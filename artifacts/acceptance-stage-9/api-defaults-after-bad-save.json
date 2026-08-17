@@ -1,0 +1,79 @@
+﻿{
+    "defaults":  {
+                     "llm":  "builtin-llm-env",
+                     "embedding":  "builtin-embedding-env",
+                     "image":  "builtin-mock-image",
+                     "video":  "builtin-mock-video"
+                 },
+    "default_profiles":  {
+                             "llm":  {
+                                         "id":  "builtin-llm-env",
+                                         "name":  "Ã§ÂÂ¯Ã¥Â¢ÂÃ©Â»ÂÃ¨Â®Â¤ LLM",
+                                         "capability":  "llm",
+                                         "provider":  "openai-compatible",
+                                         "base_url":  "http://10.126.126.2:11434/v1",
+                                         "model_name":  "qwen3-max",
+                                         "default_params":  {
+                                                                "temperature":  0.3,
+                                                                "max_tokens":  8192
+                                                            },
+                                         "enabled":  true,
+                                         "is_default":  false,
+                                         "key_configured":  false,
+                                         "builtin":  false,
+                                         "source":  "user",
+                                         "uses_mock":  false
+                                     },
+                             "embedding":  {
+                                               "id":  "builtin-embedding-env",
+                                               "name":  "Ã§ÂÂ¯Ã¥Â¢ÂÃ©Â»ÂÃ¨Â®Â¤Ã¥ÂÂÃ©ÂÂÃ¦Â¨Â¡Ã¥ÂÂ",
+                                               "capability":  "embedding",
+                                               "provider":  "ollama",
+                                               "base_url":  "http://localhost:11434",
+                                               "model_name":  "nomic-embed-text",
+                                               "default_params":  {
+                                                                      "dimension":  768
+                                                                  },
+                                               "enabled":  true,
+                                               "is_default":  false,
+                                               "key_configured":  false,
+                                               "builtin":  false,
+                                               "source":  "user",
+                                               "uses_mock":  false
+                                           },
+                             "image":  {
+                                           "id":  "builtin-mock-image",
+                                           "name":  "Mock Ã¥ÂÂ¾Ã§ÂÂÃ¦Â¨Â¡Ã¥ÂÂ",
+                                           "capability":  "image",
+                                           "provider":  "prototype-task-adapter",
+                                           "base_url":  "",
+                                           "model_name":  "mock-image-v1",
+                                           "default_params":  {
+                                                                  "size":  "1024x1024"
+                                                              },
+                                           "enabled":  true,
+                                           "is_default":  false,
+                                           "key_configured":  false,
+                                           "builtin":  false,
+                                           "source":  "user",
+                                           "uses_mock":  true
+                                       },
+                             "video":  {
+                                           "id":  "builtin-mock-video",
+                                           "name":  "Mock Ã¨Â§ÂÃ©Â¢ÂÃ¦Â¨Â¡Ã¥ÂÂ",
+                                           "capability":  "video",
+                                           "provider":  "prototype-task-adapter",
+                                           "base_url":  "",
+                                           "model_name":  "mock-video-v1",
+                                           "default_params":  {
+                                                                  "duration_seconds":  5
+                                                              },
+                                           "enabled":  true,
+                                           "is_default":  false,
+                                           "key_configured":  false,
+                                           "builtin":  false,
+                                           "source":  "user",
+                                           "uses_mock":  true
+                                       }
+                         }
+}

@@ -1,0 +1,150 @@
+{
+  "result": {
+    "originalStatus": 200,
+    "savedStatus": 200,
+    "afterSaveDefaultImage": "stage7-acceptance-image",
+    "mockTest": {
+      "status": 200,
+      "ok": true,
+      "message": "Mock provider 可用。",
+      "profileId": "builtin-mock-image"
+    },
+    "videoRealId": "stage7-video-real-ui",
+    "blockedDefaultAttemptStatus": 200,
+    "afterBlockedAttemptDefaultVideo": "stage7-video-real-ui",
+    "afterBlockedAttemptDefaultProvider": "openai-compatible",
+    "restoredStatus": 200,
+    "restoredDefaults": {
+      "llm": "builtin-llm-env",
+      "image": "builtin-mock-image",
+      "video": "builtin-mock-video"
+    },
+    "findings": {
+      "persistenceWorks": true,
+      "mockTestWorks": true,
+      "backendAllowsRealVideoDefault": true
+    }
+  },
+  "original": {
+    "profiles": [
+      {
+        "id": "builtin-mock-image",
+        "name": "内置 Mock 图片",
+        "capability": "image",
+        "provider": "prototype-task-adapter",
+        "base_url": "",
+        "model_name": "Mock 图片",
+        "default_params": {},
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": true,
+        "source": "builtin",
+        "uses_mock": true
+      },
+      {
+        "id": "builtin-llm-env",
+        "name": "环境默认 LLM",
+        "capability": "llm",
+        "provider": "openai-compatible",
+        "base_url": "http://10.126.126.2:11434/v1",
+        "model_name": "qwen3-max",
+        "default_params": {
+          "temperature": 0.3,
+          "max_tokens": 8192
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": false,
+        "builtin": true,
+        "source": "env",
+        "uses_mock": false
+      },
+      {
+        "id": "stage7-video-real-ui",
+        "name": "阶段七真实视频配置",
+        "capability": "video",
+        "provider": "openai-compatible",
+        "base_url": "http://example.invalid/v1",
+        "model_name": "demo-video",
+        "default_params": {},
+        "enabled": true,
+        "is_default": false,
+        "key_configured": false,
+        "builtin": false,
+        "source": "saved",
+        "uses_mock": false
+      },
+      {
+        "id": "builtin-mock-video",
+        "name": "内置 Mock 视频",
+        "capability": "video",
+        "provider": "prototype-task-adapter",
+        "base_url": "",
+        "model_name": "Mock 视频",
+        "default_params": {},
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": true,
+        "source": "builtin",
+        "uses_mock": true
+      }
+    ],
+    "defaults": {
+      "llm": "builtin-llm-env",
+      "image": "builtin-mock-image",
+      "video": "builtin-mock-video"
+    },
+    "default_profiles": {
+      "llm": {
+        "id": "builtin-llm-env",
+        "name": "环境默认 LLM",
+        "capability": "llm",
+        "provider": "openai-compatible",
+        "base_url": "http://10.126.126.2:11434/v1",
+        "model_name": "qwen3-max",
+        "default_params": {
+          "temperature": 0.3,
+          "max_tokens": 8192
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": false,
+        "builtin": true,
+        "source": "env",
+        "uses_mock": false
+      },
+      "image": {
+        "id": "builtin-mock-image",
+        "name": "内置 Mock 图片",
+        "capability": "image",
+        "provider": "prototype-task-adapter",
+        "base_url": "",
+        "model_name": "Mock 图片",
+        "default_params": {},
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": true,
+        "source": "builtin",
+        "uses_mock": true
+      },
+      "video": {
+        "id": "builtin-mock-video",
+        "name": "内置 Mock 视频",
+        "capability": "video",
+        "provider": "prototype-task-adapter",
+        "base_url": "",
+        "model_name": "Mock 视频",
+        "default_params": {},
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": true,
+        "source": "builtin",
+        "uses_mock": true
+      }
+    }
+  }
+}

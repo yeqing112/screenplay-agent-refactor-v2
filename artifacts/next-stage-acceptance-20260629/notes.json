@@ -1,0 +1,119 @@
+{
+  "result": "blocked_on_export_nav_disabled",
+  "screenshots": [
+    {
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\next-stage-acceptance-20260629\\01-project-list.png",
+      "bytes": 142883
+    },
+    {
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\next-stage-acceptance-20260629\\02-production-entry.png",
+      "bytes": 120118
+    },
+    {
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\next-stage-acceptance-20260629\\03-storyboard-module.png",
+      "bytes": 78767
+    },
+    {
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\next-stage-acceptance-20260629\\04-shot-detail-panels.png",
+      "bytes": 132229
+    },
+    {
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\next-stage-acceptance-20260629\\05-export-disabled-blocker.png",
+      "bytes": 132229
+    },
+    {
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\next-stage-acceptance-20260629\\debug-current-state.png",
+      "bytes": 124765
+    }
+  ],
+  "found": {
+    "分镜生产": true,
+    "创作沙盘": true,
+    "结构化镜头": true,
+    "角色站位 JSON": false,
+    "动作节拍 JSON": false,
+    "提示词编译器": true,
+    "重新编译": true,
+    "生成首帧": true,
+    "生成视频": true,
+    "验收反馈": true,
+    "导出": true,
+    "交付历史": false,
+    "导出历史": false,
+    "JSON": true,
+    "当前选中镜头": true
+  },
+  "disabledRelevantButtons": [
+    {
+      "text": "分镜生产",
+      "disabled": false,
+      "cls": "text-[11px] px-2.5 py-1 rounded-md transition-colors bg-slate-700 text-slate-200"
+    },
+    {
+      "text": "创作沙盘",
+      "disabled": false,
+      "cls": "text-[11px] px-2.5 py-1 rounded-md transition-colors text-slate-500 hover:text-slate-300"
+    },
+    {
+      "text": "高级编排",
+      "disabled": false,
+      "cls": "text-[11px] px-2.5 py-1 rounded-md transition-colors text-slate-500 hover:text-slate-300"
+    },
+    {
+      "text": "🎬\n分镜生产",
+      "disabled": false,
+      "cls": "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all text-[14px] bg-blue-900/30 border border-blue-700/50 text-blue-300"
+    },
+    {
+      "text": "📥\n导出",
+      "disabled": true,
+      "cls": "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all text-[14px] text-slate-600 cursor-not-allowed"
+    },
+    {
+      "text": "打开分镜模块",
+      "disabled": false,
+      "cls": "rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-500"
+    },
+    {
+      "text": "打开创作沙盘",
+      "disabled": false,
+      "cls": "rounded-lg border border-slate-700 px-4 py-2 text-xs text-slate-200 transition-colors hover:border-slate-500 hover:text-white"
+    },
+    {
+      "text": "开始生成分镜（1集）",
+      "disabled": false,
+      "cls": "text-xs px-4 py-2 rounded-lg transition-colors bg-blue-900/30 border border-blue-600 text-blue-300 hover:bg-blue-900/50"
+    },
+    {
+      "text": "▶️ 生成选中集的分镜 (1集)",
+      "disabled": false,
+      "cls": "text-xs px-4 py-2 rounded-lg transition-colors bg-blue-900/30 border border-blue-600 text-blue-400 hover:bg-blue-900/50"
+    },
+    {
+      "text": "🗑️ 删除所有分镜",
+      "disabled": false,
+      "cls": "text-xs px-4 py-2 rounded-lg bg-red-900/30 border border-red-600/50 text-red-400 hover:bg-red-900/50 transition-colors"
+    },
+    {
+      "text": "复制本集提示词",
+      "disabled": false,
+      "cls": "text-xs px-3 py-1.5 rounded-lg bg-purple-900/30 border border-purple-600 text-purple-400 hover:bg-purple-900/50 transition-colors"
+    },
+    {
+      "text": "保存结构化镜头",
+      "disabled": false,
+      "cls": "rounded-lg bg-amber-600 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-amber-500"
+    },
+    {
+      "text": "保存验收",
+      "disabled": false,
+      "cls": "rounded-lg bg-amber-600 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-amber-500"
+    }
+  ],
+  "apiRecords": {
+    "book_id": 14,
+    "records": []
+  },
+  "consoleIssues": [],
+  "pageExcerpt": "顶上一个孤独的身影。]\n\t\tcontrast\t\ttilt\t待补\t待生成\t待生成\t缺场景绑定、缺提示词版本、缺角色绑定、缺已采用首帧、缺已采用视频\n22\t3\tWS\t\n寺庙井边·夜晚，建立场景镜头，突出环境、时间与氛围。[和尚甲正蹲在井边洗手。]\n\t\tnatural\t\tpush-in\t待补\t待生成\t待生成\t缺场景绑定、缺提示词版本、缺角色绑定、缺已采用首帧、缺已采用视频\n23\t4\tMS\t\n寺庙井边·夜晚，人物互动中景，表情与对白清晰。和尚甲：（瞬间握住那只手，转身，眼神凌厉）；和尚乙：（被握得生疼，倒吸一口凉气）师弟！是我！\n\t和尚甲：（瞬间握住那只手，转身，眼神凌厉）；和尚乙：（被握得生疼，倒吸一口凉气）师弟！是我！\tmotivated\t\tstatic\t待补\t待生成\t待生成\t缺场景绑定、缺提示词版本、缺角色绑定、缺已采用首帧、缺已采用视频\n24\t3\tCU\t\n寺庙井边·夜晚，情绪特写或动作细节收束镜头。[画面定格：井水中，和尚甲的脸浮现出来，露出一个极致恐怖的笑容。]\n\t\tcontrast\t\ttilt\t待补\t待生成\t待生成\t缺场景绑定、缺提示词版本、缺角色绑定、缺已采用首帧、缺已采用视频\n镜号 1 · 水房·清晨\n当前选中镜头，可直接继续结构化编辑与生成。\n上一镜\n下一镜\n缺失 5\n提示词：待补\n首帧：待补\n视频：待补\n资产状态：pending\n当前缺失：缺场景绑定、缺提示词版本、缺角色绑定、缺已采用首帧、缺已采用视频\n场景：水房·清晨\n镜头：WS · push-in · 过渡: cut · 3s\n光影：natural\nBGM：suspense\n音效：\n起始：[画面开场：一桶冷水劈头盖脸泼下来]\n过程：[画面开场：一桶冷水劈头盖脸泼下来]\n结束：[画面切：和尚丙拎着空木桶，站在和尚甲面前，满脸得意。和尚乙倚在门框上，双手抱胸，嘴角挂着阴恻恻的笑。]\n结构化镜头\n场景资产 ID\n风格键\n角色资产 IDs\n道具资产 IDs\n镜头参数\n时长（秒）\n1s\n2s\n3s\n5s\n8s\n景别\nWS\nMS\nCU\nECU\nOTS\n运镜\nstatic\npush-in\npan\ndolly\nzoom\n过渡\ncut\ndissolve\nfade\nwhip\n角色站位\n用表单维护角色、位置、朝向和动作，降低日常编辑成本。\n添加站位\n暂无角色站位，点击“添加站位”开始编辑。\n动作节拍\n按镜头节奏记录主体、动作和时长，适合先粗排后细化。\n添加节拍\n站定\n走近\n转身\n0.5s\n1s\n2s\n上移\n下移\n删除\n高级 JSON\n保存结构化镜头\n旧字段会保留，结构化数据写入 meta_info\n提示词编译器\n重新编译\n当前版本：-\n锁定当前版本\n保留现有生成链兼容字段\n批量编译会默认跳过已锁定镜头\n首帧提示词\n运动提示词\n负向提示词\n生成首帧\n生成视频\n首帧 0 / 视频 0 / 状态 pending\n请先生成并采用一张首帧图\n查看历史版本\n版本会记录编译原因\n验收反馈\n当前状态：pending\n最近资产：-\n最近更新时间：-\n结果\n通过\n失败\n重试中\n类型\n首帧\n视频\n人物数量错误\n角色站位错误\n角色长相不一致\n服装错误\n道具缺失\n场景错误\n氛围不对\n构图不好\n手部错误\n新增人物\n字幕/水印/logo\n需要重试\n保存验收\n基于反馈重新编译\n失败标签会自动进入下一版提示词约束\n💄 角色定妆\n和尚丙\n和尚乙\n和尚甲\n✨ 静态提示词\n✨ 运动提示词"
+}

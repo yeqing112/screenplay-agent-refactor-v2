@@ -1,0 +1,377 @@
+{
+  "profiles": [
+    {
+      "id": "builtin-llm-env",
+      "name": "环境默认 LLM",
+      "capability": "llm",
+      "provider": "openai-compatible",
+      "base_url": "http://10.126.126.2:11434/v1",
+      "model_name": "qwen3-max",
+      "default_params": {
+        "temperature": 0.3,
+        "max_tokens": 8192
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": true,
+      "source": "env",
+      "uses_mock": false
+    },
+    {
+      "id": "builtin-embedding-env",
+      "name": "环境默认向量模型",
+      "capability": "embedding",
+      "provider": "ollama",
+      "base_url": "http://localhost:11434",
+      "model_name": "nomic-embed-text",
+      "default_params": {
+        "dimension": 768
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": true,
+      "source": "env",
+      "uses_mock": false
+    },
+    {
+      "id": "builtin-mock-image",
+      "name": "Mock 图片模型",
+      "capability": "image",
+      "provider": "prototype-task-adapter",
+      "base_url": "",
+      "model_name": "mock-image-v1",
+      "default_params": {
+        "size": "1024x1024"
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": true,
+      "source": "builtin",
+      "uses_mock": true
+    },
+    {
+      "id": "builtin-mock-video",
+      "name": "Mock 视频模型",
+      "capability": "video",
+      "provider": "prototype-task-adapter",
+      "base_url": "",
+      "model_name": "mock-video-v1",
+      "default_params": {
+        "duration_seconds": 5
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": true,
+      "source": "builtin",
+      "uses_mock": true
+    },
+    {
+      "id": "stage8-image-fake",
+      "name": "Stage8 Fake Image",
+      "capability": "image",
+      "provider": "openai-compatible",
+      "base_url": "http://127.0.0.1:8891/v1",
+      "model_name": "fake-image-model",
+      "default_params": {
+        "size": "1024x1024"
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "stage8-image-bad",
+      "name": "Stage8 Bad Image",
+      "capability": "image",
+      "provider": "openai-compatible",
+      "base_url": "http://127.0.0.1:8899/v1",
+      "model_name": "bad-image-model",
+      "default_params": {
+        "size": "1024x1024"
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "stage8-video-real",
+      "name": "Stage8 Real Video Placeholder",
+      "capability": "video",
+      "provider": "openai-compatible",
+      "base_url": "http://127.0.0.1:8891/v1",
+      "model_name": "video-not-ready",
+      "default_params": {
+        "duration_seconds": 5
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "preset-poyo-image-gpt-image-2",
+      "name": "PoYo GPT Image 2",
+      "capability": "image",
+      "provider": "poyo-async",
+      "base_url": "https://api.poyo.ai",
+      "model_name": "gpt-image-2",
+      "default_params": {
+        "task_modes": [
+          "text_to_image",
+          "image_to_image"
+        ],
+        "supports_reference_images": true,
+        "max_reference_images": 8,
+        "poll_interval_seconds": 3,
+        "poll_timeout_seconds": 180
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "preset-poyo-image-nano-banana-2-new",
+      "name": "PoYo Nano Banana 2 New",
+      "capability": "image",
+      "provider": "poyo-async",
+      "base_url": "https://api.poyo.ai",
+      "model_name": "nano-banana-2-new",
+      "default_params": {
+        "task_modes": [
+          "text_to_image",
+          "image_to_image"
+        ],
+        "supports_reference_images": true,
+        "max_reference_images": 14,
+        "poll_interval_seconds": 3,
+        "poll_timeout_seconds": 180
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "preset-poyo-image-seedream-5-lite",
+      "name": "PoYo Seedream 5 Lite",
+      "capability": "image",
+      "provider": "poyo-async",
+      "base_url": "https://api.poyo.ai",
+      "model_name": "seedream-5.0-lite",
+      "default_params": {
+        "task_modes": [
+          "text_to_image",
+          "image_to_image"
+        ],
+        "supports_reference_images": true,
+        "max_reference_images": 14,
+        "poll_interval_seconds": 3,
+        "poll_timeout_seconds": 180
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "preset-poyo-video-seedance-2",
+      "name": "PoYo Seedance 2",
+      "capability": "video",
+      "provider": "poyo-async",
+      "base_url": "https://api.poyo.ai",
+      "model_name": "seedance-2",
+      "default_params": {
+        "task_modes": [
+          "image_to_video",
+          "text_to_video"
+        ],
+        "supports_reference_images": true,
+        "max_reference_images": 4,
+        "supports_first_frame": true,
+        "supports_last_frame": true,
+        "supports_audio": true,
+        "poll_interval_seconds": 5,
+        "poll_timeout_seconds": 600
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "preset-poyo-video-kling-3-master",
+      "name": "PoYo Kling 3 Master",
+      "capability": "video",
+      "provider": "poyo-async",
+      "base_url": "https://api.poyo.ai",
+      "model_name": "kling-3.0/master",
+      "default_params": {
+        "task_modes": [
+          "image_to_video",
+          "text_to_video"
+        ],
+        "supports_reference_images": true,
+        "max_reference_images": 4,
+        "supports_first_frame": true,
+        "supports_last_frame": true,
+        "poll_interval_seconds": 5,
+        "poll_timeout_seconds": 600
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "preset-poyo-video-happy-horse-1-1",
+      "name": "PoYo Happy Horse 1.1",
+      "capability": "video",
+      "provider": "poyo-async",
+      "base_url": "https://api.poyo.ai",
+      "model_name": "happy-horse-1.1",
+      "default_params": {
+        "task_modes": [
+          "image_to_video",
+          "text_to_video"
+        ],
+        "supports_reference_images": true,
+        "max_reference_images": 4,
+        "supports_first_frame": true,
+        "task_mode": "reference_to_video",
+        "poll_interval_seconds": 5,
+        "poll_timeout_seconds": 600
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    {
+      "id": "local-llm-hwseqc",
+      "name": "DeepSeek-v4",
+      "capability": "llm",
+      "provider": "openai-compatible",
+      "base_url": "https://api.deepseek.com",
+      "model_name": "deepseek-v4-flash",
+      "default_params": {
+        "temperature": 0.3,
+        "max_tokens": 8192
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    }
+  ],
+  "defaults": {
+    "llm": "local-llm-hwseqc",
+    "embedding": "builtin-embedding-env",
+    "image": "preset-poyo-image-gpt-image-2",
+    "video": "builtin-mock-video"
+  },
+  "default_profiles": {
+    "llm": {
+      "id": "local-llm-hwseqc",
+      "name": "DeepSeek-v4",
+      "capability": "llm",
+      "provider": "openai-compatible",
+      "base_url": "https://api.deepseek.com",
+      "model_name": "deepseek-v4-flash",
+      "default_params": {
+        "temperature": 0.3,
+        "max_tokens": 8192
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    "embedding": {
+      "id": "builtin-embedding-env",
+      "name": "环境默认向量模型",
+      "capability": "embedding",
+      "provider": "ollama",
+      "base_url": "http://localhost:11434",
+      "model_name": "nomic-embed-text",
+      "default_params": {
+        "dimension": 768
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": true,
+      "source": "env",
+      "uses_mock": false
+    },
+    "image": {
+      "id": "preset-poyo-image-gpt-image-2",
+      "name": "PoYo GPT Image 2",
+      "capability": "image",
+      "provider": "poyo-async",
+      "base_url": "https://api.poyo.ai",
+      "model_name": "gpt-image-2",
+      "default_params": {
+        "task_modes": [
+          "text_to_image",
+          "image_to_image"
+        ],
+        "supports_reference_images": true,
+        "max_reference_images": 8,
+        "poll_interval_seconds": 3,
+        "poll_timeout_seconds": 180
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    "video": {
+      "id": "builtin-mock-video",
+      "name": "Mock 视频模型",
+      "capability": "video",
+      "provider": "prototype-task-adapter",
+      "base_url": "",
+      "model_name": "mock-video-v1",
+      "default_params": {
+        "duration_seconds": 5
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": true,
+      "source": "builtin",
+      "uses_mock": true
+    }
+  }
+}

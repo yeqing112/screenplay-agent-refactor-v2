@@ -1,0 +1,103 @@
+{
+  "storyboardDeleteBehindMore": false,
+  "visualDeleteBehindMore": false,
+  "storyboardButtons": [
+    {
+      "tag": "BUTTON",
+      "text": "分镜生产",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "🎬分镜生产",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "打开分镜模块",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "开始生成分镜（1集）",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "▶️ 生成选中集的分镜 (1集)",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "批量编译已选集",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "批量补首帧已选集",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "批量补视频已选集",
+      "disabled": false
+    },
+    {
+      "tag": "SUMMARY",
+      "text": "更多操作",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "🗑️ 删除所有分镜",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "批量编译本集",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "批量补首帧",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "批量补视频",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "disabled": false
+    }
+  ],
+  "visualButtons": [
+    {
+      "tag": "BUTTON",
+      "text": "🎨视觉资产",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "重新生成视觉设定",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "🔄 重新生成视觉设定",
+      "disabled": false
+    },
+    {
+      "tag": "SUMMARY",
+      "text": "更多操作",
+      "disabled": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "🗑️ 删除视觉设定",
+      "disabled": false
+    }
+  ]
+}

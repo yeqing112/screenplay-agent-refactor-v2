@@ -1,0 +1,13 @@
+{
+  "name": "short_drama",
+  "description": "竖屏短剧（抖音/快手）",
+  "icon": "📱",
+  "episode_duration": "60-120秒，不超过3分钟",
+  "episode_count": "5-100集，每季10-30集",
+  "target_audience": "18-35岁，下沉市场为主，追求强情绪刺激",
+  "pacing": "极快，每30秒一个钩子，无喘息空间",
+  "persona": "顶级竖屏短剧编剧，操盘过多部播放量过亿的竖屏短剧",
+  "adapt_persona": "顶级竖屏短剧改编策划师，操盘过上百部播放量过亿的爆款短剧",
+  "rules_file": "short_drama_rules.txt",
+  "system_prompt": "你是顶级竖屏短剧编剧。写出的剧本要让人刷到就停不下来。不要写废话，每句话都要有冲击力。"
+}

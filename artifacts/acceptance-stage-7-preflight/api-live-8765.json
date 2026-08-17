@@ -1,0 +1,8 @@
+{
+  "savedStatus": 200,
+  "requestedVideoDefault": "stage7-preflight-real-video",
+  "resolvedVideoDefault": "builtin-mock-video",
+  "resolvedVideoProvider": "prototype-task-adapter",
+  "restoredStatus": 200,
+  "pass": true
+}

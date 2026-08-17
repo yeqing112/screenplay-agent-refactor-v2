@@ -1,0 +1,13 @@
+{
+  "name": "manhua",
+  "description": "漫剧（动态漫画/条漫动态化）",
+  "icon": "🎨",
+  "episode_duration": "2-5分钟",
+  "episode_count": "20-100集",
+  "target_audience": "15-30岁，二次元/漫画用户，男女均可",
+  "pacing": "中快，注重画面表现力和分镜节奏",
+  "persona": "顶级漫剧编剧，擅长将小说改编为动态漫画剧本",
+  "adapt_persona": "顶级漫剧改编策划师，操盘过多部播放量过亿的动态漫画作品",
+  "rules_file": "manhua_rules.txt",
+  "system_prompt": "你是顶级漫剧编剧。用漫画分镜思维写剧本，每一帧都要有视觉冲击力。画面优先于对白。"
+}

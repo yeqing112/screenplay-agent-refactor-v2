@@ -1,0 +1,30 @@
+{
+  "success_case": {
+    "ok": true,
+    "message": "连接成功，返回 4 维向量",
+    "profile": {
+      "id": "builtin-embedding-env",
+      "name": "环境默认向量模型",
+      "capability": "embedding",
+      "provider": "ollama",
+      "base_url": "http://localhost:11434",
+      "model_name": "nomic-embed-text",
+      "default_params": {
+        "dimension": 4
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": true,
+      "source": "env",
+      "uses_mock": false
+    }
+  },
+  "failure_case": {
+    "ok": false,
+    "status": 400,
+    "body": {
+      "detail": "测试向量模型连接失败：上游服务返回 HTTP 502。"
+    }
+  }
+}

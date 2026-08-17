@@ -1,0 +1,306 @@
+{
+  "save": {
+    "status": 200,
+    "defaults": {
+      "llm": "builtin-llm-env",
+      "embedding": "stage8-embedding-ollama",
+      "image": "stage8-fake-image",
+      "video": "builtin-mock-video"
+    }
+  },
+  "defaultsAfterSave": {
+    "llm": {
+      "id": "builtin-llm-env",
+      "name": "环境默认 LLM",
+      "capability": "llm",
+      "provider": "openai-compatible",
+      "base_url": "http://10.126.126.2:11434/v1",
+      "model_name": "qwen3-max",
+      "default_params": {
+        "temperature": 0.3,
+        "max_tokens": 8192
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": true,
+      "source": "env",
+      "uses_mock": false
+    },
+    "embedding": {
+      "id": "stage8-embedding-ollama",
+      "name": "阶段八 Ollama 向量模型",
+      "capability": "embedding",
+      "provider": "ollama",
+      "base_url": "http://127.0.0.1:11434",
+      "model_name": "nomic-embed-text",
+      "default_params": {
+        "dimension": 4
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    "image": {
+      "id": "stage8-fake-image",
+      "name": "阶段八 Fake 图片模型",
+      "capability": "image",
+      "provider": "openai-compatible",
+      "base_url": "http://127.0.0.1:8891/v1",
+      "model_name": "fake-image-model",
+      "default_params": {
+        "size": "1024x1024"
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    "video": {
+      "id": "builtin-mock-video",
+      "name": "Mock 视频模型",
+      "capability": "video",
+      "provider": "prototype-task-adapter",
+      "base_url": "",
+      "model_name": "mock-video-v1",
+      "default_params": {
+        "duration_seconds": 5
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": true,
+      "source": "builtin",
+      "uses_mock": true
+    }
+  },
+  "embeddingTest": {
+    "status": 200,
+    "ok": true,
+    "message": "连接成功，返回 4 维向量"
+  },
+  "imageTest": {
+    "status": 200,
+    "ok": true,
+    "message": "连接成功"
+  },
+  "realVideoTest": {
+    "status": 200,
+    "ok": false,
+    "message": "真实视频 provider 尚未接入当前工作台，请继续使用 Mock 视频模型。"
+  },
+  "mock": {
+    "start": {
+      "task_id": "6c44c23cd508",
+      "status": "queued",
+      "model_profile_id": "builtin-mock-image",
+      "uses_mock": true
+    },
+    "final": {
+      "task_id": "6c44c23cd508",
+      "status": "done",
+      "progress": 100,
+      "target_kind": "image",
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": "1",
+      "version": 16,
+      "model_profile_id": "builtin-mock-image",
+      "provider": "prototype-task-adapter",
+      "uses_mock": true,
+      "asset": {
+        "id": "image-943e393c38",
+        "kind": "image",
+        "title": "分镜图 1 v16",
+        "label": "v16",
+        "uri": "data:image/svg+xml,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22640%22%20height%3D%22360%22%20viewBox%3D%220%200%20640%20360%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f172a%22%20/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23020617%22%20/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22640%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22url%28%23g%29%22%20/%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2230%22%20y%3D%2230%22%20width%3D%22580%22%20height%3D%22300%22%20rx%3D%2218%22%20fill%3D%22%230b1220%22%20stroke%3D%22%23eab308%22%20stroke-width%3D%222%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2288%22%20r%3D%2216%22%20fill%3D%22%23eab308%22%20/%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22122%22%20y%3D%2294%22%20fill%3D%22%23e2e8f0%22%20font-size%3D%2226%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3E%E5%88%86%E9%95%9C%E5%9B%BE%201%20v16%3C/text%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2244%22%20y%3D%22146%22%20fill%3D%22%2394a3b8%22%20font-size%3D%2218%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3Emock-image-v1%3C/text%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2244%22%20y%3D%22302%22%20fill%3D%22%2364748b%22%20font-size%3D%2215%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3E%E7%94%B1%E5%8E%9F%E5%9E%8B%E5%B7%A5%E4%BD%9C%E5%8F%B0%E4%BB%BB%E5%8A%A1%E9%80%82%E9%85%8D%E5%B1%82%E7%94%9F%E6%88%90%E5%B9%B6%E5%9B%9E%E5%A1%AB%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20",
+        "previewUrl": "data:image/svg+xml,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22640%22%20height%3D%22360%22%20viewBox%3D%220%200%20640%20360%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f172a%22%20/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23020617%22%20/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22640%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22url%28%23g%29%22%20/%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2230%22%20y%3D%2230%22%20width%3D%22580%22%20height%3D%22300%22%20rx%3D%2218%22%20fill%3D%22%230b1220%22%20stroke%3D%22%23eab308%22%20stroke-width%3D%222%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2288%22%20r%3D%2216%22%20fill%3D%22%23eab308%22%20/%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22122%22%20y%3D%2294%22%20fill%3D%22%23e2e8f0%22%20font-size%3D%2226%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3E%E5%88%86%E9%95%9C%E5%9B%BE%201%20v16%3C/text%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2244%22%20y%3D%22146%22%20fill%3D%22%2394a3b8%22%20font-size%3D%2218%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3Emock-image-v1%3C/text%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2244%22%20y%3D%22302%22%20fill%3D%22%2364748b%22%20font-size%3D%2215%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3E%E7%94%B1%E5%8E%9F%E5%9E%8B%E5%B7%A5%E4%BD%9C%E5%8F%B0%E4%BB%BB%E5%8A%A1%E9%80%82%E9%85%8D%E5%B1%82%E7%94%9F%E6%88%90%E5%B9%B6%E5%9B%9E%E5%A1%AB%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20",
+        "prompt": "阶段八 Mock 生图",
+        "model": "mock-image-v1",
+        "status": "done",
+        "adopted": true,
+        "sourceAssetId": null,
+        "elapsedSeconds": 2,
+        "metadata": {
+          "source": "mock",
+          "assetScope": "shot",
+          "assetSubject": "1",
+          "aspectRatio": "16:9",
+          "durationSeconds": 0,
+          "provider": "prototype-task-adapter",
+          "referenceAssetCount": 0,
+          "referenceAssetIds": [],
+          "shotId": "1",
+          "modelProfileId": "builtin-mock-image",
+          "modelName": "mock-image-v1",
+          "imageRole": "storyboard",
+          "usesMock": true
+        }
+      }
+    }
+  },
+  "real": {
+    "start": {
+      "task_id": "8a1f32b265b9",
+      "status": "queued",
+      "model_profile_id": "stage8-fake-image",
+      "uses_mock": false
+    },
+    "final": {
+      "task_id": "8a1f32b265b9",
+      "status": "done",
+      "progress": 100,
+      "target_kind": "image",
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": "1",
+      "version": 17,
+      "model_profile_id": "stage8-fake-image",
+      "provider": "openai-compatible",
+      "uses_mock": false,
+      "asset": {
+        "id": "image-567c836deb",
+        "kind": "image",
+        "title": "分镜图 1 v17",
+        "label": "v17",
+        "uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X3n0AAAAASUVORK5CYII=",
+        "previewUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X3n0AAAAASUVORK5CYII=",
+        "prompt": "阶段八 Fake 真实生图 [fake-provider]",
+        "model": "fake-image-model",
+        "status": "done",
+        "adopted": true,
+        "sourceAssetId": null,
+        "elapsedSeconds": 2,
+        "metadata": {
+          "source": "real",
+          "assetScope": "shot",
+          "assetSubject": "1",
+          "aspectRatio": "16:9",
+          "durationSeconds": 0,
+          "provider": "openai-compatible",
+          "referenceAssetCount": 0,
+          "referenceAssetIds": [],
+          "shotId": "1",
+          "modelProfileId": "stage8-fake-image",
+          "modelName": "fake-image-model",
+          "imageRole": "storyboard",
+          "usesMock": false
+        }
+      }
+    }
+  },
+  "failure": {
+    "start": {
+      "task_id": "80cfb8957ad0",
+      "status": "queued",
+      "model_profile_id": "stage8-bad-image",
+      "uses_mock": false
+    },
+    "final": {
+      "task_id": "80cfb8957ad0",
+      "status": "error",
+      "progress": 70,
+      "target_kind": "image",
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": "1",
+      "version": 18,
+      "model_profile_id": "stage8-bad-image",
+      "provider": "openai-compatible",
+      "uses_mock": false,
+      "error": "图片生成失败：上游服务返回 HTTP 502。"
+    }
+  },
+  "afterRealDefaults": {
+    "llm": {
+      "id": "builtin-llm-env",
+      "name": "环境默认 LLM",
+      "capability": "llm",
+      "provider": "openai-compatible",
+      "base_url": "http://10.126.126.2:11434/v1",
+      "model_name": "qwen3-max",
+      "default_params": {
+        "temperature": 0.3,
+        "max_tokens": 8192
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": true,
+      "source": "env",
+      "uses_mock": false
+    },
+    "embedding": {
+      "id": "stage8-embedding-ollama",
+      "name": "阶段八 Ollama 向量模型",
+      "capability": "embedding",
+      "provider": "ollama",
+      "base_url": "http://127.0.0.1:11434",
+      "model_name": "nomic-embed-text",
+      "default_params": {
+        "dimension": 4
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": false,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    "image": {
+      "id": "stage8-fake-image",
+      "name": "阶段八 Fake 图片模型",
+      "capability": "image",
+      "provider": "openai-compatible",
+      "base_url": "http://127.0.0.1:8891/v1",
+      "model_name": "fake-image-model",
+      "default_params": {
+        "size": "1024x1024"
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": false,
+      "source": "user",
+      "uses_mock": false
+    },
+    "video": {
+      "id": "builtin-mock-video",
+      "name": "Mock 视频模型",
+      "capability": "video",
+      "provider": "prototype-task-adapter",
+      "base_url": "",
+      "model_name": "mock-video-v1",
+      "default_params": {
+        "duration_seconds": 5
+      },
+      "enabled": true,
+      "is_default": false,
+      "key_configured": true,
+      "builtin": true,
+      "source": "builtin",
+      "uses_mock": true
+    }
+  },
+  "restore": {
+    "status": 200,
+    "ok": true
+  },
+  "findings": {
+    "embeddingDefaultSaved": true,
+    "embeddingTestPassed": true,
+    "imageDefaultSaved": true,
+    "imageTestPassed": true,
+    "videoDefaultGuard": true,
+    "realVideoBlockedMessage": true,
+    "mockImageDone": true,
+    "realImageDone": true,
+    "failureShowsError": true,
+    "restored": true
+  }
+}

@@ -1,0 +1,24 @@
+你是一位短剧编剧。请根据以下材料生成分集大纲。
+
+## 小说圣经（核心信息）
+{bible}
+
+## 改编方案
+{adaptation}
+
+{fixed_sliots}
+
+## 要求
+请生成 {episode_count} 集的分集大纲，每集包含：
+- 集数和标题
+- 核心事件（30字以内）
+- 开场钩子、核心冲突、反转高潮、结尾悬念（各20字以内）
+- 涉及的主要角色
+- 关键场景
+
+{fixed_sliots_extra}
+
+JSON格式输出（不要markdown代码块，直接输出JSON数组）：
+[
+  {{"episode": 1, "title": "", "core_event": "", "opening_hook": "", "core_conflict": "", "climax": "", "ending_hook": "", "characters": [], "scenes": []}}
+]

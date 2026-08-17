@@ -1,0 +1,16 @@
+{
+  "pageErrors": [],
+  "requestFailures": [],
+  "flow": {
+    "nextStepVisible": true,
+    "imageGenerated": true,
+    "firstVideoGenerated": true,
+    "secondVideoGenerated": true,
+    "adoptedFromList": true,
+    "previewOpened": true,
+    "cancelFromShot": true,
+    "previewShowsMissingAfterCancel": true,
+    "failureRetryFromShot": false,
+    "refreshPreserved": true
+  }
+}

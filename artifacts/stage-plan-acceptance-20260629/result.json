@@ -1,0 +1,113 @@
+{
+  "auditDir": "D:/Work/Project/screenplay-agent-refactor-v2/artifacts/stage-plan-acceptance-20260629",
+  "screenshots": [
+    {
+      "step": "project-list",
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\stage-plan-acceptance-20260629\\01-project-list.png",
+      "bytes": 155062
+    },
+    {
+      "step": "project-entry",
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\stage-plan-acceptance-20260629\\02-project-entry.png",
+      "bytes": 181114
+    },
+    {
+      "step": "visual-assets",
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\stage-plan-acceptance-20260629\\03-visual-assets.png",
+      "bytes": 109603
+    },
+    {
+      "step": "storyboard",
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\stage-plan-acceptance-20260629\\04-storyboard.png",
+      "bytes": 114734
+    },
+    {
+      "step": "export",
+      "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\stage-plan-acceptance-20260629\\05-export.png",
+      "bytes": 138220
+    }
+  ],
+  "checks": {
+    "visualPageHasUnifiedGeneratedStatus": true,
+    "visualAssetOverviewVisible": true,
+    "dangerousDeletesHiddenBehindMoreActions": false,
+    "exportReachable": true
+  },
+  "exportState": {
+    "disabled": false,
+    "text": "📥导出",
+    "className": "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all text-[14px] text-slate-400 hover:bg-slate-800/50"
+  },
+  "buttons": [
+    {
+      "text": "分镜生产",
+      "disabled": false
+    },
+    {
+      "text": "🎬\n分镜生产",
+      "disabled": false
+    },
+    {
+      "text": "🎨\n视觉资产",
+      "disabled": false
+    },
+    {
+      "text": "📥\n导出",
+      "disabled": false
+    },
+    {
+      "text": "打开分镜模块",
+      "disabled": false
+    },
+    {
+      "text": "登记交付",
+      "disabled": false
+    },
+    {
+      "text": "导出 JSON 并登记",
+      "disabled": false
+    },
+    {
+      "text": "复制交付摘要",
+      "disabled": false
+    },
+    {
+      "text": "复制交付摘要",
+      "disabled": false
+    },
+    {
+      "text": "回到分镜处理阻塞项",
+      "disabled": false
+    },
+    {
+      "text": "📄 导出 PDF",
+      "disabled": true
+    },
+    {
+      "text": "📄 导出 Word",
+      "disabled": true
+    },
+    {
+      "text": "📄 导出 JSON",
+      "disabled": false
+    },
+    {
+      "text": "📄 导出 Final Draft",
+      "disabled": true
+    }
+  ],
+  "consoleIssues": [
+    {
+      "type": "requestfailed",
+      "text": "http://127.0.0.1:54321/api/books :: net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "http://127.0.0.1:54321/api/nodes/registry :: net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "http://127.0.0.1:54321/api/books :: net::ERR_ABORTED"
+    }
+  ]
+}

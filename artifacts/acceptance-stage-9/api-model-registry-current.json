@@ -1,0 +1,201 @@
+﻿{
+    "profiles":  [
+                     {
+                         "id":  "builtin-llm-env",
+                         "name":  "ç¯å¢é»è®¤ LLM",
+                         "capability":  "llm",
+                         "provider":  "openai-compatible",
+                         "base_url":  "http://10.126.126.2:11434/v1",
+                         "model_name":  "qwen3-max",
+                         "default_params":  {
+                                                "temperature":  0.3,
+                                                "max_tokens":  8192
+                                            },
+                         "enabled":  true,
+                         "is_default":  false,
+                         "key_configured":  false,
+                         "builtin":  true,
+                         "source":  "env",
+                         "uses_mock":  false
+                     },
+                     {
+                         "id":  "builtin-embedding-env",
+                         "name":  "ç¯å¢é»è®¤åéæ¨¡å",
+                         "capability":  "embedding",
+                         "provider":  "ollama",
+                         "base_url":  "http://localhost:11434",
+                         "model_name":  "nomic-embed-text",
+                         "default_params":  {
+                                                "dimension":  768
+                                            },
+                         "enabled":  true,
+                         "is_default":  false,
+                         "key_configured":  true,
+                         "builtin":  true,
+                         "source":  "env",
+                         "uses_mock":  false
+                     },
+                     {
+                         "id":  "builtin-mock-image",
+                         "name":  "Mock å¾çæ¨¡å",
+                         "capability":  "image",
+                         "provider":  "prototype-task-adapter",
+                         "base_url":  "",
+                         "model_name":  "mock-image-v1",
+                         "default_params":  {
+                                                "size":  "1024x1024"
+                                            },
+                         "enabled":  true,
+                         "is_default":  false,
+                         "key_configured":  true,
+                         "builtin":  true,
+                         "source":  "builtin",
+                         "uses_mock":  true
+                     },
+                     {
+                         "id":  "builtin-mock-video",
+                         "name":  "Mock è§é¢æ¨¡å",
+                         "capability":  "video",
+                         "provider":  "prototype-task-adapter",
+                         "base_url":  "",
+                         "model_name":  "mock-video-v1",
+                         "default_params":  {
+                                                "duration_seconds":  5
+                                            },
+                         "enabled":  true,
+                         "is_default":  false,
+                         "key_configured":  true,
+                         "builtin":  true,
+                         "source":  "builtin",
+                         "uses_mock":  true
+                     },
+                     {
+                         "id":  "stage8-image-fake",
+                         "name":  "Stage8 Fake Image",
+                         "capability":  "image",
+                         "provider":  "openai-compatible",
+                         "base_url":  "http://127.0.0.1:8891/v1",
+                         "model_name":  "fake-image-model",
+                         "default_params":  {
+                                                "size":  "1024x1024"
+                                            },
+                         "enabled":  true,
+                         "is_default":  false,
+                         "key_configured":  true,
+                         "builtin":  false,
+                         "source":  "user",
+                         "uses_mock":  false
+                     },
+                     {
+                         "id":  "stage8-image-bad",
+                         "name":  "Stage8 Bad Image",
+                         "capability":  "image",
+                         "provider":  "openai-compatible",
+                         "base_url":  "http://127.0.0.1:8899/v1",
+                         "model_name":  "bad-image-model",
+                         "default_params":  {
+                                                "size":  "1024x1024"
+                                            },
+                         "enabled":  true,
+                         "is_default":  false,
+                         "key_configured":  true,
+                         "builtin":  false,
+                         "source":  "user",
+                         "uses_mock":  false
+                     },
+                     {
+                         "id":  "stage8-video-real",
+                         "name":  "Stage8 Real Video Placeholder",
+                         "capability":  "video",
+                         "provider":  "openai-compatible",
+                         "base_url":  "http://127.0.0.1:8891/v1",
+                         "model_name":  "video-not-ready",
+                         "default_params":  {
+                                                "duration_seconds":  5
+                                            },
+                         "enabled":  true,
+                         "is_default":  false,
+                         "key_configured":  true,
+                         "builtin":  false,
+                         "source":  "user",
+                         "uses_mock":  false
+                     }
+                 ],
+    "defaults":  {
+                     "llm":  "builtin-llm-env",
+                     "embedding":  "builtin-embedding-env",
+                     "image":  "stage8-image-fake",
+                     "video":  "builtin-mock-video"
+                 },
+    "default_profiles":  {
+                             "llm":  {
+                                         "id":  "builtin-llm-env",
+                                         "name":  "ç¯å¢é»è®¤ LLM",
+                                         "capability":  "llm",
+                                         "provider":  "openai-compatible",
+                                         "base_url":  "http://10.126.126.2:11434/v1",
+                                         "model_name":  "qwen3-max",
+                                         "default_params":  {
+                                                                "temperature":  0.3,
+                                                                "max_tokens":  8192
+                                                            },
+                                         "enabled":  true,
+                                         "is_default":  false,
+                                         "key_configured":  false,
+                                         "builtin":  true,
+                                         "source":  "env",
+                                         "uses_mock":  false
+                                     },
+                             "embedding":  {
+                                               "id":  "builtin-embedding-env",
+                                               "name":  "ç¯å¢é»è®¤åéæ¨¡å",
+                                               "capability":  "embedding",
+                                               "provider":  "ollama",
+                                               "base_url":  "http://localhost:11434",
+                                               "model_name":  "nomic-embed-text",
+                                               "default_params":  {
+                                                                      "dimension":  768
+                                                                  },
+                                               "enabled":  true,
+                                               "is_default":  false,
+                                               "key_configured":  true,
+                                               "builtin":  true,
+                                               "source":  "env",
+                                               "uses_mock":  false
+                                           },
+                             "image":  {
+                                           "id":  "stage8-image-fake",
+                                           "name":  "Stage8 Fake Image",
+                                           "capability":  "image",
+                                           "provider":  "openai-compatible",
+                                           "base_url":  "http://127.0.0.1:8891/v1",
+                                           "model_name":  "fake-image-model",
+                                           "default_params":  {
+                                                                  "size":  "1024x1024"
+                                                              },
+                                           "enabled":  true,
+                                           "is_default":  false,
+                                           "key_configured":  true,
+                                           "builtin":  false,
+                                           "source":  "user",
+                                           "uses_mock":  false
+                                       },
+                             "video":  {
+                                           "id":  "builtin-mock-video",
+                                           "name":  "Mock è§é¢æ¨¡å",
+                                           "capability":  "video",
+                                           "provider":  "prototype-task-adapter",
+                                           "base_url":  "",
+                                           "model_name":  "mock-video-v1",
+                                           "default_params":  {
+                                                                  "duration_seconds":  5
+                                                              },
+                                           "enabled":  true,
+                                           "is_default":  false,
+                                           "key_configured":  true,
+                                           "builtin":  true,
+                                           "source":  "builtin",
+                                           "uses_mock":  true
+                                       }
+                         }
+}

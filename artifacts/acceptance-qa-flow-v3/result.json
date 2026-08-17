@@ -1,0 +1,38 @@
+{
+  "beforeSummary": {
+    "shots": 8,
+    "refs": 8,
+    "refTotal": 8,
+    "images": 2,
+    "videos": 1,
+    "sequence": 1
+  },
+  "afterSummary": {
+    "shots": 8,
+    "refs": 8,
+    "refTotal": 8,
+    "images": 3,
+    "videos": 2,
+    "sequence": 2
+  },
+  "referenceTask": {
+    "status": "done",
+    "title": "树房子前 参考图 v5",
+    "id": "image-233d861b48"
+  },
+  "imageTask": {
+    "status": "done",
+    "title": "分镜图 5 v1",
+    "id": "image-09e7e46cbc"
+  },
+  "videoTask": {
+    "status": "done",
+    "title": "视频 5 v1",
+    "id": "video-34c748dbbd"
+  },
+  "refreshed": {
+    "persistedImage": true,
+    "persistedVideo": true,
+    "sequenceRaised": true
+  }
+}

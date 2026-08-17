@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-08-16T18:59:50.858357",
+  "story_title": "三个和尚",
+  "validation_summary": {
+    "constraint_violations": 0,
+    "prop_issues": 0,
+    "character_issues": 0,
+    "total_fixes": 0,
+    "script_issues": 5
+  },
+  "structural_findings": {
+    "constraint_violations": [],
+    "prop_issues": [],
+    "character_issues": []
+  },
+  "repair_directives": [],
+  "script_issues": [
+    "缺少场景: 场景1-寺庙大殿",
+    "缺少场景: 场景2-后山小路",
+    "缺少场景: 场景3-老和尚禅房",
+    "道具未出现: 古老经书",
+    "道具未出现: 香灰"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "tv_series",
+  "description": "电视剧（长剧集/网剧）",
+  "icon": "📺",
+  "episode_duration": "30-45分钟/集",
+  "episode_count": "20-60集",
+  "target_audience": "全年龄段，注重故事沉浸感和追剧体验",
+  "pacing": "中速，有张有弛，允许多线叙事",
+  "persona": "顶级电视剧编剧，擅长将小说改编为长剧集剧本",
+  "adapt_persona": "顶级电视剧编剧/制片人，操盘过多部口碑收视双爆的长剧集",
+  "rules_file": "tv_series_rules.txt",
+  "system_prompt": "你是顶级电视剧编剧。用多线叙事思维写剧本，注重角色塑造和追剧体验。节奏有张有弛。"
+}

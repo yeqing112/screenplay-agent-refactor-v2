@@ -1,0 +1,45 @@
+{
+  "mock_default": "builtin-mock-image",
+  "mock_task_start": {
+    "task_id": "551dc3e4e6ca",
+    "status": "queued",
+    "model_profile_id": "builtin-mock-image",
+    "uses_mock": true
+  },
+  "mock_task_final": {
+    "status": "done",
+    "provider": "prototype-task-adapter",
+    "uses_mock": true,
+    "model_profile_id": "builtin-mock-image",
+    "asset_metadata": {
+      "source": "mock",
+      "assetScope": "shot",
+      "assetSubject": "8",
+      "aspectRatio": "16:9",
+      "durationSeconds": 5,
+      "provider": "prototype-task-adapter",
+      "referenceAssetCount": 0,
+      "referenceAssetIds": [],
+      "shotId": "8",
+      "modelProfileId": "builtin-mock-image",
+      "modelName": "mock-image-v1",
+      "imageRole": "storyboard",
+      "usesMock": true
+    }
+  },
+  "bad_default": "stage8-image-bad",
+  "bad_task_start": {
+    "task_id": "c94f987824a1",
+    "status": "queued",
+    "model_profile_id": "stage8-image-bad",
+    "uses_mock": false
+  },
+  "bad_task_final": {
+    "status": "error",
+    "provider": "openai-compatible",
+    "uses_mock": false,
+    "model_profile_id": "stage8-image-bad",
+    "error": "图片生成失败：上游服务返回 HTTP 502。"
+  },
+  "restored_default": "stage8-image-fake"
+}

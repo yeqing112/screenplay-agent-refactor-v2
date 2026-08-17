@@ -1,0 +1,7048 @@
+{
+  "imageTask": {
+    "status": "done",
+    "title": "分镜图 7 v1",
+    "id": "image-a23c9eaa4a"
+  },
+  "clickableImageNode": true,
+  "hasVideoButton": true,
+  "videoTask": {
+    "status": "done",
+    "title": "视频 7 v1",
+    "id": "video-60076bb7ea"
+  },
+  "refreshed": {
+    "persistedImage": true,
+    "persistedVideo": true
+  },
+  "failures": [
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_NO_BUFFER_SPACE"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/nodes/registry",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    },
+    {
+      "url": "http://127.0.0.1:4173/api/books",
+      "method": "GET",
+      "failure": "net::ERR_INSUFFICIENT_RESOURCES"
+    }
+  ],
+  "pageErrors": [
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch",
+    "TypeError: Failed to fetch"
+  ]
+}

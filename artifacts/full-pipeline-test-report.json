@@ -1,0 +1,70 @@
+{
+  "timestamp": "2026-08-16T20:44:09.640592",
+  "test_name": "完整流水线集成测试",
+  "story_title": "迷雾寺庙",
+  "test_data_summary": {
+    "characters": 3,
+    "props": 3,
+    "scenes": 3
+  },
+  "validation_results": {
+    "constraint_violations": 2,
+    "prop_issues": 0,
+    "character_issues": 0,
+    "total_fixes": 2
+  },
+  "structural_findings": {
+    "constraint_violations": [
+      {
+        "constraint_id": "PROP_TRANSFER_MISSING",
+        "severity": "warning",
+        "message": "道具 玉佩 从 场景1-寺庙大殿 转移到 场景2-后山小路 缺少转移说明",
+        "location": "场景2-后山小路",
+        "fix_suggestion": "在场景 场景2-后山小路 开头添加道具获取/转移的过渡镜头"
+      },
+      {
+        "constraint_id": "PROP_TRANSFER_MISSING",
+        "severity": "warning",
+        "message": "道具 神秘信件 从 场景2-后山小路 转移到 场景3-老和尚禅房 缺少转移说明",
+        "location": "场景3-老和尚禅房",
+        "fix_suggestion": "在场景 场景3-老和尚禅房 开头添加道具获取/转移的过渡镜头"
+      }
+    ],
+    "prop_issues": [],
+    "character_issues": []
+  },
+  "repair_directives": [
+    {
+      "type": "CONSTRAINT_VIOLATION",
+      "constraint_id": "PROP_TRANSFER_MISSING",
+      "layer": "relationship",
+      "severity": "warning",
+      "location": "场景2-后山小路",
+      "instruction": "在场景 场景2-后山小路 开头添加道具获取/转移的过渡镜头",
+      "affected_entities": [
+        "玉佩"
+      ]
+    },
+    {
+      "type": "CONSTRAINT_VIOLATION",
+      "constraint_id": "PROP_TRANSFER_MISSING",
+      "layer": "relationship",
+      "severity": "warning",
+      "location": "场景3-老和尚禅房",
+      "instruction": "在场景 场景3-老和尚禅房 开头添加道具获取/转移的过渡镜头",
+      "affected_entities": [
+        "神秘信件"
+      ]
+    }
+  ],
+  "validation_summary": {
+    "constraint_violations": 2,
+    "prop_issues": 0,
+    "character_issues": 0,
+    "total_fixes": 2,
+    "severity_breakdown": {
+      "warning": 2
+    }
+  },
+  "validation_prompt_preview": "## Structural Validation Results\nTotal constraint violations: 2\nTotal prop issues: 0\nTotal character issues: 0\nTotal fixes needed: 2\n\n### Constraint Violations\n- [warning] 道具 玉佩 从 场景1-寺庙大殿 转移到 场景2-后山小路 缺少转移说明\n  Fix: 在场景 场景2-后山小路 开头添加道具获取/转移的过渡镜头\n- [warning] 道具 神秘信件 从 场景2-后山小路 转移到 场景3-老和尚禅房 缺少转移说明\n  Fix: 在场景 场景3-老和尚禅房 开头添加道具获取/转移的过渡镜头\n\n### Structural Fix Directives\nApply these fixes in priority order:\n1. [CONSTRAINT_FIX] 在场景 场景2-后山小路 开头添加道具获取/转移的过渡镜头...\n2. [CONSTRAINT_FIX] 在场景 场景3-老和尚禅房 开头添加道具获取/..."
+}

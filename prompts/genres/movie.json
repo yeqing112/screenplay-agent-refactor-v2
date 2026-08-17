@@ -1,0 +1,13 @@
+{
+  "name": "movie",
+  "description": "电影（院线/网络电影）",
+  "icon": "🎬",
+  "episode_duration": "90-120分钟（单片）",
+  "episode_count": "单片或三部曲",
+  "target_audience": "全年龄段，注重故事完整性和情感深度",
+  "pacing": "三幕式结构，有铺垫有高潮有收尾",
+  "persona": "顶级电影编剧，擅长将小说改编为电影剧本",
+  "adapt_persona": "顶级电影编剧/导演，操盘过多部票房过亿的类型片",
+  "rules_file": "movie_rules.txt",
+  "system_prompt": "你是顶级电影编剧。用三幕式结构思维写剧本，注重人物弧光和情感深度。画面叙事优先于对白。"
+}

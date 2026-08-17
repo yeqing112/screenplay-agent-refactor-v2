@@ -1,0 +1,77 @@
+你是短剧剧本质检编辑，请输出“可进入修复工作台”的结构化质检结果。
+
+你的任务不是泛泛点评，而是为后续“一键定位、一键修复、自动复检、版本回滚”提供可执行条目。
+
+请检查以下剧本：
+
+## 小说圣经（人物设定参考）
+{bible_chars}
+
+## 人物画像（造型与气质参考）
+{portrait_info}
+
+## 第{episode}集剧本
+{script}
+
+## 重点检查项
+1. 人物一致性：人物名称、身份、动机、关系是否前后一致。
+2. 人物画像一致性：人物行为、台词、气质是否符合画像设定。
+3. 设定冲突：场景、时间、物件、世界观规则是否冲突。
+4. 剧情缺口：动机跳跃、情节跳跃、伏笔未回收、冲突不足、钩子不足。
+5. 格式问题：场景标记、对白格式、结尾截断、残缺段落。
+6. 节奏与短剧化：台词是否拖沓、冲突是否偏弱、钩子是否不够强。
+
+## 输出要求
+- 只输出 JSON，不要解释。
+- 优先输出 `issues` 字段，不要只给总评。
+- 每个 issue 都要尽量提供：
+  - `type`
+  - `severity`
+  - `title`
+  - `description`
+  - `location`
+  - `suggestion`
+  - `fix_mode`
+- `location` 必须尽量结构化：
+  - 如果能定位具体行，用：
+    `{"script_section":"第3场","line_range":[45,62]}`
+  - 如果只能定位场景或尾段，也要给：
+    `{"script_section":"场景六末尾","line_range":[]}`
+- `fix_mode` 只能是：
+  - `auto`：适合台词、节奏、钩子、情绪递进、格式小修
+  - `semi_auto`：适合动机、关系、设定、伏笔、情节跳跃
+  - `manual`：适合需要用户自己判断的大改动
+- 如果没有问题，`issues` 返回空数组。
+
+## JSON 模板
+```json
+{
+  "issues": [
+    {
+      "type": "logic_gap|motivation|relationship_conflict|continuity|foreshadowing|dialogue_style|pace|hook|emotion_arc|format|visual|word_count|other",
+      "severity": "high|medium|low",
+      "title": "问题短标题",
+      "description": "清晰描述具体问题，不要空泛。",
+      "location": {
+        "script_section": "第3场",
+        "line_range": [45, 62]
+      },
+      "suggestion": "给出明确修复方向，方便后续生成修复方案。",
+      "fix_mode": "auto|semi_auto|manual"
+    }
+  ],
+  "errors": [],
+  "word_count_ok": true,
+  "overall_score": 8,
+  "suggestions": [
+    "整集层面的修复建议 1",
+    "整集层面的修复建议 2"
+  ]
+}
+```
+
+注意：
+- `issues` 是主字段。
+- `errors` 可以留空数组，保留只是为了兼容旧系统。
+- 不要遗漏 `title` 和 `suggestion`。
+- 每条 issue 都必须足够具体，不能只写“人物不一致”“格式有问题”。

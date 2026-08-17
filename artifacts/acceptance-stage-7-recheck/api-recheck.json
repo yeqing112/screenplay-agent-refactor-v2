@@ -1,0 +1,260 @@
+{
+  "apiResult": {
+    "originalStatus": 200,
+    "savedStatus": 200,
+    "requestedVideoDefault": "stage7-recheck-real-video",
+    "resolvedVideoDefault": "stage7-recheck-real-video",
+    "resolvedVideoProvider": "openai-compatible",
+    "resolvedImageDefault": "stage7-recheck-image",
+    "generationStart": {
+      "task_id": "d1f97b45309a",
+      "status": "running",
+      "model_profile_id": "builtin-mock-image",
+      "uses_mock": true
+    },
+    "generationFinalStatus": "done",
+    "generationFinalMeta": {
+      "source": "mock",
+      "assetScope": "shot",
+      "assetSubject": "1",
+      "aspectRatio": "16:9",
+      "durationSeconds": 0,
+      "provider": "prototype-task-adapter",
+      "referenceAssetCount": 0,
+      "referenceAssetIds": [],
+      "shotId": "1",
+      "modelProfileId": "builtin-mock-image",
+      "modelName": "Mock 图片",
+      "imageRole": "storyboard",
+      "usesMock": true
+    },
+    "restoredStatus": 200,
+    "findings": {
+      "imageDefaultPersists": true,
+      "realVideoDefaultBlocked": false,
+      "generationCarriesProfile": true,
+      "restored": true
+    }
+  },
+  "savedPayload": {
+    "profiles": [
+      {
+        "id": "stage7-recheck-image",
+        "name": "阶段七复验图片模型",
+        "capability": "image",
+        "provider": "openai-compatible",
+        "base_url": "http://example.invalid/v1",
+        "model_name": "recheck-image-model",
+        "default_params": {
+          "size": "1024x1024"
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": false,
+        "source": "saved",
+        "uses_mock": false
+      },
+      {
+        "id": "builtin-mock-image",
+        "name": "内置 Mock 图片",
+        "capability": "image",
+        "provider": "prototype-task-adapter",
+        "base_url": "",
+        "model_name": "Mock 图片",
+        "default_params": {},
+        "enabled": true,
+        "is_default": false,
+        "key_configured": true,
+        "builtin": true,
+        "source": "builtin",
+        "uses_mock": true
+      },
+      {
+        "id": "builtin-llm-env",
+        "name": "环境默认 LLM",
+        "capability": "llm",
+        "provider": "openai-compatible",
+        "base_url": "http://10.126.126.2:11434/v1",
+        "model_name": "qwen3-max",
+        "default_params": {
+          "temperature": 0.3,
+          "max_tokens": 8192
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": false,
+        "builtin": true,
+        "source": "env",
+        "uses_mock": false
+      },
+      {
+        "id": "stage7-recheck-real-video",
+        "name": "阶段七复验真实视频模型",
+        "capability": "video",
+        "provider": "openai-compatible",
+        "base_url": "http://example.invalid/v1",
+        "model_name": "recheck-video-model",
+        "default_params": {
+          "duration_seconds": 5
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": false,
+        "source": "saved",
+        "uses_mock": false
+      },
+      {
+        "id": "stage7-video-real-ui",
+        "name": "阶段七真实视频配置",
+        "capability": "video",
+        "provider": "openai-compatible",
+        "base_url": "http://example.invalid/v1",
+        "model_name": "demo-video",
+        "default_params": {},
+        "enabled": true,
+        "is_default": false,
+        "key_configured": false,
+        "builtin": false,
+        "source": "saved",
+        "uses_mock": false
+      },
+      {
+        "id": "builtin-mock-video",
+        "name": "内置 Mock 视频",
+        "capability": "video",
+        "provider": "prototype-task-adapter",
+        "base_url": "",
+        "model_name": "Mock 视频",
+        "default_params": {},
+        "enabled": true,
+        "is_default": false,
+        "key_configured": true,
+        "builtin": true,
+        "source": "builtin",
+        "uses_mock": true
+      }
+    ],
+    "defaults": {
+      "llm": "builtin-llm-env",
+      "image": "stage7-recheck-image",
+      "video": "stage7-recheck-real-video"
+    },
+    "default_profiles": {
+      "llm": {
+        "id": "builtin-llm-env",
+        "name": "环境默认 LLM",
+        "capability": "llm",
+        "provider": "openai-compatible",
+        "base_url": "http://10.126.126.2:11434/v1",
+        "model_name": "qwen3-max",
+        "default_params": {
+          "temperature": 0.3,
+          "max_tokens": 8192
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": false,
+        "builtin": true,
+        "source": "env",
+        "uses_mock": false
+      },
+      "image": {
+        "id": "stage7-recheck-image",
+        "name": "阶段七复验图片模型",
+        "capability": "image",
+        "provider": "openai-compatible",
+        "base_url": "http://example.invalid/v1",
+        "model_name": "recheck-image-model",
+        "default_params": {
+          "size": "1024x1024"
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": false,
+        "source": "saved",
+        "uses_mock": false
+      },
+      "video": {
+        "id": "stage7-recheck-real-video",
+        "name": "阶段七复验真实视频模型",
+        "capability": "video",
+        "provider": "openai-compatible",
+        "base_url": "http://example.invalid/v1",
+        "model_name": "recheck-video-model",
+        "default_params": {
+          "duration_seconds": 5
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": false,
+        "source": "saved",
+        "uses_mock": false
+      }
+    }
+  },
+  "afterSaveDefaults": {
+    "defaults": {
+      "llm": "builtin-llm-env",
+      "image": "stage7-recheck-image",
+      "video": "stage7-recheck-real-video"
+    },
+    "default_profiles": {
+      "llm": {
+        "id": "builtin-llm-env",
+        "name": "环境默认 LLM",
+        "capability": "llm",
+        "provider": "openai-compatible",
+        "base_url": "http://10.126.126.2:11434/v1",
+        "model_name": "qwen3-max",
+        "default_params": {
+          "temperature": 0.3,
+          "max_tokens": 8192
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": false,
+        "builtin": true,
+        "source": "env",
+        "uses_mock": false
+      },
+      "image": {
+        "id": "stage7-recheck-image",
+        "name": "阶段七复验图片模型",
+        "capability": "image",
+        "provider": "openai-compatible",
+        "base_url": "http://example.invalid/v1",
+        "model_name": "recheck-image-model",
+        "default_params": {
+          "size": "1024x1024"
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": false,
+        "source": "saved",
+        "uses_mock": false
+      },
+      "video": {
+        "id": "stage7-recheck-real-video",
+        "name": "阶段七复验真实视频模型",
+        "capability": "video",
+        "provider": "openai-compatible",
+        "base_url": "http://example.invalid/v1",
+        "model_name": "recheck-video-model",
+        "default_params": {
+          "duration_seconds": 5
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": false,
+        "source": "saved",
+        "uses_mock": false
+      }
+    }
+  }
+}

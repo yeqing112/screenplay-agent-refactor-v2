@@ -1,0 +1,10 @@
+{
+  "cancelAdoptFlow": false,
+  "previewShowsMissingAfterCancel": false,
+  "readoptFlow": false,
+  "failureNodeVisible": true,
+  "failureReasonVisible": true,
+  "retryVisible": false,
+  "retryTriggered": false,
+  "pageErrors": []
+}
