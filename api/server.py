@@ -2,6 +2,7 @@
 import asyncio
 import difflib
 import json
+import logging
 import uuid
 import re
 from types import SimpleNamespace
@@ -12,6 +13,7 @@ from typing import Any, Optional
 from fastapi import FastAPI, BackgroundTasks, UploadFile, File, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
+import config
 from api.generation_adapters import (
     ModelProfileError,
     build_task_adapter_asset,
@@ -44,15 +46,26 @@ from nodes.registry import REGISTRY, get_handler
 from nodes.runner import NodeRunner, WORKFLOWS_DIR, RUNS_DIR
 from models import Session, Book
 
+logger = logging.getLogger(__name__)
+
 app = FastAPI(title="Screenplay DevCanvas", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=config.API_CORS_ORIGINS,
+    allow_credentials=config.API_CORS_ALLOW_CREDENTIALS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/health")
+def health_check():
+    return {
+        "ok": True,
+        "service": "screenplay-devcanvas-api",
+        "version": app.version,
+    }
 
 # --- Data models ---
 
@@ -550,19 +563,46 @@ def get_registry():
     } for spec in REGISTRY.values()]
 
 
+def _safe_upload_filename(filename: str | None) -> str:
+    raw_name = str(filename or "").replace("\\", "/").split("/")[-1].strip()
+    safe_name = config.sanitize_filename(raw_name)
+    if not safe_name:
+        raise HTTPException(status_code=400, detail="Upload filename is required.")
+    suffix = Path(safe_name).suffix.lower()
+    if suffix not in config.UPLOAD_ALLOWED_EXTENSIONS:
+        allowed = ", ".join(sorted(config.UPLOAD_ALLOWED_EXTENSIONS))
+        raise HTTPException(status_code=400, detail=f"Unsupported upload file type. Allowed: {allowed}")
+    return safe_name
+
+
+def _read_upload_bytes(file: UploadFile) -> bytes:
+    max_bytes = max(1, int(config.UPLOAD_MAX_BYTES or 0))
+    content = file.file.read(max_bytes + 1)
+    if len(content) > max_bytes:
+        raise HTTPException(status_code=413, detail=f"Upload file is too large. Max size: {max_bytes} bytes.")
+    return content
+
+
 @app.post("/api/upload")
 def upload_file(file: UploadFile = File(...)):
     """Receive file upload and return a server-side temp path."""
-    # Save to a temp uploads dir
-    from pathlib import Path as UPath
     from datetime import datetime as udt
-    upload_dir = UPath("uploads")
-    upload_dir.mkdir(exist_ok=True)
+
+    safe_name = _safe_upload_filename(file.filename)
+    upload_dir = config.UPLOAD_DIR.resolve()
+    upload_dir.mkdir(parents=True, exist_ok=True)
     ts = udt.now().strftime("%Y%m%d_%H%M%S")
-    dest = upload_dir / f"{ts}_{file.filename}"
-    content = file.file.read()
+    dest = (upload_dir / f"{ts}_{uuid.uuid4().hex[:8]}_{safe_name}").resolve()
+    try:
+        dest.relative_to(upload_dir)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid upload path.")
+
+    content = _read_upload_bytes(file)
+    if not content:
+        raise HTTPException(status_code=400, detail="Upload file is empty.")
     dest.write_bytes(content)
-    return {"filepath": str(dest.absolute()), "filename": file.filename, "size": len(content)}
+    return {"filepath": str(dest), "filename": safe_name, "size": len(content)}
 
 
 @app.get("/api/prompts")

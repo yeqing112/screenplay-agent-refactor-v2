@@ -220,7 +220,7 @@ async function main() {
   if (START_SERVERS) {
     log("Starting backend and frontend servers...");
     spawnManaged("python", ["-m", "api.server"], { name: "api" });
-    spawnManaged("npx", ["vite", "--host", "127.0.0.1", "--port", "5173"], {
+    spawnManaged("npx", ["vite", "--host", "127.0.0.1", "--port", "5173", "--strictPort"], {
       cwd: WEB_DIR,
       name: "vite",
       env: { VITE_API_PROXY_TARGET: API_URL },

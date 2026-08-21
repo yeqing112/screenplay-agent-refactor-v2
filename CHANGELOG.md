@@ -1,5 +1,54 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-21 — 生产安全边界与 QA 修复 E2E 加固
+
+> 对应提交：本提交 `Harden API safety boundaries and QA repair E2E`
+> 背景：按全面复盘结论，优先补齐上线前必须具备的 API 安全边界、健康检查和高风险 QA 写入链路真实流程验证。
+
+### 变更概览
+
+- **API 安全边界**
+  - CORS 从 `* + credentials` 改为环境变量驱动的本地前端白名单。
+  - 新增 `API_CORS_ORIGINS / API_CORS_ALLOW_CREDENTIALS` 配置，保留部署时覆盖能力。
+  - 新增 `/health` 健康检查端点。
+
+- **上传安全**
+  - `/api/upload` 增加安全文件名清洗，阻断路径穿越。
+  - 默认仅允许 `.txt / .md / .markdown`。
+  - 新增 `UPLOAD_MAX_BYTES / UPLOAD_ALLOWED_EXTENSIONS / UPLOAD_DIR` 配置。
+  - 上传文件为空、超限、扩展名不支持时返回明确 HTTP 错误。
+
+- **真实流程 E2E**
+  - 新增 `npm run e2e:qa`。
+  - 新增 `scripts/e2e-qa-workbench.js`，自动创建临时 QA fixture 项目，真实浏览器打开 QA 修复页，并执行：
+    - issue 同步
+    - 修复预览 diff
+    - 应用修复生成版本
+    - 回滚版本
+    - 清理临时 fixture
+  - `e2e:smoke / e2e:qa` 的 Vite 启动增加 `--strictPort`，避免端口冲突时误连到漂移端口。
+
+### 新增/更新测试
+
+- 新增后端安全测试：`tests/test_api_security.py`
+- 新增 E2E：`scripts/e2e-qa-workbench.js`
+
+### 验证结果
+
+- 后端聚焦回归：`26 passed`
+- `npm run e2e:smoke`：通过
+- `npm run e2e:qa`：通过
+- 前端单元测试：`304 passed`
+- 前端生产构建：通过
+
+### 仍建议后续推进
+
+1. 将 `_pipeline_tasks / _storyboard_tasks / _creative_tasks` 从纯内存状态升级为 DB 持久化任务表。
+2. 补全 API 认证/授权策略；当前仅完成 CORS 与上传安全边界。
+3. 给上传后的导入链路增加更完整的端到端 fixture，覆盖“上传 -> 导入 -> 内容准备状态恢复”。
+
+---
+
 ## 2026-08-21 — 生产工作区 E2E Smoke 测试固化
 
 > 对应提交：本提交 `Add production workspace E2E smoke test`

@@ -64,6 +64,36 @@ CHROMA_PERSIST_DIR = os.getenv(
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DB_DIR}/screenplay.db?timeout=30")
 
 
+# ── API / Web ──
+def _load_bool(key: str, default: bool) -> bool:
+    raw = os.getenv(key)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _load_csv(key: str, default: str) -> list[str]:
+    raw = os.getenv(key, default)
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
+API_CORS_ORIGINS = _load_csv(
+    "API_CORS_ORIGINS",
+    "http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:5175,http://localhost:5175",
+)
+API_CORS_ALLOW_CREDENTIALS = _load_bool("API_CORS_ALLOW_CREDENTIALS", False)
+if "*" in API_CORS_ORIGINS and API_CORS_ALLOW_CREDENTIALS:
+    logger.warning("API_CORS_ALLOW_CREDENTIALS disabled because API_CORS_ORIGINS contains wildcard '*'.")
+    API_CORS_ALLOW_CREDENTIALS = False
+
+UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", str(BASE_DIR / "uploads")))
+UPLOAD_MAX_BYTES = _load_int("UPLOAD_MAX_BYTES", 10 * 1024 * 1024)
+UPLOAD_ALLOWED_EXTENSIONS = {
+    item.lower() if item.startswith(".") else f".{item.lower()}"
+    for item in _load_csv("UPLOAD_ALLOWED_EXTENSIONS", ".txt,.md,.markdown")
+}
+
+
 def _ensure_dirs():
     """确保内部目录存在（延迟加载，不阻塞 import）。"""
     for d in [BOOKS_DIR, INDEXES_DIR, DB_DIR]:
