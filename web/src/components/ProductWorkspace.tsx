@@ -12,7 +12,7 @@ import {
   Users,
   Wrench,
 } from 'lucide-react'
-import { useBookOutputs } from '../prototyping/useBookOutputs'
+import { useBookOutputs } from '../hooks/useBookOutputs'
 import { useProductWorkspaceUpstream } from './productWorkspaceUpstreamController'
 import {
   buildCharacterAssetSummaries,
@@ -46,9 +46,6 @@ interface Props {
   bookData: any
   onRefresh: () => void
   onBookChange: (bookId: number) => void
-  onOpenLegacy: () => void
-  onOpenPrototype: () => void
-  onSwitchToDev: () => void
 }
 
 const sections: Array<{ id: WorkspaceSection; label: string; icon: typeof Library }> = [
@@ -81,9 +78,6 @@ export default function ProductWorkspace({
   bookData,
   onRefresh,
   onBookChange,
-  onOpenLegacy,
-  onOpenPrototype,
-  onSwitchToDev,
 }: Props) {
   const persistedNavigationState = useMemo(() => readProductWorkspaceNavigationState(book.id), [book.id])
   const [section, setSection] = useState<WorkspaceSection>(persistedNavigationState?.section ?? 'dashboard')
@@ -632,9 +626,6 @@ export default function ProductWorkspace({
       onSelectSection={handleSelectSection}
       getSectionBlockedReason={getSectionBlockedReason}
       onRefreshAll={handleRefreshAll}
-      onOpenLegacy={onOpenLegacy}
-      onOpenPrototype={onOpenPrototype}
-      onSwitchToDev={onSwitchToDev}
     >
       <ProductWorkspaceSectionContent {...sectionBundles} />
     </ProductWorkspaceShell>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import ModelRegistryModal from '../components/ModelRegistryModal'
-import { fetchModelRegistry, type ModelRegistryPayload } from '../prototyping/sceneComposerModelRegistry'
+import { fetchModelRegistry, type ModelRegistryPayload } from '../services/modelRegistry'
 import { resolveProjectDisplayTitle } from './projectDisplayText'
 
 interface Book {
@@ -102,12 +102,11 @@ export function buildProjectCardBooks(items: Book[]): ProjectCardBook[] {
 interface Props {
   onSelectBook: (book: Book) => void
   onNewProject: () => void
-  onOpenBlueprintDemo: () => void
 }
 
 const API_PROXY_TARGET = import.meta.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:18765'
 
-export default function ProjectsPage({ onSelectBook, onNewProject, onOpenBlueprintDemo }: Props) {
+export default function ProjectsPage({ onSelectBook, onNewProject }: Props) {
   const [books, setBooks] = useState<ProjectCardBook[]>([])
   const [loading, setLoading] = useState(true)
   const [modelRegistryOpen, setModelRegistryOpen] = useState(false)
@@ -169,12 +168,6 @@ export default function ProjectsPage({ onSelectBook, onNewProject, onOpenBluepri
           <div className="hidden rounded-full border border-slate-700 px-3 py-1 text-[11px] text-slate-400 md:block">
             API Proxy: {API_PROXY_TARGET}
           </div>
-          <button
-            onClick={onOpenBlueprintDemo}
-            className="rounded-full border border-sky-600/60 px-3 py-1.5 text-xs text-sky-200 transition hover:border-sky-400 hover:text-white"
-          >
-            {'\u4ea7\u54c1\u539f\u578b Demo'}
-          </button>
           <button
             onClick={openModelRegistry}
             className="rounded-full border border-violet-600/60 px-3 py-1.5 text-xs text-violet-200 transition hover:border-violet-400 hover:text-white"

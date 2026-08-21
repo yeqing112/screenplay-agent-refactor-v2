@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import ProjectsPage from './pages/ProjectsPage'
 import CanvasPage from './pages/CanvasPage'
-import ProductBlueprintDemoPage from './pages/ProductBlueprintDemoPage'
 import { resolveProjectDisplayTitle } from './pages/projectDisplayText'
 
 type View =
   | { page: 'projects' }
   | { page: 'canvas'; book: { id: number; title: string } }
-  | { page: 'blueprint-demo' }
 
 const APP_VIEW_STORAGE_KEY = 'screenplay-app-view-v1'
 
@@ -28,9 +26,6 @@ export default function App() {
             title: resolveProjectDisplayTitle(parsed.book.title, parsed.book.id),
           },
         }
-      }
-      if (parsed?.page === 'blueprint-demo') {
-        return parsed
       }
     } catch {
       // Ignore invalid persisted view.
@@ -61,22 +56,13 @@ export default function App() {
     setView({ page: 'canvas', book: { id: 0, title: '新建项目' } })
   }, [])
 
-  const handleOpenBlueprintDemo = useCallback(() => {
-    setView({ page: 'blueprint-demo' })
-  }, [])
-
   if (view.page === 'projects') {
     return (
       <ProjectsPage
         onSelectBook={handleSelectBook}
         onNewProject={handleNewProject}
-        onOpenBlueprintDemo={handleOpenBlueprintDemo}
       />
     )
-  }
-
-  if (view.page === 'blueprint-demo') {
-    return <ProductBlueprintDemoPage onBack={handleBack} />
   }
 
   return <CanvasPage book={view.book} onBack={handleBack} onSelectBook={handleSelectBook} />

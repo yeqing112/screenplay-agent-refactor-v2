@@ -5,7 +5,7 @@ import {
   collectStructuredReferenceAssetIds,
   resolveEffectiveReferenceAssetIds,
 } from './productWorkspaceStoryboardReferencePayload'
-import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
 
 function makeShot(overrides: Partial<StoryboardShotOutput> = {}): StoryboardShotOutput {
   return {

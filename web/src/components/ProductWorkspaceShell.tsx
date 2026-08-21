@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ExternalLink, type LucideIcon } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { getProjectStatusLabel } from './productWorkspaceProjectStatus'
 import type { WorkspaceSection } from './productWorkspaceAssetViewController'
 
@@ -19,9 +19,6 @@ interface Props {
   onSelectSection: (section: WorkspaceSection) => void
   getSectionBlockedReason: (section: WorkspaceSection) => string | null
   onRefreshAll: () => void
-  onOpenLegacy: () => void
-  onOpenPrototype: () => void
-  onSwitchToDev: () => void
   children: ReactNode
 }
 
@@ -35,9 +32,6 @@ export default function ProductWorkspaceShell({
   onSelectSection,
   getSectionBlockedReason,
   onRefreshAll,
-  onOpenLegacy,
-  onOpenPrototype,
-  onSwitchToDev,
   children,
 }: Props) {
   const currentSectionLabel = sections.find((item) => item.id === section)?.label ?? '项目控制台'
@@ -93,35 +87,13 @@ export default function ProductWorkspaceShell({
           </div>
         </div>
 
-        <div className="mt-4 space-y-2">
+        <div className="mt-4">
           <button
             type="button"
             onClick={onRefreshAll}
             className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-left text-sm text-slate-300 hover:border-slate-700 hover:text-white"
           >
             刷新项目数据
-          </button>
-          <button
-            type="button"
-            onClick={onOpenLegacy}
-            className="flex w-full items-center justify-between rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-left text-sm text-slate-300 hover:border-slate-700 hover:text-white"
-          >
-            打开旧版生产页
-            <ExternalLink className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={onOpenPrototype}
-            className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-left text-sm text-slate-300 hover:border-slate-700 hover:text-white"
-          >
-            打开创作沙盘
-          </button>
-          <button
-            type="button"
-            onClick={onSwitchToDev}
-            className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-left text-sm text-slate-300 hover:border-slate-700 hover:text-white"
-          >
-            打开高级编排
           </button>
         </div>
       </aside>

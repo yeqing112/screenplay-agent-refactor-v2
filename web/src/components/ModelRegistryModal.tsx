@@ -5,7 +5,7 @@ import {
   type ModelCapability,
   type ModelProfileRecord,
   type ModelRegistryPayload,
-} from '../prototyping/sceneComposerModelRegistry'
+} from '../services/modelRegistry'
 import {
   isPoyoHappyHorseModel,
   isPoyoKlingFamilyModel,

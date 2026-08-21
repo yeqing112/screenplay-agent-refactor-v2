@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { createEmptyOutputsData, normalizeBookOutputs, type OutputsData } from './sceneComposerData'
+import { createEmptyOutputsData, normalizeBookOutputs, type OutputsData } from '../domain/bookOutputs'
 
 interface UseBookOutputsResult {
   data: OutputsData | null

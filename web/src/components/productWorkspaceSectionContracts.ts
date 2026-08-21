@@ -5,7 +5,7 @@ import type {
   VisualLocationOutput,
   VisualMakeupOutput,
   VisualPropOutput,
-} from '../prototyping/sceneComposerData'
+} from '../domain/bookOutputs'
 import type { AssetEpisodeInsight, AssetSummary } from './productWorkspaceAssets'
 import type {
   AssetCategoryFilter,

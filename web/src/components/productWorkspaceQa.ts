@@ -1,5 +1,5 @@
-import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
-import { toDisplayText } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
+import { toDisplayText } from '../domain/bookOutputs'
 
 export type QaLayer = 'script' | 'storyboard' | 'asset' | 'video' | 'general'
 export type QaSeverity = 'high' | 'medium' | 'low'

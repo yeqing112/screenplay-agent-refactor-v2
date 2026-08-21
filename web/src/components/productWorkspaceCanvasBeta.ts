@@ -1,4 +1,4 @@
-import type { ScriptOutput, StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import type { AssetSummary } from './productWorkspaceAssets'
 import type { CanvasNavigationTarget } from './productWorkspaceSectionContracts'
 import type { WorkspaceTaskRouteOptions, WorkspaceTaskRouteSection } from './productWorkspaceSectionContracts'

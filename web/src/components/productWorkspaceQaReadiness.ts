@@ -1,4 +1,4 @@
-import type { ScriptOutput } from '../prototyping/sceneComposerData'
+import type { ScriptOutput } from '../domain/bookOutputs'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildScriptReleaseSummary } from './productWorkspaceScriptRelease'
 

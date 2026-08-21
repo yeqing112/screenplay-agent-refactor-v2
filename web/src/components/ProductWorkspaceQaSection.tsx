@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { ScriptOutput, StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   buildQaIssueFromWorkbenchIssue,
   buildQaIssueRecords,
@@ -36,6 +36,7 @@ type QaWorkbenchIssue = {
   description?: string
   suggestion?: string
   fix_status?: string
+  fix_mode?: string
   workflow_status?: string
   repair_version?: string
   note?: string
@@ -48,6 +49,7 @@ type QaWorkbenchIssue = {
 type QaWorkbenchEpisode = {
   episode?: number
   issues?: QaWorkbenchIssue[]
+  versions?: QaWorkbenchScriptVersion[]
 }
 
 type QaWorkbenchResponse = {
@@ -56,18 +58,44 @@ type QaWorkbenchResponse = {
 
 type QaFixOption = {
   id?: string
+  title?: string
   summary?: string
+  strategy?: string
   patched_text?: string
   risk?: string
 }
 
 type QaWorkbenchActionState = {
   mode: 'idle' | 'loading' | 'success' | 'error'
-  action: 'generate' | 'autofix' | 'recheck' | null
+  action: 'generate' | 'preview' | 'apply' | 'autofix' | 'recheck' | 'rollback' | null
   message: string
   options: QaFixOption[]
   diffText: string
 }
+
+type QaPreviewPayload = {
+  patched_text?: string
+  diff_text?: string
+}
+
+type QaWorkbenchScriptVersion = {
+  id?: number
+  version_no?: number
+  label?: string
+  change_type?: string
+  change_reason?: string
+  operator_name?: string
+  diff_text?: string
+  recheck_status?: string
+  recheck_summary?: string
+  created_at?: string | null
+}
+
+type QaPendingRollback = {
+  episode: number
+  versionId: number
+  versionLabel: string
+} | null
 
 type QaCanvasPrimaryActionPlan =
   | { action: 'scripts_gate'; label: string; detail: string }
@@ -149,7 +177,7 @@ export function buildQaCanvasPrimaryActionPlan(input: {
     recommendedActions: Array<{ label: string; reason: string; target: QaActionTarget }>
   } | null
   actionState?: {
-    action: 'generate' | 'autofix' | 'recheck' | null
+    action: QaWorkbenchActionState['action']
     options: QaFixOption[]
     diffText: string
   } | null
@@ -365,6 +393,20 @@ function workflowActionLabel(status: QaWorkflowStatus) {
   }
 }
 
+function scriptVersionTone(status: string | undefined) {
+  const normalized = String(status ?? '').trim().toLowerCase()
+  if (normalized === 'passed' || normalized === 'recheck_passed') {
+    return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+  }
+  if (normalized === 'failed' || normalized === 'recheck_failed') {
+    return 'border-rose-500/30 bg-rose-500/10 text-rose-200'
+  }
+  if (normalized === 'running' || normalized === 'rechecking') {
+    return 'border-violet-500/30 bg-violet-500/10 text-violet-200'
+  }
+  return 'border-slate-700 text-slate-300'
+}
+
 function targetToSection(target: QaActionTarget): WorkspaceSection {
   if (target === 'scripts') return 'scripts'
   if (target === 'assets') return 'assets'
@@ -440,6 +482,10 @@ export default function ProductWorkspaceQaSection({
   const [actionStateByIssue, setActionStateByIssue] = useState<Record<string, QaWorkbenchActionState>>({})
   const [repairSyncStateByIssue, setRepairSyncStateByIssue] = useState<Record<string, QaRepairSyncState>>({})
   const [qaFollowupPollTarget, setQaFollowupPollTarget] = useState<QaFollowupPollTarget | null>(null)
+  const [patchDraftByIssue, setPatchDraftByIssue] = useState<Record<string, string>>({})
+  const [selectedOptionByIssue, setSelectedOptionByIssue] = useState<Record<string, string>>({})
+  const [previewByIssue, setPreviewByIssue] = useState<Record<string, QaPreviewPayload>>({})
+  const [pendingRollback, setPendingRollback] = useState<QaPendingRollback>(null)
 
   const issues = useMemo(() => {
     const derivedIssues = buildQaIssueRecords(qaEntries, shotsByEpisode)
@@ -742,6 +788,15 @@ export default function ProductWorkspaceQaSection({
   const selectedRepairSyncState = selectedIssue
     ? repairSyncStateByIssue[selectedIssue.id] ?? { mode: 'idle', message: '' }
     : { mode: 'idle', message: '' }
+  const selectedRawWorkbenchIssue = selectedIssue ? findRawWorkbenchIssue(qaWorkbench, selectedIssue.id) : null
+  const selectedWorkbenchEpisode = useMemo(
+    () => (selectedIssue ? (qaWorkbench?.episodes ?? []).find((item) => Number(item.episode ?? 0) === selectedIssue.episode) ?? null : null),
+    [qaWorkbench, selectedIssue],
+  )
+  const selectedPatchDraft = selectedIssue
+    ? patchDraftByIssue[selectedIssue.id] ?? selectedActionState.options[0]?.patched_text ?? selectedIssue.sourceExcerpt ?? ''
+    : ''
+  const selectedPreview = selectedIssue ? previewByIssue[selectedIssue.id] ?? null : null
   const qaCanvasPrimaryAction = buildQaCanvasPrimaryActionPlan({
     hasReleaseGateBlock: releaseGateSummary.isBlocked,
     issue: selectedIssue
@@ -856,7 +911,7 @@ export default function ProductWorkspaceQaSection({
             ? {
                 mode: 'success',
                 action,
-                message: `??? ${Array.isArray(payload.options) ? payload.options.length : 0} ????????`,
+                message: `已生成 ${Array.isArray(payload.options) ? payload.options.length : 0} 个修复方案，请预览 diff 后再应用。`,
                 options: Array.isArray(payload.options) ? (payload.options as QaFixOption[]) : [],
                 diffText: '',
               }
@@ -866,8 +921,8 @@ export default function ProductWorkspaceQaSection({
                   action,
                   message:
                     payload?.recheck?.status === 'running'
-                      ? '???????????? QA ??????...'
-                      : '????????',
+                      ? '自动修复已提交，正在等待 QA 复检结果回流...'
+                      : '自动修复已完成，最新状态已同步。',
                   options: [],
                   diffText: typeof payload.diff_text === 'string' ? payload.diff_text : '',
                 }
@@ -876,12 +931,26 @@ export default function ProductWorkspaceQaSection({
                   action,
                   message:
                     payload?.status === 'running'
-                      ? '?? QA ??????????????...'
-                      : '????? QA ???',
+                      ? '已启动 QA 复检，正在同步最新结果...'
+                      : '已完成 QA 复检。',
                   options: [],
                   diffText: '',
                 },
       }))
+      if (action === 'generate') {
+        const options = Array.isArray(payload.options) ? (payload.options as QaFixOption[]) : []
+        const firstOption = options[0]
+        setSelectedOptionByIssue((current) => ({ ...current, [issueId]: firstOption?.id ?? '' }))
+        setPatchDraftByIssue((current) => ({
+          ...current,
+          [issueId]: current[issueId] ?? firstOption?.patched_text ?? selectedIssue.sourceExcerpt ?? '',
+        }))
+        setPreviewByIssue((current) => {
+          const next = { ...current }
+          delete next[issueId]
+          return next
+        })
+      }
       await refreshQaWorkbench(true)
       if (action === 'autofix' && payload?.recheck?.status === 'running') {
         setQaFollowupPollTarget({ issueId, episode: selectedIssue.episode, action: 'autofix' })
@@ -889,10 +958,189 @@ export default function ProductWorkspaceQaSection({
         setQaFollowupPollTarget({ issueId, episode: selectedIssue.episode, action: 'recheck' })
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : '???????????'
+      const message = error instanceof Error ? error.message : '工单动作执行失败。'
       setActionStateByIssue((current) => ({
         ...current,
         [issueId]: { mode: 'error', action, message, options: [], diffText: '' },
+      }))
+    }
+  }
+
+  async function previewWorkbenchIssueFix() {
+    if (!selectedIssue || selectedIssue.sourceKind !== 'workbench') return
+    const issueId = selectedIssue.id
+    const patchedText = selectedPatchDraft.trim()
+    if (!patchedText) {
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: {
+          ...selectedActionState,
+          mode: 'error',
+          action: 'preview',
+          message: '请先生成修复方案，或手动填写修复片段。',
+        },
+      }))
+      return
+    }
+
+    setActionStateByIssue((current) => ({
+      ...current,
+      [issueId]: { ...selectedActionState, mode: 'loading', action: 'preview', message: '正在生成 diff 预览...' },
+    }))
+
+    try {
+      const response = await fetch(`/api/books/${bookId}/qa/issues/${issueId}/preview-fix`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: selectedRawWorkbenchIssue?.fix_mode || 'manual',
+          patchedText,
+          optionId: selectedOptionByIssue[issueId] || '',
+        }),
+      })
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        const message = typeof payload?.detail === 'string' ? payload.detail : `HTTP ${response.status}`
+        throw new Error(message)
+      }
+      setPreviewByIssue((current) => ({ ...current, [issueId]: payload as QaPreviewPayload }))
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: {
+          ...selectedActionState,
+          mode: 'success',
+          action: 'preview',
+          message: 'diff 预览已生成，确认无误后可以应用修复。',
+          diffText: typeof payload?.diff_text === 'string' ? payload.diff_text : '',
+        },
+      }))
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'diff 预览失败。'
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: { ...selectedActionState, mode: 'error', action: 'preview', message },
+      }))
+    }
+  }
+
+  async function applyWorkbenchIssueFix() {
+    if (!selectedIssue || selectedIssue.sourceKind !== 'workbench') return
+    const issueId = selectedIssue.id
+    const patchedText = selectedPatchDraft.trim()
+    if (!patchedText) {
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: {
+          ...selectedActionState,
+          mode: 'error',
+          action: 'apply',
+          message: '请先生成修复方案，或手动填写修复片段。',
+        },
+      }))
+      return
+    }
+    if (!selectedPreview || selectedPreview.patched_text !== patchedText) {
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: {
+          ...selectedActionState,
+          mode: 'error',
+          action: 'apply',
+          message: '应用修复前请先预览 diff，并确认预览内容就是当前修复片段。',
+        },
+      }))
+      return
+    }
+
+    setActionStateByIssue((current) => ({
+      ...current,
+      [issueId]: { ...selectedActionState, mode: 'loading', action: 'apply', message: '正在应用修复并触发复检...' },
+    }))
+
+    try {
+      const response = await fetch(`/api/books/${bookId}/qa/issues/${issueId}/apply-fix`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: selectedRawWorkbenchIssue?.fix_mode || 'manual',
+          patchedText,
+          changeReason: selectedIssue.title || selectedIssue.detail,
+          optionId: selectedOptionByIssue[issueId] || '',
+          rerunQa: true,
+        }),
+      })
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        const message = typeof payload?.detail === 'string' ? payload.detail : `HTTP ${response.status}`
+        throw new Error(message)
+      }
+
+      setPreviewByIssue((current) => {
+        const next = { ...current }
+        delete next[issueId]
+        return next
+      })
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: {
+          ...selectedActionState,
+          mode: payload?.recheck?.status === 'running' ? 'loading' : 'success',
+          action: 'apply',
+          message:
+            payload?.recheck?.status === 'running'
+              ? `修复已保存，第 ${selectedIssue.episode} 集正在后台复检。`
+              : '修复已保存，最新状态已同步。',
+          diffText: typeof payload?.diff_text === 'string' ? payload.diff_text : selectedActionState.diffText,
+        },
+      }))
+      await refreshQaWorkbench(true)
+      if (payload?.recheck?.status === 'running') {
+        setQaFollowupPollTarget({ issueId, episode: selectedIssue.episode, action: 'recheck' })
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '应用修复失败。'
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: { ...selectedActionState, mode: 'error', action: 'apply', message },
+      }))
+    }
+  }
+
+  async function rollbackQaScriptVersion(target: Exclude<QaPendingRollback, null>) {
+    if (!selectedIssue || selectedIssue.sourceKind !== 'workbench') return
+    const issueId = selectedIssue.id
+    setActionStateByIssue((current) => ({
+      ...current,
+      [issueId]: { ...selectedActionState, mode: 'loading', action: 'rollback', message: '正在回滚脚本版本并触发复检...' },
+    }))
+    try {
+      const response = await fetch(`/api/books/${bookId}/scripts/${target.episode}/versions/${target.versionId}/rollback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rerunQa: true }),
+      })
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        const message = typeof payload?.detail === 'string' ? payload.detail : `HTTP ${response.status}`
+        throw new Error(message)
+      }
+      setPendingRollback(null)
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: {
+          ...selectedActionState,
+          mode: 'loading',
+          action: 'rollback',
+          message: `已回滚到 ${target.versionLabel} 的修复前状态，正在等待 QA 复检结果回流。`,
+        },
+      }))
+      await refreshQaWorkbench(true)
+      setQaFollowupPollTarget({ issueId, episode: target.episode, action: 'recheck' })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '脚本版本回滚失败。'
+      setActionStateByIssue((current) => ({
+        ...current,
+        [issueId]: { ...selectedActionState, mode: 'error', action: 'rollback', message },
       }))
     }
   }
@@ -1245,25 +1493,98 @@ export default function ProductWorkspaceQaSection({
                   {selectedActionState.options.length > 0 ? (
                     <div className="mt-3 space-y-2">
                       {selectedActionState.options.map((option, index) => (
-                        <div key={option.id ?? `option-${index}`} className="rounded-lg border border-slate-800 bg-slate-950/80 p-3">
+                        <button
+                          key={option.id ?? `option-${index}`}
+                          type="button"
+                          onClick={() => {
+                            if (!selectedIssue) return
+                            setSelectedOptionByIssue((current) => ({ ...current, [selectedIssue.id]: option.id ?? '' }))
+                            setPatchDraftByIssue((current) => ({
+                              ...current,
+                              [selectedIssue.id]: option.patched_text ?? current[selectedIssue.id] ?? '',
+                            }))
+                            setPreviewByIssue((current) => {
+                              const next = { ...current }
+                              delete next[selectedIssue.id]
+                              return next
+                            })
+                          }}
+                          className={`w-full rounded-lg border p-3 text-left transition ${
+                            selectedIssue && selectedOptionByIssue[selectedIssue.id] === option.id
+                              ? 'border-sky-500/40 bg-sky-500/10'
+                              : 'border-slate-800 bg-slate-950/80 hover:border-slate-700'
+                          }`}
+                        >
                           <div className="text-xs font-medium text-white">
                             {option.id ? `方案 ${option.id}` : `方案 ${index + 1}`}
                           </div>
-                          <div className="mt-2 text-sm leading-6 text-slate-300">{option.summary ?? '暂无摘要'}</div>
+                          <div className="mt-2 text-sm leading-6 text-slate-300">{option.summary ?? option.strategy ?? option.title ?? '暂无摘要'}</div>
                           {option.risk ? <div className="mt-2 text-xs text-amber-300">风险提示：{option.risk}</div> : null}
-                        </div>
+                        </button>
                       ))}
                     </div>
                   ) : null}
 
+                  <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                    <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-3">
+                      <div className="text-xs font-medium text-slate-300">修复前片段</div>
+                      <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap text-xs leading-6 text-slate-400">
+                        {selectedIssue.sourceExcerpt || '当前问题还没有精确原文定位。'}
+                      </pre>
+                    </div>
+                    <div className="rounded-lg border border-emerald-900/40 bg-emerald-950/10 p-3">
+                      <div className="text-xs font-medium text-emerald-200">修复后片段</div>
+                      <textarea
+                        value={selectedPatchDraft}
+                        onChange={(event) => {
+                          if (!selectedIssue) return
+                          setPatchDraftByIssue((current) => ({ ...current, [selectedIssue.id]: event.target.value }))
+                          setPreviewByIssue((current) => {
+                            const next = { ...current }
+                            delete next[selectedIssue.id]
+                            return next
+                          })
+                        }}
+                        className="mt-2 min-h-48 w-full rounded-lg border border-slate-800 bg-slate-950/80 px-3 py-2 text-xs leading-6 text-slate-200 outline-none transition focus:border-emerald-500"
+                        placeholder="选择修复方案后会填入这里，也可以直接人工编辑。"
+                      />
+                    </div>
+                  </div>
+
                   {selectedActionState.diffText ? (
                     <div className="mt-3">
-                      <div className="text-xs text-slate-500">自动修复 Diff</div>
+                      <div className="text-xs text-slate-500">修复 Diff</div>
                       <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-950/80 p-3 text-xs leading-6 text-slate-300">
                         {selectedActionState.diffText}
                       </pre>
                     </div>
                   ) : null}
+
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-violet-900/30 bg-violet-950/10 p-3">
+                    <div className="text-xs leading-5 text-violet-100/80">
+                      {selectedPreview
+                        ? 'diff 已预览；如果继续编辑修复后片段，需要重新预览。'
+                        : '应用修复前必须先生成 diff 预览，确认只修改目标片段。'}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => void previewWorkbenchIssueFix()}
+                        disabled={selectedActionState.mode === 'loading'}
+                        className="rounded-lg border border-violet-500/50 px-3 py-1.5 text-xs font-medium text-violet-200 transition hover:border-violet-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        预览 diff
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void applyWorkbenchIssueFix()}
+                        disabled={selectedActionState.mode === 'loading'}
+                        className="rounded-lg border border-emerald-500/50 px-3 py-1.5 text-xs font-medium text-emerald-200 transition hover:border-emerald-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        应用修复并复检
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ) : null}
             </div>
@@ -1312,6 +1633,95 @@ export default function ProductWorkspaceQaSection({
                 </div>
               ) : null}
             </div>
+
+            {selectedIssue.sourceKind === 'workbench' ? (
+              <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="text-sm font-medium text-white">脚本修复版本</div>
+                    <div className="mt-1 text-xs text-slate-500">应用修复会生成脚本版本；必要时可从这里回滚并自动复检。</div>
+                  </div>
+                  <span className="rounded-full border border-slate-700 px-2.5 py-1 text-[11px] text-slate-300">
+                    {(selectedWorkbenchEpisode?.versions ?? []).length} 个版本
+                  </span>
+                </div>
+
+                {(selectedWorkbenchEpisode?.versions ?? []).length > 0 ? (
+                  <div className="mt-4 space-y-3">
+                    {(selectedWorkbenchEpisode?.versions ?? []).slice(0, 6).map((version) => {
+                      const versionId = Number(version.id ?? 0)
+                      const versionLabel = version.label || `v${version.version_no ?? version.id ?? '?'}`
+                      const canRollback = versionId > 0 && String(version.change_type ?? '').toLowerCase() !== 'baseline'
+                      return (
+                        <div key={version.id ?? `${version.version_no ?? 'v'}-${version.created_at ?? ''}`} className="rounded-lg border border-slate-800 bg-slate-950/80 p-3">
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-sm font-medium text-white">{versionLabel}</span>
+                                <span className={`rounded-full border px-2 py-0.5 text-[11px] ${scriptVersionTone(version.recheck_status)}`}>
+                                  {version.recheck_status || 'not_run'}
+                                </span>
+                              </div>
+                              <div className="mt-1 text-xs text-slate-500">
+                                {version.change_type || 'manual'} / {version.operator_name || 'system'}
+                              </div>
+                              {version.change_reason ? <div className="mt-2 text-sm leading-6 text-slate-300">{version.change_reason}</div> : null}
+                              {version.recheck_summary ? <div className="mt-2 text-xs leading-5 text-slate-500">{version.recheck_summary}</div> : null}
+                            </div>
+                            {canRollback ? (
+                              <button
+                                type="button"
+                                onClick={() => setPendingRollback({ episode: selectedIssue.episode, versionId, versionLabel })}
+                                disabled={selectedActionState.mode === 'loading'}
+                                className="rounded-lg border border-rose-500/40 px-3 py-1.5 text-xs font-medium text-rose-200 transition hover:border-rose-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                回滚到修复前
+                              </button>
+                            ) : null}
+                          </div>
+                          {pendingRollback?.versionId === versionId ? (
+                            <div className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3">
+                              <div className="text-xs leading-5 text-rose-100/90">
+                                确认回滚 {pendingRollback.versionLabel}？回滚后会恢复到这次修复前的剧本内容，并触发整集 QA 复检。
+                              </div>
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => void rollbackQaScriptVersion(pendingRollback)}
+                                  disabled={selectedActionState.mode === 'loading'}
+                                  className="rounded-lg border border-rose-400/50 px-3 py-1.5 text-xs font-medium text-rose-100 transition hover:border-rose-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                  确认回滚并复检
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setPendingRollback(null)}
+                                  className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 transition hover:border-slate-500 hover:text-white"
+                                >
+                                  取消
+                                </button>
+                              </div>
+                            </div>
+                          ) : null}
+                          {version.diff_text ? (
+                            <details className="mt-3">
+                              <summary className="cursor-pointer text-xs text-sky-300">查看版本 diff</summary>
+                              <pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-950/80 p-3 text-[11px] leading-5 text-slate-300">
+                                {version.diff_text}
+                              </pre>
+                            </details>
+                          ) : null}
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="mt-4 rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
+                    当前集还没有脚本修复版本。
+                  </div>
+                )}
+              </div>
+            ) : null}
 
             <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
               <div className="text-sm font-medium text-white">修复记录</div>

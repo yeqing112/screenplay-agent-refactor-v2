@@ -1,4 +1,4 @@
-import type { ModelProfileRecord, ModelRegistryPayload } from '../prototyping/sceneComposerModelRegistry'
+import type { ModelProfileRecord, ModelRegistryPayload } from '../services/modelRegistry'
 
 export interface ContentModelContextSummary {
   llmTitle: string

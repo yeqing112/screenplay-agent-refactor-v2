@@ -5,7 +5,7 @@ import type {
   VisualLocationOutput,
   VisualMakeupOutput,
   VisualPropOutput,
-} from '../prototyping/sceneComposerData'
+} from '../domain/bookOutputs'
 import {
   buildDeliveryFileStem,
   buildDeliveryExportPackage,

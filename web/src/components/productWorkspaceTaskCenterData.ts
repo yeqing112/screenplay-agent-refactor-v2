@@ -1,4 +1,4 @@
-﻿import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   getStoryboardRecoveryKindLabel,
   type CreativeTaskStatusPayload,

@@ -1,4 +1,4 @@
-import type { ScriptOutput, StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildScriptReleaseSummary } from './productWorkspaceScriptRelease'
 import type { ContentTaskState, WorkspaceTaskRouteSection } from './productWorkspaceSectionContracts'

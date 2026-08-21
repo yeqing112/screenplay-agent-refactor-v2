@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { buildShotReadiness, buildStoryboardGateSummary, summarizeShotReferences } from './productWorkspaceStoryboard'
-import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
 
 function makeShot(overrides: Partial<StoryboardShotOutput> = {}): StoryboardShotOutput {
   return {

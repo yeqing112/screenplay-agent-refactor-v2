@@ -1,4 +1,4 @@
-import type { ScriptOutput, StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import { buildQaIssueFromWorkbenchIssue, type QaLayer } from './productWorkspaceQa'
 import type { EpisodeProgress } from './productWorkspaceProgress'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'

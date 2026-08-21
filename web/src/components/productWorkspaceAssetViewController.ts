@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   buildAssetEpisodeInsights,
   type AssetCategory,

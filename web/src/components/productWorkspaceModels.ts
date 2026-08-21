@@ -1,4 +1,4 @@
-import type { ModelCapability, ModelProfileRecord } from '../prototyping/sceneComposerModelRegistry'
+import type { ModelCapability, ModelProfileRecord } from '../services/modelRegistry'
 import {
   isPoyoHappyHorseModel,
   isPoyoKlingFamilyModel,

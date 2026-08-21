@@ -1,10 +1,10 @@
-﻿import type {
+import type {
   StoryboardShotOutput,
   VisualLocationOutput,
   VisualMakeupOutput,
   VisualPropOutput,
   VisualReferenceAssetOutput,
-} from '../prototyping/sceneComposerData'
+} from '../domain/bookOutputs'
 import { buildShotReadiness } from './productWorkspaceStoryboard'
 
 export type AssetCategory = 'character' | 'location' | 'prop'

@@ -5,7 +5,7 @@ import type {
   VisualMakeupOutput,
   VisualPropOutput,
   VisualReferenceAssetOutput,
-} from '../prototyping/sceneComposerData'
+} from '../domain/bookOutputs'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildScriptReleaseSummary } from './productWorkspaceScriptRelease'
 

@@ -1,4 +1,4 @@
-import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
 
 function normalizeReferenceAssetIds(values: Array<string | null | undefined>) {
   return Array.from(new Set(values.map((item) => String(item || '').trim()).filter(Boolean)))

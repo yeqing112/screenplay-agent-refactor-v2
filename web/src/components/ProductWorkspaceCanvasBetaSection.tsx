@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -9,7 +9,7 @@ import ReactFlow, {
   type ReactFlowInstance,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
-import type { ScriptOutput, StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import { getStoryboardGenerationLabels, waitForCreativeTask } from './productWorkspaceGeneration'
 import type { AssetSummary } from './productWorkspaceAssets'
 import {

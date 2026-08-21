@@ -1,14 +1,13 @@
-import {
-  MOCK_BIBLE,
-  MOCK_GENERATED_IMAGES,
-  MOCK_QA,
-  MOCK_SCRIPTS,
-  MOCK_STORYBOARD,
-  MOCK_VISUAL,
-} from './mockData'
-import type { MockAssetImage } from './mockData'
-import type { MetadataValue } from './sceneComposerModel'
-import type { VersionKind } from './sceneComposerModel'
+export type VersionKind = 'image' | 'video' | 'audio'
+export type MetadataValue = string | number | boolean | string[] | undefined
+
+export type GeneratedImageOutput = {
+  id: string
+  shotId: string
+  prompt: string
+  imageUrl: string
+  createdAt: string
+}
 
 export interface MediaAssetOutput {
   id: string
@@ -377,7 +376,7 @@ export interface OutputsData {
     result: unknown
     error_count?: number
   }>
-  generatedImages: MockAssetImage[]
+  generatedImages: GeneratedImageOutput[]
 }
 
 export interface BookOutputsResponse {
@@ -406,14 +405,7 @@ export interface BookOutputsResponse {
   }>
 }
 
-export const MOCK_OUTPUTS_DATA: OutputsData = {
-  bible: MOCK_BIBLE,
-  scripts: MOCK_SCRIPTS,
-  storyboard: MOCK_STORYBOARD,
-  visual: MOCK_VISUAL,
-  qa: MOCK_QA,
-  generatedImages: MOCK_GENERATED_IMAGES,
-}
+export const MOCK_OUTPUTS_DATA: OutputsData = createEmptyOutputsData()
 
 export function createEmptyOutputsData(): OutputsData {
   return {

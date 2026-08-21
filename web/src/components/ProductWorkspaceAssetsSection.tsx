@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
 import type { AssetEpisodeInsight, AssetSummary } from './productWorkspaceAssets'
 import type { AssetCategoryFilter, AssetStatusFilter, AssetVersionFilter } from './productWorkspaceAssetViewController'
 import type { CanvasHandoffTarget } from './productWorkspaceSectionContracts'

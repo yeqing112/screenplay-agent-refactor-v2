@@ -1,4 +1,4 @@
-import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
 import type { PendingStoryboardTask } from './productWorkspaceRecovery'
 import { upsertPendingStoryboardTask, removePendingStoryboardTask } from './productWorkspaceRecovery'
 import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTasks'

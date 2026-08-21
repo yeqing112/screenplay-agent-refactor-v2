@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { StoryboardShotOutput } from '../domain/bookOutputs'
 import type { AssetSummary } from './productWorkspaceAssets'
 import {
   buildInitialLinkedShotDraft,

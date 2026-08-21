@@ -1,5 +1,5 @@
-﻿import { useEffect, useMemo, useState } from 'react'
-import type { MediaAssetOutput, StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import { useEffect, useMemo, useState } from 'react'
+import type { MediaAssetOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   fetchCreativeTaskStatus,
   getStoryboardRecoveryKindLabel,
@@ -881,6 +881,22 @@ function getPromptCompileReasonMeta(reason: string | undefined) {
   return { label: normalized, detail: '保留原始编译原因。' }
 }
 
+const ACCEPTANCE_STATUS_OPTIONS = [
+  { value: 'passed', label: '通过采纳' },
+  { value: 'failed', label: '打回重做' },
+  { value: 'pending', label: '继续观察' },
+]
+
+const ACCEPTANCE_TAG_OPTIONS = [
+  { value: 'character_consistency', label: '角色一致性' },
+  { value: 'character_blocking_error', label: '角色站位错误' },
+  { value: 'prop_mismatch', label: '道具不一致' },
+  { value: 'scene_mismatch', label: '场景不一致' },
+  { value: 'style_drift', label: '风格跑偏' },
+  { value: 'motion_error', label: '运动错误' },
+  { value: 'camera_error', label: '镜头语言错误' },
+]
+
 function getPromptRestoreReasonLabel(reason: string | undefined) {
   const normalized = String(reason || '').trim()
   if (normalized === 'latest_recoverable_version') return '最新可恢复版本'
@@ -1134,6 +1150,17 @@ export default function ProductWorkspaceStoryboardSection({
   const [missingRecoveryState, setMissingRecoveryState] = useState<StoryboardMissingRecoveryState | null>(() =>
     buildStoryboardMissingRecoveryState(recoveryFocus, shotsByEpisode),
   )
+  const [promptLockState, setPromptLockState] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
+  const [promptLockMessage, setPromptLockMessage] = useState('')
+  const [acceptanceDraft, setAcceptanceDraft] = useState({
+    assetKind: '',
+    assetId: '',
+    status: 'pending',
+    failureTags: [] as string[],
+    notes: '',
+  })
+  const [acceptanceState, setAcceptanceState] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
+  const [acceptanceMessage, setAcceptanceMessage] = useState('')
 
   const episodes = useMemo(
     () => Object.keys(shotsByEpisode).map(Number).filter((item) => Number.isFinite(item)).sort((a, b) => a - b),
@@ -1268,6 +1295,29 @@ export default function ProductWorkspaceStoryboardSection({
   const acceptance = selectedShot?.acceptance ?? null
   const acceptanceAssetKind = inferAcceptanceAssetKind(acceptance?.asset_kind, adoptedImage, adoptedVideo)
   const acceptanceAssetId = inferAcceptanceAssetId(acceptance?.asset_id, adoptedImage, adoptedVideo)
+  useEffect(() => {
+    setAcceptanceDraft({
+      assetKind: acceptanceAssetKind || (adoptedVideo ? 'video' : adoptedImage ? 'image' : 'image'),
+      assetId: acceptanceAssetId || '',
+      status: acceptance?.status || 'pending',
+      failureTags: Array.isArray(acceptance?.failure_tags) ? acceptance.failure_tags : [],
+      notes: acceptance?.notes || '',
+    })
+    setAcceptanceState('idle')
+    setAcceptanceMessage('')
+    setPromptLockState('idle')
+    setPromptLockMessage('')
+  }, [
+    acceptance?.failure_tags,
+    acceptance?.notes,
+    acceptance?.status,
+    acceptanceAssetId,
+    acceptanceAssetKind,
+    adoptedImage,
+    adoptedVideo,
+    selectedShot?.episode,
+    selectedShot?.shot_id,
+  ])
   const hasAdoptedFrame = Boolean(adoptedImage)
   const predictedVideoTaskMode =
     hasAdoptedFrame ? 'image_to_video' : effectiveReferenceAssetIds.length > 0 ? 'reference_to_video' : 'text_to_video'
@@ -1752,6 +1802,61 @@ export default function ProductWorkspaceStoryboardSection({
     } catch {
       setHistoryActionState('error')
       setHistoryActionMessage('推荐版本恢复失败，请稍后重试。')
+    }
+  }
+
+  const togglePromptLock = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    const nextLocked = !selectedShot.prompt_locked
+    setPromptLockState('saving')
+    setPromptLockMessage('')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/prompt-lock`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ locked: nextLocked }),
+      })
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        const message = typeof payload?.detail === 'string' ? payload.detail : `HTTP ${response.status}`
+        throw new Error(message)
+      }
+      await onRefresh()
+      setPromptLockState('success')
+      setPromptLockMessage(nextLocked ? '已锁定当前提示词版本，批量编译会跳过这个镜头。' : '已解除提示词锁定。')
+    } catch (error) {
+      setPromptLockState('error')
+      setPromptLockMessage(error instanceof Error ? error.message : '提示词锁定操作失败。')
+    }
+  }
+
+  const saveAcceptanceRecord = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    setAcceptanceState('saving')
+    setAcceptanceMessage('')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/acceptance-records`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assetKind: acceptanceDraft.assetKind,
+          assetId: acceptanceDraft.assetId,
+          status: acceptanceDraft.status,
+          failureTags: acceptanceDraft.failureTags,
+          notes: acceptanceDraft.notes,
+        }),
+      })
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        const message = typeof payload?.detail === 'string' ? payload.detail : `HTTP ${response.status}`
+        throw new Error(message)
+      }
+      await onRefresh()
+      setAcceptanceState('success')
+      setAcceptanceMessage('验收记录已保存，并会进入下一轮提示词编译上下文。')
+    } catch (error) {
+      setAcceptanceState('error')
+      setAcceptanceMessage(error instanceof Error ? error.message : '验收记录保存失败。')
     }
   }
 
@@ -2730,17 +2835,47 @@ export default function ProductWorkspaceStoryboardSection({
 
                 <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-medium text-white">提示词历史版本</div>
-                    <div className="text-xs text-slate-500">
-                      {historyState === 'loading'
-                        ? '正在加载历史版本'
-                        : historyState === 'error'
-                          ? '历史版本加载失败'
-                          : historyState === 'loaded'
-                            ? `${promptVersions.length} 个版本`
-                            : '当前镜头会保留编译版本记录'}
+                    <div>
+                      <div className="text-sm font-medium text-white">提示词历史版本</div>
+                      <div className="mt-1 text-xs text-slate-500">
+                        {historyState === 'loading'
+                          ? '正在加载历史版本'
+                          : historyState === 'error'
+                            ? '历史版本加载失败'
+                            : historyState === 'loaded'
+                              ? `${promptVersions.length} 个版本`
+                              : '当前镜头会保留编译版本记录'}
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => { void togglePromptLock() }}
+                      disabled={promptLockState === 'saving' || !hasCompiledPrompt}
+                      className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                        selectedShot?.prompt_locked
+                          ? 'border-amber-500/40 bg-amber-500/10 text-amber-100 hover:border-amber-300 hover:text-white'
+                          : 'border-slate-700 text-slate-300 hover:border-sky-500 hover:text-white'
+                      }`}
+                    >
+                      {promptLockState === 'saving'
+                        ? '保存中...'
+                        : selectedShot?.prompt_locked
+                          ? '已锁定提示词'
+                          : '锁定当前版本'}
+                    </button>
                   </div>
+
+                  {promptLockMessage ? (
+                    <div
+                      className={`mt-4 rounded-xl border p-3 text-sm ${
+                        promptLockState === 'error'
+                          ? 'border-rose-500/20 bg-rose-500/5 text-rose-200'
+                          : 'border-emerald-500/20 bg-emerald-500/5 text-emerald-200'
+                      }`}
+                    >
+                      {promptLockMessage}
+                    </div>
+                  ) : null}
 
                   {promptVersions.length > 0 ? (
                     <div className="mt-4 space-y-3">
@@ -2890,6 +3025,88 @@ export default function ProductWorkspaceStoryboardSection({
                     </div>
                   ) : null}
                   <div className="mt-3 text-xs leading-5 text-slate-500">{acceptance?.notes || '当前还没有记录验收备注。'}</div>
+
+                  <div className="mt-4 space-y-3 rounded-lg border border-slate-800 bg-slate-950/60 p-3">
+                    <div className="text-xs font-medium text-slate-300">提交验收记录</div>
+                    <div className="grid gap-2">
+                      <select
+                        value={acceptanceDraft.assetKind}
+                        onChange={(event) => setAcceptanceDraft((current) => ({ ...current, assetKind: event.target.value }))}
+                        className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
+                      >
+                        <option value="image">分镜图</option>
+                        <option value="video">视频</option>
+                        <option value="audio">音频</option>
+                      </select>
+                      <input
+                        value={acceptanceDraft.assetId}
+                        onChange={(event) => setAcceptanceDraft((current) => ({ ...current, assetId: event.target.value }))}
+                        className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
+                        placeholder="资产 ID"
+                      />
+                      <select
+                        value={acceptanceDraft.status}
+                        onChange={(event) => setAcceptanceDraft((current) => ({ ...current, status: event.target.value }))}
+                        className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
+                      >
+                        {ACCEPTANCE_STATUS_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {ACCEPTANCE_TAG_OPTIONS.map((option) => {
+                        const active = acceptanceDraft.failureTags.includes(option.value)
+                        return (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() =>
+                              setAcceptanceDraft((current) => ({
+                                ...current,
+                                failureTags: active
+                                  ? current.failureTags.filter((item) => item !== option.value)
+                                  : [...current.failureTags, option.value],
+                              }))
+                            }
+                            className={`rounded-full border px-2 py-0.5 text-[10px] transition ${
+                              active
+                                ? 'border-amber-500/30 bg-amber-500/10 text-amber-200'
+                                : 'border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white'
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <textarea
+                      rows={4}
+                      value={acceptanceDraft.notes}
+                      onChange={(event) => setAcceptanceDraft((current) => ({ ...current, notes: event.target.value }))}
+                      className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs leading-6 text-slate-200 outline-none transition focus:border-sky-500"
+                      placeholder="记录通过理由、打回原因或下一轮约束。"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { void saveAcceptanceRecord() }}
+                      disabled={acceptanceState === 'saving'}
+                      className="rounded-lg border border-sky-500/50 px-3 py-2 text-xs font-medium text-sky-200 transition hover:border-sky-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {acceptanceState === 'saving' ? '保存中...' : '保存验收'}
+                    </button>
+                    {acceptanceMessage ? (
+                      <div
+                        className={`rounded-lg border px-3 py-2 text-xs ${
+                          acceptanceState === 'error'
+                            ? 'border-rose-500/20 bg-rose-500/5 text-rose-200'
+                            : 'border-emerald-500/20 bg-emerald-500/5 text-emerald-200'
+                        }`}
+                      >
+                        {acceptanceMessage}
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
 
                 <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">

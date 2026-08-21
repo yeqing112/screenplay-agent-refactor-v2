@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { ScriptOutput, StoryboardShotOutput } from '../prototyping/sceneComposerData'
+import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   buildAdaptationSetupSummary,
   buildContentPreparationSummary,

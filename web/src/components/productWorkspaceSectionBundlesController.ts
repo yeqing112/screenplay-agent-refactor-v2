@@ -4,7 +4,7 @@ import type {
   VisualLocationOutput,
   VisualMakeupOutput,
   VisualPropOutput,
-} from '../prototyping/sceneComposerData'
+} from '../domain/bookOutputs'
 import { useMemo } from 'react'
 import type {
   AdaptationSectionState,

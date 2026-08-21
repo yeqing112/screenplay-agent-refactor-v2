@@ -1,5 +1,46 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-22 — 前端工作台收敛为正式工作台
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：项目曾同时保留正式工作台、旧版生产、创作沙盘、高级编排和产品原型 Demo，导致真实用户入口分散、维护面过大。经依赖梳理后，本轮按“先补正式能力，再删除旧入口和旧代码”的方式收敛。
+
+### 变更概览
+
+- **正式工作台补齐旧能力**
+  - QA 修复页新增人工修复片段、diff 预览、应用修复并复检，以及脚本修复版本回滚。
+  - 镜头工作台新增提示词锁定/解除锁定，以及验收记录提交表单。
+
+- **统一前端入口**
+  - `CanvasPage` 只渲染正式工作台，不再加载旧版生产、创作沙盘、高级编排。
+  - 正式工作台侧栏移除旧工作台跳转按钮。
+  - 项目列表移除 `产品原型 Demo` 入口；历史本地 `blueprint-demo` 状态会回到项目列表。
+
+- **清理旧前端实现**
+  - 删除旧版生产、ReactFlow 高级编排、创作沙盘、产品原型 Demo 及对应测试。
+  - 将正式工作台仍使用的输出归一化、模型注册表和 `useBookOutputs` 迁移到正式目录：
+    - `web/src/domain/bookOutputs.ts`
+    - `web/src/services/modelRegistry.ts`
+    - `web/src/hooks/useBookOutputs.ts`
+  - `bookOutputs` 不再依赖旧原型 mock/model 类型。
+
+### 验证结果
+
+- 前端单元测试：`221 passed`
+- 前端生产构建：通过
+- `npm run e2e:smoke`：通过
+- `npm run e2e:qa`：通过
+- 后端 QA/分镜相关专项：`28 passed`
+- `git diff --check`：通过（仅 Windows 换行提示）
+
+### 后续建议
+
+1. 继续执行真浏览器主链路回归：首页 -> 正式工作台 -> QA 修复 -> 镜头工作台 -> 任务/导出。
+2. 保留本轮仍被正式工作台调用的 `/api/prototyping/*` 后端接口，下一阶段再专项审计 `/api/workflows*`、`/api/nodes*`、`/api/runs*` 与旧执行层。
+3. 不删除历史 workflow/run/task 数据，只处理不可达前端代码。
+
+---
+
 ## 2026-08-21 — 视觉资产接口测试基线修复
 
 > 对应提交：本提交 `Restore visual assets GET endpoint`
