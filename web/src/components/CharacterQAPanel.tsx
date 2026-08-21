@@ -82,6 +82,9 @@ export default function CharacterQAPanel({ bookId }: Props) {
   }, [fetchCharacters, fetchQA])
 
   const handleMerge = async (nameA: string, nameB: string) => {
+    const confirmed = window.confirm(`确认将「${nameB}」合并到「${nameA}」吗？此操作会删除「${nameB}」的人物 profile，并改写章节中的角色名。`)
+    if (!confirmed) return
+
     setMerging(`${nameA}-${nameB}`)
     setMessage(null)
     try {
@@ -91,8 +94,9 @@ export default function CharacterQAPanel({ bookId }: Props) {
         body: JSON.stringify({ name_a: nameA, name_b: nameB }),
       })
       const data = await res.json()
-      if (data.error) {
-        setMessage({ type: 'error', text: data.error })
+      const errorMessage = data.error || data.detail
+      if (!res.ok || errorMessage) {
+        setMessage({ type: 'error', text: String(errorMessage || '合并失败') })
       } else {
         setMessage({ type: 'success', text: `已将「${nameB}」合并到「${data.merged_into}」` })
         fetchCharacters()

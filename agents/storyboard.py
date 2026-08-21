@@ -20,6 +20,7 @@ from models import (
 )
 from agents.base import BaseAgent
 from core import safe_json_loads
+from core.validators.shadow_validation import shadow_validate_storyboard_shots
 from genres import get_genre
 
 
@@ -93,6 +94,7 @@ class StoryboardAgent(BaseAgent):
                 all_shots = self._merge_and_renumber(all_shots)
                 self._save_to_db(s, all_shots, episode)
                 s.flush()
+                shadow_validate_storyboard_shots(self.book_id, episode, all_shots, s)
                 self._backfill_shot_ids(s, episode)
                 s.commit()
                 self.log(f"ep {episode}: fallback storyboard generated {len(all_shots)} shots")
@@ -152,6 +154,7 @@ class StoryboardAgent(BaseAgent):
             # 4. 写入 DB
             self._save_to_db(s, all_shots, episode)
             s.flush()
+            shadow_validate_storyboard_shots(self.book_id, episode, all_shots, s)
 
             # 5. 回填 shot_ids → makeup / location / prop
             self._backfill_shot_ids(s, episode)

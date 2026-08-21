@@ -56,7 +56,7 @@ class BibleQAChecker(BaseAgent):
     MALE_IDENTITIES = {"和尚", "武僧", "方丈", "国王", "王子", "丈夫", "新郎", "父亲", "爷爷", "爸爸"}
     FEMALE_IDENTITIES = {"尼姑", "王后", "公主", "妻子", "新娘", "母亲", "奶奶", "妈妈", "修女", "宫女"}
 
-    def run(self) -> dict:
+    def run(self, bible_content: str | None = None) -> dict:
         """主入口：运行所有检查，返回问题 + 自动修复建议。"""
         try:
             with self.session() as s:
@@ -105,11 +105,13 @@ class BibleQAChecker(BaseAgent):
                 except Exception as exc:
                     logger.warning("Failed to load portraits for bible QA: %s", exc)
 
-                # Load bible content
-                bible_entry = s.query(BookBible).filter(
-                    BookBible.book_id == self.book_id
-                ).first()
-                bible_content = bible_entry.content if bible_entry else ""
+                # Load bible content unless the caller is validating a freshly
+                # generated document that has not been committed yet.
+                if bible_content is None:
+                    bible_entry = s.query(BookBible).filter(
+                        BookBible.book_id == self.book_id
+                    ).first()
+                    bible_content = bible_entry.content if bible_entry else ""
 
                 # ── Run all deterministic checks ──
                 issues: list[dict] = []

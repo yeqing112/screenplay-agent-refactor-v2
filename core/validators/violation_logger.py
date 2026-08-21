@@ -27,27 +27,53 @@ def log_violation(
         from models import Session, AgentViolationLog
 
         with Session() as s:
-            log = AgentViolationLog(
-                agent_type=agent_type,
-                book_id=book_id,
+            log = _make_violation_log(
+                AgentViolationLog,
+                agent_type,
+                book_id,
+                violation,
                 episode=episode,
                 scene_name=scene_name,
                 shot_id=shot_id,
-                violation_id=violation.constraint_id,
-                field=violation.field,
-                actual_value=str(violation.actual_value)[:256] if violation.actual_value else None,
-                expected_source=violation.source,
-                severity=violation.severity.value if hasattr(violation.severity, 'value') else str(violation.severity),
-                repair_strategy=violation.repair_strategy.value if hasattr(violation.repair_strategy, 'value') else str(violation.repair_strategy),
                 repair_result=repair_result,
-                fix_details=json.dumps(fix_details, ensure_ascii=False) if fix_details else None,
-                regression=1 if regression else 0,
-                created_at=datetime.utcnow(),
+                fix_details=fix_details,
+                regression=regression,
             )
             s.add(log)
             s.commit()
     except Exception as e:
         logger.warning("Failed to log violation: %s", e)
+
+
+def log_violation_to_session(
+    session,
+    agent_type: str,
+    book_id: int,
+    violation: Violation,
+    episode: int | None = None,
+    scene_name: str | None = None,
+    shot_id: int | None = None,
+    repair_result: str | None = None,
+    fix_details: dict | None = None,
+    regression: bool = False,
+) -> None:
+    """Add a violation log row to an existing transaction."""
+    from models import AgentViolationLog
+
+    session.add(
+        _make_violation_log(
+            AgentViolationLog,
+            agent_type,
+            book_id,
+            violation,
+            episode=episode,
+            scene_name=scene_name,
+            shot_id=shot_id,
+            repair_result=repair_result,
+            fix_details=fix_details,
+            regression=regression,
+        )
+    )
 
 
 def log_violations_batch(
@@ -71,3 +97,35 @@ def log_violations_batch(
             shot_id=shot_id,
             repair_result=repair_result,
         )
+
+
+def _make_violation_log(
+    log_model,
+    agent_type: str,
+    book_id: int,
+    violation: Violation,
+    episode: int | None = None,
+    scene_name: str | None = None,
+    shot_id: int | None = None,
+    repair_result: str | None = None,
+    fix_details: dict | None = None,
+    regression: bool = False,
+):
+    actual_value = violation.actual_value
+    return log_model(
+        agent_type=agent_type,
+        book_id=book_id,
+        episode=episode,
+        scene_name=scene_name,
+        shot_id=shot_id,
+        violation_id=violation.constraint_id,
+        field=violation.field,
+        actual_value=str(actual_value)[:256] if actual_value is not None else None,
+        expected_source=violation.source,
+        severity=violation.severity.value if hasattr(violation.severity, "value") else str(violation.severity),
+        repair_strategy=violation.repair_strategy.value if hasattr(violation.repair_strategy, "value") else str(violation.repair_strategy),
+        repair_result=repair_result,
+        fix_details=json.dumps(fix_details, ensure_ascii=False) if fix_details else None,
+        regression=1 if regression else 0,
+        created_at=datetime.utcnow(),
+    )

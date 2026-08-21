@@ -219,6 +219,55 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             self.assertEqual(shot.visual_prompt_motion, payload["prompt_motion"])
             self.assertEqual(shot.visual_prompt_final, payload["negative_prompt"])
 
+    def test_compile_prompts_persists_rule_compiled_shot_ir_fields(self):
+        def force_ir_fields(ir, _runtime):
+            ir.duration = 2
+            ir.camera_angle = "CU"
+            ir.camera_movement = "static"
+            ir.shot_purpose = "hook"
+            ir.camera_speed = "slow"
+            return ir
+
+        with patch("core.llm.call_llm_json", return_value=self._valid_llm_payload()), patch(
+            "core.rule_compiler.compile_rules",
+            side_effect=force_ir_fields,
+        ):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
+                json={"compileReason": "manual"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["prompt_compile_context"]["duration"], 2)
+        self.assertEqual(payload["prompt_compile_context"]["camera_angle"], "CU")
+        self.assertEqual(payload["prompt_compile_context"]["camera_movement"], "static")
+        self.assertEqual(payload["prompt_compile_context"]["shot_ir"]["shot_purpose"], "hook")
+
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            meta = json.loads(shot.meta_info or "{}")
+            latest_version = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).order_by(StoryboardPromptVersion.version.desc()).first()
+            version_meta = json.loads(latest_version.meta_info or "{}")
+
+        self.assertEqual(shot.duration, 2)
+        self.assertEqual(shot.camera_angle, "CU")
+        self.assertEqual(shot.camera_movement, "static")
+        self.assertEqual(meta["structured_shot"]["duration"], 2)
+        self.assertEqual(meta["structured_shot"]["camera_angle"], "CU")
+        self.assertEqual(meta["structured_shot"]["camera_movement"], "static")
+        self.assertEqual(meta["structured_shot"]["shot_purpose"], "hook")
+        self.assertEqual(version_meta["structured_shot"]["camera_angle"], "CU")
+        self.assertEqual(version_meta["shot_ir"]["camera_movement"], "static")
+
     def test_prompt_versions_and_outputs_include_reference_images(self):
         with patch("core.llm.call_llm_json", return_value=self._valid_llm_payload()):
             compile_response = self.client.post(

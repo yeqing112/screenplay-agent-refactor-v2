@@ -36,3 +36,24 @@ artifacts-*.png
 *.legacy-*
 app.db
 test_browser*.js
+
+# === Agent/review generated artifacts ===
+.graphify_detect.json
+graphify-out/
+screenshots/
+test_screenshots/
+FOUNDATION_OPTIMIZATION_REPORT.md
+OPTIMIZATION_SUMMARY.md
+check_scripts.py
+run_qa.py
+cleaned_script_output.md
+new_script_output.md
+foundation_output.json
+foundation_test_result.json
+qa_result_optimized.json
+qa_test_result.json
+script_decisions/book_*.json
+/test_*.py
+/test_cases.md
+/test_novel.txt
+/ж^Æ

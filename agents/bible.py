@@ -1,8 +1,8 @@
 """Bible Agent - 合并所有分析，生成小说圣经。"""
 import logging
+import re
 import config
 from models import Book, Chapter, BookBible, CharacterProfile
-from core.llm import call_llm_json
 from core import safe_json_loads
 from agents.base import BaseAgent
 
@@ -75,7 +75,7 @@ class BibleAgent(BaseAgent):
                 try:
                     from agents.bible_qa import BibleQAChecker
                     bible_qa = BibleQAChecker(self.book_id)
-                    qa_result = bible_qa.run()
+                    qa_result = bible_qa.run(bible_content=doc)
                     qa_score = qa_result.get("overall_score", 9)
                     auto_fixes = qa_result.get("auto_fixes", [])
                     if auto_fixes:
@@ -188,13 +188,55 @@ class BibleAgent(BaseAgent):
     def _apply_bible_qa_fixes(self, doc: str, auto_fixes: list[dict]) -> str:
         """Apply deterministic auto-fixes to bible markdown."""
         for fix in auto_fixes:
-            old_val = fix.get("old_value", "")
-            new_val = fix.get("new_value", "")
-            char_name = fix.get("character", "")
-            if old_val and new_val and old_val in doc:
-                doc = doc.replace(old_val, new_val, 1)
-                logger.info(
-                    "Bible QA auto-fix: %s %s → %s",
+            old_val = str(fix.get("old_value", "") or "")
+            new_val_raw = fix.get("new_value", "")
+            new_val = str(new_val_raw or "")
+            char_name = str(fix.get("character", "") or "")
+            if not old_val or not new_val:
+                continue
+
+            updated = self._replace_in_character_section(doc, char_name, old_val, new_val)
+            if updated == doc:
+                logger.warning(
+                    "Skipped Bible QA auto-fix without unique character section: %s %s → %s",
                     char_name, old_val, new_val,
                 )
+                continue
+
+            doc = updated
+            logger.info(
+                "Bible QA auto-fix: %s %s → %s",
+                char_name, old_val, new_val,
+            )
         return doc
+
+    def _replace_in_character_section(
+        self,
+        doc: str,
+        character_name: str,
+        old_val: str,
+        new_val: str,
+    ) -> str:
+        """Replace a value only inside the intended character section.
+
+        Bible QA auto-fixes are derived from character-scoped portrait data. A
+        plain document-wide replace can silently update the wrong person when
+        common values such as "20-30岁" appear in several sections.
+        """
+        if not character_name:
+            return doc
+
+        heading_pattern = re.compile(rf"(?m)^###\s+{re.escape(character_name)}\s*$")
+        heading_match = heading_pattern.search(doc)
+        if not heading_match:
+            return doc
+
+        start = heading_match.start()
+        next_heading = re.search(r"(?m)^###\s+", doc[heading_match.end():])
+        end = heading_match.end() + next_heading.start() if next_heading else len(doc)
+        section = doc[start:end]
+        if old_val not in section:
+            return doc
+
+        updated_section = section.replace(old_val, new_val, 1)
+        return f"{doc[:start]}{updated_section}{doc[end:]}"

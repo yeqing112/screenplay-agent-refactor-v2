@@ -71,6 +71,11 @@ function toVisualAssetType(category: 'character' | 'location' | 'prop') {
   return category
 }
 
+export function buildEpisodeSequence(episodeCount: number) {
+  const count = Math.max(1, Math.floor(Number(episodeCount) || 1))
+  return Array.from({ length: count }, (_, index) => index + 1)
+}
+
 export default function ProductWorkspace({
   book,
   bookData,
@@ -215,7 +220,7 @@ export default function ProductWorkspace({
         body: JSON.stringify({
           book_id: book.id,
           genre,
-          episodes: [1],
+          episodes: buildEpisodeSequence(episodeCount),
         }),
       })
       const data = await res.json()
@@ -244,7 +249,7 @@ export default function ProductWorkspace({
     } catch {
       setIsGeneratingStoryboard(false)
     }
-  }, [book.id, isGeneratingStoryboard, handleRefreshAll])
+  }, [book.id, episodeCount, isGeneratingStoryboard, handleRefreshAll])
 
   const characterAssets = useMemo(
     () => buildCharacterAssetSummaries(makeups),

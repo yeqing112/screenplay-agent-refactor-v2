@@ -66,6 +66,11 @@ class StoryboardValidator:
 
         # 场景级别补充检查
         extra_violations = self._check_scene_level(shots)
+        existing_locations = {(v.constraint_id, v.location) for v in result.violations}
+        extra_violations = [
+            v for v in extra_violations
+            if (v.constraint_id, v.location) not in existing_locations
+        ]
         result.violations.extend(extra_violations)
         result.passed = not any(v.severity == ConstraintSeverity.BLOCK for v in result.violations)
         return result

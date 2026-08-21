@@ -91,8 +91,9 @@ class RewriteAgentTests(unittest.TestCase):
 
     def tearDown(self):
         output_path = config.output_path(self.book_title, "scripts", f"episode_{self.episode:02d}_script_v2.md")
+        best_path = config.output_path(self.book_title, "scripts", f"episode_{self.episode:02d}_script_best.md")
         report_path = config.output_path(self.book_title, "scripts", f"episode_{self.episode:02d}_rewrite_report.json")
-        for path in [output_path, report_path]:
+        for path in [output_path, best_path, report_path]:
             try:
                 file_path = Path(path)
                 if file_path.exists():
@@ -227,6 +228,84 @@ class RewriteAgentTests(unittest.TestCase):
 
         self.assertIn("corners the others", script.content)
         self.assertNotIn("change_summary", script.content)
+
+    def test_run_perfect_restores_best_snapshot_when_qa_regresses(self):
+        qa_scores = [
+            {"overall_score": 6, "issues": [{"severity": "high", "title": "needs repair"}]},
+            {"overall_score": 4, "issues": [{"severity": "high", "title": "regressed"}]},
+        ]
+
+        class FakeQAAgent:
+            def __init__(self, book_id):
+                self.book_id = book_id
+
+            def run(self, episode):
+                return qa_scores.pop(0)
+
+        def fake_run(agent, episode):
+            with Session() as session:
+                script = session.query(Script).filter(
+                    Script.book_id == self.book_id,
+                    Script.episode == episode,
+                ).first()
+                script.content = "REGRESSED SCRIPT"
+                script.word_count = len(script.content)
+                session.commit()
+            output = config.output_path(self.book_title, "scripts", f"episode_{episode:02d}_script_v2.md")
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text("REGRESSED SCRIPT", encoding="utf-8")
+            return str(output)
+
+        with patch("agents.qa.QAAgent", FakeQAAgent), patch.object(RewriteAgent, "run", fake_run):
+            result_path = RewriteAgent(self.book_id).run_perfect(self.episode, target_score=9, max_rounds=1)
+
+        self.assertTrue(result_path.endswith("episode_01_script_best.md"))
+        self.assertEqual(Path(result_path).read_text(encoding="utf-8"), self.script_text)
+        with Session() as session:
+            script = session.query(Script).filter(
+                Script.book_id == self.book_id,
+                Script.episode == self.episode,
+            ).first()
+        self.assertEqual(script.content, self.script_text)
+
+    def test_dialogue_refinement_rejects_truncated_long_script_output(self):
+        long_script = "\n".join(
+            [
+                "## 场景一 [well-morning]",
+                "画面：" + ("井边水声和法牌线索持续推进。" * 260),
+                "## 场景二 [hall-night]",
+                "画面：" + ("夜厅烛火和账册证据持续推进。" * 260),
+            ]
+        )
+        with Session() as session:
+            script = session.query(Script).filter(
+                Script.book_id == self.book_id,
+                Script.episode == self.episode,
+            ).first()
+            script.content = long_script
+            script.word_count = len(long_script)
+            session.commit()
+
+        captured = {}
+
+        def fake_call(prompt, system=None, **kwargs):
+            captured["prompt"] = prompt
+            return "## 场景一 [well-morning]\n画面：只返回了很短的一小段。"
+
+        with patch("agents.rewrite.call_llm", side_effect=fake_call):
+            result = RewriteAgent(self.book_id)._refine_dialogue(
+                self.episode,
+                [{"severity": "medium", "title": "dialogue thin", "suggestion": "add subtext"}],
+            )
+
+        self.assertEqual(result, "")
+        self.assertIn("夜厅烛火和账册证据", captured["prompt"])
+        with Session() as session:
+            script = session.query(Script).filter(
+                Script.book_id == self.book_id,
+                Script.episode == self.episode,
+            ).first()
+        self.assertEqual(script.content, long_script)
 
     def test_rewrite_agent_retries_after_invalid_non_json_output(self):
         calls = {"count": 0}

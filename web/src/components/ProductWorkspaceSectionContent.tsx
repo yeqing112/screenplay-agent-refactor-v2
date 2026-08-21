@@ -1,18 +1,20 @@
+import { lazy, Suspense } from 'react'
 import type { RecoveryFocusContext } from './productWorkspaceAssetViewController'
 import type { CanvasHandoffTarget, ProductWorkspaceSectionContentProps } from './productWorkspaceSectionContracts'
-import ProductWorkspaceAdaptationSection from './ProductWorkspaceAdaptationSection'
-import ProductWorkspaceAssetsSection from './ProductWorkspaceAssetsSection'
-import ProductWorkspaceCanvasBetaSection from './ProductWorkspaceCanvasBetaSection'
-import ProductWorkspaceContentSection from './ProductWorkspaceContentSection'
-import CharacterQAPanel from './CharacterQAPanel'
-import ProductWorkspaceDashboardSection from './ProductWorkspaceDashboardSection'
-import ProductWorkspaceDeliverySection from './ProductWorkspaceDeliverySection'
-import ProductWorkspaceModelsSection from './ProductWorkspaceModelsSection'
-import ProductWorkspaceQaSection from './ProductWorkspaceQaSection'
-import ProductWorkspaceScriptsSection from './ProductWorkspaceScriptsSection'
-import ProductWorkspaceStoryboardSection from './ProductWorkspaceStoryboardSection'
-import ProductWorkspaceTasksSection from './ProductWorkspaceTasksSection'
 import WorkspaceSectionErrorBoundary from './WorkspaceSectionErrorBoundary'
+
+const ProductWorkspaceAdaptationSection = lazy(() => import('./ProductWorkspaceAdaptationSection'))
+const ProductWorkspaceAssetsSection = lazy(() => import('./ProductWorkspaceAssetsSection'))
+const ProductWorkspaceCanvasBetaSection = lazy(() => import('./ProductWorkspaceCanvasBetaSection'))
+const ProductWorkspaceContentSection = lazy(() => import('./ProductWorkspaceContentSection'))
+const CharacterQAPanel = lazy(() => import('./CharacterQAPanel'))
+const ProductWorkspaceDashboardSection = lazy(() => import('./ProductWorkspaceDashboardSection'))
+const ProductWorkspaceDeliverySection = lazy(() => import('./ProductWorkspaceDeliverySection'))
+const ProductWorkspaceModelsSection = lazy(() => import('./ProductWorkspaceModelsSection'))
+const ProductWorkspaceQaSection = lazy(() => import('./ProductWorkspaceQaSection'))
+const ProductWorkspaceScriptsSection = lazy(() => import('./ProductWorkspaceScriptsSection'))
+const ProductWorkspaceStoryboardSection = lazy(() => import('./ProductWorkspaceStoryboardSection'))
+const ProductWorkspaceTasksSection = lazy(() => import('./ProductWorkspaceTasksSection'))
 
 function toStoryboardRecoveryFocus(recoveryFocus: RecoveryFocusContext | null) {
   if (recoveryFocus?.target !== 'storyboard') return null
@@ -85,6 +87,14 @@ function CanvasHandoffBanner({ handoff }: { handoff: CanvasHandoffTarget | null 
   )
 }
 
+function SectionLoadingFallback() {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 text-sm text-slate-400">
+      正在加载工作区...
+    </div>
+  )
+}
+
 export default function ProductWorkspaceSectionContent({
   section,
   dashboard,
@@ -100,7 +110,7 @@ export default function ProductWorkspaceSectionContent({
   preview,
 }: ProductWorkspaceSectionContentProps) {
   return (
-    <>
+    <Suspense fallback={<SectionLoadingFallback />}>
       {section === 'dashboard' ? (
         <ProductWorkspaceDashboardSection
           summary={{
@@ -383,6 +393,6 @@ export default function ProductWorkspaceSectionContent({
           </div>
         </div>
       ) : null}
-    </>
+    </Suspense>
   )
 }

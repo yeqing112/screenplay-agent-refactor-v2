@@ -130,17 +130,14 @@ def resolve_aliases(book_id: int, session):
         pending = []
         gender_conflicts = []
 
-    # 处理 pending_confirm：中置信度的也加入合并组
+    # pending_confirm 代表需要人工确认的候选，不能进入自动写库合并。
+    # 这里仅记录日志，避免中置信候选在上游流水线中删除独立角色。
     for item in pending:
         if not isinstance(item, dict):
             continue
         names = item.get("names", [])
         confidence = item.get("confidence", "low")
-        if confidence == "medium" and len(names) >= 2:
-            groups.append(names)
-            logger.info("中置信度合并(需确认): %s — %s", names, item.get("reason", ""))
-        else:
-            logger.info("低置信度/跳过: %s — %s", names, item.get("reason", ""))
+        logger.info("待人工确认别名候选(%s): %s — %s", confidence, names, item.get("reason", ""))
 
     # 记录性别冲突（不自动合并）
     if gender_conflicts:

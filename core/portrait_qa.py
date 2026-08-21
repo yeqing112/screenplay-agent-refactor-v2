@@ -146,6 +146,7 @@ def run_portrait_qa(book_id: int, session) -> PortraitQAReport:
 
             # 外貌相似度
             frag_similarity = _compute_fragment_similarity(frags_a, frags_b)
+            alias_match = _has_alias_link(p_a, name_a, p_b, name_b)
 
             # 性别一致性
             gender_conflict = False
@@ -164,12 +165,13 @@ def run_portrait_qa(book_id: int, session) -> PortraitQAReport:
                 confidence = "medium" if no_overlap else "low"
                 reason_parts.append(f"外貌部分相似{frag_similarity:.0%}")
 
-            if no_overlap:
-                reason_parts.append("章节完全互补（无重叠）")
-                if confidence == "low":
-                    confidence = "medium"
+            if alias_match:
+                reason_parts.append("别名互相指向")
+                if confidence in ("low", "medium"):
+                    confidence = "high" if no_overlap else "medium"
 
             # 身份相似度
+            id_sim = 0.0
             if p_a.identity and p_b.identity:
                 id_sim = SequenceMatcher(None, p_a.identity, p_b.identity).ratio()
                 if id_sim > 0.5:
@@ -177,13 +179,17 @@ def run_portrait_qa(book_id: int, session) -> PortraitQAReport:
                     if confidence == "low":
                         confidence = "medium"
 
-            if reason_parts and not gender_conflict:
+            has_strong_identity_evidence = bool(alias_match or frag_similarity > 0.3 or id_sim > 0.65)
+            if no_overlap and has_strong_identity_evidence:
+                reason_parts.append("章节完全互补（无重叠）")
+
+            if reason_parts and has_strong_identity_evidence and not gender_conflict:
                 report.merge_candidates.append(MergeCandidate(
                     char_a=name_a,
                     char_b=name_b,
                     confidence=confidence,
                     reason="；".join(reason_parts),
-                    complementary_chapters=sorted(chs_a | chs_b - chs_a),
+                    complementary_chapters=sorted((chs_a | chs_b) - overlap),
                 ))
 
                 if confidence == "high":
@@ -198,7 +204,7 @@ def run_portrait_qa(book_id: int, session) -> PortraitQAReport:
                     ))
 
             # 性别冲突
-            if gender_conflict:
+            if gender_conflict and has_strong_identity_evidence:
                 report.gender_conflicts.append(CharacterIssue(
                     issue_type="gender_conflict",
                     severity="high",
@@ -234,6 +240,20 @@ def _compute_fragment_similarity(frags_a: list[str], frags_b: list[str]) -> floa
     return SequenceMatcher(None, text_a, text_b).ratio()
 
 
+def _has_alias_link(profile_a, name_a: str, profile_b, name_b: str) -> bool:
+    """Return True only when stored aliases explicitly connect the two names."""
+    aliases_a = set(safe_json_loads(profile_a.aliases, [])) if profile_a and profile_a.aliases else set()
+    aliases_b = set(safe_json_loads(profile_b.aliases, [])) if profile_b and profile_b.aliases else set()
+    return name_b in aliases_a or name_a in aliases_b
+
+
+def _has_gender_conflict(profile_a, profile_b) -> bool:
+    known_unknowns = {"", "人物", "未识别"}
+    gender_a = (profile_a.gender or "").strip()
+    gender_b = (profile_b.gender or "").strip()
+    return gender_a not in known_unknowns and gender_b not in known_unknowns and gender_a != gender_b
+
+
 def merge_characters(book_id: int, name_a: str, name_b: str, session,
                      canonical_name: str = None) -> dict:
     """合并两个角色。name_a 保留为 canonical，name_b 被合并进来。
@@ -253,6 +273,9 @@ def merge_characters(book_id: int, name_a: str, name_b: str, session,
 
     if not profile_a or not profile_b:
         return {"error": f"角色不存在: {name_a} or {name_b}"}
+
+    if _has_gender_conflict(profile_a, profile_b):
+        return {"error": f"角色性别冲突，需先人工确认: {name_a}({profile_a.gender}) / {name_b}({profile_b.gender})"}
 
     canonical = canonical_name or name_a
 

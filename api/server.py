@@ -521,7 +521,7 @@ def create_workflow(data: WorkflowData):
 def get_workflow(workflow_id: str):
     path = _wf_path(workflow_id)
     if not path.exists():
-        return {"error": "Workflow not found"}, 404
+        raise HTTPException(status_code=404, detail="Workflow not found")
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -529,7 +529,7 @@ def get_workflow(workflow_id: str):
 def update_workflow(workflow_id: str, data: WorkflowData):
     path = _wf_path(workflow_id)
     if not path.exists():
-        return {"error": "Workflow not found"}, 404
+        raise HTTPException(status_code=404, detail="Workflow not found")
     existing = json.loads(path.read_text(encoding="utf-8"))
     existing["nodes"] = data.nodes
     existing["edges"] = data.edges
@@ -578,7 +578,7 @@ def get_prompt(name: str):
         content = load_prompt(name)
         return {"name": name, "content": content}
     except FileNotFoundError:
-        return {"error": "Prompt not found"}, 404
+        raise HTTPException(status_code=404, detail="Prompt not found")
 
 
 @app.get("/api/model-registry")
@@ -657,7 +657,7 @@ def run_node(req: RunRequest, background: BackgroundTasks):
 def get_run_status(run_id: str):
     run = _runs.get(run_id)
     if not run:
-        return {"error": "Run not found"}, 404
+        raise HTTPException(status_code=404, detail="Run not found")
 
     resp = {
         "status": run["status"],
@@ -675,11 +675,11 @@ def stream_run_logs(run_id: str):
 
     run = _runs.get(run_id)
     if not run:
-        return {"error": "Run not found"}, 404
+        raise HTTPException(status_code=404, detail="Run not found")
 
     runner = run.get("runner")
     if not runner:
-        return {"error": "No runner"}, 400
+        raise HTTPException(status_code=400, detail="No runner")
 
     async def event_stream():
         seen = len(runner.logs)
@@ -760,7 +760,7 @@ def replay_run(run_id: str, background: BackgroundTasks):
             background.add_task(execute)
             return {"run_id": new_run_id, "status": "running", "replayed_from": run_id}
 
-    return {"error": "Run not found"}, 404
+    raise HTTPException(status_code=404, detail="Run not found")
 
 
 @app.get("/api/runs/{run_id}")
@@ -776,7 +776,7 @@ def get_run_snapshot(run_id: str):
                 elif f.suffix == ".txt":
                     result[f.stem] = f.read_text(encoding="utf-8")
             return result
-    return {"error": "Run not found"}, 404
+    raise HTTPException(status_code=404, detail="Run not found")
 
 
 @app.get("/api/search")
@@ -834,7 +834,7 @@ def diff_runs(run_id_a: str, run_id_b: str):
     a = load(run_id_a)
     b = load(run_id_b)
     if not a or not b:
-        return {"error": "Run not found"}, 404
+        raise HTTPException(status_code=404, detail="Run not found")
 
     return {
         "left_run": run_id_a,
@@ -1135,7 +1135,7 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
 def get_pipeline_task(task_id: str):
     task = _pipeline_tasks.get(task_id)
     if not task:
-        return {"status": "not_found"}, 404
+        raise HTTPException(status_code=404, detail="Pipeline task not found")
     return task
 
 
@@ -5590,11 +5590,23 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
     )
     compile_context["reference_summary"] = reference_summary
 
-    from core.prompt_ir import build_shot_ir_from_context
+    from core.prompt_ir import build_shot_ir_from_context, serialize_shot_ir
     from core.rule_compiler import compile_rules
     shot_ir = build_shot_ir_from_context(compile_context)
     production_skill_runtime = compile_context.get("production_skill", {})
     shot_ir = compile_rules(shot_ir, production_skill_runtime)
+    shot_ir_payload = serialize_shot_ir(shot_ir)
+    compile_context = {
+        **compile_context,
+        "duration": shot_ir.duration,
+        "camera_angle": shot_ir.camera_angle,
+        "camera_movement": shot_ir.camera_movement,
+        "camera_speed": shot_ir.camera_speed,
+        "transition": shot_ir.transition,
+        "shot_purpose": shot_ir.shot_purpose,
+        "emotion_arc": shot_ir_payload.get("emotion_arc", {}),
+        "shot_ir": shot_ir_payload,
+    }
     compile_context["shot_ir_metadata"] = {
         "static_sections": shot_ir.static_sections,
         "motion_sections": shot_ir.motion_sections,
@@ -5776,6 +5788,7 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         "reference_asset_ids": compile_context.get("compiled_reference_asset_ids", []),
         "repair_attempted": repair_attempted,
         "shot_ir_metadata": compile_context.get("shot_ir_metadata", {}),
+        "shot_ir": compile_context.get("shot_ir", {}),
     }
 
 
@@ -5806,6 +5819,7 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         structured_seed,
     )
     compiled = _compile_storyboard_prompts(book_id, shot, structured)
+    compiled_structured = _apply_compiled_shot_ir_to_structure(structured, compiled.get("shot_ir", {}))
     latest = s.query(StoryboardPromptVersion).filter(
         StoryboardPromptVersion.book_id == book_id,
         StoryboardPromptVersion.episode == episode,
@@ -5814,7 +5828,8 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
     next_version = (latest.version if latest else 0) + 1
 
     version_meta = {
-        "structured_shot": structured,
+        "structured_shot": compiled_structured,
+        "shot_ir": compiled.get("shot_ir", {}),
         "locked_reference_summary": compiled.get("locked_reference_summary", {}),
         "prompt_compile_context": compiled.get("prompt_compile_context", {}),
         "used_assets": compiled.get("used_assets", []),
@@ -5841,6 +5856,11 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
     shot.visual_prompt_static = compiled["prompt_static"]
     shot.visual_prompt_motion = compiled["prompt_motion"]
     shot.visual_prompt_final = compiled["negative_prompt"]
+    shot.duration = int(compiled_structured.get("duration") or shot.duration or 3)
+    shot.camera_angle = str(compiled_structured.get("camera_angle") or shot.camera_angle or "MS")
+    shot.camera_movement = str(compiled_structured.get("camera_movement") or shot.camera_movement or "static")
+    shot.transition = str(compiled_structured.get("transition") or shot.transition or "cut")
+    meta_info["structured_shot"] = compiled_structured
     meta_info["prompt_compiler"] = {
         "latest_version": next_version,
         "negative_prompt": compiled["negative_prompt"],
@@ -5850,6 +5870,7 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         "feedback_constraints": compiled.get("acceptance_feedback", {}).get("constraints", []),
         "locked_reference_summary": compiled.get("locked_reference_summary", {}),
         "prompt_compile_context": compiled.get("prompt_compile_context", {}),
+        "shot_ir": compiled.get("shot_ir", {}),
         "used_assets": compiled.get("used_assets", []),
         "reference_images": compiled.get("reference_images", []),
         "reference_asset_ids": compiled.get("reference_asset_ids", []),
@@ -5866,9 +5887,28 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         "version": next_version,
         "row": row,
         "compiled": compiled,
-        "structured": structured,
+        "structured": compiled_structured,
         "meta_info": meta_info,
     }
+
+
+def _apply_compiled_shot_ir_to_structure(structured: dict, shot_ir: dict) -> dict:
+    """Merge rule-compiled ShotIR fields back into structured shot state."""
+    result = dict(structured if isinstance(structured, dict) else {})
+    if not isinstance(shot_ir, dict):
+        return result
+
+    for field in ("duration", "camera_angle", "camera_movement", "transition", "shot_purpose", "camera_speed"):
+        value = shot_ir.get(field)
+        if value is not None and str(value).strip() != "":
+            result[field] = value
+
+    for field in ("emotion_arc", "retention"):
+        value = shot_ir.get(field)
+        if isinstance(value, dict) and value:
+            result[field] = value
+
+    return result
 
 
 def _ensure_storyboard_prompt_compiler_state(s, shot) -> tuple[dict, dict, bool]:
@@ -7960,7 +8000,7 @@ async def _enqueue_creative_task(req: CreativeGenerationRequest, bg: BackgroundT
 def get_creative_task(task_id: str):
     task = _creative_tasks.get(task_id)
     if not task:
-        return {"task_id": task_id, "status": "not_found"}, 404
+        raise HTTPException(status_code=404, detail="Task not found")
     return task
 
 
@@ -8166,7 +8206,7 @@ class CharacterUpdateRequest(BaseModel):
 
 @app.get("/api/books/{book_id}/chapters")
 def list_chapters(book_id: int):
-    """获取章节列表（含原文内容）。"""
+    """获取章节列表摘要；正文由单章详情接口懒加载。"""
     from models import Chapter as ChapterModel
     with Session() as s:
         chapters = s.query(ChapterModel).filter(
@@ -8178,7 +8218,6 @@ def list_chapters(book_id: int):
                 "id": ch.id,
                 "seq": ch.seq,
                 "title": ch.title or "",
-                "content": ch.content or "",
                 "word_count": ch.word_count or 0,
                 "status": ch.status or "",
                 "summary": ch.summary or "",
@@ -8196,7 +8235,7 @@ def get_chapter(book_id: int, chapter_id: int):
             ChapterModel.book_id == book_id,
         ).first()
         if not ch:
-            return {"error": "Chapter not found"}
+            raise HTTPException(status_code=404, detail="Chapter not found")
         return {
             "id": ch.id,
             "seq": ch.seq,
@@ -8227,6 +8266,8 @@ def merge_characters_endpoint(book_id: int, req: CharacterMergeRequest):
     from core.portrait_qa import merge_characters
     with Session() as s:
         result = merge_characters(book_id, req.name_a, req.name_b, s, req.canonical_name)
+        if isinstance(result, dict) and result.get("error"):
+            raise HTTPException(status_code=409, detail=result["error"])
         return result
 
 
@@ -8290,7 +8331,7 @@ def update_character(book_id: int, char_id: int, req: CharacterUpdateRequest):
             CharacterProfile.book_id == book_id,
         ).first()
         if not p:
-            return {"error": "Character not found"}
+            raise HTTPException(status_code=404, detail="Character not found")
         if req.gender is not None:
             p.gender = req.gender
         if req.identity is not None:
@@ -8302,7 +8343,7 @@ def update_character(book_id: int, char_id: int, req: CharacterUpdateRequest):
                 CharacterProfile.name == req.name,
             ).first()
             if existing:
-                return {"error": f"角色名「{req.name}」已存在"}
+                raise HTTPException(status_code=409, detail=f"角色名「{req.name}」已存在")
             old_name = p.name
             p.name = req.name
             # 更新 stages
@@ -8326,7 +8367,7 @@ def get_character_appearance(book_id: int, char_id: int):
             CharacterProfile.book_id == book_id,
         ).first()
         if not p:
-            return {"error": "Character not found"}
+            raise HTTPException(status_code=404, detail="Character not found")
         # 从 chapter 表收集 appearance_fragments
         chapters = s.query(ChapterModel).filter(
             ChapterModel.book_id == book_id
@@ -8840,10 +8881,8 @@ async def compile_storyboard_prompts_async(
     episode: int,
     shot_id: str,
     req: StoryboardPromptCompileRequest,
+    bg: BackgroundTasks,
 ):
-    import asyncio
-    import threading
-
     from models import Session, StoryboardShot
 
     with Session() as s:
@@ -8880,10 +8919,7 @@ async def compile_storyboard_prompts_async(
     def _run_compile_in_thread():
         asyncio.run(_run_storyboard_prompt_compile_task(task_id, book_id, episode, shot_id, req.compile_reason))
 
-    threading.Thread(
-        target=_run_compile_in_thread,
-        daemon=True,
-    ).start()
+    bg.add_task(_run_compile_in_thread)
     return {
         "task_id": task_id,
         "status": "queued",
@@ -9698,7 +9734,7 @@ def delete_visual_setup(book_id: int):
 def get_visual_task(task_id: str):
     task = _visual_tasks.get(task_id)
     if not task:
-        return {"status": "not_found"}, 404
+        raise HTTPException(status_code=404, detail="Visual setup task not found")
     return task
 
 
@@ -9706,7 +9742,7 @@ def get_visual_task(task_id: str):
 def get_storyboard_task(task_id: str):
     task = _storyboard_tasks.get(task_id)
     if not task:
-        return {"status": "not_found"}, 404
+        raise HTTPException(status_code=404, detail="Storyboard task not found")
     return task
 
 
@@ -9888,7 +9924,7 @@ def delete_book(book_id: int):
     with Session() as s:
         book = s.get(Book, book_id)
         if not book:
-            return {"error": "not_found"}, 404
+            raise HTTPException(status_code=404, detail="Book not found")
 
         title = book.title
 
@@ -10065,9 +10101,10 @@ def _derive_issue_source_excerpt(content: str, script_section: str, title: str, 
         return excerpt
 
     keyword_candidates = []
-    keyword_candidates.extend(re.findall(r"[涓€-榫-Za-z]{2,8}", script_section or ""))
-    keyword_candidates.extend(re.findall(r"[涓€-榫-Za-z]{2,8}", title or ""))
-    keyword_candidates.extend(re.findall(r"[涓€-榫-Za-z]{2,8}", description or ""))
+    keyword_pattern = r"[\u4e00-\u9fffA-Za-z0-9]{2,8}"
+    keyword_candidates.extend(re.findall(keyword_pattern, script_section or ""))
+    keyword_candidates.extend(re.findall(keyword_pattern, title or ""))
+    keyword_candidates.extend(re.findall(keyword_pattern, description or ""))
     excerpt = _excerpt_from_keywords(content, keyword_candidates)
     if excerpt:
         return excerpt
@@ -11372,7 +11409,7 @@ def update_book(book_id: int, data: dict):
     with Session() as s:
         book = s.get(Book, book_id)
         if not book:
-            return {"error": "not_found"}, 404
+            raise HTTPException(status_code=404, detail="Book not found")
         if "title" in data:
             book.title = data["title"]
         s.commit()
@@ -11401,7 +11438,7 @@ def update_outline(outline_id: int, data: dict):
     with Session() as s:
         outline = s.query(EpisodeOutline).filter(EpisodeOutline.id == outline_id).first()
         if not outline:
-            return {"error": "not_found"}, 404
+            raise HTTPException(status_code=404, detail="Outline not found")
         if "title" in data:
             outline.title = data["title"]
         if "core_event" in data:
@@ -11425,7 +11462,7 @@ def update_script(script_id: int, data: dict):
     with Session() as s:
         script = s.query(Script).filter(Script.id == script_id).first()
         if not script:
-            return {"error": "not_found"}, 404
+            raise HTTPException(status_code=404, detail="Script not found")
         if "content" in data:
             script.content = data["content"]
             script.word_count = len(data["content"])

@@ -100,9 +100,9 @@ class ValidationResult:
 
 def _check_enum_match(value: Any, valid_keys: set[str], valid_values: set[str]) -> bool:
     """枚举匹配：值必须在合法集合中"""
-    if not value:
-        return True  # 空值不校验
     value_str = str(value).strip()
+    if not value_str:
+        return False
     return value_str in valid_keys or value_str in valid_values
 
 
@@ -123,9 +123,10 @@ def _check_range(value: Any, min_val: float | None, max_val: float | None) -> bo
 
 def _check_pattern(value: Any, pattern: str) -> bool:
     """正则匹配：值必须匹配指定模式"""
-    if not value:
-        return True
-    return bool(re.search(pattern, str(value)))
+    value_str = str(value).strip() if value is not None else ""
+    if not value_str:
+        return False
+    return bool(re.search(pattern, value_str))
 
 
 def _check_forbidden(value: Any, forbidden_values: set[str]) -> bool:
@@ -137,8 +138,8 @@ def _check_forbidden(value: Any, forbidden_values: set[str]) -> bool:
 
 def _check_min_length(value: Any, min_len: int) -> bool:
     """最小长度检查"""
-    if not value:
-        return True
+    if value is None:
+        return False
     return len(str(value)) >= min_len
 
 
@@ -313,7 +314,7 @@ def generate_short_drama_constraints() -> list[Constraint]:
     constraints.append(Constraint(
         id="OPENING_MUST_BE_HOOK",
         category=ConstraintCategory.FORBIDDEN,
-        target=ConstraintTarget.SHOT,
+        target=ConstraintTarget.SCENE,
         field="shot_purpose",
         rule="forbidden",
         rule_params={"forbidden_values": {"establish"}},
@@ -328,7 +329,7 @@ def generate_short_drama_constraints() -> list[Constraint]:
     constraints.append(Constraint(
         id="ENDING_MUST_HAVE_SUSPENSE",
         category=ConstraintCategory.HARD,
-        target=ConstraintTarget.SHOT,
+        target=ConstraintTarget.SCENE,
         field="shot_purpose",
         rule="enum_match",
         rule_params={"valid_keys": {"suspense", "reveal", "hook", "cliffhanger"}, "valid_values": {"suspense", "reveal", "hook", "cliffhanger"}},
@@ -361,19 +362,6 @@ def generate_short_drama_constraints() -> list[Constraint]:
 def generate_format_constraints() -> list[Constraint]:
     """输出格式合约约束"""
     return [
-        Constraint(
-            id="DURATION_MIN_2",
-            category=ConstraintCategory.CONTRACT,
-            target=ConstraintTarget.SHOT,
-            field="duration",
-            rule="range",
-            rule_params={"min": 2, "max": 6},
-            source="scene_shots.txt",
-            severity=ConstraintSeverity.BLOCK,
-            message="镜头时长必须在 2-6 秒之间",
-            fix_hint="将时长调整到 2-6 秒范围内",
-            repair_strategy=RepairStrategy.PROGRAMMATIC,
-        ),
         Constraint(
             id="STATIC_PROMPT_MIN_CHARS",
             category=ConstraintCategory.CONTRACT,
@@ -490,6 +478,8 @@ class ConstraintValidator:
                 v.location = f"shot_{i}"
             all_violations.extend(result.violations)
 
+        all_violations.extend(self._validate_scene_constraints(shots))
+
         return ValidationResult(
             passed=not any(v.severity == ConstraintSeverity.BLOCK for v in all_violations),
             violations=all_violations,
@@ -536,6 +526,30 @@ class ConstraintValidator:
         elif constraint.rule == "min_length":
             return _check_min_length(value, constraint.rule_params.get("min_len", 0))
         return True
+
+    def _validate_scene_constraints(self, shots: list[dict]) -> list[Violation]:
+        """Validate constraints that require scene position context."""
+        if not shots:
+            return []
+
+        violations: list[Violation] = []
+        constraints = {c.id: c for c in self.registry.get_by_target(ConstraintTarget.SCENE)}
+
+        opening = constraints.get("OPENING_MUST_BE_HOOK")
+        first_shot = shots[0]
+        if opening and not self._check_constraint(first_shot.get(opening.field), opening):
+            violation = self._make_violation(opening, first_shot.get(opening.field), first_shot)
+            violation.location = "shot_0"
+            violations.append(violation)
+
+        ending = constraints.get("ENDING_MUST_HAVE_SUSPENSE")
+        last_shot = shots[-1]
+        if ending and not self._check_constraint(last_shot.get(ending.field), ending):
+            violation = self._make_violation(ending, last_shot.get(ending.field), last_shot)
+            violation.location = f"shot_{len(shots) - 1}"
+            violations.append(violation)
+
+        return violations
 
     def _make_violation(self, constraint: Constraint, actual_value: Any, context: dict) -> Violation:
         """构造违规记录"""

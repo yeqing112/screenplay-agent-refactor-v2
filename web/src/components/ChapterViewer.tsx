@@ -5,7 +5,7 @@ interface Chapter {
   id: number
   seq: number
   title: string
-  content: string
+  content?: string
   word_count: number
   status: string
   summary: string
@@ -19,6 +19,7 @@ export default function ChapterViewer({ bookId }: Props) {
   const [chapters, setChapters] = useState<Chapter[]>([])
   const [selectedIdx, setSelectedIdx] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [chapterLoading, setChapterLoading] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -34,6 +35,28 @@ export default function ChapterViewer({ bookId }: Props) {
 
   const chapter = chapters[selectedIdx]
   const totalWords = chapters.reduce((sum, c) => sum + c.word_count, 0)
+
+  useEffect(() => {
+    if (!chapter || chapter.content !== undefined) return
+    let cancelled = false
+    setChapterLoading(true)
+    fetch(`/api/books/${bookId}/chapters/${chapter.id}`)
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error('chapter detail failed'))))
+      .then(data => {
+        if (cancelled) return
+        setChapters(prev => prev.map(item => (item.id === chapter.id ? { ...item, content: data.content || '' } : item)))
+      })
+      .catch(() => {
+        if (cancelled) return
+        setChapters(prev => prev.map(item => (item.id === chapter.id ? { ...item, content: '（章节正文加载失败）' } : item)))
+      })
+      .finally(() => {
+        if (!cancelled) setChapterLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [bookId, chapter])
 
   const goPrev = useCallback(() => setSelectedIdx(i => Math.max(0, i - 1)), [])
   const goNext = useCallback(() => setSelectedIdx(i => Math.min(chapters.length - 1, i + 1)), [chapters.length])
@@ -132,7 +155,7 @@ export default function ChapterViewer({ bookId }: Props) {
           {/* Raw text */}
           <div className="max-h-[60vh] overflow-y-auto px-5 py-4">
             <div className="whitespace-pre-wrap font-serif text-sm leading-7 text-slate-200">
-              {chapter.content || '（无内容）'}
+              {chapterLoading && chapter.content === undefined ? '正文加载中...' : chapter.content || '（无内容）'}
             </div>
           </div>
         </div>

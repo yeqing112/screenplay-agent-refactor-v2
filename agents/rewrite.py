@@ -1545,6 +1545,7 @@ class RewriteAgent(BaseAgent):
         
         best_score = 0
         best_path = None
+        best_snapshot = self._capture_script_snapshot(episode)
         
         # Pre-check: get current QA score
         try:
@@ -1556,6 +1557,8 @@ class RewriteAgent(BaseAgent):
             
             logger.info("Pre-rewrite QA score: %d/10 (%d issues, %d high)", 
                        pre_score, len(pre_issues), len(pre_high))
+            best_score = pre_score
+            best_path = self._write_script_snapshot_file(episode, best_snapshot, "best")
             
             # If score is already high and no high-severity issues, skip rewrite
             if pre_score >= target_score:
@@ -1596,13 +1599,14 @@ class RewriteAgent(BaseAgent):
                 for i, issue in enumerate(issues, 1):
                     logger.info("  %d. [%s] %s", i, issue.get("severity", "?"), issue.get("title", "?"))
                 
-                # Regression check: if score dropped, revert to best
+                # Regression check: if score dropped, restore the best known DB state.
                 if score < best_score:
                     logger.warning("Score regressed from %d to %d, reverting to best", best_score, score)
-                    # Don't update best_score or best_path
+                    best_path = self._restore_script_snapshot(episode, best_snapshot, "best")
                 elif score > best_score:
                     best_score = score
                     best_path = script_path
+                    best_snapshot = self._capture_script_snapshot(episode)
                 
                 # Check if we reached target
                 if score >= target_score:
@@ -1624,6 +1628,7 @@ class RewriteAgent(BaseAgent):
                             if new_score > best_score:
                                 best_score = new_score
                                 best_path = refined_path
+                                best_snapshot = self._capture_script_snapshot(episode)
                             if new_score >= target_score:
                                 return refined_path
                     except Exception as exc:
@@ -1634,11 +1639,12 @@ class RewriteAgent(BaseAgent):
                 break
         
         logger.info("Best score achieved: %d/10", best_score)
+        if best_snapshot:
+            best_path = self._restore_script_snapshot(episode, best_snapshot, "best")
         return best_path or ""
 
     def _get_script_path(self, episode: int) -> str:
         """Get the path to the current script file."""
-        import os
         with self.session() as session:
             book = session.get(Book, self.book_id)
             if not book:
@@ -1651,6 +1657,53 @@ class RewriteAgent(BaseAgent):
             if v2_path.exists():
                 return str(v2_path)
             return ""
+
+    def _capture_script_snapshot(self, episode: int) -> dict:
+        """Capture the current script row so multi-round rewrite can roll back safely."""
+        with self.session() as session:
+            book = session.get(Book, self.book_id)
+            script = session.query(Script).filter(
+                Script.book_id == self.book_id,
+                Script.episode == episode,
+            ).first()
+            if not book or not script:
+                return {}
+            return {
+                "book_title": book.title,
+                "content": script.content or "",
+                "word_count": script.word_count or len(script.content or ""),
+                "status": script.status or "draft",
+            }
+
+    def _restore_script_snapshot(self, episode: int, snapshot: dict, label: str = "best") -> str:
+        """Restore a captured script snapshot to DB and a sidecar file."""
+        if not snapshot:
+            return ""
+        with self.session() as session:
+            script = session.query(Script).filter(
+                Script.book_id == self.book_id,
+                Script.episode == episode,
+            ).first()
+            if not script:
+                return ""
+            content = str(snapshot.get("content") or "")
+            script.content = content
+            script.word_count = int(snapshot.get("word_count") or len(content))
+            script.status = str(snapshot.get("status") or script.status or "draft")
+            session.commit()
+        return self._write_script_snapshot_file(episode, snapshot, label)
+
+    def _write_script_snapshot_file(self, episode: int, snapshot: dict, label: str = "best") -> str:
+        if not snapshot:
+            return ""
+        book_title = str(snapshot.get("book_title") or "").strip()
+        content = str(snapshot.get("content") or "")
+        if not book_title or not content:
+            return ""
+        output = config.output_path(book_title, "scripts", f"episode_{episode:02d}_script_{label}.md")
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(content, encoding="utf-8")
+        return str(output)
 
     def _refine_dialogue(self, episode: int, qa_issues: list) -> str:
         """Targeted dialogue refinement for remaining medium/low issues."""
@@ -1687,9 +1740,10 @@ class RewriteAgent(BaseAgent):
                 "- Use character actions, micro-expressions, and pauses to convey information\n"
                 "- Keep the same plot beats and character intentions\n"
                 "- Maintain the same scene structure and visual proofs\n"
+                "- Return the complete episode script from the first scene to the final scene, not an excerpt\n"
                 "- Output ONLY the refined script text, no JSON, no explanation\n\n"
                 "## Current Script\n"
-                f"{script.content[:8000]}"
+                f"{script.content}"
             )
             
             system = (
@@ -1710,6 +1764,9 @@ class RewriteAgent(BaseAgent):
             for fragment in self.META_FRAGMENTS:
                 refined = refined.replace(fragment, "")
             refined = self._normalize_scene_headers(refined)
+            if not self._refined_script_preserves_full_episode(script.content or "", refined):
+                logger.warning("Dialogue refinement rejected because output looks truncated.")
+                return ""
             
             # Save
             output = config.output_path(book.title, "scripts", f"episode_{episode:02d}_script_v3.md")
@@ -1721,3 +1778,32 @@ class RewriteAgent(BaseAgent):
             session.commit()
             
             return str(output)
+
+    def _refined_script_preserves_full_episode(self, original: str, refined: str) -> bool:
+        """Reject partial dialogue refinements that would truncate a full episode."""
+        original_text = str(original or "").strip()
+        refined_text = str(refined or "").strip()
+        if not refined_text:
+            return False
+
+        if len(original_text) > 8000 and len(refined_text) < int(len(original_text) * 0.75):
+            return False
+
+        original_scenes = self._count_script_scene_headers(original_text)
+        refined_scenes = self._count_script_scene_headers(refined_text)
+        if original_scenes >= 2 and refined_scenes < original_scenes:
+            return False
+
+        return True
+
+    def _count_script_scene_headers(self, text: str) -> int:
+        patterns = [
+            r"(?m)^\s*#{1,4}\s*场景[^\n]*",
+            r"(?m)^\s*\*\*Scene\s+\d+[^\n]*\*\*",
+            r"(?m)^\s*\*\*场景[^\n]*\*\*",
+        ]
+        matches = set()
+        for pattern in patterns:
+            for match in re.finditer(pattern, str(text or ""), flags=re.IGNORECASE):
+                matches.add(match.start())
+        return len(matches)
