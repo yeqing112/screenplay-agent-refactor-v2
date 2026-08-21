@@ -67,6 +67,114 @@ def health_check():
         "version": app.version,
     }
 
+
+def _parse_task_datetime(value: Any) -> datetime | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).replace(tzinfo=None)
+    except ValueError:
+        return None
+
+
+def _persist_task_state(task_id: str, task_kind: str, task_state: dict[str, Any]) -> None:
+    if not task_id or not isinstance(task_state, dict):
+        return
+    try:
+        from models import Session, TaskRun
+
+        now = datetime.utcnow()
+        payload = json.dumps(task_state, ensure_ascii=False, default=str)
+        with Session() as s:
+            row = s.query(TaskRun).filter(TaskRun.task_id == task_id).first()
+            if not row:
+                row = TaskRun(
+                    task_id=task_id,
+                    task_kind=task_kind,
+                    created_at=_parse_task_datetime(task_state.get("created_at") or task_state.get("started_at")) or now,
+                )
+                s.add(row)
+            row.task_kind = task_kind
+            row.status = str(task_state.get("status") or "queued")
+            row.progress = int(task_state.get("progress") or 0)
+            row.book_id = int(task_state.get("book_id")) if task_state.get("book_id") not in {None, ""} else None
+            row.episode = int(task_state.get("episode")) if task_state.get("episode") not in {None, ""} else None
+            row.payload = payload
+            row.error = str(task_state.get("error") or "")
+            row.updated_at = now
+            row.finished_at = _parse_task_datetime(task_state.get("finished_at"))
+            s.commit()
+    except Exception as exc:
+        logger.warning("Failed to persist %s task %s: %s", task_kind, task_id, exc)
+
+
+def _load_persisted_task_state(task_id: str, expected_kind: str | None = None) -> dict[str, Any] | None:
+    if not task_id:
+        return None
+    try:
+        from models import Session, TaskRun
+
+        with Session() as s:
+            row = s.query(TaskRun).filter(TaskRun.task_id == task_id).first()
+            if not row:
+                return None
+            if expected_kind and row.task_kind != expected_kind:
+                return None
+            payload = safe_json_loads(row.payload, {})
+            if not isinstance(payload, dict):
+                payload = {}
+            payload.setdefault("task_id", row.task_id)
+            payload.setdefault("task_kind", row.task_kind)
+            payload.setdefault("status", row.status or "queued")
+            payload.setdefault("progress", row.progress or 0)
+            payload.setdefault("book_id", row.book_id)
+            payload.setdefault("episode", row.episode)
+            payload.setdefault("error", row.error or None)
+            payload.setdefault("created_at", row.created_at.isoformat() if row.created_at else None)
+            payload.setdefault("updated_at", row.updated_at.isoformat() if row.updated_at else None)
+            payload.setdefault("finished_at", row.finished_at.isoformat() if row.finished_at else None)
+            return payload
+    except Exception as exc:
+        logger.warning("Failed to load persisted task %s: %s", task_id, exc)
+        return None
+
+
+def _list_persisted_task_states(task_kind: str, book_id: int, limit: int = 20) -> list[dict[str, Any]]:
+    try:
+        from models import Session, TaskRun
+
+        with Session() as s:
+            rows = s.query(TaskRun).filter(
+                TaskRun.task_kind == task_kind,
+                TaskRun.book_id == book_id,
+            ).order_by(TaskRun.updated_at.desc(), TaskRun.id.desc()).limit(limit).all()
+            result: list[dict[str, Any]] = []
+            for row in rows:
+                payload = safe_json_loads(row.payload, {})
+                if not isinstance(payload, dict):
+                    payload = {}
+                payload.setdefault("task_id", row.task_id)
+                payload.setdefault("task_kind", row.task_kind)
+                payload.setdefault("status", row.status or "queued")
+                payload.setdefault("progress", row.progress or 0)
+                payload.setdefault("book_id", row.book_id)
+                payload.setdefault("episode", row.episode)
+                payload.setdefault("updated_at", row.updated_at.isoformat() if row.updated_at else None)
+                result.append(payload)
+            return result
+    except Exception as exc:
+        logger.warning("Failed to list persisted %s tasks for book %s: %s", task_kind, book_id, exc)
+        return []
+
+
+def _is_creative_task_state(task: dict[str, Any] | None) -> bool:
+    if not isinstance(task, dict):
+        return False
+    task_kind = str(task.get("task_kind") or "").strip()
+    kind = str(task.get("kind") or task.get("target_kind") or "").strip()
+    return task_kind.startswith("creative") or kind in {"image", "video", "reference-image"}
+
 # --- Data models ---
 
 
@@ -927,11 +1035,13 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
         "error": None,
     }
     _summarize_storyboard_task(_pipeline_tasks[task_id])
+    _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
 
     async def _run():
         try:
             _pipeline_tasks[task_id]["status"] = "running"
             _pipeline_tasks[task_id]["current_step"] = "starting"
+            _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
             from models import Session, Book, Chapter, BookBible, EpisodeOutline, Script, StoryboardShot
             from core.ingest import ingest
             from agents.reader import ReaderAgent
@@ -955,6 +1065,8 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                     if not book_obj:
                         _pipeline_tasks[task_id]["status"] = "error"
                         _pipeline_tasks[task_id]["current_step"] = "Book not found"
+                        _pipeline_tasks[task_id]["finished_at"] = datetime.utcnow().isoformat()
+                        _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
                         return
                     current_status = book_obj.status or "imported"
 
@@ -1009,6 +1121,7 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                 pct = min(99, int((completed / max(total_steps, 1)) * 100))
                 _pipeline_tasks[task_id]["progress"] = pct
                 _pipeline_tasks[task_id]["current_step"] = step_name
+                _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
 
             # Handle filepath ingest at step level
             if req.filepath:
@@ -1016,6 +1129,8 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                 ingest_result = await asyncio.to_thread(ingest, req.filepath, req.preferred_title)
                 book_id = ingest_result["book_id"]
                 _pipeline_tasks[task_id]["new_book_id"] = book_id
+                _pipeline_tasks[task_id]["book_id"] = book_id
+                _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
                 update_step("鏂囦欢瀵煎叆瀹屾垚")
 
             # Step: ingest (skip if already imported)
@@ -1070,6 +1185,7 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                     non_blocking_warnings.append(f"人物画像已跳过：{portrait_reason}")
                     _pipeline_tasks[task_id]["warnings"] = non_blocking_warnings
                     _pipeline_tasks[task_id]["current_step"] = "人物画像跳过，继续主链路"
+                    _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
 
                 # Step: portrait QA (auto-detect issues after portrait)
                 try:
@@ -1083,6 +1199,7 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                             if high_conf:
                                 non_blocking_warnings.append(f"检测到 {len(high_conf)} 组高置信度疑似重复角色，请在「人物质检」面板中合并")
                         _pipeline_tasks[task_id]["warnings"] = non_blocking_warnings
+                        _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
                 except Exception as qa_exc:
                     logger.warning("Portrait QA failed (non-blocking): %s", qa_exc)
 
@@ -1099,6 +1216,8 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                 _pipeline_tasks[task_id]["progress"] = 100
                 _pipeline_tasks[task_id]["current_step"] = "content preparation complete"
                 _pipeline_tasks[task_id]["warnings"] = non_blocking_warnings
+                _pipeline_tasks[task_id]["finished_at"] = datetime.utcnow().isoformat()
+                _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
                 return
 
             # Step: adapt (genre-specific, skip if already done for this genre)
@@ -1159,6 +1278,8 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
             _pipeline_tasks[task_id]["status"] = "done"
             _pipeline_tasks[task_id]["progress"] = 100
             _pipeline_tasks[task_id]["warnings"] = non_blocking_warnings
+            _pipeline_tasks[task_id]["finished_at"] = datetime.utcnow().isoformat()
+            _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
 
         except Exception as exc:
             _pipeline_tasks[task_id]["status"] = "error"
@@ -1166,6 +1287,8 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
             _pipeline_tasks[task_id]["error"] = str(exc)
             import traceback
             _pipeline_tasks[task_id]["traceback"] = traceback.format_exc()
+            _pipeline_tasks[task_id]["finished_at"] = datetime.utcnow().isoformat()
+            _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
 
     bg.add_task(_run)
     return {"task_id": task_id}
@@ -1175,7 +1298,10 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
 def get_pipeline_task(task_id: str):
     task = _pipeline_tasks.get(task_id)
     if not task:
+        task = _load_persisted_task_state(task_id, "pipeline")
+    if not task:
         raise HTTPException(status_code=404, detail="Pipeline task not found")
+    _pipeline_tasks.setdefault(task_id, task)
     return task
 
 
@@ -1237,7 +1363,7 @@ def _classify_storyboard_failure(message: str) -> tuple[str, str]:
     ):
         return (
             "llm_truncated",
-            "The episode output looks truncated. Retry the failed episode first, then resume from the breakpoint if needed.",
+            "本集输出疑似被截断。建议只重试失败集；如已有场景进度，可从断点继续。",
         )
     if (
         "empty shots" in text
@@ -1248,16 +1374,16 @@ def _classify_storyboard_failure(message: str) -> tuple[str, str]:
     ):
         return (
             "structure_invalid",
-            "The structured storyboard result looks incomplete. Check script segmentation and scene structure before retrying the failed episode.",
+            "结构化分镜结果不完整。请先检查剧本分场和场景结构，再重试失败集。",
         )
     if "script not found" in text or "没有剧本" in text:
         return (
             "missing_script",
-            "This episode does not have a usable script yet. Complete the script first, then regenerate the storyboard.",
+            "本集还没有可用剧本。请先完成剧本，再重新生成分镜。",
         )
     return (
         "unknown_error",
-        "Storyboard generation failed for this episode. Retry the failed episode first, then inspect the script and prompt context if it still fails.",
+        "本集分镜生成失败。建议先重试失败集；若仍失败，再检查剧本和提示词上下文。",
     )
 
 
@@ -1291,8 +1417,8 @@ def _update_storyboard_episode_progress(task: dict, event: dict) -> None:
             episode_task["completed_scenes"] = completed_scenes
             episode_task["last_completed_scene_name"] = resume_after_scene
             episode_task["resume_anchor"] = (
-                f"Kept the first {completed_scenes} scenes"
-                + (f", resume after {resume_after_scene}" if resume_after_scene else "")
+                f"已完成到第 {completed_scenes} 个场景"
+                + (f"，可从 {resume_after_scene} 后继续" if resume_after_scene else "，可继续生成")
             )
         episode_task["current_step"] = episode_task.get("resume_anchor") or "Resume from breakpoint"
         episode_task["progress"] = max(int(episode_task.get("progress") or 0), 8)
@@ -1361,6 +1487,11 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
         "error": None,
     }
     _summarize_storyboard_task(_storyboard_tasks[task_id])
+    _persist_task_state(task_id, "storyboard", _storyboard_tasks[task_id])
+
+    def persist_storyboard_task() -> None:
+        _summarize_storyboard_task(_storyboard_tasks[task_id])
+        _persist_task_state(task_id, "storyboard", _storyboard_tasks[task_id])
 
     async def _run():
         try:
@@ -1380,17 +1511,21 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
                 _storyboard_tasks[task_id]["status"] = "error"
                 _storyboard_tasks[task_id]["current_step"] = "No scripts found. Generate scripts first."
                 _storyboard_tasks[task_id]["finished_at"] = datetime.utcnow().isoformat()
-                _summarize_storyboard_task(_storyboard_tasks[task_id])
+                persist_storyboard_task()
                 return
 
             sb_agent = StoryboardAgent(
                 req.book_id,
                 genre=req.genre,
-                progress_callback=lambda event: _update_storyboard_episode_progress(_storyboard_tasks[task_id], event),
+                progress_callback=lambda event: (
+                    _update_storyboard_episode_progress(_storyboard_tasks[task_id], event),
+                    _persist_task_state(task_id, "storyboard", _storyboard_tasks[task_id]),
+                ),
             )
             episodes = [int(sc.episode) for sc in scripts]
             _storyboard_tasks[task_id]["requested_episodes"] = episodes
             _storyboard_tasks[task_id]["episodes"] = [_make_storyboard_episode_task(ep) for ep in episodes]
+            persist_storyboard_task()
             total = len(scripts)
             for i, sc in enumerate(scripts):
                 episode_task = next(
@@ -1408,6 +1543,7 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
                 else:
                     resume_after_scene = str(req.resume_from_scene.get(str(sc.episode)) or "").strip()
                 _storyboard_tasks[task_id]["current_step"] = f"Generate episode {sc.episode} storyboard ({i + 1}/{total})"
+                _persist_task_state(task_id, "storyboard", _storyboard_tasks[task_id])
                 try:
                     shots = await asyncio.to_thread(sb_agent.run, sc.episode, resume_after_scene=resume_after_scene or None)
                     if episode_task:
@@ -1433,14 +1569,13 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
                         episode_task["guidance"] = guidance
                         if episode_task.get("last_completed_scene_name") and episode_task.get("resume_anchor"):
                             episode_task["guidance"] = (
-                                f"{guidance} Current progress already reached "
-                                f"{episode_task['last_completed_scene_name']}; you can resume from later scenes first."
+                                f"{guidance} 当前已完成到 {episode_task['last_completed_scene_name']}，可优先从后续场景继续。"
                             )
                         episode_task["finished_at"] = datetime.utcnow().isoformat()
                 finally:
                     pct = int(((i + 1) / total) * 100)
                     _storyboard_tasks[task_id]["progress"] = pct
-                    _summarize_storyboard_task(_storyboard_tasks[task_id])
+                    persist_storyboard_task()
 
             completed = int(_storyboard_tasks[task_id].get("completed_episodes") or 0)
             failed = int(_storyboard_tasks[task_id].get("failed_episodes") or 0)
@@ -1457,6 +1592,7 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
                 _storyboard_tasks[task_id]["current_step"] = "storyboard generation failed"
             _storyboard_tasks[task_id]["progress"] = 100
             _storyboard_tasks[task_id]["finished_at"] = datetime.utcnow().isoformat()
+            persist_storyboard_task()
 
         except Exception as exc:
             _storyboard_tasks[task_id]["status"] = "error"
@@ -1466,7 +1602,7 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
             _storyboard_tasks[task_id]["traceback"] = traceback.format_exc()
             _storyboard_tasks[task_id]["finished_at"] = datetime.utcnow().isoformat()
         finally:
-            _summarize_storyboard_task(_storyboard_tasks[task_id])
+            persist_storyboard_task()
 
     bg.add_task(_run)
     return {"task_id": task_id}
@@ -1482,6 +1618,17 @@ def _stamp_creative_task_state(task_state: dict[str, Any], *, created: bool = Fa
     if created and not str(task_state.get("created_at") or "").strip():
         task_state["created_at"] = now
     task_state["updated_at"] = now
+    task_id = str(task_state.get("task_id") or "").strip()
+    if task_id:
+        raw_kind = str(task_state.get("kind") or task_state.get("task_kind") or "").strip()
+        if raw_kind in {"image", "video", "reference-image"}:
+            task_kind = f"creative-{raw_kind}"
+        elif raw_kind.startswith("creative"):
+            task_kind = raw_kind
+        else:
+            target_kind = str(task_state.get("target_kind") or "creative").strip()
+            task_kind = "creative-reference-image" if target_kind == "reference-image" else f"creative-{target_kind}"
+        _persist_task_state(task_id, task_kind, task_state)
 
 
 class CreativeGenerationRequest(BaseModel):
@@ -8040,6 +8187,12 @@ async def _enqueue_creative_task(req: CreativeGenerationRequest, bg: BackgroundT
 def get_creative_task(task_id: str):
     task = _creative_tasks.get(task_id)
     if not task:
+        task = _load_persisted_task_state(task_id)
+        if _is_creative_task_state(task):
+            _creative_tasks.setdefault(task_id, task)
+        else:
+            task = None
+    if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
@@ -8047,14 +8200,26 @@ def get_creative_task(task_id: str):
 @app.get("/api/books/{book_id}/creative-tasks")
 def list_book_creative_tasks(book_id: int, limit: int = 20):
     capped_limit = max(1, min(int(limit or 20), 100))
-    tasks = [
-        task
-        for task in _creative_tasks.values()
-        if int(task.get("book_id") or 0) == int(book_id)
-        and str(task.get("kind") or task.get("target_kind") or "").strip() in {"image", "video", "reference-image"}
-    ]
+    tasks_by_id: dict[str, dict] = {}
+    live_task_ids: set[str] = set()
+    for task_kind in ("creative-image", "creative-video", "creative-reference-image"):
+        for task in _list_persisted_task_states(task_kind, book_id, capped_limit):
+            task_id = str(task.get("task_id") or "").strip()
+            if task_id:
+                tasks_by_id[task_id] = task
+    for task in _creative_tasks.values():
+        if (
+            int(task.get("book_id") or 0) == int(book_id)
+            and str(task.get("kind") or task.get("target_kind") or "").strip() in {"image", "video", "reference-image"}
+        ):
+            task_id = str(task.get("task_id") or "").strip()
+            if task_id:
+                live_task_ids.add(task_id)
+                tasks_by_id[task_id] = task
+    tasks = list(tasks_by_id.values())
     tasks.sort(
         key=lambda item: (
+            0 if str(item.get("task_id") or "") in live_task_ids else -1,
             str(item.get("updated_at") or item.get("created_at") or ""),
             str(item.get("task_id") or ""),
         ),
@@ -8066,6 +8231,12 @@ def list_book_creative_tasks(book_id: int, limit: int = 20):
 @app.post("/api/prototyping/tasks/{task_id}/reconcile")
 async def reconcile_creative_task(task_id: str):
     task = _creative_tasks.get(task_id)
+    if not task:
+        task = _load_persisted_task_state(task_id)
+        if _is_creative_task_state(task):
+            _creative_tasks[task_id] = task
+        else:
+            task = None
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
@@ -8120,6 +8291,12 @@ async def reconcile_creative_task(task_id: str):
 @app.post("/api/prototyping/tasks/{task_id}/restart")
 async def restart_creative_task(task_id: str, bg: BackgroundTasks):
     task = _creative_tasks.get(task_id)
+    if not task:
+        task = _load_persisted_task_state(task_id)
+        if _is_creative_task_state(task):
+            _creative_tasks[task_id] = task
+        else:
+            task = None
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
@@ -9782,7 +9959,10 @@ def get_visual_task(task_id: str):
 def get_storyboard_task(task_id: str):
     task = _storyboard_tasks.get(task_id)
     if not task:
+        task = _load_persisted_task_state(task_id, "storyboard")
+    if not task:
         raise HTTPException(status_code=404, detail="Storyboard task not found")
+    _storyboard_tasks.setdefault(task_id, task)
     return task
 
 

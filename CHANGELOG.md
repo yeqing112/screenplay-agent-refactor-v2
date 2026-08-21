@@ -1,5 +1,55 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-21 — 长任务状态持久化底座
+
+> 对应提交：本提交 `Persist production task run states`
+> 背景：继续按全面复盘结论推进生产硬化，先解决 pipeline、storyboard、creative task 纯内存状态导致的刷新/重启后不可恢复问题。
+
+### 变更概览
+
+- **持久化任务表**
+  - 新增 `TaskRun` 模型与 `task_runs` 表。
+  - 新增 Alembic 迁移 `d4e5f6a7b8c9_add_persistent_task_runs.py`，并将历史双 head 收敛为单 head。
+  - 记录 `task_id / task_kind / status / progress / book_id / episode / payload / error / timestamps`。
+
+- **任务状态写入与恢复**
+  - `script pipeline` 创建、进度更新、完成、异常时写入 `task_runs`。
+  - `storyboard pipeline` 创建、分集进度、partial/done/error 收口时写入 `task_runs`。
+  - `creative image/video/reference-image task` 通过 `_stamp_creative_task_state()` 统一写入 `task_runs`。
+  - 查询 pipeline/storyboard/creative task 时，若内存 dict miss，会从 DB 恢复并回填内存缓存。
+  - `creative-tasks` 项目列表接口合并 DB 历史任务与当前内存任务，并优先显示当前进程内最新状态。
+
+- **用户可见恢复文案**
+  - 分镜失败/断点恢复提示改回干净中文，去除旧测试中暴露的乱码期望风险。
+
+### 新增/更新测试
+
+- 新增 `tests/test_task_persistence.py`，覆盖：
+  - pipeline task 内存 miss 后从 DB 恢复。
+  - storyboard task 内存 miss 后从 DB 恢复。
+  - creative task 内存 miss 后从 DB 恢复并出现在项目任务列表。
+
+### 验证结果
+
+- 任务/长链路相关后端回归：`36 passed`
+- `npm run e2e:smoke`：通过
+- `npm run e2e:qa`：通过
+- 前端单元测试：`304 passed`
+- 前端生产构建：通过
+
+### 当前发现的既有问题
+
+- `python -m unittest discover tests` 当前仍会在 `tests.test_visual_asset_library` 出现多项失败，主要表现为 visual assets endpoint 返回 404 或 payload 缺少 `locations`。
+- 该问题单独运行 `python -m unittest tests.test_visual_asset_library` 也复现，判断为既有 visual asset 测试/接口状态脱节；本轮未扩大范围修复。
+
+### 仍建议后续推进
+
+1. 为 `task_runs` 增加 TTL/归档清理策略。
+2. 将 visual setup task 与 storyboard prompt compile task 也纳入统一任务表。
+3. 专项修复 `tests.test_visual_asset_library` 对应的视觉资产接口回归问题。
+
+---
+
 ## 2026-08-21 — 生产安全边界与 QA 修复 E2E 加固
 
 > 对应提交：本提交 `Harden API safety boundaries and QA repair E2E`
