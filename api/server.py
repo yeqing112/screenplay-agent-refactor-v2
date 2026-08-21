@@ -8616,6 +8616,7 @@ def get_character_appearance(book_id: int, char_id: int):
 
 
 # ── Visual Assets endpoints ────────────────────────────────────────────────
+@app.get("/api/books/{book_id}/visual-assets")
 def get_visual_assets(book_id: int):
     from models import Session, VisualLocation, VisualProp, VisualReferenceAsset
 

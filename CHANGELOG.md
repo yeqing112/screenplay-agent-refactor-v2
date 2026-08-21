@@ -1,5 +1,34 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-21 — 视觉资产接口测试基线修复
+
+> 对应提交：本提交 `Restore visual assets GET endpoint`
+> 背景：上一轮长任务持久化提交后，完整后端测试仍暴露 `tests.test_visual_asset_library` 失败。专项排查确认不是测试 fixture 缺失，而是 `GET /api/books/{book_id}/visual-assets` 未注册为 FastAPI 路由，导致真实 HTTP 调用返回 404。
+
+### 变更概览
+
+- **恢复视觉资产读取接口**
+  - 将既有 `get_visual_assets(book_id)` 函数重新挂载为 `GET /api/books/{book_id}/visual-assets`。
+  - 保留原有序列化逻辑：场景、道具、角色妆造、参考图与 storyboard 绑定归一化输出均不变。
+
+### 验证结果
+
+- 视觉资产专项回归：`18 passed`
+- 后端聚焦回归：`37 passed`
+- 前端单元测试：`304 passed`
+- `npm run e2e:smoke`：通过
+- `npm run e2e:qa`：通过
+- 前端生产构建：通过
+- `git diff --check`：通过（仅 Windows 换行提示）
+
+### 后续建议
+
+1. 在 API 路由层增加轻量清单测试，避免“函数存在但路由未注册”的回归再次悄悄出现。
+2. 将 visual setup task 与 storyboard prompt compile task 纳入统一任务表。
+3. 为 `task_runs` 增加 TTL/归档清理策略。
+
+---
+
 ## 2026-08-21 — 长任务状态持久化底座
 
 > 对应提交：本提交 `Persist production task run states`
