@@ -1,5 +1,80 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-21 — 生产链路护栏与 Prompt 编译稳定化
+
+> 对应提交：`69b272e Stabilize production pipeline guardrails and prompt compilation`
+> 背景：复核上一版由其他 agent 新增的短剧库、约束引擎、人物质检与前端工作台增强后，修复其中的生产风险，并补齐关键回归测试与真实用户流程验证。
+
+### 变更概览
+
+- **生产安全护栏**
+  - 别名解析的 `pending_confirm` 不再自动合并中置信候选，只记录为人工确认项。
+  - 人物画像 QA 合并候选需要更强身份依据；角色合并新增性别冲突拒绝。
+  - 人物合并前端增加确认弹窗，并兼容 FastAPI `detail` 错误返回。
+
+- **约束与校验链路**
+  - 空 `enum / pattern / min_length` 不再误判通过。
+  - 开场/结尾规则改为场景级校验，避免每个镜头都错误套用。
+  - 分镜 validator 去重场景级违规。
+  - 新增 `core/validators/shadow_validation.py`，在分镜生成后以 shadow mode 记录违规，不阻断、不修复、不改写产物。
+  - `violation_logger` 新增同事务写入能力，供 shadow validation 安全落库。
+
+- **Prompt IR 与分镜编译**
+  - 分镜 prompt compile 会把规则编译后的 `ShotIR` 序列化进入版本 metadata。
+  - `duration / camera_angle / camera_movement / transition / shot_purpose / camera_speed` 等字段写回结构化镜头与 DB。
+  - 异步 prompt compile 从手写线程切换为 FastAPI `BackgroundTasks`。
+
+- **剧本改写安全**
+  - `RewriteAgent.run_perfect()` 会捕获初始最佳剧本快照。
+  - QA 分数回退时恢复 DB 中的最佳剧本内容，并写出 `episode_XX_script_best.md`。
+  - 台词精修不再截断前 8000 字；新增长剧本截断/场景缺失保护。
+
+- **Bible QA 修复**
+  - Bible 生成后 QA 现在校验刚生成的新文档，而不是旧 DB Bible。
+  - Bible QA 自动修复限定在目标人物标题段落内，并使用精确标题匹配，避免误改同名前缀人物。
+
+- **API 与前端产品体验**
+  - 章节列表接口不再返回正文，单章详情懒加载正文。
+  - 章节、人物、任务、workflow、prompt、book/outline/script 更新等错误返回统一改为 `HTTPException`。
+  - 修复 QA 工作台真实流程 500：中文关键词正则改为稳定 Unicode 范围。
+  - 分镜生成前端 payload 不再硬编码 `[1]`，改为按目标集数生成 `[1..episodeCount]`。
+  - ProductWorkspace section 改为 `React.lazy + Suspense`，生产构建不再出现 >500k chunk 警告。
+
+### 新增/更新测试
+
+- 新增后端回归：
+  - `tests/test_api_http_errors.py`
+  - `tests/test_bible_agent.py`
+  - `tests/test_chapter_api.py`
+  - `tests/test_p0_guardrails.py`
+  - `tests/test_shadow_validation.py`
+- 更新后端回归：
+  - `tests/test_rewrite_agent.py`
+  - `tests/test_storyboard_prompt_compile.py`
+- 新增前端回归：
+  - `web/src/components/ProductWorkspace.test.ts`
+
+### 验证结果
+
+- 后端聚焦回归：`79 passed`
+- 前端单元测试：`304 passed`
+- 前端生产构建：通过，无大 chunk 警告
+- `git diff --check`：通过（仅 Windows CRLF 提示）
+- 真实用户流程测试：
+  - 首页项目列表加载正常。
+  - 进入 `深夜便利店 #75` 正常。
+  - 内容准备、人物质检、剧本工作台、镜头工作台、资产中心、QA 修复、任务中心、导出中心均可真实点击加载。
+  - 章节正文懒加载通过。
+  - 测试中发现并修复 `/api/books/75/qa/workbench` 500。
+
+### 仍建议后续推进
+
+1. 将 shadow validation 从 storyboard 扩展到更多生产链路。
+2. 为 QA workbench 增加更完整 E2E：预览修复 → 应用修复 → 复检 → 回滚。
+3. 给可运行的空分镜项目准备专用 E2E fixture，真实覆盖批量分镜生成按钮与多集 payload。
+
+---
+
 > 最近一次版本（基于 commit `1e2367d init: screenplay-agent-refactor-v2 初始提交`）以来的所有功能改动。
 > 编写时间：2026-08-20
 > 适用对象：接手开发的同事
@@ -225,7 +300,7 @@ CREATE TABLE agent_violation_logs (
 | CRITICAL | 无认证/授权 | 全局 |
 | CRITICAL | 文件上传路径穿越 | `server.py:562` |
 | CRITICAL | 无文件类型/大小限制 | `server.py:554-565` |
-| HIGH | `return {...}, 404` 实际返回 200 | 多处端点 |
+| 已修复 | `return {...}, 404` 实际返回 200 | 已在 `69b272e` 统一改为 `HTTPException` |
 | HIGH | 无外键约束 | 所有 model |
 | HIGH | 无数据库索引 | `book_id` 查询 |
 | MEDIUM | 内存任务状态无 TTL | `_pipeline_tasks` 等 |
