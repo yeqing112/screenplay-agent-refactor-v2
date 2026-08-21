@@ -1,5 +1,25 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-21 — 生产工作区 E2E Smoke 测试固化
+
+> 对应提交：本提交 `Add production workspace E2E smoke test`
+> 背景：将上一阶段人工执行的真实用户流程验证沉淀为可重复运行的自动化 smoke test，降低后续 agent/人工迭代破坏主工作区流程的风险。
+
+### 变更概览
+
+- 根目录新增 `npm run e2e:smoke`。
+- 新增 `scripts/e2e-smoke.js`，自动拉起后端与 Vite 前端，并通过 Playwright Chromium 执行真实浏览器流程。
+- 自动选择本地数据库中更适合 smoke 的项目，优先选择已有剧本与分镜数据的项目。
+- 覆盖首页项目列表、进入正式产品工作区、核心工作区 tab 切换、章节详情懒加载、QA 修复页加载。
+- 捕获浏览器端 4xx/5xx 响应、console error/warning 与 page error，作为 smoke 失败条件。
+- 支持 `E2E_START_SERVERS=0` 复用已运行服务，支持 `E2E_API_URL / E2E_WEB_URL / E2E_HEADLESS` 覆盖默认配置。
+
+### 验证结果
+
+- `npm run e2e:smoke`：通过。
+
+---
+
 ## 2026-08-21 — 生产链路护栏与 Prompt 编译稳定化
 
 > 对应提交：`69b272e Stabilize production pipeline guardrails and prompt compilation`
