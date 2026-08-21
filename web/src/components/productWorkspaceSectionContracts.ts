@@ -149,6 +149,7 @@ export interface DashboardBundle {
 }
 
 export interface ContentBundle {
+  bookId: number
   summary: SummaryState
   contentTask: ContentTaskState
   uploadFile: File | null
@@ -204,6 +205,8 @@ export interface ScriptsBundle {
   adaptationStateDetail: string
   selectedAdaptationName?: string
   onNavigateTaskSection: TaskNavigateHandler
+  onGenerateScripts: () => void
+  isGeneratingScripts: boolean
 }
 
 export interface StoryboardBundle {
@@ -219,6 +222,8 @@ export interface StoryboardBundle {
   onDismissStoryboardRecoveryFocus: () => void
   onNavigateSection: (section: WorkspaceSection) => void
   onNavigateTaskSection: TaskNavigateHandler
+  onGenerateStoryboard: () => void
+  isGeneratingStoryboard: boolean
 }
 
 export interface AssetsBundle {

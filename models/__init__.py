@@ -15,6 +15,7 @@ from .prompt import StoryboardPromptVersion
 from .acceptance import StoryboardAcceptanceRecord
 from .export_record import ProductionExportRecord
 from .qa_workbench import QAIssue, ScriptVersion
+from .violation_log import AgentViolationLog
 
 __all__ = [
     "Base", "engine", "Session",
@@ -27,4 +28,5 @@ __all__ = [
     "SceneCharacter", "SceneProp",
     "StoryboardShot", "StoryboardPromptVersion", "StoryboardAcceptanceRecord", "ProductionExportRecord",
     "QAIssue", "ScriptVersion",
+    "AgentViolationLog",
 ]

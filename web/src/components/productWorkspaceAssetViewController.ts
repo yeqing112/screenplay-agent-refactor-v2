@@ -14,6 +14,7 @@ export type WorkspaceSection =
   | 'dashboard'
   | 'content'
   | 'adaptation'
+  | 'characters'
   | 'scripts'
   | 'storyboard'
   | 'canvas'

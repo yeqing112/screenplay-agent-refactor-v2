@@ -156,12 +156,18 @@ class OutlineAgent(BaseAgent):
                 is_fixed = 1 if fixed_sliots and i < len(fixed_sliots) else 0
                 chars = ep.get("characters", [])
                 if isinstance(chars, list):
-                    chars_str = ", ".join(chars)
+                    chars_str = ", ".join(
+                        c.get("name", str(c)) if isinstance(c, dict) else str(c)
+                        for c in chars
+                    )
                 else:
                     chars_str = str(chars) if chars else ""
                 scenes = ep.get("scenes", [])
                 if isinstance(scenes, list):
-                    scenes_str = ", ".join(scenes)
+                    scenes_str = ", ".join(
+                        s.get("scene_name", str(s)) if isinstance(s, dict) else str(s)
+                        for s in scenes
+                    )
                 else:
                     scenes_str = str(scenes) if scenes else ""
                 s.add(EpisodeOutline(
@@ -207,29 +213,29 @@ class OutlineAgent(BaseAgent):
                 EpisodeOutline.episode <= fixed_count,
             ).order_by(EpisodeOutline.episode).all()
 
-        if existing:
-            sliots = []
-            for row in existing:
-                sliot = {
-                    "episode": row.episode,
-                    "title": row.title or "",
-                    "core_event": row.core_event or "",
-                    "opening_hook": row.opening_hook or "",
-                    "core_conflict": row.core_conflict or "",
-                    "climax": row.climax or "",
-                    "ending_hook": row.ending_hook or "",
-                }
-                if row.characters:
-                    sliot["characters"] = [c.strip() for c in row.characters.split(",")]
-                else:
-                    sliot["characters"] = []
-                if row.scenes:
-                    sliot["scenes"] = [c.strip() for c in row.scenes.split(",")]
-                else:
-                    sliot["scenes"] = []
-                sliots.append(sliot)
-            self.log(f"从 DB 读取到 {len(sliots)} 个固定 sliot 记录")
-            return sliots
+            if existing:
+                sliots = []
+                for row in existing:
+                    sliot = {
+                        "episode": row.episode,
+                        "title": row.title or "",
+                        "core_event": row.core_event or "",
+                        "opening_hook": row.opening_hook or "",
+                        "core_conflict": row.core_conflict or "",
+                        "climax": row.climax or "",
+                        "ending_hook": row.ending_hook or "",
+                    }
+                    if row.characters:
+                        sliot["characters"] = [c.strip() for c in row.characters.split(",")]
+                    else:
+                        sliot["characters"] = []
+                    if row.scenes:
+                        sliot["scenes"] = [c.strip() for c in row.scenes.split(",")]
+                    else:
+                        sliot["scenes"] = []
+                    sliots.append(sliot)
+                self.log(f"从 DB 读取到 {len(sliots)} 个固定 sliot 记录")
+                return sliots
 
         # DB 中没有 → 用 LLM 解析改编方案（通用兜底）
         if not adaptation:
@@ -386,6 +392,8 @@ class OutlineAgent(BaseAgent):
             lines.append(f"**核心冲突：** {ep.get('core_conflict', '')}")
             lines.append(f"**反转/高潮：** {ep.get('climax', '')}")
             lines.append(f"**结尾悬念：** {ep.get('ending_hook', '')}")
-            lines.append(f"**主要角色：** {', '.join(ep.get('characters', []))}")
-            lines.append(f"**关键场景：** {', '.join(ep.get('scenes', []))}")
+            chars = ep.get('characters', [])
+            lines.append(f"**主要角色：** {', '.join(str(c) for c in chars)}")
+            scenes = ep.get('scenes', [])
+            lines.append(f"**关键场景：** {', '.join(str(s) for s in scenes)}")
         return "\n".join(lines)

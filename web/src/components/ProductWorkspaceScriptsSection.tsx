@@ -23,6 +23,8 @@ interface Props {
   adaptationStateDetail: string
   selectedAdaptationName?: string
   onNavigate: (section: WorkspaceSection, options?: { episode?: number | null }) => void
+  onGenerateScripts: () => void
+  isGeneratingScripts: boolean
 }
 
 function tone(status: 'done' | 'pending' | 'blocked') {
@@ -102,6 +104,8 @@ export default function ProductWorkspaceScriptsSection({
   adaptationStateDetail,
   selectedAdaptationName,
   onNavigate,
+  onGenerateScripts,
+  isGeneratingScripts,
 }: Props) {
   const [qaWorkbench, setQaWorkbench] = useState<ScriptWorkbenchResponse | null>(null)
   const [workbenchState, setWorkbenchState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
@@ -325,8 +329,24 @@ export default function ProductWorkspaceScriptsSection({
               )
             })
           ) : (
-            <div className="rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
-              当前项目还没有正式剧本输出。
+            <div className="rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-6 text-center">
+              <div className="text-sm text-slate-400">当前项目还没有正式剧本输出。</div>
+              <div className="mt-3 text-xs text-slate-500">需要先完成改编方向锁定，再生成分集大纲和剧本。</div>
+              <button
+                type="button"
+                onClick={onGenerateScripts}
+                disabled={isGeneratingScripts}
+                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500 disabled:bg-blue-900/50 disabled:text-slate-500"
+              >
+                {isGeneratingScripts ? (
+                  <>
+                    <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                    生成中...
+                  </>
+                ) : (
+                  '一键生成剧本'
+                )}
+              </button>
             </div>
           )}
         </div>

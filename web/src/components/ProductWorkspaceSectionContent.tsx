@@ -4,6 +4,7 @@ import ProductWorkspaceAdaptationSection from './ProductWorkspaceAdaptationSecti
 import ProductWorkspaceAssetsSection from './ProductWorkspaceAssetsSection'
 import ProductWorkspaceCanvasBetaSection from './ProductWorkspaceCanvasBetaSection'
 import ProductWorkspaceContentSection from './ProductWorkspaceContentSection'
+import CharacterQAPanel from './CharacterQAPanel'
 import ProductWorkspaceDashboardSection from './ProductWorkspaceDashboardSection'
 import ProductWorkspaceDeliverySection from './ProductWorkspaceDeliverySection'
 import ProductWorkspaceModelsSection from './ProductWorkspaceModelsSection'
@@ -121,6 +122,7 @@ export default function ProductWorkspaceSectionContent({
 
       {section === 'content' ? (
         <ProductWorkspaceContentSection
+          bookId={content.bookId}
           contentReady={content.summary.contentReady}
           contentStatusLabel={content.summary.contentSummary.label}
           contentStatusDetail={content.summary.contentSummary.detail}
@@ -171,6 +173,10 @@ export default function ProductWorkspaceSectionContent({
         />
       ) : null}
 
+      {section === 'characters' ? (
+        <CharacterQAPanel bookId={scripts.bookId} />
+      ) : null}
+
       {section === 'scripts' ? (
         <ProductWorkspaceScriptsSection
           bookId={scripts.bookId}
@@ -185,6 +191,8 @@ export default function ProductWorkspaceSectionContent({
           adaptationStateDetail={scripts.adaptationStateDetail}
           selectedAdaptationName={scripts.selectedAdaptationName}
           onNavigate={scripts.onNavigateTaskSection}
+          onGenerateScripts={scripts.onGenerateScripts}
+          isGeneratingScripts={scripts.isGeneratingScripts}
         />
       ) : null}
 
@@ -204,6 +212,8 @@ export default function ProductWorkspaceSectionContent({
             onDismissRecoveryFocus={storyboard.onDismissStoryboardRecoveryFocus}
             onNavigateSection={storyboard.onNavigateSection}
             onNavigateTaskSection={storyboard.onNavigateTaskSection}
+            onGenerateStoryboard={storyboard.onGenerateStoryboard}
+            isGeneratingStoryboard={storyboard.isGeneratingStoryboard}
           />
         </>
       ) : null}

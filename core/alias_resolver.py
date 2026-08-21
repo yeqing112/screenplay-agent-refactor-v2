@@ -88,15 +88,65 @@ def resolve_aliases(book_id: int, session):
     ).first()
     bible_summary = bible.content[:3000] if bible else "无"
 
+    # Step 2.6: 聚合 appearance_fragments 和 relationships（跨章）
+    all_fragments = {}  # {name: [sentence1, sentence2, ...]}
+    all_relationships = {}  # {name: {rel_name: desc, ...}}
+    for ch in chapters_list:
+        if ch.status != "analyzed":
+            continue
+        try:
+            frags = safe_json_loads(ch.appearance_fragments, {})
+            for fname, sentences in frags.items():
+                all_fragments.setdefault(fname, []).extend(sentences)
+        except (json.JSONDecodeError, TypeError):
+            pass
+        try:
+            chars = safe_json_loads(ch.character_table, [])
+            for c in chars:
+                cname = c.get("name", "")
+                rels = c.get("relationships", {})
+                if cname and rels:
+                    all_relationships.setdefault(cname, {}).update(rels)
+        except (json.JSONDecodeError, TypeError):
+            pass
+
     # Step 3: 用 LLM 归并
-    prompt = _build_prompt(book.title, all_names, name_chapters, name_map, bible_summary)
+    prompt = _build_prompt(book.title, all_names, name_chapters, name_map,
+                           bible_summary, all_fragments, all_relationships)
     try:
-        result = call_llm_json(prompt, estimated_tokens=4000)
-        groups = result.get("merged", []) if isinstance(result, dict) else []
+        result = call_llm_json(prompt, estimated_tokens=6000)
+        if isinstance(result, dict):
+            groups = result.get("merged", [])
+            pending = result.get("pending_confirm", [])
+            gender_conflicts = result.get("gender_conflicts", [])
+        else:
+            groups = []
+            pending = []
+            gender_conflicts = []
     except Exception as e:
         logger.error("LLM 解析失败: %s", e)
         # 回退：用 alias 字段中的简单规则做归并
         groups = _fallback_merge(all_names, name_map)
+        pending = []
+        gender_conflicts = []
+
+    # 处理 pending_confirm：中置信度的也加入合并组
+    for item in pending:
+        if not isinstance(item, dict):
+            continue
+        names = item.get("names", [])
+        confidence = item.get("confidence", "low")
+        if confidence == "medium" and len(names) >= 2:
+            groups.append(names)
+            logger.info("中置信度合并(需确认): %s — %s", names, item.get("reason", ""))
+        else:
+            logger.info("低置信度/跳过: %s — %s", names, item.get("reason", ""))
+
+    # 记录性别冲突（不自动合并）
+    if gender_conflicts:
+        for gc in gender_conflicts:
+            if isinstance(gc, dict):
+                logger.warning("性别冲突: %s — %s", gc.get("names"), gc.get("reason", ""))
 
     if not groups:
         logger.info("无归并结果，跳过")
@@ -151,8 +201,13 @@ def resolve_aliases(book_id: int, session):
 def _build_prompt(title: str, all_names: list[str],
                   name_chapters: dict[str, list[int]],
                   name_map: dict[str, object],
-                  bible_summary: str = "") -> str:
+                  bible_summary: str = "",
+                  all_fragments: dict = None,
+                  all_relationships: dict = None) -> str:
     """构建别名归并 prompt。"""
+    all_fragments = all_fragments or {}
+    all_relationships = all_relationships or {}
+
     # 对每个角色提取信息
     rows = []
     for name in sorted(all_names):
@@ -163,6 +218,7 @@ def _build_prompt(title: str, all_names: list[str],
         # 从 profile 获取身份
         p = name_map.get(name)
         identity = p.identity if p and p.identity else ""
+        gender = p.gender if p and p.gender else ""
         aliases = []
         if p:
             try:
@@ -184,9 +240,36 @@ def _build_prompt(title: str, all_names: list[str],
             context_hints.append("（身份推测中）")
 
         hint_str = " " + " ".join(context_hints) if context_hints else ""
+
+        # 外貌碎片（关键判断依据）
+        fragments = all_fragments.get(name, [])
+        frag_lines = ""
+        if fragments:
+            # 去重 + 限制数量
+            seen = set()
+            unique_frags = []
+            for f in fragments:
+                f_clean = f.strip()
+                if f_clean and f_clean not in seen:
+                    seen.add(f_clean)
+                    unique_frags.append(f_clean)
+            frag_lines = "\n    ".join(unique_frags[:8])
+            frag_lines = f"\n  外貌片段:\n    {frag_lines}"
+
+        # 人物关系（辅助判断）
+        rels = all_relationships.get(name, {})
+        rel_lines = ""
+        if rels:
+            rel_parts = [f"{r}: {d}" for r, d in list(rels.items())[:6]]
+            rel_lines = f"\n  关系: {'; '.join(rel_parts)}"
+
+        # 性别信息
+        gender_str = f"\n  性别: {gender}" if gender and gender != "人物" else "\n  性别: 未明确"
+
         rows.append(
             f"- {name}: 出场{ch_range} ({ch_count}章), "
             f"identity={identity}{hint_str}, aliases={alias_str}"
+            f"{gender_str}{frag_lines}{rel_lines}"
         )
 
     # 添加跨章线索：检查别名中有其他角色名的角色

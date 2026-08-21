@@ -71,6 +71,23 @@ class BibleAgent(BaseAgent):
                                          all_events, all_locations, all_foreshadowing,
                                          session=s)
 
+                # ── Bible QA check ──
+                try:
+                    from agents.bible_qa import BibleQAChecker
+                    bible_qa = BibleQAChecker(self.book_id)
+                    qa_result = bible_qa.run()
+                    qa_score = qa_result.get("overall_score", 9)
+                    auto_fixes = qa_result.get("auto_fixes", [])
+                    if auto_fixes:
+                        doc = self._apply_bible_qa_fixes(doc, auto_fixes)
+                    if qa_score < 6:
+                        logger.warning(
+                            "Bible QA score=%d for book %s — review recommended",
+                            qa_score, self.book_id,
+                        )
+                except Exception as qa_exc:
+                    logger.warning("Bible QA non-blocking error: %s", qa_exc)
+
                 output = config.output_path(book.title, "bible.md")
                 output.write_text(doc, encoding="utf-8")
 
@@ -167,3 +184,17 @@ class BibleAgent(BaseAgent):
         lines.append("(由后续 AI 分析补充)")
 
         return "\n".join(lines)
+
+    def _apply_bible_qa_fixes(self, doc: str, auto_fixes: list[dict]) -> str:
+        """Apply deterministic auto-fixes to bible markdown."""
+        for fix in auto_fixes:
+            old_val = fix.get("old_value", "")
+            new_val = fix.get("new_value", "")
+            char_name = fix.get("character", "")
+            if old_val and new_val and old_val in doc:
+                doc = doc.replace(old_val, new_val, 1)
+                logger.info(
+                    "Bible QA auto-fix: %s %s → %s",
+                    char_name, old_val, new_val,
+                )
+        return doc

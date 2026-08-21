@@ -1009,6 +1009,17 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
 
             # Step: portrait
             if rank < 3:
+                # Step: resolve aliases (before portrait)
+                try:
+                    from core.alias_resolver import resolve_aliases
+                    with Session() as s:
+                        update_step("归并角色别名")
+                        resolve_aliases(book_id, s)
+                        update_step("alias resolve complete")
+                except Exception as resolve_exc:
+                    logger.warning("Alias resolution failed (non-blocking): %s", resolve_exc)
+                    non_blocking_warnings.append(f"别名归并已跳过：{resolve_exc}")
+
                 update_step("生成人物画像")
                 portrait_agent = PortraitAgent(book_id)
                 try:
@@ -1019,6 +1030,21 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                     non_blocking_warnings.append(f"人物画像已跳过：{portrait_reason}")
                     _pipeline_tasks[task_id]["warnings"] = non_blocking_warnings
                     _pipeline_tasks[task_id]["current_step"] = "人物画像跳过，继续主链路"
+
+                # Step: portrait QA (auto-detect issues after portrait)
+                try:
+                    from core.portrait_qa import run_portrait_qa
+                    with Session() as s:
+                        qa_report = run_portrait_qa(book_id, s)
+                        if qa_report.gender_conflicts:
+                            non_blocking_warnings.append(f"检测到 {len(qa_report.gender_conflicts)} 个人物性别冲突，请在「人物质检」面板中确认")
+                        if qa_report.merge_candidates:
+                            high_conf = [m for m in qa_report.merge_candidates if m.confidence == "high"]
+                            if high_conf:
+                                non_blocking_warnings.append(f"检测到 {len(high_conf)} 组高置信度疑似重复角色，请在「人物质检」面板中合并")
+                        _pipeline_tasks[task_id]["warnings"] = non_blocking_warnings
+                except Exception as qa_exc:
+                    logger.warning("Portrait QA failed (non-blocking): %s", qa_exc)
 
             if str(req.stop_after or "").strip().lower() == "content":
                 with Session() as s:
@@ -2331,6 +2357,106 @@ def _derive_action_beats(existing_rows: list[dict], structure_seed: dict) -> lis
     }]
 
 
+def _get_camera_library_snapshot() -> dict:
+    """返回标准化的摄影词典快照（用于 prompt 编译）"""
+    from core.camera_library import CAMERA_LIBRARY, SHOT_SIZE_LIBRARY, CAMERA_ANGLE_LIBRARY, TRANSITION_LIBRARY, LIGHTING_LIBRARY
+    from core.style_library import DIRECTOR_STYLE_LIBRARY, VISUAL_STYLE_LIBRARY, COLOR_PALETTE_LIBRARY, COMPOSITION_LIBRARY, ASPECT_RATIO_LIBRARY
+    from core.screenwriting_library import CHARACTER_ARCHETYPE_LIBRARY, STORY_STRUCTURE_LIBRARY, CONFLICT_TYPE_LIBRARY, DIALOGUE_STYLE_LIBRARY, SCENE_STRUCTURE_LIBRARY, NARRATIVE_DEVICE_LIBRARY, PACING_TEMPLATE_LIBRARY
+    return {
+        "camera_motions": {k: {"zh": v["zh"], "en": v["en"], "category": v.get("category", ""), "speed_variants": v.get("speed_variants", {})} for k, v in CAMERA_LIBRARY.items()},
+        "shot_sizes": {k: {"zh": v["zh"], "en": v["en"], "usage": v["usage"]} for k, v in SHOT_SIZE_LIBRARY.items()},
+        "camera_angles": {k: {"zh": v["zh"], "en": v["en"], "usage": v["usage"]} for k, v in CAMERA_ANGLE_LIBRARY.items()},
+        "transitions": {k: {"zh": v["zh"], "en": v["en"], "usage": v["usage"]} for k, v in TRANSITION_LIBRARY.items()},
+        "lighting": {k: {"zh": v["zh"], "en": v["en"], "usage": v["usage"]} for k, v in LIGHTING_LIBRARY.items()},
+        "director_styles": {k: {"name": v["name"], "signature": v["signature"], "camera": v["camera"], "lighting": v["lighting"], "color": v["color"], "composition": v["composition"]} for k, v in DIRECTOR_STYLE_LIBRARY.items()},
+        "visual_styles": {k: {"name": v["name"], "signature": v["signature"], "lighting": v["lighting"], "color": v["color"], "composition": v["composition"]} for k, v in VISUAL_STYLE_LIBRARY.items()},
+        "color_palettes": {k: {"name": v["name"], "colors": v["colors"], "emotion": v["emotion"]} for k, v in COLOR_PALETTE_LIBRARY.items()},
+        "compositions": {k: {"name": v["name"], "description": v["description"], "usage": v["usage"]} for k, v in COMPOSITION_LIBRARY.items()},
+        "aspect_ratios": {k: {"name": v["name"], "usage": v["usage"], "emotion": v["emotion"]} for k, v in ASPECT_RATIO_LIBRARY.items()},
+        "character_archetypes": {k: {"name": v["name"], "dramatic_function": v["dramatic_function"], "variations": v["variations"]} for k, v in CHARACTER_ARCHETYPE_LIBRARY.items()},
+        "story_structures": {k: {"name": v["name"], "stages": [s["name"] for s in v["stages"]], "usage": v["usage"]} for k, v in STORY_STRUCTURE_LIBRARY.items()},
+        "conflict_types": {k: {"name": v["name"], "subtypes": v["subtypes"], "usage": v["usage"]} for k, v in CONFLICT_TYPE_LIBRARY.items()},
+        "dialogue_styles": {k: {"name": v["name"], "techniques": v["techniques"], "emotion_effect": v["emotion_effect"]} for k, v in DIALOGUE_STYLE_LIBRARY.items()},
+        "scene_structures": {k: {"name": v["name"], "function": v["function"], "pacing": v["pacing"]} for k, v in SCENE_STRUCTURE_LIBRARY.items()},
+        "narrative_devices": {k: {"name": v["name"], "description": v["description"], "emotion_effect": v["emotion_effect"]} for k, v in NARRATIVE_DEVICE_LIBRARY.items()},
+        "pacing_templates": {k: {"name": v["name"], "description": v["description"], "emotion_effect": v["emotion_effect"]} for k, v in PACING_TEMPLATE_LIBRARY.items()},
+    }
+
+
+def _get_emotion_library_snapshot() -> dict:
+    """返回情绪词典快照（用于 prompt 编译）"""
+    from core.emotion_library import EMOTION_MOTION_LIBRARY
+    return {
+        emotion: {
+            "low": data.get("low", ""),
+            "medium": data.get("medium", ""),
+            "high": data.get("high", ""),
+            "facs_au": data.get("facs_au", ""),
+            "body": data.get("body", ""),
+            "camera_suggestion": data.get("camera_suggestion", ""),
+        }
+        for emotion, data in EMOTION_MOTION_LIBRARY.items()
+    }
+
+
+def _get_shot_size_library_snapshot() -> dict:
+    """返回景别词典快照（用于 prompt 编译）"""
+    from core.camera_library import SHOT_SIZE_LIBRARY
+    return {k: {"zh": v["zh"], "en": v["en"], "usage": v["usage"]} for k, v in SHOT_SIZE_LIBRARY.items()}
+
+
+def _get_short_drama_library_snapshot() -> dict:
+    """返回短剧专属基础库快照（用于 prompt 编译）"""
+    from core.short_drama_library import (
+        EPISODE_BEAT_ENGINE,
+        EPISODE_EMOTION_NODES,
+        HOOK_LIBRARY,
+        SHORT_DRAMA_CONFLICT_PATTERNS,
+        SHORT_DRAMA_DIALOGUE_RULES,
+        SHORT_DRAMA_VISUAL_GRAMMAR,
+        SHORT_DRAMA_PACING_TEMPLATES,
+        SERIES_ARCHITECTURE_LIBRARY,
+        COMMON_PITFALLS,
+        EMOTION_CHECKPOINT_LIBRARY,
+    )
+    return {
+        "beat_engine": EPISODE_BEAT_ENGINE,
+        "emotion_nodes": EPISODE_EMOTION_NODES,
+        "hook_library": HOOK_LIBRARY,
+        "conflict_patterns": SHORT_DRAMA_CONFLICT_PATTERNS,
+        "dialogue_rules": SHORT_DRAMA_DIALOGUE_RULES,
+        "visual_grammar": SHORT_DRAMA_VISUAL_GRAMMAR,
+        "pacing_templates": SHORT_DRAMA_PACING_TEMPLATES,
+        "series_architecture": SERIES_ARCHITECTURE_LIBRARY,
+        "common_pitfalls": COMMON_PITFALLS,
+        "emotion_checkpoints": EMOTION_CHECKPOINT_LIBRARY,
+    }
+
+
+def _infer_emotion_from_text(text: str) -> str:
+    """从文本中推导情绪词"""
+    if not text:
+        return ""
+    for emotion in ["绝望", "恐惧", "害怕", "暴怒", "愤怒", "悲伤", "焦虑", "紧张", "心虚", "厌恶", "轻蔑", "惊喜", "坚定", "犹豫", "温暖", "平静"]:
+        if emotion in text:
+            return emotion
+    return ""
+
+
+def _infer_emotion_intensity(start_emotion: str, end_emotion: str, shot) -> str:
+    """推导情绪强度"""
+    text = f"{shot.start_state or ''} {shot.end_state or ''} {shot.action_process or ''}"
+    high_indicators = ["崩溃", "大吼", "尖叫", "颤抖", "泪流", "猛扑", "暴怒", "绝望", "疯狂"]
+    low_indicators = ["微微", "轻轻", "略", "稍", "自然", "平静"]
+    for indicator in high_indicators:
+        if indicator in text:
+            return "high"
+    for indicator in low_indicators:
+        if indicator in text:
+            return "low"
+    return "medium"
+
+
 def _derive_structured_shot_payload(meta_info: dict | None, fallback: dict | None = None) -> dict:
     fallback = fallback if isinstance(fallback, dict) else {}
     structured = meta_info.get("structured_shot", {}) if isinstance(meta_info, dict) else {}
@@ -2361,6 +2487,16 @@ def _derive_structured_shot_payload(meta_info: dict | None, fallback: dict | Non
         "start_state": str(structured.get("start_state") or fallback.get("start_state") or "").strip(),
         "end_state": str(structured.get("end_state") or fallback.get("end_state") or "").strip(),
         "makeup_prompts": fallback.get("makeup_prompts") if isinstance(fallback.get("makeup_prompts"), list) else [],
+        "retention": structured.get("retention") if isinstance(structured.get("retention"), dict) else {
+            "face": "fully_preserved",
+            "hair": "fully_preserved",
+            "costume": "fully_preserved",
+            "background": "mostly_preserved",
+            "composition": "free",
+        },
+        "emotion_arc": structured.get("emotion_arc") if isinstance(structured.get("emotion_arc"), dict) else {},
+        "shot_purpose": str(structured.get("shot_purpose") or "").strip(),
+        "camera_speed": str(structured.get("camera_speed") or "slow").strip() or "slow",
     }
 
 
@@ -3484,7 +3620,40 @@ def _build_prompt_compile_context(book_id: int, shot, structure: dict, acceptanc
         "reference_summary": reference_summary if isinstance(reference_summary, dict) else {},
         "acceptance_feedback": acceptance_feedback if isinstance(acceptance_feedback, dict) else {},
         "warnings": list(dict.fromkeys(warnings)),
+        "continuity": _build_continuity_context(book_id, shot),
+        "retention": structure.get("retention", {}),
+        "emotion_arc": structure.get("emotion_arc", {}),
+        "shot_purpose": structure.get("shot_purpose", ""),
+        "camera_library": _get_camera_library_snapshot(),
+        "emotion_library": _get_emotion_library_snapshot(),
+        "shot_size_library": _get_shot_size_library_snapshot(),
+        "short_drama_library": _get_short_drama_library_snapshot(),
     }
+
+
+def _build_continuity_context(book_id: int, current_shot) -> dict:
+    """构建跨镜头连续性上下文。
+
+    读取同一集的上一个镜头，将其 end_state 作为当前镜头的连续性约束。
+    """
+    from models import Session, StoryboardShot
+
+    with Session() as s:
+        prev_shot = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == current_shot.episode,
+            StoryboardShot.shot_id < current_shot.shot_id,
+        ).order_by(StoryboardShot.shot_id.desc()).first()
+
+        if not prev_shot:
+            return {"has_previous": False}
+
+        return {
+            "has_previous": True,
+            "previous_shot_id": prev_shot.shot_id,
+            "previous_end_state": prev_shot.end_state or "",
+            "previous_scene_name": prev_shot.scene_name or "",
+        }
 
 
 def _build_prompt_compile_context_v2(book_id: int, shot, structure: dict, acceptance_feedback: dict, reference_summary: dict) -> dict:
@@ -3821,6 +3990,14 @@ def _build_prompt_compile_context_v2(book_id: int, shot, structure: dict, accept
             "output_contracts": production_skill_runtime.get("output_contracts", {}),
         },
         "warnings": list(dict.fromkeys(warnings)),
+        "continuity": _build_continuity_context(book_id, shot),
+        "retention": structure.get("retention", {}),
+        "emotion_arc": structure.get("emotion_arc", {}),
+        "shot_purpose": structure.get("shot_purpose", ""),
+        "camera_library": _get_camera_library_snapshot(),
+        "emotion_library": _get_emotion_library_snapshot(),
+        "shot_size_library": _get_shot_size_library_snapshot(),
+        "short_drama_library": _get_short_drama_library_snapshot(),
     }
 
 
@@ -4956,6 +5133,43 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
         else "存在缺少 reference_asset_id 或 image_url 的参考图条目。",
     })
 
+    retention = context.get("retention", {}) if isinstance(context.get("retention", {}), dict) else {}
+    retention_warnings: list[str] = []
+    if retention:
+        for field, level in retention.items():
+            if level == "fully_preserved" and field in ("face", "hair", "costume"):
+                field_names = {"face": "面部", "hair": "发型", "costume": "服装"}
+                field_zh = field_names.get(field, field)
+                if field_zh not in static_text:
+                    retention_warnings.append(f"retention 要求 {field_zh} fully_preserved，但静态提示词未提及")
+    if retention_warnings:
+        warnings.append(f"retention 维护不足：{'；'.join(retention_warnings)}。")
+    checks.append({
+        "key": "retention_coverage",
+        "passed": len(retention_warnings) == 0,
+        "message": "retention 约束已体现在静态提示词中。"
+        if len(retention_warnings) == 0
+        else f"retention 维护不足：{'；'.join(retention_warnings)}",
+        "details": retention_warnings,
+    })
+
+    continuity = context.get("continuity", {}) if isinstance(context.get("continuity", {}), dict) else {}
+    continuity_warnings: list[str] = []
+    if continuity.get("has_previous"):
+        prev_end_state = str(continuity.get("previous_end_state") or "").strip()
+        if prev_end_state and prev_end_state not in static_text and prev_end_state not in motion_text:
+            continuity_warnings.append(f"上一镜头 end_state「{prev_end_state[:20]}」未在本镜头提示词中体现衔接")
+    if continuity_warnings:
+        warnings.append(f"continuity 衔接不足：{'；'.join(continuity_warnings)}。")
+    checks.append({
+        "key": "continuity_coverage",
+        "passed": len(continuity_warnings) == 0,
+        "message": "镜头间连续性已维护。"
+        if len(continuity_warnings) == 0
+        else f"continuity 衔接不足：{'；'.join(continuity_warnings)}",
+        "details": continuity_warnings,
+    })
+
     metrics = {
         "static_chars": len(static_text),
         "motion_chars": len(motion_text),
@@ -5376,6 +5590,18 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
     )
     compile_context["reference_summary"] = reference_summary
 
+    from core.prompt_ir import build_shot_ir_from_context
+    from core.rule_compiler import compile_rules
+    shot_ir = build_shot_ir_from_context(compile_context)
+    production_skill_runtime = compile_context.get("production_skill", {})
+    shot_ir = compile_rules(shot_ir, production_skill_runtime)
+    compile_context["shot_ir_metadata"] = {
+        "static_sections": shot_ir.static_sections,
+        "motion_sections": shot_ir.motion_sections,
+        "forbidden_patterns_applied": shot_ir.metadata.get("forbidden_patterns_applied", []),
+        "required_elements": shot_ir.metadata.get("required_elements", []),
+    }
+
     negative_parts = [
         "low quality",
         "deformed anatomy",
@@ -5549,6 +5775,7 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         "reference_images": compile_context.get("compiled_reference_images", []),
         "reference_asset_ids": compile_context.get("compiled_reference_asset_ids", []),
         "repair_attempted": repair_attempted,
+        "shot_ir_metadata": compile_context.get("shot_ir_metadata", {}),
     }
 
 
@@ -7924,7 +8151,213 @@ async def run_visual_setup(req: PipelineRequest, bg: BackgroundTasks):
 _visual_tasks: dict = {}
 
 
-@app.get("/api/books/{book_id}/visual-assets")
+# ── Character QA & Merge endpoints ──────────────────────────────────────────
+
+class CharacterMergeRequest(BaseModel):
+    name_a: str
+    name_b: str
+    canonical_name: str | None = None
+
+class CharacterUpdateRequest(BaseModel):
+    gender: str | None = None
+    identity: str | None = None
+    name: str | None = None
+
+
+@app.get("/api/books/{book_id}/chapters")
+def list_chapters(book_id: int):
+    """获取章节列表（含原文内容）。"""
+    from models import Chapter as ChapterModel
+    with Session() as s:
+        chapters = s.query(ChapterModel).filter(
+            ChapterModel.book_id == book_id
+        ).order_by(ChapterModel.seq).all()
+        result = []
+        for ch in chapters:
+            result.append({
+                "id": ch.id,
+                "seq": ch.seq,
+                "title": ch.title or "",
+                "content": ch.content or "",
+                "word_count": ch.word_count or 0,
+                "status": ch.status or "",
+                "summary": ch.summary or "",
+            })
+        return result
+
+
+@app.get("/api/books/{book_id}/chapters/{chapter_id}")
+def get_chapter(book_id: int, chapter_id: int):
+    """获取单个章节详情（含原文）。"""
+    from models import Chapter as ChapterModel
+    with Session() as s:
+        ch = s.query(ChapterModel).filter(
+            ChapterModel.id == chapter_id,
+            ChapterModel.book_id == book_id,
+        ).first()
+        if not ch:
+            return {"error": "Chapter not found"}
+        return {
+            "id": ch.id,
+            "seq": ch.seq,
+            "title": ch.title or "",
+            "content": ch.content or "",
+            "word_count": ch.word_count or 0,
+            "status": ch.status or "",
+            "summary": ch.summary or "",
+            "character_table": ch.character_table or "[]",
+            "events": ch.events or "[]",
+            "scenes": ch.scenes or "[]",
+            "foreshadowing": ch.foreshadowing or "[]",
+        }
+
+
+@app.get("/api/books/{book_id}/characters/qa")
+def get_character_qa(book_id: int):
+    """获取人物画像质检报告。"""
+    from core.portrait_qa import run_portrait_qa
+    with Session() as s:
+        report = run_portrait_qa(book_id, s)
+        return report.to_dict()
+
+
+@app.post("/api/books/{book_id}/characters/merge")
+def merge_characters_endpoint(book_id: int, req: CharacterMergeRequest):
+    """合并两个角色。"""
+    from core.portrait_qa import merge_characters
+    with Session() as s:
+        result = merge_characters(book_id, req.name_a, req.name_b, s, req.canonical_name)
+        return result
+
+
+@app.post("/api/books/{book_id}/characters/resolve-aliases")
+def resolve_aliases_endpoint(book_id: int):
+    """重新运行别名归并。"""
+    from core.alias_resolver import resolve_aliases
+    with Session() as s:
+        result = resolve_aliases(book_id, s)
+        return {"canonical_map": {k: v for k, v in result.items()}}
+
+
+@app.get("/api/books/{book_id}/characters")
+def list_characters(book_id: int):
+    """获取所有角色列表。"""
+    from models import CharacterProfile, CharacterStage
+    with Session() as s:
+        profiles = s.query(CharacterProfile).filter(
+            CharacterProfile.book_id == book_id
+        ).all()
+        result = []
+        for p in profiles:
+            aliases = []
+            try:
+                aliases = json.loads(p.aliases) if p.aliases else []
+            except (json.JSONDecodeError, TypeError):
+                pass
+            relationships = {}
+            try:
+                relationships = json.loads(p.relationships) if p.relationships else {}
+            except (json.JSONDecodeError, TypeError):
+                pass
+            stages = s.query(CharacterStage).filter(
+                CharacterStage.book_id == book_id,
+                CharacterStage.character_name == p.name,
+            ).all()
+            result.append({
+                "id": p.id,
+                "name": p.name,
+                "aliases": aliases,
+                "gender": p.gender or "",
+                "age_range": p.age_range or "",
+                "role": p.role or "",
+                "identity": p.identity or "",
+                "personality": p.personality or "",
+                "relationships": relationships,
+                "importance": p.importance or "",
+                "chapter_range": p.chapter_range or "",
+                "stages": [{"stage_name": st.stage_name, "chapter_start": st.chapter_start, "chapter_end": st.chapter_end} for st in stages],
+            })
+        return result
+
+
+@app.patch("/api/books/{book_id}/characters/{char_id}")
+def update_character(book_id: int, char_id: int, req: CharacterUpdateRequest):
+    """更新角色属性。"""
+    from models import CharacterProfile
+    with Session() as s:
+        p = s.query(CharacterProfile).filter(
+            CharacterProfile.id == char_id,
+            CharacterProfile.book_id == book_id,
+        ).first()
+        if not p:
+            return {"error": "Character not found"}
+        if req.gender is not None:
+            p.gender = req.gender
+        if req.identity is not None:
+            p.identity = req.identity
+        if req.name is not None and req.name != p.name:
+            # 检查新名字是否已存在
+            existing = s.query(CharacterProfile).filter(
+                CharacterProfile.book_id == book_id,
+                CharacterProfile.name == req.name,
+            ).first()
+            if existing:
+                return {"error": f"角色名「{req.name}」已存在"}
+            old_name = p.name
+            p.name = req.name
+            # 更新 stages
+            stages = s.query(CharacterStage).filter(
+                CharacterStage.book_id == book_id,
+                CharacterStage.character_name == old_name,
+            ).all()
+            for st in stages:
+                st.character_name = req.name
+        s.commit()
+        return {"ok": True, "id": p.id, "name": p.name}
+
+
+@app.get("/api/books/{book_id}/characters/{char_id}/appearance")
+def get_character_appearance(book_id: int, char_id: int):
+    """获取角色的所有外貌片段（跨章节）。"""
+    from models import CharacterProfile, Chapter as ChapterModel
+    with Session() as s:
+        p = s.query(CharacterProfile).filter(
+            CharacterProfile.id == char_id,
+            CharacterProfile.book_id == book_id,
+        ).first()
+        if not p:
+            return {"error": "Character not found"}
+        # 从 chapter 表收集 appearance_fragments
+        chapters = s.query(ChapterModel).filter(
+            ChapterModel.book_id == book_id
+        ).order_by(ChapterModel.seq).all()
+        all_frags = []
+        for ch in chapters:
+            try:
+                frags = safe_json_loads(ch.appearance_fragments, {})
+                if p.name in frags:
+                    for f in frags[p.name]:
+                        all_frags.append({"chapter": ch.seq, "fragment": f})
+            except (json.JSONDecodeError, TypeError):
+                pass
+        # 也检查旧名字的 fragments
+        try:
+            aliases = json.loads(p.aliases) if p.aliases else []
+        except:
+            aliases = []
+        for alias in aliases:
+            for ch in chapters:
+                try:
+                    frags = safe_json_loads(ch.appearance_fragments, {})
+                    if alias in frags:
+                        for f in frags[alias]:
+                            all_frags.append({"chapter": ch.seq, "fragment": f, "via_alias": alias})
+                except (json.JSONDecodeError, TypeError):
+                    pass
+        return {"character": p.name, "fragments": all_frags}
+
+
+# ── Visual Assets endpoints ────────────────────────────────────────────────
 def get_visual_assets(book_id: int):
     from models import Session, VisualLocation, VisualProp, VisualReferenceAsset
 

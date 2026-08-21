@@ -76,6 +76,10 @@ interface UseProductWorkspaceSectionBundlesParams {
   recoveryFocus: RecoveryFocusContext | null
   onRefreshAll: () => void
   onDismissStoryboardRecoveryFocus: () => void
+  onGenerateScripts: () => void
+  isGeneratingScripts: boolean
+  onGenerateStoryboard: () => void
+  isGeneratingStoryboard: boolean
   allAssetsCount: number
   shotEpisodes: Array<{ episode: number; shots: StoryboardShotOutput[] }>
   assetEpisodeFilter: 'all' | number
@@ -162,6 +166,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onNavigateSection: params.onNavigateSection,
       },
       content: {
+        bookId: params.bookId,
         summary: params.summary,
         contentTask: params.contentTask,
         uploadFile: params.uploadFile,
@@ -215,6 +220,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         adaptationStateDetail: adaptationSectionState.adaptationStateDetail,
         selectedAdaptationName: adaptationSectionState.selectedAdaptationName,
         onNavigateTaskSection: params.onNavigateTaskSection,
+        onGenerateScripts: params.onGenerateScripts,
+        isGeneratingScripts: params.isGeneratingScripts,
       },
       storyboard: {
         bookId: params.bookId,
@@ -229,6 +236,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onDismissStoryboardRecoveryFocus: params.onDismissStoryboardRecoveryFocus,
         onNavigateSection: params.onNavigateSection,
         onNavigateTaskSection: params.onNavigateTaskSection,
+        onGenerateStoryboard: params.onGenerateStoryboard,
+        isGeneratingStoryboard: params.isGeneratingStoryboard,
       },
       canvas: {
         bookId: params.bookId,

@@ -118,6 +118,9 @@ class ReaderAgent(BaseAgent):
                     logger.warning("[reader] Rate limited, sleeping 30s")
                     time.sleep(30)
 
+        # Structural fix: ensure bidirectional relationship consistency
+        self._enforce_bidirectional_relationships(all_characters)
+
         self._save_character_table(all_characters, book_title)
         self._save_appearance_fragments(book_title)
         self._save_summaries(book_title)
@@ -140,6 +143,90 @@ class ReaderAgent(BaseAgent):
             "errors": errors,
             "characters": len(all_characters),
         }
+
+    def _enforce_bidirectional_relationships(self, all_characters: dict) -> None:
+        """Enforce bidirectional relationship consistency in character data.
+        
+        This is a structural data invariant: if A→B exists, B→A must exist.
+        Called after all chapters are processed, before saving character table.
+        """
+        # Relationship inversion mapping
+        INVERSE_MAP = {
+            "夫妻": "夫妻",
+            "配偶": "配偶",
+            "姐妹": "姐妹",
+            "兄弟": "兄弟",
+            "姐弟": "姐弟",
+            "兄妹": "兄妹",
+            "父子": "父子",
+            "母子": "母子",
+            "父女": "父女",
+            "母女": "母女",
+            "朋友": "朋友",
+            "同事": "同事",
+            "邻居": "邻居",
+            "同学": "同学",
+            "恋人": "恋人",
+            "前恋人": "前恋人",
+            "师徒": "师徒",
+            "师生": "师生",
+            "主治医生与病人": "病人与主治医生",
+            "病人与主治医生": "主治医生与病人",
+        }
+        
+        # Collect all relationships
+        relationships_to_add: dict[str, dict[str, str]] = {}
+        
+        for name, char in all_characters.items():
+            rels = char.get("relationships", {})
+            if not isinstance(rels, dict):
+                continue
+            
+            for target, desc in rels.items():
+                if not isinstance(target, str) or not isinstance(desc, str):
+                    continue
+                target = target.strip()
+                desc = desc.strip()
+                if not target or not desc:
+                    continue
+                
+                # Check if target character exists
+                if target not in all_characters:
+                    continue
+                
+                # Check if reverse relationship already exists
+                target_rels = all_characters[target].get("relationships", {})
+                if not isinstance(target_rels, dict):
+                    target_rels = {}
+                
+                reverse_exists = False
+                for rel_key, rel_val in target_rels.items():
+                    if isinstance(rel_key, str) and name in rel_key:
+                        reverse_exists = True
+                        break
+                
+                if not reverse_exists:
+                    # Generate inverse relationship
+                    inverse_desc = desc
+                    for pattern, inverse in INVERSE_MAP.items():
+                        if pattern in desc:
+                            inverse_desc = desc.replace(pattern, inverse)
+                            break
+                    
+                    if target not in relationships_to_add:
+                        relationships_to_add[target] = {}
+                    relationships_to_add[target][name] = inverse_desc
+        
+        # Apply missing reverse relationships
+        for target, new_rels in relationships_to_add.items():
+            if target not in all_characters:
+                continue
+            if "relationships" not in all_characters[target]:
+                all_characters[target]["relationships"] = {}
+            for name, desc in new_rels.items():
+                if name not in all_characters[target]["relationships"]:
+                    all_characters[target]["relationships"][name] = desc
+                    logger.debug("[reader] Added reverse relationship: %s -> %s: %s", target, name, desc)
 
     def _analyze_chapter(self, chapter_data: dict) -> dict:
         content = str(chapter_data.get("content") or "")
@@ -334,6 +421,10 @@ class ReaderAgent(BaseAgent):
     def _save_character_table(self, all_characters: dict, book_title: str):
         if not all_characters:
             return
+        
+        # Save updated relationships back to database per-chapter
+        self._persist_relationships_to_db(all_characters)
+        
         from agents.bible import BibleAgent
 
         try:
@@ -342,6 +433,42 @@ class ReaderAgent(BaseAgent):
             self.log(f"Bible generated: {path_str}")
         except Exception as exc:
             self.log(f"Bible generation failed (non-fatal): {exc}")
+
+    def _persist_relationships_to_db(self, all_characters: dict) -> None:
+        """Persist bidirectional relationships back to per-chapter character_table in DB.
+        
+        This ensures BibleAgent reads the corrected data from the database.
+        """
+        from models.base import Session as write_session
+        import json
+
+        with write_session() as session:
+            chapters = session.query(Chapter).filter(
+                Chapter.book_id == self.book_id,
+                Chapter.status == "analyzed"
+            ).all()
+
+            for chapter in chapters:
+                chars = safe_json_loads(chapter.character_table, [])
+                if not isinstance(chars, list):
+                    continue
+                
+                modified = False
+                for char in chars:
+                    name = char.get("name", "")
+                    if not name or name not in all_characters:
+                        continue
+                    
+                    # Update relationships with bidirectional ones
+                    updated_rels = all_characters[name].get("relationships", {})
+                    if updated_rels and updated_rels != char.get("relationships", {}):
+                        char["relationships"] = updated_rels
+                        modified = True
+                
+                if modified:
+                    chapter.character_table = json.dumps(chars, ensure_ascii=False)
+                    session.commit()
+                    logger.debug("[reader] Updated relationships for chapter %d", chapter.seq)
 
     def _save_appearance_fragments(self, book_title: str):
         from models.base import Session as read_session

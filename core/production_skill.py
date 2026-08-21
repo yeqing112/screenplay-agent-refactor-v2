@@ -5,11 +5,122 @@ from __future__ import annotations
 import json
 import re
 from copy import deepcopy
+from dataclasses import dataclass, field, asdict
 from typing import Any
 
 from models import get_kv, set_kv
 from core.repair import build_structural_validation_block, format_structural_validation_for_prompt
 from core import safe_json_loads
+
+
+# ── Structured Scene State Model ─────────────────────────────────────────────
+
+@dataclass
+class CharacterState:
+    """角色在场景结束时的结构化状态。"""
+    name: str
+    gender: str = ""
+    position: str = ""
+    emotional_state: str = ""
+    props_held: list[str] = field(default_factory=list)
+    behavior_guardrails: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "CharacterState":
+        return cls(
+            name=str(d.get("name") or "").strip(),
+            gender=str(d.get("gender") or "").strip(),
+            position=str(d.get("position") or "").strip(),
+            emotional_state=str(d.get("emotional_state") or "").strip(),
+            props_held=[str(p) for p in (d.get("props_held") or []) if p],
+            behavior_guardrails=[str(g) for g in (d.get("behavior_guardrails") or []) if g],
+        )
+
+
+@dataclass
+class PropState:
+    """道具在场景结束时的结构化状态。"""
+    name: str
+    owner: str = ""
+    location: str = ""
+    physical_state: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "PropState":
+        return cls(
+            name=str(d.get("name") or "").strip(),
+            owner=str(d.get("owner") or "").strip(),
+            location=str(d.get("location") or "").strip(),
+            physical_state=str(d.get("physical_state") or "").strip(),
+        )
+
+
+@dataclass
+class SceneState:
+    """场景结束时的完整结构化状态，用于传递给下一场景。"""
+    characters: list[CharacterState] = field(default_factory=list)
+    props: list[PropState] = field(default_factory=list)
+    environmental_state: str = ""
+    time_anchor: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "characters": [c.to_dict() for c in self.characters],
+            "props": [p.to_dict() for p in self.props],
+            "environmental_state": self.environmental_state,
+            "time_anchor": self.time_anchor,
+        }
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> "SceneState":
+        if not d:
+            return cls()
+        chars = []
+        for c in (d.get("characters") or []):
+            if isinstance(c, dict) and c.get("name"):
+                chars.append(CharacterState.from_dict(c))
+        props = []
+        for p in (d.get("props") or []):
+            if isinstance(p, dict) and p.get("name"):
+                props.append(PropState.from_dict(p))
+        return cls(
+            characters=chars,
+            props=props,
+            environmental_state=str(d.get("environmental_state") or "").strip(),
+            time_anchor=str(d.get("time_anchor") or "").strip(),
+        )
+
+    def format_for_prompt(self) -> str:
+        """格式化为 prompt 可读的文本。"""
+        lines: list[str] = []
+        if self.time_anchor:
+            lines.append(f"### 时间锚点\n当前时间：{self.time_anchor}")
+        if self.characters:
+            lines.append("### 角色状态")
+            for c in self.characters:
+                held = "、".join(c.props_held) if c.props_held else "无"
+                gender_info = f"，性别={c.gender}" if c.gender else ""
+                lines.append(f"- {c.name}：位置={c.position}，情绪={c.emotional_state}{gender_info}，持有道具=[{held}]")
+                if c.behavior_guardrails:
+                    lines.append(f"  行为约束：{'；'.join(c.behavior_guardrails)}")
+        if self.props:
+            lines.append("### 道具状态")
+            for p in self.props:
+                owner_info = f"持有人={p.owner}" if p.owner else f"位置={p.location}"
+                lines.append(f"- {p.name}：{owner_info}，物理状态={p.physical_state}")
+        if self.environmental_state:
+            lines.append(f"### 环境状态\n{self.environmental_state}")
+        return "\n".join(lines)
+
+    def extract_prop_names(self) -> list[str]:
+        """提取所有道具名称，用于一致性校验。"""
+        return [p.name for p in self.props if p.name]
 
 
 DEFAULT_SKILL_ID = "rebirth_suspense"
@@ -669,9 +780,12 @@ def build_script_issue_rewrite_directive(issue: dict[str, Any] | None) -> str:
 
 
 def _normalize_name_list(values: Any) -> list[str]:
-    if not isinstance(values, list):
-        return []
-    return [str(value).strip() for value in values if str(value).strip()]
+    if isinstance(values, list):
+        return [str(value).strip() for value in values if str(value).strip()]
+    elif isinstance(values, str):
+        # 处理逗号分隔的字符串
+        return [name.strip() for name in values.split(",") if name.strip()]
+    return []
 
 
 def _build_character_speech_style_anchor(track_goal: str, name: str) -> str:
@@ -696,13 +810,53 @@ def _build_signature_speech_requirement(track_goal: str, name: str) -> str:
     return "if canon gives the character a recognizable phrase, cadence, or dodge pattern, keep it audible in early lines instead of flattening every speaker into neutral exposition"
 
 
-def _build_character_behavior_guardrails(track_goal: str) -> list[str]:
+def _build_character_behavior_guardrails(track_goal: str, character_personality: str = "") -> list[str]:
     normalized_track = str(track_goal or "").lower()
+    normalized_personality = str(character_personality or "").lower()
     rules = [
         "do not jump straight from setup to hidden truth without a visible trigger",
         "keep wording, body language, and action rhythm aligned with the current visible state",
         "if the script relies on a bound portrait or character asset canon, either preserve that persona in behavior or explicitly rewrite the canon before the screenplay contradicts it",
     ]
+    
+    # 根据角色性格添加特定的行为约束
+    if "内向" in normalized_personality or "introverted" in normalized_personality:
+        rules.extend([
+            "character should speak less and observe more, preferring silence or minimal responses",
+            "avoid sudden aggressive or confrontational behavior unless triggered by a specific event",
+            "physical movements should be restrained and deliberate, not expansive or attention-seeking",
+            "dialogue should be concise, with frequent pauses and incomplete sentences",
+            "maintain physical distance from other characters unless there is a compelling reason to approach",
+        ])
+    
+    if "神秘" in normalized_personality or "mysterious" in normalized_personality:
+        rules.extend([
+            "avoid revealing personal information or motivations directly",
+            "use ambiguous or evasive responses when asked direct questions",
+            "maintain an air of unpredictability through inconsistent behavior patterns",
+            "let other characters interpret the meaning behind actions rather than explaining them",
+            "reveal information gradually through actions and reactions, not exposition",
+        ])
+    
+    if "疲惫" in normalized_personality or "tired" in normalized_personality or "weary" in normalized_personality:
+        rules.extend([
+            "physical movements should be slow, heavy, and lacking energy",
+            "dialogue should be short, possibly trailing off or incomplete",
+            "avoid sudden bursts of energy or assertive behavior unless absolutely necessary",
+            "show exhaustion through posture (slumped shoulders, leaning on things), facial expressions (drooping eyelids, sighing), and speech patterns (slow, monotone)",
+            "reactions to events should be delayed or muted compared to other characters",
+            "emotional responses should be suppressed or expressed through physical fatigue rather than verbal outbursts",
+        ])
+    
+    if "怪异" in normalized_personality or "strange" in normalized_personality or "eccentric" in normalized_personality:
+        rules.extend([
+            "behavior should be unpredictable and sometimes illogical",
+            "reactions may be disproportionate to the situation",
+            "may speak to themselves or respond to things others don't notice",
+            "physical movements may be jerky, sudden, or follow unusual patterns",
+            "maintain an unsettling quality that makes other characters uncomfortable",
+        ])
+    
     if "suspense" in normalized_track or "\u60ac\u7591" in track_goal:
         rules.extend(
             [
@@ -879,9 +1033,30 @@ def _build_custody_destination_consistency_requirement(scene_name: str, scene_in
 def _build_relative_time_anchor_requirement(scene_name: str, scene_index: int) -> str:
     name = str(scene_name or "").strip() or f"scene-{scene_index}"
     return (
-        f"In {name}, keep relative time anchors consistent. If dialogue uses markers such as before entering, last night, at dusk, or this morning, "
-        "those phrases must match the staged flashback or action timeline."
+        f"In {name}, the time_anchor must advance realistically based on scene content. "
+        "Each scene should advance time by at least 3-5 minutes for dialogue-heavy scenes, "
+        "or 10-15 minutes for scenes with significant action or location changes. "
+        "Never keep the same time_anchor across consecutive scenes unless they are a direct continuation "
+        "within seconds. The time_anchor in the state output should reflect the END of the scene, "
+        "not the beginning. For example, if a scene starts at 23:47 and has 5+ minutes of dialogue, "
+        "the ending time_anchor should be 23:52 or later."
     )
+
+
+def _build_time_progression_hint(scene_name: str, scene_index: int) -> str:
+    """为每个场景提供时间推进提示。"""
+    name = str(scene_name or "").strip() or f"scene-{scene_index}"
+    if scene_index == 1:
+        return (
+            f"Scene '{name}' is the opening scene. Set a specific starting time (e.g., 23:47). "
+            "This scene should establish the time baseline for all subsequent scenes."
+        )
+    else:
+        return (
+            f"Scene '{name}' follows the previous scene. The time must advance by at least 3-10 minutes "
+            "depending on scene content. Include the elapsed time in your state output's time_anchor field. "
+            "For example: '23:55' or '00:05' (if crossing midnight)."
+        )
 
 
 def _build_action_feasibility_requirement(scene_name: str, scene_index: int) -> str:
@@ -1031,8 +1206,14 @@ def _build_split_evidence_timeline_requirement(scene_name: str, scene_index: int
 def _build_ending_image_hook_requirement(scene_name: str, scene_index: int) -> str:
     name = str(scene_name or "").strip() or f"scene-{scene_index}"
     return (
-        f"In {name}, if this beat closes the episode or a major act, the hook should land on a visible image memory: "
-        "a prop shift, body trace, movement in darkness, unstable surface, silhouette, or another concrete frame the viewer can retain."
+        f"In {name}, the ending hook MUST be strong and memorable. "
+        "If this is the last scene of the episode, the hook must include: "
+        "1) A shocking revelation or twist that recontextualizes everything seen so far, "
+        "2) A concrete visual image (prop, gesture, or environment change) that viewers will remember, "
+        "3) An emotional punch that makes viewers desperate to see the next episode. "
+        "Examples of strong hooks: a character's hidden identity is revealed, a seemingly dead person appears, "
+        "a critical piece of evidence is found that changes everything, or a character makes an irreversible choice. "
+        "NEVER end with a vague or ambiguous statement. Always end with a specific, concrete, shocking moment."
     )
 
 
@@ -1054,7 +1235,13 @@ def _build_in_character_enforcement_requirement(scene_name: str, scene_index: in
 def _build_hook_escalation_requirement(scene_name: str, scene_index: int) -> str:
     name = str(scene_name or "").strip() or f"scene-{scene_index}"
     return (
-        f"In {name}, if a suspense motif repeats later in the episode, the later beat must add new information, threat, or identification value instead of replaying the same vague tease."
+        f"In {name}, each scene's hook must ESCALATE beyond the previous one. "
+        "The final scene of the episode must have the strongest hook of all. "
+        "Hooks must be SPECIFIC and CONCRETE, not vague. "
+        "Examples of escalating hooks: "
+        "Scene 1: mysterious stranger appears → Scene 2: stranger knows protagonist's name → "
+        "Scene 3: stranger reveals they are from the protagonist's past → "
+        "Final scene: stranger shows proof that protagonist is not who they think they are."
     )
 
 
@@ -1422,6 +1609,25 @@ def _build_identity_hint_calibration_requirement(scene_name: str, scene_index: i
     )
 
 
+def _infer_character_gender(name: str) -> str:
+    """从角色名推断性别。"""
+    if not name:
+        return ""
+    # 常见女性名字后缀
+    female_suffixes = ["女", "娘", "姐", "妹", "嫂", "婶", "婆", "妈", "英", "兰", "莲", "梅", "凤", "鹃", "燕", "霞", "雪", "琳", "婷", "颖", "莉", "蓉", "薇", "倩", "媛", "慧", "敏", "静", "洁", "莹", "玲", "珍", "芳", "丽", "娟", "艳", "燕", "妮", "娜"]
+    # 常见男性名字后缀
+    male_suffixes = ["男", "哥", "弟", "叔", "伯", "爸", "爷", "强", "伟", "勇", "军", "明", "华", "建", "国", "志", "文", "斌", "浩", "宇", "轩", "泽", "豪", "鑫", "磊", "刚", "波", "涛", "鹏", "飞", "龙", "虎"]
+    
+    for suffix in female_suffixes:
+        if name.endswith(suffix):
+            return "女"
+    for suffix in male_suffixes:
+        if name.endswith(suffix):
+            return "男"
+    # 默认根据常见姓氏推断（无法确定时返回空）
+    return ""
+
+
 def _infer_character_visible_state(track_goal: str, name: str) -> str:
     if not name:
         return ""
@@ -1444,37 +1650,164 @@ def _infer_character_hidden_state(track_goal: str) -> str:
     return ""
 
 
+def _infer_character_visible_state_from_outline(
+    track_goal: str, name: str, core_conflict: str, characters: list[str]
+) -> str:
+    """从大纲信息推断角色可见状态。"""
+    if not name:
+        return ""
+
+    # 基于核心冲突推断角色立场（优先级最高）
+    conflict_lower = core_conflict.lower() if core_conflict else ""
+    
+    # 推诿/挑水相关冲突
+    if any(keyword in conflict_lower for keyword in ["推诿", "挑水", "打水", "谁去", "谁也不愿", "都不愿"]):
+        return f"{name}当前处于推诿状态，不愿意主动承担挑水任务。表面维持和平，内心各怀心思。"
+    
+    # 水缸相关冲突
+    if "水缸" in conflict_lower:
+        if any(keyword in conflict_lower for keyword in ["没水", "无水", "干涸", "见底"]):
+            return f"{name}知道水缸没水，但选择假装不知或等待他人行动。"
+        if any(keyword in conflict_lower for keyword in ["有水", "水满", "漏水"]):
+            return f"{name}对水缸状态有不同看法，可能隐藏着对水缸异常的了解。"
+    
+    # 一般冲突类型推断
+    if "悬疑" in track_goal:
+        return "表面状态未完全可信，需保留行为与真实意图之间的落差。"
+    if "虐恋" in track_goal:
+        return "对外情绪表达与真实情绪未必一致，关系压力优先。"
+    if "爽剧" in track_goal or "逆袭" in track_goal:
+        return "当前处于受压或蓄力状态，需要为后续反击保留空间。"
+    return "当前集行为状态需与角色基础设定保持一致。"
+
+
+def _infer_character_hidden_state_from_outline(
+    track_goal: str, name: str, ending_hook: str
+) -> str:
+    """从大纲信息推断角色隐藏状态。"""
+    if not name:
+        return ""
+
+    # 基于结尾钩子推断隐藏动机（优先级最高）
+    ending_lower = ending_hook.lower() if ending_hook else ""
+    
+    # 悬疑/秘密相关结尾
+    if any(keyword in ending_lower for keyword in ["黑影", "咬牙切齿", "神秘", "消失", "隐藏", "秘密"]):
+        return f"{name}可能隐藏着不为人知的秘密或计划，结尾的异常暗示有人在暗中行动。"
+    
+    # 危机/紧张相关结尾
+    if any(keyword in ending_lower for keyword in ["危机", "危险", "紧张", "摇摇欲坠", "坠落", "断裂"]):
+        return f"{name}可能预感到危险即将来临，但选择隐瞒或独自面对。"
+    
+    # 一般类型推断
+    if "悬疑" in track_goal:
+        return "隐藏目的、隐藏认知或隐藏身份必须在后续场次逐步揭示。"
+    if "虐恋" in track_goal:
+        return "隐藏情绪、误解来源或关系伤口需要逐步揭示。"
+    if "爽剧" in track_goal or "逆袭" in track_goal:
+        return "隐藏资源、计划或底牌需要为反击节点服务。"
+    return ""
+
+
+def _infer_character_transition_trigger(name: str, core_conflict: str) -> str:
+    """推断角色状态转变触发器。"""
+    if not name:
+        return ""
+
+    conflict_lower = core_conflict.lower() if core_conflict else ""
+    
+    # 推诿/挑水相关冲突
+    if any(keyword in conflict_lower for keyword in ["推诿", "挑水", "打水", "谁去", "谁也不愿", "都不愿"]):
+        return f"{name}需要一个不得不行动的理由，如：发现水缸彻底干涸、有人受伤、或被逼到绝境。"
+    
+    # 水缸相关冲突
+    if "水缸" in conflict_lower:
+        return f"{name}在发现水缸异常或有人试图隐藏真相时，状态会发生转变。"
+    
+    # 一般冲突类型
+    if any(keyword in conflict_lower for keyword in ["秘密", "隐藏", "真相", "发现"]):
+        return f"{name}在发现关键秘密或真相被揭露时，状态会发生转变。"
+    
+    return ""
+
+
 def _extract_scene_fact_rows(scenes: list[str]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    """提取场景事实行，基于场景名称生成更有意义的数据。"""
     clue_rows: list[dict[str, Any]] = []
     evidence_rows: list[dict[str, Any]] = []
     key_prop_rows: list[dict[str, Any]] = []
+    
     for index, scene_name in enumerate(scenes, start=1):
         scene_label = str(scene_name).strip()
         if not scene_label:
             continue
+        
+        # 基于场景名称推断线索
+        clue_subject = _infer_clue_from_scene_name(scene_label, index)
         clue_rows.append(
             {
                 "clue_id": f"scene_{index}_clue",
                 "scene_index": index,
                 "scene_name": scene_label,
-                "clue_subject": "",
-                "entry_mode": "scene_pending_inference",
-                "audience_meaning": "",
-                "payoff_scene_index": None,
+                "clue_subject": clue_subject,
+                "entry_mode": "visual" if clue_subject else "scene_pending_inference",
+                "audience_meaning": f"观众在{scene_label}场景中注意到{clue_subject}" if clue_subject else "",
+                "payoff_scene_index": index + 1 if index < len(scenes) else None,
             }
         )
+        
+        # 基于场景名称推断证据
+        trigger_object = _infer_trigger_object_from_scene(scene_label)
         evidence_rows.append(
             {
                 "chain_id": f"scene_{index}_evidence",
                 "scene_index": index,
                 "scene_name": scene_label,
-                "trigger_object": "",
+                "trigger_object": trigger_object,
                 "owner": "",
-                "causal_role": "pending_inference",
-                "next_dependency": "",
+                "causal_role": f"在{scene_label}场景中发现或使用",
+                "next_dependency": f"scene_{index + 1}_evidence" if index < len(scenes) else "",
             }
         )
+    
     return clue_rows, evidence_rows, key_prop_rows
+
+
+def _infer_clue_from_scene_name(scene_name: str, scene_index: int) -> str:
+    """基于场景名称推断可能的线索。"""
+    scene_lower = scene_name.lower()
+    
+    # 水缸相关场景
+    if "水缸" in scene_name or "井" in scene_name:
+        return "水缸状态、水位变化、水缸底部痕迹"
+    
+    # 寺庙相关场景
+    if "寺庙" in scene_name or "庙" in scene_name or "院" in scene_name:
+        return "寺庙环境异常、地面痕迹、物品摆放位置"
+    
+    # 房间相关场景
+    if "房" in scene_name or "室" in scene_name:
+        return "房间内物品状态、门窗痕迹、隐藏物品"
+    
+    # 山路相关场景
+    if "山" in scene_name or "路" in scene_name:
+        return "路上痕迹、脚印、遗落物品"
+    
+    # 默认
+    return f"场景{scene_index}中的关键线索"
+
+
+def _infer_trigger_object_from_scene(scene_name: str) -> str:
+    """基于场景名称推断触发物。"""
+    if "水缸" in scene_name:
+        return "水缸、水、水位线"
+    if "井" in scene_name:
+        return "井绳、水桶、井口"
+    if "庙" in scene_name or "院" in scene_name:
+        return "香炉、供桌、地面"
+    if "房" in scene_name:
+        return "门、窗、家具"
+    return ""
 
 
 def _extract_scene_names_from_script(script_content: str) -> list[str]:
@@ -1944,6 +2277,42 @@ def build_script_skill_foundation(
     outline = episode_outline if isinstance(episode_outline, dict) else {}
     summary = runtime.get("runtime_summary", {}) if isinstance(runtime.get("runtime_summary"), dict) else {}
     foundation = script_skill_foundation_contract()
+    
+    # 获取角色性格和性别信息
+    character_personalities = {}
+    character_genders = {}
+    try:
+        from models import Session, BookBible
+        with Session() as s:
+            bible = s.query(BookBible).filter(BookBible.book_id == book_id).first()
+            if bible and bible.content:
+                import re
+                character_sections = re.split(r"###\s+", bible.content)
+                for section in character_sections:
+                    if section.strip():
+                        lines = section.strip().split("\n")
+                        if lines:
+                            char_name = lines[0].strip()
+                            for line in lines:
+                                if "性格" in line or "personality" in line.lower():
+                                    personality_match = re.search(r"[*]*性格[*]*[：:]\s*(.+)", line)
+                                    if personality_match:
+                                        character_personalities[char_name] = personality_match.group(1).strip()
+                                if "性别" in line or "gender" in line.lower():
+                                    gender_match = re.search(r"[*]*性别[*]*[：:]\s*(.+)", line)
+                                    if gender_match:
+                                        gender_val = gender_match.group(1).strip()
+                                        if "女" in gender_val:
+                                            character_genders[char_name] = "女性"
+                                        elif "男" in gender_val:
+                                            character_genders[char_name] = "男性"
+                                        else:
+                                            character_genders[char_name] = gender_val
+    except Exception:
+        pass
+    except Exception:
+        pass  # 如果获取失败，使用空字典
+    
     foundation["episode_goal_card"] = {
         "episode": outline.get("episode"),
         "title": str(outline.get("title") or "").strip(),
@@ -1956,17 +2325,26 @@ def build_script_skill_foundation(
     }
 
     track_goal = foundation["episode_goal_card"]["track_goal"]
+    core_conflict = foundation["episode_goal_card"].get("core_conflict") or ""
+    ending_hook = foundation["episode_goal_card"].get("ending_hook") or ""
     characters = _normalize_name_list(outline.get("characters"))
     foundation["character_state_cards"] = [
         {
             "name": str(name).strip(),
+            "gender": character_genders.get(str(name).strip()) or _infer_character_gender(str(name).strip()),
             "base_state": "",
-            "episode_visible_state": _infer_character_visible_state(track_goal, str(name).strip()),
-            "hidden_state": _infer_character_hidden_state(track_goal),
-            "state_transition_trigger": "",
+            "episode_visible_state": _infer_character_visible_state_from_outline(
+                track_goal, str(name).strip(), core_conflict, characters
+            ),
+            "hidden_state": _infer_character_hidden_state_from_outline(
+                track_goal, str(name).strip(), ending_hook
+            ),
+            "state_transition_trigger": _infer_character_transition_trigger(
+                str(name).strip(), core_conflict
+            ),
             "speech_style_anchor": _build_character_speech_style_anchor(track_goal, str(name).strip()),
             "signature_speech_requirement": _build_signature_speech_requirement(track_goal, str(name).strip()),
-            "behavior_guardrails": _build_character_behavior_guardrails(track_goal),
+            "behavior_guardrails": _build_character_behavior_guardrails(track_goal, character_personalities.get(str(name).strip(), "")),
             "omniscience_guardrail": _build_omniscience_guardrail(track_goal),
             "flashback_provenance_guardrail": _build_flashback_provenance_guardrail(track_goal),
             "identity_cover_guardrail": _build_identity_cover_guardrail(track_goal),
@@ -1975,7 +2353,7 @@ def build_script_skill_foundation(
             "hidden_layer_seed_requirement": _build_hidden_layer_seed_requirement(track_goal),
             "hidden_layer_reveal_trigger_requirement": _build_hidden_layer_reveal_trigger_requirement(track_goal),
             "dialogue_format_guardrail": _build_dialogue_format_guardrail(),
-            "allowed_disguise_signals": ["\u773c\u795e\u53d8\u5316", "\u52a8\u4f5c\u505c\u987f", "\u7b54\u975e\u6240\u95ee", "\u5ef6\u8fdf\u53cd\u5e94"] if "\u60ac\u7591" in track_goal or "suspense" in track_goal.lower() else [],
+            "allowed_disguise_signals": ["眼神变化", "动作停顿", "答非所问", "延迟反应"] if "悬疑" in track_goal or "suspense" in track_goal.lower() else [],
             "forbidden_behavior_conflicts": [],
         }
         for name in characters
@@ -2059,6 +2437,7 @@ def build_script_skill_foundation(
             "hook_question_specificity_requirement": _build_hook_question_specificity_requirement(str(scene_name).strip(), index + 1),
             "identity_hint_calibration_requirement": _build_identity_hint_calibration_requirement(str(scene_name).strip(), index + 1),
             "revelation_density_guardrail": _build_scene_revelation_density_guardrail(index + 1),
+            "time_progression_hint": _build_time_progression_hint(str(scene_name).strip(), index + 1),
         }
         for index, scene_name in enumerate(scenes)
         if str(scene_name).strip()
@@ -2384,6 +2763,7 @@ def _build_story_fact_sheet(
     character_fact_sheet = [
         {
             "name": str(item.get("name") or "").strip(),
+            "gender": str(item.get("gender") or "").strip(),
             "public_layer": str(item.get("episode_visible_state") or "").strip(),
             "hidden_layer": str(item.get("hidden_state") or "").strip(),
             "transition_trigger": str(item.get("state_transition_trigger") or "").strip(),
@@ -2460,11 +2840,16 @@ def _build_scene_execution_cards(foundation: dict[str, Any]) -> list[dict[str, A
     character_cards = foundation.get("character_state_cards", []) if isinstance(foundation.get("character_state_cards"), list) else []
     prop_cards = foundation.get("prop_timeline_cards", []) if isinstance(foundation.get("prop_timeline_cards"), list) else []
 
-    opening_character_states = [
-        {
-            "name": str(item.get("name") or "").strip(),
-            "visible_state": str(item.get("episode_visible_state") or "").strip(),
-        }
+    # 构建角色基础状态列表（所有场景共享）
+    base_character_states = [
+        CharacterState(
+            name=str(item.get("name") or "").strip(),
+            gender=str(item.get("gender") or "").strip(),
+            position="未指定",
+            emotional_state=str(item.get("episode_visible_state") or "").strip(),
+            props_held=[],
+            behavior_guardrails=list(item.get("behavior_guardrails") or []),
+        )
         for item in character_cards
         if isinstance(item, dict) and str(item.get("name") or "").strip()
     ]
@@ -2477,14 +2862,36 @@ def _build_scene_execution_cards(foundation: dict[str, Any]) -> list[dict[str, A
         if not scene_name:
             continue
         prop_card = prop_cards[index] if index < len(prop_cards) and isinstance(prop_cards[index], dict) else {}
+
+        # 构建结构化 opening_state
+        opening_state = SceneState(
+            characters=[CharacterState(
+                name=c.name,
+                gender=c.gender,
+                position=c.position,
+                emotional_state=c.emotional_state,
+                props_held=list(c.props_held),
+                behavior_guardrails=list(c.behavior_guardrails),
+            ) for c in base_character_states],
+            props=[
+                PropState(
+                    name=str(prop_card.get("scene_name") or scene_name or "").strip(),
+                    owner="",
+                    location=str(prop_card.get("scene_open_state") or "").strip(),
+                    physical_state="",
+                )
+            ] if prop_card.get("scene_open_state") else [],
+            environmental_state="",
+        )
+
+        # closing_state 初始为空（场景生成后由 LLM 提取填充）
+        closing_state = SceneState()
+
         result.append(
             {
                 "scene_index": item.get("scene_index"),
                 "scene_name": scene_name,
-                "opening_state": {
-                    "characters": opening_character_states,
-                    "props": str(prop_card.get("scene_open_state") or "").strip(),
-                },
+                "opening_state": opening_state.to_dict(),
                 "scene_objective": str(item.get("scene_purpose") or "").strip() or str(item.get("scene_driver_requirement") or "").strip(),
                 "scene_conflict": str(item.get("scene_conflict") or "").strip() or str(item.get("scene_visual_anchor_goal") or "").strip(),
                 "required_visual_proofs": [
@@ -2500,10 +2907,7 @@ def _build_scene_execution_cards(foundation: dict[str, Any]) -> list[dict[str, A
                     for character in character_cards
                     if isinstance(character, dict) and str(character.get("hidden_layer_seed_requirement") or "").strip()
                 ],
-                "closing_state": {
-                    "characters": str(item.get("scene_emotion_delta") or "").strip(),
-                    "props": str(prop_card.get("scene_close_target") or "").strip(),
-                },
+                "closing_state": closing_state.to_dict(),
                 "handoff_to_next_scene": str(item.get("transition_requirement") or "").strip(),
             }
         )
@@ -2525,10 +2929,56 @@ def build_script_generation_brief_prompt_block(
     return "## Script Generation Brief\n" + json.dumps(payload, ensure_ascii=False, indent=2)
 
 
+def _build_execution_plan_structured_fields(
+    foundation: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """从 foundation 中提取结构化字段，供 execution plan 消费。"""
+    if not foundation or not isinstance(foundation, dict):
+        return {
+            "has_story_fact_sheet": False,
+            "has_scene_execution_cards": False,
+            "story_fact_sheet_summary": {},
+            "scene_execution_cards_summary": [],
+        }
+
+    fact_sheet = foundation.get("story_fact_sheet") or {}
+    exec_cards = foundation.get("scene_execution_cards") or []
+
+    # 摘要 fact sheet 关键指标
+    fact_summary = {
+        "episode_objective": str(fact_sheet.get("episode_objective") or "").strip(),
+        "character_count": len(fact_sheet.get("character_fact_sheet") or []),
+        "prop_count": len(fact_sheet.get("prop_fact_sheet") or []),
+        "evidence_count": len(fact_sheet.get("evidence_fact_sheet") or []),
+        "hook_count": len(fact_sheet.get("hook_delta_sheet") or []),
+    }
+
+    # 摘要 execution cards 关键指标
+    cards_summary = []
+    for card in (exec_cards if isinstance(exec_cards, list) else []):
+        if not isinstance(card, dict):
+            continue
+        cards_summary.append({
+            "scene_index": card.get("scene_index"),
+            "scene_name": str(card.get("scene_name") or "").strip(),
+            "objective": str(card.get("scene_objective") or "").strip()[:100],
+            "conflict": str(card.get("scene_conflict") or "").strip()[:100],
+            "required_proof_count": len(card.get("required_visual_proofs") or []),
+        })
+
+    return {
+        "has_story_fact_sheet": bool(fact_sheet),
+        "has_scene_execution_cards": bool(exec_cards),
+        "story_fact_sheet_summary": fact_summary,
+        "scene_execution_cards_summary": cards_summary,
+    }
+
+
 def build_script_skill_execution_plan(
     book_id: int,
     episode_outline: dict[str, Any] | None = None,
     qa_issues: list[dict[str, Any]] | None = None,
+    foundation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     runtime = build_project_production_skill_runtime(book_id)
     summary = runtime.get("runtime_summary", {}) if isinstance(runtime.get("runtime_summary"), dict) else {}
@@ -2626,6 +3076,7 @@ def build_script_skill_execution_plan(
             for stage, count in prioritized_stages
         ],
         "validation_checks": runtime.get("qa_checks", []) if isinstance(runtime.get("qa_checks"), list) else [],
+        "structured_fields": _build_execution_plan_structured_fields(foundation),
     }
 
 

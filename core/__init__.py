@@ -10,6 +10,20 @@ import httpx
 
 import config
 
+# 短剧基础库自动导出
+from core.short_drama_library import (
+    EPISODE_BEAT_ENGINE,
+    EPISODE_EMOTION_NODES,
+    HOOK_LIBRARY,
+    SHORT_DRAMA_CONFLICT_PATTERNS,
+    SHORT_DRAMA_DIALOGUE_RULES,
+    SHORT_DRAMA_VISUAL_GRAMMAR,
+    SHORT_DRAMA_PACING_TEMPLATES,
+    SERIES_ARCHITECTURE_LIBRARY,
+    COMMON_PITFALLS,
+    EMOTION_CHECKPOINT_LIBRARY,
+)
+
 logger = logging.getLogger(__name__)
 
 

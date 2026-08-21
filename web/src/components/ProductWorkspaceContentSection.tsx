@@ -5,8 +5,10 @@ import { fetchModelRegistryDefaults } from '../prototyping/sceneComposerModelReg
 import { buildContentModelContextSummary } from './productWorkspaceContentModels'
 import { getProjectStatusLabel } from './productWorkspaceProjectStatus'
 import type { ContentTaskState, ProductionSkillSectionState } from './productWorkspaceSectionContracts'
+import ChapterViewer from './ChapterViewer'
 
 interface Props {
+  bookId: number
   contentReady: boolean
   contentStatusLabel: string
   contentStatusDetail: string
@@ -29,6 +31,7 @@ interface Props {
 }
 
 export default function ProductWorkspaceContentSection({
+  bookId,
   contentReady,
   contentStatusLabel,
   contentStatusDetail,
@@ -128,6 +131,7 @@ export default function ProductWorkspaceContentSection({
         : '还缺短篇正文。'
 
   return (
+    <div className="space-y-6">
     <div className="grid gap-6 xl:grid-cols-[1.1fr_1fr_0.9fr]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
         <div className="flex items-center gap-2 text-white">
@@ -301,6 +305,8 @@ export default function ProductWorkspaceContentSection({
           </div>
         </div>
       </div>
+    </div>
+    <ChapterViewer bookId={bookId} />
     </div>
   )
 }

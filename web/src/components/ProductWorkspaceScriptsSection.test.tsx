@@ -27,6 +27,8 @@ describe('ProductWorkspaceScriptsSection', () => {
         adaptationStateDetail="当前主方向还没有锁定。"
         selectedAdaptationName={undefined}
         onNavigate={() => {}}
+        onGenerateScripts={() => {}}
+        isGeneratingScripts={false}
       />,
     )
 
@@ -59,6 +61,8 @@ describe('ProductWorkspaceScriptsSection', () => {
         adaptationStateDetail="当前主方向已经锁定。"
         selectedAdaptationName="强情绪悬疑向"
         onNavigate={() => {}}
+        onGenerateScripts={() => {}}
+        isGeneratingScripts={false}
       />,
     )
 
@@ -95,6 +99,8 @@ describe('ProductWorkspaceScriptsSection', () => {
         adaptationStateDetail="当前主方向还没有锁定。"
         selectedAdaptationName={undefined}
         onNavigate={() => {}}
+        onGenerateScripts={() => {}}
+        isGeneratingScripts={false}
       />,
     )
 

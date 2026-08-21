@@ -284,19 +284,156 @@ class StructuralQAAgent(BaseAgent):
         return directives
 
     def _build_story_fact_sheet(self, script: dict[str, Any]) -> dict[str, Any]:
-        """从剧本构建故事事实表"""
-        # 这里需要从剧本内容中提取事实
-        # 简化实现：返回空结构
-        return {
-            "characters": [],
-            "props": [],
-            "scenes": [],
-        }
+        """从剧本构建故事事实表 — 使用LLM提取结构化事实"""
+        content = str(script.get("content") or "").strip()
+        if not content:
+            return {"episode_objective": "", "character_fact_sheet": [], "prop_fact_sheet": [], "evidence_fact_sheet": [], "helper_motive_sheet": [], "spatial_mechanics_sheet": [], "hook_delta_sheet": []}
+
+        truncated = content[:config.SCRIPT_EXCERPT_CHARS]
+        extraction_prompt = (
+            "你是一个剧本结构分析专家。请从以下剧本内容中提取结构化事实信息。\n\n"
+            "请严格输出JSON，格式如下：\n"
+            "```json\n"
+            "{\n"
+            '  "episode_objective": "本集核心目标（一句话）",\n'
+            '  "character_fact_sheet": [\n'
+            "    {\n"
+            '      "name": "角色名",\n'
+            '      "public_layer": "公开面：角色在其他角色面前展示的形象",\n'
+            '      "hidden_layer": "隐藏层：角色暗中的真实意图或秘密",\n'
+            '      "transition_trigger": "转折触发器：什么事件会导致角色状态变化",\n'
+            '      "public_mask_rule": "面具规则：角色需要维持的外在表现"\n'
+            "    }\n"
+            "  ],\n"
+            '  "prop_fact_sheet": [\n'
+            "    {\n"
+            '      "prop_name": "关键道具名",\n'
+            '      "first_scene": "首次出现场景",\n'
+            '      "story_function": "剧情功能",\n'
+            '      "ownership_rule": "归属规则：道具在谁手中流转"\n'
+            "    }\n"
+            "  ],\n"
+            '  "evidence_fact_sheet": [\n'
+            "    {\n"
+            '      "evidence_name": "证据/线索名",\n'
+            '      "entry_scene": "入画场景",\n'
+            '      "story_function": "剧情功能",\n'
+            '      "observation_rule": "观察规则：必须在镜头前被看到或比较"\n'
+            "    }\n"
+            "  ],\n"
+            '  "helper_motive_sheet": [\n'
+            "    {\n"
+            '      "scene_name": "场景名",\n'
+            '      "requirement": "帮助行为动机要求"\n'
+            "    }\n"
+            "  ],\n"
+            '  "spatial_mechanics_sheet": [\n'
+            "    {\n"
+            '      "scene_name": "场景名",\n'
+            '      "mechanics_rule": "空间机关规则：锁、暗格、机关的操作路径"\n'
+            "    }\n"
+            "  ],\n"
+            '  "hook_delta_sheet": [\n'
+            "    {\n"
+            '      "hook_type": "钩子类型(opening/mid/end)",\n'
+            '      "content": "钩子内容",\n'
+            '      "delta_rule": "增量规则：必须带来新的状态变化或信息"\n'
+            "    }\n"
+            "  ]\n"
+            "}\n"
+            "```\n\n"
+            "要求：\n"
+            "1. 只从剧本文本中提取可验证的事实，不要虚构\n"
+            "2. 角色的公开面和隐藏层必须能从剧本对白和动作中推断\n"
+            "3. 道具必须是推动剧情的关键道具，不是背景摆设\n"
+            "4. 证据必须有明确的入画场景和观察方式\n"
+            "5. 钩子增量必须指向下一集或下一场的新冲突\n\n"
+            f"剧本内容：\n{truncated}"
+        )
+
+        try:
+            raw = call_llm(extraction_prompt, temperature=0.2, max_tokens=4096)
+            parsed = parse_json_object(strip_code_fences(raw.strip()))
+            if isinstance(parsed, dict):
+                return {
+                    "episode_objective": str(parsed.get("episode_objective") or "").strip(),
+                    "character_fact_sheet": parsed.get("character_fact_sheet") or [],
+                    "prop_fact_sheet": parsed.get("prop_fact_sheet") or [],
+                    "evidence_fact_sheet": parsed.get("evidence_fact_sheet") or [],
+                    "helper_motive_sheet": parsed.get("helper_motive_sheet") or [],
+                    "spatial_mechanics_sheet": parsed.get("spatial_mechanics_sheet") or [],
+                    "hook_delta_sheet": parsed.get("hook_delta_sheet") or [],
+                }
+        except Exception as exc:
+            logger.warning("Failed to extract story fact sheet via LLM: %s", exc)
+
+        return {"episode_objective": "", "character_fact_sheet": [], "prop_fact_sheet": [], "evidence_fact_sheet": [], "helper_motive_sheet": [], "spatial_mechanics_sheet": [], "hook_delta_sheet": []}
 
     def _build_scene_execution_cards(self, script: dict[str, Any]) -> list[dict[str, Any]]:
-        """从剧本构建场景执行卡"""
-        # 这里需要从剧本内容中提取场景信息
-        # 简化实现：返回空列表
+        """从剧本构建场景执行卡 — 使用LLM提取场景结构"""
+        content = str(script.get("content") or "").strip()
+        if not content:
+            return []
+
+        truncated = content[:config.SCRIPT_EXCERPT_CHARS]
+        extraction_prompt = (
+            "你是一个剧本结构分析专家。请从以下剧本内容中提取每个场景的执行卡信息。\n\n"
+            "请严格输出JSON数组，格式如下：\n"
+            "```json\n"
+            "[\n"
+            "  {\n"
+            '    "scene_index": 1,\n'
+            '    "scene_name": "场景名称",\n'
+            '    "opening_state": {\n'
+            '      "characters": [{"name": "角色名", "visible_state": "开场时的状态"}],\n'
+            '      "props": "开场时道具状态描述"\n'
+            "    },\n"
+            '    "scene_objective": "本场戏存在的目的",\n'
+            '    "scene_conflict": "本场戏的核心冲突",\n'
+            '    "required_visual_proofs": ["必须在镜头前证明的事实1", "事实2"],\n'
+            '    "public_mask_beats": ["角色维持公开面具的关键节拍"],\n'
+            '    "hidden_layer_leaks": ["隐藏层泄露的细节"],\n'
+            '    "closing_state": {\n'
+            '      "characters": "角色结束时状态变化",\n'
+            '      "props": "道具结束时状态"\n'
+            "    },\n"
+            '    "handoff_to_next_scene": "传递给下一场的承接条件"\n'
+            "  }\n"
+            "]\n"
+            "```\n\n"
+            "要求：\n"
+            "1. 每个场景必须有明确的目的和冲突\n"
+            "2. required_visual_proofs 列出本场必须在镜头前证明的事实\n"
+            "3. public_mask_beats 是角色维持外在形象的关键动作\n"
+            "4. hidden_layer_leaks 是角色不小心暴露真实意图的细节\n"
+            "5. handoff_to_next_scene 描述本场结束时的状态，作为下一场的起点\n\n"
+            f"剧本内容：\n{truncated}"
+        )
+
+        try:
+            raw = call_llm(extraction_prompt, temperature=0.2, max_tokens=4096)
+            parsed = parse_json_object(strip_code_fences(raw.strip()))
+            if isinstance(parsed, list):
+                result: list[dict[str, Any]] = []
+                for item in parsed:
+                    if not isinstance(item, dict):
+                        continue
+                    result.append({
+                        "scene_index": item.get("scene_index"),
+                        "scene_name": str(item.get("scene_name") or "").strip(),
+                        "opening_state": item.get("opening_state") or {"characters": [], "props": ""},
+                        "scene_objective": str(item.get("scene_objective") or "").strip(),
+                        "scene_conflict": str(item.get("scene_conflict") or "").strip(),
+                        "required_visual_proofs": item.get("required_visual_proofs") or [],
+                        "public_mask_beats": item.get("public_mask_beats") or [],
+                        "hidden_layer_leaks": item.get("hidden_layer_leaks") or [],
+                        "closing_state": item.get("closing_state") or {"characters": "", "props": ""},
+                        "handoff_to_next_scene": str(item.get("handoff_to_next_scene") or "").strip(),
+                    })
+                return result
+        except Exception as exc:
+            logger.warning("Failed to extract scene execution cards via LLM: %s", exc)
+
         return []
 
     def _load_script(self, session, episode: int) -> dict | None:
@@ -311,7 +448,6 @@ class StructuralQAAgent(BaseAgent):
             return {
                 "episode": row.episode,
                 "content": row.content or "",
-                "title": row.title or "",
             }
         except Exception as exc:
             logger.warning("Failed to load script: %s", exc)

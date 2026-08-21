@@ -47,7 +47,7 @@ OPENAI_API_KEY = _load_str("OPENAI_API_KEY", "sk-placeholder")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "http://10.126.126.2:11434/v1")
 LLM_MODEL = os.getenv("LLM_MODEL", "qwen3-max")
 LLM_TEMPERATURE = _load_float("LLM_TEMPERATURE", 0.3)
-LLM_MAX_TOKENS = _load_int("LLM_MAX_TOKENS", 8192)
+LLM_MAX_TOKENS = _load_int("LLM_MAX_TOKENS", 24000)
 
 # Embedding (Ollama)
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")

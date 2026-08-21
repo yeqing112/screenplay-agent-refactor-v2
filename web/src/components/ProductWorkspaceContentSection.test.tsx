@@ -7,6 +7,7 @@ import ProductWorkspaceContentSection from './ProductWorkspaceContentSection'
 function renderSection(overrides: Partial<ComponentProps<typeof ProductWorkspaceContentSection>> = {}) {
   return renderToStaticMarkup(
     <ProductWorkspaceContentSection
+      bookId={1}
       contentReady={false}
       contentStatusLabel="待补内容"
       contentStatusDetail="当前还没有正式内容基础。"

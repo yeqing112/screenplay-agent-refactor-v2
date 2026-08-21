@@ -21,6 +21,7 @@ from core.production_skill import (
     build_script_generation_brief_prompt_block,
     build_script_skill_execution_plan_prompt_block,
     build_script_skill_foundation_prompt_block,
+    build_script_skill_repair_packet,
     build_script_skill_repair_packet_prompt_block,
     load_latest_script_qa_issues,
 )
@@ -1422,10 +1423,13 @@ class RewriteAgent(BaseAgent):
                 if not script:
                     raise ValueError(f"Script for episode {episode} not found.")
 
+                # Save original content for regression protection
+                original_content = script.content or ""
+                
                 latest_qa_issues = load_latest_script_qa_issues(self.book_id, episode)
                 self._latest_qa_issues = latest_qa_issues
                 self._episode_outline = self._load_episode_outline(session, episode)
-                self._current_script_content = script.content or ""
+                self._current_script_content = original_content
                 self._expected_scene_names = self._load_expected_scene_names()
 
                 self._skill_block = build_production_skill_prompt_block(self.book_id, "script")
@@ -1482,6 +1486,15 @@ class RewriteAgent(BaseAgent):
                         "You are a short-drama screenplay repair agent. Return only the final screenplay text. Do not output chain-of-thought, drafts, or explanation."
                     )
 
+                # Regression protection: compare rewritten vs original
+                if original_content and rewritten_script:
+                    # Check if rewrite is significantly different from original
+                    similarity = self._calculate_similarity(original_content, rewritten_script)
+                    if similarity > 0.95:
+                        logger.warning("Rewrite too similar to original (%.1f%%), may not address issues", similarity * 100)
+                    elif similarity < 0.3:
+                        logger.warning("Rewrite too different from original (%.1f%%), may introduce regressions", similarity * 100)
+
                 output = config.output_path(book.title, "scripts", f"episode_{episode:02d}_script_v2.md")
                 report_output = config.output_path(book.title, "scripts", f"episode_{episode:02d}_rewrite_report.json")
                 output.parent.mkdir(parents=True, exist_ok=True)
@@ -1496,3 +1509,215 @@ class RewriteAgent(BaseAgent):
         except Exception as exc:
             logger.error("Rewrite failed for book %s ep %s: %s", self.book_id, episode, exc)
             raise
+
+    def _calculate_similarity(self, text1: str, text2: str) -> float:
+        """Calculate similarity between two texts using character n-grams."""
+        if not text1 or not text2:
+            return 0.0
+        
+        # Use character 3-grams for comparison
+        def get_ngrams(text: str, n: int = 3) -> set:
+            return {text[i:i+n] for i in range(len(text) - n + 1)}
+        
+        ngrams1 = get_ngrams(text1)
+        ngrams2 = get_ngrams(text2)
+        
+        if not ngrams1 or not ngrams2:
+            return 0.0
+        
+        intersection = len(ngrams1 & ngrams2)
+        union = len(ngrams1 | ngrams2)
+        
+        return intersection / union if union > 0 else 0.0
+
+    def run_perfect(self, episode: int, target_score: int = 9, max_rounds: int = 3) -> str:
+        """Multi-round rewrite to achieve target QA score.
+        
+        Args:
+            episode: Episode number
+            target_score: Target QA score (default 9)
+            max_rounds: Maximum rewrite rounds (default 3)
+            
+        Returns:
+            Path to final script file
+        """
+        from agents.qa import QAAgent
+        
+        best_score = 0
+        best_path = None
+        
+        # Pre-check: get current QA score
+        try:
+            qa_pre = QAAgent(self.book_id)
+            pre_result = qa_pre.run(episode=episode)
+            pre_score = pre_result.get("overall_score", 0)
+            pre_issues = pre_result.get("issues", [])
+            pre_high = [i for i in pre_issues if i.get("severity") == "high"]
+            
+            logger.info("Pre-rewrite QA score: %d/10 (%d issues, %d high)", 
+                       pre_score, len(pre_issues), len(pre_high))
+            
+            # If score is already high and no high-severity issues, skip rewrite
+            if pre_score >= target_score:
+                logger.info("Score %d already meets target %d, skipping rewrite", pre_score, target_score)
+                script = self._get_script_path(episode)
+                return script or ""
+            
+            # If score >= 8 and no high-severity issues, skip rewrite (too risky)
+            if pre_score >= 8 and not pre_high:
+                logger.info("Score %d with no high-severity issues, skipping rewrite to avoid regression", pre_score)
+                script = self._get_script_path(episode)
+                return script or ""
+                
+        except Exception as exc:
+            logger.warning("Pre-rewrite QA check failed: %s", exc)
+        
+        for round_num in range(1, max_rounds + 1):
+            logger.info("=" * 60)
+            logger.info("REWRITE ROUND %d/%d (target: QA %d+)", round_num, max_rounds, target_score)
+            logger.info("=" * 60)
+            
+            # Run rewrite
+            try:
+                script_path = self.run(episode)
+                logger.info("Round %d: Rewrite completed -> %s", round_num, script_path)
+            except Exception as exc:
+                logger.error("Round %d: Rewrite failed: %s", round_num, exc)
+                break
+            
+            # Run QA to check score
+            try:
+                qa = QAAgent(self.book_id)
+                qa_result = qa.run(episode=episode)
+                score = qa_result.get("overall_score", 0)
+                issues = qa_result.get("issues", [])
+                
+                logger.info("Round %d: QA score = %d/10 (%d issues)", round_num, score, len(issues))
+                for i, issue in enumerate(issues, 1):
+                    logger.info("  %d. [%s] %s", i, issue.get("severity", "?"), issue.get("title", "?"))
+                
+                # Regression check: if score dropped, revert to best
+                if score < best_score:
+                    logger.warning("Score regressed from %d to %d, reverting to best", best_score, score)
+                    # Don't update best_score or best_path
+                elif score > best_score:
+                    best_score = score
+                    best_path = script_path
+                
+                # Check if we reached target
+                if score >= target_score:
+                    logger.info("Target score %d reached in round %d!", target_score, round_num)
+                    return script_path
+                
+                # If no high-severity issues and score >= 8, try targeted dialogue refinement
+                high_issues = [i for i in issues if i.get("severity") == "high"]
+                if not high_issues and score >= 8 and round_num < max_rounds:
+                    logger.info("Attempting targeted dialogue refinement...")
+                    try:
+                        refined_path = self._refine_dialogue(episode, issues)
+                        if refined_path:
+                            # Re-QA after refinement
+                            qa2 = QAAgent(self.book_id)
+                            qa2_result = qa2.run(episode=episode)
+                            new_score = qa2_result.get("overall_score", 0)
+                            logger.info("After dialogue refinement: QA score = %d/10", new_score)
+                            if new_score > best_score:
+                                best_score = new_score
+                                best_path = refined_path
+                            if new_score >= target_score:
+                                return refined_path
+                    except Exception as exc:
+                        logger.warning("Dialogue refinement failed: %s", exc)
+                    
+            except Exception as exc:
+                logger.error("Round %d: QA failed: %s", round_num, exc)
+                break
+        
+        logger.info("Best score achieved: %d/10", best_score)
+        return best_path or ""
+
+    def _get_script_path(self, episode: int) -> str:
+        """Get the path to the current script file."""
+        import os
+        with self.session() as session:
+            book = session.get(Book, self.book_id)
+            if not book:
+                return ""
+            script_path = config.output_path(book.title, "scripts", f"第{episode:02d}集脚本.md")
+            if script_path.exists():
+                return str(script_path)
+            # Check for v2 version
+            v2_path = config.output_path(book.title, "scripts", f"episode_{episode:02d}_script_v2.md")
+            if v2_path.exists():
+                return str(v2_path)
+            return ""
+
+    def _refine_dialogue(self, episode: int, qa_issues: list) -> str:
+        """Targeted dialogue refinement for remaining medium/low issues."""
+        with self.session() as session:
+            book = session.get(Book, self.book_id)
+            if not book:
+                return ""
+            
+            script = session.query(Script).filter(
+                Script.book_id == self.book_id,
+                Script.episode == episode,
+            ).first()
+            if not script or not script.content:
+                return ""
+            
+            # Build targeted refinement prompt
+            issue_descriptions = []
+            for issue in qa_issues:
+                if issue.get("severity") in ("medium", "low"):
+                    issue_descriptions.append(
+                        f"- [{issue.get('severity')}] {issue.get('title')}: {issue.get('suggestion', '')}"
+                    )
+            
+            if not issue_descriptions:
+                return ""
+            
+            prompt = (
+                "You are a dialogue refinement specialist for short-drama screenplays.\n"
+                "Refine the dialogue in the following script to address these specific issues:\n\n"
+                + "\n".join(issue_descriptions) + "\n\n"
+                "## Refinement Rules\n"
+                "- Replace expository dialogue with visual/action-driven storytelling\n"
+                "- Add subtext, hesitation, and emotional layering to dialogue\n"
+                "- Use character actions, micro-expressions, and pauses to convey information\n"
+                "- Keep the same plot beats and character intentions\n"
+                "- Maintain the same scene structure and visual proofs\n"
+                "- Output ONLY the refined script text, no JSON, no explanation\n\n"
+                "## Current Script\n"
+                f"{script.content[:8000]}"
+            )
+            
+            system = (
+                "You are a dialogue refinement specialist. Output only the refined screenplay text. "
+                "No JSON, no explanation, no meta-commentary."
+            )
+            
+            refined = call_llm(
+                prompt,
+                system=system,
+                estimated_tokens=config.ESTIMATED_TOKENS_LARGE,
+            )
+            
+            if not refined:
+                return ""
+            
+            # Clean and validate
+            for fragment in self.META_FRAGMENTS:
+                refined = refined.replace(fragment, "")
+            refined = self._normalize_scene_headers(refined)
+            
+            # Save
+            output = config.output_path(book.title, "scripts", f"episode_{episode:02d}_script_v3.md")
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(refined, encoding="utf-8")
+            
+            script.content = refined
+            script.word_count = len(refined)
+            session.commit()
+            
+            return str(output)

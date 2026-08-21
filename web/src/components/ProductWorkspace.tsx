@@ -9,6 +9,7 @@ import {
   ListTodo,
   Network,
   Settings2,
+  Users,
   Wrench,
 } from 'lucide-react'
 import { useBookOutputs } from '../prototyping/useBookOutputs'
@@ -54,6 +55,7 @@ const sections: Array<{ id: WorkspaceSection; label: string; icon: typeof Librar
   { id: 'dashboard', label: '项目控制台', icon: Library },
   { id: 'content', label: '内容准备', icon: Library },
   { id: 'adaptation', label: '改编方向', icon: Compass },
+  { id: 'characters', label: '人物质检', icon: Users },
   { id: 'scripts', label: '剧本工作台', icon: FileText },
   { id: 'storyboard', label: '镜头工作台', icon: Clapperboard },
   { id: 'canvas', label: '创作画布', icon: Network },
@@ -102,6 +104,8 @@ export default function ProductWorkspace({
     assetId?: string | null
   } | null>(null)
   const [assetGenerationState, setAssetGenerationState] = useState<'idle' | 'saving'>('idle')
+  const [isGeneratingScripts, setIsGeneratingScripts] = useState(false)
+  const [isGeneratingStoryboard, setIsGeneratingStoryboard] = useState(false)
   const { data, loading, error, refresh } = useBookOutputs(book.id)
 
   const handleRefreshAll = useCallback(() => {
@@ -157,6 +161,90 @@ export default function ProductWorkspace({
     onBookChange,
     onRefreshAll: handleRefreshAll,
   })
+
+  const handleGenerateScripts = useCallback(async () => {
+    if (isGeneratingScripts) return
+    setIsGeneratingScripts(true)
+    try {
+      const genre = 'short_drama'
+      const res = await fetch('/api/pipeline/script', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          book_id: book.id,
+          genre,
+          episode_count: episodeCount || 1,
+        }),
+      })
+      const data = await res.json()
+      if (data.task_id) {
+        const poll = async () => {
+          try {
+            const pr = await fetch(`/api/pipeline/task/${data.task_id}`)
+            const pd = await pr.json()
+            if (pd.status === 'running' || pd.status === 'queued') {
+              setTimeout(poll, 3000)
+            } else if (pd.status === 'done') {
+              setIsGeneratingScripts(false)
+              handleRefreshAll()
+            } else {
+              setIsGeneratingScripts(false)
+              console.error('Pipeline failed:', pd.error)
+            }
+          } catch {
+            setIsGeneratingScripts(false)
+          }
+        }
+        poll()
+      } else {
+        setIsGeneratingScripts(false)
+      }
+    } catch {
+      setIsGeneratingScripts(false)
+    }
+  }, [book.id, episodeCount, isGeneratingScripts, handleRefreshAll])
+
+  const handleGenerateStoryboard = useCallback(async () => {
+    if (isGeneratingStoryboard) return
+    setIsGeneratingStoryboard(true)
+    try {
+      const genre = 'short_drama'
+      const res = await fetch('/api/pipeline/storyboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          book_id: book.id,
+          genre,
+          episodes: [1],
+        }),
+      })
+      const data = await res.json()
+      if (data.task_id) {
+        const poll = async () => {
+          try {
+            const pr = await fetch(`/api/pipeline/storyboard/task/${data.task_id}`)
+            const pd = await pr.json()
+            if (pd.status === 'running') {
+              setTimeout(poll, 3000)
+            } else if (pd.status === 'done' || pd.status === 'partial') {
+              setIsGeneratingStoryboard(false)
+              handleRefreshAll()
+            } else {
+              setIsGeneratingStoryboard(false)
+              console.error('Storyboard generation failed:', pd.error)
+            }
+          } catch {
+            setIsGeneratingStoryboard(false)
+          }
+        }
+        poll()
+      } else {
+        setIsGeneratingStoryboard(false)
+      }
+    } catch {
+      setIsGeneratingStoryboard(false)
+    }
+  }, [book.id, isGeneratingStoryboard, handleRefreshAll])
 
   const characterAssets = useMemo(
     () => buildCharacterAssetSummaries(makeups),
@@ -463,6 +551,10 @@ export default function ProductWorkspace({
     recoveryFocus,
     onRefreshAll: handleRefreshAll,
     onDismissStoryboardRecoveryFocus: dismissStoryboardRecoveryFocus,
+    onGenerateScripts: handleGenerateScripts,
+    isGeneratingScripts,
+    onGenerateStoryboard: handleGenerateStoryboard,
+    isGeneratingStoryboard,
     allAssetsCount: allAssets.length,
     shotEpisodes,
     assetEpisodeFilter,

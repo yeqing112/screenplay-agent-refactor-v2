@@ -98,7 +98,7 @@ class QAAgent(BaseAgent):
             bible_chars=bible_chars[:config.CHAR_INFO_CHARS],
             portrait_info=portrait_info[:config.PORTRAIT_EXCERPT_CHARS],
             episode=episode,
-            script=script_content[:5000],
+            script=script_content[:config.SCRIPT_EXCERPT_CHARS],
         )
         skill_block = build_production_skill_prompt_block(self.book_id, "qa")
         execution_plan = build_script_skill_execution_plan(self.book_id, episode_outline={"episode": episode})
@@ -459,6 +459,128 @@ class QAAgent(BaseAgent):
     def _qa_output_path(self):
         return config.output_path(self._book_title, "qa", f"episode_{self._episode:02d}_qa.json")
 
+    def _structural_preflight_check(self, script_content: str) -> list[dict]:
+        """Schema-based scene-level preflight check. No LLM dependency.
+        
+        Validates scene structure against formal schema:
+        - Scene must have end marker (except last scene)
+        - Dialogue quotes must be balanced
+        - Last content line must be a valid ending type
+        """
+        issues: list[dict] = []
+        if not script_content:
+            return issues
+
+        # Define valid line types for scene endings
+        LINE_TYPE_SCHEMAS = {
+            "scene_header": lambda l: bool(re.match(r'^##\s*场景', l)),
+            "separator": lambda l: l == "---",
+            "stage_direction": lambda l: l.startswith("*") or l.startswith("**["),
+            "scene_marker": lambda l: any(m in l for m in ["【场景开始】", "【场景结束】", "[画面渐隐]", "[画面渐暗]", "[淡出]"]),
+            "dialogue": lambda l: bool(re.match(r'^\*\*[^*]+\*\*[：:]', l)),
+            "action": lambda l: bool(re.match(r'^\*[^*]+\*$', l)),
+            "description": lambda l: True,  # Default type
+        }
+        
+        # Define valid ending line types
+        VALID_ENDING_TYPES = {"scene_marker", "dialogue", "action"}
+        
+        # Extract scene boundaries
+        scene_starts = [m.start() for m in re.finditer(r"^##\s*场景", script_content, re.MULTILINE)]
+        if not scene_starts:
+            return issues
+
+        for i, start in enumerate(scene_starts):
+            end = scene_starts[i + 1] if i + 1 < len(scene_starts) else len(script_content)
+            scene_text = script_content[start:end]
+            scene_label = f"场景{i + 1}"
+
+            # 1. Check scene end marker
+            if "【场景结束】" not in scene_text:
+                issues.append({
+                    "type": "format",
+                    "severity": "medium",
+                    "title": f"{scene_label}结尾缺少结束标记",
+                    "description": f"{scene_label}剧本中没有【场景结束】标记，可能导致结构边界模糊。",
+                    "location": {"script_section": scene_label, "line_range": []},
+                    "suggestion": f"在{scene_label}末尾添加【场景结束】标记。",
+                    "fix_mode": "auto",
+                    "rule_family": "output_completeness",
+                    "structure_layer": "compiler_layer",
+                    "repair_stage": "screenplay_compile",
+                })
+
+            # 2. Check dialogue quote balance
+            left = scene_text.count("「") + scene_text.count("『")
+            right = scene_text.count("」") + scene_text.count("』")
+            if left != right and left > 0:
+                issues.append({
+                    "type": "format",
+                    "severity": "medium",
+                    "title": f"{scene_label}对白引号未闭合",
+                    "description": f"{scene_label}中左引号{left}个，右引号{right}个，不匹配。",
+                    "location": {"script_section": scene_label, "line_range": []},
+                    "suggestion": "修复对白引号闭合。",
+                    "fix_mode": "auto",
+                    "rule_family": "output_completeness",
+                    "structure_layer": "compiler_layer",
+                    "repair_stage": "screenplay_compile",
+                })
+
+            # 3. Schema-based truncation check
+            # Classify each line by type
+            line_types = []
+            for l in scene_text.rstrip().split("\n"):
+                l = l.strip()
+                if not l:
+                    continue
+                
+                # Determine line type using schema
+                line_type = "description"
+                for type_name, type_check in LINE_TYPE_SCHEMAS.items():
+                    if type_check(l):
+                        line_type = type_name
+                        break
+                
+                line_types.append((l, line_type))
+            
+            if not line_types:
+                continue
+            
+            # Find last non-structural line
+            last_content = ""
+            last_type = ""
+            for content, line_type in reversed(line_types):
+                if line_type not in ("scene_header", "separator", "scene_marker"):
+                    last_content = content
+                    last_type = line_type
+                    break
+            
+            if not last_content:
+                continue
+            
+            # Check if last line is a valid ending type
+            if last_type not in VALID_ENDING_TYPES:
+                # Additional check: does it end with valid punctuation?
+                valid_punct = set("。！？）】」』…\u2026.!?)\"\u201d\u2019")
+                ends_with_punct = last_content[-1] in valid_punct if last_content else True
+                
+                if not ends_with_punct:
+                    issues.append({
+                        "type": "format",
+                        "severity": "low",
+                        "title": f"{scene_label}结尾文本可能不完整",
+                        "description": f"{scene_label}最后一行'{last_content[:50]}'可能不完整。",
+                        "location": {"script_section": scene_label, "line_range": []},
+                        "suggestion": "检查场景结尾是否完整。",
+                        "fix_mode": "auto",
+                        "rule_family": "output_completeness",
+                        "structure_layer": "compiler_layer",
+                        "repair_stage": "screenplay_compile",
+                    })
+
+        return issues
+
     def run(self, episode: int) -> dict:
         try:
             with self.session() as session:
@@ -488,6 +610,20 @@ class QAAgent(BaseAgent):
                 )
                 system = "你是短剧剧本质检编辑。必须遵守 Production Skill 约束并只输出合法 JSON。"
                 result = self._call_structured_qa(prompt, system)
+
+                # 结构化预检：场景结束标记、引号闭合等
+                structural_issues = self._structural_preflight_check(script.content or "")
+                if structural_issues:
+                    existing_issues = result.get("issues", [])
+                    existing_titles = {i.get("title", "") for i in existing_issues}
+                    for si in structural_issues:
+                        if si.get("title", "") not in existing_titles:
+                            existing_issues.append(si)
+                    result["issues"] = existing_issues
+                    result["overall_score"] = self._estimate_overall_score(
+                        result.get("issues", []), result.get("errors", [])
+                    )
+
                 error_count = len(_qa_issue_items(result))
 
                 session.add(
