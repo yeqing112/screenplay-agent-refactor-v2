@@ -1,7 +1,8 @@
 {
   "scripts": {
     "e2e:smoke": "node scripts/e2e-smoke.js",
-    "e2e:qa": "node scripts/e2e-qa-workbench.js"
+    "e2e:qa": "node scripts/e2e-qa-workbench.js",
+    "e2e:business": "node scripts/e2e-formal-workspace-business-flow.js"
   },
   "dependencies": {
     "playwright": "^1.62.1"
