@@ -8,7 +8,7 @@
 
 - **全自动管线** — 小说导入 → 逐章分析 → 世界观 Bible → 别名解析 → 人物画像 → 改编方案 → 分集大纲 → 剧本写作 → 质检 → 重写闭环 → 分镜生成 → 视觉设定，10+ 步骤端到端自动化
 - **多体裁支持** — 内置「竖屏短剧」「漫剧」「电影」「电视剧」四种赛道，参数化配置，新增赛道无需写 Python
-- **可视化编辑器** — React 前端提供导演模式（分步骤操作）和原型模式（视频生产管线节点编辑器，React Flow 驱动）
+- **单一正式工作台** — React 前端统一到项目列表 → 正式工作台，覆盖内容准备、改编方向、人物质检、剧本、镜头、创作画布、资产、QA、任务、导出与模型管理
 - **断点续跑** — 已完成的步骤自动跳过，1200+ 章节批量处理无压力
 - **本地优先** — 所有数据存储于本地 SQLite + ChromaDB，仅 LLM 调用外部 API
 
@@ -56,35 +56,24 @@ screenplay-agent/
 │   ├── visual.py           # 视觉资产
 │   ├── bridge.py           # 关联表
 │   └── kv.py               # 键值存储
-├── nodes/                  # DevCanvas 节点引擎
+├── nodes/                  # Legacy DevCanvas 节点引擎（兼容保留，正式工作台不直接依赖）
 │   ├── handlers/           # 节点处理器
 │   ├── registry.py         # 节点注册表
 │   └── runner.py           # 节点运行器
 ├── web/                    # React 前端
 │   └── src/
-│       ├── components/         # 通用组件
-│       │   ├── ProductionMode.tsx  # 导演模式（生产管线主界面）
-│       │   ├── Canvas.tsx       # 原型模式画布
-│       │   ├── AgentNode.tsx    # Agent 节点组件
-│       │   ├── NodePanel.tsx    # 节点面板
-│       │   ├── NodeConfigPanel.tsx # 节点配置面板
-│       │   ├── PromptSelector.tsx  # 提示词选择器
-│       │   ├── ResultRenderer.tsx  # 结果渲染器
-│       │   ├── ResultsPanel.tsx    # 结果面板
-│       │   ├── HistorySidebar.tsx  # 历史侧边栏
-│       │   ├── SearchBar.tsx       # 搜索栏
-│       │   └── pipelineLayout.ts   # 管线布局
-│       ├── prototyping/      # 原型模式组件
-│       │   ├── DirectorMode.tsx    # 原型导演布局
-│       │   ├── SceneComposer.tsx   # 视频生产管线
-│       │   ├── VisualPanel.tsx     # 视觉资产面板
-│       │   ├── mockData.ts         # Mock 数据
-│       │   ├── useMockOutputs.ts   # Mock 输出 Hook
-│       │   └── useTaskRunner.ts    # 任务运行器 Hook
+│       ├── components/         # 正式工作台组件
+│       │   ├── ProductWorkspace.tsx              # 单一正式工作台编排入口
+│       │   ├── ProductWorkspaceShell.tsx         # 工作台外壳与导航
+│       │   ├── ProductWorkspaceSectionContent.tsx # 分区内容路由
+│       │   ├── ProductWorkspace*Section.tsx      # 控制台/内容/剧本/镜头/资产/QA/任务/导出等分区
+│       │   └── productWorkspace*Controller.ts    # 工作台数据、导航、资产、上游状态控制器
 │       ├── pages/
 │       │   ├── ProjectsPage.tsx    # 项目列表
-│       │   └── CanvasPage.tsx      # 编辑器主页
-│       └── types/                  # TypeScript 类型定义
+│       │   └── CanvasPage.tsx      # 正式工作台入口
+│       ├── hooks/                  # 正式工作台与业务 Hook
+│       ├── services/               # 模型注册表、API 服务
+│       └── domain/                 # 业务输出归一化
 ├── prompts/                # Prompt 模板（.txt 文件）
 ├── scripts/                # 辅助脚本
 ├── tools/                  # 开发工具
@@ -222,11 +211,12 @@ npx vite --host
 ### 在 UI 中的操作流程
 
 1. 从**项目列表**选择一个书（或导入新书）
-2. 进入**导演模式**（默认视图）
-3. 在「剧本准备」步骤配置参数（体裁、集数），点击「**一键生产完整剧本**」
-4. 剧本完成后切换到「**分镜生产**」，选集生成分镜
-5. 分镜完成后切换到「**视觉资产**」，生成视觉设定（定妆图、场景、道具、时代色板）
-6. 最后「**导出**」汇总所有产出
+2. 进入**正式工作台**（唯一项目工作入口）
+3. 在「内容准备」「改编方向」确认书稿、体裁、集数与上游产出
+4. 在「剧本工作台」生成、审阅、修复和回滚剧本版本
+5. 在「镜头工作台」生成分镜、编译/锁定提示词并提交验收记录
+6. 在「创作画布」「资产中心」「任务中心」串联图片、视频、参考图与长任务回收
+7. 在「QA 修复」「导出中心」完成质量闭环与交付汇总
 
 ---
 
@@ -303,17 +293,17 @@ outputs/{小说名称}/
 
 ---
 
-## 原型模式
+## 正式工作台模块
 
-右上角切换到「**原型**」标签页，体验视频生产管线节点编辑器（React Flow 驱动）。
+正式工作台是当前唯一用户工作入口，侧栏模块包括：
 
-支持可视化工作流：
-- **分镜源节点** — 加载剧本分镜
-- **文生图节点** — 将分镜描述转为图像
-- **视频生成节点** — 将图像序列转为视频
-- **合成器节点** — 组合最终输出
+- **项目控制台**：项目状态、生产进度、上游缺口与继续动作。
+- **内容准备 / 改编方向 / 人物质检**：书稿、体裁、角色与改编输入治理。
+- **剧本工作台 / QA 修复**：剧本生成、质检、人工修复、diff 预览、应用修复与版本回滚。
+- **镜头工作台 / 创作画布**：分镜生成、提示词编译与锁定、图片/视频创作链路。
+- **资产中心 / 任务中心 / 导出中心 / 模型管理**：视觉资产、长任务恢复、交付导出与模型配置。
 
-原型组件位于 `web/src/prototyping/` 目录。
+历史旧版生产、创作沙盘、高级编排和产品原型 Demo 已不再作为用户入口或新增功能承载面。
 
 ---
 
@@ -333,7 +323,7 @@ outputs/{小说名称}/
 - **框架**: React 18 + TypeScript
 - **构建**: Vite 5
 - **UI 组件库**: Tailwind CSS + Lucide React Icons
-- **节点编辑器**: React Flow (React Flow v11)
+- **创作画布**: React Flow (React Flow v11)，作为正式工作台内的一级模块
 - **状态管理**: React Hooks（无额外状态库）
 
 ### AI
@@ -354,9 +344,11 @@ outputs/{小说名称}/
 
 ### 前端
 
-- 主要业务逻辑在 `web/src/components/ProductionMode.tsx`
-- 原型组件在 `web/src/prototyping/`
-- 类型定义在 `web/src/types/`
+- 项目入口为 `web/src/pages/ProjectsPage.tsx` → `web/src/pages/CanvasPage.tsx`
+- 正式工作台编排入口为 `web/src/components/ProductWorkspace.tsx`
+- 分区 UI 位于 `web/src/components/ProductWorkspace*Section.tsx`
+- 工作台数据、导航、资产和上游状态控制器位于 `web/src/components/productWorkspace*Controller.ts`
+- 业务输出归一化位于 `web/src/domain/`，模型注册表位于 `web/src/services/`
 
 ### QA 反馈闭环
 

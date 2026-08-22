@@ -25,12 +25,9 @@ Screenplay Agent 是一个 AI 驱动的剧本智能生产平台。输入小说�
 │  ┌────────────────────────────────────────────────────┐  │
 │  │ React + Vite + TypeScript + Tailwind CSS           │  │
 │  │  ┌──────────────────────────────────────────────┐  │  │
-│  │  │  Director Mode (ProductionMode.tsx)          │  │  │
-│  │  │  剧本准备 → 分镜生产 → 视觉资产 → 导出       │  │  │
-│  │  └──────────────────────────────────────────────┘  │  │
-│  │  ┌──────────────────────────────────────────────┐  │  │
-│  │  │  Prototype (原型模式)                        │  │  │
-│  │  │  SceneComposer (视频生产管线节点编辑器)        │  │  │
+│  │  │  ProductWorkspace（正式工作台）              │  │  │
+│  │  │  项目控制台 → 内容准备 → 改编/人物质检       │  │  │
+│  │  │  剧本 → 镜头 → 创作画布 → 资产/任务/导出     │  │  │
 │  │  └──────────────────────────────────────────────┘  │  │
 │  └────────────────────────────────────────────────────┘  │
 └──────────────────────┬───────────────────────────────────┘
@@ -119,7 +116,7 @@ models/            # SQLAlchemy ORM 模型
   ├── character.py #   角色
   ├── bridge.py    #   关系桥接
   └── kv.py        #   KV 存储
-nodes/             # DevCanvas 节点引擎（低代码节点系统）
+nodes/             # Legacy DevCanvas 节点引擎（兼容保留，正式工作台不直接依赖）
   ├── registry.py  #   节点注册中心
   ├── runner.py    #   节点执行器 + 工作流
   └── handlers/    #   各执行节点处理器
@@ -139,27 +136,20 @@ web/
 │   ├── App.tsx               # 路由
 │   ├── pages/
 │   │   ├── ProjectsPage.tsx  # 项目列表页（默认首页）
-│   │   └── CanvasPage.tsx    # 项目详情页（模式切换入口）
+│   │   └── CanvasPage.tsx    # 项目详情页（正式工作台入口）
 │   ├── components/
-│   │   ├── ProductionMode.tsx # 导演模式主组件（1690行，核心界面）
-│   │   ├── Canvas.tsx        # DevCanvas 编辑器
-│   │   ├── AgentNode.tsx     # 节点 UI
-│   │   ├── NodePanel.tsx     # 节点面板
-│   │   ├── NodeConfigPanel.tsx # 节点配置
-│   │   ├── HistorySidebar.tsx # 历史侧栏
-│   │   ├── SearchBar.tsx     # 搜索栏
-│   │   ├── ResultRenderer.tsx # 结果渲染
-│   │   ├── ResultsPanel.tsx  # 结果面板
-│   │   └── PromptSelector.tsx # 提示词选择器
-│   ├── prototyping/          # 原型模式组件
-│   │   ├── DirectorMode.tsx  # 原型导演模式布局（参考用）
-│   │   ├── SceneComposer.tsx # 视频生产管线节点编辑器
-│   │   ├── VisualPanel.tsx   # 视觉资产面板
-│   │   ├── mockData.ts       # Mock 数据
-│   │   ├── useMockOutputs.ts # Mock 数据 Hook
-│   │   └── useTaskRunner.ts  # 模拟任务运行器
-│   ├── hooks/useNodeExecution.ts
-│   └── types/nodes.ts
+│   │   ├── ProductWorkspace.tsx               # 正式工作台编排入口
+│   │   ├── ProductWorkspaceShell.tsx          # 工作台外壳、导航、项目标题区
+│   │   ├── ProductWorkspaceSectionContent.tsx # 工作台分区内容路由
+│   │   ├── ProductWorkspace*Section.tsx       # 控制台/内容/剧本/镜头/画布/资产/QA/任务/导出/模型
+│   │   ├── productWorkspace*Controller.ts     # 数据、导航、上游状态、资产视图控制器
+│   │   └── ResultRenderer.tsx                 # 结构化结果渲染
+│   ├── hooks/
+│   │   └── useBookOutputs.ts                  # 正式输出加载
+│   ├── domain/
+│   │   └── bookOutputs.ts                     # 业务输出归一化
+│   └── services/
+│       └── modelRegistry.ts                   # 模型注册表
 ├── vite.config.ts            # Vite 配置（含 API proxy）
 ├── package.json
 └── tsconfig.json
@@ -219,7 +209,8 @@ npx vite --host
 
 ## 开发注意事项
 
-- `ProductionMode.tsx` (约1700行) 是核心 UI 组件，包含全部状态管理和 API 调用逻辑。如需重构建议参考 `prototyping/DirectorMode.tsx` 的分步式设计
+- `ProductWorkspace.tsx` 是当前唯一项目工作台入口；新增能力应落到对应 `ProductWorkspace*Section.tsx` 或 `productWorkspace*Controller.ts`，避免重新形成巨型单文件。
 - 后端 pipeline 是后台异步任务（`BackgroundTasks`），通过轮询 `/api/pipeline/task/{id}` 获取进度
 - ChromaDB 用于语义搜索（向量维度 768，nomic-embed-text 模型）
 - 多体裁支持通过 `genres/` 目录下的配置文件和 `agents/adapter.py` 中的策略模式实现
+- `/api/workflows*`、`/api/nodes*`、`/api/runs*` 属于 Legacy DevCanvas 兼容接口；正式工作台当前不直接依赖，迁移/关停需另行完成历史数据与测试兼容评估。

@@ -1,5 +1,40 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-22 — 生产级推进：旧执行层前端残留清理
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：单一正式工作台收敛后，前端仍残留旧 DevCanvas/节点执行层组件，虽然已经不可达，但会继续放大维护面并误导后续开发。
+
+### 变更概览
+
+- **删除不可达旧前端组件**
+  - 删除 `AgentNode`、`HistorySidebar`、`PromptSelector`、`ResultsPanel`、`pipelineLayout` 和 `types/nodes`。
+  - 删除前复核当前 `web/src` 已无正式工作台 import 依赖。
+
+- **同步当前真实架构**
+  - `README.md` 改为项目列表 -> 正式工作台的单入口描述。
+  - `ARCHITECTURE.md` 改为 `ProductWorkspace` 架构，标注 `nodes/` 与 `/api/workflows*`、`/api/nodes*`、`/api/runs*` 为 legacy 兼容层。
+  - 蓝图、实施方案、阶段任务验收标准同步“禁止重新形成巨型工作台组件”的当前口径。
+
+- **保留后端兼容层**
+  - 暂不删除 `/api/workflows*`、`/api/nodes*`、`/api/runs*`。
+  - 原因：历史 workflow/run 数据、后端 HTTP 错误测试和 API 兼容策略需要独立迁移/封存决策。
+
+### 验证结果
+
+- 前端单元测试：`221 passed`
+- 前端生产构建：通过
+- 后端兼容接口专项：`python -m unittest tests.test_api_http_errors`，`6 passed`
+- 正式工作台业务 E2E：`npm run e2e:business`，通过
+
+### 后续建议
+
+1. 对 legacy 后端执行层做专项只读化/封存/删除评估。
+2. 增加源码守卫，避免正式工作台重新引入旧节点执行层 UI/type。
+3. 待创作画布领域接口稳定后，再迁移仍被正式工作台使用的 `/api/prototyping/*` 创意任务兼容接口。
+
+---
+
 ## 2026-08-22 — 前端工作台收敛为正式工作台
 
 > 对应分支：`codex/unify-formal-workspace`
