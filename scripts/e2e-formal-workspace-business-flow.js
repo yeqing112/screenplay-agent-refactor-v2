@@ -552,25 +552,40 @@ async function runBusinessFlow() {
       throw new Error(`Expected 2 seeded chapters, got ${chapters.length}.`);
     }
 
-    await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/adaptation-state`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        selectedId: "e2e-main-direction",
-        selectedName: "雨夜悬疑短剧",
-        customNote: "E2E business flow keeps formal direction locked.",
-        lockedAt: new Date().toISOString(),
-      }),
-    });
-    await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/script-decisions/${FIXTURE_EPISODE}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        lockedAt: new Date().toISOString(),
-        releasedAt: new Date().toISOString(),
-        note: "E2E business flow releases episode to storyboard.",
-      }),
-    });
+    body = await clickWorkspaceTab(page, "改编方向");
+    if (!body.includes("改编方向候选") || !body.includes("Production Skill")) {
+      throw new Error("Adaptation workspace did not expose candidate and production skill controls.");
+    }
+    const firstAdaptationCandidate = page.getByRole("button", { name: /竖屏情绪悬疑短剧/ }).first();
+    if ((await firstAdaptationCandidate.count()) === 0) {
+      throw new Error("Adaptation candidate card was not available for UI locking flow.");
+    }
+    await firstAdaptationCandidate.click();
+    await page.waitForTimeout(500);
+
+    const lockSkillButton = page.getByRole("button", { name: "锁定 Production Skill" }).first();
+    if ((await lockSkillButton.count()) > 0 && await lockSkillButton.isEnabled()) {
+      await lockSkillButton.click();
+      await page.waitForTimeout(800);
+    }
+
+    const lockAdaptationButton = page.getByRole("button", { name: "锁定为主方向" }).first();
+    if ((await lockAdaptationButton.count()) > 0 && await lockAdaptationButton.isEnabled()) {
+      await lockAdaptationButton.click();
+      await page.waitForTimeout(1000);
+    }
+    body = await page.locator("body").innerText();
+    if (!body.includes("当前主方向") || !body.includes("项目级方向状态") || !body.includes("已锁定")) {
+      throw new Error("Adaptation direction did not lock through the real UI flow.");
+    }
+    const adaptationState = await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/adaptation-state`);
+    if (!adaptationState.locked_at || !String(adaptationState.selected_name || "").includes("竖屏情绪悬疑短剧")) {
+      throw new Error(`Adaptation lock did not persist expected state: ${JSON.stringify(adaptationState)}`);
+    }
+    const productionSkillState = await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/production-skill-state`);
+    if (!productionSkillState.locked_at || !productionSkillState.skill_id) {
+      throw new Error(`Production skill lock did not persist expected state: ${JSON.stringify(productionSkillState)}`);
+    }
 
     body = await clickWorkspaceTab(page, "剧本工作台");
     if (!body.includes("林夏推门进来") && !body.includes("雨夜账册")) {
@@ -645,6 +660,16 @@ async function runBusinessFlow() {
       throw new Error("Delivery center did not expose delivery readiness and QA blocking state.");
     }
 
+    body = await clickWorkspaceTab(page, "创作画布");
+    if (!body.includes("React Flow") || !body.includes("老茶馆") || !body.includes("第 1 集质检") || !body.includes("第 1 集交付")) {
+      throw new Error("Creative canvas did not expose the linked script, shot, QA, and delivery graph.");
+    }
+
+    body = await clickWorkspaceTab(page, "模型管理");
+    if (!body.includes("文本 / LLM") || !body.includes("向量 / Embedding") || !body.includes("图像 / Image") || !body.includes("视频 / Video")) {
+      throw new Error("Model management did not expose the full default model chain.");
+    }
+
     await clickWorkspaceTab(page, "QA 修复");
     await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/qa/episodes/${FIXTURE_EPISODE}/sync`, { method: "POST" });
     await page.reload({ waitUntil: "domcontentloaded" });
@@ -668,30 +693,21 @@ async function runBusinessFlow() {
       "店长看见收据上的签名与缺页边角吻合，沉默片刻，终于选择相信她。",
     ].join("\n");
 
-    const preview = await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/qa/issues/${issue.issue_id}/preview-fix`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mode: "manual", optionId: "E2E-BIZ", patchedText }),
-    });
-    if (!preview.diff_text?.includes("染水收据")) {
-      throw new Error("QA preview diff did not contain patched evidence.");
+    const repairBox = page.getByPlaceholder("选择修复方案后会填入这里，也可以直接人工编辑。").first();
+    if ((await repairBox.count()) === 0) {
+      throw new Error("QA repair textarea was not available for manual browser repair.");
+    }
+    await repairBox.fill(patchedText);
+
+    await page.getByRole("button", { name: "预览 diff" }).click();
+    await page.waitForTimeout(1000);
+    body = await page.locator("body").innerText();
+    if (!body.includes("修复 Diff") || !body.includes("染水收据摊开")) {
+      throw new Error("QA diff preview did not render the manual evidence patch in the UI.");
     }
 
-    const apply = await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/qa/issues/${issue.issue_id}/apply-fix`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        mode: "manual",
-        optionId: "E2E-BIZ",
-        patchedText,
-        changeReason: "E2E business flow manual QA repair",
-        operatorName: "e2e-business",
-        rerunQa: false,
-      }),
-    });
-    if (!apply.version?.id || !apply.diff_text?.includes("染水收据")) {
-      throw new Error(`QA apply did not create expected script version: ${JSON.stringify(apply)}`);
-    }
+    await page.getByRole("button", { name: "应用修复并复检" }).click();
+    await page.waitForTimeout(1800);
 
     const outputsAfterApply = await readJsonFromPage(page, `/api/pipeline/book/${FIXTURE_BOOK_ID}/outputs`);
     const scriptAfterApply = outputsAfterApply.scripts?.find(item => Number(item.episode) === FIXTURE_EPISODE)?.content || "";
@@ -703,22 +719,29 @@ async function runBusinessFlow() {
     await page.waitForTimeout(800);
     await clickWorkspaceTab(page, "QA 修复");
     body = await page.locator("body").innerText();
-    if (!body.includes("v") || !body.includes("e2e-business")) {
+    if (!body.includes("v2") || !body.includes("semi_auto修复")) {
       throw new Error("QA workbench did not render the repair version after apply.");
     }
-
-    const rollback = await readJsonFromPage(
-      page,
-      `/api/books/${FIXTURE_BOOK_ID}/scripts/${FIXTURE_EPISODE}/versions/${apply.version.id}/rollback`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ operatorName: "e2e-business", rerunQa: false }),
-      },
+    const workbenchAfterApply = await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/qa/workbench`);
+    const fixVersion = (workbenchAfterApply.episodes?.[0]?.versions || []).find(
+      version => String(version.change_type || "").toLowerCase() !== "baseline",
     );
-    if (rollback.version?.change_type !== "rollback") {
-      throw new Error(`Rollback did not create rollback version: ${JSON.stringify(rollback)}`);
+    if (!fixVersion?.id || String(fixVersion.change_type || "").toLowerCase() !== "semi_auto_fix") {
+      throw new Error(`UI apply did not create expected script fix version: ${JSON.stringify(workbenchAfterApply.episodes?.[0]?.versions || [])}`);
     }
+
+    const rollbackButton = page.getByRole("button", { name: "回滚到修复前" }).first();
+    if ((await rollbackButton.count()) === 0) {
+      throw new Error("QA rollback button was not available after applying a script repair.");
+    }
+    await rollbackButton.click();
+    await page.waitForTimeout(500);
+    const confirmRollbackButton = page.getByRole("button", { name: "确认回滚并复检" }).first();
+    if ((await confirmRollbackButton.count()) === 0) {
+      throw new Error("QA rollback confirmation was not available after clicking rollback.");
+    }
+    await confirmRollbackButton.click();
+    await page.waitForTimeout(1800);
 
     const outputsAfterRollback = await readJsonFromPage(page, `/api/pipeline/book/${FIXTURE_BOOK_ID}/outputs`);
     const scriptAfterRollback = outputsAfterRollback.scripts?.find(item => Number(item.episode) === FIXTURE_EPISODE)?.content || "";
@@ -731,13 +754,17 @@ async function runBusinessFlow() {
     if (versions.length < 3) {
       throw new Error(`Expected baseline, fix, and rollback versions; got ${versions.length}.`);
     }
+    const rollbackVersion = versions.find(version => String(version.change_type || "").toLowerCase() === "rollback");
+    if (!rollbackVersion?.label?.includes("回滚到") || rollbackVersion.label.includes("鍥炴粴")) {
+      throw new Error(`Rollback version label is not production-safe Chinese: ${JSON.stringify(rollbackVersion)}`);
+    }
 
     if (failures.length) {
       throw new Error(`Browser business E2E found failures:\n${failures.join("\n")}`);
     }
 
     log(`Formal workspace business flow passed for project #${FIXTURE_BOOK_ID}.`);
-    log(`QA issue ${issue.issue_id} generated version ${apply.version.id} and rollback ${rollback.version.id}.`);
+    log(`QA issue ${issue.issue_id} generated version ${fixVersion.id} and rollback ${rollbackVersion.id}.`);
     log(`Acceptance record ${latestAcceptance.id} persisted with tags: ${latestAcceptance.failure_tags.join(", ")}.`);
   } finally {
     await browser.close();

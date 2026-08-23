@@ -1,5 +1,30 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-24 — 补齐正式工作台真浏览器主链路回归
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：手工真浏览器流程已经证明正式工作台主链路可走通，但固定回归中仍有部分关键动作由 API 代替 UI 操作，无法完全防住真实用户路径退化。
+
+### 变更概览
+
+- **强化 `npm run e2e:business` 真浏览器主链路**
+  - 改编方向改为通过 UI 选择候选、锁定 Production Skill、锁定项目主方向，并验证后端持久化。
+  - QA 修复改为通过 UI 填写修复片段、预览 diff、应用修复并复检、确认回滚。
+  - 新增创作画布与模型管理断言，覆盖剧本/分镜/资产/图片/视频/QA/交付图谱，以及 LLM/Embedding/Image/Video 默认模型链路。
+  - 继续验证提示词锁定、镜头验收记录保存、资产中心、任务中心、导出中心和旧入口不可见。
+
+- **修复 QA 脚本回滚版本乱码**
+  - 回滚版本 label 从损坏文本 `鍥炴粴鍒?` 修正为 `回滚到`。
+  - 后端测试与真浏览器 E2E 均新增“不出现乱码”的断言。
+
+### 验证结果
+
+- `python -m unittest tests.test_qa_workbench_flow`：`14 passed`
+- `node --check scripts/e2e-formal-workspace-business-flow.js`：通过
+- `npm run e2e:business`：通过
+
+---
+
 ## 2026-08-22 — 生产级推进：旧执行层前端残留清理
 
 > 对应分支：`codex/unify-formal-workspace`

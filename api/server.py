@@ -11582,7 +11582,7 @@ def rollback_script_version(book_id: int, episode: int, version_id: int, req: QA
             episode=episode,
             script_id=script.id,
             version_no=version_no,
-            label=f"v{version_no} 鍥炴粴鍒?{target.label}",
+            label=f"v{version_no} 回滚到 {target.label}",
             change_type="rollback",
             change_reason=f"Rollback from version {target.id}",
             qa_issue_key=target.qa_issue_key or "",

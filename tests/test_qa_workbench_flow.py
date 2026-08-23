@@ -557,6 +557,8 @@ class QAWorkbenchFlowTests(unittest.TestCase):
         self.assertEqual(rollback_response.status_code, 200)
         payload = rollback_response.json()
         self.assertEqual(payload["version"]["change_type"], "rollback")
+        self.assertIn("回滚到", payload["version"]["label"])
+        self.assertNotIn("鍥炴粴", payload["version"]["label"])
 
         with Session() as session:
             script = session.query(Script).filter(Script.book_id == self.book_id, Script.episode == self.episode).first()
