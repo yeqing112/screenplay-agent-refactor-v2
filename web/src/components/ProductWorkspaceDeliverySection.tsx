@@ -334,7 +334,8 @@ export default function ProductWorkspaceDeliverySection({
     setRecordMessage('')
 
     try {
-      const response = await fetch(`/api/books/${bookId}/export-records`, { cache: 'no-store' })
+      const params = new URLSearchParams({ limit: '500' })
+      const response = await fetch(`/api/books/${bookId}/export-records?${params.toString()}`, { cache: 'no-store' })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
 
       const payload = await response.json()
@@ -342,6 +343,9 @@ export default function ProductWorkspaceDeliverySection({
 
       setRawRecords(nextRecords)
       setRecordState('idle')
+      if (payload?.has_more) {
+        setRecordMessage(`已加载最近 ${nextRecords.length} 条导出资产；更早记录将在后续分页浏览中继续展开。`)
+      }
     } catch (error) {
       setRawRecords([])
       setRecordState('error')

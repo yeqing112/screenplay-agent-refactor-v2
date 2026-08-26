@@ -1699,7 +1699,12 @@ export default function ProductWorkspaceStoryboardSection({
     setMachinePromptRecordHistoryState('loading')
     setMachinePromptRecordMessage('正在读取当前镜头的机器提示词导出历史。')
     try {
-      const response = await fetch(`/api/books/${_bookId}/export-records`, { cache: 'no-store' })
+      const params = new URLSearchParams({
+        record_type: 'storyboard_machine_prompt_export',
+        episode: String(selectedShot.episode),
+        limit: '100',
+      })
+      const response = await fetch(`/api/books/${_bookId}/export-records?${params.toString()}`, { cache: 'no-store' })
       if (!response.ok) {
         let detail = ''
         try {

@@ -1,5 +1,6 @@
 import json
 import unittest
+from datetime import datetime, timedelta
 
 from fastapi.testclient import TestClient
 
@@ -99,6 +100,110 @@ class ProductionExportRecordTests(unittest.TestCase):
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0]["summary"], "已导出第 1 版交付包")
         self.assertEqual(records[0]["pending_review_shots"], 2)
+        self.assertEqual(list_response.json()["total"], 1)
+        self.assertEqual(list_response.json()["returned"], 1)
+
+    def test_export_record_list_supports_filters_search_and_pagination(self):
+        now = datetime.utcnow()
+        with Session() as session:
+            session.add_all(
+                [
+                    ProductionExportRecord(
+                        book_id=self.book_id,
+                        export_format="delivery",
+                        status="completed",
+                        total_shots=10,
+                        deliverable_shots=10,
+                        pending_review_shots=0,
+                        blocked_shots=0,
+                        summary="第 1 集正式交付包",
+                        meta_info=json.dumps({"episode": 1}, ensure_ascii=False),
+                        created_at=now + timedelta(seconds=1),
+                        updated_at=now + timedelta(seconds=1),
+                    ),
+                    ProductionExportRecord(
+                        book_id=self.book_id,
+                        export_format="delivery",
+                        status="blocked",
+                        total_shots=8,
+                        deliverable_shots=6,
+                        pending_review_shots=1,
+                        blocked_shots=2,
+                        summary="第 2 集 QA 阻塞快照",
+                        meta_info=json.dumps({"episode": 2, "blocked_reasons": ["QA 待处理 2 项"]}, ensure_ascii=False),
+                        created_at=now + timedelta(seconds=2),
+                        updated_at=now + timedelta(seconds=2),
+                    ),
+                    ProductionExportRecord(
+                        book_id=self.book_id,
+                        export_format="storyboard-machine-prompt-minimax-h3-webui",
+                        status="completed",
+                        total_shots=1,
+                        deliverable_shots=1,
+                        pending_review_shots=0,
+                        blocked_shots=0,
+                        summary="第 1 集 · 镜头 8 · minimax-h3 WEBUI 机器提示词导出快照",
+                        meta_info=json.dumps(
+                            {
+                                "record_type": "storyboard_machine_prompt_export",
+                                "episode": 1,
+                                "shot_id": 8,
+                                "scene_name": "便利店",
+                                "target_model": "minimax-h3",
+                                "export_channel": "webui",
+                                "api_submission": False,
+                            },
+                            ensure_ascii=False,
+                        ),
+                        created_at=now + timedelta(seconds=3),
+                        updated_at=now + timedelta(seconds=3),
+                    ),
+                ]
+            )
+            session.commit()
+
+        machine_response = self.client.get(
+            f"/api/books/{self.book_id}/export-records",
+            params={
+                "record_type": "machine_prompt",
+                "episode": 1,
+                "query": "便利店 minimax",
+                "limit": 1,
+                "offset": 0,
+            },
+        )
+        self.assertEqual(machine_response.status_code, 200)
+        machine_payload = machine_response.json()
+        self.assertEqual(machine_payload["total"], 1)
+        self.assertEqual(machine_payload["returned"], 1)
+        self.assertFalse(machine_payload["has_more"])
+        self.assertEqual(machine_payload["records"][0]["meta_info"]["record_type"], "storyboard_machine_prompt_export")
+
+        blocked_delivery_response = self.client.get(
+            f"/api/books/{self.book_id}/export-records",
+            params={
+                "record_type": "delivery_package",
+                "status": "blocked",
+                "format": "交付快照",
+            },
+        )
+        self.assertEqual(blocked_delivery_response.status_code, 200)
+        blocked_delivery_payload = blocked_delivery_response.json()
+        self.assertEqual(blocked_delivery_payload["total"], 1)
+        self.assertEqual(blocked_delivery_payload["records"][0]["summary"], "第 2 集 QA 阻塞快照")
+
+        paged_response = self.client.get(
+            f"/api/books/{self.book_id}/export-records",
+            params={
+                "limit": 2,
+                "offset": 0,
+            },
+        )
+        self.assertEqual(paged_response.status_code, 200)
+        paged_payload = paged_response.json()
+        self.assertEqual(paged_payload["total"], 3)
+        self.assertEqual(paged_payload["returned"], 2)
+        self.assertTrue(paged_payload["has_more"])
 
     def test_export_record_is_authoritatively_blocked_by_open_qa_issue(self):
         with Session() as session:

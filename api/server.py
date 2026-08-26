@@ -9848,7 +9848,7 @@ def _normalize_export_format_label(value: str) -> str:
     if normalized == "json":
         return "JSON"
     if normalized == "delivery":
-        return "浜や粯蹇収"
+        return "交付快照"
     return normalized.upper()
 
 
@@ -9941,6 +9941,102 @@ def _serialize_production_export_record(row) -> dict:
         "created_at": row.created_at.isoformat() if row.created_at else None,
         "updated_at": row.updated_at.isoformat() if row.updated_at else None,
     }
+
+
+def _get_production_export_record_asset_type(record: dict) -> str:
+    meta_info = record.get("meta_info") if isinstance(record.get("meta_info"), dict) else {}
+    record_type = str(meta_info.get("record_type") or "").strip()
+    export_format = str(record.get("export_format") or "").strip()
+    if record_type == "storyboard_machine_prompt_export" or export_format.startswith("storyboard-machine-prompt-"):
+        return "machine_prompt"
+    return "delivery_package"
+
+
+def _production_export_record_matches_record_type(record: dict, record_type_filter: str | None) -> bool:
+    record_type_filter = str(record_type_filter or "").strip().lower()
+    if not record_type_filter or record_type_filter == "all":
+        return True
+    meta_info = record.get("meta_info") if isinstance(record.get("meta_info"), dict) else {}
+    meta_record_type = str(meta_info.get("record_type") or "").strip().lower()
+    asset_type = _get_production_export_record_asset_type(record)
+    if record_type_filter in {"machine_prompt", "delivery_package"}:
+        return asset_type == record_type_filter
+    return meta_record_type == record_type_filter
+
+
+def _production_export_record_matches_format(record: dict, format_filter: str | None) -> bool:
+    format_filter = str(format_filter or "").strip().lower()
+    if not format_filter or format_filter == "all":
+        return True
+    export_format = str(record.get("export_format") or "").strip().lower()
+    format_label = str(record.get("format_label") or "").strip().lower()
+    normalized_filter_label = _normalize_export_format_label(format_filter).lower()
+    return format_filter in {export_format, format_label} or normalized_filter_label == format_label
+
+
+def _build_production_export_record_search_text(record: dict) -> str:
+    meta_info = record.get("meta_info") if isinstance(record.get("meta_info"), dict) else {}
+    search_items = [
+        record.get("id"),
+        record.get("episode"),
+        record.get("status"),
+        record.get("export_format"),
+        record.get("format_label"),
+        record.get("summary"),
+        meta_info.get("record_type"),
+        meta_info.get("target_model"),
+        meta_info.get("export_channel"),
+        meta_info.get("scene_name"),
+        meta_info.get("episode"),
+        meta_info.get("shot_id"),
+        meta_info.get("director_shot_text"),
+    ]
+    for key in ("blocked_reasons", "blockedReasons", "issues", "warnings"):
+        value = meta_info.get(key)
+        if isinstance(value, list):
+            search_items.extend(value)
+        elif value:
+            search_items.append(value)
+    return " ".join(str(item or "").lower() for item in search_items)
+
+
+def _production_export_record_matches_query(record: dict, query_text: str | None) -> bool:
+    terms = [term for term in str(query_text or "").strip().lower().split() if term]
+    if not terms:
+        return True
+    search_text = _build_production_export_record_search_text(record)
+    return all(term in search_text for term in terms)
+
+
+def _production_export_record_matches_filters(
+    record: dict,
+    *,
+    record_type: str | None,
+    episode: int | None,
+    status: str | None,
+    export_format: str | None,
+    query_text: str | None,
+) -> bool:
+    meta_info = record.get("meta_info") if isinstance(record.get("meta_info"), dict) else {}
+    if episode is not None:
+        try:
+            record_episode = int(meta_info.get("episode") or 0)
+        except (TypeError, ValueError):
+            record_episode = 0
+        if record_episode != episode:
+            return False
+
+    status_filter = str(status or "").strip().lower()
+    if status_filter and status_filter != "all" and str(record.get("status") or "").strip().lower() != status_filter:
+        return False
+
+    if not _production_export_record_matches_record_type(record, record_type):
+        return False
+    if not _production_export_record_matches_format(record, export_format):
+        return False
+    if not _production_export_record_matches_query(record, query_text):
+        return False
+    return True
 
 
 def _is_storyboard_shot_deliverable_for_export(shot) -> bool:
@@ -10281,16 +10377,51 @@ def _build_production_export_pdf(book, scripts: list, storyboard_rows: list, sum
 
 
 @app.get("/api/books/{book_id}/export-records")
-def get_production_export_records(book_id: int):
+def get_production_export_records(
+    book_id: int,
+    record_type: str | None = Query(default=None),
+    episode: int | None = Query(default=None),
+    status: str | None = Query(default=None),
+    export_format: str | None = Query(default=None, alias="format"),
+    query: str | None = Query(default=None),
+    limit: int | None = Query(default=None, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+):
     from models import ProductionExportRecord, Session
 
     with Session() as s:
         rows = s.query(ProductionExportRecord).filter(
             ProductionExportRecord.book_id == book_id,
         ).order_by(ProductionExportRecord.created_at.desc(), ProductionExportRecord.id.desc()).all()
+        records = [
+            record
+            for record in (_serialize_production_export_record(row) for row in rows)
+            if _production_export_record_matches_filters(
+                record,
+                record_type=record_type,
+                episode=episode,
+                status=status,
+                export_format=export_format,
+                query_text=query,
+            )
+        ]
+        total = len(records)
+        paged_records = records[offset : offset + limit] if limit is not None else records[offset:]
         return {
             "book_id": book_id,
-            "records": [_serialize_production_export_record(row) for row in rows],
+            "records": paged_records,
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "returned": len(paged_records),
+            "has_more": offset + len(paged_records) < total,
+            "filters": {
+                "record_type": record_type,
+                "episode": episode,
+                "status": status,
+                "format": export_format,
+                "query": query,
+            },
         }
 
 
