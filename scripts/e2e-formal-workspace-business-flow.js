@@ -11,6 +11,7 @@ const START_SERVERS = process.env.E2E_START_SERVERS !== "0";
 const FIXTURE_BOOK_ID = Number(process.env.E2E_BUSINESS_BOOK_ID || 999902);
 const FIXTURE_EPISODE = 1;
 const FIXTURE_SHOT_ID = 1;
+const FIXTURE_REPAIR_SHOT_ID = 2;
 
 const processes = [];
 
@@ -401,6 +402,75 @@ with Session() as session:
         negative_prompt="字幕, 水印, 变形手指",
         meta_info=json.dumps({"prompt_compile_context": prompt_context, "compiler_diagnostics": {"score": 92}}, ensure_ascii=False),
     ))
+
+    degraded_structured = {
+        "scene_asset_id": "",
+        "character_asset_ids": [str(makeup.id)],
+        "prop_asset_ids": [str(prop.id)],
+        "style_key": "cinematic-default",
+        "character_blocking": [],
+        "action_beats": [],
+    }
+    degraded_meta = {
+        "structured_shot": degraded_structured,
+        "prompt_compiler": {
+            "latest_version": 1,
+            "locked": False,
+            "locked_version": None,
+            "negative_prompt": "字幕, 水印, 变形手指",
+            "prompt_compile_context": {},
+            "used_assets": [],
+            "reference_images": [],
+            "reference_asset_ids": [],
+            "compiler_warnings": ["E2E fixture starts with a degraded prompt."],
+            "compiler_diagnostics": {
+                "status": "warning",
+                "checks": [
+                    {"key": "static_prompt_quality", "passed": False, "message": "静态提示词过短"},
+                    {"key": "motion_prompt_quality", "passed": False, "message": "运动提示词过短"},
+                ],
+            },
+        },
+    }
+    session.add(StoryboardShot(
+        book_id=book_id,
+        episode=episode,
+        scene_name="老茶馆",
+        shot_id=2,
+        dialogue="店长：你确定有人动过账册？",
+        duration=4,
+        camera_angle="MS",
+        camera_movement="push-in",
+        transition="cut",
+        lighting="窗外冷蓝雨光与室内暖黄灯光交错",
+        start_state="林夏站在柜台前，店长仍在犹豫。",
+        action_process="林夏指向收据边角，店长低头核对账册缺页。",
+        end_state="店长终于意识到账册被人动过。",
+        visual_prompt_static="老茶馆里，林夏和店长对视。",
+        visual_prompt_motion="镜头推进。",
+        visual_prompt_final="字幕, 水印, 变形手指",
+        asset_links=json.dumps({
+            "images": [{"id": "frame-e2e-repair", "url": image_data_uri, "title": "降级镜头首帧", "status": "adopted"}],
+            "videos": [{"id": "video-e2e-repair", "url": image_data_uri, "title": "降级镜头视频", "status": "adopted"}],
+        }, ensure_ascii=False),
+        asset_status="needs_prompt_repair",
+        meta_info=json.dumps(degraded_meta, ensure_ascii=False),
+    ))
+    session.add(StoryboardPromptVersion(
+        book_id=book_id,
+        episode=episode,
+        shot_id=2,
+        version=1,
+        compile_reason="fixture-degraded-baseline",
+        prompt_static="老茶馆里，林夏和店长对视。",
+        prompt_motion="镜头推进。",
+        negative_prompt="字幕, 水印, 变形手指",
+        meta_info=json.dumps({
+            "structured_shot": degraded_structured,
+            "prompt_compile_context": {},
+            "compiler_diagnostics": degraded_meta["prompt_compiler"]["compiler_diagnostics"],
+        }, ensure_ascii=False),
+    ))
     session.add(ProductionExportRecord(
         book_id=book_id,
         export_format="json",
@@ -427,8 +497,8 @@ set_kv(f"product_workspace:adaptation:{book_id}", json.dumps({
     "book_id": book_id,
     "selected_id": "e2e-main-direction",
     "selected_name": "雨夜悬疑短剧",
-    "custom_note": "E2E fixture locked adaptation direction.",
-    "locked_at": now,
+    "custom_note": "E2E fixture adaptation direction.",
+    "locked_at": None,
     "created_at": now,
     "updated_at": now,
 }, ensure_ascii=False))
@@ -501,6 +571,21 @@ async function assertBodyIncludes(page, expected, context) {
     throw new Error(`${context} did not include expected text: ${expected}`);
   }
   return body;
+}
+
+async function waitForPromptCompileTask(page, taskId, timeoutMs = 60000) {
+  const started = Date.now();
+  let lastPayload = null;
+  while (Date.now() - started < timeoutMs) {
+    const payload = await readJsonFromPage(page, `/api/storyboard-prompt-compile-tasks/${taskId}`);
+    lastPayload = payload;
+    if (payload.status === "done") return payload;
+    if (payload.status === "error") {
+      throw new Error(`Prompt compile task failed: ${JSON.stringify(payload)}`);
+    }
+    await page.waitForTimeout(1000);
+  }
+  throw new Error(`Timed out waiting for prompt compile task ${taskId}: ${JSON.stringify(lastPayload)}`);
 }
 
 async function runBusinessFlow() {
@@ -605,6 +690,7 @@ async function runBusinessFlow() {
       throw new Error("Fixture prompt should start unlocked.");
     }
 
+    await page.getByText("提示词历史版本").click();
     const lockButton = page.getByRole("button", { name: /锁定当前版本|已锁定提示词/ }).first();
     if ((await lockButton.count()) === 0) {
       throw new Error("Prompt lock button was not available in storyboard workbench.");
@@ -619,6 +705,57 @@ async function runBusinessFlow() {
       throw new Error(`Prompt lock did not persist expected state: ${JSON.stringify(promptVersionsAfterLock)}`);
     }
 
+    const degradedShotCard = page.locator(`[data-shot-id="${FIXTURE_REPAIR_SHOT_ID}"]`).first();
+    if ((await degradedShotCard.count()) === 0) {
+      throw new Error("Degraded prompt repair shot was not visible in storyboard list.");
+    }
+    await degradedShotCard.click();
+    await page.waitForTimeout(700);
+    body = await page.locator("body").innerText();
+    if (!body.includes("当前修复入口") || !body.includes("重编提示词") || !body.includes("静态提示词过短") || !body.includes("运动提示词过短")) {
+      throw new Error("Degraded prompt repair entry did not expose a clear short-prompt recompile action.");
+    }
+
+    const promptCompileResponsePromise = page.waitForResponse(
+      response =>
+        response.url().includes(`/api/books/${FIXTURE_BOOK_ID}/storyboard/${FIXTURE_EPISODE}/${FIXTURE_REPAIR_SHOT_ID}/compile-prompts/async`)
+        && response.request().method() === "POST",
+    );
+    await page.getByRole("button", { name: "重新编译提示词" }).click();
+    const promptCompileResponse = await promptCompileResponsePromise;
+    if (!promptCompileResponse.ok()) {
+      throw new Error(`Prompt repair compile submit failed with HTTP ${promptCompileResponse.status()}: ${await promptCompileResponse.text()}`);
+    }
+    const promptCompilePayload = await promptCompileResponse.json();
+    const promptTaskId = String(promptCompilePayload.task_id || "").trim();
+    if (!promptTaskId) {
+      throw new Error(`Prompt repair compile did not return task id: ${JSON.stringify(promptCompilePayload)}`);
+    }
+    const promptTask = await waitForPromptCompileTask(page, promptTaskId);
+    if (Number(promptTask.version || promptTask.prompt_version || 0) !== 2) {
+      throw new Error(`Prompt repair compile did not create v2: ${JSON.stringify(promptTask)}`);
+    }
+
+    const degradedPromptVersions = await readJsonFromPage(
+      page,
+      `/api/books/${FIXTURE_BOOK_ID}/storyboard/${FIXTURE_EPISODE}/${FIXTURE_REPAIR_SHOT_ID}/prompt-versions`,
+    );
+    if (Number(degradedPromptVersions.current_version || 0) !== 2 || (degradedPromptVersions.versions || []).length < 2) {
+      throw new Error(`Prompt repair did not persist v2 version history: ${JSON.stringify(degradedPromptVersions)}`);
+    }
+    const repairedVersion = (degradedPromptVersions.versions || []).find(version => Number(version.version || 0) === 2);
+    const repairedStatic = String(repairedVersion?.prompt_static || "");
+    const repairedMotion = String(repairedVersion?.prompt_motion || "");
+    const repairedSceneAssetId = String(repairedVersion?.meta_info?.structured_shot?.scene_asset_id || "");
+    if (repairedStatic.length < 80 || repairedMotion.length < 50 || !repairedSceneAssetId) {
+      throw new Error(`Prompt repair v2 did not repair prompt length and scene binding: ${JSON.stringify(repairedVersion)}`);
+    }
+
+    const originalShotCard = page.locator(`[data-shot-id="${FIXTURE_SHOT_ID}"]`).first();
+    await originalShotCard.click();
+    await page.waitForTimeout(500);
+
+    await page.getByText("提交验收记录").click();
     await page.locator('input[placeholder="资产 ID"]').first().fill("frame-e2e-1");
     await page.locator("select").filter({ hasText: "通过采纳" }).first().selectOption("failed");
     await page.getByRole("button", { name: "道具不一致" }).click();
@@ -774,7 +911,10 @@ async function runBusinessFlow() {
 async function main() {
   if (START_SERVERS) {
     log("Starting backend and frontend servers...");
-    spawnManaged("python", ["-m", "api.server"], { name: "api" });
+    spawnManaged("python", ["-m", "api.server"], {
+      name: "api",
+      env: { E2E_STORYBOARD_PROMPT_MOCK: "1" },
+    });
     spawnManaged("npx", ["vite", "--host", "127.0.0.1", "--port", "5173", "--strictPort"], {
       cwd: WEB_DIR,
       name: "vite",

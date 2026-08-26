@@ -92,13 +92,22 @@ function buildTaskProgress(statusPayload: CreativeTaskStatusPayload | undefined,
   return '待回收'
 }
 
+export function normalizeTaskPreviewImageUrl(value: unknown) {
+  const imageUrl = String(value || '').trim()
+  if (!imageUrl) return ''
+  if (imageUrl.startsWith('/api/prototyping/assets/') || imageUrl.includes('/api/prototyping/assets/')) {
+    return ''
+  }
+  return imageUrl
+}
+
 function buildReferenceImages(items: unknown) {
   if (!Array.isArray(items)) return []
   return items
     .map((item) => {
       if (!item || typeof item !== 'object') return null
       const record = item as Record<string, unknown>
-      const imageUrl = String(record.image_url || record.imageUrl || '').trim()
+      const imageUrl = normalizeTaskPreviewImageUrl(record.image_url || record.imageUrl)
       if (!imageUrl) return null
       return {
         referenceAssetId: String(record.reference_asset_id || record.referenceAssetId || '').trim() || undefined,
@@ -180,12 +189,12 @@ export function buildRecoveryTaskEntries(
           requestPayload.firstFrameAssetId ||
           '',
       ).trim()
-      const firstFrameUrl = String(
+      const firstFrameUrl = normalizeTaskPreviewImageUrl(
         statusPayload?.first_frame_url ||
           requestPayload.first_frame_url ||
           requestPayload.firstFrameUrl ||
           '',
-      ).trim()
+      )
       const referenceAssetIds = Array.isArray(statusPayload?.reference_asset_ids)
         ? statusPayload.reference_asset_ids
         : Array.isArray(requestPayload.reference_asset_ids)

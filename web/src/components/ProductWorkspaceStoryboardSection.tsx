@@ -19,7 +19,6 @@ import {
   getPromptReferenceItems,
   getPromptReferenceScopeLabel,
   getPromptReferenceStatusLabel,
-  getReferencePreviewUrl,
 } from './productWorkspacePrompt'
 import {
   buildCharacterBindingSummaries,
@@ -36,6 +35,28 @@ import {
   collectStructuredReferenceAssetIds,
   resolveEffectiveReferenceAssetIds,
 } from './productWorkspaceStoryboardReferencePayload'
+import {
+  CollapsiblePanel,
+  CurrentShotActionHeader,
+  DirectorShotLanguageEditor,
+  MiniMetric,
+  StatusPill,
+  StoryboardGateStrip,
+  getShotReadinessShortLabel,
+} from './ProductWorkspaceStoryboardUi'
+import { ProductWorkspaceMachinePromptExportPanel } from './ProductWorkspaceMachinePromptExportPanel'
+import { ProductWorkspaceStoryboardAdvancedToolsPanel } from './ProductWorkspaceStoryboardAdvancedToolsPanel'
+import { ProductWorkspaceStoryboardAcceptancePanel } from './ProductWorkspaceStoryboardAcceptancePanel'
+import { ProductWorkspaceStoryboardMediaPanel } from './ProductWorkspaceStoryboardMediaPanel'
+import {
+  ProductWorkspacePromptHistoryPanel,
+  buildPromptVersionAuditSummary,
+  getPromptRestoreReasonLabel,
+  sanitizeCompileContextForDisplay,
+} from './ProductWorkspacePromptHistoryPanel'
+import { ProductWorkspacePromptAuthorityPanel } from './ProductWorkspacePromptAuthorityPanel'
+import { ProductWorkspaceCompileDiagnosticsPanel } from './ProductWorkspaceCompileDiagnosticsPanel'
+import { ProductWorkspaceStoryboardRepairPanel } from './ProductWorkspaceStoryboardRepairPanel'
 
 interface Props {
   bookId: number
@@ -209,6 +230,250 @@ type PromptVersionRecord = Record<string, unknown> & {
   created_at?: string | null
 }
 
+type MachinePromptExportPreview = {
+  mode?: string
+  book_id?: string | number
+  episode?: string | number
+  shot_id?: string | number
+  api_submission?: boolean
+  target_model?: string
+  scene_name?: string
+  director_shot_text?: string
+  bound_asset_count?: number
+  reference_image_count?: number
+  warnings?: string[]
+  system_director_shot_text?: string
+  source_layers?: {
+    director_shot_text_is_user_editable?: boolean
+    director_shot_text_source?: string
+    has_user_director_shot_override?: boolean
+    machine_prompt_is_compiled?: boolean
+    model_export_is_submission_ready_but_not_submitted?: boolean
+  }
+  machine_prompt?: {
+    schema_version?: string
+    api_submission?: boolean
+    visual_timeline?: Array<{
+      phase?: string
+      time_range_seconds?: string
+      visual_action?: string
+      camera_instruction?: string
+      continuity_goal?: string
+    }>
+    continuity_constraints?: string[]
+    negative_constraints?: string[]
+    soundscape?: {
+      overall_soundscape?: string
+      non_diegetic_music?: string
+    }
+  }
+  model_exports?: Record<
+    string,
+    {
+      target_model?: string
+      export_mode?: string
+      api_submission?: boolean
+      fields?: {
+        integrated_multimodal_description?: string
+        overall_soundscape?: string
+        non_diegetic_music?: string
+      }
+      prompt?: string
+      model_params?: Record<string, unknown>
+    }
+  >
+}
+
+type ProductionExportRecordListItem = {
+  id?: string | number
+  summary?: string
+  created_at?: string | null
+  export_format?: string
+  meta_info?: {
+    record_type?: string
+    api_submission?: boolean
+    target_model?: string
+    export_channel?: string
+    episode?: number
+    shot_id?: number | string
+    scene_name?: string
+    reference_image_count?: number
+    bound_asset_count?: number
+  }
+}
+
+function isMachinePromptRecordForShot(record: ProductionExportRecordListItem, episode: number | undefined, shotId: string | number | undefined) {
+  const meta = record.meta_info ?? {}
+  return (
+    meta.record_type === 'storyboard_machine_prompt_export' &&
+    Number(meta.episode || 0) === Number(episode || 0) &&
+    String(meta.shot_id ?? '').trim() === String(shotId ?? '').trim()
+  )
+}
+
+function stringifyMachinePromptParam(value: unknown) {
+  if (value === undefined || value === null || value === '') return '-'
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value)
+  try {
+    return JSON.stringify(value, null, 2)
+  } catch {
+    return String(value)
+  }
+}
+
+export function buildMachinePromptWebuiCopyText(
+  preview: MachinePromptExportPreview | null | undefined,
+  targetModel = 'minimax-h3',
+) {
+  const modelExport = preview?.model_exports?.[targetModel] ?? preview?.model_exports?.['minimax-h3'] ?? null
+  const fields = modelExport?.fields ?? {}
+  const params = modelExport?.model_params ?? {}
+  const timeline = (preview?.machine_prompt?.visual_timeline ?? [])
+    .map((segment, index) => {
+      const phase = segment.phase || `阶段 ${index + 1}`
+      const timeRange = segment.time_range_seconds || '-'
+      const camera = segment.camera_instruction || '默认运镜'
+      const action = segment.visual_action || '暂无动作描述'
+      return `${index + 1}. ${timeRange}｜${phase}｜${camera}\n${action}`
+    })
+    .join('\n')
+
+  return [
+    `# ${targetModel} WebUI 机器提示词导出`,
+    `API 提交：否，仅复制/导出`,
+    `场景：${preview?.scene_name || '-'}`,
+    `参考图：${preview?.reference_image_count ?? 0}；绑定资产：${preview?.bound_asset_count ?? 0}`,
+    `## 导演分镜语言\n${preview?.director_shot_text || '-'}`,
+    `## 标准机器时间线\n${timeline || '-'}`,
+    `## integrated_multimodal_description\n${fields.integrated_multimodal_description || modelExport?.prompt || '-'}`,
+    `## overall_soundscape\n${fields.overall_soundscape || preview?.machine_prompt?.soundscape?.overall_soundscape || '-'}`,
+    `## non_diegetic_music\n${fields.non_diegetic_music || preview?.machine_prompt?.soundscape?.non_diegetic_music || '-'}`,
+    `## model_params\n${stringifyMachinePromptParam(params)}`,
+  ].join('\n\n')
+}
+
+function escapeMachinePromptCsvCell(value: unknown) {
+  const text = typeof value === 'string' ? value : stringifyMachinePromptParam(value)
+  return `"${String(text).replace(/"/g, '""')}"`
+}
+
+export function buildMachinePromptMarkdownExportText(
+  preview: MachinePromptExportPreview | null | undefined,
+  targetModel = 'minimax-h3',
+) {
+  const modelExport = preview?.model_exports?.[targetModel] ?? preview?.model_exports?.['minimax-h3'] ?? null
+  const fields = modelExport?.fields ?? {}
+  const timelineRows = (preview?.machine_prompt?.visual_timeline ?? [])
+    .map((segment, index) =>
+      `| ${index + 1} | ${segment.time_range_seconds || '-'} | ${segment.phase || '-'} | ${segment.camera_instruction || '-'} | ${String(segment.visual_action || '-').replace(/\|/g, '｜')} |`,
+    )
+    .join('\n')
+
+  return [
+    `# 机器提示词导出：${preview?.scene_name || '未命名场景'}`,
+    '',
+    `- 目标模型：${targetModel}`,
+    `- 导出模式：Markdown / 人工审阅`,
+    `- API 提交：否，仅导出`,
+    `- 参考图：${preview?.reference_image_count ?? 0}`,
+    `- 绑定资产：${preview?.bound_asset_count ?? 0}`,
+    '',
+    '## 导演分镜语言',
+    '',
+    preview?.director_shot_text || '-',
+    '',
+    '## 标准机器时间线',
+    '',
+    '| # | 时间 | 阶段 | 运镜 | 可观察动作 |',
+    '|---|---|---|---|---|',
+    timelineRows || '| - | - | - | - | - |',
+    '',
+    '## MiniMax H3 WebUI 字段',
+    '',
+    '### integrated_multimodal_description',
+    '',
+    fields.integrated_multimodal_description || modelExport?.prompt || '-',
+    '',
+    '### overall_soundscape',
+    '',
+    fields.overall_soundscape || preview?.machine_prompt?.soundscape?.overall_soundscape || '-',
+    '',
+    '### non_diegetic_music',
+    '',
+    fields.non_diegetic_music || preview?.machine_prompt?.soundscape?.non_diegetic_music || '-',
+    '',
+    '## 导出边界',
+    '',
+    '- 本文件只用于 WebUI / 人工审阅 / 文件交付。',
+    '- API 提交必须由独立生成动作进入任务中心。',
+  ].join('\n')
+}
+
+export function buildMachinePromptCsvExportText(
+  preview: MachinePromptExportPreview | null | undefined,
+  targetModel = 'minimax-h3',
+) {
+  const modelExport = preview?.model_exports?.[targetModel] ?? preview?.model_exports?.['minimax-h3'] ?? null
+  const fields = modelExport?.fields ?? {}
+  const rows = [
+    ['book_id', String(preview?.book_id ?? '')],
+    ['episode', String(preview?.episode ?? '')],
+    ['shot_id', String(preview?.shot_id ?? '')],
+    ['scene_name', preview?.scene_name || ''],
+    ['target_model', targetModel],
+    ['api_submission', 'false'],
+    ['reference_image_count', String(preview?.reference_image_count ?? 0)],
+    ['bound_asset_count', String(preview?.bound_asset_count ?? 0)],
+    ['director_shot_text', preview?.director_shot_text || ''],
+    ['integrated_multimodal_description', fields.integrated_multimodal_description || modelExport?.prompt || ''],
+    ['overall_soundscape', fields.overall_soundscape || preview?.machine_prompt?.soundscape?.overall_soundscape || ''],
+    ['non_diegetic_music', fields.non_diegetic_music || preview?.machine_prompt?.soundscape?.non_diegetic_music || ''],
+    ['model_params', stringifyMachinePromptParam(modelExport?.model_params ?? {})],
+  ]
+  const timelineRows = (preview?.machine_prompt?.visual_timeline ?? []).map((segment, index) => [
+    `timeline_${index + 1}`,
+    `${segment.time_range_seconds || ''}｜${segment.phase || ''}｜${segment.camera_instruction || ''}｜${segment.visual_action || ''}`,
+  ])
+  return [['field', 'value'], ...rows, ...timelineRows]
+    .map((row) => row.map(escapeMachinePromptCsvCell).join(','))
+    .join('\n')
+}
+
+export function buildMachinePromptApiJsonExportText(
+  preview: MachinePromptExportPreview | null | undefined,
+  targetModel = 'minimax-h3',
+) {
+  const modelExport = preview?.model_exports?.[targetModel] ?? preview?.model_exports?.['minimax-h3'] ?? null
+  return JSON.stringify(
+    {
+      export_contract: {
+        schema_version: 'storyboard_machine_prompt_export_v1',
+        target_model: targetModel,
+        export_mode: 'api_json_preview',
+        api_submission: false,
+        submission_policy: 'export_only_submit_via_generation_adapter',
+      },
+      source: {
+        book_id: preview?.book_id ?? null,
+        episode: preview?.episode ?? null,
+        shot_id: preview?.shot_id ?? null,
+        scene_name: preview?.scene_name ?? '',
+      },
+      director_shot_text: preview?.director_shot_text ?? '',
+      machine_prompt: {
+        ...(preview?.machine_prompt ?? {}),
+        api_submission: false,
+      },
+      model_export: {
+        ...(modelExport ?? {}),
+        api_submission: false,
+      },
+    },
+    null,
+    2,
+  )
+}
+
 type StoryboardRepairAction = {
   key: string
   title: string
@@ -224,6 +489,40 @@ type CompilerDiagnosticFocusCard = {
   detail: string
   items: string[]
   tone: string
+}
+
+type PromptQualityRepairSummary = {
+  hasIssue: boolean
+  shortStaticPrompt: boolean
+  shortMotionPrompt: boolean
+  missingSceneAsset: boolean
+  degradedVersion: boolean
+  issueLabels: string[]
+}
+
+function buildPromptQualityRepairSummary(shot: StoryboardShotOutput | null): PromptQualityRepairSummary {
+  const staticPrompt = String(shot?.visual_prompt_static || '').trim()
+  const motionPrompt = String(shot?.visual_prompt_motion || '').trim()
+  const structuredSceneAssetId = String(shot?.structured_shot?.scene_asset_id || '').trim()
+  const shortStaticPrompt = staticPrompt.length > 0 && staticPrompt.length < 80
+  const shortMotionPrompt = motionPrompt.length > 0 && motionPrompt.length < 50
+  const missingSceneAsset = Boolean(shot?.scene_name) && !structuredSceneAssetId
+  const degradedVersion = shot ? hasDegradedPromptVersion(shot) : false
+  const issueLabels = [
+    shortStaticPrompt ? '静态提示词过短' : '',
+    shortMotionPrompt ? '运动提示词过短' : '',
+    missingSceneAsset ? '缺场景资产绑定' : '',
+    degradedVersion ? '当前提示词版本已标记降级' : '',
+  ].filter(Boolean)
+
+  return {
+    hasIssue: issueLabels.length > 0,
+    shortStaticPrompt,
+    shortMotionPrompt,
+    missingSceneAsset,
+    degradedVersion,
+    issueLabels,
+  }
 }
 
 function buildSceneBindingSummary(shot: StoryboardShotOutput | null): ShotBindingSummary | null {
@@ -523,13 +822,16 @@ function BindingSummaryCard({ binding }: { binding: ShotBindingSummary }) {
   )
 }
 
-function MiniMetric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
-      <div className="text-[11px] text-slate-500">{label}</div>
-      <div className="mt-1 text-sm font-medium text-slate-100">{value}</div>
-    </div>
-  )
+function downloadTextFile(content: string, mimeType: string, filename: string) {
+  const blob = new Blob([content], { type: `${mimeType};charset=utf-8` })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
 }
 
 function findFailedCompilerCheck(
@@ -631,6 +933,7 @@ function buildStoryboardRepairActions(input: {
   compilerWarnings: string[]
   missingReferenceBindings: ShotBindingSummary[]
   characterBindings: ShotBindingSummary[]
+  promptQualityRepair: PromptQualityRepairSummary
   hasCompilerWarnings: boolean
   hasBlockingIssues: boolean
   compilerChecks: NonNullable<StoryboardShotOutput['compiler_diagnostics']>['checks'] | undefined
@@ -711,8 +1014,8 @@ function buildStoryboardRepairActions(input: {
     findFailedCompilerCheck(input.compilerChecks, 'high_importance_prop_presence')
   const hasScreenplayResidue = Boolean(findFailedCompilerCheck(input.compilerChecks, 'screenplay_prompt_residue'))
   const hasHighImportancePropGap = Boolean(findFailedCompilerCheck(input.compilerChecks, 'high_importance_prop_presence'))
-  if (promptRepairCheck) {
-    const assetNames = extractAssetNamesFromCheckDetails(promptRepairCheck.details)
+  if (promptRepairCheck || input.promptQualityRepair.hasIssue) {
+    const assetNames = extractAssetNamesFromCheckDetails(promptRepairCheck?.details)
     const canContinueVideo = input.storyboardGateStatus === 'ready' && input.hasAdoptedFrame && !input.hasAdoptedVideo && input.onCompilePromptsAndContinueVideo
     const canContinueFrame = input.storyboardGateStatus === 'ready' && !input.hasAdoptedFrame && input.onCompilePromptsAndContinueFrame
     const repairActionTitle = hasScreenplayResidue
@@ -721,15 +1024,23 @@ function buildStoryboardRepairActions(input: {
         ? `重编提示词并补齐视觉事实：${assetNames.join(' / ')}`
         : hasHighImportancePropGap
           ? '重编提示词并补齐关键道具'
-          : '重编提示词并补齐视觉事实'
+          : input.promptQualityRepair.missingSceneAsset
+            ? '重编提示词并补齐场景资产绑定'
+            : input.promptQualityRepair.shortStaticPrompt || input.promptQualityRepair.shortMotionPrompt
+              ? '重编提示词并补齐画面描述'
+              : input.promptQualityRepair.degradedVersion
+                ? '重编提示词并修复降级版本'
+                : '重编提示词并补齐视觉事实'
     const repairActionDetail =
       hasScreenplayResidue
         ? '当前提示词仍像对白稿或舞台调度文本，继续出图会直接拉低首帧质量。建议基于当前结构化绑定整体重编，把结果收敛成纯画面描述后再继续。'
         : assetNames.length > 0
-        ? `当前静态提示词没有稳定继承这些已绑定资产的关键视觉事实：${assetNames.join(' / ')}。建议基于当前结构化绑定重新编译，先收敛静态提示词，再决定是否继续出图。`
-        : hasHighImportancePropGap
-          ? '当前静态提示词没有把高重要度道具明确写进首帧画面，后续出图容易出现叙事关键物缺失。建议先重编提示词，再继续出图。'
-          : '当前静态提示词没有稳定继承已绑定资产的关键视觉事实，建议基于当前结构化绑定重新编译后再继续出图。'
+          ? `当前静态提示词没有稳定继承这些已绑定资产的关键视觉事实：${assetNames.join(' / ')}。${input.promptQualityRepair.hasIssue ? `同时命中提示词质量问题：${input.promptQualityRepair.issueLabels.join('、')}。` : ''}建议基于当前结构化绑定重新编译，先收敛静态提示词，再决定是否继续出图。`
+          : hasHighImportancePropGap
+            ? `当前静态提示词没有把高重要度道具明确写进首帧画面，后续出图容易出现叙事关键物缺失。${input.promptQualityRepair.hasIssue ? `同时命中提示词质量问题：${input.promptQualityRepair.issueLabels.join('、')}。` : ''}建议先重编提示词，再继续出图。`
+            : input.promptQualityRepair.hasIssue
+              ? `当前镜头命中提示词质量问题：${input.promptQualityRepair.issueLabels.join('、')}。建议基于当前结构化镜头与资产绑定重新编译，修复后再继续首帧或视频链路。`
+              : '当前静态提示词没有稳定继承已绑定资产的关键视觉事实，建议基于当前结构化绑定重新编译后再继续出图。'
     actions.push({
       key: 'recompile-visual-facts',
       title: repairActionTitle,
@@ -807,103 +1118,6 @@ function buildStoryboardRepairActions(input: {
   return actions
 }
 
-function getAcceptanceStatusLabel(status: string | undefined) {
-  const normalized = String(status || '').trim().toLowerCase()
-  if (normalized === 'passed' || normalized === 'approved') return '通过采纳'
-  if (normalized === 'failed' || normalized === 'rejected') return '打回重做'
-  if (normalized === 'pending') return '继续观察'
-  return normalized ? status || '' : '未验收'
-}
-
-function getAcceptanceStatusTone(status: string | undefined) {
-  const normalized = String(status || '').trim().toLowerCase()
-  if (normalized === 'passed' || normalized === 'approved') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-  if (normalized === 'failed' || normalized === 'rejected') return 'border-rose-500/30 bg-rose-500/10 text-rose-200'
-  if (normalized === 'pending') return 'border-amber-500/30 bg-amber-500/10 text-amber-200'
-  return 'border-slate-700 bg-slate-950/60 text-slate-300'
-}
-
-function getMediaAssetKindLabel(kind: string | undefined) {
-  const normalized = String(kind || '').trim().toLowerCase()
-  if (normalized === 'image') return '分镜图'
-  if (normalized === 'video') return '视频'
-  if (normalized === 'audio') return '音频'
-  return normalized ? kind || '' : '资产'
-}
-
-function getMediaAssetStatusLabel(status: string | undefined) {
-  const normalized = String(status || '').trim().toLowerCase()
-  if (normalized === 'done' || normalized === 'completed' || normalized === 'ready') return '已生成'
-  if (normalized === 'running' || normalized === 'processing') return '生成中'
-  if (normalized === 'error' || normalized === 'failed') return '生成失败'
-  if (normalized === 'pending') return '待处理'
-  return normalized ? status || '' : '未记录'
-}
-
-function getPromptCompileReasonMeta(reason: string | undefined) {
-  const normalized = String(reason || '').trim()
-  if (!normalized || normalized === 'manual') {
-    return { label: '手动编译', detail: '由当前镜头手动触发编译。' }
-  }
-  if (normalized.startsWith('manual-')) {
-    const manualReason = normalized.replace(/^manual-/, '').replace(/-/g, ' ').trim()
-    return {
-      label: '手动重编译',
-      detail: manualReason ? `触发原因：${manualReason}` : '由当前镜头手动重新编译。', 
-    }
-  }
-  if (normalized === 'history-rollback') {
-    return { label: '历史回滚', detail: '从历史提示词版本恢复当前镜头。' }
-  }
-
-  const rollbackMatch = normalized.match(/^rollback:v([^:]+):(.+)$/i)
-  if (rollbackMatch) {
-    const sourceVersion = String(rollbackMatch[1] || '').trim()
-    const rollbackReason = String(rollbackMatch[2] || '').trim()
-    const rollbackReasonLabel =
-      rollbackReason === 'manual-rollback'
-        ? '从历史版本恢复当前镜头'
-        : rollbackReason.replace(/-/g, ' ').trim()
-    return {
-      label: `版本回滚 · 源自 v${sourceVersion || '-'}`,
-      detail: rollbackReasonLabel ? `回滚说明：${rollbackReasonLabel}` : '从历史版本恢复当前镜头。',
-    }
-  }
-
-  if (normalized.startsWith('batch-')) {
-    const batchReason = normalized.replace(/^batch-/, '').replace(/-/g, ' ').trim()
-    return {
-      label: '批量编译',
-      detail: batchReason ? `批量来源：${batchReason}` : '由批量操作触发编译。',
-    }
-  }
-
-  return { label: normalized, detail: '保留原始编译原因。' }
-}
-
-const ACCEPTANCE_STATUS_OPTIONS = [
-  { value: 'passed', label: '通过采纳' },
-  { value: 'failed', label: '打回重做' },
-  { value: 'pending', label: '继续观察' },
-]
-
-const ACCEPTANCE_TAG_OPTIONS = [
-  { value: 'character_consistency', label: '角色一致性' },
-  { value: 'character_blocking_error', label: '角色站位错误' },
-  { value: 'prop_mismatch', label: '道具不一致' },
-  { value: 'scene_mismatch', label: '场景不一致' },
-  { value: 'style_drift', label: '风格跑偏' },
-  { value: 'motion_error', label: '运动错误' },
-  { value: 'camera_error', label: '镜头语言错误' },
-]
-
-function getPromptRestoreReasonLabel(reason: string | undefined) {
-  const normalized = String(reason || '').trim()
-  if (normalized === 'latest_recoverable_version') return '最新可恢复版本'
-  if (normalized === 'best_partial_recovery_version') return '最佳部分恢复版本'
-  return normalized ? normalized.replace(/_/g, ' ') : '推荐恢复版本'
-}
-
 function getPromptRestoreOutcomeMeta(
   reason: string | undefined,
   audit: StoryboardShotOutput['prompt_version_audit'] | null | undefined,
@@ -928,119 +1142,6 @@ function getPromptRestoreOutcomeMeta(
     label: '恢复后仍建议继续复核当前镜头的关键资产引用。',
     tone: 'text-amber-100/80',
   }
-}
-
-function buildPromptVersionAuditSummary(audit: StoryboardShotOutput['prompt_version_audit'] | null | undefined) {
-  if (!audit) return null
-  const missingCriticalAssets = Array.isArray(audit.missing_critical_assets) ? audit.missing_critical_assets.filter(Boolean) : []
-  const missingUsedAssetNames = Array.isArray(audit.missing_used_asset_names) ? audit.missing_used_asset_names.filter(Boolean) : []
-  const lines: string[] = []
-
-  if (audit.is_scene_only_candidate) {
-    lines.push('当前版本接近“只有场景、缺角色/关键道具”的退化状态。')
-  }
-  if (missingCriticalAssets.length > 0) {
-    lines.push(`缺失关键资产：${missingCriticalAssets.join(' / ')}`)
-  }
-  if (missingUsedAssetNames.length > 0) {
-    lines.push(`used_assets 未覆盖：${missingUsedAssetNames.join(' / ')}`)
-  }
-  if (audit.is_recoverable_version) {
-    lines.push('该版本仍可作为恢复候选。')
-  }
-  if (!lines.length && audit.is_degraded_version) {
-    lines.push('当前版本存在结构化引用退化风险，建议复核并考虑恢复。')
-  }
-
-  return {
-    missingCriticalAssets,
-    missingUsedAssetNames,
-    summary: lines.join(' '),
-  }
-}
-
-function formatVersionTimestamp(value: string | undefined | null) {
-  if (!value) return '未记录'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleString('zh-CN', { hour12: false })
-}
-
-function getCompileContextReferenceSourceLabel(value: string) {
-  const normalized = value.trim().toLowerCase()
-  if (!normalized) return value
-  if (normalized === 'selected') return '默认参考'
-  if (normalized === 'locked') return '已锁定'
-  if (normalized === 'candidate') return '候选参考'
-  if (normalized === 'rejected') return '已淘汰'
-  if (normalized === 'missing') return '未绑定参考图'
-  if (normalized === 'current_makeup') return '当前精调定妆'
-  if (normalized === 'current_variant') return '当前变体'
-  return value
-}
-
-function sanitizeCompileContextString(key: string, value: string) {
-  const trimmed = value.trim()
-  if (!trimmed) return value
-  if (/^episode_(\d+)_default$/i.test(trimmed)) {
-    const match = trimmed.match(/^episode_(\d+)_default$/i)
-    return `第${match?.[1] || '?'}集默认造型`
-  }
-  if (trimmed === 'episode_default') return '分集默认'
-  if (trimmed === 'scene_variant') return '场景变体'
-  if (trimmed === 'prop_variant') return '道具变体'
-  if (trimmed === 'active_variant') return '当前变体'
-  if (trimmed === 'scene_asset') return '场景资产权威源'
-  if (trimmed === 'character_makeup') return '人物定妆权威源'
-  if (trimmed === 'prop_asset') return '道具资产权威源'
-  if (key === 'image_url' && trimmed.startsWith('data:image/')) {
-    const mimeMatch = trimmed.match(/^data:(image\/[a-zA-Z0-9.+-]+);/i)
-    const mimeType = mimeMatch?.[1] || 'image/*'
-    return `[内嵌参考图已省略：${mimeType}]`
-  }
-  if (key === 'reference_status') return getPromptReferenceStatusLabel(trimmed)
-  if (key === 'reference_source') return getCompileContextReferenceSourceLabel(trimmed)
-  if (key === 'authority_prompt_raw' || key === 'canonical_prompt_raw') {
-    return '[详细提示词已折叠，请以上方权威源摘要为准]'
-  }
-  if (trimmed.length > 600) {
-    return `${trimmed.slice(0, 240)}... [内容过长，已截断，共 ${trimmed.length} 字符]`
-  }
-  return value
-}
-
-function sanitizeCompileContextForDisplay(value: unknown): unknown {
-  if (Array.isArray(value)) {
-    return value.map((item) => sanitizeCompileContextForDisplay(item))
-  }
-
-  if (!value || typeof value !== 'object') return value
-
-  const entries = Object.entries(value as Record<string, unknown>).map(([key, itemValue]) => {
-    if (key === 'reference_summary') {
-      return [key, '[已省略内部引用统计，请以上方 Prompt 引用摘要为准]']
-    }
-    if (key === 'reference_asset_ids') {
-      return [key, '[已省略内部引用 ID 列表]']
-    }
-    if (key === 'reference_images') {
-      return [key, '[已省略参考图载荷明细，请以上方参考图预览为准]']
-    }
-    if (key === 'authority_prompt_parts' || key === 'canonical_prompt_parts') {
-      return [key, '[已省略详细拆解，请以上方权威源摘要为准]']
-    }
-
-    if (Array.isArray(itemValue) && key === 'reference_statuses') {
-      return [key, itemValue.map((status) => (typeof status === 'string' ? getPromptReferenceStatusLabel(status) : status))]
-    }
-
-    if (typeof itemValue === 'string') {
-      return [key, sanitizeCompileContextString(key, itemValue)]
-    }
-    return [key, sanitizeCompileContextForDisplay(itemValue)]
-  })
-
-  return Object.fromEntries(entries)
 }
 
 function findLatestAdoptedAsset(items: MediaAssetOutput[] | undefined) {
@@ -1090,36 +1191,6 @@ function inferAcceptanceAssetId(
   return ''
 }
 
-function MediaAssetCard({ item }: { item: MediaAssetOutput }) {
-  const href = String(item.previewUrl || item.uri || '').trim()
-
-  return (
-    <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full border border-slate-700 px-2 py-0.5 text-[10px] text-slate-300">
-          {getMediaAssetKindLabel(String(item.kind || ''))}
-        </span>
-        {item.adopted ? (
-          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-200">
-            当前采纳
-          </span>
-        ) : null}
-      </div>
-      <div className="mt-2 text-sm font-medium text-white">{item.title || item.label || item.id}</div>
-      <div className="mt-2 space-y-1 text-[11px] text-slate-400">
-        <div>版本标签：<span className="text-slate-300">{item.label || '-'}</span></div>
-        <div>生成状态：<span className="text-slate-300">{getMediaAssetStatusLabel(item.status)}</span></div>
-        <div>模型：<span className="text-slate-300">{item.model || '未记录'}</span></div>
-      </div>
-      {href ? (
-        <a href={href} target="_blank" rel="noreferrer" className="mt-2 inline-flex text-[11px] text-sky-300 transition hover:text-sky-200">
-          查看原始文件
-        </a>
-      ) : null}
-    </div>
-  )
-}
-
 export default function ProductWorkspaceStoryboardSection({
   bookId: _bookId,
   shotsByEpisode,
@@ -1161,6 +1232,17 @@ export default function ProductWorkspaceStoryboardSection({
   })
   const [acceptanceState, setAcceptanceState] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
   const [acceptanceMessage, setAcceptanceMessage] = useState('')
+  const [machinePromptExport, setMachinePromptExport] = useState<MachinePromptExportPreview | null>(null)
+  const [machinePromptExportState, setMachinePromptExportState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
+  const [machinePromptExportMessage, setMachinePromptExportMessage] = useState('')
+  const [machinePromptCopyMessage, setMachinePromptCopyMessage] = useState('')
+  const [machinePromptRecordState, setMachinePromptRecordState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [machinePromptRecordMessage, setMachinePromptRecordMessage] = useState('')
+  const [machinePromptExportRecords, setMachinePromptExportRecords] = useState<ProductionExportRecordListItem[]>([])
+  const [machinePromptRecordHistoryState, setMachinePromptRecordHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
+  const [directorShotDraft, setDirectorShotDraft] = useState('')
+  const [directorShotSaveState, setDirectorShotSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [directorShotSaveMessage, setDirectorShotSaveMessage] = useState('')
 
   const episodes = useMemo(
     () => Object.keys(shotsByEpisode).map(Number).filter((item) => Number.isFinite(item)).sort((a, b) => a - b),
@@ -1197,6 +1279,19 @@ export default function ProductWorkspaceStoryboardSection({
     if (!selectedShotId) return currentShots[0] ?? null
     return currentShots.find((shot) => String(shot.shot_id) === String(selectedShotId)) ?? currentShots[0] ?? null
   }, [currentShots, selectedShotId])
+  useEffect(() => {
+    setMachinePromptExport(null)
+    setMachinePromptExportState('idle')
+    setMachinePromptExportMessage('')
+    setMachinePromptCopyMessage('')
+    setMachinePromptRecordState('idle')
+    setMachinePromptRecordMessage('')
+    setMachinePromptExportRecords([])
+    setMachinePromptRecordHistoryState('idle')
+    setDirectorShotDraft('')
+    setDirectorShotSaveState('idle')
+    setDirectorShotSaveMessage('')
+  }, [selectedShot?.episode, selectedShot?.shot_id])
   const storyboardCanvasHandoffSummary = useMemo(
     () => buildStoryboardCanvasHandoffSummary({ handoff: canvasHandoff, shot: selectedShot }),
     [canvasHandoff, selectedShot],
@@ -1345,23 +1440,32 @@ export default function ProductWorkspaceStoryboardSection({
       String(selectedShot?.visual_prompt_static || '').trim() ||
       String(selectedShot?.visual_prompt_motion || '').trim(),
   )
+  const promptQualityRepair = useMemo(
+    () => buildPromptQualityRepairSummary(selectedShot),
+    [selectedShot],
+  )
+  const machineTimeline = machinePromptExport?.machine_prompt?.visual_timeline ?? []
+  const minimaxH3Export = machinePromptExport?.model_exports?.['minimax-h3'] ?? null
+  const minimaxH3Fields = minimaxH3Export?.fields ?? {}
+  const genericZhVideoExport = machinePromptExport?.model_exports?.['generic-zh-video'] ?? null
+  const minimaxH3CopyText = useMemo(
+    () => buildMachinePromptWebuiCopyText(machinePromptExport, 'minimax-h3'),
+    [machinePromptExport],
+  )
   const storyboardCanvasPrimaryActionPlan = useMemo(
     () =>
-      canvasHandoff
-        ? buildStoryboardCanvasPrimaryActionPlan({
-            canGenerateFromGate,
-            promptRecoveryTaskId,
-            frameRecoveryTaskId,
-            videoRecoveryTaskId,
-            hasCompiledPrompt,
-            hasAdoptedFrame,
-            hasAdoptedVideo: Boolean(adoptedVideo),
-          })
-        : null,
+      buildStoryboardCanvasPrimaryActionPlan({
+        canGenerateFromGate,
+        promptRecoveryTaskId,
+        frameRecoveryTaskId,
+        videoRecoveryTaskId,
+        hasCompiledPrompt,
+        hasAdoptedFrame,
+        hasAdoptedVideo: Boolean(adoptedVideo),
+      }),
     [
       adoptedVideo,
       canGenerateFromGate,
-      canvasHandoff,
       frameRecoveryTaskId,
       hasAdoptedFrame,
       hasCompiledPrompt,
@@ -1392,6 +1496,7 @@ export default function ProductWorkspaceStoryboardSection({
         compilerWarnings,
         missingReferenceBindings,
         characterBindings: characterBindingSummaries,
+        promptQualityRepair,
         hasCompilerWarnings: compilerWarnings.length > 0 || compileContextWarnings.length > 0,
         hasBlockingIssues: blockingIssues.length > 0,
         compilerChecks,
@@ -1431,6 +1536,7 @@ export default function ProductWorkspaceStoryboardSection({
       missingReferenceBindings,
       onNavigateSection,
       onNavigateTaskSection,
+      promptQualityRepair,
       propBindings,
       sceneBinding,
       selectedShot,
@@ -1451,6 +1557,218 @@ export default function ProductWorkspaceStoryboardSection({
     setFrameRecoveryTaskId(tasks.find((item) => item.kind === 'frame')?.taskId ?? null)
     setVideoRecoveryTaskId(tasks.find((item) => item.kind === 'video')?.taskId ?? null)
     setRuntimeVersion((current) => current + 1)
+  }
+
+  const loadMachinePromptExportPreview = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    setMachinePromptExportState('loading')
+    setMachinePromptExportMessage('正在编译只读机器提示词导出预览，不会提交生成任务。')
+    setMachinePromptCopyMessage('')
+    setMachinePromptRecordState('idle')
+    setMachinePromptRecordMessage('')
+    try {
+      const response = await fetch(
+        `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/machine-prompt-export?target_model=minimax-h3`,
+        { cache: 'no-store' },
+      )
+      if (!response.ok) {
+        let detail = ''
+        try {
+          const payload = await response.json()
+          detail = String(payload?.detail || payload?.error || '').trim()
+        } catch {
+          detail = await response.text()
+        }
+        throw new Error(detail || `HTTP ${response.status}`)
+      }
+      const payload = (await response.json()) as MachinePromptExportPreview
+      setMachinePromptExport(payload)
+      setDirectorShotDraft(payload.director_shot_text || '')
+      setDirectorShotSaveState('idle')
+      setDirectorShotSaveMessage('')
+      setMachinePromptExportState('loaded')
+      setMachinePromptExportMessage('已生成机器提示词导出预览：当前仅用于复制或审阅，不会提交 API。')
+    } catch (error) {
+      setMachinePromptExportState('error')
+      setMachinePromptExportMessage(error instanceof Error ? error.message : '机器提示词导出预览加载失败。')
+    }
+  }
+
+  const saveDirectorShotText = async (resetToSystem = false) => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    const normalized = directorShotDraft.trim()
+    if (!resetToSystem && !normalized) {
+      setDirectorShotSaveState('error')
+      setDirectorShotSaveMessage('导演分镜语言不能为空；如果要恢复系统生成版，请点击“恢复系统版”。')
+      return
+    }
+
+    setDirectorShotSaveState('saving')
+    setDirectorShotSaveMessage(resetToSystem ? '正在恢复系统生成导演分镜语言。' : '正在保存导演分镜语言，并重新编译导出预览。')
+    try {
+      const response = await fetch(
+        `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/director-shot-text?target_model=minimax-h3`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            directorShotText: normalized,
+            operatorName: 'formal-workspace',
+            resetToSystem,
+          }),
+        },
+      )
+      if (!response.ok) {
+        let detail = ''
+        try {
+          const payload = await response.json()
+          detail = String(payload?.detail || payload?.error || '').trim()
+        } catch {
+          detail = await response.text()
+        }
+        throw new Error(detail || `HTTP ${response.status}`)
+      }
+      const payload = (await response.json()) as MachinePromptExportPreview
+      setMachinePromptExport(payload)
+      setDirectorShotDraft(payload.director_shot_text || '')
+      setDirectorShotSaveState('saved')
+      setDirectorShotSaveMessage(
+        resetToSystem
+          ? '已恢复系统生成导演分镜语言，并重新编译导出预览；未创建 PromptVersion。'
+          : '已保存导演分镜语言，并重新编译机器提示词导出；未创建 PromptVersion。',
+      )
+      setMachinePromptExportState('loaded')
+      setMachinePromptExportMessage('导出预览已基于当前导演分镜语言刷新；API 未提交。')
+    } catch (error) {
+      setDirectorShotSaveState('error')
+      setDirectorShotSaveMessage(error instanceof Error ? error.message : '导演分镜语言保存失败。')
+    }
+  }
+
+  const copyMachinePromptText = async (label: string, text: string | undefined) => {
+    const normalized = String(text || '').trim()
+    if (!normalized) {
+      setMachinePromptCopyMessage(`${label} 暂无可复制内容，请先加载导出预览。`)
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(normalized)
+      setMachinePromptCopyMessage(`${label} 已复制，可粘贴到第三方 WebUI。`)
+    } catch (error) {
+      setMachinePromptCopyMessage(error instanceof Error ? error.message : `${label} 复制失败。`)
+    }
+  }
+
+  const downloadMachinePromptExportFile = (format: 'markdown' | 'csv' | 'api-json') => {
+    if (!machinePromptExport) {
+      setMachinePromptCopyMessage('请先加载机器提示词导出预览，再下载文件。')
+      return
+    }
+
+    const episode = String(machinePromptExport.episode ?? selectedShot?.episode ?? 'episode').replace(/[^\w-]+/g, '-')
+    const shotId = String(machinePromptExport.shot_id ?? selectedShot?.shot_id ?? 'shot').replace(/[^\w-]+/g, '-')
+    const stem = `book-${_bookId}-ep-${episode}-shot-${shotId}-machine-prompt`
+    const exportMap = {
+      markdown: {
+        content: buildMachinePromptMarkdownExportText(machinePromptExport, 'minimax-h3'),
+        mimeType: 'text/markdown',
+        filename: `${stem}.md`,
+        label: 'Markdown',
+      },
+      csv: {
+        content: buildMachinePromptCsvExportText(machinePromptExport, 'minimax-h3'),
+        mimeType: 'text/csv',
+        filename: `${stem}.csv`,
+        label: 'CSV',
+      },
+      'api-json': {
+        content: buildMachinePromptApiJsonExportText(machinePromptExport, 'minimax-h3'),
+        mimeType: 'application/json',
+        filename: `${stem}.api-preview.json`,
+        label: 'API JSON',
+      },
+    } as const
+    const selectedExport = exportMap[format]
+    downloadTextFile(selectedExport.content, selectedExport.mimeType, selectedExport.filename)
+    setMachinePromptCopyMessage(`${selectedExport.label} 导出文件已生成；API 仍未提交。`)
+  }
+
+  const loadMachinePromptExportRecordHistory = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    setMachinePromptRecordHistoryState('loading')
+    setMachinePromptRecordMessage('正在读取当前镜头的机器提示词导出历史。')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/export-records`, { cache: 'no-store' })
+      if (!response.ok) {
+        let detail = ''
+        try {
+          const payload = await response.json()
+          detail = String(payload?.detail || payload?.error || '').trim()
+        } catch {
+          detail = await response.text()
+        }
+        throw new Error(detail || `HTTP ${response.status}`)
+      }
+      const payload = await response.json()
+      const records = Array.isArray(payload?.records) ? payload.records as ProductionExportRecordListItem[] : []
+      const filteredRecords = records.filter((record) =>
+        isMachinePromptRecordForShot(record, selectedShot.episode, selectedShot.shot_id),
+      )
+      setMachinePromptExportRecords(filteredRecords)
+      setMachinePromptRecordHistoryState('loaded')
+      setMachinePromptRecordMessage(
+        filteredRecords.length > 0
+          ? `已读取 ${filteredRecords.length} 条当前镜头机器提示词导出记录。`
+          : '当前镜头暂无机器提示词导出记录。',
+      )
+    } catch (error) {
+      setMachinePromptRecordHistoryState('error')
+      setMachinePromptRecordMessage(error instanceof Error ? error.message : '机器提示词导出历史读取失败。')
+    }
+  }
+
+  const saveMachinePromptExportRecord = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    setMachinePromptRecordState('saving')
+    setMachinePromptRecordMessage('正在登记当前镜头的机器提示词导出快照，不会提交生成任务。')
+    try {
+      const response = await fetch(
+        `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/machine-prompt-export-records`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            targetModel: 'minimax-h3',
+            exportChannel: 'webui',
+            operatorName: 'formal-workspace',
+          }),
+        },
+      )
+      if (!response.ok) {
+        let detail = ''
+        try {
+          const payload = await response.json()
+          detail = String(payload?.detail || payload?.error || '').trim()
+        } catch {
+          detail = await response.text()
+        }
+        throw new Error(detail || `HTTP ${response.status}`)
+      }
+      const record = await response.json()
+      setMachinePromptRecordState('saved')
+      setMachinePromptRecordMessage(`已登记导出记录 #${record?.id ?? '-'}：API 未提交，仅保存 WebUI 导出快照。`)
+      if (isMachinePromptRecordForShot(record, selectedShot.episode, selectedShot.shot_id)) {
+        setMachinePromptExportRecords((current) => [
+          record,
+          ...current.filter((item) => String(item.id ?? '') !== String(record?.id ?? '')),
+        ])
+        setMachinePromptRecordHistoryState('loaded')
+      }
+    } catch (error) {
+      setMachinePromptRecordState('error')
+      setMachinePromptRecordMessage(error instanceof Error ? error.message : '机器提示词导出记录保存失败。')
+    }
   }
 
   const persistShotExecutionSummary = (
@@ -1983,10 +2301,13 @@ export default function ProductWorkspaceStoryboardSection({
             const active = String(shot.shot_id) === String(selectedShot?.shot_id ?? '')
             const readiness = buildShotReadiness(shot)
             const degradedPrompt = hasDegradedPromptVersion(shot)
+            const shortReadinessLabel = getShotReadinessShortLabel(readiness, shot)
             return (
               <button
                 key={String(shot.shot_id)}
                 type="button"
+                data-episode={shot.episode}
+                data-shot-id={String(shot.shot_id)}
                 onClick={() => onSelectShot(String(shot.shot_id))}
                 className={`w-full rounded-xl border p-3 text-left transition ${
                   active ? 'border-sky-500/40 bg-sky-500/10' : 'border-slate-800 bg-slate-950/50 hover:border-slate-700'
@@ -2013,8 +2334,10 @@ export default function ProductWorkspaceStoryboardSection({
                 <div className="mt-2 text-[11px] text-slate-500">
                   图片 {(shot.assets?.images?.length ?? 0)} / 视频 {(shot.assets?.videos?.length ?? 0)} / 阻塞 {readiness.blockerCount}
                 </div>
-                <div className="mt-1 line-clamp-2 text-[11px] text-slate-400">
-                  下一步：{readiness.nextAction}
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-slate-400" title={readiness.nextAction}>
+                  <span className="rounded-full border border-slate-700 bg-slate-950/60 px-2 py-0.5">
+                    下一步 · {shortReadinessLabel}
+                  </span>
                 </div>
               </button>
             )
@@ -2126,56 +2449,25 @@ export default function ProductWorkspaceStoryboardSection({
                 </div>
               </div>
             ) : null}
-            <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div className="text-lg font-semibold text-white">上游放行状态</div>
-                  <div className="mt-1 text-sm text-slate-400">
-                    镜头工作台需要继承剧本工作台的锁稿与放行决策，再决定当前镜头是否适合继续编译、出图和出视频。
-                  </div>
-                </div>
-                <span
-                  className={`rounded-full border px-2.5 py-1 text-xs ${
-                    storyboardGate.tone === 'ready'
-                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-                      : 'border-rose-500/30 bg-rose-500/10 text-rose-200'
-                  }`}
-                >
-                  {storyboardGate.status === 'ready' ? '已放行' : '未放行'}
-                </span>
-              </div>
-
-              <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/50 p-4 text-sm leading-6 text-slate-300">
-                {storyboardGate.message}
-              </div>
-
-              <div className="mt-4 grid gap-3 md:grid-cols-3">
-                <MiniMetric label="当前集" value={selectedEpisode ? `第 ${selectedEpisode} 集` : '未选择'} />
-                <MiniMetric label="锁稿状态" value={selectedScriptDecision.lockedAt ? '已锁稿' : '未锁稿'} />
-                <MiniMetric label="分镜放行" value={selectedScriptDecision.releasedAt ? '已放行' : '未放行'} />
-              </div>
-
-              {onNavigateSection ? (
-                <button
-                  type="button"
-                  onClick={() => onNavigateSection('scripts')}
-                  className="mt-4 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 transition hover:border-sky-500 hover:text-white"
-                >
-                  {storyboardGate.status === 'ready' ? '回剧本工作台复核' : '返回剧本工作台补放行'}
-                </button>
-              ) : null}
-            </div>
+            <StoryboardGateStrip
+              gate={storyboardGate}
+              selectedEpisode={selectedEpisode}
+              lockedAt={selectedScriptDecision.lockedAt}
+              releasedAt={selectedScriptDecision.releasedAt}
+              onNavigateSection={onNavigateSection}
+            />
 
             <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div className="text-lg font-semibold text-white">{selectedShot.shot_id} {selectedShot.scene_name || '未命名场景'}</div>
-                  <div className="mt-1 text-sm text-slate-400">正式工作台镜头详情，优先查看提示词、绑定资产、参考图和编译权威源。</div>
-                </div>
-                <span className={`rounded-full border px-2.5 py-1 text-xs ${diagnosticMeta.tone}`}>
-                  {diagnosticMeta.label}
-                </span>
-              </div>
+              <CurrentShotActionHeader
+                shotId={String(selectedShot.shot_id)}
+                sceneName={selectedShot.scene_name}
+                diagnosticLabel={diagnosticMeta.label}
+                diagnosticToneClass={diagnosticMeta.tone}
+                primaryActionLabel={storyboardCanvasPrimaryActionPlan.label}
+                primaryActionDetail={storyboardCanvasPrimaryActionPlan.detail}
+                primaryActionIsExecutable={storyboardCanvasPrimaryActionPlan.action !== 'view_results'}
+                onPrimaryAction={runStoryboardCanvasPrimaryAction}
+              />
 
               {taskRecoveryHandoffSummary ? (
                 <div className="mt-4 rounded-xl border border-sky-500/30 bg-sky-500/10 p-4">
@@ -2204,21 +2496,59 @@ export default function ProductWorkspaceStoryboardSection({
                 <MiniMetric label="视频版本" value={`${selectedShot.assets?.videos?.length ?? 0}`} />
               </div>
 
-              <div className="mt-5 grid gap-4 lg:grid-cols-2">
-                <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-                  <div className="text-xs text-slate-500">静态提示词</div>
-                  <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-200">{selectedShot.visual_prompt_static || '当前还没有静态提示词。'}</div>
-                </div>
-                <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-                  <div className="text-xs text-slate-500">运动提示词</div>
-                  <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-200">{selectedShot.visual_prompt_motion || '当前还没有运动提示词。'}</div>
-                </div>
-              </div>
+              <DirectorShotLanguageEditor
+                draft={directorShotDraft}
+                sourceTone={machinePromptExport?.source_layers?.has_user_director_shot_override ? 'cyan' : machinePromptExport ? 'slate' : 'amber'}
+                sourceLabel={machinePromptExport?.source_layers?.has_user_director_shot_override ? '用户编辑版' : machinePromptExport ? '系统生成版' : '待加载'}
+                saveState={directorShotSaveState}
+                saveMessage={directorShotSaveMessage}
+                canSave={Boolean(selectedShot)}
+                onDraftChange={setDirectorShotDraft}
+                onSaveAndRecompile={() => saveDirectorShotText(false)}
+                onRestoreSystemVersion={() => saveDirectorShotText(true)}
+              />
 
-              <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-                <div className="text-xs text-slate-500">负向提示词</div>
-                <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-200">{selectedShot.negative_prompt || '当前还没有负向提示词。'}</div>
-              </div>
+              <CollapsiblePanel
+                title="模型提示词（静态 / 运动 / 负向）"
+                description="低频复核内容默认折叠；需要检查机器可读提示词时再展开。"
+                className="mt-4"
+              >
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+                    <div className="text-xs text-slate-500">静态提示词</div>
+                    <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-200">{selectedShot.visual_prompt_static || '当前还没有静态提示词。'}</div>
+                  </div>
+                  <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+                    <div className="text-xs text-slate-500">运动提示词</div>
+                    <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-200">{selectedShot.visual_prompt_motion || '当前还没有运动提示词。'}</div>
+                  </div>
+                </div>
+                <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+                  <div className="text-xs text-slate-500">负向提示词</div>
+                  <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-200">{selectedShot.negative_prompt || '当前还没有负向提示词。'}</div>
+                </div>
+              </CollapsiblePanel>
+
+              <ProductWorkspaceMachinePromptExportPanel
+                machinePromptExport={machinePromptExport}
+                machinePromptExportState={machinePromptExportState}
+                machinePromptExportMessage={machinePromptExportMessage}
+                machinePromptCopyMessage={machinePromptCopyMessage}
+                machinePromptRecordMessage={machinePromptRecordMessage}
+                machinePromptRecordState={machinePromptRecordState}
+                machinePromptExportRecords={machinePromptExportRecords}
+                machinePromptRecordHistoryState={machinePromptRecordHistoryState}
+                minimaxH3CopyText={minimaxH3CopyText}
+                minimaxH3Fields={minimaxH3Fields}
+                machineTimeline={machineTimeline}
+                genericZhVideoExport={genericZhVideoExport}
+                canRecordExport={Boolean(selectedShot)}
+                onLoadPreview={loadMachinePromptExportPreview}
+                onCopyText={copyMachinePromptText}
+                onDownloadFile={downloadMachinePromptExportFile}
+                onSaveRecord={saveMachinePromptExportRecord}
+                onLoadHistory={loadMachinePromptExportRecordHistory}
+              />
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
@@ -2244,414 +2574,66 @@ export default function ProductWorkspaceStoryboardSection({
               </div>
             </div>
 
-              <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/40 p-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-medium text-white">{'单镜头生成动作'}</div>
-                    <div className="mt-1 text-xs text-slate-500">{'在新版镜头工作台直接发起首帧和视频任务；长任务会自动接回任务中心恢复链路。'}</div>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {onNavigateTaskSection ? (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          onNavigateTaskSection('canvas', {
-                            episode: selectedShot.episode,
-                            shotId: String(selectedShot.shot_id),
-                          })
-                        }
-                        className="rounded-lg border border-slate-700 px-3 py-2 text-xs transition border-slate-700 text-slate-300 hover:border-sky-500 hover:text-white"
-                      >
-                        在创作画布查看
-                      </button>
-                    ) : null}
-                    <button
-                      type="button"
-                      disabled={!canGenerateFromGate || isGenerationBusy}
-                      onClick={() => { void runStoryboardGeneration('frame') }}
-                      className={`rounded-lg px-3 py-2 text-xs font-medium transition ${
-                        !canGenerateFromGate || isGenerationBusy
-                          ? 'cursor-not-allowed border border-slate-800 bg-slate-900 text-slate-500'
-                          : 'bg-emerald-600 text-white hover:bg-emerald-500'
-                      }`}
-                    >
-                      {generationState === 'frame' ? '生成首帧中...' : '生成首帧'}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={!canGenerateFromGate || !hasAdoptedFrame || isGenerationBusy}
-                      onClick={() => { void runStoryboardGeneration('video') }}
-                      className={`rounded-lg px-3 py-2 text-xs font-medium transition ${
-                        !canGenerateFromGate || !hasAdoptedFrame || isGenerationBusy
-                          ? 'cursor-not-allowed border border-slate-800 bg-slate-900 text-slate-500'
-                          : 'bg-fuchsia-600 text-white hover:bg-fuchsia-500'
-                      }`}
-                    >
-                      {generationState === 'video' ? '生成视频中...' : '生成视频'}
-                    </button>
-                    {onNavigateTaskSection ? (
-                      <button
-                        type="button"
-                        disabled={!hasRecoveryTask}
-                        onClick={() =>
-                          onNavigateTaskSection('tasks', {
-                            episode: selectedShot.episode,
-                            shotId: String(selectedShot.shot_id),
-                            taskId: videoRecoveryTaskId || frameRecoveryTaskId || undefined,
-                            recoveryKind: videoRecoveryTaskId ? 'video' : frameRecoveryTaskId ? 'frame' : undefined,
-                          })
-                        }
-                        className={`rounded-lg border px-3 py-2 text-xs transition ${
-                          hasRecoveryTask
-                            ? 'border-slate-700 text-slate-300 hover:border-sky-500 hover:text-white'
-                            : 'cursor-not-allowed border-slate-800 text-slate-600'
-                        }`}
-                      >
-                        {'去任务中心继续回收'}
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-
-                <div className="mt-3 grid gap-3 md:grid-cols-3">
-                  <MiniMetric label={'首帧状态'} value={hasAdoptedFrame ? '已有采纳首帧' : '缺采纳首帧'} />
-                  <MiniMetric label={'待恢复任务'} value={`${Number(Boolean(frameRecoveryTaskId)) + Number(Boolean(videoRecoveryTaskId))} 个`} />
-                  <MiniMetric label={'当前资产状态'} value={selectedShot.asset_status || 'pending'} />
-                </div>
-
-                {selectedShotRuntime.latestExecutionSummary || selectedShotRuntime.pendingTasks.length > 0 ? (
-                  <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="text-xs text-slate-500">当前镜头运行态</div>
-                      <div className="flex flex-wrap gap-2 text-[10px] text-slate-500">
-                        {selectedShotRuntime.latestExecutionSummary?.updatedAt ? (
-                          <span className="rounded-full border border-slate-800 px-2 py-0.5">
-                            更新于 {new Date(selectedShotRuntime.latestExecutionSummary.updatedAt).toLocaleString('zh-CN', { hour12: false })}
-                          </span>
-                        ) : null}
-                        {selectedShotPendingSummary.latestUpdatedAt ? (
-                          <span className="rounded-full border border-slate-800 px-2 py-0.5">
-                            待回收更新于 {new Date(selectedShotPendingSummary.latestUpdatedAt).toLocaleString('zh-CN', { hour12: false })}
-                          </span>
-                        ) : null}
-                        {promptRecoveryTaskId ? (
-                          <span className="rounded-full border border-slate-800 px-2 py-0.5">
-                            提示词待回收
-                          </span>
-                        ) : null}
-                      </div>
-                    </div>
-                    <div className="mt-3 grid gap-3 md:grid-cols-3">
-                      <MiniMetric
-                        label="最近执行"
-                        value={selectedShotRuntime.latestExecutionSummary?.label || '未记录'}
-                      />
-                      <MiniMetric
-                        label="待回收任务"
-                        value={
-                          selectedShotPendingSummary.count > 0
-                            ? selectedShotPendingSummary.joinedKindLabels
-                            : '无'
-                        }
-                      />
-                      <MiniMetric
-                        label="建议动作"
-                        value={
-                          selectedShotRuntime.pendingTasks.length > 0
-                            ? '先回收任务'
-                            : selectedShotRuntime.latestExecutionSummary
-                              ? '继续复核结果'
-                              : '可发起执行'
-                        }
-                      />
-                    </div>
-                    {promptRecoveryTaskId ? (
-                      <div className="mt-3 text-[11px] text-slate-400">
-                        当前镜头还有提示词重编译任务在后台执行，建议先等任务回收完成，再决定是否继续出图或出视频。
-                      </div>
-                    ) : null}
-                    {selectedShotPendingSummary.latestTaskId && selectedShotPendingSummary.latestSourceLabel ? (
-                      <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300">
-                        最近待回收来源：{selectedShotPendingSummary.latestSourceLabel} · 任务 ID：{selectedShotPendingSummary.latestTaskId}
-                      </div>
-                    ) : null}
-                    {selectedShotRuntime.pendingTasks.length > 0 ? (
-                      <div className="mt-4 space-y-2">
-                        {selectedShotRuntime.pendingTasks.slice(0, 4).map((task) => (
-                          <div key={`${task.taskId}-${task.updatedAt}`} className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-xs text-slate-300">
-                            <div className="flex flex-wrap items-center justify-between gap-2">
-                              <span>{getStoryboardRecoveryKindLabel(task.kind)} · 任务 ID：{task.taskId}</span>
-                              <span className="text-slate-500">
-                                {new Date(task.updatedAt).toLocaleString('zh-CN', { hour12: false })}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
-
-                <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-                  <div className="text-xs text-slate-500">本次视频输入摘要</div>
-                  <div className="mt-3 grid gap-3 md:grid-cols-3">
-                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
-                      <div className="text-[11px] text-slate-500">{'首帧来源'}</div>
-                      <div className="mt-1 text-sm font-medium text-slate-100 break-all">
-                        {hasAdoptedFrame ? String(adoptedImage?.title || adoptedImage?.label || adoptedImage?.id || '已采纳首帧') : '未采纳首帧'}
-                      </div>
-                      <div className="mt-2 break-all text-[11px] text-slate-500">
-                        {hasAdoptedFrame ? `资产 ID：${String(adoptedImage?.id || '').trim() || '未记录'}` : '没有首帧时视频生成保持禁用'}
-                      </div>
-                    </div>
-                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
-                      <div className="text-[11px] text-slate-500">{'参考图输入'}</div>
-                      <div className="mt-1 text-sm font-medium text-slate-100">{`${referenceAssetIds.length} 张`}</div>
-                      <div className="mt-2 break-all text-[11px] text-slate-500">
-                        {referenceAssetIds.length > 0 ? referenceAssetIds.join(' / ') : '当前未记录结构化参考图 ID'}
-                      </div>
-                      <div className="mt-2 break-all text-[11px] text-slate-500">
-                        {compiledReferenceAssetIds.length > 0
-                          ? `当前编译实际使用：${compiledReferenceAssetIds.length} 张 · ${compiledReferenceAssetIds.join(' / ')}`
-                          : '当前编译尚未沉淀可用参考图载荷'}
-                      </div>
-                      <div className="mt-2 break-all text-[11px] text-sky-200">
-                        {effectiveReferenceAssetIds.length > 0
-                          ? `本次视频实际提交：${effectiveReferenceAssetIds.length} 张 · ${effectiveReferenceAssetIds.join(' / ')}`
-                          : '本次视频不提交静态参考图 ID'}
-                      </div>
-                      <div className="mt-2 break-all text-[11px] text-slate-500">
-                        {effectiveReferencePayload.source === 'compiled'
-                          ? '当前会优先沿用已编译版本实际使用的参考图，保证提示词、参考图与任务记录保持一致。'
-                          : '当前会直接使用结构化绑定里的参考图。'}
-                      </div>
-                      {hasReferencePayloadDrift ? (
-                        <div className="mt-2 text-[11px] text-amber-300">
-                          {'结构化绑定数量与当前编译载荷不一致。本次会优先沿用已编译载荷；如果要切换到最新绑定，建议先重编提示词。'}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
-                      <div className="text-[11px] text-slate-500">{'任务模式'}</div>
-                      <div className="mt-1 text-sm font-medium text-slate-100">{predictedVideoTaskMode}</div>
-                      <div className="mt-2 break-all text-[11px] text-slate-500">
-                        {'优先使用 image_to_video，其次 reference_to_video，最后 text_to_video'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-3 text-sm text-slate-300">
-                  {!canGenerateFromGate
-                    ? '当前镜头仍受上游锁稿/放行约束，暂不建议直接出图或出视频。'
-                    : hasAdoptedFrame
-                      ? '当前镜头已具备采纳首帧，视频会显式使用这张首帧与当前结构化参考图继续生成。'
-                      : '当前镜头还没有采纳首帧，视频生成按钮会保持禁用。'}
-                </div>
-
-                {generationMessage ? (
-                  <div className={`mt-3 rounded-lg border px-3 py-2 text-sm ${
-                    generationState === 'success'
-                      ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-200'
-                      : generationState === 'error'
-                        ? 'border-amber-500/20 bg-amber-500/5 text-amber-100'
-                        : 'border-slate-700 bg-slate-950/60 text-slate-300'
-                  }`}>
-                    {generationMessage}
-                  </div>
-                ) : null}
-
-                {hasRecoveryTask ? (
-                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-400">
-                    {frameRecoveryTaskId ? <span className="rounded-full border border-slate-700 px-2 py-1">{'首帧任务：'}{frameRecoveryTaskId}</span> : null}
-                    {videoRecoveryTaskId ? <span className="rounded-full border border-slate-700 px-2 py-1">{'视频任务：'}{videoRecoveryTaskId}</span> : null}
-                  </div>
-                ) : null}
-              </div>
+              <ProductWorkspaceStoryboardAdvancedToolsPanel
+                episode={selectedShot.episode}
+                shotId={String(selectedShot.shot_id)}
+                assetStatus={selectedShot.asset_status}
+                canGenerateFromGate={canGenerateFromGate}
+                hasAdoptedFrame={hasAdoptedFrame}
+                isGenerationBusy={isGenerationBusy}
+                generationState={generationState}
+                generationMessage={generationMessage}
+                adoptedFrameLabel={String(adoptedImage?.title || adoptedImage?.label || adoptedImage?.id || '已采纳首帧')}
+                adoptedFrameAssetId={String(adoptedImage?.id || '').trim()}
+                referenceAssetIds={referenceAssetIds}
+                compiledReferenceAssetIds={compiledReferenceAssetIds}
+                effectiveReferenceAssetIds={effectiveReferenceAssetIds}
+                effectiveReferencePayloadSource={effectiveReferencePayload.source}
+                hasReferencePayloadDrift={hasReferencePayloadDrift}
+                predictedVideoTaskMode={predictedVideoTaskMode}
+                frameRecoveryTaskId={frameRecoveryTaskId}
+                videoRecoveryTaskId={videoRecoveryTaskId}
+                promptRecoveryTaskId={promptRecoveryTaskId}
+                hasRecoveryTask={hasRecoveryTask}
+                selectedShotRuntime={selectedShotRuntime}
+                selectedShotPendingSummary={selectedShotPendingSummary}
+                onNavigateCanvas={
+                  onNavigateTaskSection
+                    ? (target) => onNavigateTaskSection('canvas', target)
+                    : undefined
+                }
+                onNavigateTasks={
+                  onNavigateTaskSection
+                    ? (target) => onNavigateTaskSection('tasks', target)
+                    : undefined
+                }
+                onGenerateFrame={() => runStoryboardGeneration('frame')}
+                onGenerateVideo={() => runStoryboardGeneration('video')}
+              />
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
               <div className="space-y-6">
-                <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-medium text-white">编译诊断</div>
-                    <div className="text-xs text-slate-500">当前镜头的诊断状态、检查项和量化指标</div>
-                  </div>
+                <ProductWorkspaceCompileDiagnosticsPanel
+                  promptVersionAudit={promptVersionAudit}
+                  promptVersionAuditSummary={promptVersionAuditSummary}
+                  recommendedRestoreVersion={recommendedRestoreVersion}
+                  restoreOutcomeMeta={restoreOutcomeMeta}
+                  historyActionState={historyActionState}
+                  compilerChecks={compilerChecks}
+                  compilerFocusCards={compilerFocusCards}
+                  compilerWarnings={compilerWarnings}
+                  blockingIssues={blockingIssues}
+                  compileContextWarnings={compileContextWarnings}
+                  compilerMetricItems={compilerMetricItems}
+                  onRollbackRecommendedPromptVersion={rollbackRecommendedPromptVersion}
+                />
 
-                  {promptVersionAudit?.is_degraded_version ? (
-                    <div className="mt-4 rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium text-amber-200">当前提示词版本疑似跑偏</div>
-                          <div className="mt-1 text-xs leading-5 text-amber-100/90">
-                            {promptVersionAuditSummary?.summary || '当前版本存在关键资产缺失或退化风险，建议优先检查提示词历史版本。'}
-                          </div>
-                          <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                            <MiniMetric label="缺失关键资产" value={`${promptVersionAudit.missing_critical_count ?? 0} 个`} />
-                            <MiniMetric label="可恢复版本" value={`${promptVersionAudit.recoverable_version_count ?? 0} 个`} />
-                            <MiniMetric label="场景孤岛风险" value={promptVersionAudit.is_scene_only_candidate ? '是' : '否'} />
-                          </div>
-                        </div>
-                        {recommendedRestoreVersion?.version ? (
-                          <button
-                            type="button"
-                            onClick={() => { void rollbackRecommendedPromptVersion() }}
-                            disabled={historyActionState === 'saving'}
-                            className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-100 transition hover:border-amber-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                          >
-                            {historyActionState === 'saving'
-                              ? '恢复中...'
-                              : `恢复推荐版本 v${String(recommendedRestoreVersion.version)}`}
-                          </button>
-                        ) : null}
-                      </div>
-                      {recommendedRestoreVersion?.version ? (
-                        <div className="mt-3 text-[11px] text-amber-100/80">
-                          推荐原因：{getPromptRestoreReasonLabel(recommendedRestoreVersion.reason)}
-                        </div>
-                      ) : null}
-                      {recommendedRestoreVersion?.version ? (
-                        <div className={`mt-1 text-[11px] ${restoreOutcomeMeta.tone}`}>
-                          {restoreOutcomeMeta.label}
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : null}
-
-                  {compilerChecks.length > 0 ? (
-                    <div className="mt-4 space-y-2">
-                      {compilerChecks.map((check, index) => {
-                        const passed = check.passed !== false
-                        return (
-                          <div key={`${check.key || 'check'}-${index}`} className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className={`rounded-full border px-2 py-0.5 text-[11px] ${passed ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200' : 'border-amber-500/30 bg-amber-500/10 text-amber-200'}`}>
-                                {passed ? '通过' : '待处理'}
-                              </span>
-                              <span className="text-sm text-slate-200">{check.label || check.key || `检查项 ${index + 1}`}</span>
-                            </div>
-                            {check.message ? <div className="mt-2 text-xs leading-5 text-slate-400">{check.message}</div> : null}
-                            {Array.isArray(check.details) && check.details.length > 0 ? (
-                              <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-slate-500">
-                                {check.details.map((detail, detailIndex) => <li key={`${index}-${detailIndex}`}>{detail}</li>)}
-                              </ul>
-                            ) : null}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  ) : null}
-
-                  {compilerFocusCards.length > 0 ? (
-                    <div className="mt-4 grid gap-3 xl:grid-cols-2">
-                      {compilerFocusCards.map((card) => (
-                        <div key={card.key} className={`rounded-lg border p-4 ${card.tone}`}>
-                          <div className="text-sm font-medium">{card.title}</div>
-                          <div className="mt-1 text-xs leading-5 opacity-90">{card.detail}</div>
-                          {card.items.length > 0 ? (
-                            <ul className="mt-3 list-disc space-y-1 pl-5 text-xs opacity-90">
-                              {card.items.map((item, index) => <li key={`${card.key}-${index}`}>{item}</li>)}
-                            </ul>
-                          ) : null}
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
-
-                  {compilerWarnings.length > 0 ? (
-                    <div className="mt-4 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3">
-                      <div className="text-xs font-medium text-amber-200">编译告警</div>
-                      <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-amber-100/90">
-                        {compilerWarnings.map((item, index) => <li key={`warning-${index}`}>{item}</li>)}
-                      </ul>
-                    </div>
-                  ) : null}
-
-                  {blockingIssues.length > 0 ? (
-                    <div className="mt-4 rounded-lg border border-rose-500/20 bg-rose-500/5 p-3">
-                      <div className="text-xs font-medium text-rose-200">阻塞问题</div>
-                      <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-rose-100/90">
-                        {blockingIssues.map((item, index) => <li key={`blocking-${index}`}>{item}</li>)}
-                      </ul>
-                    </div>
-                  ) : null}
-
-                  {compileContextWarnings.length > 0 ? (
-                    <div className="mt-4 rounded-lg border border-slate-700 bg-slate-950/60 p-3">
-                      <div className="text-xs font-medium text-slate-200">编译上下文补充提示</div>
-                      <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-slate-400">
-                        {compileContextWarnings.map((item, index) => <li key={`context-warning-${index}`}>{item}</li>)}
-                      </ul>
-                    </div>
-                  ) : null}
-
-                  {compilerMetricItems.length > 0 ? (
-                    <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                      {compilerMetricItems.map((item) => <MiniMetric key={item.key} label={item.label} value={item.value} />)}
-                    </div>
-                  ) : null}
-                </div>
-
-                {usedAssets.length > 0 ? (
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                    <div className="text-sm font-medium text-white">本次实际引用资产</div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {usedAssets.map((asset, index) => (
-                        <span
-                          key={`${asset.asset_id || asset.asset_name || 'asset'}-${index}`}
-                          className="rounded-full border border-slate-700 px-2 py-1 text-[11px] text-slate-300"
-                        >
-                          {getDisplayAssetTypeLabel(asset.asset_type)} · {asset.asset_name || asset.asset_id || '未命名资产'}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
-                {repairActions.length > 0 ? (
-                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="text-sm font-medium text-white">当前修复入口</div>
-                      <div className="text-xs text-slate-500">把当前镜头最该先做的动作直接串到对应工作台</div>
-                    </div>
-                    <div className="mt-4 grid gap-3">
-                      {repairActions.map((action) => (
-                        <div key={action.key} className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                              <div className="text-sm text-slate-100">{action.title}</div>
-                              <div className="mt-1 text-xs leading-5 text-slate-400">{action.detail}</div>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={action.onClick}
-                              disabled={action.disabled}
-                              className={`rounded-lg border px-3 py-2 text-xs transition ${
-                                action.disabled
-                                  ? 'cursor-not-allowed border-slate-800 text-slate-600'
-                                  : 'border-slate-700 text-slate-300 hover:border-sky-500 hover:text-white'
-                              }`}
-                            >
-                              {action.cta}
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {compileActionMessage ? (
-                      <div
-                        className={`mt-4 rounded-xl border p-3 text-sm ${
-                          compileActionState === 'error'
-                            ? 'border-rose-500/20 bg-rose-500/5 text-rose-200'
-                            : compileActionState === 'success'
-                              ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-200'
-                              : 'border-slate-700 bg-slate-950/60 text-slate-300'
-                        }`}
-                      >
-                        {compileActionMessage}
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
+                <ProductWorkspaceStoryboardRepairPanel
+                  usedAssets={usedAssets}
+                  repairActions={repairActions}
+                  compileActionState={compileActionState}
+                  compileActionMessage={compileActionMessage}
+                />
 
                 <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
                   <div className="text-sm font-medium text-white">编译上下文</div>
@@ -2833,403 +2815,43 @@ export default function ProductWorkspaceStoryboardSection({
                   ) : null}
                 </div>
 
-                <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-sm font-medium text-white">提示词历史版本</div>
-                      <div className="mt-1 text-xs text-slate-500">
-                        {historyState === 'loading'
-                          ? '正在加载历史版本'
-                          : historyState === 'error'
-                            ? '历史版本加载失败'
-                            : historyState === 'loaded'
-                              ? `${promptVersions.length} 个版本`
-                              : '当前镜头会保留编译版本记录'}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => { void togglePromptLock() }}
-                      disabled={promptLockState === 'saving' || !hasCompiledPrompt}
-                      className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                        selectedShot?.prompt_locked
-                          ? 'border-amber-500/40 bg-amber-500/10 text-amber-100 hover:border-amber-300 hover:text-white'
-                          : 'border-slate-700 text-slate-300 hover:border-sky-500 hover:text-white'
-                      }`}
-                    >
-                      {promptLockState === 'saving'
-                        ? '保存中...'
-                        : selectedShot?.prompt_locked
-                          ? '已锁定提示词'
-                          : '锁定当前版本'}
-                    </button>
-                  </div>
-
-                  {promptLockMessage ? (
-                    <div
-                      className={`mt-4 rounded-xl border p-3 text-sm ${
-                        promptLockState === 'error'
-                          ? 'border-rose-500/20 bg-rose-500/5 text-rose-200'
-                          : 'border-emerald-500/20 bg-emerald-500/5 text-emerald-200'
-                      }`}
-                    >
-                      {promptLockMessage}
-                    </div>
-                  ) : null}
-
-                  {promptVersions.length > 0 ? (
-                    <div className="mt-4 space-y-3">
-                      {promptVersions.map((version) => (
-                        <details key={String(version.id || version.version || Math.random())} className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
-                          <summary className="cursor-pointer text-sm text-slate-300">
-                            v{String(version.version ?? '-')} · {getPromptCompileReasonMeta(version.compile_reason).label}
-                          </summary>
-                          <div className="mt-3 space-y-3">
-                            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
-                              <span className={`rounded-full border px-2 py-0.5 ${getCompilerDiagnosticMeta(version.compiler_diagnostics?.status).tone}`}>
-                                {getCompilerDiagnosticMeta(version.compiler_diagnostics?.status).label}
-                              </span>
-                              {version.is_current ? (
-                                <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-sky-200">
-                                  当前版本
-                                </span>
-                              ) : null}
-                              {version.is_locked_version ? (
-                                <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-amber-200">
-                                  锁定版本
-                                </span>
-                              ) : null}
-                              <span>创建时间：{formatVersionTimestamp(version.created_at)}</span>
-                            </div>
-                            <div className="text-xs leading-5 text-slate-500">
-                              {getPromptCompileReasonMeta(version.compile_reason).detail}
-                            </div>
-
-                            {version.version_audit?.is_degraded_version ? (
-                              <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3">
-                                <div className="text-[11px] font-medium text-amber-200">该历史版本也存在退化风险</div>
-                                <div className="mt-1 text-[11px] leading-5 text-amber-100/90">
-                                  {buildPromptVersionAuditSummary(version.version_audit)?.summary || '该版本存在关键资产缺失，请谨慎恢复。'}
-                                </div>
-                              </div>
-                            ) : null}
-
-                            {recommendedRestoreVersion?.version !== undefined &&
-                            String(version.version ?? '') === String(recommendedRestoreVersion.version) ? (
-                              <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-[11px] text-emerald-100">
-                                系统建议优先恢复到这个版本。原因：{getPromptRestoreReasonLabel(recommendedRestoreVersion.reason)}
-                              </div>
-                            ) : null}
-
-                            {Array.isArray(version.locked_reference_summary?.all) && version.locked_reference_summary.all.length > 0 ? (
-                              <div className="flex flex-wrap gap-2">
-                                {version.locked_reference_summary.all.map((item, index) => (
-                                  <span
-                                    key={`${item.id || item.scope || 'ref'}-${index}`}
-                                    className="rounded-full border border-slate-700 px-2 py-1 text-[11px] text-slate-300"
-                                  >
-                                    {item.subject || item.title || '未命名参考'}
-                                    {item.token ? ` · ${item.token}` : ''}
-                                    {item.status ? ` · ${getPromptReferenceStatusLabel(item.status)}` : ''}
-                                  </span>
-                                ))}
-                              </div>
-                            ) : null}
-
-                            <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-                              <div className="text-[11px] text-slate-500">静态提示词</div>
-                              <div className="mt-2 whitespace-pre-wrap text-xs leading-5 text-slate-300">{String(version.prompt_static || '-')}</div>
-                            </div>
-                            <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-                              <div className="text-[11px] text-slate-500">运动提示词</div>
-                              <div className="mt-2 whitespace-pre-wrap text-xs leading-5 text-slate-300">{String(version.prompt_motion || '-')}</div>
-                            </div>
-                            <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-                              <div className="text-[11px] text-slate-500">负向提示词</div>
-                              <div className="mt-2 whitespace-pre-wrap text-xs leading-5 text-slate-300">{String(version.negative_prompt || '-')}</div>
-                            </div>
-
-                            {version.prompt_compile_context ? (
-                              <details className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-                                <summary className="cursor-pointer text-[11px] text-slate-400">查看当时的编译上下文</summary>
-                                <pre className="mt-3 max-w-full overflow-auto rounded bg-slate-950 p-2 text-xs text-slate-300">
-                                  {JSON.stringify(sanitizeCompileContextForDisplay(version.prompt_compile_context), null, 2)}
-                                </pre>
-                              </details>
-                            ) : null}
-
-                            <div className="flex flex-wrap gap-2">
-                              <button
-                                type="button"
-                                onClick={() => { void rollbackPromptVersion(version.id) }}
-                                disabled={historyActionState === 'saving' || Boolean(version.is_current)}
-                                className="rounded-lg border border-slate-700 px-3 py-1.5 text-[11px] text-slate-300 transition hover:border-slate-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                              >
-                                {version.is_current
-                                  ? '当前使用中'
-                                  : historyActionState === 'saving'
-                                    ? '回滚中...'
-                                    : '回滚到此版本'}
-                              </button>
-                            </div>
-                          </div>
-                        </details>
-                      ))}
-                    </div>
-                  ) : historyState === 'loaded' ? (
-                    <div className="mt-4 rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
-                      当前镜头还没有历史版本记录。
-                    </div>
-                  ) : historyState === 'error' ? (
-                    <div className="mt-4 rounded-xl border border-rose-500/20 bg-rose-500/5 p-4 text-sm text-rose-200">
-                      历史版本暂时加载失败，刷新镜头后可重试。
-                    </div>
-                  ) : null}
-
-                  {historyActionMessage ? (
-                    <div
-                      className={`mt-4 rounded-xl border p-3 text-sm ${
-                        historyActionState === 'error'
-                          ? 'border-rose-500/20 bg-rose-500/5 text-rose-200'
-                          : historyActionState === 'success'
-                            ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-200'
-                            : 'border-slate-700 bg-slate-950/60 text-slate-300'
-                      }`}
-                    >
-                      {historyActionMessage}
-                    </div>
-                  ) : null}
-                </div>
+                <ProductWorkspacePromptHistoryPanel
+                  promptVersions={promptVersions}
+                  historyState={historyState}
+                  historyActionState={historyActionState}
+                  historyActionMessage={historyActionMessage}
+                  promptLockState={promptLockState}
+                  promptLockMessage={promptLockMessage}
+                  hasCompiledPrompt={hasCompiledPrompt}
+                  isPromptLocked={selectedShot?.prompt_locked}
+                  recommendedRestoreVersion={recommendedRestoreVersion}
+                  onTogglePromptLock={togglePromptLock}
+                  onRollbackPromptVersion={rollbackPromptVersion}
+                />
               </div>
 
               <div className="space-y-6">
-                <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-medium text-white">当前验收结论</div>
-                    <span className={`rounded-full border px-2.5 py-1 text-[11px] ${getAcceptanceStatusTone(acceptance?.status)}`}>
-                      {getAcceptanceStatusLabel(acceptance?.status)}
-                    </span>
-                  </div>
-                  <div className="mt-3 space-y-2 text-[11px] text-slate-400">
-                    <div>验收对象：<span className="text-slate-300">{getMediaAssetKindLabel(acceptanceAssetKind)}</span></div>
-                    <div>当前资产：<span className="break-all text-slate-300">{acceptanceAssetId || '未记录'}</span></div>
-                    <div>最近更新时间：<span className="text-slate-300">{acceptance?.updated_at || '未记录'}</span></div>
-                  </div>
-                  {Array.isArray(acceptance?.failure_tags) && acceptance.failure_tags.length > 0 ? (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {acceptance.failure_tags.map((tag) => (
-                        <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-200">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-                  <div className="mt-3 text-xs leading-5 text-slate-500">{acceptance?.notes || '当前还没有记录验收备注。'}</div>
+                <ProductWorkspaceStoryboardAcceptancePanel
+                  acceptance={acceptance}
+                  acceptanceAssetKind={acceptanceAssetKind}
+                  acceptanceAssetId={acceptanceAssetId}
+                  acceptanceDraft={acceptanceDraft}
+                  acceptanceState={acceptanceState}
+                  acceptanceMessage={acceptanceMessage}
+                  onDraftChange={setAcceptanceDraft}
+                  onSave={saveAcceptanceRecord}
+                />
 
-                  <div className="mt-4 space-y-3 rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-                    <div className="text-xs font-medium text-slate-300">提交验收记录</div>
-                    <div className="grid gap-2">
-                      <select
-                        value={acceptanceDraft.assetKind}
-                        onChange={(event) => setAcceptanceDraft((current) => ({ ...current, assetKind: event.target.value }))}
-                        className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
-                      >
-                        <option value="image">分镜图</option>
-                        <option value="video">视频</option>
-                        <option value="audio">音频</option>
-                      </select>
-                      <input
-                        value={acceptanceDraft.assetId}
-                        onChange={(event) => setAcceptanceDraft((current) => ({ ...current, assetId: event.target.value }))}
-                        className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
-                        placeholder="资产 ID"
-                      />
-                      <select
-                        value={acceptanceDraft.status}
-                        onChange={(event) => setAcceptanceDraft((current) => ({ ...current, status: event.target.value }))}
-                        className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
-                      >
-                        {ACCEPTANCE_STATUS_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {ACCEPTANCE_TAG_OPTIONS.map((option) => {
-                        const active = acceptanceDraft.failureTags.includes(option.value)
-                        return (
-                          <button
-                            key={option.value}
-                            type="button"
-                            onClick={() =>
-                              setAcceptanceDraft((current) => ({
-                                ...current,
-                                failureTags: active
-                                  ? current.failureTags.filter((item) => item !== option.value)
-                                  : [...current.failureTags, option.value],
-                              }))
-                            }
-                            className={`rounded-full border px-2 py-0.5 text-[10px] transition ${
-                              active
-                                ? 'border-amber-500/30 bg-amber-500/10 text-amber-200'
-                                : 'border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white'
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        )
-                      })}
-                    </div>
-                    <textarea
-                      rows={4}
-                      value={acceptanceDraft.notes}
-                      onChange={(event) => setAcceptanceDraft((current) => ({ ...current, notes: event.target.value }))}
-                      className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs leading-6 text-slate-200 outline-none transition focus:border-sky-500"
-                      placeholder="记录通过理由、打回原因或下一轮约束。"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => { void saveAcceptanceRecord() }}
-                      disabled={acceptanceState === 'saving'}
-                      className="rounded-lg border border-sky-500/50 px-3 py-2 text-xs font-medium text-sky-200 transition hover:border-sky-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      {acceptanceState === 'saving' ? '保存中...' : '保存验收'}
-                    </button>
-                    {acceptanceMessage ? (
-                      <div
-                        className={`rounded-lg border px-3 py-2 text-xs ${
-                          acceptanceState === 'error'
-                            ? 'border-rose-500/20 bg-rose-500/5 text-rose-200'
-                            : 'border-emerald-500/20 bg-emerald-500/5 text-emerald-200'
-                        }`}
-                      >
-                        {acceptanceMessage}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
+                <ProductWorkspaceStoryboardMediaPanel
+                  imageAssets={imageAssets}
+                  videoAssets={videoAssets}
+                  referenceImages={referenceImages}
+                />
 
-                <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                  <div className="text-sm font-medium text-white">已生成分镜图</div>
-                  {imageAssets.length > 0 ? (
-                    <div className="mt-3 space-y-3">
-                      {imageAssets.map((item) => <MediaAssetCard key={item.id} item={item} />)}
-                    </div>
-                  ) : (
-                    <div className="mt-3 rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
-                      当前还没有生成的分镜图版本。
-                    </div>
-                  )}
-                </div>
-
-                <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                  <div className="text-sm font-medium text-white">已生成视频</div>
-                  {videoAssets.length > 0 ? (
-                    <div className="mt-3 space-y-3">
-                      {videoAssets.map((item) => <MediaAssetCard key={item.id} item={item} />)}
-                    </div>
-                  ) : (
-                    <div className="mt-3 rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
-                      当前还没有生成的视频版本。
-                    </div>
-                  )}
-                </div>
-
-                <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                  <div className="text-sm font-medium text-white">参考图预览</div>
-                  {referenceImages.length > 0 ? (
-                    <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-                      {referenceImages.map((reference, index) => {
-                        const previewUrl = getReferencePreviewUrl(reference)
-                        return (
-                          <div key={`${reference.reference_asset_id || reference.asset_id || 'reference'}-${index}`} className="min-w-0 rounded-lg border border-slate-800 bg-slate-950/70 p-2">
-                            <div className="aspect-[4/3] overflow-hidden rounded bg-slate-900">
-                              {previewUrl ? (
-                                <img src={previewUrl} alt={reference.asset_name || reference.reference_token || '参考图'} className="h-full w-full object-cover" />
-                              ) : (
-                                <div className="flex h-full items-center justify-center text-xs text-slate-500">无可预览图片</div>
-                              )}
-                            </div>
-                            <div className="mt-2 break-all text-xs text-slate-300">{reference.asset_name || reference.reference_token || '未命名参考图'}</div>
-                            <div className="mt-1 break-all text-[11px] text-slate-500">
-                              {getDisplayAssetTypeLabel(reference.asset_type)}
-                              {reference.reference_token ? ` · ${reference.reference_token}` : ''}
-                              {reference.reference_status ? ` · ${getReferenceStatusLabel(reference.reference_status)}` : ''}
-                            </div>
-                            {previewUrl ? (
-                              <a href={previewUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex text-[11px] text-sky-300 transition hover:text-sky-200">
-                                查看大图
-                              </a>
-                            ) : null}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  ) : (
-                    <div className="mt-3 rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
-                      当前镜头还没有参考图。
-                    </div>
-                  )}
-                </div>
-
-                <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="text-sm font-medium text-white">编译权威源摘要</div>
-                    <div className="flex flex-wrap gap-2 text-[11px] text-slate-400">
-                      <span>绑定资产 {promptAuthoritySummary.items.length}</span>
-                      <span>约束 {promptAuthoritySummary.constraintCount}</span>
-                      <span>反馈 {promptAuthoritySummary.noteCount}</span>
-                      <span>告警 {promptAuthoritySummary.warningCount}</span>
-                    </div>
-                  </div>
-
-                  {promptAuthoritySummary.items.length > 0 ? (
-                    <div className="mt-3 space-y-2">
-                      {promptAuthoritySummary.items.map((item) => (
-                        <details key={item.key} className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
-                          <summary className="cursor-pointer list-none">
-                            <div className="flex flex-wrap items-start justify-between gap-3">
-                              <div className="min-w-0 flex-1">
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <span className="rounded-full border border-slate-700 px-2 py-0.5 text-[10px] text-slate-300">
-                                    {getPromptReferenceScopeLabel(item.scope)}
-                                  </span>
-                                  <div className="font-medium text-white">{item.name}</div>
-                                  {item.variantLabel ? (
-                                    <span className="rounded-full border border-slate-700 px-2 py-0.5 text-[10px] text-slate-400">
-                                      {item.variantLabel}
-                                    </span>
-                                  ) : null}
-                                </div>
-                                <div className="mt-2 text-xs leading-5 text-slate-500">
-                                  {item.authorityPromptExcerpt || '当前还没有可展示的权威摘要。'}
-                                </div>
-                              </div>
-                              <div className="text-[11px] text-slate-500">展开详情</div>
-                            </div>
-                          </summary>
-                          <div className="mt-3 space-y-1 border-t border-slate-800 pt-3 text-[11px] text-slate-400">
-                            <div>资产 ID：<span className="text-slate-300">{item.assetId || '-'}</span></div>
-                            <div>引用 token：<span className="text-slate-300">{item.token || '-'}</span></div>
-                            <div>生效版本：<span className="text-slate-300">{item.variantLabel || '-'}</span></div>
-                            <div>参考来源：<span className="text-slate-300">{item.referenceSourceLabel || '-'}</span></div>
-                            <div>参考状态：<span className="text-slate-300">{item.referenceStatusLabel || '-'}</span></div>
-                            <div>权威来源：<span className="text-slate-300">{item.authorityPromptSource || '-'}</span></div>
-                          </div>
-                        </details>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="mt-3 rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
-                      当前还没有可读的编译权威源摘要。
-                    </div>
-                  )}
-
-                  <details className="mt-3 rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-                    <summary className="cursor-pointer text-xs text-slate-400">查看原始编译上下文 JSON</summary>
-                    <pre className="mt-3 max-w-full overflow-auto rounded bg-slate-950 p-2 text-xs text-slate-300">{JSON.stringify(selectedShotCompileContextDisplay, null, 2)}</pre>
-                  </details>
-                </div>
+                <ProductWorkspacePromptAuthorityPanel
+                  promptAuthoritySummary={promptAuthoritySummary}
+                  compileContextDisplay={selectedShotCompileContextDisplay}
+                />
               </div>
             </div>
           </>

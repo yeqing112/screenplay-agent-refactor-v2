@@ -385,18 +385,6 @@ export function useProductWorkspaceUpstream({
         setAdaptationLockedAt(resolvedState?.lockedAt ?? null)
         setAdaptationStorageLoadedForBook(bookId)
 
-        if (!serverState && localState) {
-          const selectedName =
-            options.find((option) => option.id === resolvedSelectedId)?.name ??
-            localState.selectedName ??
-            null
-          void persistAdaptationStateToServer(bookId, {
-            customNote: localState.customNote,
-            lockedAt: localState.lockedAt,
-            selectedId: resolvedSelectedId,
-            selectedName,
-          })
-        }
       })
       .catch(() => {
         if (cancelled) return
@@ -425,7 +413,6 @@ export function useProductWorkspaceUpstream({
       selectedName: selectedAdaptation?.name ?? null,
     }
     persistAdaptationState(bookId, nextState)
-    void persistAdaptationStateToServer(bookId, nextState)
   }, [
     bookId,
     adaptationCustomNote,
@@ -460,12 +447,6 @@ export function useProductWorkspaceUpstream({
         ...resolvedState,
       })
       setProductionSkillStorageLoadedForBook(bookId)
-      if (!(stateResult.status === 'fulfilled' && stateResult.value)) {
-        void persistProductionSkillStateToServer(bookId, {
-          ...defaultProductionSkillState(),
-          ...resolvedState,
-        })
-      }
     })
 
     return () => {
@@ -476,7 +457,6 @@ export function useProductWorkspaceUpstream({
   useEffect(() => {
     if (productionSkillStorageLoadedForBook !== bookId) return
     persistProductionSkillState(bookId, productionSkillState)
-    void persistProductionSkillStateToServer(bookId, productionSkillState)
   }, [bookId, productionSkillState, productionSkillStorageLoadedForBook])
 
   const pollPipelineTask = async (taskId: string) => {
@@ -650,11 +630,27 @@ export function useProductWorkspaceUpstream({
 
   const lockSelectedAdaptation = () => {
     if (!selectedAdaptationId || !productionSkillState.lockedAt) return
-    setAdaptationLockedAt(new Date().toISOString())
+    const nextState = {
+      customNote: adaptationCustomNote,
+      lockedAt: new Date().toISOString(),
+      selectedId: selectedAdaptationId,
+      selectedName: selectedAdaptation?.name ?? null,
+    }
+    setAdaptationLockedAt(nextState.lockedAt)
+    persistAdaptationState(bookId, nextState)
+    void persistAdaptationStateToServer(bookId, nextState)
   }
 
   const unlockAdaptation = () => {
+    const nextState = {
+      customNote: adaptationCustomNote,
+      lockedAt: null,
+      selectedId: selectedAdaptationId,
+      selectedName: selectedAdaptation?.name ?? null,
+    }
     setAdaptationLockedAt(null)
+    persistAdaptationState(bookId, nextState)
+    void persistAdaptationStateToServer(bookId, nextState)
   }
 
   const updateProductionSkillField = (
@@ -681,17 +677,23 @@ export function useProductWorkspaceUpstream({
 
   const lockProductionSkill = () => {
     if (!productionSkillState.selectedSkillId) return
-    setProductionSkillState((current) => ({
-      ...current,
+    const nextState = {
+      ...productionSkillState,
       lockedAt: new Date().toISOString(),
-    }))
+    }
+    setProductionSkillState(nextState)
+    persistProductionSkillState(bookId, nextState)
+    void persistProductionSkillStateToServer(bookId, nextState)
   }
 
   const unlockProductionSkill = () => {
-    setProductionSkillState((current) => ({
-      ...current,
+    const nextState = {
+      ...productionSkillState,
       lockedAt: null,
-    }))
+    }
+    setProductionSkillState(nextState)
+    persistProductionSkillState(bookId, nextState)
+    void persistProductionSkillStateToServer(bookId, nextState)
   }
 
   const productionSkillSectionState: ProductionSkillSectionState = {

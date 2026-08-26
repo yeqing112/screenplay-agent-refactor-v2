@@ -1,8 +1,72 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildQaWorkbenchSummary, buildRecoveryTaskEntries } from './productWorkspaceTaskCenterData'
+import {
+  buildQaWorkbenchSummary,
+  buildRecoveryTaskEntries,
+  normalizeTaskPreviewImageUrl,
+} from './productWorkspaceTaskCenterData'
 
 describe('productWorkspaceTaskCenterData', () => {
+  it('drops legacy prototyping asset preview urls before the browser requests missing files', () => {
+    expect(normalizeTaskPreviewImageUrl('/api/prototyping/assets/image-stale')).toBe('')
+    expect(normalizeTaskPreviewImageUrl('http://127.0.0.1:5173/api/prototyping/assets/image-stale')).toBe('')
+    expect(normalizeTaskPreviewImageUrl('data:image/svg+xml,%3Csvg%3E%3C/svg%3E')).toContain('data:image')
+    expect(normalizeTaskPreviewImageUrl('https://example.com/frame.png')).toBe('https://example.com/frame.png')
+  })
+
+  it('keeps legacy creative task ids but omits missing preview urls from task-center meta', () => {
+    const entries = buildRecoveryTaskEntries(
+      [],
+      {},
+      [
+        {
+          task_id: 'task-stale-preview',
+          status: 'done',
+          kind: 'video',
+          episode: 1,
+          shot_id: '1',
+          first_frame_asset_id: 'image-stale',
+          first_frame_url: '/api/prototyping/assets/image-stale',
+          reference_asset_ids: ['ref-stale', 'ref-live'],
+          reference_images: [
+            {
+              reference_asset_id: 'ref-stale',
+              image_url: '/api/prototyping/assets/image-stale-ref',
+              asset_name: '旧占位参考图',
+            },
+            {
+              reference_asset_id: 'ref-live',
+              image_url: 'https://example.com/live-ref.png',
+              asset_name: '有效参考图',
+            },
+          ],
+        },
+      ] as any,
+      {},
+      {
+        1: [
+          {
+            shot_id: '1',
+            scene_name: 'Tea house',
+          },
+        ] as any,
+      },
+    )
+
+    expect(entries[0].creativeTaskMeta).toMatchObject({
+      firstFrameAssetId: 'image-stale',
+      firstFrameUrl: undefined,
+      referenceAssetIds: ['ref-stale', 'ref-live'],
+      referenceImages: [
+        {
+          referenceAssetId: 'ref-live',
+          imageUrl: 'https://example.com/live-ref.png',
+          title: '有效参考图',
+        },
+      ],
+    })
+  })
+
   it('treats recheck_passed issues as resolved instead of open', () => {
     const summary = buildQaWorkbenchSummary({
       episodes: [
