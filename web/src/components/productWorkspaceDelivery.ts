@@ -8,6 +8,7 @@ import type {
 } from '../domain/bookOutputs'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildScriptReleaseSummary } from './productWorkspaceScriptRelease'
+import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTasks'
 
 export type DeliveryRepairSection = 'adaptation' | 'scripts' | 'storyboard' | 'assets' | 'qa'
 
@@ -50,6 +51,11 @@ export interface DeliveryEpisodeReadiness {
   imageReadyShots: number
   videoReadyShots: number
   referencedAssetCount: number
+  qaTotalIssueCount: number
+  qaOpenIssueCount: number
+  qaInProgressCount: number
+  qaResolvedCount: number
+  qaHighOpenIssueCount: number
   qaCount: number
 }
 
@@ -163,6 +169,7 @@ interface Params {
   scriptDecisionState: ScriptDecisionMap
   shotsByEpisode: Record<number, StoryboardShotOutput[]>
   qaEntries: Array<{ episode: number; error_count?: number }>
+  qaWorkbenchEpisodes?: TaskCenterQaWorkbenchEpisodeSummary[]
   makeups: VisualMakeupOutput[]
   locations: VisualLocationOutput[]
   props: VisualPropOutput[]
@@ -229,6 +236,7 @@ export function buildDeliveryEpisodeReadiness(params: Params): DeliveryEpisodeRe
     ...params.scripts.map((item) => item.episode),
     ...Object.keys(params.shotsByEpisode).map((value) => Number(value)),
     ...params.qaEntries.map((item) => item.episode),
+    ...(params.qaWorkbenchEpisodes ?? []).map((item) => item.episode),
   ])
 
   return Array.from(episodeIds)
@@ -241,9 +249,11 @@ export function buildDeliveryEpisodeReadiness(params: Params): DeliveryEpisodeRe
       const scriptLocked = Boolean(scriptDecision.lockedAt)
       const scriptReleased = Boolean(scriptDecision.releasedAt)
       const shots = params.shotsByEpisode[episode] ?? []
-      const qaCount = params.qaEntries
-        .filter((item) => item.episode === episode)
-        .reduce((sum, item) => sum + (item.error_count ?? 0), 0)
+      const qaReadiness = buildQaDeliveryReadiness({
+        episode,
+        qaEntries: params.qaEntries,
+        qaWorkbenchEpisodes: params.qaWorkbenchEpisodes ?? [],
+      })
 
       const promptReadyShots = shots.filter((shot) =>
         Boolean(shot.visual_prompt_static?.trim() && shot.visual_prompt_motion?.trim()),
@@ -278,7 +288,12 @@ export function buildDeliveryEpisodeReadiness(params: Params): DeliveryEpisodeRe
         videoReadyShots,
         totalShots: shots.length,
         referencedAssetCount,
-        qaCount,
+        qaCount: qaReadiness.blockingIssueCount,
+        qaTotalIssueCount: qaReadiness.totalIssueCount,
+        qaOpenIssueCount: qaReadiness.openIssueCount,
+        qaInProgressCount: qaReadiness.inProgressCount,
+        qaResolvedCount: qaReadiness.resolvedCount,
+        qaHighOpenIssueCount: qaReadiness.highOpenIssueCount,
       })
 
       const blockedReasons = blockedItems.map((item) => item.label)
@@ -303,7 +318,12 @@ export function buildDeliveryEpisodeReadiness(params: Params): DeliveryEpisodeRe
         imageReadyShots,
         videoReadyShots,
         referencedAssetCount,
-        qaCount,
+        qaTotalIssueCount: qaReadiness.totalIssueCount,
+        qaOpenIssueCount: qaReadiness.openIssueCount,
+        qaInProgressCount: qaReadiness.inProgressCount,
+        qaResolvedCount: qaReadiness.resolvedCount,
+        qaHighOpenIssueCount: qaReadiness.highOpenIssueCount,
+        qaCount: qaReadiness.blockingIssueCount,
       }
     })
 }
@@ -317,7 +337,7 @@ export function summarizeDeliveryPackage(readiness: DeliveryEpisodeReadiness) {
     `分镜图 ${readiness.imageReadyShots}/${readiness.totalShots}`,
     `视频 ${readiness.videoReadyShots}/${readiness.totalShots}`,
     `资产引用 ${readiness.referencedAssetCount}`,
-    readiness.qaCount > 0 ? `QA ${readiness.qaCount}` : 'QA 通过',
+    summarizeQaReadinessLabel(readiness),
   ].join(' | ')
 }
 
@@ -475,12 +495,14 @@ export function buildDeliveryExportPackage(input: {
       content: script?.content ?? '',
     },
     qa: {
-      totalIssueCount: input.readiness.qaCount,
+      totalIssueCount: input.readiness.qaTotalIssueCount,
       blocked: input.readiness.qaCount > 0,
       summary:
         input.readiness.qaCount > 0
-          ? `当前仍有 ${input.readiness.qaCount} 条 QA 问题。`
-          : '当前未发现交付阻塞 QA。',
+          ? `当前仍有 ${input.readiness.qaCount} 条可执行 QA 问题待处理。`
+          : input.readiness.qaTotalIssueCount > 0
+            ? `QA 已放行，历史问题 ${input.readiness.qaTotalIssueCount} 条已关闭或豁免。`
+            : '当前未发现交付阻塞 QA。',
     },
     readiness: input.readiness,
     adoptedStoryboard: shots.map((shot) => ({
@@ -527,6 +549,11 @@ function buildBlockedItems(input: {
   totalShots: number
   referencedAssetCount: number
   qaCount: number
+  qaTotalIssueCount: number
+  qaOpenIssueCount: number
+  qaInProgressCount: number
+  qaResolvedCount: number
+  qaHighOpenIssueCount: number
 }): DeliveryBlockedItem[] {
   const items: DeliveryBlockedItem[] = []
   const firstMissingPromptShot = input.shots.find(
@@ -649,8 +676,8 @@ function buildBlockedItems(input: {
   if (input.qaCount > 0) {
     items.push({
       code: 'qa_blocked',
-      label: `QA ${input.qaCount} 项`,
-      detail: '当前仍有 QA 问题未清零或未明确放行。',
+      label: `QA 待处理 ${input.qaCount} 项`,
+      detail: buildQaBlockedDetail(input),
       targetSection: 'qa',
       priority: 'high',
       episode: input.episode,
@@ -658,6 +685,60 @@ function buildBlockedItems(input: {
   }
 
   return items
+}
+
+function buildQaDeliveryReadiness(input: {
+  episode: number
+  qaEntries: Array<{ episode: number; error_count?: number }>
+  qaWorkbenchEpisodes: TaskCenterQaWorkbenchEpisodeSummary[]
+}) {
+  const workbenchSummary = input.qaWorkbenchEpisodes.find((item) => item.episode === input.episode) ?? null
+  if (workbenchSummary) {
+    const openIssueCount = Number(workbenchSummary.openIssueCount ?? 0)
+    const inProgressCount = Number(workbenchSummary.inProgressCount ?? 0)
+    return {
+      totalIssueCount: Number(workbenchSummary.totalIssueCount ?? 0),
+      openIssueCount,
+      inProgressCount,
+      resolvedCount: Number(workbenchSummary.resolvedCount ?? 0),
+      highOpenIssueCount: Number(workbenchSummary.highOpenIssueCount ?? 0),
+      blockingIssueCount: openIssueCount + inProgressCount,
+    }
+  }
+
+  const legacyBlockingIssueCount = input.qaEntries
+    .filter((item) => item.episode === input.episode)
+    .reduce((sum, item) => sum + (item.error_count ?? 0), 0)
+
+  return {
+    totalIssueCount: legacyBlockingIssueCount,
+    openIssueCount: legacyBlockingIssueCount,
+    inProgressCount: 0,
+    resolvedCount: 0,
+    highOpenIssueCount: 0,
+    blockingIssueCount: legacyBlockingIssueCount,
+  }
+}
+
+function summarizeQaReadinessLabel(readiness: Pick<DeliveryEpisodeReadiness, 'qaCount' | 'qaTotalIssueCount'>) {
+  if (readiness.qaCount > 0) return `QA 待处理 ${readiness.qaCount}`
+  if (readiness.qaTotalIssueCount > 0) return `QA 已放行 ${readiness.qaTotalIssueCount}`
+  return 'QA 通过'
+}
+
+function buildQaBlockedDetail(input: {
+  qaTotalIssueCount: number
+  qaOpenIssueCount: number
+  qaInProgressCount: number
+  qaHighOpenIssueCount: number
+}) {
+  const parts = [
+    input.qaOpenIssueCount > 0 ? `开放 ${input.qaOpenIssueCount}` : '',
+    input.qaInProgressCount > 0 ? `修复/复检中 ${input.qaInProgressCount}` : '',
+    input.qaHighOpenIssueCount > 0 ? `高优先级 ${input.qaHighOpenIssueCount}` : '',
+  ].filter(Boolean)
+  const lifecycleDetail = parts.length > 0 ? parts.join('，') : `待处理 ${input.qaTotalIssueCount}`
+  return `当前仍有可执行 QA 问题未关闭或未放行：${lifecycleDetail}。已复检通过、已解决或 wont_fix 豁免的问题不会阻塞导出。`
 }
 
 function toDeliveryMediaSnapshot(
@@ -813,7 +894,7 @@ export function buildDeliveryExportSummaryText(readiness: DeliveryEpisodeReadine
     `静帧完成：${readiness.imageReadyShots}/${readiness.totalShots}`,
     `视频完成：${readiness.videoReadyShots}/${readiness.totalShots}`,
     `参考资产引用：${readiness.referencedAssetCount}`,
-    `QA 问题：${readiness.qaCount}`,
+    `QA 问题：${summarizeQaReadinessLabel(readiness)}`,
     ...(readiness.blockedReasons.length > 0 ? readiness.blockedReasons.map((item) => `- ${item}`) : []),
   ].join('\n')
 }

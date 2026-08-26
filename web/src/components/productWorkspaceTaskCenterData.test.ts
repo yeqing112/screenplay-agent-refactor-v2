@@ -91,6 +91,33 @@ describe('productWorkspaceTaskCenterData', () => {
     })
   })
 
+  it('treats resolved and wont_fix workflow issues as non-blocking when issue details are available', () => {
+    const summary = buildQaWorkbenchSummary({
+      episodes: [
+        {
+          episode: 2,
+          qa_summary: {
+            open_issue_count: 5,
+          },
+          issues: [
+            { severity: 'high', fix_status: 'recheck_passed' },
+            { severity: 'medium', workflow_status: 'resolved' },
+            { severity: 'low', workflow_status: 'wont_fix' },
+          ],
+        },
+      ],
+    })
+
+    expect(summary[0]).toMatchObject({
+      episode: 2,
+      totalIssueCount: 3,
+      openIssueCount: 0,
+      highOpenIssueCount: 0,
+      inProgressCount: 0,
+      resolvedCount: 3,
+    })
+  })
+
   it('uses shot-variant recovery routing for character reference tasks with shot context', () => {
     const entries = buildRecoveryTaskEntries(
       [

@@ -66,6 +66,99 @@ describe('productWorkspaceDelivery', () => {
     expect(summarizeDeliveryPackage(readiness[0]!)).toContain('QA')
   })
 
+  it('uses QA workbench lifecycle state for delivery blocking before falling back to legacy QA counts', () => {
+    const baseParams = {
+      hasExplicitLockedAdaptation: true,
+      scripts: [{ episode: 1, content: 'script ready' }],
+      scriptDecisionState: {
+        '1': {
+          lockedAt: '2026-07-06T10:00:00.000Z',
+          releasedAt: '2026-07-06T10:10:00.000Z',
+          note: '',
+        },
+      },
+      shotsByEpisode: {
+        1: [
+          {
+            episode: 1,
+            shot_id: '01',
+            scene_name: 'scene',
+            visual_prompt_static: 'static',
+            visual_prompt_motion: 'motion',
+            assets: {
+              images: [{ id: 'img-1', adopted: true }],
+              videos: [{ id: 'vid-1', adopted: true }],
+              audios: [],
+              references: {
+                characters: { sister: [{ id: 'ref-1' }] },
+                scene: [{ id: 'scene-ref' }],
+                props: {},
+              },
+            },
+          },
+        ] as any,
+      },
+      qaEntries: [{ episode: 1, error_count: 3 }],
+      makeups: [],
+      locations: [],
+      props: [],
+    }
+
+    const legacyReadiness = buildDeliveryEpisodeReadiness(baseParams)[0]!
+    expect(legacyReadiness.canExport).toBe(false)
+    expect(legacyReadiness.blockedItems).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'qa_blocked',
+          label: 'QA 待处理 3 项',
+        }),
+      ]),
+    )
+
+    const releasedWorkbenchReadiness = buildDeliveryEpisodeReadiness({
+      ...baseParams,
+      qaWorkbenchEpisodes: [
+        {
+          episode: 1,
+          totalIssueCount: 3,
+          openIssueCount: 0,
+          highOpenIssueCount: 0,
+          inProgressCount: 0,
+          resolvedCount: 3,
+        },
+      ],
+    })[0]!
+    expect(releasedWorkbenchReadiness.canExport).toBe(true)
+    expect(releasedWorkbenchReadiness.qaCount).toBe(0)
+    expect(releasedWorkbenchReadiness.qaTotalIssueCount).toBe(3)
+    expect(summarizeDeliveryPackage(releasedWorkbenchReadiness)).toContain('QA 已放行 3')
+
+    const openWorkbenchReadiness = buildDeliveryEpisodeReadiness({
+      ...baseParams,
+      qaWorkbenchEpisodes: [
+        {
+          episode: 1,
+          totalIssueCount: 3,
+          openIssueCount: 1,
+          highOpenIssueCount: 1,
+          inProgressCount: 1,
+          resolvedCount: 1,
+        },
+      ],
+    })[0]!
+    expect(openWorkbenchReadiness.canExport).toBe(false)
+    expect(openWorkbenchReadiness.qaCount).toBe(2)
+    expect(openWorkbenchReadiness.blockedItems).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'qa_blocked',
+          label: 'QA 待处理 2 项',
+          detail: expect.stringContaining('开放 1'),
+        }),
+      ]),
+    )
+  })
+
   it('builds structured repair path for blocked export readiness', () => {
     const readiness = buildDeliveryEpisodeReadiness({
       hasExplicitLockedAdaptation: false,

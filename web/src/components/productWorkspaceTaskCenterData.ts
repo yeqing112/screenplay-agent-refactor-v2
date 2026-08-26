@@ -10,6 +10,7 @@ import type { TaskCenterEntry, TaskCenterQaWorkbenchEpisodeSummary, TaskCenterSt
 type QaWorkbenchIssue = {
   severity?: string
   fix_status?: string
+  workflow_status?: string
 }
 
 type QaWorkbenchEpisode = {
@@ -24,22 +25,37 @@ export type QaWorkbenchResponse = {
   episodes?: QaWorkbenchEpisode[]
 }
 
-function normalizeQaWorkbenchFixStatus(value: string | undefined) {
+function normalizeQaWorkbenchStatus(value: string | undefined) {
   return String(value || '').trim().toLowerCase()
 }
 
-function isQaWorkbenchIssueResolved(statusValue: string | undefined) {
-  const normalized = normalizeQaWorkbenchFixStatus(statusValue)
-  return normalized === 'recheck_passed' || normalized === 'resolved' || normalized === 'closed' || normalized === 'accepted'
+function isQaWorkbenchIssueResolved(statusValue: string | undefined, workflowStatusValue?: string) {
+  const normalized = normalizeQaWorkbenchStatus(statusValue)
+  const workflowStatus = normalizeQaWorkbenchStatus(workflowStatusValue)
+  return (
+    normalized === 'recheck_passed' ||
+    normalized === 'resolved' ||
+    normalized === 'closed' ||
+    normalized === 'accepted' ||
+    workflowStatus === 'resolved' ||
+    workflowStatus === 'wont_fix'
+  )
 }
 
-function isQaWorkbenchIssueInProgress(statusValue: string | undefined) {
-  const normalized = normalizeQaWorkbenchFixStatus(statusValue)
-  return normalized === 'fixing' || normalized === 'fixed' || normalized === 'rechecking' || normalized === 'in_progress'
+function isQaWorkbenchIssueInProgress(statusValue: string | undefined, workflowStatusValue?: string) {
+  const normalized = normalizeQaWorkbenchStatus(statusValue)
+  const workflowStatus = normalizeQaWorkbenchStatus(workflowStatusValue)
+  return (
+    normalized === 'fixing' ||
+    normalized === 'fixed' ||
+    normalized === 'rechecking' ||
+    normalized === 'in_progress' ||
+    workflowStatus === 'in_progress'
+  )
 }
 
-function isQaWorkbenchIssueOpen(statusValue: string | undefined) {
-  return !isQaWorkbenchIssueResolved(statusValue) && !isQaWorkbenchIssueInProgress(statusValue)
+function isQaWorkbenchIssueOpen(statusValue: string | undefined, workflowStatusValue?: string) {
+  return !isQaWorkbenchIssueResolved(statusValue, workflowStatusValue) && !isQaWorkbenchIssueInProgress(statusValue, workflowStatusValue)
 }
 
 function inferRecoveryKind(kindValue: string | undefined) {
@@ -134,13 +150,13 @@ export function buildQaWorkbenchSummary(payload: QaWorkbenchResponse): TaskCente
   return (payload.episodes ?? [])
     .map((episode) => {
       const issues = episode.issues ?? []
-      const openIssues = issues.filter((item) => isQaWorkbenchIssueOpen(item.fix_status))
-      const inProgressIssues = issues.filter((item) => isQaWorkbenchIssueInProgress(item.fix_status))
-      const resolvedIssues = issues.filter((item) => isQaWorkbenchIssueResolved(item.fix_status))
+      const openIssues = issues.filter((item) => isQaWorkbenchIssueOpen(item.fix_status, item.workflow_status))
+      const inProgressIssues = issues.filter((item) => isQaWorkbenchIssueInProgress(item.fix_status, item.workflow_status))
+      const resolvedIssues = issues.filter((item) => isQaWorkbenchIssueResolved(item.fix_status, item.workflow_status))
       return {
         episode: Number(episode.episode ?? 0),
         totalIssueCount: issues.length,
-        openIssueCount: Number(episode.qa_summary?.open_issue_count ?? openIssues.length),
+        openIssueCount: issues.length > 0 ? openIssues.length : Number(episode.qa_summary?.open_issue_count ?? 0),
         highOpenIssueCount: openIssues.filter((item) => String(item.severity || '').toLowerCase() === 'high').length,
         inProgressCount: inProgressIssues.length,
         resolvedCount: resolvedIssues.length,

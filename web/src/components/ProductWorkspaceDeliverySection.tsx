@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type {
   ScriptOutput,
   StoryboardShotOutput,
@@ -22,6 +22,8 @@ import {
   type DeliveryEpisodeReadiness,
   type DeliveryRecord,
 } from './productWorkspaceDelivery'
+import { buildQaWorkbenchSummary, type QaWorkbenchResponse } from './productWorkspaceTaskCenterData'
+import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTasks'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import type { CanvasHandoffTarget, TaskNavigateHandler } from './productWorkspaceSectionContracts'
 
@@ -140,6 +142,26 @@ export default function ProductWorkspaceDeliverySection({
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null)
   const [recordState, setRecordState] = useState<RecordState>('idle')
   const [recordMessage, setRecordMessage] = useState('')
+  const [qaWorkbenchEpisodes, setQaWorkbenchEpisodes] = useState<TaskCenterQaWorkbenchEpisodeSummary[]>([])
+
+  const loadQaWorkbench = useCallback(async () => {
+    if (bookId <= 0) {
+      setQaWorkbenchEpisodes([])
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/books/${bookId}/qa/workbench`, { cache: 'no-store' })
+      if (!response.ok) {
+        setQaWorkbenchEpisodes([])
+        return
+      }
+      const payload = (await response.json()) as QaWorkbenchResponse
+      setQaWorkbenchEpisodes(buildQaWorkbenchSummary(payload))
+    } catch {
+      setQaWorkbenchEpisodes([])
+    }
+  }, [bookId])
 
   const readinessList = useMemo(
     () =>
@@ -149,11 +171,12 @@ export default function ProductWorkspaceDeliverySection({
         scriptDecisionState,
         shotsByEpisode,
         qaEntries,
+        qaWorkbenchEpisodes,
         makeups,
         locations,
         props,
       }),
-    [scripts, scriptDecisionState, shotsByEpisode, qaEntries, makeups, locations, props],
+    [scripts, scriptDecisionState, shotsByEpisode, qaEntries, qaWorkbenchEpisodes, makeups, locations, props],
   )
 
   const selectedReadiness = useMemo(
@@ -182,7 +205,8 @@ export default function ProductWorkspaceDeliverySection({
 
   useEffect(() => {
     void loadRecords()
-  }, [bookId])
+    void loadQaWorkbench()
+  }, [bookId, loadQaWorkbench])
 
   useEffect(() => {
     if (readinessList.length === 0) {
@@ -514,7 +538,17 @@ export default function ProductWorkspaceDeliverySection({
                   <MetricCard title="剧本状态" value={selectedReadiness.scriptStatusLabel} detail="先锁稿，再放行到分镜与交付" />
                   <MetricCard title="可交付镜头" value={`${selectedReadiness.readyShots}/${selectedReadiness.totalShots}`} detail="静态提示词、运动提示词、图片和视频齐备" />
                   <MetricCard title="资产引用" value={`${selectedReadiness.referencedAssetCount}`} detail="人物、场景、道具的可追溯引用数量" />
-                  <MetricCard title="QA 问题" value={`${selectedReadiness.qaCount}`} detail={selectedReadiness.qaCount > 0 ? '仍需清理后再进入稳定交付' : '当前未发现交付阻塞 QA'} />
+                  <MetricCard
+                    title="QA 问题"
+                    value={`${selectedReadiness.qaCount}`}
+                    detail={
+                      selectedReadiness.qaCount > 0
+                        ? `待处理 ${selectedReadiness.qaCount} / 总计 ${selectedReadiness.qaTotalIssueCount}`
+                        : selectedReadiness.qaTotalIssueCount > 0
+                          ? `已放行 ${selectedReadiness.qaResolvedCount} / 总计 ${selectedReadiness.qaTotalIssueCount}`
+                          : '当前未发现交付阻塞 QA'
+                    }
+                  />
                 </div>
 
                 {deliveryCanvasHandoffSummary ? (
