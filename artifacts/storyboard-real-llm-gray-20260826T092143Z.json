@@ -1,0 +1,379 @@
+{
+  "generatedAt": "2026-08-26T09:21:43.229562",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "real-llm",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 5,
+    "passed": 5,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "total_elapsed_seconds": 109.875,
+    "average_elapsed_seconds": 21.975,
+    "max_elapsed_seconds": 30.187,
+    "compiler_warnings": 6
+  },
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 898,
+          "motion": 192
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 223,
+          "motion": 181
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "pass",
+      "compiler_diagnostics_summary": {
+        "status": "pass",
+        "warnings": [],
+        "blocking_issues": [],
+        "failed_checks": []
+      },
+      "repair_attempted": false,
+      "prompt_lengths": {
+        "static": 223,
+        "motion": 181
+      },
+      "timings": {
+        "clone_seconds": 0.031,
+        "compile_seconds": 8.375,
+        "audit_seconds": 0.0,
+        "rollback_seconds": 0.016,
+        "rollback_verify_seconds": 0.0
+      },
+      "elapsed_seconds": 8.422,
+      "compiled_prompt_preview": {
+        "static": "便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感，窗外街道漆黑，室内商品标签有刺眼反光。惨白荧光灯从头顶直射，制造生硬阴影，货架商品标签反光刺眼。林小夏（@林小夏）倚在收银台后，青年女性，黑色短发或束发，五官稳定，气质百无聊赖、有气无力，穿着符合便利店员工身份的基础服装，材质朴素，细节克制，无明显配饰。她眼皮耷拉，指尖缓慢敲击台面，目光偶尔快速瞥向监控屏幕，表情自然克制。",
+        "motion": "镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。林小夏维持慵懒姿态，眼神看似涣散。她打哈欠，说话。目光扫向空无一人的街道。突然，风铃声响起。她身体几不可查地一僵。结束落点为林小夏身体微微绷直，脸上重新堆起标准但疲倦的欢迎表情，目光锁定在即将进入画面的门口方向。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "161",
+        "character_asset_ids": [
+          "585"
+        ],
+        "prop_asset_ids": [],
+        "action_beats_count": 1,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "duration": 3
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "原始丛林上空",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 541,
+          "motion": 152
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 195,
+          "motion": 84
+        },
+        "structured_scene_asset_id": "179"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "compiler_diagnostics_summary": {
+        "status": "warning",
+        "warnings": [
+          "运动提示词质量不达标，建议补充更明确的镜头推进和一致性描述。"
+        ],
+        "blocking_issues": [],
+        "failed_checks": [
+          {
+            "key": "motion_prompt_quality",
+            "message": "运动提示词缺少运动、起止或一致性约束。",
+            "details": []
+          }
+        ]
+      },
+      "repair_attempted": true,
+      "prompt_lengths": {
+        "static": 195,
+        "motion": 84
+      },
+      "timings": {
+        "clone_seconds": 0.047,
+        "compile_seconds": 25.047,
+        "audit_seconds": 0.016,
+        "rollback_seconds": 0.0,
+        "rollback_verify_seconds": 0.015
+      },
+      "elapsed_seconds": 25.125,
+      "compiled_prompt_preview": {
+        "static": "第一人称高空视角，蓝天占满画面上方，下方是原始丛林林间空地（@原始丛林上空），远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱，原始热带雨林，遮天蔽日，古木参天，林间空地潮湿泥泞，墨绿、土褐、暗金（光束）、青灰（骨骼）色调，画面即将急速下坠。",
+        "motion": "镜头以第一人称高速下坠，画面依次闪过蓝天、树冠、树枝、泥地，速度越来越快，风声尖叫混响增强，视野中泥地急速放大，即将碰撞，全过程保持首帧场景、光线、色调与空间层次一致。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "179",
+        "character_asset_ids": [],
+        "prop_asset_ids": [],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "dolly",
+        "duration": 4
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "地下赌场VIP包厢",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 980,
+          "motion": 189
+        },
+        "structured_scene_asset_id": "93"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 177,
+          "motion": 136
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "compiler_diagnostics_summary": {
+        "status": "warning",
+        "warnings": [
+          "场景资产“地下赌场VIP包厢”还没有参考图。",
+          "静态提示词质量不达标，建议补充更明确的画面描述。",
+          "这些绑定资产还没有参考图：地下赌场VIP包厢。"
+        ],
+        "blocking_issues": [],
+        "failed_checks": [
+          {
+            "key": "static_prompt_quality",
+            "message": "静态提示词缺少中文画面描述要素。",
+            "details": []
+          },
+          {
+            "key": "asset_reference_coverage",
+            "message": "缺少参考图：地下赌场VIP包厢",
+            "details": []
+          }
+        ]
+      },
+      "repair_attempted": true,
+      "prompt_lengths": {
+        "static": 177,
+        "motion": 136
+      },
+      "timings": {
+        "clone_seconds": 0.031,
+        "compile_seconds": 26.454,
+        "audit_seconds": 0.0,
+        "rollback_seconds": 0.015,
+        "rollback_verify_seconds": 0.0
+      },
+      "elapsed_seconds": 26.5,
+      "compiled_prompt_preview": {
+        "static": "幽暗封闭的地下赌场VIP包厢，中央一张椭圆形赌桌铺着绿色绒布，四周散落高背皮质沙发，深色木质护墙板，地面铺暗红色地毯，顶部有装饰性射灯和霓虹灯带，墙面有金属装饰条，一侧有酒柜吧台，整体空间压抑，烟雾弥漫。暗红色霓虹笼罩，绿色赌桌局部被射灯照亮，烟雾缭绕形成丁达尔效应。王强坐在赌桌后，叼着雪茄，面前散落扑克和钞票；颜大海站在桌前，弯腰颤抖，双手抱拳作揖。",
+        "motion": "镜头缓慢向主体推进，王强冷笑，把一叠欠条用力拍在桌上，随后站起；颜大海后退半步，手伸向桌上香烟被王强一巴掌拍开；王强吐烟圈，玩味地盯着颜大海。结束时王强站直身体，微微前倾，眼神凶狠；颜大海倒退一步，低头不敢直视。全过程保持首帧场景、人物身份、服装、发型和关键道具连续一致。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "161",
+        "character_asset_ids": [
+          "343",
+          "347"
+        ],
+        "prop_asset_ids": [],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "push-in",
+        "duration": 5
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "水房·清晨",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 298,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "133"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 368,
+          "motion": 152
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "pass",
+      "compiler_diagnostics_summary": {
+        "status": "pass",
+        "warnings": [],
+        "blocking_issues": [],
+        "failed_checks": []
+      },
+      "repair_attempted": false,
+      "prompt_lengths": {
+        "static": 368,
+        "motion": 152
+      },
+      "timings": {
+        "clone_seconds": 0.047,
+        "compile_seconds": 30.109,
+        "audit_seconds": 0.016,
+        "rollback_seconds": 0.015,
+        "rollback_verify_seconds": 0.0
+      },
+      "elapsed_seconds": 30.187,
+      "compiled_prompt_preview": {
+        "static": "寺庙后院水房（@寺庙后院水房），青石板铺地，中央一口老井，井口由青石砌成，边缘光滑，四周为灰白色墙壁，木结构梁柱，屋檐低垂，光线昏暗，墙边摆放木架，地面湿漉漉，映着天光。清晨朦胧天光，冷灰色调，微弱散射光。画面中央，一桶冷水正劈头盖脸泼向青年光头和尚（@和尚甲），他身穿灰色或褐色僧袍，斜披袈裟露出右肩，面部无妆容，额头及脸颊有细小水珠和尘土痕迹，嘴唇干燥起皮，表情隐忍。画面右侧，青年和尚（@和尚丙）身穿褪色皱褶的灰色旧僧袍，剃度光头，头皮有淡淡青色，手腕斜挎磨损念珠，正拎着一只灰褐色木质水桶（@acceptance-bucket-browser-20260721），桶身有竹箍和使用磨损痕迹，满脸得意。画面左侧门框处，青年和尚（@和尚乙）身穿灰色粗布僧袍，光头，倚门抱胸，嘴角挂着阴险假笑。整体氛围清冷、静谧、简朴，画面情绪压抑。",
+        "motion": "镜头缓慢向主体推进，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。随后画面开场，一桶冷水劈头盖脸泼下来。结束落点为画面转为和尚丙拎着空木桶，站在和尚甲面前，满脸得意。和尚乙倚在门框上，双手抱胸，嘴角挂着阴恻恻的笑。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "160",
+        "character_asset_ids": [
+          "585",
+          "584",
+          "583"
+        ],
+        "prop_asset_ids": [
+          "302"
+        ],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "push-in",
+        "duration": 3
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "麻栗山村口空地",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 884,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "91"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 274,
+          "motion": 129
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "compiler_diagnostics_summary": {
+        "status": "warning",
+        "warnings": [
+          "场景资产“麻栗山村口空地”还没有参考图。",
+          "这些绑定资产还没有参考图：麻栗山村口空地。"
+        ],
+        "blocking_issues": [],
+        "failed_checks": [
+          {
+            "key": "asset_reference_coverage",
+            "message": "缺少参考图：麻栗山村口空地",
+            "details": []
+          }
+        ]
+      },
+      "repair_attempted": false,
+      "prompt_lengths": {
+        "static": 274,
+        "motion": 129
+      },
+      "timings": {
+        "clone_seconds": 0.031,
+        "compile_seconds": 19.594,
+        "audit_seconds": 0.0,
+        "rollback_seconds": 0.016,
+        "rollback_verify_seconds": 0.0
+      },
+      "elapsed_seconds": 19.641,
+      "compiled_prompt_preview": {
+        "static": "麻栗山村口空地，远景构图，湘西苗寨村口空地，正午毒辣阳光从头顶直射，地面为干裂起灰的黄泥土，边缘散落几块青石板，四周是悬山青瓦的木质吊脚楼，外墙斑驳露出竹筋，空地中央有一口老石碾，远处是喀斯特山峰与梯田，天空湛蓝无云，空气热浪蒸腾。六个村童站成松散圆圈，陈二蛋（@陈二蛋）蹲在圆心背对镜头，他穿着深蓝粗布对襟短褂，衣襟处有低调的蜡染驱邪纹样，灰色粗布长裤膝盖和臀部有对称补丁，脚穿草鞋，腰间系一条灰色粗布袋，肤色苍白带青灰调，嘴唇无血色，婴儿肥未褪但脸型略消瘦，纯黑无眼白眼眸大而深邃。大胖叉腰朝地上吐口水，其他孩子有的转头看大胖，有的盯着陈二蛋。",
+        "motion": "镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。大胖叉腰朝地上吐口水，其他孩子有的转头看大胖，有的盯着陈二蛋。陈二蛋纹丝不动。结束时大胖保持叉腰姿态，狗剩弯腰准备捡石头，陈二蛋仍蹲着低头。全过程不改变脸型、服装、场景布局和道具状态。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "162",
+        "character_asset_ids": [
+          "585"
+        ],
+        "prop_asset_ids": [],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "static",
+        "duration": 4
+      }
+    }
+  ]
+}

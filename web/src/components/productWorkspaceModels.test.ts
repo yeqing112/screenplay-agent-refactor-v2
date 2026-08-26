@@ -8,6 +8,31 @@ import {
 } from './productWorkspaceModels'
 
 describe('productWorkspaceModels', () => {
+  it('summarizes LLM thinking mode for model management visibility', () => {
+    const summary = buildCapabilitySummary('llm', {
+      id: 'llm-mimo',
+      name: 'Mimo 2.5',
+      capability: 'llm',
+      provider: 'openai-compatible',
+      base_url: 'https://api.xiaomimimo.com/v1',
+      model_name: 'mimo-v2.5',
+      default_params: {
+        temperature: 0.3,
+        max_tokens: 8192,
+        thinking: { type: 'disabled' },
+      },
+      enabled: true,
+      is_default: true,
+      key_configured: true,
+      builtin: false,
+      source: 'saved',
+      uses_mock: false,
+    })
+
+    expect(summary.llmThinkingLabel).toBe('思考关闭')
+    expect(buildCapabilityHealthLine(summary)).toContain('思考关闭')
+  })
+
   it('builds an image capability summary with explicit integration capability flags', () => {
     const summary = buildCapabilitySummary('image', {
       id: 'img-1',

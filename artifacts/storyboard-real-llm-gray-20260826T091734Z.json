@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-08-26T09:17:34.229445",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "real-llm",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 1,
+    "passed": 1,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "total_elapsed_seconds": 30.0,
+    "average_elapsed_seconds": 30.0,
+    "max_elapsed_seconds": 30.0,
+    "compiler_warnings": 1
+  },
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 898,
+          "motion": 192
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 234,
+          "motion": 164
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "compiler_diagnostics_summary": {
+        "status": "warning",
+        "warnings": [
+          "运动提示词质量不达标，建议补充更明确的镜头推进和一致性描述。"
+        ],
+        "blocking_issues": [],
+        "failed_checks": [
+          {
+            "key": "motion_prompt_quality",
+            "message": "运动提示词缺少运动、起止或一致性约束。",
+            "details": []
+          }
+        ]
+      },
+      "repair_attempted": true,
+      "prompt_lengths": {
+        "static": 234,
+        "motion": 164
+      },
+      "timings": {
+        "clone_seconds": 0.031,
+        "compile_seconds": 29.937,
+        "audit_seconds": 0.016,
+        "rollback_seconds": 0.016,
+        "rollback_verify_seconds": 0.0
+      },
+      "elapsed_seconds": 30.0,
+      "compiled_prompt_preview": {
+        "static": "便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感，窗外街道漆黑，室内商品标签有刺眼反光。惨白荧光灯从头顶直射，制造生硬阴影，货架商品标签反光刺眼。中景构图，主体人物林小夏（@林小夏）倚在收银台后，青年中国女性，黑色短发或束发，五官稳定，气质百无聊赖、有气无力，穿着符合便利店员工身份的基础服装，材质朴素，细节克制，无明显配饰。她眼皮耷拉，指尖缓慢敲击台面，目光偶尔快速瞥向监控屏幕，表情自然克制。",
+        "motion": "镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。林小夏维持慵懒姿态，眼神看似涣散，打哈欠，说话，目光扫向空无一人的街道。突然，风铃声响起，她身体几不可查地一僵，身体微微绷直，脸上重新堆起标准但疲倦的欢迎表情，目光锁定在即将进入画面的门口方向。全过程与首帧保持一致，不改变脸型、服装、场景布局和道具状态。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "161",
+        "character_asset_ids": [
+          "585"
+        ],
+        "prop_asset_ids": [],
+        "action_beats_count": 1,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "duration": 3
+      }
+    }
+  ]
+}

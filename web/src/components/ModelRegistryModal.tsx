@@ -28,6 +28,7 @@ type EditableProfileDraft = {
 type FeedbackTone = 'info' | 'success' | 'error'
 type TestResultMeta = { tone: FeedbackTone; text: string }
 type ProfileFilter = 'all' | 'default' | 'missing-key' | 'live'
+type LlmThinkingType = 'enabled' | 'disabled'
 
 const MOCK_PROVIDER = 'prototype-task-adapter'
 const POYO_ASYNC_PROVIDER = 'poyo-async'
@@ -306,7 +307,7 @@ export function recommendedPoyoPresetLabel(capability: Extract<ModelCapability, 
 }
 
 export function suggestedDefaultParamsText(capability: ModelCapability, provider: string, modelName = '') {
-  if (capability === 'llm') return `{\n  "temperature": 0.3,\n  "max_tokens": 8192\n}`
+  if (capability === 'llm') return `{\n  "temperature": 0.3,\n  "max_tokens": 8192,\n  "thinking": {\n    "type": "disabled"\n  }\n}`
   if (capability === 'embedding') return `{\n  "dimension": 768\n}`
   if (capability === 'image') {
     if (isPoyoAsyncProvider(provider)) {
@@ -342,6 +343,45 @@ function safeParseDefaultParamsText(text: string) {
 
 function stringifyDefaultParams(params: Record<string, unknown>) {
   return JSON.stringify(params, null, 2)
+}
+
+function normalizeLlmThinkingType(value: unknown): LlmThinkingType {
+  if (value === 'enabled') return 'enabled'
+  if (value === 'disabled') return 'disabled'
+  if (typeof value === 'boolean') return value ? 'enabled' : 'disabled'
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const type = (value as Record<string, unknown>).type
+    return type === 'enabled' ? 'enabled' : 'disabled'
+  }
+  return 'disabled'
+}
+
+export function getLlmFieldValues(defaultParamsText: string) {
+  const params = safeParseDefaultParamsText(defaultParamsText)
+  return {
+    thinkingType: normalizeLlmThinkingType(params.thinking),
+  }
+}
+
+export function updateLlmDefaultParamsText(
+  defaultParamsText: string,
+  updates: Partial<ReturnType<typeof getLlmFieldValues>>,
+) {
+  const current = safeParseDefaultParamsText(defaultParamsText)
+  const nextValues = { ...getLlmFieldValues(defaultParamsText), ...updates }
+  return stringifyDefaultParams({
+    ...current,
+    thinking: {
+      type: nextValues.thinkingType,
+    },
+  })
+}
+
+function buildLlmThinkingLabel(defaultParams: unknown) {
+  const params = defaultParams && typeof defaultParams === 'object' && !Array.isArray(defaultParams)
+    ? defaultParams as Record<string, unknown>
+    : {}
+  return normalizeLlmThinkingType(params.thinking) === 'enabled' ? '思考：开启' : '思考：关闭'
 }
 
 export function getPoyoFieldValues(capability: ModelCapability, defaultParamsText: string) {
@@ -658,20 +698,42 @@ export default function ModelRegistryModal({
     [draft.capability, draft.default_params_text, draft.provider],
   )
 
+  const llmFieldValues = useMemo(
+    () => draft.capability === 'llm' && draft.provider === 'openai-compatible'
+      ? getLlmFieldValues(draft.default_params_text)
+      : null,
+    [draft.capability, draft.default_params_text, draft.provider],
+  )
+
   const parseDraftDefaultParams = useCallback(() => {
     const raw = draft.default_params_text.trim()
-    if (!raw) return {} as Record<string, unknown>
+    if (!raw) {
+      return draft.capability === 'llm' && draft.provider === 'openai-compatible'
+        ? safeParseDefaultParamsText(updateLlmDefaultParamsText('', getLlmFieldValues('')))
+        : {} as Record<string, unknown>
+    }
     const parsed = JSON.parse(raw)
     if (!parsed || Array.isArray(parsed) || typeof parsed !== 'object') {
       throw new Error('Default params must be a JSON object.')
     }
-    return parsed as Record<string, unknown>
-  }, [draft.default_params_text])
+    const params = parsed as Record<string, unknown>
+    if (draft.capability === 'llm' && draft.provider === 'openai-compatible') {
+      return safeParseDefaultParamsText(updateLlmDefaultParamsText(JSON.stringify(params), getLlmFieldValues(JSON.stringify(params))))
+    }
+    return params
+  }, [draft.capability, draft.default_params_text, draft.provider])
 
   const updatePoyoDraftDefaults = useCallback((updates: Partial<ReturnType<typeof getPoyoFieldValues>>) => {
     setDraft((current) => ({
       ...current,
       default_params_text: updatePoyoDefaultParamsText(current.capability, current.default_params_text, updates),
+    }))
+  }, [])
+
+  const updateLlmDraftDefaults = useCallback((updates: Partial<ReturnType<typeof getLlmFieldValues>>) => {
+    setDraft((current) => ({
+      ...current,
+      default_params_text: updateLlmDefaultParamsText(current.default_params_text, updates),
     }))
   }, [])
 
@@ -1067,6 +1129,7 @@ export default function ModelRegistryModal({
                           {isEditing ? <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[11px] text-violet-200">编辑中</span> : null}
                           {defaults[capability] === profile.id ? <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] text-emerald-200">默认</span> : null}
                           {profile.uses_mock ? <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] text-amber-200">模拟</span> : <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[11px] text-sky-200">生产</span>}
+                          {profile.capability === 'llm' ? <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[11px] text-violet-200">{buildLlmThinkingLabel(profile.default_params)}</span> : null}
                           {!profile.key_configured ? <span className="rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 text-[11px] text-rose-200">缺少密钥</span> : null}
                           {profile.builtin ? <span className="rounded-full border border-slate-700 px-2 py-0.5 text-[11px] text-slate-400">内置</span> : null}
                         </div>
@@ -1285,6 +1348,30 @@ export default function ModelRegistryModal({
                 onChange={(value) => setDraft((current) => ({ ...current, api_key: value }))}
               />
 
+              {llmFieldValues ? (
+                <div className="rounded-2xl border border-violet-500/20 bg-violet-500/5 px-4 py-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-violet-300">LLM 推理配置</div>
+                      <div className="mt-2 text-sm leading-6 text-slate-300">
+                        关闭思考适合分镜 Prompt Compiler、JSON 编译和低延迟结构化输出；开启思考适合更复杂的文本推理任务。
+                      </div>
+                    </div>
+                    <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-xs text-violet-100">
+                      thinking.type = {llmFieldValues.thinkingType}
+                    </span>
+                  </div>
+                  <label className="mt-4 flex items-center gap-2 text-sm text-slate-200">
+                    <input
+                      type="checkbox"
+                      checked={llmFieldValues.thinkingType === 'enabled'}
+                      onChange={(event) => updateLlmDraftDefaults({ thinkingType: event.target.checked ? 'enabled' : 'disabled' })}
+                    />
+                    开启思考
+                  </label>
+                </div>
+              ) : null}
+
               {poyoFieldValues ? (
                 <div className="rounded-2xl border border-sky-500/20 bg-sky-500/5 px-4 py-4">
                   <div className="text-xs uppercase tracking-[0.2em] text-sky-300">PoYo 能力配置</div>
@@ -1351,7 +1438,7 @@ export default function ModelRegistryModal({
                 label="默认参数 JSON"
                 value={draft.default_params_text}
                 textarea
-                placeholder={`例如 {\n  "temperature": 0.3,\n  "max_tokens": 8192\n}`}
+                placeholder={`例如 {\n  "temperature": 0.3,\n  "max_tokens": 8192,\n  "thinking": {\n    "type": "disabled"\n  }\n}`}
                 onChange={(value) => setDraft((current) => ({ ...current, default_params_text: value }))}
               />
               <label className="flex items-center gap-2 rounded-2xl border border-slate-800 bg-slate-900/60 px-3 py-2 text-sm text-slate-300">

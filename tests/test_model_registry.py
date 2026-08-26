@@ -60,6 +60,34 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(saved_profile["key_configured"])
         self.assertNotIn("api_key", saved_profile)
 
+    def test_save_registry_preserves_llm_thinking_default_param(self):
+        payload = save_registry(
+            profiles=[
+                {
+                    "id": "llm-mimo-1",
+                    "name": "Mimo 2.5",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://api.xiaomimimo.com/v1",
+                    "model_name": "mimo-v2.5",
+                    "default_params": {
+                        "temperature": 0.3,
+                        "max_tokens": 8192,
+                        "thinking": {"type": "disabled"},
+                    },
+                    "enabled": True,
+                    "api_key": "secret-test-key",
+                }
+            ],
+            defaults={"llm": "llm-mimo-1"},
+        )
+
+        saved_profile = get_default_profile("llm")
+        self.assertEqual(saved_profile["default_params"]["thinking"], {"type": "disabled"})
+        serialized = next(item for item in payload["profiles"] if item["id"] == "llm-mimo-1")
+        self.assertEqual(serialized["default_params"]["thinking"], {"type": "disabled"})
+        self.assertNotIn("api_key", serialized)
+
     def test_save_registry_preserves_existing_api_key_when_frontend_omits_it(self):
         save_registry(
             profiles=[

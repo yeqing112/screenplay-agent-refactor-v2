@@ -447,8 +447,8 @@ export default function ProductWorkspaceModelsSection() {
                 <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                   <Metric title="生产用途" value={summary.routeLabel} />
                   <Metric title="任务模式" value={buildTaskModesLabel(summary.taskModes)} />
-                  <Metric title="参考图能力" value={buildReferenceModeLabel(summary)} />
-                  <Metric title="轮询策略" value={summary.pollStrategy} />
+                  <Metric title={summary.capability === 'llm' ? '思考模式' : '参考图能力'} value={summary.capability === 'llm' ? summary.llmThinkingLabel : buildReferenceModeLabel(summary)} />
+                  <Metric title={summary.capability === 'llm' ? '调用形态' : '轮询策略'} value={summary.capability === 'llm' ? 'Chat Completions' : summary.pollStrategy} />
                 </div>
 
                 <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -494,6 +494,7 @@ export default function ProductWorkspaceModelsSection() {
                   <div className="mt-2 text-[11px] leading-5 text-slate-500">适配层：{summary.adapterLabel}</div>
                   <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
                     <Pill>{summary.supportsAsyncTasks ? '异步任务' : '同步任务'}</Pill>
+                    {summary.capability === 'llm' ? <Pill>{summary.llmThinkingLabel}</Pill> : null}
                     <Pill>图片 URL {summary.supportsImageUrl ? '支持' : '不支持'}</Pill>
                     <Pill>文件上传 {summary.supportsFileUpload ? '支持' : '不支持'}</Pill>
                     <Pill>负向提示词 {summary.supportsNegativePrompt ? '支持' : '不支持'}</Pill>

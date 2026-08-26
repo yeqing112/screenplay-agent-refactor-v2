@@ -2,11 +2,13 @@ import { describe, expect, it } from 'vitest'
 
 import {
   buildPoyoPresetProfiles,
+  getLlmFieldValues,
   getPoyoFieldValues,
   providerOptionsForCapability,
   recommendedPoyoPresetId,
   suggestedBaseUrlForProvider,
   suggestedDefaultParamsText,
+  updateLlmDefaultParamsText,
   suggestedPoyoModelNames,
   updatePoyoDefaultParamsText,
 } from './ModelRegistryModal'
@@ -69,6 +71,21 @@ describe('ModelRegistryModal helpers', () => {
     expect(videoDefaults).toContain('"supports_first_frame": true')
     expect(videoDefaults).toContain('"supports_last_frame": true')
     expect(videoDefaults).toContain('"supports_audio": true')
+  })
+
+  it('defaults LLM thinking to disabled and updates it through structured helper fields', () => {
+    const llmDefaults = suggestedDefaultParamsText('llm', 'openai-compatible')
+    const parsedDefaults = JSON.parse(llmDefaults)
+
+    expect(parsedDefaults.thinking).toEqual({ type: 'disabled' })
+    expect(getLlmFieldValues(llmDefaults).thinkingType).toBe('disabled')
+    expect(getLlmFieldValues('{"thinking": {"type": "enabled"}}').thinkingType).toBe('enabled')
+
+    const enabledText = updateLlmDefaultParamsText(llmDefaults, { thinkingType: 'enabled' })
+    expect(JSON.parse(enabledText).thinking).toEqual({ type: 'enabled' })
+
+    const disabledText = updateLlmDefaultParamsText(enabledText, { thinkingType: 'disabled' })
+    expect(JSON.parse(disabledText).thinking).toEqual({ type: 'disabled' })
   })
 
   it('adjusts poyo defaults based on the chosen model name', () => {

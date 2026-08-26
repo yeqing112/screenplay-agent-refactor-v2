@@ -27,6 +27,7 @@ export interface ModelCapabilitySummary {
   supportsNegativePrompt: boolean
   supportsAsyncTasks: boolean
   pollStrategy: string
+  llmThinkingLabel: string
 }
 
 export function buildCapabilitySummary(
@@ -71,6 +72,7 @@ export function buildCapabilitySummary(
         : usesMock
           ? 'Mock 本地即时返回'
           : '未声明',
+    llmThinkingLabel: buildLlmThinkingLabel(params),
   }
 }
 
@@ -97,12 +99,29 @@ export function buildReferenceModeLabel(summary: ModelCapabilitySummary) {
 }
 
 export function buildCapabilityHealthLine(summary: ModelCapabilitySummary) {
+  if (summary.capability === 'llm') {
+    return [
+      summary.routeLabel,
+      summary.readinessLabel,
+      summary.llmThinkingLabel,
+      '结构化输出',
+    ].join(' | ')
+  }
   return [
     summary.routeLabel,
     summary.readinessLabel,
     buildReferenceModeLabel(summary),
     summary.supportsAsyncTasks ? '异步任务' : '同步任务',
   ].join(' | ')
+}
+
+function buildLlmThinkingLabel(params: Record<string, unknown>) {
+  const thinking = params.thinking
+  if (thinking === 'enabled' || thinking === true) return '思考开启'
+  if (thinking && typeof thinking === 'object' && !Array.isArray(thinking)) {
+    return (thinking as Record<string, unknown>).type === 'enabled' ? '思考开启' : '思考关闭'
+  }
+  return '思考关闭'
 }
 
 export function buildTaskModesLabel(taskModes: string[]) {

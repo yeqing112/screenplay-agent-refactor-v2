@@ -1,0 +1,54 @@
+# Storyboard Real LLM Gray Validation
+
+- Generated at: `2026-08-26T09:21:43.229562`
+- Compiler mode: `real-llm`
+- Temp book id: `999905`
+- Samples: `5`
+- Passed / failed: `5 / 0`
+- After audit errors / warnings: `0 / 0`
+- Compiler diagnostics warnings: `6`
+- Total / average / max elapsed: `109.875s / 21.975s / 30.187s`
+
+## Samples
+
+- `#75:1:1` 深夜便利店 / 便利店收银台 => PASS
+  - elapsed: `8.422s`
+  - timings: `clone_seconds=0.031s, compile_seconds=8.375s, audit_seconds=0.0s, rollback_seconds=0.016s, rollback_verify_seconds=0.0s`
+  - diagnostics_status: `pass`
+  - structured: scene=`161`, characters=`1`, props=`0`, action_beats=`1`
+  - static_preview: 便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感，窗外街道漆黑，室内商品标签有刺眼反光。惨白荧光灯从头顶直射，制造生硬阴影，货架商品标签反光刺眼。林小夏（@林小夏）倚在收银台后，青年女性，黑色短发或束发，五官稳定，气质百无聊赖、有气无力，穿着符合便利店员工身份的基础服装，材质朴素，细节克
+  - motion_preview: 镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。林小夏维持慵懒姿态，眼神看似涣散。她打哈欠，说话。目光扫向空无一人的街道。突然，风铃声响起。她身体几不可查地一僵。结束落点为林小夏身体微微绷直，脸上重新堆起标准但疲倦的欢迎表情，目光锁定在即将进入画面的门口方向。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素
+- `#5:1:1` 神农架历险记 / 原始丛林上空 => PASS
+  - elapsed: `25.125s`
+  - timings: `clone_seconds=0.047s, compile_seconds=25.047s, audit_seconds=0.016s, rollback_seconds=0.0s, rollback_verify_seconds=0.015s`
+  - diagnostics_status: `warning`
+  - compiler_warnings: `运动提示词质量不达标，建议补充更明确的镜头推进和一致性描述。`
+  - failed_checks: `motion_prompt_quality`
+  - structured: scene=`179`, characters=`0`, props=`0`, action_beats=`1`
+  - static_preview: 第一人称高空视角，蓝天占满画面上方，下方是原始丛林林间空地（@原始丛林上空），远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱，原始热带雨林，遮天蔽日，古木参天，林间空地潮湿泥泞，墨绿、土褐、暗金（光束）、青灰（
+  - motion_preview: 镜头以第一人称高速下坠，画面依次闪过蓝天、树冠、树枝、泥地，速度越来越快，风声尖叫混响增强，视野中泥地急速放大，即将碰撞，全过程保持首帧场景、光线、色调与空间层次一致。
+- `#3:1:1` 金丝雀 / 地下赌场VIP包厢 => PASS
+  - elapsed: `26.5s`
+  - timings: `clone_seconds=0.031s, compile_seconds=26.454s, audit_seconds=0.0s, rollback_seconds=0.015s, rollback_verify_seconds=0.0s`
+  - diagnostics_status: `warning`
+  - compiler_warnings: `场景资产“地下赌场VIP包厢”还没有参考图。 | 静态提示词质量不达标，建议补充更明确的画面描述。 | 这些绑定资产还没有参考图：地下赌场VIP包厢。`
+  - failed_checks: `static_prompt_quality, asset_reference_coverage`
+  - structured: scene=`161`, characters=`2`, props=`0`, action_beats=`1`
+  - static_preview: 幽暗封闭的地下赌场VIP包厢，中央一张椭圆形赌桌铺着绿色绒布，四周散落高背皮质沙发，深色木质护墙板，地面铺暗红色地毯，顶部有装饰性射灯和霓虹灯带，墙面有金属装饰条，一侧有酒柜吧台，整体空间压抑，烟雾弥漫。暗红色霓虹笼罩，绿色赌桌局部被射灯照亮，烟雾缭绕形成丁达尔效应。王强坐在赌桌后，叼着雪茄，面前散落扑克和钞票；颜大海站在桌前，弯腰颤抖，双手抱拳作揖。
+  - motion_preview: 镜头缓慢向主体推进，王强冷笑，把一叠欠条用力拍在桌上，随后站起；颜大海后退半步，手伸向桌上香烟被王强一巴掌拍开；王强吐烟圈，玩味地盯着颜大海。结束时王强站直身体，微微前倾，眼神凶狠；颜大海倒退一步，低头不敢直视。全过程保持首帧场景、人物身份、服装、发型和关键道具连续一致。
+- `#14:1:1` 三个和尚 / 水房·清晨 => PASS
+  - elapsed: `30.187s`
+  - timings: `clone_seconds=0.047s, compile_seconds=30.109s, audit_seconds=0.016s, rollback_seconds=0.015s, rollback_verify_seconds=0.0s`
+  - diagnostics_status: `pass`
+  - structured: scene=`160`, characters=`3`, props=`1`, action_beats=`1`
+  - static_preview: 寺庙后院水房（@寺庙后院水房），青石板铺地，中央一口老井，井口由青石砌成，边缘光滑，四周为灰白色墙壁，木结构梁柱，屋檐低垂，光线昏暗，墙边摆放木架，地面湿漉漉，映着天光。清晨朦胧天光，冷灰色调，微弱散射光。画面中央，一桶冷水正劈头盖脸泼向青年光头和尚（@和尚甲），他身穿灰色或褐色僧袍，斜披袈裟露出右肩，面部无妆容，额头及脸颊有细小水珠和尘土痕迹，嘴唇干燥起皮
+  - motion_preview: 镜头缓慢向主体推进，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。随后画面开场，一桶冷水劈头盖脸泼下来。结束落点为画面转为和尚丙拎着空木桶，站在和尚甲面前，满脸得意。和尚乙倚在门框上，双手抱胸，嘴角挂着阴恻恻的笑。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。
+- `#1:1:1` 苗疆道事 / 麻栗山村口空地 => PASS
+  - elapsed: `19.641s`
+  - timings: `clone_seconds=0.031s, compile_seconds=19.594s, audit_seconds=0.0s, rollback_seconds=0.016s, rollback_verify_seconds=0.0s`
+  - diagnostics_status: `warning`
+  - compiler_warnings: `场景资产“麻栗山村口空地”还没有参考图。 | 这些绑定资产还没有参考图：麻栗山村口空地。`
+  - failed_checks: `asset_reference_coverage`
+  - structured: scene=`162`, characters=`1`, props=`0`, action_beats=`1`
+  - static_preview: 麻栗山村口空地，远景构图，湘西苗寨村口空地，正午毒辣阳光从头顶直射，地面为干裂起灰的黄泥土，边缘散落几块青石板，四周是悬山青瓦的木质吊脚楼，外墙斑驳露出竹筋，空地中央有一口老石碾，远处是喀斯特山峰与梯田，天空湛蓝无云，空气热浪蒸腾。六个村童站成松散圆圈，陈二蛋（@陈二蛋）蹲在圆心背对镜头，他穿着深蓝粗布对襟短褂，衣襟处有低调的蜡染驱邪纹样，灰色粗布长裤膝盖和
+  - motion_preview: 镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。大胖叉腰朝地上吐口水，其他孩子有的转头看大胖，有的盯着陈二蛋。陈二蛋纹丝不动。结束时大胖保持叉腰姿态，狗剩弯腰准备捡石头，陈二蛋仍蹲着低头。全过程不改变脸型、服装、场景布局和道具状态。

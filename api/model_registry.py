@@ -37,6 +37,7 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "default_params": {
                 "temperature": config.LLM_TEMPERATURE,
                 "max_tokens": config.LLM_MAX_TOKENS,
+                "thinking": {"type": "disabled"},
             },
             "enabled": True,
             "is_default": True,

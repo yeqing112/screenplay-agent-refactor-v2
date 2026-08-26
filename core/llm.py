@@ -137,10 +137,24 @@ def _normalize_max_tokens(value):
     return resolved
 
 
+def _normalize_thinking_param(value):
+    if isinstance(value, dict):
+        thinking_type = value.get("type")
+        if thinking_type in {"enabled", "disabled"}:
+            return {"type": thinking_type}
+        return value if value else None
+    if value in {"enabled", "disabled"}:
+        return {"type": value}
+    if isinstance(value, bool):
+        return {"type": "enabled" if value else "disabled"}
+    return None
+
+
 # ── LLM Call ─────────────────────────────────────────────────
 
 def call_llm(prompt, system=None, temperature=None, max_tokens=None,
-             retries=3, estimated_tokens=8000, model_profile=None):
+             retries=3, estimated_tokens=8000, model_profile=None,
+             response_format=None):
     """Call LLM with rate limiting and retry. Returns raw response text.
 
     For reasoning models (like mimo-v2.5), completion_tokens include
@@ -165,6 +179,12 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
         "temperature": temperature if temperature is not None else default_params.get("temperature", config.LLM_TEMPERATURE),
         "max_tokens": resolved_max_tokens,
     }
+    resolved_response_format = response_format or default_params.get("response_format")
+    if isinstance(resolved_response_format, dict) and resolved_response_format:
+        payload["response_format"] = resolved_response_format
+    resolved_thinking = _normalize_thinking_param(default_params.get("thinking"))
+    if resolved_thinking:
+        payload["thinking"] = resolved_thinking
 
     for attempt in range(retries):
         _limiter.wait_if_needed(estimated_tokens)
@@ -210,48 +230,57 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
     return ""
 
 
+import os
 import re
 
+from core.structured_output import parse_json_object
 
-def call_llm_json(prompt, system=None, model_profile=None, **kwargs):
-    """Call LLM and parse JSON response."""
-    raw = call_llm(prompt, system=system, model_profile=model_profile, **kwargs)
-    text = raw.strip()
-    if text.startswith("```"):
-        lines = text.split("\n")
-        lines = [l for l in lines if not l.strip().startswith("```")]
-        text = "\n".join(lines)
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError:
-        start = text.find("{")
-        end = text.rfind("}") + 1
-        if start >= 0 and end > start:
-            fragment = text[start:end]
-            # 尝试修复常见 JSON 问题
-            fixed = fragment
-            # 1) 修复无引号的 key (JS-like JSON)
-            fixed = re.sub(r'(?<=[\{,\[])\s*([a-zA-Z_][a-zA-Z_0-9]*)\s*:', r'"\1":', fixed)
-            # 2) 如果末尾有未闭合的字符串（value 被截断），移除最外层的最后一个占位
-            # 查找最外层的最后一个 key:value 对，如果 value 引号未闭合则删除
-            if fixed.count('"') % 2 != 0:
-                # 奇数个引号，尝试闭合
-                last_open = fixed.rfind('"')
-                # 去掉未闭合的部分
-                last_close = fixed[last_open+1:].find('"')
-                if last_close == -1:
-                    # 没有后续闭合引号，截断
-                    fixed = fixed[:last_open] + '"'
-            try:
-                return json.loads(fixed)
-            except json.JSONDecodeError as e:
-                # 3) 尝试修复末尾截断 ","... 模式
-                if fixed.endswith(',"'):
-                    fixed = fixed[:-2] + '}'
-                elif fixed.endswith(','):
-                    fixed = fixed[:-1] + '}'
-                try:
-                    return json.loads(fixed)
-                except json.JSONDecodeError:
-                    raise ValueError(f"Failed to parse LLM JSON response:\n{fragment[:500]}")
-        raise ValueError(f"Failed to parse LLM JSON response:\n{text[:500]}")
+
+def _repair_common_json_text(text: str) -> str:
+    fixed = str(text or "")
+    fixed = re.sub(r'(?<=[\{,\[])\s*([a-zA-Z_][a-zA-Z_0-9]*)\s*:', r'"\1":', fixed)
+    fixed = re.sub(r",\s*([}\]])", r"\1", fixed)
+    return fixed
+
+
+def _json_retry_prompt(prompt: str, error: Exception) -> str:
+    return (
+        f"{prompt}\n\n"
+        "上一轮输出无法被系统解析为 JSON。请重新输出一个完整、合法、可直接 json.loads 的 JSON object。"
+        "不要使用 Markdown 代码块，不要解释，不要省略字段，不要在 JSON 前后添加任何文本。"
+        f"解析错误摘要：{str(error)[:240]}"
+    )
+
+
+def call_llm_json(
+    prompt,
+    system=None,
+    model_profile=None,
+    required_keys: set[str] | None = None,
+    json_parse_retries: int = 1,
+    **kwargs,
+):
+    """Call LLM and parse a JSON object response with parser-level retries."""
+
+    parse_attempts = max(1, int(json_parse_retries or 0) + 1)
+    active_prompt = prompt
+    last_error: Exception | None = None
+    for attempt in range(parse_attempts):
+        call_kwargs = dict(kwargs)
+        if os.environ.get("LLM_JSON_RESPONSE_FORMAT") == "1" and "response_format" not in call_kwargs:
+            call_kwargs["response_format"] = {"type": "json_object"}
+        raw = call_llm(active_prompt, system=system, model_profile=model_profile, **call_kwargs)
+        text = _repair_common_json_text(str(raw or "").strip())
+        try:
+            return parse_json_object(
+                text,
+                label="LLM JSON response",
+                required_keys=required_keys,
+            )
+        except ValueError as exc:
+            last_error = exc
+            if attempt >= parse_attempts - 1:
+                break
+            active_prompt = _json_retry_prompt(str(prompt), exc)
+            logger.warning("LLM JSON parse failed, retrying parse-call once: %s", exc)
+    raise ValueError(f"Failed to parse LLM JSON response:\n{str(last_error)[:500]}")
