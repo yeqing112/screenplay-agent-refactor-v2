@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-08-24T21:12:32.902567",
+  "mode": "real-apply",
+  "planPath": "artifacts/book5-scene-reference-plan.json",
+  "summary": {
+    "updates": 3,
+    "updated": 3,
+    "blocked": 0
+  },
+  "results": [
+    {
+      "scene_name": "原始丛林上空",
+      "location_id": 120,
+      "formal_description": "原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。",
+      "lighting_mood": "正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。",
+      "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+      "jimeng_ref_name": "@原始丛林上空",
+      "shot_ids": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4",
+        "1-5",
+        "1-6"
+      ],
+      "status": "updated",
+      "selected_or_locked_references": 1,
+      "cleaned_reference_notes": 0
+    },
+    {
+      "scene_name": "原始丛林深处",
+      "location_id": 121,
+      "formal_description": "原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。",
+      "lighting_mood": "树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。",
+      "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+      "jimeng_ref_name": "@原始丛林深处",
+      "shot_ids": [
+        "1-7",
+        "1-8",
+        "1-9",
+        "1-10",
+        "1-11",
+        "1-12"
+      ],
+      "status": "updated",
+      "selected_or_locked_references": 1,
+      "cleaned_reference_notes": 0
+    },
+    {
+      "scene_name": "部落营地",
+      "location_id": 109,
+      "formal_description": "原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。",
+      "lighting_mood": "林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。",
+      "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+      "jimeng_ref_name": "@部落营地",
+      "shot_ids": [
+        "1-13",
+        "1-14",
+        "1-15",
+        "1-16",
+        "1-17",
+        "1-18",
+        "1-19",
+        "1-20"
+      ],
+      "status": "updated",
+      "selected_or_locked_references": 1,
+      "cleaned_reference_notes": 0
+    }
+  ]
+}

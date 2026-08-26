@@ -1,0 +1,393 @@
+{
+  "generatedAt": "2026-08-26T00:16:09.383Z",
+  "apiUrl": "http://127.0.0.1:8765",
+  "strict": false,
+  "config": {
+    "sampleBookIds": [
+      14,
+      5,
+      75,
+      3,
+      1
+    ],
+    "targetShotCount": 10,
+    "minStaticLength": 80,
+    "minMotionLength": 50
+  },
+  "summary": {
+    "audited_shots": 10,
+    "shots_with_errors": 2,
+    "shots_with_warnings": 4,
+    "total_errors": 2,
+    "total_warnings": 4,
+    "issue_counts": {
+      "short_static_prompt": 2
+    },
+    "warning_counts": {
+      "scene_name_not_in_static_prompt": 3,
+      "missing_structured_character_assets": 1
+    },
+    "by_book": {
+      "1": {
+        "book_title": "苗疆道事",
+        "shots": 2,
+        "issues": 1,
+        "warnings": 1
+      },
+      "3": {
+        "book_title": "金丝雀",
+        "shots": 2,
+        "issues": 1,
+        "warnings": 2
+      },
+      "5": {
+        "book_title": "神农架历险记",
+        "shots": 2,
+        "issues": 0,
+        "warnings": 1
+      },
+      "14": {
+        "book_title": "三个和尚",
+        "shots": 2,
+        "issues": 0,
+        "warnings": 0
+      },
+      "75": {
+        "book_title": "深夜便利店",
+        "shots": 2,
+        "issues": 0,
+        "warnings": 0
+      }
+    }
+  },
+  "top_findings": [
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "原始丛林林间空地",
+      "issues": [],
+      "warnings": [
+        "missing_structured_character_assets"
+      ]
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "地下赌场VIP包厢",
+      "issues": [],
+      "warnings": [
+        "scene_name_not_in_static_prompt"
+      ]
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 34,
+      "scene_name": "高端私人会所走廊",
+      "issues": [
+        "short_static_prompt"
+      ],
+      "warnings": [
+        "scene_name_not_in_static_prompt"
+      ]
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 21,
+      "scene_name": "陈二蛋与大凤的卧室",
+      "issues": [
+        "short_static_prompt"
+      ],
+      "warnings": [
+        "scene_name_not_in_static_prompt"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "寺庙后院水房",
+      "prompt_lengths": {
+        "static": 298,
+        "motion": 165
+      },
+      "counts": {
+        "required_assets": 5,
+        "used_assets": 5,
+        "bindings": 5,
+        "reference_images": 5
+      },
+      "issues": [],
+      "warnings": [],
+      "snippets": {
+        "static": "清晨，寺庙后院水房，青石板铺地，中央一口老井，灰白色墙壁，深褐色木梁柱，屋檐低垂，墙边摆放木架，地面湿漉漉映着天光，整体冷灰色调。前景中，一个青年和尚（中等体型，剃光头，灰色旧僧袍，神态懒散轻慢）双手握着一个灰褐色圆柱形木质水桶，桶身外壁有多道竹箍，两侧有对称桶耳，表面有磨损痕迹，桶口朝下，一桶冷水正劈头盖脸泼向对面。",
+        "motion": "镜头起始为全远景固定构图，水泼瞬间。随后镜头缓慢向前推进，水花持续溅落，和尚甲身体微微后仰，水珠从他额头、脸颊顺势流下，表情隐忍。和尚丙握着空木桶缓缓站直，脸上露出得意神色。和尚乙倚门抱胸的姿势略微放松，嘴角笑意加深。整个过程中，灰色旧僧袍、光头、木桶的灰褐色纹理、地面水渍、木架、灰白墙壁等均与首帧保持一致，运动平稳，"
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 24,
+      "scene_name": "寺庙水井旁",
+      "prompt_lengths": {
+        "static": 152,
+        "motion": 84
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [],
+      "warnings": [],
+      "snippets": {
+        "static": "夜晚，寺庙水井旁（@寺庙水井旁），青石井台湿滑，远处屋檐树木剪影，深蓝黑青灰色调，乌云遮月，极暗，唯一冷光来自井水反光。特写镜头：青年光头和尚（@和尚甲），灰色僧袍斜披袈裟露出右肩，面部无妆容，额头脸颊细小水珠尘土痕迹，鼻翼微汗，嘴唇干燥起皮，眼神隐忍警觉。一只手从背后搭上他右肩，他身体微僵，神情突变。",
+        "motion": "从特写开始，保持和尚甲灰色僧袍、光头、青石井台背景一致；镜头缓慢向下倾斜至井口，水面反射微弱冷光；和尚甲的脸在井水中逐渐清晰浮现，嘴角上扬，露出极致恐怖笑容；画面定格。"
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "原始丛林林间空地",
+      "prompt_lengths": {
+        "static": 541,
+        "motion": 152
+      },
+      "counts": {
+        "required_assets": 1,
+        "used_assets": 1,
+        "bindings": 1,
+        "reference_images": 1
+      },
+      "issues": [],
+      "warnings": [
+        {
+          "code": "missing_structured_character_assets",
+          "message": "structured_shot 缺少 character_asset_ids。",
+          "severity": "warning",
+          "details": {}
+        }
+      ],
+      "snippets": {
+        "static": "原始丛林林间空地（@原始丛林上空），远景构图，第一帧只描述当前镜头开始瞬间。视觉事实包括原始丛林林间空地（@原始丛林上空）保留原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明",
+        "motion": "4秒内，镜头缓慢滑轨移动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为镜头以第一人称高速下坠，画面依次闪过蓝天、树冠、树枝、泥地，速度越来越快，风声尖叫混响增强。结束落点为视野中泥地急速放大，即将碰撞。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。"
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 20,
+      "scene_name": "神农部落营地",
+      "prompt_lengths": {
+        "static": 1222,
+        "motion": 263
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 7,
+        "bindings": 7,
+        "reference_images": 2
+      },
+      "issues": [],
+      "warnings": [],
+      "snippets": {
+        "static": "神农部落营地（@部落营地），远景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、姬瑶、姬由、神农、神农大帝，外观、脸部、发型和服装严格继承绑定参考资产。关键道具为石矛，位置与状态清晰可见。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽",
+        "motion": "5秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为神农大帝提高声音宣布，所有野人（包括姬瑶和周围持矛者）单膝跪地低头，胡涂站在原地不知所措，同一连续画面中转向远处姬由背影——他猛地回头，眼神凶狠，手紧紧握拳。开头承接上一镜结束状态为神农大帝喃喃自语“你的血脉...不是凡人..."
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "prompt_lengths": {
+        "static": 898,
+        "motion": 192
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [],
+      "warnings": [],
+      "snippets": {
+        "static": "便利店收银台（@便利店收银台），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为林小夏（@林小夏），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括便利店收银台（@便利店收银台）保留深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感，窗外街道漆黑，室内商",
+        "motion": "3秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为林小夏维持慵懒姿态，眼神看似涣散。她打哈欠，说话。目光扫向空无一人的街道。突然，风铃声响起。她身体几不可查地一僵。。结束落点为林小夏身体微微绷直，脸上重新堆起标准但疲倦的欢迎表情，目光锁定在即将进入画面的门口方向。。全过程不改变"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 14,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 855,
+        "motion": 293
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室（@监控室），极特写构图，第一帧只描述当前镜头开始瞬间。主体人物为林小夏（@林小夏），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括监控室（@监控室）保留便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯，主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点",
+        "motion": "4秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为一只戴着深色手套（或只见手）的手从画面右侧（监控盲区边缘）伸入，将一张对折的旧照片轻轻放在台面上。手指在照片上轻按了一下，然后收回。整个过程稳定、刻意。“林小夏”无反应。。开头承接上一镜结束状态为她的脸被屏幕光照亮，表情极其专注"
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "地下赌场VIP包厢",
+      "prompt_lengths": {
+        "static": 153,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 0,
+        "used_assets": 3,
+        "bindings": 3,
+        "reference_images": 0
+      },
+      "issues": [],
+      "warnings": [
+        {
+          "code": "scene_name_not_in_static_prompt",
+          "message": "静态提示词未显式包含镜头场景名。",
+          "severity": "warning",
+          "details": {
+            "scene_name": "地下赌场VIP包厢"
+          }
+        }
+      ],
+      "snippets": {
+        "static": "全景镜头从赌桌正前方拍摄，王强主导画面右侧，颜大海位于左侧边缘。深色木质护墙板与绿色赌桌形成倒三角构图，霓虹灯光在背景墙上投下紫蓝色光带。烟雾在半空形成层叠的薄雾，射灯照亮赌桌中央的钞票与扑克牌。王强嘴角叼着雪茄，右手刚离开欠条堆，左手叉腰，姿态强势。颜大海身体佝偻，双手微张。前景暗红地毯上有烟蒂和碎屑。",
+        "motion": "镜头从稍广的全景缓慢向前推近，逐渐聚焦在王强面部与欠条的互动上。前半程跟随王强拍桌动作轻微晃动，后半程推进至王强与颜大海之间，强化二人的距离感和压迫性。推镜过程中烟雾流动，射灯光晕逐渐扩大。"
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 34,
+      "scene_name": "高端私人会所走廊",
+      "prompt_lengths": {
+        "static": 69,
+        "motion": 59
+      },
+      "counts": {
+        "required_assets": 0,
+        "used_assets": 3,
+        "bindings": 3,
+        "reference_images": 0
+      },
+      "issues": [
+        {
+          "code": "short_static_prompt",
+          "message": "静态提示词过短：69 字符，低于 80。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [
+        {
+          "code": "scene_name_not_in_static_prompt",
+          "message": "静态提示词未显式包含镜头场景名。",
+          "severity": "warning",
+          "details": {
+            "scene_name": "高端私人会所走廊"
+          }
+        }
+      ],
+      "snippets": {
+        "static": "特写颜夕颈部侧面，宋庭筠修长白皙的手指擦拭血珠，血珠在指腹上晕开。背景虚化成暖黄光斑，颜夕泪眼朦胧，嘴角微颤。构图紧凑，光圈营造柔焦效果。",
+        "motion": "固定机位，随着宋庭筠手指动作镜头静止记录。刀落地的瞬间声音出现后，镜头焦点逐渐转向颜夕的眼睛，停留两秒，完成情绪收束。"
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "麻栗山村口空地",
+      "prompt_lengths": {
+        "static": 97,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 1,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 1
+      },
+      "issues": [],
+      "warnings": [],
+      "snippets": {
+        "static": "麻栗山村口空地，正午毒辣阳光从头顶直射，黄泥巴地干裂，地面投下锐利的阴影，空气热浪蒸腾带模糊感。六个村童站成松散圆圈，陈二蛋蹲在圆心，背对镜头，身穿深蓝色粗布短褂、灰色破裤子，脖子上缠着灰布条。",
+        "motion": "镜头固定不动。大胖叉腰朝地上吐口水，其他孩子有的转头看大胖，有的盯着陈二蛋。陈二蛋纹丝不动。随后大胖保持叉腰姿态，狗剩弯腰准备捡石头，陈二蛋仍蹲着低头。角色、服装、场景、道具与首帧保持一致。"
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 21,
+      "scene_name": "陈二蛋与大凤的卧室",
+      "prompt_lengths": {
+        "static": 68,
+        "motion": 71
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "short_static_prompt",
+          "message": "静态提示词过短：68 字符，低于 80。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [
+        {
+          "code": "scene_name_not_in_static_prompt",
+          "message": "静态提示词未显式包含镜头场景名。",
+          "severity": "warning",
+          "details": {
+            "scene_name": "陈二蛋与大凤的卧室"
+          }
+        }
+      ],
+      "snippets": {
+        "static": "极特写，陈二蛋的手心，沾满血迹的鱼鳞碎片，一条透明触须从碎片中伸出，缠绕着食指，触须尖端微细。背景虚化，只有手和鳞片清晰。画面视角贴近。",
+        "motion": "变焦推进，从手掌全景逐渐推到触须缠绕手指的特写，同时陈二蛋的脸入镜（从手部上移到脸），聚焦于眼睛和扭曲表情，最后快速zoom到极致特写后黑屏。"
+      }
+    }
+  ]
+}

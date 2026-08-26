@@ -1,0 +1,263 @@
+{
+  "generatedAt": "2026-08-24T21:07:24.896053",
+  "mode": "real-enqueue",
+  "planPath": "artifacts/book5-scene-reference-plan.json",
+  "summary": {
+    "requests": 1,
+    "submitted": 1,
+    "done": 1,
+    "failed": 0,
+    "error": false
+  },
+  "requests": [
+    {
+      "scene_name": "原始丛林上空",
+      "location_id": 120,
+      "shot_count": 6,
+      "api_request": {
+        "bookId": 5,
+        "episode": 1,
+        "shotId": "scene-120",
+        "sourceNodeId": "visual-location-120",
+        "sourceAssetId": "120",
+        "assetScope": "location",
+        "assetSubject": "原始丛林上空",
+        "targetKind": "reference-image",
+        "modelProfileId": "preset-poyo-image-gpt-image-2",
+        "prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+        "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+        "aspectRatio": "16:9",
+        "count": 1,
+        "referenceAssetIds": [],
+        "referenceImages": []
+      }
+    }
+  ],
+  "results": [
+    {
+      "scene_name": "原始丛林上空",
+      "location_id": 120,
+      "task_id": "6003af4e40e0",
+      "queued": {
+        "task_id": "6003af4e40e0",
+        "status": "queued",
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "uses_mock": false
+      },
+      "ran_now": true,
+      "final_task": {
+        "task_id": "6003af4e40e0",
+        "status": "done",
+        "progress": 100,
+        "target_kind": "image",
+        "book_id": 5,
+        "episode": 1,
+        "shot_id": "scene-120",
+        "version": 1,
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "provider": "poyo-async",
+        "uses_mock": false,
+        "external_task_id": "QSLRTUUCFTEMI5ZI",
+        "external_status": "finished",
+        "poll_attempts": 32,
+        "provider_response": {
+          "code": 200,
+          "data": {
+            "task_id": "QSLRTUUCFTEMI5ZI",
+            "status": "finished",
+            "files": [
+              {
+                "file_url": "https://cdn.doculator.org/images/QSLRTUUCFTEMI5ZI/QSLRTUUCFTEMI5ZI.png",
+                "file_type": "image"
+              }
+            ],
+            "created_time": "2026-08-24T21:05:43",
+            "progress": 100.0,
+            "credits_amount": 4.0
+          }
+        },
+        "provider_request_payload": {
+          "model": "gpt-image-2",
+          "input": {
+            "task_mode": "text_to_image",
+            "task_modes": [
+              "text_to_image",
+              "image_to_image"
+            ],
+            "supports_reference_images": true,
+            "max_reference_images": 8,
+            "poll_interval_seconds": 3,
+            "poll_timeout_seconds": 180,
+            "prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+            "size": "16:9",
+            "resolution": "2K",
+            "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
+          }
+        },
+        "restarted_from_task_id": null,
+        "restart_count": 0,
+        "last_restarted_at": null,
+        "created_at": "2026-08-24T21:05:41.806948",
+        "updated_at": "2026-08-24T21:07:24.889549",
+        "kind": "reference-image",
+        "request_payload": {
+          "book_id": 5,
+          "episode": 1,
+          "shot_id": "scene-120",
+          "source_node_id": "visual-location-120",
+          "source_asset_id": "120",
+          "first_frame_asset_id": null,
+          "first_frame_url": null,
+          "asset_scope": "location",
+          "asset_subject": "原始丛林上空",
+          "target_kind": "reference-image",
+          "prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": null,
+          "model_profile_id": "preset-poyo-image-gpt-image-2",
+          "reference_asset_ids": [],
+          "reference_images": [],
+          "aspect_ratio": "16:9",
+          "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+          "duration_seconds": null,
+          "count": 1,
+          "simulate_error": false
+        },
+        "prompt_encoding_audit": {
+          "original_prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "original_contains_cjk": true,
+          "original_looks_garbled": false,
+          "original_question_mark_count": 0,
+          "submitted_prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "submitted_contains_cjk": true,
+          "submitted_looks_garbled": false,
+          "submitted_question_mark_count": 0,
+          "provider_payload_captured": true
+        },
+        "reference_asset": {
+          "id": 68,
+          "book_id": 5,
+          "episode": 1,
+          "asset_type": "scene",
+          "asset_id": "120",
+          "asset_name": "原始丛林上空",
+          "image_url": "https://cdn.doculator.org/images/QSLRTUUCFTEMI5ZI/QSLRTUUCFTEMI5ZI.png",
+          "local_path": "",
+          "reference_token": "@原始丛林上空",
+          "status": "selected",
+          "prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": "gpt-image-2",
+          "notes": "视觉资产库生成 · 2026-08-24 21:07",
+          "meta_info": {
+            "source": "visual-asset-library-generate",
+            "taskId": "6003af4e40e0",
+            "externalTaskId": "QSLRTUUCFTEMI5ZI",
+            "version": "v1",
+            "generatedAt": "2026-08-24T21:07:24.874545",
+            "assetScope": "location",
+            "assetSubject": "原始丛林上空",
+            "usesMock": false
+          },
+          "created_at": "2026-08-24T21:07:24.874545",
+          "updated_at": "2026-08-24T21:07:24.874545",
+          "sync_warning": "The reference image was generated and saved, but it is not bound to a shot yet. Bind it in the visual asset view first."
+        },
+        "asset": {
+          "id": "image-dd6696b8c3",
+          "kind": "image",
+          "title": "原始丛林上空 参考图 v1",
+          "label": "v1",
+          "uri": "https://cdn.doculator.org/images/QSLRTUUCFTEMI5ZI/QSLRTUUCFTEMI5ZI.png",
+          "previewUrl": "https://cdn.doculator.org/images/QSLRTUUCFTEMI5ZI/QSLRTUUCFTEMI5ZI.png",
+          "prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": "gpt-image-2",
+          "status": "done",
+          "adopted": true,
+          "sourceAssetId": "120",
+          "elapsedSeconds": 2,
+          "metadata": {
+            "source": "real",
+            "assetScope": "location",
+            "assetSubject": "原始丛林上空",
+            "aspectRatio": "16:9",
+            "durationSeconds": 0,
+            "provider": "poyo-async",
+            "referenceAssetCount": 0,
+            "referenceAssetIds": [],
+            "referenceImages": [],
+            "shotId": "scene-120",
+            "sourceNodeId": "visual-location-120",
+            "sourceAssetId": "120",
+            "firstFrameAssetId": "",
+            "firstFrameUrl": "",
+            "modelProfileId": "preset-poyo-image-gpt-image-2",
+            "modelName": "gpt-image-2",
+            "providerTaskMode": "",
+            "imageRole": "reference",
+            "usesMock": false,
+            "prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+            "createdAt": "2026-08-24T21:07:24.872544Z",
+            "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+            "externalTaskId": "QSLRTUUCFTEMI5ZI",
+            "externalStatus": "finished",
+            "pollAttempts": 32,
+            "providerResponse": {
+              "code": 200,
+              "data": {
+                "task_id": "QSLRTUUCFTEMI5ZI",
+                "status": "finished",
+                "files": [
+                  {
+                    "file_url": "https://cdn.doculator.org/images/QSLRTUUCFTEMI5ZI/QSLRTUUCFTEMI5ZI.png",
+                    "file_type": "image"
+                  }
+                ],
+                "created_time": "2026-08-24T21:05:43",
+                "progress": 100.0,
+                "credits_amount": 4.0
+              }
+            },
+            "providerPromptAdjusted": false,
+            "providerPromptAdjustmentReason": "",
+            "providerSafePrompt": "",
+            "providerRequestPayload": {
+              "model": "gpt-image-2",
+              "input": {
+                "task_mode": "text_to_image",
+                "task_modes": [
+                  "text_to_image",
+                  "image_to_image"
+                ],
+                "supports_reference_images": true,
+                "max_reference_images": 8,
+                "poll_interval_seconds": 3,
+                "poll_timeout_seconds": 180,
+                "prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+                "size": "16:9",
+                "resolution": "2K",
+                "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
+              }
+            },
+            "promptEncodingAudit": {
+              "original_prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+              "original_contains_cjk": true,
+              "original_looks_garbled": false,
+              "original_question_mark_count": 0,
+              "submitted_prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+              "submitted_contains_cjk": true,
+              "submitted_looks_garbled": false,
+              "submitted_question_mark_count": 0,
+              "provider_payload_captured": true
+            },
+            "referenceAssetId": 68,
+            "referenceStatus": "selected",
+            "referenceSyncWarning": "The reference image was generated and saved, but it is not bound to a shot yet. Bind it in the visual asset view first."
+          }
+        },
+        "first_frame_asset_id": "",
+        "first_frame_url": "",
+        "provider_task_mode": ""
+      }
+    }
+  ],
+  "error": ""
+}

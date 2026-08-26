@@ -1,0 +1,222 @@
+{
+  "generatedAt": "2026-08-24T15:38:57.278252",
+  "mode": "real-enqueue",
+  "planPath": "artifacts/book75-scene-reference-plan.json",
+  "summary": {
+    "requests": 2,
+    "submitted": 2,
+    "done": 0,
+    "error": false
+  },
+  "requests": [
+    {
+      "scene_name": "便利店收银台",
+      "location_id": 159,
+      "shot_count": 6,
+      "api_request": {
+        "bookId": 75,
+        "episode": 1,
+        "shotId": "scene-159",
+        "sourceNodeId": "visual-location-159",
+        "sourceAssetId": "159",
+        "assetScope": "location",
+        "assetSubject": "便利店收银台",
+        "targetKind": "reference-image",
+        "modelProfileId": "preset-poyo-image-gpt-image-2",
+        "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+        "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+        "aspectRatio": "16:9",
+        "count": 1,
+        "referenceAssetIds": [],
+        "referenceImages": []
+      }
+    },
+    {
+      "scene_name": "监控室",
+      "location_id": 158,
+      "shot_count": 8,
+      "api_request": {
+        "bookId": 75,
+        "episode": 1,
+        "shotId": "scene-158",
+        "sourceNodeId": "visual-location-158",
+        "sourceAssetId": "158",
+        "assetScope": "location",
+        "assetSubject": "监控室",
+        "targetKind": "reference-image",
+        "modelProfileId": "preset-poyo-image-gpt-image-2",
+        "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+        "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+        "aspectRatio": "16:9",
+        "count": 1,
+        "referenceAssetIds": [],
+        "referenceImages": []
+      }
+    }
+  ],
+  "results": [
+    {
+      "scene_name": "便利店收银台",
+      "location_id": 159,
+      "task_id": "75c812095a3a",
+      "queued": {
+        "task_id": "75c812095a3a",
+        "status": "queued",
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "uses_mock": false
+      },
+      "ran_now": true,
+      "final_task": {
+        "task_id": "75c812095a3a",
+        "status": "error",
+        "progress": 70,
+        "target_kind": "image",
+        "book_id": 75,
+        "episode": 1,
+        "shot_id": "scene-159",
+        "version": 2,
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "provider": "poyo-async",
+        "uses_mock": false,
+        "external_task_id": "0O4NC213PSUJ4SKL",
+        "external_status": "failed",
+        "poll_attempts": 10,
+        "provider_response": {
+          "code": 200,
+          "data": {
+            "task_id": "0O4NC213PSUJ4SKL",
+            "status": "failed",
+            "files": [],
+            "created_time": "2026-08-24T15:37:54",
+            "progress": 0.0,
+            "credits_amount": 0.0,
+            "error_message": "Custom size requires 2K or 4K resolution. Please adjust the resolution and try again."
+          }
+        },
+        "provider_request_payload": null,
+        "restarted_from_task_id": null,
+        "restart_count": 0,
+        "last_restarted_at": null,
+        "created_at": "2026-08-24T15:37:52.573816",
+        "updated_at": "2026-08-24T15:38:24.910182",
+        "kind": "reference-image",
+        "request_payload": {
+          "book_id": 75,
+          "episode": 1,
+          "shot_id": "scene-159",
+          "source_node_id": "visual-location-159",
+          "source_asset_id": "159",
+          "first_frame_asset_id": null,
+          "first_frame_url": null,
+          "asset_scope": "location",
+          "asset_subject": "便利店收银台",
+          "target_kind": "reference-image",
+          "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+          "model": null,
+          "model_profile_id": "preset-poyo-image-gpt-image-2",
+          "reference_asset_ids": [],
+          "reference_images": [],
+          "aspect_ratio": "16:9",
+          "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+          "duration_seconds": null,
+          "count": 1,
+          "simulate_error": false
+        },
+        "prompt_encoding_audit": {
+          "original_prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+          "original_contains_cjk": true,
+          "original_looks_garbled": false,
+          "original_question_mark_count": 0,
+          "submitted_prompt": "",
+          "submitted_contains_cjk": true,
+          "submitted_looks_garbled": false,
+          "submitted_question_mark_count": 0,
+          "provider_payload_captured": false
+        },
+        "error": "Custom size requires 2K or 4K resolution. Please adjust the resolution and try again."
+      }
+    },
+    {
+      "scene_name": "监控室",
+      "location_id": 158,
+      "task_id": "660c9d7d6a15",
+      "queued": {
+        "task_id": "660c9d7d6a15",
+        "status": "queued",
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "uses_mock": false
+      },
+      "ran_now": true,
+      "final_task": {
+        "task_id": "660c9d7d6a15",
+        "status": "error",
+        "progress": 70,
+        "target_kind": "image",
+        "book_id": 75,
+        "episode": 1,
+        "shot_id": "scene-158",
+        "version": 2,
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "provider": "poyo-async",
+        "uses_mock": false,
+        "external_task_id": "V04Z2YNZFO6SMHDY",
+        "external_status": "failed",
+        "poll_attempts": 10,
+        "provider_response": {
+          "code": 200,
+          "data": {
+            "task_id": "V04Z2YNZFO6SMHDY",
+            "status": "failed",
+            "files": [],
+            "created_time": "2026-08-24T15:38:26",
+            "progress": 0.0,
+            "credits_amount": 0.0,
+            "error_message": "Custom size requires 2K or 4K resolution. Please adjust the resolution and try again."
+          }
+        },
+        "provider_request_payload": null,
+        "restarted_from_task_id": null,
+        "restart_count": 0,
+        "last_restarted_at": null,
+        "created_at": "2026-08-24T15:38:24.925770",
+        "updated_at": "2026-08-24T15:38:57.270736",
+        "kind": "reference-image",
+        "request_payload": {
+          "book_id": 75,
+          "episode": 1,
+          "shot_id": "scene-158",
+          "source_node_id": "visual-location-158",
+          "source_asset_id": "158",
+          "first_frame_asset_id": null,
+          "first_frame_url": null,
+          "asset_scope": "location",
+          "asset_subject": "监控室",
+          "target_kind": "reference-image",
+          "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+          "model": null,
+          "model_profile_id": "preset-poyo-image-gpt-image-2",
+          "reference_asset_ids": [],
+          "reference_images": [],
+          "aspect_ratio": "16:9",
+          "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+          "duration_seconds": null,
+          "count": 1,
+          "simulate_error": false
+        },
+        "prompt_encoding_audit": {
+          "original_prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+          "original_contains_cjk": true,
+          "original_looks_garbled": false,
+          "original_question_mark_count": 0,
+          "submitted_prompt": "",
+          "submitted_contains_cjk": true,
+          "submitted_looks_garbled": false,
+          "submitted_question_mark_count": 0,
+          "provider_payload_captured": false
+        },
+        "error": "Custom size requires 2K or 4K resolution. Please adjust the resolution and try again."
+      }
+    }
+  ],
+  "error": ""
+}

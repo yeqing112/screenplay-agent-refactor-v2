@@ -1,0 +1,941 @@
+{
+  "generatedAt": "2026-08-26T00:15:25.391917",
+  "mode": "real-project-apply",
+  "compilerMode": "deterministic-mock",
+  "confirmationToken": "b60458b08a7c4c6b",
+  "summary": {
+    "samples": 20,
+    "before_errors": 40,
+    "before_warnings": 1,
+    "after_errors": 0,
+    "after_warnings": 1,
+    "error_reduction": 40,
+    "warning_reduction": 0
+  },
+  "results": [
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "原始丛林上空",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 283,
+          "motion": 99
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 541,
+          "motion": 152
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "baseline_anchor": {
+        "version_id": 277,
+        "version": 7,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 278,
+        "version": 8,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/1/prompt-versions/277/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "原始丛林上空",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 390,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 799,
+          "motion": 166
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "baseline_anchor": {
+        "version_id": 279,
+        "version": 14,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 280,
+        "version": 15,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/2/prompt-versions/279/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "原始丛林上空",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 412,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 881,
+          "motion": 179
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "baseline_anchor": {
+        "version_id": 281,
+        "version": 12,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 282,
+        "version": 13,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/3/prompt-versions/281/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "原始丛林上空",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 390,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 801,
+          "motion": 198
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "baseline_anchor": {
+        "version_id": 283,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 284,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/4/prompt-versions/283/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "原始丛林上空",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 390,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 793,
+          "motion": 194
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "baseline_anchor": {
+        "version_id": 285,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 286,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/5/prompt-versions/285/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "原始丛林上空",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 390,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 781,
+          "motion": 228
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "baseline_anchor": {
+        "version_id": 287,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 288,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/6/prompt-versions/287/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "原始丛林深处",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 472,
+          "motion": 103
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 977,
+          "motion": 234
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "baseline_anchor": {
+        "version_id": 289,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 290,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/7/prompt-versions/289/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "原始丛林深处",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 377,
+          "motion": 100
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 774,
+          "motion": 233
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "baseline_anchor": {
+        "version_id": 291,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 292,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/8/prompt-versions/291/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "原始丛林深处",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 650,
+          "motion": 103
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1144,
+          "motion": 240
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "baseline_anchor": {
+        "version_id": 293,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 294,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/9/prompt-versions/293/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 10,
+      "scene_name": "原始丛林深处",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 745,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1238,
+          "motion": 243
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "baseline_anchor": {
+        "version_id": 295,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 296,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/10/prompt-versions/295/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 11,
+      "scene_name": "原始丛林深处",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 472,
+          "motion": 103
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 966,
+          "motion": 238
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "baseline_anchor": {
+        "version_id": 297,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 298,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/11/prompt-versions/297/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 12,
+      "scene_name": "原始丛林深处",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 650,
+          "motion": 103
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1150,
+          "motion": 225
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "baseline_anchor": {
+        "version_id": 299,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 300,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/12/prompt-versions/299/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 13,
+      "scene_name": "部落营地",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 762,
+          "motion": 104
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1266,
+          "motion": 196
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "baseline_anchor": {
+        "version_id": 301,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 302,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/13/prompt-versions/301/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 14,
+      "scene_name": "部落营地",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 762,
+          "motion": 104
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1250,
+          "motion": 219
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "baseline_anchor": {
+        "version_id": 303,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 304,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/14/prompt-versions/303/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 15,
+      "scene_name": "部落营地",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 857,
+          "motion": 107
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1240,
+          "motion": 209
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "baseline_anchor": {
+        "version_id": 305,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 306,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/15/prompt-versions/305/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 16,
+      "scene_name": "部落营地",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 624,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1106,
+          "motion": 214
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "baseline_anchor": {
+        "version_id": 307,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 308,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/16/prompt-versions/307/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 17,
+      "scene_name": "部落营地",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 736,
+          "motion": 109
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1255,
+          "motion": 190
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "baseline_anchor": {
+        "version_id": 309,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 310,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/17/prompt-versions/309/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 18,
+      "scene_name": "部落营地",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 584,
+          "motion": 104
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1092,
+          "motion": 207
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "baseline_anchor": {
+        "version_id": 311,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 312,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/18/prompt-versions/311/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 19,
+      "scene_name": "部落营地",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 624,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1134,
+          "motion": 212
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "baseline_anchor": {
+        "version_id": 313,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 314,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/19/prompt-versions/313/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 20,
+      "scene_name": "部落营地",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1121,
+          "motion": 112
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1222,
+          "motion": 263
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "baseline_anchor": {
+        "version_id": 315,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 316,
+        "version": 6,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/5/storyboard/1/20/prompt-versions/315/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    }
+  ]
+}

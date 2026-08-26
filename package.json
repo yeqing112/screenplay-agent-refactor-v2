@@ -2,7 +2,29 @@
   "scripts": {
     "e2e:smoke": "node scripts/e2e-smoke.js",
     "e2e:qa": "node scripts/e2e-qa-workbench.js",
-    "e2e:business": "node scripts/e2e-formal-workspace-business-flow.js"
+    "e2e:business": "node scripts/e2e-formal-workspace-business-flow.js",
+    "e2e:machine-prompt-export": "node scripts/e2e-machine-prompt-export-flow.js",
+    "e2e:real-samples": "node scripts/e2e-formal-workspace-real-samples.js",
+    "check:production": "node scripts/run-production-regression.js",
+    "audit:storyboard": "node scripts/audit-storyboard-prompt-real-samples.js",
+    "audit:storyboard:zero-error-gate": "node scripts/audit-storyboard-prompt-real-samples.js --zero-error-gate",
+    "audit:scene-assets": "python scripts/audit-storyboard-scene-asset-readiness.py",
+    "apply:scene-assets": "python scripts/apply-storyboard-scene-asset-readiness.py",
+    "validate:storyboard-repair-clone": "python scripts/validate-storyboard-quality-repair-clone.py",
+    "validate:storyboard-batch-repair-clone": "python scripts/validate-storyboard-batch-repair-clone.py",
+    "plan:storyboard-batch-repair": "python scripts/plan-storyboard-batch-repair.py",
+    "plan:scene-reference-assets": "python scripts/plan-storyboard-scene-reference-assets.py",
+    "enqueue:scene-reference-generation": "python scripts/enqueue-storyboard-scene-reference-generation.py",
+    "apply:scene-reference-plan": "python scripts/apply-storyboard-scene-reference-plan.py",
+    "apply:storyboard-batch-repair": "python scripts/apply-storyboard-batch-repair.py",
+    "validate:storyboard-real-llm-gray": "python scripts/validate-storyboard-real-llm-gray.py",
+    "preview:storyboard-compiler-v1": "python scripts/preview-storyboard-compiler-v1.py",
+    "preview:book75-compiler-v1": "python scripts/preview-storyboard-compiler-v1.py --book-id 75 --target-model jimeng --out artifacts/book75-storyboard-compiler-v1-preview.json --summary-md artifacts/book75-storyboard-compiler-v1-preview.md",
+    "preview:machine-prompt-export": "python scripts/preview-storyboard-machine-prompt-export.py",
+    "preview:book75-h3-export": "python scripts/preview-storyboard-machine-prompt-export.py --book-id 75 --target-model minimax-h3 --out artifacts/book75-machine-prompt-export-preview.json --summary-md artifacts/book75-machine-prompt-export-preview.md",
+    "plan:book75-scene-references": "python scripts/plan-storyboard-scene-reference-assets.py --book-id 75 --out artifacts/book75-scene-reference-plan.json --summary-md artifacts/book75-scene-reference-plan.md",
+    "enqueue:book75-scene-references": "python scripts/enqueue-storyboard-scene-reference-generation.py --plan artifacts/book75-scene-reference-plan.json",
+    "apply:book75-scene-reference-plan": "python scripts/apply-storyboard-scene-reference-plan.py --plan artifacts/book75-scene-reference-plan.json"
   },
   "dependencies": {
     "playwright": "^1.62.1"

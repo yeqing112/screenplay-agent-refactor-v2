@@ -1,0 +1,457 @@
+{
+  "generatedAt": "2026-08-26T00:38:13.531176",
+  "mode": "real-project-apply",
+  "compilerMode": "deterministic-mock",
+  "confirmationToken": "60caf6ec2647fafb",
+  "summary": {
+    "samples": 9,
+    "before_errors": 9,
+    "before_warnings": 26,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "error_reduction": 9,
+    "warning_reduction": 26
+  },
+  "results": [
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 17,
+      "scene_name": "宋氏大厦顶层办公室",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 80,
+          "motion": 55
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1059,
+          "motion": 215
+        },
+        "structured_scene_asset_id": "94"
+      },
+      "baseline_anchor": {
+        "version_id": 437,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 438,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/17/prompt-versions/437/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 22,
+      "scene_name": "宋氏大厦顶层办公室",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 84,
+          "motion": 84
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1058,
+          "motion": 212
+        },
+        "structured_scene_asset_id": "94"
+      },
+      "baseline_anchor": {
+        "version_id": 439,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 440,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/22/prompt-versions/439/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 23,
+      "scene_name": "现代简约别墅客厅",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 98,
+          "motion": 56
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1103,
+          "motion": 219
+        },
+        "structured_scene_asset_id": "96"
+      },
+      "baseline_anchor": {
+        "version_id": 441,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 442,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/23/prompt-versions/441/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 24,
+      "scene_name": "现代简约别墅客厅",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 90,
+          "motion": 54
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1089,
+          "motion": 238
+        },
+        "structured_scene_asset_id": "96"
+      },
+      "baseline_anchor": {
+        "version_id": 443,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 444,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/24/prompt-versions/443/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 25,
+      "scene_name": "现代简约别墅客厅",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 80,
+          "motion": 61
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1062,
+          "motion": 228
+        },
+        "structured_scene_asset_id": "96"
+      },
+      "baseline_anchor": {
+        "version_id": 445,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 446,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/25/prompt-versions/445/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 27,
+      "scene_name": "现代简约别墅客厅",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 86,
+          "motion": 69
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1052,
+          "motion": 242
+        },
+        "structured_scene_asset_id": "96"
+      },
+      "baseline_anchor": {
+        "version_id": 447,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 448,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/27/prompt-versions/447/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 28,
+      "scene_name": "现代简约别墅客厅",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 83,
+          "motion": 70
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1047,
+          "motion": 240
+        },
+        "structured_scene_asset_id": "96"
+      },
+      "baseline_anchor": {
+        "version_id": 449,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 450,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/28/prompt-versions/449/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 29,
+      "scene_name": "高端私人会所走廊",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 104,
+          "motion": 52
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 985,
+          "motion": 221
+        },
+        "structured_scene_asset_id": "95"
+      },
+      "baseline_anchor": {
+        "version_id": 451,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 452,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/29/prompt-versions/451/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "公立医院病房",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 116,
+          "motion": 93
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1009,
+          "motion": 286
+        },
+        "structured_scene_asset_id": "92"
+      },
+      "baseline_anchor": {
+        "version_id": 453,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 454,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/9/prompt-versions/453/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    }
+  ]
+}

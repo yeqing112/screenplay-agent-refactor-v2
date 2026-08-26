@@ -1,0 +1,619 @@
+{
+  "generatedAt": "2026-08-26T00:14:53.436659",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 20,
+    "before_errors": 40,
+    "before_warnings": 1,
+    "after_errors": 0,
+    "after_warnings": 1,
+    "error_reduction": 40,
+    "warning_reduction": 0
+  },
+  "results": [
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "原始丛林上空",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 283,
+          "motion": 99
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 541,
+          "motion": 152
+        },
+        "structured_scene_asset_id": "179"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "原始丛林上空",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 390,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 799,
+          "motion": 139
+        },
+        "structured_scene_asset_id": "179"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "原始丛林上空",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 412,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 881,
+          "motion": 150
+        },
+        "structured_scene_asset_id": "179"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "原始丛林上空",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 390,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 801,
+          "motion": 160
+        },
+        "structured_scene_asset_id": "179"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "原始丛林上空",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 390,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 793,
+          "motion": 153
+        },
+        "structured_scene_asset_id": "179"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "原始丛林上空",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 390,
+          "motion": 102
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 781,
+          "motion": 191
+        },
+        "structured_scene_asset_id": "179"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "原始丛林深处",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 472,
+          "motion": 103
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 781,
+          "motion": 188
+        },
+        "structured_scene_asset_id": "180"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "原始丛林深处",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 377,
+          "motion": 100
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 774,
+          "motion": 187
+        },
+        "structured_scene_asset_id": "180"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "原始丛林深处",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 650,
+          "motion": 103
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1144,
+          "motion": 189
+        },
+        "structured_scene_asset_id": "180"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 10,
+      "scene_name": "原始丛林深处",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 745,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1167,
+          "motion": 195
+        },
+        "structured_scene_asset_id": "180"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 11,
+      "scene_name": "原始丛林深处",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 472,
+          "motion": 103
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 770,
+          "motion": 183
+        },
+        "structured_scene_asset_id": "180"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 12,
+      "scene_name": "原始丛林深处",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 650,
+          "motion": 103
+        },
+        "structured_scene_asset_id": "121"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1150,
+          "motion": 184
+        },
+        "structured_scene_asset_id": "180"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 13,
+      "scene_name": "部落营地",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 762,
+          "motion": 104
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1155,
+          "motion": 154
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 14,
+      "scene_name": "部落营地",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 762,
+          "motion": 104
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1139,
+          "motion": 172
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 15,
+      "scene_name": "部落营地",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 857,
+          "motion": 107
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1138,
+          "motion": 166
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 16,
+      "scene_name": "部落营地",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 624,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 745,
+          "motion": 169
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 17,
+      "scene_name": "部落营地",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 736,
+          "motion": 109
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 767,
+          "motion": 148
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 18,
+      "scene_name": "部落营地",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 584,
+          "motion": 104
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 763,
+          "motion": 169
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 19,
+      "scene_name": "部落营地",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 624,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 773,
+          "motion": 167
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 20,
+      "scene_name": "部落营地",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1121,
+          "motion": 112
+        },
+        "structured_scene_asset_id": "109"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1146,
+          "motion": 218
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    }
+  ]
+}

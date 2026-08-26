@@ -1,0 +1,594 @@
+{
+  "generatedAt": "2026-08-26T00:18:24.240899",
+  "mode": "dry-run-preflight",
+  "tempBookId": 999906,
+  "confirmationToken": "5cf18077542cbb20",
+  "status": {
+    "dry_run_only": true,
+    "real_project_mutated": false,
+    "ready_for_human_review": true,
+    "ready_for_apply_command": true,
+    "requires_baseline_version_before_apply": true,
+    "missing_rollback_anchor_count": 9,
+    "real_apply_blocker_count": 0
+  },
+  "summary": {
+    "samples": 10,
+    "before_errors": 25,
+    "before_warnings": 30,
+    "after_errors": 0,
+    "after_warnings": 6,
+    "error_reduction": 25,
+    "warning_reduction": 24
+  },
+  "results": [
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 14,
+      "scene_name": "公立医院病房",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 71,
+          "motion": 49
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 498,
+          "motion": 186
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 131,
+        "version": 3,
+        "compile_reason": "rollback:v1:batch-quality-repair-rollback"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "92"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/14/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 19,
+      "scene_name": "宋氏大厦顶层办公室",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 64,
+          "motion": 47
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 716,
+          "motion": 152
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "94"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/19/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 20,
+      "scene_name": "宋氏大厦顶层办公室",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 73,
+          "motion": 46
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 513,
+          "motion": 149
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "94"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/20/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 21,
+      "scene_name": "宋氏大厦顶层办公室",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 66,
+          "motion": 46
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 505,
+          "motion": 145
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "94"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/21/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 12,
+      "scene_name": "公立医院病房",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 79,
+          "motion": 73
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 497,
+          "motion": 196
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "92"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/12/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 15,
+      "scene_name": "陈二蛋与大凤的卧室",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 67,
+          "motion": 45
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 908,
+          "motion": 147
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "89"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/15/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "麻栗山村口空地",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 76,
+          "motion": 56
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 864,
+          "motion": 169
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "91"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/2/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "麻栗山村口空地",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 73,
+          "motion": 54
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 586,
+          "motion": 171
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "91"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/4/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "麻栗山村口空地",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 68,
+          "motion": 63
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 887,
+          "motion": 189
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "91"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/5/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "麻栗山村口空地",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 75,
+          "motion": 67
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 863,
+          "motion": 220
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "91"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/6/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    }
+  ],
+  "nextStep": "Review this plan. Do not apply to real projects until an explicit apply command requires this confirmation token and creates rollback anchors for every selected shot."
+}

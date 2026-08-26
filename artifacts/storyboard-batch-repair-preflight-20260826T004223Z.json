@@ -1,0 +1,81 @@
+{
+  "generatedAt": "2026-08-26T00:42:23.452798",
+  "mode": "dry-run-preflight",
+  "tempBookId": 999906,
+  "confirmationToken": "cc2cb2ec0fc5ef36",
+  "status": {
+    "dry_run_only": true,
+    "real_project_mutated": false,
+    "ready_for_human_review": true,
+    "ready_for_apply_command": true,
+    "requires_baseline_version_before_apply": false,
+    "missing_rollback_anchor_count": 0,
+    "real_apply_blocker_count": 0
+  },
+  "summary": {
+    "samples": 1,
+    "before_errors": 1,
+    "before_warnings": 3,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "error_reduction": 1,
+    "warning_reduction": 3
+  },
+  "results": [
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 23,
+      "scene_name": "寺庙井边·夜晚",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 202,
+          "motion": 174
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 425,
+          "motion": 154
+        },
+        "structured_scene_asset_id": "176"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 96,
+        "version": 1,
+        "compile_reason": "manual"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "140"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/23/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    }
+  ],
+  "nextStep": "Review this plan. Do not apply to real projects until an explicit apply command requires this confirmation token and creates rollback anchors for every selected shot."
+}

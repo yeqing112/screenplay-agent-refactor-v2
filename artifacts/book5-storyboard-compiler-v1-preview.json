@@ -1,0 +1,2807 @@
+{
+  "mode": "readonly_preview",
+  "book_id": 5,
+  "target_model": "jimeng",
+  "shot_count": 20,
+  "shots": [
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "原始丛林上空",
+      "current_prompts": {
+        "static": "原始丛林上空，真实项目灰度修复后的中景构图，画面清晰保留原始丛林林间空地。其中场景保持原始丛林林间空地，原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。，原始热带雨林，遮天蔽日，古木参天，林间空地潮湿泥泞，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林上空的空间连续性和原始丛林林间空地的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 283,
+        "motion": 99,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "1",
+        "scene_name": "原始丛林上空",
+        "duration": 4,
+        "camera_angle": "WS",
+        "camera_movement": "dolly",
+        "transition": "cut",
+        "scene_asset_id": "120",
+        "character_asset_ids": [],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "镜头以第一人称高速下坠，画面依次闪过蓝天、树冠、树枝、泥地，速度越来越快，风声尖叫混响增强",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 1,
+        "scene_name": "原始丛林林间空地",
+        "duration": 4,
+        "camera_angle": "WS",
+        "camera_movement": "dolly",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "视角位于高空，蓝天占满画面，无人物形象",
+        "action_process": "镜头以第一人称高速下坠，画面依次闪过蓝天、树冠、树枝、泥地，速度越来越快，风声尖叫混响增强",
+        "end_state": "视野中泥地急速放大，即将碰撞",
+        "dialogue": "（内心独白）完了完了完了完了完了...",
+        "lighting": "正午阳光透过浓密树冠形成斑驳光点，光线随坠落快速变化，从明亮天空到阴暗树荫，最后接近泥地时地面反射光",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "120",
+          "asset_name": "原始丛林林间空地",
+          "reference_token": "@原始丛林上空"
+        },
+        "character_bindings": [],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": false,
+          "previous_end_state": ""
+        },
+        "visual_facts_count": 4,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '120', 'asset_name': '原始丛林林间空地', 'reference_token': '@原始丛林上空', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": []
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始丛林林间空地（@原始丛林上空），远景构图，第一帧只描述当前镜头开始瞬间。视觉事实包括原始丛林林间空地（@原始丛林上空）保留原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱；原始热带雨林，遮天蔽…。起始状态为视角位于高空，蓝天占满画面，无人物形象。光线氛围为正午阳光透过浓密树冠形成斑驳光点，光线随坠落快速变化，从明亮天空到阴暗树荫，最后接近泥地时地面反射光。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "4秒内，镜头缓慢滑轨移动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为镜头以第一人称高速下坠，画面依次闪过蓝天、树冠、树枝、泥地，速度越来越快，风声尖叫混响增强。结束落点为视野中泥地急速放大，即将碰撞。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 1,
+      "reference_image_count": 1,
+      "warnings": []
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "原始丛林上空",
+      "current_prompts": {
+        "static": "原始丛林上空，真实项目灰度修复后的中景构图，画面清晰保留原始丛林林间空地、胡涂。其中场景保持原始丛林林间空地，原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。，原始热带雨林，遮天蔽日，古木参天，林间空地潮湿泥泞，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林上空的空间连续性和原始丛林林间空地、胡涂的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 390,
+        "motion": 102,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "2",
+        "scene_name": "原始丛林上空",
+        "duration": 3,
+        "camera_angle": "CU",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "120",
+        "character_asset_ids": [
+          "399"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "保持闭眼张嘴的惊恐表情，面部肌肉紧绷，随着坠落冲击微不可查地抖动",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 2,
+        "scene_name": "原始丛林林间空地",
+        "duration": 3,
+        "camera_angle": "CU",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "胡涂面部正面特写，双眼紧闭，嘴巴大张，两颗大门牙上的黑洞蛀牙十分显眼",
+        "action_process": "保持闭眼张嘴的惊恐表情，面部肌肉紧绷，随着坠落冲击微不可查地抖动",
+        "end_state": "表情凝固在极致恐惧中，嘴巴仍大张",
+        "dialogue": "",
+        "lighting": "顶光从上方斜照，胡涂面部受光不均匀，门牙蛀牙处形成小阴影，背景虚化呈绿色",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "120",
+          "asset_name": "原始丛林林间空地",
+          "reference_token": "@原始丛林上空"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "视野中泥地急速放大，即将碰撞"
+        },
+        "visual_facts_count": 6,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '120', 'asset_name': '原始丛林林间空地', 'reference_token': '@原始丛林上空', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": []
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始丛林林间空地（@原始丛林上空），特写构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括原始丛林林间空地（@原始丛林上空）保留原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱；原始热带雨林，遮天蔽…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…。起始状态为胡涂面部正面特写，双眼紧闭，嘴巴大张，两颗大门牙上的黑洞蛀牙十分显眼。光线氛围为顶光从上方斜照，胡涂面部受光不均匀，门牙蛀牙处形成小阴影，背景虚化呈绿色。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "3秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为保持闭眼张嘴的惊恐表情，面部肌肉紧绷，随着坠落冲击微不可查地抖动。开头承接上一镜结束状态为视野中泥地急速放大，即将碰撞。结束落点为表情凝固在极致恐惧中，嘴巴仍大张。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 2,
+      "reference_image_count": 2,
+      "warnings": []
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "原始丛林上空",
+      "current_prompts": {
+        "static": "原始丛林上空，真实项目灰度修复后的中景构图，画面清晰保留原始丛林林间空地、胡涂。其中场景保持原始丛林林间空地，原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。，原始热带雨林，遮天蔽日，古木参天，林间空地潮湿泥泞，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。；人物保持胡涂，蓝色短袖T恤、短裤、运动鞋，衣摆和裤腿已被泥点与湿气打脏，边缘贴身，表情惊慌紧绷，眉头拧起，嘴微张，额头和鼻尖带汗与泥点，凌乱黑发，被下坠气流和湿气打乱，部分发丝贴在额前，原始丛林林间空地泥坑上方，正午顶光穿过树隙，泥浆飞溅前的临界瞬间。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林上空的空间连续性和原始丛林林间空地、胡涂的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 412,
+        "motion": 102,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "3",
+        "scene_name": "原始丛林上空",
+        "duration": 3,
+        "camera_angle": "WS",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "120",
+        "character_asset_ids": [
+          "399"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "泥浆瞬间四溅，慢镜头展示泥浆飞散，胡涂身体沉入泥中，然后慢慢停止运动",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 3,
+        "scene_name": "原始丛林林间空地",
+        "duration": 3,
+        "camera_angle": "WS",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "俯拍视角，胡涂整个人高速砸进一个泥坑，即将接触泥面",
+        "action_process": "泥浆瞬间四溅，慢镜头展示泥浆飞散，胡涂身体沉入泥中，然后慢慢停止运动",
+        "end_state": "胡涂面部朝下趴在泥坑中，泥浆缓缓落下，周围水波扩散",
+        "dialogue": "噗...咳咳咳...",
+        "lighting": "俯拍泥坑，正午顶光使泥浆反光强烈，坑中泥水有镜面反射效果，周围树荫形成暗色边界",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "120",
+          "asset_name": "原始丛林林间空地",
+          "reference_token": "@原始丛林上空"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "423",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂-3",
+            "variant_scope": "shot_variant"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "表情凝固在极致恐惧中，嘴巴仍大张"
+        },
+        "visual_facts_count": 8,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '120', 'asset_name': '原始丛林林间空地', 'reference_token': '@原始丛林上空', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '423', 'asset_name': '胡涂', 'reference_token': '@胡涂-3', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": []
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始丛林林间空地（@原始丛林上空），远景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂-3），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括原始丛林林间空地（@原始丛林上空）保留原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱；原始热带雨林，遮天蔽…；胡涂（@胡涂-3）保留小学生（三年级刚毕业）；一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围。起始状态为俯拍视角，胡涂整个人高速砸进一个泥坑，即将接触泥面。光线氛围为俯拍泥坑，正午顶光使泥浆反光强烈，坑中泥水有镜面反射效果，周围树荫形成暗色边界。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "3秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为泥浆瞬间四溅，慢镜头展示泥浆飞散，胡涂身体沉入泥中，然后慢慢停止运动。开头承接上一镜结束状态为表情凝固在极致恐惧中，嘴巴仍大张。结束落点为胡涂面部朝下趴在泥坑中，泥浆缓缓落下，周围水波扩散。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 2,
+      "reference_image_count": 2,
+      "warnings": []
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "原始丛林上空",
+      "current_prompts": {
+        "static": "原始丛林上空，真实项目灰度修复后的中景构图，画面清晰保留原始丛林林间空地、胡涂。其中场景保持原始丛林林间空地，原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。，原始热带雨林，遮天蔽日，古木参天，林间空地潮湿泥泞，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林上空的空间连续性和原始丛林林间空地、胡涂的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 390,
+        "motion": 102,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "4",
+        "scene_name": "原始丛林上空",
+        "duration": 5,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "120",
+        "character_asset_ids": [
+          "399"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "他摇摇晃晃站直，低头看自己满身泥浆，抬起手擦眼睛，露出白牙，自言自语结束后面露困惑",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 4,
+        "scene_name": "原始丛林林间空地",
+        "duration": 5,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "胡涂从泥坑中慢慢爬起，手臂撑在泥坑边缘，全身覆盖黑泥，动作缓慢",
+        "action_process": "他摇摇晃晃站直，低头看自己满身泥浆，抬起手擦眼睛，露出白牙，自言自语结束后面露困惑",
+        "end_state": "胡涂站立在泥坑边，浑身泥泞，但已恢复稳定，正低头打量自己",
+        "dialogue": "我没死？从一千米高空掉下来没死？我暑假作业还没写完呢！",
+        "lighting": "林间缝隙光从侧上方打下，胡涂全身糊满黑泥，只有眼睛和牙齿反光，T恤小熊图案隐约可见",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "120",
+          "asset_name": "原始丛林林间空地",
+          "reference_token": "@原始丛林上空"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "胡涂面部朝下趴在泥坑中，泥浆缓缓落下，周围水波扩散"
+        },
+        "visual_facts_count": 6,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '120', 'asset_name': '原始丛林林间空地', 'reference_token': '@原始丛林上空', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始丛林林间空地（@原始丛林上空），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括原始丛林林间空地（@原始丛林上空）保留原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱；原始热带雨林，遮天蔽…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…。起始状态为胡涂从泥坑中慢慢爬起，手臂撑在泥坑边缘，全身覆盖黑泥，动作缓慢。光线氛围为林间缝隙光从侧上方打下，胡涂全身糊满黑泥，只有眼睛和牙齿反光，T恤小熊图案隐约可见。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "5秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为他摇摇晃晃站直，低头看自己满身泥浆，抬起手擦眼睛，露出白牙，自言自语结束后面露困惑。开头承接上一镜结束状态为胡涂面部朝下趴在泥坑中，泥浆缓缓落下，周围水波扩散。结束落点为胡涂站立在泥坑边，浑身泥泞，但已恢复稳定，正低头打量自己。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 2,
+      "reference_image_count": 2,
+      "warnings": [
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "原始丛林上空",
+      "current_prompts": {
+        "static": "原始丛林上空，真实项目灰度修复后的中景构图，画面清晰保留原始丛林林间空地、胡涂。其中场景保持原始丛林林间空地，原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。，原始热带雨林，遮天蔽日，古木参天，林间空地潮湿泥泞，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林上空的空间连续性和原始丛林林间空地、胡涂的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 390,
+        "motion": 102,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "5",
+        "scene_name": "原始丛林上空",
+        "duration": 4,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "transition": "cut",
+        "scene_asset_id": "120",
+        "character_asset_ids": [
+          "399"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "他低头注视图案，手指捏住T恤边缘，表情从疑惑逐渐转为惊恐，同时自言自语",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 5,
+        "scene_name": "原始丛林林间空地",
+        "duration": 4,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "胡涂扯开T恤领口，露出胸前的小熊图案，图案上沾着黑泥",
+        "action_process": "他低头注视图案，手指捏住T恤边缘，表情从疑惑逐渐转为惊恐，同时自言自语",
+        "end_state": "手指停在小熊图案上，眼神突然瞪大，想到某种可能性",
+        "dialogue": "不对...我刚才明明在舅舅的考察车里...怎么突然...",
+        "lighting": "特写区域受侧光，小熊图案上的黑泥细节清晰，T恤面料纹理可见，光线从左上角照来",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "120",
+          "asset_name": "原始丛林林间空地",
+          "reference_token": "@原始丛林上空"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "胡涂站立在泥坑边，浑身泥泞，但已恢复稳定，正低头打量自己"
+        },
+        "visual_facts_count": 6,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '120', 'asset_name': '原始丛林林间空地', 'reference_token': '@原始丛林上空', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始丛林林间空地（@原始丛林上空），特写构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括原始丛林林间空地（@原始丛林上空）保留原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱；原始热带雨林，遮天蔽…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…。起始状态为胡涂扯开T恤领口，露出胸前的小熊图案，图案上沾着黑泥。光线氛围为特写区域受侧光，小熊图案上的黑泥细节清晰，T恤面料纹理可见，光线从左上角照来。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "4秒内，镜头缓慢向主体推进，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为他低头注视图案，手指捏住T恤边缘，表情从疑惑逐渐转为惊恐，同时自言自语。开头承接上一镜结束状态为胡涂站立在泥坑边，浑身泥泞，但已恢复稳定，正低头打量自己。结束落点为手指停在小熊图案上，眼神突然瞪大，想到某种可能性。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 2,
+      "reference_image_count": 2,
+      "warnings": [
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "原始丛林上空",
+      "current_prompts": {
+        "static": "原始丛林上空，真实项目灰度修复后的中景构图，画面清晰保留原始丛林林间空地、胡涂。其中场景保持原始丛林林间空地，原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。，原始热带雨林，遮天蔽日，古木参天，林间空地潮湿泥泞，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林上空的空间连续性和原始丛林林间空地、胡涂的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 390,
+        "motion": 102,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "6",
+        "scene_name": "原始丛林上空",
+        "duration": 5,
+        "camera_angle": "WS",
+        "camera_movement": "dolly",
+        "transition": "cut",
+        "scene_asset_id": "120",
+        "character_asset_ids": [
+          "399"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "镜头从胡涂的面部特写快速向后拉远，展示出他周围全是参天大树、枝叶交错，镜头持续拉远直到胡涂变成画面中的一个小点，鸟叫声变得古怪尖锐",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 6,
+        "scene_name": "原始丛林林间空地",
+        "duration": 5,
+        "camera_angle": "WS",
+        "camera_movement": "dolly",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "胡涂猛抬头，仰视前方，表情震惊",
+        "action_process": "镜头从胡涂的面部特写快速向后拉远，展示出他周围全是参天大树、枝叶交错，镜头持续拉远直到胡涂变成画面中的一个小点，鸟叫声变得古怪尖锐",
+        "end_state": "胡涂孤立地站在林间空地中心，周围环境完全露出，他瞪大了眼，嘴巴微张",
+        "dialogue": "这...这是哪？",
+        "lighting": "镜头从胡涂面部快速拉远，树冠缝隙漏下的光束形成耶稣光效果，整体色调浓绿偏暗",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "120",
+          "asset_name": "原始丛林林间空地",
+          "reference_token": "@原始丛林上空"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "手指停在小熊图案上，眼神突然瞪大，想到某种可能性"
+        },
+        "visual_facts_count": 6,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '120', 'asset_name': '原始丛林林间空地', 'reference_token': '@原始丛林上空', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": []
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始丛林林间空地（@原始丛林上空），远景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括原始丛林林间空地（@原始丛林上空）保留原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地，树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地，正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱；原始热带雨林，遮天蔽…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…。起始状态为胡涂猛抬头，仰视前方，表情震惊。光线氛围为镜头从胡涂面部快速拉远，树冠缝隙漏下的光束形成耶稣光效果，整体色调浓绿偏暗。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "5秒内，镜头缓慢滑轨移动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为镜头从胡涂的面部特写快速向后拉远，展示出他周围全是参天大树、枝叶交错，镜头持续拉远直到胡涂变成画面中的一个小点，鸟叫声变得古怪尖锐。开头承接上一镜结束状态为手指停在小熊图案上，眼神突然瞪大，想到某种可能性。结束落点为胡涂孤立地站在林间空地中心，周围环境完全露出，他瞪大了眼，嘴巴微张。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 2,
+      "reference_image_count": 2,
+      "warnings": []
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "原始丛林深处",
+      "current_prompts": {
+        "static": "原始丛林深处，真实项目灰度修复后的中景构图，画面清晰保留原始森林深处、胡涂、神农。其中场景保持原始森林深处，原始丛林深处。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。，原始热带雨林，古老巨木参天，藤蔓缠绕，光线斑驳，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林深处的空间连续性和原始森林深处、胡涂、神农的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 472,
+        "motion": 103,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "7",
+        "scene_name": "原始丛林深处",
+        "duration": 4,
+        "camera_angle": "MS",
+        "camera_movement": "dolly",
+        "transition": "cut",
+        "scene_asset_id": "121",
+        "character_asset_ids": [
+          "399",
+          "419"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "胡涂一边拨开高过人头的蕨类植物，一边低头看手机信号格，脚下一滑差点摔倒，鞋陷进泥里发出‘吧唧’声，他拔出脚继续走，喘气声加重",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 7,
+        "scene_name": "原始森林深处",
+        "duration": 4,
+        "camera_angle": "MS",
+        "camera_movement": "dolly",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "胡涂弯腰驼背在泥泞林间艰难行走，运动鞋沾满黑泥，T恤上泥点斑驳，脸上汗水和泥垢混合",
+        "action_process": "胡涂一边拨开高过人头的蕨类植物，一边低头看手机信号格，脚下一滑差点摔倒，鞋陷进泥里发出‘吧唧’声，他拔出脚继续走，喘气声加重",
+        "end_state": "胡涂停下脚步，喘着粗气，抬头看到前方地上有一根巨大的白骨，眼睛瞪大",
+        "dialogue": "手机没信号...指南针乱转...舅舅说过，神农架里...",
+        "lighting": "正午阳光透过浓密树冠，在林间形成斑驳光柱，地面潮湿黑暗，光斑随着人物移动忽明忽暗",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "121",
+          "asset_name": "原始森林深处",
+          "reference_token": "@原始丛林深处"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "胡涂孤立地站在林间空地中心，周围环境完全露出，他瞪大了眼，嘴巴微张"
+        },
+        "visual_facts_count": 8,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '121', 'asset_name': '原始森林深处', 'reference_token': '@原始丛林深处', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“神农”还没有参考图。",
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始森林深处（@原始丛林深处），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、神农，外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括原始森林深处（@原始丛林深处）保留原始丛林深处，原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路，地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始；原始热带雨林，古老巨木参天，藤蔓缠…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；神农保留青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；legacy-character-profile-fallback。起始状态为胡涂弯腰驼背在泥泞林间艰难行走，运动鞋沾满黑泥，T恤上泥点斑驳，脸上汗水和泥垢混合。光线氛围为正午阳光透过浓密树冠，在林间形成斑驳光柱，地面潮湿黑暗，光斑随着人物移动忽明忽暗。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "4秒内，镜头缓慢滑轨移动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为胡涂一边拨开高过人头的蕨类植物，一边低头看手机信号格，脚下一滑差点摔倒，鞋陷进泥里发出‘吧唧’声，他拔出脚继续走，喘气声加重。开头承接上一镜结束状态为胡涂孤立地站在林间空地中心，周围环境完全露出，他瞪大了眼，嘴巴微张。结束落点为胡涂停下脚步，喘着粗气，抬头看到前方地上有一根巨大的白骨，眼睛瞪大。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 3,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“神农”还没有参考图。",
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "原始丛林深处",
+      "current_prompts": {
+        "static": "原始丛林深处，真实项目灰度修复后的中景构图，画面清晰保留原始森林深处、胡涂。其中场景保持原始森林深处，原始丛林深处。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。，原始热带雨林，古老巨木参天，藤蔓缠绕，光线斑驳，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林深处的空间连续性和原始森林深处、胡涂的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 377,
+        "motion": 100,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "8",
+        "scene_name": "原始丛林深处",
+        "duration": 5,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "transition": "cut",
+        "scene_asset_id": "121",
+        "character_asset_ids": [
+          "399"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "胡涂将骨头举到眼前仔细观察，手指抚摸骨头断裂处，瞳孔渐渐放大，嘴里喃喃自语，随后慢慢站起身，视线追随骨头向上看",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 8,
+        "scene_name": "原始森林深处",
+        "duration": 5,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "胡涂半蹲在地上，双手颤抖着从泥里捡起一根粗大的骨头，骨头上沾着泥土和苔藓",
+        "action_process": "胡涂将骨头举到眼前仔细观察，手指抚摸骨头断裂处，瞳孔渐渐放大，嘴里喃喃自语，随后慢慢站起身，视线追随骨头向上看",
+        "end_state": "胡涂站直，骨头横握胸前，下巴微抬，目光从骨头缓缓移向前方，表情凝固，眼中惊恐",
+        "dialogue": "这是...熊骨头？还是野猪？不对，这尺寸...",
+        "lighting": "阳光从侧上方斜照，骨头表面灰白色反射微光，周围阴影深重，胡涂的脸一半在阴影中",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "121",
+          "asset_name": "原始森林深处",
+          "reference_token": "@原始丛林深处"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "胡涂停下脚步，喘着粗气，抬头看到前方地上有一根巨大的白骨，眼睛瞪大"
+        },
+        "visual_facts_count": 6,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '121', 'asset_name': '原始森林深处', 'reference_token': '@原始丛林深处', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始森林深处（@原始丛林深处），特写构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括原始森林深处（@原始丛林深处）保留原始丛林深处，原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路，地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始；原始热带雨林，古老巨木参天，藤蔓缠…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…。起始状态为胡涂半蹲在地上，双手颤抖着从泥里捡起一根粗大的骨头，骨头上沾着泥土和苔藓。光线氛围为阳光从侧上方斜照，骨头表面灰白色反射微光，周围阴影深重，胡涂的脸一半在阴影中。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "5秒内，镜头缓慢向主体推进，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为胡涂将骨头举到眼前仔细观察，手指抚摸骨头断裂处，瞳孔渐渐放大，嘴里喃喃自语，随后慢慢站起身，视线追随骨头向上看。开头承接上一镜结束状态为胡涂停下脚步，喘着粗气，抬头看到前方地上有一根巨大的白骨，眼睛瞪大。结束落点为胡涂站直，骨头横握胸前，下巴微抬，目光从骨头缓缓移向前方，表情凝固，眼中惊恐。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 2,
+      "reference_image_count": 2,
+      "warnings": [
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "原始丛林深处",
+      "current_prompts": {
+        "static": "原始丛林深处，真实项目灰度修复后的中景构图，画面清晰保留原始森林深处、胡涂、石矛。其中场景保持原始森林深处，原始丛林深处。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。，原始热带雨林，古老巨木参天，藤蔓缠绕，光线斑驳，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；道具保持石矛，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹。整体色调深灰、棕褐、暗红。，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹，整体色调深灰、棕褐、暗红。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林深处的空间连续性和原始森林深处、胡涂、石矛的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 650,
+        "motion": 103,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "9",
+        "scene_name": "原始丛林深处",
+        "duration": 4,
+        "camera_angle": "WS",
+        "camera_movement": "pan",
+        "transition": "cut",
+        "scene_asset_id": "121",
+        "character_asset_ids": [
+          "399"
+        ],
+        "prop_asset_ids": [
+          "229"
+        ],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "镜头从胡涂的肩后迅速切换到他的主观视角，摇过草叶，锁定前方树林中突然出现的壮汉——赤膊、兽皮坎肩、手握石矛，壮汉侧首冷冷问话",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 9,
+        "scene_name": "原始森林深处",
+        "duration": 4,
+        "camera_angle": "WS",
+        "camera_movement": "pan",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "胡涂缓缓抬头，视线从骨头移向前方，嘴巴微张",
+        "action_process": "镜头从胡涂的肩后迅速切换到他的主观视角，摇过草叶，锁定前方树林中突然出现的壮汉——赤膊、兽皮坎肩、手握石矛，壮汉侧首冷冷问话",
+        "end_state": "画面定格在壮汉正面全貌，他右脸刀疤清晰可见，石矛斜指地面，眼神锐利如鹰",
+        "dialogue": "你是谁？",
+        "lighting": "壮汉站立处树冠间隙较亮，背后形成逆光剪影，脸上刀疤在高光下显得狰狞，胡涂处于暗处",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "121",
+          "asset_name": "原始森林深处",
+          "reference_token": "@原始丛林深处"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [
+          {
+            "asset_id": "229",
+            "asset_name": "石矛",
+            "reference_token": ""
+          }
+        ],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "胡涂站直，骨头横握胸前，下巴微抬，目光从骨头缓缓移向前方，表情凝固，眼中惊恐"
+        },
+        "visual_facts_count": 8,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '121', 'asset_name': '原始森林深处', 'reference_token': '@原始丛林深处', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "道具资产“石矛”还没有参考图。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始森林深处（@原始丛林深处），远景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂），外观、脸部、发型和服装严格继承绑定参考资产。关键道具为石矛，位置与状态清晰可见。视觉事实包括原始森林深处（@原始丛林深处）保留原始丛林深处，原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路，地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始；原始热带雨林，古老巨木参天，藤蔓缠…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；石矛保留一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹（硬化处理），矛头基部沾有暗红色干涸血迹…。起始状态为胡涂缓缓抬头，视线从骨头移向前方，嘴巴微张。光线氛围为壮汉站立处树冠间隙较亮，背后形成逆光剪影，脸上刀疤在高光下显得狰狞，胡涂处于暗处。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "4秒内，镜头缓慢pan，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为镜头从胡涂的肩后迅速切换到他的主观视角，摇过草叶，锁定前方树林中突然出现的壮汉——赤膊、兽皮坎肩、手握石矛，壮汉侧首冷冷问话。开头承接上一镜结束状态为胡涂站直，骨头横握胸前，下巴微抬，目光从骨头缓缓移向前方，表情凝固，眼中惊恐。结束落点为画面定格在壮汉正面全貌，他右脸刀疤清晰可见，石矛斜指地面，眼神锐利如鹰。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 3,
+      "reference_image_count": 2,
+      "warnings": [
+        "道具资产“石矛”还没有参考图。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 10,
+      "scene_name": "原始丛林深处",
+      "current_prompts": {
+        "static": "原始丛林深处，真实项目灰度修复后的中景构图，画面清晰保留原始森林深处、胡涂、神农、石矛。其中场景保持原始森林深处，原始丛林深处。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。，原始热带雨林，古老巨木参天，藤蔓缠绕，光线斑驳，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；道具保持石矛，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹。整体色调深灰、棕褐、暗红。，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹，整体色调深灰、棕褐、暗红。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林深处的空间连续性和原始森林深处、胡涂、神农、石矛的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 745,
+        "motion": 106,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "10",
+        "scene_name": "原始丛林深处",
+        "duration": 5,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "121",
+        "character_asset_ids": [
+          "399",
+          "419"
+        ],
+        "prop_asset_ids": [
+          "229"
+        ],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "胡涂惊恐地环顾四周，声音发颤，野人们面无表情慢慢缩小包围圈，其中一个野人将石矛尖端对准胡涂的腹部，胡涂下意识护住胸口小熊图案",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 10,
+        "scene_name": "原始森林深处",
+        "duration": 5,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "胡涂后退一步，手举在胸前作投降状，牙齿打颤；壮汉身后陆续冒出四五个同样打扮的野人，举着石矛缓缓逼近",
+        "action_process": "胡涂惊恐地环顾四周，声音发颤，野人们面无表情慢慢缩小包围圈，其中一个野人将石矛尖端对准胡涂的腹部，胡涂下意识护住胸口小熊图案",
+        "end_state": "野人们站定，形成半圆形包围圈，壮汉站在最前方，胡涂被逼至一根倒木旁，背靠树干无路可退",
+        "dialogue": "各位叔叔...我迷路了...你们能告诉我...去神农顶怎么走吗？",
+        "lighting": "野人们从四面围拢，背光站立，面部暗沉，石矛尖端的血迹在侧光下呈现暗红色",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "121",
+          "asset_name": "原始森林深处",
+          "reference_token": "@原始丛林深处"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [
+          {
+            "asset_id": "229",
+            "asset_name": "石矛",
+            "reference_token": ""
+          }
+        ],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "画面定格在壮汉正面全貌，他右脸刀疤清晰可见，石矛斜指地面，眼神锐利如鹰"
+        },
+        "visual_facts_count": 10,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '121', 'asset_name': '原始森林深处', 'reference_token': '@原始丛林深处', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“神农”还没有参考图。",
+          "道具资产“石矛”还没有参考图。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始森林深处（@原始丛林深处），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、神农，外观、脸部、发型和服装严格继承绑定参考资产。关键道具为石矛，位置与状态清晰可见。视觉事实包括原始森林深处（@原始丛林深处）保留原始丛林深处，原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路，地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始；原始热带雨林，古老巨木参天，藤蔓缠…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；神农保留青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；legacy-character-profile-fallback。起始状态为胡涂后退一步，手举在胸前作投降状，牙齿打颤；壮汉身后陆续冒出四五个同样打扮的野人，举着石矛缓缓逼近。光线氛围为野人们从四面围拢，背光站立，面部暗沉，石矛尖端的血迹在侧光下呈现暗红色。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "5秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为胡涂惊恐地环顾四周，声音发颤，野人们面无表情慢慢缩小包围圈，其中一个野人将石矛尖端对准胡涂的腹部，胡涂下意识护住胸口小熊图案。开头承接上一镜结束状态为画面定格在壮汉正面全貌，他右脸刀疤清晰可见，石矛斜指地面，眼神锐利如鹰。结束落点为野人们站定，形成半圆形包围圈，壮汉站在最前方，胡涂被逼至一根倒木旁，背靠树干无路可退。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 4,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“神农”还没有参考图。",
+        "道具资产“石矛”还没有参考图。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 11,
+      "scene_name": "原始丛林深处",
+      "current_prompts": {
+        "static": "原始丛林深处，真实项目灰度修复后的中景构图，画面清晰保留原始森林深处、胡涂、神农。其中场景保持原始森林深处，原始丛林深处。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。，原始热带雨林，古老巨木参天，藤蔓缠绕，光线斑驳，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林深处的空间连续性和原始森林深处、胡涂、神农的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 472,
+        "motion": 103,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "11",
+        "scene_name": "原始丛林深处",
+        "duration": 4,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "transition": "cut",
+        "scene_asset_id": "121",
+        "character_asset_ids": [
+          "399",
+          "419"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "壮汉缓缓说出‘神·农·大·哥’几个字，声音低沉，每说一字逼近一步；胡涂瞳孔持续放大，身体紧贴树干；野人们发出低沉的吼声应和",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 11,
+        "scene_name": "原始森林深处",
+        "duration": 4,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "壮汉冷笑一声，露出满口黑牙，眼神轻蔑；胡涂汗如雨下，衣服湿透",
+        "action_process": "壮汉缓缓说出‘神·农·大·哥’几个字，声音低沉，每说一字逼近一步；胡涂瞳孔持续放大，身体紧贴树干；野人们发出低沉的吼声应和",
+        "end_state": "壮汉已站到胡涂面前不足半米处，居高临下俯视，胡涂蜷缩颤抖",
+        "dialogue": "神农顶？你说的是...神·农·大·哥？",
+        "lighting": "壮汉面部一半在阳光中一半在阴影，刀疤在高光下泛白，胡涂面部惊恐，汗水混着泥沟流下",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "121",
+          "asset_name": "原始森林深处",
+          "reference_token": "@原始丛林深处"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "野人们站定，形成半圆形包围圈，壮汉站在最前方，胡涂被逼至一根倒木旁，背靠树干无路可退"
+        },
+        "visual_facts_count": 8,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '121', 'asset_name': '原始森林深处', 'reference_token': '@原始丛林深处', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“神农”还没有参考图。",
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始森林深处（@原始丛林深处），特写构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、神农，外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括原始森林深处（@原始丛林深处）保留原始丛林深处，原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路，地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始；原始热带雨林，古老巨木参天，藤蔓缠…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；神农保留青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；legacy-character-profile-fallback。起始状态为壮汉冷笑一声，露出满口黑牙，眼神轻蔑；胡涂汗如雨下，衣服湿透。光线氛围为壮汉面部一半在阳光中一半在阴影，刀疤在高光下泛白，胡涂面部惊恐，汗水混着泥沟流下。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "4秒内，镜头缓慢向主体推进，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为壮汉缓缓说出‘神·农·大·哥’几个字，声音低沉，每说一字逼近一步；胡涂瞳孔持续放大，身体紧贴树干；野人们发出低沉的吼声应和。开头承接上一镜结束状态为野人们站定，形成半圆形包围圈，壮汉站在最前方，胡涂被逼至一根倒木旁，背靠树干无路可退。结束落点为壮汉已站到胡涂面前不足半米处，居高临下俯视，胡涂蜷缩颤抖。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 3,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“神农”还没有参考图。",
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 12,
+      "scene_name": "原始丛林深处",
+      "current_prompts": {
+        "static": "原始丛林深处，真实项目灰度修复后的中景构图，画面清晰保留原始森林深处、胡涂、石矛。其中场景保持原始森林深处，原始丛林深处。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。，原始热带雨林，古老巨木参天，藤蔓缠绕，光线斑驳，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；道具保持石矛，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹。整体色调深灰、棕褐、暗红。，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹，整体色调深灰、棕褐、暗红。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持原始丛林深处的空间连续性和原始森林深处、胡涂、石矛的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 650,
+        "motion": 103,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "12",
+        "scene_name": "原始丛林深处",
+        "duration": 5,
+        "camera_angle": "ECU",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "121",
+        "character_asset_ids": [
+          "399"
+        ],
+        "prop_asset_ids": [
+          "229"
+        ],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "壮汉手臂肌肉绷紧，石矛缓慢而有力地刺出；胡涂眼睛瞪到最大，嘴唇哆嗦，快速说着‘我...我才考上三年级...还没上补习班呢...’",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 12,
+        "scene_name": "原始森林深处",
+        "duration": 5,
+        "camera_angle": "ECU",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "壮汉猛地举起石矛，矛尖对准胡涂喉咙；胡涂下意识捂住胸口小熊图案T恤",
+        "action_process": "壮汉手臂肌肉绷紧，石矛缓慢而有力地刺出；胡涂眼睛瞪到最大，嘴唇哆嗦，快速说着‘我...我才考上三年级...还没上补习班呢...’",
+        "end_state": "石矛矛尖距胡涂喉咙仅数厘米，胡涂闭眼大喊‘妈妈’，画面定格",
+        "dialogue": "外来者，都要死。",
+        "lighting": "顶光照射石矛尖端，血迹呈暗红发亮，胡涂喉结处皮肤泛白，光影剧烈抖动",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "121",
+          "asset_name": "原始森林深处",
+          "reference_token": "@原始丛林深处"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [
+          {
+            "asset_id": "229",
+            "asset_name": "石矛",
+            "reference_token": ""
+          }
+        ],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "壮汉已站到胡涂面前不足半米处，居高临下俯视，胡涂蜷缩颤抖"
+        },
+        "visual_facts_count": 8,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '121', 'asset_name': '原始森林深处', 'reference_token': '@原始丛林深处', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "道具资产“石矛”还没有参考图。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "原始森林深处（@原始丛林深处），极特写构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂），外观、脸部、发型和服装严格继承绑定参考资产。关键道具为石矛，位置与状态清晰可见。视觉事实包括原始森林深处（@原始丛林深处）保留原始丛林深处，原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路，地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中，树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始；原始热带雨林，古老巨木参天，藤蔓缠…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；石矛保留一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹（硬化处理），矛头基部沾有暗红色干涸血迹…。起始状态为壮汉猛地举起石矛，矛尖对准胡涂喉咙；胡涂下意识捂住胸口小熊图案T恤。光线氛围为顶光照射石矛尖端，血迹呈暗红发亮，胡涂喉结处皮肤泛白，光影剧烈抖动。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "5秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为壮汉手臂肌肉绷紧，石矛缓慢而有力地刺出；胡涂眼睛瞪到最大，嘴唇哆嗦，快速说着‘我...我才考上三年级...还没上补习班呢...’。开头承接上一镜结束状态为壮汉已站到胡涂面前不足半米处，居高临下俯视，胡涂蜷缩颤抖。结束落点为石矛矛尖距胡涂喉咙仅数厘米，胡涂闭眼大喊‘妈妈’，画面定格。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 3,
+      "reference_image_count": 2,
+      "warnings": [
+        "道具资产“石矛”还没有参考图。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 13,
+      "scene_name": "部落营地",
+      "current_prompts": {
+        "static": "部落营地，真实项目灰度修复后的中景构图，画面清晰保留神农部落营地、胡涂、姬由、石矛。其中场景保持神农部落营地，原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。，原始村落，树房子与窝棚结合，新石器时代早期部落，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持姬由，凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；道具保持石矛，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹。整体色调深灰、棕褐、暗红。，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹，整体色调深灰、棕褐、暗红。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持部落营地的空间连续性和神农部落营地、胡涂、姬由、石矛的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 762,
+        "motion": 104,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "13",
+        "scene_name": "部落营地",
+        "duration": 3,
+        "camera_angle": "CU",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "109",
+        "character_asset_ids": [
+          "399",
+          "410"
+        ],
+        "prop_asset_ids": [
+          "229"
+        ],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "410",
+            "visual_alias": "姬由",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "胡涂眼皮颤动，慢慢睁开眼，看到矛尖时瞳孔骤缩，身体微微发抖",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 13,
+        "scene_name": "神农部落营地",
+        "duration": 3,
+        "camera_angle": "CU",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "石矛尖停在胡涂喉咙前最后一厘米，胡涂紧闭双眼，面部泥浆干裂，壮汉姬由持矛姿势紧绷",
+        "action_process": "胡涂眼皮颤动，慢慢睁开眼，看到矛尖时瞳孔骤缩，身体微微发抖",
+        "end_state": "胡涂睁大眼睛惊恐地看着矛尖，姬由保持持矛姿势，但因远处咳嗽声眉头微皱",
+        "dialogue": "（无对白）",
+        "lighting": "正午顶光透过树冠形成斑驳光影，石矛尖反射冷光",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "109",
+          "asset_name": "神农部落营地",
+          "reference_token": "@部落营地"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "410",
+            "asset_name": "姬由",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [
+          {
+            "asset_id": "229",
+            "asset_name": "石矛",
+            "reference_token": ""
+          }
+        ],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "石矛矛尖距胡涂喉咙仅数厘米，胡涂闭眼大喊‘妈妈’，画面定格"
+        },
+        "visual_facts_count": 10,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '109', 'asset_name': '神农部落营地', 'reference_token': '@部落营地', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“姬由”还没有参考图。",
+          "道具资产“石矛”还没有参考图。",
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "神农部落营地（@部落营地），特写构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、姬由，外观、脸部、发型和服装严格继承绑定参考资产。关键道具为石矛，位置与状态清晰可见。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂，地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围；原始村落，树房子与窝棚结合，新石器时代早期…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；姬由保留凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；legacy-characte…。起始状态为石矛尖停在胡涂喉咙前最后一厘米，胡涂紧闭双眼，面部泥浆干裂，壮汉姬由持矛姿势紧绷。光线氛围为正午顶光透过树冠形成斑驳光影，石矛尖反射冷光。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "3秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为胡涂眼皮颤动，慢慢睁开眼，看到矛尖时瞳孔骤缩，身体微微发抖。开头承接上一镜结束状态为石矛矛尖距胡涂喉咙仅数厘米，胡涂闭眼大喊‘妈妈’，画面定格。结束落点为胡涂睁大眼睛惊恐地看着矛尖，姬由保持持矛姿势，但因远处咳嗽声眉头微皱。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 4,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“姬由”还没有参考图。",
+        "道具资产“石矛”还没有参考图。",
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 14,
+      "scene_name": "部落营地",
+      "current_prompts": {
+        "static": "部落营地，真实项目灰度修复后的中景构图，画面清晰保留神农部落营地、胡涂、姬由、石矛。其中场景保持神农部落营地，原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。，原始村落，树房子与窝棚结合，新石器时代早期部落，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持姬由，凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；道具保持石矛，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹。整体色调深灰、棕褐、暗红。，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹，整体色调深灰、棕褐、暗红。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持部落营地的空间连续性和神农部落营地、胡涂、姬由、石矛的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 762,
+        "motion": 104,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "14",
+        "scene_name": "部落营地",
+        "duration": 4,
+        "camera_angle": "MS",
+        "camera_movement": "pan",
+        "transition": "cut",
+        "scene_asset_id": "109",
+        "character_asset_ids": [
+          "399",
+          "410"
+        ],
+        "prop_asset_ids": [
+          "229"
+        ],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "410",
+            "visual_alias": "姬由",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "镜头从姬由和胡涂的侧脸开始，缓慢摇向树林入口，一位穿兽皮马甲、头发花白的老者蹒跚走出，每步都停顿喘气",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 14,
+        "scene_name": "神农部落营地",
+        "duration": 4,
+        "camera_angle": "MS",
+        "camera_movement": "pan",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "包括胡涂和姬由在内的所有人物转头看向咳嗽声方向",
+        "action_process": "镜头从姬由和胡涂的侧脸开始，缓慢摇向树林入口，一位穿兽皮马甲、头发花白的老者蹒跚走出，每步都停顿喘气",
+        "end_state": "老者站在空地边缘，姬由仍举着石矛但犹豫，胡涂趁机侧头看向老者",
+        "dialogue": "姬由，住手。",
+        "lighting": "正午阳光斜照，林间散射光柔和，老者从阴影中走出",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "109",
+          "asset_name": "神农部落营地",
+          "reference_token": "@部落营地"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "410",
+            "asset_name": "姬由",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [
+          {
+            "asset_id": "229",
+            "asset_name": "石矛",
+            "reference_token": ""
+          }
+        ],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "胡涂睁大眼睛惊恐地看着矛尖，姬由保持持矛姿势，但因远处咳嗽声眉头微皱"
+        },
+        "visual_facts_count": 10,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '109', 'asset_name': '神农部落营地', 'reference_token': '@部落营地', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“姬由”还没有参考图。",
+          "道具资产“石矛”还没有参考图。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "神农部落营地（@部落营地），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、姬由，外观、脸部、发型和服装严格继承绑定参考资产。关键道具为石矛，位置与状态清晰可见。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂，地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围；原始村落，树房子与窝棚结合，新石器时代早期…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；姬由保留凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；legacy-characte…。起始状态为包括胡涂和姬由在内的所有人物转头看向咳嗽声方向。光线氛围为正午阳光斜照，林间散射光柔和，老者从阴影中走出。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "4秒内，镜头缓慢pan，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为镜头从姬由和胡涂的侧脸开始，缓慢摇向树林入口，一位穿兽皮马甲、头发花白的老者蹒跚走出，每步都停顿喘气。开头承接上一镜结束状态为胡涂睁大眼睛惊恐地看着矛尖，姬由保持持矛姿势，但因远处咳嗽声眉头微皱。结束落点为老者站在空地边缘，姬由仍举着石矛但犹豫，胡涂趁机侧头看向老者。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 4,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“姬由”还没有参考图。",
+        "道具资产“石矛”还没有参考图。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 15,
+      "scene_name": "部落营地",
+      "current_prompts": {
+        "static": "部落营地，真实项目灰度修复后的中景构图，画面清晰保留神农部落营地、胡涂、姬由、神农、石矛。其中场景保持神农部落营地，原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。，原始村落，树房子与窝棚结合，新石器时代早期部落，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持姬由，凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；道具保持石矛，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹。整体色调深灰、棕褐、暗红。，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹，整体色调深灰、棕褐、暗红。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持部落营地的空间连续性和神农部落营地、胡涂、姬由、神农、石矛的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 857,
+        "motion": 107,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "15",
+        "scene_name": "部落营地",
+        "duration": 3,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "109",
+        "character_asset_ids": [
+          "399",
+          "410",
+          "419"
+        ],
+        "prop_asset_ids": [
+          "229"
+        ],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "410",
+            "visual_alias": "姬由",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "姬由急切反驳，老者咳嗽两声后以沙哑但坚定的声音重复命令，姬由咬牙挣扎，最终慢慢垂下石矛",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 15,
+        "scene_name": "神农部落营地",
+        "duration": 3,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "老者已走到胡涂身边，姬由皱眉面向老者，石矛半放未放",
+        "action_process": "姬由急切反驳，老者咳嗽两声后以沙哑但坚定的声音重复命令，姬由咬牙挣扎，最终慢慢垂下石矛",
+        "end_state": "姬由放下石矛，但眼神充满敌意地瞪着胡涂，老者低头打量泥人般的胡涂",
+        "dialogue": "神农大哥，他是外来的！\n我说...住手。",
+        "lighting": "两人对话区域受正面光照，姬由表情暗部明显",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "109",
+          "asset_name": "神农部落营地",
+          "reference_token": "@部落营地"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "410",
+            "asset_name": "姬由",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [
+          {
+            "asset_id": "229",
+            "asset_name": "石矛",
+            "reference_token": ""
+          }
+        ],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "老者站在空地边缘，姬由仍举着石矛但犹豫，胡涂趁机侧头看向老者"
+        },
+        "visual_facts_count": 12,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '109', 'asset_name': '神农部落营地', 'reference_token': '@部落营地', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“姬由”还没有参考图。",
+          "角色资产“神农”还没有参考图。",
+          "道具资产“石矛”还没有参考图。",
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "神农部落营地（@部落营地），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、姬由、神农，外观、脸部、发型和服装严格继承绑定参考资产。关键道具为石矛，位置与状态清晰可见。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂，地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围；原始村落，树房子与窝棚结合，新石器时代早期…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；姬由保留凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；legacy-characte…。起始状态为老者已走到胡涂身边，姬由皱眉面向老者，石矛半放未放。光线氛围为两人对话区域受正面光照，姬由表情暗部明显。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "3秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为姬由急切反驳，老者咳嗽两声后以沙哑但坚定的声音重复命令，姬由咬牙挣扎，最终慢慢垂下石矛。开头承接上一镜结束状态为老者站在空地边缘，姬由仍举着石矛但犹豫，胡涂趁机侧头看向老者。结束落点为姬由放下石矛，但眼神充满敌意地瞪着胡涂，老者低头打量泥人般的胡涂。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 5,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“姬由”还没有参考图。",
+        "角色资产“神农”还没有参考图。",
+        "道具资产“石矛”还没有参考图。",
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 16,
+      "scene_name": "部落营地",
+      "current_prompts": {
+        "static": "部落营地，真实项目灰度修复后的中景构图，画面清晰保留神农部落营地、胡涂、神农、神农大帝。其中场景保持神农部落营地，原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。，原始村落，树房子与窝棚结合，新石器时代早期部落，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；人物保持神农大帝，中国上古部落首领，神农大帝，因尝百草中毒而早衰的中年形象，灰白色长发与长须，宽阔额头，国字脸，鼻梁高挺，双眼泛红充满疲惫，身材高大健壮，手掌粗大布满老茧，身穿兽皮马甲，原始部落装束，赤脚或草鞋，佩戴骨饰与草药袋，站在云雾缭绕的山林中，自然光线，气质质朴慈祥却带一丝病容，电影级肖像。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持部落营地的空间连续性和神农部落营地、胡涂、神农、神农大帝的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 624,
+        "motion": 106,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "16",
+        "scene_name": "部落营地",
+        "duration": 5,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "transition": "cut",
+        "scene_asset_id": "109",
+        "character_asset_ids": [
+          "399",
+          "419",
+          "412"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "412",
+            "visual_alias": "神农大帝",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "神农大帝眉头微皱，眼中闪过困惑，胡涂说完后老者反问“城市是什么”，胡涂愣住，嘴唇翕动说不出来",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 16,
+        "scene_name": "神农部落营地",
+        "duration": 5,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "神农大帝蹲下与胡涂平视，胡涂仰头颤抖回答",
+        "action_process": "神农大帝眉头微皱，眼中闪过困惑，胡涂说完后老者反问“城市是什么”，胡涂愣住，嘴唇翕动说不出来",
+        "end_state": "胡涂表情从恐惧转为茫然，小声嘟囔“完了...穿越了...”",
+        "dialogue": "孩子...你从哪来？\n我...我从城市来...H市...你知道吗？\n城市...是什么？",
+        "lighting": "神农大帝逆光，胡涂满脸泥浆反光",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "109",
+          "asset_name": "神农部落营地",
+          "reference_token": "@部落营地"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "412",
+            "asset_name": "神农大帝",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "姬由放下石矛，但眼神充满敌意地瞪着胡涂，老者低头打量泥人般的胡涂"
+        },
+        "visual_facts_count": 10,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '109', 'asset_name': '神农部落营地', 'reference_token': '@部落营地', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“神农”还没有参考图。",
+          "角色资产“神农大帝”还没有参考图。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "神农部落营地（@部落营地），特写构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、神农、神农大帝，外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂，地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围；原始村落，树房子与窝棚结合，新石器时代早期…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；神农保留青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；legacy-character-profile-fallback。起始状态为神农大帝蹲下与胡涂平视，胡涂仰头颤抖回答。光线氛围为神农大帝逆光，胡涂满脸泥浆反光。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "5秒内，镜头缓慢向主体推进，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为神农大帝眉头微皱，眼中闪过困惑，胡涂说完后老者反问“城市是什么”，胡涂愣住，嘴唇翕动说不出来。开头承接上一镜结束状态为姬由放下石矛，但眼神充满敌意地瞪着胡涂，老者低头打量泥人般的胡涂。结束落点为胡涂表情从恐惧转为茫然，小声嘟囔“完了...穿越了...”。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 4,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“神农”还没有参考图。",
+        "角色资产“神农大帝”还没有参考图。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 17,
+      "scene_name": "部落营地",
+      "current_prompts": {
+        "static": "部落营地，真实项目灰度修复后的中景构图，画面清晰保留神农部落营地、胡涂、姬瑶、神农、神农大帝。其中场景保持神农部落营地，原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。，原始村落，树房子与窝棚结合，新石器时代早期部落，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持姬瑶，八岁女孩，神农之女，古铜色至黝黑皮肤，结实肌肉感的孩童，圆脸亮眼，穿粗麻短衣和兽皮短裤，赤脚，头发用布条扎起，佩带草药和葫芦，害羞表情，原始部落氛围，土黄色调，森林背景，自然光，电影质感的照片级真实画面；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；人物保持神农大帝，中国上古部落首领，神农大帝，因尝百草中毒而早衰的中年形象，灰白色长发与长须，宽阔额头，国字脸，鼻梁高挺，双眼泛红充满疲惫，身材高大健壮，手掌粗大布满老茧，身穿兽皮马甲，原始部落装束，赤脚或草鞋，佩戴骨饰与草药袋，站在云雾缭绕的山林中，自然光线，气质质朴慈祥却带一丝病容，电影级肖像。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持部落营地的空间连续性和神农部落营地、胡涂、姬瑶、神农、神农大帝的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 736,
+        "motion": 109,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "17",
+        "scene_name": "部落营地",
+        "duration": 3,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "109",
+        "character_asset_ids": [
+          "399",
+          "413",
+          "419",
+          "412"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "413",
+            "visual_alias": "姬瑶",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "412",
+            "visual_alias": "神农大帝",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "姬瑶轻声发言，神农大帝转头看女儿并温和回应，同时伸手轻抚姬瑶头发",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 17,
+        "scene_name": "神农部落营地",
+        "duration": 3,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "一个八岁左右的小女孩（姬瑶）从神农身后探出头，赤脚，手捧葫芦，好奇打量胡涂",
+        "action_process": "姬瑶轻声发言，神农大帝转头看女儿并温和回应，同时伸手轻抚姬瑶头发",
+        "end_state": "姬瑶抿嘴笑，胡涂呆呆看着同龄女孩，眼中闪过一丝困惑",
+        "dialogue": "阿爸，他好小...\n是啊，和你一样大。",
+        "lighting": "侧面光，小女孩从老者身后探出头时脸部明亮",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "109",
+          "asset_name": "神农部落营地",
+          "reference_token": "@部落营地"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "413",
+            "asset_name": "姬瑶",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "412",
+            "asset_name": "神农大帝",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "胡涂表情从恐惧转为茫然，小声嘟囔“完了...穿越了...”"
+        },
+        "visual_facts_count": 12,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '109', 'asset_name': '神农部落营地', 'reference_token': '@部落营地', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“姬瑶”还没有参考图。",
+          "角色资产“神农”还没有参考图。",
+          "角色资产“神农大帝”还没有参考图。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "神农部落营地（@部落营地），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、姬瑶、神农、神农大帝，外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂，地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围；原始村落，树房子与窝棚结合，新石器时代早期…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；姬瑶保留八岁女孩，神农之女，古铜色至黝黑皮肤，结实肌肉感的孩童，圆脸亮眼，穿粗麻短衣和兽皮短裤，赤脚，头发用布条扎起，佩带草药和葫芦，害羞表情，原始部落氛围，土黄色调，森林背景，自然光，电影质感的照片级真实画面；legacy-character-p…。起始状态为一个八岁左右的小女孩（姬瑶）从神农身后探出头，赤脚，手捧葫芦，好奇打量胡涂。光线氛围为侧面光，小女孩从老者身后探出头时脸部明亮。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "3秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为姬瑶轻声发言，神农大帝转头看女儿并温和回应，同时伸手轻抚姬瑶头发。开头承接上一镜结束状态为胡涂表情从恐惧转为茫然，小声嘟囔“完了...穿越了...”。结束落点为姬瑶抿嘴笑，胡涂呆呆看着同龄女孩，眼中闪过一丝困惑。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 5,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“姬瑶”还没有参考图。",
+        "角色资产“神农”还没有参考图。",
+        "角色资产“神农大帝”还没有参考图。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 18,
+      "scene_name": "部落营地",
+      "current_prompts": {
+        "static": "部落营地，真实项目灰度修复后的中景构图，画面清晰保留神农部落营地、胡涂、姬由、神农。其中场景保持神农部落营地，原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。，原始村落，树房子与窝棚结合，新石器时代早期部落，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持姬由，凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持部落营地的空间连续性和神农部落营地、胡涂、姬由、神农的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 584,
+        "motion": 104,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "18",
+        "scene_name": "部落营地",
+        "duration": 4,
+        "camera_angle": "MS",
+        "camera_movement": "pan",
+        "transition": "cut",
+        "scene_asset_id": "109",
+        "character_asset_ids": [
+          "399",
+          "410",
+          "419"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "410",
+            "visual_alias": "姬由",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "姬由冲神农大喊，神农先低声后提高声调命令，姬由松开手但表情狰狞，转身离开时故意撞了胡涂一下",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 18,
+        "scene_name": "神农部落营地",
+        "duration": 4,
+        "camera_angle": "MS",
+        "camera_movement": "pan",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "姬由大步走到胡涂面前，一把抓住胡涂胳膊，胡涂吃痛皱眉",
+        "action_process": "姬由冲神农大喊，神农先低声后提高声调命令，姬由松开手但表情狰狞，转身离开时故意撞了胡涂一下",
+        "end_state": "姬由头也不回地走向营地深处，胡涂被撞得后退两步，其他野人面面相觑",
+        "dialogue": "神农大哥，这小子来路不明，说不定是山神派来的祸害！\n放开他。\n大哥！\n我说...放开他！",
+        "lighting": "姬由大步走来时面部阴影加重，神农抬高声音时面部受光变强",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "109",
+          "asset_name": "神农部落营地",
+          "reference_token": "@部落营地"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "410",
+            "asset_name": "姬由",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "姬瑶抿嘴笑，胡涂呆呆看着同龄女孩，眼中闪过一丝困惑"
+        },
+        "visual_facts_count": 10,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '109', 'asset_name': '神农部落营地', 'reference_token': '@部落营地', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“姬由”还没有参考图。",
+          "角色资产“神农”还没有参考图。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "神农部落营地（@部落营地），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、姬由、神农，外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂，地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围；原始村落，树房子与窝棚结合，新石器时代早期…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；姬由保留凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；legacy-characte…。起始状态为姬由大步走到胡涂面前，一把抓住胡涂胳膊，胡涂吃痛皱眉。光线氛围为姬由大步走来时面部阴影加重，神农抬高声音时面部受光变强。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "4秒内，镜头缓慢pan，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为姬由冲神农大喊，神农先低声后提高声调命令，姬由松开手但表情狰狞，转身离开时故意撞了胡涂一下。开头承接上一镜结束状态为姬瑶抿嘴笑，胡涂呆呆看着同龄女孩，眼中闪过一丝困惑。结束落点为姬由头也不回地走向营地深处，胡涂被撞得后退两步，其他野人面面相觑。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 4,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“姬由”还没有参考图。",
+        "角色资产“神农”还没有参考图。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 19,
+      "scene_name": "部落营地",
+      "current_prompts": {
+        "static": "部落营地，真实项目灰度修复后的中景构图，画面清晰保留神农部落营地、胡涂、神农、神农大帝。其中场景保持神农部落营地，原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。，原始村落，树房子与窝棚结合，新石器时代早期部落，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；人物保持神农大帝，中国上古部落首领，神农大帝，因尝百草中毒而早衰的中年形象，灰白色长发与长须，宽阔额头，国字脸，鼻梁高挺，双眼泛红充满疲惫，身材高大健壮，手掌粗大布满老茧，身穿兽皮马甲，原始部落装束，赤脚或草鞋，佩戴骨饰与草药袋，站在云雾缭绕的山林中，自然光线，气质质朴慈祥却带一丝病容，电影级肖像。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持部落营地的空间连续性和神农部落营地、胡涂、神农、神农大帝的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 624,
+        "motion": 106,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "19",
+        "scene_name": "部落营地",
+        "duration": 5,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "transition": "cut",
+        "scene_asset_id": "109",
+        "character_asset_ids": [
+          "399",
+          "419",
+          "412"
+        ],
+        "prop_asset_ids": [],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "412",
+            "visual_alias": "神农大帝",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "神农大帝皱眉闭眼细嗅，随后睁开眼凝视胡涂，表情变得震惊，他手指微微用力掐进胡涂皮肤",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 19,
+        "scene_name": "神农部落营地",
+        "duration": 5,
+        "camera_angle": "CU",
+        "camera_movement": "push-in",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "神农大帝重新蹲下，抓住胡涂手腕，胡涂低头闻自己衣服，一脸不解",
+        "action_process": "神农大帝皱眉闭眼细嗅，随后睁开眼凝视胡涂，表情变得震惊，他手指微微用力掐进胡涂皮肤",
+        "end_state": "神农大帝喃喃自语“你的血脉...不是凡人...”，胡涂茫然瞪大眼",
+        "dialogue": "孩子，你身上...有奇怪的味道。\n泥巴味？还是...\n不是...是一种...我从未闻过的味道。",
+        "lighting": "神农大帝的手抓住胡涂手腕，特写处血管纹理清晰，周围光线变暗聚焦二人",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "109",
+          "asset_name": "神农部落营地",
+          "reference_token": "@部落营地"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "412",
+            "asset_name": "神农大帝",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "姬由头也不回地走向营地深处，胡涂被撞得后退两步，其他野人面面相觑"
+        },
+        "visual_facts_count": 10,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '109', 'asset_name': '神农部落营地', 'reference_token': '@部落营地', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“神农”还没有参考图。",
+          "角色资产“神农大帝”还没有参考图。",
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "神农部落营地（@部落营地），特写构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、神农、神农大帝，外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂，地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围；原始村落，树房子与窝棚结合，新石器时代早期…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；神农保留青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；legacy-character-profile-fallback。起始状态为神农大帝重新蹲下，抓住胡涂手腕，胡涂低头闻自己衣服，一脸不解。光线氛围为神农大帝的手抓住胡涂手腕，特写处血管纹理清晰，周围光线变暗聚焦二人。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "5秒内，镜头缓慢向主体推进，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为神农大帝皱眉闭眼细嗅，随后睁开眼凝视胡涂，表情变得震惊，他手指微微用力掐进胡涂皮肤。开头承接上一镜结束状态为姬由头也不回地走向营地深处，胡涂被撞得后退两步，其他野人面面相觑。结束落点为神农大帝喃喃自语“你的血脉...不是凡人...”，胡涂茫然瞪大眼。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 4,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“神农”还没有参考图。",
+        "角色资产“神农大帝”还没有参考图。",
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    },
+    {
+      "book_id": 5,
+      "episode": 1,
+      "shot_id": 20,
+      "scene_name": "部落营地",
+      "current_prompts": {
+        "static": "部落营地，真实项目灰度修复后的中景构图，画面清晰保留神农部落营地、胡涂、姬瑶、姬由、神农、神农大帝。其中场景保持神农部落营地，原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。，原始村落，树房子与窝棚结合，新石器时代早期部落，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。；人物保持胡涂，一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；人物保持姬瑶，八岁女孩，神农之女，古铜色至黝黑皮肤，结实肌肉感的孩童，圆脸亮眼，穿粗麻短衣和兽皮短裤，赤脚，头发用布条扎起，佩带草药和葫芦，害羞表情，原始部落氛围，土黄色调，森林背景，自然光，电影质感的照片级真实画面；人物保持姬由，凶悍魁梧的部落头领，浓密棕色络腮胡，风吹日晒的粗糙面孔，散乱深色长发束在脑后，兽皮铠甲，皮带束身，骨牙项链，肌肉结实的手臂，攻击性站姿，崎岖山地背景，戏剧性光线，电影镜头感，中世纪战士气息，高度细节，写实风格；人物保持神农，青年男性探险队领袖，名为神农，户外装扮，穿着卡其色工装裤、战术背心，背着装满地图和指南针的背包，手持草药袋，站在森林边缘的荒野中，坚定表情，自然光，写实风格，电影感构图；人物保持神农大帝，中国上古部落首领，神农大帝，因尝百草中毒而早衰的中年形象，灰白色长发与长须，宽阔额头，国字脸，鼻梁高挺，双眼泛红充满疲惫，身材高大健壮，手掌粗大布满老茧，身穿兽皮马甲，原始部落装束，赤脚或草鞋，佩戴骨饰与草药袋，站在云雾缭绕的山林中，自然光线，气质质朴慈祥却带一丝病容，电影级肖像；道具保持石矛，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹。整体色调深灰、棕褐、暗红。，一支原始石矛，矛头为深灰色燧石打制而成，刃部锋利，表面有明显打击疤痕和纹路，矛头通过植物纤维绳索和天然树脂固定在木杆一端，木杆长约1.8米，直径约4厘米，表面去除了树皮但保留粗糙纹理，有焦黑灼烧痕迹硬化处理，矛头基部沾有暗红色干涸血迹，整体色调深灰、棕褐、暗红。空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明，画面具备清晰的视觉细节、材质、色调和稳定构图。",
+        "motion": "镜头从稳定中景缓慢推进，保持部落营地的空间连续性和神农部落营地、胡涂、姬瑶、姬由、神农、神农大帝的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。",
+        "final": "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装"
+      },
+      "current_prompt_lengths": {
+        "static": 1121,
+        "motion": 112,
+        "final": 34
+      },
+      "structured_shot": {
+        "shot_id": "20",
+        "scene_name": "部落营地",
+        "duration": 5,
+        "camera_angle": "WS",
+        "camera_movement": "static",
+        "transition": "cut",
+        "scene_asset_id": "109",
+        "character_asset_ids": [
+          "399",
+          "413",
+          "410",
+          "419",
+          "412"
+        ],
+        "prop_asset_ids": [
+          "229"
+        ],
+        "style_key": "default",
+        "character_blocking": [
+          {
+            "character_id": "399",
+            "visual_alias": "胡涂",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "413",
+            "visual_alias": "姬瑶",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "410",
+            "visual_alias": "姬由",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "419",
+            "visual_alias": "神农",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          },
+          {
+            "character_id": "412",
+            "visual_alias": "神农大帝",
+            "screen_position": "",
+            "pose": "",
+            "emotion": "",
+            "status": "derived",
+            "episode": 1
+          }
+        ],
+        "action_beats": [
+          {
+            "sequence": 1,
+            "subject_type": "scene",
+            "subject_id": "",
+            "time_slice": "",
+            "description": "神农大帝提高声音宣布，所有野人（包括姬瑶和周围持矛者）单膝跪地低头，胡涂站在原地不知所措，画面切到远处姬由背影——他猛地回头，眼神凶狠，手紧紧握拳",
+            "emotion": "",
+            "intensity": "medium"
+          }
+        ]
+      },
+      "shot_ir": {
+        "shot_id": 20,
+        "scene_name": "神农部落营地",
+        "duration": 5,
+        "camera_angle": "WS",
+        "camera_movement": "static",
+        "camera_speed": "slow",
+        "transition": "cut",
+        "shot_purpose": "emotion",
+        "emotion_arc": {
+          "start": "",
+          "end": "",
+          "intensity": "medium"
+        },
+        "start_state": "神农大帝缓缓站起，环顾四周，营地里所有野人等待指令",
+        "action_process": "神农大帝提高声音宣布，所有野人（包括姬瑶和周围持矛者）单膝跪地低头，胡涂站在原地不知所措，画面切到远处姬由背影——他猛地回头，眼神凶狠，手紧紧握拳",
+        "end_state": "姬由在营地边缘背影定住，手摸向腰间石矛，嘴角露出冷笑；胡涂站在跪拜的众人中央，脸上泥浆在阳光下闪光",
+        "dialogue": "你...是上天赐予我们的孩子。\n传令下去，从今天起，这个孩子，就是我神农的义子。",
+        "lighting": "全景光充足，营地中央火塘烟雾缭绕，阳光斜射形成丁达尔效应",
+        "style_key": "default",
+        "scene_binding": {
+          "asset_id": "109",
+          "asset_name": "神农部落营地",
+          "reference_token": "@部落营地"
+        },
+        "character_bindings": [
+          {
+            "asset_id": "399",
+            "asset_name": "胡涂",
+            "reference_token": "@胡涂",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "413",
+            "asset_name": "姬瑶",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "410",
+            "asset_name": "姬由",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "419",
+            "asset_name": "神农",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          },
+          {
+            "asset_id": "412",
+            "asset_name": "神农大帝",
+            "reference_token": "",
+            "variant_scope": "base_identity"
+          }
+        ],
+        "prop_bindings": [
+          {
+            "asset_id": "229",
+            "asset_name": "石矛",
+            "reference_token": ""
+          }
+        ],
+        "retention": {
+          "face": "fully_preserved",
+          "hair": "fully_preserved",
+          "costume": "fully_preserved",
+          "background": "mostly_preserved",
+          "composition": "free"
+        },
+        "continuity": {
+          "has_previous": true,
+          "previous_end_state": "神农大帝喃喃自语“你的血脉...不是凡人...”，胡涂茫然瞪大眼"
+        },
+        "visual_facts_count": 16,
+        "required_used_assets": [
+          "{'asset_type': 'scene', 'asset_id': '109', 'asset_name': '神农部落营地', 'reference_token': '@部落营地', 'reference_status': 'selected'}",
+          "{'asset_type': 'character', 'asset_id': '399', 'asset_name': '胡涂', 'reference_token': '@胡涂', 'reference_status': 'selected'}"
+        ],
+        "static_sections": [],
+        "motion_sections": [],
+        "warnings": [
+          "角色资产“姬瑶”还没有参考图。",
+          "角色资产“姬由”还没有参考图。",
+          "角色资产“神农”还没有参考图。",
+          "角色资产“神农大帝”还没有参考图。",
+          "道具资产“石矛”还没有参考图。",
+          "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+        ]
+      },
+      "model_adapter": {
+        "adapter": "StoryboardChineseAdapter",
+        "target_model": "jimeng",
+        "static_prompt": "神农部落营地（@部落营地），远景构图，第一帧只描述当前镜头开始瞬间。主体人物为胡涂（@胡涂）、姬瑶、姬由、神农、神农大帝，外观、脸部、发型和服装严格继承绑定参考资产。关键道具为石矛，位置与状态清晰可见。视觉事实包括神农部落营地（@部落营地）保留原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂，地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱，林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围；原始村落，树房子与窝棚结合，新石器时代早期…；胡涂（@胡涂）保留一个9岁男孩，皮肤白皙，圆脸，身体结实健康，穿着蓝色短袖T恤和短裤，运动鞋，头发有点凌乱的黑发，眼睛明亮，表情坚定，站在神农架一样的野生山区，阳光透过树叶，电影质感，写实风格，儿童冒险故事氛围；legacy-character-profil…；姬瑶保留八岁女孩，神农之女，古铜色至黝黑皮肤，结实肌肉感的孩童，圆脸亮眼，穿粗麻短衣和兽皮短裤，赤脚，头发用布条扎起，佩带草药和葫芦，害羞表情，原始部落氛围，土黄色调，森林背景，自然光，电影质感的照片级真实画面；legacy-character-p…。起始状态为神农大帝缓缓站起，环顾四周，营地里所有野人等待指令。光线氛围为全景光充足，营地中央火塘烟雾缭绕，阳光斜射形成丁达尔效应。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion_prompt": "5秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。动作推进为神农大帝提高声音宣布，所有野人（包括姬瑶和周围持矛者）单膝跪地低头，胡涂站在原地不知所措，画面切到远处姬由背影——他猛地回头，眼神凶狠，手紧紧握拳。开头承接上一镜结束状态为神农大帝喃喃自语“你的血脉...不是凡人...”，胡涂茫然瞪大眼。结束落点为姬由在营地边缘背影定住，手摸向腰间石矛，嘴角露出冷笑；胡涂站在跪拜的众人中央，脸上泥浆在阳光下闪光。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative_prompt": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "bound_asset_count": 7,
+      "reference_image_count": 2,
+      "warnings": [
+        "角色资产“姬瑶”还没有参考图。",
+        "角色资产“姬由”还没有参考图。",
+        "角色资产“神农”还没有参考图。",
+        "角色资产“神农大帝”还没有参考图。",
+        "道具资产“石矛”还没有参考图。",
+        "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。"
+      ]
+    }
+  ],
+  "summary": {
+    "current_static_min": 283,
+    "current_motion_min": 99,
+    "current_static_lt_80": 0,
+    "current_motion_lt_80": 0,
+    "adapter_static_min": 297,
+    "adapter_motion_min": 152,
+    "warning_total": 36,
+    "warning_texts": {
+      "胡涂 当前镜头存在明显状态变化，建议补一条分镜精调定妆。": 9,
+      "角色资产“神农”还没有参考图。": 9,
+      "道具资产“石矛”还没有参考图。": 7,
+      "角色资产“姬由”还没有参考图。": 5,
+      "角色资产“神农大帝”还没有参考图。": 4,
+      "角色资产“姬瑶”还没有参考图。": 2
+    },
+    "zero_reference_shots": [],
+    "replacement_char_total": 0
+  }
+}

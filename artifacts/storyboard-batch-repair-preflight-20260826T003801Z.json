@@ -1,0 +1,530 @@
+{
+  "generatedAt": "2026-08-26T00:38:01.176806",
+  "mode": "dry-run-preflight",
+  "tempBookId": 999906,
+  "confirmationToken": "60caf6ec2647fafb",
+  "status": {
+    "dry_run_only": true,
+    "real_project_mutated": false,
+    "ready_for_human_review": true,
+    "ready_for_apply_command": true,
+    "requires_baseline_version_before_apply": true,
+    "missing_rollback_anchor_count": 9,
+    "real_apply_blocker_count": 0
+  },
+  "summary": {
+    "samples": 9,
+    "before_errors": 9,
+    "before_warnings": 26,
+    "after_errors": 0,
+    "after_warnings": 9,
+    "error_reduction": 9,
+    "warning_reduction": 17
+  },
+  "results": [
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 17,
+      "scene_name": "宋氏大厦顶层办公室",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 80,
+          "motion": 55
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 508,
+          "motion": 168
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "94"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/17/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 22,
+      "scene_name": "宋氏大厦顶层办公室",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 84,
+          "motion": 84
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 507,
+          "motion": 178
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "94"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/22/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 23,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 98,
+          "motion": 56
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 552,
+          "motion": 172
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/23/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 24,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 90,
+          "motion": 54
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 538,
+          "motion": 181
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/24/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 25,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 80,
+          "motion": 61
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 511,
+          "motion": 176
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/25/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 27,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 86,
+          "motion": 69
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 501,
+          "motion": 193
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/27/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 28,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 83,
+          "motion": 70
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 496,
+          "motion": 187
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/28/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 29,
+      "scene_name": "高端私人会所走廊",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 104,
+          "motion": 52
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 509,
+          "motion": 151
+        },
+        "structured_scene_asset_id": "163"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "95"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/29/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "公立医院病房",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 116,
+          "motion": 93
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 542,
+          "motion": 216
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "92"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/9/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    }
+  ],
+  "nextStep": "Review this plan. Do not apply to real projects until an explicit apply command requires this confirmation token and creates rollback anchors for every selected shot."
+}

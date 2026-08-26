@@ -42,6 +42,7 @@
 编译策略：
 - 先读取 `asset_bindings.scene / characters / props`，判断本镜头真正绑定了哪些资产。
 - 再读取 `compile_prompt_contract.summary_lines`，把它们当作本次首轮编译的硬约束摘要。
+- 如果上下文中存在 `model_adapter`，其中的 `static_prompt / motion_prompt / negative_prompt` 是 Rule Compiler + Prompt IR + Model Adapter 生成的确定性基线；你可以做自然语言润色和模型偏好优化，但不得删除其中的资产锚点、动作阶段、一致性约束和负面约束。
 - 若存在 `visual_fact_targets`，逐项检查每个资产至少应吸收多少条 `required_facts`，不要只写资产名，要把这些视觉事实自然编译进静态提示词。
 - 若存在 `required_used_assets`，输出 `used_assets` 时必须完整覆盖它们；即使表达做了改写，也不能丢掉这些绑定资产。
 - 再优先读取每个资产下的 `canonical_prompt_profile`，将其当作静态提示词的视觉事实来源。

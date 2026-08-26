@@ -410,7 +410,14 @@ def _build_poyo_image_input(
     payload = dict(profile.get("default_params") or {})
     payload["prompt"] = prompt
     if aspect_ratio:
-        payload.setdefault("aspect_ratio", aspect_ratio)
+        normalized_model = str(profile.get("model_name") or "").strip().lower()
+        normalized_ratio = str(aspect_ratio or "").strip()
+        if normalized_model == "gpt-image-2":
+            payload.setdefault("size", normalized_ratio)
+            if normalized_ratio and normalized_ratio != "auto":
+                payload.setdefault("resolution", "2K")
+        else:
+            payload.setdefault("aspect_ratio", normalized_ratio)
     if negative_prompt:
         payload.setdefault("negative_prompt", negative_prompt)
     reference_urls = _extract_reference_urls(reference_images)

@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-08-24T21:05:34.245623",
+  "mode": "dry-run",
+  "planPath": "artifacts/book5-scene-reference-plan.json",
+  "summary": {
+    "requests": 1,
+    "submitted": 0,
+    "done": 0,
+    "failed": 0,
+    "error": false
+  },
+  "requests": [
+    {
+      "scene_name": "原始丛林上空",
+      "location_id": 120,
+      "shot_count": 6,
+      "api_request": {
+        "bookId": 5,
+        "episode": 1,
+        "shotId": "scene-120",
+        "sourceNodeId": "visual-location-120",
+        "sourceAssetId": "120",
+        "assetScope": "location",
+        "assetSubject": "原始丛林上空",
+        "targetKind": "reference-image",
+        "modelProfileId": "preset-poyo-image-gpt-image-2",
+        "prompt": "原始丛林上空 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。 光线氛围为正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+        "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+        "aspectRatio": "16:9",
+        "count": 1,
+        "referenceAssetIds": [],
+        "referenceImages": []
+      }
+    }
+  ],
+  "results": [],
+  "error": ""
+}

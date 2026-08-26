@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 
 from api.server import app
 from models import (
+    ProductionExportRecord,
     Session,
     StoryboardPromptVersion,
     StoryboardShot,
@@ -28,6 +29,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.episode = 1
         self.shot_id = 1
         with Session() as session:
+            session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
             session.query(StoryboardPromptVersion).filter(StoryboardPromptVersion.book_id == self.book_id).delete()
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
             session.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == self.book_id).delete()
@@ -166,6 +168,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
 
     def tearDown(self):
         with Session() as session:
+            session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
             session.query(StoryboardPromptVersion).filter(StoryboardPromptVersion.book_id == self.book_id).delete()
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
             session.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == self.book_id).delete()
@@ -208,6 +211,9 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertIn("ref-", payload["reference_asset_ids"][0])
         self.assertEqual(payload["prompt_compile_context"]["asset_bindings"]["scene"]["asset_name"], "暴雨中的出租屋")
         self.assertEqual(payload["prompt_compile_context"]["asset_bindings"]["characters"][0]["reference_token"], "@姐姐")
+        self.assertEqual(payload["prompt_compile_context"]["model_adapter"]["target_model"], "jimeng")
+        self.assertIn("StoryboardChineseAdapter", payload["prompt_compile_context"]["model_adapter"]["adapter"])
+        self.assertIn("@姐姐", payload["prompt_compile_context"]["model_adapter"]["static_prompt"])
 
         with Session() as session:
             shot = session.query(StoryboardShot).filter(
@@ -218,6 +224,213 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             self.assertEqual(shot.visual_prompt_static, payload["prompt_static"])
             self.assertEqual(shot.visual_prompt_motion, payload["prompt_motion"])
             self.assertEqual(shot.visual_prompt_final, payload["negative_prompt"])
+            shot_meta = json.loads(shot.meta_info)
+            self.assertIn("model_adapter", shot_meta["prompt_compiler"]["prompt_compile_context"])
+
+    def test_compile_sanitizes_llm_label_like_motion_before_diagnostics(self):
+        payload = self._valid_llm_payload()
+        payload["visual_prompt_motion"] = (
+            "镜头推进为：姐姐把湿透的雨衣搭在门边，阿宁抱紧旧水壶后退半步，"
+            "最后停在两人对视的瞬间，服装、场景和道具连续一致。"
+        )
+
+        with patch("core.llm.call_llm_json", return_value=payload):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
+                json={"compileReason": "manual"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["compiler_diagnostics"]["status"], "pass")
+        self.assertNotIn("镜头推进为", body["prompt_motion"])
+        self.assertIn("镜头继续推进到姐姐把湿透的雨衣搭在门边", body["prompt_motion"])
+
+    def test_compile_preserves_exact_scene_name_when_llm_uses_generic_location(self):
+        payload = self._valid_llm_payload()
+        payload["visual_prompt_static"] = (
+            "雨夜出租屋内景，中景构图，姐姐站在门口偏左，阿宁抱着旧水壶缩在屋内偏右，"
+            "冷色雨夜光线压低室内亮度，人物外观严格参考 @姐姐 与 @阿宁，场景保持 @出租屋 的狭窄压迫感。"
+        )
+
+        with patch("core.llm.call_llm_json", return_value=payload):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
+                json={"compileReason": "manual"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["compiler_diagnostics"]["status"], "pass")
+        self.assertTrue(body["prompt_static"].startswith("暴雨中的出租屋，雨夜出租屋内景"))
+
+    def test_machine_prompt_export_preview_is_readonly_and_model_exported(self):
+        with Session() as session:
+            before_count = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).count()
+
+        response = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-export?target_model=minimax-h3"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["mode"], "readonly_machine_prompt_export_preview")
+        self.assertFalse(payload["api_submission"])
+        self.assertTrue(payload["source_layers"]["director_shot_text_is_user_editable"])
+        self.assertTrue(payload["source_layers"]["machine_prompt_is_compiled"])
+        self.assertIn("导演", "导演分镜语言")
+        self.assertIn("起始", payload["director_shot_text"])
+        self.assertEqual(payload["machine_prompt"]["schema_version"], "machine_prompt_v1")
+        self.assertFalse(payload["machine_prompt"]["api_submission"])
+        h3_fields = payload["model_exports"]["minimax-h3"]["fields"]
+        self.assertIn("integrated_multimodal_description", h3_fields)
+        self.assertIn("overall_soundscape", h3_fields)
+        self.assertIn("non_diegetic_music", h3_fields)
+        self.assertIn("generic-zh-video", payload["model_exports"])
+
+        with Session() as session:
+            after_count = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).count()
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+
+        self.assertEqual(after_count, before_count)
+        self.assertFalse(shot.visual_prompt_static)
+        self.assertFalse(shot.visual_prompt_motion)
+
+    def test_machine_prompt_export_record_persists_snapshot_without_api_submission(self):
+        with Session() as session:
+            before_version_count = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).count()
+            before_record_count = session.query(ProductionExportRecord).filter(
+                ProductionExportRecord.book_id == self.book_id,
+            ).count()
+
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-export-records",
+            json={
+                "targetModel": "minimax-h3",
+                "exportChannel": "webui",
+                "operatorName": "formal-workspace",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["export_format"], "storyboard-machine-prompt-minimax-h3-webui")
+        self.assertEqual(payload["total_shots"], 1)
+        self.assertEqual(payload["deliverable_shots"], 1)
+        self.assertIn("API 未提交", payload["summary"])
+        meta = payload["meta_info"]
+        self.assertEqual(meta["record_type"], "storyboard_machine_prompt_export")
+        self.assertFalse(meta["api_submission"])
+        self.assertEqual(meta["target_model"], "minimax-h3")
+        self.assertEqual(meta["export_channel"], "webui")
+        self.assertIn("director_shot_text", meta)
+        self.assertEqual(meta["machine_prompt"]["schema_version"], "machine_prompt_v1")
+        self.assertFalse(meta["machine_prompt"]["api_submission"])
+        self.assertIn("integrated_multimodal_description", meta["model_exports"]["minimax-h3"]["fields"])
+
+        with Session() as session:
+            after_version_count = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).count()
+            after_record_count = session.query(ProductionExportRecord).filter(
+                ProductionExportRecord.book_id == self.book_id,
+            ).count()
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+
+        self.assertEqual(after_version_count, before_version_count)
+        self.assertEqual(after_record_count, before_record_count + 1)
+        self.assertFalse(shot.visual_prompt_static)
+        self.assertFalse(shot.visual_prompt_motion)
+
+    def test_director_shot_text_override_recompiles_export_without_prompt_version(self):
+        custom_director_text = "场景：暴雨中的出租屋\n镜头：用户改写后的导演分镜语言，姐姐先停顿，再看向阿宁手里的旧水壶。"
+        with Session() as session:
+            before_version_count = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).count()
+
+        response = self.client.patch(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/director-shot-text?target_model=minimax-h3",
+            json={
+                "directorShotText": custom_director_text,
+                "operatorName": "formal-workspace",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["director_shot_text"], custom_director_text)
+        self.assertEqual(payload["machine_prompt"]["director_shot_text"], custom_director_text)
+        self.assertTrue(payload["source_layers"]["has_user_director_shot_override"])
+        self.assertEqual(payload["source_layers"]["director_shot_text_source"], "user_override")
+        self.assertIn("system_director_shot_text", payload)
+
+        with Session() as session:
+            after_version_count = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).count()
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            shot_meta = json.loads(shot.meta_info)
+
+        self.assertEqual(after_version_count, before_version_count)
+        self.assertEqual(shot_meta["director_shot_language"]["text"], custom_director_text)
+        self.assertTrue(shot_meta["director_shot_language"]["does_not_overwrite_shot_schema"])
+        self.assertFalse(shot.visual_prompt_static)
+        self.assertFalse(shot.visual_prompt_motion)
+
+    def test_model_adapter_fills_missing_llm_prompt_fields(self):
+        llm_payload = {
+            "visual_prompt_static": "",
+            "visual_prompt_motion": "",
+            "negative_prompt": "",
+            "used_assets": self._valid_llm_payload()["used_assets"],
+            "warnings": [],
+        }
+        with patch("core.llm.call_llm_json", return_value=llm_payload):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
+                json={"compileReason": "manual"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertGreaterEqual(len(payload["prompt_static"]), 80)
+        self.assertGreaterEqual(len(payload["prompt_motion"]), 80)
+        self.assertIn("@姐姐", payload["prompt_static"])
+        self.assertIn("旧水壶", payload["prompt_motion"])
+        self.assertTrue(any("Model Adapter 已接管" in item for item in payload["compiler_warnings"]))
+        self.assertEqual(payload["compiler_diagnostics"]["status"], "warning")
+        self.assertEqual(payload["compiler_diagnostics"]["blocking_issues"], [])
 
     def test_compile_prompts_persists_rule_compiled_shot_ir_fields(self):
         def force_ir_fields(ir, _runtime):
@@ -476,6 +689,220 @@ class StoryboardPromptCompileTests(unittest.TestCase):
                 StoryboardPromptVersion.shot_id == self.shot_id,
             ).order_by(StoryboardPromptVersion.version.desc()).first()
             self.assertIn("rollback:v1:acceptance-recommended-rollback", latest.compile_reason)
+
+    def test_recompile_repairs_short_prompt_and_missing_scene_asset_with_full_rollback(self):
+        degraded_structured = {
+            "shot_id": str(self.shot_id),
+            "scene_name": "暴雨中的出租屋",
+            "duration": 4,
+            "camera_angle": "MS",
+            "camera_movement": "static",
+            "transition": "cut",
+            "scene_asset_id": "",
+            "character_asset_ids": [],
+            "prop_asset_ids": [],
+            "style_key": "default",
+            "character_blocking": [],
+            "action_beats": [],
+        }
+        degraded_meta = {
+            "structured_shot": degraded_structured,
+            "prompt_compile_context": {},
+            "used_assets": [],
+            "reference_images": [],
+            "reference_asset_ids": [],
+            "compiler_warnings": ["legacy prompt is too short"],
+            "compiler_diagnostics": {
+                "status": "warning",
+                "checks": [
+                    {"key": "static_prompt_quality", "passed": False},
+                    {"key": "motion_prompt_quality", "passed": False},
+                ],
+            },
+        }
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            shot.visual_prompt_static = "出租屋里，姐姐和阿宁对视。"
+            shot.visual_prompt_motion = "镜头推进。"
+            shot.visual_prompt_final = "低质量"
+            shot.camera_movement = "static"
+            shot.meta_info = json.dumps(
+                {
+                    "structured_shot": degraded_structured,
+                    "prompt_compiler": {
+                        "latest_version": 1,
+                        "compile_reason": "legacy-short-prompt",
+                        "negative_prompt": "低质量",
+                        "prompt_compile_context": {},
+                        "used_assets": [],
+                        "reference_images": [],
+                        "reference_asset_ids": [],
+                        "compiler_warnings": degraded_meta["compiler_warnings"],
+                        "compiler_diagnostics": degraded_meta["compiler_diagnostics"],
+                    },
+                },
+                ensure_ascii=False,
+            )
+            baseline = StoryboardPromptVersion(
+                book_id=self.book_id,
+                episode=self.episode,
+                shot_id=self.shot_id,
+                version=1,
+                compile_reason="legacy-short-prompt",
+                prompt_static=shot.visual_prompt_static,
+                prompt_motion=shot.visual_prompt_motion,
+                negative_prompt=shot.visual_prompt_final,
+                meta_info=json.dumps(degraded_meta, ensure_ascii=False),
+            )
+            session.add(baseline)
+            session.commit()
+            baseline_id = baseline.id
+
+        repaired_payload = self._valid_llm_payload()
+        with patch("core.llm.call_llm_json", return_value=repaired_payload):
+            compile_response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
+                json={"compileReason": "quality-repair", "force": True},
+            )
+
+        self.assertEqual(compile_response.status_code, 200)
+        compiled = compile_response.json()
+        self.assertEqual(compiled["version"], 2)
+        self.assertEqual(compiled["compiler_diagnostics"]["status"], "pass")
+        self.assertEqual(compiled["prompt_compile_context"]["asset_bindings"]["scene"]["asset_id"], self.scene_id)
+        self.assertEqual(len(compiled["used_assets"]), 4)
+        self.assertGreaterEqual(len(compiled["prompt_static"]), 80)
+        self.assertGreaterEqual(len(compiled["prompt_motion"]), 50)
+
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            shot_meta = json.loads(shot.meta_info)
+            self.assertEqual(shot_meta["structured_shot"]["scene_asset_id"], self.scene_id)
+            self.assertEqual(shot_meta["structured_shot"]["character_asset_ids"], [self.jiejie_id, self.aning_id])
+            self.assertEqual(shot_meta["structured_shot"]["prop_asset_ids"], [self.prop_id])
+
+        rollback_response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-versions/{baseline_id}/rollback",
+            json={"reason": "quality-repair-rollback"},
+        )
+        self.assertEqual(rollback_response.status_code, 200)
+        self.assertEqual(rollback_response.json()["restored_from_version"], 1)
+
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            shot_meta = json.loads(shot.meta_info)
+            self.assertEqual(shot.visual_prompt_static, "出租屋里，姐姐和阿宁对视。")
+            self.assertEqual(shot.visual_prompt_motion, "镜头推进。")
+            self.assertEqual(shot_meta["structured_shot"]["scene_asset_id"], "")
+            self.assertEqual(shot_meta["structured_shot"]["character_asset_ids"], [])
+            latest = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).order_by(StoryboardPromptVersion.version.desc()).first()
+            self.assertIn("rollback:v1:quality-repair-rollback", latest.compile_reason)
+
+    def test_rollback_restores_explicit_empty_structured_snapshot(self):
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            baseline = StoryboardPromptVersion(
+                book_id=self.book_id,
+                episode=self.episode,
+                shot_id=self.shot_id,
+                version=1,
+                compile_reason="batch-quality-repair-current-baseline",
+                prompt_static="原始静态提示词",
+                prompt_motion="原始动态提示词",
+                negative_prompt="原始负面提示词",
+                meta_info=json.dumps(
+                    {
+                        "structured_shot": {},
+                        "prompt_compile_context": {},
+                        "used_assets": [],
+                        "reference_images": [],
+                        "reference_asset_ids": [],
+                        "compiler_warnings": ["baseline created before confirmed batch prompt repair"],
+                        "compiler_diagnostics": {},
+                    },
+                    ensure_ascii=False,
+                ),
+            )
+            session.add(baseline)
+            session.flush()
+            shot.visual_prompt_static = "修复后的静态提示词"
+            shot.visual_prompt_motion = "修复后的动态提示词"
+            shot.visual_prompt_final = "修复后的负面提示词"
+            shot.meta_info = json.dumps(
+                {
+                    "structured_shot": {
+                        "scene_asset_id": self.scene_id,
+                        "character_asset_ids": [self.jiejie_id, self.aning_id],
+                        "prop_asset_ids": [self.prop_id],
+                    },
+                    "prompt_compiler": {
+                        "latest_version": 2,
+                        "compile_reason": "batch-quality-repair-confirmed",
+                    },
+                },
+                ensure_ascii=False,
+            )
+            session.add(
+                StoryboardPromptVersion(
+                    book_id=self.book_id,
+                    episode=self.episode,
+                    shot_id=self.shot_id,
+                    version=2,
+                    compile_reason="batch-quality-repair-confirmed",
+                    prompt_static=shot.visual_prompt_static,
+                    prompt_motion=shot.visual_prompt_motion,
+                    negative_prompt=shot.visual_prompt_final,
+                    meta_info=shot.meta_info,
+                )
+            )
+            session.commit()
+            baseline_id = baseline.id
+
+        rollback_response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-versions/{baseline_id}/rollback",
+            json={"reason": "restore-empty-structured"},
+        )
+        self.assertEqual(rollback_response.status_code, 200)
+        self.assertEqual(rollback_response.json()["restored_from_version"], 1)
+
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            shot_meta = json.loads(shot.meta_info)
+            self.assertEqual(shot.visual_prompt_static, "原始静态提示词")
+            self.assertEqual(shot.visual_prompt_motion, "原始动态提示词")
+            self.assertEqual(shot_meta["structured_shot"], {})
+            latest = session.query(StoryboardPromptVersion).filter(
+                StoryboardPromptVersion.book_id == self.book_id,
+                StoryboardPromptVersion.episode == self.episode,
+                StoryboardPromptVersion.shot_id == self.shot_id,
+            ).order_by(StoryboardPromptVersion.version.desc()).first()
+            latest_meta = json.loads(latest.meta_info)
+            self.assertEqual(latest_meta["structured_shot"], {})
+            self.assertIn("rollback:v1:restore-empty-structured", latest.compile_reason)
 
     def test_outputs_include_prompt_version_audit_and_recommended_restore(self):
         with patch("core.llm.call_llm_json", return_value=self._valid_llm_payload()):

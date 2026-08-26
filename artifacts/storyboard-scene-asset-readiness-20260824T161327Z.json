@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-08-24T16:13:27.117173",
+  "mode": "read-only-scene-asset-readiness",
+  "confirmationToken": "c3aec405a61c5b4c",
+  "summary": {
+    "books": 1,
+    "blocked_books": 0,
+    "storyboard_shots": 14,
+    "visual_locations": 2,
+    "visual_reference_assets": 7,
+    "unique_scene_names": 2,
+    "missing_scene_names": 0,
+    "affected_shots": 0,
+    "production_blocking_scene_names": 0,
+    "production_affected_shots": 0,
+    "ready_for_binding_repair_apply": true,
+    "ready_for_prompt_batch_apply": true
+  },
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "storyboard_shots": 14,
+      "visual_locations": 2,
+      "visual_reference_assets": 7,
+      "unique_scene_names": 2,
+      "ready_scene_names": 2,
+      "missing_scene_names": 0,
+      "affected_shots": 0,
+      "production_blocking_scene_names": 0,
+      "production_affected_shots": 0,
+      "status": "ready",
+      "production_status": "ready",
+      "scenes": [
+        {
+          "scene_name": "监控室",
+          "shot_count": 8,
+          "shots": [
+            "1-7",
+            "1-8",
+            "1-9",
+            "1-10",
+            "1-11",
+            "1-12",
+            "1-13",
+            "1-14"
+          ],
+          "matched_location_id": "158",
+          "matched_location_name": "监控室",
+          "status": "ready",
+          "matched_asset_status": "ref_ready",
+          "reference_total": 2,
+          "reference_image_count": 1,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [
+            {
+              "reference_id": 67,
+              "source": "https://cdn.doculator.org/images/YDLST6V4WE1X2UTI/YDLST6V4WE1X2UTI.png",
+              "width": 2560,
+              "height": 1440,
+              "aspect_ratio": 1.7778,
+              "landscape_ok": true,
+              "error": ""
+            }
+          ],
+          "landscape_reference_count": 1,
+          "locked_reference_count": 0,
+          "selected_reference_count": 1,
+          "candidate_reference_count": 1,
+          "production_status": "ready",
+          "production_issues": []
+        },
+        {
+          "scene_name": "便利店收银台",
+          "shot_count": 6,
+          "shots": [
+            "1-1",
+            "1-2",
+            "1-3",
+            "1-4",
+            "1-5",
+            "1-6"
+          ],
+          "matched_location_id": "159",
+          "matched_location_name": "便利店收银台",
+          "status": "ready",
+          "matched_asset_status": "ref_ready",
+          "reference_total": 2,
+          "reference_image_count": 1,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [
+            {
+              "reference_id": 66,
+              "source": "https://cdn.doculator.org/images/B9PAAXRP6DFVK6PI/B9PAAXRP6DFVK6PI.png",
+              "width": 2560,
+              "height": 1440,
+              "aspect_ratio": 1.7778,
+              "landscape_ok": true,
+              "error": ""
+            }
+          ],
+          "landscape_reference_count": 1,
+          "locked_reference_count": 0,
+          "selected_reference_count": 1,
+          "candidate_reference_count": 1,
+          "production_status": "ready",
+          "production_issues": []
+        }
+      ]
+    }
+  ]
+}

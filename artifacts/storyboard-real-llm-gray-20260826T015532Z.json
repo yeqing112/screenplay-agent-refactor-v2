@@ -1,0 +1,125 @@
+{
+  "generatedAt": "2026-08-26T01:55:32.781984",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "real-llm",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 2,
+    "passed": 2,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 2
+  },
+  "results": [
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "地下赌场VIP包厢",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 980,
+          "motion": 189
+        },
+        "structured_scene_asset_id": "93"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 173,
+          "motion": 142
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "repair_attempted": false,
+      "prompt_lengths": {
+        "static": 173,
+        "motion": 142
+      },
+      "compiled_prompt_preview": {
+        "static": "地下赌场VIP包厢内，幽暗封闭的空间，中央一张椭圆形赌桌铺着绿色绒布，四周散落深色皮质高背沙发，背景是深色木质护墙板与闪烁的霓虹灯带，墙面有金属装饰条，一侧有酒柜吧台。地面铺暗红色地毯，顶部射灯与霓虹灯光交错，昏暗红晕笼罩全场，烟雾弥漫形成丁达尔效应。远景构图，王强坐在赌桌后叼着雪茄，面前散落扑克和钞票；颜大海站在桌前，弯腰颤抖，双手抱拳作揖。",
+        "motion": "镜头从远景缓慢向赌桌区域推进，景别从远景过渡至中景。王强冷笑，将一叠欠条用力拍在桌上，随后站起；颜大海受惊后退半步，伸手欲拿桌上香烟，被王强一巴掌拍开。王强吐出烟圈，眼神玩味地锁定颜大海；颜大海身体僵住，倒退一步后低头不敢直视。全过程人物身份、服装、场景布局与道具状态与首帧保持一致。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移，烟雾消失，霓虹灯光熄灭，背景结构改变"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "161",
+        "character_asset_ids": [],
+        "prop_asset_ids": [],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "push-in",
+        "duration": 5
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "水房·清晨",
+      "source_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 298,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "133"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 347,
+          "motion": 131
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "pass",
+      "repair_attempted": true,
+      "prompt_lengths": {
+        "static": 347,
+        "motion": 131
+      },
+      "compiled_prompt_preview": {
+        "static": "古代寺庙后院水房清晨，青石板铺地中央一口老井，井口由青石砌成边缘光滑，四周灰白墙壁与深褐色木梁柱，屋檐低垂光线昏暗，墙边木架，地面湿漉漉映着天光，冷灰色调。画面中央，一桶冷水从画外劈头盖脸泼向站立的青年和尚@和尚甲，他光头，灰色僧袍斜披袈裟露出右肩，中等体型，气质慵懒隐忍，脸上满是飞溅的水珠与尘土，表情震惊。画面左侧，青年和尚@和尚丙手持刚泼完水的空木桶站立，剃光头，灰色旧僧袍松垮未系，气质懒散轻慢，一脸得意。画面右侧门框边，青年和尚@和尚乙倚靠，光头，灰色粗布僧袍宽松，神情阴险伪善，双手抱胸嘴角微扬。所持木桶@acceptance-bucket-browser-20260721为圆柱形，灰褐色木质纹理，外壁有多道竹箍，桶口有对称桶耳，表面有使用磨损痕迹。整体氛围清冷压抑，冲突感强烈。",
+        "motion": "镜头从远景开始缓慢向画面中央的泼水瞬间推进。冷水泼洒动作完成，水花溅落。镜头继续推进，落点转为三人对峙的定格画面：和尚丙拎着空木桶得意地站在被泼湿的和尚甲面前，和尚乙倚在门框上阴险微笑。全过程人物服装、发型、面部细节、场景湿渍与光影均与首帧保持完全一致，无突变。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移，现代元素，文字，角色台词标签，舞台提示，剪辑口令"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "160",
+        "character_asset_ids": [
+          "585",
+          "584",
+          "583"
+        ],
+        "prop_asset_ids": [
+          "302"
+        ],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "push-in",
+        "duration": 3
+      }
+    }
+  ]
+}

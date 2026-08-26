@@ -1,0 +1,1141 @@
+{
+  "generatedAt": "2026-08-26T00:37:14.450956",
+  "mode": "dry-run-preflight",
+  "tempBookId": 999906,
+  "confirmationToken": "d6d55d8dbc3d2f3d",
+  "status": {
+    "dry_run_only": true,
+    "real_project_mutated": false,
+    "ready_for_human_review": false,
+    "ready_for_apply_command": false,
+    "requires_baseline_version_before_apply": true,
+    "missing_rollback_anchor_count": 9,
+    "real_apply_blocker_count": 0
+  },
+  "summary": {
+    "samples": 20,
+    "before_errors": 18,
+    "before_warnings": 56,
+    "after_errors": 3,
+    "after_warnings": 19,
+    "error_reduction": 15,
+    "warning_reduction": 37
+  },
+  "results": [
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 16,
+      "scene_name": "寺庙大殿·清晨",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 276,
+          "motion": 146
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 654,
+          "motion": 142
+        },
+        "structured_scene_asset_id": "165"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 106,
+        "version": 3,
+        "compile_reason": "manual-inprocess-post-fix-validation"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "138"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/16/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 17,
+      "scene_name": "寺庙大殿·清晨",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 343,
+          "motion": 152
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 656,
+          "motion": 163
+        },
+        "structured_scene_asset_id": "165"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 101,
+        "version": 2,
+        "compile_reason": "manual-sequential-acceptance"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "138"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/17/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 18,
+      "scene_name": "寺庙大殿·清晨",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 332,
+          "motion": 84
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 671,
+          "motion": 144
+        },
+        "structured_scene_asset_id": "165"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 107,
+        "version": 3,
+        "compile_reason": "manual-inprocess-post-fix-validation"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "138"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/18/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 19,
+      "scene_name": "寺庙钟楼·黄昏",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 199,
+          "motion": 135
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 578,
+          "motion": 127
+        },
+        "structured_scene_asset_id": "166"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 92,
+        "version": 1,
+        "compile_reason": "manual"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "139"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/19/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 20,
+      "scene_name": "寺庙钟楼·黄昏",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 206,
+          "motion": 125
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 580,
+          "motion": 123
+        },
+        "structured_scene_asset_id": "166"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 91,
+        "version": 1,
+        "compile_reason": "manual"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "139"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/20/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 21,
+      "scene_name": "寺庙钟楼·黄昏",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 108,
+          "motion": 96
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 375,
+          "motion": 127
+        },
+        "structured_scene_asset_id": "166"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 103,
+        "version": 1,
+        "compile_reason": "manual-sequential-acceptance"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "139"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/21/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 22,
+      "scene_name": "寺庙井边·夜晚",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 208,
+          "motion": 96
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 495,
+          "motion": 122
+        },
+        "structured_scene_asset_id": "176"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 94,
+        "version": 1,
+        "compile_reason": "manual"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "140"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/22/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 23,
+      "scene_name": "寺庙井边·夜晚",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 202,
+          "motion": 174
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 531,
+          "motion": 154
+        },
+        "structured_scene_asset_id": "176"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 96,
+        "version": 1,
+        "compile_reason": "manual"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "140"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/23/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 24,
+      "scene_name": "寺庙井边·夜晚",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 152,
+          "motion": 84
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 504,
+          "motion": 141
+        },
+        "structured_scene_asset_id": "176"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 95,
+        "version": 1,
+        "compile_reason": "manual"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "140"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/24/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 15,
+      "scene_name": "寺庙后山·凌晨",
+      "source_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 393,
+          "motion": 175
+        },
+        "structured_scene_asset_id": "137"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 393,
+          "motion": 140
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 436,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "137"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/15/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 17,
+      "scene_name": "宋氏大厦顶层办公室",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 80,
+          "motion": 55
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 508,
+          "motion": 168
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "94"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/17/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 22,
+      "scene_name": "宋氏大厦顶层办公室",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 84,
+          "motion": 84
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 507,
+          "motion": 178
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "94"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/22/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 23,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 98,
+          "motion": 56
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 552,
+          "motion": 172
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/23/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 24,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 90,
+          "motion": 54
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 538,
+          "motion": 181
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/24/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 25,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 80,
+          "motion": 61
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 511,
+          "motion": 176
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/25/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 27,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 86,
+          "motion": 69
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 501,
+          "motion": 193
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/27/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 28,
+      "scene_name": "现代简约别墅客厅",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 83,
+          "motion": 70
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 496,
+          "motion": 187
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "96"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/28/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 29,
+      "scene_name": "高端私人会所走廊",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 104,
+          "motion": 52
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 509,
+          "motion": 151
+        },
+        "structured_scene_asset_id": "163"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "95"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/29/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "公立医院病房",
+      "source_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 116,
+          "motion": 93
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 542,
+          "motion": 216
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "92"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/9/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "水房·清晨",
+      "source_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 298,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "133"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 696,
+          "motion": 160
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "ready",
+        "message": "可作为真实落库后的推荐回滚锚点。",
+        "version_id": 109,
+        "version": 21,
+        "compile_reason": "rollback:v19:batch-quality-repair-rollback"
+      },
+      "real_apply_readiness": {
+        "ready": true,
+        "blockers": [],
+        "warnings": [],
+        "predicted_scene_asset_id": "133"
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/1/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true
+        }
+      }
+    }
+  ],
+  "nextStep": "Review this plan. Do not apply to real projects until an explicit apply command requires this confirmation token and creates rollback anchors for every selected shot."
+}

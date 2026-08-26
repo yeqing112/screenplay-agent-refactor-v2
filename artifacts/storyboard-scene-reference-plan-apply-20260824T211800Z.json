@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-08-24T21:18:00.940251",
+  "mode": "real-apply",
+  "planPath": "artifacts/book5-scene-reference-plan.json",
+  "summary": {
+    "updates": 1,
+    "updated": 1,
+    "blocked": 0
+  },
+  "results": [
+    {
+      "scene_name": "原始丛林深处",
+      "location_id": 121,
+      "formal_description": "原始丛林深处。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。",
+      "lighting_mood": "树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。",
+      "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+      "jimeng_ref_name": "@原始丛林深处",
+      "shot_ids": [
+        "1-7",
+        "1-8",
+        "1-9",
+        "1-10",
+        "1-11",
+        "1-12"
+      ],
+      "status": "updated",
+      "selected_or_locked_references": 1,
+      "cleaned_reference_notes": 0
+    }
+  ]
+}

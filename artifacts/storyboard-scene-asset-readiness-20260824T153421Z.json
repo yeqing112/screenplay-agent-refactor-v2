@@ -1,0 +1,116 @@
+{
+  "generatedAt": "2026-08-24T15:34:21.675912",
+  "mode": "read-only-scene-asset-readiness",
+  "confirmationToken": "37737f7cd04f83e5",
+  "summary": {
+    "books": 1,
+    "blocked_books": 0,
+    "storyboard_shots": 14,
+    "visual_locations": 2,
+    "visual_reference_assets": 5,
+    "unique_scene_names": 2,
+    "missing_scene_names": 0,
+    "affected_shots": 0,
+    "production_blocking_scene_names": 2,
+    "production_affected_shots": 14,
+    "ready_for_binding_repair_apply": true,
+    "ready_for_prompt_batch_apply": false
+  },
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "storyboard_shots": 14,
+      "visual_locations": 2,
+      "visual_reference_assets": 5,
+      "unique_scene_names": 2,
+      "ready_scene_names": 2,
+      "missing_scene_names": 0,
+      "affected_shots": 0,
+      "production_blocking_scene_names": 2,
+      "production_affected_shots": 14,
+      "status": "ready",
+      "production_status": "blocked",
+      "scenes": [
+        {
+          "scene_name": "监控室",
+          "shot_count": 8,
+          "shots": [
+            "1-7",
+            "1-8",
+            "1-9",
+            "1-10",
+            "1-11",
+            "1-12",
+            "1-13",
+            "1-14"
+          ],
+          "matched_location_id": "158",
+          "matched_location_name": "监控室",
+          "status": "ready",
+          "matched_asset_status": "ref_ready",
+          "reference_total": 1,
+          "reference_image_count": 1,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [
+            {
+              "reference_id": 65,
+              "source": "https://cdn.doculator.org/images/LXYV6AW38YVPOL0W/LXYV6AW38YVPOL0W.png",
+              "width": 1024,
+              "height": 1024,
+              "aspect_ratio": 1.0,
+              "landscape_ok": false,
+              "error": ""
+            }
+          ],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 1,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产没有符合横构图比例的 selected/locked 参考图"
+          ]
+        },
+        {
+          "scene_name": "便利店收银台",
+          "shot_count": 6,
+          "shots": [
+            "1-1",
+            "1-2",
+            "1-3",
+            "1-4",
+            "1-5",
+            "1-6"
+          ],
+          "matched_location_id": "159",
+          "matched_location_name": "便利店收银台",
+          "status": "ready",
+          "matched_asset_status": "ref_ready",
+          "reference_total": 1,
+          "reference_image_count": 1,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [
+            {
+              "reference_id": 64,
+              "source": "https://cdn.doculator.org/images/FGGZ5HP8K58WNNI2/FGGZ5HP8K58WNNI2.png",
+              "width": 1024,
+              "height": 1024,
+              "aspect_ratio": 1.0,
+              "landscape_ok": false,
+              "error": ""
+            }
+          ],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 1,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产没有符合横构图比例的 selected/locked 参考图"
+          ]
+        }
+      ]
+    }
+  ]
+}

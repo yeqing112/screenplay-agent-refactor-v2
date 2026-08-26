@@ -1,0 +1,435 @@
+{
+  "generatedAt": "2026-08-25T15:28:44.671739",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 14,
+    "before_errors": 28,
+    "before_warnings": 0,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "error_reduction": 28,
+    "warning_reduction": 0
+  },
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 530,
+          "motion": 101
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 898,
+          "motion": 192
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 530,
+          "motion": 101
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 911,
+          "motion": 173
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 663,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1210,
+          "motion": 201
+        },
+        "structured_scene_asset_id": "163"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 530,
+          "motion": 101
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 892,
+          "motion": 220
+        },
+        "structured_scene_asset_id": "163"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 663,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1206,
+          "motion": 233
+        },
+        "structured_scene_asset_id": "167"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 530,
+          "motion": 101
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 915,
+          "motion": 290
+        },
+        "structured_scene_asset_id": "171"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "监控室",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 874,
+          "motion": 150
+        },
+        "structured_scene_asset_id": "174"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "监控室",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 868,
+          "motion": 184
+        },
+        "structured_scene_asset_id": "178"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "监控室",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 392,
+          "motion": 91
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 488,
+          "motion": 161
+        },
+        "structured_scene_asset_id": "182"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 10,
+      "scene_name": "监控室",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 867,
+          "motion": 173
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 11,
+      "scene_name": "监控室",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 840,
+          "motion": 157
+        },
+        "structured_scene_asset_id": "164"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 12,
+      "scene_name": "监控室",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 849,
+          "motion": 210
+        },
+        "structured_scene_asset_id": "168"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 13,
+      "scene_name": "监控室",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 889,
+          "motion": 203
+        },
+        "structured_scene_asset_id": "172"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 14,
+      "scene_name": "监控室",
+      "source_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 855,
+          "motion": 226
+        },
+        "structured_scene_asset_id": "176"
+      },
+      "repaired_version": 2,
+      "diagnostics_status": "warning"
+    }
+  ]
+}

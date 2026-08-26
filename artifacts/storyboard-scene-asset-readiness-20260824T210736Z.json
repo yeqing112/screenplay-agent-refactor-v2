@@ -1,0 +1,138 @@
+{
+  "generatedAt": "2026-08-24T21:07:36.281888",
+  "mode": "read-only-scene-asset-readiness",
+  "confirmationToken": "475edb93d4f74de9",
+  "summary": {
+    "books": 1,
+    "blocked_books": 0,
+    "storyboard_shots": 20,
+    "visual_locations": 32,
+    "visual_reference_assets": 5,
+    "unique_scene_names": 3,
+    "missing_scene_names": 0,
+    "affected_shots": 0,
+    "production_blocking_scene_names": 3,
+    "production_affected_shots": 20,
+    "ready_for_binding_repair_apply": true,
+    "ready_for_prompt_batch_apply": false
+  },
+  "results": [
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "storyboard_shots": 20,
+      "visual_locations": 32,
+      "visual_reference_assets": 5,
+      "unique_scene_names": 3,
+      "ready_scene_names": 3,
+      "missing_scene_names": 0,
+      "affected_shots": 0,
+      "production_blocking_scene_names": 3,
+      "production_affected_shots": 20,
+      "status": "ready",
+      "production_status": "blocked",
+      "scenes": [
+        {
+          "scene_name": "部落营地",
+          "shot_count": 8,
+          "shots": [
+            "1-13",
+            "1-14",
+            "1-15",
+            "1-16",
+            "1-17",
+            "1-18",
+            "1-19",
+            "1-20"
+          ],
+          "matched_location_id": "109",
+          "matched_location_name": "神农部落营地",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        },
+        {
+          "scene_name": "原始丛林上空",
+          "shot_count": 6,
+          "shots": [
+            "1-1",
+            "1-2",
+            "1-3",
+            "1-4",
+            "1-5",
+            "1-6"
+          ],
+          "matched_location_id": "120",
+          "matched_location_name": "原始丛林林间空地",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 2,
+          "reference_image_count": 1,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [
+            {
+              "reference_id": 68,
+              "source": "https://cdn.doculator.org/images/QSLRTUUCFTEMI5ZI/QSLRTUUCFTEMI5ZI.png",
+              "width": 2688,
+              "height": 1520,
+              "aspect_ratio": 1.7684,
+              "landscape_ok": true,
+              "error": ""
+            }
+          ],
+          "landscape_reference_count": 1,
+          "locked_reference_count": 0,
+          "selected_reference_count": 1,
+          "candidate_reference_count": 1,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft"
+          ]
+        },
+        {
+          "scene_name": "原始丛林深处",
+          "shot_count": 6,
+          "shots": [
+            "1-7",
+            "1-8",
+            "1-9",
+            "1-10",
+            "1-11",
+            "1-12"
+          ],
+          "matched_location_id": "121",
+          "matched_location_name": "原始森林深处",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,500 @@
+{
+  "generatedAt": "2026-08-24T15:29:07.880191",
+  "mode": "real-enqueue",
+  "planPath": "artifacts/book75-scene-reference-plan.json",
+  "summary": {
+    "requests": 2,
+    "submitted": 2,
+    "done": 2,
+    "error": false
+  },
+  "requests": [
+    {
+      "scene_name": "便利店收银台",
+      "location_id": 159,
+      "shot_count": 6,
+      "api_request": {
+        "bookId": 75,
+        "episode": 1,
+        "shotId": "scene-159",
+        "sourceNodeId": "visual-location-159",
+        "sourceAssetId": "159",
+        "assetScope": "location",
+        "assetSubject": "便利店收银台",
+        "targetKind": "reference-image",
+        "modelProfileId": "preset-poyo-image-gpt-image-2",
+        "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+        "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+        "aspectRatio": "16:9",
+        "count": 1,
+        "referenceAssetIds": [],
+        "referenceImages": []
+      }
+    },
+    {
+      "scene_name": "监控室",
+      "location_id": 158,
+      "shot_count": 8,
+      "api_request": {
+        "bookId": 75,
+        "episode": 1,
+        "shotId": "scene-158",
+        "sourceNodeId": "visual-location-158",
+        "sourceAssetId": "158",
+        "assetScope": "location",
+        "assetSubject": "监控室",
+        "targetKind": "reference-image",
+        "modelProfileId": "preset-poyo-image-gpt-image-2",
+        "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+        "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+        "aspectRatio": "16:9",
+        "count": 1,
+        "referenceAssetIds": [],
+        "referenceImages": []
+      }
+    }
+  ],
+  "results": [
+    {
+      "scene_name": "便利店收银台",
+      "location_id": 159,
+      "task_id": "a5df0b76a918",
+      "queued": {
+        "task_id": "a5df0b76a918",
+        "status": "queued",
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "uses_mock": false
+      },
+      "ran_now": true,
+      "final_task": {
+        "task_id": "a5df0b76a918",
+        "status": "done",
+        "progress": 100,
+        "target_kind": "image",
+        "book_id": 75,
+        "episode": 1,
+        "shot_id": "scene-159",
+        "version": 1,
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "provider": "poyo-async",
+        "uses_mock": false,
+        "external_task_id": "FGGZ5HP8K58WNNI2",
+        "external_status": "finished",
+        "poll_attempts": 18,
+        "provider_response": {
+          "code": 200,
+          "data": {
+            "task_id": "FGGZ5HP8K58WNNI2",
+            "status": "finished",
+            "files": [
+              {
+                "file_url": "https://cdn.doculator.org/images/FGGZ5HP8K58WNNI2/FGGZ5HP8K58WNNI2.png",
+                "file_type": "image"
+              }
+            ],
+            "created_time": "2026-08-24T15:27:12",
+            "progress": 100.0,
+            "credits_amount": 2.0
+          }
+        },
+        "provider_request_payload": {
+          "model": "gpt-image-2",
+          "input": {
+            "task_mode": "text_to_image",
+            "task_modes": [
+              "text_to_image",
+              "image_to_image"
+            ],
+            "supports_reference_images": true,
+            "max_reference_images": 8,
+            "poll_interval_seconds": 3,
+            "poll_timeout_seconds": 180,
+            "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+            "aspect_ratio": "16:9",
+            "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰"
+          }
+        },
+        "restarted_from_task_id": null,
+        "restart_count": 0,
+        "last_restarted_at": null,
+        "created_at": "2026-08-24T15:27:10.949049",
+        "updated_at": "2026-08-24T15:28:09.757337",
+        "kind": "reference-image",
+        "request_payload": {
+          "book_id": 75,
+          "episode": 1,
+          "shot_id": "scene-159",
+          "source_node_id": "visual-location-159",
+          "source_asset_id": "159",
+          "first_frame_asset_id": null,
+          "first_frame_url": null,
+          "asset_scope": "location",
+          "asset_subject": "便利店收银台",
+          "target_kind": "reference-image",
+          "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+          "model": null,
+          "model_profile_id": "preset-poyo-image-gpt-image-2",
+          "reference_asset_ids": [],
+          "reference_images": [],
+          "aspect_ratio": "16:9",
+          "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+          "duration_seconds": null,
+          "count": 1,
+          "simulate_error": false
+        },
+        "prompt_encoding_audit": {
+          "original_prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+          "original_contains_cjk": true,
+          "original_looks_garbled": false,
+          "original_question_mark_count": 0,
+          "submitted_prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+          "submitted_contains_cjk": true,
+          "submitted_looks_garbled": false,
+          "submitted_question_mark_count": 0,
+          "provider_payload_captured": true
+        },
+        "reference_asset": {
+          "id": 64,
+          "book_id": 75,
+          "episode": 1,
+          "asset_type": "scene",
+          "asset_id": "159",
+          "asset_name": "便利店收银台",
+          "image_url": "https://cdn.doculator.org/images/FGGZ5HP8K58WNNI2/FGGZ5HP8K58WNNI2.png",
+          "local_path": "",
+          "reference_token": "@便利店收银台",
+          "status": "selected",
+          "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+          "model": "gpt-image-2",
+          "notes": "瑙嗚璧勪骇搴撶敓鎴?路 2026-08-24 15:28",
+          "meta_info": {
+            "source": "visual-asset-library-generate",
+            "taskId": "a5df0b76a918",
+            "externalTaskId": "FGGZ5HP8K58WNNI2",
+            "version": "v1",
+            "generatedAt": "2026-08-24T15:28:09.679112",
+            "assetScope": "location",
+            "assetSubject": "便利店收银台",
+            "usesMock": false
+          },
+          "created_at": "2026-08-24T15:28:09.679112",
+          "updated_at": "2026-08-24T15:28:09.679112"
+        },
+        "asset": {
+          "id": "image-a9ff205eaf",
+          "kind": "image",
+          "title": "便利店收银台 参考图 v1",
+          "label": "v1",
+          "uri": "https://cdn.doculator.org/images/FGGZ5HP8K58WNNI2/FGGZ5HP8K58WNNI2.png",
+          "previewUrl": "https://cdn.doculator.org/images/FGGZ5HP8K58WNNI2/FGGZ5HP8K58WNNI2.png",
+          "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+          "model": "gpt-image-2",
+          "status": "done",
+          "adopted": true,
+          "sourceAssetId": "159",
+          "elapsedSeconds": 2,
+          "metadata": {
+            "source": "real",
+            "assetScope": "location",
+            "assetSubject": "便利店收银台",
+            "aspectRatio": "16:9",
+            "durationSeconds": 0,
+            "provider": "poyo-async",
+            "referenceAssetCount": 0,
+            "referenceAssetIds": [],
+            "referenceImages": [],
+            "shotId": "scene-159",
+            "sourceNodeId": "visual-location-159",
+            "sourceAssetId": "159",
+            "firstFrameAssetId": "",
+            "firstFrameUrl": "",
+            "modelProfileId": "preset-poyo-image-gpt-image-2",
+            "modelName": "gpt-image-2",
+            "providerTaskMode": "",
+            "imageRole": "reference",
+            "usesMock": false,
+            "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+            "createdAt": "2026-08-24T15:28:09.676115Z",
+            "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+            "externalTaskId": "FGGZ5HP8K58WNNI2",
+            "externalStatus": "finished",
+            "pollAttempts": 18,
+            "providerResponse": {
+              "code": 200,
+              "data": {
+                "task_id": "FGGZ5HP8K58WNNI2",
+                "status": "finished",
+                "files": [
+                  {
+                    "file_url": "https://cdn.doculator.org/images/FGGZ5HP8K58WNNI2/FGGZ5HP8K58WNNI2.png",
+                    "file_type": "image"
+                  }
+                ],
+                "created_time": "2026-08-24T15:27:12",
+                "progress": 100.0,
+                "credits_amount": 2.0
+              }
+            },
+            "providerPromptAdjusted": false,
+            "providerPromptAdjustmentReason": "",
+            "providerSafePrompt": "",
+            "providerRequestPayload": {
+              "model": "gpt-image-2",
+              "input": {
+                "task_mode": "text_to_image",
+                "task_modes": [
+                  "text_to_image",
+                  "image_to_image"
+                ],
+                "supports_reference_images": true,
+                "max_reference_images": 8,
+                "poll_interval_seconds": 3,
+                "poll_timeout_seconds": 180,
+                "prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+                "aspect_ratio": "16:9",
+                "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰"
+              }
+            },
+            "promptEncodingAudit": {
+              "original_prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+              "original_contains_cjk": true,
+              "original_looks_garbled": false,
+              "original_question_mark_count": 0,
+              "submitted_prompt": "深夜便利店收银台场景参考图，16:9 横构图，无人物。画面中心是狭窄收银台，台面有扫码器、香烟展示架、便利店小票机和一杯冰美式；两侧货架向后延伸，玻璃门外是黑暗街道，门上有小风铃。冷白荧光灯从头顶直射，制造生硬阴影和商品标签反光。整体风格为悬疑短剧电影感，写实，低饱和，空间层次清晰，可作为后续分镜首帧一致性的场景资产参考。",
+              "submitted_contains_cjk": true,
+              "submitted_looks_garbled": false,
+              "submitted_question_mark_count": 0,
+              "provider_payload_captured": true
+            },
+            "referenceAssetId": 64,
+            "referenceStatus": "selected"
+          }
+        },
+        "first_frame_asset_id": "",
+        "first_frame_url": "",
+        "provider_task_mode": ""
+      }
+    },
+    {
+      "scene_name": "监控室",
+      "location_id": 158,
+      "task_id": "9c1e05a416ca",
+      "queued": {
+        "task_id": "9c1e05a416ca",
+        "status": "queued",
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "uses_mock": false
+      },
+      "ran_now": true,
+      "final_task": {
+        "task_id": "9c1e05a416ca",
+        "status": "done",
+        "progress": 100,
+        "target_kind": "image",
+        "book_id": 75,
+        "episode": 1,
+        "shot_id": "scene-158",
+        "version": 1,
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "provider": "poyo-async",
+        "uses_mock": false,
+        "external_task_id": "LXYV6AW38YVPOL0W",
+        "external_status": "finished",
+        "poll_attempts": 18,
+        "provider_response": {
+          "code": 200,
+          "data": {
+            "task_id": "LXYV6AW38YVPOL0W",
+            "status": "finished",
+            "files": [
+              {
+                "file_url": "https://cdn.doculator.org/images/LXYV6AW38YVPOL0W/LXYV6AW38YVPOL0W.png",
+                "file_type": "image"
+              }
+            ],
+            "created_time": "2026-08-24T15:28:11",
+            "progress": 100.0,
+            "credits_amount": 2.0
+          }
+        },
+        "provider_request_payload": {
+          "model": "gpt-image-2",
+          "input": {
+            "task_mode": "text_to_image",
+            "task_modes": [
+              "text_to_image",
+              "image_to_image"
+            ],
+            "supports_reference_images": true,
+            "max_reference_images": 8,
+            "poll_interval_seconds": 3,
+            "poll_timeout_seconds": 180,
+            "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+            "aspect_ratio": "16:9",
+            "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰"
+          }
+        },
+        "restarted_from_task_id": null,
+        "restart_count": 0,
+        "last_restarted_at": null,
+        "created_at": "2026-08-24T15:28:09.768848",
+        "updated_at": "2026-08-24T15:29:07.874189",
+        "kind": "reference-image",
+        "request_payload": {
+          "book_id": 75,
+          "episode": 1,
+          "shot_id": "scene-158",
+          "source_node_id": "visual-location-158",
+          "source_asset_id": "158",
+          "first_frame_asset_id": null,
+          "first_frame_url": null,
+          "asset_scope": "location",
+          "asset_subject": "监控室",
+          "target_kind": "reference-image",
+          "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+          "model": null,
+          "model_profile_id": "preset-poyo-image-gpt-image-2",
+          "reference_asset_ids": [],
+          "reference_images": [],
+          "aspect_ratio": "16:9",
+          "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+          "duration_seconds": null,
+          "count": 1,
+          "simulate_error": false
+        },
+        "prompt_encoding_audit": {
+          "original_prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+          "original_contains_cjk": true,
+          "original_looks_garbled": false,
+          "original_question_mark_count": 0,
+          "submitted_prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+          "submitted_contains_cjk": true,
+          "submitted_looks_garbled": false,
+          "submitted_question_mark_count": 0,
+          "provider_payload_captured": true
+        },
+        "reference_asset": {
+          "id": 65,
+          "book_id": 75,
+          "episode": 1,
+          "asset_type": "scene",
+          "asset_id": "158",
+          "asset_name": "监控室",
+          "image_url": "https://cdn.doculator.org/images/LXYV6AW38YVPOL0W/LXYV6AW38YVPOL0W.png",
+          "local_path": "",
+          "reference_token": "@监控室",
+          "status": "selected",
+          "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+          "model": "gpt-image-2",
+          "notes": "瑙嗚璧勪骇搴撶敓鎴?路 2026-08-24 15:29",
+          "meta_info": {
+            "source": "visual-asset-library-generate",
+            "taskId": "9c1e05a416ca",
+            "externalTaskId": "LXYV6AW38YVPOL0W",
+            "version": "v1",
+            "generatedAt": "2026-08-24T15:29:07.852075",
+            "assetScope": "location",
+            "assetSubject": "监控室",
+            "usesMock": false
+          },
+          "created_at": "2026-08-24T15:29:07.852075",
+          "updated_at": "2026-08-24T15:29:07.852075"
+        },
+        "asset": {
+          "id": "image-9f80de8cc3",
+          "kind": "image",
+          "title": "监控室 参考图 v1",
+          "label": "v1",
+          "uri": "https://cdn.doculator.org/images/LXYV6AW38YVPOL0W/LXYV6AW38YVPOL0W.png",
+          "previewUrl": "https://cdn.doculator.org/images/LXYV6AW38YVPOL0W/LXYV6AW38YVPOL0W.png",
+          "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+          "model": "gpt-image-2",
+          "status": "done",
+          "adopted": true,
+          "sourceAssetId": "158",
+          "elapsedSeconds": 2,
+          "metadata": {
+            "source": "real",
+            "assetScope": "location",
+            "assetSubject": "监控室",
+            "aspectRatio": "16:9",
+            "durationSeconds": 0,
+            "provider": "poyo-async",
+            "referenceAssetCount": 0,
+            "referenceAssetIds": [],
+            "referenceImages": [],
+            "shotId": "scene-158",
+            "sourceNodeId": "visual-location-158",
+            "sourceAssetId": "158",
+            "firstFrameAssetId": "",
+            "firstFrameUrl": "",
+            "modelProfileId": "preset-poyo-image-gpt-image-2",
+            "modelName": "gpt-image-2",
+            "providerTaskMode": "",
+            "imageRole": "reference",
+            "usesMock": false,
+            "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+            "createdAt": "2026-08-24T15:29:07.850079Z",
+            "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+            "externalTaskId": "LXYV6AW38YVPOL0W",
+            "externalStatus": "finished",
+            "pollAttempts": 18,
+            "providerResponse": {
+              "code": 200,
+              "data": {
+                "task_id": "LXYV6AW38YVPOL0W",
+                "status": "finished",
+                "files": [
+                  {
+                    "file_url": "https://cdn.doculator.org/images/LXYV6AW38YVPOL0W/LXYV6AW38YVPOL0W.png",
+                    "file_type": "image"
+                  }
+                ],
+                "created_time": "2026-08-24T15:28:11",
+                "progress": 100.0,
+                "credits_amount": 2.0
+              }
+            },
+            "providerPromptAdjusted": false,
+            "providerPromptAdjustmentReason": "",
+            "providerSafePrompt": "",
+            "providerRequestPayload": {
+              "model": "gpt-image-2",
+              "input": {
+                "task_mode": "text_to_image",
+                "task_modes": [
+                  "text_to_image",
+                  "image_to_image"
+                ],
+                "supports_reference_images": true,
+                "max_reference_images": 8,
+                "poll_interval_seconds": 3,
+                "poll_timeout_seconds": 180,
+                "prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+                "aspect_ratio": "16:9",
+                "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰"
+              }
+            },
+            "promptEncodingAudit": {
+              "original_prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+              "original_contains_cjk": true,
+              "original_looks_garbled": false,
+              "original_question_mark_count": 0,
+              "submitted_prompt": "深夜便利店后方监控室场景参考图，16:9 横构图，无人物。狭小房间内多块监控屏铺满墙面，屏幕发出冷蓝绿色光，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯，角落堆放纸箱和清洁工具。整体昏暗，仅屏幕和主机指示灯照亮空间，屏幕像素噪点明显，悬疑、压抑、写实电影感，可作为后续分镜首帧一致性的场景资产参考。",
+              "submitted_contains_cjk": true,
+              "submitted_looks_garbled": false,
+              "submitted_question_mark_count": 0,
+              "provider_payload_captured": true
+            },
+            "referenceAssetId": 65,
+            "referenceStatus": "selected"
+          }
+        },
+        "first_frame_asset_id": "",
+        "first_frame_url": "",
+        "provider_task_mode": ""
+      }
+    }
+  ],
+  "error": ""
+}

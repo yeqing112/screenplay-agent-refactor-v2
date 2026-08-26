@@ -1,0 +1,263 @@
+{
+  "generatedAt": "2026-08-24T21:12:04.077192",
+  "mode": "real-enqueue",
+  "planPath": "artifacts/book5-scene-reference-plan.json",
+  "summary": {
+    "requests": 1,
+    "submitted": 1,
+    "done": 1,
+    "failed": 0,
+    "error": false
+  },
+  "requests": [
+    {
+      "scene_name": "部落营地",
+      "location_id": 109,
+      "shot_count": 8,
+      "api_request": {
+        "bookId": 5,
+        "episode": 1,
+        "shotId": "scene-109",
+        "sourceNodeId": "visual-location-109",
+        "sourceAssetId": "109",
+        "assetScope": "location",
+        "assetSubject": "部落营地",
+        "targetKind": "reference-image",
+        "modelProfileId": "preset-poyo-image-gpt-image-2",
+        "prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+        "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+        "aspectRatio": "16:9",
+        "count": 1,
+        "referenceAssetIds": [],
+        "referenceImages": []
+      }
+    }
+  ],
+  "results": [
+    {
+      "scene_name": "部落营地",
+      "location_id": 109,
+      "task_id": "11d9b3632756",
+      "queued": {
+        "task_id": "11d9b3632756",
+        "status": "queued",
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "uses_mock": false
+      },
+      "ran_now": true,
+      "final_task": {
+        "task_id": "11d9b3632756",
+        "status": "done",
+        "progress": 100,
+        "target_kind": "image",
+        "book_id": 5,
+        "episode": 1,
+        "shot_id": "scene-109",
+        "version": 1,
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "provider": "poyo-async",
+        "uses_mock": false,
+        "external_task_id": "NOQCNFLU8838Z1MK",
+        "external_status": "finished",
+        "poll_attempts": 38,
+        "provider_response": {
+          "code": 200,
+          "data": {
+            "task_id": "NOQCNFLU8838Z1MK",
+            "status": "finished",
+            "files": [
+              {
+                "file_url": "https://cdn.doculator.org/images/NOQCNFLU8838Z1MK/NOQCNFLU8838Z1MK.png",
+                "file_type": "image"
+              }
+            ],
+            "created_time": "2026-08-24T21:10:03",
+            "progress": 100.0,
+            "credits_amount": 4.0
+          }
+        },
+        "provider_request_payload": {
+          "model": "gpt-image-2",
+          "input": {
+            "task_mode": "text_to_image",
+            "task_modes": [
+              "text_to_image",
+              "image_to_image"
+            ],
+            "supports_reference_images": true,
+            "max_reference_images": 8,
+            "poll_interval_seconds": 3,
+            "poll_timeout_seconds": 180,
+            "prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+            "size": "16:9",
+            "resolution": "2K",
+            "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
+          }
+        },
+        "restarted_from_task_id": null,
+        "restart_count": 0,
+        "last_restarted_at": null,
+        "created_at": "2026-08-24T21:10:01.771343",
+        "updated_at": "2026-08-24T21:12:04.066297",
+        "kind": "reference-image",
+        "request_payload": {
+          "book_id": 5,
+          "episode": 1,
+          "shot_id": "scene-109",
+          "source_node_id": "visual-location-109",
+          "source_asset_id": "109",
+          "first_frame_asset_id": null,
+          "first_frame_url": null,
+          "asset_scope": "location",
+          "asset_subject": "部落营地",
+          "target_kind": "reference-image",
+          "prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": null,
+          "model_profile_id": "preset-poyo-image-gpt-image-2",
+          "reference_asset_ids": [],
+          "reference_images": [],
+          "aspect_ratio": "16:9",
+          "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+          "duration_seconds": null,
+          "count": 1,
+          "simulate_error": false
+        },
+        "prompt_encoding_audit": {
+          "original_prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "original_contains_cjk": true,
+          "original_looks_garbled": false,
+          "original_question_mark_count": 0,
+          "submitted_prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "submitted_contains_cjk": true,
+          "submitted_looks_garbled": false,
+          "submitted_question_mark_count": 0,
+          "provider_payload_captured": true
+        },
+        "reference_asset": {
+          "id": 70,
+          "book_id": 5,
+          "episode": 1,
+          "asset_type": "scene",
+          "asset_id": "109",
+          "asset_name": "部落营地",
+          "image_url": "https://cdn.doculator.org/images/NOQCNFLU8838Z1MK/NOQCNFLU8838Z1MK.png",
+          "local_path": "",
+          "reference_token": "@部落营地",
+          "status": "selected",
+          "prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": "gpt-image-2",
+          "notes": "视觉资产库生成 · 2026-08-24 21:12",
+          "meta_info": {
+            "source": "visual-asset-library-generate",
+            "taskId": "11d9b3632756",
+            "externalTaskId": "NOQCNFLU8838Z1MK",
+            "version": "v1",
+            "generatedAt": "2026-08-24T21:12:04.046289",
+            "assetScope": "location",
+            "assetSubject": "部落营地",
+            "usesMock": false
+          },
+          "created_at": "2026-08-24T21:12:04.046289",
+          "updated_at": "2026-08-24T21:12:04.046289",
+          "sync_warning": "The reference image was generated and saved, but it is not bound to a shot yet. Bind it in the visual asset view first."
+        },
+        "asset": {
+          "id": "image-78d57d50c7",
+          "kind": "image",
+          "title": "部落营地 参考图 v1",
+          "label": "v1",
+          "uri": "https://cdn.doculator.org/images/NOQCNFLU8838Z1MK/NOQCNFLU8838Z1MK.png",
+          "previewUrl": "https://cdn.doculator.org/images/NOQCNFLU8838Z1MK/NOQCNFLU8838Z1MK.png",
+          "prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": "gpt-image-2",
+          "status": "done",
+          "adopted": true,
+          "sourceAssetId": "109",
+          "elapsedSeconds": 2,
+          "metadata": {
+            "source": "real",
+            "assetScope": "location",
+            "assetSubject": "部落营地",
+            "aspectRatio": "16:9",
+            "durationSeconds": 0,
+            "provider": "poyo-async",
+            "referenceAssetCount": 0,
+            "referenceAssetIds": [],
+            "referenceImages": [],
+            "shotId": "scene-109",
+            "sourceNodeId": "visual-location-109",
+            "sourceAssetId": "109",
+            "firstFrameAssetId": "",
+            "firstFrameUrl": "",
+            "modelProfileId": "preset-poyo-image-gpt-image-2",
+            "modelName": "gpt-image-2",
+            "providerTaskMode": "",
+            "imageRole": "reference",
+            "usesMock": false,
+            "prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+            "createdAt": "2026-08-24T21:12:04.043629Z",
+            "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+            "externalTaskId": "NOQCNFLU8838Z1MK",
+            "externalStatus": "finished",
+            "pollAttempts": 38,
+            "providerResponse": {
+              "code": 200,
+              "data": {
+                "task_id": "NOQCNFLU8838Z1MK",
+                "status": "finished",
+                "files": [
+                  {
+                    "file_url": "https://cdn.doculator.org/images/NOQCNFLU8838Z1MK/NOQCNFLU8838Z1MK.png",
+                    "file_type": "image"
+                  }
+                ],
+                "created_time": "2026-08-24T21:10:03",
+                "progress": 100.0,
+                "credits_amount": 4.0
+              }
+            },
+            "providerPromptAdjusted": false,
+            "providerPromptAdjustmentReason": "",
+            "providerSafePrompt": "",
+            "providerRequestPayload": {
+              "model": "gpt-image-2",
+              "input": {
+                "task_mode": "text_to_image",
+                "task_modes": [
+                  "text_to_image",
+                  "image_to_image"
+                ],
+                "supports_reference_images": true,
+                "max_reference_images": 8,
+                "poll_interval_seconds": 3,
+                "poll_timeout_seconds": 180,
+                "prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+                "size": "16:9",
+                "resolution": "2K",
+                "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
+              }
+            },
+            "promptEncodingAudit": {
+              "original_prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+              "original_contains_cjk": true,
+              "original_looks_garbled": false,
+              "original_question_mark_count": 0,
+              "submitted_prompt": "部落营地 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。 光线氛围为林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+              "submitted_contains_cjk": true,
+              "submitted_looks_garbled": false,
+              "submitted_question_mark_count": 0,
+              "provider_payload_captured": true
+            },
+            "referenceAssetId": 70,
+            "referenceStatus": "selected",
+            "referenceSyncWarning": "The reference image was generated and saved, but it is not bound to a shot yet. Bind it in the visual asset view first."
+          }
+        },
+        "first_frame_asset_id": "",
+        "first_frame_url": "",
+        "provider_task_mode": ""
+      }
+    }
+  ],
+  "error": ""
+}

@@ -1,0 +1,263 @@
+{
+  "generatedAt": "2026-08-24T21:09:46.612239",
+  "mode": "real-enqueue",
+  "planPath": "artifacts/book5-scene-reference-plan.json",
+  "summary": {
+    "requests": 1,
+    "submitted": 1,
+    "done": 1,
+    "failed": 0,
+    "error": false
+  },
+  "requests": [
+    {
+      "scene_name": "原始丛林深处",
+      "location_id": 121,
+      "shot_count": 6,
+      "api_request": {
+        "bookId": 5,
+        "episode": 1,
+        "shotId": "scene-121",
+        "sourceNodeId": "visual-location-121",
+        "sourceAssetId": "121",
+        "assetScope": "location",
+        "assetSubject": "原始丛林深处",
+        "targetKind": "reference-image",
+        "modelProfileId": "preset-poyo-image-gpt-image-2",
+        "prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+        "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+        "aspectRatio": "16:9",
+        "count": 1,
+        "referenceAssetIds": [],
+        "referenceImages": []
+      }
+    }
+  ],
+  "results": [
+    {
+      "scene_name": "原始丛林深处",
+      "location_id": 121,
+      "task_id": "f7d9ca1215e4",
+      "queued": {
+        "task_id": "f7d9ca1215e4",
+        "status": "queued",
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "uses_mock": false
+      },
+      "ran_now": true,
+      "final_task": {
+        "task_id": "f7d9ca1215e4",
+        "status": "done",
+        "progress": 100,
+        "target_kind": "image",
+        "book_id": 5,
+        "episode": 1,
+        "shot_id": "scene-121",
+        "version": 1,
+        "model_profile_id": "preset-poyo-image-gpt-image-2",
+        "provider": "poyo-async",
+        "uses_mock": false,
+        "external_task_id": "W64T2ORPGHYUD46D",
+        "external_status": "finished",
+        "poll_attempts": 36,
+        "provider_response": {
+          "code": 200,
+          "data": {
+            "task_id": "W64T2ORPGHYUD46D",
+            "status": "finished",
+            "files": [
+              {
+                "file_url": "https://cdn.doculator.org/images/W64T2ORPGHYUD46D/W64T2ORPGHYUD46D.png",
+                "file_type": "image"
+              }
+            ],
+            "created_time": "2026-08-24T21:07:52",
+            "progress": 100.0,
+            "credits_amount": 4.0
+          }
+        },
+        "provider_request_payload": {
+          "model": "gpt-image-2",
+          "input": {
+            "task_mode": "text_to_image",
+            "task_modes": [
+              "text_to_image",
+              "image_to_image"
+            ],
+            "supports_reference_images": true,
+            "max_reference_images": 8,
+            "poll_interval_seconds": 3,
+            "poll_timeout_seconds": 180,
+            "prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+            "size": "16:9",
+            "resolution": "2K",
+            "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
+          }
+        },
+        "restarted_from_task_id": null,
+        "restart_count": 0,
+        "last_restarted_at": null,
+        "created_at": "2026-08-24T21:07:50.696431",
+        "updated_at": "2026-08-24T21:09:46.603239",
+        "kind": "reference-image",
+        "request_payload": {
+          "book_id": 5,
+          "episode": 1,
+          "shot_id": "scene-121",
+          "source_node_id": "visual-location-121",
+          "source_asset_id": "121",
+          "first_frame_asset_id": null,
+          "first_frame_url": null,
+          "asset_scope": "location",
+          "asset_subject": "原始丛林深处",
+          "target_kind": "reference-image",
+          "prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": null,
+          "model_profile_id": "preset-poyo-image-gpt-image-2",
+          "reference_asset_ids": [],
+          "reference_images": [],
+          "aspect_ratio": "16:9",
+          "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+          "duration_seconds": null,
+          "count": 1,
+          "simulate_error": false
+        },
+        "prompt_encoding_audit": {
+          "original_prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "original_contains_cjk": true,
+          "original_looks_garbled": false,
+          "original_question_mark_count": 0,
+          "submitted_prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "submitted_contains_cjk": true,
+          "submitted_looks_garbled": false,
+          "submitted_question_mark_count": 0,
+          "provider_payload_captured": true
+        },
+        "reference_asset": {
+          "id": 69,
+          "book_id": 5,
+          "episode": 1,
+          "asset_type": "scene",
+          "asset_id": "121",
+          "asset_name": "原始丛林深处",
+          "image_url": "https://cdn.doculator.org/images/W64T2ORPGHYUD46D/W64T2ORPGHYUD46D.png",
+          "local_path": "",
+          "reference_token": "@原始丛林深处",
+          "status": "selected",
+          "prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": "gpt-image-2",
+          "notes": "视觉资产库生成 · 2026-08-24 21:09",
+          "meta_info": {
+            "source": "visual-asset-library-generate",
+            "taskId": "f7d9ca1215e4",
+            "externalTaskId": "W64T2ORPGHYUD46D",
+            "version": "v1",
+            "generatedAt": "2026-08-24T21:09:46.585724",
+            "assetScope": "location",
+            "assetSubject": "原始丛林深处",
+            "usesMock": false
+          },
+          "created_at": "2026-08-24T21:09:46.585724",
+          "updated_at": "2026-08-24T21:09:46.585724",
+          "sync_warning": "The reference image was generated and saved, but it is not bound to a shot yet. Bind it in the visual asset view first."
+        },
+        "asset": {
+          "id": "image-a63bbb6147",
+          "kind": "image",
+          "title": "原始丛林深处 参考图 v1",
+          "label": "v1",
+          "uri": "https://cdn.doculator.org/images/W64T2ORPGHYUD46D/W64T2ORPGHYUD46D.png",
+          "previewUrl": "https://cdn.doculator.org/images/W64T2ORPGHYUD46D/W64T2ORPGHYUD46D.png",
+          "prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+          "model": "gpt-image-2",
+          "status": "done",
+          "adopted": true,
+          "sourceAssetId": "121",
+          "elapsedSeconds": 2,
+          "metadata": {
+            "source": "real",
+            "assetScope": "location",
+            "assetSubject": "原始丛林深处",
+            "aspectRatio": "16:9",
+            "durationSeconds": 0,
+            "provider": "poyo-async",
+            "referenceAssetCount": 0,
+            "referenceAssetIds": [],
+            "referenceImages": [],
+            "shotId": "scene-121",
+            "sourceNodeId": "visual-location-121",
+            "sourceAssetId": "121",
+            "firstFrameAssetId": "",
+            "firstFrameUrl": "",
+            "modelProfileId": "preset-poyo-image-gpt-image-2",
+            "modelName": "gpt-image-2",
+            "providerTaskMode": "",
+            "imageRole": "reference",
+            "usesMock": false,
+            "prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+            "createdAt": "2026-08-24T21:09:46.583724Z",
+            "negativePrompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明",
+            "externalTaskId": "W64T2ORPGHYUD46D",
+            "externalStatus": "finished",
+            "pollAttempts": 36,
+            "providerResponse": {
+              "code": 200,
+              "data": {
+                "task_id": "W64T2ORPGHYUD46D",
+                "status": "finished",
+                "files": [
+                  {
+                    "file_url": "https://cdn.doculator.org/images/W64T2ORPGHYUD46D/W64T2ORPGHYUD46D.png",
+                    "file_type": "image"
+                  }
+                ],
+                "created_time": "2026-08-24T21:07:52",
+                "progress": 100.0,
+                "credits_amount": 4.0
+              }
+            },
+            "providerPromptAdjusted": false,
+            "providerPromptAdjustmentReason": "",
+            "providerSafePrompt": "",
+            "providerRequestPayload": {
+              "model": "gpt-image-2",
+              "input": {
+                "task_mode": "text_to_image",
+                "task_modes": [
+                  "text_to_image",
+                  "image_to_image"
+                ],
+                "supports_reference_images": true,
+                "max_reference_images": 8,
+                "poll_interval_seconds": 3,
+                "poll_timeout_seconds": 180,
+                "prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+                "size": "16:9",
+                "resolution": "2K",
+                "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰，人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
+              }
+            },
+            "promptEncodingAudit": {
+              "original_prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+              "original_contains_cjk": true,
+              "original_looks_garbled": false,
+              "original_question_mark_count": 0,
+              "submitted_prompt": "原始丛林深处 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。 光线氛围为树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。",
+              "submitted_contains_cjk": true,
+              "submitted_looks_garbled": false,
+              "submitted_question_mark_count": 0,
+              "provider_payload_captured": true
+            },
+            "referenceAssetId": 69,
+            "referenceStatus": "selected",
+            "referenceSyncWarning": "The reference image was generated and saved, but it is not bound to a shot yet. Bind it in the visual asset view first."
+          }
+        },
+        "first_frame_asset_id": "",
+        "first_frame_url": "",
+        "provider_task_mode": ""
+      }
+    }
+  ],
+  "error": ""
+}

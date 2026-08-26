@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-08-26T01:51:05.648365",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "real-llm",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 3,
+    "passed": 3,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 2
+  },
+  "results": [
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "原始丛林上空",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 541,
+          "motion": 152
+        },
+        "structured_scene_asset_id": "120"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 123,
+          "motion": 89
+        },
+        "structured_scene_asset_id": "179"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "repair_attempted": true,
+      "prompt_lengths": {
+        "static": 123,
+        "motion": 89
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "地下赌场VIP包厢",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 980,
+          "motion": 189
+        },
+        "structured_scene_asset_id": "93"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 143,
+          "motion": 135
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "repair_attempted": false,
+      "prompt_lengths": {
+        "static": 143,
+        "motion": 135
+      }
+    },
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "水房·清晨",
+      "source_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 298,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "133"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 356,
+          "motion": 236
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "repair_attempted": true,
+      "prompt_lengths": {
+        "static": 356,
+        "motion": 236
+      }
+    }
+  ]
+}

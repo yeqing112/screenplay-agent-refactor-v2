@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-08-26T01:21:49.352790",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "deterministic-mock",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 1,
+    "passed": 1,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 0
+  },
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 898,
+          "motion": 192
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "deterministic-mock",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 990,
+          "motion": 192
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "repair_attempted": false,
+      "prompt_lengths": {
+        "static": 990,
+        "motion": 192
+      }
+    }
+  ]
+}

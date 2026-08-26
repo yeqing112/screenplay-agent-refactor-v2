@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-08-26T05:34:58.943371",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "real-llm",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 1,
+    "passed": 1,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 0
+  },
+  "results": [
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "水房·清晨",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 298,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "133"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 349,
+          "motion": 169
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "repair_attempted": true,
+      "prompt_lengths": {
+        "static": 349,
+        "motion": 169
+      },
+      "compiled_prompt_preview": {
+        "static": "寺庙后院水房（@寺庙后院水房），青石板地面，中央一口老井，井口由青石砌成，边缘光滑，四周灰白墙壁，木结构梁柱，屋檐低垂，光线昏暗，墙边摆放木架，地面水渍反光，清晨朦胧天光，冷灰色调。画面开场，一桶冷水从上方劈头盖脸泼下，水花四溅。画面中央是青年光头和尚（@和尚甲），中等体型，灰色或褐色棉麻僧袍斜披袈裟露右肩，被冷水浇得浑身湿透，面部有细小水珠和尘土痕迹，嘴唇干燥起皮，表情隐忍。其右侧是青年和尚（@和尚丙），剃度光头，头皮干净无发茬，身着褪色皱褶的灰色旧僧袍，手持一只灰褐色木质水桶（@acceptance-bucket-browser-20260721），桶身有使用磨损痕迹，表情得意，眼神轻慢。画面左侧门框处，青年和尚（@和尚乙）倚靠站立，光头，身着灰色粗布僧袍，双手抱胸，嘴角挂着阴险假笑。",
+        "motion": "镜头缓慢向主体推进。一桶冷水持续泼洒在青年和尚（@和尚甲）身上，水花飞溅，僧袍湿透紧贴身躯。泼水动作完成后，手持空木桶的青年和尚（@和尚丙）站在和尚甲面前，脸上露出得意的神情。倚靠在门框的青年和尚（@和尚乙）保持双手抱胸的姿势，嘴角阴笑。全过程保持与首帧一致的人物面部特征、服装、发型、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移，额外人物"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "160",
+        "character_asset_ids": [
+          "585",
+          "584",
+          "583"
+        ],
+        "prop_asset_ids": [
+          "302"
+        ],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "push-in",
+        "duration": 3
+      }
+    }
+  ]
+}

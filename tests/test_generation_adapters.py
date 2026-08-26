@@ -110,7 +110,9 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["providerRequestPayload"], submit_payload)
         self.assertEqual(submit_payload["model"], "gpt-image-2")
         self.assertEqual(submit_payload["input"]["task_mode"], "image_to_image")
-        self.assertEqual(submit_payload["input"]["aspect_ratio"], "16:9")
+        self.assertNotIn("aspect_ratio", submit_payload["input"])
+        self.assertEqual(submit_payload["input"]["size"], "16:9")
+        self.assertEqual(submit_payload["input"]["resolution"], "2K")
         self.assertEqual(submit_payload["input"]["reference_image_urls"], ["https://cdn.example.com/ref-a.png"])
 
     async def test_poyo_image_poll_accepts_nested_image_url_shapes(self):

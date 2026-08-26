@@ -1,0 +1,1008 @@
+{
+  "generatedAt": "2026-08-26T00:21:30.518970",
+  "mode": "real-project-apply",
+  "compilerMode": "deterministic-mock",
+  "confirmationToken": "06e35cdf88811f9f",
+  "summary": {
+    "samples": 20,
+    "before_errors": 32,
+    "before_warnings": 59,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "error_reduction": 32,
+    "warning_reduction": 59
+  },
+  "results": [
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 18,
+      "scene_name": "宋氏大厦顶层办公室",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 72,
+          "motion": 50
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1073,
+          "motion": 211
+        },
+        "structured_scene_asset_id": "94"
+      },
+      "baseline_anchor": {
+        "version_id": 337,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 338,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/18/prompt-versions/337/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 26,
+      "scene_name": "现代简约别墅客厅",
+      "before_audit": {
+        "issues": [
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 82,
+          "motion": 49
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1019,
+          "motion": 240
+        },
+        "structured_scene_asset_id": "96"
+      },
+      "baseline_anchor": {
+        "version_id": 339,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 340,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/26/prompt-versions/339/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 30,
+      "scene_name": "高端私人会所走廊",
+      "before_audit": {
+        "issues": [
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 80,
+          "motion": 48
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1056,
+          "motion": 202
+        },
+        "structured_scene_asset_id": "95"
+      },
+      "baseline_anchor": {
+        "version_id": 341,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 342,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/30/prompt-versions/341/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 31,
+      "scene_name": "高端私人会所走廊",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 72,
+          "motion": 52
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1181,
+          "motion": 202
+        },
+        "structured_scene_asset_id": "95"
+      },
+      "baseline_anchor": {
+        "version_id": 343,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 344,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/31/prompt-versions/343/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 32,
+      "scene_name": "高端私人会所走廊",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 79,
+          "motion": 61
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1038,
+          "motion": 218
+        },
+        "structured_scene_asset_id": "95"
+      },
+      "baseline_anchor": {
+        "version_id": 345,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 346,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/32/prompt-versions/345/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 33,
+      "scene_name": "高端私人会所走廊",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 76,
+          "motion": 51
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1040,
+          "motion": 218
+        },
+        "structured_scene_asset_id": "95"
+      },
+      "baseline_anchor": {
+        "version_id": 347,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 348,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/33/prompt-versions/347/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 34,
+      "scene_name": "高端私人会所走廊",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 69,
+          "motion": 59
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1055,
+          "motion": 231
+        },
+        "structured_scene_asset_id": "95"
+      },
+      "baseline_anchor": {
+        "version_id": 349,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 350,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/34/prompt-versions/349/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "地下赌场VIP包厢",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 153,
+          "motion": 95
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 980,
+          "motion": 189
+        },
+        "structured_scene_asset_id": "93"
+      },
+      "baseline_anchor": {
+        "version_id": 351,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 352,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/1/prompt-versions/351/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "地下赌场VIP包厢",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 144,
+          "motion": 99
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1064,
+          "motion": 229
+        },
+        "structured_scene_asset_id": "93"
+      },
+      "baseline_anchor": {
+        "version_id": 353,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 354,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/2/prompt-versions/353/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "地下赌场VIP包厢",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 148,
+          "motion": 112
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1140,
+          "motion": 265
+        },
+        "structured_scene_asset_id": "93"
+      },
+      "baseline_anchor": {
+        "version_id": 355,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 356,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/3/storyboard/1/3/prompt-versions/355/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 16,
+      "scene_name": "陈二蛋与大凤的卧室",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 73,
+          "motion": 50
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 920,
+          "motion": 215
+        },
+        "structured_scene_asset_id": "89"
+      },
+      "baseline_anchor": {
+        "version_id": 357,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 358,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/16/prompt-versions/357/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 17,
+      "scene_name": "陈二蛋与大凤的卧室",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 62,
+          "motion": 50
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 904,
+          "motion": 227
+        },
+        "structured_scene_asset_id": "89"
+      },
+      "baseline_anchor": {
+        "version_id": 359,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 360,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/17/prompt-versions/359/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 19,
+      "scene_name": "陈二蛋与大凤的卧室",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 67,
+          "motion": 56
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 915,
+          "motion": 211
+        },
+        "structured_scene_asset_id": "89"
+      },
+      "baseline_anchor": {
+        "version_id": 361,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 362,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/19/prompt-versions/361/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 20,
+      "scene_name": "陈二蛋与大凤的卧室",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 76,
+          "motion": 57
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 925,
+          "motion": 222
+        },
+        "structured_scene_asset_id": "89"
+      },
+      "baseline_anchor": {
+        "version_id": 363,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 364,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/20/prompt-versions/363/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 21,
+      "scene_name": "陈二蛋与大凤的卧室",
+      "before_audit": {
+        "issues": [
+          "short_static_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 68,
+          "motion": 71
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 916,
+          "motion": 238
+        },
+        "structured_scene_asset_id": "89"
+      },
+      "baseline_anchor": {
+        "version_id": 365,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 366,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/21/prompt-versions/365/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "麻栗山村口空地",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 97,
+          "motion": 95
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 884,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "91"
+      },
+      "baseline_anchor": {
+        "version_id": 367,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 368,
+        "version": 5,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/1/prompt-versions/367/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "麻栗山村口空地",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 85,
+          "motion": 70
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 870,
+          "motion": 247
+        },
+        "structured_scene_asset_id": "91"
+      },
+      "baseline_anchor": {
+        "version_id": 369,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 370,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/3/prompt-versions/369/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "陈二蛋家厨房",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 124,
+          "motion": 73
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 899,
+          "motion": 215
+        },
+        "structured_scene_asset_id": "90"
+      },
+      "baseline_anchor": {
+        "version_id": 371,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 372,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/7/prompt-versions/371/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "陈二蛋家厨房",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 86,
+          "motion": 50
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1110,
+          "motion": 209
+        },
+        "structured_scene_asset_id": "90"
+      },
+      "baseline_anchor": {
+        "version_id": 373,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 374,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/8/prompt-versions/373/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "陈二蛋家厨房",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 93,
+          "motion": 69
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 872,
+          "motion": 224
+        },
+        "structured_scene_asset_id": "90"
+      },
+      "baseline_anchor": {
+        "version_id": 375,
+        "version": 1,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 376,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/1/storyboard/1/9/prompt-versions/375/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    }
+  ]
+}

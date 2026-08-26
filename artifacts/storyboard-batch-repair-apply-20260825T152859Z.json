@@ -1,0 +1,661 @@
+{
+  "generatedAt": "2026-08-25T15:28:59.421366",
+  "mode": "real-project-apply",
+  "compilerMode": "deterministic-mock",
+  "confirmationToken": "cbf9283d5434fc33",
+  "summary": {
+    "samples": 14,
+    "before_errors": 28,
+    "before_warnings": 0,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "error_reduction": 28,
+    "warning_reduction": 0
+  },
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 530,
+          "motion": 101
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 898,
+          "motion": 192
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "baseline_anchor": {
+        "version_id": 249,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 250,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/1/prompt-versions/249/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "便利店收银台",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 530,
+          "motion": 101
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 911,
+          "motion": 230
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "baseline_anchor": {
+        "version_id": 251,
+        "version": 9,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 252,
+        "version": 10,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/2/prompt-versions/251/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "便利店收银台",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 663,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1210,
+          "motion": 248
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "baseline_anchor": {
+        "version_id": 253,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 254,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/3/prompt-versions/253/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "便利店收银台",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 530,
+          "motion": 101
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 892,
+          "motion": 273
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "baseline_anchor": {
+        "version_id": 255,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 256,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/4/prompt-versions/255/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "便利店收银台",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 663,
+          "motion": 106
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 1206,
+          "motion": 302
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "baseline_anchor": {
+        "version_id": 257,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 258,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/5/prompt-versions/257/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "便利店收银台",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 530,
+          "motion": 101
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 915,
+          "motion": 350
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "baseline_anchor": {
+        "version_id": 259,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 260,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/6/prompt-versions/259/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "监控室",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 874,
+          "motion": 244
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "baseline_anchor": {
+        "version_id": 261,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 262,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/7/prompt-versions/261/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "监控室",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 868,
+          "motion": 218
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "baseline_anchor": {
+        "version_id": 263,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 264,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/8/prompt-versions/263/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "监控室",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 392,
+          "motion": 91
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 488,
+          "motion": 205
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "baseline_anchor": {
+        "version_id": 265,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 266,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/9/prompt-versions/265/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 10,
+      "scene_name": "监控室",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 867,
+          "motion": 204
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "baseline_anchor": {
+        "version_id": 267,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 268,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/10/prompt-versions/267/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 11,
+      "scene_name": "监控室",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 840,
+          "motion": 199
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "baseline_anchor": {
+        "version_id": 269,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 270,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/11/prompt-versions/269/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 12,
+      "scene_name": "监控室",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 849,
+          "motion": 249
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "baseline_anchor": {
+        "version_id": 271,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 272,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/12/prompt-versions/271/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 13,
+      "scene_name": "监控室",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 889,
+          "motion": 264
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "baseline_anchor": {
+        "version_id": 273,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 274,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/13/prompt-versions/273/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 14,
+      "scene_name": "监控室",
+      "before_audit": {
+        "issues": [
+          "internal_repair_marker_in_prompt",
+          "generic_motion_prompt"
+        ],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 524,
+          "motion": 95
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 855,
+          "motion": 293
+        },
+        "structured_scene_asset_id": "158"
+      },
+      "baseline_anchor": {
+        "version_id": 275,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 276,
+        "version": 4,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/75/storyboard/1/14/prompt-versions/275/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    }
+  ]
+}

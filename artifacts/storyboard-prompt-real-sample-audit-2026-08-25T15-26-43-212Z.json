@@ -1,0 +1,685 @@
+{
+  "generatedAt": "2026-08-25T15:26:43.211Z",
+  "apiUrl": "http://127.0.0.1:8765",
+  "strict": false,
+  "config": {
+    "sampleBookIds": [
+      75
+    ],
+    "targetShotCount": 20,
+    "minStaticLength": 80,
+    "minMotionLength": 50
+  },
+  "summary": {
+    "audited_shots": 14,
+    "shots_with_errors": 14,
+    "shots_with_warnings": 0,
+    "total_errors": 28,
+    "total_warnings": 0,
+    "issue_counts": {
+      "internal_repair_marker_in_prompt": 14,
+      "generic_motion_prompt": 14
+    },
+    "warning_counts": {},
+    "by_book": {
+      "75": {
+        "book_title": "深夜便利店",
+        "shots": 14,
+        "issues": 28,
+        "warnings": 0
+      }
+    }
+  },
+  "top_findings": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "便利店收银台",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "便利店收银台",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "便利店收银台",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "便利店收银台",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "便利店收银台",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "监控室",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "监控室",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "监控室",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 10,
+      "scene_name": "监控室",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 11,
+      "scene_name": "监控室",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 12,
+      "scene_name": "监控室",
+      "issues": [
+        "internal_repair_marker_in_prompt",
+        "generic_motion_prompt"
+      ],
+      "warnings": []
+    }
+  ],
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "prompt_lengths": {
+        "static": 530,
+        "motion": 101
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "便利店收银台，真实项目灰度修复后的中景构图，画面清晰保留便利店收银台、林小夏。其中场景保持便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感；窗外街道漆黑，室内商品标签有刺眼反光。，惨白荧光灯，从头顶直射，制造生硬阴影。货架商品标签反光刺眼。；门口外",
+        "motion": "镜头从稳定中景缓慢推进，保持便利店收银台的空间连续性和便利店收银台、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "便利店收银台",
+      "prompt_lengths": {
+        "static": 530,
+        "motion": 101
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "便利店收银台，真实项目灰度修复后的中景构图，画面清晰保留便利店收银台、林小夏。其中场景保持便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感；窗外街道漆黑，室内商品标签有刺眼反光。，惨白荧光灯，从头顶直射，制造生硬阴影。货架商品标签反光刺眼。；门口外",
+        "motion": "镜头从稳定中景缓慢推进，保持便利店收银台的空间连续性和便利店收银台、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "便利店收银台",
+      "prompt_lengths": {
+        "static": 663,
+        "motion": 106
+      },
+      "counts": {
+        "required_assets": 3,
+        "used_assets": 3,
+        "bindings": 3,
+        "reference_images": 3
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "便利店收银台，真实项目灰度修复后的中景构图，画面清晰保留便利店收银台、林小夏、神秘男人。其中场景保持便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感；窗外街道漆黑，室内商品标签有刺眼反光。，惨白荧光灯，从头顶直射，制造生硬阴影。货架商品标签反光刺眼",
+        "motion": "镜头从稳定中景缓慢推进，保持便利店收银台的空间连续性和便利店收银台、林小夏、神秘男人的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "便利店收银台",
+      "prompt_lengths": {
+        "static": 530,
+        "motion": 101
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "便利店收银台，真实项目灰度修复后的中景构图，画面清晰保留便利店收银台、林小夏。其中场景保持便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感；窗外街道漆黑，室内商品标签有刺眼反光。，惨白荧光灯，从头顶直射，制造生硬阴影。货架商品标签反光刺眼。；门口外",
+        "motion": "镜头从稳定中景缓慢推进，保持便利店收银台的空间连续性和便利店收银台、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "便利店收银台",
+      "prompt_lengths": {
+        "static": 663,
+        "motion": 106
+      },
+      "counts": {
+        "required_assets": 3,
+        "used_assets": 3,
+        "bindings": 3,
+        "reference_images": 3
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "便利店收银台，真实项目灰度修复后的中景构图，画面清晰保留便利店收银台、林小夏、神秘男人。其中场景保持便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感；窗外街道漆黑，室内商品标签有刺眼反光。，惨白荧光灯，从头顶直射，制造生硬阴影。货架商品标签反光刺眼",
+        "motion": "镜头从稳定中景缓慢推进，保持便利店收银台的空间连续性和便利店收银台、林小夏、神秘男人的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "便利店收银台",
+      "prompt_lengths": {
+        "static": 530,
+        "motion": 101
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "便利店收银台，真实项目灰度修复后的中景构图，画面清晰保留便利店收银台、林小夏。其中场景保持便利店收银台，深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感；窗外街道漆黑，室内商品标签有刺眼反光。，惨白荧光灯，从头顶直射，制造生硬阴影。货架商品标签反光刺眼。；门口外",
+        "motion": "镜头从稳定中景缓慢推进，保持便利店收银台的空间连续性和便利店收银台、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 524,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室，真实项目灰度修复后的中景构图，画面清晰保留监控室、林小夏。其中场景保持监控室，便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。，昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半",
+        "motion": "镜头从稳定中景缓慢推进，保持监控室的空间连续性和监控室、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 524,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室，真实项目灰度修复后的中景构图，画面清晰保留监控室、林小夏。其中场景保持监控室，便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。，昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半",
+        "motion": "镜头从稳定中景缓慢推进，保持监控室的空间连续性和监控室、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 9,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 392,
+        "motion": 91
+      },
+      "counts": {
+        "required_assets": 1,
+        "used_assets": 1,
+        "bindings": 1,
+        "reference_images": 1
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室，真实项目灰度修复后的中景构图，画面清晰保留监控室。其中场景保持监控室，便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。，昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半身。；主",
+        "motion": "镜头从稳定中景缓慢推进，保持监控室的空间连续性和监控室的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 10,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 524,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室，真实项目灰度修复后的中景构图，画面清晰保留监控室、林小夏。其中场景保持监控室，便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。，昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半",
+        "motion": "镜头从稳定中景缓慢推进，保持监控室的空间连续性和监控室、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 11,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 524,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室，真实项目灰度修复后的中景构图，画面清晰保留监控室、林小夏。其中场景保持监控室，便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。，昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半",
+        "motion": "镜头从稳定中景缓慢推进，保持监控室的空间连续性和监控室、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 12,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 524,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室，真实项目灰度修复后的中景构图，画面清晰保留监控室、林小夏。其中场景保持监控室，便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。，昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半",
+        "motion": "镜头从稳定中景缓慢推进，保持监控室的空间连续性和监控室、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 13,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 524,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室，真实项目灰度修复后的中景构图，画面清晰保留监控室、林小夏。其中场景保持监控室，便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。，昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半",
+        "motion": "镜头从稳定中景缓慢推进，保持监控室的空间连续性和监控室、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    },
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 14,
+      "scene_name": "监控室",
+      "prompt_lengths": {
+        "static": 524,
+        "motion": 95
+      },
+      "counts": {
+        "required_assets": 2,
+        "used_assets": 2,
+        "bindings": 2,
+        "reference_images": 2
+      },
+      "issues": [
+        {
+          "code": "internal_repair_marker_in_prompt",
+          "message": "提示词含有内部修复/测试痕迹，不能作为生产交付提示词。",
+          "severity": "error",
+          "details": {}
+        },
+        {
+          "code": "generic_motion_prompt",
+          "message": "运动提示词仍是占位式泛化描述，未把导演分镜动作编译为具体机器语言。",
+          "severity": "error",
+          "details": {}
+        }
+      ],
+      "warnings": [],
+      "snippets": {
+        "static": "监控室，真实项目灰度修复后的中景构图，画面清晰保留监控室、林小夏。其中场景保持监控室，便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。，昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半",
+        "motion": "镜头从稳定中景缓慢推进，保持监控室的空间连续性和监控室、林小夏的一致外观。角色动作按原分镜过程自然推进，情绪逐步增强，最后停在关键反应瞬间；场景、服装、道具、光线和构图在动作推进中保持连续。"
+      }
+    }
+  ]
+}

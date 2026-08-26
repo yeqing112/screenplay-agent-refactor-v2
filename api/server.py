@@ -3,6 +3,7 @@ import asyncio
 import difflib
 import json
 import logging
+import os
 import uuid
 import re
 from types import SimpleNamespace
@@ -25,6 +26,7 @@ from api.generation_adapters import (
 from api.model_registry import save_registry, serialize_registry_payload, test_profile_connection
 from core import safe_json_loads
 import core.llm as llm_client
+from core.model_adapter import sanitize_machine_prompt_text
 from core.prompts import load_prompt
 from core.production_skill import (
     build_production_skill_prompt_block,
@@ -390,6 +392,23 @@ class ProductionExportRecordRequest(BaseModel):
     blocked_shots: int = Field(default=0, validation_alias=AliasChoices("blocked_shots", "blockedShots"))
     summary: str = ""
     meta_info: dict = Field(default_factory=dict, validation_alias=AliasChoices("meta_info", "metaInfo"))
+
+
+class StoryboardMachinePromptExportRecordRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    target_model: str = Field(default="minimax-h3", validation_alias=AliasChoices("target_model", "targetModel"))
+    export_channel: str = Field(default="webui", validation_alias=AliasChoices("export_channel", "exportChannel"))
+    operator_name: str = Field(default="user", validation_alias=AliasChoices("operator_name", "operatorName"))
+    notes: str = ""
+
+
+class StoryboardDirectorShotTextUpdateRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    director_shot_text: str = Field(default="", validation_alias=AliasChoices("director_shot_text", "directorShotText"))
+    operator_name: str = Field(default="user", validation_alias=AliasChoices("operator_name", "operatorName"))
+    reset_to_system: bool = Field(default=False, validation_alias=AliasChoices("reset_to_system", "resetToSystem"))
 
 
 class QAFixOptionsRequest(BaseModel):
@@ -4329,6 +4348,41 @@ def _prompt_compiler_diagnostics_need_refresh(diagnostics: dict) -> bool:
     return False
 
 
+def _scene_name_match_text(value: Any) -> str:
+    return re.sub(r"[·・•\s\t\n\r\-_\/\\—，。、；：:（）()]", "", str(value or "").strip())
+
+
+def _scene_name_parts_for_match(value: Any) -> list[str]:
+    return [
+        item.strip()
+        for item in re.split(r"[·・•\s\t\n\r\-_\/\\—，。、；：:（）()]+", str(value or "").strip())
+        if len(item.strip()) >= 2
+    ]
+
+
+def _prompt_contains_scene_name(prompt_text: str, scene_name: str) -> bool:
+    scene_text = str(scene_name or "").strip()
+    prompt = str(prompt_text or "").strip()
+    if not scene_text or not prompt:
+        return True
+    if scene_text in prompt:
+        return True
+    normalized_scene = _scene_name_match_text(scene_text)
+    normalized_prompt = _scene_name_match_text(prompt)
+    if normalized_scene and normalized_scene in normalized_prompt:
+        return True
+    parts = _scene_name_parts_for_match(scene_text)
+    return bool(len(parts) >= 2 and all(_scene_name_match_text(part) in normalized_prompt for part in parts))
+
+
+def _ensure_prompt_preserves_scene_name(prompt_text: str, scene_name: str) -> str:
+    prompt = str(prompt_text or "").strip()
+    scene_text = str(scene_name or "").strip()
+    if not prompt or not scene_text or _prompt_contains_scene_name(prompt, scene_text):
+        return prompt
+    return f"{scene_text}，{prompt}"
+
+
 def _refresh_legacy_prompt_compile_meta(
     book_id: int,
     shot,
@@ -4793,6 +4847,22 @@ def _create_storyboard_prompt_rollback(s, shot, target, req: StoryboardPromptRol
     prompt_compiler_meta["compiler_warnings"] = target_meta.get("compiler_warnings", [])
     prompt_compiler_meta["compiler_diagnostics"] = target_meta.get("compiler_diagnostics", {})
     shot_meta["prompt_compiler"] = prompt_compiler_meta
+    has_target_structured = "structured_shot" in target_meta and isinstance(target_meta.get("structured_shot"), dict)
+    target_structured = target_meta.get("structured_shot", {}) if has_target_structured else {}
+    if has_target_structured:
+        shot_meta["structured_shot"] = target_structured
+    if target_structured:
+        if target_structured.get("duration") is not None:
+            try:
+                shot.duration = int(target_structured.get("duration") or shot.duration or 3)
+            except (TypeError, ValueError):
+                pass
+        if str(target_structured.get("camera_angle") or "").strip():
+            shot.camera_angle = str(target_structured.get("camera_angle") or "").strip()
+        if str(target_structured.get("camera_movement") or "").strip():
+            shot.camera_movement = str(target_structured.get("camera_movement") or "").strip()
+        if str(target_structured.get("transition") or "").strip():
+            shot.transition = str(target_structured.get("transition") or "").strip()
     shot.meta_info = json.dumps(shot_meta, ensure_ascii=False)
     shot.updated_at = datetime.utcnow()
 
@@ -4847,10 +4917,13 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
         label = str(match.group(1) or "").strip()
         if label and label not in screenplay_labels and not any(fragment in label for fragment in screenplay_label_fragments):
             dialogue_like_labels.append(label)
+    screenplay_residue_text = combined
+    for neutral_dialogue_marker in ("无对白", "无台词", "没有对白", "无人物对白"):
+        screenplay_residue_text = screenplay_residue_text.replace(neutral_dialogue_marker, "")
     screenplay_residue_hits: list[str] = []
-    if any(token in combined for token in ["[", "]", "【", "】"]):
+    if any(token in screenplay_residue_text for token in ["[", "]", "【", "】"]):
         screenplay_residue_hits.append("方括号舞台提示")
-    if any(token in combined for token in ["对白", "画面切", "切到", "（大笑）", "（停顿）", "（沉默）"]):
+    if any(token in screenplay_residue_text for token in ["对白", "画面切", "切到", "（大笑）", "（停顿）", "（沉默）"]):
         screenplay_residue_hits.append("对白/舞台动作描述")
     unique_dialogue_labels = list(dict.fromkeys(dialogue_like_labels))
     if len(unique_dialogue_labels) >= 1:
@@ -5750,6 +5823,36 @@ def _build_prompt_repair_context(context: dict, candidate_output: dict, diagnost
 
 
 def _call_storyboard_prompt_compiler(context: dict) -> object:
+    if os.environ.get("E2E_STORYBOARD_PROMPT_MOCK") == "1":
+        scene_name = str(context.get("scene_name") or "当前场景").strip()
+        bound_assets = [item for item in context.get("bound_assets", []) if isinstance(item, dict)]
+        adapter = context.get("model_adapter", {}) if isinstance(context.get("model_adapter"), dict) else {}
+        static_prompt = str(adapter.get("static_prompt") or "").strip()
+        motion_prompt = str(adapter.get("motion_prompt") or "").strip()
+        negative_prompt = str(adapter.get("negative_prompt") or "").strip()
+        return {
+            "visual_prompt_static": static_prompt or (
+                f"{scene_name}中景构图，画面清晰保留当前场景、人物与关键道具。"
+                "空间光线、人物站位、关键道具和环境氛围都以绑定资产为准，前景动作与背景层次分明。"
+            ),
+            "visual_prompt_motion": motion_prompt or (
+                f"镜头保持{scene_name}的空间连续性，按照结构化动作节拍推进，最后停在关键反应瞬间。"
+                "场景、服装、道具、光线和构图在动作推进中保持连续。"
+            ),
+            "negative_prompt": negative_prompt or "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装",
+            "used_assets": [
+                {
+                    "asset_type": item.get("asset_type"),
+                    "asset_id": item.get("asset_id"),
+                    "asset_name": item.get("asset_name"),
+                    "reference_token": item.get("reference_token"),
+                    "reference_status": item.get("reference_status"),
+                }
+                for item in bound_assets
+            ],
+            "warnings": ["E2E storyboard prompt mock uses deterministic Model Adapter baseline"],
+        }
+
     prompt_payload = load_prompt(
         "storyboard/prompt_compiler",
         context_json=json.dumps(context, ensure_ascii=False, indent=2),
@@ -5777,12 +5880,20 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
     )
     compile_context["reference_summary"] = reference_summary
 
+    from core.model_adapter import adapt_ir_to_model
     from core.prompt_ir import build_shot_ir_from_context, serialize_shot_ir
     from core.rule_compiler import compile_rules
     shot_ir = build_shot_ir_from_context(compile_context)
     production_skill_runtime = compile_context.get("production_skill", {})
     shot_ir = compile_rules(shot_ir, production_skill_runtime)
     shot_ir_payload = serialize_shot_ir(shot_ir)
+    target_model = str(
+        compile_context.get("target_model")
+        or compile_context.get("model")
+        or compile_context.get("default_model")
+        or "jimeng"
+    ).strip() or "jimeng"
+    adapter_output = adapt_ir_to_model(shot_ir, target_model)
     compile_context = {
         **compile_context,
         "duration": shot_ir.duration,
@@ -5793,6 +5904,13 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         "shot_purpose": shot_ir.shot_purpose,
         "emotion_arc": shot_ir_payload.get("emotion_arc", {}),
         "shot_ir": shot_ir_payload,
+        "model_adapter": {
+            "target_model": target_model,
+            "adapter": adapter_output.get("adapter", ""),
+            "static_prompt": adapter_output.get("static_prompt", ""),
+            "motion_prompt": adapter_output.get("motion_prompt", ""),
+            "negative_prompt": adapter_output.get("negative_prompt", ""),
+        },
     }
     compile_context["shot_ir_metadata"] = {
         "static_sections": shot_ir.static_sections,
@@ -5828,14 +5946,34 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
             "candidate_output": llm_output,
         })
 
-    prompt_static = str(llm_output.get("visual_prompt_static") or "").strip()
-    prompt_motion = str(llm_output.get("visual_prompt_motion") or "").strip()
-    llm_negative_prompt = str(llm_output.get("negative_prompt") or "").strip()
+    adapter_static_prompt = str(adapter_output.get("static_prompt") or "").strip()
+    adapter_motion_prompt = str(adapter_output.get("motion_prompt") or "").strip()
+    adapter_negative_prompt = str(adapter_output.get("negative_prompt") or "").strip()
+    prompt_static_raw = sanitize_machine_prompt_text(llm_output.get("visual_prompt_static"))
+    prompt_motion_raw = sanitize_machine_prompt_text(llm_output.get("visual_prompt_motion"))
+    llm_negative_prompt = sanitize_machine_prompt_text(llm_output.get("negative_prompt"))
+    adapter_fallback_fields: list[str] = []
+    scene_name_for_prompt = str(compile_context.get("scene_name") or shot.scene_name or "").strip()
+    prompt_static = _ensure_prompt_preserves_scene_name(prompt_static_raw or adapter_static_prompt, scene_name_for_prompt)
+    prompt_motion = prompt_motion_raw or adapter_motion_prompt
+    if not prompt_static_raw and adapter_static_prompt:
+        adapter_fallback_fields.append("visual_prompt_static")
+    if not prompt_motion_raw and adapter_motion_prompt:
+        adapter_fallback_fields.append("visual_prompt_motion")
+    if not llm_negative_prompt and adapter_negative_prompt:
+        adapter_fallback_fields.append("negative_prompt")
     negative_prompt_parts = [llm_negative_prompt] if llm_negative_prompt else [fallback_negative_prompt]
+    if not llm_negative_prompt and adapter_negative_prompt:
+        negative_prompt_parts.insert(0, adapter_negative_prompt)
     negative_prompt_parts.extend([item for item in feedback_constraints if item and item not in llm_negative_prompt])
     negative_prompt = ", ".join([item.strip() for item in negative_prompt_parts if str(item).strip()])
     raw_used_assets = llm_output.get("used_assets", []) if isinstance(llm_output.get("used_assets", []), list) else []
     llm_warnings = [str(item).strip() for item in (llm_output.get("warnings") or []) if str(item).strip()]
+    if adapter_fallback_fields:
+        llm_warnings.append(
+            "Model Adapter 已接管这些缺失的 LLM 编译字段："
+            + "、".join(adapter_fallback_fields)
+        )
     used_assets, missing_locked_assets, overflow_assets = _normalize_compiler_used_assets(raw_used_assets, compile_context)
     used_assets = _supplement_used_assets_from_prompt_mentions(
         used_assets,
@@ -5874,14 +6012,30 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         )
         repaired_output = _call_storyboard_prompt_compiler(repair_context)
         if isinstance(repaired_output, dict):
-            repaired_static = str(repaired_output.get("visual_prompt_static") or "").strip()
-            repaired_motion = str(repaired_output.get("visual_prompt_motion") or "").strip()
-            repaired_negative_raw = str(repaired_output.get("negative_prompt") or "").strip()
+            repaired_static_raw = sanitize_machine_prompt_text(repaired_output.get("visual_prompt_static"))
+            repaired_motion_raw = sanitize_machine_prompt_text(repaired_output.get("visual_prompt_motion"))
+            repaired_negative_raw = sanitize_machine_prompt_text(repaired_output.get("negative_prompt"))
+            repaired_fallback_fields: list[str] = []
+            repaired_static = _ensure_prompt_preserves_scene_name(repaired_static_raw or adapter_static_prompt, scene_name_for_prompt)
+            repaired_motion = repaired_motion_raw or adapter_motion_prompt
+            if not repaired_static_raw and adapter_static_prompt:
+                repaired_fallback_fields.append("visual_prompt_static")
+            if not repaired_motion_raw and adapter_motion_prompt:
+                repaired_fallback_fields.append("visual_prompt_motion")
+            if not repaired_negative_raw and adapter_negative_prompt:
+                repaired_fallback_fields.append("negative_prompt")
             repaired_negative_parts = [repaired_negative_raw] if repaired_negative_raw else [fallback_negative_prompt]
+            if not repaired_negative_raw and adapter_negative_prompt:
+                repaired_negative_parts.insert(0, adapter_negative_prompt)
             repaired_negative_parts.extend([item for item in feedback_constraints if item and item not in repaired_negative_raw])
             repaired_negative = ", ".join([item.strip() for item in repaired_negative_parts if str(item).strip()])
             repaired_raw_used_assets = repaired_output.get("used_assets", []) if isinstance(repaired_output.get("used_assets", []), list) else []
             repaired_llm_warnings = [str(item).strip() for item in (repaired_output.get("warnings") or []) if str(item).strip()]
+            if repaired_fallback_fields:
+                repaired_llm_warnings.append(
+                    "Model Adapter 已接管这些缺失的 LLM 修复字段："
+                    + "、".join(repaired_fallback_fields)
+                )
             repaired_used_assets, repaired_missing_locked_assets, repaired_overflow_assets = _normalize_compiler_used_assets(
                 repaired_raw_used_assets, compile_context
             )
@@ -7877,7 +8031,7 @@ def _complete_reconciled_creative_task(
                 status="selected",
                 prompt=asset.get("prompt") or req.prompt,
                 model=model_name,
-                notes=f"瑙嗚璧勪骇搴撶敓鎴?路 {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}",
+                notes=f"视觉资产库生成 · {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}",
                 meta_info={
                     "source": "visual-asset-library-generate",
                     "taskId": task_id,
@@ -8073,7 +8227,7 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
                     status="selected",
                     prompt=asset.get("prompt") or req.prompt,
                     model=model_name,
-                    notes=f"瑙嗚璧勪骇搴撶敓鎴?路 {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}",
+                    notes=f"视觉资产库生成 · {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}",
                     meta_info={
                         "source": "visual-asset-library-generate",
                         "taskId": task_id,
@@ -8140,6 +8294,44 @@ async def generate_reference_image(req: CreativeGenerationRequest, bg: Backgroun
 @app.post("/api/prototyping/generate-video")
 async def generate_video(req: CreativeGenerationRequest, bg: BackgroundTasks):
     return await _enqueue_creative_task(req, bg, "video")
+
+
+@app.get("/api/prototyping/assets/{asset_id}")
+def get_legacy_prototyping_asset_placeholder(asset_id: str):
+    from fastapi.responses import Response
+    from urllib.parse import quote
+
+    normalized_asset_id = str(asset_id or "legacy-asset").strip()[:80]
+    escaped_asset_id = (
+        normalized_asset_id
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+    svg = f"""
+    <svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+      <defs>
+        <linearGradient id="legacy-preview" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#111827" />
+          <stop offset="100%" stop-color="#020617" />
+        </linearGradient>
+      </defs>
+      <rect width="640" height="360" rx="24" fill="url(#legacy-preview)" />
+      <rect x="32" y="32" width="576" height="296" rx="18" fill="#0f172a" stroke="#64748b" stroke-width="2" stroke-dasharray="10 8" />
+      <text x="56" y="126" fill="#e2e8f0" font-size="30" font-family="Segoe UI, sans-serif">历史预览图不可用</text>
+      <text x="56" y="176" fill="#94a3b8" font-size="20" font-family="Segoe UI, sans-serif">旧原型任务资源已丢失，系统已降级保留任务记录。</text>
+      <text x="56" y="230" fill="#64748b" font-size="16" font-family="Segoe UI, sans-serif">asset: {escaped_asset_id}</text>
+    </svg>
+    """
+    return Response(
+        content=svg,
+        media_type="image/svg+xml",
+        headers={
+            "Cache-Control": "no-store",
+            "X-Legacy-Prototyping-Asset": quote(normalized_asset_id),
+        },
+    )
 
 
 async def _enqueue_creative_task(req: CreativeGenerationRequest, bg: BackgroundTasks, kind: str):
@@ -8989,6 +9181,238 @@ def rollback_storyboard_prompt_to_recommended_version(book_id: int, episode: int
         result = _create_storyboard_prompt_rollback(s, shot, target, req)
         result["recommended_restore_version"] = recommendation
         return result
+
+
+def _preview_storyboard_machine_prompt_export(book_id: int, shot, target_model: str) -> dict:
+    meta_info = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+    if not isinstance(meta_info, dict):
+        meta_info = {}
+
+    seed = {
+        "shot_id": str(shot.shot_id),
+        "scene_name": str(shot.scene_name or "").strip(),
+        "duration": int(shot.duration or 3),
+        "camera_angle": str(shot.camera_angle or "MS").strip(),
+        "camera_movement": str(shot.camera_movement or "static").strip(),
+        "transition": str(shot.transition or "cut").strip(),
+        "start_state": str(shot.start_state or "").strip(),
+        "action_process": str(shot.action_process or "").strip(),
+        "end_state": str(shot.end_state or "").strip(),
+        "dialogue": str(shot.dialogue or "").strip(),
+        "style_key": "default",
+    }
+    structured = _auto_bind_structured_shot_assets(
+        book_id,
+        int(shot.episode),
+        _derive_structured_shot_payload(meta_info, seed),
+        seed,
+    )
+    asset_link_summary = _build_storyboard_reference_summary(
+        _load_asset_links(shot.asset_links),
+        str(shot.scene_name or "").strip(),
+    )
+    compile_context = _build_prompt_compile_context_v2(
+        book_id,
+        shot,
+        structured,
+        {},
+        asset_link_summary,
+    )
+    compile_context["target_model"] = target_model
+    compile_context["reference_summary"] = _build_storyboard_reference_summary_from_bound_assets(
+        compile_context.get("bound_assets", []),
+        str(compile_context.get("scene_name") or shot.scene_name or "").strip(),
+    )
+
+    from core.machine_prompt import (
+        build_director_shot_text,
+        compile_machine_prompt,
+        export_generic_zh_video_webui,
+        export_machine_prompt,
+        export_minimax_h3_webui,
+    )
+    from core.prompt_ir import build_shot_ir_from_context, serialize_shot_ir
+    from core.rule_compiler import compile_rules
+
+    shot_ir = build_shot_ir_from_context(compile_context)
+    shot_ir = compile_rules(shot_ir, compile_context.get("production_skill", {}))
+    system_director_shot_text = build_director_shot_text(shot_ir)
+    director_state = meta_info.get("director_shot_language", {}) if isinstance(meta_info.get("director_shot_language", {}), dict) else {}
+    user_director_shot_text = str(director_state.get("text") or "").strip()
+    director_shot_text = user_director_shot_text or system_director_shot_text
+    machine_prompt = compile_machine_prompt(
+        shot_ir,
+        reference_images=compile_context.get("reference_images", []),
+        reference_summary=compile_context.get("reference_summary", ""),
+        director_shot_text=director_shot_text,
+    )
+    return {
+        "mode": "readonly_machine_prompt_export_preview",
+        "book_id": book_id,
+        "episode": int(shot.episode),
+        "shot_id": int(shot.shot_id),
+        "scene_name": str(shot.scene_name or "").strip(),
+        "target_model": target_model,
+        "api_submission": False,
+        "source_layers": {
+            "director_shot_text_is_user_editable": True,
+            "director_shot_text_source": "user_override" if user_director_shot_text else "system_generated",
+            "has_user_director_shot_override": bool(user_director_shot_text),
+            "machine_prompt_is_compiled": True,
+            "model_export_is_submission_ready_but_not_submitted": True,
+        },
+        "director_shot_text": director_shot_text,
+        "system_director_shot_text": system_director_shot_text,
+        "structured_shot": structured,
+        "shot_ir": serialize_shot_ir(shot_ir),
+        "machine_prompt": machine_prompt,
+        "model_exports": {
+            target_model: export_machine_prompt(machine_prompt, target_model),
+            "minimax-h3": export_minimax_h3_webui(machine_prompt),
+            "generic-zh-video": export_generic_zh_video_webui(machine_prompt),
+        },
+        "bound_asset_count": len(compile_context.get("bound_assets", [])),
+        "reference_image_count": len(compile_context.get("reference_images", [])),
+        "warnings": compile_context.get("warnings", []),
+    }
+
+
+@app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/machine-prompt-export")
+def get_storyboard_machine_prompt_export(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    target_model: str = Query(default="minimax-h3", alias="target_model"),
+):
+    from models import Session, StoryboardShot
+
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id == _coerce_storyboard_shot_id(shot_id),
+        ).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        return _preview_storyboard_machine_prompt_export(book_id, shot, str(target_model or "minimax-h3").strip() or "minimax-h3")
+
+
+@app.patch("/api/books/{book_id}/storyboard/{episode}/{shot_id}/director-shot-text")
+def update_storyboard_director_shot_text(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    req: StoryboardDirectorShotTextUpdateRequest,
+    target_model: str = Query(default="minimax-h3", alias="target_model"),
+):
+    from models import Session, StoryboardShot
+
+    target_model = str(target_model or "minimax-h3").strip() or "minimax-h3"
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id == _coerce_storyboard_shot_id(shot_id),
+        ).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+
+        meta_info = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+        if not isinstance(meta_info, dict):
+            meta_info = {}
+
+        if req.reset_to_system:
+            meta_info.pop("director_shot_language", None)
+        else:
+            director_text = str(req.director_shot_text or "").strip()
+            if not director_text:
+                raise HTTPException(status_code=400, detail="director_shot_text is required unless reset_to_system is true")
+            meta_info["director_shot_language"] = {
+                "text": director_text,
+                "source": "user_override",
+                "operator_name": str(req.operator_name or "user").strip() or "user",
+                "updated_at": datetime.utcnow().isoformat(),
+                "does_not_overwrite_shot_schema": True,
+                "does_not_create_prompt_version": True,
+            }
+
+        shot.meta_info = json.dumps(meta_info, ensure_ascii=False)
+        shot.updated_at = datetime.utcnow()
+        s.commit()
+        s.refresh(shot)
+        return _preview_storyboard_machine_prompt_export(book_id, shot, target_model)
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/machine-prompt-export-records")
+def create_storyboard_machine_prompt_export_record(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    req: StoryboardMachinePromptExportRecordRequest,
+):
+    from models import ProductionExportRecord, Session, StoryboardShot
+
+    target_model = str(req.target_model or "minimax-h3").strip() or "minimax-h3"
+    export_channel = str(req.export_channel or "webui").strip() or "webui"
+    now = datetime.utcnow()
+
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id == _coerce_storyboard_shot_id(shot_id),
+        ).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+
+        preview = _preview_storyboard_machine_prompt_export(book_id, shot, target_model)
+        scene_name = str(preview.get("scene_name") or getattr(shot, "scene_name", "") or "").strip()
+        summary_parts = [
+            f"第 {int(getattr(shot, 'episode', episode) or episode)} 集",
+            f"镜头 {getattr(shot, 'shot_id', shot_id)}",
+        ]
+        if scene_name:
+            summary_parts.append(scene_name)
+        summary_parts.append(f"{target_model} {export_channel.upper()} 机器提示词导出快照")
+        summary_parts.append("API 未提交")
+
+        meta_info = {
+            "record_type": "storyboard_machine_prompt_export",
+            "api_submission": False,
+            "target_model": target_model,
+            "export_channel": export_channel,
+            "operator_name": str(req.operator_name or "user").strip() or "user",
+            "notes": str(req.notes or "").strip(),
+            "book_id": book_id,
+            "episode": int(getattr(shot, "episode", episode) or episode),
+            "shot_id": int(getattr(shot, "shot_id", 0) or 0),
+            "scene_name": scene_name,
+            "director_shot_text": preview.get("director_shot_text", ""),
+            "machine_prompt": preview.get("machine_prompt", {}),
+            "model_exports": preview.get("model_exports", {}),
+            "reference_image_count": int(preview.get("reference_image_count") or 0),
+            "bound_asset_count": int(preview.get("bound_asset_count") or 0),
+            "warnings": preview.get("warnings", []),
+            "source_layers": preview.get("source_layers", {}),
+        }
+
+        row = ProductionExportRecord(
+            book_id=book_id,
+            export_format=f"storyboard-machine-prompt-{target_model}-{export_channel}",
+            status="completed",
+            total_shots=1,
+            deliverable_shots=1,
+            pending_review_shots=0,
+            blocked_shots=0,
+            summary=" · ".join(summary_parts),
+            meta_info=json.dumps(meta_info, ensure_ascii=False),
+            created_at=now,
+            updated_at=now,
+        )
+        s.add(row)
+        s.commit()
+        s.refresh(row)
+        return _serialize_production_export_record(row)
 
 
 @app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/compile-prompts")

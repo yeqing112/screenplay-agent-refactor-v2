@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-08-26T00:42:34.889538",
+  "mode": "real-project-apply",
+  "compilerMode": "deterministic-mock",
+  "confirmationToken": "cc2cb2ec0fc5ef36",
+  "summary": {
+    "samples": 1,
+    "before_errors": 1,
+    "before_warnings": 3,
+    "after_errors": 0,
+    "after_warnings": 1,
+    "error_reduction": 1,
+    "warning_reduction": 2
+  },
+  "results": [
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 23,
+      "scene_name": "寺庙井边·夜晚",
+      "before_audit": {
+        "issues": [
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 202,
+          "motion": 174
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "scene_name_not_in_static_prompt"
+        ],
+        "prompt_lengths": {
+          "static": 583,
+          "motion": 184
+        },
+        "structured_scene_asset_id": "140"
+      },
+      "baseline_anchor": {
+        "version_id": 463,
+        "version": 2,
+        "compile_reason": "batch-quality-repair-current-baseline"
+      },
+      "applied_version": {
+        "version_id": 464,
+        "version": 3,
+        "compile_reason": "batch-quality-repair-confirmed"
+      },
+      "apply_mode": "deterministic-mock",
+      "rollback": {
+        "method": "POST",
+        "path": "/api/books/14/storyboard/1/23/prompt-versions/463/rollback",
+        "body": {
+          "reason": "batch-quality-repair-rollback"
+        }
+      }
+    }
+  ]
+}

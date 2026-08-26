@@ -1,0 +1,429 @@
+{
+  "generatedAt": "2026-08-24T20:53:55.983553",
+  "mode": "read-only-scene-asset-readiness",
+  "confirmationToken": "952399f54c81c828",
+  "summary": {
+    "books": 3,
+    "blocked_books": 0,
+    "storyboard_shots": 75,
+    "visual_locations": 40,
+    "visual_reference_assets": 6,
+    "unique_scene_names": 11,
+    "missing_scene_names": 0,
+    "affected_shots": 0,
+    "production_blocking_scene_names": 11,
+    "production_affected_shots": 75,
+    "ready_for_binding_repair_apply": true,
+    "ready_for_prompt_batch_apply": false
+  },
+  "results": [
+    {
+      "book_id": 5,
+      "book_title": "神农架历险记",
+      "storyboard_shots": 20,
+      "visual_locations": 32,
+      "visual_reference_assets": 4,
+      "unique_scene_names": 3,
+      "ready_scene_names": 3,
+      "missing_scene_names": 0,
+      "affected_shots": 0,
+      "production_blocking_scene_names": 3,
+      "production_affected_shots": 20,
+      "status": "ready",
+      "production_status": "blocked",
+      "scenes": [
+        {
+          "scene_name": "部落营地",
+          "shot_count": 8,
+          "shots": [
+            "1-13",
+            "1-14",
+            "1-15",
+            "1-16",
+            "1-17",
+            "1-18",
+            "1-19",
+            "1-20"
+          ],
+          "matched_location_id": "109",
+          "matched_location_name": "神农部落营地",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        },
+        {
+          "scene_name": "原始丛林上空",
+          "shot_count": 6,
+          "shots": [
+            "1-1",
+            "1-2",
+            "1-3",
+            "1-4",
+            "1-5",
+            "1-6"
+          ],
+          "matched_location_id": "120",
+          "matched_location_name": "原始丛林林间空地",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 1,
+          "reference_image_count": 1,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [
+            {
+              "reference_id": 45,
+              "source": "https://cdn.doculator.org/images/X4AC136BLB0NGYF8/image_20260716065318_9BzsQ3.png",
+              "width": 0,
+              "height": 0,
+              "aspect_ratio": 0,
+              "landscape_ok": false,
+              "error": "HTTP Error 404: Not Found"
+            }
+          ],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 1,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有符合横构图比例的 selected/locked 参考图"
+          ]
+        },
+        {
+          "scene_name": "原始丛林深处",
+          "shot_count": 6,
+          "shots": [
+            "1-7",
+            "1-8",
+            "1-9",
+            "1-10",
+            "1-11",
+            "1-12"
+          ],
+          "matched_location_id": "121",
+          "matched_location_name": "原始森林深处",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        }
+      ]
+    },
+    {
+      "book_id": 3,
+      "book_title": "金丝雀",
+      "storyboard_shots": 34,
+      "visual_locations": 5,
+      "visual_reference_assets": 0,
+      "unique_scene_names": 5,
+      "ready_scene_names": 5,
+      "missing_scene_names": 0,
+      "affected_shots": 0,
+      "production_blocking_scene_names": 5,
+      "production_affected_shots": 34,
+      "status": "ready",
+      "production_status": "blocked",
+      "scenes": [
+        {
+          "scene_name": "地下赌场VIP包厢",
+          "shot_count": 8,
+          "shots": [
+            "1-1",
+            "1-2",
+            "1-3",
+            "1-4",
+            "1-5",
+            "1-6",
+            "1-7",
+            "1-8"
+          ],
+          "matched_location_id": "93",
+          "matched_location_name": "地下赌场VIP包厢",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        },
+        {
+          "scene_name": "宋氏大厦顶层办公室",
+          "shot_count": 8,
+          "shots": [
+            "1-15",
+            "1-16",
+            "1-17",
+            "1-18",
+            "1-19",
+            "1-20",
+            "1-21",
+            "1-22"
+          ],
+          "matched_location_id": "94",
+          "matched_location_name": "宋氏大厦顶层办公室",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        },
+        {
+          "scene_name": "公立医院病房",
+          "shot_count": 6,
+          "shots": [
+            "1-9",
+            "1-10",
+            "1-11",
+            "1-12",
+            "1-13",
+            "1-14"
+          ],
+          "matched_location_id": "92",
+          "matched_location_name": "公立医院病房",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        },
+        {
+          "scene_name": "现代简约别墅客厅",
+          "shot_count": 6,
+          "shots": [
+            "1-23",
+            "1-24",
+            "1-25",
+            "1-26",
+            "1-27",
+            "1-28"
+          ],
+          "matched_location_id": "96",
+          "matched_location_name": "现代简约别墅客厅",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        },
+        {
+          "scene_name": "高端私人会所走廊",
+          "shot_count": 6,
+          "shots": [
+            "1-29",
+            "1-30",
+            "1-31",
+            "1-32",
+            "1-33",
+            "1-34"
+          ],
+          "matched_location_id": "95",
+          "matched_location_name": "高端私人会所走廊",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        }
+      ]
+    },
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "storyboard_shots": 21,
+      "visual_locations": 3,
+      "visual_reference_assets": 2,
+      "unique_scene_names": 3,
+      "ready_scene_names": 3,
+      "missing_scene_names": 0,
+      "affected_shots": 0,
+      "production_blocking_scene_names": 3,
+      "production_affected_shots": 21,
+      "status": "ready",
+      "production_status": "blocked",
+      "scenes": [
+        {
+          "scene_name": "陈二蛋与大凤的卧室",
+          "shot_count": 8,
+          "shots": [
+            "1-14",
+            "1-15",
+            "1-16",
+            "1-17",
+            "1-18",
+            "1-19",
+            "1-20",
+            "1-21"
+          ],
+          "matched_location_id": "89",
+          "matched_location_name": "陈二蛋与大凤的卧室",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 1,
+          "reference_image_count": 1,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [
+            {
+              "reference_id": 30,
+              "source": "data:image/svg+xml,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22640%22%20height%3D%22360%22%20viewBox%3D%220%200%20640%20360%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f172a%22%20/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23020617%22%20/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22640%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22url%28%23g%29%22%20/%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2230%22%20y%3D%2230%22%20width%3D%22580%22%20height%3D%22300%22%20rx%3D%2218%22%20fill%3D%22%230b1220%22%20stroke%3D%22%23eab308%22%20stroke-width%3D%222%22%20/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2288%22%20r%3D%2216%22%20fill%3D%22%23eab308%22%20/%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22122%22%20y%3D%2294%22%20fill%3D%22%23e2e8f0%22%20font-size%3D%2226%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3E%E9%99%88%E4%BA%8C%E8%9B%8B%E4%B8%8E%E5%A4%A7%E5%87%A4%E7%9A%84%E5%8D%A7%E5%AE%A4%20%E5%8F%82%E8%80%83%E5%9B%BE%20v1%3C/text%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2244%22%20y%3D%22146%22%20fill%3D%22%2394a3b8%22%20font-size%3D%2218%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3Emock-image-v1%3C/text%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2244%22%20y%3D%22302%22%20fill%3D%22%2364748b%22%20font-size%3D%2215%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3E%E7%94%B1%E5%8E%9F%E5%9E%8B%E5%B7%A5%E4%BD%9C%E5%8F%B0%E4%BB%BB%E5%8A%A1%E9%80%82%E9%85%8D%E5%B1%82%E7%94%9F%E6%88%90%E5%B9%B6%E5%9B%9E%E5%A1%AB%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20",
+              "width": 0,
+              "height": 0,
+              "aspect_ratio": 0,
+              "landscape_ok": false,
+              "error": "[Errno 22] Invalid argument: 'D:\\\\Work\\\\Project\\\\screenplay-agent-refactor-v2\\\\data:image\\\\svg+xml,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A\\\\www.w3.org\\\\2000\\\\svg%22%20width%3D%22640%22%20height%3D%22360%22%20viewBox%3D%220%200%20640%20360%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f172a%22%20\\\\%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23020617%22%20\\\\%3E%0A%20%20%20%20%20%20%20%20%3C\\\\linearGradient%3E%0A%20%20%20%20%20%20%3C\\\\defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22640%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22url%28%23g%29%22%20\\\\%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2230%22%20y%3D%2230%22%20width%3D%22580%22%20height%3D%22300%22%20rx%3D%2218%22%20fill%3D%22%230b1220%22%20stroke%3D%22%23eab308%22%20stroke-width%3D%222%22%20\\\\%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2288%22%20r%3D%2216%22%20fill%3D%22%23eab308%22%20\\\\%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22122%22%20y%3D%2294%22%20fill%3D%22%23e2e8f0%22%20font-size%3D%2226%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3E%E9%99%88%E4%BA%8C%E8%9B%8B%E4%B8%8E%E5%A4%A7%E5%87%A4%E7%9A%84%E5%8D%A7%E5%AE%A4%20%E5%8F%82%E8%80%83%E5%9B%BE%20v1%3C\\\\text%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2244%22%20y%3D%22146%22%20fill%3D%22%2394a3b8%22%20font-size%3D%2218%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3Emock-image-v1%3C\\\\text%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%2244%22%20y%3D%22302%22%20fill%3D%22%2364748b%22%20font-size%3D%2215%22%20font-family%3D%22Segoe%20UI%2C%20sans-serif%22%3E%E7%94%B1%E5%8E%9F%E5%9E%8B%E5%B7%A5%E4%BD%9C%E5%8F%B0%E4%BB%BB%E5%8A%A1%E9%80%82%E9%85%8D%E5%B1%82%E7%94%9F%E6%88%90%E5%B9%B6%E5%9B%9E%E5%A1%AB%3C\\\\text%3E%0A%20%20%20%20%3C\\\\svg%3E%0A%20%20%20%20'"
+            }
+          ],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 1,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有符合横构图比例的 selected/locked 参考图"
+          ]
+        },
+        {
+          "scene_name": "陈二蛋家厨房",
+          "shot_count": 7,
+          "shots": [
+            "1-7",
+            "1-8",
+            "1-9",
+            "1-10",
+            "1-11",
+            "1-12",
+            "1-13"
+          ],
+          "matched_location_id": "90",
+          "matched_location_name": "陈二蛋家厨房",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        },
+        {
+          "scene_name": "麻栗山村口空地",
+          "shot_count": 6,
+          "shots": [
+            "1-1",
+            "1-2",
+            "1-3",
+            "1-4",
+            "1-5",
+            "1-6"
+          ],
+          "matched_location_id": "91",
+          "matched_location_name": "麻栗山村口空地",
+          "status": "ready",
+          "matched_asset_status": "draft",
+          "reference_total": 0,
+          "reference_image_count": 0,
+          "reference_dimension_validation_enabled": true,
+          "active_reference_dimensions": [],
+          "landscape_reference_count": 0,
+          "locked_reference_count": 0,
+          "selected_reference_count": 0,
+          "candidate_reference_count": 0,
+          "production_status": "needs_refinement",
+          "production_issues": [
+            "场景资产状态仍为 draft",
+            "场景资产没有 selected/locked 参考图",
+            "场景资产参考图尺寸未验证"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "generatedAt": "2026-08-26T05:36:03.008411",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "deterministic-mock",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 1,
+    "passed": 1,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "compiler_warnings": 2
+  },
+  "results": [
+    {
+      "book_id": 14,
+      "book_title": "三个和尚",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "水房·清晨",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 298,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "133"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "deterministic-mock",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 696,
+          "motion": 157
+        },
+        "structured_scene_asset_id": "160"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "compiler_diagnostics_summary": {
+        "status": "warning",
+        "warnings": [
+          "deterministic clone repair uses Model Adapter baseline",
+          "静态提示词对这些资产的首轮视觉事实继承不足：木桶。"
+        ],
+        "blocking_issues": [],
+        "failed_checks": [
+          {
+            "key": "visual_fact_target_coverage",
+            "message": "这些资产没有满足首轮编译要求的视觉事实覆盖：木桶",
+            "details": [
+              "木桶：至少补入 1 条视觉事实 / 木质或竹编水桶 / 圆柱形；木质水桶 / 圆柱形"
+            ]
+          }
+        ]
+      },
+      "repair_attempted": true,
+      "prompt_lengths": {
+        "static": 696,
+        "motion": 157
+      },
+      "compiled_prompt_preview": {
+        "static": "寺庙后院水房（@寺庙后院水房），远景构图，第一帧只描述当前镜头开始瞬间。主体人物为和尚丙（@和尚丙）、和尚乙（@和尚乙）、和尚甲（@和尚甲），外观、脸部、发型和服装严格继承绑定参考资产。关键道具为木桶（@acceptance-bucket-browser-20260721），位置与状态清晰可见。视觉事实包括寺庙后院水房（@寺庙后院水房）保留寺庙后院的水房，青石板铺地，中央一口老井，井口由青石砌成，边缘光滑，四周为灰白色墙壁，木结构梁柱，屋檐低垂，光线昏暗，墙边摆放木架，地面湿漉漉，映着天光；中式寺庙后院建筑，青石板地面，半开放式水房；和尚丙（@和尚丙）保留和尚（寺庙僧侣）；懒散、轻慢、爱欺负新人、略显粗鄙；和尚乙（@和尚乙）保留和尚（寺庙僧侣）；懒散、轻慢、略显粗鄙。当前镜头必须保留以下视觉细节，寺庙后院水房需保留寺庙后院的水房，青石板铺地，中央一口老井，井口由青石砌成，边缘光滑，四周为灰白色墙壁，木结构梁柱，屋檐低垂，光线昏暗，墙边摆放木架，地面湿漉漉，映着天光；寺庙后院水房需保留中式寺庙后院建筑，青石板地面，半开放式水房；寺庙后院水房需保留清晨朦胧天光，冷灰色调，微弱散射光；寺庙后院水房需保留青灰、土黄、深褐；和尚丙需保留和尚（寺庙僧侣）；和尚丙需保留懒散、轻慢、爱欺负新人、略显粗鄙；和尚丙需保留青年和尚，中等体型，略显懒散，剃光头，灰色旧僧袍，随意不羁的气质，一副混日子的僧人模样；和尚丙需保留剃度光头，头皮干净无发茬，头顶有淡淡青色。起始状态为画面开场，一桶冷水劈头盖脸泼下来。光线氛围为natural。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion": "3秒内，镜头缓慢向主体推进，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。随后画面开场，一桶冷水劈头盖脸泼下来。结束落点为画面转为和尚丙拎着空木桶，站在和尚甲面前，满脸得意。和尚乙倚在门框上，双手抱胸，嘴角挂着阴恻恻的笑。。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "160",
+        "character_asset_ids": [
+          "585",
+          "584",
+          "583"
+        ],
+        "prop_asset_ids": [
+          "302"
+        ],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "push-in",
+        "duration": 3
+      }
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-08-24T15:31:56.456951",
+  "mode": "real-apply",
+  "planPath": "artifacts/book75-scene-reference-plan.json",
+  "summary": {
+    "updates": 2,
+    "updated": 2,
+    "blocked": 0
+  },
+  "results": [
+    {
+      "scene_name": "便利店收银台",
+      "location_id": 159,
+      "formal_description": "深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感；窗外街道漆黑，室内商品标签有刺眼反光。",
+      "lighting_mood": "惨白荧光灯，从头顶直射，制造生硬阴影。货架商品标签反光刺眼。；门口外部黑暗，男人进入时，荧光灯光从其背后勾勒轮廓，面部处于阴影中。；台面上方灯光聚焦，突出烟盒与照片。男人手部和林小夏的手部在光区，其余较暗。；顶光直射照片表面和林小夏的眼睛，照片折痕和灰尘清晰可见，瞳孔反射灯光。",
+      "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+      "jimeng_ref_name": "@便利店收银台",
+      "shot_ids": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4",
+        "1-5",
+        "1-6"
+      ],
+      "status": "updated",
+      "selected_or_locked_references": 1,
+      "cleaned_reference_notes": 1
+    },
+    {
+      "scene_name": "监控室",
+      "location_id": 158,
+      "formal_description": "便利店后方狭小监控室，墙面布满监控屏，桌面有主机、键盘、杂乱线缆、塑料包装和饮料杯；主要光源来自蓝绿色监控屏幕与主机指示灯，空间昏暗、封闭、带轻微噪点和压迫感。",
+      "lighting_mood": "昏暗，仅屏幕蓝光与主机指示灯微弱闪烁，主要光源来自监控屏幕，照亮人物上半身。；主光为监控屏幕冷光，映照在林小夏面部，突显她瞳孔的变化。阴影加重。；屏幕像素点光斑，强烈反差，突出照片轮廓。；屏幕冷光成为唯一光源，照亮林小夏上半身和杂乱桌面，人物背后陷入黑暗。",
+      "negative_prompt": "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰",
+      "jimeng_ref_name": "@监控室",
+      "shot_ids": [
+        "1-7",
+        "1-8",
+        "1-9",
+        "1-10",
+        "1-11",
+        "1-12",
+        "1-13",
+        "1-14"
+      ],
+      "status": "updated",
+      "selected_or_locked_references": 1,
+      "cleaned_reference_notes": 1
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-08-26T05:55:31.695015",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "real-llm",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 1,
+    "passed": 1,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "total_elapsed_seconds": 79.64,
+    "average_elapsed_seconds": 79.64,
+    "max_elapsed_seconds": 79.64,
+    "compiler_warnings": 2
+  },
+  "results": [
+    {
+      "book_id": 1,
+      "book_title": "苗疆道事",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "麻栗山村口空地",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 884,
+          "motion": 165
+        },
+        "structured_scene_asset_id": "91"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "real-llm",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 264,
+          "motion": 140
+        },
+        "structured_scene_asset_id": "162"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "compiler_diagnostics_summary": {
+        "status": "warning",
+        "warnings": [
+          "场景资产“麻栗山村口空地”还没有参考图。",
+          "这些绑定资产还没有参考图：麻栗山村口空地。"
+        ],
+        "blocking_issues": [],
+        "failed_checks": [
+          {
+            "key": "asset_reference_coverage",
+            "message": "缺少参考图：麻栗山村口空地",
+            "details": []
+          }
+        ]
+      },
+      "repair_attempted": false,
+      "prompt_lengths": {
+        "static": 264,
+        "motion": 140
+      },
+      "timings": {
+        "clone_seconds": 0.047,
+        "compile_seconds": 79.562,
+        "audit_seconds": 0.016,
+        "rollback_seconds": 0.015,
+        "rollback_verify_seconds": 0.0
+      },
+      "elapsed_seconds": 79.64,
+      "compiled_prompt_preview": {
+        "static": "正午毒辣阳光下的麻栗山村口空地，远景构图。地面为黄泥土干裂起灰，空地边缘散落几块青石板，四周环绕着湘西苗疆风格的木结构吊脚楼，悬山青瓦，外墙斑驳露出竹筋。空地中央有一口老石碾。远处背景是喀斯特山峰与梯田，天空湛蓝无云，空气热浪蒸腾。陈二蛋（@陈二蛋）蹲在圆心背对镜头，身穿深蓝粗布对襟短褂，衣襟有蜡染驱邪纹样，灰色粗布长裤膝盖和臀部有对称补丁，脚穿草鞋，腰系灰色粗布袋。他肤色苍白带青灰调，嘴唇无血色，婴儿肥未褪但脸型略消瘦，纯黑无眼白眼眸大而深邃。六个村童站成松散圆圈围绕，其中大胖叉腰朝地上吐口水。画面氛围压抑，充满羞辱感。",
+        "motion": "镜头固定不动，保持首帧远景构图。开始时，大胖叉腰朝地上吐口水，陈二蛋蹲在圆心纹丝不动。过程中，其他孩子有的转头看大胖，有的盯着陈二蛋，情绪逐渐紧张。结束时，大胖保持叉腰姿态，狗剩弯腰准备捡石头，陈二蛋仍蹲着低头。全程人物服装、发型、妆面与场景布局与首帧保持一致，无变形或新增元素。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移，表情僵硬，动作不自然"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "162",
+        "character_asset_ids": [
+          "585"
+        ],
+        "prop_asset_ids": [],
+        "action_beats_count": 1,
+        "camera_angle": "WS",
+        "camera_movement": "static",
+        "duration": 4
+      }
+    }
+  ]
+}

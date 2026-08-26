@@ -1,0 +1,86 @@
+{
+  "generatedAt": "2026-08-26T05:45:48.858957",
+  "mode": "clone-only-gray-validation",
+  "compilerMode": "deterministic-mock",
+  "tempBookId": 999905,
+  "summary": {
+    "samples": 1,
+    "passed": 1,
+    "failed": 0,
+    "after_errors": 0,
+    "after_warnings": 0,
+    "total_elapsed_seconds": 0.157,
+    "average_elapsed_seconds": 0.157,
+    "max_elapsed_seconds": 0.157,
+    "compiler_warnings": 1
+  },
+  "results": [
+    {
+      "book_id": 75,
+      "book_title": "深夜便利店",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "便利店收银台",
+      "source_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 898,
+          "motion": 192
+        },
+        "structured_scene_asset_id": "159"
+      },
+      "passed": true,
+      "failure_stage": null,
+      "compiler_mode": "deterministic-mock",
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 990,
+          "motion": 189
+        },
+        "structured_scene_asset_id": "161"
+      },
+      "compiled_version": 2,
+      "diagnostics_status": "warning",
+      "compiler_diagnostics_summary": {
+        "status": "warning",
+        "warnings": [
+          "deterministic clone repair uses Model Adapter baseline"
+        ],
+        "blocking_issues": [],
+        "failed_checks": []
+      },
+      "repair_attempted": false,
+      "prompt_lengths": {
+        "static": 990,
+        "motion": 189
+      },
+      "timings": {
+        "clone_seconds": 0.047,
+        "compile_seconds": 0.094,
+        "audit_seconds": 0.0,
+        "rollback_seconds": 0.016,
+        "rollback_verify_seconds": 0.0
+      },
+      "elapsed_seconds": 0.157,
+      "compiled_prompt_preview": {
+        "static": "便利店收银台（@便利店收银台），中景构图，第一帧只描述当前镜头开始瞬间。主体人物为林小夏（@林小夏），外观、脸部、发型和服装严格继承绑定参考资产。视觉事实包括便利店收银台（@便利店收银台）保留深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感，窗外街道漆黑，室内商品标签有刺眼反光；惨白荧光灯，从头顶直射，制造生硬阴影，货架商品标签反光刺眼，门口外部黑暗，男人进入时，荧光灯光…；林小夏（@林小夏）保留人物定妆设定板，展示同一个角色的六个视角，上排为脸部特写，正面、侧面、45度，下排为全身展示，正面、侧面、背面，六个视角必须是同一个人，保持面部一致性、发型一致性、服装一致性、体型一致性，人物为，青年(18-35)岁的中国人物，身份是便利店…。当前镜头必须保留以下视觉细节，便利店收银台需保留深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架、冰美式、玻璃门、门铃和两侧货架形成压迫感，窗外街道漆黑，室内商品标签有刺眼反光；便利店收银台需保留惨白荧光灯，从头顶直射，制造生硬阴影，货架商品标签反光刺眼，门口外部黑暗，男人进入时，荧光灯光从其背后勾勒轮廓，面部处于阴影中，台面上方灯光聚焦，突出烟盒与照片，男人手部和林小夏的手部在光区，其余较暗，顶光直射照片表面和林小夏的眼睛，照片折痕和灰尘清晰可见，瞳孔反射灯光；林小夏需保留人物定妆设定板，展示同一个角色的六个视角，上排为脸部特写，正面、侧面、45度，下排为全身展示，正面、侧面、背面，六个视角必须是同一个人，保持面部一致性、发型一致性、服装一致性、体型一致性，人物为，青年(18-35)岁的中国人物，身份是便利店员工（推测），气质百无聊赖、有气无力，外貌特征，五官稳定，角色识别度明确，适合影视化建模，黑色短发或束发、保持人物识别度，中等体型、站姿标准、轮廓清楚，表情自然克制，适合影视角色建模；林小夏需保留黑色短发或束发，保持人物识别度；林小夏需保留符合便利店员工（推测）身份的基础服装，材质朴素，细节克制；林小夏需保留无明显配饰。起始状态为林小夏倚在收银台后，眼皮耷拉，指尖缓慢敲击台面，目光偶尔快速瞥向监控屏幕。。光线氛围为惨白荧光灯，从头顶直射，制造生硬阴影。货架商品标签反光刺眼。。画面具备清晰空间层次、稳定构图、电影感光影和可追溯资产一致性。",
+        "motion": "3秒内，镜头固定不动，保持首帧构图、场景、人物身份、服装、发型和关键道具连续一致。随后林小夏维持慵懒姿态，眼神看似涣散。她打哈欠，说话。目光扫向空无一人的街道。突然，风铃声响起。她身体几不可查地一僵。。结束落点为林小夏身体微微绷直，脸上重新堆起标准但疲倦的欢迎表情，目光锁定在即将进入画面的门口方向。。全过程不改变脸型、服装、场景布局和道具状态，不出现突然变形或无依据新增元素。",
+        "negative": "低质量，模糊，字幕，水印，logo，人物变形，多余手指，错误服装，错误场景，身份漂移"
+      },
+      "compiled_structured_summary": {
+        "scene_asset_id": "161",
+        "character_asset_ids": [
+          "585"
+        ],
+        "prop_asset_ids": [],
+        "action_beats_count": 1,
+        "camera_angle": "MS",
+        "camera_movement": "static",
+        "duration": 3
+      }
+    }
+  ]
+}
