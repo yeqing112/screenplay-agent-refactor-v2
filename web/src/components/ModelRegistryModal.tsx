@@ -299,11 +299,11 @@ export function suggestedPoyoModelNames(capability: ModelCapability) {
 }
 
 export function recommendedPoyoPresetId(capability: Extract<ModelCapability, 'image' | 'video'>) {
-  return capability === 'image' ? 'preset-poyo-image-seedream-5-lite' : 'preset-poyo-video-seedance-2'
+  return capability === 'image' ? 'preset-poyo-image-gpt-image-2' : ''
 }
 
 export function recommendedPoyoPresetLabel(capability: Extract<ModelCapability, 'image' | 'video'>) {
-  return capability === 'image' ? 'PoYo Seedream 5 Lite' : 'PoYo Seedance 2'
+  return capability === 'image' ? 'PoYo GPT Image 2' : 'MiniMax H3（待接入）'
 }
 
 export function suggestedDefaultParamsText(capability: ModelCapability, provider: string, modelName = '') {
@@ -903,7 +903,7 @@ export default function ModelRegistryModal({
     await saveProfiles(profiles, { ...defaults, [capability]: profileId })
   }, [defaults, profiles, saveProfiles])
 
-  const applyRecommendedPoyoDefault = useCallback(async (capability: Extract<ModelCapability, 'image' | 'video'>) => {
+  const applyRecommendedPoyoDefault = useCallback(async (capability: Extract<ModelCapability, 'image'>) => {
     const profileId = recommendedPoyoPresetId(capability)
     const exists = profiles.some((item) => item.id === profileId)
     if (!exists) {
@@ -937,7 +937,6 @@ export default function ModelRegistryModal({
     })
     const nextDefaults = { ...defaults }
     if (!nextDefaults.image || !nextProfiles.some((item) => item.id === nextDefaults.image)) nextDefaults.image = recommendedPoyoPresetId('image')
-    if (!nextDefaults.video || !nextProfiles.some((item) => item.id === nextDefaults.video)) nextDefaults.video = recommendedPoyoPresetId('video')
     await saveProfiles(nextProfiles, nextDefaults)
     const summary = [
       createdCount > 0 ? `created ${createdCount}` : null,
@@ -946,7 +945,7 @@ export default function ModelRegistryModal({
     ].filter(Boolean).join(', ')
     setFeedback({
       tone: 'success',
-      text: `PoYo presets synced${summary ? `: ${summary}.` : '.'} Recommended defaults remain PoYo Seedream 5 Lite and PoYo Seedance 2.`,
+      text: `PoYo presets synced${summary ? `: ${summary}.` : '.'} Image default remains PoYo GPT Image 2; video default is preserved until MiniMax H3 is added.`,
     })
   }, [defaults, profiles, saveProfiles])
 
@@ -1096,9 +1095,9 @@ export default function ModelRegistryModal({
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-300">显示 {filteredGrouped[capability].length} 个</div>
-                    {(capability === 'image' || capability === 'video') ? (
+                    {capability === 'image' ? (
                       <button onClick={() => void applyRecommendedPoyoDefault(capability)} className="rounded-full border border-emerald-600/60 px-3 py-1 text-xs text-emerald-200 transition hover:border-emerald-400 hover:text-white">
-                        使用推荐默认
+                        使用 GPT Image 2 默认
                       </button>
                     ) : null}
                     {(capability === 'image' || capability === 'video') ? (

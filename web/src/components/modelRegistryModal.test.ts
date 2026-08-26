@@ -21,9 +21,9 @@ describe('ModelRegistryModal helpers', () => {
     expect(providerOptionsForCapability('embedding')).not.toContain('poyo-async')
   })
 
-  it('exposes the recommended poyo defaults for image and video', () => {
-    expect(recommendedPoyoPresetId('image')).toBe('preset-poyo-image-seedream-5-lite')
-    expect(recommendedPoyoPresetId('video')).toBe('preset-poyo-video-seedance-2')
+  it('keeps GPT Image 2 as the image default and leaves video waiting for MiniMax H3', () => {
+    expect(recommendedPoyoPresetId('image')).toBe('preset-poyo-image-gpt-image-2')
+    expect(recommendedPoyoPresetId('video')).toBe('')
   })
 
   it('builds eight PoYo preset profiles with recommended defaults and capabilities', () => {

@@ -107,16 +107,14 @@ export default function ProductWorkspaceModelsSection() {
   const recommendedIds = useMemo(
     () => ({
       image: recommendedPoyoPresetId('image'),
-      video: recommendedPoyoPresetId('video'),
     }),
     [],
   )
 
   const recommendationStatus = useMemo(() => {
     const imageReady = defaults.image?.id === recommendedIds.image
-    const videoReady = defaults.video?.id === recommendedIds.video
-    return { imageReady, videoReady, allReady: imageReady && videoReady }
-  }, [defaults.image?.id, defaults.video?.id, recommendedIds.image, recommendedIds.video])
+    return { imageReady, allReady: imageReady }
+  }, [defaults.image?.id, recommendedIds.image])
 
   const overview = useMemo(() => {
     const missingCapabilities = summaries.filter((item) => item.readinessTone === 'blocked')
@@ -190,7 +188,7 @@ export default function ProductWorkspaceModelsSection() {
     [],
   )
 
-  const syncRecommendedPoyoDefaults = useCallback(async () => {
+  const syncProductionModelDefaults = useCallback(async () => {
     setActionState('saving')
     setActionMessage('')
     try {
@@ -227,7 +225,6 @@ export default function ProductWorkspaceModelsSection() {
       await persistRegistrySnapshot(payload, mergedProfiles, {
         ...toSaveableDefaults(payload.defaults ?? {}),
         image: recommendedIds.image,
-        video: recommendedIds.video,
       })
 
       setActionState('success')
@@ -235,8 +232,8 @@ export default function ProductWorkspaceModelsSection() {
         [
           createdCount > 0 ? `新增 ${createdCount} 个 PoYo 预设` : null,
           updatedCount > 0 ? `更新 ${updatedCount} 个预设能力字段` : null,
-          '图像默认切到 PoYo Seedream 5 Lite',
-          '视频默认切到 PoYo Seedance 2',
+          '图像默认确认为 PoYo GPT Image 2',
+          '视频默认保持不变，等待后续接入 MiniMax H3',
         ]
           .filter(Boolean)
           .join('，') + '。',
@@ -245,24 +242,7 @@ export default function ProductWorkspaceModelsSection() {
       setActionState('error')
       setActionMessage(error instanceof Error ? error.message : '同步 PoYo 预设失败')
     }
-  }, [persistRegistrySnapshot, recommendedIds.image, recommendedIds.video, registryData])
-
-  const switchVideoDefaultToSeedance = useCallback(async () => {
-    setActionState('saving')
-    setActionMessage('')
-    try {
-      const payload = registryData ?? (await fetchModelRegistry())
-      await persistRegistrySnapshot(payload, payload.profiles, {
-        ...toSaveableDefaults(payload.defaults ?? {}),
-        video: recommendedIds.video,
-      })
-      setActionState('success')
-      setActionMessage('默认视频模型已切换为 PoYo Seedance 2。')
-    } catch (error) {
-      setActionState('error')
-      setActionMessage(error instanceof Error ? error.message : '切换默认视频模型失败')
-    }
-  }, [persistRegistrySnapshot, recommendedIds.video, registryData])
+  }, [persistRegistrySnapshot, recommendedIds.image, registryData])
 
   const syncCurrentDefaultCapabilities = useCallback(async () => {
     setActionState('saving')
@@ -333,10 +313,10 @@ export default function ProductWorkspaceModelsSection() {
           <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-sm font-medium text-white">推荐默认链路</div>
+                <div className="text-sm font-medium text-white">生产默认策略</div>
                 <div className="mt-2 text-sm leading-6 text-slate-400">
-                  图像建议优先使用 {recommendedPoyoPresetLabel('image')}，视频建议优先使用 {recommendedPoyoPresetLabel('video')}。
-                  这套默认链路更贴近当前项目的“多参考图资产生成 + 首尾帧视频生成”方式。
+                  图像生产默认固定使用 {recommendedPoyoPresetLabel('image')}；视频默认暂不强制切换，等待后续接入 {recommendedPoyoPresetLabel('video')}。
+                  这里强调“当前生产决策”，不是按模型目录自动推荐替换。
                 </div>
               </div>
               <span
@@ -346,7 +326,7 @@ export default function ProductWorkspaceModelsSection() {
                     : 'border-amber-500/30 bg-amber-500/10 text-amber-200'
                 }`}
               >
-                {recommendationStatus.allReady ? '推荐默认已到位' : '推荐默认未完全到位'}
+                {recommendationStatus.allReady ? '图像默认已到位' : '图像默认待确认'}
               </span>
             </div>
 
@@ -356,16 +336,12 @@ export default function ProductWorkspaceModelsSection() {
                 value={
                   recommendationStatus.imageReady
                     ? `${recommendedPoyoPresetLabel('image')}（已生效）`
-                    : `${defaults.image?.name ?? '未配置'}（建议切到 ${recommendedPoyoPresetLabel('image')}）`
+                    : `${defaults.image?.name ?? '未配置'}（应确认为 ${recommendedPoyoPresetLabel('image')}）`
                 }
               />
               <Metric
                 title="视频默认"
-                value={
-                  recommendationStatus.videoReady
-                    ? `${recommendedPoyoPresetLabel('video')}（已生效）`
-                    : `${defaults.video?.name ?? '未配置'}（建议切到 ${recommendedPoyoPresetLabel('video')}）`
-                }
+                value={`${defaults.video?.name ?? '未配置'}（保持现状，等待 ${recommendedPoyoPresetLabel('video')} 接入）`}
               />
             </div>
 
@@ -374,23 +350,11 @@ export default function ProductWorkspaceModelsSection() {
                 disabled={actionState === 'saving'}
                 tone="emerald"
                 onClick={() => {
-                  void syncRecommendedPoyoDefaults()
+                  void syncProductionModelDefaults()
                 }}
               >
-                {actionState === 'saving' ? '正在同步...' : '同步 PoYo 预设并设为默认'}
+                {actionState === 'saving' ? '正在同步...' : '同步 PoYo 预设并确认 GPT Image 2'}
               </ActionButton>
-
-              {!recommendationStatus.videoReady ? (
-                <ActionButton
-                  disabled={actionState === 'saving'}
-                  tone="sky"
-                  onClick={() => {
-                    void switchVideoDefaultToSeedance()
-                  }}
-                >
-                  仅切默认视频到 Seedance 2
-                </ActionButton>
-              ) : null}
 
               {syncableDefaultSummaries.length > 0 ? (
                 <ActionButton
@@ -630,13 +594,13 @@ function ActionButton({
 function describePresetUseCase(profile: ModelProfileRecord) {
   switch (normalizePoyoModelName(profile.model_name)) {
     case 'gpt-image-2':
-      return '适合高遵循度静帧、资产补图和已有提示词精修。'
+      return '适合当前项目的正式生图主链路、资产补图和已有提示词精修。'
     case 'nano-banana-2':
       return '适合快速做风格探索、方案对比和低成本多轮试稿。'
     case 'seedream-5-0-lite-api':
-      return '适合作为资产中心与分镜静帧的主力默认图像模型。'
+      return '适合作为资产中心与分镜静帧的备选图像模型。'
     case 'seedance-2':
-      return '适合作为默认视频生产链路，兼顾首尾帧、音频和分镜交付。'
+      return '适合作为可选视频链路，兼顾首尾帧、音频和分镜交付。'
     case 'kling-3.0/standard':
       return '适合做标准清晰度的视频预演与节奏验证。'
     case 'kling-3-api':
@@ -651,7 +615,7 @@ function describePresetUseCase(profile: ModelProfileRecord) {
         return '适合追求更高画质的正式镜头草稿输出。'
       }
       if (isPoyoSeedreamLiteModel(profile.model_name)) {
-        return '适合作为资产中心与分镜静帧的主力默认图像模型。'
+        return '适合作为资产中心与分镜静帧的备选图像模型。'
       }
       if (isPoyoNanoBananaModel(profile.model_name)) {
         return '适合快速做风格探索、方案对比和低成本多轮试稿。'
@@ -665,12 +629,12 @@ function describePresetUseCase(profile: ModelProfileRecord) {
 
 function describePresetRecommendation(profile: ModelProfileRecord) {
   switch (normalizePoyoModelName(profile.model_name)) {
-    case 'seedream-5-0-lite-api':
-      return '建议设为图像默认。'
-    case 'seedance-2':
-      return '建议设为视频默认。'
     case 'gpt-image-2':
-      return '建议作为高要求补图与精修备选。'
+      return '当前项目生图默认。'
+    case 'seedream-5-0-lite-api':
+      return '保留为可选图像备选，不替换当前默认。'
+    case 'seedance-2':
+      return '保留为可选视频备选，暂不设为默认。'
     case 'nano-banana-2':
       return '建议作为探索型备选。'
     case 'happy-horse-1-1':
