@@ -32,6 +32,7 @@ type ExportRecordApi = Record<string, any>
 type DeliveryHistoryEpisodeFilter = 'current' | 'all' | number
 type DeliveryHistoryStatusFilter = 'all' | DeliveryRecord['status']
 type DeliveryHistoryFormatFilter = 'all' | string
+type DeliveryAssetTypeFilter = 'all' | 'delivery_package' | 'machine_prompt'
 
 type DeliveryCanvasPrimaryActionPlan =
   | { action: 'repair_blocker'; label: string; detail: string }
@@ -125,8 +126,15 @@ export function filterDeliveryHistoryRecords(
     episodeFilter: DeliveryHistoryEpisodeFilter
     statusFilter: DeliveryHistoryStatusFilter
     formatFilter: DeliveryHistoryFormatFilter
+    assetTypeFilter?: DeliveryAssetTypeFilter
+    searchQuery?: string
   },
 ) {
+  const searchTerms = String(filters.searchQuery || '')
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
   return records.filter((record) => {
     if (filters.episodeFilter === 'current') {
       if (filters.selectedEpisode && record.episode !== filters.selectedEpisode) return false
@@ -142,6 +150,15 @@ export function filterDeliveryHistoryRecords(
       return false
     }
 
+    if (filters.assetTypeFilter && filters.assetTypeFilter !== 'all' && getDeliveryRecordAssetType(record) !== filters.assetTypeFilter) {
+      return false
+    }
+
+    if (searchTerms.length > 0) {
+      const searchText = buildDeliveryRecordSearchText(record)
+      if (!searchTerms.every((term) => searchText.includes(term))) return false
+    }
+
     return true
   })
 }
@@ -151,11 +168,47 @@ export function buildDeliveryHistorySummary(records: DeliveryRecord[]) {
     total: records.length,
     completed: records.filter((record) => record.status === 'completed').length,
     blocked: records.filter((record) => record.status === 'blocked').length,
+    deliveryPackageCount: records.filter((record) => getDeliveryRecordAssetType(record) === 'delivery_package').length,
+    machinePromptCount: records.filter((record) => getDeliveryRecordAssetType(record) === 'machine_prompt').length,
     episodes: Array.from(new Set(records.map((record) => record.episode).filter(Boolean))).sort((a, b) => a - b),
     formats: Array.from(new Set(records.map((record) => normalizeDeliveryRecordFormatLabel(record.exportFormat)))).sort((a, b) =>
       a.localeCompare(b, 'zh-CN'),
     ),
   }
+}
+
+export function getDeliveryRecordAssetType(record: DeliveryRecord): Exclude<DeliveryAssetTypeFilter, 'all'> {
+  const recordType = String(record.metaInfo?.record_type || '').trim()
+  const exportFormat = String(record.exportFormat || '').trim()
+  if (recordType === 'storyboard_machine_prompt_export' || exportFormat.startsWith('storyboard-machine-prompt-')) {
+    return 'machine_prompt'
+  }
+  return 'delivery_package'
+}
+
+function buildDeliveryRecordAssetTypeLabel(record: DeliveryRecord) {
+  return getDeliveryRecordAssetType(record) === 'machine_prompt' ? '机器提示词' : '交付包'
+}
+
+function buildDeliveryRecordSearchText(record: DeliveryRecord) {
+  const meta = record.metaInfo ?? {}
+  return [
+    record.id,
+    record.episode,
+    record.status,
+    record.exportFormat,
+    record.formatLabel,
+    record.summary,
+    meta.record_type,
+    meta.target_model,
+    meta.export_channel,
+    meta.scene_name,
+    meta.shot_id,
+    meta.director_shot_text,
+    ...(Array.isArray(record.blockedReasons) ? record.blockedReasons : []),
+  ]
+    .map((item) => String(item ?? '').toLowerCase())
+    .join(' ')
 }
 
 export default function ProductWorkspaceDeliverySection({
@@ -189,6 +242,8 @@ export default function ProductWorkspaceDeliverySection({
   const [historyEpisodeFilter, setHistoryEpisodeFilter] = useState<DeliveryHistoryEpisodeFilter>('current')
   const [historyStatusFilter, setHistoryStatusFilter] = useState<DeliveryHistoryStatusFilter>('all')
   const [historyFormatFilter, setHistoryFormatFilter] = useState<DeliveryHistoryFormatFilter>('all')
+  const [historyAssetTypeFilter, setHistoryAssetTypeFilter] = useState<DeliveryAssetTypeFilter>('all')
+  const [historySearchQuery, setHistorySearchQuery] = useState('')
   const [expandedRecordId, setExpandedRecordId] = useState<string | null>(null)
 
   const loadQaWorkbench = useCallback(async () => {
@@ -431,8 +486,10 @@ export default function ProductWorkspaceDeliverySection({
         episodeFilter: historyEpisodeFilter,
         statusFilter: historyStatusFilter,
         formatFilter: historyFormatFilter,
+        assetTypeFilter: historyAssetTypeFilter,
+        searchQuery: historySearchQuery,
       }),
-    [historyEpisodeFilter, historyFormatFilter, historyStatusFilter, records, selectedReadiness?.episode],
+    [historyAssetTypeFilter, historyEpisodeFilter, historyFormatFilter, historySearchQuery, historyStatusFilter, records, selectedReadiness?.episode],
   )
 
   const nextVersionLabel = useMemo(
@@ -525,6 +582,17 @@ export default function ProductWorkspaceDeliverySection({
     setHistoryEpisodeFilter('current')
     setRecordState('saved')
     setRecordMessage(`已切换到第 ${record.episode} 集，可复用历史格式“${record.formatLabel || normalizeDeliveryRecordFormatLabel(record.exportFormat)}”重新登记或导出。`)
+  }
+
+  async function handleCopyRecordSnapshot(record: DeliveryRecord) {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(record, null, 2))
+      setRecordState('saved')
+      setRecordMessage(`已复制 #${record.id} 的完整快照 JSON。`)
+    } catch (error) {
+      setRecordState('error')
+      setRecordMessage(error instanceof Error ? error.message : '复制导出快照失败')
+    }
   }
 
   return (
@@ -836,10 +904,10 @@ export default function ProductWorkspaceDeliverySection({
           <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <div className="text-sm font-medium text-white">交付历史中心</div>
-                <div className="mt-1 text-xs text-slate-500">跨集查看交付记录、阻塞快照和后端 QA 门禁结果；旧脏文案会自动回退到标准格式。</div>
+                <div className="text-sm font-medium text-white">项目级导出资产库</div>
+                <div className="mt-1 text-xs text-slate-500">统一查看交付包、阻塞快照、机器提示词导出和后端 QA 门禁结果；旧脏文案会自动回退到标准格式。</div>
               </div>
-              <div className="grid grid-cols-3 gap-2 text-right text-xs">
+              <div className="grid grid-cols-5 gap-2 text-right text-xs">
                 <div className="rounded-lg border border-slate-800 bg-slate-950/60 px-3 py-2">
                   <div className="text-slate-500">全部</div>
                   <div className="mt-1 font-semibold text-white">{historySummary.total}</div>
@@ -852,10 +920,33 @@ export default function ProductWorkspaceDeliverySection({
                   <div className="text-amber-200/70">阻塞</div>
                   <div className="mt-1 font-semibold text-amber-100">{historySummary.blocked}</div>
                 </div>
+                <div className="rounded-lg border border-sky-500/20 bg-sky-500/10 px-3 py-2">
+                  <div className="text-sky-200/70">交付包</div>
+                  <div className="mt-1 font-semibold text-sky-100">{historySummary.deliveryPackageCount}</div>
+                </div>
+                <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-3 py-2">
+                  <div className="text-cyan-200/70">机器提示词</div>
+                  <div className="mt-1 font-semibold text-cyan-100">{historySummary.machinePromptCount}</div>
+                </div>
               </div>
             </div>
 
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <div className="mt-4 grid gap-3 md:grid-cols-5">
+              <label className="block text-xs text-slate-400">
+                <span className="mb-1 block text-slate-500">资产类型</span>
+                <select
+                  value={historyAssetTypeFilter}
+                  onChange={(event) => {
+                    setHistoryAssetTypeFilter(event.target.value as DeliveryAssetTypeFilter)
+                    setExpandedRecordId(null)
+                  }}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
+                >
+                  <option value="all">全部资产</option>
+                  <option value="delivery_package">交付包</option>
+                  <option value="machine_prompt">机器提示词</option>
+                </select>
+              </label>
               <label className="block text-xs text-slate-400">
                 <span className="mb-1 block text-slate-500">集数范围</span>
                 <select
@@ -909,6 +1000,18 @@ export default function ProductWorkspaceDeliverySection({
                   ))}
                 </select>
               </label>
+              <label className="block text-xs text-slate-400 md:col-span-1">
+                <span className="mb-1 block text-slate-500">检索</span>
+                <input
+                  value={historySearchQuery}
+                  onChange={(event) => {
+                    setHistorySearchQuery(event.target.value)
+                    setExpandedRecordId(null)
+                  }}
+                  placeholder="模型 / 镜头 / 场景 / 摘要"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-sky-500"
+                />
+              </label>
             </div>
 
             <div className="mt-4 space-y-3">
@@ -925,6 +1028,13 @@ export default function ProductWorkspaceDeliverySection({
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-sm font-semibold text-white">第 {record.episode} 集 · {record.formatLabel || normalizeDeliveryRecordFormatLabel(record.exportFormat)}</span>
+                        <span className={`rounded-full border px-2 py-0.5 text-[11px] ${
+                          getDeliveryRecordAssetType(record) === 'machine_prompt'
+                            ? 'border-cyan-500/30 text-cyan-200'
+                            : 'border-sky-500/30 text-sky-200'
+                        }`}>
+                          {buildDeliveryRecordAssetTypeLabel(record)}
+                        </span>
                         <span className={`rounded-full px-2 py-0.5 text-[11px] ${
                           record.status === 'completed'
                             ? 'bg-emerald-900/40 text-emerald-300'
@@ -935,18 +1045,42 @@ export default function ProductWorkspaceDeliverySection({
                         <span className="text-xs text-slate-500">{record.createdAt}</span>
                       </div>
                       <div className="mt-2 text-sm text-slate-300">{record.summary}</div>
+                      {getDeliveryRecordAssetType(record) === 'machine_prompt' ? (
+                        <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-slate-500">
+                          <span>模型：{String(record.metaInfo?.target_model || '未记录')}</span>
+                          <span>通道：{String(record.metaInfo?.export_channel || 'webui')}</span>
+                          <span>镜头：{String(record.metaInfo?.shot_id || '-')}</span>
+                          <span>API 提交：{record.metaInfo?.api_submission === false ? '否' : '未知'}</span>
+                        </div>
+                      ) : null}
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedEpisode(record.episode)
-                          setHistoryEpisodeFilter('current')
-                        }}
-                        className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 transition hover:border-slate-500 hover:text-white"
-                      >
-                        定位分集
-                      </button>
+                      {getDeliveryRecordAssetType(record) === 'machine_prompt' ? (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onNavigate('storyboard', {
+                              episode: record.episode,
+                              shotId: String(record.metaInfo?.shot_id || '') || null,
+                              navigationSource: 'delivery',
+                            })
+                          }
+                          className="rounded-lg border border-cyan-500/40 px-3 py-1.5 text-xs text-cyan-200 transition hover:border-cyan-400 hover:text-white"
+                        >
+                          定位镜头
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedEpisode(record.episode)
+                            setHistoryEpisodeFilter('current')
+                          }}
+                          className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 transition hover:border-slate-500 hover:text-white"
+                        >
+                          定位分集
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={() => handleReuseRecordFormat(record)}
@@ -960,6 +1094,13 @@ export default function ProductWorkspaceDeliverySection({
                         className="rounded-lg border border-sky-500/40 px-3 py-1.5 text-xs text-sky-200 transition hover:border-sky-400 hover:text-white"
                       >
                         {expandedRecordId === record.id ? '收起快照' : '查看快照'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyRecordSnapshot(record)}
+                        className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 transition hover:border-slate-500 hover:text-white"
+                      >
+                        复制快照
                       </button>
                     </div>
                   </div>

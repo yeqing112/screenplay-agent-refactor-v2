@@ -6,6 +6,7 @@ import ProductWorkspaceDeliverySection, {
   buildDeliveryCanvasHandoffSummary,
   buildDeliveryCanvasPrimaryActionPlan,
   filterDeliveryHistoryRecords,
+  getDeliveryRecordAssetType,
 } from './ProductWorkspaceDeliverySection'
 
 describe('ProductWorkspaceDeliverySection', () => {
@@ -117,20 +118,48 @@ describe('ProductWorkspaceDeliverySection', () => {
         blockedCodes: ['qa_blocked'],
         blockedReasons: ['QA 待处理 1 项'],
       },
+      {
+        id: 'record-3',
+        episode: 1,
+        status: 'completed',
+        exportFormat: 'storyboard-machine-prompt-minimax-h3-webui',
+        formatLabel: 'STORYBOARD-MACHINE-PROMPT-MINIMAX-H3-WEBUI',
+        createdAt: '2026-08-26T12:00:00.000Z',
+        summary: '第 1 集 · 镜头 8 · minimax-h3 WEBUI 机器提示词导出快照',
+        totalShots: 1,
+        deliverableShots: 1,
+        pendingReviewShots: 0,
+        blockedShots: 0,
+        blockedShotIds: [],
+        blockedCodes: [],
+        blockedReasons: [],
+        metaInfo: {
+          record_type: 'storyboard_machine_prompt_export',
+          target_model: 'minimax-h3',
+          export_channel: 'webui',
+          scene_name: '便利店',
+          shot_id: 8,
+          api_submission: false,
+        },
+      },
     ] as any
 
     expect(buildDeliveryHistorySummary(records)).toMatchObject({
-      total: 2,
-      completed: 1,
+      total: 3,
+      completed: 2,
       blocked: 1,
+      deliveryPackageCount: 2,
+      machinePromptCount: 1,
       episodes: [1, 2],
     })
+    expect(getDeliveryRecordAssetType(records[2])).toBe('machine_prompt')
     expect(
       filterDeliveryHistoryRecords(records, {
         selectedEpisode: 1,
         episodeFilter: 'current',
         statusFilter: 'all',
         formatFilter: 'all',
+        assetTypeFilter: 'delivery_package',
       }).map((record) => record.id),
     ).toEqual(['record-1'])
     expect(
@@ -141,6 +170,16 @@ describe('ProductWorkspaceDeliverySection', () => {
         formatFilter: 'delivery',
       }).map((record) => record.id),
     ).toEqual(['record-2'])
+    expect(
+      filterDeliveryHistoryRecords(records, {
+        selectedEpisode: 1,
+        episodeFilter: 'all',
+        statusFilter: 'all',
+        formatFilter: 'all',
+        assetTypeFilter: 'machine_prompt',
+        searchQuery: '便利店 minimax',
+      }).map((record) => record.id),
+    ).toEqual(['record-3'])
   })
 
   it('renders the canvas handoff card with a first action inside delivery detail', () => {
