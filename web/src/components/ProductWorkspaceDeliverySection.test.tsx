@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import ProductWorkspaceDeliverySection, {
+  buildDeliveryHistorySummary,
   buildDeliveryCanvasHandoffSummary,
   buildDeliveryCanvasPrimaryActionPlan,
+  filterDeliveryHistoryRecords,
 } from './ProductWorkspaceDeliverySection'
 
 describe('ProductWorkspaceDeliverySection', () => {
@@ -79,6 +81,66 @@ describe('ProductWorkspaceDeliverySection', () => {
       label: '导出 JSON 并登记',
       detail: '当前集已有交付记录，下一步更适合继续导出结构化交付快照，供下游协作与回溯使用。',
     })
+  })
+
+  it('filters delivery history by episode status and format', () => {
+    const records = [
+      {
+        id: 'record-1',
+        episode: 1,
+        status: 'completed',
+        exportFormat: 'json',
+        formatLabel: 'JSON',
+        createdAt: '2026-08-26T10:00:00.000Z',
+        summary: '第 1 集可交付',
+        totalShots: 2,
+        deliverableShots: 2,
+        pendingReviewShots: 0,
+        blockedShots: 0,
+        blockedShotIds: [],
+        blockedCodes: [],
+        blockedReasons: [],
+      },
+      {
+        id: 'record-2',
+        episode: 2,
+        status: 'blocked',
+        exportFormat: 'delivery',
+        formatLabel: '交付快照',
+        createdAt: '2026-08-26T11:00:00.000Z',
+        summary: '第 2 集 QA 阻塞',
+        totalShots: 3,
+        deliverableShots: 1,
+        pendingReviewShots: 2,
+        blockedShots: 1,
+        blockedShotIds: [],
+        blockedCodes: ['qa_blocked'],
+        blockedReasons: ['QA 待处理 1 项'],
+      },
+    ] as any
+
+    expect(buildDeliveryHistorySummary(records)).toMatchObject({
+      total: 2,
+      completed: 1,
+      blocked: 1,
+      episodes: [1, 2],
+    })
+    expect(
+      filterDeliveryHistoryRecords(records, {
+        selectedEpisode: 1,
+        episodeFilter: 'current',
+        statusFilter: 'all',
+        formatFilter: 'all',
+      }).map((record) => record.id),
+    ).toEqual(['record-1'])
+    expect(
+      filterDeliveryHistoryRecords(records, {
+        selectedEpisode: 1,
+        episodeFilter: 'all',
+        statusFilter: 'blocked',
+        formatFilter: 'delivery',
+      }).map((record) => record.id),
+    ).toEqual(['record-2'])
   })
 
   it('renders the canvas handoff card with a first action inside delivery detail', () => {

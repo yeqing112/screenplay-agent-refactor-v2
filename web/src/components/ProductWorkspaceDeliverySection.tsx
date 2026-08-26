@@ -29,6 +29,9 @@ import type { CanvasHandoffTarget, TaskNavigateHandler } from './productWorkspac
 
 type RecordState = 'idle' | 'loading' | 'saving' | 'saved' | 'error'
 type ExportRecordApi = Record<string, any>
+type DeliveryHistoryEpisodeFilter = 'current' | 'all' | number
+type DeliveryHistoryStatusFilter = 'all' | DeliveryRecord['status']
+type DeliveryHistoryFormatFilter = 'all' | string
 
 type DeliveryCanvasPrimaryActionPlan =
   | { action: 'repair_blocker'; label: string; detail: string }
@@ -115,6 +118,46 @@ export function buildDeliveryCanvasPrimaryActionPlan(input: {
   } satisfies DeliveryCanvasPrimaryActionPlan
 }
 
+export function filterDeliveryHistoryRecords(
+  records: DeliveryRecord[],
+  filters: {
+    selectedEpisode?: number | null
+    episodeFilter: DeliveryHistoryEpisodeFilter
+    statusFilter: DeliveryHistoryStatusFilter
+    formatFilter: DeliveryHistoryFormatFilter
+  },
+) {
+  return records.filter((record) => {
+    if (filters.episodeFilter === 'current') {
+      if (filters.selectedEpisode && record.episode !== filters.selectedEpisode) return false
+    } else if (filters.episodeFilter !== 'all' && record.episode !== filters.episodeFilter) {
+      return false
+    }
+
+    if (filters.statusFilter !== 'all' && record.status !== filters.statusFilter) return false
+
+    const normalizedFormat = normalizeDeliveryRecordFormatLabel(record.exportFormat).toLowerCase()
+    const normalizedFilter = String(filters.formatFilter || 'all').toLowerCase()
+    if (normalizedFilter !== 'all' && normalizedFormat !== normalizeDeliveryRecordFormatLabel(normalizedFilter).toLowerCase()) {
+      return false
+    }
+
+    return true
+  })
+}
+
+export function buildDeliveryHistorySummary(records: DeliveryRecord[]) {
+  return {
+    total: records.length,
+    completed: records.filter((record) => record.status === 'completed').length,
+    blocked: records.filter((record) => record.status === 'blocked').length,
+    episodes: Array.from(new Set(records.map((record) => record.episode).filter(Boolean))).sort((a, b) => a - b),
+    formats: Array.from(new Set(records.map((record) => normalizeDeliveryRecordFormatLabel(record.exportFormat)))).sort((a, b) =>
+      a.localeCompare(b, 'zh-CN'),
+    ),
+  }
+}
+
 export default function ProductWorkspaceDeliverySection({
   bookId,
   isProjectDataLoading,
@@ -143,6 +186,10 @@ export default function ProductWorkspaceDeliverySection({
   const [recordState, setRecordState] = useState<RecordState>('idle')
   const [recordMessage, setRecordMessage] = useState('')
   const [qaWorkbenchEpisodes, setQaWorkbenchEpisodes] = useState<TaskCenterQaWorkbenchEpisodeSummary[]>([])
+  const [historyEpisodeFilter, setHistoryEpisodeFilter] = useState<DeliveryHistoryEpisodeFilter>('current')
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<DeliveryHistoryStatusFilter>('all')
+  const [historyFormatFilter, setHistoryFormatFilter] = useState<DeliveryHistoryFormatFilter>('all')
+  const [expandedRecordId, setExpandedRecordId] = useState<string | null>(null)
 
   const loadQaWorkbench = useCallback(async () => {
     if (bookId <= 0) {
@@ -376,6 +423,17 @@ export default function ProductWorkspaceDeliverySection({
         : records,
     [records, selectedReadiness],
   )
+  const historySummary = useMemo(() => buildDeliveryHistorySummary(records), [records])
+  const visibleHistoryRecords = useMemo(
+    () =>
+      filterDeliveryHistoryRecords(records, {
+        selectedEpisode: selectedReadiness?.episode ?? null,
+        episodeFilter: historyEpisodeFilter,
+        statusFilter: historyStatusFilter,
+        formatFilter: historyFormatFilter,
+      }),
+    [historyEpisodeFilter, historyFormatFilter, historyStatusFilter, records, selectedReadiness?.episode],
+  )
 
   const nextVersionLabel = useMemo(
     () => (selectedReadiness ? `v${selectedEpisodeRecords.length + 1}` : 'v1'),
@@ -460,6 +518,13 @@ export default function ProductWorkspaceDeliverySection({
         await handleExportJson()
         return
     }
+  }
+
+  function handleReuseRecordFormat(record: DeliveryRecord) {
+    setSelectedEpisode(record.episode)
+    setHistoryEpisodeFilter('current')
+    setRecordState('saved')
+    setRecordMessage(`已切换到第 ${record.episode} 集，可复用历史格式“${record.formatLabel || normalizeDeliveryRecordFormatLabel(record.exportFormat)}”重新登记或导出。`)
   }
 
   return (
@@ -769,31 +834,135 @@ export default function ProductWorkspaceDeliverySection({
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-            <div className="text-sm font-medium text-white">交付记录</div>
-            <div className="mt-1 text-xs text-slate-500">历史记录会优先显示清洗后的摘要，旧脏文案会自动回退到标准格式。</div>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div className="text-sm font-medium text-white">交付历史中心</div>
+                <div className="mt-1 text-xs text-slate-500">跨集查看交付记录、阻塞快照和后端 QA 门禁结果；旧脏文案会自动回退到标准格式。</div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-right text-xs">
+                <div className="rounded-lg border border-slate-800 bg-slate-950/60 px-3 py-2">
+                  <div className="text-slate-500">全部</div>
+                  <div className="mt-1 font-semibold text-white">{historySummary.total}</div>
+                </div>
+                <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2">
+                  <div className="text-emerald-200/70">完成</div>
+                  <div className="mt-1 font-semibold text-emerald-100">{historySummary.completed}</div>
+                </div>
+                <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2">
+                  <div className="text-amber-200/70">阻塞</div>
+                  <div className="mt-1 font-semibold text-amber-100">{historySummary.blocked}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <label className="block text-xs text-slate-400">
+                <span className="mb-1 block text-slate-500">集数范围</span>
+                <select
+                  value={String(historyEpisodeFilter)}
+                  onChange={(event) => {
+                    const value = event.target.value
+                    setHistoryEpisodeFilter(value === 'current' || value === 'all' ? value : Number(value))
+                    setExpandedRecordId(null)
+                  }}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
+                >
+                  <option value="current">当前集</option>
+                  <option value="all">全部集</option>
+                  {historySummary.episodes.map((episode) => (
+                    <option key={`history-episode-${episode}`} value={episode}>
+                      第 {episode} 集
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-xs text-slate-400">
+                <span className="mb-1 block text-slate-500">状态</span>
+                <select
+                  value={historyStatusFilter}
+                  onChange={(event) => {
+                    setHistoryStatusFilter(event.target.value as DeliveryHistoryStatusFilter)
+                    setExpandedRecordId(null)
+                  }}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
+                >
+                  <option value="all">全部状态</option>
+                  <option value="completed">已完成</option>
+                  <option value="blocked">阻塞</option>
+                </select>
+              </label>
+              <label className="block text-xs text-slate-400">
+                <span className="mb-1 block text-slate-500">格式</span>
+                <select
+                  value={historyFormatFilter}
+                  onChange={(event) => {
+                    setHistoryFormatFilter(event.target.value)
+                    setExpandedRecordId(null)
+                  }}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 outline-none transition focus:border-sky-500"
+                >
+                  <option value="all">全部格式</option>
+                  {historySummary.formats.map((format) => (
+                    <option key={`history-format-${format}`} value={format.toLowerCase()}>
+                      {format}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
 
             <div className="mt-4 space-y-3">
               {recordState === 'loading' ? <div className="text-sm text-slate-500">正在加载交付记录...</div> : null}
-              {recordState !== 'loading' && selectedEpisodeRecords.length === 0 ? (
+              {recordState !== 'loading' && visibleHistoryRecords.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
-                  {recordState === 'error' ? recordMessage || '加载交付记录失败。' : '当前还没有交付记录。'}
+                  {recordState === 'error' ? recordMessage || '加载交付记录失败。' : '当前筛选范围内还没有交付记录。'}
                 </div>
               ) : null}
 
-              {selectedEpisodeRecords.map((record) => (
+              {visibleHistoryRecords.map((record) => (
                 <div key={record.id} className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-semibold text-white">{record.formatLabel || normalizeDeliveryRecordFormatLabel(record.exportFormat)}</span>
-                    <span className={`rounded-full px-2 py-0.5 text-[11px] ${
-                      record.status === 'completed'
-                        ? 'bg-emerald-900/40 text-emerald-300'
-                        : 'bg-amber-900/40 text-amber-300'
-                    }`}>
-                      {record.status === 'completed' ? '已完成' : '阻塞'}
-                    </span>
-                    <span className="text-xs text-slate-500">{record.createdAt}</span>
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-sm font-semibold text-white">第 {record.episode} 集 · {record.formatLabel || normalizeDeliveryRecordFormatLabel(record.exportFormat)}</span>
+                        <span className={`rounded-full px-2 py-0.5 text-[11px] ${
+                          record.status === 'completed'
+                            ? 'bg-emerald-900/40 text-emerald-300'
+                            : 'bg-amber-900/40 text-amber-300'
+                        }`}>
+                          {record.status === 'completed' ? '已完成' : '阻塞'}
+                        </span>
+                        <span className="text-xs text-slate-500">{record.createdAt}</span>
+                      </div>
+                      <div className="mt-2 text-sm text-slate-300">{record.summary}</div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedEpisode(record.episode)
+                          setHistoryEpisodeFilter('current')
+                        }}
+                        className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 transition hover:border-slate-500 hover:text-white"
+                      >
+                        定位分集
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleReuseRecordFormat(record)}
+                        className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 transition hover:border-slate-500 hover:text-white"
+                      >
+                        复用格式
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setExpandedRecordId((current) => (current === record.id ? null : record.id))}
+                        className="rounded-lg border border-sky-500/40 px-3 py-1.5 text-xs text-sky-200 transition hover:border-sky-400 hover:text-white"
+                      >
+                        {expandedRecordId === record.id ? '收起快照' : '查看快照'}
+                      </button>
+                    </div>
                   </div>
-                  <div className="mt-2 text-sm text-slate-300">{record.summary}</div>
                   {record.blockedReasons.length > 0 ? (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {record.blockedReasons.map((reason, index) => (
@@ -812,6 +981,17 @@ export default function ProductWorkspaceDeliverySection({
                     <div>待验收：{record.pendingReviewShots}</div>
                     <div>阻塞：{record.blockedShots}</div>
                   </div>
+                  {expandedRecordId === record.id ? (
+                    <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950 p-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="text-xs font-medium text-white">完整快照 meta</div>
+                        <div className="text-[11px] text-slate-500">用于追溯 blocked_codes、QA gate、版本标签和历史导出上下文</div>
+                      </div>
+                      <pre className="mt-3 max-h-72 overflow-auto rounded-lg bg-slate-900 p-3 text-[11px] leading-5 text-slate-300">
+                        {JSON.stringify(record.metaInfo ?? {}, null, 2)}
+                      </pre>
+                    </div>
+                  ) : null}
                   <RecordRepairActions record={record} onNavigate={onNavigate} />
                 </div>
               ))}
@@ -1037,6 +1217,7 @@ function normalizeDeliveryRecord(
     blockedShotIdsByCode,
     blockedCodes: blockedCodes as DeliveryRecord['blockedCodes'],
     blockedReasons: sanitizedBlockedReasons,
+    metaInfo,
   }
 }
 

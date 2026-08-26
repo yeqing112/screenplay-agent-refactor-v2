@@ -76,6 +76,7 @@ export interface DeliveryRecord {
   blockedShotIdsByCode?: Partial<Record<DeliveryBlockedItem['code'], string>>
   blockedCodes: DeliveryBlockedItem['code'][]
   blockedReasons: string[]
+  metaInfo?: Record<string, unknown>
 }
 
 export interface DeliveryRecordRepairAction {
