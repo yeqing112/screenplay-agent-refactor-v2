@@ -536,6 +536,26 @@ class QAWorkbenchFlowTests(unittest.TestCase):
         self.assertEqual(issue["repair_version"], "script v2")
         self.assertEqual(issue["note"], "manual follow-up in progress")
 
+    def test_workbench_summary_treats_wont_fix_as_non_blocking(self):
+        sync_response = self.client.post(f"/api/books/{self.book_id}/qa/episodes/{self.episode}/sync")
+        issue_id = sync_response.json()["issues"][0]["issue_id"]
+
+        response = self.client.patch(
+            f"/api/books/{self.book_id}/qa/issues/{issue_id}/workflow",
+            json={
+                "workflowStatus": "wont_fix",
+                "note": "accepted by producer",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        workbench = self.client.get(f"/api/books/{self.book_id}/qa/workbench")
+        self.assertEqual(workbench.status_code, 200)
+        summary = workbench.json()["episodes"][0]["qa_summary"]
+        self.assertEqual(summary["open_issue_count"], 0)
+        self.assertEqual(summary["blocking_issue_count"], 0)
+        self.assertEqual(summary["resolved_count"], 1)
+
     def test_rollback_restores_previous_script(self):
         sync_response = self.client.post(f"/api/books/{self.book_id}/qa/episodes/{self.episode}/sync")
         issue_id = sync_response.json()["issues"][0]["issue_id"]

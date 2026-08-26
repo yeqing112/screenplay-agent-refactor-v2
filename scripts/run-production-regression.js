@@ -13,6 +13,8 @@ const steps = [
       "tests.test_storyboard_prompt_compile",
       "tests.test_storyboard_prompt_compile_repair",
       "tests.test_machine_prompt_export",
+      "tests.test_production_export_records",
+      "tests.test_qa_workbench_flow",
     ],
   },
   {

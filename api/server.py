@@ -10304,16 +10304,44 @@ def create_production_export_record(book_id: int, req: ProductionExportRecordReq
         if not book:
             raise HTTPException(status_code=404, detail="Book not found")
 
+        meta_info = dict(req.meta_info or {})
+        episode_value = meta_info.get("episode")
+        try:
+            episode = int(episode_value) if episode_value is not None else None
+        except (TypeError, ValueError):
+            episode = None
+        qa_gate = _build_qa_delivery_gate(s, book_id, episode)
+        status = req.status
+        blocked_shots = req.blocked_shots
+        summary = req.summary
+        if qa_gate["blocked"]:
+            blocked_codes = _coerce_string_list(meta_info.get("blocked_codes"))
+            if "qa_blocked" not in blocked_codes:
+                blocked_codes.append("qa_blocked")
+            blocked_reasons = _coerce_string_list(meta_info.get("blocked_reasons"))
+            qa_blocked_reason = _build_qa_delivery_blocked_reason(qa_gate)
+            if not any(str(item).startswith("QA 待处理") for item in blocked_reasons):
+                blocked_reasons.append(qa_blocked_reason)
+            meta_info["blocked_codes"] = blocked_codes
+            meta_info["blocked_reasons"] = blocked_reasons
+            meta_info["qa_delivery_gate"] = qa_gate
+            status = "blocked"
+            blocked_shots = max(int(blocked_shots or 0), 1)
+            if not str(summary or "").strip() or req.status == "completed":
+                summary = qa_blocked_reason
+        elif qa_gate["total_issue_count"] > 0:
+            meta_info["qa_delivery_gate"] = qa_gate
+
         row = ProductionExportRecord(
             book_id=book_id,
             export_format=req.export_format,
-            status=req.status,
+            status=status,
             total_shots=req.total_shots,
             deliverable_shots=req.deliverable_shots,
             pending_review_shots=req.pending_review_shots,
-            blocked_shots=req.blocked_shots,
-            summary=req.summary,
-            meta_info=json.dumps(req.meta_info, ensure_ascii=False),
+            blocked_shots=blocked_shots,
+            summary=summary,
+            meta_info=json.dumps(meta_info, ensure_ascii=False),
             created_at=now,
             updated_at=now,
         )
@@ -10338,6 +10366,16 @@ def export_production_pdf(book_id: int, episode: int | None = Query(default=None
         if episode is not None:
             scripts_query = scripts_query.filter(Script.episode == episode)
             shots_query = shots_query.filter(StoryboardShot.episode == episode)
+        qa_gate = _build_qa_delivery_gate(s, book_id, episode)
+        if qa_gate["blocked"]:
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "code": "qa_blocked",
+                    "message": "当前导出范围仍有可执行 QA 问题，不能生成正式 PDF 交付件。",
+                    "qa_delivery_gate": qa_gate,
+                },
+            )
         scripts = scripts_query.order_by(Script.episode.asc()).all()
         all_storyboard_rows = shots_query.order_by(StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc()).all()
 
@@ -10798,6 +10836,103 @@ def _serialize_qa_issue(issue) -> dict:
         "created_at": issue.created_at.isoformat() if issue.created_at else None,
         "updated_at": issue.updated_at.isoformat() if issue.updated_at else None,
     }
+
+
+def _normalize_qa_lifecycle_status(value: Any) -> str:
+    return str(value or "").strip().lower()
+
+
+def _qa_issue_workflow_status(issue) -> str:
+    meta_info = safe_json_loads(getattr(issue, "meta_info", None), {})
+    if not isinstance(meta_info, dict):
+        return ""
+    return _normalize_qa_lifecycle_status(meta_info.get("workflow_status"))
+
+
+def _is_qa_issue_resolved_for_delivery(issue) -> bool:
+    fix_status = _normalize_qa_lifecycle_status(getattr(issue, "fix_status", None))
+    workflow_status = _qa_issue_workflow_status(issue)
+    return (
+        fix_status in {"recheck_passed", "resolved", "closed", "accepted"}
+        or workflow_status in {"resolved", "wont_fix"}
+    )
+
+
+def _is_qa_issue_in_progress_for_delivery(issue) -> bool:
+    fix_status = _normalize_qa_lifecycle_status(getattr(issue, "fix_status", None))
+    workflow_status = _qa_issue_workflow_status(issue)
+    return (
+        fix_status in {"fixing", "fixed", "rechecking", "in_progress"}
+        or workflow_status == "in_progress"
+    )
+
+
+def _build_qa_delivery_gate_from_issues(issues: list) -> dict:
+    open_issues = [issue for issue in issues if not _is_qa_issue_resolved_for_delivery(issue) and not _is_qa_issue_in_progress_for_delivery(issue)]
+    in_progress_issues = [issue for issue in issues if _is_qa_issue_in_progress_for_delivery(issue)]
+    resolved_issues = [issue for issue in issues if _is_qa_issue_resolved_for_delivery(issue)]
+    high_open_issues = [
+        issue
+        for issue in open_issues
+        if _normalize_qa_lifecycle_status(getattr(issue, "severity", None)) == "high"
+    ]
+    blocking_issue_count = len(open_issues) + len(in_progress_issues)
+    return {
+        "total_issue_count": len(issues),
+        "open_issue_count": len(open_issues),
+        "in_progress_count": len(in_progress_issues),
+        "resolved_count": len(resolved_issues),
+        "high_open_issue_count": len(high_open_issues),
+        "blocking_issue_count": blocking_issue_count,
+        "blocked": blocking_issue_count > 0,
+    }
+
+
+def _build_qa_delivery_gate(session, book_id: int, episode: int | None = None) -> dict:
+    from models import QAIssue, QAResult
+
+    query = session.query(QAIssue).filter(QAIssue.book_id == book_id)
+    if episode is not None:
+        query = query.filter(QAIssue.episode == episode)
+    issues = query.order_by(QAIssue.episode.asc(), QAIssue.created_at.asc(), QAIssue.id.asc()).all()
+    gate = _build_qa_delivery_gate_from_issues(issues)
+    issue_episodes = {int(getattr(issue, "episode", 0) or 0) for issue in issues if getattr(issue, "episode", None)}
+    qa_result_query = session.query(QAResult).filter(QAResult.book_id == book_id)
+    if episode is not None:
+        qa_result_query = qa_result_query.filter(QAResult.episode == episode)
+    legacy_blocking_count = 0
+    for qa_result in qa_result_query.order_by(QAResult.episode.asc(), QAResult.created_at.desc(), QAResult.id.desc()).all():
+        qa_episode = int(getattr(qa_result, "episode", 0) or 0)
+        if qa_episode in issue_episodes:
+            continue
+        legacy_blocking_count += max(int(getattr(qa_result, "error_count", 0) or 0), 0)
+        if qa_episode:
+            issue_episodes.add(qa_episode)
+    if legacy_blocking_count > 0:
+        gate["total_issue_count"] += legacy_blocking_count
+        gate["open_issue_count"] += legacy_blocking_count
+        gate["blocking_issue_count"] += legacy_blocking_count
+        gate["blocked"] = True
+        gate["legacy_error_count"] = legacy_blocking_count
+    gate["episode"] = episode
+    gate["episodes"] = sorted(issue_episodes)
+    return gate
+
+
+def _build_qa_delivery_blocked_reason(gate: dict) -> str:
+    parts = [
+        f"开放 {gate.get('open_issue_count', 0)}" if int(gate.get("open_issue_count", 0) or 0) > 0 else "",
+        f"修复/复检中 {gate.get('in_progress_count', 0)}" if int(gate.get("in_progress_count", 0) or 0) > 0 else "",
+        f"高优先级 {gate.get('high_open_issue_count', 0)}" if int(gate.get("high_open_issue_count", 0) or 0) > 0 else "",
+    ]
+    detail = "，".join([part for part in parts if part]) or f"待处理 {gate.get('blocking_issue_count', 0)}"
+    return f"QA 待处理 {gate.get('blocking_issue_count', 0)} 项（{detail}）"
+
+
+def _coerce_string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item) for item in value if str(item or "").strip()]
 
 
 def _serialize_script_version(version) -> dict:
@@ -11304,7 +11439,8 @@ def _run_episode_qa_and_sync(book_id: int, episode: int) -> dict:
     with Session() as session:
         issues = _sync_episode_qa_issues(session, book_id, episode)
         session.commit()
-        open_count = sum(1 for issue in issues if issue.fix_status not in {"recheck_passed"})
+        qa_gate = _build_qa_delivery_gate_from_issues(issues)
+        open_count = qa_gate["blocking_issue_count"]
         failed_count = sum(1 for issue in issues if issue.fix_status == "recheck_failed")
         rows = session.query(QAIssue).filter(
             QAIssue.book_id == book_id,
@@ -11313,6 +11449,9 @@ def _run_episode_qa_and_sync(book_id: int, episode: int) -> dict:
         return {
             "episode": episode,
             "open_issue_count": open_count,
+            "in_progress_count": qa_gate["in_progress_count"],
+            "resolved_count": qa_gate["resolved_count"],
+            "high_open_issue_count": qa_gate["high_open_issue_count"],
             "recheck_failed_count": failed_count,
             "issues": [_serialize_qa_issue(row) for row in rows],
         }
@@ -11421,7 +11560,7 @@ def get_qa_workbench(book_id: int):
                 ScriptVersion.episode == script.episode,
             ).order_by(ScriptVersion.version_no.desc(), ScriptVersion.id.desc()).all()
             qa_payload = safe_json_loads(latest_qa.result, {}) if latest_qa else {}
-            open_count = sum(1 for issue in issues if issue.fix_status not in {"recheck_passed"})
+            qa_gate = _build_qa_delivery_gate_from_issues(issues)
             episodes.append({
                 "episode": script.episode,
                 "script_id": script.id,
@@ -11430,7 +11569,11 @@ def get_qa_workbench(book_id: int):
                     "qa_result_id": latest_qa.id if latest_qa else None,
                     "overall_score": qa_payload.get("overall_score"),
                     "error_count": latest_qa.error_count if latest_qa else len(issues),
-                    "open_issue_count": open_count,
+                    "open_issue_count": qa_gate["open_issue_count"],
+                    "in_progress_count": qa_gate["in_progress_count"],
+                    "resolved_count": qa_gate["resolved_count"],
+                    "high_open_issue_count": qa_gate["high_open_issue_count"],
+                    "blocking_issue_count": qa_gate["blocking_issue_count"],
                     "suggestions": qa_payload.get("suggestions", []) if isinstance(qa_payload.get("suggestions", []), list) else [],
                 },
                 "issues": [_serialize_qa_issue(issue) for issue in issues],

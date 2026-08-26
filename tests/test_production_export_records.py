@@ -1,9 +1,10 @@
+import json
 import unittest
 
 from fastapi.testclient import TestClient
 
 from api.server import app
-from models import Book, ProductionExportRecord, Script, Session, StoryboardShot, init_db
+from models import Book, ProductionExportRecord, QAIssue, QAResult, Script, Session, StoryboardShot, init_db
 
 
 class ProductionExportRecordTests(unittest.TestCase):
@@ -16,6 +17,8 @@ class ProductionExportRecordTests(unittest.TestCase):
         self.book_id = 990701
         with Session() as session:
             session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
+            session.query(QAIssue).filter(QAIssue.book_id == self.book_id).delete()
+            session.query(QAResult).filter(QAResult.book_id == self.book_id).delete()
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
             session.query(Script).filter(Script.book_id == self.book_id).delete()
             session.query(Book).filter(Book.id == self.book_id).delete()
@@ -60,6 +63,8 @@ class ProductionExportRecordTests(unittest.TestCase):
     def tearDown(self):
         with Session() as session:
             session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
+            session.query(QAIssue).filter(QAIssue.book_id == self.book_id).delete()
+            session.query(QAResult).filter(QAResult.book_id == self.book_id).delete()
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
             session.query(Script).filter(Script.book_id == self.book_id).delete()
             session.query(Book).filter(Book.id == self.book_id).delete()
@@ -95,12 +100,147 @@ class ProductionExportRecordTests(unittest.TestCase):
         self.assertEqual(records[0]["summary"], "已导出第 1 版交付包")
         self.assertEqual(records[0]["pending_review_shots"], 2)
 
+    def test_export_record_is_authoritatively_blocked_by_open_qa_issue(self):
+        with Session() as session:
+            session.add(
+                QAIssue(
+                    book_id=self.book_id,
+                    episode=1,
+                    issue_key=f"qa-export-open-{self.book_id}",
+                    severity="high",
+                    issue_type="logic_gap",
+                    title="仍有开放 QA",
+                    description="导出前必须处理。",
+                    fix_status="pending",
+                    meta_info="{}",
+                )
+            )
+            session.commit()
+
+        response = self.client.post(
+            f"/api/books/{self.book_id}/export-records",
+            json={
+                "exportFormat": "delivery",
+                "status": "completed",
+                "totalShots": 1,
+                "deliverableShots": 1,
+                "blockedShots": 0,
+                "summary": "前端误报可交付",
+                "metaInfo": {
+                    "episode": 1,
+                    "blocked_reasons": [],
+                    "blocked_codes": [],
+                },
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("qa_blocked", payload["meta_info"]["blocked_codes"])
+        self.assertEqual(payload["meta_info"]["qa_delivery_gate"]["blocking_issue_count"], 1)
+        self.assertIn("QA 待处理", payload["summary"])
+
+    def test_export_record_falls_back_to_legacy_qa_result_when_no_workbench_issues_exist(self):
+        with Session() as session:
+            session.add(
+                QAResult(
+                    book_id=self.book_id,
+                    episode=1,
+                    result=json.dumps({"errors": [{"title": "legacy"}]}, ensure_ascii=False),
+                    error_count=2,
+                )
+            )
+            session.commit()
+
+        response = self.client.post(
+            f"/api/books/{self.book_id}/export-records",
+            json={
+                "exportFormat": "delivery",
+                "status": "completed",
+                "totalShots": 1,
+                "deliverableShots": 1,
+                "blockedShots": 0,
+                "summary": "旧 QA 未同步",
+                "metaInfo": {
+                    "episode": 1,
+                },
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["meta_info"]["qa_delivery_gate"]["blocking_issue_count"], 2)
+        self.assertEqual(payload["meta_info"]["qa_delivery_gate"]["legacy_error_count"], 2)
+
+    def test_export_record_allows_wont_fix_qa_issue(self):
+        with Session() as session:
+            session.add(
+                QAIssue(
+                    book_id=self.book_id,
+                    episode=1,
+                    issue_key=f"qa-export-wont-fix-{self.book_id}",
+                    severity="high",
+                    issue_type="logic_gap",
+                    title="已人工豁免 QA",
+                    description="制片负责人接受该风险。",
+                    fix_status="pending",
+                    meta_info=json.dumps({"workflow_status": "wont_fix"}, ensure_ascii=False),
+                )
+            )
+            session.commit()
+
+        response = self.client.post(
+            f"/api/books/{self.book_id}/export-records",
+            json={
+                "exportFormat": "delivery",
+                "status": "completed",
+                "totalShots": 1,
+                "deliverableShots": 1,
+                "blockedShots": 0,
+                "summary": "已放行交付",
+                "metaInfo": {
+                    "episode": 1,
+                },
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "completed")
+        self.assertEqual(payload["meta_info"]["qa_delivery_gate"]["blocking_issue_count"], 0)
+        self.assertEqual(payload["meta_info"]["qa_delivery_gate"]["resolved_count"], 1)
+
     def test_export_pdf_endpoint_returns_pdf_bytes(self):
         response = self.client.get(f"/api/books/{self.book_id}/export-pdf")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["content-type"], "application/pdf")
         self.assertIn(".pdf", response.headers.get("content-disposition", ""))
         self.assertTrue(response.content.startswith(b"%PDF"))
+
+    def test_export_pdf_endpoint_blocks_open_qa_issue(self):
+        with Session() as session:
+            session.add(
+                QAIssue(
+                    book_id=self.book_id,
+                    episode=1,
+                    issue_key=f"qa-pdf-open-{self.book_id}",
+                    severity="medium",
+                    issue_type="logic_gap",
+                    title="PDF 导出阻塞",
+                    description="仍有 QA 待处理。",
+                    fix_status="rechecking",
+                    meta_info="{}",
+                )
+            )
+            session.commit()
+
+        response = self.client.get(f"/api/books/{self.book_id}/export-pdf?episode=1")
+        self.assertEqual(response.status_code, 409)
+        payload = response.json()
+        self.assertEqual(payload["detail"]["code"], "qa_blocked")
+        self.assertEqual(payload["detail"]["qa_delivery_gate"]["blocking_issue_count"], 1)
 
     def test_export_pdf_endpoint_accepts_episode_scope(self):
         with Session() as session:
