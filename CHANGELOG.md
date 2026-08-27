@@ -1,5 +1,39 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-27 — 机器提示词 API 提交任务链第一版
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：机器提示词导出已经支持 WebUI / Markdown / CSV / API JSON，但“API 提交”必须和普通导出分离，先进入可追踪任务中心，再接真实 provider，避免导出动作被误解为真实外发。
+
+### 变更概览
+
+- **新增 API 提交任务登记**
+  - 新增 `POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/machine-prompt-api-submissions`。
+  - 将当前机器提示词导出快照登记为 `machine_prompt_api_submission` 创意任务。
+  - 第一版只保存提交意图和 payload：`api_submission=true`，但 `actual_provider_submission=false`。
+  - provider 状态固定为 `pending-generation-adapter / waiting_for_generation_adapter`，不调用真实模型。
+
+- **正式工作台接入**
+  - 机器提示词导出面板新增“登记 API 提交任务”按钮。
+  - 成功后提示用户可到任务中心跟踪，不自动离开当前镜头上下文。
+  - 任务中心将该任务识别为提示词类任务，并显示“等待真实模型适配器”，不再 fallback 为视频任务。
+
+- **真实浏览器回归扩展**
+  - `npm run e2e:machine-prompt-export` 在原有导出闭环基础上新增 API 提交任务登记验证。
+  - E2E 会查询 `/api/books/75/creative-tasks?limit=30`，确认任务存在且 `actual_provider_submission=false`。
+  - 测试结束自动清理本次新增导出记录和 `mpapi-*` 任务。
+
+### 验证结果
+
+- 后端专项：`python -m unittest tests.test_storyboard_prompt_compile tests.test_production_export_records`，`30 passed`
+- 前端专项：`npm --prefix web test -- ProductWorkspaceStoryboardRepairActions.test.tsx ProductWorkspaceDeliverySection.test.tsx productWorkspaceDelivery.test.ts productWorkspaceTaskCenterData.test.ts productWorkspaceTaskCenterState.test.ts productWorkspaceTaskCenterSelectedTaskPanel.test.tsx productWorkspaceTaskCenterDetailPanels.test.tsx`，`39 passed`
+- 前端生产构建：`npm --prefix web run build`，通过
+- 机器提示词真实浏览器流：`npm run e2e:machine-prompt-export`，通过
+- 正式工作台真实业务流：`npm run e2e:business`，通过
+- 生产总回归：`npm run check:production`，通过；五项目 113 镜 `0 error / 0 warning`
+
+---
+
 ## 2026-08-24 — 补齐正式工作台真浏览器主链路回归
 
 > 对应分支：`codex/unify-formal-workspace`

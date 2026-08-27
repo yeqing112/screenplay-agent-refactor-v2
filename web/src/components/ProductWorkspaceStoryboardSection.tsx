@@ -1380,6 +1380,8 @@ export default function ProductWorkspaceStoryboardSection({
   const [machinePromptCopyMessage, setMachinePromptCopyMessage] = useState('')
   const [machinePromptRecordState, setMachinePromptRecordState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [machinePromptRecordMessage, setMachinePromptRecordMessage] = useState('')
+  const [machinePromptApiSubmissionState, setMachinePromptApiSubmissionState] = useState<'idle' | 'submitting' | 'submitted' | 'error'>('idle')
+  const [machinePromptApiSubmissionMessage, setMachinePromptApiSubmissionMessage] = useState('')
   const [machinePromptExportRecords, setMachinePromptExportRecords] = useState<ProductionExportRecordListItem[]>([])
   const [machinePromptRecordHistoryState, setMachinePromptRecordHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [directorShotDraft, setDirectorShotDraft] = useState('')
@@ -1432,6 +1434,8 @@ export default function ProductWorkspaceStoryboardSection({
     setMachinePromptCopyMessage('')
     setMachinePromptRecordState('idle')
     setMachinePromptRecordMessage('')
+    setMachinePromptApiSubmissionState('idle')
+    setMachinePromptApiSubmissionMessage('')
     setMachinePromptExportRecords([])
     setMachinePromptRecordHistoryState('idle')
     setDirectorShotDraft('')
@@ -1719,6 +1723,8 @@ export default function ProductWorkspaceStoryboardSection({
     setMachinePromptCopyMessage('')
     setMachinePromptRecordState('idle')
     setMachinePromptRecordMessage('')
+    setMachinePromptApiSubmissionState('idle')
+    setMachinePromptApiSubmissionMessage('')
     try {
       const response = await fetch(
         `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/machine-prompt-export?target_model=minimax-h3`,
@@ -1963,6 +1969,76 @@ export default function ProductWorkspaceStoryboardSection({
     } catch (error) {
       setMachinePromptRecordState('error')
       setMachinePromptRecordMessage(error instanceof Error ? error.message : '机器提示词导出记录保存失败。')
+    }
+  }
+
+  const submitMachinePromptApiTask = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    if (!machinePromptExport) {
+      setMachinePromptApiSubmissionState('error')
+      setMachinePromptApiSubmissionMessage('请先加载机器提示词导出预览，再登记 API 提交任务。')
+      return
+    }
+
+    setMachinePromptApiSubmissionState('submitting')
+    setMachinePromptApiSubmissionMessage('正在登记机器提示词 API 提交任务；第一版只进入任务中心，不会调用真实 provider。')
+    try {
+      const rawHistoryRecordId = machinePromptExport.source_layers?.history_export_record_id
+      const sourceExportRecordId =
+        typeof rawHistoryRecordId === 'number'
+          ? rawHistoryRecordId
+          : typeof rawHistoryRecordId === 'string' && rawHistoryRecordId.trim() && Number.isFinite(Number(rawHistoryRecordId))
+            ? Number(rawHistoryRecordId)
+            : null
+      const response = await fetch(
+        `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/machine-prompt-api-submissions`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            targetModel: 'minimax-h3',
+            exportChannel: 'api',
+            operatorName: 'formal-workspace',
+            submissionMode: 'task_intent_only',
+            sourceExportRecordId,
+            hasManualExportDraft: Boolean(machinePromptExport.source_layers?.has_manual_export_draft),
+            exportPayload: machinePromptExport,
+            notes: '由正式工作台登记的机器提示词 API 提交意图；当前不真实调用 provider。',
+          }),
+        },
+      )
+      if (!response.ok) {
+        let detail = ''
+        try {
+          const payload = await response.json()
+          detail = String(payload?.detail || payload?.error || '').trim()
+        } catch {
+          detail = await response.text()
+        }
+        throw new Error(detail || `HTTP ${response.status}`)
+      }
+
+      const payload = await response.json()
+      const taskId = String(payload?.task_id || '').trim()
+      if (!taskId) {
+        throw new Error('服务端已响应，但没有返回任务 ID。')
+      }
+
+      upsertPendingStoryboardTask(_bookId, {
+        taskId,
+        episode: selectedShot.episode,
+        shotId: String(selectedShot.shot_id),
+        kind: 'prompt',
+        updatedAt: new Date().toISOString(),
+      })
+      setMachinePromptApiSubmissionState('submitted')
+      setMachinePromptApiSubmissionMessage(
+        `已登记 API 提交任务 ${taskId}；当前尚未调用真实 provider，可到任务中心跟踪。`,
+      )
+      setRuntimeVersion((current) => current + 1)
+    } catch (error) {
+      setMachinePromptApiSubmissionState('error')
+      setMachinePromptApiSubmissionMessage(error instanceof Error ? error.message : '机器提示词 API 提交任务登记失败。')
     }
   }
 
@@ -2731,6 +2807,8 @@ export default function ProductWorkspaceStoryboardSection({
                 machinePromptCopyMessage={machinePromptCopyMessage}
                 machinePromptRecordMessage={machinePromptRecordMessage}
                 machinePromptRecordState={machinePromptRecordState}
+                machinePromptApiSubmissionMessage={machinePromptApiSubmissionMessage}
+                machinePromptApiSubmissionState={machinePromptApiSubmissionState}
                 machinePromptExportRecords={machinePromptExportRecords}
                 machinePromptRecordHistoryState={machinePromptRecordHistoryState}
                 minimaxH3CopyText={minimaxH3CopyText}
@@ -2747,6 +2825,7 @@ export default function ProductWorkspaceStoryboardSection({
                 onCopyText={copyMachinePromptText}
                 onDownloadFile={downloadMachinePromptExportFile}
                 onSaveRecord={saveMachinePromptExportRecord}
+                onSubmitApiTask={submitMachinePromptApiTask}
                 onLoadHistory={loadMachinePromptExportRecordHistory}
                 onRestoreRecordDraft={restoreMachinePromptExportRecordDraft}
               />

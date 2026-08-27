@@ -81,7 +81,7 @@ function captureBaseline() {
 import json
 import os
 from core import safe_json_loads
-from models import ProductionExportRecord, Session, StoryboardShot, init_db
+from models import ProductionExportRecord, Session, StoryboardShot, TaskRun, init_db
 
 book_id = int(os.environ["BOOK_ID"])
 episode = int(os.environ["EPISODE"])
@@ -109,9 +109,20 @@ with Session() as session:
         and int((safe_json_loads(row.meta_info) if row.meta_info else {}).get("episode") or 0) == episode
         and str((safe_json_loads(row.meta_info) if row.meta_info else {}).get("shot_id") or "") == str(shot_id)
     ]
+    task_ids = [
+        row.task_id
+        for row in session.query(TaskRun).filter(
+            TaskRun.book_id == book_id,
+            TaskRun.episode == episode,
+            TaskRun.task_kind == "creative-machine_prompt_api_submission",
+        ).all()
+        if isinstance((safe_json_loads(row.payload) if row.payload else {}), dict)
+        and str((safe_json_loads(row.payload) if row.payload else {}).get("shot_id") or "") == str(shot_id)
+    ]
     print(json.dumps({
         "meta_info": meta,
         "record_ids": record_ids,
+        "task_ids": task_ids,
         "scene_name": shot.scene_name,
     }, ensure_ascii=False))
 `;
@@ -127,16 +138,18 @@ function restoreBaseline(baseline) {
 import json
 import os
 from core import safe_json_loads
-from models import ProductionExportRecord, Session, StoryboardShot, init_db
+from models import ProductionExportRecord, Session, StoryboardShot, TaskRun, init_db
 
 book_id = int(os.environ["BOOK_ID"])
 episode = int(os.environ["EPISODE"])
 shot_id = int(os.environ["SHOT_ID"])
 baseline_meta = json.loads(os.environ["BASELINE_META"])
 baseline_record_ids = set(json.loads(os.environ["BASELINE_RECORD_IDS"]))
+baseline_task_ids = set(json.loads(os.environ["BASELINE_TASK_IDS"]))
 
 init_db()
 removed = []
+removed_task_ids = []
 with Session() as session:
     shot = session.query(StoryboardShot).filter(
         StoryboardShot.book_id == book_id,
@@ -161,8 +174,20 @@ with Session() as session:
         ):
             removed.append(row.id)
             session.delete(row)
+    task_rows = session.query(TaskRun).filter(
+        TaskRun.book_id == book_id,
+        TaskRun.episode == episode,
+        TaskRun.task_kind == "creative-machine_prompt_api_submission",
+    ).all()
+    for row in task_rows:
+        payload = safe_json_loads(row.payload) if row.payload else {}
+        if not isinstance(payload, dict):
+            payload = {}
+        if str(payload.get("shot_id") or "") == str(shot_id) and row.task_id not in baseline_task_ids:
+            removed_task_ids.append(row.task_id)
+            session.delete(row)
     session.commit()
-print(json.dumps({"removed_record_ids": removed}, ensure_ascii=False))
+print(json.dumps({"removed_record_ids": removed, "removed_task_ids": removed_task_ids}, ensure_ascii=False))
 `;
   return JSON.parse(runPython(code, {
     BOOK_ID: String(BOOK_ID),
@@ -170,6 +195,7 @@ print(json.dumps({"removed_record_ids": removed}, ensure_ascii=False))
     SHOT_ID: String(SHOT_ID),
     BASELINE_META: JSON.stringify(baseline.meta_info),
     BASELINE_RECORD_IDS: JSON.stringify(baseline.record_ids),
+    BASELINE_TASK_IDS: JSON.stringify(baseline.task_ids || []),
   }));
 }
 
@@ -289,6 +315,24 @@ async function runFlow() {
     await page.getByText("已恢复系统生成导演分镜语言").waitFor({ state: "visible", timeout: 20000 });
     await page.getByText("系统生成版").waitFor({ state: "visible", timeout: 10000 });
 
+    const apiSubmitButton = page.getByRole("button", { name: "登记 API 提交任务" });
+    if (!(await apiSubmitButton.isVisible().catch(() => false))) {
+      await page.getByText("更多导出").click();
+    }
+    await apiSubmitButton.click();
+    await page.getByText("已登记 API 提交任务").waitFor({ state: "visible", timeout: 20000 });
+    const creativeTasks = await readJsonFromPage(page, `/api/books/${BOOK_ID}/creative-tasks?limit=30`);
+    const machinePromptApiTask = (creativeTasks.tasks || []).find(task =>
+      task.kind === "machine_prompt_api_submission" &&
+      String(task.shot_id || "") === String(SHOT_ID)
+    );
+    if (!machinePromptApiTask) {
+      throw new Error("Machine prompt API submission task was not listed in task center payload.");
+    }
+    if (machinePromptApiTask.actual_provider_submission !== false || machinePromptApiTask.external_status !== "waiting_for_generation_adapter") {
+      throw new Error("Machine prompt API submission task crossed the provider-call safety boundary.");
+    }
+
     if (errors.length) {
       throw new Error(`Browser collected errors:\n${errors.join("\n")}`);
     }
@@ -320,7 +364,7 @@ async function main() {
     await runFlow();
   } finally {
     const cleanup = restoreBaseline(baseline);
-    log(`Restored baseline; removed records: ${cleanup.removed_record_ids.join(", ") || "none"}.`);
+    log(`Restored baseline; removed records: ${cleanup.removed_record_ids.join(", ") || "none"}; removed API tasks: ${cleanup.removed_task_ids.join(", ") || "none"}.`);
     if (START_SERVERS) {
       await stopManagedProcesses();
     }

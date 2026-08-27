@@ -312,4 +312,55 @@ describe('productWorkspaceTaskCenterData', () => {
       generationChain: 'canvas_recovery_continue_after_frame',
     })
   })
+
+  it('maps machine prompt api submission tasks to prompt tracking without treating them as provider calls', () => {
+    const entries = buildRecoveryTaskEntries(
+      [],
+      {},
+      [
+        {
+          task_id: 'mpapi-abc123',
+          status: 'queued',
+          progress: 5,
+          kind: 'machine_prompt_api_submission',
+          target_kind: 'machine_prompt_api_submission',
+          episode: 1,
+          shot_id: '8',
+          provider: 'pending-generation-adapter',
+          external_status: 'waiting_for_generation_adapter',
+          generation_chain: 'machine_prompt_api_submission',
+          api_submission: true,
+          actual_provider_submission: false,
+          request_payload: {
+            generation_chain: 'machine_prompt_api_submission',
+            actual_provider_submission: false,
+          },
+        },
+      ] as any,
+      {},
+      {
+        1: [
+          {
+            shot_id: '8',
+            scene_name: 'Rain room',
+          },
+        ] as any,
+      },
+    )
+
+    expect(entries[0]).toMatchObject({
+      type: '机器提示词 API 提交',
+      recoveryKind: 'prompt',
+      actionTarget: 'storyboard',
+      actionLabel: '回到镜头工作台查看导出',
+      progress: '5%',
+    })
+    expect(entries[0].detail).toContain('等待接入真实模型适配器')
+    expect(entries[0].statusReason).toContain('当前没有调用 provider')
+    expect(entries[0].creativeTaskMeta).toMatchObject({
+      provider: 'pending-generation-adapter',
+      externalStatus: 'waiting_for_generation_adapter',
+      generationChain: 'machine_prompt_api_submission',
+    })
+  })
 })

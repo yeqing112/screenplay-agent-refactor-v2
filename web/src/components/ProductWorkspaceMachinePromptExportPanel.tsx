@@ -16,6 +16,7 @@ type MachinePromptExportPreviewLike = {
     machine_prompt_is_compiled?: boolean
     is_temporary_webui_draft?: boolean
     history_export_record_id?: string | number
+    has_manual_export_draft?: boolean
   }
   machine_prompt?: {
     soundscape?: {
@@ -46,6 +47,7 @@ type ProductionExportRecordListItemLike = {
 
 type MachinePromptExportState = 'idle' | 'loading' | 'loaded' | 'error'
 type MachinePromptRecordState = 'idle' | 'saving' | 'saved' | 'error'
+type MachinePromptApiSubmissionState = 'idle' | 'submitting' | 'submitted' | 'error'
 type MachinePromptRecordHistoryState = 'idle' | 'loading' | 'loaded' | 'error'
 type MachinePromptExportFormat = 'markdown' | 'csv' | 'api-json'
 type MachinePromptTemporaryDraftLike = {
@@ -62,6 +64,8 @@ interface MachinePromptExportPanelProps {
   machinePromptCopyMessage: string
   machinePromptRecordMessage: string
   machinePromptRecordState: MachinePromptRecordState
+  machinePromptApiSubmissionMessage: string
+  machinePromptApiSubmissionState: MachinePromptApiSubmissionState
   machinePromptExportRecords: ProductionExportRecordListItemLike[]
   machinePromptRecordHistoryState: MachinePromptRecordHistoryState
   minimaxH3CopyText: string
@@ -84,6 +88,7 @@ interface MachinePromptExportPanelProps {
   onCopyText: (label: string, text: string | undefined) => void | Promise<void>
   onDownloadFile: (format: MachinePromptExportFormat) => void
   onSaveRecord: () => void | Promise<void>
+  onSubmitApiTask: () => void | Promise<void>
   onLoadHistory: () => void | Promise<void>
   onRestoreRecordDraft: (record: ProductionExportRecordListItemLike) => void
 }
@@ -95,6 +100,8 @@ export function ProductWorkspaceMachinePromptExportPanel({
   machinePromptCopyMessage,
   machinePromptRecordMessage,
   machinePromptRecordState,
+  machinePromptApiSubmissionMessage,
+  machinePromptApiSubmissionState,
   machinePromptExportRecords,
   machinePromptRecordHistoryState,
   minimaxH3CopyText,
@@ -111,6 +118,7 @@ export function ProductWorkspaceMachinePromptExportPanel({
   onCopyText,
   onDownloadFile,
   onSaveRecord,
+  onSubmitApiTask,
   onLoadHistory,
   onRestoreRecordDraft,
 }: MachinePromptExportPanelProps) {
@@ -177,6 +185,15 @@ export function ProductWorkspaceMachinePromptExportPanel({
               </button>
               <button
                 type="button"
+                onClick={() => { void onSubmitApiTask() }}
+                disabled={machinePromptApiSubmissionState === 'submitting' || !machinePromptExport}
+                className="rounded border border-amber-400/40 bg-amber-400/10 px-2 py-1 text-[11px] text-amber-100 transition hover:border-amber-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                title="第一版只登记任务意图，不会调用真实模型 provider。"
+              >
+                {machinePromptApiSubmissionState === 'submitting' ? '登记提交任务中...' : '登记 API 提交任务'}
+              </button>
+              <button
+                type="button"
                 onClick={() => { void onSaveRecord() }}
                 disabled={machinePromptRecordState === 'saving' || !canRecordExport}
                 className="rounded border border-slate-700 px-2 py-1 text-[11px] text-slate-300 transition hover:border-cyan-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
@@ -237,6 +254,17 @@ export function ProductWorkspaceMachinePromptExportPanel({
           }`}
         >
           {machinePromptRecordMessage}
+        </div>
+      ) : null}
+      {machinePromptApiSubmissionMessage ? (
+        <div
+          className={`mt-3 rounded-lg border px-3 py-2 text-xs ${
+            machinePromptApiSubmissionState === 'error'
+              ? 'border-rose-500/20 bg-rose-500/5 text-rose-200'
+              : 'border-amber-500/20 bg-amber-500/5 text-amber-100/85'
+          }`}
+        >
+          {machinePromptApiSubmissionMessage}
         </div>
       ) : null}
 

@@ -62,7 +62,7 @@ function inferRecoveryKind(kindValue: string | undefined) {
   const normalized = String(kindValue || '').trim().toLowerCase()
   if (normalized === 'reference' || normalized === 'reference-image') return 'reference' as const
   if (normalized === 'image' || normalized === 'frame') return 'frame' as const
-  if (normalized === 'prompt' || normalized === 'storyboard-prompt-compile') return 'prompt' as const
+  if (normalized === 'prompt' || normalized === 'storyboard-prompt-compile' || normalized === 'machine_prompt_api_submission') return 'prompt' as const
   return 'video' as const
 }
 
@@ -88,6 +88,11 @@ function normalizeTaskStatus(statusValue: string | undefined): TaskCenterStatus 
 
 function buildTaskStatusReason(statusPayload: CreativeTaskStatusPayload | undefined, status: TaskCenterStatus) {
   const externalStatus = String(statusPayload?.external_status || '').trim()
+  const generationChain = String(statusPayload?.generation_chain || '').trim()
+  if (generationChain === 'machine_prompt_api_submission') {
+    if (status === 'queued') return '已登记提交意图，等待真实模型适配器接入；当前没有调用 provider。'
+    if (externalStatus) return `适配器状态：${externalStatus}；当前没有真实外发。`
+  }
   if (status === 'queued') return '任务已提交，等待 provider 开始执行。'
   if (status === 'error') {
     if (String(statusPayload?.status || '').trim() === 'not_found') {
@@ -143,6 +148,7 @@ function describeGenerationChain(generationChain: string) {
   if (generationChain === 'canvas_recovery_recompile_then_frame') return '恢复后重编再生成首帧'
   if (generationChain === 'task_center_regenerate_latest_video') return '按最新镜头状态重生成视频'
   if (generationChain === 'task_center_regenerate_latest_frame') return '按最新镜头状态重生成首帧'
+  if (generationChain === 'machine_prompt_api_submission') return '机器提示词 API 提交'
   return generationChain
 }
 
@@ -255,6 +261,9 @@ export function buildRecoveryTaskEntries(
           requestPayload.generationChain ||
           '',
       ).trim()
+      const isMachinePromptApiSubmission =
+        generationChain === 'machine_prompt_api_submission' ||
+        String(statusPayload?.kind || statusPayload?.target_kind || '').trim() === 'machine_prompt_api_submission'
       const promptRecompileReason = String(
         statusPayload?.prompt_recompile_reason ||
           requestPayload.prompt_recompile_reason ||
@@ -305,10 +314,14 @@ export function buildRecoveryTaskEntries(
           ? isCharacterShotVariantRecovery
             ? '前往资产中心补人物分镜精调'
             : '前往资产中心'
-          : '前往镜头工作台'
+          : isMachinePromptApiSubmission
+            ? '回到镜头工作台查看导出'
+            : '前往镜头工作台'
       const detail =
         status === 'error'
           ? `任务 ${taskId} 当前无法继续自动回收，建议检查版本状态，或直接从任务中心重新发起。`
+          : isMachinePromptApiSubmission
+            ? `任务 ${taskId} 已登记机器提示词 API 提交意图，等待接入真实模型适配器；当前不会自动调用 provider。`
           : triggeredByPromptRecompile && generationChain
             ? `任务 ${taskId} 来自“${describeGenerationChain(generationChain)}”链路，可在任务中心追溯本次生成所使用的重编任务与提示词版本。`
             : generationChain.startsWith('task_center_regenerate_latest_')
@@ -321,7 +334,7 @@ export function buildRecoveryTaskEntries(
 
       return {
         id: `task-recovery-${taskId}`,
-        type: `${getStoryboardRecoveryKindLabel(recoveryKind)}结果回收`,
+        type: isMachinePromptApiSubmission ? '机器提示词 API 提交' : `${getStoryboardRecoveryKindLabel(recoveryKind)}结果回收`,
         target:
           recoveryKind === 'reference'
             ? `第 ${episode} 集 · ${pendingTask?.assetLabel || assetSubject || shotId || taskId}`

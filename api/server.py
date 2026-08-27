@@ -175,7 +175,7 @@ def _is_creative_task_state(task: dict[str, Any] | None) -> bool:
         return False
     task_kind = str(task.get("task_kind") or "").strip()
     kind = str(task.get("kind") or task.get("target_kind") or "").strip()
-    return task_kind.startswith("creative") or kind in {"image", "video", "reference-image"}
+    return task_kind.startswith("creative") or kind in {"image", "video", "reference-image", "machine_prompt_api_submission"}
 
 # --- Data models ---
 
@@ -400,6 +400,19 @@ class StoryboardMachinePromptExportRecordRequest(BaseModel):
     target_model: str = Field(default="minimax-h3", validation_alias=AliasChoices("target_model", "targetModel"))
     export_channel: str = Field(default="webui", validation_alias=AliasChoices("export_channel", "exportChannel"))
     operator_name: str = Field(default="user", validation_alias=AliasChoices("operator_name", "operatorName"))
+    notes: str = ""
+
+
+class StoryboardMachinePromptApiSubmissionRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    target_model: str = Field(default="minimax-h3", validation_alias=AliasChoices("target_model", "targetModel"))
+    export_channel: str = Field(default="api", validation_alias=AliasChoices("export_channel", "exportChannel"))
+    operator_name: str = Field(default="user", validation_alias=AliasChoices("operator_name", "operatorName"))
+    submission_mode: str = Field(default="task_intent_only", validation_alias=AliasChoices("submission_mode", "submissionMode"))
+    source_export_record_id: Optional[int] = Field(default=None, validation_alias=AliasChoices("source_export_record_id", "sourceExportRecordId"))
+    has_manual_export_draft: bool = Field(default=False, validation_alias=AliasChoices("has_manual_export_draft", "hasManualExportDraft"))
+    export_payload: dict = Field(default_factory=dict, validation_alias=AliasChoices("export_payload", "exportPayload"))
     notes: str = ""
 
 
@@ -1642,6 +1655,8 @@ def _stamp_creative_task_state(task_state: dict[str, Any], *, created: bool = Fa
         raw_kind = str(task_state.get("kind") or task_state.get("task_kind") or "").strip()
         if raw_kind in {"image", "video", "reference-image"}:
             task_kind = f"creative-{raw_kind}"
+        elif raw_kind == "machine_prompt_api_submission":
+            task_kind = "creative-machine_prompt_api_submission"
         elif raw_kind.startswith("creative"):
             task_kind = raw_kind
         else:
@@ -8394,7 +8409,7 @@ def list_book_creative_tasks(book_id: int, limit: int = 20):
     capped_limit = max(1, min(int(limit or 20), 100))
     tasks_by_id: dict[str, dict] = {}
     live_task_ids: set[str] = set()
-    for task_kind in ("creative-image", "creative-video", "creative-reference-image"):
+    for task_kind in ("creative-image", "creative-video", "creative-reference-image", "creative-machine_prompt_api_submission"):
         for task in _list_persisted_task_states(task_kind, book_id, capped_limit):
             task_id = str(task.get("task_id") or "").strip()
             if task_id:
@@ -8402,7 +8417,7 @@ def list_book_creative_tasks(book_id: int, limit: int = 20):
     for task in _creative_tasks.values():
         if (
             int(task.get("book_id") or 0) == int(book_id)
-            and str(task.get("kind") or task.get("target_kind") or "").strip() in {"image", "video", "reference-image"}
+            and str(task.get("kind") or task.get("target_kind") or "").strip() in {"image", "video", "reference-image", "machine_prompt_api_submission"}
         ):
             task_id = str(task.get("task_id") or "").strip()
             if task_id:
@@ -9413,6 +9428,105 @@ def create_storyboard_machine_prompt_export_record(
         s.commit()
         s.refresh(row)
         return _serialize_production_export_record(row)
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/machine-prompt-api-submissions")
+def create_storyboard_machine_prompt_api_submission_task(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    req: StoryboardMachinePromptApiSubmissionRequest,
+):
+    from models import Book, Session, StoryboardShot
+
+    target_model = str(req.target_model or "minimax-h3").strip() or "minimax-h3"
+    export_channel = str(req.export_channel or "api").strip() or "api"
+    submission_mode = str(req.submission_mode or "task_intent_only").strip() or "task_intent_only"
+    now = datetime.utcnow()
+
+    with Session() as s:
+        book = s.query(Book).filter(Book.id == book_id).first()
+        if not book:
+            raise HTTPException(status_code=404, detail="Book not found")
+        shot = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id == _coerce_storyboard_shot_id(shot_id),
+        ).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+
+    export_payload = req.export_payload if isinstance(req.export_payload, dict) else {}
+    model_exports = export_payload.get("model_exports") if isinstance(export_payload.get("model_exports"), dict) else {}
+    target_export = model_exports.get(target_model) if isinstance(model_exports.get(target_model), dict) else {}
+    fields = target_export.get("fields") if isinstance(target_export.get("fields"), dict) else {}
+    prompt_text = str(
+        fields.get("integrated_multimodal_description")
+        or target_export.get("prompt")
+        or export_payload.get("director_shot_text")
+        or ""
+    ).strip()
+
+    task_id = f"mpapi-{uuid.uuid4().hex[:12]}"
+    task_state = {
+        "task_id": task_id,
+        "task_kind": "creative-machine_prompt_api_submission",
+        "kind": "machine_prompt_api_submission",
+        "target_kind": "machine_prompt_api_submission",
+        "status": "queued",
+        "progress": 5,
+        "book_id": book_id,
+        "episode": episode,
+        "shot_id": str(shot_id),
+        "target_model": target_model,
+        "export_channel": export_channel,
+        "submission_mode": submission_mode,
+        "generation_chain": "machine_prompt_api_submission",
+        "provider": "pending-generation-adapter",
+        "uses_mock": False,
+        "external_task_id": None,
+        "external_status": "waiting_for_generation_adapter",
+        "api_submission": True,
+        "actual_provider_submission": False,
+        "has_manual_export_draft": bool(req.has_manual_export_draft),
+        "source_export_record_id": req.source_export_record_id,
+        "operator_name": str(req.operator_name or "user").strip() or "user",
+        "notes": str(req.notes or "").strip(),
+        "request_payload": {
+            "book_id": book_id,
+            "episode": episode,
+            "shot_id": str(shot_id),
+            "target_model": target_model,
+            "export_channel": export_channel,
+            "submission_mode": submission_mode,
+            "generation_chain": "machine_prompt_api_submission",
+            "api_submission": True,
+            "actual_provider_submission": False,
+            "source_export_record_id": req.source_export_record_id,
+            "has_manual_export_draft": bool(req.has_manual_export_draft),
+            "export_payload": export_payload,
+        },
+        "prompt_encoding_audit": _build_provider_prompt_encoding_audit(prompt_text),
+        "created_at": now.isoformat(),
+        "updated_at": now.isoformat(),
+    }
+    _creative_tasks[task_id] = task_state
+    _stamp_creative_task_state(task_state, created=True)
+    return {
+        "task_id": task_id,
+        "status": task_state["status"],
+        "progress": task_state["progress"],
+        "book_id": book_id,
+        "episode": episode,
+        "shot_id": str(shot_id),
+        "target_model": target_model,
+        "export_channel": export_channel,
+        "generation_chain": "machine_prompt_api_submission",
+        "external_status": task_state["external_status"],
+        "api_submission": True,
+        "actual_provider_submission": False,
+        "has_manual_export_draft": bool(req.has_manual_export_draft),
+    }
 
 
 @app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/compile-prompts")

@@ -6,10 +6,12 @@ from fastapi.testclient import TestClient
 
 from api.server import app
 from models import (
+    Book,
     ProductionExportRecord,
     Session,
     StoryboardPromptVersion,
     StoryboardShot,
+    TaskRun,
     VisualLocation,
     VisualMakeup,
     VisualProp,
@@ -29,6 +31,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.episode = 1
         self.shot_id = 1
         with Session() as session:
+            session.query(TaskRun).filter(TaskRun.book_id == self.book_id).delete()
             session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
             session.query(StoryboardPromptVersion).filter(StoryboardPromptVersion.book_id == self.book_id).delete()
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
@@ -36,6 +39,18 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             session.query(VisualMakeup).filter(VisualMakeup.book_id == self.book_id).delete()
             session.query(VisualLocation).filter(VisualLocation.book_id == self.book_id).delete()
             session.query(VisualProp).filter(VisualProp.book_id == self.book_id).delete()
+            session.query(Book).filter(Book.id == self.book_id).delete()
+
+            session.add(
+                Book(
+                    id=self.book_id,
+                    title="机器提示词测试书",
+                    filename="machine-prompt-test.txt",
+                    chapter_count=1,
+                    total_words=1000,
+                    status="imported",
+                )
+            )
 
             location = VisualLocation(
                 book_id=self.book_id,
@@ -168,6 +183,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
 
     def tearDown(self):
         with Session() as session:
+            session.query(TaskRun).filter(TaskRun.book_id == self.book_id).delete()
             session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
             session.query(StoryboardPromptVersion).filter(StoryboardPromptVersion.book_id == self.book_id).delete()
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
@@ -175,6 +191,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             session.query(VisualMakeup).filter(VisualMakeup.book_id == self.book_id).delete()
             session.query(VisualLocation).filter(VisualLocation.book_id == self.book_id).delete()
             session.query(VisualProp).filter(VisualProp.book_id == self.book_id).delete()
+            session.query(Book).filter(Book.id == self.book_id).delete()
             session.commit()
 
     def _valid_llm_payload(self):
@@ -363,6 +380,58 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertEqual(after_record_count, before_record_count + 1)
         self.assertFalse(shot.visual_prompt_static)
         self.assertFalse(shot.visual_prompt_motion)
+
+    def test_machine_prompt_api_submission_registers_task_without_provider_call(self):
+        export_preview_response = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-export?target_model=minimax-h3"
+        )
+        self.assertEqual(export_preview_response.status_code, 200)
+        export_payload = export_preview_response.json()
+
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-api-submissions",
+            json={
+                "targetModel": "minimax-h3",
+                "exportChannel": "api",
+                "operatorName": "formal-workspace",
+                "submissionMode": "task_intent_only",
+                "sourceExportRecordId": 123,
+                "hasManualExportDraft": True,
+                "exportPayload": export_payload,
+                "notes": "只登记提交意图，等待真实适配器。",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(str(payload["task_id"]).startswith("mpapi-"))
+        self.assertEqual(payload["status"], "queued")
+        self.assertEqual(payload["progress"], 5)
+        self.assertEqual(payload["generation_chain"], "machine_prompt_api_submission")
+        self.assertEqual(payload["external_status"], "waiting_for_generation_adapter")
+        self.assertTrue(payload["api_submission"])
+        self.assertFalse(payload["actual_provider_submission"])
+        self.assertTrue(payload["has_manual_export_draft"])
+
+        tasks_response = self.client.get(f"/api/books/{self.book_id}/creative-tasks?limit=30")
+        self.assertEqual(tasks_response.status_code, 200)
+        tasks = tasks_response.json()["tasks"]
+        task = next((item for item in tasks if item.get("task_id") == payload["task_id"]), None)
+        self.assertIsNotNone(task)
+        self.assertEqual(task["kind"], "machine_prompt_api_submission")
+        self.assertEqual(task["target_kind"], "machine_prompt_api_submission")
+        self.assertEqual(task["task_kind"], "creative-machine_prompt_api_submission")
+        self.assertEqual(task["provider"], "pending-generation-adapter")
+        self.assertTrue(task["api_submission"])
+        self.assertFalse(task["actual_provider_submission"])
+        self.assertEqual(task["submission_mode"], "task_intent_only")
+        self.assertEqual(task["source_export_record_id"], 123)
+        self.assertTrue(task["has_manual_export_draft"])
+        self.assertEqual(task["request_payload"]["actual_provider_submission"], False)
+        self.assertEqual(
+            task["request_payload"]["export_payload"]["model_exports"]["minimax-h3"]["fields"]["integrated_multimodal_description"],
+            export_payload["model_exports"]["minimax-h3"]["fields"]["integrated_multimodal_description"],
+        )
 
     def test_director_shot_text_override_recompiles_export_without_prompt_version(self):
         custom_director_text = "场景：暴雨中的出租屋\n镜头：用户改写后的导演分镜语言，姐姐先停顿，再看向阿宁手里的旧水壶。"

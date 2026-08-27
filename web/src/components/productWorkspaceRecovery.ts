@@ -62,6 +62,12 @@ export type CreativeTaskStatusPayload = {
   first_frame_url?: string | null
   provider_task_mode?: string | null
   generation_chain?: string | null
+  api_submission?: boolean
+  actual_provider_submission?: boolean
+  target_model?: string
+  submission_mode?: string
+  source_export_record_id?: number | null
+  has_manual_export_draft?: boolean
   triggered_by_prompt_recompile?: boolean | null
   prompt_recompile_reason?: string | null
   prompt_recompile_task_id?: string | null
