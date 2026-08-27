@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import ProductWorkspaceStoryboardSection, {
   buildMachinePromptApiJsonExportText,
   buildMachinePromptCsvExportText,
+  buildMachinePromptDraftFromExportRecord,
   buildMachinePromptMarkdownExportText,
   buildMachinePromptWebuiCopyText,
 } from './ProductWorkspaceStoryboardSection'
@@ -181,6 +182,70 @@ describe('ProductWorkspaceStoryboardSection repair action chaining', () => {
     expect(apiJson.export_contract.api_submission).toBe(false)
     expect(apiJson.export_contract.submission_policy).toBe('export_only_submit_via_generation_adapter')
     expect(apiJson.model_export.api_submission).toBe(false)
+  })
+
+  it('restores a machine prompt export record as a temporary WebUI draft', () => {
+    const draft = buildMachinePromptDraftFromExportRecord({
+      id: 88,
+      export_format: 'storyboard-machine-prompt-minimax-h3-webui',
+      summary: '第 1 集 · 镜头 8 · minimax-h3 WEBUI 机器提示词导出快照',
+      meta_info: {
+        record_type: 'storyboard_machine_prompt_export',
+        api_submission: false,
+        target_model: 'minimax-h3',
+        export_channel: 'webui',
+        book_id: 75,
+        episode: 1,
+        shot_id: 8,
+        scene_name: '便利店',
+        director_shot_text: '旧版本导演语言：林小夏盯着监控画面。',
+        reference_image_count: 2,
+        bound_asset_count: 3,
+        machine_prompt: {
+          api_submission: false,
+          visual_timeline: [
+            {
+              phase: '起始',
+              time_range_seconds: '0-2s',
+              camera_instruction: '固定近景',
+              visual_action: '林小夏盯着便利店监控屏幕。',
+            },
+          ],
+          soundscape: {
+            overall_soundscape: '便利店冷柜低鸣。',
+            non_diegetic_music: '低频悬疑氛围。',
+          },
+        },
+        model_exports: {
+          'minimax-h3': {
+            target_model: 'minimax-h3',
+            export_mode: 'webui_fields',
+            api_submission: false,
+            fields: {
+              integrated_multimodal_description: '林小夏在便利店收银台旁盯着监控画面。',
+              overall_soundscape: '冷柜低鸣与电流声。',
+              non_diegetic_music: '低频悬疑氛围。',
+            },
+          },
+          'generic-zh-video': {
+            target_model: 'generic-zh-video',
+            export_mode: 'single_prompt',
+            api_submission: false,
+            prompt: '林小夏在便利店收银台旁盯着监控画面，冷柜低鸣。',
+          },
+        },
+      },
+    })
+
+    expect(draft?.mode).toBe('history_webui_draft')
+    expect(draft?.source_layers?.is_temporary_webui_draft).toBe(true)
+    expect(draft?.source_layers?.history_export_record_id).toBe(88)
+    expect(draft?.director_shot_text).toContain('旧版本导演语言')
+    expect(draft?.model_exports?.['generic-zh-video']?.prompt).toContain('冷柜低鸣')
+
+    const text = buildMachinePromptWebuiCopyText(draft)
+    expect(text).toContain('API 提交：否，仅复制/导出')
+    expect(text).toContain('林小夏在便利店收银台旁盯着监控画面。')
   })
 
   it('upgrades prompt repair CTA to recompile-and-generate-frame when no adopted frame exists', () => {

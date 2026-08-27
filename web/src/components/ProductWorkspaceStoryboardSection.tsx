@@ -249,6 +249,8 @@ type MachinePromptExportPreview = {
     has_user_director_shot_override?: boolean
     machine_prompt_is_compiled?: boolean
     model_export_is_submission_ready_but_not_submitted?: boolean
+    history_export_record_id?: string | number
+    is_temporary_webui_draft?: boolean
   }
   machine_prompt?: {
     schema_version?: string
@@ -294,11 +296,17 @@ type ProductionExportRecordListItem = {
     api_submission?: boolean
     target_model?: string
     export_channel?: string
+    book_id?: string | number
     episode?: number
     shot_id?: number | string
     scene_name?: string
+    director_shot_text?: string
     reference_image_count?: number
     bound_asset_count?: number
+    warnings?: unknown[]
+    source_layers?: MachinePromptExportPreview['source_layers']
+    machine_prompt?: MachinePromptExportPreview['machine_prompt']
+    model_exports?: MachinePromptExportPreview['model_exports']
   }
 }
 
@@ -318,6 +326,47 @@ function stringifyMachinePromptParam(value: unknown) {
     return JSON.stringify(value, null, 2)
   } catch {
     return String(value)
+  }
+}
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
+export function buildMachinePromptDraftFromExportRecord(
+  record: ProductionExportRecordListItem | null | undefined,
+): MachinePromptExportPreview | null {
+  const meta = record?.meta_info
+  if (!meta || meta.record_type !== 'storyboard_machine_prompt_export') return null
+
+  const targetModel = String(meta.target_model || 'minimax-h3').trim() || 'minimax-h3'
+  const sourceLayers = isPlainRecord(meta.source_layers) ? meta.source_layers : {}
+  const machinePrompt = isPlainRecord(meta.machine_prompt) ? meta.machine_prompt as MachinePromptExportPreview['machine_prompt'] : undefined
+  const modelExports = isPlainRecord(meta.model_exports) ? meta.model_exports as MachinePromptExportPreview['model_exports'] : undefined
+  const warnings = Array.isArray(meta.warnings) ? meta.warnings.map((item) => String(item || '').trim()).filter(Boolean) : []
+
+  return {
+    mode: 'history_webui_draft',
+    book_id: meta.book_id,
+    episode: meta.episode,
+    shot_id: meta.shot_id,
+    api_submission: false,
+    target_model: targetModel,
+    scene_name: meta.scene_name,
+    director_shot_text: String(meta.director_shot_text || ''),
+    bound_asset_count: Number(meta.bound_asset_count || 0),
+    reference_image_count: Number(meta.reference_image_count || 0),
+    warnings,
+    source_layers: {
+      ...sourceLayers,
+      director_shot_text_source: 'history_export_record',
+      machine_prompt_is_compiled: Boolean(machinePrompt || modelExports),
+      model_export_is_submission_ready_but_not_submitted: true,
+      history_export_record_id: record?.id,
+      is_temporary_webui_draft: true,
+    },
+    machine_prompt: machinePrompt,
+    model_exports: modelExports,
   }
 }
 
@@ -1733,6 +1782,24 @@ export default function ProductWorkspaceStoryboardSection({
     }
   }
 
+  const restoreMachinePromptExportRecordDraft = (record: ProductionExportRecordListItem) => {
+    const draft = buildMachinePromptDraftFromExportRecord(record)
+    if (!draft) {
+      setMachinePromptRecordState('error')
+      setMachinePromptRecordMessage('这条历史记录缺少可恢复的机器提示词快照，无法生成 WebUI 临时草稿。')
+      return
+    }
+
+    setMachinePromptExport(draft)
+    setMachinePromptExportState('loaded')
+    setMachinePromptExportMessage(
+      `已从导出记录 #${record.id ?? '-'} 恢复为 WebUI 临时草稿；仅用于复制、下载或人工审阅，不会反写导演分镜语言、Shot Schema 或 Prompt Version。`,
+    )
+    setMachinePromptRecordState('saved')
+    setMachinePromptRecordMessage(`已恢复历史快照 #${record.id ?? '-'} 为临时导出草稿；API 未提交。`)
+    setMachinePromptCopyMessage('')
+  }
+
   const saveMachinePromptExportRecord = async () => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
     setMachinePromptRecordState('saving')
@@ -2553,6 +2620,7 @@ export default function ProductWorkspaceStoryboardSection({
                 onDownloadFile={downloadMachinePromptExportFile}
                 onSaveRecord={saveMachinePromptExportRecord}
                 onLoadHistory={loadMachinePromptExportRecordHistory}
+                onRestoreRecordDraft={restoreMachinePromptExportRecordDraft}
               />
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">

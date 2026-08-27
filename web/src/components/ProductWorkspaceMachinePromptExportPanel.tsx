@@ -14,6 +14,8 @@ type MachinePromptExportPreviewLike = {
   reference_image_count?: number
   source_layers?: {
     machine_prompt_is_compiled?: boolean
+    is_temporary_webui_draft?: boolean
+    history_export_record_id?: string | number
   }
   machine_prompt?: {
     soundscape?: {
@@ -27,11 +29,18 @@ type ProductionExportRecordListItemLike = {
   summary?: string
   created_at?: string | null
   meta_info?: {
+    record_type?: string
     api_submission?: boolean
     target_model?: string
     export_channel?: string
+    episode?: number
+    shot_id?: number | string
+    scene_name?: string
+    director_shot_text?: string
     reference_image_count?: number
     bound_asset_count?: number
+    machine_prompt?: any
+    model_exports?: Record<string, any>
   }
 }
 
@@ -65,6 +74,7 @@ interface MachinePromptExportPanelProps {
   onDownloadFile: (format: MachinePromptExportFormat) => void
   onSaveRecord: () => void | Promise<void>
   onLoadHistory: () => void | Promise<void>
+  onRestoreRecordDraft: (record: ProductionExportRecordListItemLike) => void
 }
 
 export function ProductWorkspaceMachinePromptExportPanel({
@@ -86,7 +96,10 @@ export function ProductWorkspaceMachinePromptExportPanel({
   onDownloadFile,
   onSaveRecord,
   onLoadHistory,
+  onRestoreRecordDraft,
 }: MachinePromptExportPanelProps) {
+  const isHistoryDraft = Boolean(machinePromptExport?.source_layers?.is_temporary_webui_draft)
+
   return (
     <div className="mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -169,6 +182,11 @@ export function ProductWorkspaceMachinePromptExportPanel({
         <StatusPill tone={machinePromptExport?.api_submission === false ? 'slate' : 'amber'}>
           {machinePromptExport?.api_submission === false ? 'API 未提交' : 'API 提交待加载'}
         </StatusPill>
+        {isHistoryDraft ? (
+          <StatusPill tone="amber">
+            历史草稿 #{machinePromptExport?.source_layers?.history_export_record_id ?? '-'}
+          </StatusPill>
+        ) : null}
       </div>
 
       {machinePromptExportMessage ? (
@@ -222,6 +240,17 @@ export function ProductWorkspaceMachinePromptExportPanel({
                   <div className="mt-1 text-[11px] leading-5 text-slate-400">{record.summary || '机器提示词导出快照'}</div>
                   <div className="mt-1 text-[11px] text-slate-500">
                     API 提交：{meta.api_submission === false ? '否' : '未知'} · 参考图 {meta.reference_image_count ?? 0} · 绑定资产 {meta.bound_asset_count ?? 0}
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onRestoreRecordDraft(record)}
+                      disabled={!meta.machine_prompt && !meta.model_exports}
+                      className="rounded border border-amber-400/30 px-2 py-1 text-[11px] text-amber-100 transition hover:border-amber-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      恢复为 WebUI 草稿
+                    </button>
+                    <span className="text-[11px] leading-6 text-slate-500">只恢复到导出预览，不改当前分镜。</span>
                   </div>
                 </div>
               )

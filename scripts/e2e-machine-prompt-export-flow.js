@@ -263,6 +263,14 @@ async function runFlow() {
     await page.getByText(/已读取 \d+ 条当前镜头机器提示词导出记录/).waitFor({ state: "visible", timeout: 20000 });
     await page.getByText("当前镜头导出历史").click();
     await page.getByText("API 提交：否").waitFor({ state: "visible", timeout: 10000 });
+    await page.getByRole("button", { name: "恢复为 WebUI 草稿" }).first().click();
+    await page.getByText("已恢复历史快照").waitFor({ state: "visible", timeout: 10000 });
+    await page.getByText("历史草稿 #").waitFor({ state: "visible", timeout: 10000 });
+    await page.getByRole("button", { name: "复制 H3 全字段" }).click();
+    const restoredClipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
+    if (!restoredClipboardText.includes("API 提交：否，仅复制/导出") || !restoredClipboardText.includes("integrated_multimodal_description")) {
+      throw new Error("Restored WebUI draft did not provide a copy-ready H3 export.");
+    }
 
     await page.getByText("高级").first().click();
     await page.getByRole("button", { name: "恢复系统版" }).click();
