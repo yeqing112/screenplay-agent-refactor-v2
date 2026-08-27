@@ -1,5 +1,41 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-27 — MiniMax H3 真实外网灰度脚本
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：二段式 H3 真实提交入口已经落地，但生产前仍需要一个默认 dry-run、强门禁、可审计的真实账号灰度脚本，防止手工误触付费接口。
+
+### 变更概览
+
+- **新增灰度验证脚本**
+  - 新增 `scripts/validate-minimax-h3-gray.py`。
+  - 新增 npm 入口：`npm run validate:minimax-h3-gray`。
+  - 默认只做 dry-run 预检：读取真实镜头、加载 H3 机器提示词导出、检查视频模型配置、首帧、prompt 长度和真实提交门禁。
+  - 默认不登记任务、不提交 MiniMax、不写回视频资产。
+
+- **真实提交强门禁**
+  - 真实模式必须同时满足：
+    - `--allow-real`
+    - `MINIMAX_H3_GRAY_REAL=1`
+    - `MINIMAX_H3_GRAY_CONFIRM=CONFIRM_MINIMAX_H3_SUBMIT`
+    - `MINIMAX_H3_GRAY_WHITELIST` 精确包含 `book_id:episode:shot_id`
+    - 当前视频模型或显式模型 profile 为 `minimax-h3-async`
+    - MiniMax API Key / base URL 已配置
+  - 真实模式走正式后端接口：
+    - 先登记 `machine_prompt_api_submission`
+    - 再调用确认式 provider submit
+    - 最后读取 task 状态与视频资产写回结果
+
+- **报告输出**
+  - 输出 `artifacts/minimax-h3-gray-*.json|md`。
+  - 报告包含 target、H3 prompt 预览、任务模式、首帧、provider readiness、blockers、warnings、真实运行门禁和 PowerShell SOP。
+
+### 验证结果
+
+- `npm run validate:minimax-h3-gray -- 75 1 1`：通过；输出 dry-run 报告后已清理 artifacts。
+
+---
+
 ## 2026-08-27 — 机器提示词二段式 MiniMax H3 真实提交链路
 
 > 对应分支：`codex/unify-formal-workspace`

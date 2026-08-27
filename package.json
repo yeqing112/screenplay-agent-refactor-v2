@@ -18,6 +18,7 @@
     "apply:scene-reference-plan": "python scripts/apply-storyboard-scene-reference-plan.py",
     "apply:storyboard-batch-repair": "python scripts/apply-storyboard-batch-repair.py",
     "validate:storyboard-real-llm-gray": "python scripts/validate-storyboard-real-llm-gray.py",
+    "validate:minimax-h3-gray": "python scripts/validate-minimax-h3-gray.py",
     "preview:storyboard-compiler-v1": "python scripts/preview-storyboard-compiler-v1.py",
     "preview:book75-compiler-v1": "python scripts/preview-storyboard-compiler-v1.py --book-id 75 --target-model jimeng --out artifacts/book75-storyboard-compiler-v1-preview.json --summary-md artifacts/book75-storyboard-compiler-v1-preview.md",
     "preview:machine-prompt-export": "python scripts/preview-storyboard-machine-prompt-export.py",
