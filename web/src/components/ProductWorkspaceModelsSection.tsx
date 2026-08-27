@@ -233,7 +233,7 @@ export default function ProductWorkspaceModelsSection() {
           createdCount > 0 ? `新增 ${createdCount} 个 PoYo 预设` : null,
           updatedCount > 0 ? `更新 ${updatedCount} 个预设能力字段` : null,
           '图像默认确认为 PoYo GPT Image 2',
-          '视频默认保持不变，等待后续接入 MiniMax H3',
+          '视频默认保持不变；MiniMax H3 可在注册表中单独配置',
         ]
           .filter(Boolean)
           .join('，') + '。',
@@ -315,7 +315,7 @@ export default function ProductWorkspaceModelsSection() {
               <div className="min-w-0">
                 <div className="text-sm font-medium text-white">生产默认策略</div>
                 <div className="mt-2 text-sm leading-6 text-slate-400">
-                  图像生产默认固定使用 {recommendedPoyoPresetLabel('image')}；视频默认暂不强制切换，等待后续接入 {recommendedPoyoPresetLabel('video')}。
+                  图像生产默认固定使用 {recommendedPoyoPresetLabel('image')}；视频默认暂不强制切换，MiniMax H3 可在注册表中作为真实异步视频模型单独配置。
                   这里强调“当前生产决策”，不是按模型目录自动推荐替换。
                 </div>
               </div>

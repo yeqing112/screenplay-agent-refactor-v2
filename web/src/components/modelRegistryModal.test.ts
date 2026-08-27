@@ -17,6 +17,8 @@ describe('ModelRegistryModal helpers', () => {
   it('offers poyo-async as a selectable provider for image and video capabilities', () => {
     expect(providerOptionsForCapability('image')).toContain('poyo-async')
     expect(providerOptionsForCapability('video')).toContain('poyo-async')
+    expect(providerOptionsForCapability('video')).toContain('minimax-h3-async')
+    expect(providerOptionsForCapability('image')).not.toContain('minimax-h3-async')
     expect(providerOptionsForCapability('llm')).not.toContain('poyo-async')
     expect(providerOptionsForCapability('embedding')).not.toContain('poyo-async')
   })
@@ -55,6 +57,7 @@ describe('ModelRegistryModal helpers', () => {
 
   it('suggests poyo-specific base url and default params when provider is poyo-async', () => {
     expect(suggestedBaseUrlForProvider('poyo-async')).toBe('https://api.poyo.ai')
+    expect(suggestedBaseUrlForProvider('minimax-h3-async')).toBe('https://api.minimax.io')
     expect(suggestedBaseUrlForProvider('openai-compatible')).toBe('')
     expect(suggestedPoyoModelNames('image')).toContain('seedream-5-0-lite-api')
     expect(suggestedPoyoModelNames('image')).toContain('nano-banana-2')
@@ -71,6 +74,20 @@ describe('ModelRegistryModal helpers', () => {
     expect(videoDefaults).toContain('"supports_first_frame": true')
     expect(videoDefaults).toContain('"supports_last_frame": true')
     expect(videoDefaults).toContain('"supports_audio": true')
+  })
+
+  it('suggests MiniMax H3 async defaults without enabling reference mixing', () => {
+    const h3Defaults = suggestedDefaultParamsText('video', 'minimax-h3-async', 'MiniMax-H3')
+    const parsed = JSON.parse(h3Defaults)
+
+    expect(parsed.task_modes).toEqual(['text_to_video', 'image_to_video'])
+    expect(parsed.supports_first_frame).toBe(true)
+    expect(parsed.supports_last_frame).toBe(true)
+    expect(parsed.supports_reference_images).toBe(false)
+    expect(parsed.resolution).toBe('2K')
+    expect(parsed.duration).toBe(5)
+    expect(parsed.ratio).toBe('16:9')
+    expect(parsed.poll_timeout_seconds).toBe(900)
   })
 
   it('defaults LLM thinking to disabled and updates it through structured helper fields', () => {

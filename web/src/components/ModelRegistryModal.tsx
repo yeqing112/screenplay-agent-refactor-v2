@@ -32,6 +32,7 @@ type LlmThinkingType = 'enabled' | 'disabled'
 
 const MOCK_PROVIDER = 'prototype-task-adapter'
 const POYO_ASYNC_PROVIDER = 'poyo-async'
+const MINIMAX_H3_ASYNC_PROVIDER = 'minimax-h3-async'
 
 const CAPABILITY_LABELS: Record<ModelCapability, string> = {
   llm: 'LLM',
@@ -48,15 +49,21 @@ function isPoyoAsyncProvider(provider: string) {
   return provider.trim() === POYO_ASYNC_PROVIDER
 }
 
+function isMiniMaxH3AsyncProvider(provider: string) {
+  return provider.trim() === MINIMAX_H3_ASYNC_PROVIDER
+}
+
 function canUseAsDefault(profile: Pick<ModelProfileRecord, 'capability' | 'provider' | 'uses_mock'>) {
   if (profile.capability !== 'video') return true
-  return profile.uses_mock || isPoyoAsyncProvider(profile.provider)
+  return profile.uses_mock || isPoyoAsyncProvider(profile.provider) || isMiniMaxH3AsyncProvider(profile.provider)
 }
 
 export function providerOptionsForCapability(capability: ModelCapability) {
   if (capability === 'embedding') return ['ollama']
   if (capability === 'llm') return ['openai-compatible']
-  return [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER]
+  return capability === 'video'
+    ? [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER]
+    : [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER]
 }
 
 export function buildPoyoPresetProfiles(): ModelProfileRecord[] {
@@ -289,6 +296,7 @@ export function buildPoyoPresetProfiles(): ModelProfileRecord[] {
 }
 
 export function suggestedBaseUrlForProvider(provider: string) {
+  if (isMiniMaxH3AsyncProvider(provider)) return 'https://api.minimax.io'
   return isPoyoAsyncProvider(provider) ? 'https://api.poyo.ai' : ''
 }
 
@@ -303,7 +311,7 @@ export function recommendedPoyoPresetId(capability: Extract<ModelCapability, 'im
 }
 
 export function recommendedPoyoPresetLabel(capability: Extract<ModelCapability, 'image' | 'video'>) {
-  return capability === 'image' ? 'PoYo GPT Image 2' : 'MiniMax H3（待接入）'
+  return capability === 'image' ? 'PoYo GPT Image 2' : 'MiniMax H3'
 }
 
 export function suggestedDefaultParamsText(capability: ModelCapability, provider: string, modelName = '') {
@@ -324,6 +332,9 @@ export function suggestedDefaultParamsText(capability: ModelCapability, provider
       return `{\n  "task_modes": ["image_to_video", "text_to_video"],\n  "supports_reference_images": true,\n  "max_reference_images": 4,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": false,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 600\n}`
     }
     return `{\n  "task_modes": ["image_to_video", "text_to_video"],\n  "supports_reference_images": true,\n  "max_reference_images": 4,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": true,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 600\n}`
+  }
+  if (isMiniMaxH3AsyncProvider(provider)) {
+    return `{\n  "task_modes": ["text_to_video", "image_to_video"],\n  "supports_reference_images": false,\n  "max_reference_images": 0,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": false,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "resolution": "2K",\n  "duration": 5,\n  "ratio": "16:9",\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 900\n}`
   }
   return `{\n  "duration_seconds": 5\n}`
 }
@@ -1155,7 +1166,11 @@ export default function ModelRegistryModal({
                               void applyDefault(capability, profile.id)
                             }}
                             disabled={!canUseAsDefault(profile)}
-                            title={!canUseAsDefault(profile) ? '当前只有模拟视频模型或 PoYo 异步视频模型可以设为默认。' : undefined}
+                            title={
+                              !canUseAsDefault(profile)
+                                ? '当前只有模拟视频模型、PoYo 异步视频模型或 MiniMax H3 异步视频模型可以设为默认。'
+                                : undefined
+                            }
                             className="rounded-full border border-emerald-600/60 px-3 py-1 text-xs text-emerald-200 transition hover:border-emerald-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             设为默认
@@ -1259,7 +1274,7 @@ export default function ModelRegistryModal({
                   该图片模型已经可以驱动真实的分镜首帧和视觉资产生成链路。
                 </div>
               ) : null}
-              {draft.capability === 'video' && draft.provider !== MOCK_PROVIDER && !isPoyoAsyncProvider(draft.provider) ? (
+              {draft.capability === 'video' && draft.provider !== MOCK_PROVIDER && !isPoyoAsyncProvider(draft.provider) && !isMiniMaxH3AsyncProvider(draft.provider) ? (
                 <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm leading-6 text-amber-100">
                   该视频模型当前支持保存和连通性测试，但还没有完全接入正式生产工作流。
                 </div>
@@ -1267,6 +1282,11 @@ export default function ModelRegistryModal({
               {draft.capability === 'video' && isPoyoAsyncProvider(draft.provider) ? (
                 <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm leading-6 text-emerald-100">
                   PoYo 异步视频模型已经兼容当前正式生产链路。
+                </div>
+              ) : null}
+              {draft.capability === 'video' && isMiniMaxH3AsyncProvider(draft.provider) ? (
+                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm leading-6 text-emerald-100">
+                  MiniMax H3 异步视频模型已接入后端适配层；测试配置不会提交真实任务，真实生成仍需在工作台显式发起。
                 </div>
               ) : null}
 
@@ -1302,12 +1322,14 @@ export default function ModelRegistryModal({
                     const currentDefaults = current.default_params_text.trim()
                     const shouldRefreshDefaults =
                       !currentDefaults || currentDefaults === suggestedDefaultParamsText(current.capability, current.provider, current.model_name)
+                    const nextModelName = isMiniMaxH3AsyncProvider(provider) && !current.model_name.trim() ? 'MiniMax-H3' : current.model_name
                     return {
                       ...current,
                       provider,
                       base_url: nextBaseUrl,
+                      model_name: nextModelName,
                       default_params_text: shouldRefreshDefaults
-                        ? suggestedDefaultParamsText(current.capability, provider, current.model_name)
+                        ? suggestedDefaultParamsText(current.capability, provider, nextModelName)
                         : current.default_params_text,
                     }
                   })}
@@ -1323,7 +1345,13 @@ export default function ModelRegistryModal({
                 capability={draft.capability}
                 provider={draft.provider}
                 value={draft.model_name}
-                placeholder={isPoyoAsyncProvider(draft.provider) ? '例如：seedream-5.0-lite 或 seedance-2' : undefined}
+                placeholder={
+                  isMiniMaxH3AsyncProvider(draft.provider)
+                    ? 'MiniMax-H3'
+                    : isPoyoAsyncProvider(draft.provider)
+                      ? '例如：seedream-5.0-lite 或 seedance-2'
+                      : undefined
+                }
                 onChange={(value) => setDraft((current) => {
                   const currentDefaults = current.default_params_text.trim()
                   const shouldRefreshDefaults =
@@ -1339,6 +1367,9 @@ export default function ModelRegistryModal({
               />
               {isPoyoAsyncProvider(draft.provider) ? (
                 <div className="-mt-2 text-xs text-slate-500">推荐模型：{suggestedPoyoModelNames(draft.capability).join(' · ')}</div>
+              ) : null}
+              {isMiniMaxH3AsyncProvider(draft.provider) ? (
+                <div className="-mt-2 text-xs text-slate-500">官方模型名：MiniMax-H3。测试当前草稿只校验配置结构，不发起真实扣费任务。</div>
               ) : null}
               <EditorField
                 label="API Key"

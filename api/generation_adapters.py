@@ -10,6 +10,7 @@ from typing import Any
 import httpx
 
 from .model_registry import (
+    MINIMAX_H3_ASYNC_PROVIDER,
     MOCK_PROVIDER,
     OPENAI_COMPATIBLE_PROVIDER,
     POYO_ASYNC_PROVIDER,
@@ -163,6 +164,37 @@ def _extract_poyo_file_url(data: dict[str, Any]) -> str | None:
     return None
 
 
+def _extract_minimax_h3_file_url(data: dict[str, Any]) -> str | None:
+    candidates: list[Any] = [
+        data.get("content"),
+        data.get("task", {}).get("content") if isinstance(data.get("task"), dict) else None,
+        data.get("data", {}).get("content") if isinstance(data.get("data"), dict) else None,
+        data.get("result", {}).get("content") if isinstance(data.get("result"), dict) else None,
+    ]
+    for content in candidates:
+        if isinstance(content, dict):
+            for key in ("url", "video_url", "videoUrl", "file_url", "fileUrl"):
+                value = str(content.get(key) or "").strip()
+                if value:
+                    return value
+        if isinstance(content, list):
+            for item in content:
+                if not isinstance(item, dict):
+                    continue
+                for key in ("url", "video_url", "videoUrl", "file_url", "fileUrl"):
+                    value = str(item.get(key) or "").strip()
+                    if value:
+                        return value
+    for container in (data, data.get("task"), data.get("data"), data.get("result")):
+        if not isinstance(container, dict):
+            continue
+        for key in ("url", "video_url", "videoUrl", "file_url", "fileUrl", "output_url", "outputUrl"):
+            value = str(container.get(key) or "").strip()
+            if value:
+                return value
+    return None
+
+
 def _is_http_status_error(exc: Exception, status_code: int) -> bool:
     return isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code == status_code
 
@@ -230,6 +262,241 @@ async def submit_poyo_generation(
         "providerRequestPayload": payload,
     }
 
+
+def _coerce_minimax_h3_duration(value: Any) -> int:
+    duration = _coerce_int(value, 5)
+    return min(max(duration, 4), 15)
+
+
+def _build_minimax_h3_video_payload(
+    profile: dict[str, Any],
+    *,
+    prompt: str,
+    duration_seconds: int | None,
+    aspect_ratio: str | None,
+    first_frame_url: str | None,
+) -> dict[str, Any]:
+    normalized_prompt = str(prompt or "").strip()
+    if not normalized_prompt:
+        raise ModelProfileError("MiniMax H3 视频生成缺少 prompt。")
+    if len(normalized_prompt) > 7000:
+        raise ModelProfileError("MiniMax H3 prompt 超过 7000 字符限制。")
+
+    params = dict(profile.get("default_params") or {})
+    resolution = str(params.get("resolution") or "2K").strip() or "2K"
+    if resolution not in {"768P", "2K"}:
+        raise ModelProfileError("MiniMax H3 resolution 只能是 768P 或 2K。")
+
+    payload: dict[str, Any] = {
+        "model": str(profile.get("model_name") or "MiniMax-H3").strip() or "MiniMax-H3",
+        "content": [
+            {
+                "type": "text",
+                "text": normalized_prompt,
+            }
+        ],
+        "resolution": resolution,
+        "duration": _coerce_minimax_h3_duration(duration_seconds or params.get("duration") or params.get("duration_seconds")),
+    }
+
+    normalized_first_frame_url = str(first_frame_url or "").strip()
+    if normalized_first_frame_url:
+        payload["content"].append({
+            "type": "image_url",
+            "image_url": {
+                "url": normalized_first_frame_url,
+            },
+            "role": "first_frame",
+        })
+    else:
+        ratio = str(aspect_ratio or params.get("ratio") or "16:9").strip() or "16:9"
+        if ratio == "adaptive":
+            ratio = "16:9"
+        payload["ratio"] = ratio
+
+    callback_url = str(params.get("callback_url") or params.get("callbackUrl") or "").strip()
+    if callback_url:
+        payload["callback_url"] = callback_url
+
+    return payload
+
+
+async def submit_minimax_h3_generation(
+    profile: dict[str, Any],
+    *,
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    api_key = str(profile.get("api_key") or "").strip()
+    base_url = str(profile.get("base_url") or "").rstrip("/")
+    if not api_key:
+        raise ModelProfileError("MiniMax H3 模型配置缺少 API Key。")
+    if not base_url:
+        raise ModelProfileError("MiniMax H3 模型配置缺少 base_url。")
+
+    async with httpx.AsyncClient(timeout=120) as client:
+        try:
+            response = await client.post(
+                f"{base_url}/v2/video_generation",
+                headers={"Authorization": f"Bearer {api_key}"},
+                json=payload,
+            )
+            response.raise_for_status()
+            data = response.json()
+        except Exception as exc:
+            raise _map_http_error("MiniMax H3 提交任务", exc, provider_request_payload=payload) from exc
+
+    external_task_id = str(
+        data.get("task_id")
+        or data.get("taskId")
+        or data.get("task", {}).get("task_id")
+        or data.get("data", {}).get("task_id")
+        or ""
+    ).strip()
+    if not external_task_id:
+        raise ModelProfileError("MiniMax H3 提交成功但没有返回 task_id。", provider_request_payload=payload)
+
+    return {
+        "externalTaskId": external_task_id,
+        "providerResponse": data,
+        "providerRequestPayload": payload,
+    }
+
+
+def _normalize_minimax_h3_status(data: dict[str, Any]) -> str:
+    return str(
+        data.get("status")
+        or data.get("task_status")
+        or data.get("taskStatus")
+        or data.get("task", {}).get("status")
+        or data.get("data", {}).get("status")
+        or ""
+    ).strip().lower()
+
+
+async def poll_minimax_h3_generation(
+    profile: dict[str, Any],
+    *,
+    external_task_id: str,
+) -> dict[str, Any]:
+    api_key = str(profile.get("api_key") or "").strip()
+    base_url = str(profile.get("base_url") or "").rstrip("/")
+    poll_interval = max(_coerce_int(_read_default_param(profile, "poll_interval_seconds", 5), 5), 1)
+    poll_timeout = max(_coerce_int(_read_default_param(profile, "poll_timeout_seconds", 900), 900), 10)
+    max_attempts = max(1, poll_timeout // poll_interval)
+
+    last_payload: dict[str, Any] = {}
+    last_status = "queued"
+    async with httpx.AsyncClient(timeout=120) as client:
+        for attempt in range(1, max_attempts + 1):
+            try:
+                response = await client.get(
+                    f"{base_url}/v2/query/video_generation/{external_task_id}",
+                    headers={"Authorization": f"Bearer {api_key}"},
+                )
+                response.raise_for_status()
+                data = response.json()
+            except Exception as exc:
+                if _is_http_status_error(exc, 429):
+                    if attempt < max_attempts:
+                        await sleep(min(poll_interval * attempt, 8))
+                        continue
+                raise _map_http_error("MiniMax H3 查询任务状态", exc) from exc
+
+            status = _normalize_minimax_h3_status(data)
+            last_payload = data
+            last_status = status or last_status
+
+            if status in {"succeeded", "success", "finished", "completed", "done"}:
+                file_url = _extract_minimax_h3_file_url(data)
+                if not file_url:
+                    raise ModelProfileError("MiniMax H3 任务已完成，但结果里缺少可用的视频 URL。", provider_response=data)
+                return {
+                    "externalStatus": "succeeded",
+                    "pollAttempts": attempt,
+                    "previewUrl": file_url,
+                    "uri": file_url,
+                    "providerResponse": data,
+                }
+            if status in {"failed", "error", "cancelled", "canceled"}:
+                message = str(data.get("error") or data.get("message") or data.get("detail") or "MiniMax H3 任务失败").strip()
+                raise ModelProfileError(
+                    message,
+                    provider_response=data,
+                    external_status=status or "failed",
+                    poll_attempts=attempt,
+                    external_task_id=external_task_id,
+                )
+            if attempt < max_attempts:
+                await sleep(poll_interval)
+
+    raise ModelProfileError(
+        f"MiniMax H3 任务轮询超时，最后状态：{last_status or 'unknown'}",
+        provider_response=last_payload or None,
+        external_status=last_status or "timeout",
+        poll_attempts=max_attempts,
+        external_task_id=external_task_id,
+    )
+
+
+async def reconcile_minimax_h3_generation(
+    profile: dict[str, Any],
+    *,
+    external_task_id: str,
+) -> dict[str, Any]:
+    api_key = str(profile.get("api_key") or "").strip()
+    base_url = str(profile.get("base_url") or "").rstrip("/")
+    if not api_key:
+        raise ModelProfileError("MiniMax H3 configuration is missing an API key.")
+    if not base_url:
+        raise ModelProfileError("MiniMax H3 configuration is missing a base_url.")
+
+    async with httpx.AsyncClient(timeout=120) as client:
+        try:
+            response = await client.get(
+                f"{base_url}/v2/query/video_generation/{external_task_id}",
+                headers={"Authorization": f"Bearer {api_key}"},
+            )
+            response.raise_for_status()
+            data = response.json()
+        except Exception as exc:
+            raise _map_http_error("MiniMax H3 task status check", exc) from exc
+
+    status = _normalize_minimax_h3_status(data)
+    if status in {"succeeded", "success", "finished", "completed", "done"}:
+        file_url = _extract_minimax_h3_file_url(data)
+        if not file_url:
+            raise ModelProfileError(
+                "MiniMax H3 task completed, but no usable output video URL was returned.",
+                provider_response=data,
+                external_status=status or "succeeded",
+                poll_attempts=1,
+                external_task_id=external_task_id,
+            )
+        return {
+            "status": "done",
+            "externalStatus": "succeeded",
+            "pollAttempts": 1,
+            "previewUrl": file_url,
+            "uri": file_url,
+            "providerResponse": data,
+            "externalTaskId": external_task_id,
+        }
+    if status in {"failed", "error", "cancelled", "canceled"}:
+        message = str(data.get("error") or data.get("message") or data.get("detail") or "MiniMax H3 task failed").strip()
+        raise ModelProfileError(
+            message,
+            provider_response=data,
+            external_status=status or "failed",
+            poll_attempts=1,
+            external_task_id=external_task_id,
+        )
+    return {
+        "status": "running",
+        "externalStatus": status or "queued",
+        "pollAttempts": 1,
+        "providerResponse": data,
+        "externalTaskId": external_task_id,
+    }
 
 async def poll_poyo_generation(
     profile: dict[str, Any],
@@ -595,6 +862,24 @@ async def generate_video_asset(
             "providerResponse": polled.get("providerResponse") or submitted.get("providerResponse"),
             "providerRequestPayload": submitted.get("providerRequestPayload") or {},
             "taskMode": task_mode or "",
+        }
+    if profile.get("provider") == MINIMAX_H3_ASYNC_PROVIDER:
+        provider_payload = _build_minimax_h3_video_payload(
+            profile,
+            prompt=prompt,
+            duration_seconds=duration_seconds,
+            aspect_ratio=aspect_ratio,
+            first_frame_url=first_frame_url,
+        )
+        submitted = await submit_minimax_h3_generation(profile, payload=provider_payload)
+        polled = await poll_minimax_h3_generation(profile, external_task_id=submitted["externalTaskId"])
+        task_mode = "image_to_video" if str(first_frame_url or "").strip() else "text_to_video"
+        return {
+            **polled,
+            "externalTaskId": submitted["externalTaskId"],
+            "providerResponse": polled.get("providerResponse") or submitted.get("providerResponse"),
+            "providerRequestPayload": submitted.get("providerRequestPayload") or {},
+            "taskMode": task_mode,
         }
     if profile.get("provider") != OPENAI_COMPATIBLE_PROVIDER:
         raise ModelProfileError(f"暂不支持的视频 provider：{profile.get('provider')}")

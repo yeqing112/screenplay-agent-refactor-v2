@@ -1,5 +1,39 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-27 — MiniMax H3 异步视频适配层第一阶段
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：机器提示词链路已经能导出 MiniMax H3 WebUI 字段并登记 API 提交任务；下一步需要让后端正式具备 H3 v2 create/query 的 provider adapter，但不能默认触发真实扣费任务。
+
+### 变更概览
+
+- **新增 `minimax-h3-async` provider**
+  - 模型注册表允许新增 video 能力的 MiniMax H3 异步模型。
+  - 默认 base URL 建议为 `https://api.minimax.io`，模型名为 `MiniMax-H3`。
+  - “测试当前草稿”只做配置结构校验，不发起真实视频生成。
+
+- **新增 MiniMax H3 v2 适配器**
+  - 创建任务：`POST /v2/video_generation`。
+  - 查询任务：`GET /v2/query/video_generation/{task_id}`。
+  - 支持文生视频 payload：text + `ratio`。
+  - 支持首帧图生视频 payload：text + `image_url` / `role=first_frame`，并按官方约束不发送 `ratio`。
+  - 轮询成功后从 `content.url` 等兼容结构提取视频 URL。
+  - 任务恢复链路可通过统一 reconcile 继续查询 MiniMax H3 任务。
+
+- **模型管理 UI 同步**
+  - 视频供应商列表新增 `minimax-h3-async`。
+  - 默认参数建议包含 `resolution=2K`、`duration=5`、`ratio=16:9`、轮询间隔和超时。
+  - 页面文案改为“MiniMax H3 可配置，但视频默认不强制切换；真实生成需显式发起”。
+
+### 验证结果
+
+- `python -m unittest tests.test_generation_adapters tests.test_model_registry`：`27 passed`
+- `npm --prefix web test -- modelRegistryModal.test.ts productWorkspaceModels.test.ts`：`14 passed`
+- `python -m unittest tests.test_storyboard_generation_flow tests.test_poyo_creative_task_state tests.test_task_persistence tests.test_storyboard_prompt_compile`：`36 passed`
+- `npm --prefix web run build`：通过
+
+---
+
 ## 2026-08-27 — 机器提示词 API 提交任务链第一版
 
 > 对应分支：`codex/unify-formal-workspace`

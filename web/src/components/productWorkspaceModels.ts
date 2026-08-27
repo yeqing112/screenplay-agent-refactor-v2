@@ -148,6 +148,7 @@ function buildAdapterLabel(profile: ModelProfileRecord | null | undefined) {
   if (provider === 'ollama') return 'Ollama Embedding 适配层'
   if (provider === 'openai-compatible') return 'OpenAI Compatible 适配层'
   if (provider === 'poyo-async') return 'PoYo 异步适配层 + Provider 轮询回收'
+  if (provider === 'minimax-h3-async') return 'MiniMax H3 异步适配层 + Provider 轮询回收'
   return `${provider} 统一适配层`
 }
 

@@ -20,6 +20,7 @@ from api.generation_adapters import (
     build_task_adapter_asset,
     generate_image_asset,
     generate_video_asset,
+    reconcile_minimax_h3_generation,
     reconcile_poyo_generation,
     resolve_generation_profile,
 )
@@ -8464,10 +8465,12 @@ async def reconcile_creative_task(task_id: str):
         req = CreativeGenerationRequest.model_validate(request_payload)
         profile = _resolve_creative_profile(req, capability)
         provider = str(profile.get("provider") or "")
-        if provider != "poyo-async":
+        if provider == "poyo-async":
+            reconciled = await reconcile_poyo_generation(profile, external_task_id=external_task_id)
+        elif provider == "minimax-h3-async":
+            reconciled = await reconcile_minimax_h3_generation(profile, external_task_id=external_task_id)
+        else:
             return task
-
-        reconciled = await reconcile_poyo_generation(profile, external_task_id=external_task_id)
         if reconciled.get("status") == "done":
             return _complete_reconciled_creative_task(task_id, task, req, reconciled)
 

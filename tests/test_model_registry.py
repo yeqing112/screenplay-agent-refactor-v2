@@ -188,6 +188,26 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload["defaults"]["video"], "video-poyo-1")
         self.assertEqual(get_default_profile("video")["id"], "video-poyo-1")
 
+    def test_save_registry_allows_minimax_h3_video_as_default(self):
+        payload = save_registry(
+            profiles=[
+                {
+                    "id": "video-minimax-h3-1",
+                    "name": "MiniMax H3",
+                    "capability": "video",
+                    "provider": "minimax-h3-async",
+                    "base_url": "https://api.minimax.io",
+                    "model_name": "MiniMax-H3",
+                    "default_params": {"duration": 5, "resolution": "2K", "ratio": "16:9"},
+                    "enabled": True,
+                    "api_key": "secret-test-key",
+                }
+            ],
+            defaults={"video": "video-minimax-h3-1"},
+        )
+        self.assertEqual(payload["defaults"]["video"], "video-minimax-h3-1")
+        self.assertEqual(get_default_profile("video")["id"], "video-minimax-h3-1")
+
     def test_save_registry_allows_poyo_image_as_default(self):
         payload = save_registry(
             profiles=[
@@ -265,6 +285,22 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertTrue(result["ok"])
         self.assertIn("扣费任务", result["message"])
+
+    async def test_minimax_h3_profile_test_returns_validation_only_message(self):
+        result = await test_profile_connection(
+            profile_payload={
+                "name": "MiniMax H3",
+                "capability": "video",
+                "provider": "minimax-h3-async",
+                "base_url": "https://api.minimax.io",
+                "model_name": "MiniMax-H3",
+                "api_key": "secret-test-key",
+                "default_params": {"duration": 5, "resolution": "2K", "ratio": "16:9"},
+            }
+        )
+        self.assertTrue(result["ok"])
+        self.assertIn("MiniMax H3", result["message"])
+        self.assertIn("不会发起真实扣费", result["message"])
 
     async def test_profile_test_falls_back_to_payload_when_profile_id_is_missing(self):
         result = await test_profile_connection(

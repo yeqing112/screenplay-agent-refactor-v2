@@ -21,6 +21,7 @@ MOCK_PROVIDER = "prototype-task-adapter"
 OPENAI_COMPATIBLE_PROVIDER = "openai-compatible"
 OLLAMA_PROVIDER = "ollama"
 POYO_ASYNC_PROVIDER = "poyo-async"
+MINIMAX_H3_ASYNC_PROVIDER = "minimax-h3-async"
 
 VIDEO_REAL_DEFAULT_ENABLED = True
 
@@ -219,11 +220,11 @@ def _is_profile_allowed_as_default(profile: dict[str, Any] | None) -> bool:
     capability = profile.get("capability")
     if capability == "video":
         provider = str(profile.get("provider") or "")
-        if provider == POYO_ASYNC_PROVIDER:
+        if provider in {POYO_ASYNC_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER}:
             return True
         if provider != MOCK_PROVIDER and not VIDEO_REAL_DEFAULT_ENABLED:
             return False
-        if provider not in {MOCK_PROVIDER, POYO_ASYNC_PROVIDER}:
+        if provider not in {MOCK_PROVIDER, POYO_ASYNC_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER}:
             return False
     return True
 
@@ -345,6 +346,12 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
     if provider == POYO_ASYNC_PROVIDER:
         if capability not in {"image", "video"}:
             raise ValueError("PoYo provider 目前只支持 image / video 能力")
+        _require_fields(normalized, ["base_url", "model_name"])
+        return normalized
+
+    if provider == MINIMAX_H3_ASYNC_PROVIDER:
+        if capability != "video":
+            raise ValueError("MiniMax H3 provider 目前只支持 video 能力")
         _require_fields(normalized, ["base_url", "model_name"])
         return normalized
 
@@ -481,6 +488,15 @@ async def test_profile_connection(
         return {
             "ok": True,
             "message": "PoYo 配置结构校验通过。当前测试不会发起真实扣费任务。",
+            "profile": response_profile,
+        }
+
+    if profile.get("provider") == MINIMAX_H3_ASYNC_PROVIDER:
+        _require_fields(profile, ["base_url", "model_name"])
+        response_profile = _serialize_profile(profile, is_default=False)
+        return {
+            "ok": True,
+            "message": "MiniMax H3 配置结构校验通过。当前测试不会发起真实扣费视频任务。",
             "profile": response_profile,
         }
 
