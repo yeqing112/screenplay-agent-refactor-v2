@@ -48,6 +48,12 @@ type MachinePromptExportState = 'idle' | 'loading' | 'loaded' | 'error'
 type MachinePromptRecordState = 'idle' | 'saving' | 'saved' | 'error'
 type MachinePromptRecordHistoryState = 'idle' | 'loading' | 'loaded' | 'error'
 type MachinePromptExportFormat = 'markdown' | 'csv' | 'api-json'
+type MachinePromptTemporaryDraftLike = {
+  integrated_multimodal_description: string
+  overall_soundscape: string
+  non_diegetic_music: string
+  generic_zh_video_prompt: string
+}
 
 interface MachinePromptExportPanelProps {
   machinePromptExport: MachinePromptExportPreviewLike | null
@@ -68,7 +74,12 @@ interface MachinePromptExportPanelProps {
   genericZhVideoExport?: {
     prompt?: string
   } | null
+  temporaryDraft: MachinePromptTemporaryDraftLike
+  isManualTemporaryDraft: boolean
   canRecordExport: boolean
+  onTemporaryDraftChange: (draft: MachinePromptTemporaryDraftLike) => void
+  onApplyTemporaryDraft: () => void
+  onResetTemporaryDraft: () => void
   onLoadPreview: () => void | Promise<void>
   onCopyText: (label: string, text: string | undefined) => void | Promise<void>
   onDownloadFile: (format: MachinePromptExportFormat) => void
@@ -90,7 +101,12 @@ export function ProductWorkspaceMachinePromptExportPanel({
   minimaxH3Fields,
   machineTimeline,
   genericZhVideoExport,
+  temporaryDraft,
+  isManualTemporaryDraft,
   canRecordExport,
+  onTemporaryDraftChange,
+  onApplyTemporaryDraft,
+  onResetTemporaryDraft,
   onLoadPreview,
   onCopyText,
   onDownloadFile,
@@ -99,6 +115,12 @@ export function ProductWorkspaceMachinePromptExportPanel({
   onRestoreRecordDraft,
 }: MachinePromptExportPanelProps) {
   const isHistoryDraft = Boolean(machinePromptExport?.source_layers?.is_temporary_webui_draft)
+  const updateTemporaryDraft = (key: keyof MachinePromptTemporaryDraftLike, value: string) => {
+    onTemporaryDraftChange({
+      ...temporaryDraft,
+      [key]: value,
+    })
+  }
 
   return (
     <div className="mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4">
@@ -187,6 +209,7 @@ export function ProductWorkspaceMachinePromptExportPanel({
             历史草稿 #{machinePromptExport?.source_layers?.history_export_record_id ?? '-'}
           </StatusPill>
         ) : null}
+        {isManualTemporaryDraft ? <StatusPill tone="amber">人工临时修改</StatusPill> : null}
       </div>
 
       {machinePromptExportMessage ? (
@@ -269,6 +292,77 @@ export function ProductWorkspaceMachinePromptExportPanel({
           description="展开后查看导演语言快照、标准机器语言、H3 单字段和通用 WebUI 导出。"
           className="mt-4 border-cyan-500/10"
         >
+          <details className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3">
+            <summary className="cursor-pointer text-xs font-medium text-amber-100">临时编辑最终 WebUI 草稿</summary>
+            <div className="mt-2 text-[11px] leading-5 text-amber-100/75">
+              这里的修改只影响复制、Markdown / CSV / API JSON 导出；不会保存导演分镜语言、Shot Schema 或 Prompt Version。
+            </div>
+            <div className="mt-3 grid gap-3 lg:grid-cols-2">
+              <label className="block text-[11px] text-slate-400 lg:col-span-2">
+                <span className="mb-1 block text-slate-500">H3 integrated_multimodal_description</span>
+                <textarea
+                  value={temporaryDraft.integrated_multimodal_description}
+                  onChange={(event) => updateTemporaryDraft('integrated_multimodal_description', event.target.value)}
+                  rows={5}
+                  disabled={!machinePromptExport}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs leading-5 text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="加载预览后可临时修改最终 H3 画面描述"
+                />
+              </label>
+              <label className="block text-[11px] text-slate-400">
+                <span className="mb-1 block text-slate-500">H3 overall_soundscape</span>
+                <textarea
+                  value={temporaryDraft.overall_soundscape}
+                  onChange={(event) => updateTemporaryDraft('overall_soundscape', event.target.value)}
+                  rows={3}
+                  disabled={!machinePromptExport}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs leading-5 text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="临时音景"
+                />
+              </label>
+              <label className="block text-[11px] text-slate-400">
+                <span className="mb-1 block text-slate-500">H3 non_diegetic_music</span>
+                <textarea
+                  value={temporaryDraft.non_diegetic_music}
+                  onChange={(event) => updateTemporaryDraft('non_diegetic_music', event.target.value)}
+                  rows={3}
+                  disabled={!machinePromptExport}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs leading-5 text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="临时配乐"
+                />
+              </label>
+              <label className="block text-[11px] text-slate-400 lg:col-span-2">
+                <span className="mb-1 block text-slate-500">通用中文视频 WebUI prompt</span>
+                <textarea
+                  value={temporaryDraft.generic_zh_video_prompt}
+                  onChange={(event) => updateTemporaryDraft('generic_zh_video_prompt', event.target.value)}
+                  rows={4}
+                  disabled={!machinePromptExport}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs leading-5 text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="临时通用 WebUI prompt"
+                />
+              </label>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={onApplyTemporaryDraft}
+                disabled={!machinePromptExport}
+                className="rounded border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-xs text-amber-100 transition hover:border-amber-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                应用到临时草稿
+              </button>
+              <button
+                type="button"
+                onClick={onResetTemporaryDraft}
+                disabled={!machinePromptExport}
+                className="rounded border border-slate-700 px-3 py-1.5 text-xs text-slate-300 transition hover:border-slate-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                撤销临时修改
+              </button>
+            </div>
+          </details>
+
           <div className="grid gap-4 xl:grid-cols-3">
             <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
               <div className="text-xs font-medium text-cyan-100">导演分镜语言</div>

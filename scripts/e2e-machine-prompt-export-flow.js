@@ -241,6 +241,18 @@ async function runFlow() {
       throw new Error("Clipboard text does not contain expected H3 WebUI export fields.");
     }
 
+    const manualDraftText = `E2E-${Date.now()} 人工临时 H3 画面描述：林小夏在冷白灯下短暂停顿，视线越过收银台投向门口。`;
+    await page.getByText("临时编辑最终 WebUI 草稿").click();
+    await page.locator("textarea[placeholder*='最终 H3']").fill(manualDraftText);
+    await page.getByRole("button", { name: "应用到临时草稿" }).click();
+    await page.getByText("已应用临时导出草稿").waitFor({ state: "visible", timeout: 10000 });
+    await page.getByText("人工临时修改").waitFor({ state: "visible", timeout: 10000 });
+    await page.getByRole("button", { name: "复制 H3 全字段" }).first().click();
+    const manualDraftClipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
+    if (!manualDraftClipboardText.includes(manualDraftText) || !manualDraftClipboardText.includes("API 提交：否，仅复制/导出")) {
+      throw new Error("Manual temporary WebUI draft was not used by H3 copy.");
+    }
+
     await page.getByText("更多导出").click();
     for (const [label, suffix] of [
       ["导出 Markdown", ".md"],

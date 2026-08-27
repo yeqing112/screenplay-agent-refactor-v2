@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import ProductWorkspaceStoryboardSection, {
+  applyMachinePromptTemporaryDraft,
   buildMachinePromptApiJsonExportText,
   buildMachinePromptCsvExportText,
   buildMachinePromptDraftFromExportRecord,
@@ -246,6 +247,66 @@ describe('ProductWorkspaceStoryboardSection repair action chaining', () => {
     const text = buildMachinePromptWebuiCopyText(draft)
     expect(text).toContain('API 提交：否，仅复制/导出')
     expect(text).toContain('林小夏在便利店收银台旁盯着监控画面。')
+  })
+
+  it('applies manual edits only to the temporary machine prompt export draft', () => {
+    const preview = {
+      book_id: 75,
+      episode: 1,
+      shot_id: 1,
+      scene_name: '便利店',
+      api_submission: false,
+      director_shot_text: '导演语言保持不变。',
+      machine_prompt: {
+        api_submission: false,
+        soundscape: {
+          overall_soundscape: '原始音景。',
+          non_diegetic_music: '原始配乐。',
+        },
+      },
+      model_exports: {
+        'minimax-h3': {
+          target_model: 'minimax-h3',
+          export_mode: 'webui_fields',
+          api_submission: false,
+          fields: {
+            integrated_multimodal_description: '原始 H3 画面。',
+            overall_soundscape: '原始音景。',
+            non_diegetic_music: '原始配乐。',
+          },
+        },
+        'generic-zh-video': {
+          target_model: 'generic-zh-video',
+          export_mode: 'single_prompt',
+          api_submission: false,
+          prompt: '原始通用 WebUI。',
+        },
+      },
+    }
+
+    const draft = applyMachinePromptTemporaryDraft(
+      preview,
+      {
+        integrated_multimodal_description: '人工临时 H3 画面。',
+        overall_soundscape: '人工临时音景。',
+        non_diegetic_music: '人工临时配乐。',
+        generic_zh_video_prompt: '人工临时通用 WebUI。',
+      },
+      '2026-08-27T00:00:00.000Z',
+    )
+
+    expect(draft?.source_layers?.has_manual_export_draft).toBe(true)
+    expect(draft?.director_shot_text).toBe('导演语言保持不变。')
+    expect(draft?.model_exports?.['minimax-h3']?.fields?.integrated_multimodal_description).toBe('人工临时 H3 画面。')
+    expect(draft?.model_exports?.['generic-zh-video']?.prompt).toBe('人工临时通用 WebUI。')
+    expect(draft?.machine_prompt?.soundscape?.overall_soundscape).toBe('人工临时音景。')
+
+    const text = buildMachinePromptWebuiCopyText(draft)
+    expect(text).toContain('人工临时 H3 画面。')
+    expect(text).toContain('API 提交：否，仅复制/导出')
+    const apiJson = JSON.parse(buildMachinePromptApiJsonExportText(draft))
+    expect(apiJson.export_contract.api_submission).toBe(false)
+    expect(apiJson.model_export.fields.integrated_multimodal_description).toBe('人工临时 H3 画面。')
   })
 
   it('upgrades prompt repair CTA to recompile-and-generate-frame when no adopted frame exists', () => {

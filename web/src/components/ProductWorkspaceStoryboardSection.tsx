@@ -247,6 +247,8 @@ type MachinePromptExportPreview = {
     director_shot_text_is_user_editable?: boolean
     director_shot_text_source?: string
     has_user_director_shot_override?: boolean
+    has_manual_export_draft?: boolean
+    manual_export_draft_updated_at?: string
     machine_prompt_is_compiled?: boolean
     model_export_is_submission_ready_but_not_submitted?: boolean
     history_export_record_id?: string | number
@@ -284,6 +286,13 @@ type MachinePromptExportPreview = {
       model_params?: Record<string, unknown>
     }
   >
+}
+
+type MachinePromptTemporaryDraftFields = {
+  integrated_multimodal_description: string
+  overall_soundscape: string
+  non_diegetic_music: string
+  generic_zh_video_prompt: string
 }
 
 type ProductionExportRecordListItem = {
@@ -367,6 +376,90 @@ export function buildMachinePromptDraftFromExportRecord(
     },
     machine_prompt: machinePrompt,
     model_exports: modelExports,
+  }
+}
+
+export function buildMachinePromptTemporaryDraftFields(
+  preview: MachinePromptExportPreview | null | undefined,
+): MachinePromptTemporaryDraftFields {
+  const minimaxH3Export = preview?.model_exports?.['minimax-h3'] ?? null
+  const fields = minimaxH3Export?.fields ?? {}
+  return {
+    integrated_multimodal_description: fields.integrated_multimodal_description || minimaxH3Export?.prompt || '',
+    overall_soundscape: fields.overall_soundscape || preview?.machine_prompt?.soundscape?.overall_soundscape || '',
+    non_diegetic_music: fields.non_diegetic_music || preview?.machine_prompt?.soundscape?.non_diegetic_music || '',
+    generic_zh_video_prompt: preview?.model_exports?.['generic-zh-video']?.prompt || '',
+  }
+}
+
+export function applyMachinePromptTemporaryDraft(
+  preview: MachinePromptExportPreview | null | undefined,
+  draft: Partial<MachinePromptTemporaryDraftFields>,
+  updatedAt = new Date().toISOString(),
+): MachinePromptExportPreview | null {
+  if (!preview) return null
+  const currentH3 = preview.model_exports?.['minimax-h3'] ?? {}
+  const currentGeneric = preview.model_exports?.['generic-zh-video'] ?? {}
+  const currentSoundscape = preview.machine_prompt?.soundscape ?? {}
+  const normalizedDraft = {
+    integrated_multimodal_description: String(draft.integrated_multimodal_description ?? '').trim(),
+    overall_soundscape: String(draft.overall_soundscape ?? '').trim(),
+    non_diegetic_music: String(draft.non_diegetic_music ?? '').trim(),
+    generic_zh_video_prompt: String(draft.generic_zh_video_prompt ?? '').trim(),
+  }
+
+  return {
+    ...preview,
+    api_submission: false,
+    source_layers: {
+      ...(preview.source_layers ?? {}),
+      has_manual_export_draft: true,
+      manual_export_draft_updated_at: updatedAt,
+      model_export_is_submission_ready_but_not_submitted: true,
+    },
+    machine_prompt: {
+      ...(preview.machine_prompt ?? {}),
+      api_submission: false,
+      soundscape: {
+        ...currentSoundscape,
+        overall_soundscape: normalizedDraft.overall_soundscape || currentSoundscape.overall_soundscape,
+        non_diegetic_music: normalizedDraft.non_diegetic_music || currentSoundscape.non_diegetic_music,
+      },
+    },
+    model_exports: {
+      ...(preview.model_exports ?? {}),
+      'minimax-h3': {
+        ...currentH3,
+        target_model: currentH3.target_model || 'minimax-h3',
+        export_mode: currentH3.export_mode || 'webui_fields',
+        api_submission: false,
+        fields: {
+          ...(currentH3.fields ?? {}),
+          integrated_multimodal_description:
+            normalizedDraft.integrated_multimodal_description ||
+            currentH3.fields?.integrated_multimodal_description ||
+            currentH3.prompt ||
+            '',
+          overall_soundscape:
+            normalizedDraft.overall_soundscape ||
+            currentH3.fields?.overall_soundscape ||
+            currentSoundscape.overall_soundscape ||
+            '',
+          non_diegetic_music:
+            normalizedDraft.non_diegetic_music ||
+            currentH3.fields?.non_diegetic_music ||
+            currentSoundscape.non_diegetic_music ||
+            '',
+        },
+      },
+      'generic-zh-video': {
+        ...currentGeneric,
+        target_model: currentGeneric.target_model || 'generic-zh-video',
+        export_mode: currentGeneric.export_mode || 'single_prompt',
+        api_submission: false,
+        prompt: normalizedDraft.generic_zh_video_prompt || currentGeneric.prompt || '',
+      },
+    },
   }
 }
 
@@ -1292,6 +1385,10 @@ export default function ProductWorkspaceStoryboardSection({
   const [directorShotDraft, setDirectorShotDraft] = useState('')
   const [directorShotSaveState, setDirectorShotSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [directorShotSaveMessage, setDirectorShotSaveMessage] = useState('')
+  const [machinePromptExportBase, setMachinePromptExportBase] = useState<MachinePromptExportPreview | null>(null)
+  const [machinePromptTemporaryDraft, setMachinePromptTemporaryDraft] = useState<MachinePromptTemporaryDraftFields>(() =>
+    buildMachinePromptTemporaryDraftFields(null),
+  )
 
   const episodes = useMemo(
     () => Object.keys(shotsByEpisode).map(Number).filter((item) => Number.isFinite(item)).sort((a, b) => a - b),
@@ -1501,6 +1598,7 @@ export default function ProductWorkspaceStoryboardSection({
     () => buildMachinePromptWebuiCopyText(machinePromptExport, 'minimax-h3'),
     [machinePromptExport],
   )
+  const isMachinePromptManualDraft = Boolean(machinePromptExport?.source_layers?.has_manual_export_draft)
   const storyboardCanvasPrimaryActionPlan = useMemo(
     () =>
       buildStoryboardCanvasPrimaryActionPlan({
@@ -1608,6 +1706,12 @@ export default function ProductWorkspaceStoryboardSection({
     setRuntimeVersion((current) => current + 1)
   }
 
+  const setMachinePromptExportWithBase = (preview: MachinePromptExportPreview | null) => {
+    setMachinePromptExport(preview)
+    setMachinePromptExportBase(preview)
+    setMachinePromptTemporaryDraft(buildMachinePromptTemporaryDraftFields(preview))
+  }
+
   const loadMachinePromptExportPreview = async () => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
     setMachinePromptExportState('loading')
@@ -1631,7 +1735,7 @@ export default function ProductWorkspaceStoryboardSection({
         throw new Error(detail || `HTTP ${response.status}`)
       }
       const payload = (await response.json()) as MachinePromptExportPreview
-      setMachinePromptExport(payload)
+      setMachinePromptExportWithBase(payload)
       setDirectorShotDraft(payload.director_shot_text || '')
       setDirectorShotSaveState('idle')
       setDirectorShotSaveMessage('')
@@ -1678,7 +1782,7 @@ export default function ProductWorkspaceStoryboardSection({
         throw new Error(detail || `HTTP ${response.status}`)
       }
       const payload = (await response.json()) as MachinePromptExportPreview
-      setMachinePromptExport(payload)
+      setMachinePromptExportWithBase(payload)
       setDirectorShotDraft(payload.director_shot_text || '')
       setDirectorShotSaveState('saved')
       setDirectorShotSaveMessage(
@@ -1790,13 +1894,32 @@ export default function ProductWorkspaceStoryboardSection({
       return
     }
 
-    setMachinePromptExport(draft)
+    setMachinePromptExportWithBase(draft)
     setMachinePromptExportState('loaded')
     setMachinePromptExportMessage(
       `已从导出记录 #${record.id ?? '-'} 恢复为 WebUI 临时草稿；仅用于复制、下载或人工审阅，不会反写导演分镜语言、Shot Schema 或 Prompt Version。`,
     )
     setMachinePromptRecordState('saved')
     setMachinePromptRecordMessage(`已恢复历史快照 #${record.id ?? '-'} 为临时导出草稿；API 未提交。`)
+    setMachinePromptCopyMessage('')
+  }
+
+  const applyMachinePromptManualTemporaryDraft = () => {
+    if (!machinePromptExport) {
+      setMachinePromptCopyMessage('请先加载机器提示词导出预览，再编辑临时草稿。')
+      return
+    }
+    const nextPreview = applyMachinePromptTemporaryDraft(machinePromptExport, machinePromptTemporaryDraft)
+    setMachinePromptExport(nextPreview)
+    setMachinePromptExportState('loaded')
+    setMachinePromptExportMessage('已应用临时导出草稿：复制与文件导出会使用这份人工修改；不会反写导演分镜语言、Shot Schema 或 Prompt Version。')
+    setMachinePromptCopyMessage('')
+  }
+
+  const resetMachinePromptManualTemporaryDraft = () => {
+    setMachinePromptExport(machinePromptExportBase)
+    setMachinePromptTemporaryDraft(buildMachinePromptTemporaryDraftFields(machinePromptExportBase))
+    setMachinePromptExportMessage('已撤销临时导出修改，恢复到本次加载或历史恢复的基线草稿。')
     setMachinePromptCopyMessage('')
   }
 
@@ -2614,7 +2737,12 @@ export default function ProductWorkspaceStoryboardSection({
                 minimaxH3Fields={minimaxH3Fields}
                 machineTimeline={machineTimeline}
                 genericZhVideoExport={genericZhVideoExport}
+                temporaryDraft={machinePromptTemporaryDraft}
+                isManualTemporaryDraft={isMachinePromptManualDraft}
                 canRecordExport={Boolean(selectedShot)}
+                onTemporaryDraftChange={setMachinePromptTemporaryDraft}
+                onApplyTemporaryDraft={applyMachinePromptManualTemporaryDraft}
+                onResetTemporaryDraft={resetMachinePromptManualTemporaryDraft}
                 onLoadPreview={loadMachinePromptExportPreview}
                 onCopyText={copyMachinePromptText}
                 onDownloadFile={downloadMachinePromptExportFile}
