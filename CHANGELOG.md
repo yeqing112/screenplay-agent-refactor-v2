@@ -29,10 +29,12 @@
 - **报告输出**
   - 输出 `artifacts/minimax-h3-gray-*.json|md`。
   - 报告包含 target、H3 prompt 预览、任务模式、首帧、provider readiness、blockers、warnings、真实运行门禁和 PowerShell SOP。
+  - 支持 `npm run validate:minimax-h3-gray -- auto` 自动选择候选镜头：优先外部 URL 首帧、无既有视频、无高风险动作，并把遗留导演标记 / 灰度安全风险写入报告。
 
 ### 验证结果
 
 - `npm run validate:minimax-h3-gray -- 75 1 1`：通过；输出 dry-run 报告后已清理 artifacts。
+- `npm run validate:minimax-h3-gray -- auto`：通过；自动候选当前选择 `book 14 / episode 1 / shot 1`，报告提示仍需人工复核遗留导演标记，未触发真实提交。
 
 ---
 

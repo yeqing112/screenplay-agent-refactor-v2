@@ -64,6 +64,15 @@ def target_key(book_id: int, episode: int, shot_id: str | int) -> str:
     return f"{int(book_id)}:{int(episode)}:{int(shot_id)}"
 
 
+def parse_csv_ints(raw: str) -> list[int]:
+    values: list[int] = []
+    for token in str(raw or "").split(","):
+        token = token.strip()
+        if token:
+            values.append(int(token))
+    return values
+
+
 def parse_whitelist(raw: str) -> set[str]:
     entries: set[str] = set()
     for token in str(raw or "").split(","):
@@ -113,6 +122,115 @@ def find_first_frame(shot: StoryboardShot, requested_asset_id: str = "") -> dict
         if isinstance(item, dict) and bool(item.get("adopted")):
             return item
     return None
+
+
+def _asset_url(asset: dict[str, Any] | None) -> str:
+    if not isinstance(asset, dict):
+        return ""
+    return str(asset.get("uri") or asset.get("previewUrl") or "").strip()
+
+
+def _has_legacy_director_markers(prompt: str) -> bool:
+    normalized = str(prompt or "")
+    return any(marker in normalized for marker in ("[画面", "画面开场", "画面切", "请生成", "用于首帧"))
+
+
+def _has_gray_sample_safety_risk(prompt: str) -> bool:
+    normalized = str(prompt or "")
+    return any(
+        marker in normalized
+        for marker in (
+            "高速砸进",
+            "面部朝下",
+            "停止运动",
+            "泥坑",
+            "下坠",
+            "坠落",
+            "跌落",
+            "受伤",
+            "惊恐",
+            "血",
+            "未成年",
+            "儿童",
+        )
+    )
+
+
+def select_gray_candidate(book_ids: list[int], client: TestClient | None = None) -> dict[str, Any]:
+    candidates: list[dict[str, Any]] = []
+    order = {book_id: index for index, book_id in enumerate(book_ids)}
+    with Session() as session:
+        books = {int(book.id): str(book.title or "") for book in session.query(Book).filter(Book.id.in_(book_ids)).all()}
+        rows = (
+            session.query(StoryboardShot)
+            .filter(StoryboardShot.book_id.in_(book_ids))
+            .order_by(StoryboardShot.book_id.asc(), StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc())
+            .all()
+        )
+        for shot in rows:
+            first_frame = find_first_frame(shot)
+            first_frame_url = _asset_url(first_frame)
+            if not first_frame_url:
+                continue
+            asset_links = safe_json_loads(shot.asset_links, {}) if shot.asset_links else {}
+            videos = asset_links.get("videos") if isinstance(asset_links, dict) else []
+            if not isinstance(videos, list):
+                videos = []
+            has_existing_video = any(isinstance(item, dict) for item in videos)
+            is_external_http = first_frame_url.startswith("http://") or first_frame_url.startswith("https://")
+            is_local_placeholder = first_frame_url.startswith("/api/prototyping/assets/")
+            is_data_uri = first_frame_url.startswith("data:")
+            prompt = ""
+            prompt_has_legacy_markers = False
+            prompt_has_safety_risk = False
+            prompt_length = 0
+            if client is not None:
+                try:
+                    export_payload = load_machine_prompt_export(client, int(shot.book_id), int(shot.episode or 1), int(shot.shot_id))
+                    prompt = str(h3_fields(export_payload).get("integrated_multimodal_description") or "").strip()
+                    prompt_length = len(prompt)
+                    prompt_has_legacy_markers = _has_legacy_director_markers(prompt)
+                    prompt_has_safety_risk = _has_gray_sample_safety_risk(prompt)
+                except Exception:
+                    prompt_has_legacy_markers = True
+            score = 0
+            if is_external_http:
+                score += 100
+            if not has_existing_video:
+                score += 40
+            if not is_local_placeholder and not is_data_uri:
+                score += 20
+            if prompt and not prompt_has_legacy_markers:
+                score += 30
+            if prompt_has_legacy_markers:
+                score -= 80
+            if prompt_has_safety_risk:
+                score -= 100
+            score -= order.get(int(shot.book_id), 999)
+            candidates.append(
+                {
+                    "book_id": int(shot.book_id),
+                    "book_title": books.get(int(shot.book_id), ""),
+                    "episode": int(shot.episode or 1),
+                    "shot_id": int(shot.shot_id),
+                    "scene_name": str(shot.scene_name or ""),
+                    "first_frame_asset_id": str(first_frame.get("id") or "") if isinstance(first_frame, dict) else "",
+                    "first_frame_url": first_frame_url,
+                    "has_existing_video": has_existing_video,
+                    "is_external_http": is_external_http,
+                    "prompt_length": prompt_length,
+                    "prompt_has_legacy_director_markers": prompt_has_legacy_markers,
+                    "prompt_has_gray_sample_safety_risk": prompt_has_safety_risk,
+                    "score": score,
+                }
+            )
+    if not candidates:
+        raise RuntimeError(f"No adopted first-frame candidates found in books: {book_ids}")
+    candidates.sort(key=lambda item: (-int(item["score"]), item["book_id"], item["episode"], item["shot_id"]))
+    selected = candidates[0]
+    selected["candidate_count"] = len(candidates)
+    selected["alternatives"] = candidates[1:6]
+    return selected
 
 
 def load_machine_prompt_export(client: TestClient, book_id: int, episode: int, shot_id: int) -> dict[str, Any]:
@@ -184,6 +302,10 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
         blockers.append("missing_h3_integrated_multimodal_description")
     if len(prompt) > 7000:
         blockers.append("h3_prompt_exceeds_7000_chars")
+    if _has_gray_sample_safety_risk(prompt):
+        warnings.append("h3_prompt_contains_gray_sample_safety_risk_markers")
+    if _has_legacy_director_markers(prompt):
+        warnings.append("h3_prompt_contains_legacy_director_markers")
     if not profile:
         blockers.append("missing_video_model_profile")
     elif profile_summary["provider"] != "minimax-h3-async":
@@ -239,6 +361,7 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
             "api_submission": True,
             "actual_provider_submission": bool(safety["will_submit"]),
         },
+        "candidate_selection": getattr(args, "selected_candidate", None),
         "profile": profile_summary,
         "source_layers": export_payload.get("source_layers") if isinstance(export_payload.get("source_layers"), dict) else {},
         "readiness": {
@@ -340,6 +463,32 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.extend([f"- {item}" for item in warnings])
     else:
         lines.append("- 无")
+    candidate_selection = report.get("candidate_selection") if isinstance(report.get("candidate_selection"), dict) else None
+    if candidate_selection:
+        lines.extend(
+            [
+                "",
+                "## 自动候选选择",
+                "",
+                f"- 候选总数：{candidate_selection.get('candidate_count')}",
+                f"- 选中首帧：{candidate_selection.get('first_frame_asset_id')}",
+                f"- 外部 URL：{candidate_selection.get('is_external_http')}",
+                f"- 已有视频：{candidate_selection.get('has_existing_video')}",
+                f"- Prompt 遗留导演标记：{candidate_selection.get('prompt_has_legacy_director_markers')}",
+                f"- Prompt 灰度安全风险：{candidate_selection.get('prompt_has_gray_sample_safety_risk')}",
+            ]
+        )
+        alternatives = candidate_selection.get("alternatives") if isinstance(candidate_selection.get("alternatives"), list) else []
+        if alternatives:
+            lines.append("- 备选：")
+            for item in alternatives:
+                lines.append(
+                    f"  - {target_key(item.get('book_id'), item.get('episode'), item.get('shot_id'))}"
+                    f"｜{item.get('scene_name')}｜external={item.get('is_external_http')}"
+                    f"｜hasVideo={item.get('has_existing_video')}"
+                    f"｜legacyMarkers={item.get('prompt_has_legacy_director_markers')}"
+                    f"｜safetyRisk={item.get('prompt_has_gray_sample_safety_risk')}"
+                )
     lines.extend(["", "## 真实运行门禁", ""])
     for key in ("allow_real_cli", "real_env_enabled", "confirmation_matches", "target_whitelisted"):
         lines.append(f"- {key}: {safety.get(key)}")
@@ -391,18 +540,37 @@ def main() -> int:
     parser.add_argument("--allow-real", action="store_true")
     parser.add_argument("--out", default="")
     parser.add_argument("--summary-md", default="")
+    parser.add_argument("--auto-candidate", action="store_true", help="Select a real shot with an adopted first-frame image.")
+    parser.add_argument("--candidate-book-ids", default="75,5,3,1,14")
     parser.add_argument("positionals", nargs="*", help="Optional positional fallback: book_id episode shot_id")
     args = parser.parse_args()
     if args.positionals:
-        if len(args.positionals) != 3:
+        if len(args.positionals) == 1 and args.positionals[0].strip().lower() in {"auto", "auto-candidate"}:
+            args.auto_candidate = True
+        elif len(args.positionals) != 3:
             raise RuntimeError("Positional fallback must be exactly: book_id episode shot_id.")
-        args.book_id = int(args.positionals[0])
-        args.episode = int(args.positionals[1])
-        args.shot_id = int(args.positionals[2])
+        else:
+            args.book_id = int(args.positionals[0])
+            args.episode = int(args.positionals[1])
+            args.shot_id = int(args.positionals[2])
 
     started = time.monotonic()
     init_db()
     client = TestClient(app)
+    if args.auto_candidate:
+        selected = select_gray_candidate(parse_csv_ints(args.candidate_book_ids), client=client)
+        args.book_id = int(selected["book_id"])
+        args.episode = int(selected["episode"])
+        args.shot_id = int(selected["shot_id"])
+        args.first_frame_asset_id = str(selected.get("first_frame_asset_id") or "")
+        args.selected_candidate = selected
+        log(
+            "Selected candidate "
+            f"{target_key(args.book_id, args.episode, args.shot_id)} "
+            f"from {selected.get('candidate_count')} first-frame candidate(s)."
+        )
+    else:
+        args.selected_candidate = None
     report = build_preflight_report(args, client)
     if report["mode"] == "real-submit":
         report["real_submission_result"] = submit_real(client, args, report)
