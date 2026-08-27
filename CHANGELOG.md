@@ -1,5 +1,38 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-27 — 机器提示词二段式 MiniMax H3 真实提交链路
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：MiniMax H3 adapter 第一阶段已经具备 v2 create/query 与轮询回收能力，但机器提示词 API 提交仍停留在“登记意图”。本轮把该链路升级为二段式：先登记，再由用户显式确认后真实提交 H3。
+
+### 变更概览
+
+- **新增确认式真实提交接口**
+  - 新增 `POST /api/prototyping/tasks/{task_id}/submit-machine-prompt-provider`。
+  - 仅允许 `generation_chain=machine_prompt_api_submission` 的任务进入该接口。
+  - 必须传入确认口令 `CONFIRM_MINIMAX_H3_SUBMIT`，否则拒绝提交。
+  - 真实提交仅允许使用 `minimax-h3-async` 视频模型；默认 mock 或其他 provider 会被拒绝。
+
+- **机器提示词到视频资产回写**
+  - 从导出快照中抽取 MiniMax H3 `integrated_multimodal_description` 作为真实视频 prompt。
+  - 若当前镜头存在采纳首帧，优先走 H3 首帧图生视频；否则走文生视频。
+  - 提交后任务保留 `kind=machine_prompt_api_submission`，同时升级 `target_kind=video`、`actual_provider_submission=true`。
+  - provider 返回视频 URL 后复用现有视频资产写回链路，记录 `externalTaskId / providerRequestPayload / providerResponse`。
+
+- **正式工作台二段式按钮**
+  - 导出高级区保留“登记 API 提交任务”。
+  - 新增“真实提交 H3”按钮，点击后需要浏览器二次确认。
+  - 任务中心文案从“等待适配器接入”更新为“已登记，需二次确认才真实提交”或“已真实提交，等待回收”。
+
+### 验证结果
+
+- `python -m unittest tests.test_storyboard_prompt_compile.StoryboardPromptCompileTests.test_machine_prompt_provider_submit_requires_confirmation_token tests.test_storyboard_prompt_compile.StoryboardPromptCompileTests.test_machine_prompt_provider_submit_sends_h3_prompt_and_writes_video_asset`：通过
+- `npm --prefix web test -- productWorkspaceTaskCenterData.test.ts ProductWorkspaceStoryboardRepairActions.test.tsx`：`16 passed`
+- `npm run e2e:machine-prompt-export`：通过；仅验证导出与登记，不触发真实 H3
+- `npm run check:production`：通过；93 个 Python 测试、前端 build、五项目 113 镜 `0 error / 0 warning`
+
+---
+
 ## 2026-08-27 — MiniMax H3 异步视频适配层第一阶段
 
 > 对应分支：`codex/unify-formal-workspace`

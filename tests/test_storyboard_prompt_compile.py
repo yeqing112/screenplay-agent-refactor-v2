@@ -1,10 +1,10 @@
 import json
 import unittest
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from fastapi.testclient import TestClient
 
-from api.server import app
+from api.server import app, _creative_tasks
 from models import (
     Book,
     ProductionExportRecord,
@@ -182,6 +182,9 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             self.prop_id = str(session.query(VisualProp).filter(VisualProp.book_id == self.book_id).first().id)
 
     def tearDown(self):
+        for task_id, task in list(_creative_tasks.items()):
+            if int(task.get("book_id") or 0) == self.book_id:
+                _creative_tasks.pop(task_id, None)
         with Session() as session:
             session.query(TaskRun).filter(TaskRun.book_id == self.book_id).delete()
             session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
@@ -432,6 +435,145 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             task["request_payload"]["export_payload"]["model_exports"]["minimax-h3"]["fields"]["integrated_multimodal_description"],
             export_payload["model_exports"]["minimax-h3"]["fields"]["integrated_multimodal_description"],
         )
+
+    def test_machine_prompt_provider_submit_requires_confirmation_token(self):
+        export_preview_response = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-export?target_model=minimax-h3"
+        )
+        self.assertEqual(export_preview_response.status_code, 200)
+        export_payload = export_preview_response.json()
+
+        register_response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-api-submissions",
+            json={
+                "targetModel": "minimax-h3",
+                "exportChannel": "api",
+                "operatorName": "formal-workspace",
+                "submissionMode": "task_intent_only",
+                "exportPayload": export_payload,
+            },
+        )
+        self.assertEqual(register_response.status_code, 200)
+        task_id = register_response.json()["task_id"]
+
+        submit_response = self.client.post(
+            f"/api/prototyping/tasks/{task_id}/submit-machine-prompt-provider",
+            json={"confirmationToken": "WRONG"},
+        )
+
+        self.assertEqual(submit_response.status_code, 400)
+        self.assertIn("CONFIRM_MINIMAX_H3_SUBMIT", submit_response.json()["detail"])
+        task = self.client.get(f"/api/prototyping/tasks/{task_id}").json()
+        self.assertFalse(task["actual_provider_submission"])
+        self.assertEqual(task["external_status"], "waiting_for_generation_adapter")
+
+    def test_machine_prompt_provider_submit_sends_h3_prompt_and_writes_video_asset(self):
+        export_preview_response = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-export?target_model=minimax-h3"
+        )
+        self.assertEqual(export_preview_response.status_code, 200)
+        export_payload = export_preview_response.json()
+        expected_prompt = export_payload["model_exports"]["minimax-h3"]["fields"]["integrated_multimodal_description"]
+
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            shot.asset_links = json.dumps({
+                "images": [
+                    {
+                        "id": "frame-adopted-1",
+                        "kind": "image",
+                        "title": "当前采纳首帧",
+                        "uri": "https://example.com/frame-adopted-1.png",
+                        "previewUrl": "https://example.com/frame-adopted-1.png",
+                        "adopted": True,
+                    }
+                ],
+                "references": {},
+            }, ensure_ascii=False)
+            session.commit()
+
+        register_response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-api-submissions",
+            json={
+                "targetModel": "minimax-h3",
+                "exportChannel": "api",
+                "operatorName": "formal-workspace",
+                "submissionMode": "task_intent_only",
+                "exportPayload": export_payload,
+            },
+        )
+        self.assertEqual(register_response.status_code, 200)
+        task_id = register_response.json()["task_id"]
+
+        async_generated = AsyncMock(return_value={
+            "previewUrl": "https://example.com/minimax-h3-video.mp4",
+            "uri": "https://example.com/minimax-h3-video.mp4",
+            "externalTaskId": "h3-real-task-1",
+            "externalStatus": "succeeded",
+            "pollAttempts": 1,
+            "providerResponse": {"status": "succeeded"},
+            "providerRequestPayload": {
+                "model": "MiniMax-H3",
+                "content": [{"type": "text", "text": expected_prompt}],
+            },
+            "taskMode": "image_to_video",
+        })
+
+        with patch("api.server.asyncio.sleep", new=AsyncMock(return_value=None)), patch(
+            "api.server.resolve_generation_profile",
+            return_value={
+                "id": "video-minimax-h3-test",
+                "provider": "minimax-h3-async",
+                "model_name": "MiniMax-H3",
+                "enabled": True,
+                "default_params": {"duration": 5, "ratio": "16:9"},
+            },
+        ), patch("api.server.generate_video_asset", new=async_generated):
+            submit_response = self.client.post(
+                f"/api/prototyping/tasks/{task_id}/submit-machine-prompt-provider",
+                json={
+                    "confirmationToken": "CONFIRM_MINIMAX_H3_SUBMIT",
+                    "durationSeconds": 5,
+                    "aspectRatio": "16:9",
+                    "useFirstFrame": True,
+                },
+            )
+
+        self.assertEqual(submit_response.status_code, 200)
+        submit_payload = submit_response.json()
+        self.assertTrue(submit_payload["actual_provider_submission"])
+        self.assertEqual(submit_payload["provider"], "minimax-h3-async")
+        self.assertEqual(submit_payload["provider_task_mode"], "image_to_video")
+        async_generated.assert_awaited_once()
+        self.assertEqual(async_generated.await_args.kwargs["prompt"], expected_prompt)
+        self.assertEqual(async_generated.await_args.kwargs["first_frame_url"], "https://example.com/frame-adopted-1.png")
+
+        task = self.client.get(f"/api/prototyping/tasks/{task_id}").json()
+        self.assertEqual(task["status"], "done")
+        self.assertEqual(task["kind"], "machine_prompt_api_submission")
+        self.assertEqual(task["target_kind"], "video")
+        self.assertTrue(task["actual_provider_submission"])
+        self.assertEqual(task["external_task_id"], "h3-real-task-1")
+        self.assertEqual(task["provider_request_payload"]["content"][0]["text"], expected_prompt)
+        self.assertEqual(task["prompt_encoding_audit"]["submitted_prompt"], expected_prompt)
+
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            asset_links = json.loads(shot.asset_links)
+
+        self.assertEqual(len(asset_links["videos"]), 1)
+        video = asset_links["videos"][0]
+        self.assertEqual(video["uri"], "https://example.com/minimax-h3-video.mp4")
+        self.assertEqual(video["metadata"]["externalTaskId"], "h3-real-task-1")
+        self.assertEqual(video["metadata"]["providerTaskMode"], "image_to_video")
 
     def test_director_shot_text_override_recompiles_export_without_prompt_version(self):
         custom_director_text = "场景：暴雨中的出租屋\n镜头：用户改写后的导演分镜语言，姐姐先停顿，再看向阿宁手里的旧水壶。"

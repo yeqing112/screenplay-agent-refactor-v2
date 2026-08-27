@@ -417,6 +417,18 @@ class StoryboardMachinePromptApiSubmissionRequest(BaseModel):
     notes: str = ""
 
 
+class StoryboardMachinePromptProviderSubmitRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    confirmation_token: str = Field(default="", validation_alias=AliasChoices("confirmation_token", "confirmationToken"))
+    model_profile_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
+    aspect_ratio: str = Field(default="16:9", validation_alias=AliasChoices("aspect_ratio", "aspectRatio"))
+    duration_seconds: Optional[int] = Field(default=5, validation_alias=AliasChoices("duration_seconds", "durationSeconds"))
+    use_first_frame: bool = Field(default=True, validation_alias=AliasChoices("use_first_frame", "useFirstFrame"))
+    first_frame_asset_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("first_frame_asset_id", "firstFrameAssetId"))
+    notes: str = ""
+
+
 class StoryboardDirectorShotTextUpdateRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -7729,6 +7741,14 @@ def _build_provider_prompt_encoding_audit(
         input_payload = provider_request_payload.get("input")
         if isinstance(input_payload, dict):
             submitted_prompt = str(input_payload.get("prompt") or "")
+        if not submitted_prompt:
+            content_payload = provider_request_payload.get("content")
+            if isinstance(content_payload, list):
+                submitted_prompt = "\n".join(
+                    str(item.get("text") or "").strip()
+                    for item in content_payload
+                    if isinstance(item, dict) and str(item.get("text") or "").strip()
+                ).strip()
 
     def _question_mark_count(text: str) -> int:
         return text.count("?")
@@ -7963,7 +7983,8 @@ def _complete_reconciled_creative_task(
     req: CreativeGenerationRequest,
     generated: dict,
 ) -> dict:
-    kind = str(task_state.get("kind") or task_state.get("target_kind") or "image")
+    raw_kind = str(task_state.get("kind") or task_state.get("target_kind") or "image")
+    kind = "video" if raw_kind == "machine_prompt_api_submission" else raw_kind
     version = int(task_state.get("version", 1))
     asset_kind = "image" if kind == "reference-image" else kind
     capability = "image" if asset_kind == "image" else "video"
@@ -9529,6 +9550,184 @@ def create_storyboard_machine_prompt_api_submission_task(
         "api_submission": True,
         "actual_provider_submission": False,
         "has_manual_export_draft": bool(req.has_manual_export_draft),
+    }
+
+
+def _extract_h3_prompt_from_machine_prompt_payload(export_payload: dict[str, Any], target_model: str) -> str:
+    if not isinstance(export_payload, dict):
+        return ""
+    model_exports = export_payload.get("model_exports") if isinstance(export_payload.get("model_exports"), dict) else {}
+    target_export = model_exports.get(target_model) if isinstance(model_exports.get(target_model), dict) else {}
+    if not target_export and target_model != "minimax-h3":
+        target_export = model_exports.get("minimax-h3") if isinstance(model_exports.get("minimax-h3"), dict) else {}
+    fields = target_export.get("fields") if isinstance(target_export.get("fields"), dict) else {}
+    prompt_text = str(
+        fields.get("integrated_multimodal_description")
+        or target_export.get("prompt")
+        or export_payload.get("director_shot_text")
+        or ""
+    ).strip()
+    return prompt_text
+
+
+def _resolve_optional_storyboard_first_frame(shot, *, first_frame_asset_id: str | None = None) -> tuple[str, str]:
+    asset_links = _load_asset_links(shot.asset_links)
+    requested_id = str(first_frame_asset_id or "").strip()
+    first_frame_asset = None
+    if requested_id:
+        first_frame_asset = _find_shot_asset_by_id(asset_links, "images", requested_id)
+        if not first_frame_asset:
+            raise HTTPException(status_code=400, detail="Selected first-frame image was not found on this shot.")
+    else:
+        first_frame_asset = _find_adopted_shot_asset(asset_links, "images")
+    if not first_frame_asset:
+        return "", ""
+    first_frame_url = str(first_frame_asset.get("uri") or first_frame_asset.get("previewUrl") or "").strip()
+    if not first_frame_url:
+        raise HTTPException(status_code=400, detail="The selected first-frame image is missing a usable preview URL.")
+    return str(first_frame_asset.get("id") or "").strip(), first_frame_url
+
+
+@app.post("/api/prototyping/tasks/{task_id}/submit-machine-prompt-provider")
+async def submit_machine_prompt_api_task_to_provider(
+    task_id: str,
+    req: StoryboardMachinePromptProviderSubmitRequest,
+    bg: BackgroundTasks,
+):
+    if str(req.confirmation_token or "").strip() != "CONFIRM_MINIMAX_H3_SUBMIT":
+        raise HTTPException(status_code=400, detail="真实提交 MiniMax H3 前必须提供确认口令 CONFIRM_MINIMAX_H3_SUBMIT。")
+
+    task_state = _creative_tasks.get(task_id)
+    if not task_state:
+        task_state = _load_persisted_task_state(task_id)
+        if _is_creative_task_state(task_state):
+            _creative_tasks[task_id] = task_state
+        else:
+            task_state = None
+    if not task_state:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    if str(task_state.get("generation_chain") or "").strip() != "machine_prompt_api_submission":
+        raise HTTPException(status_code=400, detail="Only machine prompt API submission tasks can be submitted through this endpoint.")
+    if bool(task_state.get("actual_provider_submission")) and str(task_state.get("external_task_id") or "").strip():
+        raise HTTPException(status_code=409, detail="This machine prompt task has already been submitted to a provider.")
+    if str(task_state.get("status") or "").strip() in {"running", "done"} and bool(task_state.get("actual_provider_submission")):
+        raise HTTPException(status_code=409, detail="This machine prompt task is already running or completed as a provider submission.")
+
+    request_payload = task_state.get("request_payload")
+    if not isinstance(request_payload, dict):
+        raise HTTPException(status_code=400, detail="Task request payload is unavailable.")
+    export_payload = request_payload.get("export_payload") if isinstance(request_payload.get("export_payload"), dict) else {}
+    target_model = str(task_state.get("target_model") or request_payload.get("target_model") or "minimax-h3").strip() or "minimax-h3"
+    prompt_text = _extract_h3_prompt_from_machine_prompt_payload(export_payload, target_model)
+    if not prompt_text:
+        raise HTTPException(status_code=400, detail="Machine prompt export payload does not contain a usable MiniMax H3 prompt.")
+
+    book_id = int(task_state.get("book_id") or request_payload.get("book_id") or 0)
+    episode = int(task_state.get("episode") or request_payload.get("episode") or 0)
+    shot_id = str(task_state.get("shot_id") or request_payload.get("shot_id") or "").strip()
+    if not book_id or not episode or not shot_id:
+        raise HTTPException(status_code=400, detail="Machine prompt task is missing storyboard identity fields.")
+
+    from models import Session, StoryboardShot
+
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id == _coerce_storyboard_shot_id(shot_id),
+        ).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+
+        first_frame_asset_id = ""
+        first_frame_url = ""
+        if req.use_first_frame:
+            first_frame_asset_id, first_frame_url = _resolve_optional_storyboard_first_frame(
+                shot,
+                first_frame_asset_id=req.first_frame_asset_id,
+            )
+
+    creative_req = CreativeGenerationRequest(
+        book_id=book_id,
+        episode=episode,
+        shot_id=shot_id,
+        source_node_id=f"machine-prompt-api-{episode}-{shot_id}",
+        source_asset_id=first_frame_asset_id or None,
+        first_frame_asset_id=first_frame_asset_id or None,
+        first_frame_url=first_frame_url or None,
+        asset_scope="shot",
+        asset_subject=shot_id,
+        target_kind="video",
+        prompt=prompt_text,
+        negative_prompt="",
+        model_profile_id=req.model_profile_id,
+        reference_asset_ids=[],
+        reference_images=[],
+        aspect_ratio=req.aspect_ratio,
+        duration_seconds=req.duration_seconds,
+    )
+
+    try:
+        profile = _resolve_creative_profile(creative_req, "video")
+    except (ModelProfileError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if str(profile.get("provider") or "").strip() != "minimax-h3-async":
+        raise HTTPException(status_code=400, detail="真实机器提示词 API 提交目前只允许使用 MiniMax H3 异步视频模型。请先在模型管理中把视频模型配置为 minimax-h3-async，或显式传入该模型配置。")
+
+    version = _next_asset_version(book_id, episode, shot_id, "video")
+    task_state.update({
+        "status": "queued",
+        "progress": max(int(task_state.get("progress") or 0), 10),
+        "target_kind": "video",
+        "version": version,
+        "model_profile_id": profile.get("id"),
+        "provider": profile.get("provider"),
+        "uses_mock": False,
+        "external_task_id": None,
+        "external_status": "queued_for_minimax_h3_submission",
+        "poll_attempts": 0,
+        "provider_response": None,
+        "provider_request_payload": None,
+        "actual_provider_submission": True,
+        "submission_mode": "confirmed_provider_submission",
+        "first_frame_asset_id": first_frame_asset_id,
+        "first_frame_url": first_frame_url,
+        "provider_task_mode": "image_to_video" if first_frame_url else "text_to_video",
+        "provider_submission_confirmed_at": datetime.utcnow().isoformat(),
+        "provider_submission_notes": str(req.notes or "").strip(),
+        "prompt_encoding_audit": _build_provider_prompt_encoding_audit(prompt_text),
+        "request_payload": {
+            **creative_req.model_dump(mode="json", by_alias=False),
+            "generation_chain": "machine_prompt_api_submission",
+            "api_submission": True,
+            "actual_provider_submission": True,
+            "target_model": target_model,
+            "source_export_record_id": request_payload.get("source_export_record_id"),
+            "has_manual_export_draft": bool(request_payload.get("has_manual_export_draft")),
+            "export_payload": export_payload,
+            "provider_submission_confirmed_at": datetime.utcnow().isoformat(),
+        },
+    })
+    _stamp_creative_task_state(task_state)
+    bg.add_task(_run_creative_task, task_id, "video", creative_req)
+    return {
+        "task_id": task_id,
+        "status": task_state["status"],
+        "progress": task_state["progress"],
+        "book_id": book_id,
+        "episode": episode,
+        "shot_id": shot_id,
+        "target_model": target_model,
+        "generation_chain": "machine_prompt_api_submission",
+        "provider": profile.get("provider"),
+        "model_profile_id": profile.get("id"),
+        "external_status": task_state["external_status"],
+        "api_submission": True,
+        "actual_provider_submission": True,
+        "first_frame_asset_id": first_frame_asset_id,
+        "first_frame_url": first_frame_url,
+        "provider_task_mode": task_state["provider_task_mode"],
     }
 
 

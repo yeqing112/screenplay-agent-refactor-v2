@@ -88,7 +88,8 @@ interface MachinePromptExportPanelProps {
   onCopyText: (label: string, text: string | undefined) => void | Promise<void>
   onDownloadFile: (format: MachinePromptExportFormat) => void
   onSaveRecord: () => void | Promise<void>
-  onSubmitApiTask: () => void | Promise<void>
+  onSubmitApiTask: () => void | string | Promise<void | string>
+  onSubmitProviderTask: () => void | Promise<void>
   onLoadHistory: () => void | Promise<void>
   onRestoreRecordDraft: (record: ProductionExportRecordListItemLike) => void
 }
@@ -119,6 +120,7 @@ export function ProductWorkspaceMachinePromptExportPanel({
   onDownloadFile,
   onSaveRecord,
   onSubmitApiTask,
+  onSubmitProviderTask,
   onLoadHistory,
   onRestoreRecordDraft,
 }: MachinePromptExportPanelProps) {
@@ -188,9 +190,18 @@ export function ProductWorkspaceMachinePromptExportPanel({
                 onClick={() => { void onSubmitApiTask() }}
                 disabled={machinePromptApiSubmissionState === 'submitting' || !machinePromptExport}
                 className="rounded border border-amber-400/40 bg-amber-400/10 px-2 py-1 text-[11px] text-amber-100 transition hover:border-amber-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                title="第一版只登记任务意图，不会调用真实模型 provider。"
+                title="第一步：只登记提交意图，不调用真实模型 provider。"
               >
                 {machinePromptApiSubmissionState === 'submitting' ? '登记提交任务中...' : '登记 API 提交任务'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { void onSubmitProviderTask() }}
+                disabled={machinePromptApiSubmissionState === 'submitting' || !machinePromptExport}
+                className="rounded border border-rose-400/50 bg-rose-500/10 px-2 py-1 text-[11px] text-rose-100 transition hover:border-rose-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                title="第二步：需要二次确认，确认后才会真实提交 MiniMax H3。"
+              >
+                {machinePromptApiSubmissionState === 'submitting' ? '提交处理中...' : '真实提交 H3'}
               </button>
               <button
                 type="button"

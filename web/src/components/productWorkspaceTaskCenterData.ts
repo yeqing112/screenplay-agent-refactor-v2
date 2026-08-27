@@ -90,8 +90,12 @@ function buildTaskStatusReason(statusPayload: CreativeTaskStatusPayload | undefi
   const externalStatus = String(statusPayload?.external_status || '').trim()
   const generationChain = String(statusPayload?.generation_chain || '').trim()
   if (generationChain === 'machine_prompt_api_submission') {
-    if (status === 'queued') return '已登记提交意图，等待真实模型适配器接入；当前没有调用 provider。'
-    if (externalStatus) return `适配器状态：${externalStatus}；当前没有真实外发。`
+    if (statusPayload?.actual_provider_submission) {
+      if (externalStatus) return `MiniMax H3 provider 状态：${externalStatus}`
+      return '已真实提交 MiniMax H3，等待 provider 回收。'
+    }
+    if (status === 'queued') return '已登记提交意图；当前没有调用 provider，需要二次确认后才会真实提交 H3。'
+    if (externalStatus) return `登记状态：${externalStatus}；当前没有真实外发。`
   }
   if (status === 'queued') return '任务已提交，等待 provider 开始执行。'
   if (status === 'error') {
@@ -320,8 +324,10 @@ export function buildRecoveryTaskEntries(
       const detail =
         status === 'error'
           ? `任务 ${taskId} 当前无法继续自动回收，建议检查版本状态，或直接从任务中心重新发起。`
+          : isMachinePromptApiSubmission && !statusPayload?.actual_provider_submission
+            ? `任务 ${taskId} 已登记机器提示词 API 提交意图；当前不会自动调用 provider，需要在镜头工作台二次确认后才会真实提交 H3。`
           : isMachinePromptApiSubmission
-            ? `任务 ${taskId} 已登记机器提示词 API 提交意图，等待接入真实模型适配器；当前不会自动调用 provider。`
+            ? `任务 ${taskId} 已真实提交 MiniMax H3，可继续从任务中心回收 provider 视频结果。`
           : triggeredByPromptRecompile && generationChain
             ? `任务 ${taskId} 来自“${describeGenerationChain(generationChain)}”链路，可在任务中心追溯本次生成所使用的重编任务与提示词版本。`
             : generationChain.startsWith('task_center_regenerate_latest_')

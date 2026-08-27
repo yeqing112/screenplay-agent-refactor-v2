@@ -1382,6 +1382,7 @@ export default function ProductWorkspaceStoryboardSection({
   const [machinePromptRecordMessage, setMachinePromptRecordMessage] = useState('')
   const [machinePromptApiSubmissionState, setMachinePromptApiSubmissionState] = useState<'idle' | 'submitting' | 'submitted' | 'error'>('idle')
   const [machinePromptApiSubmissionMessage, setMachinePromptApiSubmissionMessage] = useState('')
+  const [machinePromptApiSubmissionTaskId, setMachinePromptApiSubmissionTaskId] = useState('')
   const [machinePromptExportRecords, setMachinePromptExportRecords] = useState<ProductionExportRecordListItem[]>([])
   const [machinePromptRecordHistoryState, setMachinePromptRecordHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [directorShotDraft, setDirectorShotDraft] = useState('')
@@ -1973,15 +1974,15 @@ export default function ProductWorkspaceStoryboardSection({
   }
 
   const submitMachinePromptApiTask = async () => {
-    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return ''
     if (!machinePromptExport) {
       setMachinePromptApiSubmissionState('error')
       setMachinePromptApiSubmissionMessage('请先加载机器提示词导出预览，再登记 API 提交任务。')
-      return
+      return ''
     }
 
     setMachinePromptApiSubmissionState('submitting')
-    setMachinePromptApiSubmissionMessage('正在登记机器提示词 API 提交任务；第一版只进入任务中心，不会调用真实 provider。')
+    setMachinePromptApiSubmissionMessage('正在登记机器提示词 API 提交任务；这一步只进入任务中心，不会调用真实 provider。')
     try {
       const rawHistoryRecordId = machinePromptExport.source_layers?.history_export_record_id
       const sourceExportRecordId =
@@ -2023,6 +2024,7 @@ export default function ProductWorkspaceStoryboardSection({
       if (!taskId) {
         throw new Error('服务端已响应，但没有返回任务 ID。')
       }
+      setMachinePromptApiSubmissionTaskId(taskId)
 
       upsertPendingStoryboardTask(_bookId, {
         taskId,
@@ -2033,12 +2035,81 @@ export default function ProductWorkspaceStoryboardSection({
       })
       setMachinePromptApiSubmissionState('submitted')
       setMachinePromptApiSubmissionMessage(
-        `已登记 API 提交任务 ${taskId}；当前尚未调用真实 provider，可到任务中心跟踪。`,
+        `已登记 API 提交任务 ${taskId}；当前尚未调用真实 provider。如需生成视频，请再执行“真实提交 H3”。`,
+      )
+      setRuntimeVersion((current) => current + 1)
+      return taskId
+    } catch (error) {
+      setMachinePromptApiSubmissionState('error')
+      setMachinePromptApiSubmissionMessage(error instanceof Error ? error.message : '机器提示词 API 提交任务登记失败。')
+      return ''
+    }
+  }
+
+  const submitMachinePromptProviderTask = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    if (!machinePromptExport) {
+      setMachinePromptApiSubmissionState('error')
+      setMachinePromptApiSubmissionMessage('请先加载机器提示词导出预览，再执行真实 H3 提交。')
+      return
+    }
+
+    const confirmed =
+      typeof window === 'undefined'
+        ? false
+        : window.confirm('确认真实提交 MiniMax H3 视频生成？该操作可能产生平台费用，并会把返回视频写回当前镜头资产。')
+    if (!confirmed) {
+      setMachinePromptApiSubmissionMessage('已取消真实 H3 提交；当前只保留导出/登记状态。')
+      return
+    }
+
+    let taskId = machinePromptApiSubmissionTaskId
+    if (!taskId) {
+      taskId = await submitMachinePromptApiTask()
+    }
+    if (!taskId) return
+
+    setMachinePromptApiSubmissionState('submitting')
+    setMachinePromptApiSubmissionMessage(`正在真实提交 MiniMax H3：任务 ${taskId}。`)
+    try {
+      const response = await fetch(`/api/prototyping/tasks/${taskId}/submit-machine-prompt-provider`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          confirmationToken: 'CONFIRM_MINIMAX_H3_SUBMIT',
+          aspectRatio: '16:9',
+          durationSeconds: 5,
+          useFirstFrame: true,
+          notes: '由正式工作台二次确认后真实提交 MiniMax H3。',
+        }),
+      })
+      if (!response.ok) {
+        let detail = ''
+        try {
+          const payload = await response.json()
+          detail = String(payload?.detail || payload?.error || '').trim()
+        } catch {
+          detail = await response.text()
+        }
+        throw new Error(detail || `HTTP ${response.status}`)
+      }
+
+      const payload = await response.json()
+      upsertPendingStoryboardTask(_bookId, {
+        taskId,
+        episode: selectedShot.episode,
+        shotId: String(selectedShot.shot_id),
+        kind: 'video',
+        updatedAt: new Date().toISOString(),
+      })
+      setMachinePromptApiSubmissionState('submitted')
+      setMachinePromptApiSubmissionMessage(
+        `已真实提交 MiniMax H3：任务 ${taskId}，provider 状态 ${payload?.external_status || 'queued'}。可到任务中心回收视频结果。`,
       )
       setRuntimeVersion((current) => current + 1)
     } catch (error) {
       setMachinePromptApiSubmissionState('error')
-      setMachinePromptApiSubmissionMessage(error instanceof Error ? error.message : '机器提示词 API 提交任务登记失败。')
+      setMachinePromptApiSubmissionMessage(error instanceof Error ? error.message : 'MiniMax H3 真实提交失败。')
     }
   }
 
@@ -2826,6 +2897,7 @@ export default function ProductWorkspaceStoryboardSection({
                 onDownloadFile={downloadMachinePromptExportFile}
                 onSaveRecord={saveMachinePromptExportRecord}
                 onSubmitApiTask={submitMachinePromptApiTask}
+                onSubmitProviderTask={submitMachinePromptProviderTask}
                 onLoadHistory={loadMachinePromptExportRecordHistory}
                 onRestoreRecordDraft={restoreMachinePromptExportRecordDraft}
               />
