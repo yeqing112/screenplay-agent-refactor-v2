@@ -1,5 +1,6 @@
 import json
 import unittest
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from fastapi.testclient import TestClient
@@ -532,7 +533,22 @@ class StoryboardPromptCompileTests(unittest.TestCase):
                 "enabled": True,
                 "default_params": {"duration": 5, "ratio": "16:9"},
             },
-        ), patch("api.server.generate_video_asset", new=async_generated):
+        ), patch("api.server.generate_video_asset", new=async_generated), patch(
+            "api.server.ensure_provider_accessible_url",
+            return_value=SimpleNamespace(
+                ok=True,
+                public_url="https://qiniu.example.com/frame-adopted-1.png?e=86400&token=test",
+                to_dict=lambda: {
+                    "ok": True,
+                    "source_url": "https://example.com/frame-adopted-1.png",
+                    "public_url": "https://qiniu.example.com/frame-adopted-1.png?e=86400&token=test",
+                    "storage_provider": "qiniu",
+                    "object_key": "screenplay-agent/test/frame.png",
+                    "uploaded": True,
+                    "signed": True,
+                },
+            ),
+        ):
             submit_response = self.client.post(
                 f"/api/prototyping/tasks/{task_id}/submit-machine-prompt-provider",
                 json={
@@ -550,7 +566,10 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertEqual(submit_payload["provider_task_mode"], "image_to_video")
         async_generated.assert_awaited_once()
         self.assertEqual(async_generated.await_args.kwargs["prompt"], expected_prompt)
-        self.assertEqual(async_generated.await_args.kwargs["first_frame_url"], "https://example.com/frame-adopted-1.png")
+        self.assertEqual(
+            async_generated.await_args.kwargs["first_frame_url"],
+            "https://qiniu.example.com/frame-adopted-1.png?e=86400&token=test",
+        )
 
         task = self.client.get(f"/api/prototyping/tasks/{task_id}").json()
         self.assertEqual(task["status"], "done")

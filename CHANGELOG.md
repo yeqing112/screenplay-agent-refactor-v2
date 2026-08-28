@@ -1,5 +1,41 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-28 — 七牛公网资产中转接入第一版
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：本地局域网运行的项目无法把首帧图直接交给云端视频模型拉取；H3 图生视频真实提交前必须保证首帧 URL 可被 provider 公网访问。
+
+### 变更概览
+
+- 新增公共资产存储配置，第一版支持七牛 Kodo：
+  - `PUBLIC_ASSET_STORAGE_PROVIDER=qiniu`
+  - `QINIU_BUCKET=ai-ku01`
+  - `QINIU_REGION=z2`
+  - `QINIU_PUBLIC_BASE_URL`
+  - `QINIU_BUCKET_PRIVATE=true`
+- 新增 `core/public_asset_storage.py`：
+  - 检查公网 HTTP/HTTPS URL 是否可访问。
+  - 支持把本地路径、局域网 API URL、data URI 或仍可下载的 URL 上传到七牛。
+  - 私有 Bucket 默认生成限时签名下载 URL。
+- H3 真实提交入口接入首帧公网化：
+  - 若首帧原 URL 已可访问，直接使用。
+  - 若首帧不可访问但可经七牛中转，则使用七牛签名 URL。
+  - 若首帧源图无法读取或中转后仍不可访问，则拒绝真实提交，避免 provider 扣费失败。
+- H3 灰度脚本新增首帧 URL 可达性检查：
+  - 自动候选不再只看“是否外部 URL”，会实际检查 URL 是否可拉取。
+  - `404` 或本地 `/api/prototyping/assets/...` 会成为真实提交 blocker。
+  - 新增 `--publish-first-frame` 显式开关；默认 dry-run 不会向七牛写入对象。
+
+### 当前七牛控制台核对
+
+- Bucket：`ai-ku01`
+- 区域：华南-广东，对应 `z2`
+- 访问控制：私有
+- 当前域名：`tkgj4ur0t.hn-bkt.clouddn.com`
+- 限制：该域名是七牛测试域名，页面提示每日限回源总流量、30 天回收且不支持 HTTPS；适合临时开发，不适合生产。
+
+---
+
 ## 2026-08-28 — H3 视频时长改为由分镜决定
 
 > 对应分支：`codex/unify-formal-workspace`

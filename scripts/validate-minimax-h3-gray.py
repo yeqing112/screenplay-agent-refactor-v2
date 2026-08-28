@@ -41,6 +41,7 @@ if str(ROOT_DIR) not in sys.path:
 from api.generation_adapters import ModelProfileError, resolve_generation_profile
 from api.server import app
 from core import safe_json_loads
+from core.public_asset_storage import check_public_url_accessible, ensure_provider_accessible_url, public_asset_storage_enabled
 from models import Book, Session, StoryboardShot, init_db
 
 
@@ -221,6 +222,10 @@ def select_gray_candidate(book_ids: list[int], client: TestClient | None = None)
             is_external_http = first_frame_url.startswith("http://") or first_frame_url.startswith("https://")
             is_local_placeholder = first_frame_url.startswith("/api/prototyping/assets/")
             is_data_uri = first_frame_url.startswith("data:")
+            first_frame_url_accessible = False
+            first_frame_url_access_error = ""
+            if is_external_http:
+                first_frame_url_accessible, first_frame_url_access_error = check_public_url_accessible(first_frame_url)
             prompt = ""
             prompt_has_legacy_markers = False
             prompt_has_safety_risk = False
@@ -237,6 +242,10 @@ def select_gray_candidate(book_ids: list[int], client: TestClient | None = None)
             score = 0
             if is_external_http:
                 score += 100
+            if first_frame_url_accessible:
+                score += 120
+            elif is_external_http:
+                score -= 200
             if not has_existing_video:
                 score += 40
             if not is_local_placeholder and not is_data_uri:
@@ -259,6 +268,8 @@ def select_gray_candidate(book_ids: list[int], client: TestClient | None = None)
                     "first_frame_url": first_frame_url,
                     "has_existing_video": has_existing_video,
                     "is_external_http": is_external_http,
+                    "first_frame_url_accessible": first_frame_url_accessible,
+                    "first_frame_url_access_error": first_frame_url_access_error,
                     "prompt_length": prompt_length,
                     "prompt_has_legacy_director_markers": prompt_has_legacy_markers,
                     "prompt_has_gray_sample_safety_risk": prompt_has_safety_risk,
@@ -332,8 +343,38 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
     duration_info = resolve_h3_duration_seconds(args, shot)
     first_frame = find_first_frame(shot, args.first_frame_asset_id) if args.use_first_frame else None
     first_frame_url = ""
+    first_frame_public_asset: dict[str, Any] = {}
     if isinstance(first_frame, dict):
         first_frame_url = str(first_frame.get("uri") or first_frame.get("previewUrl") or "").strip()
+    final_first_frame_url = first_frame_url
+    if first_frame_url:
+        if args.publish_first_frame:
+            first_frame_public_asset = ensure_provider_accessible_url(
+                first_frame_url,
+                key_hint=f"book-{args.book_id}-episode-{args.episode}-shot-{args.shot_id}-first-frame",
+            ).to_dict()
+            final_first_frame_url = str(first_frame_public_asset.get("public_url") or first_frame_url).strip()
+        elif first_frame_url.startswith(("http://", "https://")):
+            accessible, error = check_public_url_accessible(first_frame_url)
+            first_frame_public_asset = {
+                "ok": accessible,
+                "source_url": first_frame_url,
+                "public_url": first_frame_url if accessible else "",
+                "uploaded": False,
+                "signed": False,
+                "source_accessible": accessible,
+                "error": error,
+            }
+        else:
+            first_frame_public_asset = {
+                "ok": False,
+                "source_url": first_frame_url,
+                "public_url": "",
+                "uploaded": False,
+                "signed": False,
+                "source_accessible": False,
+                "error": "not_public_http_url",
+            }
 
     profile, profile_error = effective_video_profile(args.model_profile_id)
     profile_summary = public_profile_summary(profile, profile_error)
@@ -360,6 +401,10 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
         warnings.append("no_adopted_first_frame_found_will_use_text_to_video")
     elif args.use_first_frame and not first_frame_url:
         blockers.append("selected_first_frame_has_no_url")
+    elif args.use_first_frame and first_frame_url and not first_frame_public_asset.get("ok"):
+        blockers.append("selected_first_frame_url_not_provider_accessible")
+        if public_asset_storage_enabled() and not args.publish_first_frame:
+            warnings.append("qiniu_public_asset_storage_configured_but_publish_first_frame_flag_not_enabled")
 
     whitelist = parse_whitelist(os.environ.get("MINIMAX_H3_GRAY_WHITELIST", ""))
     current_target = target_key(args.book_id, args.episode, args.shot_id)
@@ -400,7 +445,9 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
             "use_first_frame": bool(args.use_first_frame),
             "first_frame_asset_id": str(first_frame.get("id") or "") if isinstance(first_frame, dict) else "",
             "first_frame_url": first_frame_url,
-            "task_mode": "image_to_video" if first_frame_url else "text_to_video",
+            "provider_first_frame_url": final_first_frame_url if first_frame_public_asset.get("ok") else "",
+            "first_frame_public_asset": first_frame_public_asset,
+            "task_mode": "image_to_video" if first_frame_public_asset.get("ok") else "text_to_video",
             "api_submission": True,
             "actual_provider_submission": bool(safety["will_submit"]),
         },
@@ -488,6 +535,8 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- 时长：{submission.get('duration_seconds')}s（{(submission.get('duration_source') or {}).get('source_label') or '-'}）",
         f"- 任务模式：{submission.get('task_mode')}",
         f"- 首帧：{submission.get('first_frame_asset_id') or '无，文生视频'}",
+        f"- 首帧可访问：{(submission.get('first_frame_public_asset') or {}).get('ok')}",
+        f"- Provider 首帧 URL：{submission.get('provider_first_frame_url') or '-'}",
         f"- 模型配置：{profile.get('id') or '-'} / {profile.get('provider') or '-'} / {profile.get('model_name') or '-'}",
         f"- API Key：{'已配置' if profile.get('api_key_configured') else '未配置'}",
         f"- 可真实提交：{readiness.get('ready_for_real_submit')}",
@@ -517,6 +566,7 @@ def render_markdown(report: dict[str, Any]) -> str:
                 f"- 候选总数：{candidate_selection.get('candidate_count')}",
                 f"- 选中首帧：{candidate_selection.get('first_frame_asset_id')}",
                 f"- 外部 URL：{candidate_selection.get('is_external_http')}",
+                f"- 首帧 URL 可访问：{candidate_selection.get('first_frame_url_accessible')}",
                 f"- 已有视频：{candidate_selection.get('has_existing_video')}",
                 f"- Prompt 遗留导演标记：{candidate_selection.get('prompt_has_legacy_director_markers')}",
                 f"- Prompt 灰度安全风险：{candidate_selection.get('prompt_has_gray_sample_safety_risk')}",
@@ -529,6 +579,7 @@ def render_markdown(report: dict[str, Any]) -> str:
                 lines.append(
                     f"  - {target_key(item.get('book_id'), item.get('episode'), item.get('shot_id'))}"
                     f"｜{item.get('scene_name')}｜external={item.get('is_external_http')}"
+                    f"｜accessible={item.get('first_frame_url_accessible')}"
                     f"｜hasVideo={item.get('has_existing_video')}"
                     f"｜legacyMarkers={item.get('prompt_has_legacy_director_markers')}"
                     f"｜safetyRisk={item.get('prompt_has_gray_sample_safety_risk')}"
@@ -581,6 +632,7 @@ def main() -> int:
     parser.add_argument("--first-frame-asset-id", default="")
     parser.add_argument("--no-first-frame", dest="use_first_frame", action="store_false")
     parser.set_defaults(use_first_frame=True)
+    parser.add_argument("--publish-first-frame", action="store_true", help="Publish the first frame through configured public asset storage before preflight/real submit.")
     parser.add_argument("--allow-real", action="store_true")
     parser.add_argument("--out", default="")
     parser.add_argument("--summary-md", default="")

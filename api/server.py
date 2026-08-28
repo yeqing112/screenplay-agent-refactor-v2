@@ -28,6 +28,7 @@ from api.model_registry import save_registry, serialize_registry_payload, test_p
 from core import safe_json_loads
 import core.llm as llm_client
 from core.model_adapter import sanitize_machine_prompt_text
+from core.public_asset_storage import ensure_provider_accessible_url, public_asset_storage_enabled
 from core.prompts import load_prompt
 from core.production_skill import (
     build_production_skill_prompt_block,
@@ -9588,6 +9589,26 @@ def _resolve_optional_storyboard_first_frame(shot, *, first_frame_asset_id: str 
     return str(first_frame_asset.get("id") or "").strip(), first_frame_url
 
 
+def _resolve_provider_ready_storyboard_first_frame(shot, *, first_frame_asset_id: str | None = None) -> tuple[str, str, dict[str, Any]]:
+    resolved_asset_id, source_url = _resolve_optional_storyboard_first_frame(shot, first_frame_asset_id=first_frame_asset_id)
+    if not source_url:
+        return "", "", {}
+    key_hint = f"book-{getattr(shot, 'book_id', '')}-episode-{getattr(shot, 'episode', '')}-shot-{getattr(shot, 'shot_id', '')}-first-frame"
+    public_result = ensure_provider_accessible_url(
+        source_url,
+        key_hint=key_hint,
+        local_base_url=config.PUBLIC_ASSET_LOCAL_BASE_URL,
+    )
+    public_dict = public_result.to_dict()
+    if not public_result.ok:
+        storage_hint = "；已配置七牛资产中转，但源图无法读取或中转 URL 不可访问" if public_asset_storage_enabled() else "；请先配置七牛资产中转或改用公网可访问首帧"
+        raise HTTPException(
+            status_code=400,
+            detail=f"首帧图无法被外部视频模型访问：{public_result.error or 'unknown_error'}{storage_hint}。",
+        )
+    return resolved_asset_id, public_result.public_url or source_url, public_dict
+
+
 @app.post("/api/prototyping/tasks/{task_id}/submit-machine-prompt-provider")
 async def submit_machine_prompt_api_task_to_provider(
     task_id: str,
@@ -9642,8 +9663,9 @@ async def submit_machine_prompt_api_task_to_provider(
 
         first_frame_asset_id = ""
         first_frame_url = ""
+        first_frame_public_asset = {}
         if req.use_first_frame:
-            first_frame_asset_id, first_frame_url = _resolve_optional_storyboard_first_frame(
+            first_frame_asset_id, first_frame_url, first_frame_public_asset = _resolve_provider_ready_storyboard_first_frame(
                 shot,
                 first_frame_asset_id=req.first_frame_asset_id,
             )
@@ -9693,6 +9715,7 @@ async def submit_machine_prompt_api_task_to_provider(
         "submission_mode": "confirmed_provider_submission",
         "first_frame_asset_id": first_frame_asset_id,
         "first_frame_url": first_frame_url,
+        "first_frame_public_asset": first_frame_public_asset,
         "provider_task_mode": "image_to_video" if first_frame_url else "text_to_video",
         "provider_submission_confirmed_at": datetime.utcnow().isoformat(),
         "provider_submission_notes": str(req.notes or "").strip(),
@@ -9707,6 +9730,7 @@ async def submit_machine_prompt_api_task_to_provider(
             "has_manual_export_draft": bool(request_payload.get("has_manual_export_draft")),
             "export_payload": export_payload,
             "provider_submission_confirmed_at": datetime.utcnow().isoformat(),
+            "first_frame_public_asset": first_frame_public_asset,
         },
     })
     _stamp_creative_task_state(task_state)
@@ -9727,6 +9751,7 @@ async def submit_machine_prompt_api_task_to_provider(
         "actual_provider_submission": True,
         "first_frame_asset_id": first_frame_asset_id,
         "first_frame_url": first_frame_url,
+        "first_frame_public_asset": first_frame_public_asset,
         "provider_task_mode": task_state["provider_task_mode"],
     }
 

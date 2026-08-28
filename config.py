@@ -93,6 +93,22 @@ UPLOAD_ALLOWED_EXTENSIONS = {
     for item in _load_csv("UPLOAD_ALLOWED_EXTENSIONS", ".txt,.md,.markdown")
 }
 
+# ── Public asset storage ──
+# Used when a local/private storyboard asset must be pulled by an external
+# provider such as MiniMax H3. Secrets must stay in the local .env file.
+PUBLIC_ASSET_STORAGE_PROVIDER = os.getenv("PUBLIC_ASSET_STORAGE_PROVIDER", "").strip().lower()
+PUBLIC_ASSET_LOCAL_BASE_URL = os.getenv("PUBLIC_ASSET_LOCAL_BASE_URL", "http://127.0.0.1:18765").strip()
+
+QINIU_ACCESS_KEY = os.getenv("QINIU_ACCESS_KEY", "").strip()
+QINIU_SECRET_KEY = os.getenv("QINIU_SECRET_KEY", "").strip()
+QINIU_BUCKET = os.getenv("QINIU_BUCKET", "").strip()
+QINIU_REGION = os.getenv("QINIU_REGION", "z2").strip()
+QINIU_PUBLIC_BASE_URL = os.getenv("QINIU_PUBLIC_BASE_URL", "").strip().rstrip("/")
+QINIU_BUCKET_PRIVATE = _load_bool("QINIU_BUCKET_PRIVATE", True)
+QINIU_KEY_PREFIX = os.getenv("QINIU_KEY_PREFIX", "screenplay-agent").strip().strip("/")
+QINIU_UPLOAD_TOKEN_EXPIRES_SECONDS = _load_int("QINIU_UPLOAD_TOKEN_EXPIRES_SECONDS", 3600)
+QINIU_PUBLIC_URL_TTL_SECONDS = _load_int("QINIU_PUBLIC_URL_TTL_SECONDS", 86400)
+
 
 def _ensure_dirs():
     """确保内部目录存在（延迟加载，不阻塞 import）。"""
