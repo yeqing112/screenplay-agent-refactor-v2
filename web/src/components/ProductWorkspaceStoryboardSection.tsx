@@ -44,7 +44,10 @@ import {
   StoryboardGateStrip,
   getShotReadinessShortLabel,
 } from './ProductWorkspaceStoryboardUi'
-import { ProductWorkspaceMachinePromptExportPanel } from './ProductWorkspaceMachinePromptExportPanel'
+import {
+  ProductWorkspaceMachinePromptExportPanel,
+  type H3ProviderSubmitSummary,
+} from './ProductWorkspaceMachinePromptExportPanel'
 import { ProductWorkspaceStoryboardAdvancedToolsPanel } from './ProductWorkspaceStoryboardAdvancedToolsPanel'
 import { ProductWorkspaceStoryboardAcceptancePanel } from './ProductWorkspaceStoryboardAcceptancePanel'
 import { ProductWorkspaceStoryboardMediaPanel } from './ProductWorkspaceStoryboardMediaPanel'
@@ -1565,6 +1568,7 @@ export default function ProductWorkspaceStoryboardSection({
     selectedShot?.shot_id,
   ])
   const hasAdoptedFrame = Boolean(adoptedImage)
+  const adoptedImageUrl = String(adoptedImage?.uri || adoptedImage?.previewUrl || '').trim()
   const predictedVideoTaskMode =
     hasAdoptedFrame ? 'image_to_video' : effectiveReferenceAssetIds.length > 0 ? 'reference_to_video' : 'text_to_video'
   const hasReferencePayloadDrift =
@@ -1599,6 +1603,23 @@ export default function ProductWorkspaceStoryboardSection({
   const minimaxH3Export = machinePromptExport?.model_exports?.['minimax-h3'] ?? null
   const minimaxH3Fields = minimaxH3Export?.fields ?? {}
   const genericZhVideoExport = machinePromptExport?.model_exports?.['generic-zh-video'] ?? null
+  const h3ProviderSubmitSummary = useMemo<H3ProviderSubmitSummary | null>(() => {
+    if (!machinePromptExport) return null
+    const promptText = String(minimaxH3Fields.integrated_multimodal_description || '').trim()
+    return {
+      platformLabel: 'metaso.cn MiniMax H3 兼容 API',
+      baseUrl: 'https://metaso.cn/api/minimax',
+      modelName: 'MiniMax-H3',
+      resolution: '768P',
+      durationSeconds: 5,
+      aspectRatio: '16:9',
+      aigcWatermark: false,
+      taskMode: adoptedImageUrl ? 'image_to_video' : 'text_to_video',
+      firstFrameAssetLabel: adoptedImage ? String(adoptedImage.title || adoptedImage.label || adoptedImage.id || '').trim() : '',
+      firstFrameUrl: adoptedImageUrl,
+      promptLength: promptText.length,
+    }
+  }, [adoptedImage, adoptedImageUrl, machinePromptExport, minimaxH3Fields.integrated_multimodal_description])
   const minimaxH3CopyText = useMemo(
     () => buildMachinePromptWebuiCopyText(machinePromptExport, 'minimax-h3'),
     [machinePromptExport],
@@ -2886,6 +2907,7 @@ export default function ProductWorkspaceStoryboardSection({
                 minimaxH3Fields={minimaxH3Fields}
                 machineTimeline={machineTimeline}
                 genericZhVideoExport={genericZhVideoExport}
+                h3ProviderSubmitSummary={h3ProviderSubmitSummary}
                 temporaryDraft={machinePromptTemporaryDraft}
                 isManualTemporaryDraft={isMachinePromptManualDraft}
                 canRecordExport={Boolean(selectedShot)}

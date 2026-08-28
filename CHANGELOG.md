@@ -1,5 +1,31 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-28 — H3 真实提交前摘要
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：metaso MiniMax H3 真实提交即将进入账号灰度，用户二次确认前必须看清实际提交规格，避免“点了真实提交但不知道提交了什么”的生产风险。
+
+### 变更概览
+
+- 正式镜头工作台的机器提示词导出区新增“真实提交 H3 前摘要”。
+- 摘要显示：
+  - 平台：`metaso.cn MiniMax H3 兼容 API`
+  - Base URL：`https://metaso.cn/api/minimax`
+  - 模型：`MiniMax-H3`
+  - 规格：`768P / 5s / 16:9`
+  - 模式：首帧图生视频或文生视频
+  - AIGC 水印：关闭
+  - Prompt 长度
+- 当前没有采纳首帧时，摘要会明确提示后端会按文生视频提交，并建议优先补齐首帧再做真实灰度。
+- 新增 `ProductWorkspaceMachinePromptExportPanel.test.ts` 锁定摘要文本。
+
+### 验证结果
+
+- `npm --prefix web test -- ProductWorkspaceMachinePromptExportPanel.test.ts modelRegistryModal.test.ts ProductWorkspaceStoryboardRepairActions.test.tsx`：通过，17 tests。
+- `npm --prefix web run build`：通过。
+
+---
+
 ## 2026-08-28 — metaso MiniMax H3 兼容 API 收口
 
 > 对应分支：`codex/unify-formal-workspace`

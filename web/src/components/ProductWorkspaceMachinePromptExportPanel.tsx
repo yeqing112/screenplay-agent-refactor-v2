@@ -57,6 +57,37 @@ type MachinePromptTemporaryDraftLike = {
   generic_zh_video_prompt: string
 }
 
+export type H3ProviderSubmitSummary = {
+  platformLabel: string
+  baseUrl: string
+  modelName: string
+  resolution: string
+  durationSeconds: number
+  aspectRatio: string
+  aigcWatermark: boolean
+  taskMode: 'image_to_video' | 'text_to_video'
+  firstFrameAssetLabel?: string
+  firstFrameUrl?: string
+  promptLength?: number
+}
+
+export function buildH3ProviderSubmitSummaryLines(summary: H3ProviderSubmitSummary | null | undefined) {
+  if (!summary) return []
+  const taskModeLabel =
+    summary.taskMode === 'image_to_video'
+      ? `首帧图生视频${summary.firstFrameAssetLabel ? `（${summary.firstFrameAssetLabel}）` : ''}`
+      : '文生视频（当前未检测到采纳首帧）'
+  return [
+    `平台：${summary.platformLabel}`,
+    `Base URL：${summary.baseUrl}`,
+    `模型：${summary.modelName}`,
+    `规格：${summary.resolution} / ${summary.durationSeconds}s / ${summary.aspectRatio}`,
+    `模式：${taskModeLabel}`,
+    `AIGC 水印：${summary.aigcWatermark ? '开启' : '关闭'}`,
+    `Prompt 长度：${summary.promptLength ?? 0} 字`,
+  ]
+}
+
 interface MachinePromptExportPanelProps {
   machinePromptExport: MachinePromptExportPreviewLike | null
   machinePromptExportState: MachinePromptExportState
@@ -78,6 +109,7 @@ interface MachinePromptExportPanelProps {
   genericZhVideoExport?: {
     prompt?: string
   } | null
+  h3ProviderSubmitSummary?: H3ProviderSubmitSummary | null
   temporaryDraft: MachinePromptTemporaryDraftLike
   isManualTemporaryDraft: boolean
   canRecordExport: boolean
@@ -109,6 +141,7 @@ export function ProductWorkspaceMachinePromptExportPanel({
   minimaxH3Fields,
   machineTimeline,
   genericZhVideoExport,
+  h3ProviderSubmitSummary,
   temporaryDraft,
   isManualTemporaryDraft,
   canRecordExport,
@@ -125,6 +158,7 @@ export function ProductWorkspaceMachinePromptExportPanel({
   onRestoreRecordDraft,
 }: MachinePromptExportPanelProps) {
   const isHistoryDraft = Boolean(machinePromptExport?.source_layers?.is_temporary_webui_draft)
+  const h3SubmitSummaryLines = buildH3ProviderSubmitSummaryLines(h3ProviderSubmitSummary)
   const updateTemporaryDraft = (key: keyof MachinePromptTemporaryDraftLike, value: string) => {
     onTemporaryDraftChange({
       ...temporaryDraft,
@@ -239,6 +273,29 @@ export function ProductWorkspaceMachinePromptExportPanel({
         ) : null}
         {isManualTemporaryDraft ? <StatusPill tone="amber">人工临时修改</StatusPill> : null}
       </div>
+
+      {machinePromptExport && h3SubmitSummaryLines.length > 0 ? (
+        <div className="mt-3 rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="text-xs font-medium text-amber-100">真实提交 H3 前摘要</div>
+            <StatusPill tone="amber">需二次确认</StatusPill>
+          </div>
+          <div className="mt-2 grid gap-x-4 gap-y-1 text-[11px] leading-5 text-amber-100/80 md:grid-cols-2">
+            {h3SubmitSummaryLines.map((line) => (
+              <div key={line} className="break-all">{line}</div>
+            ))}
+          </div>
+          {h3ProviderSubmitSummary?.firstFrameUrl ? (
+            <div className="mt-2 break-all text-[11px] leading-5 text-amber-100/65">
+              首帧 URL：{h3ProviderSubmitSummary.firstFrameUrl}
+            </div>
+          ) : (
+            <div className="mt-2 text-[11px] leading-5 text-amber-100/65">
+              提醒：没有采纳首帧时后端会按文生视频提交；建议优先补齐首帧再做真实灰度。
+            </div>
+          )}
+        </div>
+      ) : null}
 
       {machinePromptExportMessage ? (
         <div
