@@ -1,5 +1,31 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-28 — H3 视频时长改为由分镜决定
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：视频生成不应固定为 5 秒；镜头节奏应由分镜 `duration` 决定，H3/metaso 适配层只负责转换为平台可接受的提交参数。
+
+### 变更概览
+
+- 正式镜头工作台的 H3 真实提交前摘要改为显示分镜推导出的时长。
+- 真实提交 MiniMax H3 时，`durationSeconds` 不再写死为 `5`，而是从当前镜头 `duration` 推导。
+- 推导规则：
+  - 有效分镜时长：四舍五入为整数秒。
+  - 平台提交范围：按 H3 支持范围夹取到 `4s–15s`。
+  - 缺失或非法时长：使用默认 `5s`，并在摘要/报告中标明来源。
+- `scripts/validate-minimax-h3-gray.py` 灰度脚本同步改为默认读取分镜时长；仅显式传入 `--duration-seconds` 时才视为命令行覆盖。
+- H3 预检摘要与灰度报告新增“时长来源”，避免 UI 摘要、脚本报告、实际提交参数不一致。
+
+### 验证结果
+
+- `npm --prefix web test -- ProductWorkspaceMachinePromptExportPanel.test.ts ProductWorkspaceStoryboardRepairActions.test.tsx`：通过，9 tests。
+- `npm --prefix web run build`：通过。
+- `python -m py_compile scripts/validate-minimax-h3-gray.py`：通过。
+- `npm run validate:minimax-h3-gray -- auto`：通过；dry-run 未触发 provider call。自动候选 `book 14 / episode 1 / shot 1` 的原始分镜时长为 `3s`，报告显示按 H3 平台范围提交为 `4s`。
+- `npm run e2e:machine-prompt-export`：通过；真浏览器验证 H3 提交前摘要显示分镜来源时长。
+
+---
+
 ## 2026-08-28 — H3 真实提交前摘要
 
 > 对应分支：`codex/unify-formal-workspace`
@@ -12,7 +38,8 @@
   - 平台：`metaso.cn MiniMax H3 兼容 API`
   - Base URL：`https://metaso.cn/api/minimax`
   - 模型：`MiniMax-H3`
-  - 规格：`768P / 5s / 16:9`
+  - 规格：`768P / 分镜时长 / 16:9`
+  - 时长来源：分镜 `duration`，并按 H3 平台范围提交
   - 模式：首帧图生视频或文生视频
   - AIGC 水印：关闭
   - Prompt 长度

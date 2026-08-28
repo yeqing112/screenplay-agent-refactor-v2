@@ -63,6 +63,7 @@ export type H3ProviderSubmitSummary = {
   modelName: string
   resolution: string
   durationSeconds: number
+  durationSourceLabel?: string
   aspectRatio: string
   aigcWatermark: boolean
   taskMode: 'image_to_video' | 'text_to_video'
@@ -82,6 +83,7 @@ export function buildH3ProviderSubmitSummaryLines(summary: H3ProviderSubmitSumma
     `Base URL：${summary.baseUrl}`,
     `模型：${summary.modelName}`,
     `规格：${summary.resolution} / ${summary.durationSeconds}s / ${summary.aspectRatio}`,
+    ...(summary.durationSourceLabel ? [`时长来源：${summary.durationSourceLabel}`] : []),
     `模式：${taskModeLabel}`,
     `AIGC 水印：${summary.aigcWatermark ? '开启' : '关闭'}`,
     `Prompt 长度：${summary.promptLength ?? 0} 字`,

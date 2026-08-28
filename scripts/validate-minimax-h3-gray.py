@@ -64,6 +64,47 @@ def target_key(book_id: int, episode: int, shot_id: str | int) -> str:
     return f"{int(book_id)}:{int(episode)}:{int(shot_id)}"
 
 
+def coerce_h3_duration_seconds_from_storyboard(value: Any) -> dict[str, Any]:
+    try:
+        raw_duration_seconds = round(float(value))
+    except (TypeError, ValueError):
+        return {
+            "raw_duration_seconds": None,
+            "duration_seconds": 5,
+            "source": "default_fallback",
+            "source_label": "分镜未记录，使用默认 5s",
+        }
+    if raw_duration_seconds <= 0:
+        return {
+            "raw_duration_seconds": None,
+            "duration_seconds": 5,
+            "source": "default_fallback",
+            "source_label": "分镜未记录，使用默认 5s",
+        }
+    duration_seconds = min(max(raw_duration_seconds, 4), 15)
+    return {
+        "raw_duration_seconds": raw_duration_seconds,
+        "duration_seconds": duration_seconds,
+        "source": "storyboard",
+        "source_label": (
+            f"分镜 {raw_duration_seconds}s"
+            if duration_seconds == raw_duration_seconds
+            else f"分镜 {raw_duration_seconds}s，H3 按平台范围提交 {duration_seconds}s"
+        ),
+    }
+
+
+def resolve_h3_duration_seconds(args: argparse.Namespace, shot: StoryboardShot) -> dict[str, Any]:
+    if args.duration_seconds is not None:
+        return {
+            "raw_duration_seconds": args.duration_seconds,
+            "duration_seconds": args.duration_seconds,
+            "source": "cli_override",
+            "source_label": f"命令行指定 {args.duration_seconds}s",
+        }
+    return coerce_h3_duration_seconds_from_storyboard(getattr(shot, "duration", None))
+
+
 def parse_csv_ints(raw: str) -> list[int]:
     values: list[int] = []
     for token in str(raw or "").split(","):
@@ -288,6 +329,7 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
     export_payload = load_machine_prompt_export(client, args.book_id, args.episode, args.shot_id)
     fields = h3_fields(export_payload)
     prompt = str(fields.get("integrated_multimodal_description") or "").strip()
+    duration_info = resolve_h3_duration_seconds(args, shot)
     first_frame = find_first_frame(shot, args.first_frame_asset_id) if args.use_first_frame else None
     first_frame_url = ""
     if isinstance(first_frame, dict):
@@ -352,7 +394,8 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
             "target_model": "minimax-h3",
             "prompt_length": len(prompt),
             "prompt_preview": prompt[:800],
-            "duration_seconds": args.duration_seconds,
+            "duration_seconds": duration_info["duration_seconds"],
+            "duration_source": duration_info,
             "aspect_ratio": args.aspect_ratio,
             "use_first_frame": bool(args.use_first_frame),
             "first_frame_asset_id": str(first_frame.get("id") or "") if isinstance(first_frame, dict) else "",
@@ -405,7 +448,7 @@ def submit_real(client: TestClient, args: argparse.Namespace, report: dict[str, 
     log(f"Registered task {task_id}; submitting to MiniMax H3...")
     body: dict[str, Any] = {
         "confirmationToken": CONFIRMATION_TOKEN,
-        "durationSeconds": args.duration_seconds,
+        "durationSeconds": report["submission"]["duration_seconds"],
         "aspectRatio": args.aspect_ratio,
         "useFirstFrame": bool(args.use_first_frame),
         "notes": "MiniMax H3 gray validation: confirmed real provider submission.",
@@ -442,6 +485,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- 项目：{target.get('book_title')}",
         f"- 场景：{target.get('scene_name')}",
         f"- Prompt 长度：{submission.get('prompt_length')}",
+        f"- 时长：{submission.get('duration_seconds')}s（{(submission.get('duration_source') or {}).get('source_label') or '-'}）",
         f"- 任务模式：{submission.get('task_mode')}",
         f"- 首帧：{submission.get('first_frame_asset_id') or '无，文生视频'}",
         f"- 模型配置：{profile.get('id') or '-'} / {profile.get('provider') or '-'} / {profile.get('model_name') or '-'}",
@@ -532,7 +576,7 @@ def main() -> int:
     parser.add_argument("--episode", type=int, default=1)
     parser.add_argument("--shot-id", type=int, default=1)
     parser.add_argument("--model-profile-id", default="")
-    parser.add_argument("--duration-seconds", type=int, default=5)
+    parser.add_argument("--duration-seconds", type=int, default=None)
     parser.add_argument("--aspect-ratio", default="16:9")
     parser.add_argument("--first-frame-asset-id", default="")
     parser.add_argument("--no-first-frame", dest="use_first_frame", action="store_false")

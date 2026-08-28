@@ -9,7 +9,8 @@ describe('ProductWorkspaceMachinePromptExportPanel helpers', () => {
       baseUrl: 'https://metaso.cn/api/minimax',
       modelName: 'MiniMax-H3',
       resolution: '768P',
-      durationSeconds: 5,
+      durationSeconds: 7,
+      durationSourceLabel: '分镜 7s',
       aspectRatio: '16:9',
       aigcWatermark: false,
       taskMode: 'image_to_video',
@@ -21,7 +22,8 @@ describe('ProductWorkspaceMachinePromptExportPanel helpers', () => {
     expect(lines).toContain('平台：metaso.cn MiniMax H3 兼容 API')
     expect(lines).toContain('Base URL：https://metaso.cn/api/minimax')
     expect(lines).toContain('模型：MiniMax-H3')
-    expect(lines).toContain('规格：768P / 5s / 16:9')
+    expect(lines).toContain('规格：768P / 7s / 16:9')
+    expect(lines).toContain('时长来源：分镜 7s')
     expect(lines).toContain('模式：首帧图生视频（当前采纳首帧）')
     expect(lines).toContain('AIGC 水印：关闭')
     expect(lines).toContain('Prompt 长度：561 字')

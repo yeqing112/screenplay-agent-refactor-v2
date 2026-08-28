@@ -1294,6 +1294,27 @@ function findLatestAdoptedAsset(items: MediaAssetOutput[] | undefined) {
   return items.find((item) => item.adopted) ?? items[items.length - 1] ?? null
 }
 
+function coerceH3DurationSecondsFromStoryboard(value: unknown) {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return {
+      rawDurationSeconds: null,
+      durationSeconds: 5,
+      sourceLabel: '分镜未记录，使用默认 5s',
+    }
+  }
+  const rounded = Math.round(parsed)
+  const durationSeconds = Math.min(Math.max(rounded, 4), 15)
+  return {
+    rawDurationSeconds: rounded,
+    durationSeconds,
+    sourceLabel:
+      durationSeconds === rounded
+        ? `分镜 ${rounded}s`
+        : `分镜 ${rounded}s，H3 按平台范围提交 ${durationSeconds}s`,
+  }
+}
+
 function buildStoryboardMissingRecoveryState(
   recoveryFocus: Props['recoveryFocus'],
   shotsByEpisode: Record<number, StoryboardShotOutput[]>,
@@ -1603,6 +1624,7 @@ export default function ProductWorkspaceStoryboardSection({
   const minimaxH3Export = machinePromptExport?.model_exports?.['minimax-h3'] ?? null
   const minimaxH3Fields = minimaxH3Export?.fields ?? {}
   const genericZhVideoExport = machinePromptExport?.model_exports?.['generic-zh-video'] ?? null
+  const h3Duration = coerceH3DurationSecondsFromStoryboard(selectedShot?.duration)
   const h3ProviderSubmitSummary = useMemo<H3ProviderSubmitSummary | null>(() => {
     if (!machinePromptExport) return null
     const promptText = String(minimaxH3Fields.integrated_multimodal_description || '').trim()
@@ -1611,7 +1633,8 @@ export default function ProductWorkspaceStoryboardSection({
       baseUrl: 'https://metaso.cn/api/minimax',
       modelName: 'MiniMax-H3',
       resolution: '768P',
-      durationSeconds: 5,
+      durationSeconds: h3Duration.durationSeconds,
+      durationSourceLabel: h3Duration.sourceLabel,
       aspectRatio: '16:9',
       aigcWatermark: false,
       taskMode: adoptedImageUrl ? 'image_to_video' : 'text_to_video',
@@ -1619,7 +1642,7 @@ export default function ProductWorkspaceStoryboardSection({
       firstFrameUrl: adoptedImageUrl,
       promptLength: promptText.length,
     }
-  }, [adoptedImage, adoptedImageUrl, machinePromptExport, minimaxH3Fields.integrated_multimodal_description])
+  }, [adoptedImage, adoptedImageUrl, h3Duration.durationSeconds, h3Duration.sourceLabel, machinePromptExport, minimaxH3Fields.integrated_multimodal_description])
   const minimaxH3CopyText = useMemo(
     () => buildMachinePromptWebuiCopyText(machinePromptExport, 'minimax-h3'),
     [machinePromptExport],
@@ -2099,7 +2122,7 @@ export default function ProductWorkspaceStoryboardSection({
         body: JSON.stringify({
           confirmationToken: 'CONFIRM_MINIMAX_H3_SUBMIT',
           aspectRatio: '16:9',
-          durationSeconds: 5,
+          durationSeconds: h3ProviderSubmitSummary?.durationSeconds ?? h3Duration.durationSeconds,
           useFirstFrame: true,
           notes: '由正式工作台二次确认后真实提交 MiniMax H3。',
         }),

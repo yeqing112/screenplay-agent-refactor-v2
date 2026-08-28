@@ -240,7 +240,8 @@ async function runFlow() {
     await page.getByText("已生成机器提示词导出预览").waitFor({ state: "visible", timeout: 20000 });
     await page.getByText("真实提交 H3 前摘要").waitFor({ state: "visible", timeout: 10000 });
     await page.getByText("Base URL：https://metaso.cn/api/minimax").waitFor({ state: "visible", timeout: 10000 });
-    await page.getByText("规格：768P / 5s / 16:9").waitFor({ state: "visible", timeout: 10000 });
+    await page.getByText(/规格：768P \/ \d+s \/ 16:9/).waitFor({ state: "visible", timeout: 10000 });
+    await page.getByText(/时长来源：分镜 \d+s/).waitFor({ state: "visible", timeout: 10000 });
     await page.getByText("更多机器语言与单字段复制").click();
     await page.getByText("MiniMax H3 / WebUI 导出").waitFor({ state: "visible", timeout: 10000 });
 
