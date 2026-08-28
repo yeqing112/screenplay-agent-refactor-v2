@@ -53,6 +53,37 @@ class PublicAssetStorageTests(unittest.TestCase):
         self.assertEqual(result.public_url, "https://cdn.example.com/frame.png")
         self.assertTrue(result.source_accessible)
 
+    def test_svg_source_is_rasterized_to_png_before_upload(self):
+        self.client.put(
+            "/api/public-asset-storage/config",
+            json={
+                "provider": "qiniu",
+                "localBaseUrl": "http://127.0.0.1:18765",
+                "qiniuAccessKey": "ak-test",
+                "qiniuSecretKey": "sk-test",
+                "qiniuBucket": "ai-ku01",
+                "qiniuRegion": "z2",
+                "qiniuPublicBaseUrl": "https://assets.example.com",
+                "qiniuBucketPrivate": True,
+                "qiniuKeyPrefix": "screenplay-agent",
+            },
+        )
+        svg = (
+            "data:image/svg+xml,"
+            "%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22640%22%20height%3D%22360%22%3E"
+            "%3Crect%20width%3D%22640%22%20height%3D%22360%22%20fill%3D%22%23000%22/%3E%3C/svg%3E"
+        )
+        with patch("core.public_asset_storage.check_public_url_accessible", return_value=(True, "")), patch(
+            "core.public_asset_storage._upload_bytes_to_qiniu",
+            return_value=("https://assets.example.com/screenplay-agent/test.png", "screenplay-agent/test.png", True),
+        ) as upload:
+            result = ensure_provider_accessible_url(svg, key_hint="svg-first-frame")
+
+        self.assertTrue(result.ok)
+        _, kwargs = upload.call_args
+        self.assertEqual(kwargs["content_type"], "image/png")
+        self.assertTrue(upload.call_args.args[0].startswith(b"\x89PNG\r\n\x1a\n"))
+
     def test_storage_config_api_masks_secrets_and_preserves_existing_secret_on_blank_update(self):
         save_response = self.client.put(
             "/api/public-asset-storage/config",

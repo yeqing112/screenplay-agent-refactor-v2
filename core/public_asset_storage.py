@@ -190,6 +190,7 @@ def ensure_provider_accessible_url(
 
     try:
         data, content_type = _load_source_bytes(normalized, local_base_url=local_base_url or storage_config.local_base_url)
+        data, content_type = _normalize_provider_image_bytes(data, content_type)
         public_url, object_key, signed = _upload_bytes_to_qiniu(
             data,
             content_type=content_type,
@@ -252,6 +253,27 @@ def _load_data_uri(data_uri: str) -> tuple[bytes, str]:
     from urllib.parse import unquote_to_bytes
 
     return unquote_to_bytes(payload), content_type
+
+
+def _normalize_provider_image_bytes(data: bytes, content_type: str) -> tuple[bytes, str]:
+    """Normalize generated placeholder images to formats accepted by video providers.
+
+    MiniMax H3 accepts raster image formats such as PNG/JPEG/WebP, but not SVG.
+    The local workbench often uses SVG placeholders for repaired/legacy first
+    frames, so the public bridge must rasterize SVG before uploading it.
+    """
+
+    normalized_type = str(content_type or "application/octet-stream").split(";")[0].strip().lower()
+    if normalized_type != "image/svg+xml":
+        return data, content_type or "application/octet-stream"
+    try:
+        import cairosvg
+    except ModuleNotFoundError as exc:  # pragma: no cover - dependency guard
+        raise RuntimeError("cairosvg is required to publish SVG first frames as PNG for video providers") from exc
+    png_bytes = cairosvg.svg2png(bytestring=data)
+    if not png_bytes:
+        raise RuntimeError("svg_to_png_failed")
+    return png_bytes, "image/png"
 
 
 def _download_bytes(url: str) -> tuple[bytes, str]:

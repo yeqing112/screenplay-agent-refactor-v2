@@ -18,12 +18,14 @@
   - 识别已在目标对象存储、本地/内联待发布、外部可读、外部不可读、未知来源等状态。
   - 当前只生成迁移计划，不会自动搬迁云对象或改写数据库引用。
 - 自动迁移执行被明确列为下一阶段受保护能力：必须先 dry-run、生成确认令牌，再允许写入对象存储和改写资产引用。
+- 真实 H3 灰度时发现 MiniMax H3 不接受 SVG 首帧 URL；对象存储中转层已补 SVG -> PNG 栅格化，保证本地 SVG 占位/历史首帧发布给视频 provider 时使用 PNG。
 
 ### 验证结果
 
 - `python -m py_compile core/public_asset_storage.py api/server.py scripts/validate-minimax-h3-gray.py`：通过。
 - `python -m unittest tests.test_public_asset_storage tests.test_storyboard_prompt_compile tests.test_generation_adapters`：通过。
 - `npm --prefix web run build`：通过。
+- `python scripts/validate-minimax-h3-gray.py --book-id 3 --episode 1 --shot-id 3 --allow-real --publish-first-frame`：真实灰度通过；H3 provider 返回 `succeeded`，并回写视频资产。该样本使用的是占位首帧转 PNG，证明技术链路打通；正式画面质量灰度仍需使用 GPT Image 2 生成的真实首帧。
 
 ---
 
