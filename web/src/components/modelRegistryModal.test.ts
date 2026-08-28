@@ -84,7 +84,7 @@ describe('ModelRegistryModal helpers', () => {
     expect(parsed.supports_first_frame).toBe(true)
     expect(parsed.supports_last_frame).toBe(true)
     expect(parsed.supports_reference_images).toBe(false)
-    expect(parsed.resolution).toBe('2K')
+    expect(parsed.resolution).toBe('768P')
     expect(parsed.duration).toBe(5)
     expect(parsed.ratio).toBe('16:9')
     expect(parsed.poll_timeout_seconds).toBe(900)

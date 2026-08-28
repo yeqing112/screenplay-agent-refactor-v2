@@ -261,6 +261,46 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(submit_payload["resolution"], "2K")
         self.assertEqual(submit_payload["ratio"], "9:16")
 
+    async def test_minimax_h3_defaults_to_768p_when_resolution_is_not_configured(self):
+        submit_response = Mock()
+        submit_response.raise_for_status.return_value = None
+        submit_response.json.return_value = {"task_id": "task-h3-default-resolution"}
+
+        status_response = Mock()
+        status_response.raise_for_status.return_value = None
+        status_response.json.return_value = {
+            "status": "succeeded",
+            "task": {"content": {"url": "https://cdn.example.com/h3-default-resolution.mp4"}},
+        }
+
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.post.return_value = submit_response
+        mock_client.get.return_value = status_response
+
+        with patch("api.generation_adapters.httpx.AsyncClient", return_value=mock_client):
+            result = await generate_video_asset(
+                {
+                    "provider": "minimax-h3-async",
+                    "base_url": "https://metaso.cn/api/minimax",
+                    "model_name": "MiniMax-H3",
+                    "api_key": "mk-secret-test-key",
+                    "default_params": {
+                        "duration": 5,
+                        "ratio": "16:9",
+                        "poll_interval_seconds": 1,
+                        "poll_timeout_seconds": 5,
+                    },
+                },
+                prompt="H3 默认 768P 视频提示词",
+                duration_seconds=5,
+                aspect_ratio="16:9",
+            )
+
+        submit_payload = mock_client.post.await_args.kwargs["json"]
+        self.assertEqual(result["externalTaskId"], "task-h3-default-resolution")
+        self.assertEqual(submit_payload["resolution"], "768P")
+
     async def test_minimax_h3_first_frame_payload_omits_ratio(self):
         submit_response = Mock()
         submit_response.raise_for_status.return_value = None

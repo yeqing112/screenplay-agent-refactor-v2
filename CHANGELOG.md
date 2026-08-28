@@ -1,5 +1,18 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-28 — MiniMax H3 默认分辨率收口为 768P
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：metaso.cn MiniMax H3 兼容平台支持 `768P / 2K`，真实灰度阶段应优先采用低成本、低风险默认值；用户仍可在模型配置中显式切换为 `2K`。
+
+### 变更概览
+
+- MiniMax H3 adapter 在未配置 `default_params.resolution` 时，默认使用 `768P`。
+- 模型管理中 `minimax-h3-async` 的推荐默认参数从 `resolution=2K` 改为 `resolution=768P`。
+- 保留 `2K` 合法值校验，显式配置 `2K` 时仍会按 `2K` 提交。
+
+---
+
 ## 2026-08-28 — MiniMax H3 机器提示词导演口令清洗
 
 > 对应分支：`codex/unify-formal-workspace`
@@ -120,7 +133,7 @@
 
 - **模型管理 UI 同步**
   - 视频供应商列表新增 `minimax-h3-async`。
-  - 默认参数建议包含 `resolution=2K`、`duration=5`、`ratio=16:9`、轮询间隔和超时。
+  - 默认参数建议包含 `resolution=768P`、`duration=5`、`ratio=16:9`、轮询间隔和超时。
   - 页面文案改为“MiniMax H3 可配置，但视频默认不强制切换；真实生成需显式发起”。
 
 ### 验证结果

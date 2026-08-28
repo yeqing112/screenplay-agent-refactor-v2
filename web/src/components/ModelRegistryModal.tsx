@@ -334,7 +334,7 @@ export function suggestedDefaultParamsText(capability: ModelCapability, provider
     return `{\n  "task_modes": ["image_to_video", "text_to_video"],\n  "supports_reference_images": true,\n  "max_reference_images": 4,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": true,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 600\n}`
   }
   if (isMiniMaxH3AsyncProvider(provider)) {
-    return `{\n  "task_modes": ["text_to_video", "image_to_video"],\n  "supports_reference_images": false,\n  "max_reference_images": 0,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": false,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "resolution": "2K",\n  "duration": 5,\n  "ratio": "16:9",\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 900\n}`
+    return `{\n  "task_modes": ["text_to_video", "image_to_video"],\n  "supports_reference_images": false,\n  "max_reference_images": 0,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": false,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "resolution": "768P",\n  "duration": 5,\n  "ratio": "16:9",\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 900\n}`
   }
   return `{\n  "duration_seconds": 5\n}`
 }

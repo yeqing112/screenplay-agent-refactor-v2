@@ -283,7 +283,7 @@ def _build_minimax_h3_video_payload(
         raise ModelProfileError("MiniMax H3 prompt 超过 7000 字符限制。")
 
     params = dict(profile.get("default_params") or {})
-    resolution = str(params.get("resolution") or "2K").strip() or "2K"
+    resolution = str(params.get("resolution") or "768P").strip() or "768P"
     if resolution not in {"768P", "2K"}:
         raise ModelProfileError("MiniMax H3 resolution 只能是 768P 或 2K。")
 
