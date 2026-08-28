@@ -20,6 +20,75 @@ from urllib.parse import quote, urljoin, urlparse
 import httpx
 
 import config
+from models import get_kv
+
+
+PUBLIC_ASSET_STORAGE_KV_KEY = "public_asset_storage_config"
+
+
+def _json_loads_dict(raw: str) -> dict[str, Any]:
+    import json
+
+    try:
+        parsed = json.loads(raw or "{}")
+    except json.JSONDecodeError:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def _coerce_bool(value: Any, default: bool = False) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _coerce_int(value: Any, default: int) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+@dataclass
+class PublicAssetStorageConfig:
+    provider: str
+    local_base_url: str
+    qiniu_access_key: str
+    qiniu_secret_key: str
+    qiniu_bucket: str
+    qiniu_region: str
+    qiniu_public_base_url: str
+    qiniu_bucket_private: bool
+    qiniu_key_prefix: str
+    qiniu_upload_token_expires_seconds: int
+    qiniu_public_url_ttl_seconds: int
+
+    @property
+    def enabled(self) -> bool:
+        return self.provider == "qiniu" and bool(
+            self.qiniu_access_key
+            and self.qiniu_secret_key
+            and self.qiniu_bucket
+            and self.qiniu_public_base_url
+        )
+
+    def public_dict(self) -> dict[str, Any]:
+        return {
+            "provider": self.provider,
+            "enabled": self.enabled,
+            "local_base_url": self.local_base_url,
+            "qiniu_bucket": self.qiniu_bucket,
+            "qiniu_region": self.qiniu_region,
+            "qiniu_public_base_url": self.qiniu_public_base_url,
+            "qiniu_bucket_private": self.qiniu_bucket_private,
+            "qiniu_key_prefix": self.qiniu_key_prefix,
+            "qiniu_upload_token_expires_seconds": self.qiniu_upload_token_expires_seconds,
+            "qiniu_public_url_ttl_seconds": self.qiniu_public_url_ttl_seconds,
+            "qiniu_access_key_configured": bool(self.qiniu_access_key),
+            "qiniu_secret_key_configured": bool(self.qiniu_secret_key),
+        }
 
 
 @dataclass
@@ -53,11 +122,32 @@ class PublicAssetResult:
 
 
 def public_asset_storage_enabled() -> bool:
-    return config.PUBLIC_ASSET_STORAGE_PROVIDER == "qiniu" and bool(
-        config.QINIU_ACCESS_KEY
-        and config.QINIU_SECRET_KEY
-        and config.QINIU_BUCKET
-        and config.QINIU_PUBLIC_BASE_URL
+    return load_public_asset_storage_config().enabled
+
+
+def load_public_asset_storage_config() -> PublicAssetStorageConfig:
+    try:
+        saved = _json_loads_dict(get_kv(PUBLIC_ASSET_STORAGE_KV_KEY, "{}"))
+    except Exception:
+        saved = {}
+    return PublicAssetStorageConfig(
+        provider=str(saved.get("provider") or config.PUBLIC_ASSET_STORAGE_PROVIDER or "").strip().lower(),
+        local_base_url=str(saved.get("local_base_url") or config.PUBLIC_ASSET_LOCAL_BASE_URL or "").strip(),
+        qiniu_access_key=str(saved.get("qiniu_access_key") or config.QINIU_ACCESS_KEY or "").strip(),
+        qiniu_secret_key=str(saved.get("qiniu_secret_key") or config.QINIU_SECRET_KEY or "").strip(),
+        qiniu_bucket=str(saved.get("qiniu_bucket") or config.QINIU_BUCKET or "").strip(),
+        qiniu_region=str(saved.get("qiniu_region") or config.QINIU_REGION or "z2").strip(),
+        qiniu_public_base_url=str(saved.get("qiniu_public_base_url") or config.QINIU_PUBLIC_BASE_URL or "").strip().rstrip("/"),
+        qiniu_bucket_private=_coerce_bool(saved.get("qiniu_bucket_private"), config.QINIU_BUCKET_PRIVATE),
+        qiniu_key_prefix=str(saved.get("qiniu_key_prefix") or config.QINIU_KEY_PREFIX or "screenplay-agent").strip().strip("/"),
+        qiniu_upload_token_expires_seconds=_coerce_int(
+            saved.get("qiniu_upload_token_expires_seconds"),
+            config.QINIU_UPLOAD_TOKEN_EXPIRES_SECONDS,
+        ),
+        qiniu_public_url_ttl_seconds=_coerce_int(
+            saved.get("qiniu_public_url_ttl_seconds"),
+            config.QINIU_PUBLIC_URL_TTL_SECONDS,
+        ),
     )
 
 
@@ -94,12 +184,18 @@ def ensure_provider_accessible_url(
         if not public_asset_storage_enabled():
             return PublicAssetResult(ok=False, source_url=normalized, source_accessible=False, error=error)
 
-    if not public_asset_storage_enabled():
+    storage_config = load_public_asset_storage_config()
+    if not storage_config.enabled:
         return PublicAssetResult(ok=False, source_url=normalized, error="public_asset_storage_not_configured")
 
     try:
-        data, content_type = _load_source_bytes(normalized, local_base_url=local_base_url)
-        public_url, object_key, signed = _upload_bytes_to_qiniu(data, content_type=content_type, key_hint=key_hint)
+        data, content_type = _load_source_bytes(normalized, local_base_url=local_base_url or storage_config.local_base_url)
+        public_url, object_key, signed = _upload_bytes_to_qiniu(
+            data,
+            content_type=content_type,
+            key_hint=key_hint,
+            storage_config=storage_config,
+        )
         accessible, error = check_public_url_accessible(public_url)
         return PublicAssetResult(
             ok=accessible,
@@ -166,7 +262,13 @@ def _download_bytes(url: str) -> tuple[bytes, str]:
     return response.content, content_type or "application/octet-stream"
 
 
-def _upload_bytes_to_qiniu(data: bytes, *, content_type: str, key_hint: str) -> tuple[str, str, bool]:
+def _upload_bytes_to_qiniu(
+    data: bytes,
+    *,
+    content_type: str,
+    key_hint: str,
+    storage_config: PublicAssetStorageConfig,
+) -> tuple[str, str, bool]:
     try:
         from qiniu import Auth, put_data
     except ModuleNotFoundError as exc:  # pragma: no cover - dependency guard
@@ -176,18 +278,18 @@ def _upload_bytes_to_qiniu(data: bytes, *, content_type: str, key_hint: str) -> 
     ext = mimetypes.guess_extension(content_type) or ".bin"
     safe_hint = re.sub(r"[^A-Za-z0-9._/-]+", "-", str(key_hint or "asset")).strip("-/") or "asset"
     date_prefix = datetime.now(UTC).strftime("%Y/%m/%d")
-    prefix = config.QINIU_KEY_PREFIX.strip("/")
+    prefix = storage_config.qiniu_key_prefix.strip("/")
     object_key = f"{prefix}/{date_prefix}/{safe_hint}-{digest}{ext}" if prefix else f"{date_prefix}/{safe_hint}-{digest}{ext}"
 
-    auth = Auth(config.QINIU_ACCESS_KEY, config.QINIU_SECRET_KEY)
-    token = auth.upload_token(config.QINIU_BUCKET, object_key, config.QINIU_UPLOAD_TOKEN_EXPIRES_SECONDS)
+    auth = Auth(storage_config.qiniu_access_key, storage_config.qiniu_secret_key)
+    token = auth.upload_token(storage_config.qiniu_bucket, object_key, storage_config.qiniu_upload_token_expires_seconds)
     ret, info = put_data(token, object_key, data, mime_type=content_type or "application/octet-stream")
     if getattr(info, "status_code", 0) not in {200, 614}:
         raise RuntimeError(f"qiniu_upload_failed:{getattr(info, 'status_code', '')}:{getattr(info, 'text_body', '')}")
     if not isinstance(ret, dict) or str(ret.get("key") or object_key) != object_key:
         raise RuntimeError("qiniu_upload_returned_unexpected_key")
 
-    unsigned_url = f"{config.QINIU_PUBLIC_BASE_URL}/{quote(object_key)}"
-    if config.QINIU_BUCKET_PRIVATE:
-        return auth.private_download_url(unsigned_url, expires=config.QINIU_PUBLIC_URL_TTL_SECONDS), object_key, True
+    unsigned_url = f"{storage_config.qiniu_public_base_url}/{quote(object_key)}"
+    if storage_config.qiniu_bucket_private:
+        return auth.private_download_url(unsigned_url, expires=storage_config.qiniu_public_url_ttl_seconds), object_key, True
     return unsigned_url, object_key, False

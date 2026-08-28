@@ -1,5 +1,32 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-28 — 对象存储后台配置与迁移规划
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：H3 图生视频需要公网可拉取首帧；仅靠 `.env` 配置不利于后台添加、替换和后续迁移对象存储。
+
+### 变更概览
+
+- 新增对象存储后台配置 API：
+  - `GET /api/public-asset-storage/config`
+  - `PUT /api/public-asset-storage/config`
+- 配置第一版支持七牛 Kodo，字段包括 Provider、本地后端地址、Bucket、Region、公网访问域名、对象前缀、私有 Bucket、AccessKey / SecretKey。
+- AccessKey / SecretKey 支持后台保存状态检查，但接口响应不会回显密钥；前端留空保存会保留已保存密钥。
+- 模型管理页新增“对象存储 / 首帧公网中转”配置卡，可在正式工作台内完成对象存储添加或更换配置。
+- 新增只读迁移规划 API：`GET /api/public-asset-storage/migration-plan`。
+  - 扫描视觉参考资产与镜头资产链接。
+  - 识别已在目标对象存储、本地/内联待发布、外部可读、外部不可读、未知来源等状态。
+  - 当前只生成迁移计划，不会自动搬迁云对象或改写数据库引用。
+- 自动迁移执行被明确列为下一阶段受保护能力：必须先 dry-run、生成确认令牌，再允许写入对象存储和改写资产引用。
+
+### 验证结果
+
+- `python -m py_compile core/public_asset_storage.py api/server.py scripts/validate-minimax-h3-gray.py`：通过。
+- `python -m unittest tests.test_public_asset_storage tests.test_storyboard_prompt_compile tests.test_generation_adapters`：通过。
+- `npm --prefix web run build`：通过。
+
+---
+
 ## 2026-08-28 — 七牛公网资产中转接入第一版
 
 > 对应分支：`codex/unify-formal-workspace`

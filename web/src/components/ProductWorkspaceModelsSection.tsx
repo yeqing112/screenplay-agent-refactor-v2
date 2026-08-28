@@ -13,6 +13,13 @@ import {
   type ModelRegistryPayload,
 } from '../services/modelRegistry'
 import {
+  fetchPublicAssetStorageConfig,
+  fetchPublicAssetStorageMigrationPlan,
+  savePublicAssetStorageConfig,
+  type PublicAssetStorageConfig,
+  type PublicAssetStorageMigrationPlan,
+} from '../services/publicAssetStorage'
+import {
   buildCapabilityHealthLine,
   buildCapabilitySummary,
   buildReferenceModeLabel,
@@ -70,6 +77,23 @@ export default function ProductWorkspaceModelsSection() {
   const [registryError, setRegistryError] = useState<string | null>(null)
   const [actionState, setActionState] = useState<ActionState>('idle')
   const [actionMessage, setActionMessage] = useState('')
+  const [storageConfig, setStorageConfig] = useState<PublicAssetStorageConfig | null>(null)
+  const [storageDraft, setStorageDraft] = useState({
+    provider: 'qiniu',
+    local_base_url: 'http://127.0.0.1:18765',
+    qiniu_access_key: '',
+    qiniu_secret_key: '',
+    qiniu_bucket: '',
+    qiniu_region: 'z2',
+    qiniu_public_base_url: '',
+    qiniu_bucket_private: true,
+    qiniu_key_prefix: 'screenplay-agent',
+    qiniu_upload_token_expires_seconds: 3600,
+    qiniu_public_url_ttl_seconds: 86400,
+  })
+  const [storageState, setStorageState] = useState<ActionState | 'loading'>('loading')
+  const [storageMessage, setStorageMessage] = useState('')
+  const [migrationPlan, setMigrationPlan] = useState<PublicAssetStorageMigrationPlan | null>(null)
 
   const refreshDefaults = useCallback(async () => {
     setDefaultsState('loading')
@@ -85,6 +109,65 @@ export default function ProductWorkspaceModelsSection() {
   useEffect(() => {
     void refreshDefaults()
   }, [refreshDefaults])
+
+  const refreshStorageConfig = useCallback(async () => {
+    setStorageState('loading')
+    try {
+      const payload = await fetchPublicAssetStorageConfig()
+      setStorageConfig(payload)
+      setStorageDraft((current) => ({
+        ...current,
+        provider: payload.provider || 'qiniu',
+        local_base_url: payload.local_base_url || 'http://127.0.0.1:18765',
+        qiniu_access_key: '',
+        qiniu_secret_key: '',
+        qiniu_bucket: payload.qiniu_bucket || '',
+        qiniu_region: payload.qiniu_region || 'z2',
+        qiniu_public_base_url: payload.qiniu_public_base_url || '',
+        qiniu_bucket_private: payload.qiniu_bucket_private,
+        qiniu_key_prefix: payload.qiniu_key_prefix || 'screenplay-agent',
+        qiniu_upload_token_expires_seconds: payload.qiniu_upload_token_expires_seconds || 3600,
+        qiniu_public_url_ttl_seconds: payload.qiniu_public_url_ttl_seconds || 86400,
+      }))
+      setStorageState('idle')
+    } catch (error) {
+      setStorageState('error')
+      setStorageMessage(error instanceof Error ? error.message : '对象存储配置加载失败')
+    }
+  }, [])
+
+  useEffect(() => {
+    void refreshStorageConfig()
+  }, [refreshStorageConfig])
+
+  const saveStorageConfig = useCallback(async () => {
+    setStorageState('saving')
+    setStorageMessage('')
+    try {
+      const saved = await savePublicAssetStorageConfig(storageDraft)
+      setStorageConfig(saved)
+      setStorageDraft((current) => ({ ...current, qiniu_access_key: '', qiniu_secret_key: '' }))
+      setStorageState('success')
+      setStorageMessage(saved.enabled ? '对象存储配置已保存，H3 首帧公网中转可用。' : '对象存储配置已保存，但密钥、Bucket 或访问域名仍未完整。')
+    } catch (error) {
+      setStorageState('error')
+      setStorageMessage(error instanceof Error ? error.message : '对象存储配置保存失败')
+    }
+  }, [storageDraft])
+
+  const loadMigrationPlan = useCallback(async () => {
+    setStorageState('saving')
+    setStorageMessage('正在生成迁移计划；默认先快扫来源类型，不会写入或改库。')
+    try {
+      const plan = await fetchPublicAssetStorageMigrationPlan(200)
+      setMigrationPlan(plan)
+      setStorageState('success')
+      setStorageMessage('迁移计划已生成；当前只做规划，不会搬迁或改写资产。')
+    } catch (error) {
+      setStorageState('error')
+      setStorageMessage(error instanceof Error ? error.message : '迁移计划生成失败')
+    }
+  }, [])
 
   const openRegistry = useCallback(() => {
     setRegistryOpen(true)
@@ -442,6 +525,140 @@ export default function ProductWorkspaceModelsSection() {
 
         <div className="min-w-0 space-y-6">
           <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div className="text-sm font-medium text-white">对象存储 / 首帧公网中转</div>
+                <div className="mt-2 text-sm leading-6 text-slate-400">
+                  本地工作台生成的首帧需要先进入公网对象存储，MiniMax H3 才能稳定拉取。Secret 不会回显；留空会保留后台已保存密钥。
+                </div>
+              </div>
+              <span
+                className={`rounded-full border px-2 py-0.5 text-[11px] ${
+                  storageConfig?.enabled
+                    ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+                    : 'border-amber-500/30 bg-amber-500/10 text-amber-200'
+                }`}
+              >
+                {storageConfig?.enabled ? '中转已配置' : storageState === 'loading' ? '读取中' : '待配置'}
+              </span>
+            </div>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              <Field label="Provider">
+                <select
+                  value={storageDraft.provider}
+                  onChange={(event) => setStorageDraft((current) => ({ ...current, provider: event.target.value }))}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                >
+                  <option value="qiniu">七牛 Kodo</option>
+                </select>
+              </Field>
+              <Field label="本地后端地址">
+                <input
+                  value={storageDraft.local_base_url}
+                  onChange={(event) => setStorageDraft((current) => ({ ...current, local_base_url: event.target.value }))}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </Field>
+              <Field label="Bucket">
+                <input
+                  value={storageDraft.qiniu_bucket}
+                  onChange={(event) => setStorageDraft((current) => ({ ...current, qiniu_bucket: event.target.value }))}
+                  placeholder="例如：ai-ku01"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </Field>
+              <Field label="Region">
+                <input
+                  value={storageDraft.qiniu_region}
+                  onChange={(event) => setStorageDraft((current) => ({ ...current, qiniu_region: event.target.value }))}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </Field>
+              <Field label="公网访问域名">
+                <input
+                  value={storageDraft.qiniu_public_base_url}
+                  onChange={(event) => setStorageDraft((current) => ({ ...current, qiniu_public_base_url: event.target.value }))}
+                  placeholder="例如：https://assets.example.com"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </Field>
+              <Field label="对象前缀">
+                <input
+                  value={storageDraft.qiniu_key_prefix}
+                  onChange={(event) => setStorageDraft((current) => ({ ...current, qiniu_key_prefix: event.target.value }))}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </Field>
+              <Field label={`AccessKey${storageConfig?.qiniu_access_key_configured ? '（已保存，留空不改）' : ''}`}>
+                <input
+                  value={storageDraft.qiniu_access_key}
+                  onChange={(event) => setStorageDraft((current) => ({ ...current, qiniu_access_key: event.target.value }))}
+                  type="password"
+                  autoComplete="off"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </Field>
+              <Field label={`SecretKey${storageConfig?.qiniu_secret_key_configured ? '（已保存，留空不改）' : ''}`}>
+                <input
+                  value={storageDraft.qiniu_secret_key}
+                  onChange={(event) => setStorageDraft((current) => ({ ...current, qiniu_secret_key: event.target.value }))}
+                  type="password"
+                  autoComplete="off"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </Field>
+            </div>
+
+            <label className="mt-3 flex items-center gap-2 text-xs text-slate-300">
+              <input
+                type="checkbox"
+                checked={storageDraft.qiniu_bucket_private}
+                onChange={(event) => setStorageDraft((current) => ({ ...current, qiniu_bucket_private: event.target.checked }))}
+              />
+              私有 Bucket，提交给 H3 时使用限时签名 URL
+            </label>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <Metric title="AccessKey" value={storageConfig?.qiniu_access_key_configured ? '已保存' : '未保存'} />
+              <Metric title="SecretKey" value={storageConfig?.qiniu_secret_key_configured ? '已保存' : '未保存'} />
+              <Metric title="当前限制" value={storageDraft.qiniu_public_base_url.includes('clouddn.com') ? '七牛测试域名：不支持 HTTPS / 会回收' : '自定义域名'} />
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-3">
+              <ActionButton disabled={storageState === 'saving'} tone="emerald" onClick={() => void saveStorageConfig()}>
+                {storageState === 'saving' ? '处理中...' : '保存对象存储配置'}
+              </ActionButton>
+              <ActionButton disabled={storageState === 'saving'} tone="amber" onClick={() => void loadMigrationPlan()}>
+                生成迁移计划
+              </ActionButton>
+              <ActionButton disabled={storageState === 'saving'} tone="slate" onClick={() => void refreshStorageConfig()}>
+                刷新配置
+              </ActionButton>
+            </div>
+
+            {storageMessage ? (
+              <div className={`mt-3 text-xs leading-6 ${storageState === 'error' ? 'text-rose-300' : 'text-slate-400'}`}>
+                {storageMessage}
+              </div>
+            ) : null}
+
+            {migrationPlan ? (
+              <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/70 p-3 text-xs leading-6 text-slate-300">
+                <div className="font-medium text-white">迁移规划摘要</div>
+                <div className="mt-2 grid gap-2 md:grid-cols-2">
+                  <div>扫描资产：{migrationPlan.summary.total_scanned}</div>
+                  <div>建议迁移：{migrationPlan.summary.requires_migration}</div>
+                  <div>本地/内联待发布：{migrationPlan.summary.needs_publish}</div>
+                  <div>外部待深度检查：{migrationPlan.summary.external_unchecked}</div>
+                  <div>外部不可读：{migrationPlan.summary.external_unreachable}</div>
+                </div>
+                <div className="mt-2 text-slate-500">{migrationPlan.migration_apply_note}</div>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
             <div className="text-sm font-medium text-white">能力矩阵</div>
             <div className="mt-3 text-sm leading-6 text-slate-400">
               这里强调“默认生产链路”能不能真正支撑当前项目，而不是只看是否存在某个模型配置。
@@ -561,6 +778,15 @@ function Pill({ children }: { children: ReactNode }) {
   return <span className="rounded-full border border-slate-700 px-2 py-0.5 text-slate-300">{children}</span>
 }
 
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label className="block">
+      <div className="mb-1 text-xs text-slate-500">{label}</div>
+      {children}
+    </label>
+  )
+}
+
 function ActionButton({
   children,
   disabled,
@@ -569,7 +795,7 @@ function ActionButton({
 }: {
   children: ReactNode
   disabled?: boolean
-  tone: 'emerald' | 'sky' | 'amber'
+  tone: 'emerald' | 'sky' | 'amber' | 'slate'
   onClick: () => void
 }) {
   const toneClass =
@@ -577,7 +803,9 @@ function ActionButton({
       ? 'border-emerald-500/50 text-emerald-200 hover:border-emerald-400'
       : tone === 'sky'
         ? 'border-sky-500/50 text-sky-200 hover:border-sky-400'
-        : 'border-amber-500/50 text-amber-200 hover:border-amber-400'
+        : tone === 'amber'
+          ? 'border-amber-500/50 text-amber-200 hover:border-amber-400'
+          : 'border-slate-600 text-slate-300 hover:border-slate-400'
 
   return (
     <button

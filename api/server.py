@@ -28,7 +28,13 @@ from api.model_registry import save_registry, serialize_registry_payload, test_p
 from core import safe_json_loads
 import core.llm as llm_client
 from core.model_adapter import sanitize_machine_prompt_text
-from core.public_asset_storage import ensure_provider_accessible_url, public_asset_storage_enabled
+from core.public_asset_storage import (
+    PUBLIC_ASSET_STORAGE_KV_KEY,
+    check_public_url_accessible,
+    ensure_provider_accessible_url,
+    load_public_asset_storage_config,
+    public_asset_storage_enabled,
+)
 from core.prompts import load_prompt
 from core.production_skill import (
     build_production_skill_prompt_block,
@@ -430,6 +436,22 @@ class StoryboardMachinePromptProviderSubmitRequest(BaseModel):
     notes: str = ""
 
 
+class PublicAssetStorageConfigRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    provider: str = "qiniu"
+    local_base_url: str = Field(default="", validation_alias=AliasChoices("local_base_url", "localBaseUrl"))
+    qiniu_access_key: Optional[str] = Field(default=None, validation_alias=AliasChoices("qiniu_access_key", "qiniuAccessKey"))
+    qiniu_secret_key: Optional[str] = Field(default=None, validation_alias=AliasChoices("qiniu_secret_key", "qiniuSecretKey"))
+    qiniu_bucket: str = Field(default="", validation_alias=AliasChoices("qiniu_bucket", "qiniuBucket"))
+    qiniu_region: str = Field(default="z2", validation_alias=AliasChoices("qiniu_region", "qiniuRegion"))
+    qiniu_public_base_url: str = Field(default="", validation_alias=AliasChoices("qiniu_public_base_url", "qiniuPublicBaseUrl"))
+    qiniu_bucket_private: bool = Field(default=True, validation_alias=AliasChoices("qiniu_bucket_private", "qiniuBucketPrivate"))
+    qiniu_key_prefix: str = Field(default="screenplay-agent", validation_alias=AliasChoices("qiniu_key_prefix", "qiniuKeyPrefix"))
+    qiniu_upload_token_expires_seconds: int = Field(default=3600, validation_alias=AliasChoices("qiniu_upload_token_expires_seconds", "qiniuUploadTokenExpiresSeconds"))
+    qiniu_public_url_ttl_seconds: int = Field(default=86400, validation_alias=AliasChoices("qiniu_public_url_ttl_seconds", "qiniuPublicUrlTtlSeconds"))
+
+
 class StoryboardDirectorShotTextUpdateRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -809,6 +831,156 @@ async def test_model_registry_profile(req: ModelRegistryTestRequest):
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+def _storage_public_dict() -> dict[str, Any]:
+    return load_public_asset_storage_config().public_dict()
+
+
+@app.get("/api/public-asset-storage/config")
+def get_public_asset_storage_config():
+    return _storage_public_dict()
+
+
+@app.put("/api/public-asset-storage/config")
+def update_public_asset_storage_config(req: PublicAssetStorageConfigRequest):
+    from models import get_kv, set_kv
+
+    current = safe_json_loads(get_kv(PUBLIC_ASSET_STORAGE_KV_KEY, "{}"), {})
+    if not isinstance(current, dict):
+        current = {}
+    next_config = {
+        "provider": str(req.provider or "").strip().lower(),
+        "local_base_url": str(req.local_base_url or "").strip(),
+        "qiniu_access_key": str(req.qiniu_access_key).strip() if req.qiniu_access_key is not None and str(req.qiniu_access_key).strip() else str(current.get("qiniu_access_key") or "").strip(),
+        "qiniu_secret_key": str(req.qiniu_secret_key).strip() if req.qiniu_secret_key is not None and str(req.qiniu_secret_key).strip() else str(current.get("qiniu_secret_key") or "").strip(),
+        "qiniu_bucket": str(req.qiniu_bucket or "").strip(),
+        "qiniu_region": str(req.qiniu_region or "z2").strip(),
+        "qiniu_public_base_url": str(req.qiniu_public_base_url or "").strip().rstrip("/"),
+        "qiniu_bucket_private": bool(req.qiniu_bucket_private),
+        "qiniu_key_prefix": str(req.qiniu_key_prefix or "screenplay-agent").strip().strip("/"),
+        "qiniu_upload_token_expires_seconds": max(int(req.qiniu_upload_token_expires_seconds or 3600), 60),
+        "qiniu_public_url_ttl_seconds": max(int(req.qiniu_public_url_ttl_seconds or 86400), 300),
+    }
+    if next_config["provider"] not in {"", "qiniu"}:
+        raise HTTPException(status_code=400, detail="当前对象存储配置第一版仅支持 qiniu。")
+    set_kv(PUBLIC_ASSET_STORAGE_KV_KEY, json.dumps(next_config, ensure_ascii=False))
+    return _storage_public_dict()
+
+
+def _collect_storage_migration_assets(limit: int) -> list[dict[str, Any]]:
+    from models import Session, StoryboardShot, VisualReferenceAsset
+
+    rows: list[dict[str, Any]] = []
+
+    def add_asset(source: str, owner: dict[str, Any], url: Any) -> None:
+        text = str(url or "").strip()
+        if not text or len(rows) >= limit:
+            return
+        rows.append({"source": source, "owner": owner, "url": text})
+
+    with Session() as s:
+        reference_rows = s.query(VisualReferenceAsset).order_by(VisualReferenceAsset.id.asc()).limit(max(limit, 1000)).all()
+        for row in reference_rows:
+            if len(rows) >= limit:
+                break
+            owner = {
+                "book_id": int(row.book_id),
+                "episode": row.episode,
+                "asset_type": row.asset_type,
+                "asset_id": row.asset_id,
+                "reference_id": row.id,
+            }
+            add_asset("visual_reference.image_url", owner, row.image_url)
+            add_asset("visual_reference.local_path", owner, row.local_path)
+
+        shot_rows = s.query(StoryboardShot).order_by(StoryboardShot.book_id.asc(), StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc()).limit(max(limit, 1000)).all()
+        for shot in shot_rows:
+            if len(rows) >= limit:
+                break
+            asset_links = _load_asset_links(shot.asset_links)
+            owner = {
+                "book_id": int(shot.book_id),
+                "episode": int(shot.episode or 1),
+                "shot_id": int(shot.shot_id),
+                "scene_name": str(shot.scene_name or ""),
+            }
+            for group_key in ("images", "videos", "audios"):
+                items = asset_links.get(group_key) if isinstance(asset_links, dict) else []
+                if not isinstance(items, list):
+                    continue
+                for item in items:
+                    if not isinstance(item, dict):
+                        continue
+                    item_owner = {**owner, "asset_group": group_key, "asset_id": item.get("id")}
+                    add_asset(f"storyboard.{group_key}.uri", item_owner, item.get("uri"))
+                    add_asset(f"storyboard.{group_key}.previewUrl", item_owner, item.get("previewUrl"))
+                    if len(rows) >= limit:
+                        break
+                if len(rows) >= limit:
+                    break
+    return rows
+
+
+def _classify_storage_asset(url: str, target_base_url: str, *, check_external: bool = False) -> dict[str, Any]:
+    text = str(url or "").strip()
+    target = str(target_base_url or "").strip().rstrip("/")
+    if target and text.startswith(target + "/"):
+        return {"status": "already_target_storage", "requires_migration": False, "reason": "已在当前对象存储域名下"}
+    if text.startswith("data:") or text.startswith("/") or text.startswith(("file:",)):
+        return {"status": "needs_publish", "requires_migration": True, "reason": "本地或内联资产，需要发布到对象存储"}
+    if text.startswith(("http://", "https://")):
+        if not check_external:
+            return {
+                "status": "external_unchecked",
+                "requires_migration": True,
+                "reason": "外部 URL 未做在线可读性检查；如更换 OSS，需在执行迁移前深度核验。",
+            }
+        accessible, error = check_public_url_accessible(text, timeout_seconds=5.0)
+        return {
+            "status": "external_accessible" if accessible else "external_unreachable",
+            "requires_migration": bool(accessible),
+            "reason": "外部 URL 可读取，可迁移" if accessible else f"外部 URL 不可读取：{error}",
+        }
+    return {"status": "unknown_source", "requires_migration": False, "reason": "无法识别的资产地址"}
+
+
+@app.get("/api/public-asset-storage/migration-plan")
+def get_public_asset_storage_migration_plan(
+    limit: int = Query(default=200, ge=1, le=2000),
+    check_external: bool = Query(default=False),
+):
+    storage_config = load_public_asset_storage_config()
+    assets = _collect_storage_migration_assets(limit)
+    items = []
+    summary = {
+        "total_scanned": len(assets),
+        "already_target_storage": 0,
+        "needs_publish": 0,
+        "external_unchecked": 0,
+        "external_accessible": 0,
+        "external_unreachable": 0,
+        "unknown_source": 0,
+        "requires_migration": 0,
+    }
+    for asset in assets:
+        classification = _classify_storage_asset(
+            asset["url"],
+            storage_config.qiniu_public_base_url,
+            check_external=check_external,
+        )
+        status = classification["status"]
+        summary[status] = int(summary.get(status, 0)) + 1
+        if classification["requires_migration"]:
+            summary["requires_migration"] += 1
+        items.append({**asset, **classification})
+    return {
+        "storage": storage_config.public_dict(),
+        "summary": summary,
+        "items": items,
+        "migration_apply_supported": False,
+        "migration_apply_note": "当前默认只做快速迁移规划，不会搬迁或改写资产；批量迁移写入需要后续受保护任务实现。",
+    }
 
 
 # --- Node execution ---
