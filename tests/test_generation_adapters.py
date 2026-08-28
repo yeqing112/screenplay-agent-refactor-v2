@@ -234,9 +234,9 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
             result = await generate_video_asset(
                 {
                     "provider": "minimax-h3-async",
-                    "base_url": "https://api.minimax.io",
+                    "base_url": "https://metaso.cn/api/minimax",
                     "model_name": "MiniMax-H3",
-                    "api_key": "secret-test-key",
+                    "api_key": "mk-secret-test-key",
                     "default_params": {
                         "resolution": "2K",
                         "duration": 5,
@@ -298,8 +298,52 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
             )
 
         submit_payload = mock_client.post.await_args.kwargs["json"]
+        submit_url = mock_client.post.await_args.args[0]
         self.assertEqual(result["externalTaskId"], "task-h3-default-resolution")
+        self.assertEqual(submit_url, "https://metaso.cn/api/minimax/v2/video_generation")
         self.assertEqual(submit_payload["resolution"], "768P")
+        self.assertNotIn("aigc_watermark", submit_payload)
+
+    async def test_minimax_h3_sends_aigc_watermark_only_when_enabled(self):
+        submit_response = Mock()
+        submit_response.raise_for_status.return_value = None
+        submit_response.json.return_value = {"task_id": "task-h3-watermark"}
+
+        status_response = Mock()
+        status_response.raise_for_status.return_value = None
+        status_response.json.return_value = {
+            "status": "succeeded",
+            "task": {"content": {"url": "https://cdn.example.com/h3-watermark.mp4"}},
+        }
+
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.post.return_value = submit_response
+        mock_client.get.return_value = status_response
+
+        with patch("api.generation_adapters.httpx.AsyncClient", return_value=mock_client):
+            await generate_video_asset(
+                {
+                    "provider": "minimax-h3-async",
+                    "base_url": "https://metaso.cn/api/minimax",
+                    "model_name": "MiniMax-H3",
+                    "api_key": "mk-secret-test-key",
+                    "default_params": {
+                        "resolution": "768P",
+                        "duration": 5,
+                        "ratio": "16:9",
+                        "aigc_watermark": True,
+                        "poll_interval_seconds": 1,
+                        "poll_timeout_seconds": 5,
+                    },
+                },
+                prompt="H3 水印视频提示词",
+                duration_seconds=5,
+                aspect_ratio="16:9",
+            )
+
+        submit_payload = mock_client.post.await_args.kwargs["json"]
+        self.assertEqual(submit_payload["aigc_watermark"], True)
 
     async def test_minimax_h3_first_frame_payload_omits_ratio(self):
         submit_response = Mock()
@@ -322,9 +366,9 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
             result = await generate_video_asset(
                 {
                     "provider": "minimax-h3-async",
-                    "base_url": "https://api.minimax.io",
+                    "base_url": "https://metaso.cn/api/minimax",
                     "model_name": "MiniMax-H3",
-                    "api_key": "secret-test-key",
+                    "api_key": "mk-secret-test-key",
                     "default_params": {
                         "resolution": "768P",
                         "duration": 5,
@@ -392,9 +436,9 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
             result = await reconcile_minimax_h3_generation(
                 {
                     "provider": "minimax-h3-async",
-                    "base_url": "https://api.minimax.io",
+                    "base_url": "https://metaso.cn/api/minimax",
                     "model_name": "MiniMax-H3",
-                    "api_key": "secret-test-key",
+                    "api_key": "mk-secret-test-key",
                 },
                 external_task_id="task-h3-recover-1",
             )
@@ -402,6 +446,37 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["status"], "done")
         self.assertEqual(result["externalStatus"], "succeeded")
         self.assertEqual(result["previewUrl"], "https://cdn.example.com/h3-recovered.mp4")
+
+    async def test_reconcile_minimax_h3_generation_treats_fail_and_expired_as_failed(self):
+        for provider_status in ("fail", "expired"):
+            with self.subTest(provider_status=provider_status):
+                status_response = Mock()
+                status_response.raise_for_status.return_value = None
+                status_response.json.return_value = {
+                    "task": {
+                        "status": provider_status,
+                        "error": {"message": f"{provider_status} from metaso"},
+                    },
+                }
+
+                mock_client = AsyncMock()
+                mock_client.__aenter__.return_value = mock_client
+                mock_client.get.return_value = status_response
+
+                with patch("api.generation_adapters.httpx.AsyncClient", return_value=mock_client):
+                    with self.assertRaises(ModelProfileError) as ctx:
+                        await reconcile_minimax_h3_generation(
+                            {
+                                "provider": "minimax-h3-async",
+                                "base_url": "https://metaso.cn/api/minimax",
+                                "model_name": "MiniMax-H3",
+                                "api_key": "mk-secret-test-key",
+                            },
+                            external_task_id=f"task-h3-{provider_status}",
+                        )
+
+                self.assertIn(f"{provider_status} from metaso", str(ctx.exception))
+                self.assertEqual(ctx.exception.external_status, provider_status)
 
     async def test_reconcile_poyo_generation_reports_running_state(self):
         status_response = Mock()

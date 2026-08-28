@@ -196,9 +196,9 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
                     "name": "MiniMax H3",
                     "capability": "video",
                     "provider": "minimax-h3-async",
-                    "base_url": "https://api.minimax.io",
+                    "base_url": "https://metaso.cn/api/minimax",
                     "model_name": "MiniMax-H3",
-                    "default_params": {"duration": 5, "resolution": "2K", "ratio": "16:9"},
+                    "default_params": {"duration": 5, "resolution": "768P", "ratio": "16:9", "aigc_watermark": False},
                     "enabled": True,
                     "api_key": "secret-test-key",
                 }
@@ -292,10 +292,10 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
                 "name": "MiniMax H3",
                 "capability": "video",
                 "provider": "minimax-h3-async",
-                "base_url": "https://api.minimax.io",
+                "base_url": "https://metaso.cn/api/minimax",
                 "model_name": "MiniMax-H3",
                 "api_key": "secret-test-key",
-                "default_params": {"duration": 5, "resolution": "2K", "ratio": "16:9"},
+                "default_params": {"duration": 5, "resolution": "768P", "ratio": "16:9", "aigc_watermark": False},
             }
         )
         self.assertTrue(result["ok"])

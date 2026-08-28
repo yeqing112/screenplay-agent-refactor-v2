@@ -57,7 +57,7 @@ describe('ModelRegistryModal helpers', () => {
 
   it('suggests poyo-specific base url and default params when provider is poyo-async', () => {
     expect(suggestedBaseUrlForProvider('poyo-async')).toBe('https://api.poyo.ai')
-    expect(suggestedBaseUrlForProvider('minimax-h3-async')).toBe('https://api.minimax.io')
+    expect(suggestedBaseUrlForProvider('minimax-h3-async')).toBe('https://metaso.cn/api/minimax')
     expect(suggestedBaseUrlForProvider('openai-compatible')).toBe('')
     expect(suggestedPoyoModelNames('image')).toContain('seedream-5-0-lite-api')
     expect(suggestedPoyoModelNames('image')).toContain('nano-banana-2')
@@ -87,6 +87,7 @@ describe('ModelRegistryModal helpers', () => {
     expect(parsed.resolution).toBe('768P')
     expect(parsed.duration).toBe(5)
     expect(parsed.ratio).toBe('16:9')
+    expect(parsed.aigc_watermark).toBe(false)
     expect(parsed.poll_timeout_seconds).toBe(900)
   })
 

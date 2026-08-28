@@ -1,5 +1,19 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-28 — metaso MiniMax H3 兼容 API 收口
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：确认目标接入平台为 [metaso.cn/minimax-h3](https://metaso.cn/minimax-h3)，其 ComfyUI 插件使用 MiniMax H3 兼容协议：`base_url=https://metaso.cn/api/minimax`，token 为 `mk-` 开头，create/query 路径沿用 `/v2/video_generation` 与 `/v2/query/video_generation/{task_id}`。
+
+### 变更概览
+
+- 模型管理中 `minimax-h3-async` 的推荐 Base URL 从官方域名改为 `https://metaso.cn/api/minimax`。
+- H3 推荐默认参数新增 `aigc_watermark=false`；真实请求中只有显式开启时才发送 `aigc_watermark: true`。
+- H3 adapter 增加 `fail / expired` 失败状态兼容，并优先读取 `task.error.message`。
+- 新增 mock 测试锁定 metaso create URL、默认不发水印、开启水印时发送 `aigc_watermark=true`，以及 `fail / expired` 状态失败处理。
+
+---
+
 ## 2026-08-28 — MiniMax H3 默认分辨率收口为 768P
 
 > 对应分支：`codex/unify-formal-workspace`
@@ -120,7 +134,7 @@
 
 - **新增 `minimax-h3-async` provider**
   - 模型注册表允许新增 video 能力的 MiniMax H3 异步模型。
-  - 默认 base URL 建议为 `https://api.minimax.io`，模型名为 `MiniMax-H3`。
+  - 默认 base URL 当前建议为 `https://metaso.cn/api/minimax`，模型名为 `MiniMax-H3`。
   - “测试当前草稿”只做配置结构校验，不发起真实视频生成。
 
 - **新增 MiniMax H3 v2 适配器**

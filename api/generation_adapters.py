@@ -87,6 +87,19 @@ def _coerce_int(value: Any, fallback: int) -> int:
         return fallback
 
 
+def _coerce_bool(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return value != 0
+    normalized = str(value or "").strip().lower()
+    if normalized in {"1", "true", "yes", "y", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "n", "off", ""}:
+        return False
+    return False
+
+
 def _extract_reference_urls(reference_images: list[dict[str, Any]] | None) -> list[str]:
     urls: list[str] = []
     for item in reference_images or []:
@@ -268,6 +281,31 @@ def _coerce_minimax_h3_duration(value: Any) -> int:
     return min(max(duration, 4), 15)
 
 
+MINIMAX_H3_SUCCESS_STATUSES = {"succeeded", "success", "finished", "completed", "done"}
+MINIMAX_H3_FAILED_STATUSES = {"failed", "fail", "error", "cancelled", "canceled", "expired"}
+
+
+def _extract_minimax_h3_error_message(data: dict[str, Any], fallback: str) -> str:
+    candidates: list[Any] = [
+        data.get("error"),
+        data.get("message"),
+        data.get("detail"),
+        data.get("task", {}).get("error") if isinstance(data.get("task"), dict) else None,
+        data.get("data", {}).get("error") if isinstance(data.get("data"), dict) else None,
+        data.get("result", {}).get("error") if isinstance(data.get("result"), dict) else None,
+    ]
+    for item in candidates:
+        if isinstance(item, dict):
+            message = str(item.get("message") or item.get("status_msg") or item.get("detail") or item.get("code") or "").strip()
+            if message:
+                return message
+        else:
+            message = str(item or "").strip()
+            if message:
+                return message
+    return fallback
+
+
 def _build_minimax_h3_video_payload(
     profile: dict[str, Any],
     *,
@@ -317,6 +355,9 @@ def _build_minimax_h3_video_payload(
     callback_url = str(params.get("callback_url") or params.get("callbackUrl") or "").strip()
     if callback_url:
         payload["callback_url"] = callback_url
+
+    if _coerce_bool(params.get("aigc_watermark", params.get("watermark"))):
+        payload["aigc_watermark"] = True
 
     return payload
 
@@ -406,7 +447,7 @@ async def poll_minimax_h3_generation(
             last_payload = data
             last_status = status or last_status
 
-            if status in {"succeeded", "success", "finished", "completed", "done"}:
+            if status in MINIMAX_H3_SUCCESS_STATUSES:
                 file_url = _extract_minimax_h3_file_url(data)
                 if not file_url:
                     raise ModelProfileError("MiniMax H3 任务已完成，但结果里缺少可用的视频 URL。", provider_response=data)
@@ -417,8 +458,8 @@ async def poll_minimax_h3_generation(
                     "uri": file_url,
                     "providerResponse": data,
                 }
-            if status in {"failed", "error", "cancelled", "canceled"}:
-                message = str(data.get("error") or data.get("message") or data.get("detail") or "MiniMax H3 任务失败").strip()
+            if status in MINIMAX_H3_FAILED_STATUSES:
+                message = _extract_minimax_h3_error_message(data, "MiniMax H3 任务失败")
                 raise ModelProfileError(
                     message,
                     provider_response=data,
@@ -462,7 +503,7 @@ async def reconcile_minimax_h3_generation(
             raise _map_http_error("MiniMax H3 task status check", exc) from exc
 
     status = _normalize_minimax_h3_status(data)
-    if status in {"succeeded", "success", "finished", "completed", "done"}:
+    if status in MINIMAX_H3_SUCCESS_STATUSES:
         file_url = _extract_minimax_h3_file_url(data)
         if not file_url:
             raise ModelProfileError(
@@ -481,8 +522,8 @@ async def reconcile_minimax_h3_generation(
             "providerResponse": data,
             "externalTaskId": external_task_id,
         }
-    if status in {"failed", "error", "cancelled", "canceled"}:
-        message = str(data.get("error") or data.get("message") or data.get("detail") or "MiniMax H3 task failed").strip()
+    if status in MINIMAX_H3_FAILED_STATUSES:
+        message = _extract_minimax_h3_error_message(data, "MiniMax H3 task failed")
         raise ModelProfileError(
             message,
             provider_response=data,
