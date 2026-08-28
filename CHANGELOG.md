@@ -1,5 +1,32 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-08-28 — MiniMax H3 机器提示词导演口令清洗
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：H3 灰度脚本自动候选已能选出带外部首帧的真实镜头，但报告发现模型提交字段仍可能残留 `画面开场 / 画面切` 这类导演剪辑口令。产品边界需要进一步收紧：导演分镜语言允许保留创作表达，提交给模型的机器提示词必须更像标准化执行语言。
+
+### 变更概览
+
+- **机器字段清洗**
+  - `compile_machine_prompt` 在生成 `visual_timeline` 与 `observable_action` 时，对 `start_state / action_process / end_state / dialogue` 先进入统一机器文本清洗。
+  - `director_shot_text` 不做清洗，继续保留用户可编辑的导演分镜语言。
+  - H3 / 通用 WebUI 导出不再直接带出 `画面开场 / 画面切 / [画面` 等剪辑口令。
+
+- **Adapter 规则补齐**
+  - `sanitize_machine_prompt_text` 新增对 `画面开场`、`镜头开场` 的清理。
+  - 既有 `画面切 / 镜头切 / 对白 / 台词` 等清洗规则继续用于把导演口令转换为连续镜头机器语言。
+
+- **灰度脚本维护**
+  - `scripts/validate-minimax-h3-gray.py` 改用 timezone-aware UTC 时间，去除 Python `datetime.utcnow()` deprecation warning。
+
+### 验证结果
+
+- `python -m unittest tests.test_machine_prompt_export tests.test_model_adapter`：通过，13 tests。
+- `python -m py_compile scripts/validate-minimax-h3-gray.py`：通过。
+- `npm run validate:minimax-h3-gray -- auto`：通过；自动候选仍为 `book 14 / episode 1 / shot 1`，报告 `warnings: []`，未触发真实提交；当前唯一 blocker 为视频 profile 仍未配置为 `minimax-h3-async`。
+
+---
+
 ## 2026-08-27 — MiniMax H3 真实外网灰度脚本
 
 > 对应分支：`codex/unify-formal-workspace`
@@ -34,7 +61,7 @@
 ### 验证结果
 
 - `npm run validate:minimax-h3-gray -- 75 1 1`：通过；输出 dry-run 报告后已清理 artifacts。
-- `npm run validate:minimax-h3-gray -- auto`：通过；自动候选当前选择 `book 14 / episode 1 / shot 1`，报告提示仍需人工复核遗留导演标记，未触发真实提交。
+- `npm run validate:minimax-h3-gray -- auto`：通过；自动候选当前选择 `book 14 / episode 1 / shot 1`，未触发真实提交。2026-08-28 已补机器提示词导演口令清洗后，自动候选报告的 prompt warning 已清空，剩余 blocker 为视频 profile 尚未切换到 `minimax-h3-async`。
 
 ---
 

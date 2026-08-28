@@ -28,7 +28,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -53,7 +53,7 @@ def log(message: str) -> None:
 
 
 def timestamp_slug() -> str:
-    return datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S-%fZ")
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H-%M-%S-%fZ")
 
 
 def default_artifact_path(suffix: str) -> Path:
@@ -340,7 +340,7 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
 
     return {
         "mode": "real-submit" if safety["will_submit"] else "dry-run-preflight",
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.now(UTC).isoformat(),
         "target": {
             "book_id": args.book_id,
             "book_title": str(book.title or ""),

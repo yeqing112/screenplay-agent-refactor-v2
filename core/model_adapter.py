@@ -35,6 +35,8 @@ def _clean_visual_prompt_text(value: object) -> str:
     text = text.replace("画面切：", "画面转为")
     text = text.replace("画面切 ", "画面转为")
     text = text.replace("画面切", "画面转为")
+    text = re.sub(r"画面开场[：:，,\s]*", "", text)
+    text = re.sub(r"镜头开场[：:，,\s]*", "", text)
     text = text.replace("镜头切到", "同一连续镜头中转向")
     text = text.replace("镜头切出", "镜头自然结束")
     text = text.replace("镜头切，", "镜头转为")

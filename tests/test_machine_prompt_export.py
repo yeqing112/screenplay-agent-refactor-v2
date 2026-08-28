@@ -92,6 +92,26 @@ class MachinePromptExportTests(unittest.TestCase):
         self.assertIn("动作时间线", generic["prompt"])
         self.assertFalse(generic["api_submission"])
 
+    def test_machine_prompt_strips_director_cut_markers_from_model_fields(self):
+        ir = self._shot_ir()
+        ir.start_state = "[画面开场：一桶冷水泼下来]"
+        ir.action_process = "和尚丙拎着空木桶，画面切：和尚乙倚在门框上。"
+        ir.end_state = "[画面切：和尚甲弯腰捡起木桶]"
+
+        prompt = compile_machine_prompt(ir)
+        h3 = export_minimax_h3_webui(prompt)
+        integrated = h3["fields"]["integrated_multimodal_description"]
+        generic = export_generic_zh_video_webui(prompt)["prompt"]
+
+        self.assertIn("画面开场", prompt["director_shot_text"])
+        self.assertNotIn("画面开场", integrated)
+        self.assertNotIn("画面切", integrated)
+        self.assertNotIn("[画面", integrated)
+        self.assertNotIn("画面开场", generic)
+        self.assertNotIn("画面切", generic)
+        self.assertIn("一桶冷水泼下来", integrated)
+        self.assertIn("和尚乙倚在门框上", integrated)
+
 
 if __name__ == "__main__":
     unittest.main()

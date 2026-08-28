@@ -123,6 +123,18 @@ class ModelAdapterTests(unittest.TestCase):
         self.assertIn("镜头继续推进到泼水后的静止瞬间", result)
         self.assertIn("随后和尚丙拎着空桶得意站立", result)
 
+    def test_sanitize_machine_prompt_removes_director_opening_and_cut_markers(self):
+        text = "[画面开场：一桶冷水泼下来]，画面切：和尚乙倚在门框上。"
+
+        result = sanitize_machine_prompt_text(text)
+
+        self.assertNotIn("画面开场", result)
+        self.assertNotIn("画面切", result)
+        self.assertNotIn("[", result)
+        self.assertNotIn("]", result)
+        self.assertIn("一桶冷水泼下来", result)
+        self.assertIn("画面转为和尚乙倚在门框上", result)
+
 
 if __name__ == "__main__":
     unittest.main()

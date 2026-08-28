@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from core.model_adapter import sanitize_machine_prompt_text
 from core.prompt_ir import AssetBinding, ShotIR
 
 
@@ -30,6 +31,10 @@ def _truncate(text: object, limit: int = 140) -> str:
 
 def _rstrip_terminal_punct(text: object) -> str:
     return _clean_text(text).rstrip("。.!！?？")
+
+
+def _machine_action_text(value: object) -> str:
+    return sanitize_machine_prompt_text(value)
 
 
 def _asset_label(binding: AssetBinding) -> str:
@@ -248,10 +253,14 @@ def compile_machine_prompt(
     """Compile ShotIR into a model-neutral, executable machine prompt payload."""
 
     director_text = director_shot_text or build_director_shot_text(ir)
+    machine_start_state = _machine_action_text(ir.start_state)
+    machine_action_process = _machine_action_text(ir.action_process)
+    machine_end_state = _machine_action_text(ir.end_state)
+    machine_dialogue = _machine_action_text(ir.dialogue)
     timeline_source = {
-        "opening": ir.start_state or ir.action_process or ir.end_state,
-        "development": ir.action_process or ir.end_state or ir.start_state,
-        "landing": ir.end_state or ir.action_process or ir.start_state,
+        "opening": machine_start_state or machine_action_process or machine_end_state,
+        "development": machine_action_process or machine_end_state or machine_start_state,
+        "landing": machine_end_state or machine_action_process or machine_start_state,
     }
     camera = {
         "shot_size": _shot_size_zh(ir),
@@ -286,10 +295,10 @@ def compile_machine_prompt(
         "visual_timeline": timeline,
         "camera": camera,
         "observable_action": {
-            "start_state": _clean_text(ir.start_state),
-            "action_process": _clean_text(ir.action_process),
-            "end_state": _clean_text(ir.end_state),
-            "dialogue_or_sound_cue": _clean_text(ir.dialogue),
+            "start_state": machine_start_state,
+            "action_process": machine_action_process,
+            "end_state": machine_end_state,
+            "dialogue_or_sound_cue": machine_dialogue,
         },
         "emotion_arc": {
             "start": _clean_text(ir.emotion_arc.start),
