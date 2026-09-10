@@ -13,11 +13,15 @@ def _get_db():
 def init_fts():
     """Create FTS5 virtual table for keyword search."""
     conn = _get_db()
+    # Keep the index self-contained.  The previous external-content
+    # definition pointed at ``chapters`` while declaring a non-existent
+    # ``chapter_id`` column, which made ordinary MATCH queries fail with
+    # ``no such column: T.chapter_id``.  ``rebuild_fts`` already writes
+    # the projection explicitly, so a contentless table is the correct
+    # representation for this derived search index.
     conn.execute("""
         CREATE VIRTUAL TABLE IF NOT EXISTS chapter_fts USING fts5(
-            chapter_id, book_id, seq, summary, characters, events, scenes,
-            content='chapters',
-            content_rowid='id'
+            chapter_id, book_id, seq, summary, characters, events, scenes
         )
     """)
     conn.commit()
