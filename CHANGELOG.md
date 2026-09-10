@@ -3,6 +3,7 @@
 ## 2026-09-10 — 分镜生成模式与导演语义持久化收口
 
 - 正式分镜生成 API 与工作台默认使用 `director_llm`；`deterministic_safe` 仅能显式选择，旧 `forceLlm` 参数继续兼容。
+- CLI 的单集与完整管线入口同步显式使用 `director_llm`，避免命令行与正式工作台产生不同的分镜质量路径。
 - 任务状态记录实际 `generation_mode`，便于回放、成本审计和失败恢复；不自动切换模型或绕过外部调用确认。
 - `StoryboardShot` 新增并贯通 `camera_speed`、`shot_purpose`、`emotion_arc`，覆盖 LLM/fallback、数据库、API、刷新、Prompt Compiler、导出和拆镜继承。
 - 新增 Alembic 迁移 `d7e8f9a0b1c2_add_storyboard_director_semantics.py`，会从旧 `meta_info.structured_shot` 安全回填，不覆盖已有非默认值。

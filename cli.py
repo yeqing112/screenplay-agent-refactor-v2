@@ -405,7 +405,10 @@ def storyboard(
     _init()
     console.print(f"[cyan]生成第{episode}集分镜表...[/]")
     from agents.storyboard import StoryboardAgent
-    shots = StoryboardAgent(book_id, genre=genre).run(episode)
+    # Keep the CLI aligned with the formal API/workbench: production storyboard
+    # generation uses the director-LLM path.  The deterministic fallback remains
+    # available only through an explicit API/node generation_mode selection.
+    shots = StoryboardAgent(book_id, genre=genre, force_llm=True).run(episode)
     console.print(f"[green]✓[/] 共生成 {len(shots)} 个镜头")
 
 
@@ -556,7 +559,7 @@ def pipeline(
                 Script.book_id == book_id, Script.episode == ep
             ).first()
         if check_script:
-            StoryboardAgent(book_id, genre=genre).run(ep)
+            StoryboardAgent(book_id, genre=genre, force_llm=True).run(ep)
     console.print("  ✓ 分镜表完成\n")
 
     console.print(f"[bold green]=== 全部完成 ===[/]")
