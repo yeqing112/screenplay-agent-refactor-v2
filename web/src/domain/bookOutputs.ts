@@ -127,6 +127,18 @@ export interface StoryboardShotOutput {
     local_path?: string
   }>
   prompt_compile_context?: {
+    core_action?: string
+    action_beats?: Array<Record<string, unknown>>
+    continuity_in?: string
+    continuity_out?: string
+    executability?: {
+      status?: 'pass' | 'warning' | 'blocked' | string
+      summary?: string
+      warnings?: string[]
+      blocking_issues?: string[]
+      recommendations?: Array<Record<string, unknown> | string>
+      metrics?: Record<string, unknown>
+    }
     reference_asset_ids?: string[]
     compiled_reference_asset_ids?: string[]
     compile_prompt_contract?: {
@@ -174,6 +186,32 @@ export interface StoryboardShotOutput {
       image_url?: string
       local_path?: string
     }>
+    model_adapter?: {
+      target_model?: string
+      adapter?: string
+      static_prompt?: string
+      motion_prompt?: string
+      negative_prompt?: string
+      static_prompt_sections?: {
+        schema_version?: string
+        frame_focus?: string
+        asset_anchors?: Array<{
+          role?: string
+          label?: string
+        }>
+        composition?: string
+        frozen_action?: string
+        asset_visual_facts?: Array<{
+          role?: string
+          label?: string
+          fact?: string
+        }>
+        required_visual_facts?: string[]
+        lighting_emotion?: string
+        constraints?: string
+        flattening_note?: string
+      }
+    }
     character_variants?: VisualMakeupOutput[]
     asset_bindings?: {
       scene?: {
@@ -254,6 +292,32 @@ export interface StoryboardShotOutput {
     style_key?: string
     character_blocking?: Array<Record<string, unknown>>
     action_beats?: Array<Record<string, unknown>>
+    core_action?: string
+    continuity_in?: string
+    continuity_out?: string
+    executability?: {
+      status?: 'pass' | 'warning' | 'blocked' | string
+      summary?: string
+      warnings?: string[]
+      blocking_issues?: string[]
+      recommendations?: Array<Record<string, unknown> | string>
+      metrics?: Record<string, unknown>
+    }
+  }
+  executability_split_draft?: {
+    status?: string
+    created_at?: string
+    source_executability_status?: string
+    source_duration?: number
+    reason?: string
+    note?: string
+    candidates?: Array<{
+      sequence?: number
+      recommended_duration?: number
+      purpose?: string
+      action_beats?: string[]
+    }>
+    archived_asset_links?: unknown
   }
   scene_prompt?: string
   makeup_prompts?: Array<{
@@ -279,6 +343,11 @@ export interface StoryboardShotOutput {
     audios: MediaAssetOutput[]
     references?: ReferenceAssetCollections
   }
+  split_archived_assets?: {
+    images: MediaAssetOutput[]
+    videos: MediaAssetOutput[]
+    audios: MediaAssetOutput[]
+  }
 }
 
 export interface VisualLocationOutput {
@@ -292,6 +361,10 @@ export interface VisualLocationOutput {
   visual_prompt_zh?: string
   core_prompt_zh?: string
   zh_prompt?: string
+  confirmed_prompt_raw?: string
+  structured_variant_fields?: Record<string, unknown>
+  rendered_prompt_preview?: string
+  reference_negative_prompt?: string
   era?: string
   jimeng_ref_name?: string
   negative_prompt?: string
@@ -301,6 +374,7 @@ export interface VisualLocationOutput {
   variant_scope?: string
   scope_label?: string
   reference_assets?: VisualReferenceAssetOutput[]
+  references?: VisualReferenceAssetOutput[]
   shot_ids?: string[]
 }
 
@@ -312,9 +386,14 @@ export interface VisualPropOutput {
   era?: string
   description?: string
   associated_characters?: string
+  style_ref_zh?: string
   visual_prompt_zh?: string
   core_prompt_zh?: string
   zh_prompt?: string
+  confirmed_prompt_raw?: string
+  structured_variant_fields?: Record<string, unknown>
+  rendered_prompt_preview?: string
+  reference_negative_prompt?: string
   jimeng_ref_name?: string
   negative_prompt?: string
   asset_status?: string
@@ -323,6 +402,7 @@ export interface VisualPropOutput {
   variant_scope?: string
   scope_label?: string
   reference_assets?: VisualReferenceAssetOutput[]
+  references?: VisualReferenceAssetOutput[]
   shot_ids?: string[]
 }
 
@@ -348,6 +428,10 @@ export interface VisualMakeupOutput {
   core_prompt_zh?: string
   outfit_prompt_zh?: string
   scene_prompt_zh?: string
+  confirmed_prompt_raw?: string
+  structured_variant_fields?: Record<string, unknown>
+  rendered_prompt_preview?: string
+  reference_negative_prompt?: string
   consistency_notes?: string
   meta_info?: Record<string, MetadataValue>
   jimeng_ref_name?: string
@@ -451,6 +535,9 @@ export function normalizeBookOutputs(response: BookOutputsResponse): OutputsData
       sound_effects: shot.sound_effects ?? [],
       makeup_prompts: shot.makeup_prompts ?? [],
       assets: normalizeShotAssets(String(shot.shot_id), shot.asset_links),
+      split_archived_assets: shot.executability_split_draft?.archived_asset_links
+        ? normalizeShotAssets(`archived-${shot.shot_id}`, shot.executability_split_draft.archived_asset_links)
+        : undefined,
     })
     return acc
   }, {})

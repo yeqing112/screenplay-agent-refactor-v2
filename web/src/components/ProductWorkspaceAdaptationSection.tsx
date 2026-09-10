@@ -192,6 +192,13 @@ export default function ProductWorkspaceAdaptationSection({
             先锁定赛道化生产 skill，再去确定改编方向。后续剧本、分镜、资产、QA 都会继承这套规范。
           </div>
 
+          <details open={!resolvedProductionSkill.lockedAt} className="mt-4 rounded-xl border border-slate-800 bg-slate-950/30 p-3">
+            <summary className="cursor-pointer text-sm font-medium text-slate-300">
+              {resolvedProductionSkill.lockedAt ? '高级：查看或调整已锁定的 Production Skill' : '配置并锁定 Production Skill'}
+            </summary>
+            {resolvedProductionSkill.lockedAt ? (
+              <div className="mt-2 text-xs leading-6 text-slate-500">已锁定后，剧本、分镜、资产与 QA 会继承该规范；如确需调整，再展开处理。</div>
+            ) : null}
           <div className="mt-4 space-y-4">
             <label className="block text-xs text-slate-500">
               技能包
@@ -333,6 +340,7 @@ export default function ProductWorkspaceAdaptationSection({
               )}
             </div>
           </div>
+          </details>
         </div>
 
         <InfoPanel

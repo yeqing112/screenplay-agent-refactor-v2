@@ -109,4 +109,37 @@ describe('ProductWorkspaceScriptsSection', () => {
     expect(html).toContain('当前项目主方向还没有锁定')
     expect(html).toContain('disabled')
   })
+
+  it('keeps script QA and version history out of the initial editing view', () => {
+    const html = renderToStaticMarkup(
+      <ProductWorkspaceScriptsSection
+        bookId={14}
+        scripts={[{ episode: 1, content: '第一集剧本内容', status: 'done' } as any]}
+        shotsByEpisode={{}}
+        episodeProgress={[
+          {
+            episode: 1,
+            statusLabel: '待放行',
+            progressLabel: '脚本已锁稿，待放行到分镜',
+            blockerCount: 1,
+            nextAction: '回剧本工作台放行到分镜',
+          },
+        ]}
+        scriptDecisionState={{}}
+        onScriptDecisionStateChange={vi.fn()}
+        hasLockedAdaptation
+        hasExplicitLockedAdaptation
+        adaptationStateLabel="已锁定"
+        adaptationStateDetail="当前主方向已经锁定。"
+        selectedAdaptationName="强情绪悬疑向"
+        onNavigate={() => {}}
+        onGenerateScripts={() => {}}
+        isGeneratingScripts={false}
+      />,
+    )
+
+    expect(html).toContain('高级：查看脚本 QA 与版本历史')
+    expect(html).not.toContain('<details open=""')
+    expect(html).toContain('锁稿 / 放行')
+  })
 })

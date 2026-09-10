@@ -286,6 +286,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onGenerateAssetReference: params.onGenerateAssetReference,
         onDeleteReferenceAsset: params.onDeleteReferenceAsset,
         onUpdateReferenceAssetStatus: params.onUpdateReferenceAssetStatus,
+        onRefreshAll: params.onRefreshAll,
         onNavigateSection: params.onNavigateSection,
         onNavigateTaskSection: params.onNavigateTaskSection,
         onNavigateAssetShot: params.onNavigateAssetShot,

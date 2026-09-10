@@ -468,6 +468,31 @@ class QAWorkbenchFlowTests(unittest.TestCase):
         self.assertIn("染血账册", script.content)
         self.assertIn("钟声把画面缓缓带到寺门外", script.content)
 
+    def test_auto_fix_episode_can_run_as_persisted_background_task(self):
+        """A multi-issue LLM repair must not keep the browser request open."""
+        self.client.post(f"/api/books/{self.book_id}/qa/episodes/{self.episode}/sync")
+
+        with patch("api.server.llm_client.call_llm_json", return_value={
+            "options": [{
+                "id": "A",
+                "title": "targeted repair",
+                "strategy": "补足关键证据动作",
+                "patched_text": self.fixed_excerpt,
+            }]
+        }):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/qa/episodes/{self.episode}/auto-fix",
+                json={"mode": "auto", "rerunQa": False, "asyncMode": True, "maxIssues": 1},
+            )
+
+        self.assertEqual(response.status_code, 202)
+        task_id = response.json()["task_id"]
+        task_response = self.client.get(f"/api/books/{self.book_id}/qa/auto-fix/tasks/{task_id}")
+        self.assertEqual(task_response.status_code, 200)
+        task = task_response.json()
+        self.assertEqual(task["status"], "done")
+        self.assertEqual(task["result"]["applied_count"], 1)
+
     def test_auto_fix_issue_blocks_large_diff_by_safety_guard(self):
         sync_response = self.client.post(f"/api/books/{self.book_id}/qa/episodes/{self.episode}/sync")
         issue_id = sync_response.json()["issues"][0]["issue_id"]

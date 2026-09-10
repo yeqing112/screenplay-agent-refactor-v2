@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import ProductWorkspaceStoryboardSection, {
   buildStoryboardCanvasHandoffSummary,
   buildStoryboardCanvasPrimaryActionPlan,
+  buildStoryboardRepairActions,
 } from './ProductWorkspaceStoryboardSection'
 
 function makeShot(overrides: Record<string, unknown> = {}) {
@@ -49,6 +50,31 @@ function renderStoryboard(shots: any[], overrides: Record<string, unknown> = {})
 }
 
 describe('ProductWorkspaceStoryboardSection', () => {
+  it('keeps only the upstream release action when the storyboard gate is blocked', () => {
+    const actions = buildStoryboardRepairActions({
+      selectedShot: makeShot(),
+      storyboardGateStatus: 'blocked',
+      hasAdoptedFrame: false,
+      hasAdoptedVideo: false,
+      compilerWarnings: ['缺少场景参考图'],
+      missingReferenceBindings: [{ title: '钟楼', assetId: 'scene-1' }],
+      characterBindings: [],
+      promptQualityRepair: { hasIssue: true, issueLabels: ['提示词过短'] },
+      hasCompilerWarnings: true,
+      hasBlockingIssues: true,
+      compilerChecks: [],
+      hasRecoveryTask: true,
+      onNavigateSection: () => {},
+      onNavigateTaskSection: () => {},
+      onCompilePrompts: () => {},
+      onGenerateFrame: () => {},
+      onGenerateVideo: () => {},
+    } as any)
+
+    expect(actions).toHaveLength(1)
+    expect(actions[0]?.key).toBe('scripts-release')
+  })
+
   it('shows blocked upstream gate guidance before storyboard release', () => {
     const html = renderToStaticMarkup(
       <ProductWorkspaceStoryboardSection
@@ -136,8 +162,57 @@ describe('ProductWorkspaceStoryboardSection', () => {
 
     expect(html).toContain('\u672c\u6b21\u89c6\u9891\u8f93\u5165\u6458\u8981')
     expect(html).toContain('\u5f53\u524d\u7f16\u8bd1\u5b9e\u9645\u4f7f\u7528\uff1a1 \u5f20')
-    expect(html).toContain('image_to_video')
+    expect(html).toContain('reference_to_video')
     expect(html).toContain('\u53bb\u4efb\u52a1\u4e2d\u5fc3\u7ee7\u7eed\u56de\u6536')
+  })
+
+  it('uses image-to-video when the shot has an adopted frame but no references', () => {
+    const html = renderStoryboard([
+      makeShot({
+        assets: {
+          images: [{ id: 'img-only', title: '首帧 v1', previewUrl: 'https://example.com/frame.png', adopted: true }],
+          videos: [],
+          audios: [],
+          references: { characters: {}, scene: [], props: {} },
+        },
+      }),
+    ])
+
+    expect(html).toContain('image_to_video')
+  })
+
+  it('keeps media from before a split available for audit without treating it as current output', () => {
+    const html = renderStoryboard([
+      makeShot({
+        split_archived_assets: {
+          images: [
+            {
+              id: 'old-image',
+              kind: 'image',
+              title: '旧分镜图',
+              label: 'v1',
+            },
+          ],
+          videos: [
+            {
+              id: 'old-video',
+              kind: 'video',
+              title: '视频 3 v2',
+              label: 'v2',
+              prompt: '旧视频提示词',
+              previewUrl: 'https://example.com/old.mp4',
+              adopted: true,
+            },
+          ],
+          audios: [],
+        },
+      }),
+    ])
+
+    expect(html).toContain('拆镜前归档媒体')
+    expect(html).toContain('仅追溯，不作为当前镜头成片')
+    expect(html).toContain('视频 3 v2')
+    expect(html).toContain('查看当次提交提示词')
   })
 
   it('shows effective submitted reference payload in the video summary', () => {

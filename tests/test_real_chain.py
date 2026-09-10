@@ -184,7 +184,7 @@ def create_script_with_issues():
 """
 
 
-def test_chain_validation(story_data, scene_cards, script_content):
+def run_chain_validation(story_data, scene_cards, script_content):
     """测试链路验证"""
     print("=" * 60)
     print("真实链路测试 - 结构化修复流程")
@@ -366,7 +366,7 @@ def main():
     script_content = create_script_with_issues()
     
     # 2. 运行链路验证
-    report = test_chain_validation(story_data, scene_cards, script_content)
+    report = run_chain_validation(story_data, scene_cards, script_content)
     
     # 3. 应用修复（简化版）
     print("\n" + "=" * 60)

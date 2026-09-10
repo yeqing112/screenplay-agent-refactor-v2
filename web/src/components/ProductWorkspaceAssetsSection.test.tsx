@@ -13,6 +13,14 @@ function buildAsset(overrides: Partial<AssetSummary> = {}): AssetSummary {
     subtitle: '第 1 集默认造型',
     status: 'ref_ready',
     prompt: '人物分镜精调定妆设定板提示词',
+    confirmedPromptRaw: '人物分镜精调定妆设定板提示词',
+    structuredVariantFields: {
+      character_name: '和尚甲',
+      asset_type: 'character',
+      refined_outfit: '僧袍',
+    },
+    renderedPromptPreview: '人物分镜精调定妆设定板提示词',
+    referenceNegativePrompt: '低质量，模糊',
     shotIds: ['1-01'],
     episodeIds: [1],
     referenceCount: 1,
@@ -116,6 +124,41 @@ describe('ProductWorkspaceAssetsSection', () => {
     const html = renderSection(buildAsset())
 
     expect(html).toContain('查看来源')
+  })
+
+  it('shows a manual upload entry for the selected asset reference image', () => {
+    const html = renderSection(buildAsset())
+
+    expect(html).toContain('上传当前资产参考图')
+    expect(html).toContain('支持人物、场景、道具手动上传')
+    expect(html).toContain('上传并锁定')
+  })
+
+  it('separates structured asset facts from reference image prompt and negative prompt', () => {
+    const html = renderSection(
+      buildAsset({
+        category: 'location',
+        title: '便利店收银台',
+        prompt: '深夜便利店收银区资产描述',
+        confirmedPromptRaw: '深夜便利店收银区资产描述',
+        structuredVariantFields: {
+          scene_name: '便利店收银台',
+          asset_type: 'scene',
+          lighting_mood: '冷白荧光灯顶光',
+        },
+        renderedPromptPreview:
+          '便利店收银台 场景参考图，单张 16:9 横构图，无人物、无人脸、不出现角色。写实电影感，空间层次清晰。',
+        referenceNegativePrompt: '人物，人脸，分格，拼图',
+      }),
+    )
+
+    expect(html).toContain('资产提示词结构')
+    expect(html).toContain('参考图生成提示词')
+    expect(html).toContain('结构化资产描述')
+    expect(html).toContain('负向提示词')
+    expect(html).toContain('单张 16:9 横构图')
+    expect(html).toContain('冷白荧光灯顶光')
+    expect(html).toContain('人物，人脸，分格，拼图')
   })
 
   it('hides source prompt action when the reference has no stored prompt', () => {

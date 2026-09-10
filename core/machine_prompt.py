@@ -18,6 +18,10 @@ from core.model_adapter import sanitize_machine_prompt_text
 from core.prompt_ir import AssetBinding, ShotIR
 
 
+MINIMAX_H3_MIN_DURATION_SECONDS = 4
+MINIMAX_H3_MAX_DURATION_SECONDS = 15
+
+
 def _clean_text(value: object) -> str:
     return " ".join(str(value or "").replace("\n", " ").split()).strip()
 
@@ -76,6 +80,21 @@ def _shot_size_zh(ir: ShotIR) -> str:
 def _camera_motion_zh(ir: ShotIR) -> str:
     movement = _clean_text(ir.camera_movement).lower().replace("_", "-")
     speed = _clean_text(ir.camera_speed).lower()
+    # Structured records may carry a composed value such as
+    # ``slow_push_in``.  Split the speed prefix before looking up the camera
+    # movement so the exported machine language is a real standard term
+    # ("缓慢推进"), rather than leaking the internal enum verbatim.
+    for prefix, inferred_speed in (
+        ("very-slow-", "very_slow"),
+        ("slow-", "slow"),
+        ("medium-", "medium"),
+        ("fast-", "fast"),
+    ):
+        if movement.startswith(prefix):
+            movement = movement[len(prefix):]
+            if not speed:
+                speed = inferred_speed
+            break
     speed_prefix = {
         "very_slow": "极缓慢",
         "very-slow": "极缓慢",
@@ -108,6 +127,16 @@ def _timeline_ranges(duration: int) -> list[tuple[str, float, float]]:
     else:
         ratios = [("opening", 0.0, 0.20), ("development", 0.20, 0.75), ("landing", 0.75, 1.0)]
     return [(name, round(total * start, 2), round(total * end, 2)) for name, start, end in ratios]
+
+
+def normalize_minimax_h3_duration(value: object) -> int:
+    """Return the provider-valid H3 duration used by both export and submission."""
+
+    try:
+        duration = int(value or MINIMAX_H3_MIN_DURATION_SECONDS)
+    except (TypeError, ValueError):
+        duration = MINIMAX_H3_MIN_DURATION_SECONDS
+    return min(max(duration, MINIMAX_H3_MIN_DURATION_SECONDS), MINIMAX_H3_MAX_DURATION_SECONDS)
 
 
 def build_director_shot_text(ir: ShotIR) -> str:
@@ -326,41 +355,80 @@ def compile_machine_prompt(
     return machine_prompt
 
 
+def _h3_reference_role(asset_type: object) -> str:
+    normalized = _clean_text(asset_type).lower()
+    if normalized == "storyboard_composition":
+        return "approved shot composition, character blocking, screen direction, spatial layout, and lighting only"
+    if normalized == "scene":
+        return "scene layout, spatial proportions, and lighting"
+    if normalized == "character":
+        return "character identity, face, hair, costume, and body silhouette"
+    if normalized == "prop":
+        return "prop shape, material, color, and state"
+    return "the declared visual asset only"
+
+
+def _rescale_h3_timeline(timeline: list[dict[str, Any]], duration_seconds: int) -> list[tuple[dict[str, Any], str]]:
+    ranges = _timeline_ranges(duration_seconds)
+    return [
+        (segment, f"{start:.2f}-{end:.2f}s")
+        for segment, (_, start, end) in zip(timeline, ranges)
+        if isinstance(segment, dict)
+    ]
+
+
 def export_minimax_h3_webui(machine_prompt: dict[str, Any]) -> dict[str, Any]:
     shot = machine_prompt.get("shot") or {}
     timeline = machine_prompt.get("visual_timeline") or []
     action = machine_prompt.get("observable_action") or {}
     camera = machine_prompt.get("camera") or {}
+    source_duration = shot.get("duration_seconds")
+    duration_seconds = normalize_minimax_h3_duration(source_duration)
     refs = [
         image
         for asset in machine_prompt.get("asset_references") or []
         for image in (asset.get("reference_images") or [])
         if isinstance(asset, dict)
     ]
-    ref_sentence = (
-        f"Use the {len(refs)} provided reference image(s) as identity, scene, prop, and first-frame anchors. "
-        if refs
-        else "Use the structured asset descriptions as identity, scene, prop, and first-frame anchors. "
-    )
+    if refs:
+        reference_assignments = []
+        for index, image in enumerate(refs, start=1):
+            label = _clean_text(image.get("label")) or f"reference {index}"
+            role = _h3_reference_role(image.get("asset_type"))
+            reference_assignments.append(f"Reference image {index} ({label}): use only for {role}.")
+        ref_sentence = "Reference assignments: " + " ".join(reference_assignments) + " Do not swap the roles of reference images. "
+    else:
+        ref_sentence = "Use the structured asset descriptions only for their declared identity, scene, or prop roles. "
+
     segments = []
-    for segment in timeline:
+    for segment, time_range in _rescale_h3_timeline(timeline, duration_seconds):
         segments.append(
-            f"{segment.get('time_range_seconds')}: {segment.get('visual_action')} "
+            f"{time_range}: {segment.get('visual_action')} "
             f"Camera: {segment.get('camera_instruction')}."
         )
+
+    negative_constraints = [
+        _clean_text(item)
+        for item in (machine_prompt.get("negative_constraints") or [])
+        if _clean_text(item)
+    ]
+    hard_constraints = " ".join(negative_constraints)
+    sound = machine_prompt.get("soundscape") or {}
+    sound_cue = _clean_text(sound.get("overall_soundscape"))
 
     integrated = (
         f"[Shot {shot.get('shot_id')}] Live-action cinematic footage. "
         f"Scene: {shot.get('scene_name') or 'current scene'}. "
-        f"Duration: {shot.get('duration_seconds')} seconds. "
+        f"Duration: {duration_seconds} seconds. "
         f"{ref_sentence}"
         f"Opening state: {_rstrip_terminal_punct(action.get('start_state'))}. "
         f"Observable action timeline: {' '.join(segments)} "
         f"Final frame: {_rstrip_terminal_punct(action.get('end_state'))}. "
         f"Shot size: {camera.get('shot_size')}; camera movement: {camera.get('movement')}. "
-        f"Maintain continuity of face, costume, hair, prop state, lighting, and spatial layout."
+        f"Maintain continuity of face, costume, hair, prop state, lighting, and spatial layout. "
+        f"Hard constraints: {hard_constraints or 'No unexplained changes or extra subjects.'} "
+        f"Ambient sound cue: {sound_cue or 'Keep the scene ambience natural and restrained.'}"
     )
-    sound = machine_prompt.get("soundscape") or {}
     return {
         "target_model": "minimax-h3",
         "export_mode": "webui_copy",
@@ -372,7 +440,8 @@ def export_minimax_h3_webui(machine_prompt: dict[str, Any]) -> dict[str, Any]:
         },
         "reference_images": refs,
         "model_params": {
-            "duration_seconds": shot.get("duration_seconds"),
+            "duration_seconds": duration_seconds,
+            "source_duration_seconds": source_duration,
             "aspect_ratio": "16:9",
             "submission_policy": "export_only; paste into WebUI or convert to API payload explicitly",
         },

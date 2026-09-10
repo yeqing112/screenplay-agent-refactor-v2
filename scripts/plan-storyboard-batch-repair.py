@@ -296,6 +296,8 @@ def create_preflight_plan() -> None:
             "body": {
                 "compileReason": "batch-quality-repair-confirmed",
                 "force": True,
+                "confirmed": True,
+                "allowExternalCall": True,
             },
         }
         results.append(repaired)
@@ -314,7 +316,10 @@ def create_preflight_plan() -> None:
     )
     log(f"JSON report written: {json_path}")
     log(f"Markdown report written: {md_path}")
-    if summary["after_errors"] > 0:
+    # A fail-closed compiler response is an expected, reviewable outcome of a
+    # dry-run.  Keep the report (including the exact candidate diagnostics)
+    # available for human review instead of treating it as a script crash.
+    if summary["after_errors"] > 0 and not summary.get("repair_blocked"):
         raise RuntimeError(f"Preflight clone repair left {summary['after_errors']} error(s).")
     if status["real_apply_blocker_count"] > 0 and os.environ.get("PLAN_STORYBOARD_BATCH_REPAIR_STRICT_READY") == "1":
         raise RuntimeError(f"Preflight found {status['real_apply_blocker_count']} real apply blocker(s).")

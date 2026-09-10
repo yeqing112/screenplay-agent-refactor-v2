@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildDashboardActions,
   buildEpisodeProgress,
+  buildProjectStageProjection,
   buildScriptWorkbenchChecklist,
 } from './productWorkspaceProgress'
 
@@ -51,6 +52,30 @@ describe('productWorkspaceProgress', () => {
       targetSection: 'adaptation',
       priority: 'high',
     })
+  })
+
+  it('projects one shared current stage from the highest-priority project action', () => {
+    const projection = buildProjectStageProjection({
+      contentReady: true,
+      adaptationLocked: false,
+      episodesWithScripts: 1,
+      scriptReleasePendingCount: 1,
+      totalShots: 25,
+      visualCount: 6,
+      qaCount: 5,
+    })
+
+    expect(projection.currentStage).toBe('adaptation')
+    expect(projection.primaryAction.targetSection).toBe('adaptation')
+    expect(projection.stages.map((item) => [item.key, item.state])).toEqual([
+      ['content', 'done'],
+      ['adaptation', 'current'],
+      ['scripts', 'pending'],
+      ['assets', 'pending'],
+      ['storyboard', 'pending'],
+      ['qa', 'pending'],
+      ['delivery', 'pending'],
+    ])
   })
 
   it('builds episode progress from production artifacts', () => {

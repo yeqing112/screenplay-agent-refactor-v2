@@ -238,7 +238,15 @@ def sample_payload(book: Book, shot: StoryboardShot) -> dict[str, Any]:
 
 def compile_clone(client: TestClient, clone: dict[str, Any], sample: dict[str, Any], mode: str):
     url = f"/api/books/{batch.helper.TEMP_BOOK_ID}/storyboard/{clone['episode']}/{clone['shot_id']}/compile-prompts"
-    body = {"compileReason": f"real-llm-gray-{mode}", "force": True}
+    body = {
+        "compileReason": f"real-llm-gray-{mode}",
+        "force": True,
+        # The endpoint intentionally rejects implicit provider calls.  The
+        # gray runner is an explicit operator-controlled validation tool; in
+        # deterministic mode the provider call is still locally mocked.
+        "confirmed": True,
+        "allowExternalCall": True,
+    }
     if mode == "deterministic-mock":
         mock_payload = batch.helper.build_mock_llm_payload(sample["episode"], sample["shot_id"])
         with patch("core.llm.call_llm_json", return_value=mock_payload):

@@ -188,4 +188,24 @@ describe('ProductWorkspaceQaSection', () => {
     expect(html).toContain('承接后的首个动作')
     expect(html).toContain('立即继续')
   })
+
+  it('opens as a repair queue instead of mixing resolved history into the first view', () => {
+    const html = renderToStaticMarkup(
+      <ProductWorkspaceQaSection
+        bookId={14}
+        scripts={[]}
+        scriptDecisionState={{}}
+        hasExplicitLockedAdaptation
+        qaEntries={[]}
+        shotsByEpisode={{}}
+        onNavigate={() => {}}
+        onSelectShot={() => {}}
+      />,
+    )
+
+    expect(html).toContain('默认只显示待处理问题')
+    expect(html).toContain('高级：筛选问题范围、历史与排序')
+    expect(html).not.toContain('<details open=""')
+    expect(html).toContain('<option value="open" selected="">待处理</option>')
+  })
 })

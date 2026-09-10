@@ -35,6 +35,18 @@ export interface PublicAssetStorageMigrationPlan {
   }>
   migration_apply_supported: boolean
   migration_apply_note: string
+  confirmation_token: string
+  plan_fingerprint: string
+}
+
+export interface PublicAssetStorageMigrationRecord {
+  id: number
+  task_id: string
+  plan_fingerprint: string
+  status: string
+  result: { total?: number; migrated?: number; failed?: number }
+  error_report: Array<{ error?: string; retryable?: boolean }>
+  old_objects_deleted: boolean
 }
 
 const API = '/api/public-asset-storage'
@@ -81,6 +93,35 @@ export async function fetchPublicAssetStorageMigrationPlan(limit = 200): Promise
   if (!response.ok) {
     const detail = await readErrorMessage(response, `HTTP ${response.status}`)
     throw new Error(`生成对象存储迁移计划失败：${detail}`)
+  }
+  return response.json()
+}
+
+export async function executePublicAssetStorageMigration(plan: PublicAssetStorageMigrationPlan): Promise<{ record_id: number; task_id: string; status?: string }> {
+  const response = await fetch(`${API}/migration-plan/execute`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      confirmationToken: plan.confirmation_token,
+      limit: Math.max(1, Math.min(plan.summary.total_scanned || 200, 2000)),
+      executeWrite: true,
+      confirmed: true,
+      allowWrite: true,
+      executionConfirmationToken: 'CONFIRM_PUBLIC_ASSET_STORAGE_MIGRATION',
+    }),
+  })
+  if (!response.ok) {
+    const detail = await readErrorMessage(response, `HTTP ${response.status}`)
+    throw new Error(`对象存储迁移提交失败：${detail}`)
+  }
+  return response.json()
+}
+
+export async function fetchPublicAssetStorageMigrationRecord(recordId: number): Promise<PublicAssetStorageMigrationRecord> {
+  const response = await fetch(`${API}/migration-records/${encodeURIComponent(String(recordId))}`)
+  if (!response.ok) {
+    const detail = await readErrorMessage(response, `HTTP ${response.status}`)
+    throw new Error(`加载对象存储迁移记录失败：${detail}`)
   }
   return response.json()
 }

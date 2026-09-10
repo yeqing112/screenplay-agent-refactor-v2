@@ -358,6 +358,28 @@ function auditShot(book, shot) {
       blocking_issues: blockingDiagnostics,
     });
   }
+  // The audit must consume the exact diagnostics produced by the shared
+  // compiler.  Otherwise this external sample gate can report a false green
+  // while the product itself is warning about omitted authority facts,
+  // continuity, or variant inheritance.  Keep the diagnostic key and details
+  // intact so the report points back to the same corrective path as the UI.
+  const compilerWarnings = Array.isArray(compilerDiagnostics.warnings)
+    ? compilerDiagnostics.warnings.map(normalizeText).filter(Boolean)
+    : [];
+  for (const message of [...new Set(compilerWarnings)]) {
+    issue("compiler_warning_present", message, "warning");
+  }
+  const failedCompilerChecks = Array.isArray(compilerDiagnostics.checks)
+    ? compilerDiagnostics.checks.filter(item => item && item.passed === false)
+    : [];
+  for (const check of failedCompilerChecks) {
+    const key = normalizeText(check.key) || "unknown";
+    const message = normalizeText(check.message) || "编译诊断检查未通过。";
+    issue(`compiler_check_failed:${key}`, message, "warning", {
+      check_key: key,
+      details: Array.isArray(check.details) ? check.details : [],
+    });
+  }
 
   return {
     book_id: book.id,
@@ -525,8 +547,18 @@ async function runAudit() {
       `Storyboard prompt audit only covered ${summary.audited_shots} shots; expected at least ${MIN_AUDITED_SHOTS}.`
     );
   }
-  if (STRICT_MODE && summary.total_errors > 0) {
-    throw new Error(`Storyboard prompt audit failed with ${summary.total_errors} errors.`);
+  // `--zero-error-gate` is the production safety gate: warnings are
+  // reviewable quality debt, while errors are blockers.  The opt-in strict
+  // environment mode intentionally remains warning-free for teams that want
+  // that stronger policy.  Previously the zero-error gate also failed on
+  // advisory warnings, making its name and operational meaning inconsistent.
+  const gateFailed = ZERO_ERROR_GATE
+    ? summary.total_errors > 0
+    : STRICT_MODE && (summary.total_errors > 0 || summary.total_warnings > 0);
+  if (gateFailed) {
+    throw new Error(
+      `Storyboard prompt audit failed with ${summary.total_errors} errors and ${summary.total_warnings} warnings.`
+    );
   }
 }
 
@@ -548,7 +580,14 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  console.error(error);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch(error => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  auditShot,
+  summarize,
+};

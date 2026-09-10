@@ -260,7 +260,7 @@ export default function TaskCenterSelectedTaskPanel({
     <div className="min-w-0 rounded-xl border border-slate-800 bg-slate-900 p-5">
       {navigationSummary ? <InfoPanel tone="sky" title="恢复上下文" detail={navigationSummary.detail} label={navigationSummary.title} /> : null}
       {operationSummary ? (
-        <div className="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3">
+        <div role="status" aria-live="polite" className="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3">
           <div className="text-sm font-medium text-white">{operationSummary.title}</div>
           <div className="mt-2 text-xs leading-6 text-emerald-100/90">{operationSummary.detail}</div>
           {operationSummary.primaryLabel || operationSummary.secondaryCanvasOptions ? (
@@ -527,6 +527,14 @@ export default function TaskCenterSelectedTaskPanel({
             <div className="text-sm font-medium text-white">任务说明</div>
             <div className="mt-3 text-sm leading-6 text-slate-300">{selectedTask.detail}</div>
             <div className="mt-3 text-xs text-slate-500">{buildTaskActionHint(selectedTask)}</div>
+            {selectedTask.agentMeta ? (
+              <div className="mt-3 space-y-1 rounded-lg border border-violet-500/20 bg-violet-500/5 p-3 text-xs text-violet-100/80">
+                <div>会话状态：{selectedTask.agentMeta.sessionStatus}</div>
+                {selectedTask.agentMeta.operation ? <div>最近操作：{selectedTask.agentMeta.operation}</div> : null}
+                {selectedTask.agentMeta.evidenceFingerprint ? <div className="break-all">证据指纹：{selectedTask.agentMeta.evidenceFingerprint}</div> : null}
+                {selectedTask.agentMeta.planFingerprint ? <div className="break-all">计划指纹：{selectedTask.agentMeta.planFingerprint}</div> : null}
+              </div>
+            ) : null}
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-3">

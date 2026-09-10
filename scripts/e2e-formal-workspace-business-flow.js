@@ -5,9 +5,14 @@ const { chromium } = require("playwright");
 
 const ROOT_DIR = process.cwd();
 const WEB_DIR = path.join(ROOT_DIR, "web");
-const API_URL = process.env.E2E_API_URL || "http://127.0.0.1:8765";
-const WEB_URL = process.env.E2E_WEB_URL || "http://127.0.0.1:5173";
+// Keep the self-managed regression isolated from the formal workspace ports
+// (18765/5175) and from common local tooling.  Callers may still override
+// both URLs to test an already-running environment with E2E_START_SERVERS=0.
+const API_URL = process.env.E2E_API_URL || "http://127.0.0.1:18768";
+const WEB_URL = process.env.E2E_WEB_URL || "http://127.0.0.1:5176";
 const START_SERVERS = process.env.E2E_START_SERVERS !== "0";
+const API_PORT = Number(new URL(API_URL).port || 80);
+const WEB_PORT = Number(new URL(WEB_URL).port || 80);
 const FIXTURE_BOOK_ID = Number(process.env.E2E_BUSINESS_BOOK_ID || 999902);
 const FIXTURE_EPISODE = 1;
 const FIXTURE_SHOT_ID = 1;
@@ -83,7 +88,7 @@ import os
 from pathlib import Path
 from models import (
     Book, BookBible, Chapter, CharacterProfile, CharacterStage, EpisodeOutline, KV,
-    ProductionExportRecord, QAResult, QAIssue, SceneCharacter, SceneProp, Script,
+    DecisionPacketRecord, ProductionExportRecord, QAResult, QAIssue, SceneCharacter, SceneProp, Script,
     ScriptVersion, Session, StoryboardAcceptanceRecord, StoryboardPromptVersion,
     StoryboardShot, TaskRun, VisualEraSpec, VisualLocation, VisualMakeup, VisualProp,
     VisualReferenceAsset, init_db,
@@ -93,7 +98,7 @@ book_id = int(os.environ["E2E_BUSINESS_BOOK_ID"])
 init_db()
 with Session() as session:
     for model in [
-        ScriptVersion, QAIssue, QAResult, Script, EpisodeOutline, StoryboardAcceptanceRecord,
+        DecisionPacketRecord, ScriptVersion, QAIssue, QAResult, Script, EpisodeOutline, StoryboardAcceptanceRecord,
         StoryboardPromptVersion, StoryboardShot, VisualReferenceAsset, VisualMakeup,
         VisualProp, VisualLocation, VisualEraSpec, SceneCharacter, SceneProp,
         CharacterStage, CharacterProfile, ProductionExportRecord, TaskRun, Chapter,
@@ -565,7 +570,18 @@ async function clickWorkspaceTab(page, tabName) {
   return body;
 }
 
-async function assertBodyIncludes(page, expected, context) {
+async function assertBodyIncludes(page, expected, context, timeoutMs = 8000) {
+  try {
+    await page.waitForFunction(
+      expectedText => document.body.innerText.includes(expectedText),
+      expected,
+      { timeout: timeoutMs },
+    );
+  } catch {
+    // Preserve the final rendered body in the error below. It is much more
+    // actionable than Playwright's generic wait timeout when a panel failed
+    // to load or when an API contract changed.
+  }
   const body = await page.locator("body").innerText();
   if (!body.includes(expected)) {
     throw new Error(`${context} did not include expected text: ${expected}`);
@@ -627,10 +643,27 @@ async function runBusinessFlow() {
         throw new Error(`Legacy workspace entry is still visible: ${legacyLabel}`);
       }
     }
+    for (const navigationGroup of ["创作", "生产与检查", "管理"]) {
+      if (!workspaceText.includes(navigationGroup)) {
+        throw new Error(`Formal workspace navigation did not expose group: ${navigationGroup}`);
+      }
+    }
 
     let body = await clickWorkspaceTab(page, "内容准备");
     if (!body.includes("雨夜账册") || !body.includes("林夏发现账册异常")) {
       throw new Error("Content preparation did not expose seeded chapter business content.");
+    }
+    const contentImportPanel = page.locator("details").filter({ hasText: "高级：更换内容或导入新的小说" }).first();
+    if ((await contentImportPanel.count()) !== 1 || await contentImportPanel.evaluate(element => element.open)) {
+      throw new Error("Content replacement/import controls should be available but collapsed when a project already has content.");
+    }
+    await contentImportPanel.locator("summary").click();
+    if (!await contentImportPanel.evaluate(element => element.open)) {
+      throw new Error("Content replacement/import controls could not be expanded on demand.");
+    }
+    body = await page.locator("body").innerText();
+    if (!body.includes("上传长篇小说") || !body.includes("添加短篇小说")) {
+      throw new Error("Expanded content replacement/import controls did not retain both supported import paths.");
     }
     const chapters = await readJsonFromPage(page, `/api/books/${FIXTURE_BOOK_ID}/chapters`);
     if (chapters.length !== 2) {
@@ -671,13 +704,38 @@ async function runBusinessFlow() {
     if (!productionSkillState.locked_at || !productionSkillState.skill_id) {
       throw new Error(`Production skill lock did not persist expected state: ${JSON.stringify(productionSkillState)}`);
     }
+    const lockedSkillPanel = page.locator("details").filter({ hasText: "高级：查看或调整已锁定的 Production Skill" }).first();
+    if ((await lockedSkillPanel.count()) !== 1 || await lockedSkillPanel.evaluate(element => element.open)) {
+      throw new Error("A locked Production Skill should be summarized and collapsed by default.");
+    }
+    await lockedSkillPanel.locator("summary").click();
+    if (!await lockedSkillPanel.evaluate(element => element.open)) {
+      throw new Error("Locked Production Skill controls could not be expanded for an explicit adjustment.");
+    }
+    body = await page.locator("body").innerText();
+    if (!body.includes("解除 Skill 锁定")) {
+      throw new Error("Expanded locked Production Skill controls did not retain the explicit adjustment route.");
+    }
 
     body = await clickWorkspaceTab(page, "剧本工作台");
     if (!body.includes("林夏推门进来") && !body.includes("雨夜账册")) {
       throw new Error("Script workbench did not expose seeded episode/script context.");
     }
+    const scriptQaHistoryPanel = page.locator("details").filter({ hasText: "高级：查看脚本 QA 与版本历史" }).first();
+    if ((await scriptQaHistoryPanel.count()) !== 1 || await scriptQaHistoryPanel.evaluate(element => element.open)) {
+      throw new Error("Script QA and version history should be collapsed until the creator explicitly needs it.");
+    }
+    await scriptQaHistoryPanel.locator("summary").click();
+    if (!await scriptQaHistoryPanel.evaluate(element => element.open)) {
+      throw new Error("Script QA and version history could not be expanded on demand.");
+    }
+    body = await page.locator("body").innerText();
+    if (!body.includes("脚本 QA") || !body.includes("版本历史")) {
+      throw new Error("Expanded script QA/version history did not expose the retained production records.");
+    }
 
-    body = await clickWorkspaceTab(page, "镜头工作台");
+    await clickWorkspaceTab(page, "镜头工作台");
+    body = await assertBodyIncludes(page, "老茶馆", "Storyboard workbench");
     if (!body.includes("老茶馆") || !body.includes("染水收据")) {
       throw new Error("Storyboard workbench did not expose seeded shot and asset bindings.");
     }
@@ -715,40 +773,74 @@ async function runBusinessFlow() {
     if (!body.includes("当前修复入口") || !body.includes("重编提示词") || !body.includes("静态提示词过短") || !body.includes("运动提示词过短")) {
       throw new Error("Degraded prompt repair entry did not expose a clear short-prompt recompile action.");
     }
-
-    const promptCompileResponsePromise = page.waitForResponse(
-      response =>
-        response.url().includes(`/api/books/${FIXTURE_BOOK_ID}/storyboard/${FIXTURE_EPISODE}/${FIXTURE_REPAIR_SHOT_ID}/compile-prompts/async`)
-        && response.request().method() === "POST",
+    const promptVersionsBeforeRepair = await readJsonFromPage(
+      page,
+      `/api/books/${FIXTURE_BOOK_ID}/storyboard/${FIXTURE_EPISODE}/${FIXTURE_REPAIR_SHOT_ID}/prompt-versions`,
     );
-    await page.getByRole("button", { name: "重新编译提示词" }).click();
-    const promptCompileResponse = await promptCompileResponsePromise;
-    if (!promptCompileResponse.ok()) {
-      throw new Error(`Prompt repair compile submit failed with HTTP ${promptCompileResponse.status()}: ${await promptCompileResponse.text()}`);
+    const baselineRepairVersion = Number(promptVersionsBeforeRepair.current_version || 0);
+    if (baselineRepairVersion < 1) {
+      throw new Error(`Degraded fixture is missing its baseline Prompt Version: ${JSON.stringify(promptVersionsBeforeRepair)}`);
     }
-    const promptCompilePayload = await promptCompileResponse.json();
-    const promptTaskId = String(promptCompilePayload.task_id || "").trim();
-    if (!promptTaskId) {
-      throw new Error(`Prompt repair compile did not return task id: ${JSON.stringify(promptCompilePayload)}`);
-    }
-    const promptTask = await waitForPromptCompileTask(page, promptTaskId);
-    if (Number(promptTask.version || promptTask.prompt_version || 0) !== 2) {
-      throw new Error(`Prompt repair compile did not create v2: ${JSON.stringify(promptTask)}`);
+
+    // Prompt compilation is now a review-first DecisionPacket flow.  The E2E
+    // exercises the same evidence -> explicit model confirmation -> version
+    // confirmation path a formal-workspace user sees, using the isolated mock
+    // server started above.
+    await page.getByText("受控 Prompt Compiler 草案").click();
+    const evidenceResponsePromise = page.waitForResponse(response =>
+      response.url().includes(`/api/books/${FIXTURE_BOOK_ID}/storyboard/${FIXTURE_EPISODE}/${FIXTURE_REPAIR_SHOT_ID}/prompt-drafts`)
+      && response.request().method() === "POST",
+    );
+    await page.getByRole("button", { name: "生成证据包" }).click();
+    const evidenceResponse = await evidenceResponsePromise;
+    if (!evidenceResponse.ok()) throw new Error(`Prompt evidence request failed: ${await evidenceResponse.text()}`);
+    const evidencePayload = await evidenceResponse.json();
+    const packetId = Number(evidencePayload.packet?.id || 0);
+    if (!packetId) throw new Error(`Prompt evidence did not return a packet: ${JSON.stringify(evidencePayload)}`);
+
+    const llmResponsePromise = page.waitForResponse(response =>
+      response.url().includes(`/prompt-drafts/${packetId}/llm`) && response.request().method() === "POST",
+    );
+    page.once("dialog", dialog => dialog.accept());
+    await page.getByRole("button", { name: "确认调用 LLM" }).click();
+    const llmResponse = await llmResponsePromise;
+    if (!llmResponse.ok()) throw new Error(`Prompt candidate generation failed: ${await llmResponse.text()}`);
+
+    const confirmResponsePromise = page.waitForResponse(response =>
+      response.url().includes(`/prompt-drafts/${packetId}/confirm`) && response.request().method() === "POST",
+    );
+    page.once("dialog", dialog => dialog.accept());
+    await page.getByRole("button", { name: "确认创建新版本" }).click();
+    const confirmResponse = await confirmResponsePromise;
+    if (!confirmResponse.ok()) throw new Error(`Prompt version confirmation failed: ${await confirmResponse.text()}`);
+    const promptCompilePayload = await confirmResponse.json();
+    const confirmedRepairVersion = Number(promptCompilePayload.prompt_version || 0);
+    // Approval writes both an immutable preimage anchor and the approved
+    // prompt. Therefore the user-facing current version advances by two.
+    const expectedConfirmedRepairVersion = baselineRepairVersion + 2;
+    if (confirmedRepairVersion !== expectedConfirmedRepairVersion) {
+      throw new Error(`Prompt repair did not create a rollback anchor plus confirmed version from v${baselineRepairVersion}: ${JSON.stringify(promptCompilePayload)}`);
     }
 
     const degradedPromptVersions = await readJsonFromPage(
       page,
       `/api/books/${FIXTURE_BOOK_ID}/storyboard/${FIXTURE_EPISODE}/${FIXTURE_REPAIR_SHOT_ID}/prompt-versions`,
     );
-    if (Number(degradedPromptVersions.current_version || 0) !== 2 || (degradedPromptVersions.versions || []).length < 2) {
-      throw new Error(`Prompt repair did not persist v2 version history: ${JSON.stringify(degradedPromptVersions)}`);
+    if (Number(degradedPromptVersions.current_version || 0) !== confirmedRepairVersion || (degradedPromptVersions.versions || []).length < 3) {
+      throw new Error(`Prompt repair did not persist the confirmed version history: ${JSON.stringify(degradedPromptVersions)}`);
     }
-    const repairedVersion = (degradedPromptVersions.versions || []).find(version => Number(version.version || 0) === 2);
+    const rollbackAnchor = (degradedPromptVersions.versions || []).find(version => Number(version.version || 0) === baselineRepairVersion + 1);
+    if (String(rollbackAnchor?.meta_info?.rollback_anchor?.kind || "") !== "state_snapshot") {
+      throw new Error(`Prompt repair did not persist its preimage rollback anchor: ${JSON.stringify(rollbackAnchor)}`);
+    }
+    const repairedVersion = (degradedPromptVersions.versions || []).find(version => Number(version.version || 0) === confirmedRepairVersion);
     const repairedStatic = String(repairedVersion?.prompt_static || "");
     const repairedMotion = String(repairedVersion?.prompt_motion || "");
     const repairedSceneAssetId = String(repairedVersion?.meta_info?.structured_shot?.scene_asset_id || "");
-    if (repairedStatic.length < 80 || repairedMotion.length < 50 || !repairedSceneAssetId) {
-      throw new Error(`Prompt repair v2 did not repair prompt length and scene binding: ${JSON.stringify(repairedVersion)}`);
+    const repairedChecks = repairedVersion?.meta_info?.compiler_diagnostics?.checks || [];
+    const checkPassed = key => repairedChecks.some(check => check?.key === key && check?.passed === true);
+    if (repairedStatic.length < 50 || repairedMotion.length < 50 || !repairedSceneAssetId || !checkPassed("static_prompt_quality") || !checkPassed("motion_prompt_quality")) {
+      throw new Error(`Prompt repair v${confirmedRepairVersion} did not repair usable prompt quality and scene binding: ${JSON.stringify(repairedVersion)}`);
     }
 
     const originalShotCard = page.locator(`[data-shot-id="${FIXTURE_SHOT_ID}"]`).first();
@@ -788,13 +880,13 @@ async function runBusinessFlow() {
     }
 
     body = await clickWorkspaceTab(page, "任务中心");
-    if (!body.includes("任务中心概览") || !body.includes("QA 修复")) {
-      throw new Error("Task center did not expose project execution and QA state.");
+    if (!body.includes("现在该处理什么") || !body.includes("需要你处理") || !body.includes("正在执行") || !body.includes("历史") || !body.includes("QA 修复")) {
+      throw new Error("Task center did not expose creator-facing workflow views and QA state.");
     }
 
     body = await clickWorkspaceTab(page, "导出中心");
-    if (!body.includes("导出中心") || !body.includes("QA")) {
-      throw new Error("Delivery center did not expose delivery readiness and QA blocking state.");
+    if (!body.includes("导出中心") || !body.includes("首个阻塞入口") || !body.includes("更多交付格式、复制与历史刷新")) {
+      throw new Error("Delivery center did not expose the primary delivery blocker and collapsed advanced actions.");
     }
 
     body = await clickWorkspaceTab(page, "创作画布");
@@ -805,6 +897,34 @@ async function runBusinessFlow() {
     body = await clickWorkspaceTab(page, "模型管理");
     if (!body.includes("文本 / LLM") || !body.includes("向量 / Embedding") || !body.includes("图像 / Image") || !body.includes("视频 / Video")) {
       throw new Error("Model management did not expose the full default model chain.");
+    }
+    for (const advancedLabel of [
+      "高级：查看模型能力、协议与健康详情",
+      "管理员配置：对象存储、密钥与迁移",
+      "管理员参考：能力矩阵、供应商适配与候选模型",
+    ]) {
+      const panel = page.locator("details").filter({ hasText: advancedLabel }).first();
+      if ((await panel.count()) !== 1 || await panel.evaluate((element) => element.open)) {
+        throw new Error(`Model management advanced panel was missing or open by default: ${advancedLabel}`);
+      }
+    }
+    const modelNavigation = page.getByRole("button", { name: "模型管理", exact: true }).first();
+    await modelNavigation.focus();
+    await page.keyboard.press("Tab");
+    const focusedAfterNavigation = await page.evaluate(() => document.activeElement?.textContent?.trim() || "");
+    if (!focusedAfterNavigation.includes("刷新项目数据")) {
+      throw new Error(`Keyboard navigation did not reach the workspace action after model navigation: ${focusedAfterNavigation}`);
+    }
+    const storageAdminPanel = page.locator("details").filter({ hasText: "管理员配置：对象存储、密钥与迁移" }).first();
+    const storageAdminSummary = storageAdminPanel.locator("summary");
+    await storageAdminSummary.focus();
+    await page.keyboard.press("Enter");
+    if (!await storageAdminPanel.evaluate((element) => element.open)) {
+      throw new Error("Keyboard Enter did not expand object storage administrator configuration.");
+    }
+    await page.keyboard.press("Enter");
+    if (await storageAdminPanel.evaluate((element) => element.open)) {
+      throw new Error("Keyboard Enter did not collapse object storage administrator configuration.");
     }
 
     await clickWorkspaceTab(page, "QA 修复");
@@ -855,6 +975,15 @@ async function runBusinessFlow() {
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForTimeout(800);
     await clickWorkspaceTab(page, "QA 修复");
+    // The creator-facing default deliberately shows only unresolved work.
+    // Switch to history explicitly before inspecting the version created by
+    // the repair above; otherwise a successful repair quite correctly leaves
+    // no selected issue or version panel in the primary work queue.
+    await page.getByText("高级：筛选问题范围、历史与排序", { exact: true }).click();
+    await page.getByLabel("按处理状态筛选").selectOption("all");
+    await assertBodyIncludes(page, "信任转折缺少证据", "QA history after repair");
+    await page.getByText("高级：查看版本、差异与回滚记录", { exact: true }).click();
+    await page.waitForTimeout(200);
     body = await page.locator("body").innerText();
     if (!body.includes("v2") || !body.includes("semi_auto修复")) {
       throw new Error("QA workbench did not render the repair version after apply.");
@@ -911,11 +1040,11 @@ async function runBusinessFlow() {
 async function main() {
   if (START_SERVERS) {
     log("Starting backend and frontend servers...");
-    spawnManaged("python", ["-m", "api.server"], {
+    spawnManaged("python", ["-m", "uvicorn", "api.server:app", "--host", "127.0.0.1", "--port", String(API_PORT)], {
       name: "api",
       env: { E2E_STORYBOARD_PROMPT_MOCK: "1" },
     });
-    spawnManaged("npx", ["vite", "--host", "127.0.0.1", "--port", "5173", "--strictPort"], {
+    spawnManaged("npx", ["vite", "--host", "127.0.0.1", "--port", String(WEB_PORT), "--strictPort"], {
       cwd: WEB_DIR,
       name: "vite",
       env: { VITE_API_PROXY_TARGET: API_URL },

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import ModelRegistryModal, {
   buildPoyoPresetProfiles,
-  recommendedPoyoPresetId,
-  recommendedPoyoPresetLabel,
+  buildShapiPresetProfiles,
 } from './ModelRegistryModal'
+import AgentModelConfigPanel from './AgentModelConfigPanel'
 import {
   fetchModelRegistry,
   fetchModelRegistryDefaults,
@@ -15,16 +15,21 @@ import {
 import {
   fetchPublicAssetStorageConfig,
   fetchPublicAssetStorageMigrationPlan,
+  executePublicAssetStorageMigration,
+  fetchPublicAssetStorageMigrationRecord,
   savePublicAssetStorageConfig,
   type PublicAssetStorageConfig,
   type PublicAssetStorageMigrationPlan,
+  type PublicAssetStorageMigrationRecord,
 } from '../services/publicAssetStorage'
 import {
   buildCapabilityHealthLine,
   buildCapabilitySummary,
+  buildPublicAssetDomainRequirement,
   buildReferenceModeLabel,
   buildSyncedCapabilityParams,
   buildTaskModesLabel,
+  isProductionSafePublicAssetDomain,
 } from './productWorkspaceModels'
 import {
   isPoyoHappyHorseModel,
@@ -94,6 +99,7 @@ export default function ProductWorkspaceModelsSection() {
   const [storageState, setStorageState] = useState<ActionState | 'loading'>('loading')
   const [storageMessage, setStorageMessage] = useState('')
   const [migrationPlan, setMigrationPlan] = useState<PublicAssetStorageMigrationPlan | null>(null)
+  const [migrationRecord, setMigrationRecord] = useState<PublicAssetStorageMigrationRecord | null>(null)
 
   const refreshDefaults = useCallback(async () => {
     setDefaultsState('loading')
@@ -148,7 +154,13 @@ export default function ProductWorkspaceModelsSection() {
       setStorageConfig(saved)
       setStorageDraft((current) => ({ ...current, qiniu_access_key: '', qiniu_secret_key: '' }))
       setStorageState('success')
-      setStorageMessage(saved.enabled ? '对象存储配置已保存，H3 首帧公网中转可用。' : '对象存储配置已保存，但密钥、Bucket 或访问域名仍未完整。')
+      setStorageMessage(
+        saved.enabled && isProductionSafePublicAssetDomain(saved.qiniu_public_base_url)
+          ? '对象存储配置已保存，H3 参考资产公网中转可用。'
+          : saved.enabled
+            ? `对象存储配置已保存，但${buildPublicAssetDomainRequirement(saved.qiniu_public_base_url)}`
+            : '对象存储配置已保存，但密钥、Bucket 或访问域名仍未完整。',
+      )
     } catch (error) {
       setStorageState('error')
       setStorageMessage(error instanceof Error ? error.message : '对象存储配置保存失败')
@@ -169,6 +181,30 @@ export default function ProductWorkspaceModelsSection() {
     }
   }, [])
 
+  const executeMigrationPlan = useCallback(async () => {
+    if (!migrationPlan) return
+    if (!window.confirm(`确认迁移 ${migrationPlan.summary.requires_migration} 个资产引用到当前对象存储吗？\n\n此操作会上传新对象并改写对应引用；旧对象不会被删除。失败项不会自动重试。`)) return
+    setStorageState('saving')
+    setStorageMessage('正在提交受保护的对象存储迁移任务…')
+    try {
+      const submitted = await executePublicAssetStorageMigration(migrationPlan)
+      const refreshRecord = async () => {
+        const record = await fetchPublicAssetStorageMigrationRecord(submitted.record_id)
+        setMigrationRecord(record)
+        if (record.status === 'queued' || record.status === 'running') {
+          window.setTimeout(() => { void refreshRecord() }, 1200)
+          return
+        }
+        setStorageState(record.status === 'completed' ? 'success' : 'error')
+        setStorageMessage(record.status === 'completed' ? '对象存储迁移已完成；旧对象未删除。' : `迁移结束：成功 ${record.result.migrated || 0}，失败 ${record.result.failed || 0}。失败项可重新生成计划后人工确认重试。`)
+      }
+      await refreshRecord()
+    } catch (error) {
+      setStorageState('error')
+      setStorageMessage(error instanceof Error ? error.message : '对象存储迁移提交失败')
+    }
+  }, [migrationPlan])
+
   const openRegistry = useCallback(() => {
     setRegistryOpen(true)
     setRegistryError(null)
@@ -186,18 +222,6 @@ export default function ProductWorkspaceModelsSection() {
     () => summaries.filter((item) => item.configNeedsSync),
     [summaries],
   )
-
-  const recommendedIds = useMemo(
-    () => ({
-      image: recommendedPoyoPresetId('image'),
-    }),
-    [],
-  )
-
-  const recommendationStatus = useMemo(() => {
-    const imageReady = defaults.image?.id === recommendedIds.image
-    return { imageReady, allReady: imageReady }
-  }, [defaults.image?.id, recommendedIds.image])
 
   const overview = useMemo(() => {
     const missingCapabilities = summaries.filter((item) => item.readinessTone === 'blocked')
@@ -241,6 +265,21 @@ export default function ProductWorkspaceModelsSection() {
     })) satisfies GuidanceCard[]
   }, [])
 
+  const shapiGuidance = useMemo(() => buildShapiPresetProfiles().map((preset) => ({
+    key: preset.id,
+    name: preset.name,
+    modelName: preset.model_name,
+    useCase: preset.provider === 'shapi-gemini-image'
+      ? '正式资产与分镜静帧：将锁定的 HTTPS 参考资产以内联图片方式提交。'
+      : '无参考图的高质量文生图备选；参考图请求会被明确拒绝，避免静默失真。',
+    referenceMode: buildReferenceModeLabel(buildCapabilitySummary(preset.capability, preset)),
+    taskModes: buildTaskModesLabel(
+      Array.isArray(preset.default_params?.task_modes)
+        ? preset.default_params.task_modes.filter((item): item is string => typeof item === 'string')
+        : [],
+    ),
+  })), [])
+
   const persistRegistrySnapshot = useCallback(
     async (
       payload: ModelRegistryPayload,
@@ -271,7 +310,7 @@ export default function ProductWorkspaceModelsSection() {
     [],
   )
 
-  const syncProductionModelDefaults = useCallback(async () => {
+  const syncPoyoPresetCatalog = useCallback(async () => {
     setActionState('saving')
     setActionMessage('')
     try {
@@ -305,18 +344,16 @@ export default function ProductWorkspaceModelsSection() {
         createdCount += 1
       }
 
-      await persistRegistrySnapshot(payload, mergedProfiles, {
-        ...toSaveableDefaults(payload.defaults ?? {}),
-        image: recommendedIds.image,
-      })
+      // Presets are optional catalog entries.  They must never silently replace
+      // a user's current production default (or its configured key).
+      await persistRegistrySnapshot(payload, mergedProfiles, toSaveableDefaults(payload.defaults ?? {}))
 
       setActionState('success')
       setActionMessage(
         [
           createdCount > 0 ? `新增 ${createdCount} 个 PoYo 预设` : null,
           updatedCount > 0 ? `更新 ${updatedCount} 个预设能力字段` : null,
-          '图像默认确认为 PoYo GPT Image 2',
-          '视频默认保持不变；MiniMax H3 可在注册表中单独配置',
+          '未修改任何当前默认模型、密钥或生产路由',
         ]
           .filter(Boolean)
           .join('，') + '。',
@@ -325,7 +362,36 @@ export default function ProductWorkspaceModelsSection() {
       setActionState('error')
       setActionMessage(error instanceof Error ? error.message : '同步 PoYo 预设失败')
     }
-  }, [persistRegistrySnapshot, recommendedIds.image, registryData])
+  }, [persistRegistrySnapshot, registryData])
+
+  const addShapiImagePresets = useCallback(async () => {
+    setActionState('saving')
+    setActionMessage('')
+    try {
+      const payload = registryData ?? (await fetchModelRegistry())
+      const presetMap = new Map(buildShapiPresetProfiles().map((item) => [item.id, item]))
+      const nextProfiles = payload.profiles.map((item) => {
+        const preset = presetMap.get(item.id)
+        if (!preset) return item
+        presetMap.delete(item.id)
+        return {
+          ...preset,
+          api_key: item.api_key,
+          key_configured: item.key_configured || Boolean(item.api_key),
+          builtin: item.builtin,
+          is_default: item.is_default,
+          source: item.source,
+        }
+      })
+      nextProfiles.push(...presetMap.values())
+      await persistRegistrySnapshot(payload, nextProfiles, toSaveableDefaults(payload.defaults ?? {}))
+      setActionState('success')
+      setActionMessage('SHAPI Nano Banana 2 与 GPT Image 2 预设已添加；未修改任何默认模型或已有密钥。')
+    } catch (error) {
+      setActionState('error')
+      setActionMessage(error instanceof Error ? error.message : '添加 SHAPI 图像预设失败')
+    }
+  }, [persistRegistrySnapshot, registryData])
 
   const syncCurrentDefaultCapabilities = useCallback(async () => {
     setActionState('saving')
@@ -359,6 +425,9 @@ export default function ProductWorkspaceModelsSection() {
       setActionMessage(error instanceof Error ? error.message : '补齐默认模型能力字段失败')
     }
   }, [persistRegistrySnapshot, registryData])
+
+  const hasProductionSafeStorageDomain = Boolean(storageConfig?.enabled) && isProductionSafePublicAssetDomain(storageDraft.qiniu_public_base_url)
+  const storageDomainRequirement = buildPublicAssetDomainRequirement(storageDraft.qiniu_public_base_url)
 
   return (
     <>
@@ -394,73 +463,51 @@ export default function ProductWorkspaceModelsSection() {
           </div>
 
           <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="text-sm font-medium text-white">生产默认策略</div>
-                <div className="mt-2 text-sm leading-6 text-slate-400">
-                  图像生产默认固定使用 {recommendedPoyoPresetLabel('image')}；视频默认暂不强制切换，MiniMax H3 可在注册表中作为真实异步视频模型单独配置。
-                  这里强调“当前生产决策”，不是按模型目录自动推荐替换。
-                </div>
-              </div>
-              <span
-                className={`rounded-full border px-2 py-0.5 text-[11px] ${
-                  recommendationStatus.allReady
-                    ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-                    : 'border-amber-500/30 bg-amber-500/10 text-amber-200'
-                }`}
-              >
-                {recommendationStatus.allReady ? '图像默认已到位' : '图像默认待确认'}
-              </span>
+            <div className="text-sm font-medium text-white">当前实际生效的生产模型</div>
+            <div className="mt-2 text-sm leading-6 text-slate-400">
+              以下是正式工作台现在真正会使用的模型。不会因为目录里存在候选模型而自动切换；修改默认值、密钥或协议请进入注册表并人工保存。
             </div>
-
             <div className="mt-4 grid gap-3 md:grid-cols-2">
-              <Metric
-                title="图像默认"
-                value={
-                  recommendationStatus.imageReady
-                    ? `${recommendedPoyoPresetLabel('image')}（已生效）`
-                    : `${defaults.image?.name ?? '未配置'}（应确认为 ${recommendedPoyoPresetLabel('image')}）`
-                }
-              />
-              <Metric
-                title="视频默认"
-                value={`${defaults.video?.name ?? '未配置'}（保持现状，等待 ${recommendedPoyoPresetLabel('video')} 接入）`}
-              />
+              {summaries.map((summary) => (
+                <Metric key={`current-${summary.capability}`} title={CAPABILITY_LABELS[summary.capability]} value={summary.defaultLabel} />
+              ))}
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-3">
-              <ActionButton
-                disabled={actionState === 'saving'}
-                tone="emerald"
-                onClick={() => {
-                  void syncProductionModelDefaults()
-                }}
-              >
-                {actionState === 'saving' ? '正在同步...' : '同步 PoYo 预设并确认 GPT Image 2'}
-              </ActionButton>
-
-              {syncableDefaultSummaries.length > 0 ? (
-                <ActionButton
-                  disabled={actionState === 'saving'}
-                  tone="amber"
-                  onClick={() => {
-                    void syncCurrentDefaultCapabilities()
-                  }}
-                >
-                  补齐当前默认模型能力字段
+            <details className="mt-4 rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+              <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：添加候选模型与同步能力字段</summary>
+              <div className="mt-2 text-xs leading-6 text-slate-500">
+                这些操作只维护模型目录或补齐当前默认模型的能力描述；不会更换默认模型、覆盖密钥，也不会触发任何生成。
+              </div>
+              <div className="mt-3 flex flex-wrap gap-3">
+                <ActionButton disabled={actionState === 'saving'} tone="emerald" onClick={() => void syncPoyoPresetCatalog()}>
+                  {actionState === 'saving' ? '正在同步...' : '同步 PoYo 候选预设'}
                 </ActionButton>
-              ) : null}
-            </div>
+                <ActionButton disabled={actionState === 'saving'} tone="sky" onClick={() => void addShapiImagePresets()}>
+                  添加 SHAPI 图片候选预设
+                </ActionButton>
+                {syncableDefaultSummaries.length > 0 ? (
+                  <ActionButton disabled={actionState === 'saving'} tone="amber" onClick={() => void syncCurrentDefaultCapabilities()}>
+                    补齐当前默认模型能力字段
+                  </ActionButton>
+                ) : null}
+              </div>
+            </details>
 
             {actionMessage ? (
-              <div className={`mt-3 text-xs leading-6 ${actionState === 'error' ? 'text-rose-300' : 'text-slate-400'}`}>
+              <div role="status" aria-live="polite" className={`mt-3 text-xs leading-6 ${actionState === 'error' ? 'text-rose-300' : 'text-slate-400'}`}>
                 {actionMessage}
               </div>
             ) : null}
+            <AgentModelConfigPanel />
           </div>
 
-          <div className="mt-5 grid gap-4">
-            {summaries.map((summary) => (
+          <details className="mt-5 rounded-xl border border-slate-800 bg-slate-950/30 p-4">
+            <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看模型能力、协议与健康详情</summary>
+            <div className="mt-2 text-xs leading-6 text-slate-500">
+              这里用于排查供应商适配、参考图能力与轮询策略。日常创作只需关注上方的生产模型状态。
+            </div>
+            <div className="mt-4 grid gap-4">
+              {summaries.map((summary) => (
               <div key={summary.capability} className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -515,33 +562,59 @@ export default function ProductWorkspaceModelsSection() {
               </div>
             ))}
 
-            {defaultsState === 'error' ? (
-              <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
+              {defaultsState === 'error' ? (
+              <div role="alert" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
                 默认模型信息加载失败。当前可以先打开注册表检查配置、密钥和连通性。
               </div>
             ) : null}
-          </div>
+            </div>
+          </details>
         </div>
 
         <div className="min-w-0 space-y-6">
           <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <div className="text-sm font-medium text-white">对象存储 / 首帧公网中转</div>
+                <div className="text-sm font-medium text-white">对象存储 / 参考资产公网中转</div>
                 <div className="mt-2 text-sm leading-6 text-slate-400">
-                  本地工作台生成的首帧需要先进入公网对象存储，MiniMax H3 才能稳定拉取。Secret 不会回显；留空会保留后台已保存密钥。
+                  本地工作台生成或手动上传的参考图、分镜图需要先进入公网对象存储，MiniMax H3 才能稳定拉取。Secret 不会回显；留空会保留后台已保存密钥。
                 </div>
               </div>
               <span
                 className={`rounded-full border px-2 py-0.5 text-[11px] ${
-                  storageConfig?.enabled
+                  hasProductionSafeStorageDomain
                     ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
                     : 'border-amber-500/30 bg-amber-500/10 text-amber-200'
                 }`}
               >
-                {storageConfig?.enabled ? '中转已配置' : storageState === 'loading' ? '读取中' : '待配置'}
+                {storageConfig?.enabled
+                  ? hasProductionSafeStorageDomain
+                    ? '中转可用'
+                    : '需 HTTPS 域名'
+                  : storageState === 'loading'
+                    ? '读取中'
+                    : '待配置'}
               </span>
             </div>
+
+            <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 p-3 text-sm leading-6 text-slate-300">
+              {storageConfig?.enabled && !hasProductionSafeStorageDomain
+                ? `对象存储密钥和 Bucket 已配置，但${storageDomainRequirement}`
+                : storageConfig?.enabled
+                  ? '参考资产可通过已配置的公网中转供视频模型读取。'
+                : '视频生成需要先由管理员完成对象存储配置，确保参考资产可被外部模型读取。'}
+            </div>
+            {storageConfig?.enabled && !hasProductionSafeStorageDomain ? (
+              <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-6 text-amber-100">
+                {storageDomainRequirement}
+              </div>
+            ) : null}
+
+            <details className="mt-4 rounded-lg border border-slate-800 bg-slate-950/30 p-3">
+              <summary className="cursor-pointer text-sm font-medium text-slate-300">管理员配置：对象存储、密钥与迁移</summary>
+              <div className="mt-2 text-xs leading-6 text-slate-500">
+                此处包含 Bucket、访问域名、密钥和资产迁移。保存或迁移都会影响生产基础设施，请仅由管理员操作。
+              </div>
 
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               <Field label="Provider">
@@ -622,7 +695,7 @@ export default function ProductWorkspaceModelsSection() {
             <div className="mt-4 grid gap-3 md:grid-cols-3">
               <Metric title="AccessKey" value={storageConfig?.qiniu_access_key_configured ? '已保存' : '未保存'} />
               <Metric title="SecretKey" value={storageConfig?.qiniu_secret_key_configured ? '已保存' : '未保存'} />
-              <Metric title="当前限制" value={storageDraft.qiniu_public_base_url.includes('clouddn.com') ? '七牛测试域名：不支持 HTTPS / 会回收' : '自定义域名'} />
+              <Metric title="当前限制" value={hasProductionSafeStorageDomain ? 'HTTPS 自定义域名' : '需 HTTPS 自定义域名'} />
             </div>
 
             <div className="mt-4 flex flex-wrap gap-3">
@@ -632,13 +705,16 @@ export default function ProductWorkspaceModelsSection() {
               <ActionButton disabled={storageState === 'saving'} tone="amber" onClick={() => void loadMigrationPlan()}>
                 生成迁移计划
               </ActionButton>
+              {migrationPlan?.migration_apply_supported && migrationPlan.summary.requires_migration > 0 ? <ActionButton disabled={storageState === 'saving'} tone="amber" onClick={() => void executeMigrationPlan()}>
+                确认执行迁移
+              </ActionButton> : null}
               <ActionButton disabled={storageState === 'saving'} tone="slate" onClick={() => void refreshStorageConfig()}>
                 刷新配置
               </ActionButton>
             </div>
 
             {storageMessage ? (
-              <div className={`mt-3 text-xs leading-6 ${storageState === 'error' ? 'text-rose-300' : 'text-slate-400'}`}>
+              <div role="status" aria-live="polite" className={`mt-3 text-xs leading-6 ${storageState === 'error' ? 'text-rose-300' : 'text-slate-400'}`}>
                 {storageMessage}
               </div>
             ) : null}
@@ -656,8 +732,20 @@ export default function ProductWorkspaceModelsSection() {
                 <div className="mt-2 text-slate-500">{migrationPlan.migration_apply_note}</div>
               </div>
             ) : null}
+            {migrationRecord ? <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950/70 p-3 text-xs leading-6 text-slate-300">
+              <div className="font-medium text-white">迁移执行记录 · {migrationRecord.status}</div>
+              <div className="mt-1">成功：{migrationRecord.result.migrated || 0} · 失败：{migrationRecord.result.failed || 0} · 旧对象删除：否</div>
+              {migrationRecord.error_report.length ? <div className="mt-1 text-amber-200">存在 {migrationRecord.error_report.length} 个失败项；系统未自动重试，请重新生成当前计划后再人工确认。</div> : null}
+            </div> : null}
+            </details>
           </div>
 
+          <details className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+            <summary className="cursor-pointer text-sm font-medium text-slate-300">管理员参考：能力矩阵、供应商适配与候选模型</summary>
+            <div className="mt-2 text-xs leading-6 text-slate-500">
+              这些是接入和排障资料，不会改变当前默认模型或触发生成。
+            </div>
+            <div className="mt-5 space-y-6">
           <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
             <div className="text-sm font-medium text-white">能力矩阵</div>
             <div className="mt-3 text-sm leading-6 text-slate-400">
@@ -746,6 +834,32 @@ export default function ProductWorkspaceModelsSection() {
               ))}
             </div>
           </div>
+
+          <div className="rounded-xl border border-sky-500/20 bg-slate-900 p-5">
+            <div className="text-sm font-medium text-white">SHAPI 图片模型接入</div>
+            <div className="mt-3 text-sm leading-6 text-slate-400">
+              Nano Banana 2 走 Gemini 原生图片协议并保留参考资产；GPT Image 2 走 OpenAI Images 协议，当前只开放无参考图文生图，避免把资产约束静默丢弃。
+            </div>
+            <div className="mt-4 grid gap-3">
+              {shapiGuidance.map((item) => (
+                <div key={item.key} className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-medium text-white">{item.name}</div>
+                      <div className="mt-1 text-xs text-slate-500">{item.modelName}</div>
+                    </div>
+                    <Pill>{item.referenceMode}</Pill>
+                  </div>
+                  <div className="mt-3 grid gap-3 md:grid-cols-2">
+                    <Metric title="适用场景" value={item.useCase} />
+                    <Metric title="任务模式" value={item.taskModes} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+            </div>
+          </details>
         </div>
       </div>
 
@@ -858,16 +972,16 @@ function describePresetUseCase(profile: ModelProfileRecord) {
 function describePresetRecommendation(profile: ModelProfileRecord) {
   switch (normalizePoyoModelName(profile.model_name)) {
     case 'gpt-image-2':
-      return '当前项目生图默认。'
+      return '可选的正式生图候选；只有在注册表中人工设为默认后才会生效。'
     case 'seedream-5-0-lite-api':
       return '保留为可选图像备选，不替换当前默认。'
     case 'seedance-2':
       return '保留为可选视频备选，暂不设为默认。'
     case 'nano-banana-2':
-      return '建议作为探索型备选。'
+      return '可作为探索型候选；不代表当前默认。'
     case 'happy-horse-1-1':
       return '建议保留为参考图驱动视频的补充链路。'
     default:
-      return '建议作为专项镜头或高规格输出的补充模型。'
+      return '可作为专项镜头或高规格输出候选；不代表当前默认。'
   }
 }

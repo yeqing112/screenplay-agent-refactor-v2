@@ -14,6 +14,22 @@ body {
   overflow: hidden;
 }
 
+/* The formal workspace contains many compact controls. A consistent keyboard
+   focus ring prevents the active control from disappearing in the dark UI. */
+:where(button, a, input, select, textarea, summary, [role="button"], [role="tab"]):focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

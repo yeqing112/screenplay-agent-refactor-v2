@@ -298,6 +298,22 @@ class QAAgentTests(unittest.TestCase):
         self.assertEqual(result["structure_summary"]["layer_counts"]["fact_layer"], 1)
         self.assertEqual(result["structure_summary"]["layer_counts"]["scene_execution_layer"], 1)
 
+    def test_structural_preflight_accepts_equivalent_markdown_scene_endings(self):
+        script = "\n".join([
+            "## 场景1：钟楼大厅",
+            "林晚合上清单，走向出口。",
+            "**[场景结束]**",
+            "---",
+            "## 场景2：钟楼阁楼",
+            "林晚回头看了一眼裂开的钟面。",
+            "*（悬念未解，真相仍在迷雾之中）*",
+            "[画面渐隐]",
+        ])
+
+        issues = QAAgent(self.book_id)._structural_preflight_check(script)
+
+        self.assertEqual(issues, [])
+
     def test_qa_agent_uses_normalization_when_salvage_is_low_fidelity(self):
         responses = [
             "not json at all",

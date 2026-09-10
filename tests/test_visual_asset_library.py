@@ -1,4 +1,5 @@
 import unittest
+from io import BytesIO
 from datetime import datetime, timedelta
 import json
 from urllib.parse import unquote
@@ -6,7 +7,7 @@ from urllib.parse import unquote
 from fastapi.testclient import TestClient
 
 from api.server import app
-from models import Session, StoryboardShot, VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset, init_db
+from models import AssetSemanticGovernanceRecord, Session, StoryboardShot, VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset, init_db
 
 
 class VisualAssetLibraryTests(unittest.TestCase):
@@ -18,6 +19,7 @@ class VisualAssetLibraryTests(unittest.TestCase):
     def setUp(self):
         self.book_id = 990101
         with Session() as session:
+            session.query(AssetSemanticGovernanceRecord).filter(AssetSemanticGovernanceRecord.book_id == self.book_id).delete()
             session.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == self.book_id).delete()
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
             session.query(VisualMakeup).filter(VisualMakeup.book_id == self.book_id).delete()
@@ -26,6 +28,13 @@ class VisualAssetLibraryTests(unittest.TestCase):
 
             location = VisualLocation(book_id=self.book_id, name="Forest Camp")
             prop = VisualProp(book_id=self.book_id, name="Clay Bowl")
+            location.description = "Forest camp structured scene prompt."
+            location.visual_prompt_zh = "森林营地结构化场景提示词。"
+            location.core_prompt_zh = "森林营地核心空间锚点。"
+            location.lighting_mood = "冷月顶光；林小夏面部处于阴影中；货架反光。"
+            prop.description = "Clay bowl structured prop prompt."
+            prop.visual_prompt_zh = "陶碗结构化道具提示词。"
+            prop.core_prompt_zh = "陶碗核心材质锚点。"
             makeup = VisualMakeup(book_id=self.book_id, episode=1, character_name="Ji You")
             shot = StoryboardShot(
                 book_id=self.book_id,
@@ -45,12 +54,45 @@ class VisualAssetLibraryTests(unittest.TestCase):
 
     def tearDown(self):
         with Session() as session:
+            session.query(AssetSemanticGovernanceRecord).filter(AssetSemanticGovernanceRecord.book_id == self.book_id).delete()
             session.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == self.book_id).delete()
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
             session.query(VisualMakeup).filter(VisualMakeup.book_id == self.book_id).delete()
             session.query(VisualProp).filter(VisualProp.book_id == self.book_id).delete()
             session.query(VisualLocation).filter(VisualLocation.book_id == self.book_id).delete()
             session.commit()
+
+    def test_manual_reference_upload_supports_character_scene_and_prop_assets(self):
+        one_pixel_png = (
+            b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01"
+            b"\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc\xf8\x0f"
+            b"\x00\x01\x01\x01\x00\x18\xdd\x8d\xb0\x00\x00\x00\x00IEND\xaeB`\x82"
+        )
+        targets = [
+            ("character", self.makeup_id, "Ji You"),
+            ("scene", self.location_id, "Forest Camp"),
+            ("prop", self.prop_id, "Clay Bowl"),
+        ]
+
+        for asset_type, asset_id, asset_name in targets:
+            response = self.client.post(
+                f"/api/books/{self.book_id}/visual-assets/{asset_type}/{asset_id}/manual-reference-assets",
+                data={"assetName": asset_name, "notes": f"manual {asset_type} reference"},
+                files={"file": (f"{asset_type}.png", BytesIO(one_pixel_png), "image/png")},
+            )
+            self.assertEqual(response.status_code, 200, response.text)
+            payload = response.json()
+            self.assertEqual(payload["asset_type"], asset_type)
+            self.assertEqual(payload["asset_id"], str(asset_id))
+            self.assertEqual(payload["reference"]["status"], "locked")
+            self.assertEqual(payload["reference"]["model"], "manual-upload")
+            self.assertTrue(payload["reference"]["image_url"].startswith("/api/prototyping/manual-media/"))
+
+        with Session() as session:
+            rows = session.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == self.book_id).all()
+            self.assertEqual(len(rows), 3)
+            self.assertEqual({row.asset_type for row in rows}, {"character", "scene", "prop"})
+            self.assertTrue(all(row.status == "locked" for row in rows))
 
     def test_visual_assets_endpoint_returns_defaults(self):
         response = self.client.get(f"/api/books/{self.book_id}/visual-assets")
@@ -60,14 +102,93 @@ class VisualAssetLibraryTests(unittest.TestCase):
         self.assertEqual(payload["book_id"], self.book_id)
         self.assertEqual(payload["locations"][0]["asset_status"], "draft")
         self.assertEqual(payload["locations"][0]["jimeng_ref_name"], "")
+        self.assertEqual(payload["locations"][0]["description"], "Forest camp structured scene prompt.")
+        self.assertEqual(payload["locations"][0]["visual_prompt_zh"], "森林营地结构化场景提示词。")
+        self.assertEqual(payload["locations"][0]["core_prompt_zh"], "森林营地核心空间锚点。")
+        self.assertEqual(payload["locations"][0]["confirmed_prompt_raw"], "森林营地结构化场景提示词。")
+        self.assertIn("Forest Camp 场景参考图", payload["locations"][0]["rendered_prompt_preview"])
+        self.assertIn("单张 16:9 横构图", payload["locations"][0]["rendered_prompt_preview"])
+        self.assertIn("无人物、无人脸、不出现角色", payload["locations"][0]["rendered_prompt_preview"])
+        self.assertIn("写实电影感", payload["locations"][0]["rendered_prompt_preview"])
+        self.assertIn("冷月顶光", payload["locations"][0]["rendered_prompt_preview"])
+        self.assertIn("货架反光", payload["locations"][0]["rendered_prompt_preview"])
+        self.assertNotIn("林小夏", payload["locations"][0]["rendered_prompt_preview"])
+        self.assertNotIn("面部", payload["locations"][0]["rendered_prompt_preview"])
+        self.assertEqual(payload["locations"][0]["structured_variant_fields"]["scene_name"], "Forest Camp")
+        self.assertIn("人物", payload["locations"][0]["reference_negative_prompt"])
+        self.assertIn("分格", payload["locations"][0]["reference_negative_prompt"])
         self.assertEqual(payload["props"][0]["asset_status"], "draft")
+        self.assertEqual(payload["props"][0]["description"], "Clay bowl structured prop prompt.")
+        self.assertEqual(payload["props"][0]["visual_prompt_zh"], "陶碗结构化道具提示词。")
+        self.assertEqual(payload["props"][0]["core_prompt_zh"], "陶碗核心材质锚点。")
+        self.assertEqual(payload["props"][0]["confirmed_prompt_raw"], "陶碗结构化道具提示词。")
+        self.assertIn("Clay Bowl 道具参考图", payload["props"][0]["rendered_prompt_preview"])
+        self.assertIn("主体明确", payload["props"][0]["rendered_prompt_preview"])
+        self.assertEqual(payload["props"][0]["structured_variant_fields"]["prop_name"], "Clay Bowl")
         self.assertEqual(payload["characters"][0]["asset_status"], "draft")
         self.assertEqual(payload["locations"][0]["variant_scope"], "")
         self.assertEqual(payload["locations"][0]["scope_label"], "")
         self.assertEqual(payload["locations"][0]["stage_name"], "")
+        self.assertIn("references", payload["locations"][0])
+        self.assertIn("reference_assets", payload["locations"][0])
+        self.assertEqual(payload["locations"][0]["reference_assets"], payload["locations"][0]["references"])
         self.assertEqual(payload["props"][0]["variant_scope"], "")
         self.assertEqual(payload["props"][0]["scope_label"], "")
         self.assertEqual(payload["props"][0]["stage_name"], "")
+        self.assertIn("references", payload["props"][0])
+        self.assertIn("reference_assets", payload["props"][0])
+        self.assertEqual(payload["props"][0]["reference_assets"], payload["props"][0]["references"])
+
+    def test_prop_reference_contract_removes_legacy_multi_view_boilerplate(self):
+        from api.server import _build_prop_asset_prompt_contract
+
+        with Session() as session:
+            prop = session.query(VisualProp).filter(VisualProp.id == self.prop_id).first()
+            prop.visual_prompt_zh = (
+                "道具视觉描述，高质量写实道具多角度展示图，横向构图，2行3列干净网格排版，"
+                "六个极正视角：绝对正前方视图、绝对正后方视图。"
+                "深色桃花心木，黄铜机构，玻璃表面有斜向裂痕，指针停在11:47。"
+                "画面中不得出现任何人物、角色、手、脚、人脸、场景、建筑、自然景观。"
+            )
+            session.commit()
+            contract = _build_prop_asset_prompt_contract(prop)
+
+        rendered = contract["rendered_prompt_preview"]
+        self.assertIn("深色桃花心木", rendered)
+        self.assertIn("斜向裂痕", rendered)
+        self.assertIn("单张 1:1 或 4:3", rendered)
+        self.assertIn("道具完整入画", rendered)
+        self.assertIn("主体不裁切", rendered)
+        self.assertNotIn("2行3列", rendered)
+        self.assertNotIn("多角度展示图", rendered)
+        self.assertNotIn("六个极正视角", rendered)
+        self.assertNotIn("不得出现任何人物", rendered)
+        self.assertNotIn("关联人物", rendered)
+        self.assertNotIn("林小夏", rendered)
+        self.assertIn("safe_reference_description", contract["structured_variant_fields"])
+
+    def test_reference_version_counts_canonical_history_when_asset_is_unbound(self):
+        from api.server import _next_reference_asset_version
+
+        with Session() as session:
+            session.add_all([
+                VisualReferenceAsset(
+                    book_id=self.book_id, episode=1, asset_type="prop", asset_id=str(self.prop_id),
+                    asset_name="Clay Bowl", image_url="/old-a.png", status="stale",
+                    meta_info=json.dumps({"version": "v1"}, ensure_ascii=False),
+                ),
+                VisualReferenceAsset(
+                    book_id=self.book_id, episode=1, asset_type="prop", asset_id=str(self.prop_id),
+                    asset_name="Clay Bowl", image_url="/old-b.png", status="candidate",
+                    meta_info=json.dumps({"version": "v1"}, ensure_ascii=False),
+                ),
+            ])
+            session.commit()
+
+        self.assertEqual(
+            _next_reference_asset_version(self.book_id, 1, "prop", "Clay Bowl", str(self.prop_id)),
+            3,
+        )
 
     def test_scene_and_prop_formal_variant_metadata_round_trip_through_outputs(self):
         with Session() as session:
@@ -133,6 +254,104 @@ class VisualAssetLibraryTests(unittest.TestCase):
         self.assertEqual(payload["jimeng_ref_name"], "@forest-camp")
         self.assertEqual(payload["negative_prompt"], "no modern objects")
         self.assertEqual(payload["asset_status"], "locked")
+
+    def test_asset_semantic_governance_draft_is_read_only_and_confirm_is_guarded(self):
+        from unittest.mock import patch
+        with Session() as session:
+            makeup = session.query(VisualMakeup).filter(VisualMakeup.id == self.makeup_id).first()
+            makeup.refined_outfit = "穿着白色连衣裙，长发披肩"
+            makeup.hair_style = "穿着白色连衣裙，长发披肩"
+            shot = session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).first()
+            shot.meta_info = json.dumps({"structured_shot": {"character_asset_ids": [str(self.makeup_id)]}}, ensure_ascii=False)
+            session.commit()
+
+        compiler_result = {
+            "proposed_fields": {"refined_outfit": "白色连衣裙", "hair_style": "长发披肩"},
+            "field_moves": [{"source_field": "hair_style", "target_field": "refined_outfit", "text": "白色连衣裙"}],
+            "shot_layer_extractions": [],
+            "rationale": ["服装与发型属于不同的稳定人物外观字段。"],
+            "affected_shots": [],
+        }
+        with patch("api.server.llm_client.call_llm_json", return_value=compiler_result):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/visual-assets/character/{self.makeup_id}/semantic-governance-drafts"
+            )
+        self.assertEqual(response.status_code, 200, response.text)
+        evidence = response.json()
+        self.assertFalse(evidence["llm_called"])
+        with patch("api.server.llm_client.call_llm_json", return_value=compiler_result) as mock_call:
+            response = self.client.post(
+                f"/api/books/{self.book_id}/visual-assets/character/{self.makeup_id}/semantic-governance-drafts/llm-draft",
+                json={"packetFingerprint": evidence["plan_fingerprint"], "confirmed": True, "allowExternalCall": True},
+            )
+        self.assertEqual(response.status_code, 200, response.text)
+        mock_call.assert_called_once()
+        draft = response.json()
+        repeated_draft = self.client.post(
+            f"/api/books/{self.book_id}/visual-assets/character/{self.makeup_id}/semantic-governance-drafts/llm-draft",
+            json={"packetFingerprint": evidence["plan_fingerprint"], "confirmed": True, "allowExternalCall": True},
+        )
+        self.assertEqual(repeated_draft.status_code, 200, repeated_draft.text)
+        self.assertTrue(repeated_draft.json()["deduplicated"])
+        mock_call.assert_called_once()
+        self.assertTrue(draft["requires_confirmation"])
+        self.assertEqual(draft["proposed_fields"]["hair_style"], "长发披肩")
+        self.assertEqual(draft["affected_shots"][0]["composite_shot_id"], "1-1")
+
+        with Session() as session:
+            makeup = session.query(VisualMakeup).filter(VisualMakeup.id == self.makeup_id).first()
+            self.assertEqual(makeup.hair_style, "穿着白色连衣裙，长发披肩")
+            self.assertEqual(
+                session.query(AssetSemanticGovernanceRecord)
+                .filter(AssetSemanticGovernanceRecord.book_id == self.book_id)
+                .count(),
+                1,
+            )
+
+        unguarded = self.client.post(
+            f"/api/books/{self.book_id}/visual-assets/character/{self.makeup_id}/semantic-governance-drafts/confirm",
+            json={"planFingerprint": draft["plan_fingerprint"], "confirmed": True},
+        )
+        self.assertEqual(unguarded.status_code, 400)
+        confirmed = self.client.post(
+            f"/api/books/{self.book_id}/visual-assets/character/{self.makeup_id}/semantic-governance-drafts/confirm",
+            json={"planFingerprint": draft["plan_fingerprint"], "confirmed": True, "allowWrite": True},
+        )
+        self.assertEqual(confirmed.status_code, 200, confirmed.text)
+        self.assertEqual(confirmed.json()["recompile_plan_status"], "pending_recompile")
+        repeated = self.client.post(
+            f"/api/books/{self.book_id}/visual-assets/character/{self.makeup_id}/semantic-governance-drafts/confirm",
+            json={"planFingerprint": draft["plan_fingerprint"], "confirmed": True, "allowWrite": True},
+        )
+        self.assertEqual(repeated.status_code, 200, repeated.text)
+        self.assertTrue(repeated.json()["already_confirmed"])
+        with Session() as session:
+            makeup = session.query(VisualMakeup).filter(VisualMakeup.id == self.makeup_id).first()
+            self.assertEqual(makeup.refined_outfit, "白色连衣裙")
+            self.assertEqual(makeup.hair_style, "长发披肩")
+            shot = session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).first()
+            self.assertTrue(json.loads(shot.meta_info)["prompt_compiler"]["recompile_required"])
+
+    def test_asset_semantic_governance_rejects_stale_source_snapshot(self):
+        from unittest.mock import patch
+
+        compiler_result = {
+            "proposed_fields": {"lighting_mood": "冷月顶光"},
+            "field_moves": [], "shot_layer_extractions": [], "rationale": [], "affected_shots": [],
+        }
+        response = self.client.post(f"/api/books/{self.book_id}/visual-assets/scene/{self.location_id}/semantic-governance-drafts")
+        self.assertEqual(response.status_code, 200, response.text)
+        evidence = response.json()
+        with Session() as session:
+            location = session.query(VisualLocation).filter(VisualLocation.id == self.location_id).first()
+            location.lighting_mood = "已被其他编辑更新"
+            session.commit()
+        with patch("api.server.llm_client.call_llm_json", return_value=compiler_result):
+            stale = self.client.post(
+                f"/api/books/{self.book_id}/visual-assets/scene/{self.location_id}/semantic-governance-drafts/llm-draft",
+                json={"packetFingerprint": evidence["plan_fingerprint"], "confirmed": True, "allowExternalCall": True},
+            )
+        self.assertEqual(stale.status_code, 409)
 
     def test_reference_assets_round_trip_through_visual_assets_endpoint(self):
         create_response = self.client.post(
@@ -286,7 +505,7 @@ class VisualAssetLibraryTests(unittest.TestCase):
         self.assertEqual(len(storyboard_refs), 1)
         self.assertEqual(storyboard_refs[0]["metadata"]["referenceToken"], "@forest-camp-b")
 
-    def test_patch_visual_asset_shot_links_resyncs_active_reference(self):
+    def test_patch_visual_asset_shot_links_invalidates_legacy_reference(self):
         created = self.client.post(
             f"/api/books/{self.book_id}/visual-reference-assets",
             json={
@@ -310,9 +529,12 @@ class VisualAssetLibraryTests(unittest.TestCase):
 
         outputs_response = self.client.get(f"/api/pipeline/book/{self.book_id}/outputs")
         outputs = outputs_response.json()
-        storyboard_refs = outputs["storyboard"][0]["asset_links"]["references"]["props"]["Clay Bowl"]
-        self.assertEqual(len(storyboard_refs), 1)
-        self.assertEqual(storyboard_refs[0]["metadata"]["referenceToken"], "@clay-bowl-2")
+        storyboard_props = outputs["storyboard"][0]["asset_links"]["references"].get("props", {})
+        self.assertNotIn("Clay Bowl", storyboard_props)
+        listed = self.client.get(f"/api/books/{self.book_id}/visual-assets").json()
+        prop = next(item for item in listed["props"] if item["id"] == self.prop_id)
+        reference = next(item for item in prop["references"] if item["reference_token"] == "@clay-bowl-2")
+        self.assertEqual(reference["status"], "stale")
 
     def test_reference_asset_create_can_fallback_to_meta_shot_id_when_asset_has_no_bound_shots(self):
         create_response = self.client.post(
@@ -662,6 +884,45 @@ class VisualAssetLibraryTests(unittest.TestCase):
         storyboard_refs = outputs_response.json()["storyboard"][0]["asset_links"]["references"]["scene"]
         self.assertEqual(len(storyboard_refs), 1)
         self.assertEqual(storyboard_refs[0]["metadata"]["referenceToken"], "@forest-camp-new")
+
+    def test_visual_assets_endpoint_orders_locked_reference_first(self):
+        now = datetime.utcnow()
+        with Session() as session:
+            session.add_all([
+                VisualReferenceAsset(
+                    book_id=self.book_id,
+                    episode=1,
+                    asset_type="scene",
+                    asset_id=str(self.location_id),
+                    asset_name="Forest Camp",
+                    image_url="https://example.com/forest-camp-candidate.png",
+                    reference_token="@forest-camp-candidate",
+                    status="candidate",
+                    created_at=now,
+                    updated_at=now,
+                ),
+                VisualReferenceAsset(
+                    book_id=self.book_id,
+                    episode=1,
+                    asset_type="scene",
+                    asset_id=str(self.location_id),
+                    asset_name="Forest Camp",
+                    image_url="https://example.com/forest-camp-locked.png",
+                    reference_token="@forest-camp-locked",
+                    status="locked",
+                    created_at=now - timedelta(minutes=10),
+                    updated_at=now - timedelta(minutes=10),
+                ),
+            ])
+            session.commit()
+
+        response = self.client.get(f"/api/books/{self.book_id}/visual-assets")
+        self.assertEqual(response.status_code, 200)
+        location = response.json()["locations"][0]
+        self.assertEqual(location["references"][0]["reference_token"], "@forest-camp-locked")
+        self.assertEqual(location["reference_assets"][0]["reference_token"], "@forest-camp-locked")
+        self.assertEqual(location["primary_reference_token"], "@forest-camp-locked")
+        self.assertEqual(location["locked_reference_token"], "@forest-camp-locked")
 
 
 if __name__ == "__main__":

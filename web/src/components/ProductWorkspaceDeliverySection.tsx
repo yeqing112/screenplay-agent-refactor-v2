@@ -741,21 +741,27 @@ export default function ProductWorkspaceDeliverySection({
                   </div>
                 ) : null}
 
-                <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
-                  <div className="text-sm font-medium text-white">阻塞清单</div>
-                  {selectedReadiness.blockedItems.length > 0 ? (
-                    <div className="mt-3 space-y-3">
-                      {selectedReadiness.blockedItems.map((item) => (
+                {selectedReadiness.blockedItems.length > 1 ? (
+                  <details className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                    <summary className="cursor-pointer text-sm font-medium text-slate-300">
+                      还有 {selectedReadiness.blockedItems.length - 1} 项交付检查待查看
+                    </summary>
+                    <div className="mt-1 text-xs leading-5 text-slate-500">先完成上面的首个阻塞项；需要安排后续工作时再展开。</div>
+                    <div className="mt-4 space-y-3">
+                      {selectedReadiness.blockedItems.slice(1).map((item) => (
                         <BlockedItemCard key={`${selectedReadiness.episode}-${item.code}`} item={item} onNavigate={onNavigate} />
                       ))}
                     </div>
-                  ) : (
-                    <div className="mt-3 text-sm text-emerald-300">当前没有阻塞项，可以进入交付记录或导出 JSON。</div>
-                  )}
-                </div>
+                  </details>
+                ) : !primaryBlockedItem ? (
+                  <div className="mt-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+                    当前没有交付阻塞项，可以生成交付记录或导出 JSON。
+                  </div>
+                ) : null}
 
                 {selectedExportPackage ? (
-                  <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                  <details className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                    <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看交付包内容与资产快照</summary>
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
                         <div className="text-sm font-medium text-white">交付包内容</div>
@@ -808,16 +814,33 @@ export default function ProductWorkspaceDeliverySection({
                         detail="仅导出 selected / locked 参考图"
                       />
                     </div>
-                  </div>
+                  </details>
                 ) : null}
 
                 <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <div className="text-sm font-medium text-white">交付动作</div>
-                      <div className="mt-1 text-xs text-slate-500">先登记快照，再决定是否导出给外部团队或质检链路。</div>
+                      <div className="text-sm font-medium text-white">交付与存档</div>
+                      <div className="mt-1 text-xs text-slate-500">
+                        {primaryBlockedItem
+                          ? '先完成首个交付阻塞项；文件格式与历史记录按需展开。'
+                          : '当前可以先生成交付记录，其他格式与项目历史按需展开。'}
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    {!primaryBlockedItem ? (
+                      <button
+                        type="button"
+                        onClick={selectedReadiness.canExport ? handleSaveRecord : handleExportJson}
+                        disabled={!selectedReadiness || recordState === 'saving'}
+                        className="rounded-lg border border-sky-500/50 bg-sky-500/10 px-3 py-1.5 text-xs font-medium text-sky-100 transition hover:border-sky-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {selectedReadiness.canExport ? '生成交付记录' : '导出阻塞快照'}
+                      </button>
+                    ) : null}
+                  </div>
+                  <details className="mt-4 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+                    <summary className="cursor-pointer text-xs font-medium text-slate-300">更多交付格式、复制与历史刷新</summary>
+                    <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={handleSaveRecord}
@@ -875,10 +898,10 @@ export default function ProductWorkspaceDeliverySection({
                         刷新交付记录
                       </button>
                     </div>
-                  </div>
+                  </details>
 
                   {recordMessage ? (
-                    <div className={`mt-3 rounded-lg border px-3 py-2 text-xs ${
+                    <div role="status" aria-live="polite" className={`mt-3 rounded-lg border px-3 py-2 text-xs ${
                       recordState === 'error'
                         ? 'border-rose-500/30 bg-rose-500/10 text-rose-200'
                         : 'border-sky-500/30 bg-sky-500/10 text-sky-200'
@@ -905,7 +928,8 @@ export default function ProductWorkspaceDeliverySection({
             )}
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          <details className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+            <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看项目导出历史与机器提示词资产库</summary>
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <div className="text-sm font-medium text-white">项目级导出资产库</div>
@@ -1141,7 +1165,7 @@ export default function ProductWorkspaceDeliverySection({
                 </div>
               ))}
             </div>
-          </div>
+          </details>
         </section>
       </div>
     </div>

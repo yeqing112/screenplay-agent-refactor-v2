@@ -1211,6 +1211,7 @@ def _build_ending_image_hook_requirement(scene_name: str, scene_index: int) -> s
         "1) A shocking revelation or twist that recontextualizes everything seen so far, "
         "2) A concrete visual image (prop, gesture, or environment change) that viewers will remember, "
         "3) An emotional punch that makes viewers desperate to see the next episode. "
+        "The hook should land on a visible image memory, not only on dialogue or abstract explanation. "
         "Examples of strong hooks: a character's hidden identity is revealed, a seemingly dead person appears, "
         "a critical piece of evidence is found that changes everything, or a character makes an irreversible choice. "
         "NEVER end with a vague or ambiguous statement. Always end with a specific, concrete, shocking moment."

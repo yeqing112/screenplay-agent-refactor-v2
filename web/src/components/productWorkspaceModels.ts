@@ -128,6 +128,37 @@ export function buildTaskModesLabel(taskModes: string[]) {
   return taskModes.length > 0 ? taskModes.join(' / ') : '未声明'
 }
 
+/**
+ * A configured bucket is not automatically a production-safe source for
+ * provider-side reference images. Qiniu's clouddn domain is temporary and an
+ * HTTP endpoint cannot satisfy providers that require public HTTPS URLs.
+ */
+export function isProductionSafePublicAssetDomain(baseUrl: string | null | undefined) {
+  const value = String(baseUrl || '').trim()
+  if (!value) return false
+  try {
+    const parsed = new URL(value)
+    const host = parsed.hostname.toLowerCase()
+    return parsed.protocol === 'https:' && Boolean(host) && host !== 'clouddn.com' && !host.endsWith('.clouddn.com')
+  } catch {
+    return false
+  }
+}
+
+export function buildPublicAssetDomainRequirement(baseUrl: string | null | undefined) {
+  const value = String(baseUrl || '').trim()
+  if (!value) return '还没有配置公网访问域名。'
+  try {
+    const parsed = new URL(value)
+    const host = parsed.hostname.toLowerCase()
+    if (parsed.protocol !== 'https:') return '公网访问域名必须使用 HTTPS，外部视频模型不能稳定读取 HTTP 或局域网地址。'
+    if (host === 'clouddn.com' || host.endsWith('.clouddn.com')) return '当前使用七牛测试域名；正式生产前请换成稳定的 HTTPS 自定义域名。'
+  } catch {
+    return '公网访问域名格式无效，请填写完整 HTTPS 地址，例如：https://assets.example.com。'
+  }
+  return '参考资产可通过已配置的 HTTPS 自定义域名供外部视频模型读取。'
+}
+
 export function buildSyncedCapabilityParams(profile: ModelProfileRecord | null | undefined) {
   return {
     ...resolveCapabilityParams(profile),
@@ -149,6 +180,9 @@ function buildAdapterLabel(profile: ModelProfileRecord | null | undefined) {
   if (provider === 'openai-compatible') return 'OpenAI Compatible 适配层'
   if (provider === 'poyo-async') return 'PoYo 异步适配层 + Provider 轮询回收'
   if (provider === 'minimax-h3-async') return 'MiniMax H3 异步适配层 + Provider 轮询回收'
+  if (provider === '75api-minimax-h3') return '75api MiniMax H3 图片条件适配层 + Provider 轮询回收'
+  if (provider === 'shapi-gemini-image') return 'SHAPI Gemini 图像适配层 + 多参考图内联回收'
+  if (provider === 'shapi-openai-images') return 'SHAPI OpenAI Images 适配层 + 同步回收'
   return `${provider} 统一适配层`
 }
 
@@ -209,6 +243,51 @@ function inferKnownProviderParams(profile: ModelProfileRecord | null | undefined
   if (!profile) return null
   const provider = String(profile.provider || '').trim()
   const modelName = String(profile.model_name || '').trim()
+  if (provider === 'shapi-gemini-image' && profile.capability === 'image') {
+    return {
+      task_modes: ['text_to_image', 'image_to_image'],
+      supports_reference_images: true,
+      max_reference_images: 14,
+      supports_image_url: true,
+      supports_file_upload: false,
+      supports_negative_prompt: false,
+      supports_async_tasks: false,
+      aspect_ratio: '16:9',
+      image_size: '2K',
+    }
+  }
+  if (provider === 'shapi-openai-images' && profile.capability === 'image') {
+    return {
+      task_modes: ['text_to_image'],
+      supports_reference_images: false,
+      supports_image_url: false,
+      supports_file_upload: false,
+      supports_negative_prompt: false,
+      supports_async_tasks: false,
+      size: 'auto',
+    }
+  }
+  if (provider === '75api-minimax-h3' && profile.capability === 'video') {
+    return {
+      task_modes: ['image_to_video', 'reference_to_video'],
+      supports_reference_images: true,
+      max_reference_images: 8,
+      supports_first_frame: true,
+      supports_last_frame: false,
+      supports_audio: false,
+      supports_text_to_video: false,
+      supports_image_url: true,
+      supports_file_upload: false,
+      supports_negative_prompt: false,
+      supports_async_tasks: true,
+      requires_public_media_url: true,
+      resolution: '768p',
+      seconds: 5,
+      aspect_ratio: '16:9',
+      poll_interval_seconds: 5,
+      poll_timeout_seconds: 900,
+    }
+  }
   if (provider !== 'poyo-async' || !modelName) return null
 
   if (profile.capability === 'image') {

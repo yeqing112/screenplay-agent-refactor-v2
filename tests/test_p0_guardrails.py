@@ -13,7 +13,7 @@ from core.constraint_engine import (
     RepairStrategy,
 )
 from core.portrait_qa import merge_characters, run_portrait_qa
-from models import Book, Chapter, CharacterProfile, Session, init_db
+from models import Book, Chapter, CharacterProfile, Session, VisualMakeup, VisualReferenceAsset, init_db
 
 
 class P0GuardrailTests(unittest.TestCase):
@@ -43,6 +43,8 @@ class P0GuardrailTests(unittest.TestCase):
             session.commit()
 
     def _cleanup(self, session):
+        session.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == self.book_id).delete()
+        session.query(VisualMakeup).filter(VisualMakeup.book_id == self.book_id).delete()
         session.query(Chapter).filter(Chapter.book_id == self.book_id).delete()
         session.query(CharacterProfile).filter(CharacterProfile.book_id == self.book_id).delete()
         session.query(Book).filter(Book.id == self.book_id).delete()
@@ -141,6 +143,31 @@ class P0GuardrailTests(unittest.TestCase):
                     CharacterProfile.name == "阿宁",
                 ).first()
             )
+
+    def test_portrait_qa_detects_locked_makeup_gender_drift(self):
+        with Session() as session:
+            self._add_profile(session, "阿强", gender="男性")
+            session.flush()
+            profile = session.query(CharacterProfile).filter_by(book_id=self.book_id, name="阿强").first()
+            makeup = VisualMakeup(
+                book_id=self.book_id,
+                episode=1,
+                character_name="阿强",
+                meta_info=json.dumps({"character_profile_id": profile.id, "gender": "女性"}, ensure_ascii=False),
+            )
+            session.add(makeup); session.flush()
+            session.add(VisualReferenceAsset(
+                book_id=self.book_id, episode=1, asset_type="character", asset_id=str(makeup.id),
+                asset_name="阿强", status="locked", image_url="https://example.com/aqiang.png",
+            ))
+            session.commit()
+
+            report = run_portrait_qa(self.book_id, session)
+
+        issue = next(issue for issue in report.issues if issue.issue_type == "makeup_gender_conflict")
+        self.assertEqual(issue.severity, "high")
+        self.assertEqual(issue.evidence["expected_gender"], "男性")
+        self.assertEqual(issue.evidence["actual_gender"], "女性")
 
     def test_constraint_validator_handles_empty_and_positional_scene_rules(self):
         registry = ConstraintRegistry()

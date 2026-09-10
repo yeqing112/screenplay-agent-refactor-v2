@@ -1,4 +1,5 @@
 import type { TaskCenterEntry, TaskCenterStatus } from './productWorkspaceTasks'
+import type { TaskCenterWorkflowBucket } from './productWorkspaceTaskCenterState'
 
 type StatusOption = {
   value: 'all' | TaskCenterStatus
@@ -11,6 +12,8 @@ type ScopeOption = {
 }
 
 interface Props {
+  workflowBucket: TaskCenterWorkflowBucket
+  workflowCounts: Record<TaskCenterWorkflowBucket, number>
   statusFilter: 'all' | TaskCenterStatus
   scopeFilter: 'all' | 'global' | 'episode'
   episodeFilter: 'all' | number
@@ -20,6 +23,7 @@ interface Props {
   selectedTaskId: string | null
   statusOptions: readonly StatusOption[]
   scopeOptions: readonly ScopeOption[]
+  onWorkflowBucketChange: (value: TaskCenterWorkflowBucket) => void
   onStatusFilterChange: (value: 'all' | TaskCenterStatus) => void
   onScopeFilterChange: (value: 'all' | 'global' | 'episode') => void
   onEpisodeFilterChange: (value: 'all' | number) => void
@@ -28,6 +32,8 @@ interface Props {
 }
 
 export default function TaskCenterListPanel({
+  workflowBucket,
+  workflowCounts,
   statusFilter,
   scopeFilter,
   episodeFilter,
@@ -37,6 +43,7 @@ export default function TaskCenterListPanel({
   selectedTaskId,
   statusOptions,
   scopeOptions,
+  onWorkflowBucketChange,
   onStatusFilterChange,
   onScopeFilterChange,
   onEpisodeFilterChange,
@@ -45,9 +52,38 @@ export default function TaskCenterListPanel({
 }: Props) {
   return (
     <div className="min-w-0 rounded-xl border border-slate-800 bg-slate-900 p-4">
-      <div className="text-sm font-medium text-white">任务列表</div>
+      <div className="text-sm font-medium text-white">现在该处理什么</div>
+      <div className="mt-1 text-xs leading-5 text-slate-500">系统会保留完整任务状态；这里按你当前需要做的事组织。</div>
 
-      <div className="mt-4 grid gap-2">
+      <div className="mt-4 grid grid-cols-3 gap-2" role="tablist" aria-label="任务视图">
+        {([
+          ['attention', '需要你处理'],
+          ['running', '正在执行'],
+          ['history', '历史'],
+        ] as const).map(([value, label]) => {
+          const active = workflowBucket === value
+          return (
+            <button
+              key={value}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => onWorkflowBucketChange(value)}
+              className={`rounded-lg border px-2 py-2 text-xs transition ${
+                active
+                  ? 'border-sky-500/50 bg-sky-500/10 text-sky-100'
+                  : 'border-slate-800 bg-slate-950/50 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+              }`}
+            >
+              {label} {workflowCounts[value]}
+            </button>
+          )
+        })}
+      </div>
+
+      <details className="mt-4 rounded-lg border border-slate-800 bg-slate-950/40 p-3">
+        <summary className="cursor-pointer text-xs font-medium text-slate-400">高级筛选：状态、范围和集数</summary>
+        <div className="mt-3 grid gap-2">
         <select
           value={statusFilter}
           onChange={(event) => onStatusFilterChange(event.target.value as 'all' | TaskCenterStatus)}
@@ -84,7 +120,8 @@ export default function TaskCenterListPanel({
             </option>
           ))}
         </select>
-      </div>
+        </div>
+      </details>
 
       <div className="mt-4 space-y-3">
         {filteredEntries.map((entry) => {
@@ -110,7 +147,7 @@ export default function TaskCenterListPanel({
                 <div className="min-w-0">
                   <div className="truncate text-sm font-medium text-white">{entry.type}</div>
                   <div className="mt-1 text-[11px] text-slate-500">
-                    {entry.scope === 'global' ? '\u6279\u91cf / \u5168\u5c40\u4efb\u52a1' : '\u5355\u96c6\u4efb\u52a1'}
+                    {entry.agentMeta ? '智能导演台会话' : entry.scope === 'global' ? '\u6279\u91cf / \u5168\u5c40\u4efb\u52a1' : '\u5355\u96c6\u4efb\u52a1'}
                     {entry.isBatch ? ' | \u8c03\u5ea6\u5165\u53e3' : ''}
                   </div>
                 </div>
@@ -174,7 +211,11 @@ export default function TaskCenterListPanel({
 
         {filteredEntries.length === 0 ? (
           <div className="rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
-            当前筛选条件下没有任务。
+            {workflowBucket === 'attention'
+              ? '当前没有需要你处理的任务。'
+              : workflowBucket === 'running'
+                ? '当前没有正在执行的任务。'
+                : '当前筛选范围内还没有历史任务。'}
           </div>
         ) : null}
       </div>

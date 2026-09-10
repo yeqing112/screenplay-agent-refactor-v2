@@ -7,6 +7,7 @@ interface WorkspaceShellSection {
   id: WorkspaceSection
   label: string
   icon: LucideIcon
+  group?: string
 }
 
 interface Props {
@@ -36,6 +37,16 @@ export default function ProductWorkspaceShell({
 }: Props) {
   const currentSectionLabel = sections.find((item) => item.id === section)?.label ?? '项目控制台'
   const projectStatusLabel = getProjectStatusLabel(projectStatus)
+  const sectionGroups = sections.reduce<Array<{ label: string; items: WorkspaceShellSection[] }>>((groups, item) => {
+    const label = item.group || '工作区'
+    const existing = groups.find((group) => group.label === label)
+    if (existing) {
+      existing.items.push(item)
+    } else {
+      groups.push({ label, items: [item] })
+    }
+    return groups
+  }, [])
 
   return (
     <div className="flex h-full bg-slate-950 text-slate-200">
@@ -51,36 +62,43 @@ export default function ProductWorkspaceShell({
           </div>
         </div>
 
-        <nav className="mt-6 space-y-1">
-          {sections.map((item) => {
-            const Icon = item.icon
-            const active = section === item.id
-            const blockedReason = getSectionBlockedReason(item.id)
-            const effectiveBlockedReason = loading ? null : blockedReason
+        <nav className="mt-6 space-y-5" aria-label="正式工作台导航">
+          {sectionGroups.map((group) => (
+            <div key={group.label}>
+              <div className="mb-1 px-3 text-[10px] font-medium uppercase tracking-[0.16em] text-slate-600">{group.label}</div>
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const Icon = item.icon
+                  const active = section === item.id
+                  const blockedReason = getSectionBlockedReason(item.id)
+                  const effectiveBlockedReason = loading ? null : blockedReason
 
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  if (!effectiveBlockedReason) onSelectSection(item.id)
-                }}
-                title={effectiveBlockedReason ?? item.label}
-                aria-disabled={effectiveBlockedReason ? 'true' : 'false'}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition ${
-                  effectiveBlockedReason
-                    ? 'cursor-not-allowed text-slate-600'
-                    : active
-                      ? 'bg-slate-800 text-white'
-                      : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                <span className="flex-1">{item.label}</span>
-                {effectiveBlockedReason ? <span className="text-[10px] text-slate-600">锁定</span> : null}
-              </button>
-            )
-          })}
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        if (!effectiveBlockedReason) onSelectSection(item.id)
+                      }}
+                      title={effectiveBlockedReason ?? item.label}
+                      aria-disabled={effectiveBlockedReason ? 'true' : 'false'}
+                      className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition ${
+                        effectiveBlockedReason
+                          ? 'cursor-not-allowed text-slate-600'
+                          : active
+                            ? 'bg-slate-800 text-white'
+                            : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span className="flex-1">{item.label}</span>
+                      {effectiveBlockedReason ? <span className="text-[10px] text-slate-600">锁定</span> : null}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
       </aside>

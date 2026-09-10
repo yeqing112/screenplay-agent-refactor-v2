@@ -85,7 +85,7 @@ class StoryboardAcceptanceFeedbackTests(unittest.TestCase):
         }):
             compile_response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
-                json={"compileReason": "after-feedback"},
+                json={"compileReason": "after-feedback", "confirmed": True, "allowExternalCall": True},
             )
         self.assertEqual(compile_response.status_code, 200)
         compile_payload = compile_response.json()

@@ -135,6 +135,17 @@ class ModelAdapterTests(unittest.TestCase):
         self.assertIn("一桶冷水泼下来", result)
         self.assertIn("画面转为和尚乙倚在门框上", result)
 
+    def test_sanitize_machine_prompt_removes_long_stage_direction_wrappers(self):
+        # Long director blocks must be normalized just like short blocks; a
+        # length cap would leak the brackets into the model-facing prompt and
+        # fail the screenplay-residue hard gate.
+        body = "动作开始：" + "和尚甲保持站立并观察水桶状态，" * 40
+        result = sanitize_machine_prompt_text(f"[{body}]")
+
+        self.assertNotIn("[", result)
+        self.assertNotIn("]", result)
+        self.assertIn("和尚甲保持站立", result)
+
 
 if __name__ == "__main__":
     unittest.main()

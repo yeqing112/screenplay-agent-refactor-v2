@@ -22,6 +22,12 @@ OPENAI_COMPATIBLE_PROVIDER = "openai-compatible"
 OLLAMA_PROVIDER = "ollama"
 POYO_ASYNC_PROVIDER = "poyo-async"
 MINIMAX_H3_ASYNC_PROVIDER = "minimax-h3-async"
+# 75api exposes a separate, image-conditioned H3 endpoint.  Keep it
+# independent from the Metaso-compatible adapter so protocol and capability
+# assumptions cannot bleed between providers.
+MINIMAX_H3_75API_PROVIDER = "75api-minimax-h3"
+SHAPI_OPENAI_IMAGES_PROVIDER = "shapi-openai-images"
+SHAPI_GEMINI_IMAGE_PROVIDER = "shapi-gemini-image"
 
 VIDEO_REAL_DEFAULT_ENABLED = True
 
@@ -220,7 +226,7 @@ def _is_profile_allowed_as_default(profile: dict[str, Any] | None) -> bool:
     capability = profile.get("capability")
     if capability == "video":
         provider = str(profile.get("provider") or "")
-        if provider in {POYO_ASYNC_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER}:
+        if provider in {POYO_ASYNC_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER, MINIMAX_H3_75API_PROVIDER}:
             return True
         if provider != MOCK_PROVIDER and not VIDEO_REAL_DEFAULT_ENABLED:
             return False
@@ -349,10 +355,24 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         _require_fields(normalized, ["base_url", "model_name"])
         return normalized
 
+    if provider in {SHAPI_OPENAI_IMAGES_PROVIDER, SHAPI_GEMINI_IMAGE_PROVIDER}:
+        if capability != "image":
+            raise ValueError("SHAPI 图片 provider 目前只支持 image 能力")
+        _require_fields(normalized, ["base_url", "model_name"])
+        return normalized
+
     if provider == MINIMAX_H3_ASYNC_PROVIDER:
         if capability != "video":
             raise ValueError("MiniMax H3 provider 目前只支持 video 能力")
         _require_fields(normalized, ["base_url", "model_name"])
+        return normalized
+
+    if provider == MINIMAX_H3_75API_PROVIDER:
+        if capability != "video":
+            raise ValueError("75api MiniMax H3 provider 目前只支持 video 能力")
+        _require_fields(normalized, ["base_url", "model_name"])
+        if normalized["model_name"] != "minimax_h3_no_audios":
+            raise ValueError("75api MiniMax H3 provider 只支持模型：minimax_h3_no_audios")
         return normalized
 
     raise ValueError(f"暂不支持 provider：{provider}")
@@ -423,6 +443,40 @@ async def _test_openai_compatible_profile(profile: dict[str, Any]) -> dict[str, 
     if model_ids and configured not in model_ids:
         message = f"连接成功，但远端模型列表中未发现 {configured}"
 
+    return {"ok": True, "message": message}
+
+
+async def _test_shapi_gemini_image_profile(profile: dict[str, Any]) -> dict[str, Any]:
+    """Verify the account/model name without submitting a billable generation task."""
+
+    _require_fields(profile, ["base_url", "model_name"])
+    api_key = str(profile.get("api_key") or "").strip()
+    if not api_key:
+        raise ValueError("真实模型测试连接需要 API Key。")
+
+    # Gemini's native generation endpoint lives at /v1beta, while SHAPI exposes
+    # model discovery through its OpenAI-compatible /v1/models endpoint.
+    base_url = str(profile.get("base_url") or "").rstrip("/")
+    if base_url.endswith("/v1"):
+        base_url = base_url[: -len("/v1")]
+    if base_url.endswith("/v1beta"):
+        base_url = base_url[: -len("/v1beta")]
+    async with httpx.AsyncClient(timeout=30) as client:
+        try:
+            response = await client.get(
+                f"{base_url}/v1/models",
+                headers={"Authorization": f"Bearer {api_key}"},
+            )
+            response.raise_for_status()
+            data = response.json()
+        except Exception as exc:  # pragma: no cover - covered by public callers/tests
+            raise ValueError(_friendly_http_error("测试 SHAPI 图片模型连接", exc)) from exc
+
+    model_ids = [str(item.get("id")) for item in data.get("data", []) if isinstance(item, dict)]
+    configured = str(profile.get("model_name") or "")
+    message = "SHAPI 连接成功；未发起任何计费图片生成。"
+    if model_ids and configured not in model_ids:
+        message = f"SHAPI 连接成功，但远端模型列表中未发现 {configured}。"
     return {"ok": True, "message": message}
 
 
@@ -500,14 +554,26 @@ async def test_profile_connection(
             "profile": response_profile,
         }
 
-    if profile.get("capability") == "video":
+    if profile.get("provider") == MINIMAX_H3_75API_PROVIDER:
+        _require_fields(profile, ["base_url", "model_name"])
+        response_profile = _serialize_profile(profile, is_default=False)
+        return {
+            "ok": True,
+            "message": "75api MiniMax H3 配置结构校验通过。该模型仅支持图片条件视频，当前测试不会发起真实扣费任务。",
+            "profile": response_profile,
+        }
+
+    if profile.get("provider") == SHAPI_GEMINI_IMAGE_PROVIDER:
+        result = await _test_shapi_gemini_image_profile(profile)
+    elif profile.get("provider") == SHAPI_OPENAI_IMAGES_PROVIDER:
+        result = await _test_openai_compatible_profile(profile)
+    elif profile.get("capability") == "video":
         return {
             "ok": False,
             "message": "真实视频 provider 尚未接入当前工作台，请继续使用 Mock 视频模型。",
             "profile": _serialize_profile(profile, is_default=False),
         }
-
-    if profile.get("capability") == "embedding":
+    elif profile.get("capability") == "embedding":
         result = await _test_embedding_profile(profile)
     else:
         result = await _test_openai_compatible_profile(profile)

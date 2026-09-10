@@ -1446,6 +1446,7 @@ export default function ProductWorkspaceCanvasBetaSection({
 
   const handleCompilePrompts = async (compileReason = 'canvas-manual-recompile'): Promise<CanvasCompileResult> => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return { status: 'invalid' }
+    if (!window.confirm('确认从创作画布直接调用 LLM 重编译？建议优先使用正式工作台的受控 Prompt Compiler 草案。')) return { status: 'invalid' }
     setCompileState('submitting')
     setCompileMessage('正在从创作画布提交当前镜头提示词重编译任务，通常需要 30-60 秒。')
     setPromptRecoveryTaskId(null)
@@ -1456,7 +1457,7 @@ export default function ProductWorkspaceCanvasBetaSection({
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ compileReason, force: false }),
+          body: JSON.stringify({ compileReason, force: false, confirmed: true, allowExternalCall: true }),
         },
       )
 
@@ -1690,7 +1691,9 @@ export default function ProductWorkspaceCanvasBetaSection({
               首帧生成和视频生成，再回任务中心继续回收长任务结果。
             </div>
           </div>
-          <div className="flex flex-wrap items-end gap-3">
+          <details className="rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2">
+            <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：筛选、整理与重置画布</summary>
+            <div className="mt-3 flex flex-wrap items-end gap-3">
             <label className="text-xs text-slate-500">
               搜索节点
               <input
@@ -1757,10 +1760,16 @@ export default function ProductWorkspaceCanvasBetaSection({
             >
               重置视图
             </button>
-          </div>
+            </div>
+          </details>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <details className="mt-4 rounded-xl border border-slate-800 bg-slate-950/30 p-3">
+          <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：按节点类型、状态和资产分组查看</summary>
+          <div className="mt-3 text-xs leading-6 text-slate-500">
+            日常创作通常不需要调整这些筛选；只有排查某类资产、缺图或阻塞关系时再展开使用。
+          </div>
+        <div className="mt-3 flex flex-wrap gap-2">
           {FILTERABLE_KINDS.map((kind) => {
             const active = activeKinds.includes(kind)
             return (
@@ -1819,6 +1828,7 @@ export default function ProductWorkspaceCanvasBetaSection({
             )
           })}
         </div>
+        </details>
 
         {navigationSummary ? (
           <div className="mt-4 rounded-2xl border border-sky-500/30 bg-sky-500/10 px-5 py-4">
@@ -2223,6 +2233,8 @@ export default function ProductWorkspaceCanvasBetaSection({
                     </div>
                     {generationMessage ? (
                       <div
+                        role="status"
+                        aria-live="polite"
                         className={`mt-3 rounded-lg border px-3 py-2 text-xs leading-5 ${
                           generationState === 'error'
                             ? 'border-amber-500/30 bg-amber-500/10 text-amber-100'
@@ -2236,6 +2248,8 @@ export default function ProductWorkspaceCanvasBetaSection({
                     ) : null}
                     {compileMessage ? (
                       <div
+                        role="status"
+                        aria-live="polite"
                         className={`mt-3 rounded-lg border px-3 py-2 text-xs leading-5 ${
                           compileState === 'error'
                             ? 'border-rose-500/30 bg-rose-500/10 text-rose-100'

@@ -9,7 +9,6 @@ import {
   ListTodo,
   Network,
   Settings2,
-  Users,
   Wrench,
 } from 'lucide-react'
 import { useBookOutputs } from '../hooks/useBookOutputs'
@@ -48,19 +47,18 @@ interface Props {
   onBookChange: (bookId: number) => void
 }
 
-const sections: Array<{ id: WorkspaceSection; label: string; icon: typeof Library }> = [
-  { id: 'dashboard', label: '项目控制台', icon: Library },
-  { id: 'content', label: '内容准备', icon: Library },
-  { id: 'adaptation', label: '改编方向', icon: Compass },
-  { id: 'characters', label: '人物质检', icon: Users },
-  { id: 'scripts', label: '剧本工作台', icon: FileText },
-  { id: 'storyboard', label: '镜头工作台', icon: Clapperboard },
-  { id: 'canvas', label: '创作画布', icon: Network },
-  { id: 'assets', label: '资产中心', icon: Boxes },
-  { id: 'qa', label: 'QA 修复', icon: Wrench },
-  { id: 'tasks', label: '任务中心', icon: ListTodo },
-  { id: 'delivery', label: '导出中心', icon: FileOutput },
-  { id: 'models', label: '模型管理', icon: Settings2 },
+const sections: Array<{ id: WorkspaceSection; label: string; icon: typeof Library; group: '创作' | '生产与检查' | '管理' }> = [
+  { id: 'dashboard', label: '项目控制台', icon: Library, group: '创作' },
+  { id: 'content', label: '内容准备', icon: Library, group: '创作' },
+  { id: 'adaptation', label: '改编方向', icon: Compass, group: '创作' },
+  { id: 'scripts', label: '剧本工作台', icon: FileText, group: '创作' },
+  { id: 'storyboard', label: '镜头工作台', icon: Clapperboard, group: '创作' },
+  { id: 'canvas', label: '创作画布', icon: Network, group: '创作' },
+  { id: 'assets', label: '资产中心', icon: Boxes, group: '生产与检查' },
+  { id: 'qa', label: 'QA 修复', icon: Wrench, group: '生产与检查' },
+  { id: 'tasks', label: '任务中心', icon: ListTodo, group: '生产与检查' },
+  { id: 'delivery', label: '导出中心', icon: FileOutput, group: '生产与检查' },
+  { id: 'models', label: '模型管理', icon: Settings2, group: '管理' },
 ]
 
 function toVisualAssetType(category: 'character' | 'location' | 'prop') {
@@ -335,6 +333,26 @@ export default function ProductWorkspace({
     clearNavigationContext()
     setSection(nextSection)
   }, [clearNavigationContext])
+
+  useEffect(() => {
+    const handleAgentNavigation = (event: Event) => {
+      const detail = (event as CustomEvent<Record<string, unknown>>).detail
+      if (!detail || typeof detail !== 'object') return
+      const target = String(detail.section || '').trim() as WorkspaceSection
+      const allowed: WorkspaceSection[] = ['dashboard', 'content', 'adaptation', 'scripts', 'storyboard', 'canvas', 'assets', 'qa', 'tasks', 'delivery', 'models']
+      if (!allowed.includes(target)) return
+      navigateTaskSection(target, {
+        episode: Number(detail.episode || 0) || null,
+        shotId: detail.shot_id == null ? null : String(detail.shot_id),
+        assetId: detail.asset_id == null ? null : String(detail.asset_id),
+        navigationSource: 'tasks',
+        handoffLabel: typeof detail.label === 'string' ? detail.label : null,
+        handoffDetail: typeof detail.guard === 'string' ? detail.guard : null,
+      })
+    }
+    window.addEventListener('smart-director:navigate', handleAgentNavigation)
+    return () => window.removeEventListener('smart-director:navigate', handleAgentNavigation)
+  }, [navigateTaskSection])
 
   useEffect(() => {
     writeProductWorkspaceNavigationState(

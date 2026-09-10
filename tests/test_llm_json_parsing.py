@@ -72,6 +72,25 @@ class LLMJsonParsingTests(unittest.TestCase):
         self.assertEqual(request_payload["temperature"], 0.2)
         self.assertEqual(request_payload["max_tokens"], 2048)
 
+    def test_zero_retry_budget_still_makes_exactly_one_provider_call(self):
+        response = Mock()
+        response.status_code = 200
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "choices": [{"message": {"content": "ok"}}],
+            "usage": {"total_tokens": 3},
+        }
+        client = Mock()
+        client.__enter__ = Mock(return_value=client)
+        client.__exit__ = Mock(return_value=None)
+        client.post.return_value = response
+
+        with patch("core.llm.httpx.Client", return_value=client), patch("core.llm._limiter.wait_if_needed"), patch("core.llm._limiter.record"):
+            result = call_llm("prompt", retries=0)
+
+        self.assertEqual(result, "ok")
+        self.assertEqual(client.post.call_count, 1)
+
 
 if __name__ == "__main__":
     unittest.main()

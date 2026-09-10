@@ -132,7 +132,17 @@ export default function ProductWorkspaceContentSection({
 
   return (
     <div className="space-y-6">
-    <div className="grid gap-6 xl:grid-cols-[1.1fr_1fr_0.9fr]">
+    <InfoPanel
+      title="当前内容基础"
+      action={contentReady ? '可进入改编方向' : contentStatusLabel}
+      description={`${contentWorkbench.scaleLabel}。${contentWorkbench.note}`}
+    />
+    <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+      <details open={!contentReady} className="rounded-xl border border-slate-800 bg-slate-950/30 p-4">
+        <summary className="cursor-pointer text-sm font-medium text-slate-300">
+          {contentReady ? '高级：更换内容或导入新的小说' : '导入小说，建立内容基础'}
+        </summary>
+        <div className="mt-4 grid gap-6 md:grid-cols-2">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
         <div className="flex items-center gap-2 text-white">
           <Upload className="h-4 w-4 text-sky-300" />
@@ -208,6 +218,8 @@ export default function ProductWorkspaceContentSection({
           </button>
         </div>
       </div>
+        </div>
+      </details>
 
       <div className="space-y-6">
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">

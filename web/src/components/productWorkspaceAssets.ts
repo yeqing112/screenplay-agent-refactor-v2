@@ -31,6 +31,10 @@ export interface AssetSummary {
   detailTertiary?: string
   status: string
   prompt: string
+  confirmedPromptRaw?: string
+  structuredVariantFields?: Record<string, unknown>
+  renderedPromptPreview?: string
+  referenceNegativePrompt?: string
   shotIds: string[]
   episodeIds: number[]
   referenceCount: number
@@ -86,6 +90,31 @@ function summarizeReferenceAssets(referenceAssets: VisualReferenceAssetOutput[] 
     selectedReferenceCount,
     lockedReferenceCount,
   }
+}
+
+function referenceStatusPriority(status?: string) {
+  if (status === 'locked') return 0
+  if (status === 'selected') return 1
+  if (status === 'candidate') return 2
+  if (status === 'rejected') return 4
+  return 3
+}
+
+function referenceTimestampValue(value?: string | null) {
+  const ts = Date.parse(String(value || ''))
+  return Number.isFinite(ts) ? ts : 0
+}
+
+function sortReferenceAssets(referenceAssets: VisualReferenceAssetOutput[] | undefined) {
+  return (referenceAssets ?? []).slice().sort((left, right) => {
+    const priorityDelta = referenceStatusPriority(left.status) - referenceStatusPriority(right.status)
+    if (priorityDelta !== 0) return priorityDelta
+    const timeDelta =
+      referenceTimestampValue(right.updated_at || right.created_at) -
+      referenceTimestampValue(left.updated_at || left.created_at)
+    if (timeDelta !== 0) return timeDelta
+    return (right.id ?? 0) - (left.id ?? 0)
+  })
 }
 
 function normalizePromptText(value: string | null | undefined) {
@@ -426,6 +455,10 @@ export function buildCharacterAssetSummaries(makeups: VisualMakeupOutput[]): Ass
       detailTertiary: pickFirstDisplayValue(item.refined_outfit, item.hair_style, item.expression_mood),
       status: item.derived_asset_status || item.asset_status || 'draft',
       prompt,
+      confirmedPromptRaw: sanitizePromptDisplayText(item.confirmed_prompt_raw || prompt),
+      structuredVariantFields: item.structured_variant_fields ?? {},
+      renderedPromptPreview: sanitizePromptDisplayText(item.rendered_prompt_preview || prompt),
+      referenceNegativePrompt: sanitizePromptDisplayText(item.reference_negative_prompt || item.negative_prompt || ''),
       shotIds,
       episodeIds: toEpisodeIds(shotIds),
       referenceCount: refs.totalCount,
@@ -434,7 +467,7 @@ export function buildCharacterAssetSummaries(makeups: VisualMakeupOutput[]): Ass
       lockedReferenceCount: refs.lockedReferenceCount,
       staleReferenceCount,
       hasStaleReferencePrompt: staleReferenceCount > 0,
-      references: item.reference_assets ?? [],
+      references: sortReferenceAssets(item.reference_assets),
       variantGroupKey,
       variantLabel: normalizeCharacterVariantLabel(item.scope_label, item.stage_name, item.makeup_scope),
       variantScope: item.makeup_scope || '',
@@ -456,7 +489,8 @@ export function buildLocationAssetSummaries(locations: VisualLocationOutput[]): 
   }
 
   return locations.map((item, index) => {
-    const refs = summarizeReferenceAssets(item.reference_assets)
+    const referenceAssets = item.reference_assets ?? item.references ?? []
+    const refs = summarizeReferenceAssets(referenceAssets)
     const shotIds = item.shot_ids ?? []
     const prompt = sanitizePromptDisplayText(item.zh_prompt || item.visual_prompt_zh || item.core_prompt_zh || item.description || '')
     const variantGroupKey = normalizeDisplayText(item.name) || '未命名场景'
@@ -491,6 +525,10 @@ export function buildLocationAssetSummaries(locations: VisualLocationOutput[]): 
       detailTertiary: pickFirstDisplayValue(item.color_palette, item.description),
       status: item.derived_asset_status || item.asset_status || 'draft',
       prompt,
+      confirmedPromptRaw: sanitizePromptDisplayText(item.confirmed_prompt_raw || prompt),
+      structuredVariantFields: item.structured_variant_fields ?? {},
+      renderedPromptPreview: sanitizePromptDisplayText(item.rendered_prompt_preview || prompt),
+      referenceNegativePrompt: sanitizePromptDisplayText(item.reference_negative_prompt || item.negative_prompt || ''),
       shotIds,
       episodeIds: toEpisodeIds(shotIds),
       referenceCount: refs.totalCount,
@@ -499,7 +537,7 @@ export function buildLocationAssetSummaries(locations: VisualLocationOutput[]): 
       lockedReferenceCount: refs.lockedReferenceCount,
       staleReferenceCount: 0,
       hasStaleReferencePrompt: false,
-      references: item.reference_assets ?? [],
+      references: sortReferenceAssets(referenceAssets),
       variantGroupKey,
       variantLabel,
       variantScope,
@@ -521,7 +559,8 @@ export function buildPropAssetSummaries(props: VisualPropOutput[]): AssetSummary
   }
 
   return props.map((item, index) => {
-    const refs = summarizeReferenceAssets(item.reference_assets)
+    const referenceAssets = item.reference_assets ?? item.references ?? []
+    const refs = summarizeReferenceAssets(referenceAssets)
     const shotIds = item.shot_ids ?? []
     const prompt = sanitizePromptDisplayText(item.zh_prompt || item.visual_prompt_zh || item.core_prompt_zh || item.description || '')
     const variantGroupKey = normalizeDisplayText(item.name) || '未命名道具'
@@ -554,6 +593,10 @@ export function buildPropAssetSummaries(props: VisualPropOutput[]): AssetSummary
       detailTertiary: pickFirstDisplayValue(item.description),
       status: item.derived_asset_status || item.asset_status || 'draft',
       prompt,
+      confirmedPromptRaw: sanitizePromptDisplayText(item.confirmed_prompt_raw || prompt),
+      structuredVariantFields: item.structured_variant_fields ?? {},
+      renderedPromptPreview: sanitizePromptDisplayText(item.rendered_prompt_preview || prompt),
+      referenceNegativePrompt: sanitizePromptDisplayText(item.reference_negative_prompt || item.negative_prompt || ''),
       shotIds,
       episodeIds: toEpisodeIds(shotIds),
       referenceCount: refs.totalCount,
@@ -562,7 +605,7 @@ export function buildPropAssetSummaries(props: VisualPropOutput[]): AssetSummary
       lockedReferenceCount: refs.lockedReferenceCount,
       staleReferenceCount: 0,
       hasStaleReferencePrompt: false,
-      references: item.reference_assets ?? [],
+      references: sortReferenceAssets(referenceAssets),
       variantGroupKey,
       variantLabel,
       variantScope,

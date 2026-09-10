@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import CharacterQAPanel from './CharacterQAPanel'
 import type { StoryboardShotOutput } from '../domain/bookOutputs'
 import type { AssetEpisodeInsight, AssetSummary } from './productWorkspaceAssets'
 import type { AssetCategoryFilter, AssetStatusFilter, AssetVersionFilter } from './productWorkspaceAssetViewController'
@@ -66,6 +67,7 @@ interface Props {
   onGenerateAssetReference: (assetId: string) => void
   onDeleteReferenceAsset: (referenceId: number) => void
   onUpdateReferenceAssetStatus: (referenceId: number, nextStatus: 'candidate' | 'selected' | 'locked') => void
+  onRefreshAll?: () => void
   onNavigateSection: (section: 'storyboard' | 'qa') => void
   onNavigateTaskSection?: (
     section: 'storyboard' | 'canvas' | 'assets' | 'qa' | 'tasks',
@@ -181,6 +183,11 @@ function assetCategoryLabel(category: AssetSummary['category']) {
   return '\u9053\u5177'
 }
 
+function toVisualAssetType(category: AssetSummary['category']) {
+  if (category === 'location') return 'scene'
+  return category
+}
+
 function assetCategoryFilterLabel(category: AssetCategoryFilter) {
   if (category === 'all') return '\u5168\u90e8'
   return assetCategoryLabel(category)
@@ -222,6 +229,8 @@ function ActionMessage({ tone, message }: { tone: 'info' | 'error'; message: str
   if (!message) return null
   return (
     <div
+      role="status"
+      aria-live="polite"
       className={`rounded-lg border px-3 py-2 text-xs ${
         tone === 'error'
           ? 'border-rose-500/30 bg-rose-500/10 text-rose-200'
@@ -241,6 +250,49 @@ function MetricCard({ title, value, detail }: { title: string; value: string; de
       <div className="mt-1 text-xs text-slate-400">{detail}</div>
     </div>
   )
+}
+
+function formatStructuredFieldValue(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item || '').trim()).filter(Boolean).join('、')
+  }
+  if (value && typeof value === 'object') {
+    return JSON.stringify(value)
+  }
+  return String(value ?? '').trim()
+}
+
+function structuredFieldLabel(key: string) {
+  const labels: Record<string, string> = {
+    asset_type: '资产类型',
+    scene_name: '场景名',
+    prop_name: '道具名',
+    character_name: '人物名',
+    category: '分类',
+    description: '描述',
+    key_props: '关键陈设/道具',
+    lighting_mood: '光线氛围',
+    color_palette: '色彩基调',
+    time_period: '时代/环境',
+    style_ref_zh: '材质/风格参考',
+    associated_characters: '关联人物',
+    importance: '剧情重要性',
+    stage_name: '阶段',
+    makeup_scope: '定妆范围',
+    gender: '性别',
+    identity: '身份',
+    temperament: '气质',
+    refined_outfit: '服装',
+    hair_style: '发型',
+    expression_mood: '表情/情绪',
+  }
+  return labels[key] ?? key
+}
+
+function buildStructuredFieldEntries(fields: Record<string, unknown> | undefined) {
+  return Object.entries(fields ?? {})
+    .map(([key, value]) => ({ key, label: structuredFieldLabel(key), value: formatStructuredFieldValue(value) }))
+    .filter((item) => item.value)
 }
 
 function uniqueImpactEpisodeCount(insight: AssetEpisodeInsight | null | undefined) {
@@ -799,6 +851,167 @@ function ReferenceSourcePromptDialog({
   )
 }
 
+type AssetSemanticDraft = {
+  plan_fingerprint: string
+  llm_generated?: boolean
+  proposed_fields: Record<string, string>
+  field_moves: Array<{ source_field?: string; target_field?: string; text?: string; confidence?: number | null }>
+  shot_layer_extractions: Array<{ source_field?: string; target?: string; text?: string; candidate_shot_ids?: string[]; confidence?: number | null }>
+  rationale: string[]
+  affected_shots: Array<{ composite_shot_id: string; scene_name?: string; binding_source?: string }>
+}
+
+function AssetSemanticGovernancePanel({
+  bookId,
+  asset,
+  onRefresh,
+}: {
+  bookId: number
+  asset: AssetSummary
+  onRefresh?: () => void
+}) {
+  const [draft, setDraft] = useState<AssetSemanticDraft | null>(null)
+  const [reviewedFields, setReviewedFields] = useState<Record<string, string>>({})
+  const [state, setState] = useState<'idle' | 'loading' | 'calling' | 'confirming' | 'error' | 'success'>('idle')
+  const [message, setMessage] = useState('')
+  const [promptPreview, setPromptPreview] = useState('')
+  const [confirmed, setConfirmed] = useState(false)
+  const [allowWrite, setAllowWrite] = useState(false)
+  const assetType = toVisualAssetType(asset.category)
+
+  useEffect(() => {
+    let active = true
+    if (!asset.assetRecordId || bookId <= 0) return () => { active = false }
+    fetch(`/api/books/${bookId}/visual-assets/${assetType}/${asset.assetRecordId}/semantic-governance-drafts/latest`)
+      .then(async (response) => ({ response, payload: await response.json() }))
+      .then(({ response, payload }) => {
+        const pendingDraft = payload?.draft
+        if (!active || !response.ok || !pendingDraft) return
+        setDraft(pendingDraft)
+        setReviewedFields(pendingDraft.proposed_fields ?? {})
+        setMessage(pendingDraft.llm_generated ? '已载入待审核草案；不会重复调用模型。' : '已载入证据包；尚未调用模型。')
+      })
+      .catch(() => undefined)
+    return () => { active = false }
+  }, [asset.assetRecordId, assetType, bookId])
+
+  const generate = async () => {
+    if (!asset.assetRecordId) return
+    setState('loading')
+    setMessage('')
+    setConfirmed(false)
+    setAllowWrite(false)
+    try {
+      const response = await fetch(`/api/books/${bookId}/visual-assets/${assetType}/${asset.assetRecordId}/semantic-governance-drafts`, { method: 'POST' })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail || `生成证据包失败: HTTP ${response.status}`)
+      setDraft(payload)
+      setReviewedFields({})
+      setMessage('证据包已生成；可先预览 LLM 提示词，再显式确认调用。')
+      setState('idle')
+    } catch (error) {
+      setState('error')
+      setMessage(error instanceof Error ? error.message : '生成草案失败')
+    }
+  }
+
+  const previewLlm = async () => {
+    if (!draft || !asset.assetRecordId) return
+    setState('loading'); setMessage('')
+    try {
+      const response = await fetch(`/api/books/${bookId}/visual-assets/${assetType}/${asset.assetRecordId}/semantic-governance-drafts/llm-preview?planFingerprint=${encodeURIComponent(draft.plan_fingerprint)}`)
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail || `读取提示词失败: HTTP ${response.status}`)
+      setPromptPreview(String(payload.prompt || '')); setState('idle')
+    } catch (error) { setState('error'); setMessage(error instanceof Error ? error.message : '读取提示词失败') }
+  }
+
+  const callLlm = async () => {
+    if (!draft || !asset.assetRecordId || !window.confirm('确认调用当前默认 LLM 生成资产治理草案？这可能产生模型费用；结果不会自动写入资产。')) return
+    setState('calling'); setMessage('')
+    try {
+      const response = await fetch(`/api/books/${bookId}/visual-assets/${assetType}/${asset.assetRecordId}/semantic-governance-drafts/llm-draft`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ packetFingerprint: draft.plan_fingerprint, confirmed: true, allowExternalCall: true }) })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail || `生成草案失败: HTTP ${response.status}`)
+      setDraft(payload); setReviewedFields(payload.proposed_fields ?? {}); setState('idle')
+      setMessage(payload.deduplicated ? '该证据包已有 LLM 草案，未重复调用。' : 'LLM 草案已生成，请人工审核后确认写入。')
+    } catch (error) { setState('error'); setMessage(error instanceof Error ? error.message : '生成草案失败') }
+  }
+
+  const confirm = async () => {
+    if (!draft || !asset.assetRecordId || !confirmed || !allowWrite) return
+    setState('confirming')
+    setMessage('')
+    try {
+      const response = await fetch(`/api/books/${bookId}/visual-assets/${assetType}/${asset.assetRecordId}/semantic-governance-drafts/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planFingerprint: draft.plan_fingerprint,
+          confirmed: true,
+          allowWrite: true,
+          reviewedProposedFields: reviewedFields,
+        }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail || `确认写入失败: HTTP ${response.status}`)
+      setState('success')
+      setMessage(
+        payload?.already_confirmed
+          ? '该草案此前已确认写入；没有重复修改资产或重建重编译计划。'
+          : `已写入资产字段；${payload.affected_shots?.length ?? 0} 个关联镜头已建立回滚锚点并进入待重编译计划。`,
+      )
+      setDraft(null)
+      setReviewedFields({})
+      setConfirmed(false)
+      setAllowWrite(false)
+      onRefresh?.()
+    } catch (error) {
+      setState('error')
+      setMessage(error instanceof Error ? error.message : '确认写入失败')
+    }
+  }
+
+  return (
+    <div className="mt-5 rounded-xl border border-violet-500/30 bg-violet-500/5 p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-sm font-medium text-violet-100">资产语义治理（审核后写入）</div>
+          <div className="mt-1 text-xs leading-5 text-violet-100/70">系统用资产权威文本与已声明的结构化镜头绑定生成草案；不会自动改资产、锁定参考图或触发生图/视频。</div>
+        </div>
+        <div className="flex flex-wrap gap-2"><button type="button" onClick={generate} disabled={!asset.assetRecordId || state === 'loading' || state === 'calling' || state === 'confirming'} className="rounded-lg border border-violet-400/50 px-3 py-1.5 text-xs text-violet-100 transition hover:border-violet-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50">{state === 'loading' ? '生成中…' : '生成证据包'}</button>
+          {draft && !draft.llm_generated ? <><button type="button" onClick={() => void previewLlm()} disabled={state !== 'idle'} className="rounded-lg border border-slate-600 px-3 py-1.5 text-xs text-slate-200 disabled:opacity-50">预览 LLM 提示词</button><button type="button" onClick={() => void callLlm()} disabled={state !== 'idle'} className="rounded-lg border border-violet-300/50 bg-violet-400/10 px-3 py-1.5 text-xs text-violet-100 disabled:opacity-50">{state === 'calling' ? '调用中…' : '确认调用 LLM'}</button></> : null}</div>
+      </div>
+      {message ? <div className={`mt-3 rounded-lg border px-3 py-2 text-xs ${state === 'error' ? 'border-rose-500/30 bg-rose-500/10 text-rose-200' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'}`}>{message}</div> : null}
+      {promptPreview ? <details className="mt-3 rounded-lg border border-slate-800 bg-slate-950/40 p-3"><summary className="cursor-pointer text-xs text-slate-300">查看 LLM 提示词全文</summary><pre className="mt-3 max-h-64 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-slate-400">{promptPreview}</pre></details> : null}
+      {draft?.llm_generated ? (
+        <div className="mt-4 space-y-3">
+          <div className="rounded-lg border border-violet-500/20 bg-slate-950/40 p-3">
+            <div className="text-xs font-medium text-violet-100">建议写回的资产字段（可编辑）</div>
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
+              {Object.entries(reviewedFields).map(([field, value]) => (
+                <label key={field} className="block">
+                  <span className="text-[11px] text-slate-400">{structuredFieldLabel(field)}</span>
+                  <textarea value={value} onChange={(event) => setReviewedFields((current) => ({ ...current, [field]: event.target.value }))} rows={3} className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs leading-5 text-slate-200 focus:border-violet-400 focus:outline-none" />
+                </label>
+              ))}
+            </div>
+          </div>
+          {draft.field_moves.length > 0 ? <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-3 text-xs text-slate-300"><div className="font-medium text-slate-200">字段归属调整</div>{draft.field_moves.map((item, index) => <div key={`${item.source_field}-${index}`} className="mt-2">{structuredFieldLabel(item.source_field || '')} → {structuredFieldLabel(item.target_field || '')}：{item.text || '（未提供文本）'}</div>)}</div> : null}
+          {draft.shot_layer_extractions.length > 0 ? <div className="rounded-lg border border-amber-500/25 bg-amber-500/5 p-3 text-xs text-amber-100"><div className="font-medium">建议迁入镜头层（本次不会自动改镜头）</div>{draft.shot_layer_extractions.map((item, index) => <div key={`${item.source_field}-${index}`} className="mt-2 leading-5">{item.text} {item.candidate_shot_ids?.length ? `→ ${item.candidate_shot_ids.join('、')}` : '→ 暂无可安全匹配镜头'}</div>)}</div> : null}
+          {draft.rationale.length > 0 ? <div className="text-xs leading-5 text-slate-400">{draft.rationale.join(' ')}</div> : null}
+          <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-3 text-xs text-slate-400">影响镜头：{draft.affected_shots.length ? draft.affected_shots.map((item) => `${item.composite_shot_id}${item.scene_name ? ` ${item.scene_name}` : ''}`).join('；') : '未发现已声明的结构化绑定镜头'}</div>
+          <div className="flex flex-wrap items-center gap-4 rounded-lg border border-slate-800 bg-slate-950/40 p-3 text-xs text-slate-300">
+            <label className="flex items-center gap-2"><input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} />我已审核上述字段与影响范围</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={allowWrite} onChange={(event) => setAllowWrite(event.target.checked)} />允许写入并建立待重编译计划</label>
+            <button type="button" onClick={confirm} disabled={!confirmed || !allowWrite || state === 'confirming'} className="rounded-lg border border-emerald-500/50 px-3 py-1.5 text-xs text-emerald-200 transition hover:border-emerald-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50">{state === 'confirming' ? '写入中…' : '确认写入治理结果'}</button>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
 function FilterChip({
   active,
   label,
@@ -865,6 +1078,7 @@ export default function ProductWorkspaceAssetsSection({
   onGenerateAssetReference,
   onDeleteReferenceAsset,
   onUpdateReferenceAssetStatus,
+  onRefreshAll,
   onNavigateSection,
   onNavigateTaskSection,
   onNavigateShot,
@@ -877,6 +1091,10 @@ export default function ProductWorkspaceAssetsSection({
     prompt: string
     model?: string | null
   } | null>(null)
+  const [manualReferenceFile, setManualReferenceFile] = useState<File | null>(null)
+  const [manualReferenceNotes, setManualReferenceNotes] = useState('')
+  const [manualReferenceState, setManualReferenceState] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle')
+  const [manualReferenceMessage, setManualReferenceMessage] = useState('')
   const assetGroups = groupAssetsByMaster(prioritizedAssets)
   const selectedInsight = selectedAsset
     ? assetEpisodeInsights.get(selectedAsset.id) ?? { shotIds: [], blockerCount: 0, missingReference: false, impactShots: [] }
@@ -950,6 +1168,43 @@ export default function ProductWorkspaceAssetsSection({
       assetActionFollowUp &&
       (!assetActionFollowUp.assetId || assetActionFollowUp.assetId === selectedAsset.id),
   )
+  const selectedStructuredFieldEntries = selectedAsset ? buildStructuredFieldEntries(selectedAsset.structuredVariantFields) : []
+  const canUploadManualReference = Boolean(selectedAsset?.assetRecordId && bookId > 0)
+
+  const uploadManualReference = async () => {
+    if (!selectedAsset || !manualReferenceFile || !selectedAsset.assetRecordId || bookId <= 0) return
+
+    try {
+      setManualReferenceState('uploading')
+      setManualReferenceMessage('')
+      const body = new FormData()
+      body.append('file', manualReferenceFile)
+      body.append('assetName', selectedAsset.title)
+      body.append('status', 'locked')
+      if (manualReferenceNotes.trim()) body.append('notes', manualReferenceNotes.trim())
+
+      const response = await fetch(
+        `/api/books/${bookId}/visual-assets/${toVisualAssetType(selectedAsset.category)}/${selectedAsset.assetRecordId}/manual-reference-assets`,
+        {
+          method: 'POST',
+          body,
+        },
+      )
+      if (!response.ok) {
+        throw new Error(`手动上传资产参考图失败: HTTP ${response.status}`)
+      }
+      const payload = await response.json()
+      const syncWarning = payload?.reference?.sync_warning ? `；同步提醒：${payload.reference.sync_warning}` : ''
+      setManualReferenceState('success')
+      setManualReferenceMessage(`已上传并锁定为「${selectedAsset.title}」参考图${syncWarning}`)
+      setManualReferenceFile(null)
+      setManualReferenceNotes('')
+      onRefreshAll?.()
+    } catch (error) {
+      setManualReferenceState('error')
+      setManualReferenceMessage(error instanceof Error ? error.message : '手动上传资产参考图失败')
+    }
+  }
 
   const runAssetCanvasPrimaryAction = () => {
     if (!selectedAsset || !assetCanvasPrimaryActionPlan) return
@@ -1091,14 +1346,32 @@ export default function ProductWorkspaceAssetsSection({
 
         <div className="mt-4 space-y-4">
           {prioritizedAssets.length > 0 ? (
-            assetGroups.map((group) => (
-              <div key={group.key} className="rounded-xl border border-slate-800 bg-slate-950/30 p-3">
+            assetGroups.map((group) => {
+              const firstAssetId = group.items[0]?.id ?? ''
+              const groupActive = group.items.some((asset) => selectedAsset?.id === asset.id)
+
+              return (
+              <div
+                key={group.key}
+                className={`rounded-xl border p-3 transition ${
+                  groupActive ? 'border-sky-500/40 bg-sky-500/5' : 'border-slate-800 bg-slate-950/30'
+                }`}
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
                   <div>
-                    <div className="text-sm font-medium text-white">{group.title}</div>
+                    <button
+                      type="button"
+                      disabled={!firstAssetId}
+                      onClick={() => firstAssetId && onSelectAsset(firstAssetId)}
+                      className="text-left text-sm font-medium text-white transition hover:text-sky-100 disabled:cursor-default disabled:hover:text-white"
+                    >
+                      {group.title}
+                    </button>
                     <div className="mt-1 text-xs text-slate-500">{assetCategoryLabel(group.category)} / {'\u5171'} {group.count} {'\u4e2a\u7248\u672c'}</div>
                   </div>
-                  {group.count > 1 ? (
+                  {groupActive ? (
+                    <span className="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 text-[11px] text-sky-100">当前查看</span>
+                  ) : group.count > 1 ? (
                     <span className="rounded-full border border-slate-700 px-2 py-0.5 text-[11px] text-slate-300">{'\u7248\u672c\u7ec4'}</span>
                   ) : null}
                 </div>
@@ -1131,12 +1404,6 @@ export default function ProductWorkspaceAssetsSection({
                           </div>
 
                           <div className="mt-1 text-xs text-slate-500">{buildAssetMetaLine(asset)}</div>
-
-                          {(asset.detailPrimary || asset.detailSecondary || asset.detailTertiary) && (
-                            <div className="mt-3">
-                              <AssetDetailGroup asset={asset} />
-                            </div>
-                          )}
 
                           <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
                             {runtimeSummary?.latestExecutionLabel ? (
@@ -1197,7 +1464,8 @@ export default function ProductWorkspaceAssetsSection({
                   })}
                 </div>
               </div>
-            ))
+              )
+            })
           ) : (
             <div className="rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">
               {assetSearchQuery.trim()
@@ -1323,8 +1591,23 @@ export default function ProductWorkspaceAssetsSection({
               />
             </div>
 
+            {selectedAsset.category === 'character' ? (
+              <details className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：人物一致性检查</summary>
+                <div className="mt-1 text-xs leading-5 text-slate-500">
+                  检查人物别名、重复角色与性别冲突。合并或改写前仍会要求明确确认，不会自动修改人物资料。
+                </div>
+                <div className="mt-4 border-t border-slate-800 pt-4">
+                  <CharacterQAPanel bookId={bookId} embedded />
+                </div>
+              </details>
+            ) : null}
+
             {selectedAssetRuntimeSummary ? (
-              <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+              <details className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看关联镜头运行与待回收任务</summary>
+                <div className="mt-1 text-xs leading-5 text-slate-500">仅在需要追踪任务或定位异常镜头时展开。</div>
+                <div className="mt-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="text-sm font-medium text-white">关联镜头运行态</div>
                   <div className="flex flex-wrap gap-2 text-[11px] text-slate-500">
@@ -1466,10 +1749,14 @@ export default function ProductWorkspaceAssetsSection({
                     ))}
                   </div>
                 ) : null}
-              </div>
+                </div>
+              </details>
             ) : null}
 
-            <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+            <details className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+              <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看资产结构、生产提示词与负向约束</summary>
+              <div className="mt-1 text-xs leading-5 text-slate-500">这里用于审核资产事实和生图输入，不影响当前参考图的选择与使用。</div>
+              <div className="mt-4">
               <div className="text-sm font-medium text-white">{'\u4e3b\u6863\u6848\u4e0e\u5f53\u524d\u7248\u672c'}</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <AssetDetailPill label={`\u4e3b\u6863\u6848\uff1a${assetMasterLabel(selectedAsset)}`} />
@@ -1526,11 +1813,57 @@ export default function ProductWorkspaceAssetsSection({
                   <AssetDetailGroup asset={selectedAsset} />
                 </div>
               )}
-              <div className="text-sm font-medium text-white">{'\u8d44\u4ea7\u63d0\u793a\u8bcd'}</div>
-              <div className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-300">
-                {selectedAsset.prompt || '\u5f53\u524d\u8d44\u4ea7\u8fd8\u6ca1\u6709\u53ef\u5c55\u793a\u7684\u7ed3\u6784\u5316\u63d0\u793a\u8bcd\u3002'}
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className="text-sm font-medium text-white">资产提示词结构</div>
+                  <div className="mt-1 text-xs text-slate-500">
+                    结构事实用于资产治理；参考图生成提示词才是提交给生图模型的生产文本。
+                  </div>
+                </div>
+                <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[11px] text-sky-200">
+                  {selectedAsset.category === 'location' ? '场景参考图结构' : selectedAsset.category === 'prop' ? '道具参考图结构' : '人物定妆结构'}
+                </span>
               </div>
-            </div>
+
+              <div className="mt-4 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+                <div className="text-xs font-medium text-slate-300">参考图生成提示词</div>
+                <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-200">
+                  {selectedAsset.renderedPromptPreview || selectedAsset.prompt || '当前资产还没有可展示的参考图生成提示词。'}
+                </div>
+              </div>
+
+              <div className="mt-3 rounded-lg border border-slate-800 bg-slate-900/40 p-3">
+                <div className="text-xs font-medium text-slate-300">结构化资产描述</div>
+                {selectedStructuredFieldEntries.length > 0 ? (
+                  <div className="mt-3 grid gap-2 md:grid-cols-2">
+                    {selectedStructuredFieldEntries.map((field) => (
+                      <div key={field.key} className="rounded-lg border border-slate-800 bg-slate-950/60 px-3 py-2">
+                        <div className="text-[11px] text-slate-500">{field.label}</div>
+                        <div className="mt-1 text-xs leading-5 text-slate-300">{field.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-300">
+                    {selectedAsset.confirmedPromptRaw || selectedAsset.prompt || '当前资产还没有可展示的结构化资产描述。'}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-3 rounded-lg border border-slate-800 bg-slate-900/40 p-3">
+                <div className="text-xs font-medium text-slate-300">负向提示词</div>
+                <div className="mt-2 whitespace-pre-wrap text-xs leading-5 text-slate-400">
+                  {selectedAsset.referenceNegativePrompt || '当前资产未配置单独负向提示词，将使用模型或任务默认负向约束。'}
+                </div>
+              </div>
+              </div>
+            </details>
+
+            <details className="mt-5 rounded-xl border border-violet-500/25 bg-violet-500/5 p-4">
+              <summary className="cursor-pointer text-sm font-medium text-violet-100">高级：审核资产治理草案与版本化修改</summary>
+              <div className="mt-1 text-xs leading-5 text-violet-100/70">治理仅在你生成证据包、确认调用和最终写入后生效。</div>
+              <AssetSemanticGovernancePanel key={selectedAsset.id} bookId={bookId} asset={selectedAsset} onRefresh={onRefreshAll} />
+            </details>
 
             <div className={`mt-5 rounded-xl border p-4 ${shouldHighlightRecoveredReference ? 'border-sky-500/40 bg-sky-500/5' : 'border-slate-800 bg-slate-950/50'}`}>
               <div className="flex items-center justify-between gap-3">
@@ -1554,6 +1887,75 @@ export default function ProductWorkspaceAssetsSection({
 
               <div className="mt-3">
                 <ActionMessage tone={assetActionTone} message={assetActionMessage} />
+              </div>
+
+              <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <div className="text-sm font-medium text-white">上传当前资产参考图</div>
+                    <div className="mt-1 text-xs leading-5 text-slate-500">
+                      支持人物、场景、道具手动上传；上传后会进入资产中心参考图版本，并默认锁定为 H3 多参考可用输入。
+                    </div>
+                  </div>
+                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] text-emerald-200">
+                    上传即锁定
+                  </span>
+                </div>
+                <div className="mt-3 grid gap-3 md:grid-cols-[1.1fr_1fr_auto]">
+                  <label className="block">
+                    <span className="text-[11px] text-slate-500">选择图片（PNG / JPG / WebP）</span>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      disabled={!canUploadManualReference || manualReferenceState === 'uploading'}
+                      onChange={(event) => {
+                        setManualReferenceFile(event.target.files?.[0] ?? null)
+                        setManualReferenceMessage('')
+                        setManualReferenceState('idle')
+                      }}
+                      className="mt-1 block w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-md file:border-0 file:bg-sky-500/15 file:px-3 file:py-1.5 file:text-xs file:text-sky-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-[11px] text-slate-500">备注（可选）</span>
+                    <input
+                      type="text"
+                      value={manualReferenceNotes}
+                      disabled={!canUploadManualReference || manualReferenceState === 'uploading'}
+                      onChange={(event) => setManualReferenceNotes(event.target.value)}
+                      placeholder="例如：用户上传正面定妆 / 场景总览 / 道具特写"
+                      className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </label>
+                  <div className="flex items-end">
+                    <button
+                      type="button"
+                      onClick={uploadManualReference}
+                      disabled={!canUploadManualReference || !manualReferenceFile || manualReferenceState === 'uploading'}
+                      className="w-full rounded-lg border border-sky-500/50 bg-sky-500/10 px-3 py-2 text-xs font-medium text-sky-100 transition hover:border-sky-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {manualReferenceState === 'uploading' ? '上传中...' : '上传并锁定'}
+                    </button>
+                  </div>
+                </div>
+                {!canUploadManualReference ? (
+                  <div className="mt-2 text-xs text-amber-200/90">
+                    当前资产还没有正式资产记录 ID，先保存镜头绑定或完成资产回填后即可上传。
+                  </div>
+                ) : null}
+                {manualReferenceMessage ? (
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className={`mt-3 rounded-lg border px-3 py-2 text-xs ${
+                      manualReferenceState === 'error'
+                        ? 'border-rose-500/30 bg-rose-500/10 text-rose-200'
+                        : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+                    }`}
+                  >
+                    {manualReferenceMessage}
+                  </div>
+                ) : null}
               </div>
 
               {showActionFollowUp && assetActionFollowUp ? (
@@ -1781,6 +2183,11 @@ export default function ProductWorkspaceAssetsSection({
                 </div>
               ) : null}
 
+              <details className="mt-3">
+                <summary className="cursor-pointer text-xs font-medium text-sky-300">
+                  查看并编辑 {selectedInsight?.impactShots.length ?? 0} 个受影响镜头
+                </summary>
+                <div className="mt-1 text-xs leading-5 text-slate-500">需要逐镜头检查引用或调整绑定时再展开。</div>
               <div className="mt-3 space-y-2">
                 {(selectedInsight?.impactShots ?? []).length > 0 ? (
                   (selectedInsight?.impactShots ?? []).map((shot) => {
@@ -1828,6 +2235,7 @@ export default function ProductWorkspaceAssetsSection({
                   </div>
                 )}
               </div>
+              </details>
             </div>
           </div>
         ) : (

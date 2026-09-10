@@ -17,6 +17,7 @@ import {
 import type { CanvasHandoffTarget } from './productWorkspaceSectionContracts'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildQaReleaseGateSummary } from './productWorkspaceQaReadiness'
+import { ProductWorkspaceQaDecisionPanel } from './ProductWorkspaceQaDecisionPanel'
 
 type WorkspaceSection = 'scripts' | 'storyboard' | 'assets'
 
@@ -360,6 +361,11 @@ function statusLabel(status: QaWorkflowStatus) {
   }
 }
 
+function isHumanReview(issue: { statusReason?: string | null; status_reason?: string; meta_info?: Record<string, unknown> }): boolean {
+  const meta = (issue.meta_info || {}) as Record<string, unknown>;
+  return meta.routing === 'human' || meta.human_review_required === true || String(issue.statusReason || issue.status_reason || '').includes('人工定稿')
+}
+
 function lifecycleTone(rawStatus: QaLifecycleFilter) {
   switch (rawStatus) {
     case 'recheck_passed':
@@ -470,7 +476,9 @@ export default function ProductWorkspaceQaSection({
   onSelectShot,
 }: Props) {
   const [layerFilter, setLayerFilter] = useState<'all' | QaLayer>('all')
-  const [statusFilter, setStatusFilter] = useState<'all' | QaWorkflowStatus>('all')
+  // QA is a work queue first.  Historical resolved records remain available
+  // through the status filter, but must not bury the next repair action.
+  const [statusFilter, setStatusFilter] = useState<'all' | QaWorkflowStatus>('open')
   const [lifecycleFilter, setLifecycleFilter] = useState<QaLifecycleFilter>('all')
   const [episodeFilter, setEpisodeFilter] = useState<'all' | number>('all')
   const [sortMode, setSortMode] = useState<QaIssueSortMode>('status_priority')
@@ -1203,6 +1211,7 @@ export default function ProductWorkspaceQaSection({
                 ? '真实 QA 工作台读取失败，当前回退为派生问题视图。'
                 : '当前显示结构化 QA 问题。'}
         </div>
+        <div className="mt-1 text-xs text-slate-500">默认只显示待处理问题；已解决和不修复记录可在“全部状态”中回看。</div>
 
         {releaseGateSummary.totalScriptEpisodes > 0 ? (
           <div
@@ -1232,8 +1241,11 @@ export default function ProductWorkspaceQaSection({
           </div>
         ) : null}
 
-        <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-1">
+        <details className="mt-4 rounded-lg border border-slate-800 bg-slate-950/30 p-3">
+          <summary className="cursor-pointer text-xs font-medium text-slate-300">高级：筛选问题范围、历史与排序</summary>
+          <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-1">
           <select
+            aria-label="按问题层级筛选"
             value={layerFilter}
             onChange={(event) => setLayerFilter(event.target.value as 'all' | QaLayer)}
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
@@ -1246,6 +1258,7 @@ export default function ProductWorkspaceQaSection({
           </select>
 
           <select
+            aria-label="按处理状态筛选"
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value as 'all' | QaWorkflowStatus)}
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
@@ -1258,6 +1271,7 @@ export default function ProductWorkspaceQaSection({
           </select>
 
           <select
+            aria-label="按修复阶段筛选"
             value={lifecycleFilter}
             onChange={(event) => setLifecycleFilter(event.target.value as QaLifecycleFilter)}
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
@@ -1270,6 +1284,7 @@ export default function ProductWorkspaceQaSection({
           </select>
 
           <select
+            aria-label="按集数筛选"
             value={episodeFilter === 'all' ? 'all' : String(episodeFilter)}
             onChange={(event) => setEpisodeFilter(event.target.value === 'all' ? 'all' : Number(event.target.value))}
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
@@ -1283,6 +1298,7 @@ export default function ProductWorkspaceQaSection({
           </select>
 
           <select
+            aria-label="排序方式"
             value={sortMode}
             onChange={(event) => setSortMode(event.target.value as QaIssueSortMode)}
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
@@ -1300,7 +1316,8 @@ export default function ProductWorkspaceQaSection({
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none transition focus:border-sky-500"
             placeholder="搜索镜头号或问题关键词"
           />
-        </div>
+          </div>
+        </details>
 
         <div className="mt-4 space-y-3">
           {filteredIssues.length > 0 ? (
@@ -1321,6 +1338,11 @@ export default function ProductWorkspaceQaSection({
                     <span className={`rounded-full border px-2 py-0.5 text-[11px] ${severityTone(issue.severity)}`}>
                       {issue.severity}
                     </span>
+                    {isHumanReview(issue) ? (
+                      <span className="rounded-full border border-amber-400/50 bg-amber-400/10 px-2 py-0.5 text-[11px] font-medium text-amber-200">
+                        人工定稿
+                      </span>
+                    ) : null}
                     <span className={`rounded-full border px-2 py-0.5 text-[11px] ${statusTone(workflowStatus)}`}>
                       {statusLabel(workflowStatus)}
                     </span>
@@ -1478,6 +1500,8 @@ export default function ProductWorkspaceQaSection({
 
                   {selectedActionState.message ? (
                     <div
+                      role="status"
+                      aria-live="polite"
                       className={`mt-3 rounded-lg border px-3 py-2 text-xs ${
                         selectedActionState.mode === 'error'
                           ? 'border-rose-500/30 bg-rose-500/10 text-rose-200'
@@ -1621,6 +1645,8 @@ export default function ProductWorkspaceQaSection({
               </div>
               {selectedIssue.sourceKind === 'workbench' && selectedRepairSyncState.message ? (
                 <div
+                  role="status"
+                  aria-live="polite"
                   className={`mt-3 rounded-lg border px-3 py-2 text-xs ${
                     selectedRepairSyncState.mode === 'error'
                       ? 'border-rose-500/30 bg-rose-500/10 text-rose-200'
@@ -1634,8 +1660,8 @@ export default function ProductWorkspaceQaSection({
               ) : null}
             </div>
 
-            {selectedIssue.sourceKind === 'workbench' ? (
-              <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+              {selectedIssue.sourceKind === 'workbench' ? (
+                <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="text-sm font-medium text-white">脚本修复版本</div>
@@ -1646,6 +1672,9 @@ export default function ProductWorkspaceQaSection({
                   </span>
                 </div>
 
+                <details className="mt-4">
+                  <summary className="cursor-pointer text-xs font-medium text-sky-300">高级：查看版本、差异与回滚记录</summary>
+                  <div className="mt-1 text-xs leading-5 text-slate-500">版本历史只在需要追溯或恢复时展开，不干扰当前问题的修复操作。</div>
                 {(selectedWorkbenchEpisode?.versions ?? []).length > 0 ? (
                   <div className="mt-4 space-y-3">
                     {(selectedWorkbenchEpisode?.versions ?? []).slice(0, 6).map((version) => {
@@ -1720,7 +1749,23 @@ export default function ProductWorkspaceQaSection({
                     当前集还没有脚本修复版本。
                   </div>
                 )}
-              </div>
+                </details>
+                </div>
+              ) : null}
+
+            {selectedIssue.sourceKind === 'workbench' ? (
+              <ProductWorkspaceQaDecisionPanel
+                bookId={bookId}
+                issueKey={selectedIssue.id}
+                onUseProposal={(content) => {
+                  setPatchDraftByIssue((current) => ({ ...current, [selectedIssue.id]: content }))
+                  setPreviewByIssue((current) => {
+                    const next = { ...current }
+                    delete next[selectedIssue.id]
+                    return next
+                  })
+                }}
+              />
             ) : null}
 
             <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">

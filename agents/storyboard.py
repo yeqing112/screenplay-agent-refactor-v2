@@ -9,7 +9,8 @@ from datetime import datetime
 from typing import Optional
 
 import config
-from core.llm import call_llm_json
+from core.llm import call_llm, call_llm_json
+from core.structured_output import strip_code_fences
 from core.prompts import load_prompt, PROMPTS_DIR
 from core.production_skill import build_production_skill_prompt_block
 from models import (
@@ -29,11 +30,12 @@ class StoryboardAgent(BaseAgent):
 
     name = "storyboard"
 
-    def __init__(self, book_id: int, genre: str = "short_drama", progress_callback=None):
+    def __init__(self, book_id: int, genre: str = "short_drama", progress_callback=None, force_llm: bool = False):
         super().__init__(book_id)
         self.genre = get_genre(genre)
         self.max_shots_per_scene = (4, 8)  # 每场景镜头数区间
         self.progress_callback = progress_callback
+        self.force_llm = bool(force_llm)
 
     def _notify_progress(self, stage: str, **payload):
         if not callable(self.progress_callback):
@@ -59,7 +61,10 @@ class StoryboardAgent(BaseAgent):
                 )
 
             parsed_scene_blocks = self._parse_script_scene_blocks(script.content or "")
-            if parsed_scene_blocks:
+            # The fallback path deterministically produces marker-only shots and
+            # is not production-grade.  ``force_llm`` opts a structured script into
+            # the director-LLM path, leaving default behavior unchanged for others.
+            if parsed_scene_blocks and not self.force_llm:
                 all_shots = []
                 preserved_shots = self._load_existing_episode_shots(s, episode, resume_after_scene)
                 if preserved_shots:
@@ -103,10 +108,17 @@ class StoryboardAgent(BaseAgent):
             # 1. 加载场景列表
             # 优先用 LLM 从剧本拆分（更准确定位实际出现的场景）
             # 视觉设定数据仅作为增强参考，不作为场景来源
-            scenes = self._llm_split_scenes(s, episode, script.content or "")
-            if not scenes:
-                self.log(f"ep {episode}: LLM split returned empty, fallback to visual_locations")
-                scenes = self._load_scenes(s, episode)
+            if parsed_scene_blocks and self.force_llm:
+                # A structured script gives exact scene blocks; prefer them and
+                # let the director LLM compose each scene's shots.  ``_llm_split_scenes``
+                # is only consulted when no parsed blocks exist.
+                scenes = parsed_scene_blocks
+                self.log(f"ep {episode}: using {len(scenes)} parsed scene blocks (force_llm)")
+            else:
+                scenes = self._llm_split_scenes(s, episode, script.content or "")
+                if not scenes:
+                    self.log(f"ep {episode}: LLM split returned empty, fallback to visual_locations")
+                    scenes = self._load_scenes(s, episode)
             preserved_shots = self._load_existing_episode_shots(s, episode, resume_after_scene)
             if preserved_shots:
                 self._notify_progress(
@@ -138,6 +150,9 @@ class StoryboardAgent(BaseAgent):
                     s, scene_data, episode, script.content or ""
                 )
                 scene_shots = self._generate_scene_shots(context, fallback_scene=scene_data)
+                if not scene_shots:
+                    scene_shots = self._generate_scene_shots_fallback(scene_data)
+                    self.log(f"  {scene_data.get('name', '')}: LLM empty, fallback {len(scene_shots)} shots")
                 self.log(f"  {scene_data['name']}: {len(scene_shots)} shots")
                 all_shots.extend(scene_shots)
                 self._notify_progress(
@@ -165,16 +180,15 @@ class StoryboardAgent(BaseAgent):
 
     def _parse_script_scene_blocks(self, content: str) -> list[dict]:
         """Parse structured markdown scenes directly from generated scripts."""
-        pattern = re.compile(
-            r"\*\*场景[一二三四五六七八九十0-9]+：\[(?P<name>[^\]]+)\]\*\*(?P<body>.*?)(?=\n---|\n\*\*场景[一二三四五六七八九十0-9]+：\[|\Z)",
-            re.DOTALL,
-        )
-        scene_blocks = []
-        for match in pattern.finditer(content):
-            name = match.group("name").strip()
-            body = match.group("body").strip()
+        scene_blocks: list[dict] = []
+        seen_names: set[str] = set()
+
+        def append_block(name: str, body: str) -> None:
             if not name or not body:
-                continue
+                return
+            if name in seen_names:
+                return
+            seen_names.add(name)
             scene_blocks.append(
                 {
                     "name": name,
@@ -186,6 +200,33 @@ class StoryboardAgent(BaseAgent):
                     "script_block": body,
                 }
             )
+
+        # Format 1: ``**场景N：[name]**`` (older structured-form script).
+        pattern = re.compile(
+            r"\*\*场景[一二三四五六七八九十0-9]+：\[(?P<name>[^\]]+)\]\*\*(?P<body>.*?)(?=\n---|\n\*\*场景[一二三四五六七八九十0-9]+：\[|\Z)",
+            re.DOTALL,
+        )
+        for match in pattern.finditer(content):
+            append_block(match.group("name").strip(), match.group("body").strip())
+
+        # Format 2: ``## 场景N：name`` markdown (ScriptwriterAgent's default
+        # output).  The heading carries the scene title plus optional location /
+        # time after ``—``; use the leading title as the canonical scene name.
+        md_parts = re.split(r"(?m)^(\s*##\s*场景[一二三四五六七八九十0-9]+：)", content or "")
+        for index in range(1, len(md_parts), 2):
+            body = md_parts[index + 1] if index + 1 < len(md_parts) else ""
+            stripped = body.strip()
+            if not stripped:
+                continue
+            # The scene title is the first line after the ``## 场景N：`` heading,
+            # e.g. ``钟楼外景 — 钟楼外 — 黄昏``; the title precedes ``—``.
+            first_line = stripped.splitlines()[0].strip()
+            name = re.split(r"[，。—－]\s*", first_line, maxsplit=1)[0].strip()
+            if not name:
+                continue
+            body_block = "\n".join(stripped.splitlines()[1:]).strip() or stripped
+            append_block(name, body_block)
+
         return scene_blocks
 
     def _iter_resume_scenes(self, scenes: list[dict], resume_after_scene: str | None) -> list[dict]:
@@ -551,7 +592,8 @@ class StoryboardAgent(BaseAgent):
         )
         prompt = f"{build_production_skill_prompt_block(self.book_id, 'directing')}\n\n{prompt}"
         try:
-            result = call_llm_json(prompt, estimated_tokens=config.ESTIMATED_TOKENS_DEFAULT)
+            raw = call_llm(prompt, estimated_tokens=config.ESTIMATED_TOKENS_DEFAULT)
+            result = json.loads(strip_code_fences(raw))
             shots = self._normalize_scene_shot_payload(result, context["scene_name"])
             if not shots:
                 self.log(f"  WARNING: LLM returned empty shots for {context['scene_name']}")
@@ -559,7 +601,8 @@ class StoryboardAgent(BaseAgent):
             return shots
         except ValueError as exc:
             lowered = str(exc).lower()
-            if "failed to parse llm json response" not in lowered and "truncated" not in lowered:
+            is_parse_error = isinstance(exc, json.JSONDecodeError) or "failed to parse" in lowered or "truncated" in lowered
+            if not is_parse_error:
                 raise
 
             self.log(f"  WARNING: scene {context['scene_name']} parse failed, retry with compact prompt")
@@ -581,7 +624,8 @@ class StoryboardAgent(BaseAgent):
             ) + "\n\n补充约束：如果场景较长，请优先输出 4 个最关键镜头，确保 JSON 完整闭合，不要输出 5 个以上镜头。"
             compact_prompt = f"{build_production_skill_prompt_block(self.book_id, 'directing')}\n\n{compact_prompt}"
             try:
-                retry_result = call_llm_json(compact_prompt, estimated_tokens=max(2000, config.ESTIMATED_TOKENS_DEFAULT // 2))
+                retry_raw = call_llm(compact_prompt, estimated_tokens=max(2000, config.ESTIMATED_TOKENS_DEFAULT // 2))
+                retry_result = json.loads(strip_code_fences(retry_raw))
                 shots = self._normalize_scene_shot_payload(retry_result, context["scene_name"])
                 if not shots:
                     raise ValueError("LLM returned empty shots after compact retry")
@@ -598,6 +642,7 @@ class StoryboardAgent(BaseAgent):
                 return self._generate_scene_shots_fallback(fallback_scene)
 
     def _normalize_scene_shot_payload(self, result, scene_name: str) -> list[dict]:
+        _SHOT_KEYS = {"action_process", "shot_purpose", "camera_angle", "duration", "start_state", "end_state"}
         if isinstance(result, dict):
             shots = (
                 result.get("shots")
@@ -605,6 +650,10 @@ class StoryboardAgent(BaseAgent):
                 or result.get("storyboard")
                 or []
             )
+            # Some models return a single shot object instead of a list.  Accept
+            # a dict that already looks like a shot rather than dropping it.
+            if not shots and any(key in result for key in _SHOT_KEYS):
+                shots = [result]
         else:
             shots = result
 

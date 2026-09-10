@@ -1,3 +1,4 @@
+import base64
 import json
 import unittest
 from types import SimpleNamespace
@@ -8,10 +9,13 @@ from fastapi.testclient import TestClient
 from api.server import app, _creative_tasks
 from models import (
     Book,
+    DecisionPacketRecord,
     ProductionExportRecord,
     Session,
     StoryboardPromptVersion,
     StoryboardShot,
+    StoryboardTransitionContract,
+    StoryboardTransitionFrame,
     TaskRun,
     VisualLocation,
     VisualMakeup,
@@ -21,17 +25,29 @@ from models import (
 )
 
 
+class ConfirmedMockCompileClient(TestClient):
+    """Legacy compiler assertions describe an approved mock operation explicitly."""
+    def post(self, url, *args, **kwargs):
+        if "/compile-prompts" in str(url):
+            body = dict(kwargs.get("json") or {})
+            body.setdefault("confirmed", True)
+            body.setdefault("allowExternalCall", True)
+            kwargs["json"] = body
+        return super().post(url, *args, **kwargs)
+
+
 class StoryboardPromptCompileTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         init_db()
-        cls.client = TestClient(app)
+        cls.client = ConfirmedMockCompileClient(app)
 
     def setUp(self):
         self.book_id = 990301
         self.episode = 1
         self.shot_id = 1
         with Session() as session:
+            session.query(DecisionPacketRecord).filter(DecisionPacketRecord.book_id == self.book_id).delete()
             session.query(TaskRun).filter(TaskRun.book_id == self.book_id).delete()
             session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
             session.query(StoryboardPromptVersion).filter(StoryboardPromptVersion.book_id == self.book_id).delete()
@@ -187,6 +203,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             if int(task.get("book_id") or 0) == self.book_id:
                 _creative_tasks.pop(task_id, None)
         with Session() as session:
+            session.query(DecisionPacketRecord).filter(DecisionPacketRecord.book_id == self.book_id).delete()
             session.query(TaskRun).filter(TaskRun.book_id == self.book_id).delete()
             session.query(ProductionExportRecord).filter(ProductionExportRecord.book_id == self.book_id).delete()
             session.query(StoryboardPromptVersion).filter(StoryboardPromptVersion.book_id == self.book_id).delete()
@@ -198,11 +215,65 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             session.query(Book).filter(Book.id == self.book_id).delete()
             session.commit()
 
+    def test_manual_reference_image_upload_syncs_into_h3_reference_payload(self):
+        png_bytes = base64.b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="
+        )
+
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/manual-media-assets",
+            data={
+                "targetKind": "reference-image",
+                "assetType": "scene",
+                "assetId": self.scene_id,
+                "assetName": "手动上传出租屋",
+                "referenceToken": "@手动出租屋",
+                "status": "locked",
+                "adopted": "true",
+            },
+            files={"file": ("manual-scene.png", png_bytes, "image/png")},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["target_kind"], "reference-image")
+        self.assertTrue(payload["uploaded"]["url"].startswith("/api/prototyping/manual-media/"))
+        self.assertEqual(payload["reference"]["model"], "manual-upload")
+        self.assertEqual(payload["reference"]["status"], "locked")
+
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            asset_links = json.loads(shot.asset_links)
+            scene_refs = asset_links["references"]["scene"]
+
+        self.assertEqual(len(scene_refs), 1)
+        self.assertEqual(scene_refs[0]["metadata"]["source"], "visual-reference-assets")
+        self.assertEqual(scene_refs[0]["metadata"]["referenceToken"], "@手动出租屋")
+        self.assertTrue(scene_refs[0]["uri"].startswith("/api/prototyping/manual-media/"))
+
+        export_response = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-export?target_model=minimax-h3"
+        )
+        self.assertEqual(export_response.status_code, 200)
+        export_payload = export_response.json()
+        self.assertIn("/api/prototyping/manual-media/", json.dumps(export_payload, ensure_ascii=False))
+
     def _valid_llm_payload(self):
         return {
             "visual_prompt_static": "暴雨中的出租屋内景，中景构图，姐姐站在门口偏左，湿透的雨衣贴在肩背，阿宁抱着旧水壶缩在屋内偏右，冷色雨夜光线压低室内亮度，地面反出潮湿微光，人物外观严格参考 @姐姐 与 @阿宁，场景保持 @出租屋 的狭窄压迫感。",
             "visual_prompt_motion": "镜头从中景缓慢推进，先保持首帧里姐姐与阿宁、旧水壶和出租屋陈设完全一致，随后姐姐压低声音侧身进屋，阿宁抱紧旧水壶后退半步，视线始终追着姐姐，情绪从警惕推进到紧张，最后停在两人对视的瞬间，服装、场景和道具连续一致。",
             "negative_prompt": "低质量，多余手指，多余人物，不要现代汽车",
+            "core_action": "姐姐侧身进屋，阿宁抱紧旧水壶后退半步",
+            "action_beats": [
+                {"start": 0.0, "end": 1.5, "action": "姐姐侧身进屋"},
+                {"start": 1.5, "end": 3.0, "action": "阿宁抱紧旧水壶并后退半步"},
+            ],
+            "continuity_in": "姐姐站在出租屋门口，阿宁抱着旧水壶",
+            "continuity_out": "两人在屋内对视，旧水壶仍被阿宁抱在胸前",
             "used_assets": [
                 {"asset_type": "scene", "asset_id": self.scene_id, "asset_name": "暴雨中的出租屋", "reference_token": "@出租屋", "reference_status": "locked"},
                 {"asset_type": "character", "asset_id": self.jiejie_id, "asset_name": "姐姐", "reference_token": "@姐姐", "reference_status": "locked"},
@@ -233,8 +304,36 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertEqual(payload["prompt_compile_context"]["asset_bindings"]["scene"]["asset_name"], "暴雨中的出租屋")
         self.assertEqual(payload["prompt_compile_context"]["asset_bindings"]["characters"][0]["reference_token"], "@姐姐")
         self.assertEqual(payload["prompt_compile_context"]["model_adapter"]["target_model"], "jimeng")
+        self.assertEqual(payload["prompt_compile_context"]["core_action"], "姐姐侧身进屋，阿宁抱紧旧水壶后退半步")
+        self.assertEqual(len(payload["prompt_compile_context"]["action_beats"]), 2)
+        self.assertEqual(payload["prompt_compile_context"]["continuity_in"], "姐姐站在出租屋门口，阿宁抱着旧水壶")
+        self.assertEqual(payload["prompt_compile_context"]["executability"]["status"], "pass")
+        motion_contract = payload["prompt_compile_context"]["motion_contract"]
+        self.assertEqual(motion_contract["start_state"], "姐姐站在出租屋门口，阿宁抱着旧水壶")
+        self.assertEqual(motion_contract["camera"], "push-in")
+        self.assertEqual(len(motion_contract["action_beats"]), 2)
+        self.assertEqual(motion_contract["end_state"], "两人在屋内对视，旧水壶仍被阿宁抱在胸前")
+        self.assertTrue(motion_contract["preserve_first_frame"])
         self.assertIn("StoryboardChineseAdapter", payload["prompt_compile_context"]["model_adapter"]["adapter"])
         self.assertIn("@姐姐", payload["prompt_compile_context"]["model_adapter"]["static_prompt"])
+        static_sections = payload["prompt_compile_context"]["model_adapter"]["static_prompt_sections"]
+        self.assertEqual(static_sections["schema_version"], "storyboard_image_prompt_sections_v1")
+        self.assertIn("frame_focus", static_sections)
+        self.assertIn("asset_anchors", static_sections)
+        self.assertIn("composition", static_sections)
+        self.assertIn("frozen_action", static_sections)
+        self.assertIn("asset_visual_facts", static_sections)
+        self.assertIn("lighting_emotion", static_sections)
+        self.assertIn("constraints", static_sections)
+        self.assertTrue(any(item["role"] == "scene" and "出租屋" in item["label"] for item in static_sections["asset_anchors"]))
+        self.assertTrue(any(item["role"] == "character" and "@姐姐" in item["label"] for item in static_sections["asset_anchors"]))
+        self.assertTrue(any(item["role"] == "prop" and "@旧水壶" in item["label"] for item in static_sections["asset_anchors"]))
+        self.assertTrue(any(item["role"] in {"scene", "character", "prop"} and item["fact"] for item in static_sections["asset_visual_facts"]))
+        self.assertEqual(payload["reference_images"][0]["reference_role"], "scene")
+        self.assertEqual(payload["reference_images"][1]["reference_role"], "character")
+        self.assertIn("reference_name", payload["reference_images"][0])
+        self.assertIn("reference_purpose", payload["reference_images"][0])
+        self.assertIn("reference_label", payload["reference_images"][0])
 
         with Session() as session:
             shot = session.query(StoryboardShot).filter(
@@ -248,7 +347,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             shot_meta = json.loads(shot.meta_info)
             self.assertIn("model_adapter", shot_meta["prompt_compiler"]["prompt_compile_context"])
 
-    def test_compile_sanitizes_llm_label_like_motion_before_diagnostics(self):
+    def test_compile_sanitizes_llm_label_like_motion_and_reports_contract_gap(self):
         payload = self._valid_llm_payload()
         payload["visual_prompt_motion"] = (
             "镜头推进为：姐姐把湿透的雨衣搭在门边，阿宁抱紧旧水壶后退半步，"
@@ -264,8 +363,9 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         body = response.json()
         self.assertEqual(body["compiler_diagnostics"]["status"], "pass")
+        self.assertTrue(body["prompt_motion"])
         self.assertNotIn("镜头推进为", body["prompt_motion"])
-        self.assertIn("镜头继续推进到姐姐把湿透的雨衣搭在门边", body["prompt_motion"])
+        self.assertIn("首帧", body["prompt_motion"])
 
     def test_compile_preserves_exact_scene_name_when_llm_uses_generic_location(self):
         payload = self._valid_llm_payload()
@@ -284,6 +384,51 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         body = response.json()
         self.assertEqual(body["compiler_diagnostics"]["status"], "pass")
         self.assertTrue(body["prompt_static"].startswith("暴雨中的出租屋，雨夜出租屋内景"))
+
+    def test_compile_does_not_leak_character_reference_board_template_into_static_prompt(self):
+        reference_board_prompt = (
+            "人物定妆设定板，展示同一个角色的六个视角。"
+            "上排为脸部特写：正面、侧面、45度；"
+            "下排为全身展示：正面、侧面、背面。"
+            "六个视角必须是同一个人，保持面部一致性、发型一致性、服装一致性、体型一致性。"
+            "人物为：【青年】岁的【中国】【人物】，身份是【姐姐】，气质【警惕】。"
+        )
+        with Session() as session:
+            rows = session.query(VisualMakeup).filter(
+                VisualMakeup.book_id == self.book_id,
+            ).all()
+            for row in rows:
+                row.core_prompt_zh = reference_board_prompt
+                row.hair_style = "黑色短发，保持人物识别度"
+                row.refined_outfit = "深色旧外套，雨水打湿肩背"
+            session.commit()
+
+        polluted_payload = self._valid_llm_payload()
+        polluted_payload["visual_prompt_static"] = (
+            polluted_payload["visual_prompt_static"]
+            + " 姐姐保留人物定妆设定板，展示同一个角色的六个视角，上排为脸部特写，正面、侧面、45度，"
+            + "下排为全身展示，正面、侧面、背面。阿宁保留六个视角必须是同一个人，保持面部一致性、发型一致性、服装一致性、体型一致性。"
+            + "姐姐黑色短发，深色旧外套，雨水打湿肩背。"
+        )
+
+        with patch("core.llm.call_llm_json", return_value=polluted_payload):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
+                json={"compileReason": "manual"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertIn("@姐姐", body["prompt_static"])
+        self.assertIn("黑色短发", body["prompt_static"])
+        self.assertIn("深色旧外套", body["prompt_static"])
+        self.assertNotIn("人物定妆设定板", body["prompt_static"])
+        self.assertNotIn("六个视角", body["prompt_static"])
+        self.assertNotIn("上排为脸部特写", body["prompt_static"])
+        self.assertNotIn("下排为全身展示", body["prompt_static"])
+        self.assertNotIn("正面、侧面、45度", body["prompt_static"])
+        self.assertNotIn("当前镜头必须保留以下视觉细节", body["prompt_static"])
+        self.assertNotIn("视觉事实包括", body["prompt_static"])
 
     def test_machine_prompt_export_preview_is_readonly_and_model_exported(self):
         with Session() as session:
@@ -468,7 +613,38 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertFalse(task["actual_provider_submission"])
         self.assertEqual(task["external_status"], "waiting_for_generation_adapter")
 
-    def test_machine_prompt_provider_submit_sends_h3_prompt_and_writes_video_asset(self):
+    def test_machine_prompt_provider_submit_rejects_model_profile_switch_after_registration(self):
+        export_preview_response = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-export?target_model=minimax-h3"
+        )
+        self.assertEqual(export_preview_response.status_code, 200)
+        register_response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-api-submissions",
+            json={
+                "targetModel": "minimax-h3",
+                "modelProfileId": "frozen-video-profile",
+                "exportPayload": export_preview_response.json(),
+            },
+        )
+        self.assertEqual(register_response.status_code, 200)
+        task_id = register_response.json()["task_id"]
+
+        submit_response = self.client.post(
+            f"/api/prototyping/tasks/{task_id}/submit-machine-prompt-provider",
+            json={
+                "confirmationToken": "CONFIRM_MINIMAX_H3_SUBMIT",
+                "modelProfileId": "different-video-profile",
+                "useReferenceImages": False,
+                "useFirstFrame": False,
+            },
+        )
+
+        self.assertEqual(submit_response.status_code, 409)
+        self.assertIn("冻结", str(submit_response.json()["detail"]))
+        task = self.client.get(f"/api/prototyping/tasks/{task_id}").json()
+        self.assertFalse(task["actual_provider_submission"])
+
+    def test_machine_prompt_provider_submit_prefers_h3_reference_images_and_writes_video_asset(self):
         export_preview_response = self.client.get(
             f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/machine-prompt-export?target_model=minimax-h3"
         )
@@ -482,6 +658,41 @@ class StoryboardPromptCompileTests(unittest.TestCase):
                 StoryboardShot.episode == self.episode,
                 StoryboardShot.shot_id == self.shot_id,
             ).first()
+            shot_meta = json.loads(shot.meta_info or "{}")
+            shot_meta["prompt_compiler"] = {
+                **shot_meta.get("prompt_compiler", {}),
+                "reference_images": [
+                    {
+                        "asset_type": "scene",
+                        "asset_id": self.scene_id,
+                        "asset_name": "暴雨中的出租屋",
+                        "reference_asset_id": "ref-scene-test",
+                        "reference_token": "@出租屋",
+                        "image_url": "https://example.com/scene-locked.png",
+                        "reference_status": "locked",
+                    },
+                    {
+                        "asset_type": "character",
+                        "asset_id": self.jiejie_id,
+                        "asset_name": "姐姐",
+                        "reference_asset_id": "ref-jiejie-test",
+                        "reference_token": "@姐姐",
+                        "image_url": "https://example.com/jiejie-locked.png",
+                        "reference_status": "locked",
+                    },
+                    {
+                        "asset_type": "character",
+                        "asset_id": self.aning_id,
+                        "asset_name": "阿宁",
+                        "reference_asset_id": "ref-aning-test",
+                        "reference_token": "@阿宁",
+                        "image_url": "https://example.com/aning-locked.png",
+                        "reference_status": "locked",
+                    },
+                ],
+                "reference_asset_ids": ["ref-scene-test", "ref-jiejie-test", "ref-aning-test"],
+            }
+            shot.meta_info = json.dumps(shot_meta, ensure_ascii=False)
             shot.asset_links = json.dumps({
                 "images": [
                     {
@@ -521,8 +732,24 @@ class StoryboardPromptCompileTests(unittest.TestCase):
                 "model": "MiniMax-H3",
                 "content": [{"type": "text", "text": expected_prompt}],
             },
-            "taskMode": "image_to_video",
+            "taskMode": "reference_to_video",
         })
+
+        def public_asset_result(source_url, **kwargs):
+            suffix = source_url.rsplit("/", 1)[-1]
+            return SimpleNamespace(
+                ok=True,
+                public_url=f"https://qiniu.example.com/{suffix}?e=86400&token=test",
+                to_dict=lambda: {
+                    "ok": True,
+                    "source_url": source_url,
+                    "public_url": f"https://qiniu.example.com/{suffix}?e=86400&token=test",
+                    "storage_provider": "qiniu",
+                    "object_key": f"screenplay-agent/test/{suffix}",
+                    "uploaded": True,
+                    "signed": True,
+                },
+            )
 
         with patch("api.server.asyncio.sleep", new=AsyncMock(return_value=None)), patch(
             "api.server.resolve_generation_profile",
@@ -535,19 +762,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             },
         ), patch("api.server.generate_video_asset", new=async_generated), patch(
             "api.server.ensure_provider_accessible_url",
-            return_value=SimpleNamespace(
-                ok=True,
-                public_url="https://qiniu.example.com/frame-adopted-1.png?e=86400&token=test",
-                to_dict=lambda: {
-                    "ok": True,
-                    "source_url": "https://example.com/frame-adopted-1.png",
-                    "public_url": "https://qiniu.example.com/frame-adopted-1.png?e=86400&token=test",
-                    "storage_provider": "qiniu",
-                    "object_key": "screenplay-agent/test/frame.png",
-                    "uploaded": True,
-                    "signed": True,
-                },
-            ),
+            side_effect=public_asset_result,
         ):
             submit_response = self.client.post(
                 f"/api/prototyping/tasks/{task_id}/submit-machine-prompt-provider",
@@ -555,7 +770,8 @@ class StoryboardPromptCompileTests(unittest.TestCase):
                     "confirmationToken": "CONFIRM_MINIMAX_H3_SUBMIT",
                     "durationSeconds": 5,
                     "aspectRatio": "16:9",
-                    "useFirstFrame": True,
+                    "useReferenceImages": True,
+                    "useFirstFrame": False,
                 },
             )
 
@@ -563,13 +779,12 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         submit_payload = submit_response.json()
         self.assertTrue(submit_payload["actual_provider_submission"])
         self.assertEqual(submit_payload["provider"], "minimax-h3-async")
-        self.assertEqual(submit_payload["provider_task_mode"], "image_to_video")
+        self.assertEqual(submit_payload["provider_task_mode"], "reference_to_video")
         async_generated.assert_awaited_once()
         self.assertEqual(async_generated.await_args.kwargs["prompt"], expected_prompt)
-        self.assertEqual(
-            async_generated.await_args.kwargs["first_frame_url"],
-            "https://qiniu.example.com/frame-adopted-1.png?e=86400&token=test",
-        )
+        self.assertIsNone(async_generated.await_args.kwargs["first_frame_url"])
+        self.assertGreaterEqual(len(async_generated.await_args.kwargs["reference_images"]), 3)
+        self.assertTrue(async_generated.await_args.kwargs["reference_images"][0]["image_url"].startswith("https://qiniu.example.com/"))
 
         task = self.client.get(f"/api/prototyping/tasks/{task_id}").json()
         self.assertEqual(task["status"], "done")
@@ -592,7 +807,202 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         video = asset_links["videos"][0]
         self.assertEqual(video["uri"], "https://example.com/minimax-h3-video.mp4")
         self.assertEqual(video["metadata"]["externalTaskId"], "h3-real-task-1")
-        self.assertEqual(video["metadata"]["providerTaskMode"], "image_to_video")
+        self.assertEqual(video["metadata"]["providerTaskMode"], "reference_to_video")
+
+    def test_storyboard_generate_video_publishes_references_for_real_h3_provider(self):
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == self.book_id,
+                StoryboardShot.episode == self.episode,
+                StoryboardShot.shot_id == self.shot_id,
+            ).first()
+            shot.visual_prompt_static = "暴雨中的出租屋，中景首帧。"
+            shot.visual_prompt_motion = "4秒内，镜头缓慢推进，姐姐和阿宁保持身份、服装、场景连续一致。"
+            shot.visual_prompt_final = "低质量，水印"
+            shot_meta = json.loads(shot.meta_info or "{}")
+            shot_meta["prompt_compiler"] = {
+                **shot_meta.get("prompt_compiler", {}),
+                "latest_version": 2,
+                "reference_images": [
+                    {
+                        "asset_type": "scene",
+                        "asset_id": self.scene_id,
+                        "asset_name": "暴雨中的出租屋",
+                        "reference_asset_id": "ref-scene-test",
+                        "reference_token": "@出租屋",
+                        "image_url": "/api/prototyping/manual-media/manual-scene.png",
+                        "reference_status": "locked",
+                    },
+                    {
+                        "asset_type": "character",
+                        "asset_id": self.jiejie_id,
+                        "asset_name": "姐姐",
+                        "reference_asset_id": "ref-jiejie-test",
+                        "reference_token": "@姐姐",
+                        "image_url": "https://example.com/jiejie-locked.png",
+                        "reference_status": "locked",
+                    },
+                ],
+                "reference_asset_ids": ["ref-scene-test", "ref-jiejie-test"],
+                "prompt_compile_context": {
+                    "executability": {
+                        "status": "pass",
+                        "duration": 4,
+                        "action_count": 1,
+                        "recommended_max_actions": 2,
+                        "findings": [],
+                        "suggestions": [],
+                    }
+                },
+            }
+            shot.meta_info = json.dumps(shot_meta, ensure_ascii=False)
+            shot.asset_links = json.dumps({
+                "images": [
+                    {
+                        "id": "frame-adopted-1",
+                        "kind": "image",
+                        "title": "当前采纳首帧",
+                        "uri": "/api/prototyping/manual-media/manual-frame.png",
+                        "previewUrl": "/api/prototyping/manual-media/manual-frame.png",
+                        "adopted": True,
+                    }
+                ],
+                "references": {},
+            }, ensure_ascii=False)
+            session.commit()
+
+        async_generated = AsyncMock(return_value={
+            "previewUrl": "https://example.com/h3-normal-video.mp4",
+            "uri": "https://example.com/h3-normal-video.mp4",
+            "externalTaskId": "h3-normal-task-1",
+            "externalStatus": "succeeded",
+            "pollAttempts": 1,
+            "providerResponse": {"status": "succeeded"},
+            "providerRequestPayload": {
+                "model": "MiniMax-H3",
+                "content": [{"type": "text", "text": "ok"}],
+            },
+            "taskMode": "reference_to_video",
+        })
+
+        def public_asset_result(source_url, **kwargs):
+            suffix = str(source_url).rsplit("/", 1)[-1]
+            return SimpleNamespace(
+                ok=True,
+                public_url=f"https://qiniu.example.com/{suffix}",
+                to_dict=lambda: {
+                    "ok": True,
+                    "source_url": source_url,
+                    "public_url": f"https://qiniu.example.com/{suffix}",
+                    "storage_provider": "qiniu",
+                    "object_key": f"screenplay-agent/test/{suffix}",
+                    "uploaded": True,
+                },
+            )
+
+        with patch("api.server.asyncio.sleep", new=AsyncMock(return_value=None)), patch(
+            "api.server.resolve_generation_profile",
+            return_value={
+                "id": "video-minimax-h3-test",
+                "provider": "minimax-h3-async",
+                "model_name": "MiniMax-H3",
+                "enabled": True,
+                "default_params": {"duration": 4, "ratio": "16:9"},
+            },
+        ), patch("api.server.generate_video_asset", new=async_generated), patch(
+            "api.server.ensure_provider_accessible_url",
+            side_effect=public_asset_result,
+        ):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-video",
+                json={"aspectRatio": "16:9"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        # An adopted composition frame is the authoritative scene reference
+        # for H3 multi-reference submission; the character reference remains
+        # unchanged.
+        self.assertEqual(body["reference_asset_ids"], ["composition-frame-adopted-1", "ref-jiejie-test"])
+        self.assertEqual(body["first_frame_url"], "")
+        self.assertTrue(all(item["image_url"].startswith("https://qiniu.example.com/") for item in body["reference_images"]))
+        async_generated.assert_awaited_once()
+        submitted_prompt = async_generated.await_args.kwargs["prompt"]
+        self.assertIn("Live-action cinematic footage", submitted_prompt)
+        self.assertIn("Reference assignments:", submitted_prompt)
+        self.assertIn("Hard constraints:", submitted_prompt)
+        self.assertIsNone(async_generated.await_args.kwargs["first_frame_url"])
+        self.assertEqual(async_generated.await_args.kwargs["duration_seconds"], 4)
+        self.assertEqual(len(async_generated.await_args.kwargs["reference_images"]), 2)
+        self.assertTrue(all(item["image_url"].startswith("https://qiniu.example.com/") for item in async_generated.await_args.kwargs["reference_images"]))
+
+    def test_strict_continuity_h3_prompt_does_not_claim_omitted_references(self):
+        """H3 keyframe mode must agree with its exported prompt evidence."""
+        with Session() as session:
+            target = StoryboardShot(
+                book_id=self.book_id,
+                episode=self.episode,
+                scene_name="暴雨中的出租屋",
+                shot_id=2,
+                action_process="阿宁在原地握紧旧水壶。",
+                start_state="阿宁承接上一镜画面站在屋内。",
+                end_state="阿宁抬头看向门口。",
+                visual_prompt_static="暴雨中的出租屋，阿宁特写。",
+                visual_prompt_motion="4秒内，阿宁握紧旧水壶后抬头看向门口。",
+                duration=4,
+                camera_angle="CU",
+                camera_movement="static",
+                meta_info=json.dumps({
+                    "structured_shot": {"scene_asset_id": self.scene_id, "character_asset_ids": [self.aning_id]},
+                    "prompt_compiler": {
+                        "latest_version": 3,
+                        "reference_images": [{
+                            "asset_type": "character", "asset_id": self.aning_id,
+                            "asset_name": "阿宁", "reference_asset_id": "ref-aning-test",
+                            "reference_token": "@阿宁", "image_url": "https://example.com/aning.png",
+                            "reference_status": "locked",
+                        }],
+                        "reference_asset_ids": ["ref-aning-test"],
+                        "prompt_compile_context": {"executability": {"status": "pass"}},
+                    },
+                }, ensure_ascii=False),
+                asset_links=json.dumps({"images": [{
+                    "id": "target-composition", "kind": "image", "adopted": True,
+                    "uri": "https://example.com/target-composition.png",
+                    "previewUrl": "https://example.com/target-composition.png",
+                }]}),
+            )
+            session.add(target)
+            session.add(StoryboardTransitionContract(
+                book_id=self.book_id, episode=self.episode, source_shot_id=1, target_shot_id=2,
+                continuity_level="strict", status="confirmed", version=1,
+            ))
+            session.add(StoryboardTransitionFrame(
+                book_id=self.book_id, episode=self.episode, source_shot_id=1, target_shot_id=2,
+                public_url="https://example.com/locked-handoff.png", checksum="handoff-checksum",
+                status="locked",
+            ))
+            session.commit()
+
+        async_generated = AsyncMock(return_value={
+            "previewUrl": "https://example.com/strict-video.mp4", "uri": "https://example.com/strict-video.mp4",
+            "externalTaskId": "h3-strict-task", "externalStatus": "succeeded", "pollAttempts": 1,
+            "providerResponse": {"status": "succeeded"}, "providerRequestPayload": {}, "taskMode": "image_to_video",
+        })
+        with patch("api.server.asyncio.sleep", new=AsyncMock(return_value=None)), patch(
+            "api.server.resolve_generation_profile",
+            return_value={"id": "video-minimax-h3-test", "provider": "minimax-h3-async", "model_name": "MiniMax-H3", "enabled": True, "default_params": {}},
+        ), patch("api.server.generate_video_asset", new=async_generated):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/2/generate-video",
+                json={"aspectRatio": "16:9"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        submitted_prompt = async_generated.await_args.kwargs["prompt"]
+        self.assertNotIn("Reference assignments:", submitted_prompt)
+        self.assertEqual(async_generated.await_args.kwargs["reference_images"], [])
+        self.assertEqual(async_generated.await_args.kwargs["first_frame_url"], "https://example.com/locked-handoff.png")
 
     def test_director_shot_text_override_recompiles_export_without_prompt_version(self):
         custom_director_text = "场景：暴雨中的出租屋\n镜头：用户改写后的导演分镜语言，姐姐先停顿，再看向阿宁手里的旧水壶。"
@@ -1303,9 +1713,9 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         body = response.json()
         self.assertEqual(body["compiler_diagnostics"]["status"], "warning")
         self.assertTrue(any(check["key"] == "static_prompt_quality" and not check["passed"] for check in body["compiler_diagnostics"]["checks"]))
-        self.assertTrue(any(check["key"] == "motion_prompt_quality" and not check["passed"] for check in body["compiler_diagnostics"]["checks"]))
+        self.assertTrue(any(check["key"] == "static_prompt_quality" and not check["passed"] for check in body["compiler_diagnostics"]["checks"]))
 
-    def test_motion_quality_accepts_gradual_and_static_camera_variants(self):
+    def test_motion_quality_requires_variants_to_cover_the_structured_motion_contract(self):
         payload = self._valid_llm_payload()
         payload["visual_prompt_motion"] = (
             "镜头从广角缓缓向前推近，聚焦姐姐和阿宁之间的对峙。"
@@ -1400,6 +1810,141 @@ class StoryboardPromptCompileTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["compiler_diagnostics"]["status"], "pass")
+
+    def test_prompt_draft_provider_failure_is_audited_without_version_write(self):
+        evidence_response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts"
+        )
+        self.assertEqual(evidence_response.status_code, 200)
+        packet = evidence_response.json()["packet"]
+
+        with patch("api.server._call_storyboard_prompt_compiler", side_effect=ValueError("provider returned invalid JSON")):
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts/{packet['id']}/llm",
+                json={
+                    "packetFingerprint": packet["packet_fingerprint"],
+                    "confirmed": True,
+                    "allowExternalCall": True,
+                },
+            )
+
+        self.assertEqual(response.status_code, 502)
+        packets = self.client.get(f"/api/books/{self.book_id}/decision-packets?domain=prompt").json()["items"]
+        audited = next(item for item in packets if item["id"] == packet["id"])
+        self.assertFalse(audited["model_info"]["llm_generated"])
+        self.assertEqual(audited["model_info"]["llm_attempt_count"], 1)
+        self.assertEqual(audited["model_info"]["last_llm_attempt"]["outcome"], "provider_error")
+        self.assertIn("invalid JSON", audited["model_info"]["last_llm_attempt"]["message"])
+        self.assertEqual(
+            self.client.get(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-versions"
+            ).json()["versions"],
+            [],
+        )
+
+    def test_prompt_draft_diagnostics_recheck_is_read_only(self):
+        evidence_response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts"
+        )
+        self.assertEqual(evidence_response.status_code, 200)
+        packet = evidence_response.json()["packet"]
+        with patch("api.server._call_storyboard_prompt_compiler", return_value=self._valid_llm_payload()):
+            draft_response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts/{packet['id']}/llm",
+                json={
+                    "packetFingerprint": packet["packet_fingerprint"],
+                    "confirmed": True,
+                    "allowExternalCall": True,
+                },
+            )
+        self.assertEqual(draft_response.status_code, 200)
+
+        recheck = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts/{packet['id']}/diagnostics"
+        )
+        self.assertEqual(recheck.status_code, 200)
+        self.assertFalse(recheck.json()["llm_called"])
+        self.assertFalse(recheck.json()["domain_write_performed"])
+        self.assertIn("screenplay_prompt_residue", {item["key"] for item in recheck.json()["diagnostics"]["checks"]})
+        self.assertEqual(
+            self.client.get(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-versions"
+            ).json()["versions"],
+            [],
+        )
+
+    def test_prompt_draft_uses_one_provider_attempt_per_confirmation(self):
+        with patch("api.server.llm_client.call_llm_json", return_value={}) as mocked_call:
+            from api.server import _call_storyboard_prompt_compiler
+            _call_storyboard_prompt_compiler({
+                "scene_name": "测试场景",
+                "bound_assets": [{
+                    "asset_type": "character", "asset_id": "7", "asset_name": "阿强",
+                    "reference_token": "@阿强", "locked_reference": True,
+                }],
+                "required_used_assets": [{"asset_type": "character", "asset_id": "7"}],
+            })
+
+        self.assertEqual(mocked_call.call_count, 1)
+        self.assertEqual(mocked_call.call_args.kwargs["retries"], 1)
+        self.assertEqual(mocked_call.call_args.kwargs["json_parse_retries"], 0)
+        system_prompt = mocked_call.call_args.kwargs["system"]
+        self.assertIn("static_prompt_must_naturally_mention_each_locked_anchor", system_prompt)
+        # Shot-specific anchor labels belong to the dynamic task suffix so the
+        # stable system prefix can be reused by MiMo's prompt cache.
+        self.assertNotIn("@阿强", system_prompt)
+        self.assertIn("@阿强", mocked_call.call_args.args[0])
+
+    def test_compiler_blocks_candidate_missing_known_character_gender(self):
+        from api.server import _build_prompt_compiler_diagnostics
+        context = {
+            "bound_assets": [{"asset_type": "character", "asset_id": "1", "asset_name": "阿强", "gender": "男性"}],
+        }
+        without_gender = _build_prompt_compiler_diagnostics(
+            "出租屋中景构图，阿强站在门边，雨夜冷光照亮他的侧脸。",
+            "固定机位，阿强缓慢回头，保持首帧构图和服装一致。",
+            context,
+            [{"asset_type": "character", "asset_id": "1", "asset_name": "阿强"}],
+        )
+        with_gender = _build_prompt_compiler_diagnostics(
+            "出租屋中景构图，阿强是一名男性，站在门边，雨夜冷光照亮他的侧脸。",
+            "固定机位，阿强缓慢回头，保持首帧构图和服装一致。",
+            context,
+            [{"asset_type": "character", "asset_id": "1", "asset_name": "阿强"}],
+        )
+
+        self.assertEqual(without_gender["status"], "blocked")
+        self.assertIn("静态提示词未继承人物性别权威事实。", without_gender["blocking_issues"])
+        self.assertTrue(next(check for check in with_gender["checks"] if check["key"] == "character_gender_authority")["passed"])
+
+    def test_compiler_adds_missing_gender_fact_without_overriding_conflict(self):
+        from api.server import _build_prompt_compiler_diagnostics, _ensure_prompt_includes_missing_character_gender_facts
+
+        bound_assets = [{"asset_type": "character", "asset_id": "1", "asset_name": "阿强", "gender": "男"}]
+        enriched = _ensure_prompt_includes_missing_character_gender_facts("出租屋中景构图，阿强站在门边。", bound_assets)
+        self.assertIn("阿强为男性", enriched)
+        diagnostics = _build_prompt_compiler_diagnostics(enriched, "固定机位，阿强缓慢回头，保持首帧构图。", {"bound_assets": bound_assets}, [{"asset_type": "character", "asset_id": "1", "asset_name": "阿强"}])
+        self.assertTrue(next(check for check in diagnostics["checks"] if check["key"] == "character_gender_authority")["passed"])
+        self.assertTrue(next(check for check in diagnostics["checks"] if check["key"] == "screenplay_prompt_residue")["passed"])
+
+        conflicting = _ensure_prompt_includes_missing_character_gender_facts("出租屋中景构图，阿强是一名女性。", bound_assets)
+        self.assertNotIn("阿强为男性", conflicting)
+        conflict_diagnostics = _build_prompt_compiler_diagnostics(conflicting, "固定机位，阿强缓慢回头，保持首帧构图。", {"bound_assets": bound_assets}, [{"asset_type": "character", "asset_id": "1", "asset_name": "阿强"}])
+        self.assertEqual(conflict_diagnostics["status"], "blocked")
+
+    def test_locked_asset_anchor_contract_preserves_omitted_typed_anchor(self):
+        from api.server import _preserve_locked_asset_anchor_contract
+        prompt = _preserve_locked_asset_anchor_contract(
+            "深夜收银区中景构图，冷白荧光灯压下生硬阴影。",
+            [{
+                "asset_type": "character", "asset_id": "7", "asset_name": "阿强",
+                "reference_token": "@阿强", "locked_reference": True,
+            }],
+        )
+        self.assertIn("阿强（@阿强）", prompt)
+        self.assertIn("面部、发型、服装与身份一致", prompt)
+        self.assertNotIn("。，", prompt)
+        self.assertTrue(prompt.endswith("。"))
 
 
     def skip_test_compile_retries_once_when_first_candidate_has_warning(self):

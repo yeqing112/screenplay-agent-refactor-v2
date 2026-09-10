@@ -144,7 +144,7 @@ class MakeupVariantResolutionTests(unittest.TestCase):
         with patch("core.llm.call_llm_json", return_value=llm_payload):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
-                json={"compileReason": "manual"},
+                json={"compileReason": "manual", "confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)
@@ -185,7 +185,7 @@ class MakeupVariantResolutionTests(unittest.TestCase):
         with patch("core.llm.call_llm_json", return_value=llm_payload):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
-                json={"compileReason": "manual"},
+                json={"compileReason": "manual", "confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 422)
@@ -339,7 +339,7 @@ class MakeupVariantResolutionTests(unittest.TestCase):
         with patch("core.llm.call_llm_json", return_value=llm_payload):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
-                json={"compileReason": "manual"},
+                json={"compileReason": "manual", "confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)
@@ -389,7 +389,7 @@ class MakeupVariantResolutionTests(unittest.TestCase):
         with patch("core.llm.call_llm_json", return_value=llm_payload):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts",
-                json={"compileReason": "manual"},
+                json={"compileReason": "manual", "confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)

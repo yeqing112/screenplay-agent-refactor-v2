@@ -75,6 +75,9 @@ class ShotIR:
     start_state: str = ""
     action_process: str = ""
     end_state: str = ""
+    core_action: str = ""
+    action_beats: list[dict[str, Any]] = field(default_factory=list)
+    executability: dict[str, Any] = field(default_factory=dict)
     dialogue: str = ""
     lighting: str = ""
     style_key: str = "default"
@@ -109,6 +112,8 @@ def build_shot_ir_from_context(context: dict) -> ShotIR:
     shot.start_state = str(context.get("start_state") or "").strip()
     shot.action_process = str(context.get("action_process") or "").strip()
     shot.end_state = str(context.get("end_state") or "").strip()
+    shot.core_action = str(context.get("core_action") or "").strip()
+    shot.action_beats = [item for item in (context.get("action_beats") or []) if isinstance(item, dict)]
     shot.dialogue = str(context.get("dialogue") or "").strip()
     shot.lighting = str(context.get("lighting") or "").strip()
     shot.style_key = str(context.get("style_key") or "default").strip()
@@ -212,6 +217,18 @@ def build_shot_ir_from_context(context: dict) -> ShotIR:
         "production_skill": context.get("production_skill", {}),
     }
 
+    from core.shot_executability import validate_shot_executability
+    shot.executability = validate_shot_executability(
+        duration=shot.duration,
+        action_process=shot.action_process,
+        action_beats=shot.action_beats,
+        camera_movement=shot.camera_movement,
+        start_state=shot.start_state,
+        end_state=shot.end_state,
+    )
+    if not shot.core_action:
+        shot.core_action = shot.action_beats[0].get("description", "").strip() if shot.action_beats else shot.action_process.strip()
+
     return shot
 
 
@@ -234,6 +251,9 @@ def serialize_shot_ir(ir: ShotIR) -> dict:
         "start_state": ir.start_state,
         "action_process": ir.action_process,
         "end_state": ir.end_state,
+        "core_action": ir.core_action,
+        "action_beats": ir.action_beats,
+        "executability": ir.executability,
         "dialogue": ir.dialogue,
         "lighting": ir.lighting,
         "style_key": ir.style_key,

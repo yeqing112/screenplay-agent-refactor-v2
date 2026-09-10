@@ -51,6 +51,9 @@ import {
 import { ProductWorkspaceStoryboardAdvancedToolsPanel } from './ProductWorkspaceStoryboardAdvancedToolsPanel'
 import { ProductWorkspaceStoryboardAcceptancePanel } from './ProductWorkspaceStoryboardAcceptancePanel'
 import { ProductWorkspaceStoryboardMediaPanel } from './ProductWorkspaceStoryboardMediaPanel'
+import { ProductWorkspaceStoryboardContinuityPanel } from './ProductWorkspaceStoryboardContinuityPanel'
+import { ProductWorkspaceStoryboardDecisionPanel } from './ProductWorkspaceStoryboardDecisionPanel'
+import { ProductWorkspacePromptDraftPanel } from './ProductWorkspacePromptDraftPanel'
 import {
   ProductWorkspacePromptHistoryPanel,
   buildPromptVersionAuditSummary,
@@ -60,6 +63,7 @@ import {
 import { ProductWorkspacePromptAuthorityPanel } from './ProductWorkspacePromptAuthorityPanel'
 import { ProductWorkspaceCompileDiagnosticsPanel } from './ProductWorkspaceCompileDiagnosticsPanel'
 import { ProductWorkspaceStoryboardRepairPanel } from './ProductWorkspaceStoryboardRepairPanel'
+import { fetchModelRegistryDefaults, type ModelProfileRecord } from '../services/modelRegistry'
 
 interface Props {
   bookId: number
@@ -139,6 +143,7 @@ export function buildStoryboardCanvasPrimaryActionPlan(input: {
   videoRecoveryTaskId?: string | null
   hasCompiledPrompt: boolean
   hasAdoptedFrame: boolean
+  hasReferenceImages?: boolean
   hasAdoptedVideo: boolean
 }) {
   if (!input.canGenerateFromGate) {
@@ -181,19 +186,22 @@ export function buildStoryboardCanvasPrimaryActionPlan(input: {
     } satisfies StoryboardCanvasPrimaryActionPlan
   }
 
-  if (!input.hasAdoptedFrame) {
+  if (!input.hasAdoptedFrame && !input.hasReferenceImages) {
     return {
       action: 'generate_frame',
       label: '先生成首帧',
-      detail: '提示词已经就绪，但当前镜头还没有已采纳首帧，下一步先补齐分镜图版本。',
+      detail: '提示词已经就绪，但当前镜头还没有已采纳首帧或可用参考图，下一步先补齐分镜图版本。',
     } satisfies StoryboardCanvasPrimaryActionPlan
   }
 
   if (!input.hasAdoptedVideo) {
+    const videoInputDetail = input.hasReferenceImages
+      ? '当前镜头已有多参考图，下一步可以用参考资产继续生成视频。'
+      : '当前镜头已经有已采纳首帧，下一步可以直接沿用当前输入继续生成视频。'
     return {
       action: 'generate_video',
       label: '继续生成视频',
-      detail: '当前镜头已经有已采纳首帧，下一步可以直接沿用当前输入继续生成视频。',
+      detail: videoInputDetail,
     } satisfies StoryboardCanvasPrimaryActionPlan
   }
 
@@ -209,6 +217,9 @@ function formatGenerationErrorMessage(raw: string, fallback: string) {
   if (!message) return fallback
   if (message.includes('An adopted first-frame image is required before generating video.')) {
     return '\u5f53\u524d\u955c\u5934\u8fd8\u6ca1\u6709\u5df2\u91c7\u7eb3\u9996\u5e27\uff0c\u4e0d\u80fd\u76f4\u63a5\u751f\u6210\u89c6\u9891\u3002\u8bf7\u5148\u751f\u6210\u5e76\u91c7\u7eb3\u4e00\u5f20\u5206\u955c\u56fe\u3002'
+  }
+  if (message.includes('A video input image is required before generating video')) {
+    return '当前镜头还没有可用于视频生成的图片输入。请先生成/上传一张分镜图，或上传并锁定至少一张参考图。'
   }
   if (message.includes('The selected first-frame image is missing a usable preview URL.')) {
     return '\u5f53\u524d\u5df2\u91c7\u7eb3\u9996\u5e27\u7f3a\u5c11\u53ef\u7528\u9884\u89c8\u5730\u5740\uff0c\u6682\u65f6\u4e0d\u80fd\u751f\u6210\u89c6\u9891\u3002\u8bf7\u91cd\u65b0\u751f\u6210\u6216\u91cd\u65b0\u91c7\u7eb3\u9996\u5e27\u3002'
@@ -291,12 +302,60 @@ type MachinePromptExportPreview = {
   >
 }
 
+type ProductionReadinessPreview = {
+  status?: 'pass' | 'warning' | 'blocked' | string
+  summary?: {
+    shots?: number
+    assets?: number
+    blocked_items?: number
+    warning_items?: number
+    issue_counts?: Record<string, number>
+  }
+  recommended_order?: string[]
+  shots?: Array<{ episode?: number; shot_id?: number | string; status?: string; issues?: Array<{ message?: string }> }>
+}
+
+type TransitionOverview = {
+  items?: Array<{ shot_id?: number | string; status?: string; label?: string; next_action?: string }>
+  counts?: Record<string, number>
+}
+
+type ProductionRepairPlanPreview = {
+  status?: string
+  confirmation_token?: string
+  real_data_mutated?: boolean
+  requires_operator_confirmation?: boolean
+  summary?: { shot_actions?: number; asset_actions?: number; blocked_shots?: number; warning_shots?: number; missing_rollback_anchors?: number }
+  shot_actions?: Array<{ action?: string; label?: string; episode?: number; shot_id?: number | string; rollback_anchor?: { version?: number; version_id?: number; kind?: string } | null; executability_suggestions?: Array<{ type?: string; recommended_duration?: number }> }>
+  asset_actions?: Array<{ asset_type?: string; asset_id?: string; asset_name?: string; action?: string; label?: string; issue_codes?: string[] }>
+}
+
+type StructureGovernancePlanPreview = {
+  plan_fingerprint?: string
+  confirmation_token?: string
+  real_data_mutated?: boolean
+  summary?: { affected_shots?: number; identity_repairs?: number; diagnostics_to_mark_stale?: number }
+  items?: Array<{ episode?: number; shot_id?: number | string; identity_stale?: boolean; diagnostics_stale?: boolean; operations?: string[] }>
+}
+
+type ProductionRepairTaskState = {
+  task_id?: string
+  status?: string
+  progress?: number
+  confirmation_token?: string
+  results?: Array<{ episode?: number; shot_id?: number | string; status?: string; baseline_version?: number; version?: number; error?: string }>
+}
+
 type MachinePromptTemporaryDraftFields = {
   integrated_multimodal_description: string
   overall_soundscape: string
   non_diegetic_music: string
   generic_zh_video_prompt: string
 }
+
+type StoryboardImagePromptSections = NonNullable<
+  NonNullable<StoryboardShotOutput['prompt_compile_context']>['model_adapter']
+>['static_prompt_sections']
 
 type ProductionExportRecordListItem = {
   id?: string | number
@@ -339,6 +398,128 @@ function stringifyMachinePromptParam(value: unknown) {
   } catch {
     return String(value)
   }
+}
+
+function getStoryboardPromptSectionRoleLabel(role: string | undefined) {
+  const normalized = String(role || '').trim()
+  if (normalized === 'scene') return '场景'
+  if (normalized === 'character') return '人物'
+  if (normalized === 'prop') return '道具'
+  return normalized || '资产'
+}
+
+function hasStoryboardImagePromptSections(sections: StoryboardImagePromptSections | undefined | null) {
+  if (!sections || sections.schema_version !== 'storyboard_image_prompt_sections_v1') return false
+  return Boolean(
+    String(sections.frame_focus || '').trim() ||
+      sections.asset_anchors?.length ||
+      String(sections.composition || '').trim() ||
+      String(sections.frozen_action || '').trim() ||
+      sections.asset_visual_facts?.length ||
+      String(sections.lighting_emotion || '').trim() ||
+      String(sections.constraints || '').trim(),
+  )
+}
+
+function StoryboardImagePromptSectionsPanel({
+  sections,
+}: {
+  sections: StoryboardImagePromptSections | undefined | null
+}) {
+  if (!hasStoryboardImagePromptSections(sections)) {
+    return (
+      <div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4">
+        <div className="text-sm font-medium text-amber-100">结构化分镜图提示词待刷新</div>
+        <div className="mt-2 text-xs leading-6 text-amber-100/80">
+          当前镜头还没有新版结构化 sections。点击“重新编译提示词”后，会生成画面定格、资产锚点、构图关系和资产视觉事实。
+        </div>
+      </div>
+    )
+  }
+
+  const anchors = sections?.asset_anchors ?? []
+  const facts = sections?.asset_visual_facts ?? []
+  const requiredFacts = sections?.required_visual_facts ?? []
+
+  return (
+    <div className="mt-4 rounded-xl border border-cyan-500/25 bg-cyan-500/10 p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-sm font-medium text-cyan-100">结构化分镜图提示词</div>
+          <div className="mt-1 text-xs text-cyan-100/70">系统用于编译首帧生图提示词的可审计结构，不是直接粘给模型的字段清单。</div>
+        </div>
+        <span className="rounded-full border border-cyan-400/30 bg-cyan-950/50 px-2.5 py-1 text-[11px] text-cyan-100">
+          {sections?.schema_version}
+        </span>
+      </div>
+
+      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        <div className="rounded-lg border border-cyan-400/20 bg-slate-950/40 p-3">
+          <div className="text-xs text-cyan-200/70">画面定格</div>
+          <div className="mt-2 text-sm leading-6 text-slate-100">{sections?.frame_focus || '暂无'}</div>
+        </div>
+        <div className="rounded-lg border border-cyan-400/20 bg-slate-950/40 p-3">
+          <div className="text-xs text-cyan-200/70">构图关系</div>
+          <div className="mt-2 text-sm leading-6 text-slate-100">{sections?.composition || '暂无'}</div>
+        </div>
+        <div className="rounded-lg border border-cyan-400/20 bg-slate-950/40 p-3">
+          <div className="text-xs text-cyan-200/70">当前帧动作</div>
+          <div className="mt-2 text-sm leading-6 text-slate-100">{sections?.frozen_action || '暂无'}</div>
+        </div>
+        <div className="rounded-lg border border-cyan-400/20 bg-slate-950/40 p-3">
+          <div className="text-xs text-cyan-200/70">光线与情绪</div>
+          <div className="mt-2 text-sm leading-6 text-slate-100">{sections?.lighting_emotion || '暂无'}</div>
+        </div>
+      </div>
+
+      <div className="mt-3 rounded-lg border border-cyan-400/20 bg-slate-950/40 p-3">
+        <div className="text-xs text-cyan-200/70">资产锚点</div>
+        {anchors.length ? (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {anchors.map((item, index) => (
+              <span key={`${item.role || 'asset'}-${item.label || index}`} className="rounded-full border border-slate-700 bg-slate-900/80 px-2.5 py-1 text-xs text-slate-200">
+                {getStoryboardPromptSectionRoleLabel(item.role)} · {item.label || '-'}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-2 text-sm text-slate-400">暂无资产锚点。</div>
+        )}
+      </div>
+
+      <div className="mt-3 rounded-lg border border-cyan-400/20 bg-slate-950/40 p-3">
+        <div className="text-xs text-cyan-200/70">资产视觉事实</div>
+        {facts.length ? (
+          <div className="mt-2 space-y-2">
+            {facts.map((item, index) => (
+              <div key={`${item.role || 'fact'}-${item.label || index}`} className="rounded-lg border border-slate-800 bg-slate-950/70 p-2">
+                <div className="text-xs text-slate-400">{getStoryboardPromptSectionRoleLabel(item.role)} · {item.label || '-'}</div>
+                <div className="mt-1 text-sm leading-6 text-slate-100">{item.fact || '-'}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-2 text-sm text-slate-400">暂无可继承的资产视觉事实。</div>
+        )}
+      </div>
+
+      {requiredFacts.length ? (
+        <div className="mt-3 rounded-lg border border-cyan-400/20 bg-slate-950/40 p-3">
+          <div className="text-xs text-cyan-200/70">补充视觉锚点</div>
+          <div className="mt-2 space-y-1 text-sm leading-6 text-slate-200">
+            {requiredFacts.map((item, index) => (
+              <div key={`${item}-${index}`}>• {item}</div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      <div className="mt-3 rounded-lg border border-cyan-400/20 bg-slate-950/40 p-3">
+        <div className="text-xs text-cyan-200/70">一致性与禁止项</div>
+        <div className="mt-2 text-sm leading-6 text-slate-100">{sections?.constraints || '暂无'}</div>
+      </div>
+    </div>
+  )
 }
 
 function isPlainRecord(value: unknown): value is Record<string, unknown> {
@@ -1070,7 +1251,7 @@ function buildCompilerDiagnosticFocusCards(
   })
 }
 
-function buildStoryboardRepairActions(input: {
+export function buildStoryboardRepairActions(input: {
   selectedShot: StoryboardShotOutput | null
   storyboardGateStatus: 'ready' | 'blocked'
   hasAdoptedFrame: boolean
@@ -1105,6 +1286,10 @@ function buildStoryboardRepairActions(input: {
       onClick: input.onNavigateSection ? () => input.onNavigateSection?.('scripts') : undefined,
       disabled: !input.onNavigateSection,
     })
+    // A blocked upstream gate is the sole actionable state.  Showing asset,
+    // compiler, generation or QA actions alongside it turns a hard sequence
+    // into a misleading checklist of unavailable choices.
+    return actions
   }
 
   for (const binding of input.missingReferenceBindings) {
@@ -1204,7 +1389,10 @@ function buildStoryboardRepairActions(input: {
     })
   }
 
-  if (input.storyboardGateStatus === 'ready' && !input.hasAdoptedFrame) {
+  // H3 can use locked multi-reference images without a storyboard first
+  // frame.  Once a video already exists, suggesting a frame as the next
+  // production action is both redundant and misleading.
+  if (input.storyboardGateStatus === 'ready' && !input.hasAdoptedFrame && !input.hasAdoptedVideo) {
     actions.push({
       key: 'generate-frame',
       title: '先生成首帧',
@@ -1294,22 +1482,25 @@ function findLatestAdoptedAsset(items: MediaAssetOutput[] | undefined) {
   return items.find((item) => item.adopted) ?? items[items.length - 1] ?? null
 }
 
-function coerceH3DurationSecondsFromStoryboard(value: unknown) {
+function coerceH3DurationSecondsFromStoryboard(value: unknown, minimum = 4, strictMinimum = false) {
   const parsed = Number(value)
   if (!Number.isFinite(parsed) || parsed <= 0) {
     return {
       rawDurationSeconds: null,
       durationSeconds: 5,
-      sourceLabel: '分镜未记录，使用默认 5s',
+      sourceLabel: `分镜未记录，使用默认 5s${strictMinimum ? '；当前模型要求 5–15s' : ''}`,
     }
   }
   const rounded = Math.round(parsed)
-  const durationSeconds = Math.min(Math.max(rounded, 4), 15)
+  const durationSeconds = strictMinimum
+    ? rounded
+    : Math.min(Math.max(rounded, minimum), 15)
   return {
     rawDurationSeconds: rounded,
     durationSeconds,
-    sourceLabel:
-      durationSeconds === rounded
+    sourceLabel: strictMinimum && (rounded < minimum || rounded > 15)
+      ? `分镜 ${rounded}s；当前模型要求 ${minimum}–15s，提交会被阻断`
+      : durationSeconds === rounded
         ? `分镜 ${rounded}s`
         : `分镜 ${rounded}s，H3 按平台范围提交 ${durationSeconds}s`,
   }
@@ -1412,10 +1603,26 @@ export default function ProductWorkspaceStoryboardSection({
   const [directorShotDraft, setDirectorShotDraft] = useState('')
   const [directorShotSaveState, setDirectorShotSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [directorShotSaveMessage, setDirectorShotSaveMessage] = useState('')
+  const [splitDraftState, setSplitDraftState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [splitDraftMessage, setSplitDraftMessage] = useState('')
+  const [splitApplyState, setSplitApplyState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [splitApplyMessage, setSplitApplyMessage] = useState('')
   const [machinePromptExportBase, setMachinePromptExportBase] = useState<MachinePromptExportPreview | null>(null)
   const [machinePromptTemporaryDraft, setMachinePromptTemporaryDraft] = useState<MachinePromptTemporaryDraftFields>(() =>
     buildMachinePromptTemporaryDraftFields(null),
   )
+  const [productionReadiness, setProductionReadiness] = useState<ProductionReadinessPreview | null>(null)
+  const [productionReadinessState, setProductionReadinessState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
+  const [productionRepairPlan, setProductionRepairPlan] = useState<ProductionRepairPlanPreview | null>(null)
+  const [structureGovernancePlan, setStructureGovernancePlan] = useState<StructureGovernancePlanPreview | null>(null)
+  const [structureGovernanceState, setStructureGovernanceState] = useState<'idle' | 'previewing' | 'ready' | 'applying' | 'done' | 'error'>('idle')
+  const [structureGovernanceMessage, setStructureGovernanceMessage] = useState('')
+  const [repairExecutionState, setRepairExecutionState] = useState<'idle' | 'previewing' | 'ready' | 'executing' | 'done' | 'error'>('idle')
+  const [repairExecutionMessage, setRepairExecutionMessage] = useState('')
+  const [repairTask, setRepairTask] = useState<ProductionRepairTaskState | null>(null)
+  const [rollbackAnchorState, setRollbackAnchorState] = useState<'idle' | 'previewing' | 'ready' | 'creating' | 'done' | 'error'>('idle')
+  const [rollbackAnchorMessage, setRollbackAnchorMessage] = useState('')
+  const [rollbackAnchorShotIds, setRollbackAnchorShotIds] = useState<string[]>([])
 
   const episodes = useMemo(
     () => Object.keys(shotsByEpisode).map(Number).filter((item) => Number.isFinite(item)).sort((a, b) => a - b),
@@ -1423,6 +1630,240 @@ export default function ProductWorkspaceStoryboardSection({
   )
 
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(episodes[0] ?? null)
+  const [transitionOverview, setTransitionOverview] = useState<TransitionOverview | null>(null)
+  const [videoModelProfile, setVideoModelProfile] = useState<ModelProfileRecord | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    fetchModelRegistryDefaults()
+      .then((payload) => {
+        if (!cancelled) setVideoModelProfile(payload.default_profiles?.video ?? null)
+      })
+      .catch(() => {
+        if (!cancelled) setVideoModelProfile(null)
+      })
+    return () => { cancelled = true }
+  }, [])
+
+  useEffect(() => {
+    if (!selectedEpisode) { setTransitionOverview(null); return }
+    let cancelled = false
+    fetch(`/api/books/${_bookId}/storyboard/${selectedEpisode}/transition-overview`, { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`transition overview ${response.status}`)
+        return response.json() as Promise<TransitionOverview>
+      })
+      .then((payload) => { if (!cancelled) setTransitionOverview(payload) })
+      .catch(() => { if (!cancelled) setTransitionOverview(null) })
+    return () => { cancelled = true }
+  }, [_bookId, selectedEpisode])
+
+  useEffect(() => {
+    let cancelled = false
+    setProductionReadinessState('loading')
+    fetch(`/api/books/${_bookId}/production-readiness`, { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`readiness ${response.status}`)
+        return response.json() as Promise<ProductionReadinessPreview>
+      })
+      .then((payload) => {
+        if (cancelled) return
+        setProductionReadiness(payload)
+        setProductionReadinessState('loaded')
+      })
+      .catch(() => {
+        if (!cancelled) setProductionReadinessState('error')
+      })
+    fetch(`/api/books/${_bookId}/production-readiness/repair-plan`, { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`repair-plan ${response.status}`)
+        return response.json() as Promise<ProductionRepairPlanPreview>
+      })
+      .then((payload) => { if (!cancelled) setProductionRepairPlan(payload) })
+      .catch(() => { if (!cancelled) setProductionRepairPlan(null) })
+    fetch(`/api/books/${_bookId}/storyboard/structure-governance/plan`, { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`structure-governance ${response.status}`)
+        return response.json() as Promise<StructureGovernancePlanPreview>
+      })
+      .then((payload) => { if (!cancelled) setStructureGovernancePlan(payload) })
+      .catch(() => { if (!cancelled) setStructureGovernancePlan(null) })
+    return () => { cancelled = true }
+  }, [_bookId])
+
+  const previewRepairExecution = async () => {
+    if (!productionRepairPlan?.confirmation_token) return
+    const shotIds = (productionRepairPlan.shot_actions ?? [])
+      .filter((item) => (item.action === 'recompile_prompt' || item.action === 'backfill_prompt_runtime') && item.shot_id !== undefined)
+      .map((item) => String(item.shot_id))
+    if (shotIds.length === 0) {
+      setRepairExecutionMessage('当前没有可直接批量重编译的镜头；blocked 镜头需先人工复核。')
+      setRepairExecutionState('error')
+      return
+    }
+    setRepairExecutionState('previewing')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/production-readiness/repair-plan/execute`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmationToken: productionRepairPlan.confirmation_token, shotIds, confirmed: false, allowWrite: false }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail?.message || payload?.message || '修复计划预检失败')
+      setRepairExecutionMessage(`预检通过：将处理 ${payload.selected_shots?.length ?? shotIds.length} 个镜头。仅“重编译”会调用 LLM；“回填”只补齐已确认版本的生产元数据。确认后才会写入。`)
+      setRepairExecutionState('ready')
+    } catch (error) {
+      setRepairExecutionMessage(error instanceof Error ? error.message : '修复计划预检失败')
+      setRepairExecutionState('error')
+    }
+  }
+
+  const refreshProductionRepairPlan = async () => {
+    const response = await fetch(`/api/books/${_bookId}/production-readiness/repair-plan`, { cache: 'no-store' })
+    if (!response.ok) throw new Error(`repair-plan ${response.status}`)
+    setProductionRepairPlan(await response.json() as ProductionRepairPlanPreview)
+  }
+
+  const previewStructureGovernance = async () => {
+    if (!structureGovernancePlan?.plan_fingerprint) return
+    setStructureGovernanceState('previewing')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/storyboard/structure-governance/backfill`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planFingerprint: structureGovernancePlan.plan_fingerprint }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail?.message || payload?.message || '结构治理预检失败')
+      setStructureGovernanceMessage(`预检通过：将只修正 ${payload.items?.filter((item: { identity_stale?: boolean }) => item.identity_stale).length ?? 0} 个派生镜头标识，并标记 ${payload.items?.length ?? 0} 份旧诊断为过期。`)
+      setStructureGovernanceState('ready')
+    } catch (error) {
+      setStructureGovernanceMessage(error instanceof Error ? error.message : '结构治理预检失败')
+      setStructureGovernanceState('error')
+    }
+  }
+
+  const applyStructureGovernance = async () => {
+    if (!structureGovernancePlan?.plan_fingerprint || !structureGovernancePlan.confirmation_token || structureGovernanceState !== 'ready') return
+    if (!window.confirm('确认写入结构化镜头身份治理结果？这会创建每个镜头的回滚快照；不会改导演文本、提示词内容、资产或媒体。')) return
+    setStructureGovernanceState('applying')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/storyboard/structure-governance/backfill`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planFingerprint: structureGovernancePlan.plan_fingerprint, confirmationToken: structureGovernancePlan.confirmation_token, confirmed: true, allowWrite: true }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail?.message || payload?.message || '结构治理写入失败')
+      setStructureGovernanceMessage(`已受控治理 ${payload.applied?.length ?? 0} 个镜头；旧提示词诊断已标记过期，需按镜头确认重编译。`)
+      setStructureGovernanceState('done')
+      const [readinessResponse, planResponse] = await Promise.all([
+        fetch(`/api/books/${_bookId}/production-readiness`, { cache: 'no-store' }),
+        fetch(`/api/books/${_bookId}/storyboard/structure-governance/plan`, { cache: 'no-store' }),
+      ])
+      if (readinessResponse.ok) setProductionReadiness(await readinessResponse.json() as ProductionReadinessPreview)
+      if (planResponse.ok) setStructureGovernancePlan(await planResponse.json() as StructureGovernancePlanPreview)
+    } catch (error) {
+      setStructureGovernanceMessage(error instanceof Error ? error.message : '结构治理写入失败')
+      setStructureGovernanceState('error')
+    }
+  }
+
+  const previewRollbackAnchors = async () => {
+    if (!productionRepairPlan?.confirmation_token) return
+    const shotIds = (productionRepairPlan.shot_actions ?? [])
+      .filter((item) => !item.rollback_anchor && item.shot_id !== undefined)
+      .map((item) => String(item.shot_id))
+    if (shotIds.length === 0) {
+      setRollbackAnchorMessage('当前计划中的镜头都已有可回滚锚点。')
+      setRollbackAnchorState('done')
+      return
+    }
+    setRollbackAnchorState('previewing')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/production-readiness/repair-plan/rollback-anchors`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmationToken: productionRepairPlan.confirmation_token, shotIds }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail?.message || payload?.message || '状态锚点预检失败')
+      const eligible = Array.isArray(payload.eligible_shots) ? payload.eligible_shots : []
+      setRollbackAnchorShotIds(eligible.map((item: { shot_id?: number | string }) => String(item.shot_id)).filter(Boolean))
+      setRollbackAnchorMessage(eligible.length > 0 ? `预检通过：可为 ${eligible.length} 个已声明结构变换镜头建立状态锚点。` : '缺少锚点的镜头不具备已声明的结构变换来源，不能自动补建。')
+      setRollbackAnchorState(eligible.length > 0 ? 'ready' : 'error')
+    } catch (error) {
+      setRollbackAnchorMessage(error instanceof Error ? error.message : '状态锚点预检失败')
+      setRollbackAnchorState('error')
+    }
+  }
+
+  const createRollbackAnchors = async () => {
+    if (!productionRepairPlan?.confirmation_token || rollbackAnchorState !== 'ready' || rollbackAnchorShotIds.length === 0) return
+    if (!window.confirm(`确认建立 ${rollbackAnchorShotIds.length} 个结构变换后的状态锚点？这会创建审计版本，但不会重编译提示词。`)) return
+    setRollbackAnchorState('creating')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/production-readiness/repair-plan/rollback-anchors`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmationToken: productionRepairPlan.confirmation_token, shotIds: rollbackAnchorShotIds, confirmed: true, allowWrite: true }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail?.message || payload?.message || '创建状态锚点失败')
+      await refreshProductionRepairPlan()
+      setRollbackAnchorMessage(`已建立 ${payload.created?.length ?? 0} 个状态锚点；请重新预检重编译计划。`)
+      setRollbackAnchorState('done')
+    } catch (error) {
+      setRollbackAnchorMessage(error instanceof Error ? error.message : '创建状态锚点失败')
+      setRollbackAnchorState('error')
+    }
+  }
+
+  const executeRepairPlan = async () => {
+    if (!productionRepairPlan?.confirmation_token || repairExecutionState !== 'ready') return
+    if (!window.confirm('确认执行当前生产修复？重编译会调用 LLM 并创建新版本；元数据回填不会调用 LLM、不会改提示词文本或创建版本。')) return
+    const shotIds = (productionRepairPlan.shot_actions ?? [])
+      .filter((item) => (item.action === 'recompile_prompt' || item.action === 'backfill_prompt_runtime') && item.shot_id !== undefined)
+      .map((item) => String(item.shot_id))
+    setRepairExecutionState('executing')
+    try {
+      const response = await fetch(`/api/books/${_bookId}/production-readiness/repair-plan/execute`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmationToken: productionRepairPlan.confirmation_token, shotIds, confirmed: true, allowWrite: true }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail?.message || payload?.message || '修复任务创建失败')
+      setRepairExecutionMessage(`已创建受保护修复任务 ${payload.task_id}，请到任务中心跟踪逐镜头结果。`)
+      setRepairTask({ task_id: payload.task_id, status: 'queued', progress: 0, confirmation_token: productionRepairPlan.confirmation_token })
+      setRepairExecutionState('done')
+    } catch (error) {
+      setRepairExecutionMessage(error instanceof Error ? error.message : '修复任务创建失败')
+      setRepairExecutionState('error')
+    }
+  }
+
+  useEffect(() => {
+    const taskId = repairTask?.task_id
+    if (!taskId) return
+    let cancelled = false
+    const poll = async () => {
+      try {
+        const response = await fetch(`/api/books/${_bookId}/production-readiness/repair-tasks/${taskId}`, { cache: 'no-store' })
+        if (!response.ok) return
+        const payload = await response.json() as ProductionRepairTaskState
+        if (!cancelled) setRepairTask(payload)
+      } catch { /* task center remains the source of truth */ }
+    }
+    void poll()
+    const timer = window.setInterval(() => void poll(), 2500)
+    return () => { cancelled = true; window.clearInterval(timer) }
+  }, [_bookId, repairTask?.task_id])
+
+  const rollbackRepairShot = async (item: NonNullable<ProductionRepairTaskState['results']>[number]) => {
+    if (!repairTask?.task_id || !repairTask.confirmation_token || !item.baseline_version || item.episode === undefined || item.shot_id === undefined) return
+    if (!window.confirm(`确认将第 ${item.episode} 集 / 镜头 ${item.shot_id} 回滚到 baseline v${item.baseline_version}？`)) return
+    const response = await fetch(`/api/books/${_bookId}/production-readiness/repair-tasks/${repairTask.task_id}/rollback`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ confirmationToken: repairTask.confirmation_token, episode: item.episode, shotId: String(item.shot_id), baselineVersion: item.baseline_version, confirmed: true }),
+    })
+    const payload = await response.json()
+    setRepairExecutionMessage(response.ok ? `镜头 ${item.shot_id} 已回滚到 baseline v${item.baseline_version}。` : (payload?.detail || '回滚失败'))
+  }
 
   useEffect(() => {
     if (episodes.length === 0) {
@@ -1529,6 +1970,7 @@ export default function ProductWorkspaceStoryboardSection({
   const compilerChecks = selectedShot?.compiler_diagnostics?.checks ?? []
   const compilerWarnings = selectedShot?.compiler_diagnostics?.warnings ?? []
   const blockingIssues = selectedShot?.compiler_diagnostics?.blocking_issues ?? []
+  const selectedShotStaticPromptSections = selectedShot?.prompt_compile_context?.model_adapter?.static_prompt_sections ?? null
   const compilerFocusCards = useMemo(() => buildCompilerDiagnosticFocusCards(compilerChecks), [compilerChecks])
   const promptVersionAudit = selectedShot?.prompt_version_audit ?? null
   const recommendedRestoreVersion = selectedShot?.recommended_restore_version ?? null
@@ -1554,6 +1996,22 @@ export default function ProductWorkspaceStoryboardSection({
     compilePromptContract?.summary_lines
     ?? []
   ).filter(Boolean)
+  const selectedExecutability = useMemo(() => {
+    const contextValue = selectedShot?.prompt_compile_context?.executability
+    const structuredValue = selectedShot?.structured_shot?.executability
+    return (contextValue && typeof contextValue === 'object' ? contextValue : structuredValue) ?? null
+  }, [selectedShot?.prompt_compile_context?.executability, selectedShot?.structured_shot?.executability])
+  const selectedActionBeats = (
+    selectedShot?.prompt_compile_context?.action_beats
+    ?? selectedShot?.structured_shot?.action_beats
+    ?? []
+  ).filter(Boolean)
+  const selectedSplitDraft = selectedShot?.executability_split_draft ?? null
+  const hasSplitSuggestion = Boolean(
+    selectedExecutability?.recommendations?.some((item) =>
+      typeof item !== 'string' && String((item as Record<string, unknown>).type || '') === 'split_shot',
+    ),
+  )
   const imageAssets = selectedShot?.assets?.images ?? []
   const videoAssets = selectedShot?.assets?.videos ?? []
   const adoptedImage = useMemo(() => findLatestAdoptedAsset(imageAssets), [imageAssets])
@@ -1591,7 +2049,7 @@ export default function ProductWorkspaceStoryboardSection({
   const hasAdoptedFrame = Boolean(adoptedImage)
   const adoptedImageUrl = String(adoptedImage?.uri || adoptedImage?.previewUrl || '').trim()
   const predictedVideoTaskMode =
-    hasAdoptedFrame ? 'image_to_video' : effectiveReferenceAssetIds.length > 0 ? 'reference_to_video' : 'text_to_video'
+    effectiveReferenceAssetIds.length > 0 ? 'reference_to_video' : hasAdoptedFrame ? 'image_to_video' : 'text_to_video'
   const hasReferencePayloadDrift =
     referenceAssetIds.length !== compiledReferenceAssetIds.length ||
     referenceAssetIds.some((item) => !compiledReferenceAssetIds.includes(item))
@@ -1628,21 +2086,38 @@ export default function ProductWorkspaceStoryboardSection({
   const h3ProviderSubmitSummary = useMemo<H3ProviderSubmitSummary | null>(() => {
     if (!machinePromptExport) return null
     const promptText = String(minimaxH3Fields.integrated_multimodal_description || '').trim()
+    const profile = videoModelProfile
+    const provider = String(profile?.provider || '').trim()
+    const params = profile?.default_params && typeof profile.default_params === 'object' ? profile.default_params : {}
+    const is75Api = provider === '75api-minimax-h3'
+    const resolution = String(params.resolution || (is75Api ? '768p' : '768P')).trim() || (is75Api ? '768p' : '768P')
+    const baseUrl = String(profile?.base_url || (is75Api ? 'https://www.75api.com' : 'https://metaso.cn/api/minimax')).trim()
+    const modelName = String(profile?.model_name || (is75Api ? 'minimax_h3_no_audios' : 'MiniMax-H3')).trim()
+    const supportsTextToVideo = params.supports_text_to_video === false
+      ? false
+      : Array.isArray(params.task_modes)
+        ? params.task_modes.includes('text_to_video')
+        : !is75Api
+    const modelMinimumDuration = is75Api ? 5 : 4
+    const effectiveDuration = coerceH3DurationSecondsFromStoryboard(selectedShot?.duration, modelMinimumDuration, is75Api)
     return {
-      platformLabel: 'metaso.cn MiniMax H3 兼容 API',
-      baseUrl: 'https://metaso.cn/api/minimax',
-      modelName: 'MiniMax-H3',
-      resolution: '768P',
-      durationSeconds: h3Duration.durationSeconds,
-      durationSourceLabel: h3Duration.sourceLabel,
+      platformLabel: is75Api ? '75api MiniMax H3' : 'metaso.cn MiniMax H3 兼容 API',
+      baseUrl,
+      modelName,
+      provider,
+      supportsTextToVideo,
+      resolution,
+      durationSeconds: effectiveDuration.durationSeconds,
+      durationSourceLabel: effectiveDuration.sourceLabel,
       aspectRatio: '16:9',
-      aigcWatermark: false,
-      taskMode: adoptedImageUrl ? 'image_to_video' : 'text_to_video',
+      aigcWatermark: Boolean(params.aigc_watermark ?? params.watermark),
+      taskMode: effectiveReferenceAssetIds.length > 0 ? 'reference_to_video' : adoptedImageUrl ? 'image_to_video' : 'text_to_video',
+      referenceImageCount: effectiveReferenceAssetIds.length,
       firstFrameAssetLabel: adoptedImage ? String(adoptedImage.title || adoptedImage.label || adoptedImage.id || '').trim() : '',
       firstFrameUrl: adoptedImageUrl,
       promptLength: promptText.length,
     }
-  }, [adoptedImage, adoptedImageUrl, h3Duration.durationSeconds, h3Duration.sourceLabel, machinePromptExport, minimaxH3Fields.integrated_multimodal_description])
+  }, [adoptedImage, adoptedImageUrl, effectiveReferenceAssetIds.length, machinePromptExport, minimaxH3Fields.integrated_multimodal_description, selectedShot?.duration, videoModelProfile])
   const minimaxH3CopyText = useMemo(
     () => buildMachinePromptWebuiCopyText(machinePromptExport, 'minimax-h3'),
     [machinePromptExport],
@@ -1657,12 +2132,14 @@ export default function ProductWorkspaceStoryboardSection({
         videoRecoveryTaskId,
         hasCompiledPrompt,
         hasAdoptedFrame,
+        hasReferenceImages: effectiveReferenceAssetIds.length > 0,
         hasAdoptedVideo: Boolean(adoptedVideo),
       }),
     [
       adoptedVideo,
       canGenerateFromGate,
       frameRecoveryTaskId,
+      effectiveReferenceAssetIds.length,
       hasAdoptedFrame,
       hasCompiledPrompt,
       promptRecoveryTaskId,
@@ -2042,6 +2519,7 @@ export default function ProductWorkspaceStoryboardSection({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             targetModel: 'minimax-h3',
+            modelProfileId: videoModelProfile?.id || undefined,
             exportChannel: 'api',
             operatorName: 'formal-workspace',
             submissionMode: 'task_intent_only',
@@ -2123,8 +2601,14 @@ export default function ProductWorkspaceStoryboardSection({
           confirmationToken: 'CONFIRM_MINIMAX_H3_SUBMIT',
           aspectRatio: '16:9',
           durationSeconds: h3ProviderSubmitSummary?.durationSeconds ?? h3Duration.durationSeconds,
-          useFirstFrame: true,
-          notes: '由正式工作台二次确认后真实提交 MiniMax H3。',
+          modelProfileId: videoModelProfile?.id || undefined,
+          useReferenceImages: effectiveReferenceAssetIds.length > 0,
+          referenceAssetIds: effectiveReferenceAssetIds,
+          useFirstFrame: effectiveReferenceAssetIds.length === 0 && Boolean(adoptedImageUrl),
+          firstFrameAssetId: effectiveReferenceAssetIds.length === 0 ? (adoptedImage?.id ? String(adoptedImage.id) : undefined) : undefined,
+          notes: effectiveReferenceAssetIds.length > 0
+            ? '由正式工作台二次确认后真实提交 MiniMax H3；使用多参考图模式，不与首/尾帧模式混用。'
+            : '由正式工作台二次确认后真实提交 MiniMax H3；使用当前采纳首帧图生视频模式。',
         }),
       })
       if (!response.ok) {
@@ -2182,6 +2666,9 @@ export default function ProductWorkspaceStoryboardSection({
 
   const compileSelectedShotPrompts = async (compileReason = 'manual-visual-fact-repair') => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return { status: 'invalid' as const }
+    if (!window.confirm('确认直接调用 LLM 重编译当前提示词？这可能产生模型费用并创建新的 Prompt Version。建议优先使用“受控 Prompt Compiler 草案”审核流程。')) {
+      return { status: 'cancelled' as const, reason: compileReason }
+    }
     setCompileActionState('saving')
     setCompileActionMessage('正在提交当前镜头提示词重编译任务，通常需要 30-60 秒。')
 
@@ -2190,7 +2677,7 @@ export default function ProductWorkspaceStoryboardSection({
       const response = await fetch(`/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/compile-prompts/async`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ compileReason, force: false }),
+        body: JSON.stringify({ compileReason, force: false, confirmed: true, allowExternalCall: true }),
       })
       if (!response.ok) {
         let detail = ''
@@ -2290,6 +2777,74 @@ export default function ProductWorkspaceStoryboardSection({
     }
   }
 
+  const saveExecutabilitySplitDraft = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    setSplitDraftState('saving')
+    setSplitDraftMessage('正在保存拆镜草案；此操作不会改写原镜头。')
+    try {
+      const response = await fetch(
+        `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/executability/split-draft`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ note: '由正式工作台保存，等待人工确认后再应用。' }),
+        },
+      )
+      if (!response.ok) {
+        let detail = ''
+        try {
+          const payload = await response.json()
+          detail = String(payload?.detail || payload?.error || '')
+        } catch {
+          detail = await response.text()
+        }
+        throw new Error(detail || `HTTP ${response.status}`)
+      }
+      setSplitDraftState('saved')
+      setSplitDraftMessage('拆镜草案已保存；原镜头和提示词尚未改动。')
+      await onRefresh()
+    } catch (error) {
+      setSplitDraftState('error')
+      setSplitDraftMessage(error instanceof Error ? error.message : '保存拆镜草案失败。')
+    }
+  }
+
+  const applyExecutabilitySplitDraft = async () => {
+    if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    const confirmed = typeof window !== 'undefined' && window.confirm(
+      '确认应用拆镜草案？系统会按草案段数创建连续镜头、顺延后续镜头号，并清空所有新片段的旧提示词和媒体产物；随后必须重新编译。',
+    )
+    if (!confirmed) return
+    setSplitApplyState('saving')
+    setSplitApplyMessage('正在应用拆镜草案并重排后续镜头。')
+    try {
+      const response = await fetch(
+        `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/executability/split-draft/apply`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirmed: true }) },
+      )
+      if (!response.ok) {
+        let detail = ''
+        try {
+          const payload = await response.json()
+          detail = String(payload?.detail || payload?.error || '')
+        } catch {
+          detail = await response.text()
+        }
+        throw new Error(detail || `HTTP ${response.status}`)
+      }
+      const payload = await response.json()
+      setSplitApplyState('saved')
+      const createdShotIds = Array.isArray(payload?.created_shot_ids)
+        ? payload.created_shot_ids.map((item: unknown) => String(item)).filter(Boolean)
+        : (payload?.created_shot_id ? [String(payload.created_shot_id)] : [])
+      setSplitApplyMessage(`已创建 ${createdShotIds.length} 个连续镜头${createdShotIds.length ? `（${createdShotIds.join('、')}）` : ''}；所有片段都需要重新编译。`)
+      await onRefresh()
+    } catch (error) {
+      setSplitApplyState('error')
+      setSplitApplyMessage(error instanceof Error ? error.message : '应用拆镜草案失败。')
+    }
+  }
+
   const runPromptRepairAndContinue = async (nextKind: 'frame' | 'video') => {
     const compileResult = await compileSelectedShotPrompts(
       nextKind === 'video' ? 'manual-recompile-before-video' : 'manual-recompile-before-frame',
@@ -2326,39 +2881,56 @@ export default function ProductWorkspaceStoryboardSection({
     targetTaskSetter(null)
 
     try {
-      const response = await fetch(`/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/${kind === 'frame' ? 'generate-frame' : 'generate-video'}`, {
+      const endpoint = `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/${kind === 'frame' ? 'generate-frame' : 'generate-video'}`
+      const requestBody = kind === 'frame'
+        ? {
+            generationChain: chainMeta?.generationChain,
+            triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
+            promptRecompileReason: chainMeta?.promptRecompileReason,
+            promptRecompileTaskId: chainMeta?.promptRecompileTaskId,
+            promptRecompileVersion: chainMeta?.promptRecompileVersion,
+          }
+        : {
+            compileIfMissing: true,
+            firstFrameAssetId: String(adoptedImage?.id || '').trim(),
+            referenceAssetIds: effectiveReferenceAssetIds,
+            generationChain: chainMeta?.generationChain,
+            triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
+            promptRecompileReason: chainMeta?.promptRecompileReason,
+            promptRecompileTaskId: chainMeta?.promptRecompileTaskId,
+            promptRecompileVersion: chainMeta?.promptRecompileVersion,
+          }
+      let response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(
-          kind === 'frame'
-            ? {
-                generationChain: chainMeta?.generationChain,
-                triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
-                promptRecompileReason: chainMeta?.promptRecompileReason,
-                promptRecompileTaskId: chainMeta?.promptRecompileTaskId,
-                promptRecompileVersion: chainMeta?.promptRecompileVersion,
-              }
-            : {
-                compileIfMissing: true,
-                firstFrameAssetId: String(adoptedImage?.id || '').trim(),
-                referenceAssetIds: effectiveReferenceAssetIds,
-                generationChain: chainMeta?.generationChain,
-                triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
-                promptRecompileReason: chainMeta?.promptRecompileReason,
-                promptRecompileTaskId: chainMeta?.promptRecompileTaskId,
-                promptRecompileVersion: chainMeta?.promptRecompileVersion,
-              },
-        ),
+        body: JSON.stringify(requestBody),
       })
       if (!response.ok) {
-        let detail = ''
+        let payload: any = null
         try {
-          const payload = await response.json()
-          detail = String(payload?.detail || payload?.error || '')
+          payload = await response.json()
         } catch {
-          detail = await response.text()
+          payload = null
         }
-        throw new Error(detail || `HTTP ${response.status}`)
+        const detailPayload = payload?.detail && typeof payload.detail === 'object' ? payload.detail : null
+        if (kind === 'video' && response.status === 409 && detailPayload?.requires_confirmation) {
+          const confirmed = typeof window !== 'undefined' && window.confirm(
+            `当前镜头可拍性存在告警：${String(detailPayload.message || '建议先优化镜头')}\n\n仍要提交视频生成吗？`,
+          )
+          if (confirmed) {
+            response = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...requestBody, executabilityOverride: true, executabilityOverrideReason: '用户确认可拍性告警后提交' }),
+            })
+          } else {
+            throw new Error(String(detailPayload.message || '已取消视频提交；请先处理可拍性告警。'))
+          }
+        }
+        if (!response.ok) {
+          const detail = String(payload?.detail?.message || payload?.detail || payload?.error || '')
+          throw new Error(detail || `HTTP ${response.status}`)
+        }
       }
 
       const payload = await response.json()
@@ -2682,12 +3254,22 @@ export default function ProductWorkspaceStoryboardSection({
           })}
         </div>
 
+        {transitionOverview?.counts ? (
+          <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950/45 px-3 py-2 text-[11px] text-slate-400">
+            本集画面衔接：
+            <span className="ml-1 text-emerald-200">已通过 {transitionOverview.counts.passed ?? 0}</span>
+            <span className="ml-2 text-sky-200">待处理 {(transitionOverview.counts.needs_contract ?? 0) + (transitionOverview.counts.needs_handoff ?? 0) + (transitionOverview.counts.waiting_target ?? 0) + (transitionOverview.counts.needs_review ?? 0)}</span>
+            {(transitionOverview.counts.stale ?? 0) > 0 ? <span className="ml-2 text-amber-200">需重新检查 {transitionOverview.counts.stale}</span> : null}
+          </div>
+        ) : null}
+
         <div className="mt-4 space-y-2">
           {currentShots.map((shot) => {
             const active = String(shot.shot_id) === String(selectedShot?.shot_id ?? '')
             const readiness = buildShotReadiness(shot)
             const degradedPrompt = hasDegradedPromptVersion(shot)
             const shortReadinessLabel = getShotReadinessShortLabel(readiness, shot)
+            const transition = transitionOverview?.items?.find((item) => String(item.shot_id) === String(shot.shot_id))
             return (
               <button
                 key={String(shot.shot_id)}
@@ -2724,6 +3306,17 @@ export default function ProductWorkspaceStoryboardSection({
                   <span className="rounded-full border border-slate-700 bg-slate-950/60 px-2 py-0.5">
                     下一步 · {shortReadinessLabel}
                   </span>
+                  {transition?.label ? (
+                    <span className={`rounded-full border px-2 py-0.5 ${
+                      transition.status === 'passed' || transition.status === 'not_applicable'
+                        ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-200'
+                        : transition.status === 'stale' || transition.status === 'needs_attention'
+                          ? 'border-amber-500/30 bg-amber-500/10 text-amber-200'
+                          : 'border-sky-500/25 bg-sky-500/10 text-sky-200'
+                    }`}>
+                      衔接 · {transition.label}
+                    </span>
+                  ) : null}
                 </div>
               </button>
             )
@@ -2843,6 +3436,179 @@ export default function ProductWorkspaceStoryboardSection({
               onNavigateSection={onNavigateSection}
             />
 
+            {productionReadinessState === 'loaded' && productionReadiness ? (
+              <details className={`rounded-xl border p-4 ${
+                productionReadiness.status === 'blocked'
+                  ? 'border-rose-500/30 bg-rose-500/10'
+                  : productionReadiness.status === 'warning'
+                    ? 'border-amber-500/30 bg-amber-500/10'
+                    : 'border-emerald-500/30 bg-emerald-500/10'
+              }`}>
+                <summary className="cursor-pointer list-none">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <div className="text-xs font-medium text-slate-300">生产前质量体检</div>
+                      <div className="mt-1 text-sm font-medium text-white">
+                        {productionReadiness.status === 'blocked' ? '先处理生产阻塞，再继续批量生成' : productionReadiness.status === 'warning' ? '可继续局部工作，但建议先补质量风险' : '当前项目满足已知生产前检查'}
+                      </div>
+                    </div>
+                    <div className="text-xs text-slate-200">阻塞 {productionReadiness.summary?.blocked_items ?? 0} · 告警 {productionReadiness.summary?.warning_items ?? 0}</div>
+                  </div>
+                </summary>
+                <div className="mt-3 text-xs leading-6 text-slate-300">
+                  {(productionReadiness.recommended_order ?? []).map((item) => <div key={item}>{item}</div>)}
+                  {productionRepairPlan ? (
+                    <div className="mt-3 rounded-lg border border-slate-700/70 bg-slate-950/30 p-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="font-medium text-slate-200">受控修复计划（只读）</span>
+                        <span className="text-[11px] text-slate-400">
+                          镜头 {productionRepairPlan.summary?.shot_actions ?? 0} 项 · 资产 {productionRepairPlan.summary?.asset_actions ?? 0} 项
+                        </span>
+                      </div>
+                      <div className="mt-1 text-[11px] text-slate-400">
+                        {productionRepairPlan.real_data_mutated === false ? '当前仅生成审阅计划，不会写入真实数据。' : '请先确认计划后再执行。'}
+                      </div>
+                      <div className="mt-1 text-[11px] text-slate-500">
+                        计划指纹：{productionRepairPlan.confirmation_token || '不可用'} · 缺少回滚锚点：{productionRepairPlan.summary?.missing_rollback_anchors ?? 0}
+                      </div>
+                      {structureGovernancePlan && (structureGovernancePlan.summary?.affected_shots ?? 0) > 0 ? (
+                        <div className="mt-3 rounded-md border border-amber-300/20 bg-amber-950/10 p-2.5 text-[11px] text-amber-100/85">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="font-medium">结构化镜头与旧诊断治理</span>
+                            <span>受影响 {structureGovernancePlan.summary?.affected_shots ?? 0} · 身份修正 {structureGovernancePlan.summary?.identity_repairs ?? 0}</span>
+                          </div>
+                          <div className="mt-1 text-amber-100/65">仅修正派生镜头标识并使旧诊断过期；不会改导演文本、提示词、资产或已生成媒体。</div>
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => void previewStructureGovernance()}
+                              disabled={structureGovernanceState === 'previewing' || structureGovernanceState === 'applying'}
+                              className="rounded border border-amber-300/35 bg-amber-400/10 px-2 py-1 text-[11px] font-medium text-amber-100 hover:bg-amber-400/20 disabled:opacity-50"
+                            >
+                              {structureGovernanceState === 'previewing' ? '治理预检中…' : '预检结构治理'}
+                            </button>
+                            {structureGovernanceState === 'ready' ? (
+                              <button type="button" onClick={() => void applyStructureGovernance()} className="rounded border border-amber-300/45 bg-amber-400/15 px-2 py-1 text-[11px] font-medium text-amber-100 hover:bg-amber-400/25">
+                                确认写入治理结果
+                              </button>
+                            ) : null}
+                          </div>
+                          {structureGovernanceMessage ? <div className="mt-2 text-amber-100/75">{structureGovernanceMessage}</div> : null}
+                        </div>
+                      ) : null}
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {Array.from(new Set((productionRepairPlan.shot_actions ?? []).map((item) => item.action).filter(Boolean))).map((action) => {
+                          const count = (productionRepairPlan.shot_actions ?? []).filter((item) => item.action === action).length
+                          const label = (productionRepairPlan.shot_actions ?? []).find((item) => item.action === action)?.label || action
+                          return <span key={action} className="rounded-full border border-slate-600 px-2 py-0.5 text-[11px] text-slate-300">{label} · {count}</span>
+                        })}
+                      </div>
+                      {(productionRepairPlan.asset_actions ?? []).length > 0 ? (
+                        <div className="mt-2 rounded-md border border-amber-300/15 bg-amber-950/10 px-2 py-1.5 text-[11px] text-amber-100/85">
+                          <div className="font-medium">资产人工动作（仅审阅，不会自动锁定参考图）</div>
+                          <div className="mt-1 space-y-0.5 text-amber-100/70">
+                            {(productionRepairPlan.asset_actions ?? []).slice(0, 6).map((item) => (
+                              <div key={`repair-asset-${item.asset_type}-${item.asset_id}`}>
+                                {item.asset_type === 'character' ? '人物' : item.asset_type === 'scene' ? '场景' : '道具'} · {item.asset_name || '未命名资产'}：{item.label || '人工复核资产字段'}
+                              </div>
+                            ))}
+                            {(productionRepairPlan.asset_actions ?? []).length > 6 ? <div>另有 {(productionRepairPlan.asset_actions ?? []).length - 6} 项，请前往资产中心按状态筛选处理。</div> : null}
+                          </div>
+                        </div>
+                      ) : null}
+                      {(productionRepairPlan.shot_actions ?? []).filter((item) => item.action === 'recompile_prompt').slice(0, 6).map((item) => (
+                        <div key={`repair-anchor-${item.episode}-${item.shot_id}`} className="mt-1 text-[11px] text-slate-500">
+                          第 {item.episode} 集 / 镜头 {item.shot_id} · baseline {item.rollback_anchor?.version ? `${item.rollback_anchor.kind === 'state_snapshot' ? '状态快照 ' : ''}v${item.rollback_anchor.version}` : '缺失'}
+                        </div>
+                      ))}
+                      {(productionRepairPlan.shot_actions ?? []).filter((item) => item.action === 'review_executability').slice(0, 6).map((item) => {
+                        const suggestionTypes = Array.from(new Set((item.executability_suggestions ?? []).map((suggestion) => suggestion.type).filter(Boolean)))
+                        return <div key={`repair-suggestion-${item.episode}-${item.shot_id}`} className="mt-1 text-[11px] text-rose-200/80">
+                          第 {item.episode} 集 / 镜头 {item.shot_id} · 候选：{suggestionTypes.includes('split_shot') ? '拆镜' : suggestionTypes.includes('extend_duration') ? '延长时长' : '人工复核'}
+                        </div>
+                      })}
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                        {(productionRepairPlan.summary?.missing_rollback_anchors ?? 0) > 0 ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => void previewRollbackAnchors()}
+                              disabled={rollbackAnchorState === 'previewing' || rollbackAnchorState === 'creating'}
+                              className="rounded-lg border border-violet-300/35 bg-violet-400/10 px-3 py-1.5 text-[11px] font-medium text-violet-100 transition hover:border-violet-200 hover:bg-violet-400/20 disabled:opacity-50"
+                            >
+                              {rollbackAnchorState === 'previewing' ? '锚点预检中…' : '预检补建状态锚点'}
+                            </button>
+                            {rollbackAnchorState === 'ready' ? (
+                              <button
+                                type="button"
+                                onClick={() => void createRollbackAnchors()}
+                                className="rounded-lg border border-violet-300/45 bg-violet-400/15 px-3 py-1.5 text-[11px] font-medium text-violet-100 transition hover:border-violet-200 hover:bg-violet-400/25"
+                              >
+                                确认建立状态锚点
+                              </button>
+                            ) : null}
+                          </>
+                        ) : null}
+                        <button
+                          type="button"
+                          onClick={() => void previewRepairExecution()}
+                          disabled={repairExecutionState === 'previewing' || repairExecutionState === 'executing'}
+                          className="rounded-lg border border-sky-300/35 bg-sky-400/10 px-3 py-1.5 text-[11px] font-medium text-sky-100 transition hover:border-sky-200 hover:bg-sky-400/20 disabled:opacity-50"
+                        >
+                          {repairExecutionState === 'previewing' ? '预检中…' : '预检可重编译镜头'}
+                        </button>
+                        {repairExecutionState === 'ready' ? (
+                          <button
+                            type="button"
+                            onClick={() => void executeRepairPlan()}
+                            className="rounded-lg border border-amber-300/40 bg-amber-400/15 px-3 py-1.5 text-[11px] font-medium text-amber-100 transition hover:border-amber-200 hover:bg-amber-400/25"
+                          >
+                            确认执行并创建任务
+                          </button>
+                        ) : null}
+                      </div>
+                      {rollbackAnchorMessage ? <div className="mt-2 text-[11px] text-violet-200/80">{rollbackAnchorMessage}</div> : null}
+                      {repairExecutionMessage ? <div className="mt-2 text-[11px] text-slate-400">{repairExecutionMessage}</div> : null}
+                      {repairTask ? (
+                        <div className="mt-3 rounded-lg border border-slate-700/70 bg-slate-950/40 p-3">
+                          <div className="flex items-center justify-between gap-2 text-[11px]">
+                            <span className="font-medium text-slate-200">修复任务 {repairTask.task_id}</span>
+                            <span className="text-slate-400">{repairTask.status || 'queued'} · {repairTask.progress ?? 0}%</span>
+                          </div>
+                          {(repairTask.results ?? []).map((item) => (
+                            <div key={`repair-result-${item.episode}-${item.shot_id}`} className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+                              <span>第 {item.episode} 集 / 镜头 {item.shot_id} · {item.status === 'done' ? `v${item.version} 完成` : item.error || '失败'}</span>
+                              {item.status === 'done' && item.baseline_version ? (
+                                <button type="button" onClick={() => void rollbackRepairShot(item)} className="rounded border border-rose-400/30 px-2 py-0.5 text-rose-200 hover:bg-rose-400/10">回滚到 v{item.baseline_version}</button>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {productionReadiness.shots?.some((item) => item.status === 'blocked') ? (
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <span className="text-rose-100/90">优先阻塞镜头：</span>
+                      {productionReadiness.shots.filter((item) => item.status === 'blocked').slice(0, 6).map((item) => (
+                        <button
+                          key={`${item.episode}-${item.shot_id}`}
+                          type="button"
+                          onClick={() => {
+                            if (typeof item.episode === 'number') setSelectedEpisode(item.episode)
+                            if (item.shot_id !== undefined) onSelectShot(String(item.shot_id))
+                          }}
+                          className="rounded-full border border-rose-400/35 bg-rose-400/10 px-2 py-0.5 text-[11px] text-rose-100 transition hover:border-rose-300 hover:bg-rose-400/20"
+                        >
+                          {item.episode ? `第 ${item.episode} 集 / ` : ''}镜头 {item.shot_id}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </details>
+            ) : null}
+
             <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
               <CurrentShotActionHeader
                 shotId={String(selectedShot.shot_id)}
@@ -2854,6 +3620,19 @@ export default function ProductWorkspaceStoryboardSection({
                 primaryActionIsExecutable={storyboardCanvasPrimaryActionPlan.action !== 'view_results'}
                 onPrimaryAction={runStoryboardCanvasPrimaryAction}
               />
+
+              <ProductWorkspaceStoryboardContinuityPanel
+                bookId={_bookId}
+                episode={selectedShot.episode ?? selectedEpisode ?? 0}
+                shotId={selectedShot.shot_id}
+              />
+
+              <ProductWorkspaceStoryboardDecisionPanel
+                bookId={_bookId}
+                episode={selectedShot.episode ?? selectedEpisode ?? 0}
+                shotId={selectedShot.shot_id}
+              />
+              <ProductWorkspacePromptDraftPanel bookId={_bookId} episode={selectedShot.episode ?? selectedEpisode ?? 0} shotId={selectedShot.shot_id} onRefresh={onRefresh} />
 
               {taskRecoveryHandoffSummary ? (
                 <div className="mt-4 rounded-xl border border-sky-500/30 bg-sky-500/10 p-4">
@@ -2882,6 +3661,101 @@ export default function ProductWorkspaceStoryboardSection({
                 <MiniMetric label="视频版本" value={`${selectedShot.assets?.videos?.length ?? 0}`} />
               </div>
 
+              {selectedExecutability ? (
+                <div className={`mt-4 rounded-xl border p-4 ${
+                  selectedExecutability.status === 'blocked'
+                    ? 'border-rose-500/40 bg-rose-500/10'
+                    : selectedExecutability.status === 'warning'
+                      ? 'border-amber-500/40 bg-amber-500/10'
+                      : 'border-emerald-500/30 bg-emerald-500/10'
+                }`}>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <div className="text-xs font-medium text-slate-300">可拍性校验</div>
+                      <div className="mt-1 text-sm font-medium text-white">{
+                        selectedExecutability.status === 'blocked' ? '阻塞：暂不可生成视频' : selectedExecutability.status === 'warning' ? '告警：建议确认后生成' : '通过：动作承载正常'
+                      }</div>
+                    </div>
+                    <span className="rounded-full border border-current/30 px-2 py-0.5 text-[11px] uppercase tracking-wide text-slate-200">{selectedExecutability.status || 'unknown'}</span>
+                  </div>
+                  {selectedExecutability.summary ? <div className="mt-2 text-xs leading-5 text-slate-300">{selectedExecutability.summary}</div> : null}
+                  <div className="mt-3 grid gap-3 md:grid-cols-3">
+                    <MiniMetric label="时长" value={`${selectedShot.duration ?? '-'}s`} />
+                    <MiniMetric label="核心动作" value={String(selectedShot.prompt_compile_context?.core_action || selectedShot.structured_shot?.core_action || '未提取')} />
+                    <MiniMetric label="动作节拍" value={`${selectedActionBeats.length} 段`} />
+                  </div>
+                  {selectedActionBeats.length > 0 ? (
+                    <details className="mt-3 rounded-lg border border-slate-700/70 bg-slate-950/30 p-3">
+                      <summary className="cursor-pointer text-[11px] text-slate-300">查看按秒动作节拍</summary>
+                      <div className="mt-2 space-y-2">
+                        {selectedActionBeats.map((beat, index) => {
+                          const item = beat as Record<string, unknown>
+                          const time = String(item.start_second ?? item.start ?? item.at ?? '').trim()
+                          const description = String(item.description ?? item.action ?? item.text ?? '').trim()
+                          return <div key={`action-beat-${index}`} className="text-xs text-slate-400">{time ? `${time}s · ` : ''}{description || JSON.stringify(item)}</div>
+                        })}
+                      </div>
+                    </details>
+                  ) : null}
+                  {Array.isArray(selectedExecutability.recommendations) && selectedExecutability.recommendations.length > 0 ? (
+                    <div className="mt-3 space-y-2">
+                      {selectedExecutability.recommendations.slice(0, 3).map((item, index) => {
+                        if (typeof item === 'string') return <div key={`exec-recommendation-${index}`} className="text-[11px] text-slate-300">{item}</div>
+                        const recommendation = item as Record<string, unknown>
+                        const type = String(recommendation.type || recommendation.label || recommendation.action || '优化建议')
+                        const candidates = Array.isArray(recommendation.candidates) ? recommendation.candidates : []
+                        return (
+                          <div key={`exec-recommendation-${index}`} className="rounded-lg border border-slate-700 bg-slate-950/30 p-2 text-[11px] text-slate-300">
+                            <span className="font-medium text-white">{type === 'extend_duration' ? `建议延长至 ${String(recommendation.recommended_duration || '')} 秒` : type === 'trim_non_core_actions' ? '建议删减非核心动作' : type === 'split_shot' ? `建议拆为 ${candidates.length || '多'} 个连续镜头` : type}</span>
+                            {recommendation.reason ? <span className="ml-2 text-slate-400">{String(recommendation.reason)}</span> : null}
+                            {recommendation.keep ? <div className="mt-1 text-slate-400">保留：{String(recommendation.keep)}</div> : null}
+                            {candidates.length > 0 ? <div className="mt-2 space-y-1 text-slate-400">{candidates.map((candidate, candidateIndex) => {
+                              const row = candidate as Record<string, unknown>
+                              const beats = Array.isArray(row.action_beats) ? row.action_beats.join(' → ') : ''
+                              return <div key={`exec-candidate-${candidateIndex}`}>镜头 {String(row.sequence || candidateIndex + 1)} · {String(row.recommended_duration || '')} 秒：{beats || String(row.purpose || '')}</div>
+                            })}</div> : null}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : null}
+                  {hasSplitSuggestion ? (
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={saveExecutabilitySplitDraft}
+                        disabled={splitDraftState === 'saving'}
+                        className="rounded-lg border border-fuchsia-300/40 bg-fuchsia-400/15 px-3 py-1.5 text-xs font-medium text-white transition hover:border-fuchsia-200 hover:bg-fuchsia-400/20 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {splitDraftState === 'saving' ? '保存中…' : selectedSplitDraft ? '更新拆镜草案' : '保存拆镜草案'}
+                      </button>
+                      <span className="text-[11px] text-slate-400">保存仅供审阅，不会拆分或覆盖当前镜头。</span>
+                    </div>
+                  ) : null}
+                  {selectedSplitDraft ? (
+                    <div className="mt-3 rounded-lg border border-fuchsia-400/25 bg-fuchsia-400/5 p-3 text-[11px] text-slate-300">
+                      <div className="font-medium text-fuchsia-100">已保存拆镜草案 · 待人工确认</div>
+                      <div className="mt-1 text-slate-400">{selectedSplitDraft.reason || '可拍性校验建议拆镜'}</div>
+                      {selectedSplitDraft.candidates?.map((candidate, index) => (
+                        <div key={`saved-split-${index}`} className="mt-1 text-slate-400">镜头 {candidate.sequence || index + 1} · {candidate.recommended_duration || '-'} 秒：{candidate.action_beats?.join(' → ') || candidate.purpose || ''}</div>
+                      ))}
+                      {selectedSplitDraft.status === 'draft' ? (
+                        <button
+                          type="button"
+                          onClick={applyExecutabilitySplitDraft}
+                          disabled={splitApplyState === 'saving'}
+                          className="mt-3 rounded-lg border border-rose-300/45 bg-rose-400/15 px-3 py-1.5 text-xs font-medium text-white transition hover:border-rose-200 hover:bg-rose-400/20 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {splitApplyState === 'saving' ? '应用中…' : '确认应用拆镜草案'}
+                        </button>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {splitDraftMessage ? <div className={`mt-2 text-[11px] ${splitDraftState === 'error' ? 'text-rose-300' : 'text-slate-400'}`}>{splitDraftMessage}</div> : null}
+                  {splitApplyMessage ? <div className={`mt-2 text-[11px] ${splitApplyState === 'error' ? 'text-rose-300' : 'text-slate-400'}`}>{splitApplyMessage}</div> : null}
+                </div>
+              ) : null}
+
               <DirectorShotLanguageEditor
                 draft={directorShotDraft}
                 sourceTone={machinePromptExport?.source_layers?.has_user_director_shot_override ? 'cyan' : machinePromptExport ? 'slate' : 'amber'}
@@ -2889,10 +3763,17 @@ export default function ProductWorkspaceStoryboardSection({
                 saveState={directorShotSaveState}
                 saveMessage={directorShotSaveMessage}
                 canSave={Boolean(selectedShot)}
+                readOnly={!canGenerateFromGate}
                 onDraftChange={setDirectorShotDraft}
                 onSaveAndRecompile={() => saveDirectorShotText(false)}
                 onRestoreSystemVersion={() => saveDirectorShotText(true)}
               />
+
+              <details className="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-4">
+                <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看结构化分镜图提示词</summary>
+                <div className="mt-1 text-xs leading-5 text-slate-500">用于复核画面结构和资产锚点；不是日常创作时需要阅读的机器字段。</div>
+                <StoryboardImagePromptSectionsPanel sections={selectedShotStaticPromptSections} />
+              </details>
 
               <CollapsiblePanel
                 title="模型提示词（静态 / 运动 / 负向）"
@@ -2915,7 +3796,7 @@ export default function ProductWorkspaceStoryboardSection({
                 </div>
               </CollapsiblePanel>
 
-              <ProductWorkspaceMachinePromptExportPanel
+              {canGenerateFromGate ? <ProductWorkspaceMachinePromptExportPanel
                 machinePromptExport={machinePromptExport}
                 machinePromptExportState={machinePromptExportState}
                 machinePromptExportMessage={machinePromptExportMessage}
@@ -2945,7 +3826,12 @@ export default function ProductWorkspaceStoryboardSection({
                 onSubmitProviderTask={submitMachinePromptProviderTask}
                 onLoadHistory={loadMachinePromptExportRecordHistory}
                 onRestoreRecordDraft={restoreMachinePromptExportRecordDraft}
-              />
+              /> : (
+                <details className="mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4">
+                  <summary className="cursor-pointer text-sm font-medium text-cyan-100">高级：查看机器提示词导出说明</summary>
+                  <div className="mt-2 text-xs leading-5 text-cyan-100/75">上游剧本尚未放行。为避免导出或提交与未定稿内容不一致的机器提示词，此镜头暂只保留现有版本的只读信息。</div>
+                </details>
+              )}
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
@@ -2962,7 +3848,8 @@ export default function ProductWorkspaceStoryboardSection({
                   <div className="text-xs text-slate-500">当前视频结论</div>
                   {adoptedVideo ? (
                     <div className="mt-2 text-sm text-slate-200">
-                      已有当前采纳视频：<span className="text-white">{adoptedVideo.title || adoptedVideo.label || adoptedVideo.id}</span>
+                      已有当前镜头采纳视频：<span className="text-white">{adoptedVideo.title || adoptedVideo.label || adoptedVideo.id}</span>
+                      <span className="ml-1 text-xs text-slate-400">（标题保留原始生成审计）</span>
                     </div>
                   ) : (
                     <div className="mt-2 text-sm text-slate-400">当前还没有采纳的视频版本。</div>
@@ -3240,9 +4127,14 @@ export default function ProductWorkspaceStoryboardSection({
                 />
 
                 <ProductWorkspaceStoryboardMediaPanel
+                  bookId={_bookId}
+                  shot={selectedShot}
                   imageAssets={imageAssets}
                   videoAssets={videoAssets}
+                  archivedAssets={selectedShot.split_archived_assets}
                   referenceImages={referenceImages}
+                  onUploaded={onRefresh}
+                  allowManualUpload={canGenerateFromGate}
                 />
 
                 <ProductWorkspacePromptAuthorityPanel

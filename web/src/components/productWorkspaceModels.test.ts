@@ -2,12 +2,23 @@ import { describe, expect, it } from 'vitest'
 import {
   buildCapabilityHealthLine,
   buildCapabilitySummary,
+  buildPublicAssetDomainRequirement,
   buildReferenceModeLabel,
   buildSyncedCapabilityParams,
   buildTaskModesLabel,
+  isProductionSafePublicAssetDomain,
 } from './productWorkspaceModels'
 
 describe('productWorkspaceModels', () => {
+  it('does not mark an HTTP or temporary Qiniu domain as production-safe storage', () => {
+    expect(isProductionSafePublicAssetDomain('https://assets.example.com')).toBe(true)
+    expect(isProductionSafePublicAssetDomain('http://assets.example.com')).toBe(false)
+    expect(isProductionSafePublicAssetDomain('https://bucket.clouddn.com')).toBe(false)
+    expect(isProductionSafePublicAssetDomain('not a url')).toBe(false)
+    expect(buildPublicAssetDomainRequirement('http://assets.example.com')).toContain('HTTPS')
+    expect(buildPublicAssetDomainRequirement('https://bucket.clouddn.com')).toContain('测试域名')
+  })
+
   it('summarizes LLM thinking mode for model management visibility', () => {
     const summary = buildCapabilitySummary('llm', {
       id: 'llm-mimo',
@@ -115,6 +126,33 @@ describe('productWorkspaceModels', () => {
     expect(summary.supportsAsyncTasks).toBe(true)
     expect(summary.pollStrategy).toBe('5s 轮询 / 600s 超时')
     expect(buildReferenceModeLabel(summary)).toContain('支持首尾帧 + 参考图')
+  })
+
+  it('summarizes 75api H3 as image-conditioned and audio-free', () => {
+    const summary = buildCapabilitySummary('video', {
+      id: 'video-75api-h3',
+      name: '75api MiniMax H3',
+      capability: 'video',
+      provider: '75api-minimax-h3',
+      base_url: 'https://www.75api.com',
+      model_name: 'minimax_h3_no_audios',
+      default_params: {},
+      enabled: true,
+      is_default: true,
+      key_configured: true,
+      builtin: false,
+      source: 'saved',
+      uses_mock: false,
+    })
+
+    expect(summary.taskModes).toEqual(['image_to_video', 'reference_to_video'])
+    expect(summary.supportsReferenceImages).toBe(true)
+    expect(summary.maxReferenceImages).toBe(8)
+    expect(summary.supportsFirstFrame).toBe(true)
+    expect(summary.supportsLastFrame).toBe(false)
+    expect(summary.supportsAudio).toBe(false)
+    expect(buildReferenceModeLabel(summary)).toContain('最多 8 张')
+    expect(summary.adapterLabel).toContain('75api')
   })
 
   it('marks mock video defaults as warnings instead of ready production', () => {

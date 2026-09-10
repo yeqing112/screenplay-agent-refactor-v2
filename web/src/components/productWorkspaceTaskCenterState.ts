@@ -9,6 +9,26 @@ import {
 import type { TaskCenterEntry, TaskCenterQaWorkbenchEpisodeSummary, TaskCenterStatus } from './productWorkspaceTasks'
 import type { WorkspaceTaskRouteOptions } from './productWorkspaceSectionContracts'
 
+/**
+ * A creator-facing task grouping. The underlying task status remains intact for
+ * audit and recovery, but the first question in the UI becomes "what needs me
+ * now?" rather than "what raw status does this record have?".
+ */
+export type TaskCenterWorkflowBucket = 'attention' | 'running' | 'history'
+
+export function getTaskCenterWorkflowBucket(status: TaskCenterStatus): TaskCenterWorkflowBucket {
+  if (status === 'running') return 'running'
+  if (status === 'done' || status === 'skipped') return 'history'
+  return 'attention'
+}
+
+export function filterTaskCenterEntriesByWorkflow(
+  entries: TaskCenterEntry[],
+  bucket: TaskCenterWorkflowBucket,
+) {
+  return entries.filter((entry) => getTaskCenterWorkflowBucket(entry.status) === bucket)
+}
+
 export function summarizeTaskCenter(entries: TaskCenterEntry[]) {
   const globalEntries = entries.filter((item) => item.scope === 'global')
   const readyForAction = entries.filter((item) => ['queued', 'running', 'error'].includes(item.status))

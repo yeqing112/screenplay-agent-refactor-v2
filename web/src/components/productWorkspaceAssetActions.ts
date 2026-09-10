@@ -7,6 +7,12 @@ type AssetCategory = 'character' | 'location' | 'prop'
 
 type AssetReferenceItem = {
   id: number
+  asset_type?: string
+  asset_id?: string
+  asset_name?: string
+  image_url?: string
+  reference_token?: string
+  status?: string
 }
 
 type AssetSummaryLike = {
@@ -113,6 +119,40 @@ export function resolveAssetReferenceShotTarget(input: {
   }
 }
 
+export function buildAssetGenerationReferenceImages(
+  selectedAsset: Pick<AssetSummaryLike, 'category' | 'title' | 'references'>,
+) {
+  const statusOrder: Record<string, number> = { locked: 0, selected: 1 }
+  return (selectedAsset.references ?? [])
+    .filter((reference) => {
+      const status = String(reference.status || '').trim().toLowerCase()
+      return status === 'locked' || status === 'selected'
+    })
+    .filter((reference) => Boolean(String(reference.image_url || '').trim()))
+    .slice()
+    .sort((left, right) => {
+      const leftRank = statusOrder[String(left.status || '').trim().toLowerCase()] ?? 99
+      const rightRank = statusOrder[String(right.status || '').trim().toLowerCase()] ?? 99
+      return leftRank - rightRank || left.id - right.id
+    })
+    .map((reference) => ({
+      reference_asset_id: `ref-${reference.id}`,
+      reference_token: String(reference.reference_token || `@${selectedAsset.title}`).trim(),
+      reference_name: String(reference.asset_name || selectedAsset.title).trim(),
+      image_url: String(reference.image_url || '').trim(),
+      reference_status: String(reference.status || '').trim().toLowerCase(),
+      asset_type: String(reference.asset_type || selectedAsset.category).trim(),
+      asset_id: String(reference.asset_id || '').trim(),
+      role: selectedAsset.category === 'location' ? 'scene' : selectedAsset.category,
+      reference_purpose:
+        selectedAsset.category === 'character'
+          ? 'identity_costume_face_hair'
+          : selectedAsset.category === 'location'
+            ? 'background_layout_lighting'
+            : 'prop_shape_material_state',
+    }))
+}
+
 export async function runGenerateSelectedAssetReference({
   bookId,
   assetEpisodeFilter,
@@ -139,14 +179,15 @@ export async function runGenerateSelectedAssetReference({
     selectedAsset,
     inferredShotIds,
   })
+  const referenceImages = buildAssetGenerationReferenceImages(selectedAsset)
 
   try {
     setAssetGenerationState('saving')
     setAssetActionTone('info')
     setAssetActionMessage(
       usedInferredShot
-        ? '\u6b63\u5728\u63d0\u4ea4\u53c2\u8003\u56fe\u751f\u6210\u4efb\u52a1\uff0c\u5e76\u4f18\u5148\u4f7f\u7528\u7cfb\u7edf\u8bc6\u522b\u51fa\u7684\u5f71\u54cd\u955c\u5934\u4f5c\u4e3a\u56de\u5199\u76ee\u6807...'
-        : '\u6b63\u5728\u63d0\u4ea4\u53c2\u8003\u56fe\u751f\u6210\u4efb\u52a1...',
+        ? `\u6b63\u5728\u63d0\u4ea4\u53c2\u8003\u56fe\u751f\u6210\u4efb\u52a1\uff08\u643a\u5e26 ${referenceImages.length} \u5f20\u5df2\u9501\u5b9a/\u9ed8\u8ba4\u8d44\u4ea7\u56fe\uff09\uff0c\u5e76\u4f18\u5148\u4f7f\u7528\u7cfb\u7edf\u8bc6\u522b\u51fa\u7684\u5f71\u54cd\u955c\u5934\u4f5c\u4e3a\u56de\u5199\u76ee\u6807...`
+        : `\u6b63\u5728\u63d0\u4ea4\u53c2\u8003\u56fe\u751f\u6210\u4efb\u52a1\uff08\u643a\u5e26 ${referenceImages.length} \u5f20\u5df2\u9501\u5b9a/\u9ed8\u8ba4\u8d44\u4ea7\u56fe\uff09...`,
     )
 
     const startResponse = await fetch('/api/prototyping/generate-reference-image', {
@@ -163,6 +204,7 @@ export async function runGenerateSelectedAssetReference({
         targetKind: 'image',
         prompt,
         aspectRatio: '1:1',
+        referenceImages,
       }),
     })
     if (!startResponse.ok) {

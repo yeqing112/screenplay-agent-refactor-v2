@@ -6,14 +6,14 @@ from fastapi.testclient import TestClient
 
 from api.server import app
 from models import Session, StoryboardShot, VisualMakeup, VisualProp
-from tests.test_storyboard_prompt_compile import StoryboardPromptCompileTests
+from tests.test_storyboard_prompt_compile import ConfirmedMockCompileClient, StoryboardPromptCompileTests
 
 
 class StoryboardPromptCompileRepairTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         StoryboardPromptCompileTests.setUpClass()
-        cls.client = TestClient(app)
+        cls.client = ConfirmedMockCompileClient(app)
 
     def setUp(self):
         self.base = StoryboardPromptCompileTests()

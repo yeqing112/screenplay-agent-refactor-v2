@@ -79,8 +79,43 @@ class MachinePromptExportTests(unittest.TestCase):
         self.assertIn("integrated_multimodal_description", export["fields"])
         self.assertIn("overall_soundscape", export["fields"])
         self.assertIn("non_diegetic_music", export["fields"])
-        self.assertIn("reference image", export["fields"]["integrated_multimodal_description"])
+        self.assertIn("Reference image", export["fields"]["integrated_multimodal_description"])
         self.assertEqual(export["model_params"]["submission_policy"].split(";")[0], "export_only")
+
+    def test_h3_export_aligns_short_duration_and_names_reference_roles(self):
+        ir = self._shot_ir()
+        ir.duration = 3
+        prompt = compile_machine_prompt(
+            ir,
+            reference_images=[
+                {"asset_name": "监控室", "asset_type": "scene", "image_url": "https://cdn.test/room.png"},
+                {"asset_name": "旧照片", "asset_type": "prop", "image_url": "https://cdn.test/photo.png"},
+            ],
+        )
+
+        export = export_minimax_h3_webui(prompt)
+        integrated = export["fields"]["integrated_multimodal_description"]
+
+        self.assertEqual(export["model_params"]["duration_seconds"], 4)
+        self.assertEqual(export["model_params"]["source_duration_seconds"], 3)
+        self.assertIn("Duration: 4 seconds", integrated)
+        self.assertIn("Reference image 1 (监控室): use only for scene layout", integrated)
+        self.assertIn("Reference image 2 (旧照片): use only for prop shape", integrated)
+        self.assertIn("Hard constraints:", integrated)
+        self.assertIn("不要字幕", integrated)
+
+    def test_composed_camera_movement_is_normalized_to_standard_machine_language(self):
+        ir = self._shot_ir()
+        ir.camera_movement = "slow_push_in"
+        ir.camera_speed = ""
+
+        director_text = build_director_shot_text(ir)
+        integrated = export_minimax_h3_webui(compile_machine_prompt(ir))["fields"]["integrated_multimodal_description"]
+
+        self.assertIn("缓慢推进", director_text)
+        self.assertIn("缓慢推进", integrated)
+        self.assertNotIn("slow_push_in", director_text)
+        self.assertNotIn("slow_push_in", integrated)
 
     def test_same_machine_prompt_exports_to_multiple_formats(self):
         prompt = compile_machine_prompt(self._shot_ir())

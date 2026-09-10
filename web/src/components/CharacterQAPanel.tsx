@@ -45,9 +45,11 @@ interface QAResult {
 
 interface Props {
   bookId: number
+  /** When shown from an asset, keep the outer page free of a second title card. */
+  embedded?: boolean
 }
 
-export default function CharacterQAPanel({ bookId }: Props) {
+export default function CharacterQAPanel({ bookId, embedded = false }: Props) {
   const [characters, setCharacters] = useState<Character[]>([])
   const [qaResult, setQaResult] = useState<QAResult | null>(null)
   const [loading, setLoading] = useState(false)
@@ -162,14 +164,17 @@ export default function CharacterQAPanel({ bookId }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-white">人物画像质检</h2>
-          <p className="mt-1 text-sm text-slate-400">
-            检测重复角色、性别冲突、孤立 profile 等问题
-          </p>
-        </div>
+      <div className="flex items-center justify-between gap-4">
+        {embedded ? (
+          <div className="text-sm leading-6 text-slate-400">检测重复角色、性别冲突、孤立 profile 等问题。</div>
+        ) : (
+          <div>
+            <h2 className="text-lg font-semibold text-white">人物画像质检</h2>
+            <p className="mt-1 text-sm text-slate-400">
+              检测重复角色、性别冲突、孤立 profile 等问题
+            </p>
+          </div>
+        )}
         <div className="flex gap-2">
           <button
             onClick={handleResolveAliases}

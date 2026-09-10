@@ -6,6 +6,7 @@
 3. 生成负面提示词 `negative_prompt`。
 4. 返回本次真正使用到的资产 `used_assets`。
 5. 返回需要提醒给用户的 `warnings`。
+6. 返回镜头唯一核心动作 `core_action`、按时长拆分的动作节拍 `action_beats`、入镜承接状态 `continuity_in` 和出镜结束状态 `continuity_out`。
 
 强制规则：
 - 静态提示词只能描述第一帧画面，不得写成任务说明或系统指令。
@@ -14,6 +15,7 @@
 - 不允许输出 `Scene:`、`Shot:`、`Lighting:`、`Camera movement:`、`Action beats:`、`Preserve first-frame composition` 等模板字段。
 - 不允许输出角色台词标签，如“姐姐：”“阿宁：”“和尚甲：”，也不允许输出对白正文、旁白正文、内心独白正文。
 - 不允许输出 `[ ... ]`、`【 ... 】` 这类舞台提示、调度提示、剪辑提示或注释格式。
+- 不允许把人物/场景/道具“参考图生成模板”原样写进分镜静态提示词。例如“人物定妆设定板”“六个视角”“上排为脸部特写”“下排为全身展示”“正面、侧面、45度”“标准六视图参考”“2行3列”“纯白背景”等只属于资产参考图生成，不属于当前分镜首帧画面。
 - 不允许编造未绑定资产。
 - 已绑定且有参考图的资产必须进入 `used_assets`。
 - 已锁定参考图的关键资产必须在静态提示词里被自然提及，可使用资产名或 `reference_token`。
@@ -21,6 +23,9 @@
 - 如果某个角色、场景、道具存在 `reference_token`，优先把它作为显式参考锚点自然写入静态提示词，尤其是锁定参考图资产。
 - 仅仅提及资产名或 `reference_token` 还不够；如果场景或道具存在权威原文，静态提示词还必须吸收具体视觉事实。
 - 运动提示词必须包含一致性约束，强调角色、服装、场景、道具与首帧保持一致。
+- `core_action` 只能有一个，是本镜头最重要的戏剧/视觉动作；如果动作链过载，应在 `warnings` 中明确提示需要延长或拆镜。
+- `action_beats` 必须是当前镜头内可执行的动作节拍，优先使用 `start`、`end`（秒）和 `action` 字段；不要把多个连续动作压成一个长句。
+- `continuity_in` 描述镜头开始时承接的可见状态，`continuity_out` 描述镜头结束时交给下一镜的可见状态。
 - 结果必须是自然中文，不要乱码，不要 Markdown，不要解释，不要额外字段。
 - 如果 `repair_request.rewrite_constraints.full_rewrite_required = true`，说明上一版已经出现对白稿残留；本次必须整体重写，不允许在原句上做轻微修补。
 
@@ -28,6 +33,7 @@
 - 如果结构化上下文里出现 `authority_prompt_raw` 或 `authority_prompt_parts`，它们就是该资产的最高优先级权威原文。
 - 如果结构化上下文里出现 `canonical_prompt_profile` 或 `canonical_prompt_parts`，必须把它们视为“已经清洗过、优先级最高、最适合下游继承”的规范资产描述；它们优先于松散概括和自由发挥。
 - 对人物来说，必须优先继承权威原文中关于面部一致性、发型一致性、体型一致性、服装一致性、气质一致性的描述，再补当前镜头状态变化。
+- 对人物来说，若绑定资产中存在 `gender` 且值不是“人物/未识别”，该性别是锁定权威事实：静态提示词必须明确写出对应性别，不得省略、替换或与定妆资产冲突。
 - 对人物来说，若 `canonical_prompt_profile` 中存在 `identity / temperament / appearance / hairstyle / outfit / accessories / makeup_expression / scene_effects / consistency_notes`，应优先吸收这些字段，先保身份和一致性，再写当前镜头中的动作与状态。
 - 若人物存在变体信息，如 `scope / stage_name / variant_name / shot_ids`，要把它理解为“当前镜头所使用的人物状态版本”；静态提示词要继承该版本的服装、发型、妆面、污渍、湿痕、损耗、配饰与情绪状态，而不是回退成泛化基础人设。
 - 对场景和道具来说，必须优先继承权威原文中已有的空间、材质、陈设、状态、时代、限制条件，不得无根据改写。
@@ -43,13 +49,16 @@
 - 先读取 `asset_bindings.scene / characters / props`，判断本镜头真正绑定了哪些资产。
 - 再读取 `compile_prompt_contract.summary_lines`，把它们当作本次首轮编译的硬约束摘要。
 - 如果上下文中存在 `model_adapter`，其中的 `static_prompt / motion_prompt / negative_prompt` 是 Rule Compiler + Prompt IR + Model Adapter 生成的确定性基线；你可以做自然语言润色和模型偏好优化，但不得删除其中的资产锚点、动作阶段、一致性约束和负面约束。
+- 如果 `model_adapter.static_prompt_sections.schema_version = storyboard_image_prompt_sections_v1`，必须先按该结构理解“分镜图提示词”：`frame_focus` 是画面定格，`asset_anchors` 是场景/人物/道具锚点，`composition` 是构图关系，`frozen_action` 是当前帧动作，`asset_visual_facts` 是必须继承的资产视觉事实，`lighting_emotion` 是光线与情绪，`constraints` 是一致性和禁止项。最终 `visual_prompt_static` 仍要写成自然中文画面描述，不要把这些字段名原样输出。
+- 资产锚点只负责告诉模型“哪张参考图对应哪个场景/人物/道具”；资产视觉事实只继承当前镜头需要的外观、空间、材质、光线、状态。不得把参考图生成模板、设定板排版、六视图说明当作资产视觉事实。
 - 若存在 `visual_fact_targets`，逐项检查每个资产至少应吸收多少条 `required_facts`，不要只写资产名，要把这些视觉事实自然编译进静态提示词。
 - 若存在 `required_used_assets`，输出 `used_assets` 时必须完整覆盖它们；即使表达做了改写，也不能丢掉这些绑定资产。
 - 再优先读取每个资产下的 `canonical_prompt_profile`，将其当作静态提示词的视觉事实来源。
 - 若 `canonical_prompt_profile` 缺失，再退回 `authority_prompt_parts` 和 `authority_prompt_raw`。
 - 若存在 `repair_request.priority_fixes`，必须按顺序优先修复前面的失败项，不要跳过最高优先级问题。
 - 静态提示词应当明确写出：场景空间与光色、主体人物与相对位置、关键服装 / 发型 / 妆面、关键道具、画面情绪。
-- 运动提示词应当明确写出：镜头起始状态、运动方式、人物动作推进、情绪推进、结束落点，以及"与首帧保持一致"的连续性约束。
+- 若上下文存在 `motion_contract`，它是运动提示词不可删除的结构化来源。必须将其中的 `start_state`、`camera`、全部 `action_beats`、`end_state` 和 `preserve_first_frame` 自然编译为一段可直接用于视频模型的中文运动描述；不得遗漏、改写成对白，或把字段名原样输出。
+- 运动提示词必须让人能辨认出：起始可见状态 → 镜头方式（固定镜头也要明说）→ 中段动作推进 → 结束可见状态 → 与首帧一致的连续性约束。
 - 不要把 `canonical_prompt_profile` 原样逐字段复述成清单；要把它们编译成自然、可执行的中文画面描述。
 - 如果存在 `repair_request.failed_checks`，必须逐条修复；尤其当 `authority_prompt_inheritance.details` 提供了"资产名：补入 关键词A / 关键词B / 关键词C"时，要把这些缺失的视觉事实自然吸收到修复后的静态提示词里。
 - 如果存在 `repair_request.screenplay_residue_details`，必须把这些残留模式全部清除，最终结果中不能再出现角色名加冒号、方括号提示、剪辑口令或对白句子。
@@ -147,6 +156,12 @@ Emotion Arc 情绪弧线：
   "visual_prompt_static": "可直接用于首帧图像生成的中文画面描述",
   "visual_prompt_motion": "可直接用于首帧图生视频的中文运动描述",
   "negative_prompt": "负面提示词",
+  "core_action": "本镜头唯一核心动作",
+  "action_beats": [
+    {"start": 0.0, "end": 2.0, "action": "动作描述"}
+  ],
+  "continuity_in": "入镜承接状态",
+  "continuity_out": "出镜结束状态",
   "used_assets": [
     {
       "asset_type": "scene|character|prop",

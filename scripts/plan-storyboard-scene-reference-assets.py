@@ -26,6 +26,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from api.server import _normalize_scene_asset_id
+from api.model_registry import get_default_profile
 from models import Session, StoryboardShot, VisualLocation, VisualReferenceAsset, init_db
 
 
@@ -296,7 +297,15 @@ def _confirmation_token(items: list[dict[str, Any]]) -> str:
     return digest[:16]
 
 
-def plan_book(book_id: int, model_profile_id: str = "preset-poyo-image-gpt-image-2") -> dict[str, Any]:
+def plan_book(book_id: int, model_profile_id: str | None = None) -> dict[str, Any]:
+    # Resolve the image provider from the same model registry used by the
+    # production workspace.  Keeping a historical provider id as the default
+    # would make a read-only plan silently diverge from the active image model.
+    if not model_profile_id:
+        profile = get_default_profile("image")
+        model_profile_id = str(profile.get("id") or "") if profile else ""
+    if not model_profile_id:
+        raise RuntimeError("当前没有可用的默认图片模型，无法生成场景参考图计划。")
     with Session() as session:
         shots = (
             session.query(StoryboardShot)
@@ -498,7 +507,7 @@ def main() -> int:
     parser.add_argument("--book-id", type=int, default=75)
     parser.add_argument("--out", default="")
     parser.add_argument("--summary-md", default="")
-    parser.add_argument("--model-profile-id", default="preset-poyo-image-gpt-image-2")
+    parser.add_argument("--model-profile-id", default=None)
     args = parser.parse_args()
 
     init_db()

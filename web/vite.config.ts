@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-const apiProxyTarget = process.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:8765'
+// Keep the development fallback aligned with the single formal local API.
+// An omitted environment variable must not silently route the workspace to a
+// retired prototype port.
+const apiProxyTarget = process.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:18765'
 
 export default defineConfig({
   plugins: [react()],

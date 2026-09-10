@@ -86,6 +86,11 @@ if "*" in API_CORS_ORIGINS and API_CORS_ALLOW_CREDENTIALS:
     logger.warning("API_CORS_ALLOW_CREDENTIALS disabled because API_CORS_ORIGINS contains wildcard '*'.")
     API_CORS_ALLOW_CREDENTIALS = False
 
+# The formal workspace does not depend on the pre-refactor visual node runner.
+# Keep it enabled for existing local installations, but let a production
+# deployment remove its execution surface without changing code.
+ENABLE_LEGACY_NODE_API = _load_bool("ENABLE_LEGACY_NODE_API", True)
+
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", str(BASE_DIR / "uploads")))
 UPLOAD_MAX_BYTES = _load_int("UPLOAD_MAX_BYTES", 10 * 1024 * 1024)
 UPLOAD_ALLOWED_EXTENSIONS = {

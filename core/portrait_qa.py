@@ -11,7 +11,7 @@ import json
 import logging
 from dataclasses import dataclass, field, asdict
 from difflib import SequenceMatcher
-from models import Chapter, CharacterProfile, CharacterStage
+from models import Chapter, CharacterProfile, CharacterStage, VisualMakeup, VisualReferenceAsset
 from core import safe_json_loads
 
 logger = logging.getLogger(__name__)
@@ -65,9 +65,6 @@ def run_portrait_qa(book_id: int, session) -> PortraitQAReport:
     ).all()
     report.total_characters = len(profiles)
 
-    if len(profiles) <= 1:
-        return report
-
     # 收集所有章节数据
     chapters = session.query(Chapter).filter(
         Chapter.book_id == book_id
@@ -102,15 +99,56 @@ def run_portrait_qa(book_id: int, session) -> PortraitQAReport:
     profile_map = {p.name: p for p in profiles}
     all_names = list(profile_map.keys())
 
-    # 1. 性别缺失检测
+    # 1. 性别缺失检测。性别是人物参考资产和提示词编译的权威事实，
+    # 不能作为普通低优先级提示放过。
     for p in profiles:
         if not p.gender or p.gender in ("人物", "未识别", ""):
             report.issues.append(CharacterIssue(
                 issue_type="missing_gender",
-                severity="medium",
+                severity="high",
                 characters=[p.name],
                 description=f"角色「{p.name}」性别未明确",
                 suggestion="specify_gender",
+            ))
+
+    # 1b. 人物档案与定妆资产必须继承同一性别事实。只对已建立
+    # profile 关联的资产作判断，避免用名字猜测或把同名角色混为一谈。
+    profile_by_id = {str(p.id): p for p in profiles}
+    makeups = session.query(VisualMakeup).filter(VisualMakeup.book_id == book_id).all()
+    for makeup in makeups:
+        meta = safe_json_loads(makeup.meta_info, {}) if makeup.meta_info else {}
+        meta = meta if isinstance(meta, dict) else {}
+        profile = profile_by_id.get(str(meta.get("character_profile_id") or meta.get("profile_id") or ""))
+        if profile is None:
+            continue
+        expected = str(profile.gender or "").strip()
+        actual = str(meta.get("gender") or "").strip()
+        if expected in ("", "人物", "未识别"):
+            continue
+        refs = session.query(VisualReferenceAsset).filter(
+            VisualReferenceAsset.book_id == book_id,
+            VisualReferenceAsset.asset_type == "character",
+            VisualReferenceAsset.asset_id == str(makeup.id),
+            VisualReferenceAsset.status == "locked",
+        ).count()
+        severity = "high" if refs else "medium"
+        if actual in ("", "人物", "未识别"):
+            report.issues.append(CharacterIssue(
+                issue_type="makeup_gender_missing",
+                severity=severity,
+                characters=[profile.name],
+                description=f"角色「{profile.name}」的定妆资产缺少性别继承",
+                suggestion="sync_character_gender_to_makeup",
+                evidence={"profile_id": profile.id, "makeup_id": makeup.id, "expected_gender": expected, "locked_reference_count": refs},
+            ))
+        elif actual != expected:
+            report.issues.append(CharacterIssue(
+                issue_type="makeup_gender_conflict",
+                severity=severity,
+                characters=[profile.name],
+                description=f"角色「{profile.name}」档案性别为「{expected}」，定妆资产为「{actual}」",
+                suggestion="sync_character_gender_to_makeup",
+                evidence={"profile_id": profile.id, "makeup_id": makeup.id, "expected_gender": expected, "actual_gender": actual, "locked_reference_count": refs},
             ))
 
     # 2. 孤立 profile 检测

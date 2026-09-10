@@ -72,6 +72,13 @@ export interface TaskCenterEntry {
       isSceneOnlyCandidate?: boolean
     }>
   }
+  agentMeta?: {
+    sessionId: number
+    sessionStatus: string
+    evidenceFingerprint?: string
+    planFingerprint?: string
+    operation?: string
+  }
 }
 
 interface QaEntry {

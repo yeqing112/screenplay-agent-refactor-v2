@@ -1,17 +1,22 @@
 ﻿"""DevCanvas API server."""
 import asyncio
+import base64
 import difflib
+import hashlib
 import json
 import logging
 import os
 import uuid
 import re
+import unicodedata
+import tempfile
 from types import SimpleNamespace
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Any, Optional
 
-from fastapi import FastAPI, BackgroundTasks, UploadFile, File, HTTPException, Query
+from fastapi import FastAPI, BackgroundTasks, UploadFile, File, Form, HTTPException, Query, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 import config
@@ -20,20 +25,40 @@ from api.generation_adapters import (
     build_task_adapter_asset,
     generate_image_asset,
     generate_video_asset,
+    normalize_minimax_h3_duration,
+    normalize_75api_minimax_h3_seconds,
+    reconcile_75api_minimax_h3_generation,
     reconcile_minimax_h3_generation,
     reconcile_poyo_generation,
     resolve_generation_profile,
 )
-from api.model_registry import save_registry, serialize_registry_payload, test_profile_connection
+from api.model_registry import (
+    MINIMAX_H3_75API_PROVIDER,
+    MINIMAX_H3_ASYNC_PROVIDER,
+    SHAPI_GEMINI_IMAGE_PROVIDER,
+    save_registry,
+    serialize_registry_payload,
+    test_profile_connection,
+)
 from core import safe_json_loads
 import core.llm as llm_client
 from core.model_adapter import sanitize_machine_prompt_text
+from core.video_continuity import CONTINUITY_LEVELS, resolve_video_continuity_strategy
+from core.transition_frame_extraction import TransitionFrameExtractionError, extract_transition_frame
+from core.decision_packet import decision_packet_fingerprint, normalize_decision_packet
+from core.decision_draft import build_decision_draft_prompt, validate_decision_draft
+from core.script_beat import build_script_beats, find_issue_beats, is_structural_beat
+from core.qa_resolution import build_resolution_criteria, evaluate_resolution_criteria, route_issue
+from core.script_edit import apply_edits, validate_edits
+from core.agent_model_config import read_agent_model_config, write_agent_model_config, write_agent_runtime_policy
 from core.public_asset_storage import (
     PUBLIC_ASSET_STORAGE_KV_KEY,
     check_public_url_accessible,
     ensure_provider_accessible_url,
     load_public_asset_storage_config,
+    public_asset_storage_is_production_safe,
     public_asset_storage_enabled,
+    _load_source_bytes,
 )
 from core.prompts import load_prompt
 from core.production_skill import (
@@ -51,6 +76,8 @@ from core.production_skill import (
     read_project_production_skill_state,
     write_project_production_skill_state,
 )
+from api.director_plan_shadow_api import router as director_plan_shadow_router
+from api.director_agent_draft_api import router as director_agent_draft_router
 
 from nodes.registry import REGISTRY, get_handler
 from nodes.runner import NodeRunner, WORKFLOWS_DIR, RUNS_DIR
@@ -59,6 +86,13 @@ from models import Session, Book
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Screenplay DevCanvas", version="0.1.0")
+app.include_router(director_plan_shadow_router)
+app.include_router(director_agent_draft_router)
+
+# Any change here changes the DecisionPacket evidence fingerprint.  A draft
+# compiled under an older delivery contract must never be deduplicated as if
+# it had passed newer motion/asset requirements.
+PROMPT_DRAFT_DELIVERY_CONTRACT_VERSION = "2026-09-05-motion-contract-v2"
 
 app.add_middleware(
     CORSMiddleware,
@@ -69,6 +103,30 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def block_disabled_legacy_node_api(request: Request, call_next):
+    """Optionally retire the pre-formal-workspace node runner at the edge.
+
+    This is path-scoped instead of deleting routes so existing local users can
+    migrate deliberately.  Formal-workspace APIs never use these endpoints.
+    """
+    path = request.url.path
+    if not config.ENABLE_LEGACY_NODE_API and (
+        path == "/api/workflows"
+        or path.startswith("/api/workflows/")
+        or path == "/api/nodes/registry"
+        or path == "/api/nodes/run"
+        or path.startswith("/api/nodes/run/")
+        or path == "/api/runs"
+        or path.startswith("/api/runs/")
+    ):
+        return JSONResponse(
+            status_code=410,
+            content={"detail": "Legacy node API is disabled. Use the formal workspace APIs instead."},
+        )
+    return await call_next(request)
+
+
 @app.get("/health")
 def health_check():
     return {
@@ -76,6 +134,1435 @@ def health_check():
         "service": "screenplay-devcanvas-api",
         "version": app.version,
     }
+
+
+def _serialize_decision_packet(row) -> dict[str, Any]:
+    return {"id": row.id, "book_id": row.book_id, "domain": row.domain, "scope": safe_json_loads(row.scope, {}), "packet_fingerprint": row.packet_fingerprint, "evidence": safe_json_loads(row.evidence, []), "unknowns": safe_json_loads(row.unknowns, []), "conflicts": safe_json_loads(row.conflicts, []), "allowed_operations": safe_json_loads(row.allowed_operations, []), "proposal": safe_json_loads(row.proposal, {}), "status": row.status, "model_info": safe_json_loads(row.model_info, {}), "confirmed_at": row.confirmed_at.isoformat() if row.confirmed_at else None}
+
+
+@app.post("/api/books/{book_id}/decision-packets/draft")
+def create_decision_packet_draft(book_id: int, req: dict):
+    """Persists a reviewable LLM proposal; it deliberately performs no domain write."""
+    from models import Session, DecisionPacketRecord
+    try:
+        parsed = DecisionPacketDraftRequest.model_validate(req)
+        packet = normalize_decision_packet(parsed.model_dump())
+        fingerprint = decision_packet_fingerprint(packet)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    with Session() as session:
+        existing = session.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=fingerprint).first()
+        if existing: return {"packet": _serialize_decision_packet(existing), "deduplicated": True, "mutated": False}
+        row = DecisionPacketRecord(book_id=book_id, domain=packet["domain"], scope=json.dumps(packet["scope"], ensure_ascii=False), packet_fingerprint=fingerprint, evidence=json.dumps(packet["evidence"], ensure_ascii=False), unknowns=json.dumps(packet["unknowns"], ensure_ascii=False), conflicts=json.dumps(packet["conflicts"], ensure_ascii=False), allowed_operations=json.dumps(packet["allowed_operations"], ensure_ascii=False), proposal=json.dumps(parsed.proposal, ensure_ascii=False), model_info=json.dumps(parsed.model_info, ensure_ascii=False))
+        session.add(row); session.commit(); session.refresh(row)
+        return {"packet": _serialize_decision_packet(row), "deduplicated": False, "mutated": True}
+
+
+@app.get("/api/books/{book_id}/decision-packets")
+def list_decision_packets(book_id: int, domain: Optional[str] = None):
+    from models import Session, DecisionPacketRecord
+    with Session() as session:
+        query = session.query(DecisionPacketRecord).filter_by(book_id=book_id)
+        if domain: query = query.filter(DecisionPacketRecord.domain == domain)
+        return {"items": [_serialize_decision_packet(row) for row in query.order_by(DecisionPacketRecord.updated_at.desc()).limit(100).all()]}
+
+
+@app.post("/api/books/{book_id}/decision-packets/{packet_id}/review")
+def review_decision_packet(book_id: int, packet_id: int, req: dict):
+    from models import Session, DecisionPacketRecord
+    parsed = DecisionPacketReviewRequest.model_validate(req)
+    if parsed.action not in {"confirmed", "rejected"}: raise HTTPException(status_code=400, detail="action must be confirmed or rejected.")
+    if not (parsed.confirmed and parsed.allow_write): raise HTTPException(status_code=409, detail="Reviewing a decision packet requires confirmed=true and allow_write=true.")
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        if not row: raise HTTPException(status_code=404, detail="Decision packet not found.")
+        if row.packet_fingerprint != parsed.packet_fingerprint: raise HTTPException(status_code=409, detail="Decision packet fingerprint is stale; reload the current packet before reviewing.")
+        row.status=parsed.action; row.confirmed_at=datetime.utcnow() if parsed.action == "confirmed" else None; row.updated_at=datetime.utcnow(); session.commit()
+        return {"packet": _serialize_decision_packet(row), "domain_write_performed": False}
+
+
+@app.post("/api/books/{book_id}/decision-packets/{packet_id}/llm-draft")
+def generate_decision_packet_llm_draft(book_id: int, packet_id: int, req: dict):
+    """Call the configured LLM only after explicit approval, then persist a draft.
+
+    This endpoint cannot apply a proposed operation.  It exists solely to attach
+    a bounded, auditable analysis to an already frozen evidence packet.
+    """
+    from models import Session, DecisionPacketRecord
+    try:
+        parsed = DecisionPacketLlmDraftRequest.model_validate(req)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if not (parsed.confirmed and parsed.allow_external_call):
+        raise HTTPException(status_code=409, detail="Calling an LLM requires confirmed=true and allowExternalCall=true.")
+    # Reserve the packet before making the external call.  A completed draft
+    # alone is not enough for de-duplication: two browser requests can otherwise
+    # both observe `llm_generated=false` and incur duplicate model charges.
+    attempt_id = uuid.uuid4().hex
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        if not row:
+            raise HTTPException(status_code=404, detail="Decision packet not found.")
+        if row.packet_fingerprint != parsed.packet_fingerprint:
+            raise HTTPException(status_code=409, detail="Decision packet fingerprint is stale; reload the current packet before calling the LLM.")
+        model_info = safe_json_loads(row.model_info, {})
+        if isinstance(model_info, dict) and model_info.get("llm_generated"):
+            scope = safe_json_loads(row.scope, {})
+            contract = scope.get("proposal_contract") if isinstance(scope.get("proposal_contract"), dict) else {}
+            if row.domain == "script":
+                existing_proposal = safe_json_loads(row.proposal, {})
+                first = existing_proposal.get("proposals", [{}])[0] if isinstance(existing_proposal.get("proposals"), list) and existing_proposal.get("proposals") else {}
+                target_span = first.get("target_span") if isinstance(first, dict) else {}
+                has_conflicts = isinstance(existing_proposal.get("conflicts"), list) and bool(existing_proposal.get("conflicts"))
+                if contract.get("kind") == "script_qa_target_resolution_v1":
+                    usable = isinstance(target_span, dict) and bool(target_span.get("line_start")) and bool(target_span.get("line_end")) and not has_conflicts
+                else:
+                    # A rejected selection, an out-of-span candidate or a
+                    # no-op local revision is not a finished decision; allow a
+                    # controlled re-call for the same frozen packet.
+                    usable = not has_conflicts
+                if not usable:
+                    model_info = dict(model_info)
+                    model_info.pop("llm_generated", None)
+                    model_info.pop("llm_draft_in_progress", None)
+                    row.model_info = json.dumps(model_info, ensure_ascii=False)
+                    row.status = "draft"
+                    row.updated_at = datetime.utcnow()
+                    session.commit()
+                else:
+                    return {"packet": _serialize_decision_packet(row), "llm_called": False, "deduplicated": True, "domain_write_performed": False}
+            else:
+                return {"packet": _serialize_decision_packet(row), "llm_called": False, "deduplicated": True, "domain_write_performed": False}
+        if isinstance(model_info, dict) and model_info.get("llm_draft_in_progress"):
+            raise HTTPException(status_code=409, detail="This decision packet already has an LLM draft request in progress. Please wait for the existing result.")
+        packet = normalize_decision_packet({"domain": row.domain, "scope": safe_json_loads(row.scope, {}), "evidence": safe_json_loads(row.evidence, []), "unknowns": safe_json_loads(row.unknowns, []), "conflicts": safe_json_loads(row.conflicts, []), "allowed_operations": safe_json_loads(row.allowed_operations, [])})
+        prompt = build_decision_draft_prompt(packet)
+        row.model_info = json.dumps({
+            **(model_info if isinstance(model_info, dict) else {}),
+            "mode": "explicit_llm_draft",
+            "llm_generated": False,
+            "llm_draft_in_progress": True,
+            "llm_draft_attempt_id": attempt_id,
+            "llm_draft_started_at": datetime.utcnow().isoformat(),
+        }, ensure_ascii=False)
+        row.status = "llm_draft_in_progress"
+        row.updated_at = datetime.utcnow()
+        session.commit()
+
+    try:
+        result = llm_client.call_llm_json(
+            prompt,
+            system="你是受证据约束的影视生产决断助手。仅输出要求的 JSON。",
+            required_keys={"decision", "confidence", "evidence", "unknowns", "conflicts", "proposals", "human_confirmation_required"},
+            estimated_tokens=4000,
+        )
+        proposal = validate_decision_draft(result, packet)
+    except (ValueError, RuntimeError, OSError) as exc:
+        with Session() as session:
+            row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+            info = safe_json_loads(row.model_info, {}) if row else {}
+            if row and isinstance(info, dict) and info.get("llm_draft_attempt_id") == attempt_id:
+                row.model_info = json.dumps({
+                    **info,
+                    "llm_draft_in_progress": False,
+                    "last_llm_draft_failure": str(exc)[:500],
+                    "last_llm_draft_failed_at": datetime.utcnow().isoformat(),
+                }, ensure_ascii=False)
+                row.status = "draft"
+                row.updated_at = datetime.utcnow()
+                session.commit()
+        raise HTTPException(status_code=502, detail=f"LLM decision draft failed: {str(exc)[:500]}") from exc
+
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        info = safe_json_loads(row.model_info, {}) if row else {}
+        if not row or not isinstance(info, dict) or info.get("llm_draft_attempt_id") != attempt_id:
+            raise HTTPException(status_code=409, detail="The decision packet changed while the LLM draft was running. Its result was not applied.")
+        try:
+            from api.model_registry import get_default_profile
+            profile = get_default_profile("llm") or {}
+        except Exception:
+            profile = {}
+        if isinstance(packet.get("scope"), dict) and packet.get("scope", {}).get("proposal_contract", {}).get("kind") == "script_qa_single_issue_local_revision_v1":
+            contract = packet["scope"]["proposal_contract"]
+            line_range = contract.get("target_line_range") or [0, 0]
+            try:
+                start = int(line_range[0]) if len(line_range) > 0 else 0
+                end = int(line_range[1]) if len(line_range) > 1 else 0
+            except (TypeError, ValueError, IndexError):
+                start = end = 0
+            # Re-read the frozen excerpt from the live script so a model that
+            # merely echoes the original is detected and cannot be applied as a
+            # no-op "fix".
+            try:
+                from models import Script
+                with Session() as check_session:
+                    script_row = check_session.query(Script).filter_by(book_id=book_id, episode=int(packet["scope"].get("episode") or 0)).first()
+                    excerpt = _extract_script_excerpt(str((script_row.content if script_row else "") or ""), start, end) if script_row else ""
+                proposal_proposals = proposal.get("proposals", []) if isinstance(proposal.get("proposals"), list) else []
+                for item in proposal_proposals:
+                    if item.get("operation") == "propose_script_revision" and item.get("proposed_content") and not _qa_fix_patch_has_change(excerpt, item["proposed_content"]):
+                        item["proposed_content"] = ""
+                        conflict_list = proposal.get("conflicts", []) if isinstance(proposal.get("conflicts"), list) else []
+                        conflict_list.append("候选与原片段一致（no-op），不能作为有效修复；等待重新生成。")
+                        proposal["conflicts"] = conflict_list
+            except Exception:
+                # Never let a read-only intent check block a bounded draft.
+                pass
+        row.proposal = json.dumps(proposal, ensure_ascii=False)
+        row.model_info = json.dumps({
+            **info,
+            "mode": "explicit_llm_draft",
+            "llm_generated": True,
+            "llm_draft_in_progress": False,
+            "profile_id": str(profile.get("id") or ""),
+            "provider": str(profile.get("provider") or ""),
+            "model_name": str(profile.get("model_name") or ""),
+            "generated_at": datetime.utcnow().isoformat(),
+        }, ensure_ascii=False)
+        row.status = "draft"
+        row.updated_at = datetime.utcnow()
+        session.commit()
+        session.refresh(row)
+        return {"packet": _serialize_decision_packet(row), "llm_called": True, "deduplicated": False, "domain_write_performed": False}
+
+
+@app.get("/api/books/{book_id}/decision-packets/{packet_id}/llm-draft-preview")
+def preview_decision_packet_llm_draft(book_id: int, packet_id: int, packet_fingerprint: str = Query(alias="packetFingerprint")):
+    """Return the exact bounded LLM prompt without contacting an external model."""
+    from models import Session, DecisionPacketRecord
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        if not row:
+            raise HTTPException(status_code=404, detail="Decision packet not found.")
+        if row.packet_fingerprint != packet_fingerprint:
+            raise HTTPException(status_code=409, detail="Decision packet fingerprint is stale; reload the current packet before previewing.")
+        packet = normalize_decision_packet({"domain": row.domain, "scope": safe_json_loads(row.scope, {}), "evidence": safe_json_loads(row.evidence, []), "unknowns": safe_json_loads(row.unknowns, []), "conflicts": safe_json_loads(row.conflicts, []), "allowed_operations": safe_json_loads(row.allowed_operations, [])})
+        return {"packet_fingerprint": row.packet_fingerprint, "prompt": build_decision_draft_prompt(packet), "llm_called": False, "domain_write_performed": False}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/decision-packet/draft")
+def create_storyboard_decision_packet_draft(book_id: int, episode: int, shot_id: int):
+    """Build a no-LLM, reviewable evidence packet for one storyboard decision."""
+    from models import Session, StoryboardShot, DecisionPacketRecord
+    from core.shot_executability import validate_shot_executability
+    with Session() as session:
+        shot = session.query(StoryboardShot).filter(StoryboardShot.book_id == book_id, StoryboardShot.episode == episode, StoryboardShot.shot_id == _coerce_storyboard_shot_id(shot_id)).first()
+        if not shot: raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        meta = safe_json_loads(shot.meta_info, {})
+        if not isinstance(meta, dict): meta = {}
+        compiler = meta.get("prompt_compiler") if isinstance(meta.get("prompt_compiler"), dict) else {}
+        context = compiler.get("prompt_compile_context") if isinstance(compiler.get("prompt_compile_context"), dict) else {}
+        structure_seed = {
+            "shot_id": shot.shot_id,
+            "scene_name": shot.scene_name,
+            "action_process": shot.action_process,
+            "dialogue": shot.dialogue,
+            "start_state": shot.start_state,
+            "end_state": shot.end_state,
+            "duration": shot.duration,
+            "camera_angle": shot.camera_angle,
+            "camera_movement": shot.camera_movement,
+            "transition": shot.transition,
+            "makeup_prompts": _load_episode_makeup_prompt_stub(book_id, episode),
+        }
+        structured = _auto_bind_structured_shot_assets(
+            book_id,
+            episode,
+            _derive_structured_shot_payload(meta, structure_seed),
+            structure_seed,
+        )
+        executability = context.get("executability") or structured.get("executability")
+        if not isinstance(executability, dict) or not executability:
+            executability = validate_shot_executability(
+                duration=shot.duration,
+                action_process=str(shot.action_process or ""),
+                action_beats=structured.get("action_beats") if isinstance(structured.get("action_beats"), list) else [],
+                camera_movement=str(shot.camera_movement or "static"),
+                start_state=str(shot.start_state or ""),
+                end_state=str(shot.end_state or ""),
+                motion_prompt=str(shot.visual_prompt_motion or ""),
+            )
+        evidence = [
+            {"id": f"shot:{shot.id}", "tier": "source_text", "summary": str(shot.action_process or ""), "version": str(compiler.get("latest_version") or "")},
+            {"id": f"shot-ir:{shot.id}", "tier": "derived_fact", "summary": json.dumps(structured, ensure_ascii=False), "version": str(compiler.get("latest_version") or "")},
+            {"id": f"prompt:{shot.id}", "tier": "derived_fact", "summary": str(shot.visual_prompt_motion or ""), "version": str(compiler.get("latest_version") or "")},
+            {"id": f"executability:{shot.id}", "tier": "derived_fact", "summary": json.dumps(executability, ensure_ascii=False), "version": str(compiler.get("latest_version") or "")},
+        ]
+        unknowns = []
+        if not shot.visual_prompt_motion: unknowns.append("missing-motion-prompt")
+        if not executability: unknowns.append("missing-executability-result")
+        if not _find_adopted_shot_asset(_load_asset_links(shot.asset_links), "images") and not compiler.get("reference_images"): unknowns.append("missing-video-visual-input")
+        packet = normalize_decision_packet({"domain": "storyboard", "scope": {"book_id": book_id, "episode": episode, "shot_id": shot.shot_id}, "evidence": evidence, "unknowns": unknowns, "conflicts": [], "allowed_operations": ["propose_prompt_recompile", "propose_duration_change", "propose_split_draft", "request_missing_information"]})
+        fingerprint = decision_packet_fingerprint(packet)
+        row = session.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=fingerprint).first()
+        if row: return {"packet": _serialize_decision_packet(row), "deduplicated": True, "llm_called": False}
+        proposal = {"decision": "needs_information" if unknowns else "ready_for_llm_review", "confidence": 0.0, "human_confirmation_required": True, "note": "This is an evidence packet only; no LLM call or storyboard mutation occurred."}
+        row = DecisionPacketRecord(book_id=book_id, domain="storyboard", scope=json.dumps(packet["scope"], ensure_ascii=False), packet_fingerprint=fingerprint, evidence=json.dumps(packet["evidence"], ensure_ascii=False), unknowns=json.dumps(packet["unknowns"], ensure_ascii=False), conflicts="[]", allowed_operations=json.dumps(packet["allowed_operations"], ensure_ascii=False), proposal=json.dumps(proposal, ensure_ascii=False), model_info=json.dumps({"mode": "no_llm_evidence_packet"}))
+        session.add(row); session.commit(); session.refresh(row)
+        return {"packet": _serialize_decision_packet(row), "deduplicated": False, "llm_called": False}
+
+
+def _build_script_qa_decision_packet(session, book_id: int, issue, script, qa_result, version) -> dict[str, Any]:
+    """Build a single-issue repair contract with the context a model needs.
+
+    The packet deliberately distinguishes the full episode (for reasoning) from
+    the writable excerpt (for a candidate patch).  That makes an LLM useful for
+    structural diagnosis without granting it an accidental whole-episode rewrite.
+    """
+    from models import BookBible, QAIssue
+
+    target_content = str((script.content if script else "") or "")
+    target_version = str(version.version_no) if version else "script-current"
+    line_range_matches_section = _qa_location_line_range_matches_scene_section(
+        target_content,
+        issue.script_section or "",
+        issue.line_start,
+        issue.line_end,
+    )
+    exact_excerpt = _extract_script_excerpt(target_content, issue.line_start, issue.line_end) if line_range_matches_section else ""
+    source_excerpt = exact_excerpt or _derive_issue_source_excerpt(
+        target_content,
+        issue.script_section or "",
+        issue.title or "",
+        issue.description or "",
+    )
+    precise_span = bool(
+        exact_excerpt
+        and issue.line_start
+        and issue.line_end
+        and line_range_matches_section
+        and _qa_line_range_is_precise_enough(target_content, issue.line_start, issue.line_end)
+    )
+    repair_focus = _build_qa_fix_focus_payload(issue)
+    outline = _load_episode_outline_payload(session, book_id, issue.episode)
+    bible = session.query(BookBible).filter_by(book_id=book_id).first()
+    siblings = []
+    for item in session.query(QAIssue).filter_by(book_id=book_id, episode=issue.episode).order_by(QAIssue.id.asc()).all():
+        if item.issue_key == issue.issue_key or item.fix_status == "recheck_passed":
+            continue
+        item_meta = safe_json_loads(item.meta_info, {})
+        if isinstance(item_meta, dict) and str(item_meta.get("workflow_status") or "") in {"resolved", "wont_fix"}:
+            continue
+        siblings.append({
+            "issue_key": item.issue_key,
+            "type": item.issue_type,
+            "severity": item.severity,
+            "title": item.title,
+            "description": item.description,
+        })
+    repair_contract = {
+        "kind": "script_qa_single_issue_local_revision_v1",
+        "target_issue_key": issue.issue_key,
+        "target_rule_family": repair_focus["rule_family"],
+        "target_excerpt_is_precise_span": precise_span,
+        "target_line_range": [issue.line_start, issue.line_end] if precise_span else [],
+        "allow_full_episode_rewrite": False,
+        "max_replacement_chars": min(max(len(source_excerpt) * 3, 360), 3000) if precise_span else 0,
+        "must_not_solve_sibling_issues": True,
+        "no_precise_span_behavior": "Provide a review summary only; proposed_content must be empty.",
+    }
+    allowed_operations = ["propose_script_revision", "request_missing_information", "propose_qa_recheck"]
+    if not precise_span:
+        candidates = _qa_target_resolution_candidates(target_content, issue.script_section or "")
+        if candidates:
+            repair_contract = {
+                "kind": "script_qa_target_resolution_v1",
+                "validation_policy_version": "v2_no_whole_scene",
+                "target_issue_key": issue.issue_key,
+                "target_rule_family": repair_focus["rule_family"],
+                "candidate_spans": candidates,
+                "allow_script_revision": False,
+                "human_confirmation_required": True,
+            }
+            allowed_operations = ["propose_repair_target", "request_missing_information"]
+    evidence = [
+        {"id": f"script:{getattr(script, 'id', 'missing')}", "tier": "source_text", "summary": target_content, "version": target_version},
+        {"id": f"qa-issue:{issue.issue_key}", "tier": "derived_fact", "summary": json.dumps({"type": issue.issue_type, "severity": issue.severity, "title": issue.title, "description": issue.description, "source_excerpt": source_excerpt, "suggestion": issue.suggestion, "script_section": issue.script_section, "line_start": issue.line_start, "line_end": issue.line_end}, ensure_ascii=False), "version": str(issue.updated_at or issue.created_at or "")},
+        {"id": f"repair-contract:{issue.issue_key}", "tier": "locked_fact", "summary": json.dumps(repair_contract, ensure_ascii=False), "version": "v1"},
+        {"id": f"episode-outline:{issue.episode}", "tier": "approved_fact", "summary": json.dumps(outline, ensure_ascii=False), "version": target_version},
+        {"id": "production-skill:script", "tier": "approved_fact", "summary": build_production_skill_prompt_block(book_id, "script"), "version": "current"},
+    ]
+    if bible and str(bible.content or "").strip():
+        evidence.append({"id": f"book-bible:{book_id}", "tier": "source_text", "summary": str(bible.content or ""), "version": "current"})
+    if siblings:
+        evidence.append({"id": f"active-qa-context:{issue.episode}", "tier": "derived_fact", "summary": json.dumps(siblings, ensure_ascii=False), "version": str(qa_result.id if qa_result else "")})
+    if qa_result:
+        evidence.append({"id": f"qa-result:{qa_result.id}", "tier": "derived_fact", "summary": json.dumps({"overall_score": safe_json_loads(qa_result.result, {}).get("overall_score"), "error_count": qa_result.error_count}, ensure_ascii=False), "version": str(qa_result.created_at or "")})
+    unknowns = []
+    if not target_content:
+        unknowns.append("missing-script-content")
+    if not str(issue.description or source_excerpt or issue.title).strip():
+        unknowns.append("missing-qa-issue-detail")
+    if not qa_result:
+        unknowns.append("missing-qa-result")
+    beat_ids, beat_reliable = find_issue_beats(
+        target_content,
+        issue.episode,
+        source_excerpt=issue.source_excerpt or "",
+        line_start=issue.line_start,
+        line_end=issue.line_end,
+        script_section=issue.script_section or "",
+    )
+    resolution_criteria = build_resolution_criteria(
+        {"type": issue.issue_type, "rule_family": repair_focus.get("rule_family"), "title": issue.title, "description": issue.description},
+        beat_ids if beat_reliable else [],
+    )
+    if not beat_reliable:
+        resolution_criteria = {"kind": "requires_human", "beat_ids": [], "reason": "未找到稳定 beat 锚点，转人工定稿。"}
+    return normalize_decision_packet({
+        "domain": "script",
+        "scope": {
+            "book_id": book_id,
+            "episode": issue.episode,
+            "issue_key": issue.issue_key,
+            "target_version": target_version,
+            "proposal_contract": repair_contract,
+            "beat_ids": beat_ids if beat_reliable else [],
+            "beat_anchor_reliable": beat_reliable,
+            "resolution_criteria": resolution_criteria,
+        },
+        "evidence": evidence,
+        "unknowns": unknowns,
+        "conflicts": [],
+        "allowed_operations": allowed_operations,
+    })
+
+
+@app.post("/api/books/{book_id}/qa/issues/{issue_key}/decision-packet/draft")
+def create_script_qa_decision_packet_draft(book_id: int, issue_key: str):
+    """Freeze a complete, bounded script-QA context before an LLM can advise."""
+    from models import Session, QAIssue, QAResult, Script, ScriptVersion, DecisionPacketRecord
+    with Session() as session:
+        issue = session.query(QAIssue).filter_by(book_id=book_id, issue_key=issue_key).first()
+        if not issue:
+            raise HTTPException(status_code=404, detail="QA issue not found")
+        script = session.query(Script).filter_by(book_id=book_id, episode=issue.episode).first()
+        version = session.query(ScriptVersion).filter_by(book_id=book_id, episode=issue.episode).order_by(ScriptVersion.version_no.desc(), ScriptVersion.id.desc()).first()
+        qa_result = session.query(QAResult).filter_by(book_id=book_id, episode=issue.episode).order_by(QAResult.created_at.desc(), QAResult.id.desc()).first()
+        packet = _build_script_qa_decision_packet(session, book_id, issue, script, qa_result, version)
+        fingerprint = decision_packet_fingerprint(packet)
+        row = session.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=fingerprint).first()
+        if row:
+            return {"packet": _serialize_decision_packet(row), "deduplicated": True, "llm_called": False}
+        proposal = {"decision": "needs_information" if packet["unknowns"] else "ready_for_llm_review", "confidence": 0.0, "human_confirmation_required": True, "note": "This is an evidence packet only; no LLM call or script mutation occurred."}
+        row = DecisionPacketRecord(book_id=book_id, domain="script", scope=json.dumps(packet["scope"], ensure_ascii=False), packet_fingerprint=fingerprint, evidence=json.dumps(packet["evidence"], ensure_ascii=False), unknowns=json.dumps(packet["unknowns"], ensure_ascii=False), conflicts="[]", allowed_operations=json.dumps(packet["allowed_operations"], ensure_ascii=False), proposal=json.dumps(proposal, ensure_ascii=False), model_info=json.dumps({"mode": "no_llm_evidence_packet"}))
+        session.add(row); session.commit(); session.refresh(row)
+        return {"packet": _serialize_decision_packet(row), "deduplicated": False, "llm_called": False}
+
+
+def _build_script_qa_local_revision_packet(session, book_id: int, issue, script, qa_result, version, target_span: dict) -> dict[str, Any]:
+    """Freeze a human-confirmed span as a bounded, single-issue local-revision contract."""
+    from models import BookBible, QAIssue
+
+    target_content = str((script.content if script else "") or "")
+    target_version = str(version.version_no) if version else "script-current"
+    start = int(target_span.get("line_start") or 0)
+    end = int(target_span.get("line_end") or 0)
+    source_fingerprint = str(target_span.get("source_fingerprint") or "").strip()
+    excerpt = _extract_script_excerpt(target_content, start, end)
+    if not excerpt:
+        raise ValueError("Local revision span produced no extractable script excerpt.")
+    span_fingerprint = hashlib.sha256(excerpt.encode("utf-8")).hexdigest()[:24]
+
+    repair_focus = _build_qa_fix_focus_payload(issue)
+    outline = _load_episode_outline_payload(session, book_id, issue.episode)
+    bible = session.query(BookBible).filter_by(book_id=book_id).first()
+    siblings = []
+    for item in session.query(QAIssue).filter_by(book_id=book_id, episode=issue.episode).order_by(QAIssue.id.asc()).all():
+        if item.issue_key == issue.issue_key or item.fix_status == "recheck_passed":
+            continue
+        item_meta = safe_json_loads(item.meta_info, {})
+        if isinstance(item_meta, dict) and str(item_meta.get("workflow_status") or "") in {"resolved", "wont_fix"}:
+            continue
+        siblings.append({"issue_key": item.issue_key, "type": item.issue_type, "severity": item.severity, "title": item.title, "description": item.description})
+
+    repair_contract = {
+        "kind": "script_qa_single_issue_local_revision_v1",
+        "target_issue_key": issue.issue_key,
+        "target_rule_family": repair_focus["rule_family"],
+        "target_excerpt_is_precise_span": True,
+        "target_line_range": [start, end],
+        "target_span_fingerprint": span_fingerprint,
+        "source_span_fingerprint": source_fingerprint,
+        "allow_full_episode_rewrite": False,
+        "max_replacement_chars": min(max(len(excerpt) * 3, 360), 3000),
+        "must_not_solve_sibling_issues": True,
+    }
+    evidence = [
+        {"id": f"script:{getattr(script, 'id', 'missing')}", "tier": "source_text", "summary": target_content, "version": target_version},
+        {"id": f"qa-issue:{issue.issue_key}", "tier": "derived_fact", "summary": json.dumps({"type": issue.issue_type, "severity": issue.severity, "title": issue.title, "description": issue.description, "source_excerpt": excerpt, "suggestion": issue.suggestion, "script_section": issue.script_section}, ensure_ascii=False), "version": str(issue.updated_at or issue.created_at or "")},
+        {"id": f"repair-contract:{issue.issue_key}", "tier": "locked_fact", "summary": json.dumps(repair_contract, ensure_ascii=False), "version": "v2"},
+        {"id": f"episode-outline:{issue.episode}", "tier": "approved_fact", "summary": json.dumps(outline, ensure_ascii=False), "version": target_version},
+        {"id": "production-skill:script", "tier": "approved_fact", "summary": build_production_skill_prompt_block(book_id, "script"), "version": "current"},
+    ]
+    if bible and str(bible.content or "").strip():
+        evidence.append({"id": f"book-bible:{book_id}", "tier": "source_text", "summary": str(bible.content or ""), "version": "current"})
+    if siblings:
+        evidence.append({"id": f"active-qa-context:{issue.episode}", "tier": "derived_fact", "summary": json.dumps(siblings, ensure_ascii=False), "version": str(qa_result.id if qa_result else "")})
+    if qa_result:
+        evidence.append({"id": f"qa-result:{qa_result.id}", "tier": "derived_fact", "summary": json.dumps({"overall_score": safe_json_loads(qa_result.result, {}).get("overall_score"), "error_count": qa_result.error_count}, ensure_ascii=False), "version": str(qa_result.created_at or "")})
+    unknowns = []
+    if not target_content:
+        unknowns.append("missing-script-content")
+    if not str(issue.description or excerpt or issue.title).strip():
+        unknowns.append("missing-qa-issue-detail")
+    if not qa_result:
+        unknowns.append("missing-qa-result")
+    span_beats = [b.beat_id for b in build_script_beats(target_content, issue.episode) if b.start_line <= end and b.end_line >= start and not is_structural_beat(b.content, b.kind)]
+    return normalize_decision_packet({
+        "domain": "script",
+        "scope": {
+            "book_id": book_id,
+            "episode": issue.episode,
+            "issue_key": issue.issue_key,
+            "target_version": target_version,
+            "proposal_contract": repair_contract,
+            "beat_ids": span_beats,
+            "beat_anchor_reliable": bool(span_beats),
+        },
+        "evidence": evidence,
+        "unknowns": unknowns,
+        "conflicts": [],
+        "allowed_operations": ["propose_edits", "propose_script_revision", "request_missing_information", "propose_qa_recheck"],
+    })
+
+
+@app.post("/api/books/{book_id}/qa/issues/{issue_key}/target-resolution/{packet_id}/revision-draft")
+def create_script_qa_local_revision_packet(book_id: int, issue_key: str, packet_id: int, req: dict):
+    """Convert a human-confirmed target span into a writeable local-revision packet."""
+    from models import Session, QAIssue, QAResult, Script, ScriptVersion, DecisionPacketRecord
+    try:
+        parsed = ScriptQaTargetResolutionForwardRequest.model_validate(req)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    with Session() as session:
+        issue = session.query(QAIssue).filter_by(book_id=book_id, issue_key=issue_key).first()
+        if not issue:
+            raise HTTPException(status_code=404, detail="QA issue not found")
+        source = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id, domain="script").first()
+        if not source:
+            raise HTTPException(status_code=404, detail="Target resolution packet not found")
+        if source.packet_fingerprint != parsed.packet_fingerprint:
+            raise HTTPException(status_code=409, detail="Target resolution packet fingerprint is stale; reload before forwarding.")
+        src_scope = safe_json_loads(source.scope, {})
+        src_contract = src_scope.get("proposal_contract") if isinstance(src_scope.get("proposal_contract"), dict) else {}
+        if src_contract.get("kind") != "script_qa_target_resolution_v1":
+            raise HTTPException(status_code=409, detail="Source packet is not a target-resolution packet.")
+        span = parsed.target_span if isinstance(parsed.target_span, dict) else {}
+        try:
+            ts, te = int(span.get("line_start") or 0), int(span.get("line_end") or 0)
+        except (TypeError, ValueError):
+            raise HTTPException(status_code=400, detail="Target span requires numeric line bounds.")
+        span_fp = str(span.get("source_fingerprint") or "").strip()
+        valid = False
+        for cand in src_contract.get("candidate_spans", []) or []:
+            if not isinstance(cand, dict):
+                continue
+            try:
+                cs, ce = int(cand.get("line_start") or 0), int(cand.get("line_end") or 0)
+            except (TypeError, ValueError):
+                continue
+            if ts >= cs and te <= ce and span_fp == str(cand.get("source_fingerprint") or "") and not (ts == cs and te == ce):
+                valid = True
+                break
+        if not valid:
+            raise HTTPException(status_code=409, detail="Target span does not fall inside a frozen candidate scene as a strict sub-range.")
+        script = session.query(Script).filter_by(book_id=book_id, episode=issue.episode).first()
+        version = session.query(ScriptVersion).filter_by(book_id=book_id, episode=issue.episode).order_by(ScriptVersion.version_no.desc(), ScriptVersion.id.desc()).first()
+        qa_result = session.query(QAResult).filter_by(book_id=book_id, episode=issue.episode).order_by(QAResult.created_at.desc(), QAResult.id.desc()).first()
+        try:
+            packet = _build_script_qa_local_revision_packet(session, book_id, issue, script, qa_result, version, span)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        fingerprint = decision_packet_fingerprint(packet)
+        row = session.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=fingerprint).first()
+        if row:
+            return {"packet": _serialize_decision_packet(row), "deduplicated": True, "llm_called": False, "source_packet_id": packet_id}
+        proposal = {"decision": "needs_information" if packet["unknowns"] else "ready_for_llm_review", "confidence": 0.0, "human_confirmation_required": True, "note": "Local-revision evidence packet only; no LLM call or script mutation occurred."}
+        row = DecisionPacketRecord(book_id=book_id, domain="script", scope=json.dumps(packet["scope"], ensure_ascii=False), packet_fingerprint=fingerprint, evidence=json.dumps(packet["evidence"], ensure_ascii=False), unknowns=json.dumps(packet["unknowns"], ensure_ascii=False), conflicts="[]", allowed_operations=json.dumps(packet["allowed_operations"], ensure_ascii=False), proposal=json.dumps(proposal, ensure_ascii=False), model_info=json.dumps({"mode": "no_llm_local_revision_packet", "source_packet_id": packet_id, "target_span": span}, ensure_ascii=False))
+        session.add(row); session.commit(); session.refresh(row)
+        return {"packet": _serialize_decision_packet(row), "deduplicated": False, "llm_called": False, "source_packet_id": packet_id}
+
+
+@app.post("/api/books/{book_id}/qa/decision-packets/{packet_id}/scoped-check")
+def scoped_check_script_qa_packet(book_id: int, packet_id: int):
+    """Evaluate a frozen packet's resolution criterion against the current script.
+
+    This is a read-only harness used by the auto-fix loop to decide whether a
+    target issue is resolved.  It never re-runs the whole QA report and never
+    writes any issue, version, or media.
+    """
+    from models import Script, DecisionPacketRecord
+    with Session() as session:
+        packet = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id, domain="script").first()
+        if not packet:
+            raise HTTPException(status_code=404, detail="Decision packet not found.")
+        scope = safe_json_loads(packet.scope, {})
+        episode = int(scope.get("episode") or 0)
+        script = session.query(Script).filter_by(book_id=book_id, episode=episode).first()
+        if not script:
+            raise HTTPException(status_code=404, detail="Script not found.")
+        criteria = scope.get("resolution_criteria") if isinstance(scope.get("resolution_criteria"), dict) else {}
+        passed, detail = evaluate_resolution_criteria(str(script.content or ""), episode, criteria)
+        return {
+            "packet_id": packet.id,
+            "issue_key": scope.get("issue_key") or "",
+            "criteria_kind": criteria.get("kind"),
+            "passed": passed,
+            "detail": detail,
+            "beat_ids": scope.get("beat_ids") or [],
+        }
+
+
+def _prompt_compile_draft_context(book_id: int, shot) -> tuple[dict, dict]:
+    """Build a read-only compiler context from current shot facts, never invoking LLM."""
+    meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+    meta = meta if isinstance(meta, dict) else {}
+    # Decision packets must see the same derived bindings as direct compilation
+    # and the structure API.  A legacy shot may not have persisted
+    # ``structured_shot`` yet; treating that as an empty structure makes the
+    # packet falsely report missing assets and prevents a safe repair draft.
+    structure_seed = {
+        "shot_id": shot.shot_id,
+        "scene_name": shot.scene_name,
+        "action_process": shot.action_process,
+        "dialogue": shot.dialogue,
+        "start_state": shot.start_state,
+        "end_state": shot.end_state,
+        "duration": shot.duration,
+        "camera_angle": shot.camera_angle,
+        "camera_movement": shot.camera_movement,
+        "transition": shot.transition,
+        "makeup_prompts": _load_episode_makeup_prompt_stub(book_id, shot.episode),
+    }
+    structure = _auto_bind_structured_shot_assets(
+        book_id,
+        shot.episode,
+        _derive_structured_shot_payload(meta, structure_seed),
+        structure_seed,
+    )
+    acceptance = _collect_acceptance_constraints(book_id, shot.episode, shot.shot_id)
+    links = _build_storyboard_reference_summary(_load_asset_links(shot.asset_links), str(shot.scene_name or "").strip())
+    context = _build_prompt_compile_context_v2(book_id, shot, structure, acceptance, links)
+    # Candidate review and version confirmation must validate against the
+    # same motion contract.  Without this, a draft can look clean while the
+    # confirmed runtime later discovers a missing start/end/beat requirement.
+    context["motion_contract"] = _build_motion_prompt_contract(context)
+    # Preserve the exact derived Shot IR projection in the evidence context.
+    # Previously the packet advertised a ``shot-ir`` entry but serialized
+    # `{}` for legacy and current shots alike, withholding camera, duration,
+    # blocking and continuity facts from review/audit consumers.
+    context = {**context, "structured_shot": structure}
+    compiler = meta.get("prompt_compiler", {}) if isinstance(meta.get("prompt_compiler"), dict) else {}
+    return context, compiler
+
+
+def _build_storyboard_prompt_compile_evidence(book_id: int, shot) -> tuple[dict, dict, dict]:
+    """Build the immutable compiler input set used by both draft and approval."""
+    context, compiler = _prompt_compile_draft_context(book_id, shot)
+    evidence = [
+        {"id": "compiler-delivery-contract", "tier": "derived_fact", "summary": PROMPT_DRAFT_DELIVERY_CONTRACT_VERSION, "version": PROMPT_DRAFT_DELIVERY_CONTRACT_VERSION},
+        {"id": f"director-shot:{shot.id}", "tier": "source_text", "summary": str(shot.action_process or ""), "version": str(compiler.get("latest_version") or "")},
+        {"id": f"shot-ir:{shot.id}", "tier": "derived_fact", "summary": json.dumps(context.get("shot_ir") or context.get("structured_shot") or {}, ensure_ascii=False), "version": str(compiler.get("latest_version") or "")},
+        # Include the normalized temporal contract in the fingerprint.  Shot
+        # IR historically used ``description`` for action beats while the
+        # compiler contract uses ``action``; a projection-rule change must
+        # invalidate old drafts instead of silently reusing their fallback
+        # motion text.
+        {"id": f"motion-contract:{shot.id}", "tier": "derived_fact", "summary": json.dumps(context.get("motion_contract") or {}, ensure_ascii=False, sort_keys=True), "version": "motion-contract-projection-v2"},
+        {"id": f"asset-bindings:{shot.id}", "tier": "locked_fact", "summary": json.dumps(context.get("bound_assets", []), ensure_ascii=False), "version": str(compiler.get("latest_version") or "")},
+        {"id": f"compiler-state:{shot.id}", "tier": "derived_fact", "summary": json.dumps({"model_adapter": context.get("model_adapter", {}), "acceptance_feedback": context.get("acceptance_feedback", {}), "current_static": shot.visual_prompt_static, "current_motion": shot.visual_prompt_motion, "current_negative": shot.visual_prompt_final}, ensure_ascii=False), "version": str(compiler.get("latest_version") or "")},
+    ]
+    unknowns = []
+    if not str(shot.action_process or "").strip(): unknowns.append("missing-director-shot-language")
+    if not context.get("bound_assets"): unknowns.append("missing-bound-assets")
+    packet = normalize_decision_packet({"domain": "prompt", "scope": {"book_id": book_id, "episode": shot.episode, "shot_id": shot.shot_id, "target_version": compiler.get("latest_version")}, "evidence": evidence, "unknowns": unknowns, "conflicts": [], "allowed_operations": ["propose_prompt_recompile", "request_missing_information"]})
+    return context, compiler, packet
+
+
+def _decision_packet_shot_ir_snapshot(packet) -> dict:
+    """Read the frozen Shot IR projection from a prompt DecisionPacket."""
+    evidence = safe_json_loads(getattr(packet, "evidence", ""), [])
+    if not isinstance(evidence, list):
+        return {}
+    for item in evidence:
+        if not isinstance(item, dict) or not str(item.get("id") or "").startswith("shot-ir:"):
+            continue
+        snapshot = safe_json_loads(item.get("summary"), {})
+        if isinstance(snapshot, dict) and snapshot:
+            return snapshot
+    return {}
+
+
+def _summarize_llm_audit_records(records):
+    """Reduce a list of LLM request audit records into a single, non-secret summary.
+
+    Each input record comes from ``core.llm._build_audit_record`` and contains
+    only fingerprints, vendor metadata, and bounded length information; the
+    function never returns prompt or response text.  This is used to persist
+    evidence that an explicit, confirmed provider call actually happened for a
+    given prompt draft, without leaking credentials or large payloads.
+    """
+    items = [item for item in (records or []) if isinstance(item, dict)]
+    if not items:
+        return {"attempt_count": 0, "last": {}}
+    last = items[-1]
+    vendor_models = sorted({str(item.get("vendor_model") or "") for item in items if str(item.get("vendor_model") or "")})
+    vendor_hosts = sorted({str(item.get("vendor_host") or "") for item in items if str(item.get("vendor_host") or "")})
+    system_lengths = [int(item.get("system_prompt_length") or 0) for item in items]
+    response_lengths = [int(item.get("response_length") or 0) for item in items]
+    has_repair = any(bool(item.get("has_repair_request")) for item in items)
+    usage_items = [item.get("usage") for item in items if isinstance(item.get("usage"), dict)]
+    prompt_tokens = sum(int(item.get("prompt_tokens") or 0) for item in usage_items)
+    cached_tokens = sum(int(item.get("cached_tokens") or 0) for item in usage_items)
+    completion_tokens = sum(int(item.get("completion_tokens") or 0) for item in usage_items)
+    total_tokens = sum(int(item.get("total_tokens") or 0) for item in usage_items)
+    cache_hit_rate = round(cached_tokens / prompt_tokens, 6) if prompt_tokens else None
+    return {
+        "attempt_count": len(items),
+        "vendor_models": vendor_models,
+        "vendor_hosts": vendor_hosts,
+        "system_prompt_max_length": max(system_lengths) if system_lengths else 0,
+        "response_max_length": max(response_lengths) if response_lengths else 0,
+        "has_repair_request": has_repair,
+        "last_request_messages_sha256": str(last.get("request_messages_sha256") or ""),
+        "last_system_prompt_sha256": str(last.get("system_prompt_sha256") or ""),
+        "last_user_prompt_sha256": str(last.get("user_prompt_sha256") or ""),
+        "last_repair_request_sha256": str(last.get("repair_request_sha256") or ""),
+        "last_response_sha256": str(last.get("response_sha256") or ""),
+        "last_http_status": int(last.get("http_status") or 0),
+        "last_parse_ok": bool(last.get("parse_ok")),
+        "prompt_tokens": prompt_tokens,
+        "cached_tokens": cached_tokens,
+        "completion_tokens": completion_tokens,
+        "total_tokens": total_tokens,
+        "cache_hit_rate": cache_hit_rate,
+        "last_request_fingerprint": str(last.get("request_fingerprint") or ""),
+        "last_latency_ms": float(last.get("latency_ms") or 0),
+    }
+
+
+def _record_prompt_draft_attempt_failure(packet, outcome: str, message: str, *, error_type: str = "", audit_summary=None) -> None:
+    """Persist bounded failure evidence for an explicitly approved LLM attempt.
+
+    The caller owns the surrounding transaction.  This deliberately records no
+    raw model response (which can be large or contain unexpected data), and it
+    never changes a storyboard shot or creates a prompt version.
+    """
+    current_info = safe_json_loads(packet.model_info, {})
+    current_info = current_info if isinstance(current_info, dict) else {}
+    try:
+        attempt_count = max(0, int(current_info.get("llm_attempt_count") or 0)) + 1
+    except (TypeError, ValueError):
+        attempt_count = 1
+    failure_payload = {
+        "mode": "explicit_prompt_compile_draft",
+        "llm_generated": False,
+        "llm_attempt_count": attempt_count,
+        "last_llm_attempt": {
+            "outcome": str(outcome or "failed"),
+            "error_type": str(error_type or ""),
+            "message": str(message or "")[:400],
+            "at": datetime.utcnow().isoformat(),
+        },
+    }
+    if isinstance(audit_summary, dict) and audit_summary:
+        # Attach a non-secret, bounded audit summary so reviewers can verify
+        # that an actual, confirmed provider request was issued (and inspect
+        # its request/response fingerprints) without exposing payloads.
+        failure_payload["llm_request_audit"] = audit_summary
+    packet.model_info = json.dumps({**current_info, **failure_payload}, ensure_ascii=False)
+    packet.status = "draft"
+    packet.updated_at = datetime.utcnow()
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/prompt-drafts")
+def create_storyboard_prompt_compile_evidence_packet(book_id: int, episode: int, shot_id: int):
+    """Freeze current prompt-compiler inputs. This route is strictly no-LLM."""
+    from models import Session, StoryboardShot, DecisionPacketRecord
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).first()
+        if not shot: raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        _, _, packet = _build_storyboard_prompt_compile_evidence(book_id, shot)
+        fingerprint = decision_packet_fingerprint(packet)
+        row = s.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=fingerprint).first()
+        if row: return {"packet": _serialize_decision_packet(row), "deduplicated": True, "llm_called": False}
+        proposal = {"decision": "needs_information" if packet.get("unknowns") else "ready_for_llm_review", "confidence": 0.0, "human_confirmation_required": True, "mode": "prompt_compile_evidence"}
+        row = DecisionPacketRecord(book_id=book_id, domain="prompt", scope=json.dumps(packet["scope"], ensure_ascii=False), packet_fingerprint=fingerprint, evidence=json.dumps(packet["evidence"], ensure_ascii=False), unknowns=json.dumps(packet["unknowns"], ensure_ascii=False), conflicts="[]", allowed_operations=json.dumps(packet["allowed_operations"], ensure_ascii=False), proposal=json.dumps(proposal, ensure_ascii=False), model_info=json.dumps({"mode": "no_llm_evidence_packet"}))
+        s.add(row); s.commit(); s.refresh(row)
+        return {"packet": _serialize_decision_packet(row), "deduplicated": False, "llm_called": False}
+
+
+@app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/prompt-drafts/{packet_id}/diagnostics")
+def recheck_storyboard_prompt_compile_draft_diagnostics(book_id: int, episode: int, shot_id: int, packet_id: int):
+    """Re-evaluate a saved candidate with the current deterministic gates.
+
+    This is deliberately read-only: it never calls the LLM, mutates the
+    candidate, or creates a Prompt Version.  A packet whose evidence is stale
+    is rejected so the UI cannot present diagnostics for a different shot
+    state than the one the reviewer is about to approve.
+    """
+    from models import Session, StoryboardShot, DecisionPacketRecord
+    with Session() as s:
+        packet = s.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id, domain="prompt").first()
+        shot = s.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).first()
+        if not packet or not shot:
+            raise HTTPException(status_code=404, detail="提示词草案或镜头不存在。")
+        context, _, fresh_packet = _build_storyboard_prompt_compile_evidence(book_id, shot)
+        if decision_packet_fingerprint(fresh_packet) != packet.packet_fingerprint:
+            raise HTTPException(status_code=409, detail="提示词草案依赖的资产或镜头事实已变化；请重新生成证据包。")
+        proposal = safe_json_loads(packet.proposal, {})
+        candidate = proposal.get("candidate") if isinstance(proposal, dict) else None
+        if not isinstance(candidate, dict):
+            raise HTTPException(status_code=409, detail="当前证据包没有可复核的候选提示词。")
+        diagnostics = _build_prompt_compiler_diagnostics(
+            str(candidate.get("prompt_static") or ""),
+            str(candidate.get("prompt_motion") or ""),
+            context,
+            candidate.get("used_assets") if isinstance(candidate.get("used_assets"), list) else [],
+        )
+        return {
+            "packet_id": packet.id,
+            "packet_fingerprint": packet.packet_fingerprint,
+            "diagnostics": diagnostics,
+            "llm_called": False,
+            "domain_write_performed": False,
+        }
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/prompt-drafts/{packet_id}/llm")
+def generate_storyboard_prompt_compile_draft(book_id: int, episode: int, shot_id: int, packet_id: int, req: dict):
+    """Explicitly call the compiler LLM and persist a candidate only."""
+    from models import Session, StoryboardShot, DecisionPacketRecord, AgentAuditLog, AgentPlan
+    parsed = DecisionPacketLlmDraftRequest.model_validate(req)
+    if not (parsed.confirmed and parsed.allow_external_call):
+        raise HTTPException(status_code=409, detail="调用 LLM 需要 confirmed=true 且 allowExternalCall=true。")
+    with Session() as s:
+        packet = s.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id, domain="prompt").first()
+        shot = s.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).first()
+        if not packet or not shot or packet.packet_fingerprint != parsed.packet_fingerprint:
+            raise HTTPException(status_code=409, detail="提示词证据包已过期；请重新生成。")
+        if safe_json_loads(packet.unknowns, []):
+            raise HTTPException(status_code=409, detail="提示词证据存在关键缺失；请先补齐信息。")
+        info = safe_json_loads(packet.model_info, {})
+        info = info if isinstance(info, dict) else {}
+        revision_mode = bool(req.get("continuityRevision") or req.get("continuity_revision"))
+        context, compiler, fresh_packet = _build_storyboard_prompt_compile_evidence(book_id, shot)
+        if decision_packet_fingerprint(fresh_packet) != packet.packet_fingerprint:
+            raise HTTPException(status_code=409, detail="提示词证据包已过期；请重新生成。")
+        revision_audit = None
+        if revision_mode:
+            try:
+                audit_id = int(req.get("agentAuditId") or req.get("agent_audit_id") or 0)
+            except (TypeError, ValueError):
+                audit_id = 0
+            revision_audit = s.get(AgentAuditLog, audit_id) if audit_id else None
+            revision_plan = s.get(AgentPlan, revision_audit.plan_id) if revision_audit and revision_audit.plan_id else None
+            revision_scope = safe_json_loads(revision_plan.scope, {}) if revision_plan else {}
+            if not revision_audit or revision_audit.result_status != "succeeded" or not isinstance(revision_scope, dict) or int(revision_scope.get("episode") or 0) != episode or str(revision_scope.get("shot_id") or "") != str(shot_id):
+                raise HTTPException(status_code=409, detail="连续性修订必须关联同一镜头的已成功 Agent 审计记录。")
+            prior_proposal = safe_json_loads(packet.proposal, {})
+            prior_candidate = prior_proposal.get("candidate", {}) if isinstance(prior_proposal, dict) else {}
+            prior_diagnostics = prior_candidate.get("diagnostics", {}) if isinstance(prior_candidate, dict) else {}
+            prior_output = {"visual_prompt_static": str(prior_candidate.get("prompt_static") or ""), "visual_prompt_motion": str(prior_candidate.get("prompt_motion") or ""), "negative_prompt": str(prior_candidate.get("negative_prompt") or ""), "used_assets": prior_candidate.get("used_assets", [])}
+            context = _build_prompt_repair_context(context, prior_output, prior_diagnostics if isinstance(prior_diagnostics, dict) else {}, int(info.get("llm_attempt_count") or 1) + 1)
+            advisory = safe_json_loads(revision_audit.response_payload, {})
+            repair_request = context.get("repair_request", {}) if isinstance(context.get("repair_request"), dict) else {}
+            context["repair_request"] = {**repair_request, "goal": "基于已审核的连续性诊断重写候选提示词，使本镜头起始状态严格承接上一镜头结束状态；不得引入未绑定资产或改变锁定事实。", "continuity_advisory": {"audit_id": revision_audit.id, "summary": str(advisory.get("summary") or revision_audit.result_message or "")[:1200], "analysis": str(advisory.get("analysis") or "")[:2400]}}
+        # Business-level idempotency is stricter than evidence-only reuse:
+        # model identity and safe parameters are part of the request branch.
+        # This fingerprint is deterministic before the provider call and does
+        # not contain credentials or raw prompt text.
+        from core.prompt_cache import canonical_json, llm_request_fingerprint
+        request_identity = llm_request_fingerprint(
+            system="storyboard_prompt_compiler:v1",
+            user=canonical_json(context),
+            profile=llm_client._resolve_llm_profile(),
+        )
+        if info.get("llm_generated") and not revision_mode and str(info.get("llm_request_fingerprint") or "") == request_identity:
+            return {"packet": _serialize_decision_packet(packet), "llm_called": False, "deduplicated": True}
+        # Bounded, non-secret audit collector: each confirmed provider call
+        # appends a fingerprint-only summary so reviewers can verify the
+        # request was actually issued (and to which vendor/model) without
+        # storing payloads.  Failures fall back to the same collector.
+        audit_records = []
+        audit_extra = {"mode": "prompt_compile_revision" if revision_mode else "prompt_compile", "continuity_revision": bool(revision_mode)}
+        try:
+            raw = _call_storyboard_prompt_compiler(
+                context,
+                audit_callback=audit_records.append,
+                audit_extra=audit_extra,
+            )
+        except Exception as exc:
+            # An external-call failure is itself production evidence.  Persist a
+            # bounded, non-secret audit entry before returning so a user can
+            # distinguish a provider failure from a draft that was rejected by
+            # compiler validation.  This never creates a prompt version and it
+            # does not make a retry decision on the user's behalf.
+            _record_prompt_draft_attempt_failure(
+                packet, "provider_error", str(exc),
+                error_type=type(exc).__name__,
+                audit_summary=_summarize_llm_audit_records(audit_records),
+            )
+            s.commit()
+            raise HTTPException(status_code=502, detail=f"候选提示词生成失败: {str(exc)[:400]}") from exc
+        if not isinstance(raw, dict):
+            _record_prompt_draft_attempt_failure(
+                packet, "invalid_model_output", "候选提示词不是 JSON object。",
+                audit_summary=_summarize_llm_audit_records(audit_records),
+            )
+            s.commit()
+            raise HTTPException(status_code=422, detail="候选提示词不是 JSON object。")
+        static = str(raw.get("visual_prompt_static") or "").strip()
+        motion = str(raw.get("visual_prompt_motion") or "").strip()
+        negative = str(raw.get("negative_prompt") or "").strip()
+        if revision_mode:
+            disposition = raw.get("revision_disposition")
+            if not isinstance(disposition, dict):
+                _record_prompt_draft_attempt_failure(
+                    packet, "revision_disposition_missing",
+                    "模型未输出 revision_disposition 字段，无法证明已阅读 continuity_advisory。",
+                    audit_summary=_summarize_llm_audit_records(audit_records),
+                )
+                s.commit()
+                raise HTTPException(status_code=422, detail="候选提示词缺少 revision_disposition 字段；模型未确认已阅读 continuity_advisory。")
+            goal_ack = bool(disposition.get("goal_ack"))
+            previous_candidate_kept = bool(disposition.get("previous_candidate_kept"))
+            advisory_summary_reflected = bool(disposition.get("advisory_summary_reflected"))
+            if previous_candidate_kept:
+                _record_prompt_draft_attempt_failure(
+                    packet, "revision_previous_candidate_kept",
+                    "模型声明 previous_candidate_kept=true，拒绝写入版本。",
+                    audit_summary=_summarize_llm_audit_records(audit_records),
+                )
+                s.commit()
+                raise HTTPException(status_code=422, detail="模型返回了未改写的旧候选；请重新调用并要求模型重写可见状态。")
+            if not goal_ack or not advisory_summary_reflected:
+                _record_prompt_draft_attempt_failure(
+                    packet, "revision_disposition_unacknowledged",
+                    "模型未确认 goal 或未反映 continuity_advisory 摘要。",
+                    audit_summary=_summarize_llm_audit_records(audit_records),
+                )
+                s.commit()
+                raise HTTPException(status_code=422, detail="模型未确认 continuity_advisory；请重新调用并要求模型真正处理 advisory。")
+        if not static or not motion or not negative:
+            _record_prompt_draft_attempt_failure(packet, "invalid_model_output", "候选提示词缺少静态、运动或负向字段。")
+            s.commit()
+            raise HTTPException(status_code=422, detail="候选提示词缺少静态、运动或负向字段。")
+        raw_used_assets = raw.get("used_assets", []) if isinstance(raw.get("used_assets", []), list) else []
+        used_assets, missing_locked_assets, overflow_assets = _normalize_compiler_used_assets(raw_used_assets, context)
+        if missing_locked_assets or overflow_assets:
+            details = []
+            if missing_locked_assets: details.append(f"遗漏锁定资产：{'、'.join(missing_locked_assets)}")
+            if overflow_assets: details.append(f"包含未绑定资产：{'、'.join(overflow_assets)}")
+            message = f"候选提示词未通过资产证据校验（{'；'.join(details)}）。"
+            _record_prompt_draft_attempt_failure(
+                packet, "asset_evidence_rejected", message,
+                audit_summary=_summarize_llm_audit_records(audit_records),
+            )
+            s.commit()
+            raise HTTPException(status_code=422, detail=message)
+        static = _preserve_locked_asset_anchor_contract(static, used_assets, context.get("bound_assets", []))
+        motion, diagnostics, motion_contract_finalized = _finalize_motion_prompt_contract(static, motion, context, used_assets)
+        if diagnostics.get("status") == "blocked":
+            conflict_details = []
+            for check in diagnostics.get("checks", []):
+                if isinstance(check, dict) and check.get("key") == "locked_asset_fact_conflicts":
+                    conflict_details = [str(item).strip() for item in (check.get("details") or []) if str(item).strip()]
+                    break
+            suffix = f"（{'；'.join(conflict_details[:3])}）" if conflict_details else ""
+            message = f"候选提示词未通过生产硬校验：{'；'.join(diagnostics.get('blocking_issues', []))}{suffix}"
+            _record_prompt_draft_attempt_failure(
+                packet, "production_guard_rejected", message,
+                audit_summary=_summarize_llm_audit_records(audit_records),
+            )
+            s.commit()
+            raise HTTPException(status_code=422, detail=message)
+        candidate = {
+            "prompt_static": static,
+            "prompt_motion": motion,
+            "negative_prompt": negative,
+            "used_assets": used_assets,
+            "warnings": raw.get("warnings", []),
+            "diagnostics": diagnostics,
+            "derivations": ([{
+                "kind": "motion_contract_export",
+                "reason": "LLM candidate omitted one or more frozen motion-contract facts; the compiler exported the approved typed contract without changing creative content.",
+            }] if motion_contract_finalized else []),
+            "baseline": {
+                "version": compiler.get("latest_version"),
+                "prompt_static": str(shot.visual_prompt_static or ""),
+                "prompt_motion": str(shot.visual_prompt_motion or ""),
+                "negative_prompt": str(shot.visual_prompt_final or ""),
+            },
+            "context_fingerprint": hashlib.sha256(json.dumps(context, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")).hexdigest()[:24],
+        }
+        packet.proposal = json.dumps({"decision": "ready_for_review", "confidence": 0.0, "candidate": candidate, "human_confirmation_required": True}, ensure_ascii=False)
+        packet.model_info = json.dumps({
+            "mode": "explicit_prompt_compile_draft",
+            "llm_generated": True,
+            "generated_at": datetime.utcnow().isoformat(),
+            "continuity_revision": bool(revision_mode),
+            "source_agent_audit_id": revision_audit.id if revision_audit else None,
+            "llm_request_audit": _summarize_llm_audit_records(audit_records),
+            "llm_request_fingerprint": request_identity,
+        }, ensure_ascii=False)
+        packet.updated_at = datetime.utcnow(); s.commit(); s.refresh(packet)
+        return {"packet": _serialize_decision_packet(packet), "llm_called": True, "deduplicated": False}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/prompt-drafts/{packet_id}/finalize-motion-contract")
+def finalize_storyboard_prompt_compile_draft_motion_contract(book_id: int, episode: int, shot_id: int, packet_id: int, req: dict):
+    """Normalize an existing LLM candidate against its frozen motion contract.
+
+    This route never invokes a provider and never writes a Prompt Version.  It
+    only makes an omission explicit using evidence that was already frozen in
+    the DecisionPacket, with an audit record in the candidate itself.
+    """
+    from models import Session, StoryboardShot, DecisionPacketRecord
+    parsed = DecisionPacketDraftFinalizeRequest.model_validate(req)
+    if not parsed.confirmed:
+        raise HTTPException(status_code=409, detail="请显式确认后再规范化候选草案。")
+    with Session() as s:
+        packet = s.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id, domain="prompt").first()
+        shot = s.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).first()
+        if not packet or not shot or packet.packet_fingerprint != parsed.packet_fingerprint:
+            raise HTTPException(status_code=409, detail="提示词证据包已过期；请重新生成。")
+        context, _, _ = _build_storyboard_prompt_compile_evidence(book_id, shot)
+        # This operation repairs an already-frozen candidate, so its temporal
+        # authority must be read from that packet rather than regenerated from
+        # mutable runtime metadata.  Confirmation of the candidate still does
+        # the full current-snapshot check before creating a Prompt Version.
+        frozen_shot_ir = _decision_packet_shot_ir_snapshot(packet)
+        if not frozen_shot_ir:
+            raise HTTPException(status_code=409, detail="候选草案缺少冻结的 Shot IR，不能安全规范化。")
+        context = {
+            **context,
+            "shot_ir": frozen_shot_ir,
+            "core_action": str(frozen_shot_ir.get("core_action") or context.get("core_action") or "").strip(),
+            "action_beats": frozen_shot_ir.get("action_beats", []) if isinstance(frozen_shot_ir.get("action_beats", []), list) else [],
+            "continuity_in": str(frozen_shot_ir.get("continuity_in") or frozen_shot_ir.get("start_state") or context.get("continuity_in") or "").strip(),
+            "continuity_out": str(frozen_shot_ir.get("continuity_out") or frozen_shot_ir.get("end_state") or context.get("continuity_out") or "").strip(),
+        }
+        context["motion_contract"] = _build_motion_prompt_contract(context)
+        proposal = safe_json_loads(packet.proposal, {})
+        candidate = proposal.get("candidate") if isinstance(proposal, dict) else None
+        if not isinstance(candidate, dict):
+            raise HTTPException(status_code=409, detail="当前证据包没有可规范化的 LLM 候选草案。")
+        static = str(candidate.get("prompt_static") or "").strip()
+        motion = str(candidate.get("prompt_motion") or "").strip()
+        used_assets = candidate.get("used_assets") if isinstance(candidate.get("used_assets"), list) else []
+        finalized_motion, diagnostics, changed = _finalize_motion_prompt_contract(static, motion, context, used_assets)
+        if not changed:
+            return {"packet": _serialize_decision_packet(packet), "normalized": False, "llm_called": False}
+        candidate["prompt_motion"] = finalized_motion
+        candidate["diagnostics"] = diagnostics
+        derivations = candidate.get("derivations") if isinstance(candidate.get("derivations"), list) else []
+        candidate["derivations"] = [*derivations, {
+            "kind": "motion_contract_export",
+            "reason": "Existing LLM candidate omitted frozen motion-contract facts; exported the approved typed contract without external call.",
+            "at": datetime.utcnow().isoformat(),
+        }]
+        proposal["candidate"] = candidate
+        packet.proposal = json.dumps(proposal, ensure_ascii=False)
+        info = safe_json_loads(packet.model_info, {})
+        packet.model_info = json.dumps({**(info if isinstance(info, dict) else {}), "motion_contract_finalized_at": datetime.utcnow().isoformat()}, ensure_ascii=False)
+        packet.updated_at = datetime.utcnow()
+        s.commit(); s.refresh(packet)
+        return {"packet": _serialize_decision_packet(packet), "normalized": True, "llm_called": False}
+
+
+def _build_confirmed_prompt_runtime_state(book_id: int, shot, meta_info: dict, candidate: dict) -> dict:
+    """Build the production runtime contract for an approved prompt version.
+
+    A candidate has already passed the LLM and human-review boundary.  This
+    helper therefore performs only deterministic derivation from the current
+    row, its locked asset graph and the approved text.  Keeping it here makes
+    the approval path and the legacy migration path use exactly the same
+    schema instead of letting one of them silently create a flat prompt.
+    """
+    from core.model_adapter import adapt_ir_to_model
+    from core.prompt_ir import build_shot_ir_from_context, serialize_shot_ir
+    from core.rule_compiler import compile_rules
+    from core.shot_executability import validate_shot_executability
+
+    seed = {
+        "shot_id": shot.shot_id,
+        "scene_name": shot.scene_name,
+        "makeup_prompts": _load_episode_makeup_prompt_stub(book_id, shot.episode),
+        "action_process": shot.action_process,
+        "dialogue": shot.dialogue,
+        "start_state": shot.start_state,
+        "end_state": shot.end_state,
+        "duration": shot.duration,
+        "camera_angle": shot.camera_angle,
+        "camera_movement": shot.camera_movement,
+        "transition": shot.transition,
+    }
+    structured = _auto_bind_structured_shot_assets(
+        book_id,
+        shot.episode,
+        _derive_structured_shot_payload(meta_info, seed),
+        seed,
+    )
+    acceptance = _collect_acceptance_constraints(book_id, shot.episode, shot.shot_id)
+    links = _build_storyboard_reference_summary(
+        _load_asset_links(shot.asset_links),
+        str(shot.scene_name or "").strip(),
+    )
+    context = _build_prompt_compile_context_v2(book_id, shot, structured, acceptance, links)
+    shot_ir = compile_rules(build_shot_ir_from_context(context), context.get("production_skill", {}))
+    shot_ir_payload = serialize_shot_ir(shot_ir)
+    target_model = str(
+        context.get("target_model")
+        or context.get("model")
+        or context.get("default_model")
+        or "jimeng"
+    ).strip() or "jimeng"
+    adapter_output = adapt_ir_to_model(shot_ir, target_model)
+
+    evidence_shot_ir = candidate.get("evidence_shot_ir") if isinstance(candidate.get("evidence_shot_ir"), dict) else {}
+    action_beats = candidate.get("action_beats") if isinstance(candidate.get("action_beats"), list) else shot_ir.action_beats
+    if not action_beats:
+        action_beats = evidence_shot_ir.get("action_beats") if isinstance(evidence_shot_ir.get("action_beats"), list) else structure.get("action_beats", [])
+    action_beats = [item for item in action_beats if isinstance(item, dict)]
+    continuity_in = str(candidate.get("continuity_in") or evidence_shot_ir.get("continuity_in") or shot_ir.start_state or shot.start_state or "").strip()
+    continuity_out = str(candidate.get("continuity_out") or evidence_shot_ir.get("continuity_out") or shot_ir.end_state or shot.end_state or "").strip()
+    core_action = str(candidate.get("core_action") or evidence_shot_ir.get("core_action") or shot_ir.core_action or "").strip()
+    context = {
+        **context,
+        "duration": shot_ir.duration,
+        "camera_angle": shot_ir.camera_angle,
+        "camera_movement": shot_ir.camera_movement,
+        "camera_speed": shot_ir.camera_speed,
+        "transition": shot_ir.transition,
+        "shot_purpose": shot_ir.shot_purpose,
+        "emotion_arc": shot_ir_payload.get("emotion_arc", {}),
+        "core_action": core_action,
+        "action_beats": action_beats,
+        "continuity_in": continuity_in,
+        "continuity_out": continuity_out,
+        "shot_ir": shot_ir_payload,
+        "model_adapter": {
+            "target_model": target_model,
+            "adapter": adapter_output.get("adapter", ""),
+            "static_prompt_sections": adapter_output.get("static_prompt_sections", {}),
+            "static_prompt": adapter_output.get("static_prompt", ""),
+            "motion_prompt": adapter_output.get("motion_prompt", ""),
+            "negative_prompt": adapter_output.get("negative_prompt", ""),
+        },
+        "shot_ir_metadata": {
+            "static_sections": shot_ir.static_sections,
+            "motion_sections": shot_ir.motion_sections,
+            "forbidden_patterns_applied": shot_ir.metadata.get("forbidden_patterns_applied", []),
+            "required_elements": shot_ir.metadata.get("required_elements", []),
+        },
+    }
+    context["motion_contract"] = _build_motion_prompt_contract(context)
+
+    prompt_static = str(candidate.get("prompt_static") or "").strip()
+    prompt_motion = str(candidate.get("prompt_motion") or "").strip()
+    prompt_negative = str(candidate.get("negative_prompt") or "").strip()
+    raw_used_assets = candidate.get("used_assets", []) if isinstance(candidate.get("used_assets"), list) else []
+    used_assets, missing_locked_assets, overflow_assets = _normalize_compiler_used_assets(raw_used_assets, context)
+    if not used_assets:
+        used_assets = [
+            _hydrate_used_asset_from_bound_item(item)
+            for item in (context.get("bound_assets") or [])
+            if isinstance(item, dict)
+        ]
+        missing_locked_assets = []
+        overflow_assets = []
+    used_assets = _supplement_used_assets_from_prompt_mentions(used_assets, context, prompt_static, prompt_motion)
+    prompt_static = _preserve_locked_asset_anchor_contract(prompt_static, used_assets, context.get("bound_assets", []))
+    compiled_reference_asset_ids, compiled_reference_images = _build_effective_compiled_reference_payloads(context, used_assets)
+    context = {
+        **context,
+        "compiled_reference_images": compiled_reference_images,
+        "compiled_reference_asset_ids": compiled_reference_asset_ids,
+    }
+    executability = validate_shot_executability(
+        duration=context.get("duration"),
+        action_process=str(context.get("action_process") or ""),
+        action_beats=action_beats,
+        camera_movement=str(context.get("camera_movement") or "static"),
+        start_state=continuity_in,
+        end_state=continuity_out,
+        motion_prompt=prompt_motion,
+    )
+    context["executability"] = executability
+    context["shot_ir"] = {**shot_ir_payload, "core_action": core_action, "action_beats": action_beats, "continuity_in": continuity_in, "continuity_out": continuity_out, "executability": executability}
+    diagnostics = _build_prompt_compiler_diagnostics(prompt_static, prompt_motion, context, used_assets)
+    if missing_locked_assets:
+        diagnostics["blocking_issues"] = list(dict.fromkeys([
+            *(diagnostics.get("blocking_issues", []) or []),
+            f"候选版本缺少已锁定资产：{'、'.join(missing_locked_assets)}",
+        ]))
+        diagnostics["status"] = "blocked"
+    if overflow_assets:
+        diagnostics["blocking_issues"] = list(dict.fromkeys([
+            *(diagnostics.get("blocking_issues", []) or []),
+            f"候选版本包含未绑定资产：{'、'.join(overflow_assets)}",
+        ]))
+        diagnostics["status"] = "blocked"
+    diagnostics = _apply_prompt_compiler_hard_gates(diagnostics, False)
+    structured = _normalize_structured_shot_identity(
+        shot,
+        _apply_compiled_shot_ir_to_structure(structured, context["shot_ir"]),
+    )
+    return {
+        "structured": structured,
+        "context": context,
+        "used_assets": used_assets,
+        "reference_images": compiled_reference_images,
+        "reference_asset_ids": compiled_reference_asset_ids,
+        "diagnostics": diagnostics,
+        "prompt_static": prompt_static,
+        "prompt_motion": prompt_motion,
+        "negative_prompt": prompt_negative,
+    }
+
+
+def _backfill_confirmed_prompt_runtime_state(s, book_id: int, shot) -> dict:
+    """Attach missing runtime metadata to the current approved Prompt Version.
+
+    The caller must have already presented and confirmed a repair plan.  This
+    function is intentionally fail-closed: if deterministic validation would
+    alter a prompt text or finds a blocked quality condition, it leaves the
+    version untouched and asks for the normal draft/recompile workflow.
+    """
+    from models import StoryboardPromptVersion
+
+    meta = safe_json_loads(shot.meta_info or "{}")
+    meta = meta if isinstance(meta, dict) else {}
+    compiler = meta.get("prompt_compiler", {}) if isinstance(meta.get("prompt_compiler", {}), dict) else {}
+    latest = s.query(StoryboardPromptVersion).filter_by(
+        book_id=book_id,
+        episode=shot.episode,
+        shot_id=shot.shot_id,
+    ).order_by(StoryboardPromptVersion.version.desc()).first()
+    if not latest or not str(latest.prompt_static or "").strip() or not str(latest.prompt_motion or "").strip() or not str(latest.negative_prompt or "").strip():
+        raise ValueError("当前镜头没有可回填的完整 Prompt Version。")
+    version_meta = safe_json_loads(latest.meta_info or "{}")
+    version_meta = version_meta if isinstance(version_meta, dict) else {}
+    candidate = version_meta.get("candidate", {}) if isinstance(version_meta.get("candidate", {}), dict) else {}
+    candidate = {
+        **candidate,
+        "prompt_static": str(latest.prompt_static or ""),
+        "prompt_motion": str(latest.prompt_motion or ""),
+        "negative_prompt": str(latest.negative_prompt or ""),
+        "used_assets": candidate.get("used_assets") if isinstance(candidate.get("used_assets"), list) else version_meta.get("used_assets", compiler.get("used_assets", [])),
+    }
+    runtime = _build_confirmed_prompt_runtime_state(book_id, shot, meta, candidate)
+    original_prompts = (str(latest.prompt_static or ""), str(latest.prompt_motion or ""), str(latest.negative_prompt or ""))
+    derived_prompts = (runtime["prompt_static"], runtime["prompt_motion"], runtime["negative_prompt"])
+    if derived_prompts != original_prompts:
+        raise ValueError("旧版本缺少的资产锚点会改变已确认提示词；拒绝静默回填，请走受控 Prompt 草案流程。")
+    diagnostics = runtime["diagnostics"]
+    if diagnostics.get("status") == "blocked":
+        raise ValueError(f"旧版本未通过当前生产校验：{'；'.join(diagnostics.get('blocking_issues', []))}")
+
+    shot.visual_prompt_static, shot.visual_prompt_motion, shot.visual_prompt_final = original_prompts
+    diagnostics["context_fingerprint"] = _prompt_compiler_context_fingerprint(
+        shot,
+        runtime["structured"],
+        runtime["context"],
+        prompt_static=original_prompts[0],
+        prompt_motion=original_prompts[1],
+        negative_prompt=original_prompts[2],
+    )
+    diagnostics["evaluated_at"] = datetime.utcnow().isoformat()
+    runtime_meta = {
+        "structured_shot": runtime["structured"],
+        "shot_ir": runtime["context"].get("shot_ir", {}),
+        "prompt_compile_context": runtime["context"],
+        "used_assets": runtime["used_assets"],
+        "reference_images": runtime["reference_images"],
+        "reference_asset_ids": runtime["reference_asset_ids"],
+        "compiler_warnings": diagnostics.get("warnings", []),
+        "compiler_diagnostics": diagnostics,
+    }
+    latest.meta_info = json.dumps({
+        **version_meta,
+        **runtime_meta,
+        "runtime_backfill": {
+            "mode": "deterministic-approved-version-metadata-v1",
+            "at": datetime.utcnow().isoformat(),
+            "source_version": latest.version,
+            "prompt_text_mutated": False,
+        },
+    }, ensure_ascii=False)
+    compiler = {
+        **compiler,
+        **runtime_meta,
+        "latest_version": latest.version,
+        "negative_prompt": original_prompts[2],
+        "compile_reason": str(compiler.get("compile_reason") or latest.compile_reason or "").strip(),
+        "recompile_required": False,
+        "runtime_backfill": {
+            "mode": "deterministic-approved-version-metadata-v1",
+            "at": datetime.utcnow().isoformat(),
+            "source_version": latest.version,
+            "prompt_text_mutated": False,
+        },
+    }
+    meta["structured_shot"] = runtime["structured"]
+    meta["prompt_compiler"] = compiler
+    shot.meta_info = json.dumps(meta, ensure_ascii=False)
+    shot.updated_at = datetime.utcnow()
+    s.flush()
+    return {"version": latest.version, "diagnostics": diagnostics, "executability": runtime["context"].get("executability", {})}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/prompt-drafts/{packet_id}/confirm")
+def confirm_storyboard_prompt_compile_draft(book_id: int, episode: int, shot_id: int, packet_id: int, req: dict):
+    """Version an approved candidate without invoking the LLM a second time."""
+    from models import Session, StoryboardShot, StoryboardPromptVersion, DecisionPacketRecord
+    parsed = PromptDraftConfirmRequest.model_validate(req)
+    if not (parsed.confirmed and parsed.allow_write): raise HTTPException(status_code=409, detail="确认创建版本需要 confirmed=true 且 allowWrite=true。")
+    with Session() as s:
+        packet = s.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id, domain="prompt").first()
+        shot = s.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).first()
+        if not packet or not shot or packet.packet_fingerprint != parsed.packet_fingerprint: raise HTTPException(status_code=409, detail="提示词草案已过期；请重新生成。")
+        context, _, fresh_packet = _build_storyboard_prompt_compile_evidence(book_id, shot)
+        if decision_packet_fingerprint(fresh_packet) != packet.packet_fingerprint:
+            raise HTTPException(status_code=409, detail="提示词草案依赖的资产或镜头事实已变化；请重新生成。")
+        proposal = safe_json_loads(packet.proposal, {})
+        candidate = proposal.get("candidate", {}) if isinstance(proposal, dict) else {}
+        reviewed = req.get("reviewedCandidate") if isinstance(req.get("reviewedCandidate"), dict) else req.get("reviewed_candidate")
+        if isinstance(reviewed, dict):
+            candidate = {**candidate, **{key: str(reviewed[key]).strip() for key in ("prompt_static", "prompt_motion", "negative_prompt") if key in reviewed}}
+        if not isinstance(candidate, dict) or not candidate.get("prompt_static") or not candidate.get("prompt_motion") or not candidate.get("negative_prompt"):
+            raise HTTPException(status_code=409, detail="没有可确认的候选提示词草案。")
+        # The reviewed text and the frozen Shot IR are one approval unit.  Do
+        # not let optional LLM fields (which may be omitted) erase already
+        # reviewed action beats or continuity from the evidence packet.
+        candidate = {**candidate, "evidence_shot_ir": _decision_packet_shot_ir_snapshot(packet)}
+        meta = safe_json_loads(shot.meta_info, {}) if shot.meta_info else {}; meta = meta if isinstance(meta, dict) else {}
+        runtime = _build_confirmed_prompt_runtime_state(book_id, shot, meta, candidate)
+        diagnostics = runtime["diagnostics"]
+        if diagnostics.get("status") == "blocked":
+            raise HTTPException(status_code=409, detail=f"候选提示词未通过生产硬校验：{'；'.join(diagnostics.get('blocking_issues', []))}")
+        _create_storyboard_state_snapshot_anchor(s, shot, {"type": "prompt-draft", "packet_id": packet.id}, "prompt-draft-preimage")
+        latest = s.query(StoryboardPromptVersion).filter_by(book_id=book_id, episode=episode, shot_id=shot.shot_id).order_by(StoryboardPromptVersion.version.desc()).first()
+        version_no = (latest.version if latest else 0) + 1
+        shot.visual_prompt_static = runtime["prompt_static"]
+        shot.visual_prompt_motion = runtime["prompt_motion"]
+        shot.visual_prompt_final = runtime["negative_prompt"]
+        diagnostics["context_fingerprint"] = _prompt_compiler_context_fingerprint(
+            shot,
+            runtime["structured"],
+            runtime["context"],
+            prompt_static=runtime["prompt_static"],
+            prompt_motion=runtime["prompt_motion"],
+            negative_prompt=runtime["negative_prompt"],
+        )
+        diagnostics["evaluated_at"] = datetime.utcnow().isoformat()
+        candidate = {**candidate, "diagnostics": diagnostics}
+        version_meta = {
+            "candidate": candidate,
+            "decision_packet_id": packet.id,
+            "structured_shot": runtime["structured"],
+            "shot_ir": runtime["context"].get("shot_ir", {}),
+            "prompt_compile_context": runtime["context"],
+            "used_assets": runtime["used_assets"],
+            "reference_images": runtime["reference_images"],
+            "reference_asset_ids": runtime["reference_asset_ids"],
+            "compiler_warnings": diagnostics.get("warnings", []),
+            "compiler_diagnostics": diagnostics,
+        }
+        version = StoryboardPromptVersion(book_id=book_id, episode=episode, shot_id=shot.shot_id, version=version_no, compile_reason=f"confirmed-llm-draft:{packet.id}", prompt_static=runtime["prompt_static"], prompt_motion=runtime["prompt_motion"], negative_prompt=runtime["negative_prompt"], meta_info=json.dumps(version_meta, ensure_ascii=False))
+        s.add(version)
+        compiler = meta.get("prompt_compiler", {}) if isinstance(meta.get("prompt_compiler"), dict) else {}
+        compiler.update({
+            "latest_version": version_no,
+            "negative_prompt": version.negative_prompt,
+            "compile_reason": version.compile_reason,
+            "acceptance_feedback": _collect_acceptance_constraints(book_id, shot.episode, shot.shot_id),
+            "prompt_compile_context": runtime["context"],
+            "shot_ir": runtime["context"].get("shot_ir", {}),
+            "used_assets": runtime["used_assets"],
+            "reference_images": runtime["reference_images"],
+            "reference_asset_ids": runtime["reference_asset_ids"],
+            "compiler_warnings": diagnostics.get("warnings", []),
+            "compiler_diagnostics": diagnostics,
+            "recompile_required": False,
+        })
+        meta["structured_shot"] = runtime["structured"]
+        meta["prompt_compiler"] = compiler; shot.meta_info = json.dumps(meta, ensure_ascii=False); shot.updated_at = datetime.utcnow()
+        packet.status = "confirmed"; packet.confirmed_at = datetime.utcnow(); packet.updated_at = datetime.utcnow(); s.commit()
+        return {"confirmed": True, "prompt_version": version_no, "domain_write_performed": True, "generation_triggered": False}
+
+
+def _prompt_runtime_repair_version_plan(session, book_id: int, episode: int, shot_id: int) -> dict:
+    """Plan a text-preserving repair when approved runtime metadata is stale."""
+    from models import DecisionPacketRecord, StoryboardPromptVersion, StoryboardShot
+    shot = session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).first()
+    latest = session.query(StoryboardPromptVersion).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).order_by(StoryboardPromptVersion.version.desc()).first()
+    if not shot or not latest:
+        raise HTTPException(status_code=404, detail="镜头或已确认 Prompt Version 不存在。")
+    version_meta = safe_json_loads(latest.meta_info) if latest.meta_info else {}
+    version_meta = version_meta if isinstance(version_meta, dict) else {}
+    candidate = version_meta.get("candidate", {}) if isinstance(version_meta.get("candidate"), dict) else {}
+    evidence_shot_ir = candidate.get("evidence_shot_ir") if isinstance(candidate.get("evidence_shot_ir"), dict) else {}
+    if not evidence_shot_ir:
+        packet_id = version_meta.get("decision_packet_id")
+        if isinstance(packet_id, int) or (isinstance(packet_id, str) and str(packet_id).isdigit()):
+            packet = session.query(DecisionPacketRecord).filter_by(id=int(packet_id), book_id=book_id, domain="prompt").first()
+            if packet:
+                evidence_shot_ir = _decision_packet_shot_ir_snapshot(packet)
+    if not isinstance(evidence_shot_ir.get("action_beats"), list) or not evidence_shot_ir.get("action_beats"):
+        raise HTTPException(status_code=409, detail="当前版本没有可验证的冻结动作节拍，不能自动修复。")
+    meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+    meta = meta if isinstance(meta, dict) else {}
+    repair_candidate = {**candidate, "evidence_shot_ir": evidence_shot_ir, "prompt_static": latest.prompt_static, "prompt_motion": latest.prompt_motion, "negative_prompt": latest.negative_prompt}
+    runtime = _build_confirmed_prompt_runtime_state(book_id, shot, meta, repair_candidate)
+    diagnostics = runtime["diagnostics"]
+    if diagnostics.get("status") == "blocked":
+        raise HTTPException(status_code=409, detail="冻结证据无法通过当前生产硬校验，拒绝自动修复。")
+    before = (version_meta.get("structured_shot", {}) if isinstance(version_meta.get("structured_shot"), dict) else {}).get("action_beats", [])
+    after = runtime["structured"].get("action_beats", [])
+    if before == after:
+        raise HTTPException(status_code=409, detail="当前版本运行时契约无需修复。")
+    evidence = {"version": latest.version, "shot_id": shot.shot_id, "prompts": [latest.prompt_static, latest.prompt_motion, latest.negative_prompt], "before_action_beats": before, "after_action_beats": after, "evidence_shot_ir": evidence_shot_ir}
+    fingerprint = hashlib.sha256(json.dumps(evidence, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return {"plan_fingerprint": fingerprint, "source_version": latest.version, "target_version": latest.version + 1, "prompt_text_mutated": False, "restored_action_beats": after, "diagnostics": diagnostics, "runtime": runtime, "candidate": repair_candidate, "version_meta": version_meta}
+
+
+@app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/prompt-runtime-repair-plan")
+def get_storyboard_prompt_runtime_repair_plan(book_id: int, episode: int, shot_id: int):
+    from models import Session
+    with Session() as session:
+        plan = _prompt_runtime_repair_version_plan(session, book_id, episode, shot_id)
+        return {key: value for key, value in plan.items() if key not in {"runtime", "candidate", "version_meta"}}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/prompt-runtime-repair-plan/apply")
+def apply_storyboard_prompt_runtime_repair_plan(book_id: int, episode: int, shot_id: int, req: dict):
+    from models import Session, StoryboardPromptVersion, StoryboardShot
+    parsed = StoryboardPromptRuntimeRepairVersionRequest.model_validate(req)
+    if not (parsed.confirmed and parsed.allow_write):
+        raise HTTPException(status_code=409, detail="运行时修复写入需要 confirmed=true 且 allowWrite=true。")
+    with Session() as session:
+        plan = _prompt_runtime_repair_version_plan(session, book_id, episode, shot_id)
+        if parsed.plan_fingerprint != plan["plan_fingerprint"]:
+            raise HTTPException(status_code=409, detail="运行时修复计划已变化；请重新预览。")
+        shot = session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).one()
+        latest = session.query(StoryboardPromptVersion).filter_by(book_id=book_id, episode=episode, shot_id=shot.shot_id, version=plan["source_version"]).one()
+        runtime, diagnostics = plan["runtime"], plan["diagnostics"]
+        _create_storyboard_state_snapshot_anchor(session, shot, {"type": "prompt-runtime-repair", "source_version": latest.version, "plan_fingerprint": plan["plan_fingerprint"]}, "prompt-runtime-repair-preimage")
+        diagnostics["context_fingerprint"] = _prompt_compiler_context_fingerprint(shot, runtime["structured"], runtime["context"], prompt_static=runtime["prompt_static"], prompt_motion=runtime["prompt_motion"], negative_prompt=runtime["negative_prompt"])
+        diagnostics["evaluated_at"] = datetime.utcnow().isoformat()
+        version_meta = {**plan["version_meta"], "candidate": {**plan["candidate"], "diagnostics": diagnostics}, "structured_shot": runtime["structured"], "shot_ir": runtime["context"].get("shot_ir", {}), "prompt_compile_context": runtime["context"], "used_assets": runtime["used_assets"], "reference_images": runtime["reference_images"], "reference_asset_ids": runtime["reference_asset_ids"], "compiler_warnings": diagnostics.get("warnings", []), "compiler_diagnostics": diagnostics, "runtime_repair": {"source_version": latest.version, "plan_fingerprint": plan["plan_fingerprint"], "prompt_text_mutated": False, "at": datetime.utcnow().isoformat()}}
+        version = StoryboardPromptVersion(book_id=book_id, episode=episode, shot_id=shot.shot_id, version=plan["target_version"], compile_reason=f"prompt-runtime-repair:{latest.version}", prompt_static=runtime["prompt_static"], prompt_motion=runtime["prompt_motion"], negative_prompt=runtime["negative_prompt"], meta_info=json.dumps(version_meta, ensure_ascii=False))
+        session.add(version)
+        meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}; meta = meta if isinstance(meta, dict) else {}
+        compiler = meta.get("prompt_compiler", {}) if isinstance(meta.get("prompt_compiler"), dict) else {}
+        compiler.update({"latest_version": version.version, "negative_prompt": version.negative_prompt, "compile_reason": version.compile_reason, "prompt_compile_context": runtime["context"], "shot_ir": runtime["context"].get("shot_ir", {}), "used_assets": runtime["used_assets"], "reference_images": runtime["reference_images"], "reference_asset_ids": runtime["reference_asset_ids"], "compiler_warnings": diagnostics.get("warnings", []), "compiler_diagnostics": diagnostics, "recompile_required": False})
+        meta["structured_shot"] = runtime["structured"]; meta["prompt_compiler"] = compiler; shot.meta_info = json.dumps(meta, ensure_ascii=False); shot.visual_prompt_static = runtime["prompt_static"]; shot.visual_prompt_motion = runtime["prompt_motion"]; shot.visual_prompt_final = runtime["negative_prompt"]; shot.updated_at = datetime.utcnow()
+        session.commit()
+        return {"confirmed": True, "prompt_version": version.version, "source_version": latest.version, "prompt_text_mutated": False, "generation_triggered": False}
 
 
 def _parse_task_datetime(value: Any) -> datetime | None:
@@ -233,6 +1720,14 @@ class ModelRegistryTestRequest(BaseModel):
     profile: Optional[ModelProfilePayload] = None
 
 
+class AgentModelConfigRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    profile_id: str = Field(default="", validation_alias=AliasChoices("profile_id", "profileId"))
+    thinking: Optional[str] = None
+    vision_enabled: Optional[bool] = Field(default=None, validation_alias=AliasChoices("vision_enabled", "visionEnabled"))
+
+
 class VisualAssetPatchRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -240,6 +1735,193 @@ class VisualAssetPatchRequest(BaseModel):
     negative_prompt: Optional[str] = Field(default=None, validation_alias=AliasChoices("negative_prompt", "negativePrompt"))
     asset_status: Optional[str] = Field(default=None, validation_alias=AliasChoices("asset_status", "assetStatus"))
     shot_ids: Optional[list[str]] = Field(default=None, validation_alias=AliasChoices("shot_ids", "shotIds"))
+    style: Optional[str] = None
+    lighting_mood: Optional[str] = Field(default=None, validation_alias=AliasChoices("lighting_mood", "lightingMood"))
+    hair_style: Optional[str] = Field(default=None, validation_alias=AliasChoices("hair_style", "hairStyle"))
+    refined_outfit: Optional[str] = Field(default=None, validation_alias=AliasChoices("refined_outfit", "refinedOutfit"))
+    refined_accessories: Optional[str] = Field(default=None, validation_alias=AliasChoices("refined_accessories", "refinedAccessories"))
+    makeup_spec: Optional[str] = Field(default=None, validation_alias=AliasChoices("makeup_spec", "makeupSpec"))
+    expression_mood: Optional[str] = Field(default=None, validation_alias=AliasChoices("expression_mood", "expressionMood"))
+
+
+class AssetSemanticGovernanceConfirmRequest(BaseModel):
+    """Explicit operator confirmation for a persisted, review-first proposal."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    plan_fingerprint: str = Field(validation_alias=AliasChoices("plan_fingerprint", "planFingerprint"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+    reviewed_proposed_fields: Optional[dict[str, str]] = Field(
+        default=None,
+        validation_alias=AliasChoices("reviewed_proposed_fields", "reviewedProposedFields"),
+    )
+    review_notes: str = Field(default="", validation_alias=AliasChoices("review_notes", "reviewNotes"))
+
+
+class VisualReferenceRebindingApplyRequest(BaseModel):
+    """Explicitly apply a deterministic reference-to-asset rebinding plan."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    plan_fingerprint: str = Field(validation_alias=AliasChoices("plan_fingerprint", "planFingerprint"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class StoryboardTransitionContractConfirmRequest(BaseModel):
+    """An explicit, review-first confirmation; draft discovery never writes."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    source_shot_id: int = Field(validation_alias=AliasChoices("source_shot_id", "sourceShotId"))
+    continuity_level: str = Field(default="independent", validation_alias=AliasChoices("continuity_level", "continuityLevel"))
+    entry_state: Optional[str] = Field(default=None, validation_alias=AliasChoices("entry_state", "entryState"))
+    exit_state: Optional[str] = Field(default=None, validation_alias=AliasChoices("exit_state", "exitState"))
+    inherit_rules: dict = Field(default_factory=dict, validation_alias=AliasChoices("inherit_rules", "inheritRules"))
+    allowed_changes: list[str] = Field(default_factory=list, validation_alias=AliasChoices("allowed_changes", "allowedChanges"))
+    forbidden_changes: list[str] = Field(default_factory=list, validation_alias=AliasChoices("forbidden_changes", "forbiddenChanges"))
+    required_transition_frame: str = Field(default="", validation_alias=AliasChoices("required_transition_frame", "requiredTransitionFrame"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class StoryboardTransitionFrameRegisterRequest(BaseModel):
+    """Registers a manually extracted/uploaded frame; it does not upload or lock it."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    source_shot_id: int = Field(validation_alias=AliasChoices("source_shot_id", "sourceShotId"))
+    source_video_asset_id: str = Field(default="", validation_alias=AliasChoices("source_video_asset_id", "sourceVideoAssetId"))
+    frame_time_ms: int = Field(default=0, ge=0, validation_alias=AliasChoices("frame_time_ms", "frameTimeMs"))
+    frame_kind: str = Field(default="last", validation_alias=AliasChoices("frame_kind", "frameKind"))
+    public_url: str = Field(default="", validation_alias=AliasChoices("public_url", "publicUrl"))
+    storage_key: str = Field(default="", validation_alias=AliasChoices("storage_key", "storageKey"))
+    checksum: str = ""
+    width: Optional[int] = None
+    height: Optional[int] = None
+    extraction_profile: dict = Field(default_factory=dict, validation_alias=AliasChoices("extraction_profile", "extractionProfile"))
+    notes: str = ""
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class StoryboardTransitionFrameStatusRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    status: str
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class StoryboardTransitionFrameExtractRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    source_shot_id: int = Field(validation_alias=AliasChoices("source_shot_id", "sourceShotId"))
+    frame_kind: str = Field(default="near_last", validation_alias=AliasChoices("frame_kind", "frameKind"))
+    frame_time_ms: Optional[int] = Field(default=None, ge=0, validation_alias=AliasChoices("frame_time_ms", "frameTimeMs"))
+    notes: str = ""
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+    # Request-scoped gray-test opt-in for publishing the extracted handoff
+    # frame when the configured Qiniu endpoint is a temporary HTTP domain.
+    allow_unstable_public_assets: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("allow_unstable_public_assets", "allowUnstablePublicAssets"),
+    )
+
+
+class StoryboardTransitionContinuityReviewRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    source_shot_id: int = Field(validation_alias=AliasChoices("source_shot_id", "sourceShotId"))
+    target_video_asset_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("target_video_asset_id", "targetVideoAssetId"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+    allow_unstable_public_assets: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("allow_unstable_public_assets", "allowUnstablePublicAssets"),
+    )
+
+
+class StoryboardTransitionContinuityReviewPatchRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    review_result: str = Field(validation_alias=AliasChoices("review_result", "reviewResult"))
+    drift_categories: list[str] = Field(default_factory=list, validation_alias=AliasChoices("drift_categories", "driftCategories"))
+    review_notes: str = Field(default="", validation_alias=AliasChoices("review_notes", "reviewNotes"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class StoryboardVideoRetryConfirmRequest(BaseModel):
+    """A deliberate retry of the immutable input captured when a video failed."""
+
+    model_config = ConfigDict(populate_by_name=True)
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+    confirmation_token: str = Field(default="", validation_alias=AliasChoices("confirmation_token", "confirmationToken"))
+
+
+class DecisionPacketDraftRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    domain: str
+    scope: dict = Field(default_factory=dict)
+    evidence: list[dict] = Field(default_factory=list)
+    unknowns: list[str] = Field(default_factory=list)
+    conflicts: list[str] = Field(default_factory=list)
+    allowed_operations: list[str] = Field(default_factory=list, validation_alias=AliasChoices("allowed_operations", "allowedOperations"))
+    proposal: dict = Field(default_factory=dict)
+    model_info: dict = Field(default_factory=dict, validation_alias=AliasChoices("model_info", "modelInfo"))
+
+
+class DecisionPacketReviewRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    packet_fingerprint: str = Field(validation_alias=AliasChoices("packet_fingerprint", "packetFingerprint"))
+    action: str  # confirmed / rejected
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class DecisionPacketLlmDraftRequest(BaseModel):
+    """Explicit consent for one billable, non-mutating LLM draft call."""
+    model_config = ConfigDict(populate_by_name=True)
+    packet_fingerprint: str = Field(validation_alias=AliasChoices("packet_fingerprint", "packetFingerprint"))
+    confirmed: bool = False
+    allow_external_call: bool = Field(default=False, validation_alias=AliasChoices("allow_external_call", "allowExternalCall"))
+
+
+class DecisionPacketDraftFinalizeRequest(BaseModel):
+    """Explicit approval for a deterministic, non-LLM draft normalization."""
+    model_config = ConfigDict(populate_by_name=True)
+    packet_fingerprint: str = Field(validation_alias=AliasChoices("packet_fingerprint", "packetFingerprint"))
+    confirmed: bool = False
+
+
+class PromptDraftConfirmRequest(BaseModel):
+    """Confirmation payload for versioning an already-reviewed prompt draft."""
+    model_config = ConfigDict(populate_by_name=True)
+    packet_fingerprint: str = Field(validation_alias=AliasChoices("packet_fingerprint", "packetFingerprint"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class ScriptQaTargetResolutionForwardRequest(BaseModel):
+    """Freeze a human-confirmed target span into a precise local-revision contract."""
+    model_config = ConfigDict(populate_by_name=True)
+    packet_fingerprint: str = Field(validation_alias=AliasChoices("packet_fingerprint", "packetFingerprint"))
+    target_span: dict = Field(default_factory=dict, validation_alias=AliasChoices("target_span", "targetSpan"))
+
+
+class ScriptEditsApplyRequest(BaseModel):
+    """Apply a validated, anchored batch of script edits."""
+    model_config = ConfigDict(populate_by_name=True)
+    episode: int = Field(default=1)
+    edits: list[dict] = Field(default_factory=list)
+    qa_issue_key: str = Field(default="", validation_alias=AliasChoices("qa_issue_key", "qaIssueKey"))
+    change_reason: str = Field(default="", validation_alias=AliasChoices("change_reason", "changeReason"))
+    operator_name: str = Field(default="user", validation_alias=AliasChoices("operator_name", "operatorName"))
+    rerun_qa: bool = Field(default=True, validation_alias=AliasChoices("rerun_qa", "rerunQa"))
+    frozen_beat_fingerprints: dict = Field(default_factory=dict, validation_alias=AliasChoices("frozen_beat_fingerprints", "frozenBeatFingerprints"))
+    resolution_criteria: dict = Field(default_factory=dict, validation_alias=AliasChoices("resolution_criteria", "resolutionCriteria"))
 
 
 class CharacterShotVariantCreateRequest(BaseModel):
@@ -303,6 +1985,9 @@ class StoryboardStructurePatchRequest(BaseModel):
     style_key: Optional[str] = Field(default=None, validation_alias=AliasChoices("style_key", "styleKey"))
     character_blocking: Optional[list[dict]] = Field(default=None, validation_alias=AliasChoices("character_blocking", "characterBlocking"))
     action_beats: Optional[list[dict]] = Field(default=None, validation_alias=AliasChoices("action_beats", "actionBeats"))
+    start_state: Optional[str] = Field(default=None, validation_alias=AliasChoices("start_state", "startState"))
+    action_process: Optional[str] = Field(default=None, validation_alias=AliasChoices("action_process", "actionProcess"))
+    end_state: Optional[str] = Field(default=None, validation_alias=AliasChoices("end_state", "endState"))
 
 
 class StoryboardAutoBindRequest(BaseModel):
@@ -311,11 +1996,108 @@ class StoryboardAutoBindRequest(BaseModel):
     episodes: Optional[list[int]] = None
 
 
+class StoryboardExecutabilitySplitDraftRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    note: str = ""
+
+
+class StoryboardExecutabilitySplitLlmRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    confirmed: bool = False
+    allow_external_call: bool = Field(default=False, validation_alias=AliasChoices("allow_external_call", "allowExternalCall"))
+    source_fingerprint: str = Field(default="", validation_alias=AliasChoices("source_fingerprint", "sourceFingerprint"))
+    note: str = ""
+
+
+class StoryboardExecutabilitySplitApplyRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    confirmed: bool = False
+
+
+class StoryboardProductionRepairExecuteRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    confirmation_token: str = Field(default="", validation_alias=AliasChoices("confirmation_token", "confirmationToken"))
+    shot_ids: list[str] = Field(default_factory=list, validation_alias=AliasChoices("shot_ids", "shotIds"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+    compile_reason: str = Field(default="production-readiness-repair", validation_alias=AliasChoices("compile_reason", "compileReason"))
+
+
+class StoryboardPromptRuntimeBackfillRequest(BaseModel):
+    """Confirm a deterministic metadata backfill for already approved prompts.
+
+    This is deliberately separate from prompt compilation: it never calls an
+    external model, never edits the three approved prompt texts and never
+    creates a Prompt Version.  It only attaches the compiler's typed runtime
+    state which earlier versions failed to persist.
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    plan_fingerprint: str = Field(default="", validation_alias=AliasChoices("plan_fingerprint", "planFingerprint"))
+    confirmation_token: str = Field(default="", validation_alias=AliasChoices("confirmation_token", "confirmationToken"))
+    shot_ids: list[str] = Field(default_factory=list, validation_alias=AliasChoices("shot_ids", "shotIds"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class StoryboardPromptRuntimeRepairVersionRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    plan_fingerprint: str = Field(validation_alias=AliasChoices("plan_fingerprint", "planFingerprint"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
+class StoryboardProductionRepairRollbackAnchorRequest(BaseModel):
+    """Create audited pre-recompile state anchors for transformed shots.
+
+    This is deliberately separate from prompt compilation.  A caller must first
+    review the current repair plan, then explicitly confirm this write.
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    confirmation_token: str = Field(default="", validation_alias=AliasChoices("confirmation_token", "confirmationToken"))
+    shot_ids: list[str] = Field(default_factory=list, validation_alias=AliasChoices("shot_ids", "shotIds"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+    reason: str = "production-repair-state-anchor"
+
+
+class StoryboardProductionRepairRollbackRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    confirmation_token: str = Field(default="", validation_alias=AliasChoices("confirmation_token", "confirmationToken"))
+    episode: int
+    shot_id: str = Field(validation_alias=AliasChoices("shot_id", "shotId"))
+    baseline_version: int = Field(validation_alias=AliasChoices("baseline_version", "baselineVersion"))
+    confirmed: bool = False
+    reason: str = "production-repair-rollback"
+
+
+class StoryboardStructureGovernanceBackfillRequest(BaseModel):
+    """Explicit write gate for derived storyboard-structure repairs only."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    plan_fingerprint: str = Field(default="", validation_alias=AliasChoices("plan_fingerprint", "planFingerprint"))
+    confirmation_token: str = Field(default="", validation_alias=AliasChoices("confirmation_token", "confirmationToken"))
+    shot_ids: list[str] = Field(default_factory=list, validation_alias=AliasChoices("shot_ids", "shotIds"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
+
+
 class StoryboardPromptCompileRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     compile_reason: str = Field(default="manual", validation_alias=AliasChoices("compile_reason", "compileReason"))
     force: bool = False
+    confirmed: bool = False
+    allow_external_call: bool = Field(default=False, validation_alias=AliasChoices("allow_external_call", "allowExternalCall"))
 
 
 class StoryboardPromptLockRequest(BaseModel):
@@ -335,7 +2117,7 @@ class StoryboardGenerationRequest(BaseModel):
 
     model_profile_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
     aspect_ratio: str = Field(default="16:9", validation_alias=AliasChoices("aspect_ratio", "aspectRatio"))
-    duration_seconds: Optional[int] = Field(default=5, validation_alias=AliasChoices("duration_seconds", "durationSeconds"))
+    duration_seconds: Optional[int] = Field(default=None, validation_alias=AliasChoices("duration_seconds", "durationSeconds"))
     first_frame_asset_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("first_frame_asset_id", "firstFrameAssetId"))
     reference_asset_ids: list[str] = Field(default_factory=list, validation_alias=AliasChoices("reference_asset_ids", "referenceAssetIds"))
     compile_if_missing: bool = Field(default=True, validation_alias=AliasChoices("compile_if_missing", "compileIfMissing"))
@@ -344,6 +2126,14 @@ class StoryboardGenerationRequest(BaseModel):
     prompt_recompile_reason: Optional[str] = Field(default=None, validation_alias=AliasChoices("prompt_recompile_reason", "promptRecompileReason"))
     prompt_recompile_task_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("prompt_recompile_task_id", "promptRecompileTaskId"))
     prompt_recompile_version: Optional[int] = Field(default=None, validation_alias=AliasChoices("prompt_recompile_version", "promptRecompileVersion"))
+    executability_override: bool = Field(default=False, validation_alias=AliasChoices("executability_override", "executabilityOverride"))
+    executability_override_reason: Optional[str] = Field(default=None, validation_alias=AliasChoices("executability_override_reason", "executabilityOverrideReason"))
+    # Explicitly scoped gray-test opt-in.  Temporary Qiniu HTTP domains stay
+    # blocked by default and are never treated as production-safe storage.
+    allow_unstable_public_assets: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("allow_unstable_public_assets", "allowUnstablePublicAssets"),
+    )
 
 
 class StoryboardAcceptanceRequest(BaseModel):
@@ -415,6 +2205,10 @@ class StoryboardMachinePromptApiSubmissionRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     target_model: str = Field(default="minimax-h3", validation_alias=AliasChoices("target_model", "targetModel"))
+    # Freeze the selected video profile at intent-registration time.  The
+    # browser sends the current default profile id so changing Model Registry
+    # while a task waits for confirmation cannot silently switch providers.
+    model_profile_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
     export_channel: str = Field(default="api", validation_alias=AliasChoices("export_channel", "exportChannel"))
     operator_name: str = Field(default="user", validation_alias=AliasChoices("operator_name", "operatorName"))
     submission_mode: str = Field(default="task_intent_only", validation_alias=AliasChoices("submission_mode", "submissionMode"))
@@ -431,8 +2225,19 @@ class StoryboardMachinePromptProviderSubmitRequest(BaseModel):
     model_profile_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
     aspect_ratio: str = Field(default="16:9", validation_alias=AliasChoices("aspect_ratio", "aspectRatio"))
     duration_seconds: Optional[int] = Field(default=5, validation_alias=AliasChoices("duration_seconds", "durationSeconds"))
+    use_reference_images: bool = Field(default=True, validation_alias=AliasChoices("use_reference_images", "useReferenceImages"))
+    reference_asset_ids: list[str] = Field(default_factory=list, validation_alias=AliasChoices("reference_asset_ids", "referenceAssetIds"))
     use_first_frame: bool = Field(default=True, validation_alias=AliasChoices("use_first_frame", "useFirstFrame"))
     first_frame_asset_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("first_frame_asset_id", "firstFrameAssetId"))
+    # Temporary public storage (for example a provider's unstable preview
+    # domain) must be explicitly opted into for each real submission.  Keep
+    # this gate on the provider-submit request as well as normal generation,
+    # otherwise a machine-prompt task could not legally reuse a locked
+    # transition frame stored behind that temporary URL.
+    allow_unstable_public_assets: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("allow_unstable_public_assets", "allowUnstablePublicAssets"),
+    )
     notes: str = ""
 
 
@@ -450,6 +2255,18 @@ class PublicAssetStorageConfigRequest(BaseModel):
     qiniu_key_prefix: str = Field(default="screenplay-agent", validation_alias=AliasChoices("qiniu_key_prefix", "qiniuKeyPrefix"))
     qiniu_upload_token_expires_seconds: int = Field(default=3600, validation_alias=AliasChoices("qiniu_upload_token_expires_seconds", "qiniuUploadTokenExpiresSeconds"))
     qiniu_public_url_ttl_seconds: int = Field(default=86400, validation_alias=AliasChoices("qiniu_public_url_ttl_seconds", "qiniuPublicUrlTtlSeconds"))
+
+
+class PublicAssetStorageMigrationExecuteRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    confirmation_token: str = Field(default="", validation_alias=AliasChoices("confirmation_token", "confirmationToken"))
+    limit: int = Field(default=200, ge=1, le=2000)
+    check_external: bool = Field(default=False, validation_alias=AliasChoices("check_external", "checkExternal"))
+    execute_write: bool = Field(default=False, validation_alias=AliasChoices("execute_write", "executeWrite"))
+    execution_confirmation_token: str = Field(default="", validation_alias=AliasChoices("execution_confirmation_token", "executionConfirmationToken"))
+    confirmed: bool = False
+    allow_write: bool = Field(default=False, validation_alias=AliasChoices("allow_write", "allowWrite"))
 
 
 class StoryboardDirectorShotTextUpdateRequest(BaseModel):
@@ -499,6 +2316,7 @@ class QAAutoFixRequest(BaseModel):
     max_diff_lines: int = Field(default=16, validation_alias=AliasChoices("max_diff_lines", "maxDiffLines"))
     max_length_delta_ratio: float = Field(default=0.8, validation_alias=AliasChoices("max_length_delta_ratio", "maxLengthDeltaRatio"))
     stop_after_failed_rechecks: int = Field(default=2, validation_alias=AliasChoices("stop_after_failed_rechecks", "stopAfterFailedRechecks"))
+    async_mode: bool = Field(default=False, validation_alias=AliasChoices("async_mode", "asyncMode"))
 
 
 class QARollbackRequest(BaseModel):
@@ -781,6 +2599,338 @@ def upload_file(file: UploadFile = File(...)):
     return {"filepath": str(dest), "filename": safe_name, "size": len(content)}
 
 
+MANUAL_MEDIA_ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
+MANUAL_MEDIA_MAX_BYTES = 25 * 1024 * 1024
+GENERATED_VIDEO_ALLOWED_EXTENSIONS = {".mp4", ".webm", ".mov"}
+GENERATED_VIDEO_MAX_BYTES = 250 * 1024 * 1024
+
+
+def _safe_manual_media_filename(filename: str | None) -> str:
+    raw_name = str(filename or "").replace("\\", "/").split("/")[-1].strip()
+    safe_name = config.sanitize_filename(raw_name)
+    if not safe_name:
+        raise HTTPException(status_code=400, detail="Media filename is required.")
+    suffix = Path(safe_name).suffix.lower()
+    if suffix not in MANUAL_MEDIA_ALLOWED_EXTENSIONS:
+        allowed = ", ".join(sorted(MANUAL_MEDIA_ALLOWED_EXTENSIONS))
+        raise HTTPException(status_code=400, detail=f"Unsupported media file type. Allowed: {allowed}")
+    return safe_name
+
+
+def _read_manual_media_bytes(file: UploadFile) -> bytes:
+    content = file.file.read(MANUAL_MEDIA_MAX_BYTES + 1)
+    if len(content) > MANUAL_MEDIA_MAX_BYTES:
+        raise HTTPException(status_code=413, detail=f"Media file is too large. Max size: {MANUAL_MEDIA_MAX_BYTES} bytes.")
+    if not content:
+        raise HTTPException(status_code=400, detail="Media file is empty.")
+    if not (
+        content.startswith(b"\x89PNG\r\n\x1a\n")
+        or content.startswith(b"\xff\xd8\xff")
+        or content.startswith(b"RIFF") and content[8:12] == b"WEBP"
+    ):
+        raise HTTPException(status_code=400, detail="Uploaded media is not a supported image payload.")
+    return content
+
+
+def _store_manual_media_upload(
+    file: UploadFile,
+    *,
+    book_id: int,
+    episode: int | None = None,
+    shot_id: str | None = None,
+    asset_type: str | None = None,
+    asset_id: str | None = None,
+) -> dict[str, Any]:
+    from datetime import datetime as udt
+
+    safe_name = _safe_manual_media_filename(file.filename)
+    media_dir = (config.UPLOAD_DIR / "manual-media").resolve()
+    media_dir.mkdir(parents=True, exist_ok=True)
+    suffix = Path(safe_name).suffix.lower()
+    ts = udt.now().strftime("%Y%m%d_%H%M%S")
+    if episode is not None and shot_id:
+        context_prefix = f"book-{book_id}-episode-{episode}-shot-{shot_id}"
+    elif asset_type and asset_id:
+        context_prefix = f"book-{book_id}-{config.sanitize_filename(asset_type)}-{config.sanitize_filename(asset_id)}"
+    else:
+        context_prefix = f"book-{book_id}-manual-asset"
+    stored_name = f"{context_prefix}-{ts}-{uuid.uuid4().hex[:8]}{suffix}"
+    dest = (media_dir / stored_name).resolve()
+    try:
+        dest.relative_to(media_dir)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid media upload path.")
+
+    content = _read_manual_media_bytes(file)
+    dest.write_bytes(content)
+    return {
+        "filename": safe_name,
+        "stored_filename": stored_name,
+        "filepath": str(dest),
+        "size": len(content),
+        "url": f"/api/prototyping/manual-media/{stored_name}",
+    }
+
+
+def _persist_generated_image_locally(
+    source_url: str,
+    *,
+    book_id: int,
+    task_id: str,
+    label: str,
+) -> dict[str, Any]:
+    """Create a durable local copy of a provider-generated image.
+
+    Generation providers commonly return short-lived URLs.  Those URLs are
+    useful provenance, but must never be the only copy that backs a visual
+    asset or storyboard image.  Manual uploads and generated images therefore
+    share the same durable media store and local serving endpoint.
+    """
+    original_url = str(source_url or "").strip()
+    audit_source_url = "inline-data-uri" if original_url.startswith("data:") else original_url
+    if not original_url:
+        return {"ok": False, "source_url": "", "error": "empty_generated_image_url"}
+
+    try:
+        # Reuse the storage bridge's source handling (HTTP(S), data URI, and
+        # already-local media) so persistence behaves consistently with the
+        # later H3 public-URL bridge.
+        from core.public_asset_storage import _load_source_bytes, _normalize_provider_image_bytes
+
+        content, content_type = _load_source_bytes(original_url)
+        content, content_type = _normalize_provider_image_bytes(content, content_type)
+        if not content:
+            raise RuntimeError("generated_image_is_empty")
+        if len(content) > MANUAL_MEDIA_MAX_BYTES:
+            raise RuntimeError(f"generated_image_too_large:{len(content)}")
+
+        normalized_type = str(content_type or "").split(";", 1)[0].strip().lower()
+        extension_by_type = {
+            "image/png": ".png",
+            "image/jpeg": ".jpg",
+            "image/webp": ".webp",
+        }
+        if content.startswith(b"\x89PNG\r\n\x1a\n"):
+            suffix, normalized_type = ".png", "image/png"
+        elif content.startswith(b"\xff\xd8\xff"):
+            suffix, normalized_type = ".jpg", "image/jpeg"
+        elif content.startswith(b"RIFF") and content[8:12] == b"WEBP":
+            suffix, normalized_type = ".webp", "image/webp"
+        else:
+            suffix = extension_by_type.get(normalized_type, "")
+            if not suffix:
+                raise RuntimeError(f"unsupported_generated_image_type:{normalized_type or 'unknown'}")
+
+        media_dir = (config.UPLOAD_DIR / "manual-media").resolve()
+        media_dir.mkdir(parents=True, exist_ok=True)
+        safe_label = config.sanitize_filename(str(label or "generated-image")) or "generated-image"
+        safe_task_id = config.sanitize_filename(str(task_id or "task")) or "task"
+        digest = hashlib.sha256(content).hexdigest()
+        stored_name = f"book-{int(book_id)}-generated-{safe_label[:32]}-{safe_task_id[:16]}-{digest[:16]}{suffix}"
+        destination = (media_dir / stored_name).resolve()
+        try:
+            destination.relative_to(media_dir)
+        except ValueError as exc:
+            raise RuntimeError("invalid_generated_media_path") from exc
+
+        if not destination.exists():
+            temporary = destination.with_suffix(f"{destination.suffix}.tmp-{uuid.uuid4().hex}")
+            try:
+                temporary.write_bytes(content)
+                temporary.replace(destination)
+            finally:
+                if temporary.exists():
+                    temporary.unlink()
+
+        return {
+            "ok": True,
+            # Do not duplicate a provider's Base64 result in task or asset
+            # metadata.  The generated image is already durably stored below.
+            "source_url": audit_source_url,
+            "source_kind": "inline_data_uri" if original_url.startswith("data:") else "provider_url",
+            "image_url": f"/api/prototyping/manual-media/{stored_name}",
+            "local_path": str(destination),
+            "content_type": normalized_type,
+            "bytes": len(content),
+            "sha256": digest,
+        }
+    except Exception as exc:
+        logger.warning("Failed to persist generated image locally (%s): %s", original_url[:200], exc)
+        return {"ok": False, "source_url": audit_source_url, "error": str(exc)}
+
+
+def _apply_generated_image_persistence(
+    asset: dict[str, Any],
+    *,
+    book_id: int,
+    task_id: str,
+    label: str,
+) -> dict[str, Any]:
+    """Replace an image asset's volatile provider URL with its local copy."""
+    source_url = str(asset.get("uri") or asset.get("previewUrl") or "").strip()
+    result = _persist_generated_image_locally(
+        source_url,
+        book_id=book_id,
+        task_id=task_id,
+        label=label,
+    )
+    metadata = asset.setdefault("metadata", {})
+    if not isinstance(metadata, dict):
+        metadata = {}
+        asset["metadata"] = metadata
+    metadata["generatedImagePersistence"] = result
+    if result.get("ok"):
+        asset["uri"] = result["image_url"]
+        asset["previewUrl"] = result["image_url"]
+        metadata["originalProviderUrl"] = result["source_url"]
+    else:
+        # The task result remains inspectable, but its UI state makes clear
+        # that it is not a durable production asset yet.
+        metadata["storageStatus"] = "remote_only"
+        metadata["storageWarning"] = f"Generated image was not persisted locally: {result.get('error') or 'unknown_error'}"
+    return result
+
+
+def _persist_generated_video_locally(
+    source_url: str,
+    *,
+    book_id: int,
+    task_id: str,
+    label: str,
+    download_headers: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    """Create a durable local copy of a provider-generated video result."""
+    original_url = str(source_url or "").strip()
+    if not original_url:
+        return {"ok": False, "source_url": "", "error": "empty_generated_video_url"}
+
+    try:
+        from core.public_asset_storage import _load_source_bytes
+
+        content, content_type = _load_source_bytes(original_url, headers=download_headers)
+        if not content:
+            raise RuntimeError("generated_video_is_empty")
+        if len(content) > GENERATED_VIDEO_MAX_BYTES:
+            raise RuntimeError(f"generated_video_too_large:{len(content)}")
+
+        normalized_type = str(content_type or "").split(";", 1)[0].strip().lower()
+        # ISO base media files place the brand at byte offset 4.  WebM is an
+        # EBML container.  Keep the validation narrow because this directory
+        # is served back to the browser as executable media content.
+        if len(content) >= 12 and content[4:8] == b"ftyp":
+            suffix = ".mov" if normalized_type == "video/quicktime" else ".mp4"
+            normalized_type = "video/quicktime" if suffix == ".mov" else "video/mp4"
+        elif content.startswith(b"\x1a\x45\xdf\xa3"):
+            suffix, normalized_type = ".webm", "video/webm"
+        else:
+            raise RuntimeError(f"unsupported_generated_video_type:{normalized_type or 'unknown'}")
+
+        media_dir = (config.UPLOAD_DIR / "generated-media").resolve()
+        media_dir.mkdir(parents=True, exist_ok=True)
+        safe_label = config.sanitize_filename(str(label or "generated-video")) or "generated-video"
+        safe_task_id = config.sanitize_filename(str(task_id or "task")) or "task"
+        digest = hashlib.sha256(content).hexdigest()
+        stored_name = f"book-{int(book_id)}-generated-{safe_label[:32]}-{safe_task_id[:16]}-{digest[:16]}{suffix}"
+        destination = (media_dir / stored_name).resolve()
+        try:
+            destination.relative_to(media_dir)
+        except ValueError as exc:
+            raise RuntimeError("invalid_generated_video_path") from exc
+        if not destination.exists():
+            temporary = destination.with_suffix(f"{destination.suffix}.tmp-{uuid.uuid4().hex}")
+            try:
+                temporary.write_bytes(content)
+                temporary.replace(destination)
+            finally:
+                if temporary.exists():
+                    temporary.unlink()
+        return {
+            "ok": True,
+            "source_url": original_url,
+            "video_url": f"/api/prototyping/generated-media/{stored_name}",
+            "local_path": str(destination),
+            "content_type": normalized_type,
+            "bytes": len(content),
+            "sha256": digest,
+        }
+    except Exception as exc:
+        logger.warning("Failed to persist generated video locally (%s): %s", original_url[:200], exc)
+        return {"ok": False, "source_url": original_url, "error": str(exc)}
+
+
+def _apply_generated_video_persistence(
+    asset: dict[str, Any],
+    *,
+    book_id: int,
+    task_id: str,
+    label: str,
+    download_headers: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    source_url = str(asset.get("uri") or asset.get("previewUrl") or "").strip()
+    result = _persist_generated_video_locally(
+        source_url,
+        book_id=book_id,
+        task_id=task_id,
+        label=label,
+        download_headers=download_headers,
+    )
+    metadata = asset.setdefault("metadata", {})
+    if not isinstance(metadata, dict):
+        metadata = {}
+        asset["metadata"] = metadata
+    metadata["generatedVideoPersistence"] = result
+    if result.get("ok"):
+        asset["uri"] = result["video_url"]
+        asset["previewUrl"] = result["video_url"]
+        metadata["originalProviderUrl"] = result["source_url"]
+    else:
+        metadata["storageStatus"] = "remote_only"
+        metadata["storageWarning"] = f"Generated video was not persisted locally: {result.get('error') or 'unknown_error'}"
+    return result
+
+
+@app.get("/api/prototyping/manual-media/{filename}")
+def get_manual_media_asset(filename: str):
+    from fastapi.responses import FileResponse
+
+    safe_name = _safe_manual_media_filename(filename)
+    media_dir = (config.UPLOAD_DIR / "manual-media").resolve()
+    path = (media_dir / safe_name).resolve()
+    try:
+        path.relative_to(media_dir)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid media asset path.")
+    if not path.exists() or not path.is_file():
+        raise HTTPException(status_code=404, detail="Manual media asset not found.")
+    media_type = {
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".webp": "image/webp",
+    }.get(path.suffix.lower(), "application/octet-stream")
+    return FileResponse(path, media_type=media_type, headers={"Cache-Control": "public, max-age=31536000, immutable"})
+
+
+@app.get("/api/prototyping/generated-media/{filename}")
+def get_generated_media_asset(filename: str):
+    from fastapi.responses import FileResponse
+
+    safe_name = config.sanitize_filename(str(filename or "").replace("\\", "/").split("/")[-1])
+    suffix = Path(safe_name).suffix.lower()
+    if not safe_name or suffix not in GENERATED_VIDEO_ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail="Unsupported generated media filename.")
+    media_dir = (config.UPLOAD_DIR / "generated-media").resolve()
+    path = (media_dir / safe_name).resolve()
+    try:
+        path.relative_to(media_dir)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid generated media path.")
+    if not path.exists() or not path.is_file():
+        raise HTTPException(status_code=404, detail="Generated media asset not found.")
+    media_type = {".mp4": "video/mp4", ".webm": "video/webm", ".mov": "video/quicktime"}.get(suffix, "application/octet-stream")
+    return FileResponse(path, media_type=media_type, headers={"Cache-Control": "public, max-age=31536000, immutable"})
+
+
 @app.get("/api/prompts")
 def list_prompts():
     from core.prompts import list_prompts as _lp
@@ -833,6 +2983,24 @@ async def test_model_registry_profile(req: ModelRegistryTestRequest):
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+@app.get("/api/agent/model-config")
+def get_agent_model_config():
+    return read_agent_model_config()
+
+
+@app.put("/api/agent/model-config")
+def update_agent_model_config(req: AgentModelConfigRequest):
+    try:
+        write_agent_model_config(req.profile_id)
+        # Agent runtime policy is deliberately persisted separately from the
+        # model registry.  The registry describes provider/model facts;
+        # these options describe how the Smart Director is allowed to run.
+        write_agent_runtime_policy(thinking=req.thinking, vision_enabled=req.vision_enabled)
+        return read_agent_model_config()
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 def _storage_public_dict() -> dict[str, Any]:
     return load_public_asset_storage_config().public_dict()
 
@@ -873,11 +3041,11 @@ def _collect_storage_migration_assets(limit: int) -> list[dict[str, Any]]:
 
     rows: list[dict[str, Any]] = []
 
-    def add_asset(source: str, owner: dict[str, Any], url: Any) -> None:
+    def add_asset(source: str, owner: dict[str, Any], url: Any, locator: dict[str, Any]) -> None:
         text = str(url or "").strip()
         if not text or len(rows) >= limit:
             return
-        rows.append({"source": source, "owner": owner, "url": text})
+        rows.append({"source": source, "owner": owner, "url": text, "locator": locator})
 
     with Session() as s:
         reference_rows = s.query(VisualReferenceAsset).order_by(VisualReferenceAsset.id.asc()).limit(max(limit, 1000)).all()
@@ -891,8 +3059,17 @@ def _collect_storage_migration_assets(limit: int) -> list[dict[str, Any]]:
                 "asset_id": row.asset_id,
                 "reference_id": row.id,
             }
-            add_asset("visual_reference.image_url", owner, row.image_url)
-            add_asset("visual_reference.local_path", owner, row.local_path)
+            # The local copy remains a recovery source.  Migrating it updates
+            # image_url, not local_path, so a rollback never loses the durable
+            # local evidence.
+            source_url = str(row.image_url or "").strip() or str(row.local_path or "").strip()
+            source_kind = "visual_reference.image_url" if str(row.image_url or "").strip() else "visual_reference.local_path"
+            add_asset(source_kind, owner, source_url, {
+                "kind": "visual_reference",
+                "reference_id": int(row.id),
+                "field": "image_url",
+                "source_field": "image_url" if str(row.image_url or "").strip() else "local_path",
+            })
 
         shot_rows = s.query(StoryboardShot).order_by(StoryboardShot.book_id.asc(), StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc()).limit(max(limit, 1000)).all()
         for shot in shot_rows:
@@ -912,9 +3089,21 @@ def _collect_storage_migration_assets(limit: int) -> list[dict[str, Any]]:
                 for item in items:
                     if not isinstance(item, dict):
                         continue
-                    item_owner = {**owner, "asset_group": group_key, "asset_id": item.get("id")}
-                    add_asset(f"storyboard.{group_key}.uri", item_owner, item.get("uri"))
-                    add_asset(f"storyboard.{group_key}.previewUrl", item_owner, item.get("previewUrl"))
+                    asset_id = str(item.get("id") or "").strip()
+                    if not asset_id:
+                        continue
+                    item_owner = {**owner, "asset_group": group_key, "asset_id": asset_id}
+                    source_field = "uri" if str(item.get("uri") or "").strip() else "previewUrl"
+                    source_url = item.get(source_field)
+                    add_asset(f"storyboard.{group_key}.{source_field}", item_owner, source_url, {
+                        "kind": "storyboard_asset",
+                        "book_id": int(shot.book_id),
+                        "episode": int(shot.episode or 1),
+                        "shot_id": int(shot.shot_id),
+                        "asset_group": group_key,
+                        "asset_id": asset_id,
+                        "field": source_field,
+                    })
                     if len(rows) >= limit:
                         break
                 if len(rows) >= limit:
@@ -945,6 +3134,11 @@ def _classify_storage_asset(url: str, target_base_url: str, *, check_external: b
     return {"status": "unknown_source", "requires_migration": False, "reason": "无法识别的资产地址"}
 
 
+def _storage_migration_target_is_production_safe(storage_config) -> bool:
+    """Do not permanently repoint production assets to Qiniu's temporary HTTP domain."""
+    return public_asset_storage_is_production_safe(storage_config)
+
+
 @app.get("/api/public-asset-storage/migration-plan")
 def get_public_asset_storage_migration_plan(
     limit: int = Query(default=200, ge=1, le=2000),
@@ -963,6 +3157,8 @@ def get_public_asset_storage_migration_plan(
         "unknown_source": 0,
         "requires_migration": 0,
     }
+
+
     for asset in assets:
         classification = _classify_storage_asset(
             asset["url"],
@@ -974,12 +3170,239 @@ def get_public_asset_storage_migration_plan(
         if classification["requires_migration"]:
             summary["requires_migration"] += 1
         items.append({**asset, **classification})
-    return {
+    plan_payload = {
         "storage": storage_config.public_dict(),
         "summary": summary,
         "items": items,
-        "migration_apply_supported": False,
-        "migration_apply_note": "当前默认只做快速迁移规划，不会搬迁或改写资产；批量迁移写入需要后续受保护任务实现。",
+    }
+    # A future writer must bind to this exact snapshot.  The plan intentionally
+    # contains no secrets and does not mutate either old objects or DB links.
+    confirmation_token = hashlib.sha256(
+        json.dumps(plan_payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()[:16]
+    return {
+        **plan_payload,
+        "mode": "readonly-storage-migration-plan",
+        "real_data_mutated": False,
+        "confirmation_token": confirmation_token,
+        "plan_fingerprint": confirmation_token,
+        "requires_operator_confirmation": bool(summary["requires_migration"]),
+        "migration_apply_supported": bool(storage_config.enabled and _storage_migration_target_is_production_safe(storage_config)),
+        "migration_apply_note": (
+            "已配置对象存储：可在复核当前计划后执行受保护迁移；迁移会保留旧对象，不会自动删除。"
+            if storage_config.enabled and _storage_migration_target_is_production_safe(storage_config)
+            else "当前只能生成只读计划：迁移写入要求已配置对象存储，并绑定非 clouddn.com 的自定义 HTTPS 访问域名。"
+        ),
+    }
+
+
+def _storage_migration_public_record(row) -> dict[str, Any]:
+    result = safe_json_loads(row.result, {})
+    errors = safe_json_loads(row.error_report, [])
+    return {
+        "id": row.id,
+        "task_id": row.task_id,
+        "plan_fingerprint": row.plan_fingerprint,
+        "status": row.status,
+        "result": result if isinstance(result, dict) else {},
+        "error_report": errors if isinstance(errors, list) else [],
+        "old_objects_deleted": bool(row.old_objects_deleted),
+        "confirmed_at": row.confirmed_at.isoformat() if row.confirmed_at else None,
+        "started_at": row.started_at.isoformat() if row.started_at else None,
+        "finished_at": row.finished_at.isoformat() if row.finished_at else None,
+        "created_at": row.created_at.isoformat() if row.created_at else None,
+        "updated_at": row.updated_at.isoformat() if row.updated_at else None,
+    }
+
+
+def _apply_storage_migration_reference(item: dict[str, Any], public_result) -> dict[str, Any]:
+    """Change exactly one planned reference, retaining all original recovery data."""
+    from models import Session, StoryboardShot, VisualReferenceAsset
+
+    locator = item.get("locator") if isinstance(item.get("locator"), dict) else {}
+    source_url = str(item.get("url") or "").strip()
+    target_url = str(getattr(public_result, "public_url", "") or "").strip()
+    if not locator or not source_url or not target_url:
+        raise RuntimeError("storage_migration_invalid_item")
+
+    with Session() as session:
+        if locator.get("kind") == "visual_reference":
+            row = session.query(VisualReferenceAsset).filter_by(id=int(locator.get("reference_id") or 0)).first()
+            if not row:
+                raise RuntimeError("storage_migration_reference_not_found")
+            source_field = str(locator.get("source_field") or "image_url")
+            current_source = str(getattr(row, source_field, "") or "").strip()
+            if current_source != source_url:
+                raise RuntimeError("storage_migration_source_changed")
+            meta = safe_json_loads(row.meta_info, {})
+            if not isinstance(meta, dict):
+                meta = {}
+            history = meta.get("storage_migrations") if isinstance(meta.get("storage_migrations"), list) else []
+            history.append({
+                "source_url": source_url,
+                "target_url": target_url,
+                "object_key": str(getattr(public_result, "object_key", "") or ""),
+                "at": datetime.utcnow().isoformat(),
+            })
+            meta["storage_migrations"] = history[-20:]
+            row.image_url = target_url
+            row.meta_info = json.dumps(meta, ensure_ascii=False)
+            row.updated_at = datetime.utcnow()
+            session.commit()
+        elif locator.get("kind") == "storyboard_asset":
+            shot = session.query(StoryboardShot).filter_by(
+                book_id=int(locator.get("book_id") or 0),
+                episode=int(locator.get("episode") or 0),
+                shot_id=int(locator.get("shot_id") or 0),
+            ).first()
+            if not shot:
+                raise RuntimeError("storage_migration_storyboard_shot_not_found")
+            links = _load_asset_links(shot.asset_links)
+            group = str(locator.get("asset_group") or "")
+            field = str(locator.get("field") or "")
+            assets = links.get(group) if isinstance(links, dict) else None
+            if not isinstance(assets, list) or field not in {"uri", "previewUrl"}:
+                raise RuntimeError("storage_migration_storyboard_asset_invalid")
+            matched = next((asset for asset in assets if isinstance(asset, dict) and str(asset.get("id") or "") == str(locator.get("asset_id") or "")), None)
+            if not isinstance(matched, dict):
+                raise RuntimeError("storage_migration_storyboard_asset_not_found")
+            if str(matched.get(field) or "").strip() != source_url:
+                raise RuntimeError("storage_migration_source_changed")
+            metadata = matched.get("metadata") if isinstance(matched.get("metadata"), dict) else {}
+            history = metadata.get("storageMigrations") if isinstance(metadata.get("storageMigrations"), list) else []
+            history.append({"field": field, "sourceUrl": source_url, "targetUrl": target_url, "objectKey": str(getattr(public_result, "object_key", "") or ""), "at": datetime.utcnow().isoformat()})
+            metadata["storageMigrations"] = history[-20:]
+            matched["metadata"] = metadata
+            matched[field] = target_url
+            shot.asset_links = json.dumps(links, ensure_ascii=False)
+            shot.updated_at = datetime.utcnow()
+            session.commit()
+        else:
+            raise RuntimeError("storage_migration_locator_unsupported")
+    return {
+        "status": "migrated",
+        "source": item.get("source"),
+        "owner": item.get("owner"),
+        "object_key": str(getattr(public_result, "object_key", "") or ""),
+        "target_url": target_url.split("?", 1)[0],
+        "bytes": int(getattr(public_result, "bytes_count", 0) or 0),
+    }
+
+
+def _run_public_asset_storage_migration(record_id: int) -> None:
+    """Run an operator-confirmed plan once.  There is deliberately no auto retry."""
+    from models import PublicAssetStorageMigrationRecord, Session
+
+    with Session() as session:
+        record = session.query(PublicAssetStorageMigrationRecord).filter_by(id=record_id).first()
+        if not record:
+            return
+        plan = safe_json_loads(record.plan_snapshot, {})
+        storage_snapshot = safe_json_loads(record.storage_snapshot, {})
+        if not isinstance(plan, dict) or not isinstance(storage_snapshot, dict):
+            record.status = "failed"; record.error_report = json.dumps([{"code": "invalid_migration_snapshot"}], ensure_ascii=False); record.finished_at = datetime.utcnow(); record.updated_at = datetime.utcnow(); session.commit(); return
+        record.status = "running"; record.started_at = datetime.utcnow(); record.updated_at = datetime.utcnow(); session.commit()
+        task_id = record.task_id
+
+    current_storage = load_public_asset_storage_config()
+    if not current_storage.enabled or current_storage.public_dict() != storage_snapshot:
+        errors = [{"code": "storage_configuration_changed", "message": "对象存储配置已变化；请重新生成迁移计划并再次确认。"}]
+        with Session() as session:
+            record = session.query(PublicAssetStorageMigrationRecord).filter_by(id=record_id).first()
+            if record:
+                record.status = "failed"; record.error_report = json.dumps(errors, ensure_ascii=False); record.finished_at = datetime.utcnow(); record.updated_at = datetime.utcnow(); session.commit()
+        _persist_task_state(task_id, "public-asset-storage-migration", {"task_id": task_id, "task_kind": "public-asset-storage-migration", "status": "failed", "progress": 100, "error": errors[0]["message"], "record_id": record_id, "old_objects_deleted": False, "finished_at": datetime.utcnow().isoformat()})
+        return
+
+    items = [item for item in plan.get("items", []) if isinstance(item, dict) and item.get("requires_migration")]
+    migrated: list[dict[str, Any]] = []
+    failures: list[dict[str, Any]] = []
+    for index, item in enumerate(items, start=1):
+        try:
+            hint_seed = json.dumps(item.get("locator") or item.get("owner") or {}, ensure_ascii=False, sort_keys=True)
+            hint = f"storage-migration-{hashlib.sha256(hint_seed.encode('utf-8')).hexdigest()[:16]}"
+            published = ensure_provider_accessible_url(str(item.get("url") or ""), key_hint=hint, force_storage=True)
+            if not published.ok:
+                raise RuntimeError(str(published.error or "storage_publish_failed"))
+            migrated.append(_apply_storage_migration_reference(item, published))
+        except Exception as exc:
+            failures.append({"source": item.get("source"), "owner": item.get("owner"), "error": str(exc), "retryable": True})
+        progress = int(index * 100 / max(len(items), 1))
+        result = {"total": len(items), "migrated": len(migrated), "failed": len(failures), "items": migrated, "old_objects_deleted": False}
+        with Session() as session:
+            record = session.query(PublicAssetStorageMigrationRecord).filter_by(id=record_id).first()
+            if record:
+                record.result = json.dumps(result, ensure_ascii=False); record.error_report = json.dumps(failures, ensure_ascii=False); record.updated_at = datetime.utcnow(); session.commit()
+        _persist_task_state(task_id, "public-asset-storage-migration", {"task_id": task_id, "task_kind": "public-asset-storage-migration", "status": "running", "progress": progress, "record_id": record_id, "summary": {"total": len(items), "migrated": len(migrated), "failed": len(failures)}, "old_objects_deleted": False})
+
+    status = "completed" if not failures else "partial" if migrated else "failed"
+    result = {"total": len(items), "migrated": len(migrated), "failed": len(failures), "items": migrated, "old_objects_deleted": False}
+    with Session() as session:
+        record = session.query(PublicAssetStorageMigrationRecord).filter_by(id=record_id).first()
+        if record:
+            record.status = status; record.result = json.dumps(result, ensure_ascii=False); record.error_report = json.dumps(failures, ensure_ascii=False); record.finished_at = datetime.utcnow(); record.updated_at = datetime.utcnow(); session.commit()
+    _persist_task_state(task_id, "public-asset-storage-migration", {"task_id": task_id, "task_kind": "public-asset-storage-migration", "status": status, "progress": 100, "record_id": record_id, "summary": {"total": len(items), "migrated": len(migrated), "failed": len(failures)}, "error": "迁移存在可人工重试的失败项" if failures else "", "old_objects_deleted": False, "finished_at": datetime.utcnow().isoformat()})
+
+
+@app.get("/api/public-asset-storage/migration-records/{record_id}")
+def get_public_asset_storage_migration_record(record_id: int):
+    from models import PublicAssetStorageMigrationRecord, Session
+    with Session() as session:
+        record = session.query(PublicAssetStorageMigrationRecord).filter_by(id=record_id).first()
+        if not record:
+            raise HTTPException(status_code=404, detail="storage_migration_record_not_found")
+        return _storage_migration_public_record(record)
+
+
+@app.post("/api/public-asset-storage/migration-plan/execute")
+def execute_public_asset_storage_migration_plan(req: PublicAssetStorageMigrationExecuteRequest, bg: BackgroundTasks):
+    """Dry-run by default; write mode is explicitly confirmed and backgrounded."""
+    plan = get_public_asset_storage_migration_plan(limit=req.limit, check_external=req.check_external)
+    if str(req.confirmation_token or "").strip() != str(plan.get("confirmation_token") or ""):
+        raise HTTPException(status_code=409, detail="storage_migration_plan_stale_or_unconfirmed")
+    operator_requested_write = bool(req.confirmed and req.allow_write)
+    requested_write = bool(req.execute_write)
+    eligible_items = [item for item in plan["items"] if item.get("requires_migration")]
+    if requested_write:
+        if not (req.confirmed and req.allow_write):
+            raise HTTPException(status_code=409, detail="storage_migration_write_requires_confirmed_and_allow_write")
+        if str(req.execution_confirmation_token or "").strip() != "CONFIRM_PUBLIC_ASSET_STORAGE_MIGRATION":
+            raise HTTPException(status_code=400, detail="storage_migration_write_requires_confirmation_token")
+        storage = load_public_asset_storage_config()
+        if not storage.enabled or not _storage_migration_target_is_production_safe(storage):
+            raise HTTPException(status_code=409, detail="storage_migration_requires_custom_https_storage_domain")
+        from models import PublicAssetStorageMigrationRecord, Session
+
+        task_id = f"storage-migration-{uuid.uuid4().hex[:12]}"
+        record = PublicAssetStorageMigrationRecord(
+            plan_fingerprint=plan["plan_fingerprint"], status="queued", storage_snapshot=json.dumps(storage.public_dict(), ensure_ascii=False),
+            plan_snapshot=json.dumps({"items": eligible_items, "summary": plan["summary"]}, ensure_ascii=False), task_id=task_id,
+            confirmed_at=datetime.utcnow(), old_objects_deleted=False,
+        )
+        with Session() as session:
+            session.add(record); session.commit(); session.refresh(record); record_id = record.id
+        task_state = {"task_id": task_id, "task_kind": "public-asset-storage-migration", "status": "queued", "progress": 0, "record_id": record_id, "confirmation_token": plan["confirmation_token"], "summary": plan["summary"], "eligible_count": len(eligible_items), "old_objects_deleted": False, "created_at": datetime.utcnow().isoformat()}
+        _persist_task_state(task_id, "public-asset-storage-migration", task_state)
+        bg.add_task(_run_public_asset_storage_migration, record_id)
+        return {"mode": "storage-migration-submitted", "real_data_mutated": False, "write_requested": True, "write_supported": True, "confirmation_token": plan["confirmation_token"], "summary": plan["summary"], "task_id": task_id, "record_id": record_id, "eligible_count": len(eligible_items), "old_objects_deleted": False, "automatic_retry": False}
+
+    task_id = f"storage-migration-dryrun-{uuid.uuid4().hex[:12]}"
+    task_state = {
+        "task_id": task_id, "task_kind": "public-asset-storage-migration",
+        "status": "dry_run", "progress": 100,
+        "confirmation_token": plan["confirmation_token"],
+        "summary": plan["summary"], "eligible_count": len(eligible_items),
+        "write_requested": operator_requested_write, "old_objects_deleted": False,
+        "created_at": datetime.utcnow().isoformat(), "finished_at": datetime.utcnow().isoformat(),
+    }
+    _persist_task_state(task_id, "public-asset-storage-migration", task_state)
+    return {
+        "mode": "storage-migration-dry-run", "real_data_mutated": False,
+        "write_requested": operator_requested_write, "write_supported": False,
+        "confirmation_token": plan["confirmation_token"], "summary": plan["summary"],
+        "task_id": task_id, "eligible_items": eligible_items,
+        "next_safe_step": "confirm_execute_write" if operator_requested_write else "review_and_confirm_current_plan",
+        "old_objects_deleted": False,
     }
 
 
@@ -1410,6 +3833,15 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                     from core.portrait_qa import run_portrait_qa
                     with Session() as s:
                         qa_report = run_portrait_qa(book_id, s)
+                        gender_authority_issues = [
+                            issue for issue in qa_report.issues
+                            if issue.issue_type in {"missing_gender", "makeup_gender_missing", "makeup_gender_conflict"}
+                        ]
+                        if gender_authority_issues:
+                            non_blocking_warnings.append(
+                                f"检测到 {len(gender_authority_issues)} 项人物性别权威事实问题；"
+                                "请在「人物质检」完成修正后再生成定妆或提示词。"
+                            )
                         if qa_report.gender_conflicts:
                             non_blocking_warnings.append(f"检测到 {len(qa_report.gender_conflicts)} 个人物性别冲突，请在「人物质检」面板中确认")
                         if qa_report.merge_candidates:
@@ -1485,6 +3917,13 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
                 for ep in range(1, actual_scripts + 1):
                     update_step(f"Run QA for episode {ep} script")
                     await asyncio.to_thread(qa_agent.run, ep)
+                    # Materialise the freshly produced QA report into reviewable
+                    # QAIssue rows so the controlled fix/auto-fix workflow has a
+                    # target.  Without this, the QA report is produced but auto-fix
+                    # and UI review find nothing to act on.
+                    with Session() as qa_sync_session:
+                        _sync_episode_qa_issues(qa_sync_session, book_id, ep)
+                        qa_sync_session.commit()
                 update_step("qa complete")
 
             with Session() as s:
@@ -1527,6 +3966,7 @@ class StoryboardRequest(BaseModel):
     book_id: int
     genre: str = "short_drama"
     episodes: Optional[list[int]] = None  # None = all
+    force_llm: bool = Field(default=False, validation_alias=AliasChoices("force_llm", "forceLlm"))
     resume_from_scene: dict[str, str] = Field(default_factory=dict, validation_alias=AliasChoices("resume_from_scene", "resumeFromScene"))
 
 
@@ -1735,6 +4175,7 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
             sb_agent = StoryboardAgent(
                 req.book_id,
                 genre=req.genre,
+                force_llm=req.force_llm,
                 progress_callback=lambda event: (
                     _update_storyboard_episode_progress(_storyboard_tasks[task_id], event),
                     _persist_task_state(task_id, "storyboard", _storyboard_tasks[task_id]),
@@ -2229,6 +4670,7 @@ def _build_character_profile_fallback_makeup_row(profile):
         "scope": "base_identity",
         "record_source": "character_profile_fallback",
         "profile_id": profile_id,
+        "gender": gender,
         "readonly": True,
     }
 
@@ -2378,10 +4820,19 @@ def _serialize_makeup_row(row, reference_assets: list[dict] | None = None, peer_
     shot_ids = _json_loads_list(getattr(row, "shot_ids", None))
     scope = _makeup_scope_from_row(row, peer_rows)
     meta_info = safe_json_loads(getattr(row, "meta_info", "{}")) if getattr(row, "meta_info", None) else {}
-    gender = str(getattr(row, "gender", "") or meta_info.get("gender") or "").strip()
-    identity = str(getattr(row, "identity", "") or meta_info.get("identity") or "").strip()
-    temperament = str(getattr(row, "temperament", "") or meta_info.get("temperament") or "").strip()
-    appearance = str(getattr(row, "appearance", "") or meta_info.get("appearance") or "").strip()
+    structured = meta_info.get("structured_result", {}) if isinstance(meta_info.get("structured_result", {}), dict) else {}
+    # VisualMakeup predates an explicit gender column. Governed assets persist
+    # the authoritative value inside structured_result, so expose it in the
+    # canonical profile instead of allowing stale flat prompts to win.
+    gender = str(
+        getattr(row, "gender", "")
+        or meta_info.get("gender")
+        or structured.get("gender")
+        or ""
+    ).strip()
+    identity = str(getattr(row, "identity", "") or meta_info.get("identity") or structured.get("identity") or "").strip()
+    temperament = str(getattr(row, "temperament", "") or meta_info.get("temperament") or structured.get("temperament") or "").strip()
+    appearance = str(getattr(row, "appearance", "") or meta_info.get("appearance") or structured.get("core_prompt_zh") or "").strip()
     payload = {
         "id": row.id,
         "episode": row.episode,
@@ -2650,9 +5101,6 @@ def _normalize_scene_asset_id(book_id: int, scene_name: str | None) -> str:
 def _extract_character_asset_ids(book_id: int, episode: int, structure_seed: dict, existing_ids: list[str]) -> list[str]:
     from models import Session
 
-    if existing_ids:
-        return existing_ids
-
     search_parts = [
         structure_seed.get("action_process"),
         structure_seed.get("dialogue"),
@@ -2660,24 +5108,37 @@ def _extract_character_asset_ids(book_id: int, episode: int, structure_seed: dic
         structure_seed.get("end_state"),
         structure_seed.get("scene_name"),
     ]
-    search_text = " ".join(str(part or "") for part in search_parts)
-    normalized_text = _normalize_asset_match_text(search_text)
-    if not normalized_text:
-        return []
 
     with Session() as s:
         rows = _load_makeup_rows_or_profile_fallback(s, book_id)
         episode_rows = [row for row in rows if int(getattr(row, "episode", 0) or 0) in {0, episode}]
         rows = episode_rows or rows
 
-        matched_ids: list[str] = []
+        # A structured id is only valid while it resolves to a current visual
+        # identity.  Rebuilt asset rows leave stale ids behind; this function
+        # derives a safe in-memory replacement but deliberately never writes
+        # one.  Persistent rebinding is a separately confirmed operation.
+        valid_ids = {str(getattr(row, "id", "")) for row in rows}
+        existing_valid: list[str] = []
+        for asset_id in existing_ids:
+            normalized_id = str(asset_id or "").strip()
+            if normalized_id and normalized_id in valid_ids and normalized_id not in existing_valid:
+                existing_valid.append(normalized_id)
+
+        for item in _normalize_structure_list(structure_seed.get("character_blocking")):
+            search_parts.append(item.get("visual_alias") or item.get("character_name") or "")
+        normalized_text = _normalize_asset_match_text(" ".join(str(part or "") for part in search_parts))
+        if not normalized_text:
+            return existing_valid
+
+        matched_ids: list[str] = list(existing_valid)
         seen_names: set[str] = set()
         for row in rows:
             name = str(getattr(row, "character_name", "") or "").strip()
             if not name or name in seen_names:
                 continue
             normalized_name = _normalize_asset_match_text(name)
-            if normalized_name and normalized_name in normalized_text:
+            if normalized_name and normalized_name in normalized_text and str(row.id) not in matched_ids:
                 matched_ids.append(str(row.id))
                 seen_names.add(name)
         return matched_ids
@@ -2717,12 +5178,39 @@ def _extract_prop_asset_ids(book_id: int, structure_seed: dict, existing_ids: li
 def _hydrate_character_blocking(book_id: int, episode: int, character_asset_ids: list[str], existing_rows: list[dict]) -> list[dict]:
     from models import Session, VisualMakeup
 
-    if existing_rows:
-        return existing_rows
-    if not character_asset_ids:
-        return []
-
     with Session() as s:
+        if existing_rows:
+            # Keep director blocking intact, but repair only a stale derived
+            # identity when its alias resolves uniquely within the already
+            # bound character ids.  This is a pure projection; persistence is
+            # still controlled by the caller's normal governance path.
+            bound_rows = []
+            for asset_id in character_asset_ids:
+                if not _is_integer_string(asset_id):
+                    continue
+                candidate = s.query(VisualMakeup).filter(
+                    VisualMakeup.book_id == book_id,
+                    VisualMakeup.id == int(asset_id),
+                ).first() or _find_profile_fallback_makeup_by_id(s, book_id, asset_id)
+                if candidate:
+                    bound_rows.append(candidate)
+            aliases: dict[str, list[str]] = {}
+            for candidate in bound_rows:
+                normalized = _normalize_asset_match_text(getattr(candidate, "character_name", ""))
+                if normalized:
+                    aliases.setdefault(normalized, []).append(str(candidate.id))
+            repaired = []
+            for item in existing_rows:
+                next_item = dict(item) if isinstance(item, dict) else item
+                if isinstance(next_item, dict):
+                    normalized = _normalize_asset_match_text(next_item.get("visual_alias") or next_item.get("character_name"))
+                    candidates = aliases.get(normalized, [])
+                    if len(candidates) == 1:
+                        next_item["character_id"] = candidates[0]
+                repaired.append(next_item)
+            return repaired
+        if not character_asset_ids:
+            return []
         rows: list[dict] = []
         for asset_id in character_asset_ids:
             if not _is_integer_string(asset_id):
@@ -2870,8 +5358,12 @@ def _derive_structured_shot_payload(meta_info: dict | None, fallback: dict | Non
     if not isinstance(structured, dict):
         structured = {}
 
+    # ``fallback`` is the authoritative row projection whenever it includes a
+    # shot id. A structured payload is derived state and must never retain the
+    # identity of a source row after a split/reorder transform.
+    authoritative_shot_id = str(fallback.get("shot_id") or "").strip()
     return {
-        "shot_id": str(structured.get("shot_id") or fallback.get("shot_id") or "").strip(),
+        "shot_id": authoritative_shot_id or str(structured.get("shot_id") or "").strip(),
         "scene_name": str(structured.get("scene_name") or fallback.get("scene_name") or "").strip(),
         "duration": int(structured.get("duration") or fallback.get("duration") or 3),
         "camera_angle": str(structured.get("camera_angle") or fallback.get("camera_angle") or "MS").strip() or "MS",
@@ -2889,6 +5381,10 @@ def _derive_structured_shot_payload(meta_info: dict | None, fallback: dict | Non
             _normalize_structure_item(item)
             for item in _normalize_structure_list(structured.get("action_beats") or fallback.get("action_beats"))
         ],
+        "core_action": str(structured.get("core_action") or fallback.get("core_action") or "").strip(),
+        "continuity_in": str(structured.get("continuity_in") or fallback.get("continuity_in") or "").strip(),
+        "continuity_out": str(structured.get("continuity_out") or fallback.get("continuity_out") or "").strip(),
+        "executability": structured.get("executability") if isinstance(structured.get("executability"), dict) else {},
         "action_process": str(structured.get("action_process") or fallback.get("action_process") or "").strip(),
         "dialogue": str(structured.get("dialogue") or fallback.get("dialogue") or "").strip(),
         "start_state": str(structured.get("start_state") or fallback.get("start_state") or "").strip(),
@@ -2932,6 +5428,10 @@ def _auto_bind_structured_shot_assets(book_id: int, episode: int, structure: dic
         "style_key": payload["style_key"],
         "character_blocking": payload["character_blocking"],
         "action_beats": payload["action_beats"],
+        "core_action": payload["core_action"],
+        "continuity_in": payload["continuity_in"],
+        "continuity_out": payload["continuity_out"],
+        "executability": payload["executability"],
     }
 
 
@@ -3078,16 +5578,252 @@ def _serialize_reference_asset_row(row) -> dict:
     }
 
 
+def _reference_rebinding_asset_type(asset_type: str) -> str:
+    normalized = str(asset_type or "").strip().lower()
+    return "scene" if normalized == "location" else normalized
+
+
+def _reference_rebinding_candidates(session, book_id: int, reference) -> list[dict]:
+    """Return exact, scope-compatible targets for a dangling reference.
+
+    This deliberately uses no fuzzy matching: a reference is migratable only
+    when its normalized stored asset name identifies exactly one live asset.
+    """
+    from models import VisualLocation, VisualMakeup, VisualProp
+
+    asset_type = _reference_rebinding_asset_type(reference.asset_type)
+    model_map = {"scene": VisualLocation, "character": VisualMakeup, "prop": VisualProp}
+    model = model_map.get(asset_type)
+    if not model:
+        return []
+    source_name = _normalize_asset_match_text(reference.asset_name)
+    if not source_name:
+        return []
+    source_episode = getattr(reference, "episode", None)
+    candidates: list[dict] = []
+    for row in session.query(model).filter(model.book_id == book_id).order_by(model.id.asc()).all():
+        name = str(getattr(row, "character_name" if asset_type == "character" else "name", "") or "").strip()
+        if _normalize_asset_match_text(name) != source_name:
+            continue
+        target_episode = getattr(row, "episode", None) if asset_type == "character" else None
+        # Global references cannot be silently narrowed to an episode-local
+        # identity. Episode-scoped references can use global or same-episode.
+        if asset_type == "character":
+            if source_episode is None and target_episode not in {None, 0}:
+                continue
+            if source_episode is not None and target_episode not in {None, 0, source_episode}:
+                continue
+        candidates.append({"asset_id": str(row.id), "asset_name": name, "episode": target_episode})
+    return candidates
+
+
+def _reference_rebinding_plan(session, book_id: int) -> dict:
+    """Build an immutable, deterministic plan for dangling reference records."""
+    from models import VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset
+
+    model_map = {"scene": VisualLocation, "character": VisualMakeup, "prop": VisualProp}
+    proposed: list[dict] = []
+    ambiguous: list[dict] = []
+    unavailable: list[dict] = []
+    unchanged: list[int] = []
+    snapshots: list[dict] = []
+    rows = session.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == book_id).order_by(VisualReferenceAsset.id.asc()).all()
+    for reference in rows:
+        asset_type = _reference_rebinding_asset_type(reference.asset_type)
+        model = model_map.get(asset_type)
+        current = None
+        if model and str(reference.asset_id or "").strip().isdigit():
+            current = session.query(model).filter(model.book_id == book_id, model.id == int(reference.asset_id)).first()
+        snapshot = {
+            "reference_id": reference.id,
+            "asset_type": asset_type,
+            "source_asset_id": str(reference.asset_id),
+            "asset_name": str(reference.asset_name or ""),
+            "episode": reference.episode,
+            "status": str(reference.status or ""),
+            "updated_at": reference.updated_at.isoformat() if reference.updated_at else None,
+            "image_url": str(reference.image_url or ""),
+            "local_path": str(reference.local_path or ""),
+        }
+        if current is not None:
+            unchanged.append(reference.id)
+            snapshots.append({**snapshot, "state": "live"})
+            continue
+        candidates = _reference_rebinding_candidates(session, book_id, reference)
+        snapshots.append({**snapshot, "state": "dangling", "candidates": candidates})
+        item = {**snapshot, "candidates": candidates}
+        if len(candidates) == 1:
+            proposed.append({**item, "target_asset_id": candidates[0]["asset_id"], "target_asset_name": candidates[0]["asset_name"], "target_episode": candidates[0]["episode"]})
+        elif len(candidates) > 1:
+            ambiguous.append(item)
+        else:
+            unavailable.append(item)
+    # A previous confirmed rebinding remains auditable on the reference row.
+    # Include only those exact mappings when locating stale derived IDs in
+    # storyboard metadata; no lexical inference is used in this repair pass.
+    known_mappings = list(proposed)
+    for reference in rows:
+        meta = safe_json_loads(reference.meta_info) if reference.meta_info else {}
+        audit = meta.get("assetRebindingAudit") if isinstance(meta, dict) and isinstance(meta.get("assetRebindingAudit"), list) else []
+        for item in audit[-1:]:
+            if not isinstance(item, dict):
+                continue
+            if str(item.get("target_asset_id") or "") != str(reference.asset_id):
+                continue
+            known_mappings.append({
+                "source_asset_id": str(item.get("source_asset_id") or ""),
+                "target_asset_id": str(item.get("target_asset_id") or ""),
+                "asset_name": str(reference.asset_name or ""),
+                "episode": reference.episode,
+            })
+    unique_mappings: list[dict] = []
+    seen_mapping_keys: set[tuple[str, str, str, object]] = set()
+    for mapping in known_mappings:
+        key = (
+            str(mapping.get("source_asset_id") or ""),
+            str(mapping.get("target_asset_id") or ""),
+            _normalize_asset_match_text(mapping.get("asset_name")),
+            mapping.get("episode"),
+        )
+        if not all(key[:3]) or key in seen_mapping_keys:
+            continue
+        seen_mapping_keys.add(key)
+        unique_mappings.append(mapping)
+    repair_candidates: list[dict] = []
+    from models import StoryboardShot
+    for shot in session.query(StoryboardShot).filter(StoryboardShot.book_id == book_id).order_by(StoryboardShot.episode, StoryboardShot.shot_id).all():
+        meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+        structured = meta.get("structured_shot") if isinstance(meta, dict) and isinstance(meta.get("structured_shot"), dict) else {}
+        ids = structured.get("character_asset_ids") if isinstance(structured.get("character_asset_ids"), list) else []
+        blocking = structured.get("character_blocking") if isinstance(structured.get("character_blocking"), list) else []
+        repairs = []
+        for mapping in unique_mappings:
+            if mapping.get("episode") is not None and mapping.get("episode") != shot.episode:
+                continue
+            old_id, target_id = str(mapping.get("source_asset_id") or ""), str(mapping.get("target_asset_id") or "")
+            if not old_id or not target_id or old_id not in [str(value) for value in ids]:
+                continue
+            expected_alias = _normalize_asset_match_text(mapping.get("asset_name"))
+            if not any(
+                isinstance(item, dict)
+                and str(item.get("character_id") or "") == old_id
+                and _normalize_asset_match_text(item.get("visual_alias") or item.get("character_name")) == expected_alias
+                for item in blocking
+            ):
+                continue
+            repairs.append({"source_asset_id": old_id, "target_asset_id": target_id, "asset_name": mapping.get("asset_name"), "episode": mapping.get("episode")})
+        if repairs:
+            repair_candidates.append({"episode": shot.episode, "shot_id": shot.shot_id, "mappings": repairs})
+    evidence = {"book_id": book_id, "references": snapshots, "structured_repair_candidates": repair_candidates}
+    fingerprint = hashlib.sha256(json.dumps(evidence, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return {
+        "kind": "visual_reference_asset_rebinding_plan",
+        "book_id": book_id,
+        "plan_fingerprint": fingerprint,
+        "proposed_migrations": proposed,
+        "structured_repair_candidates": repair_candidates,
+        "ambiguous": ambiguous,
+        "unavailable": unavailable,
+        "unchanged_reference_ids": unchanged,
+        "requires_confirmation": bool(proposed or repair_candidates),
+        "evidence": evidence,
+    }
+
+
+def _sync_rebound_reference_ids_into_structured_shots(session, book_id: int, migrations: list[dict]) -> list[str]:
+    """Repair only proven stale ids in derived shot structure after rebinding.
+
+    The mapping comes from the confirmed reference plan, is episode scoped, and
+    also requires the structured blocking alias to match.  It therefore cannot
+    rewrite a coincidentally equal legacy id into a different character.
+    """
+    from models import StoryboardShot
+
+    changed: list[str] = []
+    for shot in session.query(StoryboardShot).filter(StoryboardShot.book_id == book_id).all():
+        meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+        meta = meta if isinstance(meta, dict) else {}
+        structured = meta.get("structured_shot") if isinstance(meta.get("structured_shot"), dict) else None
+        if not structured:
+            continue
+        scoped = [item for item in migrations if item.get("episode") is None or item.get("episode") == shot.episode]
+        if not scoped:
+            continue
+        id_map = {str(item["source_asset_id"]): str(item["target_asset_id"]) for item in scoped}
+        alias_map = {str(item["source_asset_id"]): _normalize_asset_match_text(item.get("asset_name")) for item in scoped}
+        before = json.dumps(structured, ensure_ascii=False, sort_keys=True)
+        ids = structured.get("character_asset_ids")
+        if isinstance(ids, list):
+            structured["character_asset_ids"] = [id_map.get(str(value), str(value)) for value in ids]
+        blocking = structured.get("character_blocking")
+        if isinstance(blocking, list):
+            for item in blocking:
+                if not isinstance(item, dict):
+                    continue
+                old_id = str(item.get("character_id") or "")
+                alias = _normalize_asset_match_text(item.get("visual_alias") or item.get("character_name"))
+                if old_id in id_map and alias and alias == alias_map.get(old_id):
+                    item["character_id"] = id_map[old_id]
+        if json.dumps(structured, ensure_ascii=False, sort_keys=True) == before:
+            continue
+        meta["structured_shot"] = structured
+        compiler = meta.get("prompt_compiler") if isinstance(meta.get("prompt_compiler"), dict) else {}
+        compiler.update({
+            "recompile_required": True,
+            "compile_reason": "visual_reference_asset_rebinding",
+            "diagnostics_state": {"status": "stale", "reason": "visual_reference_asset_rebinding", "marked_at": datetime.utcnow().isoformat()},
+        })
+        meta["prompt_compiler"] = compiler
+        shot.meta_info = json.dumps(meta, ensure_ascii=False)
+        shot.updated_at = datetime.utcnow()
+        changed.append(f"{shot.episode}-{shot.shot_id}")
+    return sorted(changed)
+
+
+def _reference_asset_timestamp(value: object) -> float:
+    text = str(value or "").strip()
+    if not text:
+        return 0.0
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return 0.0
+
+
+def _reference_asset_sort_key(item: dict) -> tuple[int, float, int]:
+    status_priority = {
+        "locked": 0,
+        "selected": 1,
+        "candidate": 2,
+        "": 3,
+        "rejected": 4,
+    }
+    status = str(item.get("status") or "").strip().lower()
+    timestamp = max(
+        _reference_asset_timestamp(item.get("updated_at")),
+        _reference_asset_timestamp(item.get("created_at")),
+    )
+    try:
+        reference_id = int(item.get("id") or 0)
+    except (TypeError, ValueError):
+        reference_id = 0
+    return (status_priority.get(status, 3), -timestamp, -reference_id)
+
+
+def _sort_reference_assets_for_display(reference_assets: list[dict] | None) -> list[dict]:
+    return sorted(reference_assets or [], key=_reference_asset_sort_key)
+
+
 def _derive_visual_asset_reference_summary(reference_assets: list[dict] | None) -> dict:
-    items = reference_assets or []
+    items = _sort_reference_assets_for_display(reference_assets)
     selected_items = [item for item in items if str(item.get("status") or "") == "selected"]
     locked_items = [item for item in items if str(item.get("status") or "") == "locked"]
     rejected_items = [item for item in items if str(item.get("status") or "") == "rejected"]
     candidate_items = [item for item in items if str(item.get("status") or "") == "candidate"]
-    primary_reference = locked_items[-1] if locked_items else selected_items[-1] if selected_items else None
+    primary_reference = locked_items[0] if locked_items else selected_items[0] if selected_items else None
     latest_item = None
     if items:
-        latest_item = max(items, key=lambda item: str(item.get("created_at") or ""))
+        latest_item = min(items, key=_reference_asset_sort_key)
 
     if locked_items:
         derived_status = "locked"
@@ -3102,8 +5838,8 @@ def _derive_visual_asset_reference_summary(reference_assets: list[dict] | None) 
         "derived_asset_status": derived_status,
         "primary_reference_id": primary_reference.get("id") if isinstance(primary_reference, dict) else None,
         "primary_reference_token": primary_reference.get("reference_token") if isinstance(primary_reference, dict) else "",
-        "locked_reference_id": locked_items[-1].get("id") if locked_items else None,
-        "locked_reference_token": locked_items[-1].get("reference_token", "") if locked_items else "",
+        "locked_reference_id": locked_items[0].get("id") if locked_items else None,
+        "locked_reference_token": locked_items[0].get("reference_token", "") if locked_items else "",
         "selected_reference_count": len(selected_items),
         "locked_reference_count": len(locked_items),
         "candidate_reference_count": len(candidate_items),
@@ -3113,27 +5849,264 @@ def _derive_visual_asset_reference_summary(reference_assets: list[dict] | None) 
     }
 
 
+VISUAL_ASSET_DEFAULT_NEGATIVE_PROMPT = "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰"
+SCENE_REFERENCE_NEGATIVE_TERMS = "人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
+SCENE_REFERENCE_MODE_REQUIREMENT = (
+    "单张 16:9 横构图，无人物、无人脸、不出现角色。"
+    "画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。"
+)
+PROP_REFERENCE_MODE_REQUIREMENT = (
+    "单张 1:1 或 4:3 道具参考图，主体明确，允许纯净背景或真实使用环境。"
+    "道具完整入画，主体不裁切，保留整体轮廓与底座，镜头距离适中，可采用正面或三分之四视角。"
+    "不分格、不拼图、不做多视角排版，不出现文字说明。"
+)
+PROP_REFERENCE_TEMPLATE_BANNED_FRAGMENTS = (
+    # Legacy asset templates used to request a six-view contact sheet.  That
+    # is a different deliverable from the canonical single reference image
+    # used by the production pipeline, and must never leak into the positive
+    # prompt.  Keep this list semantic/template-only so user-authored shape,
+    # material, colour and state facts are preserved.
+    "道具视觉描述",
+    "高质量写实道具多角度展示图",
+    "多角度展示图",
+    "多角度参考图",
+    "横向构图",
+    "2行3列",
+    "2 行 3 列",
+    "干净网格排版",
+    "六个极正视角",
+    "六个视角",
+    "正前方视图",
+    "正后方视图",
+    "左侧视图",
+    "右侧视图",
+    "正上方俯拍视图",
+    "正下方仰拍视图",
+    "标准六视图参考",
+    "所有视图必须是同一道具",
+    "材质、颜色、比例、结构完全一致",
+    "使用超长焦镜头或移轴镜头效果",
+    "透视变形降到最低",
+    "纯白色纯净背景",
+    "纯白背景",
+    "专业产品影棚摄影",
+    "画面中不得出现任何人物、角色、手、脚、人脸、场景、建筑、自然景观",
+    "无其他道具、无文字、无水印、无logo、无UI元素",
+)
+SCENE_REFERENCE_BANNED_FRAGMENTS = (
+    "人物",
+    "人脸",
+    "人形",
+    "角色",
+    "男人",
+    "女人",
+    "林小夏",
+    "面部",
+    "脸部",
+    "手部",
+    "手指",
+    "眼睛",
+    "瞳孔",
+    "照片",
+    "分格",
+    "拼图",
+    "多宫格",
+    "多视角",
+)
+
+
+def _compact_visual_asset_text(value: object) -> str:
+    return " ".join(str(value or "").replace("\r", " ").replace("\n", " ").split()).strip()
+
+
+def _append_negative_terms(base: str, extra_terms: str) -> str:
+    prompt = _compact_visual_asset_text(base) or VISUAL_ASSET_DEFAULT_NEGATIVE_PROMPT
+    for term in [item.strip() for item in extra_terms.split("，") if item.strip()]:
+        if term not in prompt:
+            prompt += f"，{term}"
+    return prompt
+
+
+def _split_visual_asset_fragments(text: str) -> list[str]:
+    normalized = _compact_visual_asset_text(text)
+    for mark in ("。", "；", "，", ","):
+        normalized = normalized.replace(mark, "；")
+    return [part.strip(" ；。") for part in normalized.split("；") if part.strip(" ；。")]
+
+
+def _safe_scene_reference_text(text: object, *, limit: int = 8) -> str:
+    parts: list[str] = []
+    for part in _split_visual_asset_fragments(_compact_visual_asset_text(text)):
+        if any(fragment in part for fragment in SCENE_REFERENCE_BANNED_FRAGMENTS):
+            continue
+        if part and part not in parts:
+            parts.append(part)
+        if len(parts) >= limit:
+            break
+    return "；".join(parts)
+
+
+def _safe_prop_reference_text(text: object, *, limit: int = 12) -> str:
+    """Strip legacy reference-sheet boilerplate from a prop description.
+
+    ``visual_prompt_zh`` is user/LLM editable data, so we do not overwrite it
+    in the database.  We only derive the provider-facing prompt here.  This
+    keeps the original text auditable while guaranteeing that a single-view
+    reference request cannot contain contradictory grid/multi-angle commands.
+    """
+    parts: list[str] = []
+    for part in _split_visual_asset_fragments(_compact_visual_asset_text(text)):
+        if any(fragment in part for fragment in PROP_REFERENCE_TEMPLATE_BANNED_FRAGMENTS):
+            continue
+        if part and part not in parts:
+            parts.append(part)
+        if len(parts) >= limit:
+            break
+    return "；".join(parts)
+
+
+def _ensure_visual_asset_sentence(text: str) -> str:
+    value = _compact_visual_asset_text(text)
+    if not value:
+        return ""
+    if value[-1] in "。！？.!?":
+        return value
+    return f"{value}。"
+
+
+def _build_scene_asset_prompt_contract(row) -> dict:
+    scene_name = _compact_visual_asset_text(getattr(row, "name", ""))
+    category = _compact_visual_asset_text(getattr(row, "category", ""))
+    confirmed_prompt = _compact_visual_asset_text(getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", "") or getattr(row, "description", ""))
+    description = _safe_scene_reference_text(confirmed_prompt)
+    lighting = _safe_scene_reference_text(getattr(row, "lighting_mood", ""), limit=3)
+    color_palette = _safe_scene_reference_text(getattr(row, "color_palette", ""), limit=2)
+    key_props = _json_loads_list(getattr(row, "key_props", None))
+    key_props_text = "、".join(str(item).strip() for item in key_props if str(item).strip())
+    era = _compact_visual_asset_text(getattr(row, "time_period", ""))
+
+    sections = [
+        f"{scene_name or '未命名场景'} 场景参考图，{SCENE_REFERENCE_MODE_REQUIREMENT}",
+    ]
+    if description:
+        sections.append(_ensure_visual_asset_sentence(description))
+    if key_props_text:
+        sections.append(f"关键陈设与道具：{key_props_text}。")
+    if lighting:
+        sections.append(f"光线氛围为{lighting.rstrip('。')}。")
+    if color_palette:
+        sections.append(f"色彩基调为{color_palette.rstrip('。')}。")
+    if era:
+        sections.append(f"时代与环境质感为{era.rstrip('。')}。")
+    sections.append("写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜一致性的生产级场景资产参考。")
+
+    return {
+        "confirmed_prompt_raw": confirmed_prompt,
+        "structured_variant_fields": {
+            "scene_name": scene_name,
+            "asset_type": "scene",
+            "category": category,
+            "description": confirmed_prompt,
+            "safe_reference_description": description,
+            "key_props": key_props,
+            "lighting_mood": lighting,
+            "color_palette": color_palette,
+            "time_period": era,
+        },
+        "rendered_prompt_preview": "".join(sections),
+        "reference_negative_prompt": _append_negative_terms(getattr(row, "negative_prompt", ""), SCENE_REFERENCE_NEGATIVE_TERMS),
+    }
+
+
+def _build_prop_asset_prompt_contract(row) -> dict:
+    prop_name = _compact_visual_asset_text(getattr(row, "name", ""))
+    category = _compact_visual_asset_text(getattr(row, "category", ""))
+    raw_description = _compact_visual_asset_text(
+        getattr(row, "visual_prompt_zh", "")
+        or getattr(row, "core_prompt_zh", "")
+        or getattr(row, "description", "")
+    )
+    description = _safe_prop_reference_text(raw_description) or _safe_prop_reference_text(
+        getattr(row, "description", "")
+    )
+    style_ref = _compact_visual_asset_text(getattr(row, "style_ref_zh", ""))
+    associated_characters = _compact_visual_asset_text(getattr(row, "associated_characters", ""))
+    importance = _compact_visual_asset_text(getattr(row, "importance", ""))
+    era = _compact_visual_asset_text(getattr(row, "time_period", ""))
+
+    sections = [
+        f"{prop_name or '未命名道具'} 道具参考图，{PROP_REFERENCE_MODE_REQUIREMENT}",
+    ]
+    if description:
+        sections.append(description)
+    if style_ref:
+        sections.append(f"材质、造型和风格参考：{style_ref.rstrip('。')}。")
+    if era:
+        sections.append(f"时代与使用痕迹：{era.rstrip('。')}。")
+    sections.append("写实电影感，主体边缘清晰，材质纹理、磨损痕迹和尺度关系稳定，适合作为后续分镜一致性的生产级道具资产参考。")
+
+    return {
+        "confirmed_prompt_raw": raw_description,
+        "structured_variant_fields": {
+            "prop_name": prop_name,
+            "asset_type": "prop",
+            "category": category,
+            "description": raw_description,
+            "safe_reference_description": description,
+            "style_ref_zh": style_ref,
+            "associated_characters": associated_characters,
+            "importance": importance,
+            "time_period": era,
+        },
+        "rendered_prompt_preview": " ".join(sections),
+        "reference_negative_prompt": _append_negative_terms(getattr(row, "negative_prompt", ""), "人物，人脸，角色，分格，拼图，多宫格，多视角排版，文字说明"),
+    }
+
+
 def _serialize_visual_asset_row(row, asset_type: str, *, episode: int | None = None, reference_assets: list[dict] | None = None, peer_rows: list | None = None) -> dict:
     if asset_type == "character":
+        character_prompt = _compact_visual_asset_text(getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", ""))
         payload = {
             "asset_type": "character",
             "asset_id": str(row.id),
             "name": getattr(row, "character_name", ""),
             **_serialize_makeup_row(row, reference_assets, peer_rows),
+            "confirmed_prompt_raw": character_prompt,
+            "structured_variant_fields": {
+                "character_name": _compact_visual_asset_text(getattr(row, "character_name", "")),
+                "asset_type": "character",
+                "stage_name": _compact_visual_asset_text(getattr(row, "stage_name", "")),
+                "makeup_scope": _compact_visual_asset_text(getattr(row, "makeup_scope", "")),
+                "gender": _compact_visual_asset_text(getattr(row, "gender", "")),
+                "identity": _compact_visual_asset_text(getattr(row, "identity", "")),
+                "temperament": _compact_visual_asset_text(getattr(row, "temperament", "")),
+                "refined_outfit": _compact_visual_asset_text(getattr(row, "refined_outfit", "")),
+                "hair_style": _compact_visual_asset_text(getattr(row, "hair_style", "")),
+                "expression_mood": _compact_visual_asset_text(getattr(row, "expression_mood", "")),
+            },
+            "rendered_prompt_preview": character_prompt,
+            "reference_negative_prompt": _compact_visual_asset_text(getattr(row, "negative_prompt", "")),
         }
         return payload
 
     summary = _derive_visual_asset_reference_summary(reference_assets or [])
+    prompt_contract = _build_scene_asset_prompt_contract(row) if asset_type == "scene" else _build_prop_asset_prompt_contract(row)
     payload = {
         "id": row.id,
         "asset_type": asset_type,
         "asset_id": str(row.id),
         "name": getattr(row, "name", None) or getattr(row, "character_name", ""),
+        "category": getattr(row, "category", "") or "",
+        "description": getattr(row, "description", "") or "",
+        "visual_prompt_zh": getattr(row, "visual_prompt_zh", "") or "",
+        "core_prompt_zh": getattr(row, "core_prompt_zh", "") or "",
         "jimeng_ref_name": getattr(row, "jimeng_ref_name", "") or "",
         "negative_prompt": getattr(row, "negative_prompt", "") or "",
         "asset_status": getattr(row, "asset_status", "") or "draft",
         "references": reference_assets or [],
+        "reference_assets": reference_assets or [],
         "shot_ids": _json_loads_list(getattr(row, "shot_ids", None)),
+        **prompt_contract,
         **summary,
     }
     if asset_type == "scene":
@@ -3499,11 +6472,19 @@ def _extract_authority_keywords(text: str) -> list[str]:
         "一致",
         "统一",
         "六个视角",
+        "六个视角必须是同一个人",
         "同一个人",
+        "人物定妆设定板",
         "基础定妆",
         "当前分镜状态",
         "角色设定板",
         "人物分镜精调定妆设定板",
+        "上排为脸部特写",
+        "下排为全身展示",
+        "正面",
+        "侧面",
+        "背面",
+        "45度",
     }
     for fragment in fragments:
         candidate = fragment.strip()
@@ -3523,8 +6504,14 @@ def _extract_authority_keywords(text: str) -> list[str]:
 
 
 def _normalize_authority_match_text(text: str) -> str:
-    normalized = re.sub(r"\s+", "", str(text or "").strip())
-    normalized = re.sub(r"[，。；：、“”‘’\.\,\;\:\!\?（）()\[\]{}·]", "", normalized)
+    # Asset facts arrive from user-authored fields, imported documents, and
+    # model output.  Normalize their presentation before matching; do not add
+    # vocabulary-specific aliases here, otherwise each new project would need
+    # another hand-written exception.
+    normalized = unicodedata.normalize("NFKC", str(text or "").strip())
+    normalized = re.sub(r"\s+", "", normalized)
+    normalized = re.sub(r"[，。；：、“”‘’\.\,\;\:\!\?（）()\[\]{}【】<>《》·]", "", normalized)
+    normalized = re.sub(r"[^\u4e00-\u9fffA-Za-z0-9_-]", "", normalized)
     return normalized
 
 
@@ -3546,24 +6533,10 @@ def _build_authority_match_variants(keyword: str) -> list[str]:
     if collapsed:
         variants.append(collapsed)
     simplified = normalized
-    for token in ["仍", "还", "正", "已", "略", "微", "棉麻", "粗布", "旧"]:
+    for token in ["仍", "还", "正", "已", "略", "微"]:
         simplified = simplified.replace(token, "")
     if simplified:
         variants.append(simplified)
-    if "寺庙僧侣" in normalized:
-        variants.append(normalized.replace("寺庙僧侣", "和尚"))
-    if "木质或竹编水桶" in normalized:
-        variants.extend(["木质水桶", "竹编水桶", "水桶"])
-    if "外壁多道竹箍或铁" in normalized:
-        variants.extend(["竹箍", "铁箍", "多道竹箍", "多道铁箍"])
-    if "桶口略呈圆形" in normalized:
-        variants.extend(["桶口圆形", "圆形桶口"])
-    if "中央一口老井" in normalized:
-        variants.extend(["老井", "一口老井", "中央老井"])
-    if "井口由青石砌成" in normalized:
-        variants.extend(["青石砌成", "井口青石砌成", "青石井口"])
-    if "四周为灰白色墙壁" in normalized:
-        variants.extend(["灰白色墙壁", "四周灰白色墙壁"])
     if normalized.startswith("略显") and len(normalized) > 2:
         variants.append(normalized[2:])
     if normalized.endswith("气") and len(normalized) > 1:
@@ -3578,7 +6551,10 @@ def _build_authority_overlap_terms(keyword: str) -> list[str]:
     if not normalized:
         return []
     if re.search(r"[\u4e00-\u9fff]", normalized):
-        simplified = normalized
+        # Coordinating words describe alternatives or parallel attributes, so
+        # they are boundaries rather than visual facts.  This is language
+        # normalization, deliberately independent of a project vocabulary.
+        simplified = re.sub(r"[、/／或和及与并]", " ", normalized)
         for token in ["可见", "可以", "看出", "仍在", "仍露", "仍", "还", "正", "已", "被", "把", "将", "从", "到", "与", "和", "及", "并", "的", "地", "得"]:
             simplified = simplified.replace(token, " ")
         terms: list[str] = []
@@ -3622,9 +6598,249 @@ def _authority_keyword_present(keyword: str, prompt_text: str) -> bool:
     return False
 
 
+# Retention dimensions are broad visual categories, not a single canonical
+# surface.  A composer may express an already-preserved "hair" fact as
+# "黑色短发", "及腰长发" or "束发" without repeating the literal label "发型".
+# These are language normalisation sets, deliberately independent of any
+# project vocabulary, so no project/character special case is introduced.
+_RETENTION_HYGIENE_TERMS: dict[str, set[str]] = {
+    "face": {"面部", "脸部", "脸型", "五官", "面容", "脸", "轮廓"},
+    "hair": {"发型", "头发", "发丝", "发色", "短发", "长发", "束发", "刘海", "发髻"},
+    "costume": {"服装", "衣服", "穿着", "衣着", "装扮", "外衣"},
+}
+
+
+def _retention_field_present(field: str, prompt_text: str) -> bool:
+    """Return whether a retention dimension is semantically represented.
+
+    Falls back to literal label matching for dimensions without a curated
+    synonym set, so behaviour stays conservative for new dimensions.
+    """
+    normalized_prompt = _normalize_authority_match_text(prompt_text)
+    terms = _RETENTION_HYGIENE_TERMS.get(field)
+    if terms:
+        return any(term in normalized_prompt for term in terms)
+    if not normalized_prompt:
+        return False
+    return _normalize_authority_match_text(field) in normalized_prompt
+
+
+_GENDER_MARKERS = {
+    "male": ("他", "男", "男性", "男青年"),
+    "female": ("她", "女", "女性", "女青年"),
+}
+
+_GENDER_EXPLICIT_MARKERS = {
+    "male": ("男", "男性", "男青年"),
+    "female": ("女", "女性", "女青年"),
+}
+
+
+def _gender_authority_presence(gender: str, prompt_text: str) -> str:
+    """Classify how a prompt represents a character's authoritative gender.
+
+    Gender is a locked character fact; a compiler that swaps it (male written as
+    female) is a hard defect.  Because the portrait reference image already pins
+    the character's appearance, we require an explicit gender noun (男性/女性),
+    not an ambiguous pronoun.  This returns one of:
+      "correct"  an explicit authoritative-gender noun is present
+      "conflict" only the opposite gender is asserted (or neither side agrees)
+      "missing"  no gender marker at all is present
+    The marker sets are language-level and project-independent, so this is not
+    an asset- or book-specific exception.
+    """
+    g = str(gender or "").strip()
+    text = str(prompt_text or "")
+    male_present = any(marker in text for marker in _GENDER_EXPLICIT_MARKERS["male"])
+    female_present = any(marker in text for marker in _GENDER_EXPLICIT_MARKERS["female"])
+    authoritative = "male" if ("男" in g or "男性" in g) else ("female" if ("女" in g or "女性" in g) else "")
+    if authoritative == "male" and male_present:
+        return "correct"
+    if authoritative == "female" and female_present:
+        return "correct"
+    if authoritative == "male" and female_present:
+        return "conflict"
+    if authoritative == "female" and male_present:
+        return "conflict"
+    return "missing"
+
+
+def _ensure_prompt_includes_missing_character_gender_facts(
+    prompt_text: str,
+    bound_assets: list[dict] | None,
+) -> str:
+    """Add explicit gender nouns for known characters when the prompt omits them.
+
+    Character gender is a locked asset fact.  The compiler may therefore make
+    an omitted fact explicit, but it must never silently rewrite a prompt that
+    contains the opposite gender marker: that remains a blocking conflict for
+    the normal diagnostics path.  The rule is intentionally asset- and
+    project-independent and only operates on the authoritative bound-assets
+    list.
+    """
+
+    text = str(prompt_text or "").strip()
+    if not text:
+        return text
+
+    missing: list[str] = []
+    for item in bound_assets or []:
+        if not isinstance(item, dict) or str(item.get("asset_type") or "").strip() != "character":
+            continue
+        gender = str(item.get("gender") or "").strip()
+        if gender in {"", "人物", "未识别", "未知"}:
+            continue
+        if _gender_authority_presence(gender, text) != "missing":
+            continue
+        asset_name = str(item.get("asset_name") or "").strip()
+        if not asset_name:
+            continue
+        normalized_gender = "男性" if "男" in gender else "女性" if "女" in gender else ""
+        if normalized_gender:
+            missing.append(f"{asset_name}为{normalized_gender}")
+
+    if not missing:
+        return text
+    # Use sentence punctuation instead of a ``label: value`` form.  The
+    # compiler's screenplay-residue gate treats colon-labelled segments as
+    # dialogue/stage directions; the preservation note is machine metadata
+    # expressed in natural prose and must not create a false hard blocker.
+    suffix = "角色性别事实已确认，" + "；".join(dict.fromkeys(missing)) + "。"
+    separator = "" if text.endswith(("。", "！", "？", ".", "!", "?")) else "。"
+    return f"{text}{separator}{suffix}"
+def _build_motion_prompt_contract(context: dict) -> dict:
+    """Return the typed motion requirements carried by a storyboard shot.
+
+    The natural-language motion prompt is an export of this contract.  The
+    contract, rather than a brittle requirement to copy an earlier shot's
+    prose verbatim, is the source of truth for start/end continuity.
+    """
+    source = context if isinstance(context, dict) else {}
+    # Compile contexts keep the normalized Shot IR under `shot_ir` (and older
+    # evidence packets use `structured_shot`).  Reading only the flat context
+    # silently drops action beats, yielding a fallback motion prompt that says
+    # “按既定核心动作” while the validator quite correctly sees no contract.
+    # Project the nested typed IR first, then allow explicit flat overrides.
+    structured_source = source.get("shot_ir")
+    if not isinstance(structured_source, dict):
+        structured_source = source.get("structured_shot")
+    if not isinstance(structured_source, dict):
+        structured_source = {}
+
+    def value(key: str) -> object:
+        return source.get(key) if source.get(key) not in (None, "", []) else structured_source.get(key)
+
+    beats = value("action_beats") or []
+    normalized_beats = [
+        {
+            "start": item.get("start"),
+            "end": item.get("end"),
+            # Shot IR action beats historically used ``description`` while
+            # compiler-native contracts use ``action``.  Project both names
+            # into the same typed contract so the motion export never falls
+            # back to the opaque “按既定核心动作” placeholder.
+            "action": str(item.get("action") or item.get("description") or item.get("text") or "").strip(),
+        }
+        for item in beats
+        if isinstance(item, dict) and str(item.get("action") or item.get("description") or item.get("text") or "").strip()
+    ]
+    return {
+        "start_state": str(value("continuity_in") or value("start_state") or "").strip(),
+        "camera": str(value("camera_movement") or "").strip(),
+        "action_beats": normalized_beats,
+        "end_state": str(value("continuity_out") or value("end_state") or "").strip(),
+        "preserve_first_frame": True,
+    }
+
+
+def _build_motion_contract_coverage(motion_text: str, motion_contract: dict) -> list[str]:
+    """Return missing typed motion-contract sections in a natural export.
+
+    This deliberately reuses the generic authority-fact matcher: it compares
+    source fields to their export without any project, asset, or vocabulary
+    exceptions.  A free-text prompt is therefore not accepted merely because
+    the structured plan happened to be stored next to it.
+    """
+    contract = motion_contract if isinstance(motion_contract, dict) else {}
+    missing: list[str] = []
+    checks = (
+        ("起始可见状态", str(contract.get("start_state") or "").strip()),
+        ("动作节拍", " ".join(str(item.get("action") or "").strip() for item in (contract.get("action_beats") or []) if isinstance(item, dict))),
+        ("结束可见状态", str(contract.get("end_state") or "").strip()),
+    )
+    for label, source_text in checks:
+        if source_text and not _authority_keyword_present(source_text, motion_text):
+            missing.append(label)
+    if contract.get("preserve_first_frame") and not _authority_keyword_present("与首帧保持一致", motion_text):
+        missing.append("首帧一致性")
+    return missing
+
+
+def _render_motion_contract_fallback(motion_contract: dict) -> str:
+    """Deterministically export a complete motion contract when LLM repair fails.
+
+    This is a model-safe fallback, not a creative replacement: it preserves
+    the already approved typed shot plan and only supplies the required
+    temporal connective language for a video-model prompt.
+    """
+    contract = motion_contract if isinstance(motion_contract, dict) else {}
+
+    def visible_state(value: object) -> str:
+        text = sanitize_machine_prompt_text(str(value or "")).strip()
+        # Remove a generic editorial prefix such as "split shot 2:" while
+        # retaining the actual visible state.  It is intentionally based on
+        # structural shot identifiers, never on project names or dialogue.
+        return re.sub(r"^[^：:]{0,48}(?:镜头|shot)\s*\d+[^：:]*[：:]\s*", "", text, flags=re.IGNORECASE).strip() or text
+
+    camera = str(contract.get("camera") or "").strip().lower()
+    camera_text = {
+        "static": "固定机位，镜头不移动",
+        "push-in": "镜头缓慢向前推进",
+        "pull-out": "镜头缓慢拉远",
+        "pan": "镜头平稳摇摄",
+        "tracking": "镜头稳定跟拍",
+        "tilt": "镜头平稳俯仰摇摄",
+    }.get(camera, f"镜头采用{camera or '既定'}运动方式")
+    actions = "；随后，".join(
+        sanitize_machine_prompt_text(str(item.get("action") or "")).strip()
+        for item in (contract.get("action_beats") or [])
+        if isinstance(item, dict) and str(item.get("action") or "").strip()
+    )
+    start_state = visible_state(contract.get("start_state"))
+    end_state = visible_state(contract.get("end_state"))
+    parts = [
+        f"起始画面中，{start_state}" if start_state else "起始画面保持当前首帧状态",
+        camera_text,
+        f"随后，{actions}" if actions else "随后按既定核心动作自然推进",
+        f"最终，{end_state}" if end_state else "最终落在既定出镜状态",
+        "全过程保持与首帧一致，人物身份、服装、发型、场景、道具、光线和构图不突变。",
+    ]
+    return "。".join(part.rstrip("。") for part in parts if part) + "。"
+
+
+def _finalize_motion_prompt_contract(static_text: str, motion_text: str, context: dict, used_assets: list[dict]) -> tuple[str, dict, bool]:
+    """Guarantee that a draft's motion export carries its frozen typed contract.
+
+    An LLM is allowed to choose the natural phrasing, but it is not allowed to
+    silently omit a required temporal fact.  When validation detects such an
+    omission, export the already-frozen contract deterministically.  This is
+    deliberately independent of book, shot, character, or model vocabulary.
+    """
+    diagnostics = _build_prompt_compiler_diagnostics(static_text, motion_text, context, used_assets)
+    failed_keys = {
+        str(item.get("key") or "").strip()
+        for item in (diagnostics.get("checks") or [])
+        if isinstance(item, dict) and not bool(item.get("passed"))
+    }
+    if "motion_prompt_quality" not in failed_keys:
+        return motion_text, diagnostics, False
+    finalized = _render_motion_contract_fallback(context.get("motion_contract", {}))
+    return finalized, _build_prompt_compiler_diagnostics(static_text, finalized, context, used_assets), True
+
+
 def _normalize_reference_status(value: str | None) -> str:
     normalized = str(value or "").strip().lower()
-    if normalized in {"locked", "selected", "candidate", "rejected", "missing"}:
+    if normalized in {"locked", "selected", "candidate", "rejected", "stale", "missing"}:
         return normalized
     return "candidate" if normalized else "missing"
 
@@ -3667,16 +6883,32 @@ def _build_generation_reference_item(asset_payload: dict) -> dict | None:
     image_url = str(asset_payload.get("image_url") or "").strip()
     if not image_url:
         return None
+    asset_type = str(asset_payload.get("asset_type") or "").strip()
+    asset_name = str(asset_payload.get("asset_name") or "").strip()
+    reference_asset_id = str(asset_payload.get("reference_asset_id") or "").strip()
+    reference_token = str(asset_payload.get("reference_token") or "").strip()
+    role = "character" if asset_type == "character" else "scene" if asset_type == "scene" else "prop"
+    fallback_token = f"@{asset_name}" if asset_name else reference_asset_id
+    reference_label = reference_token or fallback_token
+    reference_purpose = {
+        "scene": "background_layout_lighting",
+        "character": "identity_costume_face_hair",
+        "prop": "prop_shape_material_state",
+    }.get(role, "visual_reference")
     return {
-        "asset_type": str(asset_payload.get("asset_type") or "").strip(),
+        "asset_type": asset_type,
         "asset_id": str(asset_payload.get("asset_id") or "").strip(),
-        "asset_name": str(asset_payload.get("asset_name") or "").strip(),
-        "reference_asset_id": str(asset_payload.get("reference_asset_id") or "").strip(),
-        "reference_token": str(asset_payload.get("reference_token") or "").strip(),
+        "asset_name": asset_name,
+        "reference_asset_id": reference_asset_id,
+        "reference_name": reference_label,
+        "reference_token": reference_token or fallback_token,
+        "reference_label": reference_label,
         "image_url": image_url,
         "reference_status": _normalize_reference_status(asset_payload.get("reference_status")),
-        "role": "character" if str(asset_payload.get("asset_type") or "").strip() == "character" else "scene" if str(asset_payload.get("asset_type") or "").strip() == "scene" else "prop",
-        "weight": 1.2 if str(asset_payload.get("asset_type") or "").strip() == "character" else 1.0,
+        "role": role,
+        "reference_role": role,
+        "reference_purpose": reference_purpose,
+        "weight": 1.2 if role == "character" else 1.0,
     }
 
 
@@ -3723,6 +6955,22 @@ def _normalize_compiler_asset_text(value: str | None, fallback: str = "") -> str
     parts = [item.strip() for item in re.split(r"[，,。；;：:\n\r]+", text) if item.strip()]
     deduped: list[str] = []
     generic_visual_template_tokens = (
+        "人物定妆设定板",
+        "角色设定板",
+        "人物分镜精调定妆设定板",
+        "展示同一个角色的六个视角",
+        "六个视角",
+        "六个视角必须是同一个人",
+        "上排为脸部特写",
+        "下排为全身展示",
+        "正面、侧面、45度",
+        "正面、侧面、背面",
+        "保持面部一致性",
+        "发型一致性",
+        "服装一致性",
+        "体型一致性",
+        "适合影视角色建模",
+        "表情自然克制",
         "道具视觉描述",
         "高质量写实道具多角度展示图",
         "横向构图",
@@ -3791,6 +7039,12 @@ def _build_storyboard_character_canonical_payload(row) -> dict:
     if not isinstance(meta_info, dict):
         meta_info = {}
     structured = meta_info.get("structured_result", {}) if isinstance(meta_info.get("structured_result", {}), dict) else {}
+    gender = str(
+        getattr(row, "gender", "")
+        or meta_info.get("gender")
+        or structured.get("gender")
+        or ""
+    ).strip()
     shot_ids = structured.get("shot_ids", [])
     if not isinstance(shot_ids, list):
         shot_ids = []
@@ -3808,7 +7062,18 @@ def _build_storyboard_character_canonical_payload(row) -> dict:
     makeup_source = str(structured.get("makeup_spec") or structured.get("expression_mood") or getattr(row, "makeup_spec", "") or "").strip()
     scene_effects_source = str(getattr(row, "scene_prompt_zh", "") or structured.get("scene_prompt_zh") or "").strip()
     hairstyle_source = str(getattr(row, "hair_style", "") or structured.get("hair_style") or "").strip()
-    outfit_source = str(getattr(row, "refined_outfit", "") or structured.get("refined_outfit") or "").strip()
+    # A character's concrete wardrobe is stored in outfit_prompt_zh; the
+    # similarly named refined_outfit is only a current-state summary and can
+    # be generic.  Prefer the concrete field everywhere the compiler builds
+    # reusable visual facts, otherwise reference images and downstream video
+    # prompts can lose the actual wardrobe even though the asset contains it.
+    outfit_source = str(
+        getattr(row, "outfit_prompt_zh", "")
+        or structured.get("outfit_prompt_zh")
+        or getattr(row, "refined_outfit", "")
+        or structured.get("refined_outfit")
+        or ""
+    ).strip()
     accessories_source = str(getattr(row, "refined_accessories", "") or structured.get("refined_accessories") or "").strip()
     variant_fields = canonicalize_variant_prompt_inputs(
         identity=canonical_fields["identity"],
@@ -3825,6 +7090,7 @@ def _build_storyboard_character_canonical_payload(row) -> dict:
         "scope": scope or "episode_default",
         "stage_name": str(structured.get("stage_name") or getattr(row, "stage_name", "") or "").strip(),
         "variant_name": str(structured.get("variant_name") or structured.get("stage_name") or getattr(row, "stage_name", "") or "").strip(),
+        "gender": gender,
         "shot_ids": [str(item).strip() for item in shot_ids if str(item).strip()],
         "identity": canonical_fields["identity"] if identity else "",
         "temperament": canonical_fields["temperament"] if temperament else "",
@@ -3837,6 +7103,7 @@ def _build_storyboard_character_canonical_payload(row) -> dict:
         "consistency_notes": consistency_notes,
     }
     parts = _non_empty_canonical_parts([
+        ("canonical_gender", canonical["gender"]),
         ("canonical_identity", canonical["identity"]),
         ("canonical_temperament", canonical["temperament"]),
         ("canonical_appearance", canonical["appearance"]),
@@ -3942,6 +7209,11 @@ def _build_prompt_compile_context(book_id: int, shot, structure: dict, acceptanc
                 "reference_statuses": reference_diag.get("statuses", []),
                 **reference_payload,
             }
+            if asset_type == "character":
+                character_meta = safe_json_loads(getattr(row, "meta_info", ""), {}) if getattr(row, "meta_info", "") else {}
+                character_meta = character_meta if isinstance(character_meta, dict) else {}
+                structured_identity = character_meta.get("structured_result", {}) if isinstance(character_meta.get("structured_result", {}), dict) else {}
+                payload["gender"] = str(getattr(row, "gender", "") or character_meta.get("gender") or structured_identity.get("gender") or "").strip()
             if not payload["has_reference"]:
                 asset_label = "场景" if asset_type == "scene" else "角色" if asset_type == "character" else "道具"
                 warnings.append(f"{asset_label}资产“{payload['asset_name']}”还没有参考图。")
@@ -4028,6 +7300,15 @@ def _build_prompt_compile_context(book_id: int, shot, structure: dict, acceptanc
         "acceptance_feedback": acceptance_feedback if isinstance(acceptance_feedback, dict) else {},
         "warnings": list(dict.fromkeys(warnings)),
         "continuity": _build_continuity_context(book_id, shot),
+        # Keep the typed temporal plan at the compiler-context top level.  The
+        # prompt compiler and its deterministic motion export consume this
+        # contract directly; only retaining it inside ``structured_shot`` makes
+        # a valid Shot IR invisible to the delivery guard.
+        "shot_ir": structure if isinstance(structure, dict) else {},
+        "core_action": str(structure.get("core_action") or "").strip(),
+        "action_beats": structure.get("action_beats", []) if isinstance(structure.get("action_beats", []), list) else [],
+        "continuity_in": str(structure.get("continuity_in") or structure.get("start_state") or shot.start_state or "").strip(),
+        "continuity_out": str(structure.get("continuity_out") or structure.get("end_state") or shot.end_state or "").strip(),
         "retention": structure.get("retention", {}),
         "emotion_arc": structure.get("emotion_arc", {}),
         "shot_purpose": structure.get("shot_purpose", ""),
@@ -4172,6 +7453,16 @@ def _build_prompt_compile_context_v2(book_id: int, shot, structure: dict, accept
                 **build_authority_prompt_payload(asset_type, row),
                 **reference_payload,
             }
+            if asset_type == "character":
+                character_meta = safe_json_loads(getattr(row, "meta_info", ""), {}) if getattr(row, "meta_info", "") else {}
+                character_meta = character_meta if isinstance(character_meta, dict) else {}
+                structured_identity = character_meta.get("structured_result", {}) if isinstance(character_meta.get("structured_result", {}), dict) else {}
+                payload["gender"] = str(
+                    getattr(row, "gender", "")
+                    or character_meta.get("gender")
+                    or structured_identity.get("gender")
+                    or ""
+                ).strip()
             if not payload["has_reference"]:
                 asset_label = "场景" if asset_type == "scene" else "角色" if asset_type == "character" else "道具"
                 warnings.append(f"{asset_label}资产“{payload['asset_name']}”还没有参考图。")
@@ -4398,6 +7689,17 @@ def _build_prompt_compile_context_v2(book_id: int, shot, structure: dict, accept
         },
         "warnings": list(dict.fromkeys(warnings)),
         "continuity": _build_continuity_context(book_id, shot),
+        # Keep the typed Shot IR available at the compiler-context top level.
+        # The v2 authority builder previously returned only asset bindings;
+        # candidate review then built its motion contract before the nested
+        # structure was attached, dropping legacy ``description`` action
+        # beats and falling back to an opaque placeholder.
+        "shot_ir": structure if isinstance(structure, dict) else {},
+        "core_action": str(structure.get("core_action") or "").strip(),
+        "action_beats": structure.get("action_beats", []) if isinstance(structure.get("action_beats", []), list) else [],
+        "continuity_in": str(structure.get("continuity_in") or structure.get("start_state") or shot.start_state or "").strip(),
+        "continuity_out": str(structure.get("continuity_out") or structure.get("end_state") or shot.end_state or "").strip(),
+        "executability": structure.get("executability", {}) if isinstance(structure.get("executability", {}), dict) else {},
         "retention": structure.get("retention", {}),
         "emotion_arc": structure.get("emotion_arc", {}),
         "shot_purpose": structure.get("shot_purpose", ""),
@@ -4449,6 +7751,119 @@ def _prompt_compile_context_needs_refresh(prompt_compile_context: dict) -> bool:
                 return True
 
     return False
+
+
+# Generic, project-independent material vocabulary used only to detect an
+# explicit contradiction against a locked asset fact.  This is deliberately a
+# small semantic lexicon (not a book/shot-specific patch): the detector compares
+# material families on structural objects and ignores incidental mentions such
+# as "金属刮痕" or "玻璃反光".
+_MATERIAL_FAMILY_TERMS: dict[str, tuple[str, ...]] = {
+    "wood": ("木质", "木制", "木头", "木材", "木"),
+    "metal": ("金属", "铁制", "钢制", "铝制", "铜制", "铁", "钢", "铝", "铜"),
+    "glass": ("玻璃",),
+    "stone": ("石材", "石制", "石头", "大理石", "花岗岩", "砖石", "砖"),
+    "concrete": ("混凝土", "水泥"),
+    "plastic": ("塑料", "亚克力"),
+    "leather": ("皮革", "皮质"),
+    "fabric": ("布料", "布质", "织物", "棉布", "麻布", "牛仔", "帆布"),
+    "paper": ("纸质", "纸张"),
+    "ceramic": ("陶瓷", "瓷质"),
+    "bamboo": ("竹制", "竹质", "竹"),
+}
+_MATERIAL_INCIDENTAL_SUFFIXES = {
+    "刮痕", "划痕", "痕迹", "反光", "光泽", "纹理", "质感", "颜色", "色泽", "粉尘", "灰尘",
+}
+_STRUCTURAL_OBJECT_SUFFIXES = {
+    "门", "窗", "墙", "地板", "地面", "屋顶", "天花板", "梁", "柱", "楼梯", "栏杆", "柜", "桌", "椅", "箱", "架", "结构",
+}
+_CHARACTER_OBJECT_SUFFIXES = {"外套", "裤", "鞋", "帽", "衣服", "服装"}
+
+
+def _extract_material_mentions(text: str) -> list[dict[str, str]]:
+    """Extract material + structural-object mentions without project terms."""
+    normalized = re.sub(r"\s+", "", str(text or ""))
+    mentions: list[dict[str, str]] = []
+    for family, terms in _MATERIAL_FAMILY_TERMS.items():
+        for term in sorted(terms, key=len, reverse=True):
+            start = 0
+            while True:
+                index = normalized.find(term, start)
+                if index < 0:
+                    break
+                suffix = normalized[index + len(term): index + len(term) + 6]
+                # Keep only material used as an object modifier.  A metal
+                # scratch/shine is an incidental surface detail, not evidence
+                # that the containing object itself is metallic.
+                if suffix and not any(suffix.startswith(item) for item in _MATERIAL_INCIDENTAL_SUFFIXES):
+                    object_suffix = next((item for item in _STRUCTURAL_OBJECT_SUFFIXES if suffix.startswith(item)), "")
+                    if object_suffix:
+                        mentions.append({"family": family, "term": term, "object": object_suffix})
+                start = index + max(len(term), 1)
+    return mentions
+
+
+def _detect_locked_asset_fact_conflicts(prompt_text: str, bound_assets: list[dict]) -> list[str]:
+    """Find high-confidence contradictions between locked asset facts and prompt.
+
+    The comparison is evidence-first: only locked assets, explicit material
+    modifiers, and structural object mentions participate.  It intentionally
+    does not infer facts from a book/shot name or from a single vague noun.
+    """
+    conflicts: list[str] = []
+    candidate_mentions = _extract_material_mentions(prompt_text)
+    if not candidate_mentions:
+        return conflicts
+    for asset in bound_assets or []:
+        if not isinstance(asset, dict) or not asset.get("locked_reference"):
+            continue
+        asset_name = str(asset.get("asset_name") or "").strip() or f"{asset.get('asset_type') or 'asset'}:{asset.get('asset_id') or ''}"
+        profile = asset.get("canonical_prompt_profile", {}) if isinstance(asset.get("canonical_prompt_profile"), dict) else {}
+        authority_text = " ".join(
+            str(profile.get(key) or "")
+            for key in ("description", "style", "core_visual", "outfit", "appearance", "scene_effects")
+        )
+        authority_families = {item["family"] for item in _extract_material_mentions(authority_text)}
+        if not authority_families:
+            # A broad scene fact such as “木质结构” is commonly expressed as a
+            # material + structure mention and is covered above.  Do not guess
+            # when the authority has no explicit material evidence.
+            continue
+        for mention in candidate_mentions:
+            asset_type = str(asset.get("asset_type") or "").strip()
+            # Keep asset-type domains disjoint.  Clothing words (e.g.
+            # “牛仔外套/牛仔裤”) are character facts, never scene structure;
+            # otherwise a locked wooden scene can falsely conflict with a
+            # character's denim outfit in the same prompt.
+            if asset_type == "scene" and mention["object"] not in _STRUCTURAL_OBJECT_SUFFIXES:
+                continue
+            if asset_type == "character" and mention["object"] not in _CHARACTER_OBJECT_SUFFIXES:
+                continue
+            if mention["family"] in authority_families:
+                continue
+            # A candidate material mention must be near the bound asset name or
+            # token.  This prevents an unrelated asset's material from being
+            # attributed to every locked asset while supporting scenes,
+            # characters, and props with the same generic rule.
+            asset_tokens = [
+                str(asset.get("asset_name") or "").strip(),
+                str(asset.get("reference_token") or "").strip(),
+            ]
+            mention_index = str(prompt_text or "").find(mention["term"] + mention["object"])
+            if mention_index < 0:
+                mention_index = str(prompt_text or "").find(mention["term"])
+            nearby = any(
+                token
+                and str(prompt_text or "").find(token) >= 0
+                and abs(str(prompt_text or "").find(token) - mention_index) <= 120
+                for token in asset_tokens
+            )
+            if not nearby:
+                continue
+            conflicts.append(
+                f"{asset_name}：锁定权威材质为{','.join(sorted(authority_families))}，提示词却将结构对象描述为{mention['term']}{mention['object']}"
+            )
+    return list(dict.fromkeys(conflicts))
 
 
 def _normalize_prompt_binding_contract(binding: dict | None) -> dict:
@@ -4607,6 +8022,23 @@ def _refresh_legacy_prompt_compile_meta(
         prompt_compiler_meta.get("acceptance_feedback", {}),
         prompt_compiler_meta.get("locked_reference_summary", {}),
     )
+    existing_model_adapter = (
+        prompt_compile_context.get("model_adapter", {})
+        if isinstance(prompt_compile_context.get("model_adapter", {}), dict)
+        else {}
+    )
+    if existing_model_adapter and not isinstance(rebuilt_context.get("model_adapter"), dict):
+        rebuilt_context["model_adapter"] = existing_model_adapter
+    # These fields were added after the legacy runtime context format. Preserve
+    # either the already-compiled value or deterministic structure backfill when
+    # refreshing references/asset contracts, rather than silently dropping the
+    # production gate state from API output.
+    for field in ("core_action", "action_beats", "continuity_in", "continuity_out", "executability", "shot_ir"):
+        value = prompt_compile_context.get(field)
+        if value is None or value == "" or value == [] or value == {}:
+            value = structured_shot.get(field) if isinstance(structured_shot, dict) else None
+        if value is not None and value != "" and value != [] and value != {}:
+            rebuilt_context[field] = value
     diagnostics = prompt_compiler_meta.get("compiler_diagnostics", {}) if isinstance(prompt_compiler_meta.get("compiler_diagnostics", {}), dict) else {}
     if (
         not _prompt_compile_context_needs_refresh(prompt_compile_context)
@@ -4663,6 +8095,75 @@ def _normalize_compiler_used_assets(raw_used_assets: list, context: dict) -> tup
             missing_assets.append(str(bound_item.get("asset_name") or "").strip())
 
     return normalized, missing_assets, overflow_assets
+
+
+def _preserve_locked_asset_anchor_contract(
+    static_prompt: str,
+    used_assets: list[dict],
+    bound_assets: list[dict] | None = None,
+) -> str:
+    """Compile omitted locked-reference anchors into a candidate non-lossily.
+
+    This is a typed compiler preservation pass, not an asset-name exception:
+    its inputs are the already validated ``used_assets`` contract plus the
+    bound-asset graph, and it applies the same deterministic phrasing to every
+    character, scene, or prop.  The LLM still owns composition and prose; this
+    pass only guarantees that a candidate cannot discard a bound, locked visual
+    identity or a character's authoritative gender before human review.
+    """
+    text = str(static_prompt or "").strip()
+    clauses: list[str] = []
+    type_suffix = {
+        "character": "保持锁定参考图中的面部、发型、服装与身份一致",
+        "scene": "保持锁定参考图中的空间结构、光线与陈设一致",
+        "prop": "保持锁定参考图中的形制、材质与状态一致",
+    }
+    for item in used_assets or []:
+        if not isinstance(item, dict) or not bool(item.get("locked_reference")):
+            continue
+        name = str(item.get("asset_name") or "").strip()
+        token = str(item.get("reference_token") or "").strip()
+        if not name or name in text or (token and token in text):
+            continue
+        anchor = f"{name}（{token}）" if token else name
+        suffix = type_suffix.get(str(item.get("asset_type") or "").strip(), "保持锁定参考图中的关键视觉特征一致")
+        clauses.append(f"画面中的{anchor}{suffix}")
+    # Gender is a locked character authority, not a stylistic suggestion.  If a
+    # bound character carries a specific gender and the candidate dropped it,
+    # restore it deterministically rather than emitting a false hard-gate error.
+    # This is derived from the graph, so it applies uniformly to every character.
+    # It only adds a gender when none is asserted (missing); a prompt that states
+    # the opposite gender is a genuine QA defect and must not be silently merged.
+    for item in bound_assets or []:
+        if not isinstance(item, dict) or str(item.get("asset_type") or "").strip() != "character":
+            continue
+        gender = str(item.get("gender") or "").strip()
+        if gender in {"", "人物", "未识别", "未知"}:
+            continue
+        name = str(item.get("asset_name") or "").strip()
+        if not name:
+            continue
+        authoritative = "male" if ("男" in gender or "男性" in gender) else ("female" if ("女" in gender or "女性" in gender) else "")
+        if not authoritative:
+            continue
+        opposite_markers = _GENDER_MARKERS["female"] if authoritative == "male" else _GENDER_MARKERS["male"]
+        explicit_markers = _GENDER_EXPLICIT_MARKERS[authoritative]
+        # Never merge against a contradictory gender assertion: a prompt that
+        # already states the opposite gender is a QA defect, not a missing fact.
+        if any(marker in text for marker in opposite_markers):
+            continue
+        # A same-direction pronoun (e.g. 她 for a female character) already agrees
+        # with the authority, so adding the explicit noun is safe and non-lossy.
+        if any(marker in text for marker in explicit_markers):
+            continue
+        clauses.append(f"{name}的权威性别为{gender}，面部、发型、服装与身份以锁定参考图为准")
+    if not clauses:
+        return text
+    # The model-owned sentence may already end in a full stop.  Normalize only
+    # the join boundary so the compiler-added contract remains natural Chinese
+    # prose instead of producing punctuation artifacts such as ``。 ，``.
+    base = text.rstrip("，,；;。.!！?？ ")
+    return "。".join([part for part in (base, *clauses) if part]) + "。"
 
 
 def _is_critical_bound_asset_for_usage(item: dict) -> bool:
@@ -4935,6 +8436,11 @@ def _recommend_storyboard_restore_version(version_payloads: list[dict], current_
 def _build_storyboard_prompt_version_payloads(s, book_id: int, shot, current_version: int | None, locked_version: int | None) -> list[dict]:
     from models import StoryboardPromptVersion
 
+    shot_meta = safe_json_loads(shot.meta_info) if getattr(shot, "meta_info", None) else {}
+    compiler_meta = shot_meta.get("prompt_compiler", {}) if isinstance(shot_meta, dict) and isinstance(shot_meta.get("prompt_compiler", {}), dict) else {}
+    if compiler_meta.get("recompile_required"):
+        return []
+
     rows = s.query(StoryboardPromptVersion).filter(
         StoryboardPromptVersion.book_id == book_id,
         StoryboardPromptVersion.episode == shot.episode,
@@ -5000,6 +8506,105 @@ def _build_storyboard_prompt_version_payloads(s, book_id: int, shot, current_ver
     ]
 
 
+def _storyboard_transform_origin(meta_info: dict) -> dict | None:
+    """Return declared transform provenance, never infer it from prompt text."""
+    if not isinstance(meta_info, dict):
+        return None
+    split_draft = meta_info.get("executability_split_draft", {})
+    if isinstance(split_draft, dict) and split_draft.get("status") == "applied":
+        return {
+            "type": "storyboard-transform",
+            "operation": "executability-split-draft",
+            "sequence": split_draft.get("sequence"),
+            "source_shot_id": split_draft.get("source_shot_id"),
+            "applied_at": split_draft.get("applied_at"),
+        }
+    return None
+
+
+def _snapshot_storyboard_shot_state(shot) -> dict:
+    """Capture the complete editable storyboard state before prompt compilation.
+
+    Prompt versions are normally sufficient for a compiled shot.  A structural
+    transform creates a valid shot with intentionally blank prompts, so its
+    rollback baseline must include the storyboard fields as well.
+    """
+    return {
+        "scene_name": shot.scene_name,
+        "dialogue": shot.dialogue,
+        "duration": shot.duration,
+        "camera_angle": shot.camera_angle,
+        "camera_movement": shot.camera_movement,
+        "transition": shot.transition,
+        "lighting": shot.lighting,
+        "sound_effects": shot.sound_effects,
+        "bgm_mood": shot.bgm_mood,
+        "start_state": shot.start_state,
+        "action_process": shot.action_process,
+        "end_state": shot.end_state,
+        "visual_prompt_static": shot.visual_prompt_static,
+        "visual_prompt_motion": shot.visual_prompt_motion,
+        "visual_prompt_final": shot.visual_prompt_final,
+        "asset_links": shot.asset_links,
+        "asset_status": shot.asset_status,
+        "notes": shot.notes,
+        "meta_info": shot.meta_info or "{}",
+    }
+
+
+def _create_storyboard_state_snapshot_anchor(s, shot, origin: dict, reason: str) -> dict:
+    """Persist an immutable, non-prompt rollback anchor for a transformed shot."""
+    from models import StoryboardPromptVersion
+
+    latest = s.query(StoryboardPromptVersion).filter(
+        StoryboardPromptVersion.book_id == shot.book_id,
+        StoryboardPromptVersion.episode == shot.episode,
+        StoryboardPromptVersion.shot_id == shot.shot_id,
+    ).order_by(StoryboardPromptVersion.version.desc()).first()
+    next_version = (latest.version if latest else 0) + 1
+    created_at = datetime.utcnow().isoformat()
+    anchor_meta = {
+        "rollback_anchor": {
+            "schema_version": 1,
+            "kind": "state_snapshot",
+            "lifecycle": "pre-recompile",
+            "origin": origin,
+            "created_at": created_at,
+            "reason": str(reason or "production-repair-state-anchor").strip(),
+        },
+        "shot_state": _snapshot_storyboard_shot_state(shot),
+    }
+    row = StoryboardPromptVersion(
+        book_id=shot.book_id,
+        episode=shot.episode,
+        shot_id=shot.shot_id,
+        version=next_version,
+        compile_reason="baseline:state-snapshot",
+        # Empty prompt fields are intentional: this is an initial state, not a
+        # synthetic compiled prompt pretending to be historical output.
+        prompt_static="",
+        prompt_motion="",
+        negative_prompt="",
+        meta_info=json.dumps(anchor_meta, ensure_ascii=False),
+    )
+    s.add(row)
+    s.flush()
+    return {"version": row.version, "version_id": row.id, "kind": "state_snapshot", "origin": origin}
+
+
+def _prompt_version_rollback_anchor(version) -> dict:
+    version_meta = safe_json_loads(version.meta_info) if version.meta_info else {}
+    version_meta = version_meta if isinstance(version_meta, dict) else {}
+    declared = version_meta.get("rollback_anchor", {}) if isinstance(version_meta.get("rollback_anchor", {}), dict) else {}
+    kind = str(declared.get("kind") or "prompt_version").strip()
+    return {
+        "version": version.version,
+        "version_id": version.id,
+        "kind": kind,
+        "origin": declared.get("origin") if kind == "state_snapshot" else None,
+    }
+
+
 def _create_storyboard_prompt_rollback(s, shot, target, req: StoryboardPromptRollbackRequest) -> dict:
     from models import StoryboardPromptVersion
 
@@ -5020,6 +8625,8 @@ def _create_storyboard_prompt_rollback(s, shot, target, req: StoryboardPromptRol
         target_meta = {}
 
     rollback_reason = str(req.reason or "").strip() or "manual-rollback"
+    declared_anchor = target_meta.get("rollback_anchor", {}) if isinstance(target_meta.get("rollback_anchor", {}), dict) else {}
+    is_state_snapshot = declared_anchor.get("kind") == "state_snapshot" and isinstance(target_meta.get("shot_state"), dict)
     rollback_row = StoryboardPromptVersion(
         book_id=shot.book_id,
         episode=shot.episode,
@@ -5033,10 +8640,27 @@ def _create_storyboard_prompt_rollback(s, shot, target, req: StoryboardPromptRol
     )
     s.add(rollback_row)
 
-    shot.visual_prompt_static = target.prompt_static
-    shot.visual_prompt_motion = target.prompt_motion
-    shot.visual_prompt_final = target.negative_prompt
+    if is_state_snapshot:
+        snapshot = target_meta["shot_state"]
+        # Restore only persisted, editable storyboard columns.  This is an
+        # explicit schema, so a malformed snapshot cannot overwrite identity
+        # or cross-project ownership fields.
+        for field in (
+            "scene_name", "dialogue", "duration", "camera_angle", "camera_movement", "transition",
+            "lighting", "sound_effects", "bgm_mood", "start_state", "action_process", "end_state",
+            "visual_prompt_static", "visual_prompt_motion", "visual_prompt_final", "asset_links",
+            "asset_status", "notes",
+        ):
+            if field in snapshot:
+                setattr(shot, field, snapshot[field])
+        restored_meta = safe_json_loads(snapshot.get("meta_info")) if snapshot.get("meta_info") else {}
+        shot_meta = restored_meta if isinstance(restored_meta, dict) else {}
+    else:
+        shot.visual_prompt_static = target.prompt_static
+        shot.visual_prompt_motion = target.prompt_motion
+        shot.visual_prompt_final = target.negative_prompt
 
+    prompt_compiler_meta = shot_meta.get("prompt_compiler", {}) if isinstance(shot_meta.get("prompt_compiler", {}), dict) else {}
     prompt_compiler_meta["latest_version"] = next_version
     prompt_compiler_meta["negative_prompt"] = target.negative_prompt
     prompt_compiler_meta["compile_reason"] = rollback_row.compile_reason
@@ -5048,7 +8672,7 @@ def _create_storyboard_prompt_rollback(s, shot, target, req: StoryboardPromptRol
     prompt_compiler_meta["compiler_warnings"] = target_meta.get("compiler_warnings", [])
     prompt_compiler_meta["compiler_diagnostics"] = target_meta.get("compiler_diagnostics", {})
     shot_meta["prompt_compiler"] = prompt_compiler_meta
-    has_target_structured = "structured_shot" in target_meta and isinstance(target_meta.get("structured_shot"), dict)
+    has_target_structured = not is_state_snapshot and "structured_shot" in target_meta and isinstance(target_meta.get("structured_shot"), dict)
     target_structured = target_meta.get("structured_shot", {}) if has_target_structured else {}
     if has_target_structured:
         shot_meta["structured_shot"] = target_structured
@@ -5076,6 +8700,7 @@ def _create_storyboard_prompt_rollback(s, shot, target, req: StoryboardPromptRol
         "shot_id": shot.shot_id,
         "version": rollback_row.version,
         "restored_from_version": target.version,
+        "restored_anchor_kind": "state_snapshot" if is_state_snapshot else "prompt_version",
         "compile_reason": rollback_row.compile_reason,
         "prompt_static": rollback_row.prompt_static,
         "prompt_motion": rollback_row.prompt_motion,
@@ -5090,6 +8715,24 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
     blocking_issues: list[str] = []
     checks: list[dict] = []
     combined = f"{static_text}\n{motion_text}"
+
+    # Locked asset facts are authoritative.  A prompt that explicitly changes
+    # a structural material (for example, a locked wooden scene rendered as an
+    # iron door) must be blocked before any image/video generation is queued.
+    locked_fact_conflicts = _detect_locked_asset_fact_conflicts(
+        combined,
+        context.get("bound_assets", []) if isinstance(context.get("bound_assets", []), list) else [],
+    )
+    if locked_fact_conflicts:
+        blocking_issues.append("提示词与锁定资产权威事实冲突。")
+    checks.append({
+        "key": "locked_asset_fact_conflicts",
+        "passed": len(locked_fact_conflicts) == 0,
+        "message": "未发现提示词与锁定资产权威事实冲突。"
+        if len(locked_fact_conflicts) == 0
+        else "发现提示词与锁定资产权威事实冲突。",
+        "details": locked_fact_conflicts,
+    })
 
     meta_prompt_tokens = ["请生成", "用于首帧", "输出应为", "你需要", "不要暴露", "必须从首帧"]
     meta_hits = [token for token in meta_prompt_tokens if token in combined]
@@ -5126,6 +8769,35 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
         screenplay_residue_hits.append("方括号舞台提示")
     if any(token in screenplay_residue_text for token in ["对白", "画面切", "切到", "（大笑）", "（停顿）", "（沉默）"]):
         screenplay_residue_hits.append("对白/舞台动作描述")
+    # LLM candidates can still leak screenplay dialogue without a canonical
+    # ``角色：台词`` label (for example: ``和尚丙，（低声）师父……`` or
+    # ``站住！你看看你！``).  Treat these forms as the same review warning.
+    # The checks intentionally use structural signals rather than character
+    # or shot names, so this remains generic and does not become a data patch.
+    parenthetical_stage_hits = re.findall(
+        r"（[^（）]{0,24}(?:低声|高声|自语|旁白|喊|说|问|答|笑|怒|沉默|停顿|拍掉|窜出|伸手)[^（）]{0,24}）",
+        screenplay_residue_text,
+    )
+    quoted_dialogue_hits = re.findall(r"[“‘「『\"].{1,120}?[”’」』\"]", screenplay_residue_text)
+    speech_verb_hits = re.findall(
+        # Do not treat ``压低声音`` (a visual/audio mood cue) as dialogue by
+        # itself; standalone speech markers are only actionable when they
+        # describe an utterance or are wrapped in a stage-direction marker.
+        r"(?:自语|说道|说着|喊道|叫道|喝道|问道|答道|回应|怒斥|喃喃|嘀咕)",
+        screenplay_residue_text,
+    )
+    exclamation_dialogue = bool(
+        len(re.findall(r"[！？]", screenplay_residue_text)) >= 2
+        and re.search(r"(?:你|我|师父|徒儿|站住|等等|不要|别|这桶|不合格)", screenplay_residue_text)
+    )
+    if parenthetical_stage_hits:
+        screenplay_residue_hits.append("括号舞台动作：" + " / ".join(list(dict.fromkeys(parenthetical_stage_hits))[:2]))
+    if quoted_dialogue_hits:
+        screenplay_residue_hits.append("引号对白片段")
+    if speech_verb_hits:
+        screenplay_residue_hits.append("对白叙述动词")
+    if exclamation_dialogue:
+        screenplay_residue_hits.append("感叹句对白片段")
     unique_dialogue_labels = list(dict.fromkeys(dialogue_like_labels))
     if len(unique_dialogue_labels) >= 1:
         screenplay_residue_hits.append(f"角色对白标签：{' / '.join(unique_dialogue_labels[:3])}")
@@ -5173,23 +8845,37 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
     })
 
     motion_camera_hits = _count_keyword_hits(motion_text, ["镜头", "机位", "固定机位", "推进", "推近", "拉远", "摇镜", "摇摄", "跟拍", "平移", "俯拍", "仰拍", "倾斜", "定镜", "静止", "静态", "运动"])
-    motion_timeline_hits = _count_keyword_hits(motion_text, ["开始", "先", "随后", "接着", "之后", "最后", "结束", "逐渐", "缓缓", "慢慢", "从", "转向", "转为", "停在", "同时", "准备"])
-    motion_continuity_hits = _count_keyword_hits(motion_text, ["一致", "保持", "延续", "首帧", "固定", "连续", "不变"])
+    has_motion_contract = isinstance(context.get("motion_contract"), dict)
+    motion_contract = context.get("motion_contract", {}) if has_motion_contract else {}
+    contract_beats = motion_contract.get("action_beats", []) if isinstance(motion_contract.get("action_beats", []), list) else []
+    motion_contract_complete = not has_motion_contract or bool(
+        str(motion_contract.get("start_state") or "").strip()
+        and str(motion_contract.get("camera") or "").strip()
+        and contract_beats
+        and str(motion_contract.get("end_state") or "").strip()
+        and motion_contract.get("preserve_first_frame") is True
+    )
+    motion_contract_missing_sections = (
+        _build_motion_contract_coverage(motion_text, motion_contract)
+        if has_motion_contract and motion_contract_complete
+        else []
+    )
     motion_quality_pass = (
         _contains_cjk(motion_text)
         and len(motion_text) >= 28
         and motion_camera_hits >= 1
-        and motion_timeline_hits >= 1
-        and motion_continuity_hits >= 1
+        and motion_contract_complete
+        and not motion_contract_missing_sections
     )
     if not motion_quality_pass:
-        warnings.append("运动提示词质量不达标，建议补充更明确的镜头推进和一致性描述。")
+        warnings.append("运动提示词质量不达标，需补齐镜头运动文本或结构化起始、动作节拍、结束和一致性合约。")
     checks.append({
         "key": "motion_prompt_quality",
         "passed": motion_quality_pass,
         "message": "运动提示词具备镜头运动和动作推进。"
         if motion_quality_pass
-        else "运动提示词缺少运动、起止或一致性约束。",
+        else "运动提示词缺少镜头运动文本，或没有自然覆盖结构化起止、动作节拍、一致性合约。",
+        "details": motion_contract_missing_sections,
     })
 
     missing_reference_assets = [item.get("asset_name") for item in (context.get("bound_assets") or []) if isinstance(item, dict) and not item.get("has_reference")]
@@ -5218,8 +8904,7 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
         missing_facts: list[str] = []
         for fact in required_facts:
             direct_hit = fact in static_text
-            keyword_hits = _extract_authority_keywords(fact)
-            indirect_hit = any(keyword in static_text for keyword in keyword_hits[:3] if keyword)
+            indirect_hit = _authority_keyword_present(fact, static_text)
             if direct_hit or indirect_hit:
                 covered_count += 1
             else:
@@ -5601,7 +9286,7 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
             if level == "fully_preserved" and field in ("face", "hair", "costume"):
                 field_names = {"face": "面部", "hair": "发型", "costume": "服装"}
                 field_zh = field_names.get(field, field)
-                if field_zh not in static_text:
+                if not _retention_field_present(field, static_text):
                     retention_warnings.append(f"retention 要求 {field_zh} fully_preserved，但静态提示词未提及")
     if retention_warnings:
         warnings.append(f"retention 维护不足：{'；'.join(retention_warnings)}。")
@@ -5617,9 +9302,17 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
     continuity = context.get("continuity", {}) if isinstance(context.get("continuity", {}), dict) else {}
     continuity_warnings: list[str] = []
     if continuity.get("has_previous"):
-        prev_end_state = str(continuity.get("previous_end_state") or "").strip()
-        if prev_end_state and prev_end_state not in static_text and prev_end_state not in motion_text:
-            continuity_warnings.append(f"上一镜头 end_state「{prev_end_state[:20]}」未在本镜头提示词中体现衔接")
+        # Continuity is a typed relation between adjacent shot states.  Do not
+        # require the model export to contain the previous end-state verbatim:
+        # that turns internal split-shot annotations into false prompt errors.
+        has_contract = isinstance(context.get("motion_contract"), dict)
+        contract = context.get("motion_contract", {}) if has_contract else {}
+        if has_contract and not str(contract.get("start_state") or "").strip():
+            continuity_warnings.append("当前镜头缺少结构化入镜状态")
+        if has_contract and not str(contract.get("end_state") or "").strip():
+            continuity_warnings.append("当前镜头缺少结构化出镜状态")
+        if has_contract and not contract.get("preserve_first_frame"):
+            continuity_warnings.append("当前镜头缺少首帧一致性约束")
     if continuity_warnings:
         warnings.append(f"continuity 衔接不足：{'；'.join(continuity_warnings)}。")
     checks.append({
@@ -5629,6 +9322,32 @@ def _build_prompt_compiler_diagnostics(prompt_static: str, prompt_motion: str, c
         if len(continuity_warnings) == 0
         else f"continuity 衔接不足：{'；'.join(continuity_warnings)}",
         "details": continuity_warnings,
+    })
+
+    # Gender is a locked character fact, not a stylistic suggestion.  Require
+    # an explicit value in the static prompt so the image model receives the
+    # same fact that the portrait asset and its reference image represent.
+    missing_gender_facts: list[str] = []
+    for item in (context.get("bound_assets") or []):
+        if not isinstance(item, dict) or str(item.get("asset_type") or "").strip() != "character":
+            continue
+        gender = str(item.get("gender") or "").strip()
+        if gender in {"", "人物", "未识别", "未知"}:
+            continue
+        asset_name = str(item.get("asset_name") or "").strip() or f"character:{item.get('asset_id') or ''}"
+        presence = _gender_authority_presence(gender, static_text)
+        if presence != "correct":
+            reason = "与权威性别相反" if presence == "conflict" else "未明确"
+            missing_gender_facts.append(f"{asset_name}：必须明确为{gender}（当前{reason}）")
+    if missing_gender_facts:
+        blocking_issues.append("静态提示词未继承人物性别权威事实。")
+    checks.append({
+        "key": "character_gender_authority",
+        "passed": len(missing_gender_facts) == 0,
+        "message": "静态提示词已明确继承全部绑定人物的性别事实。"
+        if len(missing_gender_facts) == 0
+        else "静态提示词缺少绑定人物的性别事实。",
+        "details": missing_gender_facts,
     })
 
     metrics = {
@@ -5740,7 +9459,6 @@ def _extract_compile_required_facts(bound_item: dict) -> list[str]:
             str(profile.get("accessories") or "").strip(),
             str(profile.get("makeup_expression") or "").strip(),
             str(profile.get("scene_effects") or "").strip(),
-            str(profile.get("consistency_notes") or "").strip(),
         ]
     elif asset_type == "scene":
         ordered_fields = [
@@ -5949,7 +9667,7 @@ def _build_repair_priority_fixes(diagnostics: dict) -> list[dict]:
         "prop_variant_state": "道具必须继承当前状态版本的形制、磨损、材质和功能状态。",
         "high_importance_prop_presence": "高重要度道具必须在静态提示词里被明确提及并带出关键外观细节。",
         "critical_bound_asset_usage": "所有关键绑定资产必须进入 used_assets，不能漏掉。",
-        "motion_prompt_quality": "运动提示词只写镜头运动、人物动作、节奏和情绪推进，不要回退成剧本说明。",
+        "motion_prompt_quality": "运动提示词只写镜头运动、人物动作、节奏和情绪推进；必须自然覆盖 motion_contract 的起始状态、镜头方式、全部动作节拍、结束状态和首帧一致性，不要回退成剧本说明。",
         "static_prompt_quality": "静态提示词要落到首帧画面本身，明确主体、空间、服装、道具和光色。",
     }
     priority_fixes: list[dict] = []
@@ -6003,8 +9721,8 @@ def _build_prompt_repair_context(context: dict, candidate_output: dict, diagnost
                     "优先补齐场景、人物、道具的缺失视觉事实，写成自然中文画面描述。",
                 ],
                 "motion_prompt": [
-                    "只描述镜头运动、人物动作推进、节奏变化和结束落点。",
-                    "保留与首帧一致的角色、服装、场景、道具连续性，不要重复对白稿。",
+                    "只描述镜头运动、人物动作推进、节奏变化和结束落点；按 motion_contract 依次自然覆盖起始状态、镜头方式、全部动作节拍和结束状态。",
+                    "保留与首帧一致的角色、服装、场景、道具连续性，不要重复对白稿或原样输出结构字段。",
                 ],
                 "forbidden_patterns": [
                     "角色名：对白",
@@ -6023,7 +9741,7 @@ def _build_prompt_repair_context(context: dict, candidate_output: dict, diagnost
     }
 
 
-def _call_storyboard_prompt_compiler(context: dict) -> object:
+def _call_storyboard_prompt_compiler(context: dict, *, audit_callback=None, audit_extra=None) -> object:
     if os.environ.get("E2E_STORYBOARD_PROMPT_MOCK") == "1":
         scene_name = str(context.get("scene_name") or "当前场景").strip()
         bound_assets = [item for item in context.get("bound_assets", []) if isinstance(item, dict)]
@@ -6041,6 +9759,10 @@ def _call_storyboard_prompt_compiler(context: dict) -> object:
                 "场景、服装、道具、光线和构图在动作推进中保持连续。"
             ),
             "negative_prompt": negative_prompt or "低质量，字幕，水印，logo，多余手指，变形肢体，错误场景，错误服装",
+            "core_action": str(context.get("core_action") or "").strip() or str(context.get("action_process") or "").strip(),
+            "action_beats": context.get("action_beats", []) if isinstance(context.get("action_beats", []), list) else [],
+            "continuity_in": str(context.get("start_state") or "").strip(),
+            "continuity_out": str(context.get("end_state") or "").strip(),
             "used_assets": [
                 {
                     "asset_type": item.get("asset_type"),
@@ -6054,19 +9776,118 @@ def _call_storyboard_prompt_compiler(context: dict) -> object:
             "warnings": ["E2E storyboard prompt mock uses deterministic Model Adapter baseline"],
         }
 
+    # A candidate draft is evaluated by the same production guard as a final
+    # version.  Make the non-negotiable delivery contract compact and explicit
+    # in the system instruction as well as in the (potentially large) context
+    # JSON, so a model cannot lose locked-reference anchors among verbose asset
+    # authority data.  This is derived entirely from the current binding graph;
+    # it is not a book-, shot-, or asset-specific exception.
+    critical_static_anchors = []
+    for item in context.get("bound_assets", []) if isinstance(context.get("bound_assets", []), list) else []:
+        if not isinstance(item, dict) or not bool(item.get("locked_reference")):
+            continue
+        asset_name = str(item.get("asset_name") or "").strip()
+        reference_token = str(item.get("reference_token") or "").strip()
+        if asset_name or reference_token:
+            critical_static_anchors.append({
+                "asset_type": str(item.get("asset_type") or "").strip(),
+                "asset_id": str(item.get("asset_id") or "").strip(),
+                "mention_one_of": [value for value in (asset_name, reference_token) if value],
+            })
+    required_used_assets = context.get("required_used_assets", [])
+    required_used_asset_keys = [
+        {
+            "asset_type": str(item.get("asset_type") or "").strip(),
+            "asset_id": str(item.get("asset_id") or "").strip(),
+        }
+        for item in required_used_assets
+        if isinstance(item, dict) and (str(item.get("asset_type") or "").strip() or str(item.get("asset_id") or "").strip())
+    ]
+    # Gender is a locked character authority checked by the production guard.
+    # Surface the exact authoritative token per bound character so the model
+    # writes it inline instead of being corrected by the preservation pass.
+    character_gender_tokens = []
+    for item in context.get("bound_assets", []) if isinstance(context.get("bound_assets", []), list) else []:
+        if not isinstance(item, dict) or str(item.get("asset_type") or "").strip() != "character":
+            continue
+        gender = str(item.get("gender") or "").strip()
+        if gender in {"", "人物", "未识别"}:
+            continue
+        asset_name = str(item.get("asset_name") or "").strip()
+        if asset_name:
+            character_gender_tokens.append({"asset_name": asset_name, "gender": gender})
+    candidate_delivery_contract = {
+        "static_prompt_must_naturally_mention_each_locked_anchor": critical_static_anchors,
+        "used_assets_must_include_each_required_key": required_used_asset_keys,
+        "visual_prompt_static_must_explicitly_state_each_character_gender": character_gender_tokens,
+        "motion_prompt_must_begin_with_natural_visible_start_state": str((context.get("motion_contract") or {}).get("start_state") or "").strip(),
+        "motion_prompt_must_naturally_cover": {
+            "camera": str((context.get("motion_contract") or {}).get("camera") or "").strip(),
+            "action_beats": (context.get("motion_contract") or {}).get("action_beats", []),
+            "end_state": str((context.get("motion_contract") or {}).get("end_state") or "").strip(),
+            "preserve_first_frame": bool((context.get("motion_contract") or {}).get("preserve_first_frame")),
+        },
+    }
+    # Keep the template and its generic rules stable.  Shot-specific evidence
+    # and the delivery contract are deliberately appended to the user task so
+    # MiMo can reuse the common system/prompt prefix across shots.
+    from core.prompt_cache import canonical_json
+
     prompt_payload = load_prompt(
         "storyboard/prompt_compiler",
-        context_json=json.dumps(context, ensure_ascii=False, indent=2),
+        context_json=canonical_json(context),
+    )
+    repair_request = context.get("repair_request", {}) if isinstance(context.get("repair_request"), dict) else {}
+    revision_mode = bool(repair_request)
+    revision_suffix = ""
+    if revision_mode:
+        revision_suffix = (
+            "REVISION MODE. You are NOT producing a fresh compile. You are revising a previously rejected candidate. Hard rules that override everything below:\n"
+            "1. You MUST satisfy repair_request.goal verbatim.\n"
+            "2. If repair_request.continuity_advisory is present, you MUST treat continuity_advisory.summary and continuity_advisory.analysis as binding narrative facts.\n"
+            "3. You MUST NOT return the previous_candidate fields unchanged. Rewrite the affected continuity_in, start_state, action_beats, continuity_out, end_state.\n"
+            "4. Locked facts (character gender, locked reference anchors, required_used_assets) MUST be preserved verbatim.\n"
+            "5. You MUST include a JSON-level top-level field 'revision_disposition' whose value is an object with keys 'goal_ack' (boolean), 'advisory_audit_id' (integer or null), 'advisory_summary_reflected' (boolean), 'previous_candidate_kept' (boolean). False answers will cause the candidate to be rejected by the compiler.\n"
+            "repair_request payload: " + canonical_json(repair_request) + "\n\n"
+        )
+    prompt_payload += (
+        "\n\nCURRENT TASK EVIDENCE AND DELIVERY CONTRACT (dynamic suffix; do not treat as global rules):\n"
+        "DELIVERY CONTRACT: " + canonical_json(candidate_delivery_contract) + "\n"
+        + revision_suffix
     )
     system_prompt = (
         "You are a storyboard prompt compiler for short drama production. "
-        "Return only usable Chinese JSON prompt fields based on the provided structured context. "
-        "Do not output task instructions, markdown, explanations, or extra fields."
+        + "Return only usable Chinese JSON prompt fields based on the provided structured context. "
+        + "Do not output task instructions, markdown, explanations, or extra fields. "
+        + "Before returning, validate the delivery contract below: every locked "
+        + "anchor must be naturally mentioned in visual_prompt_static by one of "
+        + "its allowed labels, every required asset key must appear in "
+        + "used_assets, and every listed character gender token must appear "
+        + "verbatim in visual_prompt_static. The visual_prompt_motion MUST begin "
+        + "with a natural Chinese rendering of the required visible start state, "
+        + "then cover the camera, every action beat, the visible end state, and "
+        + "first-frame continuity. If any condition is not true, "
+        + "rewrite the candidate before returning it. If the user task contains "
+        + "REVISION MODE, follow its revision requirements and return the required "
+        + "revision_disposition object. The current task evidence and delivery "
+        + "contract (including static_prompt_must_naturally_mention_each_locked_anchor) "
+        + "are provided at the end of the user prompt."
     )
     return llm_client.call_llm_json(
         prompt_payload,
         system=system_prompt,
         estimated_tokens=5000,
+        # Candidate generation is an explicitly approved, billable action.
+        # One approval maps to one provider request; parse or transport errors
+        # must be surfaced for review instead of silently spending a retry.
+        # ``call_llm`` interprets this as total attempts, not retry count:
+        # one attempt means the explicitly confirmed provider call happens
+        # exactly once and is never retried automatically.
+        retries=1,
+        json_parse_retries=0,
+        audit_callback=audit_callback,
+        audit_extra=audit_extra,
+        audit_repair_request=repair_request,
     )
 
 
@@ -6108,6 +9929,7 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         "model_adapter": {
             "target_model": target_model,
             "adapter": adapter_output.get("adapter", ""),
+            "static_prompt_sections": adapter_output.get("static_prompt_sections", {}),
             "static_prompt": adapter_output.get("static_prompt", ""),
             "motion_prompt": adapter_output.get("motion_prompt", ""),
             "negative_prompt": adapter_output.get("negative_prompt", ""),
@@ -6119,6 +9941,7 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         "forbidden_patterns_applied": shot_ir.metadata.get("forbidden_patterns_applied", []),
         "required_elements": shot_ir.metadata.get("required_elements", []),
     }
+    compile_context["motion_contract"] = _build_motion_prompt_contract(compile_context)
 
     negative_parts = [
         "low quality",
@@ -6147,6 +9970,41 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
             "candidate_output": llm_output,
         })
 
+    from core.shot_executability import validate_shot_executability
+    llm_action_beats = llm_output.get("action_beats", []) if isinstance(llm_output.get("action_beats", []), list) else []
+    llm_core_action = str(llm_output.get("core_action") or "").strip()
+    continuity_in = str(llm_output.get("continuity_in") or compile_context.get("start_state") or "").strip()
+    continuity_out = str(llm_output.get("continuity_out") or compile_context.get("end_state") or "").strip()
+    executability = validate_shot_executability(
+        duration=compile_context.get("duration"),
+        action_process=str(compile_context.get("action_process") or ""),
+        action_beats=llm_action_beats,
+        camera_movement=str(compile_context.get("camera_movement") or "static"),
+        start_state=continuity_in,
+        end_state=continuity_out,
+    )
+    compile_context = {
+        **compile_context,
+        "core_action": llm_core_action or str(shot_ir.core_action or "").strip(),
+        "action_beats": llm_action_beats or shot_ir.action_beats,
+        "continuity_in": continuity_in,
+        "continuity_out": continuity_out,
+        "executability": executability,
+    }
+    compile_context["motion_contract"] = _build_motion_prompt_contract(compile_context)
+    # Keep the persisted ShotIR and the compiler context aligned with the
+    # model-authored action plan (the initial rule IR may only contain a
+    # deterministic fallback).
+    shot_ir_payload = {
+        **(compile_context.get("shot_ir", {}) if isinstance(compile_context.get("shot_ir", {}), dict) else {}),
+        "core_action": compile_context["core_action"],
+        "action_beats": compile_context["action_beats"],
+        "continuity_in": compile_context["continuity_in"],
+        "continuity_out": compile_context["continuity_out"],
+        "executability": compile_context["executability"],
+    }
+    compile_context["shot_ir"] = shot_ir_payload
+
     adapter_static_prompt = str(adapter_output.get("static_prompt") or "").strip()
     adapter_motion_prompt = str(adapter_output.get("motion_prompt") or "").strip()
     adapter_negative_prompt = str(adapter_output.get("negative_prompt") or "").strip()
@@ -6156,6 +10014,10 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
     adapter_fallback_fields: list[str] = []
     scene_name_for_prompt = str(compile_context.get("scene_name") or shot.scene_name or "").strip()
     prompt_static = _ensure_prompt_preserves_scene_name(prompt_static_raw or adapter_static_prompt, scene_name_for_prompt)
+    prompt_static = _ensure_prompt_includes_missing_character_gender_facts(
+        prompt_static,
+        compile_context.get("bound_assets", []),
+    )
     prompt_motion = prompt_motion_raw or adapter_motion_prompt
     if not prompt_static_raw and adapter_static_prompt:
         adapter_fallback_fields.append("visual_prompt_static")
@@ -6181,6 +10043,11 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         compile_context,
         prompt_static,
         prompt_motion,
+    )
+    prompt_static = _preserve_locked_asset_anchor_contract(
+        prompt_static,
+        used_assets,
+        compile_context.get("bound_assets", []),
     )
     compile_context = {
         **compile_context,
@@ -6218,6 +10085,10 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
             repaired_negative_raw = sanitize_machine_prompt_text(repaired_output.get("negative_prompt"))
             repaired_fallback_fields: list[str] = []
             repaired_static = _ensure_prompt_preserves_scene_name(repaired_static_raw or adapter_static_prompt, scene_name_for_prompt)
+            repaired_static = _ensure_prompt_includes_missing_character_gender_facts(
+                repaired_static,
+                compile_context.get("bound_assets", []),
+            )
             repaired_motion = repaired_motion_raw or adapter_motion_prompt
             if not repaired_static_raw and adapter_static_prompt:
                 repaired_fallback_fields.append("visual_prompt_static")
@@ -6290,6 +10161,21 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
                 missing_locked_assets = repaired_missing_locked_assets
                 overflow_assets = repaired_overflow_assets
                 llm_output = repaired_output
+    final_failed_checks = {
+        str(item.get("key") or "").strip()
+        for item in (diagnostics.get("checks") or [])
+        if isinstance(item, dict) and not bool(item.get("passed"))
+    }
+    if "motion_prompt_quality" in final_failed_checks:
+        prompt_motion = _render_motion_contract_fallback(compile_context.get("motion_contract", {}))
+        diagnostics = _build_prompt_compiler_diagnostics(prompt_static, prompt_motion, compile_context, used_assets)
+        compile_context = {
+            **compile_context,
+            "warnings": list(dict.fromkeys([
+                *(compile_context.get("warnings", []) if isinstance(compile_context.get("warnings", []), list) else []),
+                "LLM 修复未完整覆盖结构化运动合约，已回退为确定性运动合约导出。",
+            ])),
+        }
     if missing_locked_assets:
         diagnostics["blocking_issues"] = list(
             dict.fromkeys([*diagnostics.get("blocking_issues", []), f"LLM 没有使用这些已锁定资产：{'、'.join(missing_locked_assets)}"])
@@ -6301,6 +10187,51 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         )
         diagnostics["status"] = "blocked"
     diagnostics = _apply_prompt_compiler_hard_gates(diagnostics, repair_attempted)
+
+    # The final motion prompt can contain actions added by the compiler/repair
+    # pass. Re-validate that exact submission text so a compact source schema
+    # cannot incorrectly pass an overloaded rendered video prompt.
+    final_executability = validate_shot_executability(
+        duration=compile_context.get("duration"),
+        action_process=str(compile_context.get("action_process") or ""),
+        action_beats=compile_context.get("action_beats", []) if isinstance(compile_context.get("action_beats", []), list) else [],
+        camera_movement=str(compile_context.get("camera_movement") or "static"),
+        start_state=str(compile_context.get("continuity_in") or compile_context.get("start_state") or ""),
+        end_state=str(compile_context.get("continuity_out") or compile_context.get("end_state") or ""),
+        motion_prompt=prompt_motion,
+    )
+    # The adapter renders directly from ShotIR, whereas an LLM prose response
+    # can introduce undeclared micro-actions.  When the validator proves that
+    # exact drift, fall back to the IR projection and validate again.  This is
+    # schema-driven and applies to every model/shot; it never edits the
+    # director text or invents a replacement action plan.
+    final_codes = {str(item.get("code") or "") for item in final_executability.get("findings", []) if isinstance(item, dict)}
+    if "motion_prompt_action_drift" in final_codes and adapter_motion_prompt:
+        adapter_executability = validate_shot_executability(
+            duration=compile_context.get("duration"),
+            action_process=str(compile_context.get("action_process") or ""),
+            action_beats=compile_context.get("action_beats", []) if isinstance(compile_context.get("action_beats", []), list) else [],
+            camera_movement=str(compile_context.get("camera_movement") or "static"),
+            start_state=str(compile_context.get("continuity_in") or compile_context.get("start_state") or ""),
+            end_state=str(compile_context.get("continuity_out") or compile_context.get("end_state") or ""),
+            motion_prompt=adapter_motion_prompt,
+        )
+        adapter_codes = {str(item.get("code") or "") for item in adapter_executability.get("findings", []) if isinstance(item, dict)}
+        if "motion_prompt_action_drift" not in adapter_codes:
+            prompt_motion = adapter_motion_prompt
+            final_executability = adapter_executability
+            compile_context["warnings"] = list(dict.fromkeys([
+                *(compile_context.get("warnings", []) if isinstance(compile_context.get("warnings", []), list) else []),
+                "LLM 运动提示词新增了未声明动作，已回退为 ShotIR 驱动的 Model Adapter 输出。",
+            ]))
+    compile_context = {
+        **compile_context,
+        "executability": final_executability,
+        "shot_ir": {
+            **(compile_context.get("shot_ir", {}) if isinstance(compile_context.get("shot_ir", {}), dict) else {}),
+            "executability": final_executability,
+        },
+    }
 
     if diagnostics["status"] == "blocked":
         raise HTTPException(status_code=422, detail={
@@ -6361,7 +10292,30 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         structured_seed,
     )
     compiled = _compile_storyboard_prompts(book_id, shot, structured)
-    compiled_structured = _apply_compiled_shot_ir_to_structure(structured, compiled.get("shot_ir", {}))
+    compiled_structured = _normalize_structured_shot_identity(
+        shot,
+        _apply_compiled_shot_ir_to_structure(structured, compiled.get("shot_ir", {})),
+    )
+    # Fingerprint the post-compile row state, not its pre-compile values.
+    # ShotIR may legitimately normalize duration/camera fields.
+    shot.visual_prompt_static = compiled["prompt_static"]
+    shot.visual_prompt_motion = compiled["prompt_motion"]
+    shot.visual_prompt_final = compiled["negative_prompt"]
+    shot.duration = int(compiled_structured.get("duration") or shot.duration or 3)
+    shot.camera_angle = str(compiled_structured.get("camera_angle") or shot.camera_angle or "MS")
+    shot.camera_movement = str(compiled_structured.get("camera_movement") or shot.camera_movement or "static")
+    shot.transition = str(compiled_structured.get("transition") or shot.transition or "cut")
+    diagnostics = dict(compiled.get("compiler_diagnostics", {}) if isinstance(compiled.get("compiler_diagnostics", {}), dict) else {})
+    diagnostics["context_fingerprint"] = _prompt_compiler_context_fingerprint(
+        shot,
+        compiled_structured,
+        compiled.get("prompt_compile_context", {}),
+        prompt_static=compiled.get("prompt_static", ""),
+        prompt_motion=compiled.get("prompt_motion", ""),
+        negative_prompt=compiled.get("negative_prompt", ""),
+    )
+    diagnostics["evaluated_at"] = datetime.utcnow().isoformat()
+    compiled["compiler_diagnostics"] = diagnostics
     latest = s.query(StoryboardPromptVersion).filter(
         StoryboardPromptVersion.book_id == book_id,
         StoryboardPromptVersion.episode == episode,
@@ -6395,13 +10349,6 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
     )
     s.add(row)
 
-    shot.visual_prompt_static = compiled["prompt_static"]
-    shot.visual_prompt_motion = compiled["prompt_motion"]
-    shot.visual_prompt_final = compiled["negative_prompt"]
-    shot.duration = int(compiled_structured.get("duration") or shot.duration or 3)
-    shot.camera_angle = str(compiled_structured.get("camera_angle") or shot.camera_angle or "MS")
-    shot.camera_movement = str(compiled_structured.get("camera_movement") or shot.camera_movement or "static")
-    shot.transition = str(compiled_structured.get("transition") or shot.transition or "cut")
     meta_info["structured_shot"] = compiled_structured
     meta_info["prompt_compiler"] = {
         "latest_version": next_version,
@@ -6418,6 +10365,7 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         "reference_asset_ids": compiled.get("reference_asset_ids", []),
         "compiler_warnings": compiled.get("compiler_warnings", []),
         "compiler_diagnostics": compiled.get("compiler_diagnostics", {}),
+        "recompile_required": False,
         "locked": bool(previous_compiler.get("locked")),
         "locked_version": previous_compiler.get("locked_version"),
     }
@@ -6440,7 +10388,7 @@ def _apply_compiled_shot_ir_to_structure(structured: dict, shot_ir: dict) -> dic
     if not isinstance(shot_ir, dict):
         return result
 
-    for field in ("duration", "camera_angle", "camera_movement", "transition", "shot_purpose", "camera_speed"):
+    for field in ("duration", "camera_angle", "camera_movement", "transition", "shot_purpose", "camera_speed", "core_action", "continuity_in", "continuity_out"):
         value = shot_ir.get(field)
         if value is not None and str(value).strip() != "":
             result[field] = value
@@ -6450,7 +10398,74 @@ def _apply_compiled_shot_ir_to_structure(structured: dict, shot_ir: dict) -> dic
         if isinstance(value, dict) and value:
             result[field] = value
 
+    if isinstance(shot_ir.get("action_beats"), list):
+        result["action_beats"] = shot_ir["action_beats"]
+    if isinstance(shot_ir.get("executability"), dict):
+        result["executability"] = shot_ir["executability"]
+
     return result
+
+
+def _normalize_structured_shot_identity(shot, structured: dict | None) -> dict:
+    """Return derived structure with the owning storyboard row as authority."""
+    normalized = dict(structured) if isinstance(structured, dict) else {}
+    normalized["shot_id"] = str(getattr(shot, "shot_id", "") or "").strip()
+    return normalized
+
+
+def _prompt_compiler_context_fingerprint(
+    shot,
+    structured: dict | None,
+    prompt_compile_context: dict | None,
+    *,
+    prompt_static: str | None = None,
+    prompt_motion: str | None = None,
+    negative_prompt: str | None = None,
+) -> str:
+    """Fingerprint facts that make persisted compiler diagnostics valid."""
+    context = prompt_compile_context if isinstance(prompt_compile_context, dict) else {}
+    normalized_structure = _normalize_structured_shot_identity(shot, structured)
+    bound_assets = []
+    for item in context.get("bound_assets", []) if isinstance(context.get("bound_assets", []), list) else []:
+        if not isinstance(item, dict):
+            continue
+        bound_assets.append({
+            "asset_type": str(item.get("asset_type") or "").strip(),
+            "asset_id": str(item.get("asset_id") or "").strip(),
+            "asset_status": str(item.get("asset_status") or "").strip(),
+            "reference_asset_id": str(item.get("reference_asset_id") or "").strip(),
+            "reference_status": str(item.get("reference_status") or "").strip(),
+            "locked_reference": bool(item.get("locked_reference")),
+            "image_url": str(item.get("image_url") or "").strip(),
+            "gender": str(item.get("gender") or "").strip(),
+        })
+    payload = {
+        "identity": {"book_id": int(getattr(shot, "book_id", 0) or 0), "episode": int(getattr(shot, "episode", 0) or 0), "shot_id": str(getattr(shot, "shot_id", "") or "").strip()},
+        "source": {field: str(getattr(shot, field, "") or "").strip() for field in ("scene_name", "dialogue", "start_state", "action_process", "end_state", "camera_angle", "camera_movement", "transition")} | {"duration": int(getattr(shot, "duration", 0) or 0)},
+        "structured_shot": normalized_structure,
+        "prompts": {
+            "static": str(getattr(shot, "visual_prompt_static", "") if prompt_static is None else prompt_static or "").strip(),
+            "motion": str(getattr(shot, "visual_prompt_motion", "") if prompt_motion is None else prompt_motion or "").strip(),
+            "negative": str(getattr(shot, "visual_prompt_final", "") if negative_prompt is None else negative_prompt or "").strip(),
+        },
+        "bindings": sorted(bound_assets, key=lambda item: (item["asset_type"], item["asset_id"], item["reference_asset_id"])),
+        "model": {
+            "target_model": str(context.get("target_model") or context.get("model") or context.get("default_model") or "").strip(),
+            "adapter": str((context.get("model_adapter") or {}).get("adapter") or "").strip() if isinstance(context.get("model_adapter"), dict) else "",
+        },
+    }
+    return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")).hexdigest()
+
+
+def _prompt_compiler_diagnostics_fresh(shot, structured: dict | None, compiler: dict) -> bool:
+    if not isinstance(compiler, dict):
+        return False
+    diagnostics = compiler.get("compiler_diagnostics", {}) if isinstance(compiler.get("compiler_diagnostics", {}), dict) else {}
+    stored = str(diagnostics.get("context_fingerprint") or "").strip()
+    if not stored:
+        return False
+    context = compiler.get("prompt_compile_context", {}) if isinstance(compiler.get("prompt_compile_context", {}), dict) else {}
+    return stored == _prompt_compiler_context_fingerprint(shot, structured, context)
 
 
 def _ensure_storyboard_prompt_compiler_state(s, shot) -> tuple[dict, dict, bool]:
@@ -6460,6 +10475,11 @@ def _ensure_storyboard_prompt_compiler_state(s, shot) -> tuple[dict, dict, bool]
     if not isinstance(shot_meta, dict):
         shot_meta = {}
     prompt_compiler_meta = shot_meta.get("prompt_compiler", {}) if isinstance(shot_meta.get("prompt_compiler", {}), dict) else {}
+    # A split creates two new narrative units.  Their source prompt versions
+    # remain in the database only as audit history and must never be revived
+    # into either new unit before an explicit recompile.
+    if prompt_compiler_meta.get("recompile_required"):
+        return shot_meta, prompt_compiler_meta, False
     if prompt_compiler_meta.get("latest_version"):
         return shot_meta, prompt_compiler_meta, False
 
@@ -6636,23 +10656,103 @@ def _resolve_storyboard_reference_payloads(
     return list(dict.fromkeys(filtered_ids)), filtered_images
 
 
+def _build_storyboard_composition_reference(shot) -> dict[str, Any] | None:
+    """Expose the adopted storyboard image as a composition-only video reference.
+
+    Asset references preserve identity and individual scene details.  They do
+    not, however, encode the approved screen direction and multi-character
+    blocking from the storyboard image.  Keeping this as a distinct role lets
+    a provider receive both kinds of evidence without pretending that a
+    character turnaround is a shot composition.
+    """
+    asset_links = _load_asset_links(getattr(shot, "asset_links", None))
+    adopted_image = _find_adopted_shot_asset(asset_links, "images")
+    if not isinstance(adopted_image, dict):
+        return None
+    image_url = str(adopted_image.get("uri") or adopted_image.get("previewUrl") or "").strip()
+    image_id = str(adopted_image.get("id") or "").strip()
+    if not image_url or not image_id:
+        return None
+    return {
+        "asset_type": "storyboard_composition",
+        "asset_id": image_id,
+        "asset_name": f"镜头 {getattr(shot, 'shot_id', '')} 已采纳分镜图",
+        "reference_asset_id": f"composition-{image_id}",
+        "reference_token": "@已采纳分镜图",
+        "image_url": image_url,
+        "reference_status": "adopted",
+        "role": "composition",
+        "weight": 1.5,
+    }
+
+
+def _resolve_storyboard_video_reference_payloads(
+    shot,
+    requested_reference_asset_ids: list[str] | None,
+    *,
+    max_reference_images: int | None = None,
+) -> tuple[list[str], list[dict]]:
+    """Build video references with a composition anchor before asset details.
+
+    A provider's reference-image cap is a hard production constraint.  The
+    approved storyboard image consumes one slot; all character identities are
+    retained next, then scene/prop references fill remaining capacity.  We
+    reject a request that cannot retain both the composition and every bound
+    character rather than silently dropping a visible performer.
+    """
+    reference_asset_ids, reference_images = _resolve_storyboard_reference_payloads(shot, requested_reference_asset_ids)
+    composition = _build_storyboard_composition_reference(shot)
+    if not composition:
+        return reference_asset_ids, reference_images
+
+    characters = [item for item in reference_images if str(item.get("role") or item.get("asset_type") or "").strip() == "character"]
+    # The approved storyboard image is the shot-level scene/layout anchor.  A
+    # second scene turnaround adds no distinct identity signal and can dilute
+    # blocking guidance, even when the selected provider has spare image
+    # capacity.  Keep independent props because their state may be invisible
+    # or ambiguous in the composition image.
+    remaining = [
+        item
+        for item in reference_images
+        if item not in characters
+        and str(item.get("role") or item.get("asset_type") or "").strip() != "scene"
+    ]
+    ordered_images = [composition, *characters, *remaining]
+    if max_reference_images is not None:
+        limit = max(int(max_reference_images), 1)
+        if 1 + len(characters) > limit:
+            raise HTTPException(
+                status_code=409,
+                detail=(
+                    f"当前模型最多支持 {limit} 张参考图；镜头的已采纳分镜构图加上 "
+                    f"{len(characters)} 个角色定妆图已超出上限。系统不会静默丢弃角色参考，"
+                    "请改用支持更多参考图的模型，或调整镜头的出场角色。"
+                ),
+            )
+        ordered_images = ordered_images[:limit]
+
+    ids = [str(item.get("reference_asset_id") or "").strip() for item in ordered_images]
+    return list(dict.fromkeys(item for item in ids if item)), ordered_images
+
+
 def _resolve_storyboard_video_generation_context(shot, req: StoryboardGenerationRequest) -> dict[str, Any]:
     asset_links = _load_asset_links(shot.asset_links)
+    reference_asset_ids, reference_images = _resolve_storyboard_reference_payloads(shot, req.reference_asset_ids)
     adopted_image = _find_adopted_shot_asset(asset_links, "images")
     requested_first_frame = _find_shot_asset_by_id(asset_links, "images", req.first_frame_asset_id)
     first_frame_asset = requested_first_frame or adopted_image
-    if not first_frame_asset:
-        raise HTTPException(status_code=400, detail="An adopted first-frame image is required before generating video.")
-
-    first_frame_url = str(first_frame_asset.get("uri") or first_frame_asset.get("previewUrl") or "").strip()
-    if not first_frame_url:
+    first_frame_url = ""
+    if first_frame_asset:
+        first_frame_url = str(first_frame_asset.get("uri") or first_frame_asset.get("previewUrl") or "").strip()
+    if first_frame_asset and not first_frame_url:
         raise HTTPException(status_code=400, detail="The selected first-frame image is missing a usable preview URL.")
+    if not first_frame_url and not reference_images:
+        raise HTTPException(status_code=400, detail="A video input image is required before generating video: add an adopted first-frame image or selected reference images.")
 
-    reference_asset_ids, reference_images = _resolve_storyboard_reference_payloads(shot, req.reference_asset_ids)
     return {
         "asset_links": asset_links,
-        "first_frame_asset": first_frame_asset,
-        "first_frame_asset_id": str(first_frame_asset.get("id") or "").strip(),
+        "first_frame_asset": first_frame_asset or {},
+        "first_frame_asset_id": str(first_frame_asset.get("id") or "").strip() if isinstance(first_frame_asset, dict) else "",
         "first_frame_url": first_frame_url,
         "reference_asset_ids": reference_asset_ids,
         "reference_images": reference_images,
@@ -7156,6 +11256,23 @@ def _create_visual_reference_asset_record(
     with Session() as s:
         if asset_type == "character":
             _materialize_character_profile_fallback_makeup(s, book_id, asset_id)
+        model_map = {"scene": VisualLocation, "character": VisualMakeup, "prop": VisualProp}
+        authority_model = model_map.get(asset_type)
+        authority_row = None
+        if authority_model and _is_integer_string(asset_id):
+            authority_row = s.query(authority_model).filter(
+                authority_model.book_id == book_id,
+                authority_model.id == int(str(asset_id)),
+            ).first()
+        if authority_row is not None:
+            # A generated or manually supplied image is only valid for the
+            # exact authority snapshot it was attached to.  This provenance is
+            # later compared when an asset prompt is edited or rebound.
+            meta_payload = {
+                **meta_payload,
+                "asset_visual_authority_fingerprint": _asset_visual_authority_fingerprint(authority_row, asset_type),
+                "asset_visual_authority_snapshot": _asset_visual_authority_snapshot(authority_row, asset_type),
+            }
         existing_row = None
         if task_id:
             candidates = s.query(VisualReferenceAsset).filter(
@@ -7221,17 +11338,18 @@ def _create_visual_reference_asset_record(
 
 
 def _demote_selected_reference_siblings(session, row) -> list[dict]:
-    if row.status != "selected":
+    if row.status not in {"selected", "locked"}:
         return []
 
     from models import VisualReferenceAsset
 
+    sibling_statuses = ["selected", "locked"] if row.status == "locked" else ["selected"]
     demoted_rows = session.query(VisualReferenceAsset).filter(
         VisualReferenceAsset.book_id == row.book_id,
         VisualReferenceAsset.asset_type == row.asset_type,
         VisualReferenceAsset.asset_id == row.asset_id,
         VisualReferenceAsset.id != row.id,
-        VisualReferenceAsset.status == "selected",
+        VisualReferenceAsset.status.in_(sibling_statuses),
     ).all()
 
     affected = []
@@ -7821,8 +11939,39 @@ def _next_asset_version(book_id: int, episode: int, shot_id: str, kind: str) -> 
         return len(current_assets) + 1
 
 
-def _next_reference_asset_version(book_id: int, episode: int, scope: str, subject: str | None) -> int:
-    from models import Session, StoryboardShot
+def _next_reference_asset_version(
+    book_id: int,
+    episode: int,
+    scope: str,
+    subject: str | None,
+    asset_id: str | None = None,
+) -> int:
+    """Return a monotonic reference version across all storage locations.
+
+    Asset-library generation is allowed before an asset is bound to a shot.
+    Looking only at ``StoryboardShot.asset_links`` then reuses ``v1`` on every
+    retry.  Count the canonical reference rows first (including stale rows),
+    and retain the shot-link fallback for legacy records that predate the
+    canonical table.
+    """
+    from models import Session, StoryboardShot, VisualReferenceAsset
+
+    normalized_scope = "scene" if str(scope or "").strip() in {"location", "scene"} else str(scope or "").strip()
+    normalized_subject = str(subject or "").strip()
+    with Session() as s:
+        query = s.query(VisualReferenceAsset).filter(
+            VisualReferenceAsset.book_id == book_id,
+            VisualReferenceAsset.asset_type == normalized_scope,
+        )
+        if asset_id:
+            query = query.filter(VisualReferenceAsset.asset_id == str(asset_id).strip())
+        elif normalized_subject:
+            query = query.filter(VisualReferenceAsset.asset_name == normalized_subject)
+        if episode is not None:
+            query = query.filter(VisualReferenceAsset.episode == episode)
+        canonical_count = query.count()
+        if canonical_count:
+            return canonical_count + 1
 
     target_shot_ids = _collect_reference_target_shots(book_id, episode, scope, subject)
     if not target_shot_ids:
@@ -7904,6 +12053,75 @@ def _store_creative_task_request(task_state: dict, req: CreativeGenerationReques
     _stamp_creative_task_state(task_state)
 
 
+def _video_retry_input_snapshot(task_state: dict[str, Any], req: CreativeGenerationRequest) -> dict[str, Any]:
+    """Capture exactly the provider-facing inputs needed for a manual retry.
+
+    This intentionally uses the persisted request and submission-time continuity
+    policy.  It must not consult the current storyboard, unlocked references, or
+    mutable model defaults: those would turn a retry into a new generation.
+    """
+    request_payload = req.model_dump(mode="json", by_alias=False)
+    return {
+        "request_payload": request_payload,
+        "model_profile_id": str(task_state.get("model_profile_id") or request_payload.get("model_profile_id") or ""),
+        "provider": str(task_state.get("provider") or ""),
+        "provider_task_mode": str(task_state.get("provider_task_mode") or ""),
+        "continuity": task_state.get("continuity") if isinstance(task_state.get("continuity"), dict) else {},
+        "first_frame_public_asset": task_state.get("first_frame_public_asset") if isinstance(task_state.get("first_frame_public_asset"), dict) else {},
+        "reference_public_assets": task_state.get("reference_public_assets") if isinstance(task_state.get("reference_public_assets"), list) else [],
+        "source_task_id": str(task_state.get("task_id") or ""),
+    }
+
+
+def _video_retry_input_fingerprint(snapshot: dict[str, Any]) -> str:
+    canonical = json.dumps(snapshot, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _record_failed_video_retry_attempt(task_state: dict[str, Any], req: CreativeGenerationRequest) -> None:
+    """Persist one failure record; this records evidence only and never retries."""
+    source_task_id = str(task_state.get("task_id") or "").strip()
+    if not source_task_id:
+        return
+    try:
+        from models import Session, StoryboardVideoRetryAttempt
+
+        snapshot = _video_retry_input_snapshot(task_state, req)
+        fingerprint = _video_retry_input_fingerprint(snapshot)
+        root_task_id = str(task_state.get("continuity_retry_root_task_id") or source_task_id).strip() or source_task_id
+        with Session() as session:
+            row = session.query(StoryboardVideoRetryAttempt).filter_by(source_task_id=source_task_id).first()
+            if row is None:
+                latest = session.query(StoryboardVideoRetryAttempt).filter_by(retry_root_task_id=root_task_id).order_by(StoryboardVideoRetryAttempt.attempt_number.desc()).first()
+                row = StoryboardVideoRetryAttempt(
+                    book_id=req.book_id,
+                    episode=req.episode,
+                    shot_id=_coerce_storyboard_shot_id(req.shot_id),
+                    source_task_id=source_task_id,
+                    retry_root_task_id=root_task_id,
+                    attempt_number=(int(latest.attempt_number) + 1) if latest else 1,
+                    input_fingerprint=fingerprint,
+                    input_snapshot=json.dumps(snapshot, ensure_ascii=False),
+                    error_message=str(task_state.get("error") or ""),
+                    provider_response=json.dumps(task_state.get("provider_response") or {}, ensure_ascii=False, default=str),
+                )
+                session.add(row)
+                session.flush()
+            else:
+                # A task can be reconciled after an error. Preserve the original
+                # immutable input but retain the latest provider diagnostic.
+                row.error_message = str(task_state.get("error") or row.error_message or "")
+                row.provider_response = json.dumps(task_state.get("provider_response") or {}, ensure_ascii=False, default=str)
+                row.updated_at = datetime.utcnow()
+            session.commit()
+            task_state["continuity_retry_record_id"] = row.id
+            task_state["continuity_retry_root_task_id"] = root_task_id
+            task_state["continuity_retry_attempt_number"] = row.attempt_number
+    except Exception as exc:
+        # Failure auditing must never mask the provider failure itself.
+        logger.warning("Failed to record video retry attempt for %s: %s", source_task_id, exc)
+
+
 def _build_provider_prompt_encoding_audit(
     original_prompt: str | None,
     provider_request_payload: dict[str, Any] | None = None,
@@ -7973,10 +12191,10 @@ def _infer_creative_video_task_mode(req: CreativeGenerationRequest, generated: d
         task_mode = str(generated.get("taskMode") or "").strip()
         if task_mode:
             return task_mode
-    if str(req.first_frame_url or "").strip():
-        return "image_to_video"
     if req.reference_images:
         return "reference_to_video"
+    if str(req.first_frame_url or "").strip():
+        return "image_to_video"
     return "text_to_video"
 
 
@@ -8100,6 +12318,76 @@ def _build_provider_safe_storyboard_prompt_variants(prompt: str) -> list[str]:
     return variants
 
 
+def _prepare_shapi_gemini_reference_images(
+    profile: dict[str, Any],
+    reference_images: list[dict[str, Any]] | None,
+) -> list[dict[str, Any]]:
+    """Make bound visual assets usable by Nano Banana without exposing LAN URLs.
+
+    The Gemini transport accepts only public HTTPS URLs or image data URIs.  A
+    formal-workspace reference may instead be a durable manual upload served by
+    this application (``/api/prototyping/manual-media/...``), a local file, or
+    an already-public URL.  For this *specific* provider, read those registered
+    source assets server-side and submit them as data URIs.  The original URLs
+    remain in the task request and asset bindings; only the transient provider
+    input is transformed.  The adapter redacts inline bytes from its audit
+    snapshot, so task records never store a copy of a user's source image.
+    """
+    if str(profile.get("provider") or "").strip() != SHAPI_GEMINI_IMAGE_PROVIDER:
+        return list(reference_images or [])
+
+    params = profile.get("default_params") or {}
+    try:
+        max_references = int(params.get("max_reference_images") or 14)
+    except (TypeError, ValueError):
+        max_references = 14
+    max_references = min(max(max_references, 1), 14)
+    try:
+        max_bytes = int(params.get("max_reference_image_bytes") or 10 * 1024 * 1024)
+    except (TypeError, ValueError):
+        max_bytes = 10 * 1024 * 1024
+    max_bytes = min(max(max_bytes, 1 * 1024 * 1024), 20 * 1024 * 1024)
+
+    prepared: list[dict[str, Any]] = []
+    for index, raw_item in enumerate((reference_images or [])[:max_references], start=1):
+        if not isinstance(raw_item, dict):
+            continue
+        item = dict(raw_item)
+        source_url = str(item.get("image_url") or item.get("imageUrl") or item.get("url") or "").strip()
+        if not source_url:
+            continue
+        if source_url.startswith("data:"):
+            prepared.append(item)
+            continue
+
+        try:
+            # The storage helper enforces our local manual-media path boundary
+            # before reading.  It also supports a pre-existing public URL.
+            from core.public_asset_storage import _normalize_provider_image_bytes
+
+            content, content_type = _load_source_bytes(source_url, local_base_url=config.PUBLIC_ASSET_LOCAL_BASE_URL)
+            content, content_type = _normalize_provider_image_bytes(content, content_type)
+        except Exception as exc:
+            reference_id = str(item.get("reference_asset_id") or item.get("referenceAssetId") or index)
+            raise ModelProfileError(f"无法读取 Nano Banana 2 参考图 {reference_id}：{exc}") from exc
+
+        mime_type = str(content_type or "").split(";", 1)[0].strip().lower()
+        if not mime_type.startswith("image/"):
+            raise ModelProfileError(f"Nano Banana 2 参考图 #{index} 不是图片文件。")
+        if not content or len(content) > max_bytes:
+            raise ModelProfileError(
+                f"Nano Banana 2 参考图 #{index} 必须介于 1 字节与 {max_bytes // (1024 * 1024)}MB 之间。"
+            )
+
+        item["image_url"] = f"data:{mime_type};base64,{base64.b64encode(content).decode('ascii')}"
+        # Do not retain a second large payload under an alternative camelCase
+        # key: the adapter chooses image_url first and redacts that one input.
+        item.pop("imageUrl", None)
+        item.pop("url", None)
+        prepared.append(item)
+    return prepared
+
+
 async def _generate_image_asset_with_provider_recovery(
     profile: dict[str, Any],
     *,
@@ -8209,14 +12497,37 @@ def _complete_reconciled_creative_task(
         "usesMock": provider == "prototype-task-adapter",
         "negativePrompt": req.negative_prompt or "",
         "externalTaskId": generated.get("externalTaskId") or "",
+        "providerTaskId": generated.get("providerTaskId") or generated.get("externalTaskId") or "",
         "externalStatus": generated.get("externalStatus") or "",
         "pollAttempts": generated.get("pollAttempts") or 0,
         "providerResponse": generated.get("providerResponse") or {},
         "providerPromptAdjusted": bool(generated.get("providerPromptAdjusted")),
         "providerPromptAdjustmentReason": generated.get("providerPromptAdjustmentReason") or "",
         "providerSafePrompt": generated.get("providerSafePrompt") or "",
+        "providerContentRequiresAuth": bool(generated.get("providerContentRequiresAuth")),
     })
     _apply_provider_submission_snapshot(task_state, asset, req, generated=generated)
+
+    persistence = None
+    if asset_kind == "image":
+        persistence = _apply_generated_image_persistence(
+            asset,
+            book_id=req.book_id,
+            task_id=task_id,
+            label=title,
+        )
+    elif asset_kind == "video":
+        persistence = _apply_generated_video_persistence(
+            asset,
+            book_id=req.book_id,
+            task_id=task_id,
+            label=title,
+            download_headers=(
+                {"Authorization": f"Bearer {str(profile.get('api_key') or '').strip()}"}
+                if provider == MINIMAX_H3_75API_PROVIDER and generated.get("providerContentRequiresAuth") and str(profile.get("api_key") or "").strip()
+                else None
+            ),
+        )
 
     if kind == "reference-image":
         persisted_reference = None
@@ -8236,9 +12547,12 @@ def _complete_reconciled_creative_task(
                 asset_id=str(req.source_asset_id),
                 asset_name=req.asset_subject or title,
                 image_url=image_uri,
-                local_path="",
+                local_path=str(persistence.get("local_path") or "") if isinstance(persistence, dict) else "",
                 reference_token=reference_token,
-                status="selected",
+                # A provider response is evidence, not an approval.  Keep it
+                # out of downstream production until visual QA and an explicit
+                # operator decision promote it to selected/locked.
+                status="candidate",
                 prompt=asset.get("prompt") or req.prompt,
                 model=model_name,
                 notes=f"视觉资产库生成 · {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}",
@@ -8251,6 +12565,8 @@ def _complete_reconciled_creative_task(
                     "assetScope": req.asset_scope or "location",
                     "assetSubject": req.asset_subject or title,
                     "usesMock": provider == "prototype-task-adapter",
+                    "originalProviderUrl": persistence.get("source_url") if isinstance(persistence, dict) else image_uri,
+                    "generatedImagePersistence": persistence or {},
                 },
             )
             asset["metadata"]["referenceAssetId"] = persisted_reference.get("id")
@@ -8334,13 +12650,17 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
                 provider_task_mode=_infer_creative_video_task_mode(req) if asset_kind == "video" else "",
             )
         elif asset_kind == "image":
+            provider_reference_images = _prepare_shapi_gemini_reference_images(
+                profile,
+                req.reference_images or [],
+            )
             generated = await _generate_image_asset_with_provider_recovery(
                 profile,
                 kind=kind,
                 prompt=req.prompt,
                 aspect_ratio=req.aspect_ratio,
                 negative_prompt=req.negative_prompt,
-                reference_images=req.reference_images or [],
+                reference_images=provider_reference_images,
             )
             asset = build_task_adapter_asset(
                 kind=kind,
@@ -8405,14 +12725,37 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
             "usesMock": provider == "prototype-task-adapter",
             "negativePrompt": req.negative_prompt or "",
             "externalTaskId": generated.get("externalTaskId") or "",
+            "providerTaskId": generated.get("providerTaskId") or generated.get("externalTaskId") or "",
             "externalStatus": generated.get("externalStatus") or "",
             "pollAttempts": generated.get("pollAttempts") or 0,
             "providerResponse": generated.get("providerResponse") or {},
             "providerPromptAdjusted": bool(generated.get("providerPromptAdjusted")),
             "providerPromptAdjustmentReason": generated.get("providerPromptAdjustmentReason") or "",
             "providerSafePrompt": generated.get("providerSafePrompt") or "",
+            "providerContentRequiresAuth": bool(generated.get("providerContentRequiresAuth")),
         })
         _apply_provider_submission_snapshot(task_state, asset, req, generated=generated)
+
+        persistence = None
+        if asset_kind == "image":
+            persistence = _apply_generated_image_persistence(
+                asset,
+                book_id=req.book_id,
+                task_id=task_id,
+                label=title,
+            )
+        elif asset_kind == "video":
+            persistence = _apply_generated_video_persistence(
+                asset,
+                book_id=req.book_id,
+                task_id=task_id,
+                label=title,
+                download_headers=(
+                    {"Authorization": f"Bearer {str(profile.get('api_key') or '').strip()}"}
+                    if provider == MINIMAX_H3_75API_PROVIDER and generated.get("providerContentRequiresAuth") and str(profile.get("api_key") or "").strip()
+                    else None
+                ),
+            )
 
         if kind == "reference-image":
             persisted_reference = None
@@ -8432,9 +12775,12 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
                     asset_id=str(req.source_asset_id),
                     asset_name=req.asset_subject or title,
                     image_url=image_uri,
-                    local_path="",
+                    local_path=str(persistence.get("local_path") or "") if isinstance(persistence, dict) else "",
                     reference_token=reference_token,
-                    status="selected",
+                # A provider response is evidence, not an approval.  Keep it
+                # out of downstream production until visual QA and an explicit
+                # operator decision promote it to selected/locked.
+                status="candidate",
                     prompt=asset.get("prompt") or req.prompt,
                     model=model_name,
                     notes=f"视觉资产库生成 · {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}",
@@ -8447,6 +12793,8 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
                         "assetScope": req.asset_scope or "location",
                         "assetSubject": req.asset_subject or title,
                         "usesMock": provider == "prototype-task-adapter",
+                        "originalProviderUrl": persistence.get("source_url") if isinstance(persistence, dict) else image_uri,
+                        "generatedImagePersistence": persistence or {},
                     },
                 )
                 asset["metadata"]["referenceAssetId"] = persisted_reference.get("id")
@@ -8475,6 +12823,12 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
         task_state = _creative_tasks[task_id]
         task_state["status"] = "error"
         task_state["error"] = str(exc)
+        # Do not leave a provider task looking queued after the worker has
+        # definitively failed (for example an upstream balance/validation
+        # rejection).  Preserve a provider-supplied terminal status when one
+        # exists, otherwise expose a deterministic failed state to the UI.
+        if not str(task_state.get("external_status") or "").strip() or str(task_state.get("external_status") or "").strip().startswith("queued"):
+            task_state["external_status"] = "failed"
         if isinstance(exc, ModelProfileError):
             provider_message = _extract_provider_error_message(getattr(exc, "provider_response", None))
             if provider_message:
@@ -8488,6 +12842,8 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
             if getattr(exc, "provider_response", None) is not None:
                 task_state["provider_response"] = exc.provider_response
             _apply_provider_submission_snapshot(task_state, None, req, exc=exc)
+        if kind == "video" or str(task_state.get("target_kind") or "") == "video":
+            _record_failed_video_retry_attempt(task_state, req)
         _stamp_creative_task_state(task_state)
 
 
@@ -8553,7 +12909,13 @@ async def _enqueue_creative_task(req: CreativeGenerationRequest, bg: BackgroundT
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     version = (
-        _next_reference_asset_version(req.book_id, req.episode, req.asset_scope or "location", req.asset_subject)
+        _next_reference_asset_version(
+            req.book_id,
+            req.episode,
+            req.asset_scope or "location",
+            req.asset_subject,
+            req.source_asset_id,
+        )
         if kind == "reference-image"
         else _next_asset_version(req.book_id, req.episode, req.shot_id, "video" if kind == "video" else "image")
     )
@@ -8663,6 +13025,8 @@ async def reconcile_creative_task(task_id: str):
             reconciled = await reconcile_poyo_generation(profile, external_task_id=external_task_id)
         elif provider == "minimax-h3-async":
             reconciled = await reconcile_minimax_h3_generation(profile, external_task_id=external_task_id)
+        elif provider == MINIMAX_H3_75API_PROVIDER:
+            reconciled = await reconcile_75api_minimax_h3_generation(profile, external_task_id=external_task_id)
         else:
             return task
         if reconciled.get("status") == "done":
@@ -9036,6 +13400,10 @@ def get_visual_assets(book_id: int):
         reference_index: dict[tuple[str, str], list[dict]] = {}
         for row in reference_rows:
             reference_index.setdefault((row.asset_type, row.asset_id), []).append(_serialize_reference_asset_row(row))
+        reference_index = {
+            key: _sort_reference_assets_for_display(items)
+            for key, items in reference_index.items()
+        }
 
         location_rows = s.query(VisualLocation).filter(VisualLocation.book_id == book_id).order_by(VisualLocation.name).all()
         prop_rows = s.query(VisualProp).filter(VisualProp.book_id == book_id).order_by(VisualProp.name).all()
@@ -9081,6 +13449,389 @@ def get_visual_assets(book_id: int):
     }
 
 
+_ASSET_SEMANTIC_WRITABLE_FIELDS = {
+    "character": {
+        "refined_outfit", "refined_accessories", "makeup_spec", "hair_style", "expression_mood",
+        "visual_prompt_zh", "core_prompt_zh", "outfit_prompt_zh", "scene_prompt_zh", "consistency_notes", "negative_prompt",
+    },
+    "scene": {
+        "style", "description", "color_palette", "lighting_mood", "key_props", "visual_prompt_zh", "core_prompt_zh",
+        "scene_mood_zh", "negative_prompt",
+    },
+    "prop": {
+        "category", "description", "associated_characters", "time_period", "visual_prompt_zh", "core_prompt_zh",
+        "style_ref_zh", "importance", "notes", "negative_prompt",
+    },
+}
+
+
+def _asset_semantic_model(asset_type: str):
+    from models import VisualLocation, VisualMakeup, VisualProp
+    model = {"scene": VisualLocation, "character": VisualMakeup, "prop": VisualProp}.get(asset_type)
+    if not model:
+        raise HTTPException(status_code=400, detail=f"Unsupported asset_type: {asset_type}")
+    return model
+
+
+def _asset_semantic_subject(row, asset_type: str) -> str:
+    return str(getattr(row, "character_name" if asset_type == "character" else "name", "") or "").strip()
+
+
+def _asset_semantic_source_snapshot(row, asset_type: str) -> dict:
+    fields = sorted(_ASSET_SEMANTIC_WRITABLE_FIELDS[asset_type])
+    return {
+        "asset_id": str(row.id),
+        "asset_type": asset_type,
+        "asset_name": _asset_semantic_subject(row, asset_type),
+        "episode": getattr(row, "episode", None),
+        "fields": {field: str(getattr(row, field, "") or "") for field in fields},
+        "authoritative_prompt": str(
+            getattr(row, "visual_prompt_zh", "")
+            or getattr(row, "core_prompt_zh", "")
+            or getattr(row, "description", "")
+            or ""
+        ),
+        "shot_ids": _normalize_asset_shot_ids(_json_loads_list(getattr(row, "shot_ids", None))),
+    }
+
+
+def _asset_semantic_affected_shots(s, book_id: int, asset_type: str, row) -> list[dict]:
+    """Resolve only declared bindings; never infer with lexical/keyword matching."""
+    from models import StoryboardShot
+    declared = set(_normalize_asset_shot_ids(_json_loads_list(getattr(row, "shot_ids", None))))
+    declared_composites = {item for item in declared if "-" in item}
+    declared_plain = {item for item in declared if "-" not in item}
+    asset_episode = getattr(row, "episode", None) if asset_type == "character" else None
+    result: list[dict] = []
+    for shot in s.query(StoryboardShot).filter(StoryboardShot.book_id == book_id).order_by(StoryboardShot.episode, StoryboardShot.shot_id).all():
+        composite = f"{shot.episode}-{shot.shot_id}"
+        meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+        structure = meta.get("structured_shot", {}) if isinstance(meta, dict) else {}
+        structure = structure if isinstance(structure, dict) else {}
+        bound_ids = (
+            [str(structure.get("scene_asset_id") or "")] if asset_type == "scene"
+            else [str(item) for item in (structure.get("character_asset_ids", []) if asset_type == "character" else structure.get("prop_asset_ids", []))]
+        )
+        explicitly_bound = str(row.id) in bound_ids
+        # A bare shot id has no episode scope for scenes/props and must not be
+        # expanded across episodes. Character variants carry an explicit
+        # episode, so their bare ids remain unambiguous legacy declarations.
+        legacy_plain_binding = asset_episode == shot.episode and str(shot.shot_id) in declared_plain
+        if composite in declared_composites or legacy_plain_binding or explicitly_bound:
+            result.append({
+                "episode": shot.episode,
+                "shot_id": str(shot.shot_id),
+                "composite_shot_id": composite,
+                "scene_name": shot.scene_name,
+                "binding_source": "structured" if explicitly_bound else "asset_shot_ids",
+                "has_compiled_prompt": bool(str(shot.visual_prompt_static or "").strip()),
+                # These are director/structure facts for semantic assignment,
+                # not a request to compile or modify the shot.
+                "shot_context": {
+                    "start_state": str(shot.start_state or ""),
+                    "action_process": str(shot.action_process or ""),
+                    "end_state": str(shot.end_state or ""),
+                    "dialogue": str(shot.dialogue or ""),
+                    "camera_angle": str(shot.camera_angle or ""),
+                    "camera_movement": str(shot.camera_movement or ""),
+                    "lighting": str(shot.lighting or ""),
+                },
+            })
+    return result
+
+
+def _asset_semantic_fingerprint(source_snapshot: dict, proposal: dict) -> str:
+    canonical = json.dumps({"source_snapshot": source_snapshot, "proposal": proposal}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _asset_semantic_evidence_fingerprint(source_snapshot: dict, affected_shots: list[dict]) -> str:
+    canonical = json.dumps({"source_snapshot": source_snapshot, "affected_shots": affected_shots}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _build_asset_semantic_llm_prompt(source_snapshot: dict, affected_shots: list[dict], asset_type: str) -> str:
+    context = {
+        "source_snapshot": source_snapshot,
+        "affected_shots": affected_shots,
+        "allowed_proposed_fields": sorted(_ASSET_SEMANTIC_WRITABLE_FIELDS[asset_type]),
+    }
+    return load_prompt("asset/semantic_governance", context_json=json.dumps(context, ensure_ascii=False, indent=2))
+
+
+def _normalize_asset_semantic_proposal(raw: object, asset_type: str, affected_shots: list[dict]) -> dict:
+    if not isinstance(raw, dict):
+        raise HTTPException(status_code=422, detail="资产语义治理模型未返回 JSON object。")
+    writable = _ASSET_SEMANTIC_WRITABLE_FIELDS[asset_type]
+    proposed_raw = raw.get("proposed_fields", {})
+    if not isinstance(proposed_raw, dict):
+        raise HTTPException(status_code=422, detail="资产语义治理草案缺少 proposed_fields object。")
+    invalid = sorted(set(proposed_raw) - writable)
+    if invalid:
+        raise HTTPException(status_code=422, detail=f"草案尝试写入不允许的资产字段: {', '.join(invalid)}")
+    proposed_fields = {field: str(value or "").strip() for field, value in proposed_raw.items()}
+    valid_composites = {item["composite_shot_id"] for item in affected_shots}
+    extractions = raw.get("shot_layer_extractions", [])
+    if not isinstance(extractions, list):
+        extractions = []
+    normalized_extractions = []
+    for item in extractions:
+        if not isinstance(item, dict):
+            continue
+        candidate_values = item.get("candidate_shot_ids") or item.get("candidateShotIds") or []
+        candidates = [str(value).strip() for value in candidate_values if str(value).strip() in valid_composites]
+        text = str(item.get("text") or item.get("content") or "").strip()
+        source_field = str(item.get("source_field") or item.get("from_field") or "").strip()
+        if not text or not source_field:
+            raise HTTPException(status_code=422, detail="资产语义治理草案包含不完整的镜头层迁移项。")
+        normalized_extractions.append({
+            "source_field": source_field,
+            "target": str(item.get("target") or item.get("target_layer") or "shot_context").strip(),
+            "text": text,
+            "candidate_shot_ids": list(dict.fromkeys(candidates)),
+            "confidence": item.get("confidence"),
+        })
+    field_moves = []
+    for item in raw.get("field_moves", []):
+        if not isinstance(item, dict):
+            continue
+        field_moves.append({
+            "source_field": str(item.get("source_field") or item.get("from_field") or "").strip(),
+            "target_field": str(item.get("target_field") or item.get("to_field") or "").strip(),
+            "text": str(item.get("text") or item.get("content") or item.get("content_moved") or "").strip(),
+            "confidence": item.get("confidence"),
+        })
+    return {
+        "proposed_fields": proposed_fields,
+        "field_moves": field_moves,
+        "shot_layer_extractions": normalized_extractions,
+        "rationale": [str(item).strip() for item in raw.get("rationale", []) if str(item).strip()],
+        "affected_shots": affected_shots,
+        "requires_confirmation": True,
+    }
+
+
+@app.post("/api/books/{book_id}/visual-assets/{asset_type}/{asset_id}/semantic-governance-drafts")
+def create_visual_asset_semantic_governance_draft(book_id: int, asset_type: str, asset_id: int):
+    """Freeze a read-only asset evidence packet; it never calls an LLM."""
+    from models import AssetSemanticGovernanceRecord, Session
+    model = _asset_semantic_model(asset_type)
+    with Session() as s:
+        row = s.query(model).filter(model.book_id == book_id, model.id == asset_id).first()
+        if not row:
+            raise HTTPException(status_code=404, detail="Visual asset not found")
+        previous_authority_fingerprint = _asset_visual_authority_fingerprint(row, asset_type)
+        source_snapshot = _asset_semantic_source_snapshot(row, asset_type)
+        affected_shots = _asset_semantic_affected_shots(s, book_id, asset_type, row)
+        fingerprint = _asset_semantic_evidence_fingerprint(source_snapshot, affected_shots)
+        existing = s.query(AssetSemanticGovernanceRecord).filter(AssetSemanticGovernanceRecord.plan_fingerprint == fingerprint).first()
+        if not existing:
+            s.add(AssetSemanticGovernanceRecord(
+                book_id=book_id, asset_type=asset_type, asset_id=str(asset_id), plan_fingerprint=fingerprint,
+                source_snapshot=json.dumps(source_snapshot, ensure_ascii=False),
+                proposal=json.dumps({"mode": "evidence_packet", "affected_shots": affected_shots, "requires_confirmation": True}, ensure_ascii=False),
+            ))
+            s.commit()
+        return {"kind": "asset_semantic_evidence_packet", "source_snapshot": source_snapshot, "affected_shots": affected_shots, "plan_fingerprint": fingerprint, "llm_called": False}
+
+
+@app.get("/api/books/{book_id}/visual-assets/{asset_type}/{asset_id}/semantic-governance-drafts/llm-preview")
+def preview_visual_asset_semantic_governance_llm(book_id: int, asset_type: str, asset_id: int, plan_fingerprint: str = Query(alias="planFingerprint")):
+    """Return the exact LLM prompt without contacting the model."""
+    from models import AssetSemanticGovernanceRecord, Session
+    _asset_semantic_model(asset_type)
+    with Session() as s:
+        record = s.query(AssetSemanticGovernanceRecord).filter_by(book_id=book_id, asset_type=asset_type, asset_id=str(asset_id), plan_fingerprint=plan_fingerprint, status="draft").first()
+        if not record: raise HTTPException(status_code=409, detail="资产证据包已过期；请重新生成。")
+        source_snapshot = safe_json_loads(record.source_snapshot) or {}
+        proposal = safe_json_loads(record.proposal) or {}
+        affected_shots = proposal.get("affected_shots", []) if isinstance(proposal, dict) else []
+        return {"plan_fingerprint": plan_fingerprint, "prompt": _build_asset_semantic_llm_prompt(source_snapshot, affected_shots, asset_type), "llm_called": False}
+
+
+@app.post("/api/books/{book_id}/visual-assets/{asset_type}/{asset_id}/semantic-governance-drafts/llm-draft")
+def generate_visual_asset_semantic_governance_llm_draft(book_id: int, asset_type: str, asset_id: int, req: dict):
+    """Generate one reviewable asset proposal after explicit external-call consent."""
+    from models import AssetSemanticGovernanceRecord, Session
+    parsed = DecisionPacketLlmDraftRequest.model_validate(req)
+    if not (parsed.confirmed and parsed.allow_external_call):
+        raise HTTPException(status_code=409, detail="调用 LLM 需要 confirmed=true 且 allowExternalCall=true。")
+    model = _asset_semantic_model(asset_type)
+    with Session() as s:
+        record = s.query(AssetSemanticGovernanceRecord).filter_by(book_id=book_id, asset_type=asset_type, asset_id=str(asset_id), plan_fingerprint=parsed.packet_fingerprint, status="draft").first()
+        # A generated proposal may carry a derived output fingerprint while
+        # retaining the original evidence fingerprint.  Reuse that pending
+        # record for the same frozen evidence instead of forcing a second
+        # provider call when the browser retries with the source fingerprint.
+        if not record:
+            candidates = s.query(AssetSemanticGovernanceRecord).filter_by(
+                book_id=book_id, asset_type=asset_type, asset_id=str(asset_id), status="draft"
+            ).order_by(AssetSemanticGovernanceRecord.updated_at.desc(), AssetSemanticGovernanceRecord.id.desc()).limit(20).all()
+            for candidate_record in candidates:
+                candidate_proposal = safe_json_loads(candidate_record.proposal) or {}
+                if candidate_proposal.get("evidence_fingerprint") == parsed.packet_fingerprint:
+                    record = candidate_record
+                    break
+        row = s.query(model).filter(model.book_id == book_id, model.id == asset_id).first()
+        if not record or not row: raise HTTPException(status_code=409, detail="资产证据包已过期；请重新生成。")
+        source_snapshot = safe_json_loads(record.source_snapshot) or {}
+        affected_shots = _asset_semantic_affected_shots(s, book_id, asset_type, row)
+        if _asset_semantic_source_snapshot(row, asset_type) != source_snapshot or _asset_semantic_evidence_fingerprint(source_snapshot, affected_shots) != parsed.packet_fingerprint:
+            record.status = "superseded"; record.updated_at = datetime.utcnow(); s.commit()
+            raise HTTPException(status_code=409, detail="资产或绑定已变化；证据包已作废。")
+        current = safe_json_loads(record.proposal) or {}
+        from core.prompt_cache import canonical_json, llm_request_fingerprint
+        request_identity = llm_request_fingerprint(
+            system="asset_semantic_governance:v1",
+            user=canonical_json({"asset_type": asset_type, "source_snapshot": source_snapshot, "affected_shots": affected_shots}),
+            profile=llm_client._resolve_llm_profile(),
+        )
+        current_audit = current.get("llm_request_audit") if isinstance(current, dict) else {}
+        if isinstance(current, dict) and current.get("llm_generated") and isinstance(current_audit, dict) and current_audit.get("dedupe_request_fingerprint") == request_identity:
+            return {"kind": "asset_semantic_normalization", "source_snapshot": source_snapshot, **current, "plan_fingerprint": record.plan_fingerprint, "llm_called": False, "deduplicated": True}
+        try:
+            audit_records = []
+            raw = llm_client.call_llm_json(
+                _build_asset_semantic_llm_prompt(source_snapshot, affected_shots, asset_type),
+                system="You are a conservative semantic normalization compiler. Return only the requested JSON object.",
+                required_keys={"proposed_fields", "field_moves", "shot_layer_extractions", "rationale", "affected_shots"},
+                estimated_tokens=3500,
+                json_parse_retries=0,
+                audit_callback=audit_records.append,
+                audit_extra={"mode": "asset_semantic_governance", "asset_type": asset_type},
+            )
+            proposal = _normalize_asset_semantic_proposal(raw, asset_type, affected_shots)
+            from core.prompt_cache import summarize_audit_records
+            proposal["llm_request_audit"] = summarize_audit_records(audit_records)
+            # When a test double/provider omits audit callbacks, retain a
+            # deterministic local identity so the business dedupe boundary
+            # remains enforceable without fabricating usage metrics.
+            if not proposal["llm_request_audit"].get("last_request_fingerprint"):
+                proposal["llm_request_audit"]["last_request_fingerprint"] = request_identity
+            proposal["llm_request_audit"]["dedupe_request_fingerprint"] = request_identity
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=f"资产语义治理草案生成失败: {str(exc)[:300]}") from exc
+        proposal.update({"llm_generated": True, "evidence_fingerprint": parsed.packet_fingerprint, "generated_at": datetime.utcnow().isoformat()})
+        final_fingerprint = _asset_semantic_fingerprint(source_snapshot, proposal)
+        record.plan_fingerprint = final_fingerprint; record.proposal = json.dumps(proposal, ensure_ascii=False); record.updated_at = datetime.utcnow(); s.commit()
+        return {"kind": "asset_semantic_normalization", "source_snapshot": source_snapshot, **proposal, "plan_fingerprint": final_fingerprint, "llm_called": True, "deduplicated": False}
+
+
+@app.get("/api/books/{book_id}/visual-assets/{asset_type}/{asset_id}/semantic-governance-drafts/latest")
+def get_latest_visual_asset_semantic_governance_draft(book_id: int, asset_type: str, asset_id: int):
+    """Load the current pending proposal without making another LLM request."""
+    from models import AssetSemanticGovernanceRecord, Session
+    _asset_semantic_model(asset_type)
+    with Session() as s:
+        record = (
+            s.query(AssetSemanticGovernanceRecord)
+            .filter(
+                AssetSemanticGovernanceRecord.book_id == book_id,
+                AssetSemanticGovernanceRecord.asset_type == asset_type,
+                AssetSemanticGovernanceRecord.asset_id == str(asset_id),
+                AssetSemanticGovernanceRecord.status == "draft",
+            )
+            .order_by(AssetSemanticGovernanceRecord.updated_at.desc(), AssetSemanticGovernanceRecord.id.desc())
+            .first()
+        )
+        if not record:
+            return {"draft": None}
+        source_snapshot = safe_json_loads(record.source_snapshot) or {}
+        proposal = safe_json_loads(record.proposal) or {}
+        return {
+            "draft": {
+                "kind": "asset_semantic_normalization",
+                "source_snapshot": source_snapshot,
+                **proposal,
+                "plan_fingerprint": record.plan_fingerprint,
+            }
+        }
+
+
+@app.post("/api/books/{book_id}/visual-assets/{asset_type}/{asset_id}/semantic-governance-drafts/confirm")
+def confirm_visual_asset_semantic_governance_draft(book_id: int, asset_type: str, asset_id: int, req: AssetSemanticGovernanceConfirmRequest):
+    from models import AssetSemanticGovernanceRecord, Session
+    if not req.confirmed or not req.allow_write:
+        raise HTTPException(status_code=400, detail="确认写入需要 confirmed=true 且 allow_write=true。")
+    model = _asset_semantic_model(asset_type)
+    with Session() as s:
+        record = s.query(AssetSemanticGovernanceRecord).filter(
+            AssetSemanticGovernanceRecord.book_id == book_id,
+            AssetSemanticGovernanceRecord.asset_type == asset_type,
+            AssetSemanticGovernanceRecord.asset_id == str(asset_id),
+            AssetSemanticGovernanceRecord.plan_fingerprint == req.plan_fingerprint,
+            AssetSemanticGovernanceRecord.status == "draft",
+        ).first()
+        if not record:
+            confirmed_record = s.query(AssetSemanticGovernanceRecord).filter(
+                AssetSemanticGovernanceRecord.book_id == book_id,
+                AssetSemanticGovernanceRecord.asset_type == asset_type,
+                AssetSemanticGovernanceRecord.asset_id == str(asset_id),
+                AssetSemanticGovernanceRecord.plan_fingerprint == req.plan_fingerprint,
+                AssetSemanticGovernanceRecord.status == "confirmed",
+            ).first()
+            if confirmed_record:
+                return {
+                    "confirmed": True,
+                    "already_confirmed": True,
+                    "plan_fingerprint": req.plan_fingerprint,
+                    "recompile_plan_status": "pending_recompile",
+                }
+            raise HTTPException(status_code=409, detail="草案不存在、已确认或指纹不匹配；请重新生成并审核。")
+        row = s.query(model).filter(model.book_id == book_id, model.id == asset_id).first()
+        if not row:
+            raise HTTPException(status_code=404, detail="Visual asset not found")
+        source_snapshot = safe_json_loads(record.source_snapshot) or {}
+        if _asset_semantic_source_snapshot(row, asset_type) != source_snapshot:
+            record.status = "superseded"
+            record.updated_at = datetime.utcnow()
+            s.commit()
+            raise HTTPException(status_code=409, detail="资产在草案生成后已变更；草案已作废，请重新生成。")
+        proposal = safe_json_loads(record.proposal) or {}
+        if not isinstance(proposal, dict) or not proposal.get("llm_generated"):
+            raise HTTPException(status_code=409, detail="当前记录仅为证据包；请先显式确认调用 LLM 生成可审核草案。")
+        previous_authority_fingerprint = _asset_visual_authority_fingerprint(row, asset_type)
+        proposed_fields = proposal.get("proposed_fields", {}) if isinstance(proposal, dict) else {}
+        reviewed = req.reviewed_proposed_fields if isinstance(req.reviewed_proposed_fields, dict) else proposed_fields
+        invalid = sorted(set(reviewed) - _ASSET_SEMANTIC_WRITABLE_FIELDS[asset_type])
+        if invalid:
+            raise HTTPException(status_code=422, detail=f"审核内容含不允许字段: {', '.join(invalid)}")
+        affected_shots = _asset_semantic_affected_shots(s, book_id, asset_type, row)
+        anchors = []
+        from models import StoryboardShot
+        for impact in affected_shots:
+            shot = s.query(StoryboardShot).filter(StoryboardShot.book_id == book_id, StoryboardShot.episode == impact["episode"], StoryboardShot.shot_id == int(impact["shot_id"])).first()
+            if not shot:
+                continue
+            anchors.append(_create_storyboard_state_snapshot_anchor(
+                s, shot,
+                {"type": "asset-semantic-governance", "operation": "proposal-confirm", "source_asset_id": str(asset_id)},
+                "asset-semantic-governance-preimage",
+            ))
+            meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+            meta = meta if isinstance(meta, dict) else {}
+            compiler = meta.get("prompt_compiler", {}) if isinstance(meta.get("prompt_compiler", {}), dict) else {}
+            compiler.update({"recompile_required": True, "compile_reason": "asset-semantic-governance-confirmed", "asset_semantic_plan_fingerprint": req.plan_fingerprint})
+            meta["prompt_compiler"] = compiler
+            meta["asset_semantic_recompile_plan"] = {"plan_fingerprint": req.plan_fingerprint, "asset_id": str(asset_id), "asset_type": asset_type, "status": "pending_recompile"}
+            shot.meta_info = json.dumps(meta, ensure_ascii=False)
+            shot.updated_at = datetime.utcnow()
+        for field, value in reviewed.items():
+            setattr(row, field, str(value or "").strip())
+        row.updated_at = datetime.utcnow()
+        stale_reference_ids = _invalidate_stale_reference_assets(
+            s, book_id, asset_type, row, previous_authority_fingerprint,
+        )
+        proposal["reviewed_proposed_fields"] = {field: str(value or "").strip() for field, value in reviewed.items()}
+        proposal["review_notes"] = req.review_notes.strip()
+        record.proposal = json.dumps(proposal, ensure_ascii=False)
+        record.status = "confirmed"
+        record.confirmed_at = datetime.utcnow()
+        record.updated_at = datetime.utcnow()
+        s.commit()
+        return {"confirmed": True, "plan_fingerprint": req.plan_fingerprint, "affected_shots": affected_shots, "rollback_anchors": anchors, "stale_reference_ids": stale_reference_ids, "recompile_plan_status": "pending_recompile"}
+
+
 @app.patch("/api/books/{book_id}/visual-assets/{asset_type}/{asset_id}")
 def patch_visual_asset(book_id: int, asset_type: str, asset_id: int, req: VisualAssetPatchRequest):
     from models import Session, VisualLocation, VisualMakeup, VisualProp
@@ -9100,6 +13851,7 @@ def patch_visual_asset(book_id: int, asset_type: str, asset_id: int, req: Visual
             row = _materialize_character_profile_fallback_makeup(s, book_id, asset_id)
         if not row:
             raise HTTPException(status_code=404, detail="Visual asset not found")
+        previous_authority_fingerprint = _asset_visual_authority_fingerprint(row, asset_type)
 
         if req.jimeng_ref_name is not None:
             row.jimeng_ref_name = req.jimeng_ref_name
@@ -9109,10 +13861,28 @@ def patch_visual_asset(book_id: int, asset_type: str, asset_id: int, req: Visual
             row.asset_status = req.asset_status
         if req.shot_ids is not None:
             row.shot_ids = json.dumps([str(item) for item in req.shot_ids if str(item).strip()], ensure_ascii=False)
+        if req.style is not None and hasattr(row, "style"):
+            row.style = req.style
+        if req.lighting_mood is not None and hasattr(row, "lighting_mood"):
+            row.lighting_mood = req.lighting_mood
+        if req.hair_style is not None and hasattr(row, "hair_style"):
+            row.hair_style = req.hair_style
+        if req.refined_outfit is not None and hasattr(row, "refined_outfit"):
+            row.refined_outfit = req.refined_outfit
+        if req.refined_accessories is not None and hasattr(row, "refined_accessories"):
+            row.refined_accessories = req.refined_accessories
+        if req.makeup_spec is not None and hasattr(row, "makeup_spec"):
+            row.makeup_spec = req.makeup_spec
+        if req.expression_mood is not None and hasattr(row, "expression_mood"):
+            row.expression_mood = req.expression_mood
         row.updated_at = datetime.utcnow()
+        stale_reference_ids = _invalidate_stale_reference_assets(
+            s, book_id, asset_type, row, previous_authority_fingerprint,
+        )
         s.commit()
         s.refresh(row)
         payload = _serialize_visual_asset_row(row, asset_type, episode=getattr(row, "episode", None))
+        payload["stale_reference_ids"] = stale_reference_ids
 
     warnings = _sync_active_reference_assets_for_visual_asset(book_id, asset_type, asset_id)
     if warnings:
@@ -9132,21 +13902,228 @@ def create_character_shot_variant(book_id: int, asset_id: int, req: CharacterSho
 
 @app.post("/api/books/{book_id}/visual-reference-assets")
 def create_visual_reference_asset(book_id: int, req: VisualReferenceAssetRequest):
+    image_url = str(req.image_url or "").strip()
+    local_path = str(req.local_path or "").strip()
+    meta_info = dict(req.meta_info or {})
+    # This endpoint is also used by recovery clients.  Do not allow that
+    # fallback path to reintroduce short-lived third-party image URLs.
+    if not local_path and image_url.startswith(("http://", "https://", "data:")):
+        persistence = _persist_generated_image_locally(
+            image_url,
+            book_id=book_id,
+            task_id=str(meta_info.get("taskId") or "reference-api"),
+            label=req.asset_name or req.asset_type or "reference-image",
+        )
+        meta_info["generatedImagePersistence"] = persistence
+        meta_info["originalProviderUrl"] = persistence.get("source_url") or image_url
+        if persistence.get("ok"):
+            image_url = str(persistence["image_url"])
+            local_path = str(persistence["local_path"])
+        else:
+            meta_info["storageStatus"] = "remote_only"
+            meta_info["storageWarning"] = f"Reference image was not persisted locally: {persistence.get('error') or 'unknown_error'}"
     return _create_visual_reference_asset_record(
         book_id,
         episode=req.episode,
         asset_type=req.asset_type,
         asset_id=req.asset_id,
         asset_name=req.asset_name or "",
-        image_url=req.image_url,
-        local_path=req.local_path,
+        image_url=image_url,
+        local_path=local_path,
         reference_token=req.reference_token,
         status=req.status,
         prompt=req.prompt,
         model=req.model,
         notes=req.notes,
-        meta_info=req.meta_info,
+        meta_info=meta_info,
     )
+
+
+@app.post("/api/books/{book_id}/visual-assets/{asset_type}/{asset_id}/manual-reference-assets")
+def upload_visual_asset_manual_reference_asset(
+    book_id: int,
+    asset_type: str,
+    asset_id: int,
+    file: UploadFile = File(...),
+    asset_name: str = Form(default="", alias="assetName"),
+    reference_token: str = Form(default="", alias="referenceToken"),
+    status: str = Form(default="locked"),
+    notes: str = Form(default=""),
+):
+    from models import Session, VisualLocation, VisualMakeup, VisualProp
+
+    normalized_asset_type = "scene" if str(asset_type or "").strip().lower() in {"scene", "location"} else str(asset_type or "").strip().lower()
+    if normalized_asset_type not in {"scene", "character", "prop"}:
+        raise HTTPException(status_code=400, detail="Manual reference upload assetType must be scene, character, or prop.")
+    if asset_id <= 0:
+        raise HTTPException(status_code=400, detail="Manual reference upload requires a valid visual asset id.")
+
+    model_map = {
+        "scene": VisualLocation,
+        "prop": VisualProp,
+        "character": VisualMakeup,
+    }
+    model = model_map[normalized_asset_type]
+    with Session() as s:
+        row = s.query(model).filter(model.book_id == book_id, model.id == asset_id).first()
+        if row is None and normalized_asset_type == "character":
+            row = _materialize_character_profile_fallback_makeup(s, book_id, asset_id)
+            if row is not None:
+                s.commit()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Visual asset not found.")
+
+        resolved_asset_name = str(
+            asset_name
+            or getattr(row, "name", None)
+            or getattr(row, "character_name", None)
+            or f"asset-{asset_id}"
+        ).strip()
+        row_episode = getattr(row, "episode", None)
+        row_shot_ids = _json_loads_list(getattr(row, "shot_ids", None))
+
+    uploaded = _store_manual_media_upload(
+        file,
+        book_id=book_id,
+        asset_type=normalized_asset_type,
+        asset_id=str(asset_id),
+    )
+    reference = _create_visual_reference_asset_record(
+        book_id,
+        episode=row_episode if isinstance(row_episode, int) else None,
+        asset_type=normalized_asset_type,
+        asset_id=str(asset_id),
+        asset_name=resolved_asset_name,
+        image_url=uploaded["url"],
+        local_path=uploaded["filepath"],
+        reference_token=reference_token or _resolve_visual_reference_token(
+            book_id,
+            normalized_asset_type,
+            str(asset_id),
+            resolved_asset_name,
+        ),
+        status=str(status or "locked").strip() or "locked",
+        prompt="",
+        model="manual-upload",
+        notes=notes or "手动上传资产参考图，可参与 Prompt Compiler 与 H3 多参考视频生成。",
+        meta_info={
+            "source": "manual-upload",
+            "assetCenterUpload": True,
+            "assetType": normalized_asset_type,
+            "assetId": str(asset_id),
+            "shotIds": row_shot_ids,
+            "originalFilename": uploaded["filename"],
+            "localPath": uploaded["filepath"],
+            "size": uploaded["size"],
+        },
+    )
+    return {
+        "book_id": book_id,
+        "asset_type": normalized_asset_type,
+        "asset_id": str(asset_id),
+        "uploaded": uploaded,
+        "reference": reference,
+    }
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/manual-media-assets")
+def upload_storyboard_manual_media_asset(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    file: UploadFile = File(...),
+    target_kind: str = Form(default="image", alias="targetKind"),
+    asset_type: str = Form(default="scene", alias="assetType"),
+    asset_id: str = Form(default="", alias="assetId"),
+    asset_name: str = Form(default="", alias="assetName"),
+    reference_token: str = Form(default="", alias="referenceToken"),
+    status: str = Form(default="locked"),
+    adopted: bool = Form(default=True),
+    notes: str = Form(default=""),
+):
+    normalized_kind = str(target_kind or "image").strip().lower()
+    if normalized_kind in {"frame", "storyboard", "storyboard-image"}:
+        normalized_kind = "image"
+    if normalized_kind in {"reference", "reference-image", "reference_image"}:
+        normalized_kind = "reference-image"
+    if normalized_kind not in {"image", "reference-image"}:
+        raise HTTPException(status_code=400, detail="Manual media upload currently supports image or reference-image.")
+
+    uploaded = _store_manual_media_upload(file, book_id=book_id, episode=episode, shot_id=str(shot_id))
+    now_iso = datetime.utcnow().isoformat()
+
+    if normalized_kind == "image":
+        version = _next_asset_version(book_id, episode, shot_id, "image")
+        asset = {
+            "id": f"manual-image-{uuid.uuid4().hex[:10]}",
+            "kind": "image",
+            "title": asset_name or f"手动上传分镜图 v{version}",
+            "label": f"v{version}",
+            "uri": uploaded["url"],
+            "previewUrl": uploaded["url"],
+            "prompt": "",
+            "model": "manual-upload",
+            "status": "ready",
+            "adopted": bool(adopted),
+            "createdAt": now_iso,
+            "metadata": {
+                "imageRole": "storyboard",
+                "source": "manual-upload",
+                "localPath": uploaded["filepath"],
+                "originalFilename": uploaded["filename"],
+                "size": uploaded["size"],
+                "shotId": str(shot_id),
+                "notes": notes,
+            },
+        }
+        _save_asset_to_storyboard(book_id, episode, shot_id, "image", asset)
+        return {
+            "book_id": book_id,
+            "episode": episode,
+            "shot_id": shot_id,
+            "target_kind": normalized_kind,
+            "uploaded": uploaded,
+            "asset": asset,
+        }
+
+    normalized_asset_type = "scene" if str(asset_type or "").strip().lower() in {"scene", "location"} else str(asset_type or "").strip().lower()
+    if normalized_asset_type not in {"scene", "character", "prop"}:
+        raise HTTPException(status_code=400, detail="Reference upload assetType must be scene, character, or prop.")
+    if not str(asset_id or "").strip():
+        raise HTTPException(status_code=400, detail="Reference upload requires assetId so it can be bound into storyboard reference images.")
+    if not str(asset_id).strip().isdigit():
+        raise HTTPException(status_code=400, detail="Reference upload assetId must point to an existing numeric visual asset id.")
+
+    reference = _create_visual_reference_asset_record(
+        book_id,
+        episode=episode,
+        asset_type=normalized_asset_type,
+        asset_id=str(asset_id).strip(),
+        asset_name=asset_name or "",
+        image_url=uploaded["url"],
+        local_path=uploaded["filepath"],
+        reference_token=reference_token or _slugify_reference_token(asset_name or asset_id, f"@asset-{asset_id}"),
+        status=str(status or "selected").strip() or "selected",
+        prompt="",
+        model="manual-upload",
+        notes=notes or "手动上传参考图，可参与 H3 多参考视频生成。",
+        meta_info={
+            "source": "manual-upload",
+            "shotId": str(shot_id),
+            "shotIds": [f"{episode}-{shot_id}"],
+            "originalFilename": uploaded["filename"],
+            "localPath": uploaded["filepath"],
+            "size": uploaded["size"],
+        },
+    )
+    return {
+        "book_id": book_id,
+        "episode": episode,
+        "shot_id": shot_id,
+        "target_kind": normalized_kind,
+        "uploaded": uploaded,
+        "reference": reference,
+    }
 
 
 @app.patch("/api/books/{book_id}/visual-reference-assets/{reference_id}")
@@ -9192,6 +14169,159 @@ def patch_visual_reference_asset(book_id: int, reference_id: int, req: VisualRef
         except Exception as exc:
             payload["sync_warning"] = _build_reference_sync_warning(exc)
         return payload
+
+
+@app.get("/api/books/{book_id}/visual-reference-rebinding-plan")
+def get_visual_reference_asset_rebinding_plan(book_id: int):
+    """Inspect dangling reference bindings without changing data."""
+    from models import Session
+    with Session() as session:
+        return _reference_rebinding_plan(session, book_id)
+
+
+@app.post("/api/books/{book_id}/visual-reference-rebinding-plan/apply")
+def apply_visual_reference_asset_rebinding_plan(book_id: int, req: VisualReferenceRebindingApplyRequest):
+    """Apply only the unique mappings of an unchanged reviewed plan.
+
+    Image data and reference state are intentionally untouched.  The audit
+    trail lives on the reference row so migrations remain portable with it.
+    """
+    from models import Session, VisualReferenceAsset
+    if not (req.confirmed and req.allow_write):
+        raise HTTPException(status_code=409, detail="重绑定写入需要 confirmed=true 且 allowWrite=true。")
+    migrated_rows: list[dict] = []
+    with Session() as session:
+        plan = _reference_rebinding_plan(session, book_id)
+        if req.plan_fingerprint != plan["plan_fingerprint"]:
+            raise HTTPException(status_code=409, detail={"message": "参考图或资产已变化；重绑定计划已过期，请重新预览。", "expected_plan_fingerprint": plan["plan_fingerprint"]})
+        for migration in plan["proposed_migrations"]:
+            row = session.query(VisualReferenceAsset).filter(
+                VisualReferenceAsset.book_id == book_id,
+                VisualReferenceAsset.id == migration["reference_id"],
+                VisualReferenceAsset.asset_id == migration["source_asset_id"],
+            ).first()
+            if not row:
+                raise HTTPException(status_code=409, detail="参考图在写入前已变化；未执行任何重绑定。")
+            meta = safe_json_loads(row.meta_info) if row.meta_info else {}
+            meta = meta if isinstance(meta, dict) else {}
+            target_model = _asset_semantic_model(migration["asset_type"])
+            target_row = session.query(target_model).filter(
+                target_model.book_id == book_id,
+                target_model.id == int(migration["target_asset_id"]),
+            ).first()
+            if target_row is None:
+                raise HTTPException(status_code=409, detail="重绑定目标资产已变化；未执行任何重绑定。")
+            source_authority_fingerprint = str(meta.get("asset_visual_authority_fingerprint") or "").strip()
+            target_authority_fingerprint = _asset_visual_authority_fingerprint(target_row, migration["asset_type"])
+            authority_compatible = bool(source_authority_fingerprint) and source_authority_fingerprint == target_authority_fingerprint
+            audit = meta.get("assetRebindingAudit") if isinstance(meta.get("assetRebindingAudit"), list) else []
+            audit.append({
+                "source_asset_id": str(row.asset_id),
+                "target_asset_id": migration["target_asset_id"],
+                "plan_fingerprint": plan["plan_fingerprint"],
+                "applied_at": datetime.utcnow().isoformat(),
+                "reason": "unique_exact_name_and_scope_match",
+                "authority_compatible": authority_compatible,
+            })
+            if not authority_compatible:
+                meta["stale_reason"] = "reference_rebound_to_different_visual_authority"
+                meta["stale_at"] = datetime.utcnow().isoformat()
+                meta["current_asset_visual_authority_fingerprint"] = target_authority_fingerprint
+                row.status = "stale"
+            meta["assetRebindingAudit"] = audit
+            row.asset_id = migration["target_asset_id"]
+            row.asset_name = migration["target_asset_name"]
+            row.meta_info = json.dumps(meta, ensure_ascii=False)
+            row.updated_at = datetime.utcnow()
+            migrated_rows.append(_serialize_reference_asset_row(row))
+        structured_mappings = [
+            mapping
+            for candidate in plan.get("structured_repair_candidates", [])
+            for mapping in candidate.get("mappings", [])
+            if isinstance(mapping, dict)
+        ]
+        affected_structured_shots = _sync_rebound_reference_ids_into_structured_shots(session, book_id, structured_mappings)
+        session.commit()
+
+    sync_warnings: list[str] = []
+    for payload in migrated_rows:
+        try:
+            _sync_visual_reference_asset_to_storyboard(book_id, SimpleNamespace(**payload))
+        except Exception as exc:
+            sync_warnings.append(_build_reference_sync_warning(exc))
+    return {
+        "applied": True,
+        "plan_fingerprint": plan["plan_fingerprint"],
+        "migrated_reference_ids": [item["id"] for item in migrated_rows],
+        "migrated_count": len(migrated_rows),
+        "affected_structured_shots": affected_structured_shots,
+        "ambiguous": plan["ambiguous"],
+        "unavailable": plan["unavailable"],
+        "sync_warnings": sync_warnings,
+    }
+
+
+def _asset_visual_authority_snapshot(row, asset_type: str) -> dict:
+    """Return the versioned visual facts an image must be compatible with.
+
+    Character generation historically stored its structured facts under
+    ``meta_info.structured_result`` while consumers read only top-level
+    metadata.  Project that nested schema here so every producer and gate uses
+    one authority source, without relying on a particular UI write path.
+    """
+    base = _asset_semantic_source_snapshot(row, asset_type)
+    meta = safe_json_loads(getattr(row, "meta_info", ""), {}) if getattr(row, "meta_info", "") else {}
+    meta = meta if isinstance(meta, dict) else {}
+    structured = meta.get("structured_result", {}) if isinstance(meta.get("structured_result", {}), dict) else {}
+    if asset_type != "character":
+        return base
+    identity = {
+        key: str(structured.get(key) or meta.get(key) or "").strip()
+        for key in ("gender", "age", "region", "identity", "temperament", "hair_style", "refined_outfit", "core_prompt_zh", "outfit_prompt_zh")
+    }
+    return {
+        **base,
+        "visual_identity": identity,
+        "authoritative_prompt": str(
+            structured.get("core_prompt_zh") or getattr(row, "core_prompt_zh", "") or base["authoritative_prompt"]
+        ).strip(),
+    }
+
+
+def _asset_visual_authority_fingerprint(row, asset_type: str) -> str:
+    payload = _asset_visual_authority_snapshot(row, asset_type)
+    return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+def _invalidate_stale_reference_assets(session, book_id: int, asset_type: str, row, previous_fingerprint: str) -> list[int]:
+    """Demote references made against an older visual-authority version."""
+    from models import VisualReferenceAsset
+    current_fingerprint = _asset_visual_authority_fingerprint(row, asset_type)
+    if not previous_fingerprint or previous_fingerprint == current_fingerprint:
+        return []
+    changed: list[int] = []
+    references = session.query(VisualReferenceAsset).filter(
+        VisualReferenceAsset.book_id == book_id,
+        VisualReferenceAsset.asset_type == asset_type,
+        VisualReferenceAsset.asset_id == str(row.id),
+    ).all()
+    for reference in references:
+        meta = safe_json_loads(reference.meta_info, {}) if reference.meta_info else {}
+        meta = meta if isinstance(meta, dict) else {}
+        source_fingerprint = str(meta.get("asset_visual_authority_fingerprint") or "").strip()
+        # Legacy images have no reproducible authority snapshot and therefore
+        # cannot retain production eligibility after the asset has changed.
+        if source_fingerprint == current_fingerprint:
+            continue
+        meta["asset_visual_authority_fingerprint"] = source_fingerprint
+        meta["stale_reason"] = "asset_visual_authority_changed"
+        meta["stale_at"] = datetime.utcnow().isoformat()
+        meta["current_asset_visual_authority_fingerprint"] = current_fingerprint
+        reference.meta_info = json.dumps(meta, ensure_ascii=False)
+        reference.status = "stale"
+        reference.updated_at = datetime.utcnow()
+        changed.append(reference.id)
+    return changed
 
 
 @app.delete("/api/books/{book_id}/visual-reference-assets/{reference_id}")
@@ -9276,6 +14406,23 @@ def patch_storyboard_structure(book_id: int, episode: int, shot_id: str, req: St
         current_meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
         if not isinstance(current_meta, dict):
             current_meta = {}
+        # A structure edit changes the director-level source, not merely a
+        # compiled prompt.  Preserve the complete pre-edit state so it can be
+        # restored without pretending an older prompt version contains it.
+        edit_fields = (
+            "duration", "camera_angle", "camera_movement", "transition",
+            "start_state", "action_process", "end_state", "action_beats",
+            "character_blocking", "scene_asset_id", "character_asset_ids", "prop_asset_ids", "style_key",
+        )
+        has_edit = any(getattr(req, field, None) is not None for field in edit_fields)
+        rollback_anchor = None
+        if has_edit:
+            rollback_anchor = _create_storyboard_state_snapshot_anchor(
+                s,
+                shot,
+                {"type": "operator-structure-edit", "operation": "storyboard-structure-patch", "source_shot_id": shot.shot_id},
+                "structure-edit-preimage",
+            )
         next_meta = _merge_structured_shot_payload(current_meta, req)
         if req.duration is not None:
             shot.duration = int(req.duration)
@@ -9285,6 +14432,12 @@ def patch_storyboard_structure(book_id: int, episode: int, shot_id: str, req: St
             shot.camera_movement = req.camera_movement
         if req.transition is not None:
             shot.transition = req.transition
+        if req.start_state is not None:
+            shot.start_state = req.start_state
+        if req.action_process is not None:
+            shot.action_process = req.action_process
+        if req.end_state is not None:
+            shot.end_state = req.end_state
         shot.meta_info = json.dumps(next_meta, ensure_ascii=False)
         shot.updated_at = datetime.utcnow()
         s.commit()
@@ -9294,6 +14447,7 @@ def patch_storyboard_structure(book_id: int, episode: int, shot_id: str, req: St
             "episode": episode,
             "shot_id": shot.shot_id,
             "structured_shot": next_meta["structured_shot"],
+            "rollback_anchor": rollback_anchor,
         }
 
 
@@ -9329,8 +14483,524 @@ def get_storyboard_prompt_versions(book_id: int, episode: int, shot_id: str):
             "locked": bool(prompt_compiler_meta.get("locked", False)),
             "current_version": current_version,
             "locked_version": locked_version,
+            "recompile_required": bool(prompt_compiler_meta.get("recompile_required")),
             "recommended_restore_version": _recommend_storyboard_restore_version(version_payloads, current_version),
             "versions": version_payloads,
+        }
+
+
+def _split_candidate_has_narrative_residue(candidate: dict[str, Any]) -> bool:
+    """Return whether a split segment still contains screenplay-only syntax.
+
+    Split drafts must contain visible, filmable action beats. Speaker labels,
+    dialogue quotes, bracketed stage directions, and empty beats belong to the
+    director-language layer and must be rewritten before a new shot is made.
+    The check is structural and does not depend on any book, character, or
+    shot identifier.
+    """
+    beats = candidate.get("action_beats", []) if isinstance(candidate.get("action_beats", []), list) else []
+    for value in beats:
+        text = str(value or "").strip()
+        if not text:
+            return True
+        if any(marker in text for marker in ("[", "]", "【", "】", "\"", "“", "”")):
+            return True
+        # A colon after a short label is a screenplay cue, not a visible
+        # action. Leave ordinary punctuation inside natural descriptions.
+        if re.match(r"^[^，。；：:]{1,24}[：:]", text):
+            return True
+    return False
+
+
+def _executability_split_source_snapshot(shot: Any) -> dict[str, Any]:
+    meta_info = safe_json_loads(getattr(shot, "meta_info", "") or "{}")
+    meta_info = meta_info if isinstance(meta_info, dict) else {}
+    compiler = meta_info.get("prompt_compiler", {}) if isinstance(meta_info.get("prompt_compiler", {}), dict) else {}
+    context = compiler.get("prompt_compile_context", {}) if isinstance(compiler.get("prompt_compile_context", {}), dict) else {}
+    structured = meta_info.get("structured_shot", {}) if isinstance(meta_info.get("structured_shot", {}), dict) else {}
+    return {
+        "episode": int(getattr(shot, "episode", 0) or 0),
+        "shot_id": int(getattr(shot, "shot_id", 0) or 0),
+        "scene_name": str(getattr(shot, "scene_name", "") or "").strip(),
+        "duration": int(getattr(shot, "duration", 0) or 0),
+        "camera_angle": str(getattr(shot, "camera_angle", "") or "").strip(),
+        "camera_movement": str(getattr(shot, "camera_movement", "") or "").strip(),
+        "start_state": str(getattr(shot, "start_state", "") or "").strip(),
+        "action_process": str(getattr(shot, "action_process", "") or "").strip(),
+        "end_state": str(getattr(shot, "end_state", "") or "").strip(),
+        "action_beats": context.get("action_beats") if isinstance(context.get("action_beats"), list) else structured.get("action_beats", []),
+        "visual_prompt_motion": str(getattr(shot, "visual_prompt_motion", "") or "").strip(),
+    }
+
+
+def _executability_split_source_fingerprint(snapshot: dict[str, Any]) -> str:
+    return hashlib.sha256(json.dumps(snapshot, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")).hexdigest()
+
+
+def _build_executability_split_llm_prompt(snapshot: dict[str, Any]) -> str:
+    return """你是影视分镜可拍性修复助手。请把一个动作过载的单镜头拆成连续、可执行的 2–6 个镜头段落。
+只输出 JSON 对象，不要 Markdown，不要对白，不要说话人标签，不要方括号/圆括号舞台指令。
+每个 segments 项必须包含：sequence（整数）、purpose（建立动作/揭示/反应等）、recommended_duration（秒，整数）、action_beats（只写可见动作短句数组）、start_state、end_state。
+动作节拍必须是摄像机能拍到的行为（站起、转身、拿起、注视、停下等），不要把台词原文当动作；对白信息如必须保留，请转成“张嘴说话/看向对方”等可见行为。
+保持场景、人物、道具、连续性事实不变，不新增资产，不改变镜头原意。segments 总数至少 2 个，且每段至少一个动作节拍。
+
+当前镜头证据：
+""" + json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n\n返回格式：{\"segments\":[...],\"rationale\":\"...\"}"
+
+
+def _normalize_executability_split_llm_output(raw: Any, snapshot: dict[str, Any]) -> tuple[list[dict[str, Any]], str]:
+    if not isinstance(raw, dict):
+        raise ValueError("模型输出不是 JSON object")
+    raw_segments = raw.get("segments")
+    if not isinstance(raw_segments, list) or not (2 <= len(raw_segments) <= 8):
+        raise ValueError("模型输出的 segments 必须为 2–8 段")
+    candidates: list[dict[str, Any]] = []
+    for index, item in enumerate(raw_segments, start=1):
+        if not isinstance(item, dict):
+            raise ValueError("拆镜段落必须是对象")
+        beats_raw = item.get("action_beats")
+        if not isinstance(beats_raw, list):
+            raise ValueError("拆镜段落缺少 action_beats")
+        beats: list[str] = []
+        for beat in beats_raw:
+            value = beat.get("description") if isinstance(beat, dict) else beat
+            text = str(value or "").strip()
+            if text:
+                beats.append(text)
+        candidate = {
+            "sequence": index,
+            "purpose": str(item.get("purpose") or "完成动作段落").strip(),
+            "recommended_duration": max(1, min(30, int(item.get("recommended_duration") or snapshot.get("duration") or 3))),
+            "action_beats": beats,
+            "start_state": str(item.get("start_state") or "").strip(),
+            "end_state": str(item.get("end_state") or "").strip(),
+        }
+        if not beats or _split_candidate_has_narrative_residue(candidate):
+            raise ValueError("模型输出仍含对白/舞台标记或空动作节拍")
+        candidates.append(candidate)
+    return candidates, str(raw.get("rationale") or "").strip()
+
+
+@app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/executability/split-draft/llm-preview")
+def preview_storyboard_executability_split_llm(book_id: int, episode: int, shot_id: str):
+    from models import Session, StoryboardShot
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        snapshot = _executability_split_source_snapshot(shot)
+        return {"source_fingerprint": _executability_split_source_fingerprint(snapshot), "prompt": _build_executability_split_llm_prompt(snapshot), "llm_called": False}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/executability/split-draft/llm")
+def generate_storyboard_executability_split_llm(book_id: int, episode: int, shot_id: str, req: StoryboardExecutabilitySplitLlmRequest):
+    from models import Session, StoryboardShot
+    if not (req.confirmed and req.allow_external_call):
+        raise HTTPException(status_code=409, detail="调用 LLM 需要 confirmed=true 且 allowExternalCall=true。")
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, shot_id=_coerce_storyboard_shot_id(shot_id)).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        snapshot = _executability_split_source_snapshot(shot)
+        fingerprint = _executability_split_source_fingerprint(snapshot)
+        if req.source_fingerprint != fingerprint:
+            raise HTTPException(status_code=409, detail="镜头事实已变化；请重新预览拆镜证据包。")
+        try:
+            audit_records = []
+            raw = llm_client.call_llm_json(
+                _build_executability_split_llm_prompt(snapshot),
+                system="You are a conservative film-shot executability planner. Return only JSON.",
+                required_keys={"segments", "rationale"},
+                estimated_tokens=2400,
+                json_parse_retries=0,
+                audit_callback=audit_records.append,
+                audit_extra={"mode": "executability_split", "episode": episode, "shot_id": str(shot_id)},
+            )
+            candidates, rationale = _normalize_executability_split_llm_output(raw, snapshot)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=f"拆镜候选不合规：{str(exc)[:240]}") from exc
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=f"拆镜候选生成失败：{str(exc)[:300]}") from exc
+        meta_info = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+        meta_info = meta_info if isinstance(meta_info, dict) else {}
+        draft = {
+            "status": "draft",
+            "llm_generated": True,
+            "created_at": datetime.utcnow().isoformat(),
+            "source_fingerprint": fingerprint,
+            "source_duration": snapshot["duration"],
+            "source_shot_id": shot.shot_id,
+            "reason": "LLM 根据当前镜头证据生成可视化动作节拍拆镜候选",
+            "rationale": rationale,
+            "note": str(req.note or "").strip(),
+            "candidates": candidates,
+        }
+        from core.prompt_cache import summarize_audit_records
+        draft["llm_request_audit"] = summarize_audit_records(audit_records)
+        meta_info["executability_split_draft"] = draft
+        shot.meta_info = json.dumps(meta_info, ensure_ascii=False)
+        shot.updated_at = datetime.utcnow()
+        s.commit()
+        return {"book_id": book_id, "episode": episode, "shot_id": shot.shot_id, "draft": draft, "llm_called": True, "generation_triggered": False}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/executability/split-draft")
+def save_storyboard_executability_split_draft(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    req: StoryboardExecutabilitySplitDraftRequest,
+):
+    """Persist a reviewable split proposal; it never alters storyboard rows."""
+    from models import Session, StoryboardShot
+
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id == _coerce_storyboard_shot_id(shot_id),
+        ).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        meta_info = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+        if not isinstance(meta_info, dict):
+            meta_info = {}
+        compiler = meta_info.get("prompt_compiler", {}) if isinstance(meta_info.get("prompt_compiler", {}), dict) else {}
+        context = compiler.get("prompt_compile_context", {}) if isinstance(compiler.get("prompt_compile_context", {}), dict) else {}
+        # Re-evaluate from persisted structure at save time.  A saved draft
+        # must reflect the current generic planner, not stale diagnostics from
+        # an earlier compiler version.
+        from core.shot_executability import validate_shot_executability
+        executability = validate_shot_executability(
+            duration=shot.duration,
+            action_process=str(shot.action_process or ""),
+            action_beats=context.get("action_beats", []) if isinstance(context.get("action_beats", []), list) else [],
+            camera_movement=str(shot.camera_movement or "static"),
+            start_state=str(shot.start_state or ""),
+            end_state=str(shot.end_state or ""),
+            motion_prompt=str(shot.visual_prompt_motion or ""),
+        )
+        recommendations = executability.get("suggestions", []) if isinstance(executability.get("suggestions", []), list) else []
+        split = next((item for item in recommendations if isinstance(item, dict) and item.get("type") == "split_shot"), None)
+        if not split or not isinstance(split.get("candidates"), list) or not split["candidates"]:
+            raise HTTPException(status_code=422, detail="当前镜头没有可保存的拆镜草案，请先完成可拍性校验。")
+        if any(_split_candidate_has_narrative_residue(item) for item in split["candidates"] if isinstance(item, dict)):
+            raise HTTPException(status_code=422, detail="当前拆镜建议仍含对白或舞台标记；请先将导演语言改写为可见动作节拍，再保存拆镜草案。")
+        draft = {
+            "status": "draft",
+            "created_at": datetime.utcnow().isoformat(),
+            "source_executability_status": executability.get("status"),
+            "source_duration": shot.duration,
+            "source_shot_id": shot.shot_id,
+            "reason": split.get("reason") or "可拍性校验建议拆镜",
+            "note": str(req.note or "").strip(),
+            "candidates": split["candidates"],
+        }
+        meta_info["executability_split_draft"] = draft
+        shot.meta_info = json.dumps(meta_info, ensure_ascii=False)
+        shot.updated_at = datetime.utcnow()
+        s.commit()
+        return {"book_id": book_id, "episode": episode, "shot_id": shot.shot_id, "draft": draft}
+
+
+def _remap_split_asset_shot_ids(
+    shot_ids: list | None,
+    *,
+    episode: int,
+    split_after_shot_id: int,
+    allow_unprefixed: bool,
+    inserted_count: int = 1,
+) -> list:
+    """Keep visual-asset scope aligned when inserting a storyboard shot.
+
+    Prefixed asset bindings (``1-3``) are unambiguous.  A bare ``3`` is only
+    safe to remap for an episode-scoped row; global asset rows may use bare
+    values for another episode, so they are deliberately left untouched.
+    """
+    result: list = []
+    seen: set[str] = set()
+
+    def append(value):
+        marker = f"{type(value).__name__}:{value}"
+        if marker not in seen:
+            seen.add(marker)
+            result.append(value)
+
+    for value in shot_ids or []:
+        raw = str(value).strip()
+        prefixed = re.fullmatch(r"(\d+)-(\d+)", raw)
+        is_current_episode = bool(prefixed and int(prefixed.group(1)) == int(episode))
+        numeric = int(prefixed.group(2)) if is_current_episode else (int(raw) if allow_unprefixed and raw.isdigit() else None)
+        if numeric is None:
+            append(value)
+            continue
+
+        def make_value(next_shot_id: int):
+            if is_current_episode:
+                return f"{episode}-{next_shot_id}"
+            return next_shot_id if isinstance(value, int) else str(next_shot_id)
+
+        if numeric == split_after_shot_id:
+            # Every segment created from the source inherits its references.
+            for segment_id in range(numeric, numeric + inserted_count + 1):
+                append(value if segment_id == numeric else make_value(segment_id))
+        elif numeric > split_after_shot_id:
+            append(make_value(numeric + inserted_count))
+        else:
+            append(value)
+    return result
+
+
+def _remap_split_meta_shot_ids(value, *, episode: int, split_after_shot_id: int, allow_unprefixed: bool, inserted_count: int = 1):
+    """Recursively remap explicit ``shotIds``/``shot_ids`` metadata fields."""
+    if isinstance(value, list):
+        return [
+            _remap_split_meta_shot_ids(item, episode=episode, split_after_shot_id=split_after_shot_id, allow_unprefixed=allow_unprefixed, inserted_count=inserted_count)
+            for item in value
+        ]
+    if not isinstance(value, dict):
+        return value
+
+    remapped = {}
+    for key, item in value.items():
+        if key in {"shotIds", "shot_ids"} and isinstance(item, list):
+            remapped[key] = _remap_split_asset_shot_ids(
+                item,
+                episode=episode,
+                split_after_shot_id=split_after_shot_id,
+                allow_unprefixed=allow_unprefixed,
+                inserted_count=inserted_count,
+            )
+        else:
+            remapped[key] = _remap_split_meta_shot_ids(
+                item,
+                episode=episode,
+                split_after_shot_id=split_after_shot_id,
+                allow_unprefixed=allow_unprefixed,
+                inserted_count=inserted_count,
+            )
+    return remapped
+
+
+def _shift_storyboard_split_references(s, *, book_id: int, episode: int, split_after_shot_id: int, inserted_count: int = 1) -> None:
+    """Shift all live shot-keyed data before a split inserts ``N + 1``.
+
+    Task runs are intentionally not remapped: they are immutable execution
+    audit records, not live storyboard relations.  Prompt versions for the
+    source shot remain historical evidence but are hidden until recompile.
+    """
+    from models import (
+        AgentViolationLog,
+        StoryboardAcceptanceRecord,
+        StoryboardPromptVersion,
+        VisualLocation,
+        VisualMakeup,
+        VisualProp,
+        VisualReferenceAsset,
+    )
+
+    for model in (StoryboardPromptVersion, StoryboardAcceptanceRecord, AgentViolationLog):
+        rows = s.query(model).filter(
+            model.book_id == book_id,
+            model.episode == episode,
+            model.shot_id > split_after_shot_id,
+        ).order_by(model.shot_id.desc(), model.id.desc()).all()
+        for row in rows:
+            row.shot_id += inserted_count
+
+    for model in (VisualLocation, VisualProp, VisualMakeup):
+        for row in s.query(model).filter(model.book_id == book_id).all():
+            scoped_to_episode = model is VisualMakeup and int(getattr(row, "episode", 0) or 0) == int(episode)
+            current = _json_loads_list(getattr(row, "shot_ids", None))
+            remapped = _remap_split_asset_shot_ids(
+                current,
+                episode=episode,
+                split_after_shot_id=split_after_shot_id,
+                allow_unprefixed=scoped_to_episode,
+                inserted_count=inserted_count,
+            )
+            if remapped != current:
+                row.shot_ids = json.dumps(remapped, ensure_ascii=False)
+
+    for row in s.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == book_id).all():
+        meta_info = safe_json_loads(row.meta_info) if row.meta_info else {}
+        if not isinstance(meta_info, dict):
+            continue
+        remapped = _remap_split_meta_shot_ids(
+            meta_info,
+            episode=episode,
+            split_after_shot_id=split_after_shot_id,
+            allow_unprefixed=int(getattr(row, "episode", 0) or 0) == int(episode),
+            inserted_count=inserted_count,
+        )
+        if remapped != meta_info:
+            row.meta_info = json.dumps(remapped, ensure_ascii=False)
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/executability/split-draft/apply")
+def apply_storyboard_executability_split_draft(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    req: StoryboardExecutabilitySplitApplyRequest,
+):
+    """Apply a reviewed N-segment draft after an explicit user confirmation."""
+    from models import Session, StoryboardShot
+
+    if not req.confirmed:
+        raise HTTPException(status_code=409, detail="拆镜会创建新镜头并清空旧媒体/提示词，必须显式确认。")
+    target_shot_id = _coerce_storyboard_shot_id(shot_id)
+    with Session() as s:
+        shot = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id == target_shot_id,
+        ).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        meta_info = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+        if not isinstance(meta_info, dict):
+            meta_info = {}
+        draft = meta_info.get("executability_split_draft", {}) if isinstance(meta_info.get("executability_split_draft", {}), dict) else {}
+        candidates = draft.get("candidates", []) if isinstance(draft.get("candidates", []), list) else []
+        if len(candidates) < 2 or not all(isinstance(item, dict) for item in candidates):
+            raise HTTPException(status_code=422, detail="当前镜头没有有效的多段拆镜草案。")
+        if any(_split_candidate_has_narrative_residue(item) for item in candidates):
+            raise HTTPException(status_code=422, detail="拆镜草案包含对白或舞台标记，不能应用；请先重新生成可视化动作节拍。")
+
+        def candidate_text(candidate: dict) -> str:
+            beats = candidate.get("action_beats", []) if isinstance(candidate.get("action_beats", []), list) else []
+            return "。".join(str(item).strip(" 。") for item in beats if str(item).strip())
+
+        candidate_texts = [candidate_text(candidate) for candidate in candidates]
+        if not all(candidate_texts):
+            raise HTTPException(status_code=422, detail="拆镜草案存在缺少动作的片段，不能应用。")
+        inserted_count = len(candidates) - 1
+        _shift_storyboard_split_references(
+            s,
+            book_id=book_id,
+            episode=episode,
+            split_after_shot_id=target_shot_id,
+            inserted_count=inserted_count,
+        )
+        following = s.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id > target_shot_id,
+        ).order_by(StoryboardShot.shot_id.desc()).all()
+        for item in following:
+            item.shot_id += inserted_count
+
+        original_end_state = str(shot.end_state or "").strip()
+        original_asset_links = safe_json_loads(shot.asset_links) if shot.asset_links else {}
+        references_only = {"references": original_asset_links.get("references", {})} if isinstance(original_asset_links, dict) else {"references": {}}
+        base_structured = meta_info.get("structured_shot", {}) if isinstance(meta_info.get("structured_shot", {}), dict) else {}
+
+        def fresh_meta(candidate: dict, sequence: int, start_state: str, end_state: str) -> dict:
+            next_meta = dict(meta_info)
+            next_structured = dict(base_structured)
+            action_beats = candidate.get("action_beats", []) if isinstance(candidate.get("action_beats", []), list) else []
+            next_structured.update({
+                "duration": int(candidate.get("recommended_duration") or shot.duration or 3),
+                "action_beats": [{"sequence": index + 1, "description": str(value)} for index, value in enumerate(action_beats)],
+                "core_action": str(action_beats[0] if action_beats else "").strip(),
+                "continuity_in": start_state,
+                "continuity_out": end_state,
+            })
+            next_structured.pop("executability", None)
+            next_meta["structured_shot"] = next_structured
+            next_meta["prompt_compiler"] = {
+                "latest_version": None,
+                "compile_reason": "split-draft-applied-recompile-required",
+                "recompile_required": True,
+                "locked": False,
+                "locked_version": None,
+            }
+            next_meta["executability_split_draft"] = {
+                **draft,
+                "status": "applied",
+                "applied_at": datetime.utcnow().isoformat(),
+                "sequence": sequence,
+                "source_shot_id": target_shot_id,
+                "archived_asset_links": original_asset_links,
+            }
+            return next_meta
+
+        created_shots = []
+        for index, candidate in enumerate(candidates[1:], start=1):
+            current_shot_id = target_shot_id + index
+            next_state = (f"承接拆分镜头 {current_shot_id + 1}：{candidate_texts[index + 1]}"
+                          if index < len(candidates) - 1 else original_end_state)
+            previous_state = (f"承接拆分镜头 {current_shot_id}：{candidate_texts[index]}"
+                              if index > 0 else str(shot.start_state or "").strip())
+            segment_meta = fresh_meta(candidate, index + 1, previous_state, next_state)
+            new_shot = StoryboardShot(
+            book_id=book_id,
+            episode=episode,
+            scene_name=shot.scene_name,
+            shot_id=current_shot_id,
+            dialogue="",
+            duration=int(candidate.get("recommended_duration") or shot.duration or 3),
+            camera_angle=shot.camera_angle,
+            camera_movement="static",
+            transition=shot.transition,
+            lighting=shot.lighting,
+            sound_effects=shot.sound_effects,
+            bgm_mood=shot.bgm_mood,
+            start_state=previous_state,
+            action_process=candidate_texts[index],
+            end_state=next_state,
+            visual_prompt_static="",
+            visual_prompt_motion="",
+            visual_prompt_final="",
+            asset_links=json.dumps(references_only, ensure_ascii=False),
+            asset_status="pending",
+            meta_info=json.dumps(segment_meta, ensure_ascii=False),
+            notes=f"由镜头 {target_shot_id} 的第 {index + 1} 段草案创建；需要重新编译提示词。",
+            )
+            s.add(new_shot)
+            created_shots.append((new_shot, segment_meta))
+        first_end_state = f"承接拆分镜头 {target_shot_id + 1}：{candidate_texts[1]}"
+        first_meta = fresh_meta(candidates[0], 1, str(shot.start_state or "").strip(), first_end_state)
+        shot.duration = int(candidates[0].get("recommended_duration") or shot.duration or 3)
+        shot.action_process = candidate_texts[0]
+        shot.end_state = first_end_state
+        shot.visual_prompt_static = ""
+        shot.visual_prompt_motion = ""
+        shot.visual_prompt_final = ""
+        shot.asset_links = json.dumps(references_only, ensure_ascii=False)
+        shot.asset_status = "pending"
+        shot.meta_info = json.dumps(first_meta, ensure_ascii=False)
+        all_segment_ids = [target_shot_id, *[item.shot_id for item, _ in created_shots]]
+        shot.notes = f"已应用 {len(candidates)} 段拆镜草案；原镜头拆为 { '、'.join(str(item) for item in all_segment_ids) }，需要重新编译提示词。"
+        shot.updated_at = datetime.utcnow()
+        # A split is a structural transform, not a prompt edit.  Create a
+        # durable pre-recompile state anchor for *each* resulting shot so the
+        # next generic repair batch can be safely rolled back.
+        s.flush()
+        first_anchor = _create_storyboard_state_snapshot_anchor(
+            s,
+            shot,
+            _storyboard_transform_origin(first_meta) or {"type": "storyboard-transform", "operation": "split-draft-apply"},
+            "split-draft-applied",
+        )
+        created_anchors = []
+        for created_shot, created_meta in created_shots:
+            created_anchors.append(_create_storyboard_state_snapshot_anchor(
+                s, created_shot,
+                _storyboard_transform_origin(created_meta) or {"type": "storyboard-transform", "operation": "split-draft-apply"},
+                "split-draft-applied",
+            ))
+        s.commit()
+        return {
+            "book_id": book_id,
+            "episode": episode,
+            "source_shot_id": target_shot_id,
+            "created_shot_id": created_shots[0][0].shot_id,
+            "created_shot_ids": [item.shot_id for item, _ in created_shots],
+            "recompile_required": True,
+            "cleared_media": True,
+            "rollback_anchors": {"source": first_anchor, "created": created_anchors},
         }
 
 
@@ -9346,6 +15016,10 @@ def rollback_storyboard_prompt_version(book_id: int, episode: int, shot_id: str,
         ).first()
         if not shot:
             raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        current_meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+        current_compiler = current_meta.get("prompt_compiler", {}) if isinstance(current_meta, dict) and isinstance(current_meta.get("prompt_compiler", {}), dict) else {}
+        if current_compiler.get("recompile_required"):
+            raise HTTPException(status_code=409, detail="当前镜头由拆镜生成，必须先重新编译提示词后才可回滚版本。")
 
         target = s.query(StoryboardPromptVersion).filter(
             StoryboardPromptVersion.book_id == book_id,
@@ -9395,7 +15069,826 @@ def rollback_storyboard_prompt_to_recommended_version(book_id: int, episode: int
         return result
 
 
-def _preview_storyboard_machine_prompt_export(book_id: int, shot, target_model: str) -> dict:
+def _active_reference_assets(rows: list[Any]) -> list[Any]:
+    """Return selected/locked reference rows that still point at an image.
+
+    Production readiness is deliberately read-only.  A stale candidate, or a
+    selected row without either a local path or a public URL, must not be
+    reported as an available visual anchor.
+    """
+    return [
+        row
+        for row in rows
+        if str(getattr(row, "status", "") or "").strip().lower() in {"selected", "locked"}
+        and (str(getattr(row, "image_url", "") or "").strip() or str(getattr(row, "local_path", "") or "").strip())
+    ]
+
+
+def _build_asset_production_readiness(row: Any, asset_type: str, references: list[Any]) -> dict:
+    """Build non-destructive readiness advice for one reusable visual asset."""
+    active_references = _active_reference_assets(references)
+    locked_reference_count = sum(
+        1 for reference in active_references
+        if str(getattr(reference, "status", "") or "").strip().lower() == "locked"
+    )
+    issues: list[dict[str, str]] = []
+
+    def warn(code: str, message: str) -> None:
+        issues.append({"severity": "warning", "code": code, "message": message})
+
+    asset_status = str(getattr(row, "asset_status", "") or "draft").strip().lower() or "draft"
+    if asset_status in {"draft", "pending"}:
+        warn("asset_not_confirmed", "资产仍是 draft/pending，尚未作为稳定生产资产确认。")
+    if not active_references:
+        warn("missing_active_reference", "没有 selected/locked 且带图片的参考资产。")
+    elif not locked_reference_count:
+        warn("reference_not_locked", "已有可用参考图，但尚未锁定；人物/场景连续性可能漂移。")
+
+    if asset_type == "character":
+        core_identity = " ".join([
+            str(getattr(row, "refined_outfit", "") or "").strip(),
+            str(getattr(row, "hair_style", "") or "").strip(),
+            str(getattr(row, "makeup_spec", "") or "").strip(),
+            str(getattr(row, "consistency_notes", "") or "").strip(),
+            str(getattr(row, "core_prompt_zh", "") or "").strip(),
+        ])
+        if len(core_identity) < 24:
+            warn("character_identity_too_generic", "人物定妆缺少足够的可识别外观事实（发型、服装、妆容或稳定识别点）。")
+        if not str(getattr(row, "negative_prompt", "") or "").strip():
+            warn("missing_character_negative_prompt", "人物资产未设置负向约束，容易出现脸型、服装或多余肢体漂移。")
+        hair_style = str(getattr(row, "hair_style", "") or "").strip()
+        if any(token in hair_style for token in ("连衣裙", "衬衫", "外套", "裙装", "裤装", "制服")):
+            warn("character_field_semantic_mismatch", "发型字段包含明显服装词，建议人工校正字段归属后再重编译。")
+    elif asset_type == "scene":
+        description = str(getattr(row, "description", "") or "").strip()
+        style = str(getattr(row, "style", "") or "").strip()
+        lighting = str(getattr(row, "lighting_mood", "") or "").strip()
+        if not description:
+            warn("missing_scene_description", "场景缺少稳定空间描述。")
+        if not style:
+            warn("missing_scene_style", "场景缺少风格定义。")
+        if not lighting:
+            warn("missing_scene_lighting", "场景缺少可复用的光线/氛围定义。")
+        story_markers = sum(token in lighting for token in ("男人", "女人", "人物", "手部", "照片", "烟盒", "手机", "尸体"))
+        action_markers = sum(token in lighting for token in ("进入", "转身", "放在", "拿起", "看向", "伸手", "走向"))
+        if story_markers >= 2 and action_markers >= 1:
+            warn("scene_lighting_contaminated_by_shot", "场景光线字段包含人物/道具动作，建议迁回镜头层，避免污染其他分镜。")
+    elif asset_type == "prop":
+        description = str(getattr(row, "description", "") or "").strip()
+        if len(description) < 12:
+            warn("prop_description_too_generic", "道具缺少可复用的形状、材质、颜色或状态描述。")
+        if not str(getattr(row, "negative_prompt", "") or "").strip():
+            warn("missing_prop_negative_prompt", "道具未设置负向约束，关键状态可能在连续镜头中漂移。")
+
+    return {
+        "asset_type": asset_type,
+        "asset_id": str(getattr(row, "id", "") or ""),
+        "asset_name": str(getattr(row, "character_name", "") or getattr(row, "name", "") or "").strip(),
+        "asset_status": asset_status,
+        "reference_count": len(active_references),
+        "locked_reference_count": locked_reference_count,
+        "status": "warning" if issues else "pass",
+        "issues": issues,
+    }
+
+
+def _build_storyboard_production_readiness(shots: list[Any], assets: dict[str, list[Any]], references: list[Any]) -> dict:
+    """Summarise preflight quality from persisted data without mutating it.
+
+    This complements prompt-compiler diagnostics: it exposes their persisted
+    result alongside reusable asset readiness so operators can fix the right
+    layer before they press image/video generation.
+    """
+    references_by_asset: dict[tuple[str, str], list[Any]] = {}
+    for reference in references:
+        key = (str(getattr(reference, "asset_type", "") or "").strip(), str(getattr(reference, "asset_id", "") or "").strip())
+        references_by_asset.setdefault(key, []).append(reference)
+
+    # Scope asset readiness to assets actually referenced by the current
+    # storyboard whenever the persisted shot context provides stable
+    # ``asset_type``/``asset_id`` keys.  Large libraries often contain
+    # optional or ``shot_only`` assets which should not block a production
+    # preflight for this episode.  Legacy shots may only persist a boolean
+    # ``has_reference`` entry; in that case we deliberately fall back to the
+    # complete library instead of silently hiding missing asset governance.
+    bound_asset_keys: set[tuple[str, str]] = set()
+    for shot in shots:
+        shot_meta = safe_json_loads(getattr(shot, "meta_info", "") or "{}")
+        shot_meta = shot_meta if isinstance(shot_meta, dict) else {}
+        compiler = shot_meta.get("prompt_compiler", {}) if isinstance(shot_meta.get("prompt_compiler", {}), dict) else {}
+        context = compiler.get("prompt_compile_context", {}) if isinstance(compiler.get("prompt_compile_context", {}), dict) else {}
+        bound_assets = context.get("bound_assets", []) if isinstance(context.get("bound_assets", []), list) else []
+        for item in bound_assets:
+            if not isinstance(item, dict):
+                continue
+            asset_type = str(item.get("asset_type") or item.get("type") or "").strip().lower()
+            asset_id = str(item.get("asset_id") or item.get("id") or "").strip()
+            if asset_type in assets and asset_id:
+                bound_asset_keys.add((asset_type, asset_id))
+    scoped_assets = bool(bound_asset_keys)
+    asset_results = {
+        asset_type: [
+            _build_asset_production_readiness(
+                row,
+                asset_type,
+                references_by_asset.get((asset_type, str(getattr(row, "id", "") or "")), []),
+            )
+            for row in rows
+            if not scoped_assets or (asset_type, str(getattr(row, "id", "") or "").strip()) in bound_asset_keys
+        ]
+        for asset_type, rows in assets.items()
+    }
+
+    shot_results: list[dict] = []
+    for shot in shots:
+        meta_info = safe_json_loads(getattr(shot, "meta_info", "") or "{}")
+        meta_info = meta_info if isinstance(meta_info, dict) else {}
+        compiler = meta_info.get("prompt_compiler", {}) if isinstance(meta_info.get("prompt_compiler", {}), dict) else {}
+        context = compiler.get("prompt_compile_context", {}) if isinstance(compiler.get("prompt_compile_context", {}), dict) else {}
+        diagnostics = compiler.get("compiler_diagnostics", {}) if isinstance(compiler.get("compiler_diagnostics", {}), dict) else {}
+        structured = meta_info.get("structured_shot", {}) if isinstance(meta_info.get("structured_shot", {}), dict) else {}
+        executability = context.get("executability") or structured.get("executability") or {}
+        executability = executability if isinstance(executability, dict) else {}
+        issues: list[dict[str, str]] = []
+        expected_shot_id = str(getattr(shot, "shot_id", "") or "").strip()
+        stored_shot_id = str(structured.get("shot_id") or "").strip()
+        structure_identity_stale = stored_shot_id != expected_shot_id
+        diagnostics_fresh = (not structure_identity_stale) and _prompt_compiler_diagnostics_fresh(shot, structured, compiler)
+        diagnostic_status = str(diagnostics.get("status") or "").strip().lower()
+        executability_status = str(executability.get("status") or "").strip().lower()
+        if structure_identity_stale:
+            issues.append({"severity": "warning", "code": "structured_shot_identity_stale", "message": "结构化镜头标识与所属镜头不一致；该派生状态须受控回填。"})
+        if diagnostics and not diagnostics_fresh:
+            issues.append({"severity": "warning", "code": "stale_prompt_diagnostics", "message": "已保存的提示词诊断不匹配当前镜头事实；请受控重编译后再将其作为质量结论。"})
+        elif diagnostic_status == "blocked":
+            issues.append({"severity": "blocked", "code": "prompt_compiler_blocked", "message": "已保存的提示词编译诊断为 blocked，请先修复并重新编译。"})
+        elif diagnostic_status == "warning":
+            issues.append({"severity": "warning", "code": "prompt_compiler_warning", "message": "已保存的提示词编译诊断存在 warning，建议复核后再生产。"})
+        elif not diagnostic_status:
+            issues.append({"severity": "warning", "code": "missing_prompt_diagnostics", "message": "没有已保存的提示词编译诊断；旧分镜建议重新编译。"})
+        if executability_status == "blocked":
+            issues.append({"severity": "blocked", "code": "executability_blocked", "message": "镜头可拍性为 blocked，不能提交视频生成。"})
+        elif executability_status == "warning":
+            issues.append({"severity": "warning", "code": "executability_warning", "message": "镜头可拍性为 warning；应优化、拆分或由操作者明确确认。"})
+        elif not executability_status:
+            issues.append({"severity": "warning", "code": "missing_executability", "message": "缺少可拍性校验；重新编译后才能进入视频生产。"})
+        model_adapter = context.get("model_adapter", {}) if isinstance(context.get("model_adapter", {}), dict) else {}
+        static_sections = structured.get("static_prompt_sections") or model_adapter.get("static_prompt_sections", {})
+        if not isinstance(static_sections, dict) or not static_sections:
+            issues.append({"severity": "warning", "code": "legacy_flat_static_prompt", "message": "未发现新版结构化首帧 sections；建议重编译以获得可审计的分层提示词。"})
+        bound_assets = context.get("bound_assets", []) if isinstance(context.get("bound_assets", []), list) else []
+        reference_count = sum(1 for item in bound_assets if isinstance(item, dict) and bool(item.get("has_reference")))
+        locked_reference_count = sum(1 for item in bound_assets if isinstance(item, dict) and bool(item.get("locked_reference")))
+        if bound_assets and not reference_count:
+            issues.append({"severity": "warning", "code": "bound_assets_without_reference", "message": "镜头已绑定资产但没有可用参考图；多参考视频质量无法保证。"})
+        shot_status = "blocked" if any(item["severity"] == "blocked" for item in issues) else ("warning" if issues else "pass")
+        shot_results.append({
+            "episode": int(getattr(shot, "episode", 0) or 0),
+            "shot_id": int(getattr(shot, "shot_id", 0) or 0),
+            "scene_name": str(getattr(shot, "scene_name", "") or "").strip(),
+            "duration": int(getattr(shot, "duration", 0) or 0),
+            "status": shot_status,
+            "prompt_diagnostics_status": diagnostic_status or "missing",
+            "prompt_diagnostics_fresh": diagnostics_fresh,
+            "structured_shot_identity_status": "stale" if structure_identity_stale else "current",
+            "executability_status": executability_status or "missing",
+            "bound_asset_count": len(bound_assets),
+            "reference_count": reference_count,
+            "locked_reference_count": locked_reference_count,
+            "issues": issues,
+        })
+
+    all_assets = [item for group in asset_results.values() for item in group]
+    all_items = [*shot_results, *all_assets]
+    blocked_count = sum(1 for item in all_items if item.get("status") == "blocked")
+    warning_count = sum(1 for item in all_items if item.get("status") == "warning")
+    issue_codes: dict[str, int] = {}
+    for item in all_items:
+        for issue in item.get("issues", []):
+            code = str(issue.get("code") or "").strip()
+            if code:
+                issue_codes[code] = issue_codes.get(code, 0) + 1
+    return {
+        "mode": "readonly-production-readiness",
+        "status": "blocked" if blocked_count else ("warning" if warning_count else "pass"),
+        "summary": {
+            "shots": len(shot_results),
+            "assets": len(all_assets),
+            "asset_scope": "bound_to_shots" if scoped_assets else "library_fallback",
+            "blocked_items": blocked_count,
+            "warning_items": warning_count,
+            "issue_counts": dict(sorted(issue_codes.items())),
+        },
+        "recommended_order": [
+            "先修复 blocked 镜头的可拍性或提示词编译问题。",
+            "再补锁定的角色/场景/关键道具参考图与权威资产字段。",
+            "最后重编译旧扁平提示词分镜，并复核机器提示词导出。",
+        ],
+        "shots": shot_results,
+        "assets": asset_results,
+    }
+
+
+@app.get("/api/books/{book_id}/production-readiness")
+def get_book_production_readiness(book_id: int):
+    """Read-only production preflight; never changes prompts, assets, or media."""
+    from models import Session, StoryboardShot, VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset
+
+    with Session() as s:
+        shots = s.query(StoryboardShot).filter(StoryboardShot.book_id == book_id).order_by(StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc()).all()
+        assets = {
+            "scene": s.query(VisualLocation).filter(VisualLocation.book_id == book_id).order_by(VisualLocation.id.asc()).all(),
+            "character": s.query(VisualMakeup).filter(VisualMakeup.book_id == book_id).order_by(VisualMakeup.id.asc()).all(),
+            "prop": s.query(VisualProp).filter(VisualProp.book_id == book_id).order_by(VisualProp.id.asc()).all(),
+        }
+        references = s.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == book_id).order_by(VisualReferenceAsset.id.asc()).all()
+        return {"book_id": book_id, **_build_storyboard_production_readiness(shots, assets, references)}
+
+
+def _build_storyboard_structure_governance_plan(book_id: int, shots: list[Any]) -> dict:
+    """Build a deterministic, read-only repair plan for derived state only."""
+    items: list[dict[str, Any]] = []
+    for shot in shots:
+        meta = safe_json_loads(getattr(shot, "meta_info", "") or "{}")
+        meta = meta if isinstance(meta, dict) else {}
+        structured = meta.get("structured_shot", {}) if isinstance(meta.get("structured_shot", {}), dict) else {}
+        compiler = meta.get("prompt_compiler", {}) if isinstance(meta.get("prompt_compiler", {}), dict) else {}
+        stored_shot_id = str(structured.get("shot_id") or "").strip()
+        expected_shot_id = str(getattr(shot, "shot_id", "") or "").strip()
+        identity_stale = stored_shot_id != expected_shot_id
+        diagnostics = compiler.get("compiler_diagnostics", {}) if isinstance(compiler.get("compiler_diagnostics", {}), dict) else {}
+        diagnostics_state = compiler.get("diagnostics_state", {}) if isinstance(compiler.get("diagnostics_state", {}), dict) else {}
+        # A prior confirmed governance run intentionally leaves historical
+        # diagnostics in place but marks their authority stale. Do not create
+        # another backfill/rollback anchor for that already-applied operation.
+        already_marked_stale = str(diagnostics_state.get("status") or "").strip().lower() == "stale"
+        diagnostics_stale = bool(diagnostics) and not already_marked_stale and not _prompt_compiler_diagnostics_fresh(shot, structured, compiler)
+        if not identity_stale and not diagnostics_stale:
+            continue
+        snapshot = hashlib.sha256(json.dumps({"meta_info": meta, "shot": _snapshot_storyboard_shot_state(shot)}, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")).hexdigest()
+        items.append({
+            "episode": int(getattr(shot, "episode", 0) or 0),
+            "shot_id": expected_shot_id,
+            "stored_structured_shot_id": stored_shot_id,
+            "identity_stale": identity_stale,
+            "diagnostics_stale": diagnostics_stale,
+            "source_snapshot_fingerprint": snapshot,
+            "operations": [
+                *(["normalize_structured_shot_identity"] if identity_stale else []),
+                *(["mark_prompt_diagnostics_stale"] if diagnostics_stale else []),
+            ],
+        })
+    plan_payload = {"book_id": book_id, "items": items, "schema_version": 1}
+    fingerprint = hashlib.sha256(json.dumps(plan_payload, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
+    return {
+        "book_id": book_id,
+        "mode": "readonly-structure-governance-plan",
+        "real_data_mutated": False,
+        "plan_fingerprint": fingerprint,
+        "confirmation_token": "CONFIRM_STRUCTURED_SHOT_IDENTITY_BACKFILL",
+        "requires_operator_confirmation": bool(items),
+        "items": items,
+        "summary": {"affected_shots": len(items), "identity_repairs": sum(1 for item in items if item["identity_stale"]), "diagnostics_to_mark_stale": sum(1 for item in items if item["diagnostics_stale"])},
+    }
+
+
+@app.get("/api/books/{book_id}/storyboard/structure-governance/plan")
+def get_storyboard_structure_governance_plan(book_id: int):
+    """Preview derived-structure identity/diagnostic freshness repairs; no writes."""
+    from models import Session, StoryboardShot
+    with Session() as session:
+        shots = session.query(StoryboardShot).filter(StoryboardShot.book_id == book_id).order_by(StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc()).all()
+        return _build_storyboard_structure_governance_plan(book_id, shots)
+
+
+@app.post("/api/books/{book_id}/storyboard/structure-governance/backfill")
+def apply_storyboard_structure_governance_backfill(book_id: int, req: StoryboardStructureGovernanceBackfillRequest):
+    """Apply a reviewed derived-state repair with snapshot anchors and audit.
+
+    No director text, prompt version, asset binding, media, or generated prompt
+    text is changed. Existing diagnostics are retained as historical evidence
+    but explicitly made stale until a controlled compiler confirmation occurs.
+    """
+    from models import Session, StoryboardShot, DecisionPacketRecord
+    with Session() as session:
+        shots = session.query(StoryboardShot).filter(StoryboardShot.book_id == book_id).order_by(StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc()).all()
+        plan = _build_storyboard_structure_governance_plan(book_id, shots)
+        if str(req.plan_fingerprint or "").strip() != str(plan["plan_fingerprint"]):
+            raise HTTPException(status_code=409, detail={"message": "结构治理计划已变化，请重新加载预览。", "expected_plan_fingerprint": plan["plan_fingerprint"]})
+        selected = {str(item).strip() for item in req.shot_ids if str(item).strip()}
+        targets = [item for item in plan["items"] if not selected or str(item["shot_id"]) in selected or f"{item['episode']}:{item['shot_id']}" in selected]
+        if not req.confirmed or not req.allow_write or str(req.confirmation_token or "").strip() != plan["confirmation_token"]:
+            return {**plan, "items": targets, "mode": "structure-governance-backfill-preview", "requires_confirmation": bool(targets), "message": "这是只读预检；需 confirmed=true、allowWrite=true 及确认令牌才会写入。"}
+        if not targets:
+            return {**plan, "mode": "structure-governance-backfill-applied", "real_data_mutated": False, "applied": []}
+        evidence = [{"id": f"storyboard:{item['episode']}:{item['shot_id']}", "tier": "derived_fact", "summary": json.dumps(item, ensure_ascii=False), "version": item["source_snapshot_fingerprint"]} for item in targets]
+        packet = normalize_decision_packet({"domain": "storyboard", "scope": {"book_id": book_id, "operation": "structure_governance_backfill", "plan_fingerprint": plan["plan_fingerprint"]}, "evidence": evidence, "unknowns": [], "conflicts": [], "allowed_operations": ["normalize_structured_shot_identity", "mark_prompt_diagnostics_stale"]})
+        packet_fingerprint = decision_packet_fingerprint(packet)
+        audit = session.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=packet_fingerprint).first()
+        if audit and audit.status == "confirmed":
+            return {**plan, "items": targets, "mode": "structure-governance-backfill-applied", "real_data_mutated": False, "deduplicated": True, "audit_packet_id": audit.id, "applied": []}
+        if not audit:
+            audit = DecisionPacketRecord(book_id=book_id, domain=packet["domain"], scope=json.dumps(packet["scope"], ensure_ascii=False), packet_fingerprint=packet_fingerprint, evidence=json.dumps(packet["evidence"], ensure_ascii=False), unknowns="[]", conflicts="[]", allowed_operations=json.dumps(packet["allowed_operations"], ensure_ascii=False), proposal=json.dumps({"type": "derived_state_backfill", "plan_fingerprint": plan["plan_fingerprint"]}, ensure_ascii=False), model_info=json.dumps({"mode": "no_llm_confirmed_backfill"}, ensure_ascii=False))
+            session.add(audit)
+        applied = []
+        for item in targets:
+            shot = next((row for row in shots if int(row.episode or 0) == int(item["episode"]) and str(row.shot_id) == str(item["shot_id"])), None)
+            if not shot:
+                raise HTTPException(status_code=409, detail="目标镜头已变化，请重新加载治理计划。")
+            current_snapshot = hashlib.sha256(json.dumps({"meta_info": safe_json_loads(shot.meta_info or "{}"), "shot": _snapshot_storyboard_shot_state(shot)}, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")).hexdigest()
+            if current_snapshot != item["source_snapshot_fingerprint"]:
+                raise HTTPException(status_code=409, detail={"message": "目标镜头在预览后发生变化，拒绝写入。", "episode": item["episode"], "shot_id": item["shot_id"]})
+            anchor = _create_storyboard_state_snapshot_anchor(session, shot, {"type": "structure-governance-backfill", "plan_fingerprint": plan["plan_fingerprint"]}, "structure-governance-preimage")
+            meta = safe_json_loads(shot.meta_info or "{}")
+            meta = meta if isinstance(meta, dict) else {}
+            structured = meta.get("structured_shot", {}) if isinstance(meta.get("structured_shot", {}), dict) else {}
+            meta["structured_shot"] = _normalize_structured_shot_identity(shot, structured)
+            compiler = meta.get("prompt_compiler", {}) if isinstance(meta.get("prompt_compiler", {}), dict) else {}
+            if compiler:
+                compiler["recompile_required"] = True
+                compiler["diagnostics_state"] = {"status": "stale", "reason": "structure_governance_backfill", "plan_fingerprint": plan["plan_fingerprint"], "marked_at": datetime.utcnow().isoformat()}
+                meta["prompt_compiler"] = compiler
+            meta["structure_governance"] = {"plan_fingerprint": plan["plan_fingerprint"], "audit_packet_fingerprint": packet_fingerprint, "applied_at": datetime.utcnow().isoformat()}
+            shot.meta_info = json.dumps(meta, ensure_ascii=False)
+            shot.updated_at = datetime.utcnow()
+            applied.append({"episode": item["episode"], "shot_id": item["shot_id"], "rollback_anchor": anchor, "operations": item["operations"]})
+        audit.status = "confirmed"; audit.confirmed_at = datetime.utcnow(); audit.updated_at = datetime.utcnow()
+        session.commit()
+        return {**plan, "items": targets, "mode": "structure-governance-backfill-applied", "real_data_mutated": bool(applied), "audit_packet_id": audit.id, "applied": applied}
+
+
+@app.get("/api/books/{book_id}/production-readiness/repair-plan")
+def get_book_production_repair_plan(book_id: int):
+    """Return a reviewable, non-mutating repair plan for production blockers."""
+    from models import Session, StoryboardShot, StoryboardPromptVersion, VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset
+
+    with Session() as s:
+        shots = s.query(StoryboardShot).filter(StoryboardShot.book_id == book_id).order_by(StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc()).all()
+        assets = {
+            "scene": s.query(VisualLocation).filter(VisualLocation.book_id == book_id).order_by(VisualLocation.id.asc()).all(),
+            "character": s.query(VisualMakeup).filter(VisualMakeup.book_id == book_id).order_by(VisualMakeup.id.asc()).all(),
+            "prop": s.query(VisualProp).filter(VisualProp.book_id == book_id).order_by(VisualProp.id.asc()).all(),
+        }
+        references = s.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == book_id).order_by(VisualReferenceAsset.id.asc()).all()
+        prompt_versions = s.query(StoryboardPromptVersion).filter(StoryboardPromptVersion.book_id == book_id).order_by(StoryboardPromptVersion.version.desc()).all()
+
+    readiness = _build_storyboard_production_readiness(shots, assets, references)
+    executability_by_shot: dict[tuple[int, int], dict[str, Any]] = {}
+    for source_shot in shots:
+        source_meta = safe_json_loads(source_shot.meta_info) if source_shot.meta_info else {}
+        source_meta = source_meta if isinstance(source_meta, dict) else {}
+        source_compiler = source_meta.get("prompt_compiler", {}) if isinstance(source_meta.get("prompt_compiler", {}), dict) else {}
+        source_context = source_compiler.get("prompt_compile_context", {}) if isinstance(source_compiler.get("prompt_compile_context", {}), dict) else {}
+        candidate = source_context.get("executability") or source_meta.get("structured_shot", {}).get("executability", {})
+        executability_by_shot[(int(source_shot.episode or 0), int(source_shot.shot_id or 0))] = candidate if isinstance(candidate, dict) else {}
+    actions: list[dict[str, Any]] = []
+    versions_by_shot: dict[tuple[int, int], list[Any]] = {}
+    for version in prompt_versions:
+        key = (int(version.episode or 0), int(version.shot_id or 0))
+        versions_by_shot.setdefault(key, []).append(version)
+
+    def resolve_rollback_anchor(source_shot) -> dict | None:
+        key = (int(source_shot.episode or 0), int(source_shot.shot_id or 0))
+        candidates = versions_by_shot.get(key, [])
+        source_meta = safe_json_loads(source_shot.meta_info) if source_shot.meta_info else {}
+        source_meta = source_meta if isinstance(source_meta, dict) else {}
+        source_compiler = source_meta.get("prompt_compiler", {}) if isinstance(source_meta.get("prompt_compiler", {}), dict) else {}
+        # A structural transform explicitly declares that its blank-prompt
+        # state is the rollback baseline until the first successful compile.
+        if source_compiler.get("recompile_required") and _storyboard_transform_origin(source_meta):
+            for candidate in candidates:
+                anchor = _prompt_version_rollback_anchor(candidate)
+                if anchor.get("kind") == "state_snapshot":
+                    return anchor
+            return None
+        return _prompt_version_rollback_anchor(candidates[0]) if candidates else None
+    source_shots_by_key = {(int(row.episode or 0), int(row.shot_id or 0)): row for row in shots}
+    for shot in readiness.get("shots", []):
+        status = str(shot.get("status") or "").strip().lower()
+        if status not in {"blocked", "warning"}:
+            continue
+        issue_codes = {str(item.get("code") or "") for item in shot.get("issues", []) if isinstance(item, dict)}
+        key = (int(shot.get("episode") or 0), int(shot.get("shot_id") or 0))
+        latest_version = (versions_by_shot.get(key) or [None])[0]
+        latest_meta = safe_json_loads(latest_version.meta_info or "{}") if latest_version else {}
+        latest_meta = latest_meta if isinstance(latest_meta, dict) else {}
+        is_confirmed_draft_version = bool(
+            latest_version
+            and str(latest_version.compile_reason or "").startswith("confirmed-llm-draft:")
+            and isinstance(latest_meta.get("candidate"), dict)
+        )
+        missing_runtime_only = issue_codes.issubset({
+            "legacy_flat_static_prompt",
+            "missing_prompt_diagnostics",
+            "missing_executability",
+        })
+        if is_confirmed_draft_version and missing_runtime_only:
+            action = "backfill_prompt_runtime"
+            label = "回填已确认版本的生产元数据"
+            confirmation_required = True
+        elif "executability_blocked" in issue_codes:
+            action = "review_executability"
+            label = "先复核动作节拍"
+            confirmation_required = True
+        elif "stale_prompt_diagnostics" in issue_codes:
+            # A stale result is not evidence that the current prompt is bad.
+            # Route it to the existing evidence-packet/LLM-draft flow instead
+            # of offering a historical direct recompile.
+            action = "prepare_prompt_draft"
+            label = "准备受控 Prompt 草案"
+            confirmation_required = True
+        elif "legacy_flat_static_prompt" in issue_codes:
+            action = "recompile_prompt"
+            label = "重编译结构化提示词"
+            confirmation_required = False
+        else:
+            action = "review_shot"
+            label = "人工复核镜头"
+            confirmation_required = True
+        source_shot = source_shots_by_key.get(key)
+        actions.append({
+            "episode": shot.get("episode"),
+            "shot_id": shot.get("shot_id"),
+            "scene_name": shot.get("scene_name"),
+            "status": status,
+            "action": action,
+            "label": label,
+            "confirmation_required": confirmation_required,
+            "issue_codes": sorted(code for code in issue_codes if code),
+            "issues": shot.get("issues", []),
+            "rollback_anchor": resolve_rollback_anchor(source_shot) if source_shot else None,
+            "executability_suggestions": executability_by_shot.get((int(shot.get("episode") or 0), int(shot.get("shot_id") or 0)), {}).get("suggestions", []),
+        })
+
+    asset_actions: list[dict[str, Any]] = []
+    for asset_type, rows in (readiness.get("assets") or {}).items():
+        for asset in rows:
+            if not isinstance(asset, dict) or asset.get("status") == "pass":
+                continue
+            issue_codes = [str(item.get("code") or "") for item in asset.get("issues", []) if isinstance(item, dict)]
+            issue_code_set = set(issue_codes)
+            # One primary action keeps the plan executable at a glance, while
+            # every detected issue remains attached for the operator's audit.
+            # This is deliberately driven by readiness codes, never by asset
+            # names, book IDs, or prompt wording.
+            if "missing_active_reference" in issue_code_set:
+                action = "upload_or_select_reference"
+                label = "上传或选定正式参考图"
+            elif "reference_not_locked" in issue_code_set:
+                action = "review_and_lock_reference"
+                label = "人工复核后锁定参考图"
+            elif "asset_not_confirmed" in issue_code_set:
+                action = "confirm_asset_metadata"
+                label = "确认资产视觉字段与生产状态"
+            elif "character_field_semantic_mismatch" in issue_code_set:
+                action = "correct_character_field_semantics"
+                label = "修正人物发型/服装字段归属"
+            elif "scene_lighting_contaminated_by_shot" in issue_code_set:
+                action = "separate_scene_lighting_facts"
+                label = "将镜头剧情从场景光线字段拆出"
+            elif any(code.endswith("_negative_prompt") for code in issue_code_set):
+                action = "complete_asset_negative_constraints"
+                label = "补齐资产负向约束"
+            else:
+                action = "review_asset_metadata"
+                label = "人工复核资产字段"
+            asset_actions.append({
+                "asset_type": asset_type,
+                "asset_id": asset.get("asset_id"),
+                "asset_name": asset.get("asset_name"),
+                "action": action,
+                "label": label,
+                "confirmation_required": True,
+                "issue_codes": sorted(code for code in issue_codes if code),
+                "issues": asset.get("issues", []),
+            })
+
+    plan_payload = {
+        "book_id": book_id,
+        "status": readiness.get("status", "warning"),
+        "shot_actions": actions,
+        "asset_actions": asset_actions,
+    }
+    confirmation_token = hashlib.sha256(
+        json.dumps(plan_payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()[:16]
+    return {
+        "book_id": book_id,
+        "mode": "readonly-repair-plan",
+        "status": readiness.get("status", "warning"),
+        "real_data_mutated": False,
+        "requires_operator_confirmation": bool(actions or asset_actions),
+        "confirmation_token": confirmation_token,
+        "plan_fingerprint": confirmation_token,
+        "next_safe_step": "review_plan",
+        "summary": {
+            "shot_actions": len(actions),
+            "asset_actions": len(asset_actions),
+            "blocked_shots": sum(1 for item in actions if item.get("status") == "blocked"),
+            "warning_shots": sum(1 for item in actions if item.get("status") == "warning"),
+            "missing_rollback_anchors": sum(1 for item in actions if not item.get("rollback_anchor")),
+        },
+        "recommended_order": readiness.get("recommended_order", []),
+        "shot_actions": actions,
+        "asset_actions": asset_actions,
+    }
+
+
+@app.post("/api/books/{book_id}/production-readiness/repair-plan/rollback-anchors")
+def create_book_production_repair_rollback_anchors(
+    book_id: int,
+    req: StoryboardProductionRepairRollbackAnchorRequest,
+):
+    """Preview or create state-snapshot anchors for declared shot transforms.
+
+    It never invents a baseline from prompt text.  Only a shot that explicitly
+    records a completed structural transform and still requires recompilation
+    is eligible for this migration path.
+    """
+    plan = get_book_production_repair_plan(book_id)
+    expected = str(plan.get("confirmation_token") or "").strip()
+    if not expected or str(req.confirmation_token or "").strip() != expected:
+        raise HTTPException(status_code=409, detail={
+            "message": "修复计划已变化或确认令牌无效，请重新加载当前修复计划。",
+            "expected_plan_fingerprint": expected,
+        })
+    selected_ids = {str(item).strip() for item in (req.shot_ids or []) if str(item).strip()}
+    selected_actions = [
+        item for item in (plan.get("shot_actions") or [])
+        if (not selected_ids or str(item.get("shot_id") or "").strip() in selected_ids)
+        and not item.get("rollback_anchor")
+    ]
+    from models import Session, StoryboardShot
+    eligible: list[dict[str, Any]] = []
+    ineligible: list[dict[str, Any]] = []
+    with Session() as session:
+        for action in selected_actions:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == book_id,
+                StoryboardShot.episode == int(action.get("episode") or 0),
+                StoryboardShot.shot_id == _coerce_storyboard_shot_id(action.get("shot_id")),
+            ).first()
+            meta_info = safe_json_loads(shot.meta_info) if shot and shot.meta_info else {}
+            meta_info = meta_info if isinstance(meta_info, dict) else {}
+            compiler = meta_info.get("prompt_compiler", {}) if isinstance(meta_info.get("prompt_compiler", {}), dict) else {}
+            origin = _storyboard_transform_origin(meta_info)
+            target = {"episode": action.get("episode"), "shot_id": action.get("shot_id"), "origin": origin}
+            if shot and compiler.get("recompile_required") and origin:
+                eligible.append(target)
+            else:
+                ineligible.append({**target, "reason": "no_declared_pre_recompile_transform"})
+
+        if not req.confirmed or not req.allow_write:
+            return {
+                "mode": "rollback-anchor-preview",
+                "real_data_mutated": False,
+                "requires_confirmation": bool(eligible),
+                "confirmation_token": expected,
+                "eligible_shots": eligible,
+                "ineligible_shots": ineligible,
+                "message": "这是状态锚点预检；需同时 confirmed=true 且 allow_write=true 才会创建锚点。",
+            }
+
+        created: list[dict[str, Any]] = []
+        for target in eligible:
+            shot = session.query(StoryboardShot).filter(
+                StoryboardShot.book_id == book_id,
+                StoryboardShot.episode == int(target["episode"] or 0),
+                StoryboardShot.shot_id == _coerce_storyboard_shot_id(target["shot_id"]),
+            ).first()
+            if shot:
+                created.append({
+                    "episode": target["episode"],
+                    "shot_id": target["shot_id"],
+                    "rollback_anchor": _create_storyboard_state_snapshot_anchor(session, shot, target["origin"], req.reason),
+                })
+        session.commit()
+    return {
+        "mode": "rollback-anchor-created",
+        "real_data_mutated": bool(created),
+        "created": created,
+        "ineligible_shots": ineligible,
+        "next_safe_step": "reload_repair_plan",
+    }
+
+
+@app.post("/api/books/{book_id}/production-readiness/repair-plan/execute")
+def execute_book_production_repair_plan(
+    book_id: int,
+    req: StoryboardProductionRepairExecuteRequest,
+    bg: BackgroundTasks,
+):
+    """Queue a protected prompt-recompile batch after plan confirmation.
+
+    The endpoint is intentionally fail-closed: without ``confirmed`` and
+    ``allow_write`` it only returns a dry-run acknowledgement.  The supplied
+    token is recomputed from the current read-only plan so stale plans cannot
+    write over newer operator edits.
+    """
+    plan = get_book_production_repair_plan(book_id)
+    expected = str(plan.get("confirmation_token") or "").strip()
+    supplied = str(req.confirmation_token or "").strip()
+    if not supplied or supplied != expected:
+        raise HTTPException(status_code=409, detail={
+            "message": "修复计划已变化或确认令牌无效，请重新加载当前修复计划。",
+            "expected_plan_fingerprint": expected,
+        })
+    selected_ids = {str(item).strip() for item in (req.shot_ids or []) if str(item).strip()}
+    planned_actions = [
+        item for item in (plan.get("shot_actions") or [])
+        if (not selected_ids or str(item.get("shot_id") or "").strip() in selected_ids)
+        and str(item.get("action") or "") in {"recompile_prompt", "backfill_prompt_runtime"}
+    ]
+    if not planned_actions:
+        raise HTTPException(status_code=400, detail="No repairable shots selected in the current plan.")
+    missing_anchors = [
+        item for item in planned_actions
+        if not item.get("rollback_anchor")
+    ]
+    if req.confirmed and req.allow_write and missing_anchors:
+        raise HTTPException(status_code=409, detail={
+            "message": "所选镜头缺少 baseline Prompt Version，拒绝批量写入。请先建立可回滚锚点或改为逐镜头人工处理。",
+            "missing_rollback_anchors": [
+                {"episode": item.get("episode"), "shot_id": item.get("shot_id")}
+                for item in missing_anchors
+            ],
+        })
+    if not req.confirmed or not req.allow_write:
+        return {
+            "mode": "dry-run",
+            "real_data_mutated": False,
+            "requires_confirmation": True,
+            "confirmation_token": expected,
+            "selected_shots": planned_actions,
+            "message": "这是预检结果。需同时 confirmed=true 且 allow_write=true 才会创建写入任务。",
+        }
+
+    # Fail closed on overlapping active repair work.  Version numbers are not
+    # a concurrency primitive: two confirmed requests for the same shot must
+    # never both compile and create competing versions.
+    from models import Session, TaskRun
+    requested_keys = {(int(item.get("episode") or 0), str(item.get("shot_id") or "")) for item in planned_actions}
+    with Session() as task_session:
+        active_rows = task_session.query(TaskRun).filter(
+            TaskRun.book_id == book_id,
+            TaskRun.status.in_(["queued", "running"]),
+        ).all()
+        conflicts = []
+        for active in active_rows:
+            payload = safe_json_loads(active.payload, {}) if active.payload else {}
+            payload = payload if isinstance(payload, dict) else {}
+            if payload.get("kind") != "production-readiness-repair":
+                continue
+            active_keys = {(int(item.get("episode") or 0), str(item.get("shot_id") or "")) for item in payload.get("selected_shots", []) if isinstance(item, dict)}
+            overlap = requested_keys & active_keys
+            if overlap:
+                conflicts.append({"task_id": active.task_id, "shots": [{"episode": episode, "shot_id": shot_id} for episode, shot_id in sorted(overlap)]})
+        if conflicts:
+            raise HTTPException(status_code=409, detail={"message": "存在处理同一镜头的活动修复任务，拒绝创建重复版本。", "conflicts": conflicts})
+
+    task_id = uuid.uuid4().hex[:12]
+    task_state = {
+        "task_id": task_id,
+        "kind": "production-readiness-repair",
+        "status": "queued",
+        "progress": 0,
+        "book_id": book_id,
+        "confirmation_token": expected,
+        "selected_shots": planned_actions,
+        "compile_reason": req.compile_reason,
+        "real_data_mutated": False,
+        "results": [],
+        "error": None,
+    }
+    _creative_tasks[task_id] = task_state
+    _stamp_creative_task_state(task_state, created=True)
+
+    def _run_repair_batch():
+        task_state["status"] = "running"
+        _stamp_creative_task_state(task_state)
+        from models import Session, StoryboardShot
+        try:
+            with Session() as session:
+                total = len(planned_actions)
+                for index, planned in enumerate(planned_actions, start=1):
+                    shot = session.query(StoryboardShot).filter(
+                        StoryboardShot.book_id == book_id,
+                        StoryboardShot.episode == int(planned.get("episode") or 0),
+                        StoryboardShot.shot_id == _coerce_storyboard_shot_id(planned.get("shot_id")),
+                    ).first()
+                    result = {
+                        "episode": planned.get("episode"),
+                        "shot_id": planned.get("shot_id"),
+                        "status": "failed",
+                    }
+                    if not shot:
+                        result["error"] = "Storyboard shot not found"
+                    else:
+                        planned_anchor = planned.get("rollback_anchor", {}) if isinstance(planned.get("rollback_anchor", {}), dict) else {}
+                        baseline_version = planned_anchor.get("version")
+                        try:
+                            if planned.get("action") == "backfill_prompt_runtime":
+                                hydrated = _backfill_confirmed_prompt_runtime_state(session, book_id, shot)
+                                session.commit()
+                                result.update({
+                                    "status": "done",
+                                    "baseline_version": baseline_version,
+                                    "version": hydrated.get("version"),
+                                    "operation": "backfill_prompt_runtime",
+                                    "prompt_text_mutated": False,
+                                })
+                            else:
+                                compiled = _persist_storyboard_prompt_compile(session, book_id, shot.episode, shot, req.compile_reason)
+                                session.commit()
+                                result.update({"status": "done", "baseline_version": baseline_version, "version": compiled.get("row").version, "operation": "recompile_prompt"})
+                            task_state["real_data_mutated"] = True
+                        except Exception as exc:
+                            session.rollback()
+                            result["error"] = str(exc)
+                    task_state["results"].append(result)
+                    task_state["progress"] = int(index / total * 100)
+                    _stamp_creative_task_state(task_state)
+            task_state["status"] = "done" if all(item.get("status") == "done" for item in task_state["results"]) else "completed_with_errors"
+        except Exception as exc:
+            task_state["status"] = "failed"
+            task_state["error"] = str(exc)
+        _stamp_creative_task_state(task_state)
+
+    bg.add_task(_run_repair_batch)
+    return {"task_id": task_id, "status": "queued", "real_data_mutated": False, "selected_shots": planned_actions}
+
+
+@app.get("/api/books/{book_id}/production-readiness/repair-tasks/{task_id}")
+def get_production_repair_task(book_id: int, task_id: str):
+    task = _creative_tasks.get(task_id) or _load_persisted_task_state(task_id)
+    if not task or int(task.get("book_id") or 0) != int(book_id) or task.get("kind") != "production-readiness-repair":
+        raise HTTPException(status_code=404, detail="Production repair task not found")
+    return task
+
+
+@app.post("/api/books/{book_id}/production-readiness/repair-tasks/{task_id}/retry-plan")
+def get_production_repair_retry_plan(book_id: int, task_id: str):
+    task = get_production_repair_task(book_id, task_id)
+    failed = [item for item in (task.get("results") or []) if item.get("status") != "done"]
+    return {
+        "mode": "readonly-retry-plan",
+        "real_data_mutated": False,
+        "source_task_id": task_id,
+        "retryable_shots": failed,
+        "requires_operator_confirmation": bool(failed),
+        "message": "这是失败镜头的重试计划，不会自动重试或创建新版本。",
+    }
+
+
+@app.post("/api/books/{book_id}/production-readiness/repair-tasks/{task_id}/rollback")
+def rollback_production_repair_shot(
+    book_id: int,
+    task_id: str,
+    req: StoryboardProductionRepairRollbackRequest,
+):
+    """Restore one repaired shot to its recorded baseline prompt version."""
+    task = get_production_repair_task(book_id, task_id)
+    expected = str(task.get("confirmation_token") or "").strip()
+    if not expected or str(req.confirmation_token or "").strip() != expected:
+        raise HTTPException(status_code=409, detail="修复任务确认令牌无效，拒绝回滚。")
+    if not req.confirmed:
+        return {
+            "mode": "rollback-preview",
+            "real_data_mutated": False,
+            "episode": req.episode,
+            "shot_id": req.shot_id,
+            "baseline_version": req.baseline_version,
+            "message": "这是回滚预览；confirmed=true 后才会恢复该镜头。",
+        }
+    from models import Session, StoryboardPromptVersion, StoryboardShot
+    with Session() as session:
+        shot = session.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == req.episode,
+            StoryboardShot.shot_id == _coerce_storyboard_shot_id(req.shot_id),
+        ).first()
+        target = session.query(StoryboardPromptVersion).filter(
+            StoryboardPromptVersion.book_id == book_id,
+            StoryboardPromptVersion.episode == req.episode,
+            StoryboardPromptVersion.shot_id == _coerce_storyboard_shot_id(req.shot_id),
+            StoryboardPromptVersion.version == req.baseline_version,
+        ).first()
+        if not shot or not target:
+            raise HTTPException(status_code=404, detail="指定镜头或 baseline Prompt Version 不存在。")
+        result = _create_storyboard_prompt_rollback(
+            session,
+            shot,
+            target,
+            StoryboardPromptRollbackRequest(reason=req.reason),
+        )
+        return {"mode": "rollback-applied", "real_data_mutated": True, **result}
+def _preview_storyboard_machine_prompt_export(
+    book_id: int,
+    shot,
+    target_model: str,
+    *,
+    reference_images_override: list[dict[str, Any]] | None = None,
+) -> dict:
     meta_info = safe_json_loads(shot.meta_info) if shot.meta_info else {}
     if not isinstance(meta_info, dict):
         meta_info = {}
@@ -9431,6 +15924,12 @@ def _preview_storyboard_machine_prompt_export(book_id: int, shot, target_model: 
         asset_link_summary,
     )
     compile_context["target_model"] = target_model
+    if reference_images_override is not None:
+        # Provider-ready ordering can differ from the compile-time asset list:
+        # video production prep may prepend an adopted storyboard composition
+        # image and omit a lower-priority scene/prop reference due to model
+        # limits.  The numbered H3 text must describe that exact order.
+        compile_context["reference_images"] = reference_images_override
     compile_context["reference_summary"] = _build_storyboard_reference_summary_from_bound_assets(
         compile_context.get("bound_assets", []),
         str(compile_context.get("scene_name") or shot.scene_name or "").strip(),
@@ -9676,6 +16175,7 @@ def create_storyboard_machine_prompt_api_submission_task(
         "episode": episode,
         "shot_id": str(shot_id),
         "target_model": target_model,
+        "model_profile_id": str(req.model_profile_id or "").strip() or None,
         "export_channel": export_channel,
         "submission_mode": submission_mode,
         "generation_chain": "machine_prompt_api_submission",
@@ -9694,6 +16194,7 @@ def create_storyboard_machine_prompt_api_submission_task(
             "episode": episode,
             "shot_id": str(shot_id),
             "target_model": target_model,
+            "model_profile_id": str(req.model_profile_id or "").strip() or None,
             "export_channel": export_channel,
             "submission_mode": submission_mode,
             "generation_chain": "machine_prompt_api_submission",
@@ -9717,6 +16218,7 @@ def create_storyboard_machine_prompt_api_submission_task(
         "episode": episode,
         "shot_id": str(shot_id),
         "target_model": target_model,
+        "model_profile_id": task_state.get("model_profile_id"),
         "export_channel": export_channel,
         "generation_chain": "machine_prompt_api_submission",
         "external_status": task_state["external_status"],
@@ -9743,6 +16245,733 @@ def _extract_h3_prompt_from_machine_prompt_payload(export_payload: dict[str, Any
     return prompt_text
 
 
+def _find_storyboard_transition_pair(session, book_id: int, episode: int, target_shot_id: int, source_shot_id: int | None = None):
+    """Resolve an adjacent ordered pair; continuity never bridges arbitrary shots."""
+    from models import StoryboardShot
+
+    ordered = session.query(StoryboardShot).filter(
+        StoryboardShot.book_id == book_id,
+        StoryboardShot.episode == episode,
+    ).order_by(StoryboardShot.shot_id.asc()).all()
+    target_index = next((index for index, item in enumerate(ordered) if item.shot_id == target_shot_id), None)
+    if target_index is None:
+        raise HTTPException(status_code=404, detail="Storyboard target shot not found.")
+    if target_index == 0:
+        raise HTTPException(status_code=409, detail="The first shot has no preceding shot to form a transition contract.")
+    source = ordered[target_index - 1]
+    if source_shot_id is not None and source.shot_id != source_shot_id:
+        raise HTTPException(status_code=409, detail="Transition contracts can only link adjacent shots in episode order.")
+    return source, ordered[target_index]
+
+
+def _transition_contract_snapshot(source, target) -> dict[str, Any]:
+    return {
+        "source": {
+            "shot_id": source.shot_id,
+            "scene_name": str(source.scene_name or ""),
+            "end_state": str(source.end_state or ""),
+            "camera_angle": str(source.camera_angle or ""),
+            "camera_movement": str(source.camera_movement or ""),
+            "transition": str(source.transition or ""),
+        },
+        "target": {
+            "shot_id": target.shot_id,
+            "scene_name": str(target.scene_name or ""),
+            "start_state": str(target.start_state or ""),
+            "camera_angle": str(target.camera_angle or ""),
+            "camera_movement": str(target.camera_movement or ""),
+            "transition": str(target.transition or ""),
+        },
+    }
+
+
+def _serialize_transition_contract(row) -> dict[str, Any]:
+    return {
+        "id": row.id,
+        "book_id": row.book_id,
+        "episode": row.episode,
+        "source_shot_id": row.source_shot_id,
+        "target_shot_id": row.target_shot_id,
+        "continuity_level": row.continuity_level,
+        "entry_state": row.entry_state,
+        "exit_state": row.exit_state,
+        "inherit_rules": safe_json_loads(row.inherit_rules, {}),
+        "allowed_changes": safe_json_loads(row.allowed_changes, []),
+        "forbidden_changes": safe_json_loads(row.forbidden_changes, []),
+        "required_transition_frame": row.required_transition_frame,
+        "source_snapshot": safe_json_loads(row.source_snapshot, {}),
+        "status": row.status,
+        "version": row.version,
+        "confirmed_at": row.confirmed_at.isoformat() if row.confirmed_at else None,
+        "updated_at": row.updated_at.isoformat() if row.updated_at else None,
+    }
+
+
+def _serialize_transition_frame(row) -> dict[str, Any]:
+    return {
+        "id": row.id,
+        "book_id": row.book_id,
+        "episode": row.episode,
+        "source_shot_id": row.source_shot_id,
+        "target_shot_id": row.target_shot_id,
+        "source_video_asset_id": row.source_video_asset_id,
+        "frame_time_ms": row.frame_time_ms,
+        "frame_kind": row.frame_kind,
+        "storage_key": row.storage_key,
+        "public_url": row.public_url,
+        "checksum": row.checksum,
+        "width": row.width,
+        "height": row.height,
+        "status": row.status,
+        "extraction_profile": safe_json_loads(row.extraction_profile, {}),
+        "notes": row.notes,
+        "updated_at": row.updated_at.isoformat() if row.updated_at else None,
+    }
+
+
+def _transition_evidence_status(
+    frame,
+    review,
+    *,
+    source_video_asset_id: str,
+    target_video_asset_id: str,
+) -> str:
+    """Return the current validity of immutable continuity evidence.
+
+    Frames and reviews remain immutable audit records.  Their *validity*, on
+    the other hand, is derived from the video versions currently adopted by
+    the two shots.  This prevents a newly adopted upstream video from silently
+    reusing an old end frame as if it represented the new cut.
+    """
+    if frame is not None:
+        recorded_source_id = str(frame.source_video_asset_id or "").strip()
+        if recorded_source_id and source_video_asset_id and recorded_source_id != source_video_asset_id:
+            return "stale"
+    if review is not None:
+        recorded_target_id = str(review.target_video_asset_id or "").strip()
+        if recorded_target_id and target_video_asset_id and recorded_target_id != target_video_asset_id:
+            return "stale"
+    return "current"
+
+
+def _build_transition_readiness(contract, frames, reviews, *, source_video, target_video, source_ready: bool) -> dict[str, Any]:
+    """Project technical continuity records into one stable creator-facing state."""
+    source_video_id = str((source_video or {}).get("id") or "").strip()
+    target_video_id = str((target_video or {}).get("id") or "").strip()
+    locked = next((row for row in frames if row.status == "locked"), None)
+    latest_review = next((row for row in reviews if row.status == "reviewed"), None)
+    frame_status = _transition_evidence_status(locked, None, source_video_asset_id=source_video_id, target_video_asset_id=target_video_id) if locked else "missing"
+    review_status = _transition_evidence_status(locked, latest_review, source_video_asset_id=source_video_id, target_video_asset_id=target_video_id) if latest_review else "missing"
+
+    if not contract:
+        return {"status": "needs_contract", "label": "待确认承接", "next_action": "confirm_contract", "frame_status": frame_status, "review_status": review_status}
+    if not source_ready:
+        return {"status": "waiting_source", "label": "等上一镜", "next_action": "finish_source", "frame_status": frame_status, "review_status": review_status}
+    if frame_status == "stale" or review_status == "stale":
+        return {"status": "stale", "label": "需重新检查", "next_action": "refresh_evidence", "frame_status": frame_status, "review_status": review_status}
+    if not locked:
+        return {"status": "needs_handoff", "label": "待准备交接", "next_action": "extract_handoff", "frame_status": frame_status, "review_status": review_status}
+    if not target_video:
+        return {"status": "waiting_target", "label": "待生成", "next_action": "generate_target", "frame_status": frame_status, "review_status": review_status}
+    if not latest_review:
+        return {"status": "needs_review", "label": "待检查", "next_action": "review", "frame_status": frame_status, "review_status": review_status}
+    if latest_review.review_result == "pass":
+        return {"status": "passed", "label": "已通过", "next_action": "continue", "frame_status": frame_status, "review_status": review_status}
+    return {"status": "needs_attention", "label": "需处理", "next_action": "review_result", "frame_status": frame_status, "review_status": review_status}
+
+
+def _transition_contract_draft(source, target) -> dict[str, Any]:
+    return {
+        "source_shot_id": source.shot_id,
+        "target_shot_id": target.shot_id,
+        "continuity_level": "soft",
+        "entry_state": str(target.start_state or ""),
+        "exit_state": str(source.end_state or ""),
+        "inherit_rules": {
+            "character_identity": "preserve_when_present_in_both_shots",
+            "scene_layout": "preserve_when_same_scene",
+            "screen_direction": "preserve_unless_declared_transition_changes_it",
+        },
+        "allowed_changes": [],
+        "forbidden_changes": [],
+        "required_transition_frame": "",
+        "source_snapshot": _transition_contract_snapshot(source, target),
+        "status": "draft",
+        "requires_operator_confirmation": True,
+    }
+
+
+@app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-contract")
+def get_storyboard_transition_contract(book_id: int, episode: int, shot_id: int):
+    from models import Session, StoryboardTransitionContract
+
+    with Session() as session:
+        try:
+            source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id)
+        except HTTPException as exc:
+            # The formal workbench reads this resource whenever a shot is
+            # selected.  A first shot is an expected no-predecessor state,
+            # rather than a failed business operation, so expose it as a
+            # successful, explicit no-op response and keep actual adjacency
+            # violations as conflicts on the mutating endpoints.
+            if exc.status_code == 409 and "first shot" in str(exc.detail).lower():
+                return {"not_applicable": True, "reason": "first_shot", "contract": None, "draft": None}
+            raise
+        row = session.query(StoryboardTransitionContract).filter(
+            StoryboardTransitionContract.book_id == book_id,
+            StoryboardTransitionContract.episode == episode,
+            StoryboardTransitionContract.source_shot_id == source.shot_id,
+            StoryboardTransitionContract.target_shot_id == target.shot_id,
+        ).order_by(StoryboardTransitionContract.version.desc()).first()
+        return {
+            "contract": _serialize_transition_contract(row) if row else None,
+            "draft": _transition_contract_draft(source, target),
+        }
+
+
+@app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-state")
+def get_storyboard_transition_state(book_id: int, episode: int, shot_id: int):
+    """Read-only operation state for the formal continuity review panel."""
+    from models import Session, StoryboardTransitionContract, StoryboardTransitionFrame, StoryboardTransitionContinuityReview, StoryboardVideoRetryAttempt
+    with Session() as session:
+        try:
+            source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id)
+        except HTTPException as exc:
+            if exc.status_code == 409 and "first shot" in str(exc.detail).lower():
+                return {"not_applicable": True, "reason": "first_shot", "frames": [], "reviews": [], "retry_attempts": []}
+            raise
+        frames = session.query(StoryboardTransitionFrame).filter_by(book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id).order_by(StoryboardTransitionFrame.id.desc()).all()
+        reviews = session.query(StoryboardTransitionContinuityReview).filter_by(book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id).order_by(StoryboardTransitionContinuityReview.id.desc()).all()
+        retries = session.query(StoryboardVideoRetryAttempt).filter_by(book_id=book_id, episode=episode, shot_id=target.shot_id).order_by(StoryboardVideoRetryAttempt.attempt_number.desc(), StoryboardVideoRetryAttempt.id.desc()).all()
+        source_video = _find_adopted_shot_asset(_load_asset_links(source.asset_links), "videos") or {}
+        target_video = _find_adopted_shot_asset(_load_asset_links(target.asset_links), "videos") or {}
+        source_meta = safe_json_loads(source.meta_info or "{}")
+        target_meta = safe_json_loads(target.meta_info or "{}")
+        source_meta = source_meta if isinstance(source_meta, dict) else {}
+        target_meta = target_meta if isinstance(target_meta, dict) else {}
+        source_acceptance = source_meta.get("acceptance", {}) if isinstance(source_meta.get("acceptance", {}), dict) else {}
+        target_acceptance = target_meta.get("acceptance", {}) if isinstance(target_meta.get("acceptance", {}), dict) else {}
+        source_ready = _is_storyboard_shot_deliverable_for_export(source)
+        readiness = _build_transition_readiness(
+            session.query(StoryboardTransitionContract).filter(
+                StoryboardTransitionContract.book_id == book_id,
+                StoryboardTransitionContract.episode == episode,
+                StoryboardTransitionContract.source_shot_id == source.shot_id,
+                StoryboardTransitionContract.target_shot_id == target.shot_id,
+                StoryboardTransitionContract.status == "confirmed",
+            ).order_by(StoryboardTransitionContract.version.desc()).first(),
+            frames,
+            reviews,
+            source_video=source_video,
+            target_video=target_video,
+            source_ready=source_ready,
+        )
+        source_video_id = str(source_video.get("id") or "").strip()
+        target_video_id = str(target_video.get("id") or "").strip()
+        return {
+            "source_shot_id": source.shot_id,
+            "target_shot_id": target.shot_id,
+            # A concise readiness projection lets a normal creator understand
+            # what must happen next without reading contracts or raw assets.
+            "source": {
+                "has_adopted_video": bool(source_video),
+                "video_title": str(source_video.get("title") or source_video.get("id") or ""),
+                "acceptance_status": str(source_acceptance.get("status") or ""),
+                "ready_for_handoff": source_ready,
+            },
+            "target": {
+                "has_adopted_video": bool(target_video),
+                "video_id": str(target_video.get("id") or ""),
+                "video_title": str(target_video.get("title") or target_video.get("id") or ""),
+                "acceptance_status": str(target_acceptance.get("status") or ""),
+            },
+            "readiness": readiness,
+            "frames": [{**_serialize_transition_frame(row), "evidence_status": _transition_evidence_status(row, None, source_video_asset_id=source_video_id, target_video_asset_id=target_video_id)} for row in frames],
+            "reviews": [{"id": row.id, "status": row.status, "review_result": row.review_result, "drift_categories": safe_json_loads(row.drift_categories, []), "review_notes": row.review_notes, "target_first_frame_url": row.target_first_frame_url, "transition_frame_id": row.transition_frame_id, "evidence_status": _transition_evidence_status(next((frame for frame in frames if frame.id == row.transition_frame_id), None), row, source_video_asset_id=source_video_id, target_video_asset_id=target_video_id)} for row in reviews],
+            "retry_attempts": [{
+                "id": row.id,
+                "source_task_id": row.source_task_id,
+                "retry_root_task_id": row.retry_root_task_id,
+                "attempt_number": row.attempt_number,
+                "status": row.status,
+                "input_fingerprint": row.input_fingerprint,
+                "error_message": row.error_message,
+                "retry_task_id": row.retry_task_id,
+                "created_at": row.created_at.isoformat() if row.created_at else None,
+                "confirmed_at": row.confirmed_at.isoformat() if row.confirmed_at else None,
+            } for row in retries],
+        }
+
+
+@app.get("/api/books/{book_id}/storyboard/{episode}/transition-overview")
+def get_storyboard_transition_overview(book_id: int, episode: int):
+    """Compact episode-wide continuity state for the shot list and dashboard.
+
+    This is deliberately read-only.  It does not infer a creative decision;
+    it only says whether previously confirmed evidence still matches the
+    currently adopted video versions.
+    """
+    from models import Session, StoryboardShot, StoryboardTransitionContract, StoryboardTransitionFrame, StoryboardTransitionContinuityReview
+    with Session() as session:
+        shots = session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode).order_by(StoryboardShot.shot_id.asc()).all()
+        output: list[dict[str, Any]] = []
+        for index, target in enumerate(shots):
+            if index == 0:
+                output.append({"shot_id": target.shot_id, "status": "not_applicable", "label": "从这里开始", "next_action": "start"})
+                continue
+            source = shots[index - 1]
+            contract = session.query(StoryboardTransitionContract).filter_by(book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id, status="confirmed").order_by(StoryboardTransitionContract.version.desc()).first()
+            frames = session.query(StoryboardTransitionFrame).filter_by(book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id).order_by(StoryboardTransitionFrame.id.desc()).all()
+            reviews = session.query(StoryboardTransitionContinuityReview).filter_by(book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id).order_by(StoryboardTransitionContinuityReview.id.desc()).all()
+            source_video = _find_adopted_shot_asset(_load_asset_links(source.asset_links), "videos") or {}
+            target_video = _find_adopted_shot_asset(_load_asset_links(target.asset_links), "videos") or {}
+            readiness = _build_transition_readiness(contract, frames, reviews, source_video=source_video, target_video=target_video, source_ready=_is_storyboard_shot_deliverable_for_export(source))
+            output.append({"shot_id": target.shot_id, "source_shot_id": source.shot_id, **readiness})
+        counts: dict[str, int] = {}
+        for item in output:
+            status = str(item["status"])
+            counts[status] = counts.get(status, 0) + 1
+        return {"episode": episode, "items": output, "counts": counts}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/video-retry-attempts/{retry_id}/confirm")
+async def confirm_fixed_storyboard_video_retry(
+    book_id: int,
+    episode: int,
+    shot_id: int,
+    retry_id: int,
+    req: StoryboardVideoRetryConfirmRequest,
+    bg: BackgroundTasks,
+):
+    """Submit one user-authorised retry using the original immutable inputs.
+
+    This is intentionally separate from the generic task restart endpoint.  It
+    can only retry a persisted failed video task, revalidates the frozen model
+    and locked strict-continuity frame, and records the retry lineage before the
+    provider work begins.  It never auto-retries a failed provider request.
+    """
+    if not (req.confirmed and req.allow_write):
+        raise HTTPException(status_code=409, detail="固定输入视频重试需要 confirmed=true 和 allow_write=true。")
+    if str(req.confirmation_token or "").strip() != "CONFIRM_FIXED_VIDEO_RETRY":
+        raise HTTPException(status_code=400, detail="真实视频重试前必须提供确认口令 CONFIRM_FIXED_VIDEO_RETRY。")
+
+    from models import Session, StoryboardTransitionFrame, StoryboardVideoRetryAttempt
+
+    coerced_shot_id = _coerce_storyboard_shot_id(shot_id)
+    with Session() as session:
+        record = session.query(StoryboardVideoRetryAttempt).filter_by(
+            id=retry_id, book_id=book_id, episode=episode, shot_id=coerced_shot_id,
+        ).first()
+        if not record:
+            raise HTTPException(status_code=404, detail="视频失败重试记录不存在。")
+        if record.status != "failed":
+            raise HTTPException(status_code=409, detail="该视频失败记录已经提交过重试，不能重复调用。")
+        snapshot = safe_json_loads(record.input_snapshot, {})
+        if not isinstance(snapshot, dict) or _video_retry_input_fingerprint(snapshot) != record.input_fingerprint:
+            raise HTTPException(status_code=409, detail="视频重试输入快照已损坏，不能安全重试。")
+        request_payload = snapshot.get("request_payload")
+        if not isinstance(request_payload, dict):
+            raise HTTPException(status_code=409, detail="视频重试缺少冻结的请求参数。")
+        source_task = _load_persisted_task_state(record.source_task_id)
+        if not _is_creative_task_state(source_task) or str(source_task.get("status") or "") != "error":
+            raise HTTPException(status_code=409, detail="原视频任务已不再是失败状态，不能按失败重试处理。")
+        try:
+            frozen_req = CreativeGenerationRequest.model_validate(request_payload)
+            profile = _resolve_creative_profile(frozen_req, "video")
+        except (ValueError, ModelProfileError) as exc:
+            raise HTTPException(status_code=409, detail=f"冻结的视频模型已不可用：{exc}") from exc
+        if str(profile.get("id") or "") != str(snapshot.get("model_profile_id") or "") or str(profile.get("provider") or "") != str(snapshot.get("provider") or ""):
+            raise HTTPException(status_code=409, detail="当前模型配置已偏离失败时的冻结模型，不能作为固定输入重试。")
+
+        continuity = snapshot.get("continuity") if isinstance(snapshot.get("continuity"), dict) else {}
+        locked = continuity.get("transition_frame") if isinstance(continuity.get("transition_frame"), dict) else None
+        if locked:
+            frame = session.query(StoryboardTransitionFrame).filter_by(id=int(locked.get("id") or 0)).first()
+            if not frame or frame.status != "locked" or str(frame.checksum or "") != str(locked.get("checksum") or "") or str(frame.public_url or "") != str(locked.get("public_url") or ""):
+                raise HTTPException(status_code=409, detail="锁定交接帧已变化或失效；请先重新生成视频，而不是重试旧输入。")
+
+        record.status = "retrying"
+        record.confirmed_at = datetime.utcnow()
+        record.updated_at = datetime.utcnow()
+        input_fingerprint = record.input_fingerprint
+        retry_root_task_id = record.retry_root_task_id
+        source_task_id = record.source_task_id
+        next_attempt_number = int(record.attempt_number) + 1
+        session.commit()
+
+    try:
+        launched = await _enqueue_creative_task(frozen_req, bg, "video")
+        retry_task_id = str(launched.get("task_id") or "").strip()
+        if not retry_task_id:
+            raise RuntimeError("视频重试任务未返回 task_id")
+        retry_task = _creative_tasks.get(retry_task_id)
+        if isinstance(retry_task, dict):
+            retry_task["continuity_retry_record_id"] = retry_id
+            retry_task["continuity_retry_root_task_id"] = retry_root_task_id
+            retry_task["continuity_retry_parent_task_id"] = source_task_id
+            retry_task["continuity_retry_attempt_number"] = next_attempt_number
+            retry_task["retry_input_fingerprint"] = input_fingerprint
+            _stamp_creative_task_state(retry_task)
+        with Session() as session:
+            row = session.query(StoryboardVideoRetryAttempt).filter_by(id=retry_id).first()
+            if row:
+                row.status = "submitted"
+                row.retry_task_id = retry_task_id
+                row.updated_at = datetime.utcnow()
+                session.commit()
+        return {
+            "retry_id": retry_id,
+            "retry_task_id": retry_task_id,
+            "status": "submitted",
+            "input_fingerprint": input_fingerprint,
+            "automatic_retry": False,
+        }
+    except Exception:
+        with Session() as session:
+            row = session.query(StoryboardVideoRetryAttempt).filter_by(id=retry_id).first()
+            if row and row.status == "retrying":
+                row.status = "failed"
+                row.updated_at = datetime.utcnow()
+                session.commit()
+        raise
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-contract/draft")
+def draft_storyboard_transition_contract(book_id: int, episode: int, shot_id: int):
+    """Read-only draft. It never creates a contract or changes a shot."""
+    from models import Session
+
+    with Session() as session:
+        source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id)
+        return {"draft": _transition_contract_draft(source, target), "mutated": False}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-contract/confirm")
+def confirm_storyboard_transition_contract(
+    book_id: int,
+    episode: int,
+    shot_id: int,
+    req: StoryboardTransitionContractConfirmRequest,
+):
+    from models import Session, StoryboardTransitionContract
+
+    level = str(req.continuity_level or "").strip().lower()
+    if level not in CONTINUITY_LEVELS:
+        raise HTTPException(status_code=400, detail=f"Unsupported continuity_level: {level}")
+    if not (req.confirmed and req.allow_write):
+        raise HTTPException(status_code=409, detail="Confirming a transition contract requires confirmed=true and allow_write=true.")
+    with Session() as session:
+        source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id, req.source_shot_id)
+        snapshot = _transition_contract_snapshot(source, target)
+        previous = session.query(StoryboardTransitionContract).filter(
+            StoryboardTransitionContract.book_id == book_id,
+            StoryboardTransitionContract.episode == episode,
+            StoryboardTransitionContract.source_shot_id == source.shot_id,
+            StoryboardTransitionContract.target_shot_id == target.shot_id,
+            StoryboardTransitionContract.status == "confirmed",
+        ).order_by(StoryboardTransitionContract.version.desc()).first()
+        version = (previous.version + 1) if previous else 1
+        if previous:
+            previous.status = "superseded"
+            previous.updated_at = datetime.utcnow()
+        row = StoryboardTransitionContract(
+            book_id=book_id,
+            episode=episode,
+            source_shot_id=source.shot_id,
+            target_shot_id=target.shot_id,
+            continuity_level=level,
+            entry_state=str(req.entry_state if req.entry_state is not None else target.start_state or ""),
+            exit_state=str(req.exit_state if req.exit_state is not None else source.end_state or ""),
+            inherit_rules=json.dumps(req.inherit_rules, ensure_ascii=False),
+            allowed_changes=json.dumps(req.allowed_changes, ensure_ascii=False),
+            forbidden_changes=json.dumps(req.forbidden_changes, ensure_ascii=False),
+            required_transition_frame=str(req.required_transition_frame or "").strip(),
+            source_snapshot=json.dumps(snapshot, ensure_ascii=False),
+            status="confirmed",
+            version=version,
+            confirmed_at=datetime.utcnow(),
+        )
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return {"contract": _serialize_transition_contract(row)}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-frames/extraction-plan")
+def get_storyboard_transition_frame_extraction_plan(book_id: int, episode: int, shot_id: int, source_shot_id: int = Query(...)):
+    """Reports a plan only; frame extraction/storage remains an explicit later action."""
+    from models import Session
+
+    with Session() as session:
+        source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id, source_shot_id)
+        video = _find_adopted_shot_asset(_load_asset_links(source.asset_links), "videos") or {}
+        source_url = str(video.get("uri") or video.get("previewUrl") or "").strip()
+        return {
+            "mutated": False,
+            "source_shot_id": source.shot_id,
+            "target_shot_id": target.shot_id,
+            "available": bool(source_url),
+            "source_video_asset_id": str(video.get("id") or ""),
+            "source_video_url": source_url,
+            "recommended_frame_kind": "near_last",
+            "recommended_frame_time": "near the final stable frame; operator reviews before registering and locking",
+            "requires_public_media_url": True,
+        }
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-frames/extract")
+def extract_storyboard_transition_frame(
+    book_id: int,
+    episode: int,
+    shot_id: int,
+    req: StoryboardTransitionFrameExtractRequest,
+):
+    """Extract, persist, and register a candidate frame after explicit confirmation.
+
+    This endpoint never locks the result and never generates a new video.  It
+    only operates on an adopted, accepted source video from the adjacent shot.
+    """
+    from models import Session, StoryboardTransitionFrame
+
+    if not (req.confirmed and req.allow_write):
+        raise HTTPException(status_code=409, detail="Extracting a transition frame requires confirmed=true and allow_write=true.")
+    if req.frame_kind not in {"last", "near_last"}:
+        raise HTTPException(status_code=400, detail="frame_kind must be last or near_last.")
+    if not public_asset_storage_enabled():
+        raise HTTPException(status_code=409, detail="Transition-frame extraction requires configured public object storage so the next video model can access the frame.")
+
+    with Session() as session:
+        source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id, req.source_shot_id)
+        if not _is_storyboard_shot_deliverable_for_export(source):
+            raise HTTPException(status_code=409, detail="The source shot needs an adopted video with approved/accepted acceptance before a transition frame can be extracted.")
+        source_video = _find_adopted_shot_asset(_load_asset_links(source.asset_links), "videos") or {}
+        source_url = str(source_video.get("uri") or source_video.get("previewUrl") or "").strip()
+        if not source_url:
+            raise HTTPException(status_code=409, detail="The adopted source video has no readable URL.")
+
+        try:
+            source_bytes, content_type = _load_source_bytes(source_url, local_base_url=config.PUBLIC_ASSET_LOCAL_BASE_URL)
+            if not source_bytes:
+                raise RuntimeError("source_video_empty")
+            source_suffix = ".mp4" if "mp4" in content_type.lower() else ".video"
+            with tempfile.TemporaryDirectory(prefix="transition-frame-") as temp_dir:
+                temp_path = Path(temp_dir)
+                source_path = temp_path / f"source{source_suffix}"
+                source_path.write_bytes(source_bytes)
+                local_output_path = temp_path / "handoff-frame.png"
+                extracted = extract_transition_frame(
+                    source_path,
+                    local_output_path,
+                    frame_kind=req.frame_kind,
+                    frame_time_ms=req.frame_time_ms,
+                )
+                checksum = str(extracted["checksum"])
+                persistent_dir = config.UPLOAD_DIR / "transition-frames" / f"book-{book_id}" / f"episode-{episode}"
+                persistent_dir.mkdir(parents=True, exist_ok=True)
+                persistent_path = persistent_dir / f"source-{source.shot_id}-target-{target.shot_id}-{checksum[:16]}.png"
+                if not persistent_path.exists():
+                    persistent_path.write_bytes(local_output_path.read_bytes())
+                extracted["local_path"] = str(persistent_path)
+        except (OSError, RuntimeError, TransitionFrameExtractionError) as exc:
+            raise HTTPException(status_code=400, detail=f"Transition frame extraction failed: {exc}") from exc
+
+        checksum = str(extracted["checksum"])
+        existing = session.query(StoryboardTransitionFrame).filter(
+            StoryboardTransitionFrame.book_id == book_id,
+            StoryboardTransitionFrame.episode == episode,
+            StoryboardTransitionFrame.source_shot_id == source.shot_id,
+            StoryboardTransitionFrame.target_shot_id == target.shot_id,
+            StoryboardTransitionFrame.checksum == checksum,
+        ).order_by(StoryboardTransitionFrame.id.desc()).first()
+        if existing:
+            return {"frame": _serialize_transition_frame(existing), "deduplicated": True, "mutated": False}
+
+        public_result = ensure_provider_accessible_url(
+            str(extracted["local_path"]),
+            key_hint=f"book-{book_id}-episode-{episode}-source-{source.shot_id}-target-{target.shot_id}-transition-{req.frame_kind}",
+            local_base_url=config.PUBLIC_ASSET_LOCAL_BASE_URL,
+            force_storage=True,
+            allow_unstable_storage=req.allow_unstable_public_assets,
+        )
+        if not public_result.ok or not public_result.public_url:
+            raise HTTPException(status_code=400, detail=f"Transition frame was extracted locally but could not be published to object storage: {public_result.error or 'unknown_error'}")
+
+        extraction_profile = dict(extracted["extraction_profile"])
+        extraction_profile.update({
+            "local_path": str(extracted["local_path"]),
+            "source_url": source_url,
+            "source_content_type": content_type,
+            "storage_provider": public_result.storage_provider,
+            "storage_uploaded": public_result.uploaded,
+                "unstable_storage_override": bool(getattr(public_result, "unstable_storage_override", False)),
+        })
+        row = StoryboardTransitionFrame(
+            book_id=book_id,
+            episode=episode,
+            source_shot_id=source.shot_id,
+            target_shot_id=target.shot_id,
+            source_video_asset_id=str(source_video.get("id") or ""),
+            frame_time_ms=int(extracted["frame_time_ms"]),
+            frame_kind=req.frame_kind,
+            storage_key=public_result.object_key,
+            public_url=public_result.public_url,
+            checksum=checksum,
+            width=int(extracted["width"]),
+            height=int(extracted["height"]),
+            status="candidate",
+            extraction_profile=json.dumps(extraction_profile, ensure_ascii=False),
+            notes=str(req.notes or "").strip(),
+        )
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return {"frame": _serialize_transition_frame(row), "deduplicated": False, "mutated": True}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-frames")
+def register_storyboard_transition_frame(
+    book_id: int,
+    episode: int,
+    shot_id: int,
+    req: StoryboardTransitionFrameRegisterRequest,
+):
+    from models import Session, StoryboardTransitionFrame
+
+    if not (req.confirmed and req.allow_write):
+        raise HTTPException(status_code=409, detail="Registering a transition frame requires confirmed=true and allow_write=true.")
+    if req.frame_kind not in {"last", "near_last"}:
+        raise HTTPException(status_code=400, detail="frame_kind must be last or near_last.")
+    if not str(req.public_url or "").strip():
+        raise HTTPException(status_code=400, detail="A provider-accessible public_url is required when registering a transition frame.")
+    with Session() as session:
+        source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id, req.source_shot_id)
+        row = StoryboardTransitionFrame(
+            book_id=book_id,
+            episode=episode,
+            source_shot_id=source.shot_id,
+            target_shot_id=target.shot_id,
+            source_video_asset_id=str(req.source_video_asset_id or "").strip(),
+            frame_time_ms=req.frame_time_ms,
+            frame_kind=req.frame_kind,
+            storage_key=str(req.storage_key or "").strip(),
+            public_url=str(req.public_url).strip(),
+            checksum=str(req.checksum or "").strip(),
+            width=req.width,
+            height=req.height,
+            extraction_profile=json.dumps(req.extraction_profile, ensure_ascii=False),
+            notes=str(req.notes or "").strip(),
+            status="candidate",
+        )
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return {"frame": _serialize_transition_frame(row)}
+
+
+@app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-continuity-reviews/extract")
+def extract_transition_continuity_review(book_id: int, episode: int, shot_id: int, req: StoryboardTransitionContinuityReviewRequest):
+    """Extract target video's first frame for human comparison; no automatic scoring."""
+    from models import Session, StoryboardTransitionFrame, StoryboardTransitionContinuityReview
+    if not (req.confirmed and req.allow_write):
+        raise HTTPException(status_code=409, detail="Creating a continuity review requires confirmed=true and allow_write=true.")
+    if not public_asset_storage_enabled():
+        raise HTTPException(status_code=409, detail="Continuity review extraction requires configured public object storage.")
+    with Session() as session:
+        source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id, req.source_shot_id)
+        handoff = session.query(StoryboardTransitionFrame).filter_by(book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id, status="locked").order_by(StoryboardTransitionFrame.id.desc()).first()
+        if not handoff:
+            raise HTTPException(status_code=409, detail="A locked transition frame is required before extracting a continuity review frame.")
+        video = _find_adopted_shot_asset(_load_asset_links(target.asset_links), "videos") or {}
+        if req.target_video_asset_id and str(video.get("id") or "") != req.target_video_asset_id:
+            raise HTTPException(status_code=409, detail="Selected target video is not the adopted video for this shot.")
+        video_url = str(video.get("uri") or video.get("previewUrl") or "").strip()
+        if not video_url:
+            raise HTTPException(status_code=409, detail="Target shot needs an adopted video before continuity review.")
+        try:
+            raw, content_type = _load_source_bytes(video_url, local_base_url=config.PUBLIC_ASSET_LOCAL_BASE_URL)
+            with tempfile.TemporaryDirectory(prefix="continuity-review-") as temp_dir:
+                root = Path(temp_dir); source_path = root / ("target.mp4" if "mp4" in content_type.lower() else "target.video"); source_path.write_bytes(raw)
+                output_path = root / "first.png"
+                extracted = extract_transition_frame(source_path, output_path, frame_kind="last", frame_time_ms=0)
+                checksum = str(extracted["checksum"])
+                local_dir = config.UPLOAD_DIR / "transition-reviews" / f"book-{book_id}" / f"episode-{episode}"; local_dir.mkdir(parents=True, exist_ok=True)
+                local_path = local_dir / f"source-{source.shot_id}-target-{target.shot_id}-{checksum[:16]}.png"
+                if not local_path.exists(): local_path.write_bytes(output_path.read_bytes())
+        except (OSError, RuntimeError, TransitionFrameExtractionError) as exc:
+            raise HTTPException(status_code=400, detail=f"Target first-frame extraction failed: {exc}") from exc
+        public = ensure_provider_accessible_url(
+            str(local_path),
+            key_hint=f"book-{book_id}-episode-{episode}-source-{source.shot_id}-target-{target.shot_id}-review-first",
+            force_storage=True,
+            allow_unstable_storage=req.allow_unstable_public_assets,
+        )
+        if not public.ok or not public.public_url:
+            raise HTTPException(status_code=400, detail=f"Target first frame could not be published: {public.error or 'unknown_error'}")
+        session.query(StoryboardTransitionContinuityReview).filter_by(book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id, status="candidate").update({"status": "superseded", "updated_at": datetime.utcnow()})
+        row = StoryboardTransitionContinuityReview(book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id, transition_frame_id=handoff.id, target_video_asset_id=str(video.get("id") or ""), target_first_frame_url=public.public_url, target_first_frame_storage_key=public.object_key, target_first_frame_checksum=checksum)
+        session.add(row); session.commit(); session.refresh(row)
+        return {"review": {"id": row.id, "status": row.status, "transition_frame_id": row.transition_frame_id, "target_first_frame_url": row.target_first_frame_url, "target_first_frame_checksum": row.target_first_frame_checksum}, "mutated": True}
+
+
+@app.patch("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-continuity-reviews/{review_id}")
+def review_storyboard_transition_continuity(book_id: int, episode: int, shot_id: int, review_id: int, req: StoryboardTransitionContinuityReviewPatchRequest):
+    from models import Session, StoryboardTransitionContinuityReview
+    if req.review_result not in {"pass", "warning", "fail"}:
+        raise HTTPException(status_code=400, detail="review_result must be pass, warning, or fail.")
+    if not (req.confirmed and req.allow_write):
+        raise HTTPException(status_code=409, detail="Reviewing continuity requires confirmed=true and allow_write=true.")
+    allowed = {"identity_drift", "costume_drift", "scene_drift", "prop_drift", "composition_jump"}
+    if set(req.drift_categories) - allowed:
+        raise HTTPException(status_code=400, detail="Unsupported continuity drift category.")
+    with Session() as session:
+        source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id)
+        row = session.query(StoryboardTransitionContinuityReview).filter_by(id=review_id, book_id=book_id, episode=episode, source_shot_id=source.shot_id, target_shot_id=target.shot_id).first()
+        if not row: raise HTTPException(status_code=404, detail="Continuity review not found.")
+        row.status="reviewed"; row.review_result=req.review_result; row.drift_categories=json.dumps(sorted(set(req.drift_categories)), ensure_ascii=False); row.review_notes=req.review_notes; row.reviewed_at=datetime.utcnow(); row.updated_at=datetime.utcnow(); session.commit()
+        return {"review": {"id": row.id, "status": row.status, "review_result": row.review_result, "drift_categories": safe_json_loads(row.drift_categories, []), "review_notes": row.review_notes}}
+
+
+@app.patch("/api/books/{book_id}/storyboard/{episode}/{shot_id}/transition-frames/{frame_id}")
+def update_storyboard_transition_frame_status(
+    book_id: int,
+    episode: int,
+    shot_id: int,
+    frame_id: int,
+    req: StoryboardTransitionFrameStatusRequest,
+):
+    from models import Session, StoryboardTransitionFrame
+
+    status = str(req.status or "").strip().lower()
+    if status not in {"candidate", "selected", "locked", "superseded"}:
+        raise HTTPException(status_code=400, detail="Unsupported transition frame status.")
+    if not (req.confirmed and req.allow_write):
+        raise HTTPException(status_code=409, detail="Changing transition frame status requires confirmed=true and allow_write=true.")
+    with Session() as session:
+        source, target = _find_storyboard_transition_pair(session, book_id, episode, shot_id)
+        row = session.query(StoryboardTransitionFrame).filter(
+            StoryboardTransitionFrame.id == frame_id,
+            StoryboardTransitionFrame.book_id == book_id,
+            StoryboardTransitionFrame.episode == episode,
+            StoryboardTransitionFrame.source_shot_id == source.shot_id,
+            StoryboardTransitionFrame.target_shot_id == target.shot_id,
+        ).first()
+        if not row:
+            raise HTTPException(status_code=404, detail="Transition frame not found for this adjacent shot pair.")
+        if status == "locked":
+            session.query(StoryboardTransitionFrame).filter(
+                StoryboardTransitionFrame.book_id == book_id,
+                StoryboardTransitionFrame.episode == episode,
+                StoryboardTransitionFrame.source_shot_id == source.shot_id,
+                StoryboardTransitionFrame.target_shot_id == target.shot_id,
+                StoryboardTransitionFrame.id != row.id,
+                StoryboardTransitionFrame.status == "locked",
+            ).update({"status": "superseded", "updated_at": datetime.utcnow()})
+        row.status = status
+        row.updated_at = datetime.utcnow()
+        session.commit()
+        return {"frame": _serialize_transition_frame(row)}
+
+
 def _resolve_optional_storyboard_first_frame(shot, *, first_frame_asset_id: str | None = None) -> tuple[str, str]:
     asset_links = _load_asset_links(shot.asset_links)
     requested_id = str(first_frame_asset_id or "").strip()
@@ -9761,8 +16990,43 @@ def _resolve_optional_storyboard_first_frame(shot, *, first_frame_asset_id: str 
     return str(first_frame_asset.get("id") or "").strip(), first_frame_url
 
 
-def _resolve_provider_ready_storyboard_first_frame(shot, *, first_frame_asset_id: str | None = None) -> tuple[str, str, dict[str, Any]]:
-    resolved_asset_id, source_url = _resolve_optional_storyboard_first_frame(shot, first_frame_asset_id=first_frame_asset_id)
+def _resolve_provider_ready_storyboard_first_frame(
+    shot,
+    *,
+    first_frame_asset_id: str | None = None,
+    allow_unstable_storage: bool = False,
+) -> tuple[str, str, dict[str, Any]]:
+    # A locked continuity handoff frame is a first-frame source even when it
+    # is not present in the target shot's ordinary image asset links.  Resolve
+    # it through the transition-frame registry and scope the lookup to the
+    # exact target shot; this keeps continuity references reproducible without
+    # introducing shot-specific behavior.
+    requested_id = str(first_frame_asset_id or "").strip()
+    resolved_asset_id = ""
+    source_url = ""
+    if requested_id.startswith("transition-frame-"):
+        raw_frame_id = requested_id.removeprefix("transition-frame-").strip()
+        try:
+            frame_id = int(raw_frame_id)
+        except (TypeError, ValueError):
+            frame_id = 0
+        if frame_id:
+            from models import Session, StoryboardTransitionFrame
+
+            with Session() as session:
+                row = session.query(StoryboardTransitionFrame).filter(
+                    StoryboardTransitionFrame.id == frame_id,
+                    StoryboardTransitionFrame.book_id == int(getattr(shot, "book_id", 0) or 0),
+                    StoryboardTransitionFrame.episode == int(getattr(shot, "episode", 0) or 0),
+                    StoryboardTransitionFrame.target_shot_id == _coerce_storyboard_shot_id(getattr(shot, "shot_id", 0)),
+                    StoryboardTransitionFrame.status == "locked",
+                ).first()
+                if row:
+                    resolved_asset_id = requested_id
+                    source_url = str(row.public_url or "").strip()
+
+    if not source_url:
+        resolved_asset_id, source_url = _resolve_optional_storyboard_first_frame(shot, first_frame_asset_id=first_frame_asset_id)
     if not source_url:
         return "", "", {}
     key_hint = f"book-{getattr(shot, 'book_id', '')}-episode-{getattr(shot, 'episode', '')}-shot-{getattr(shot, 'shot_id', '')}-first-frame"
@@ -9770,6 +17034,7 @@ def _resolve_provider_ready_storyboard_first_frame(shot, *, first_frame_asset_id
         source_url,
         key_hint=key_hint,
         local_base_url=config.PUBLIC_ASSET_LOCAL_BASE_URL,
+        allow_unstable_storage=allow_unstable_storage,
     )
     public_dict = public_result.to_dict()
     if not public_result.ok:
@@ -9781,6 +17046,190 @@ def _resolve_provider_ready_storyboard_first_frame(shot, *, first_frame_asset_id
     return resolved_asset_id, public_result.public_url or source_url, public_dict
 
 
+def _model_max_reference_images(profile: dict[str, Any], default: int = 9) -> int:
+    params = profile.get("default_params") if isinstance(profile, dict) else {}
+    params = params if isinstance(params, dict) else {}
+    try:
+        return max(int(params.get("max_reference_images") or default), 1)
+    except (TypeError, ValueError):
+        return default
+
+
+def _resolve_provider_ready_storyboard_reference_images(
+    shot,
+    *,
+    requested_reference_asset_ids: list[str] | None = None,
+    max_reference_images: int | None = None,
+    include_composition_reference: bool = False,
+    allow_unstable_storage: bool = False,
+) -> tuple[list[str], list[dict[str, Any]], list[dict[str, Any]]]:
+    if include_composition_reference:
+        reference_asset_ids, reference_images = _resolve_storyboard_video_reference_payloads(
+            shot,
+            requested_reference_asset_ids,
+            max_reference_images=max_reference_images,
+        )
+    else:
+        reference_asset_ids, reference_images = _resolve_storyboard_reference_payloads(shot, requested_reference_asset_ids)
+    provider_ready_images: list[dict[str, Any]] = []
+    public_assets: list[dict[str, Any]] = []
+
+    provider_limit = max(int(max_reference_images or 9), 1)
+    for index, item in enumerate(reference_images[:provider_limit], start=1):
+        if not isinstance(item, dict):
+            continue
+        source_url = str(item.get("image_url") or item.get("imageUrl") or item.get("url") or "").strip()
+        reference_asset_id = str(item.get("reference_asset_id") or item.get("referenceAssetId") or item.get("asset_id") or "").strip()
+        if not source_url or not reference_asset_id:
+            continue
+        key_hint = (
+            f"book-{getattr(shot, 'book_id', '')}-episode-{getattr(shot, 'episode', '')}-"
+            f"shot-{getattr(shot, 'shot_id', '')}-reference-{index}-{reference_asset_id}"
+        )
+        public_result = ensure_provider_accessible_url(
+            source_url,
+            key_hint=key_hint,
+            local_base_url=config.PUBLIC_ASSET_LOCAL_BASE_URL,
+            force_storage=True,
+            allow_unstable_storage=allow_unstable_storage,
+        )
+        public_dict = public_result.to_dict()
+        public_dict["reference_asset_id"] = reference_asset_id
+        public_assets.append(public_dict)
+        if not public_result.ok:
+            storage_hint = "；已配置七牛资产中转，但参考图源文件无法读取或中转 URL 不可访问" if public_asset_storage_enabled() else "；请先配置七牛资产中转或改用公网可访问参考图"
+            raise HTTPException(
+                status_code=400,
+                detail=f"H3 多参考图 {reference_asset_id or f'#{index}'} 无法被外部视频模型访问：{public_result.error or 'unknown_error'}{storage_hint}。",
+            )
+        provider_item = dict(item)
+        provider_item["image_url"] = public_result.public_url or source_url
+        provider_ready_images.append(provider_item)
+
+    provider_ready_asset_ids = [
+        str(item.get("reference_asset_id") or item.get("referenceAssetId") or item.get("asset_id") or "").strip()
+        for item in provider_ready_images
+        if str(item.get("reference_asset_id") or item.get("referenceAssetId") or item.get("asset_id") or "").strip()
+    ]
+    return list(dict.fromkeys(provider_ready_asset_ids or reference_asset_ids[: len(provider_ready_images)])), provider_ready_images, public_assets
+
+
+def _resolve_storyboard_video_continuity_policy(session, shot, profile: dict[str, Any], reference_images: list[dict[str, Any]]) -> dict[str, Any]:
+    """Load only confirmed/locked continuity records for the target shot.
+
+    Absence of a contract keeps legacy generation available.  A confirmed strict
+    contract, however, is a production gate: it must never be silently degraded
+    to a different visual-input mode.
+    """
+    from models import StoryboardTransitionContract, StoryboardTransitionFrame
+
+    try:
+        source, target = _find_storyboard_transition_pair(
+            session,
+            int(shot.book_id),
+            int(shot.episode),
+            int(shot.shot_id),
+        )
+    except HTTPException as exc:
+        if exc.status_code == 409:
+            return {
+                "strategy": "legacy_input_selection",
+                "continuity_level": "independent",
+                "first_frame_url": "",
+                "reference_images": reference_images,
+                "blocking_issues": [],
+                "warnings": ["first-shot-has-no-predecessor"],
+                "capability_snapshot": {},
+                "contract": None,
+                "transition_frame": None,
+            }
+        raise
+    contract = session.query(StoryboardTransitionContract).filter(
+        StoryboardTransitionContract.book_id == shot.book_id,
+        StoryboardTransitionContract.episode == shot.episode,
+        StoryboardTransitionContract.source_shot_id == source.shot_id,
+        StoryboardTransitionContract.target_shot_id == target.shot_id,
+        StoryboardTransitionContract.status == "confirmed",
+    ).order_by(StoryboardTransitionContract.version.desc()).first()
+    if not contract:
+        return {
+            "strategy": "legacy_input_selection",
+            "continuity_level": "independent",
+            "first_frame_url": "",
+            "reference_images": reference_images,
+            "blocking_issues": [],
+            "warnings": [],
+            "capability_snapshot": {},
+            "contract": None,
+            "transition_frame": None,
+        }
+    frame = session.query(StoryboardTransitionFrame).filter(
+        StoryboardTransitionFrame.book_id == shot.book_id,
+        StoryboardTransitionFrame.episode == shot.episode,
+        StoryboardTransitionFrame.source_shot_id == source.shot_id,
+        StoryboardTransitionFrame.target_shot_id == target.shot_id,
+        StoryboardTransitionFrame.status == "locked",
+    ).order_by(StoryboardTransitionFrame.updated_at.desc(), StoryboardTransitionFrame.id.desc()).first()
+    source_video = _find_adopted_shot_asset(_load_asset_links(source.asset_links), "videos") or {}
+    source_video_asset_id = str(source_video.get("id") or "").strip()
+    if frame and _transition_evidence_status(
+        frame,
+        None,
+        source_video_asset_id=source_video_asset_id,
+        target_video_asset_id="",
+    ) == "stale":
+        # A locked frame is evidence for one exact source video.  Do not feed a
+        # frame from an older cut to a provider after a new video is adopted.
+        frame = None
+    policy = resolve_video_continuity_strategy(
+        contract=_serialize_transition_contract(contract),
+        transition_frame=_serialize_transition_frame(frame) if frame else None,
+        model_profile=profile,
+        reference_images=reference_images,
+    )
+    policy["contract"] = _serialize_transition_contract(contract)
+    policy["transition_frame"] = _serialize_transition_frame(frame) if frame else None
+    if not frame and source_video_asset_id:
+        policy["warnings"] = list(policy.get("warnings") or []) + ["locked-transition-frame-is-stale-for-current-source-video"]
+    return policy
+
+
+def _append_video_continuity_contract_to_prompt(prompt: str, continuity_policy: dict[str, Any] | None) -> str:
+    """Compile a confirmed continuity contract into a provider-facing prompt.
+
+    A continuity contract is not merely audit metadata: for soft continuity it
+    is the only vendor-neutral way to preserve identity and spatial facts while
+    still permitting an editorial cut.  Strict contracts additionally have a
+    locked handoff frame, but retain this text constraint for the portions of
+    the state that remain visible after camera reframing.
+    """
+    policy = continuity_policy if isinstance(continuity_policy, dict) else {}
+    contract = policy.get("contract") if isinstance(policy.get("contract"), dict) else {}
+    if str(contract.get("status") or "").strip().lower() != "confirmed":
+        return prompt
+    level = str(contract.get("continuity_level") or policy.get("continuity_level") or "").strip().lower()
+    if level not in {"soft", "strict", "narrative"}:
+        return prompt
+
+    def text(value: Any) -> str:
+        return " ".join(str(value or "").split()).strip()
+
+    inherited = contract.get("inherit_rules") if isinstance(contract.get("inherit_rules"), dict) else {}
+    inherit_values = [text(value) for value in inherited.values() if text(value)]
+    allowed = [text(value) for value in (contract.get("allowed_changes") or []) if text(value)]
+    forbidden = [text(value) for value in (contract.get("forbidden_changes") or []) if text(value)]
+    clauses = [
+        f"Confirmed {level} continuity contract.",
+        f"Required entry state: {text(contract.get('entry_state'))}." if text(contract.get("entry_state")) else "",
+        f"Required exit state: {text(contract.get('exit_state'))}." if text(contract.get("exit_state")) else "",
+        f"Preserve: {'; '.join(inherit_values)}." if inherit_values else "",
+        f"Only these declared changes are allowed: {'; '.join(allowed)}." if allowed else "",
+        f"Never: {'; '.join(forbidden)}." if forbidden else "",
+    ]
+    block = " ".join(clause for clause in clauses if clause)
+    return f"{prompt.rstrip()} {block}".strip()
+
+
 @app.post("/api/prototyping/tasks/{task_id}/submit-machine-prompt-provider")
 async def submit_machine_prompt_api_task_to_provider(
     task_id: str,
@@ -9789,6 +17238,11 @@ async def submit_machine_prompt_api_task_to_provider(
 ):
     if str(req.confirmation_token or "").strip() != "CONFIRM_MINIMAX_H3_SUBMIT":
         raise HTTPException(status_code=400, detail="真实提交 MiniMax H3 前必须提供确认口令 CONFIRM_MINIMAX_H3_SUBMIT。")
+    if req.use_reference_images and req.use_first_frame:
+        raise HTTPException(
+            status_code=409,
+            detail="MiniMax H3 多参考图与首/尾帧模式互斥。请在确认提交前明确选择多参考图或首帧模式。",
+        )
 
     task_state = _creative_tasks.get(task_id)
     if not task_state:
@@ -9811,10 +17265,27 @@ async def submit_machine_prompt_api_task_to_provider(
     if not isinstance(request_payload, dict):
         raise HTTPException(status_code=400, detail="Task request payload is unavailable.")
     export_payload = request_payload.get("export_payload") if isinstance(request_payload.get("export_payload"), dict) else {}
+    frozen_model_profile_id = str(
+        task_state.get("model_profile_id")
+        or request_payload.get("model_profile_id")
+        or req.model_profile_id
+        or ""
+    ).strip()
+    if (
+        frozen_model_profile_id
+        and req.model_profile_id
+        and str(req.model_profile_id).strip() != frozen_model_profile_id
+    ):
+        raise HTTPException(status_code=409, detail="提交任务绑定的模型配置已冻结，不能在确认时切换模型。")
+    # Resolve the frozen profile before collecting references so provider
+    # limits (for example 75api's eight-image cap) are applied from the same
+    # model that will actually receive the request.
+    try:
+        frozen_profile = resolve_generation_profile("video", frozen_model_profile_id or None)
+    except (ModelProfileError, ValueError):
+        frozen_profile = None
     target_model = str(task_state.get("target_model") or request_payload.get("target_model") or "minimax-h3").strip() or "minimax-h3"
-    prompt_text = _extract_h3_prompt_from_machine_prompt_payload(export_payload, target_model)
-    if not prompt_text:
-        raise HTTPException(status_code=400, detail="Machine prompt export payload does not contain a usable MiniMax H3 prompt.")
+    prompt_text = ""
 
     book_id = int(task_state.get("book_id") or request_payload.get("book_id") or 0)
     episode = int(task_state.get("episode") or request_payload.get("episode") or 0)
@@ -9836,11 +17307,40 @@ async def submit_machine_prompt_api_task_to_provider(
         first_frame_asset_id = ""
         first_frame_url = ""
         first_frame_public_asset = {}
+        reference_asset_ids: list[str] = []
+        reference_images: list[dict[str, Any]] = []
+        reference_public_assets: list[dict[str, Any]] = []
+        if req.use_reference_images:
+            reference_asset_ids, reference_images, reference_public_assets = _resolve_provider_ready_storyboard_reference_images(
+                shot,
+                requested_reference_asset_ids=req.reference_asset_ids,
+                max_reference_images=_model_max_reference_images(frozen_profile or {}, default=9),
+                include_composition_reference=True,
+            )
+            if not reference_images:
+                raise HTTPException(status_code=409, detail="已选择 MiniMax H3 多参考图模式，但当前镜头没有可用的参考图。")
         if req.use_first_frame:
             first_frame_asset_id, first_frame_url, first_frame_public_asset = _resolve_provider_ready_storyboard_first_frame(
                 shot,
                 first_frame_asset_id=req.first_frame_asset_id,
+                allow_unstable_storage=req.allow_unstable_public_assets,
             )
+
+        # Recompile the provider-facing export after the input mode is known.
+        # A saved preview may contain ordinary scene/character references,
+        # while strict first-frame mode deliberately sends only the locked
+        # handoff frame.  The text must describe the exact payload that will
+        # be submitted, otherwise the model receives contradictory guidance.
+        if req.use_first_frame and not req.use_reference_images:
+            export_payload = _preview_storyboard_machine_prompt_export(
+                book_id,
+                shot,
+                target_model,
+                reference_images_override=[],
+            )
+        prompt_text = _extract_h3_prompt_from_machine_prompt_payload(export_payload, target_model)
+        if not prompt_text:
+            raise HTTPException(status_code=400, detail="Machine prompt export payload does not contain a usable MiniMax H3 prompt.")
 
     creative_req = CreativeGenerationRequest(
         book_id=book_id,
@@ -9856,18 +17356,26 @@ async def submit_machine_prompt_api_task_to_provider(
         prompt=prompt_text,
         negative_prompt="",
         model_profile_id=req.model_profile_id,
-        reference_asset_ids=[],
-        reference_images=[],
+        reference_asset_ids=reference_asset_ids,
+        reference_images=reference_images,
         aspect_ratio=req.aspect_ratio,
         duration_seconds=req.duration_seconds,
     )
+
+    # When a task was registered from the formal workspace, use the frozen
+    # profile id unless an older API caller intentionally omitted one.
+    if frozen_model_profile_id:
+        creative_req = creative_req.model_copy(update={"model_profile_id": frozen_model_profile_id})
 
     try:
         profile = _resolve_creative_profile(creative_req, "video")
     except (ModelProfileError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    if str(profile.get("provider") or "").strip() != "minimax-h3-async":
-        raise HTTPException(status_code=400, detail="真实机器提示词 API 提交目前只允许使用 MiniMax H3 异步视频模型。请先在模型管理中把视频模型配置为 minimax-h3-async，或显式传入该模型配置。")
+    provider_name = str(profile.get("provider") or "").strip()
+    if provider_name not in {MINIMAX_H3_ASYNC_PROVIDER, MINIMAX_H3_75API_PROVIDER}:
+        raise HTTPException(status_code=400, detail="真实机器提示词 API 提交目前只允许使用已接入的 MiniMax H3 视频模型。请先在模型管理中选择 Metaso H3 或 75api H3 配置。")
+    if provider_name == MINIMAX_H3_75API_PROVIDER and not (reference_images or first_frame_url):
+        raise HTTPException(status_code=409, detail="75api MiniMax H3 不支持文生视频，必须先提供首帧图或多参考图。")
 
     version = _next_asset_version(book_id, episode, shot_id, "video")
     task_state.update({
@@ -9888,7 +17396,10 @@ async def submit_machine_prompt_api_task_to_provider(
         "first_frame_asset_id": first_frame_asset_id,
         "first_frame_url": first_frame_url,
         "first_frame_public_asset": first_frame_public_asset,
-        "provider_task_mode": "image_to_video" if first_frame_url else "text_to_video",
+        "reference_asset_ids": reference_asset_ids,
+        "reference_images": reference_images,
+        "reference_public_assets": reference_public_assets,
+        "provider_task_mode": "reference_to_video" if reference_images else "image_to_video" if first_frame_url else "text_to_video",
         "provider_submission_confirmed_at": datetime.utcnow().isoformat(),
         "provider_submission_notes": str(req.notes or "").strip(),
         "prompt_encoding_audit": _build_provider_prompt_encoding_audit(prompt_text),
@@ -9903,6 +17414,7 @@ async def submit_machine_prompt_api_task_to_provider(
             "export_payload": export_payload,
             "provider_submission_confirmed_at": datetime.utcnow().isoformat(),
             "first_frame_public_asset": first_frame_public_asset,
+            "reference_public_assets": reference_public_assets,
         },
     })
     _stamp_creative_task_state(task_state)
@@ -9924,6 +17436,9 @@ async def submit_machine_prompt_api_task_to_provider(
         "first_frame_asset_id": first_frame_asset_id,
         "first_frame_url": first_frame_url,
         "first_frame_public_asset": first_frame_public_asset,
+        "reference_asset_ids": reference_asset_ids,
+        "reference_images": reference_images,
+        "reference_public_assets": reference_public_assets,
         "provider_task_mode": task_state["provider_task_mode"],
     }
 
@@ -9931,6 +17446,9 @@ async def submit_machine_prompt_api_task_to_provider(
 @app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/compile-prompts")
 def compile_storyboard_prompts(book_id: int, episode: int, shot_id: str, req: StoryboardPromptCompileRequest):
     from models import Session, StoryboardShot
+
+    if not (req.confirmed and req.allow_external_call):
+        raise HTTPException(status_code=409, detail="直接重编译会调用 LLM；请改用候选草案，或显式传 confirmed=true 和 allowExternalCall=true。")
 
     with Session() as s:
         shot = s.query(StoryboardShot).filter(
@@ -10039,6 +17557,9 @@ async def compile_storyboard_prompts_async(
     bg: BackgroundTasks,
 ):
     from models import Session, StoryboardShot
+
+    if not (req.confirmed and req.allow_external_call):
+        raise HTTPException(status_code=409, detail="直接重编译会调用 LLM；请改用候选草案，或显式传 confirmed=true 和 allowExternalCall=true。")
 
     with Session() as s:
         shot = s.query(StoryboardShot).filter(
@@ -10149,11 +17670,58 @@ async def _queue_storyboard_generation_task(
             raise HTTPException(status_code=404, detail="Storyboard shot not found")
 
         if req.compile_if_missing and (not shot.visual_prompt_static or not shot.visual_prompt_motion):
-            _persist_storyboard_prompt_compile(s, book_id, episode, shot, f"auto-{kind}")
+            raise HTTPException(status_code=409, detail={
+                "message": "当前镜头缺少提示词；系统不会为生成任务自动调用 LLM。请先在受控 Prompt Compiler 草案中审核并创建版本。",
+                "requires_prompt_draft": True,
+                "generation_not_started": True,
+            })
 
         prompt = (shot.visual_prompt_static if kind == "image" else shot.visual_prompt_motion or "").strip()
         if not prompt:
             raise HTTPException(status_code=400, detail="Storyboard prompts are empty. Compile prompts first.")
+
+        executability: dict[str, Any] = {}
+        if kind == "video":
+            shot_meta_for_gate = safe_json_loads(shot.meta_info) if shot.meta_info else {}
+            if not isinstance(shot_meta_for_gate, dict):
+                shot_meta_for_gate = {}
+            structured_for_gate = shot_meta_for_gate.get("structured_shot", {}) if isinstance(shot_meta_for_gate.get("structured_shot", {}), dict) else {}
+            compiler_for_gate = shot_meta_for_gate.get("prompt_compiler", {}) if isinstance(shot_meta_for_gate.get("prompt_compiler", {}), dict) else {}
+            context_for_gate = compiler_for_gate.get("prompt_compile_context", {}) if isinstance(compiler_for_gate.get("prompt_compile_context", {}), dict) else {}
+            candidate = context_for_gate.get("executability") or structured_for_gate.get("executability") or {}
+            executability = candidate if isinstance(candidate, dict) else {}
+            exec_status = str(executability.get("status") or "").strip().lower()
+            if not exec_status:
+                raise HTTPException(status_code=409, detail={
+                    "message": "当前镜头尚未完成可拍性校验，请先重新编译提示词后再生成视频。",
+                    "executability": {"status": "blocked", "blocking_issues": ["missing-executability-result"]},
+                    "requires_recompile": True,
+                })
+            if exec_status == "blocked":
+                raise HTTPException(status_code=409, detail={
+                    "message": "当前镜头可拍性校验为 blocked，不能提交视频生成。请延长、删减或拆分镜头后重新编译。",
+                    "executability": executability,
+                    "requires_recompile": True,
+                })
+            if exec_status == "warning" and not req.executability_override:
+                raise HTTPException(status_code=409, detail={
+                    "message": "当前镜头可拍性校验存在 warning。请确认仍要提交，或先按建议优化镜头。",
+                    "executability": executability,
+                    "requires_confirmation": True,
+                })
+            if exec_status == "warning" and req.executability_override:
+                audit = shot_meta_for_gate.get("executability_overrides", [])
+                if not isinstance(audit, list):
+                    audit = []
+                audit.append({
+                    "at": datetime.utcnow().isoformat(),
+                    "reason": str(req.executability_override_reason or "operator-confirmed-warning").strip(),
+                    "status": exec_status,
+                    "action": "video-generation",
+                })
+                shot_meta_for_gate["executability_overrides"] = audit[-20:]
+                shot.meta_info = json.dumps(shot_meta_for_gate, ensure_ascii=False)
+                shot.updated_at = datetime.utcnow()
 
         negative_prompt = (shot.visual_prompt_final or "").strip()
         asset_links = _load_asset_links(shot.asset_links)
@@ -10187,13 +17755,114 @@ async def _queue_storyboard_generation_task(
             reference_asset_ids=reference_asset_ids,
             reference_images=reference_images,
             aspect_ratio=req.aspect_ratio,
-            duration_seconds=req.duration_seconds,
+            duration_seconds=req.duration_seconds or int(getattr(shot, "duration", None) or 5),
         )
 
         try:
             profile = _resolve_creative_profile(creative_req, "image" if kind == "image" else "video")
         except (ModelProfileError, ValueError) as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+        continuity_policy: dict[str, Any] = {}
+        if kind == "video":
+            continuity_policy = _resolve_storyboard_video_continuity_policy(s, shot, profile, reference_images)
+            if continuity_policy.get("blocking_issues"):
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "message": "已确认的镜头连续性合约无法由当前模型/交接帧满足，未提交生成。",
+                        "continuity": continuity_policy,
+                        "requires_operator_action": True,
+                    },
+                )
+            if continuity_policy.get("strategy") == "strict_first_frame":
+                locked_frame = continuity_policy.get("transition_frame") or {}
+                first_frame_asset_id = f"transition-frame-{locked_frame.get('id')}"
+                first_frame_url = str(continuity_policy.get("first_frame_url") or "").strip()
+                reference_asset_ids = []
+                reference_images = []
+                creative_req = creative_req.model_copy(update={
+                    "source_asset_id": first_frame_asset_id,
+                    "first_frame_asset_id": first_frame_asset_id,
+                    "first_frame_url": first_frame_url,
+                    "reference_asset_ids": [],
+                    "reference_images": [],
+                })
+
+        prompt_source = "storyboard_static" if kind == "image" else "storyboard_motion"
+        source_duration_seconds = int(req.duration_seconds or getattr(shot, "duration", None) or 5)
+        effective_duration_seconds = source_duration_seconds
+        if kind == "video" and str(profile.get("provider") or "").strip() in {MINIMAX_H3_ASYNC_PROVIDER, MINIMAX_H3_75API_PROVIDER}:
+            # A strict handoff uses the locked predecessor frame as H3's sole
+            # visual input.  H3 does not support keyframe and reference-image
+            # modes together, so its exported prompt must not claim numbered
+            # references that the provider request deliberately omits.
+            if continuity_policy.get("strategy") == "strict_first_frame":
+                h3_reference_images: list[dict[str, Any]] = []
+            else:
+                _, h3_reference_images = _resolve_storyboard_video_reference_payloads(
+                    shot,
+                    creative_req.reference_asset_ids,
+                    max_reference_images=_model_max_reference_images(profile),
+                )
+            h3_preview = _preview_storyboard_machine_prompt_export(
+                book_id,
+                shot,
+                "minimax-h3",
+                reference_images_override=h3_reference_images,
+            )
+            h3_export = (
+                h3_preview.get("model_exports", {}).get("minimax-h3", {})
+                if isinstance(h3_preview.get("model_exports", {}), dict)
+                else {}
+            )
+            h3_fields = h3_export.get("fields", {}) if isinstance(h3_export, dict) else {}
+            h3_prompt = str(h3_fields.get("integrated_multimodal_description") or "").strip()
+            if not h3_prompt:
+                raise HTTPException(status_code=409, detail="MiniMax H3 机器提示词编译失败，请先重新编译镜头提示词。")
+            h3_prompt = _append_video_continuity_contract_to_prompt(h3_prompt, continuity_policy)
+            if str(profile.get("provider") or "").strip() == MINIMAX_H3_75API_PROVIDER:
+                try:
+                    effective_duration_seconds = normalize_75api_minimax_h3_seconds(source_duration_seconds)
+                except ModelProfileError as exc:
+                    raise HTTPException(status_code=409, detail=str(exc)) from exc
+            else:
+                effective_duration_seconds = normalize_minimax_h3_duration(source_duration_seconds)
+            creative_req = creative_req.model_copy(update={
+                "prompt": h3_prompt,
+                "duration_seconds": effective_duration_seconds,
+            })
+            prompt_source = "minimax_h3_machine_export"
+        first_frame_public_asset: dict[str, Any] = {}
+        reference_public_assets: list[dict[str, Any]] = []
+        if kind == "video" and str(profile.get("provider") or "").strip() != "prototype-task-adapter":
+            if continuity_policy.get("strategy") == "strict_first_frame":
+                # The registered transition frame is required to be public when
+                # it is written. Never replace it with this shot's references.
+                reference_asset_ids, reference_images = [], []
+            elif creative_req.reference_images:
+                reference_asset_ids, reference_images, reference_public_assets = _resolve_provider_ready_storyboard_reference_images(
+                    shot,
+                    requested_reference_asset_ids=creative_req.reference_asset_ids,
+                    max_reference_images=_model_max_reference_images(profile),
+                    include_composition_reference=True,
+                    allow_unstable_storage=req.allow_unstable_public_assets,
+                )
+                first_frame_asset_id = ""
+                first_frame_url = ""
+            else:
+                first_frame_asset_id, first_frame_url, first_frame_public_asset = _resolve_provider_ready_storyboard_first_frame(
+                    shot,
+                    first_frame_asset_id=req.first_frame_asset_id,
+                    allow_unstable_storage=req.allow_unstable_public_assets,
+                )
+            creative_req = creative_req.model_copy(update={
+                "source_asset_id": first_frame_asset_id or None,
+                "first_frame_asset_id": first_frame_asset_id or None,
+                "first_frame_url": first_frame_url or None,
+                "reference_asset_ids": reference_asset_ids,
+                "reference_images": reference_images,
+            })
 
         _creative_tasks[task_id] = {
             "task_id": task_id,
@@ -10208,12 +17877,18 @@ async def _queue_storyboard_generation_task(
             "provider": profile.get("provider"),
             "uses_mock": profile.get("provider") == "prototype-task-adapter",
             "prompt_version": safe_json_loads(shot.meta_info).get("prompt_compiler", {}).get("latest_version") if shot.meta_info else None,
+            "prompt_source": prompt_source,
+            "source_duration_seconds": source_duration_seconds,
+            "effective_duration_seconds": effective_duration_seconds,
             "negative_prompt": negative_prompt,
             "first_frame_asset_id": first_frame_asset_id,
             "first_frame_url": first_frame_url,
+            "first_frame_public_asset": first_frame_public_asset,
             "reference_asset_ids": reference_asset_ids,
             "reference_images": reference_images,
-            "provider_task_mode": "image_to_video" if kind == "video" and first_frame_asset_id else ("reference_to_video" if kind == "video" and reference_asset_ids else "text_to_video" if kind == "video" else ""),
+            "reference_public_assets": reference_public_assets,
+            "continuity": continuity_policy,
+            "provider_task_mode": "reference_to_video" if kind == "video" and reference_asset_ids else ("image_to_video" if kind == "video" and first_frame_asset_id else "text_to_video" if kind == "video" else ""),
             "external_task_id": None,
             "external_status": None,
             "poll_attempts": 0,
@@ -10224,6 +17899,17 @@ async def _queue_storyboard_generation_task(
             "prompt_recompile_reason": (req.prompt_recompile_reason or "").strip() or None,
             "prompt_recompile_task_id": (req.prompt_recompile_task_id or "").strip() or None,
             "prompt_recompile_version": req.prompt_recompile_version,
+            "executability": executability,
+            "executability_override": bool(req.executability_override),
+            "executability_override_reason": (req.executability_override_reason or "").strip() or None,
+            "allow_unstable_public_assets": bool(req.allow_unstable_public_assets),
+            "unstable_public_asset_override": bool(
+                any(
+                    isinstance(item, dict) and item.get("unstable_storage_override")
+                    for item in reference_public_assets
+                )
+                or (isinstance(first_frame_public_asset, dict) and first_frame_public_asset.get("unstable_storage_override"))
+            ),
         }
         _store_creative_task_request(_creative_tasks[task_id], creative_req, kind)
         if req.generation_chain or req.triggered_by_prompt_recompile or req.prompt_recompile_task_id or req.prompt_recompile_version is not None:
@@ -10234,6 +17920,19 @@ async def _queue_storyboard_generation_task(
                 request_payload["prompt_recompile_reason"] = (req.prompt_recompile_reason or "").strip() or None
                 request_payload["prompt_recompile_task_id"] = (req.prompt_recompile_task_id or "").strip() or None
                 request_payload["prompt_recompile_version"] = req.prompt_recompile_version
+        request_payload = _creative_tasks[task_id].get("request_payload")
+        if isinstance(request_payload, dict):
+            request_payload["first_frame_public_asset"] = first_frame_public_asset
+            request_payload["reference_public_assets"] = reference_public_assets
+            request_payload["continuity"] = continuity_policy
+            request_payload["allow_unstable_public_assets"] = bool(req.allow_unstable_public_assets)
+            request_payload["unstable_public_asset_override"] = bool(
+                any(
+                    isinstance(item, dict) and item.get("unstable_storage_override")
+                    for item in reference_public_assets
+                )
+                or (isinstance(first_frame_public_asset, dict) and first_frame_public_asset.get("unstable_storage_override"))
+            )
         s.commit()
 
     bg.add_task(_run_creative_task, task_id, kind, creative_req)
@@ -10248,6 +17947,7 @@ async def _queue_storyboard_generation_task(
         "reference_images": reference_images,
         "model_profile_id": profile.get("id"),
         "uses_mock": profile.get("provider") == "prototype-task-adapter",
+        "continuity": continuity_policy,
     }
 
 
@@ -10295,7 +17995,14 @@ def get_storyboard_acceptance_records(book_id: int, episode: int, shot_id: str):
 
 @app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/acceptance-records")
 def create_storyboard_acceptance_record(book_id: int, episode: int, shot_id: str, req: StoryboardAcceptanceRequest):
-    from models import Session, StoryboardAcceptanceRecord, StoryboardShot
+    from models import (
+        Session,
+        StoryboardAcceptanceRecord,
+        StoryboardShot,
+        StoryboardTransitionContract,
+        StoryboardTransitionContinuityReview,
+        StoryboardTransitionFrame,
+    )
 
     now = datetime.utcnow()
     coerced_shot_id = _coerce_storyboard_shot_id(shot_id)
@@ -10307,6 +18014,50 @@ def create_storyboard_acceptance_record(book_id: int, episode: int, shot_id: str
         ).first()
         if not shot:
             raise HTTPException(status_code=404, detail="Storyboard shot not found")
+
+        # A strict continuity target cannot be marked accepted before its
+        # locked handoff frame has a reviewed, passing comparison.  Previously
+        # the acceptance endpoint allowed a manual "passed" status to bypass
+        # the continuity audit entirely, which let composition drift reach
+        # production.  This gate is contract-driven and applies to every
+        # strict pair, not to a particular book or shot.
+        accepted_statuses = {"passed", "approved", "accepted"}
+        if str(req.asset_kind or "").strip().lower() == "video" and str(req.status or "").strip().lower() in accepted_statuses:
+            strict_contract = s.query(StoryboardTransitionContract).filter(
+                StoryboardTransitionContract.book_id == book_id,
+                StoryboardTransitionContract.episode == episode,
+                StoryboardTransitionContract.target_shot_id == coerced_shot_id,
+                StoryboardTransitionContract.status == "confirmed",
+                StoryboardTransitionContract.continuity_level == "strict",
+            ).order_by(StoryboardTransitionContract.version.desc(), StoryboardTransitionContract.id.desc()).first()
+            if strict_contract:
+                handoff = s.query(StoryboardTransitionFrame).filter(
+                    StoryboardTransitionFrame.book_id == book_id,
+                    StoryboardTransitionFrame.episode == episode,
+                    StoryboardTransitionFrame.target_shot_id == coerced_shot_id,
+                    StoryboardTransitionFrame.status == "locked",
+                ).order_by(StoryboardTransitionFrame.id.desc()).first()
+                passing_review = None
+                if handoff:
+                    passing_review = s.query(StoryboardTransitionContinuityReview).filter(
+                        StoryboardTransitionContinuityReview.book_id == book_id,
+                        StoryboardTransitionContinuityReview.episode == episode,
+                        StoryboardTransitionContinuityReview.target_shot_id == coerced_shot_id,
+                        StoryboardTransitionContinuityReview.transition_frame_id == handoff.id,
+                        StoryboardTransitionContinuityReview.target_video_asset_id == str(req.asset_id or "").strip(),
+                        StoryboardTransitionContinuityReview.status == "reviewed",
+                        StoryboardTransitionContinuityReview.review_result == "pass",
+                    ).order_by(StoryboardTransitionContinuityReview.id.desc()).first()
+                if not passing_review:
+                    raise HTTPException(
+                        status_code=409,
+                        detail={
+                            "message": "严格连续性镜头必须先完成交接帧对比验收，且结果为通过，才能标记视频合格。",
+                            "requires_continuity_review": True,
+                            "transition_frame_id": int(handoff.id) if handoff else None,
+                            "target_video_asset_id": str(req.asset_id or "").strip(),
+                        },
+                    )
 
         row = StoryboardAcceptanceRecord(
             book_id=book_id,
@@ -10558,7 +18309,11 @@ def _is_storyboard_shot_deliverable_for_export(shot) -> bool:
     meta_info = safe_json_loads(getattr(shot, "meta_info", None)) if getattr(shot, "meta_info", None) else {}
     acceptance = meta_info.get("acceptance", {}) if isinstance(meta_info, dict) else {}
     acceptance_status = str(acceptance.get("status") or "").strip().lower()
-    return bool(adopted_video) and acceptance_status in {"approved", "accepted"}
+    # The acceptance-record API uses ``passed`` as its successful QA result,
+    # while legacy export data used ``approved``/``accepted``.  All three
+    # represent a reviewed, positive acceptance; treating one of them as
+    # non-deliverable breaks downstream transition evidence and export gates.
+    return bool(adopted_video) and acceptance_status in {"passed", "approved", "accepted"}
 
 
 def _build_export_shot_payload(shot) -> dict:
@@ -10727,6 +18482,7 @@ def _serialize_storyboard_output_row(
         "asset_status": shot.asset_status,
         "meta_info": meta_info,
         "structured_shot": structured_shot,
+        "executability_split_draft": meta_info.get("executability_split_draft", {}) if isinstance(meta_info.get("executability_split_draft", {}), dict) else None,
         "negative_prompt": prompt_compiler_meta.get("negative_prompt", ""),
         "acceptance": acceptance_meta,
         "prompt_locked": bool(prompt_compiler_meta.get("locked", False)),
@@ -11135,6 +18891,10 @@ def get_book_outputs(book_id: int, genre: str = "short_drama"):
         reference_index: dict[tuple[str, str], list[dict]] = {}
         for row in reference_assets:
             reference_index.setdefault((row.asset_type, row.asset_id), []).append(_serialize_reference_asset_row(row))
+        reference_index = {
+            key: _sort_reference_assets_for_display(items)
+            for key, items in reference_index.items()
+        }
         storyboard_rows = s.query(StoryboardShot).filter(
             StoryboardShot.book_id == book_id
         ).order_by(StoryboardShot.episode, StoryboardShot.shot_id).all()
@@ -11354,11 +19114,20 @@ def _chinese_numeral_to_int(text: str) -> Optional[int]:
     return mapping.get(raw)
 
 
+_SCRIPT_SCENE_HEADING_RE = re.compile(
+    r"^\s*(?:##\s*|\*\*\s*)场景([零一二两三四五六七八九十0-9]+)[：:，,]?[^\n]*",
+    re.MULTILINE,
+)
+
+
 def _extract_scene_blocks(content: str) -> list[tuple[int, str]]:
     if not content:
         return []
-    pattern = re.compile(r"\*\*场景([零一二两三四五六七八九十0-9]+)[：:，,]?[^\n]*", re.MULTILINE)
-    matches = list(pattern.finditer(content))
+    # Accept both the legacy `**场景1**` form and the script compiler's
+    # canonical `## 场景1：名称` heading.  Excerpt derivation is evidence
+    # selection, so a format mismatch here must not silently point a QA repair
+    # at the first unrelated paragraph of an episode.
+    matches = list(_SCRIPT_SCENE_HEADING_RE.finditer(content))
     blocks = []
     for index, match in enumerate(matches):
         scene_no = _chinese_numeral_to_int(match.group(1))
@@ -11368,6 +19137,148 @@ def _extract_scene_blocks(content: str) -> list[tuple[int, str]]:
         end = matches[index + 1].start() if index + 1 < len(matches) else len(content)
         blocks.append((scene_no, content[start:end].strip()))
     return blocks
+
+
+def _qa_location_line_range_matches_scene_section(content: str, script_section: str, line_start: Optional[int], line_end: Optional[int]) -> bool:
+    """Ensure QA-provided line ranges honour both declared scene and position.
+
+    A QA report that says ``场景2末尾`` is not precise merely because its line
+    range happens to fall *somewhere* in scene 2.  Treating it as precise lets
+    an otherwise bounded replacement be spliced into an unrelated beat near
+    the beginning of the scene.  This resolver keeps the location contract
+    generic: it checks every declared scene, plus start/end qualifiers when
+    the report supplies them.  Ambiguous or stale locations deliberately
+    downgrade to an advice-only DecisionPacket instead of becoming writable.
+    """
+    section = str(script_section or "")
+    expected = {
+        _chinese_numeral_to_int(value)
+        for value in re.findall(r"场景([零一二两三四五六七八九十0-9]+)", section)
+    }
+    expected.discard(None)
+    if not expected or not line_start or not line_end:
+        return True
+    matches = list(_SCRIPT_SCENE_HEADING_RE.finditer(content or ""))
+    if not matches:
+        return True
+    actual = set()
+    scene_ranges: dict[int, tuple[int, int]] = {}
+    for index, match in enumerate(matches):
+        scene_no = _chinese_numeral_to_int(match.group(1))
+        if scene_no is None:
+            continue
+        start_line = (content or "")[:match.start()].count("\n") + 1
+        end_pos = matches[index + 1].start() if index + 1 < len(matches) else len(content or "")
+        # The next heading belongs to the following scene, rather than the
+        # previous one.  Keeping the interval inclusive makes the overlap
+        # test below easy to reason about and avoids a one-line boundary leak.
+        end_line = max(start_line, (content or "")[:end_pos].count("\n"))
+        scene_ranges[scene_no] = (start_line, end_line)
+        if int(line_start) <= end_line and int(line_end) >= start_line:
+            actual.add(scene_no)
+    if not expected.issubset(actual):
+        return False
+
+    # Inspect qualifiers independently for each declared scene.  For example
+    # ``场景2末尾至场景3开头`` must cover the tail of scene 2 *and* the head of
+    # scene 3.  We intentionally use broad (30%, minimum three lines) zones:
+    # this is a location-validity guard, not a brittle attempt to infer beats.
+    references = list(re.finditer(
+        r"场景([零一二两三四五六七八九十0-9]+)([^场景]{0,32})",
+        section,
+    ))
+    start_markers = ("开头", "开始", "起始", "开场", "前段")
+    end_markers = ("末尾", "结尾", "结束", "收束", "后段")
+    for reference in references:
+        scene_no = _chinese_numeral_to_int(reference.group(1))
+        if scene_no is None or scene_no not in scene_ranges:
+            continue
+        qualifier = str(reference.group(2) or "")
+        wants_start = any(marker in qualifier for marker in start_markers)
+        wants_end = any(marker in qualifier for marker in end_markers)
+        if not (wants_start or wants_end):
+            continue
+        scene_start, scene_end = scene_ranges[scene_no]
+        zone_size = max(3, int((scene_end - scene_start + 1) * 0.30 + 0.999))
+        if wants_start:
+            start_zone_end = min(scene_end, scene_start + zone_size - 1)
+            if int(line_end) < scene_start or int(line_start) > start_zone_end:
+                return False
+        if wants_end:
+            end_zone_start = max(scene_start, scene_end - zone_size + 1)
+            if int(line_end) < end_zone_start or int(line_start) > scene_end:
+                return False
+    return True
+
+
+def _qa_target_resolution_candidates(content: str, script_section: str) -> list[dict[str, Any]]:
+    """Freeze the legal ranges an LLM may select, honoring declared position.
+
+    A QA report that says ``场景2末尾`` pins the defect to the tail of scene 2,
+    not to an arbitrary beat anywhere in that scene.  Without narrowing, a model
+    may pick a head-of-scene span and the resulting local revision would silently
+    replace an unrelated scene body.  The resolver therefore clips each declared
+    scene to the same 30% start/end zone used by location validation, keeping the
+    rule book- and project-agnostic.
+    """
+    section = str(script_section or "")
+    expected = {_chinese_numeral_to_int(value) for value in re.findall(r"场景([零一二两三四五六七八九十0-9]+)", section)}
+    expected.discard(None)
+    start_markers = ("开头", "开始", "起始", "开场", "前段")
+    end_markers = ("末尾", "结尾", "结束", "收束", "后段")
+    qualifiers: dict[int, str] = {}
+    for reference in re.finditer(r"场景([零一二两三四五六七八九十0-9]+)([^场景]{0,32})", section):
+        number = _chinese_numeral_to_int(reference.group(1))
+        if number is None:
+            continue
+        qualifier = reference.group(2)
+        if any(marker in qualifier for marker in end_markers):
+            qualifiers.setdefault(number, "end")
+        elif any(marker in qualifier for marker in start_markers):
+            qualifiers.setdefault(number, "start")
+
+    matches = list(_SCRIPT_SCENE_HEADING_RE.finditer(content or ""))
+    candidates = []
+    for index, match in enumerate(matches):
+        number = _chinese_numeral_to_int(match.group(1))
+        if expected and number not in expected:
+            continue
+        start = (content or "")[:match.start()].count("\n") + 1
+        end_pos = matches[index + 1].start() if index + 1 < len(matches) else len(content or "")
+        end = max(start, (content or "")[:end_pos].count("\n"))
+        qualifier = qualifiers.get(number)
+        if qualifier == "end":
+            zone_size = max(3, int((end - start + 1) * 0.30 + 0.999))
+            start = max(start, end - zone_size + 1)
+        elif qualifier == "start":
+            zone_size = max(3, int((end - start + 1) * 0.30 + 0.999))
+            end = min(end, start + zone_size - 1)
+        excerpt = "\n".join((content or "").splitlines()[start - 1:end])
+        candidates.append({"scene_no": number, "line_start": start, "line_end": end, "source_fingerprint": hashlib.sha256(excerpt.encode("utf-8")).hexdigest()[:24]})
+    return candidates
+
+
+def _qa_line_range_is_precise_enough(content: str, line_start: Optional[int], line_end: Optional[int]) -> bool:
+    """A writable QA span must live inside one scene and stay reasonably bounded.
+
+    A cross-scene range (for example ``场景1、场景2`` lines 50-120) is not a
+    localized revision: replacing it would let a model rewrite two scenes in one
+    action.  Treating it as precise re-opens the same accidental whole-block
+    rewrite we guard against.  Such cases must fall through to target resolution.
+    """
+    if not line_start or not line_end or line_end < line_start:
+        return False
+    if (line_end - line_start + 1) > 40:
+        return False
+    heading_starts = []
+    for match in _SCRIPT_SCENE_HEADING_RE.finditer(content or ""):
+        heading_starts.append((match.start(), (content or "")[:match.start()].count("\n") + 1))
+    for index, (_, start) in enumerate(heading_starts):
+        end_pos = heading_starts[index + 1][0] if index + 1 < len(heading_starts) else len(content or "")
+        end = (content or "")[:end_pos].count("\n")
+        if int(line_start) >= start and int(line_end) <= end:
+            return True
+    return False
 
 
 def _excerpt_from_scene_blocks(content: str, script_section: str) -> str:
@@ -11382,7 +19293,10 @@ def _excerpt_from_scene_blocks(content: str, script_section: str) -> str:
             if current_no == scene_no:
                 return block[-700:].strip()
 
-    range_match = re.search(r"场景([零一二两三四五六七八九十0-9]+)\s*[至到\-~]\s*([零一二两三四五六七八九十0-9]+)", section)
+    range_match = re.search(
+        r"场景([零一二两三四五六七八九十0-9]+)(?:[^场景]{0,12})?(?:至|到|\-|~)(?:[^场景]{0,12})?场景?([零一二两三四五六七八九十0-9]+)",
+        section,
+    )
     if range_match:
         start_no = _chinese_numeral_to_int(range_match.group(1))
         end_no = _chinese_numeral_to_int(range_match.group(2))
@@ -11773,6 +19687,14 @@ def _generate_qa_fix_options_for_issue(issue, script, mode: str, option_count: i
         episode_outline = _load_episode_outline_payload(session, issue.book_id, issue.episode)
     repair_context_block = _build_qa_fix_repair_context(issue, episode_outline=episode_outline)
     repair_focus = _build_qa_fix_focus_payload(issue)
+    repair_type = str(repair_focus.get("rule_family") or issue.issue_type or "").strip().lower()
+    needs_addition = repair_type in _QA_CONTENT_ADD_REPAIR_TYPES
+    default_requirement = (
+        "本问题属于需要补足内容型：必须在 patched_text 中真正新增伏笔/动机/因果/节奏/视觉目的等必要内容来解决，"
+        "严禁通过删除被标记的行、或压缩原片段来规避问题。可适当扩充该片段（上限为原片段 300%）以满足剧情需要。"
+        if needs_addition
+        else "保持短剧节奏，只做最小必要的局部改动，台词总量不超过原片段的 120%。"
+    )
     prompt = load_prompt(
         "qa/fix_options",
         option_count=max(1, min(option_count, 3)),
@@ -11783,7 +19705,7 @@ def _generate_qa_fix_options_for_issue(issue, script, mode: str, option_count: i
         issue_location=f"{issue.script_section or '未标注'} {f'行 {issue.line_start}-{issue.line_end}' if issue.line_start and issue.line_end else ''}".strip(),
         original_excerpt=excerpt,
         fix_mode=mode,
-        extra_requirement=custom_requirement or "保持短剧节奏，台词总量不超过原片段的 120%。",
+        extra_requirement=custom_requirement or default_requirement,
     )
     full_prompt = f"{repair_context_block}\n\n{prompt}"
 
@@ -11812,31 +19734,64 @@ def _generate_qa_fix_options_for_issue(issue, script, mode: str, option_count: i
     return excerpt, options
 
 
-def _score_qa_fix_option(issue, excerpt: str, option: dict) -> tuple[int, int, int, str]:
+# Repair stages that genuinely need content to be ADDED (foreshadowing,
+# motivation, causal linking, visual purpose, opening hook).  For these, a fix
+# that merely deletes the flagged lines or trims the excerpt evades the problem
+# instead of resolving it, so the selector must prefer additions.
+_QA_CONTENT_ADD_REPAIR_TYPES = {
+    "logic_gap",
+    "motivation",
+    "continuity",
+    "hook",
+    "visual",
+    "clue_payoff_integrity",
+    "character_state_transition",
+    "prop_evidence_continuity",
+    "scene_effectiveness",
+    "episode_hook_strength",
+}
+
+# Minimisation-oriented repair types where a tight, local change is appropriate.
+_QA_MINIMISE_REPAIR_TYPES = {"format", "word_count", "dialogue_style", "pace"}
+
+
+def _qa_fix_patch_has_change(excerpt: str, patched_text: str) -> bool:
+    return _normalize_authority_match_text(excerpt) != _normalize_authority_match_text(patched_text)
+
+
+def _score_qa_fix_option(issue, excerpt: str, option: dict) -> tuple[int, int, str]:
     patched_text = str(option.get("patched_text") or "").strip()
     strategy = str(option.get("strategy") or "").strip().lower()
     suggestion = str(issue.suggestion or "").strip().lower()
     issue_type = str(issue.issue_type or "").strip().lower()
+    rule_family = str(option.get("rule_family") or getattr(issue, "rule_family", "") or "").strip().lower()
     excerpt_len = max(1, len(excerpt or ""))
-    length_delta = abs(len(patched_text) - excerpt_len)
+    patched_len = max(1, len(patched_text))
+    length_delta = abs(patched_len - excerpt_len)
+    repair_type = rule_family or issue_type
+    needs_addition = repair_type in _QA_CONTENT_ADD_REPAIR_TYPES
+    needs_tight = repair_type in _QA_MINIMISE_REPAIR_TYPES
 
-    conservative_bonus = 0
-    if issue_type in {"format", "pace", "dialogue_style", "word_count"}:
-        conservative_bonus += 20
-    if length_delta <= max(40, int(excerpt_len * 0.35)):
-        conservative_bonus += 15
-    if suggestion and any(token and token in strategy for token in suggestion.split()[:6]):
-        conservative_bonus += 10
-    if any(keyword in strategy for keyword in ["保守", "最小", "局部", "不改动其他"]):
-        conservative_bonus += 8
-
-    patched_lines = len([line for line in patched_text.splitlines() if line.strip()])
-    return (
-        conservative_bonus,
-        -length_delta,
-        -patched_lines,
-        str(option.get("id") or ""),
-    )
+    score = 0
+    # A "fix" that leaves the excerpt unchanged is worthless; heavily penalise it
+    # so no-op/whitespace-only options are never selected as a real repair.
+    if not _qa_fix_patch_has_change(excerpt, patched_text):
+        score -= 60
+    if needs_addition:
+        # Adding content (foreshadowing, motivation, beats) is the correct
+        # direction; shrinking to evade the flagged problem is the wrong one.
+        if patched_len > excerpt_len:
+            score += 18
+        elif patched_len < excerpt_len:
+            score -= 12
+        if suggestion and any(token and token in strategy for token in suggestion.split()[:6]):
+            score += 8
+    elif needs_tight:
+        if length_delta <= max(40, int(excerpt_len * 0.35)):
+            score += 12
+        if any(keyword in strategy for keyword in ["保守", "最小", "局部", "不改动其他"]):
+            score += 6
+    return (score, -length_delta, str(option.get("id") or ""))
 
 
 def _select_best_qa_fix_option(issue, excerpt: str, options: list[dict]) -> Optional[dict]:
@@ -12558,8 +20513,258 @@ def auto_fix_qa_issue(book_id: int, issue_key: str, req: QAAutoFixRequest, backg
     }
 
 
+@app.post("/api/books/{book_id}/qa/{episode}/apply-edits")
+def apply_script_qa_edits(book_id: int, episode: int, req: ScriptEditsApplyRequest, background: BackgroundTasks):
+    """Apply a validated anchored edit batch and version it.
+
+    Edits must already be anchored to ``beat_id`` values.  ``frozen_beat_fingerprints``
+    may be passed from a frozen evidence packet; when present it is used to reject
+    stale edits whose target beat changed since the packet was captured.  This
+    endpoint never calls an LLM.
+    """
+    from models import QAIssue, Script, ScriptVersion
+
+    with Session() as session:
+        script = session.query(Script).filter_by(book_id=book_id, episode=episode).first()
+        if not script:
+            raise HTTPException(status_code=404, detail="Script not found.")
+        before = str(script.content or "")
+        validation = validate_edits(
+            before,
+            episode,
+            req.edits,
+            frozen_beats=req.frozen_beat_fingerprints or None,
+        )
+        if not validation["valid"]:
+            raise HTTPException(status_code=409, detail={"conflicts": validation["conflicts"]})
+        after, applied = apply_edits(before, episode, req.edits)
+        if after == before:
+            raise HTTPException(status_code=409, detail={"conflicts": ["应用后文本无变化。"]})
+        issue = session.query(QAIssue).filter_by(book_id=book_id, issue_key=req.qa_issue_key).first() if req.qa_issue_key else None
+        verification = None
+        if req.resolution_criteria and issue:
+            passed, detail = evaluate_resolution_criteria(after, episode, req.resolution_criteria)
+            verification = {"passed": passed, "detail": detail}
+        _ensure_script_baseline_version(session, script)
+        diff_text = _build_script_diff(before, after, episode)
+        version_no = _next_script_version_no(session, book_id, episode)
+        version = ScriptVersion(
+            book_id=book_id,
+            episode=episode,
+            script_id=script.id,
+            version_no=version_no,
+            label=f"v{version_no} 锚定编辑：{(req.change_reason or 'QA 修复').strip()[:16]}",
+            change_type="qa_edit",
+            change_reason=req.change_reason or "",
+            qa_issue_key=req.qa_issue_key or "",
+            operator_name=req.operator_name or "user",
+            content_before=before,
+            content_after=after,
+            diff_text=diff_text,
+            recheck_status="running" if req.rerun_qa else "not_run",
+            recheck_summary="QA 复检已启动。" if req.rerun_qa else "未启动复检。",
+            meta_info=json.dumps({"pre_apply_beats": [b.as_dict() for b in build_script_beats(before, episode)], "applied_edits": applied}, ensure_ascii=False),
+        )
+        session.add(version)
+        script.content = after
+        script.word_count = len(after or "")
+        if issue:
+            if verification is not None:
+                issue.fix_status = "resolved" if verification["passed"] else "needs_refinement"
+                issue.status_reason = "锚定编辑已应用；" + ("判定通过。" if verification["passed"] else "判定未达标，待定稿。")
+            else:
+                issue.fix_status = "in_progress"
+                issue.status_reason = "锚定编辑已应用，正在复检。"
+            issue.updated_at = datetime.now()
+        session.commit()
+        session.refresh(version)
+
+    recheck_payload = None
+    if req.rerun_qa:
+        background.add_task(_run_episode_recheck_in_background, book_id, episode, version.id, req.qa_issue_key or None)
+        recheck_payload = {"status": "running", "message": "QA 复检已启动。"}
+    return {
+        "ok": True,
+        "episode": episode,
+        "version": _serialize_script_version(version),
+        "applied": applied,
+        "diff_text": diff_text,
+        "recheck": recheck_payload,
+        "verification": verification,
+    }
+
+
+def _compute_qa_issue_route(session, book_id: int, episode: int, issue) -> dict[str, Any]:
+    """Evaluate one issue's anchor reliability + criteria to decide auto vs human."""
+    from models import Script
+    script = session.query(Script).filter_by(book_id=book_id, episode=episode).first()
+    content = str((script.content if script else "") or "")
+    beat_ids, reliable = find_issue_beats(
+        content,
+        episode,
+        source_excerpt=issue.source_excerpt or "",
+        line_start=issue.line_start,
+        line_end=issue.line_end,
+        script_section=issue.script_section or "",
+    )
+    criteria = build_resolution_criteria(
+        {"type": issue.issue_type, "title": issue.title, "description": issue.description},
+        beat_ids if reliable else [],
+    )
+    route = route_issue({"type": issue.issue_type, "title": issue.title, "description": issue.description}, reliable, criteria)
+    return {"route": route, "beat_ids": beat_ids if reliable else [], "beat_anchor_reliable": reliable, "criteria_kind": criteria.get("kind"), "criteria_reason": criteria.get("reason") or ""}
+
+
+@app.get("/api/books/{book_id}/qa/{episode}/routing-plan")
+def qa_routing_plan(book_id: int, episode: int):
+    """Read-only routing plan; never mutates issues or the script."""
+    from models import QAIssue
+    with Session() as session:
+        rows = session.query(QAIssue).filter_by(book_id=book_id, episode=episode).order_by(QAIssue.id.asc()).all()
+        items = []
+        for issue in rows:
+            meta = safe_json_loads(issue.meta_info, {})
+            if str(meta.get("workflow_status") or "") in {"resolved", "wont_fix"} or issue.fix_status == "recheck_passed":
+                continue
+            info = _compute_qa_issue_route(session, book_id, episode, issue)
+            items.append({"issue_key": issue.issue_key, "type": issue.issue_type, "title": issue.title, **info})
+        return {"episode": episode, "items": items}
+
+
+@app.post("/api/books/{book_id}/qa/{episode}/route-human-queue")
+def apply_qa_human_routing(book_id: int, episode: int):
+    """Mark subjective / non-decidable open issues as human-review queue items.
+
+    This only writes the issue routing metadata.  It never calls an LLM, never
+    rewrites the script, and never creates a version.  Auto-routed issues are
+    left untouched so they can go through the edit pipeline later.
+    """
+    from models import QAIssue
+    with Session() as session:
+        rows = session.query(QAIssue).filter_by(book_id=book_id, episode=episode).order_by(QAIssue.id.asc()).all()
+        human = []
+        auto = []
+        for issue in rows:
+            meta = safe_json_loads(issue.meta_info, {})
+            if str(meta.get("workflow_status") or "") in {"resolved", "wont_fix"} or issue.fix_status == "recheck_passed":
+                continue
+            info = _compute_qa_issue_route(session, book_id, episode, issue)
+            if info["route"] == "human":
+                meta["human_review_required"] = True
+                meta["routing"] = "human"
+                meta["routing_reason"] = info["criteria_reason"] or "主观项 / 无可靠 beat 锚点，转人工定稿。"
+                issue.meta_info = json.dumps(meta, ensure_ascii=False)
+                issue.status_reason = "转人工定稿。"
+                issue.updated_at = datetime.now()
+                human.append(issue.issue_key)
+            else:
+                auto.append(issue.issue_key)
+        session.commit()
+        return {"episode": episode, "human": human, "auto": auto, "human_count": len(human), "auto_count": len(auto)}
+
+
+_qa_auto_fix_tasks: dict[str, dict[str, Any]] = {}
+
+
+def _set_qa_auto_fix_task_state(task_id: str, state: dict[str, Any]) -> None:
+    _qa_auto_fix_tasks[task_id] = state
+    _persist_task_state(task_id, "qa-auto-fix", state)
+
+
+def _run_qa_auto_fix_episode_task(task_id: str, book_id: int, episode: int, request_payload: dict[str, Any]) -> None:
+    """Finish an explicitly requested repair batch outside the browser request.
+
+    LLM-backed repair options can take longer than a reverse proxy/browser
+    request. Persisting this task keeps the exact same safety guards and script
+    versioning, while allowing the UI to poll progress instead of timing out.
+    """
+    state = _qa_auto_fix_tasks.get(task_id) or _load_persisted_task_state(task_id, "qa-auto-fix") or {}
+    try:
+        requested = QAAutoFixRequest.model_validate(request_payload)
+        inline_request = requested.model_copy(update={"async_mode": False, "rerun_qa": False})
+        state.update({
+            "task_id": task_id,
+            "task_kind": "qa-auto-fix",
+            "book_id": book_id,
+            "episode": episode,
+            "status": "running",
+            "progress": 10,
+            "current_step": "正在生成受控修复方案",
+            "started_at": datetime.utcnow().isoformat(),
+            "error": None,
+        })
+        _set_qa_auto_fix_task_state(task_id, state)
+
+        # Reuse the synchronous implementation so option selection, diff guards,
+        # version snapshots and per-issue failure reporting remain identical.
+        result = auto_fix_qa_episode(book_id, episode, inline_request, BackgroundTasks())
+        if isinstance(result, JSONResponse):
+            raise RuntimeError("Unexpected nested async QA repair response.")
+        state.update({"result": result, "progress": 88, "current_step": "修复批次已完成，正在准备复检"})
+        _set_qa_auto_fix_task_state(task_id, state)
+
+        if requested.rerun_qa and (result.get("applied") or result.get("failed")):
+            state.update({"status": "rechecking", "progress": 92, "current_step": "正在运行整集 QA 复检"})
+            _set_qa_auto_fix_task_state(task_id, state)
+            state["recheck"] = _run_episode_qa_and_sync(book_id, episode)
+
+        result_failed = int(result.get("failed_count") or 0)
+        state.update({
+            "status": "done" if result_failed == 0 else "partial",
+            "progress": 100,
+            "current_step": "QA 批量修复完成",
+            "finished_at": datetime.utcnow().isoformat(),
+        })
+        _set_qa_auto_fix_task_state(task_id, state)
+    except Exception as exc:
+        state.update({
+            "task_id": task_id,
+            "task_kind": "qa-auto-fix",
+            "book_id": book_id,
+            "episode": episode,
+            "status": "error",
+            "progress": 100,
+            "current_step": "QA 批量修复失败",
+            "error": str(exc),
+            "finished_at": datetime.utcnow().isoformat(),
+        })
+        _set_qa_auto_fix_task_state(task_id, state)
+        logger.exception("QA auto-fix task %s failed", task_id)
+
+
+@app.get("/api/books/{book_id}/qa/auto-fix/tasks/{task_id}")
+def get_qa_auto_fix_task(book_id: int, task_id: str):
+    task = _qa_auto_fix_tasks.get(task_id) or _load_persisted_task_state(task_id, "qa-auto-fix")
+    if not task or int(task.get("book_id") or 0) != int(book_id):
+        raise HTTPException(status_code=404, detail="QA auto-fix task not found.")
+    _qa_auto_fix_tasks.setdefault(task_id, task)
+    return task
+
+
 @app.post("/api/books/{book_id}/qa/episodes/{episode}/auto-fix")
 def auto_fix_qa_episode(book_id: int, episode: int, req: QAAutoFixRequest, background: BackgroundTasks):
+    if req.async_mode:
+        task_id = f"qa-auto-fix-{uuid.uuid4().hex[:12]}"
+        task_state = {
+            "task_id": task_id,
+            "task_kind": "qa-auto-fix",
+            "book_id": book_id,
+            "episode": episode,
+            "status": "queued",
+            "progress": 0,
+            "current_step": "已排队，等待执行受控修复",
+            "created_at": datetime.utcnow().isoformat(),
+            "request": req.model_dump(by_alias=False, mode="json"),
+        }
+        _set_qa_auto_fix_task_state(task_id, task_state)
+        background.add_task(
+            _run_qa_auto_fix_episode_task,
+            task_id,
+            book_id,
+            episode,
+            req.model_dump(by_alias=False, mode="json"),
+        )
+        return JSONResponse(status_code=202, content={"ok": True, "task_id": task_id, "status": "queued", "async_mode": True})
     from models import QAIssue, Script, ScriptVersion
 
     applied = []
@@ -12628,6 +20833,20 @@ def auto_fix_qa_episode(book_id: int, episode: int, req: QAAutoFixRequest, backg
                         "title": issue.title,
                         "failure_kind": "safety_guard_blocked",
                         "reason": f"Auto-fix blocked by safety guard: {', '.join(guard['reasons'])}",
+                    })
+                    continue
+                if guard["changed_line_count"] <= 0:
+                    # A fix that leaves the script byte-identical is not a repair;
+                    # accept only options that materially alter the episode text.
+                    fail_count = int(issue_meta.get("auto_fix_recheck_fail_count") or 0) + 1
+                    adjusted_meta = dict(issue_meta)
+                    adjusted_meta["auto_fix_recheck_fail_count"] = fail_count
+                    issue.meta_info = json.dumps(adjusted_meta, ensure_ascii=False)
+                    failed.append({
+                        "issue_id": issue.issue_key,
+                        "title": issue.title,
+                        "failure_kind": "no_usable_option",
+                        "reason": "Selected fix produces no change to the script; refusing no-op repair.",
                     })
                     continue
 

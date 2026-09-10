@@ -44,6 +44,17 @@ class ApiSecurityTests(unittest.TestCase):
 
         self.assertNotEqual(response.headers.get("access-control-allow-origin"), "https://evil.example")
 
+    def test_legacy_node_api_can_be_disabled_without_affecting_formal_health_api(self):
+        original_value = server.config.ENABLE_LEGACY_NODE_API
+        try:
+            server.config.ENABLE_LEGACY_NODE_API = False
+            response = self.client.get("/api/nodes/registry")
+            self.assertEqual(response.status_code, 410)
+            self.assertIn("Legacy node API is disabled", response.json()["detail"])
+            self.assertEqual(self.client.get("/health").status_code, 200)
+        finally:
+            server.config.ENABLE_LEGACY_NODE_API = original_value
+
     def test_upload_sanitizes_filename_and_stays_inside_upload_dir(self):
         original_dir = server.config.UPLOAD_DIR
         try:

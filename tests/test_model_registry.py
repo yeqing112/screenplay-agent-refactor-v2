@@ -8,7 +8,7 @@ from api.model_registry import (
     resolve_defaults,
     save_registry,
     serialize_registry_payload,
-    test_profile_connection,
+    test_profile_connection as run_profile_connection_test,
 )
 from models import get_kv, init_db, set_kv
 
@@ -208,6 +208,32 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload["defaults"]["video"], "video-minimax-h3-1")
         self.assertEqual(get_default_profile("video")["id"], "video-minimax-h3-1")
 
+    def test_save_registry_allows_75api_image_conditioned_h3_as_default(self):
+        payload = save_registry(
+            profiles=[
+                {
+                    "id": "video-75api-h3-1",
+                    "name": "75api MiniMax H3",
+                    "capability": "video",
+                    "provider": "75api-minimax-h3",
+                    "base_url": "https://www.75api.com",
+                    "model_name": "minimax_h3_no_audios",
+                    "default_params": {
+                        "task_modes": ["image_to_video", "reference_to_video"],
+                        "max_reference_images": 8,
+                        "supports_text_to_video": False,
+                        "supports_audio": False,
+                        "resolution": "768p",
+                    },
+                    "enabled": True,
+                    "api_key": "secret-test-key",
+                }
+            ],
+            defaults={"video": "video-75api-h3-1"},
+        )
+        self.assertEqual(payload["defaults"]["video"], "video-75api-h3-1")
+        self.assertEqual(get_default_profile("video")["model_name"], "minimax_h3_no_audios")
+
     def test_save_registry_allows_poyo_image_as_default(self):
         payload = save_registry(
             profiles=[
@@ -228,8 +254,65 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload["defaults"]["image"], "image-poyo-1")
         self.assertEqual(get_default_profile("image")["id"], "image-poyo-1")
 
+    def test_save_registry_allows_shapi_image_providers_as_default(self):
+        payload = save_registry(
+            profiles=[
+                {
+                    "id": "image-shapi-nano-1",
+                    "name": "SHAPI Nano Banana 2",
+                    "capability": "image",
+                    "provider": "shapi-gemini-image",
+                    "base_url": "https://shapi.vip",
+                    "model_name": "nano-banana-2",
+                    "default_params": {"image_size": "2K", "max_reference_images": 14},
+                    "enabled": True,
+                    "api_key": "secret-test-key",
+                },
+                {
+                    "id": "image-shapi-gpt-1",
+                    "name": "SHAPI GPT Image 2",
+                    "capability": "image",
+                    "provider": "shapi-openai-images",
+                    "base_url": "https://shapi.vip/v1",
+                    "model_name": "gpt-image-2",
+                    "default_params": {"size": "auto"},
+                    "enabled": True,
+                    "api_key": "secret-test-key",
+                },
+            ],
+            defaults={"image": "image-shapi-nano-1"},
+        )
+        self.assertEqual(payload["defaults"]["image"], "image-shapi-nano-1")
+        self.assertEqual(get_default_profile("image")["provider"], "shapi-gemini-image")
+        saved_gpt = next(item for item in payload["profiles"] if item["id"] == "image-shapi-gpt-1")
+        self.assertEqual(saved_gpt["provider"], "shapi-openai-images")
+
+    async def test_shapi_gemini_profile_test_reads_models_without_generating_an_image(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {"data": [{"id": "nano-banana-2"}]}
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "SHAPI Nano Banana 2",
+                    "capability": "image",
+                    "provider": "shapi-gemini-image",
+                    "base_url": "https://shapi.vip",
+                    "model_name": "nano-banana-2",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(mock_client.get.await_args.args[0], "https://shapi.vip/v1/models")
+        self.assertIn("未发起任何计费", result["message"])
+
     async def test_mock_profile_test_endpoint_returns_ok(self):
-        result = await test_profile_connection(profile_id="builtin-mock-image")
+        result = await run_profile_connection_test(profile_id="builtin-mock-image")
         self.assertTrue(result["ok"])
         self.assertEqual(result["profile"]["provider"], "prototype-task-adapter")
 
@@ -243,7 +326,7 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         mock_client.post.return_value = mock_response
 
         with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
-            result = await test_profile_connection(
+            result = await run_profile_connection_test(
                 profile_payload={
                     "name": "Embed Test",
                     "capability": "embedding",
@@ -258,7 +341,7 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["profile"]["default_params"]["dimension"], 4)
 
     async def test_real_video_profile_test_returns_blocked_message(self):
-        result = await test_profile_connection(
+        result = await run_profile_connection_test(
             profile_payload={
                 "name": "Video Blocked",
                 "capability": "video",
@@ -272,7 +355,7 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("尚未接入", result["message"])
 
     async def test_poyo_profile_test_returns_validation_only_message(self):
-        result = await test_profile_connection(
+        result = await run_profile_connection_test(
             profile_payload={
                 "name": "PoYo Image",
                 "capability": "image",
@@ -287,7 +370,7 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("扣费任务", result["message"])
 
     async def test_minimax_h3_profile_test_returns_validation_only_message(self):
-        result = await test_profile_connection(
+        result = await run_profile_connection_test(
             profile_payload={
                 "name": "MiniMax H3",
                 "capability": "video",
@@ -302,8 +385,38 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("MiniMax H3", result["message"])
         self.assertIn("不会发起真实扣费", result["message"])
 
+    async def test_75api_h3_profile_test_returns_image_conditioned_validation_message(self):
+        result = await run_profile_connection_test(
+            profile_payload={
+                "name": "75api MiniMax H3",
+                "capability": "video",
+                "provider": "75api-minimax-h3",
+                "base_url": "https://www.75api.com",
+                "model_name": "minimax_h3_no_audios",
+                "api_key": "secret-test-key",
+                "default_params": {"max_reference_images": 8, "supports_text_to_video": False},
+            }
+        )
+        self.assertTrue(result["ok"])
+        self.assertIn("75api MiniMax H3", result["message"])
+        self.assertIn("图片条件", result["message"])
+
+    async def test_75api_h3_profile_rejects_other_model_names(self):
+        with self.assertRaises(ValueError) as ctx:
+            await run_profile_connection_test(
+                profile_payload={
+                    "name": "75api H3 wrong model",
+                    "capability": "video",
+                    "provider": "75api-minimax-h3",
+                    "base_url": "https://www.75api.com",
+                    "model_name": "minimax_h3",
+                    "api_key": "secret-test-key",
+                }
+            )
+        self.assertIn("minimax_h3_no_audios", str(ctx.exception))
+
     async def test_profile_test_falls_back_to_payload_when_profile_id_is_missing(self):
-        result = await test_profile_connection(
+        result = await run_profile_connection_test(
             profile_id="missing-poyo-profile",
             profile_payload={
                 "id": "missing-poyo-profile",

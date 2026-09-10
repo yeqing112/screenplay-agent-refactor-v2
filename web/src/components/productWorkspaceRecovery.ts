@@ -335,6 +335,7 @@ export async function restartStoryboardRecoveryTask(input: {
   shotId: string
 }): Promise<CreativeTaskStatusPayload & { restarted_from_task_id?: string }> {
   if (input.kind === 'prompt') {
+    throw new Error('提示词恢复不会自动调用 LLM。请打开对应镜头的“受控 Prompt Compiler 草案”重新审核并创建版本。')
     const response = await fetch(`/api/books/${input.bookId}/storyboard/${input.episode}/${input.shotId}/compile-prompts/async`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

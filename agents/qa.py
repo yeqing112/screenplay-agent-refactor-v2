@@ -24,6 +24,31 @@ from models import Book, BookBible, CharacterProfile, QAResult, Script
 logger = logging.getLogger(__name__)
 
 
+# Scriptwriter output may use either Chinese or ASCII brackets, optionally
+# wrapped in Markdown emphasis.  Treat these as one scene-boundary grammar;
+# otherwise a valid `**[场景结束]**` or `[画面渐隐]` becomes a false QA defect.
+_SCENE_END_MARKER_RE = re.compile(
+    r"^\s*(?:\*{1,3}\s*)?[【\[]\s*(?:场景结束|画面渐隐|画面渐暗|淡出)\s*[】\]](?:\s*\*{1,3})?\s*$"
+)
+
+
+def _is_scene_end_marker(line: str) -> bool:
+    return bool(_SCENE_END_MARKER_RE.match(str(line or "").strip()))
+
+
+def _strip_terminal_markdown_emphasis(line: str) -> str:
+    """Read terminal punctuation from emphasized screenplay prose correctly."""
+    text = str(line or "").strip()
+    while len(text) >= 2 and text.startswith("*") and text.endswith("*"):
+        leading = len(text) - len(text.lstrip("*"))
+        trailing = len(text) - len(text.rstrip("*"))
+        trim = min(leading, trailing, 3)
+        if trim <= 0:
+            break
+        text = text[trim:-trim].strip()
+    return text
+
+
 def _qa_issue_items(result: dict) -> list[dict]:
     if not isinstance(result, dict):
         return []
@@ -475,8 +500,8 @@ class QAAgent(BaseAgent):
         LINE_TYPE_SCHEMAS = {
             "scene_header": lambda l: bool(re.match(r'^##\s*场景', l)),
             "separator": lambda l: l == "---",
-            "stage_direction": lambda l: l.startswith("*") or l.startswith("**["),
-            "scene_marker": lambda l: any(m in l for m in ["【场景开始】", "【场景结束】", "[画面渐隐]", "[画面渐暗]", "[淡出]"]),
+            "scene_marker": _is_scene_end_marker,
+            "stage_direction": lambda l: l.startswith("*"),
             "dialogue": lambda l: bool(re.match(r'^\*\*[^*]+\*\*[：:]', l)),
             "action": lambda l: bool(re.match(r'^\*[^*]+\*$', l)),
             "description": lambda l: True,  # Default type
@@ -495,8 +520,10 @@ class QAAgent(BaseAgent):
             scene_text = script_content[start:end]
             scene_label = f"场景{i + 1}"
 
-            # 1. Check scene end marker
-            if "【场景结束】" not in scene_text:
+            # 1. Check scene end marker.  A scene can end with the canonical
+            # marker or a valid fade-out marker; both are stable compiler-layer
+            # boundaries and neither should be rewritten merely for glyph style.
+            if not any(_is_scene_end_marker(line) for line in scene_text.splitlines()):
                 issues.append({
                     "type": "format",
                     "severity": "medium",
@@ -563,7 +590,8 @@ class QAAgent(BaseAgent):
             if last_type not in VALID_ENDING_TYPES:
                 # Additional check: does it end with valid punctuation?
                 valid_punct = set("。！？）】」』…\u2026.!?)\"\u201d\u2019")
-                ends_with_punct = last_content[-1] in valid_punct if last_content else True
+                terminal_content = _strip_terminal_markdown_emphasis(last_content)
+                ends_with_punct = terminal_content[-1] in valid_punct if terminal_content else True
                 
                 if not ends_with_punct:
                     issues.append({

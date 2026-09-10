@@ -41,7 +41,7 @@ class StoryboardPromptAuthorityContextTests(unittest.TestCase):
                 makeup_spec="Pale complexion, tired eyes, muted lips.",
                 scene_prompt_zh="Scene influence only: cold rain outside the doorway.",
                 consistency_notes="All six views must remain the same person with stable character identity.",
-                meta_info='{"scope":"shot_variant","structured_result":{"identity":"Sister","temperament":"calm, guarded","variant_name":"doorway rain state","shot_ids":["1"]}}',
+                meta_info='{"scope":"shot_variant","structured_result":{"identity":"Sister","temperament":"calm, guarded","gender":"女性","variant_name":"doorway rain state","shot_ids":["1"]}}',
             )
             session.add(character)
             session.flush()
@@ -167,6 +167,8 @@ class StoryboardPromptAuthorityContextTests(unittest.TestCase):
         self.assertTrue(any(item["key"] == "refined_outfit" for item in character["authority_prompt_parts"]))
         self.assertTrue(any(item["key"] == "consistency_notes" for item in character["authority_prompt_parts"]))
         self.assertEqual(character["canonical_prompt_profile"]["identity"], "Sister")
+        self.assertEqual(character["gender"], "女性")
+        self.assertEqual(character["canonical_prompt_profile"]["gender"], "女性")
         self.assertIn("Dark casual clothing soaked by rain", character["canonical_prompt_profile"]["outfit"])
         self.assertIn("jacket clinging to the body", character["canonical_prompt_profile"]["outfit"])
         self.assertTrue(any(item["key"] == "canonical_outfit" for item in character["authority_prompt_parts"]))

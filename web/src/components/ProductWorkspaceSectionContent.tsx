@@ -1,13 +1,14 @@
 import { lazy, Suspense } from 'react'
 import type { RecoveryFocusContext } from './productWorkspaceAssetViewController'
 import type { CanvasHandoffTarget, ProductWorkspaceSectionContentProps } from './productWorkspaceSectionContracts'
+import { buildProjectStageProjectionFromAction } from './productWorkspaceProgress'
+import { ProductWorkspaceProjectStageStrip } from './ProductWorkspaceProjectStageStrip'
 import WorkspaceSectionErrorBoundary from './WorkspaceSectionErrorBoundary'
 
 const ProductWorkspaceAdaptationSection = lazy(() => import('./ProductWorkspaceAdaptationSection'))
 const ProductWorkspaceAssetsSection = lazy(() => import('./ProductWorkspaceAssetsSection'))
 const ProductWorkspaceCanvasBetaSection = lazy(() => import('./ProductWorkspaceCanvasBetaSection'))
 const ProductWorkspaceContentSection = lazy(() => import('./ProductWorkspaceContentSection'))
-const CharacterQAPanel = lazy(() => import('./CharacterQAPanel'))
 const ProductWorkspaceDashboardSection = lazy(() => import('./ProductWorkspaceDashboardSection'))
 const ProductWorkspaceDeliverySection = lazy(() => import('./ProductWorkspaceDeliverySection'))
 const ProductWorkspaceModelsSection = lazy(() => import('./ProductWorkspaceModelsSection'))
@@ -109,8 +110,19 @@ export default function ProductWorkspaceSectionContent({
   delivery,
   preview,
 }: ProductWorkspaceSectionContentProps) {
+  const projectStage = dashboard.dashboardActions[0]
+    ? buildProjectStageProjectionFromAction(dashboard.dashboardActions[0])
+    : null
+
   return (
     <Suspense fallback={<SectionLoadingFallback />}>
+      {section !== 'dashboard' && projectStage ? (
+        <ProductWorkspaceProjectStageStrip
+          projection={projectStage}
+          activeSection={section}
+          onNavigate={(target) => dashboard.onNavigateSection(target)}
+        />
+      ) : null}
       {section === 'dashboard' ? (
         <ProductWorkspaceDashboardSection
           summary={{
@@ -184,7 +196,21 @@ export default function ProductWorkspaceSectionContent({
       ) : null}
 
       {section === 'characters' ? (
-        <CharacterQAPanel bookId={scripts.bookId} />
+        <WorkspaceSectionErrorBoundary sectionLabel="人物检查">
+          <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+            <div className="text-sm font-medium text-white">人物检查已并入资产中心</div>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+              人物一致性、别名归并和性别冲突属于低频的专家检查。请在资产中心选中任一人物资产，再展开“高级：人物一致性检查”。
+            </p>
+            <button
+              type="button"
+              onClick={() => dashboard.onNavigateSection('assets')}
+              className="mt-4 rounded-lg border border-sky-500/50 bg-sky-500/10 px-3 py-2 text-sm font-medium text-sky-100 transition hover:border-sky-400 hover:text-white"
+            >
+              前往资产中心
+            </button>
+          </div>
+        </WorkspaceSectionErrorBoundary>
       ) : null}
 
       {section === 'scripts' ? (
@@ -281,6 +307,7 @@ export default function ProductWorkspaceSectionContent({
             onGenerateAssetReference={assets.onGenerateAssetReference}
             onDeleteReferenceAsset={assets.onDeleteReferenceAsset}
             onUpdateReferenceAssetStatus={assets.onUpdateReferenceAssetStatus}
+            onRefreshAll={assets.onRefreshAll}
             onNavigateSection={assets.onNavigateSection}
             onNavigateTaskSection={assets.onNavigateTaskSection}
             onNavigateShot={assets.onNavigateAssetShot}

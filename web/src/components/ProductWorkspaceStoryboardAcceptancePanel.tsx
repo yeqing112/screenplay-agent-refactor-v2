@@ -172,6 +172,8 @@ export function ProductWorkspaceStoryboardAcceptancePanel({
           </button>
           {acceptanceMessage ? (
             <div
+              role="status"
+              aria-live="polite"
               className={`rounded-lg border px-3 py-2 text-xs ${
                 acceptanceState === 'error'
                   ? 'border-rose-500/20 bg-rose-500/5 text-rose-200'

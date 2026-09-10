@@ -604,7 +604,12 @@ def validate_clone_repair_sample(source_book_id: int, source_episode: int, sourc
         with patch("core.llm.call_llm_json", return_value=mock_payload):
             compile_response = client.post(
                 f"/api/books/{TEMP_BOOK_ID}/storyboard/{clone['episode']}/{clone['shot_id']}/compile-prompts",
-                json={"compileReason": "clone-quality-repair", "force": True},
+                json={
+                    "compileReason": "clone-quality-repair",
+                    "force": True,
+                    "confirmed": True,
+                    "allowExternalCall": True,
+                },
             )
         if compile_response.status_code != 200:
             raise RuntimeError(f"Compile failed: {compile_response.status_code} {compile_response.text}")

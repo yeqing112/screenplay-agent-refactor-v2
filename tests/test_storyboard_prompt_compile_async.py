@@ -158,7 +158,7 @@ class StoryboardPromptCompileAsyncTests(unittest.TestCase):
         with patch("core.llm.call_llm_json", return_value=self._valid_llm_payload()):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/compile-prompts/async",
-                json={"compileReason": "async-test"},
+                json={"compileReason": "async-test", "confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)

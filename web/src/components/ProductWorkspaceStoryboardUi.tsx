@@ -103,7 +103,7 @@ export function StoryboardGateStrip({
       <summary className="cursor-pointer list-none">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <div className="text-sm font-medium text-white">上游放行</div>
+            <div className="text-sm font-medium text-white">上游放行状态</div>
             <StatusPill tone={gate.status === 'ready' ? 'emerald' : 'rose'}>
               {gate.status === 'ready' ? '已放行' : '未放行'}
             </StatusPill>
@@ -189,6 +189,7 @@ export function DirectorShotLanguageEditor({
   saveState,
   saveMessage,
   canSave,
+  readOnly = false,
   onDraftChange,
   onSaveAndRecompile,
   onRestoreSystemVersion,
@@ -199,6 +200,7 @@ export function DirectorShotLanguageEditor({
   saveState: 'idle' | 'saving' | 'saved' | 'error'
   saveMessage: string
   canSave: boolean
+  readOnly?: boolean
   onDraftChange: (value: string) => void
   onSaveAndRecompile: () => void | Promise<void>
   onRestoreSystemVersion: () => void | Promise<void>
@@ -217,14 +219,17 @@ export function DirectorShotLanguageEditor({
       <textarea
         value={draft}
         onChange={(event) => onDraftChange(event.target.value)}
+        readOnly={readOnly}
         placeholder="请先加载导出预览，系统会生成可编辑的导演分镜语言。"
         className="mt-3 min-h-32 w-full rounded-lg border border-cyan-500/20 bg-slate-950 px-3 py-2 text-xs leading-6 text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-cyan-500"
       />
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
         <div className={`text-xs ${saveState === 'error' ? 'text-rose-200' : 'text-slate-500'}`}>
-          {saveMessage || '提示：这里保存的是导演语言覆盖层，最终生产仍会先编译为机器语言。'}
+          {readOnly
+            ? '上游剧本尚未放行：当前仅可查看导演分镜语言，完成放行后才能编辑并重新编译。'
+            : saveMessage || '提示：这里保存的是导演语言覆盖层，最终生产仍会先编译为机器语言。'}
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        {!readOnly ? <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => { void onSaveAndRecompile() }}
@@ -244,7 +249,7 @@ export function DirectorShotLanguageEditor({
               恢复系统版
             </button>
           </details>
-        </div>
+        </div> : null}
       </div>
     </div>
   )

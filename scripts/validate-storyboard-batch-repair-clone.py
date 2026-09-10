@@ -415,14 +415,37 @@ def repair_clone_sample(client: TestClient, sample: dict[str, Any]) -> dict[str,
     try:
         mock_payload = helper.build_mock_llm_payload(sample["episode"], sample["shot_id"])
         with patch("core.llm.call_llm_json", return_value=mock_payload):
+            # The compiler now has a mandatory two-factor external-call gate.
+            # This clone run is still fully local because call_llm_json is
+            # patched above, but it must carry the same explicit consent fields
+            # as the production route so the dry-run stays protocol-compatible.
             response = client.post(
                 f"/api/books/{helper.TEMP_BOOK_ID}/storyboard/{clone['episode']}/{clone['shot_id']}/compile-prompts",
-                json={"compileReason": "batch-clone-quality-repair", "force": True},
+                json={
+                    "compileReason": "batch-clone-quality-repair",
+                    "force": True,
+                    "confirmed": True,
+                    "allowExternalCall": True,
+                },
             )
-        if response.status_code != 200:
-            raise RuntimeError(f"Compile failed: {response.status_code} {response.text}")
-
-        compiled = response.json()
+        compiled = response.json() if response.content else {}
+        repair_blocked = response.status_code != 200
+        if repair_blocked:
+            # A modern compiler can fail closed with a structured 422 when a
+            # candidate still violates a production diagnostic.  Preserve that
+            # candidate and diagnostics in the dry-run report instead of
+            # crashing the entire batch preflight.  No real project is mutated
+            # by this clone command, and the caller can review the exact
+            # remaining blockers before deciding on a human-confirmed repair.
+            detail = compiled.get("detail") if isinstance(compiled, dict) else None
+            if isinstance(detail, dict):
+                compiled = {
+                    "compiler_diagnostics": detail.get("compiler_diagnostics") or {},
+                    "candidate_output": detail.get("candidate_output") or {},
+                    "blocked_message": detail.get("message") or "compile blocked",
+                }
+            else:
+                raise RuntimeError(f"Compile failed: {response.status_code} {response.text}")
         with Session() as session:
             repaired_shot = (
                 session.query(StoryboardShot)
@@ -438,12 +461,22 @@ def repair_clone_sample(client: TestClient, sample: dict[str, Any]) -> dict[str,
             repaired_meta = helper.safe_json_loads(repaired_shot.meta_info, {})
 
         after_audit = audit_snapshot(
-            static_prompt=compiled.get("prompt_static") or repaired_shot.visual_prompt_static,
-            motion_prompt=compiled.get("prompt_motion") or repaired_shot.visual_prompt_motion,
+            static_prompt=(compiled.get("prompt_static")
+                           or compiled.get("candidate_output", {}).get("visual_prompt_static")
+                           or repaired_shot.visual_prompt_static),
+            motion_prompt=(compiled.get("prompt_motion")
+                           or compiled.get("candidate_output", {}).get("visual_prompt_motion")
+                           or repaired_shot.visual_prompt_motion),
             scene_name=repaired_shot.scene_name,
             structured=structured_from_meta(repaired_meta),
             diagnostics=compiled.get("compiler_diagnostics") if isinstance(compiled.get("compiler_diagnostics"), dict) else {},
         )
+        if repair_blocked:
+            # No version was written when the compiler failed closed.  The
+            # candidate diagnostics are retained above, while the before/after
+            # quality comparison must not double-count those diagnostics as a
+            # second set of persisted errors.
+            after_audit = sample["source_audit"]
 
         rollback_response = client.post(
             f"/api/books/{helper.TEMP_BOOK_ID}/storyboard/{clone['episode']}/{clone['shot_id']}/prompt-versions/{clone['baseline_version_id']}/rollback",
@@ -477,6 +510,8 @@ def repair_clone_sample(client: TestClient, sample: dict[str, Any]) -> dict[str,
             **sample,
             "after_audit": after_audit,
             "repaired_version": compiled.get("version"),
+            "repair_blocked": repair_blocked,
+            "blocked_message": compiled.get("blocked_message") if repair_blocked else None,
             "diagnostics_status": compiled.get("compiler_diagnostics", {}).get("status")
             if isinstance(compiled.get("compiler_diagnostics"), dict)
             else None,
@@ -491,6 +526,7 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     before_warnings = sum(len(item["source_audit"]["warnings"]) for item in results)
     after_errors = sum(len(item["after_audit"]["issues"]) for item in results)
     after_warnings = sum(len(item["after_audit"]["warnings"]) for item in results)
+    repair_blocked = sum(1 for item in results if item.get("repair_blocked"))
     return {
         "samples": len(results),
         "before_errors": before_errors,
@@ -499,6 +535,7 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
         "after_warnings": after_warnings,
         "error_reduction": before_errors - after_errors,
         "warning_reduction": before_warnings - after_warnings,
+        "repair_blocked": repair_blocked,
     }
 
 

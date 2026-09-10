@@ -57,6 +57,15 @@ describe('ProductWorkspaceContentSection', () => {
     expect(html).toContain('已接入正式内容')
     expect(html).toContain('24 章 / 约 8.6 万字')
     expect(html).toContain('可以继续进入改编方向')
+    expect(html).toContain('高级：更换内容或导入新的小说')
+    expect(html).not.toContain('<details open=""')
+  })
+
+  it('keeps first-time import controls open until a content foundation exists', () => {
+    const html = renderSection()
+
+    expect(html).toContain('<details open=""')
+    expect(html).toContain('导入小说，建立内容基础')
   })
 
   it('disables submit actions and surfaces preflight hints when draft inputs are incomplete', () => {

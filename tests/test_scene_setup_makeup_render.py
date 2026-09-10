@@ -97,6 +97,29 @@ class SceneSetupMakeupRenderTests(unittest.TestCase):
         self.assertNotIn("episode_1_default", prompt)
         self.assertNotIn("人物分镜精调定妆设定板", prompt)
 
+    def test_concrete_outfit_prompt_overrides_generic_state_label(self):
+        result = {
+            "scope": "episode_default",
+            "stage_name": "episode_1_default",
+            "variant_name": "第1集默认造型",
+            "core_prompt_zh": "青年女性，五官清晰",
+            "refined_outfit": "符合继承人身份的基础服装，材质朴素",
+            "outfit_prompt_zh": "洗得发白的牛仔外套，内搭简约T恤，深色修身牛仔裤，平底短靴",
+            "refined_accessories": "无明显配饰",
+            "hair_style": "黑色长发扎成马尾",
+            "makeup_spec": "淡妆或素颜",
+            "age": "青年(18-35)",
+            "region": "中国",
+            "gender": "女性",
+            "identity": "继承人",
+            "temperament": "谨慎",
+        }
+
+        prompt = self.agent._render_makeup_prompt_from_result("角色", 1, self.profile, result)
+
+        self.assertIn("洗得发白的牛仔外套", prompt)
+        self.assertIn("深色修身牛仔裤", prompt)
+
     def test_base_identity_prompt_uses_profile_age_range_when_result_age_missing(self):
         profile = SimpleNamespace(
             precise_age=None,

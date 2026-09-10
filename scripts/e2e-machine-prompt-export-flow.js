@@ -4,9 +4,15 @@ const { chromium } = require("playwright");
 
 const ROOT_DIR = process.cwd();
 const WEB_DIR = path.join(ROOT_DIR, "web");
-const API_URL = process.env.E2E_API_URL || "http://127.0.0.1:8765";
-const WEB_URL = process.env.E2E_WEB_URL || "http://127.0.0.1:5173";
+// Keep this self-managed browser regression isolated from the formal local
+// workspace ports (18765/5175) and from common browser tooling (8765).  Both
+// URLs remain overridable so callers can explicitly exercise an already
+// running environment with E2E_START_SERVERS=0.
+const API_URL = process.env.E2E_API_URL || "http://127.0.0.1:18769";
+const WEB_URL = process.env.E2E_WEB_URL || "http://127.0.0.1:5177";
 const START_SERVERS = process.env.E2E_START_SERVERS !== "0";
+const API_PORT = Number(new URL(API_URL).port || 80);
+const WEB_PORT = Number(new URL(WEB_URL).port || 80);
 const BOOK_ID = Number(process.env.E2E_MACHINE_PROMPT_BOOK_ID || 75);
 const BOOK_TITLE = process.env.E2E_MACHINE_PROMPT_BOOK_TITLE || "深夜便利店";
 const EPISODE = Number(process.env.E2E_MACHINE_PROMPT_EPISODE || 1);
@@ -350,8 +356,11 @@ async function runFlow() {
 async function main() {
   if (START_SERVERS) {
     log("Starting backend and frontend servers...");
-    spawnManaged("python", ["-m", "api.server"], { name: "api" });
-    spawnManaged("npx", ["vite", "--host", "127.0.0.1", "--port", "5173", "--strictPort"], {
+    spawnManaged("python", ["-m", "uvicorn", "api.server:app", "--host", "127.0.0.1", "--port", String(API_PORT)], {
+      name: "api",
+      env: { E2E_STORYBOARD_PROMPT_MOCK: "1" },
+    });
+    spawnManaged("npx", ["vite", "--host", "127.0.0.1", "--port", String(WEB_PORT), "--strictPort"], {
       cwd: WEB_DIR,
       name: "vite",
       env: { VITE_API_PROXY_TARGET: API_URL },

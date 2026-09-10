@@ -92,6 +92,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
   } = options
 
   if (action === 'batch-compile-prompts') {
+    throw new Error('批量直接重编译已停用：请逐镜使用“受控 Prompt Compiler 草案”审核并确认，避免批量隐式调用 LLM。')
     const executableShots = Object.entries(shotsByEpisode)
       .flatMap(([episode, shots]) =>
         shots

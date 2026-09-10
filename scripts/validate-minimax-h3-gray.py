@@ -5,7 +5,8 @@ Default behavior is dry-run only:
 - reads one real storyboard shot
 - loads its MiniMax H3 machine-prompt export through the backend read-only API
 - checks video model/provider readiness
-- resolves the adopted first frame when available
+- resolves compiled multi-reference images when available
+- keeps adopted first frame as an optional compatibility fallback
 - writes a JSON/Markdown preflight report
 
 It does not register a task, call MiniMax, or write storyboard assets unless all
@@ -39,6 +40,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from api.generation_adapters import ModelProfileError, resolve_generation_profile
+from api.model_registry import MINIMAX_H3_75API_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER
 from api.server import app
 from core import safe_json_loads
 from core.public_asset_storage import check_public_url_accessible, ensure_provider_accessible_url, public_asset_storage_enabled
@@ -212,8 +214,7 @@ def select_gray_candidate(book_ids: list[int], client: TestClient | None = None)
         for shot in rows:
             first_frame = find_first_frame(shot)
             first_frame_url = _asset_url(first_frame)
-            if not first_frame_url:
-                continue
+            reference_image_count = 0
             asset_links = safe_json_loads(shot.asset_links, {}) if shot.asset_links else {}
             videos = asset_links.get("videos") if isinstance(asset_links, dict) else []
             if not isinstance(videos, list):
@@ -233,13 +234,18 @@ def select_gray_candidate(book_ids: list[int], client: TestClient | None = None)
             if client is not None:
                 try:
                     export_payload = load_machine_prompt_export(client, int(shot.book_id), int(shot.episode or 1), int(shot.shot_id))
+                    reference_image_count = len(reference_images_from_export_payload(export_payload))
                     prompt = str(h3_fields(export_payload).get("integrated_multimodal_description") or "").strip()
                     prompt_length = len(prompt)
                     prompt_has_legacy_markers = _has_legacy_director_markers(prompt)
                     prompt_has_safety_risk = _has_gray_sample_safety_risk(prompt)
                 except Exception:
                     prompt_has_legacy_markers = True
+            if not reference_image_count and not first_frame_url:
+                continue
             score = 0
+            if reference_image_count:
+                score += 220 + min(reference_image_count, 9) * 10
             if is_external_http:
                 score += 100
             if first_frame_url_accessible:
@@ -264,6 +270,7 @@ def select_gray_candidate(book_ids: list[int], client: TestClient | None = None)
                     "episode": int(shot.episode or 1),
                     "shot_id": int(shot.shot_id),
                     "scene_name": str(shot.scene_name or ""),
+                    "reference_image_count": reference_image_count,
                     "first_frame_asset_id": str(first_frame.get("id") or "") if isinstance(first_frame, dict) else "",
                     "first_frame_url": first_frame_url,
                     "has_existing_video": has_existing_video,
@@ -300,6 +307,74 @@ def h3_fields(export_payload: dict[str, Any]) -> dict[str, Any]:
     h3 = model_exports.get("minimax-h3") if isinstance(model_exports.get("minimax-h3"), dict) else {}
     fields = h3.get("fields") if isinstance(h3.get("fields"), dict) else {}
     return fields
+
+
+def reference_images_from_export_payload(export_payload: dict[str, Any]) -> list[dict[str, Any]]:
+    candidates = [
+        export_payload.get("reference_images"),
+        export_payload.get("referenceImages"),
+        export_payload.get("machine_prompt", {}).get("reference_images") if isinstance(export_payload.get("machine_prompt"), dict) else None,
+        export_payload.get("prompt_compiler", {}).get("reference_images") if isinstance(export_payload.get("prompt_compiler"), dict) else None,
+        export_payload.get("model_exports", {}).get("minimax-h3", {}).get("reference_images") if isinstance(export_payload.get("model_exports"), dict) and isinstance(export_payload.get("model_exports", {}).get("minimax-h3"), dict) else None,
+    ]
+    for candidate in candidates:
+        if not isinstance(candidate, list):
+            continue
+        cleaned = [
+            item
+            for item in candidate
+            if isinstance(item, dict) and str(item.get("image_url") or item.get("imageUrl") or item.get("url") or "").strip()
+        ]
+        if cleaned:
+            return cleaned
+    return []
+
+
+def provider_ready_reference_images(
+    reference_images: list[dict[str, Any]],
+    *,
+    publish: bool,
+    key_prefix: str,
+    max_images: int = 9,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    ready_images: list[dict[str, Any]] = []
+    public_assets: list[dict[str, Any]] = []
+    for index, item in enumerate(reference_images[:max(int(max_images), 1)], start=1):
+        source_url = str(item.get("image_url") or item.get("imageUrl") or item.get("url") or "").strip()
+        if not source_url:
+            continue
+        if publish:
+            public_asset = ensure_provider_accessible_url(
+                source_url,
+                key_hint=f"{key_prefix}-reference-{index}",
+            ).to_dict()
+        elif source_url.startswith(("http://", "https://")):
+            accessible, error = check_public_url_accessible(source_url)
+            public_asset = {
+                "ok": accessible,
+                "source_url": source_url,
+                "public_url": source_url if accessible else "",
+                "uploaded": False,
+                "signed": False,
+                "source_accessible": accessible,
+                "error": error,
+            }
+        else:
+            public_asset = {
+                "ok": False,
+                "source_url": source_url,
+                "public_url": "",
+                "uploaded": False,
+                "signed": False,
+                "source_accessible": False,
+                "error": "not_public_http_url",
+            }
+        public_assets.append(public_asset)
+        if public_asset.get("ok"):
+            ready = dict(item)
+            ready["image_url"] = str(public_asset.get("public_url") or source_url).strip()
+            ready_images.append(ready)
+    return ready_images, public_assets
 
 
 def effective_video_profile(model_profile_id: str = "") -> tuple[dict[str, Any] | None, str]:
@@ -340,7 +415,18 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
     export_payload = load_machine_prompt_export(client, args.book_id, args.episode, args.shot_id)
     fields = h3_fields(export_payload)
     prompt = str(fields.get("integrated_multimodal_description") or "").strip()
+    profile, profile_error = effective_video_profile(args.model_profile_id)
+    profile_summary = public_profile_summary(profile, profile_error)
+    provider_name = str(profile.get("provider") or "").strip() if profile else ""
+    provider_reference_limit = 8 if provider_name == MINIMAX_H3_75API_PROVIDER else 9
     duration_info = resolve_h3_duration_seconds(args, shot)
+    reference_images = reference_images_from_export_payload(export_payload) if args.use_reference_images else []
+    reference_images_ready, reference_public_assets = provider_ready_reference_images(
+        reference_images,
+        publish=bool(args.publish_reference_images),
+        key_prefix=f"book-{args.book_id}-episode-{args.episode}-shot-{args.shot_id}",
+        max_images=provider_reference_limit,
+    )
     first_frame = find_first_frame(shot, args.first_frame_asset_id) if args.use_first_frame else None
     first_frame_url = ""
     first_frame_public_asset: dict[str, Any] = {}
@@ -376,9 +462,6 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
                 "error": "not_public_http_url",
             }
 
-    profile, profile_error = effective_video_profile(args.model_profile_id)
-    profile_summary = public_profile_summary(profile, profile_error)
-
     blockers: list[str] = []
     warnings: list[str] = []
     if not prompt:
@@ -391,20 +474,43 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
         warnings.append("h3_prompt_contains_legacy_director_markers")
     if not profile:
         blockers.append("missing_video_model_profile")
-    elif profile_summary["provider"] != "minimax-h3-async":
-        blockers.append("video_profile_is_not_minimax_h3_async")
+    elif profile_summary["provider"] not in {MINIMAX_H3_ASYNC_PROVIDER, MINIMAX_H3_75API_PROVIDER}:
+        blockers.append("video_profile_is_not_supported_h3_provider")
     elif not profile_summary["api_key_configured"]:
         blockers.append("minimax_h3_api_key_missing")
     if profile and not str(profile.get("base_url") or "").strip():
         blockers.append("minimax_h3_base_url_missing")
-    if args.use_first_frame and not first_frame:
-        warnings.append("no_adopted_first_frame_found_will_use_text_to_video")
+    if args.use_reference_images and not reference_images:
+        if provider_name == MINIMAX_H3_75API_PROVIDER:
+            blockers.append("no_compiled_reference_images_for_75api_h3")
+        else:
+            warnings.append("no_compiled_reference_images_found_will_fallback_to_first_frame_or_text")
+    elif args.use_reference_images and len(reference_images) > provider_reference_limit:
+        blockers.append("compiled_reference_images_exceed_provider_limit")
+    elif args.use_reference_images and len(reference_images_ready) != len(reference_images[:provider_reference_limit]):
+        blockers.append("compiled_reference_images_not_provider_accessible")
+        if public_asset_storage_enabled() and not args.publish_reference_images:
+            warnings.append("qiniu_public_asset_storage_configured_but_publish_reference_images_flag_not_enabled")
+    if reference_images_ready:
+        pass
+    elif args.use_first_frame and not first_frame:
+        if provider_name == MINIMAX_H3_75API_PROVIDER:
+            blockers.append("no_adopted_first_frame_for_75api_h3")
+        else:
+            warnings.append("no_adopted_first_frame_found_will_use_text_to_video")
     elif args.use_first_frame and not first_frame_url:
         blockers.append("selected_first_frame_has_no_url")
     elif args.use_first_frame and first_frame_url and not first_frame_public_asset.get("ok"):
         blockers.append("selected_first_frame_url_not_provider_accessible")
         if public_asset_storage_enabled() and not args.publish_first_frame:
             warnings.append("qiniu_public_asset_storage_configured_but_publish_first_frame_flag_not_enabled")
+
+    if provider_name == MINIMAX_H3_75API_PROVIDER:
+        raw_duration = duration_info.get("raw_duration_seconds")
+        if raw_duration is not None and not 5 <= int(raw_duration) <= 15:
+            blockers.append("75api_h3_duration_must_be_5_to_15_seconds")
+        if not reference_images_ready and not first_frame_public_asset.get("ok"):
+            blockers.append("75api_h3_requires_reference_or_first_frame_image")
 
     whitelist = parse_whitelist(os.environ.get("MINIMAX_H3_GRAY_WHITELIST", ""))
     current_target = target_key(args.book_id, args.episode, args.shot_id)
@@ -442,12 +548,21 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
             "duration_seconds": duration_info["duration_seconds"],
             "duration_source": duration_info,
             "aspect_ratio": args.aspect_ratio,
+            "use_reference_images": bool(args.use_reference_images),
+            "reference_image_count": len(reference_images),
+            "provider_reference_image_count": len(reference_images_ready),
+            "reference_asset_ids": [
+                str(item.get("reference_asset_id") or item.get("referenceAssetId") or item.get("asset_id") or "").strip()
+                for item in reference_images_ready
+                if str(item.get("reference_asset_id") or item.get("referenceAssetId") or item.get("asset_id") or "").strip()
+            ],
+            "reference_public_assets": reference_public_assets,
             "use_first_frame": bool(args.use_first_frame),
             "first_frame_asset_id": str(first_frame.get("id") or "") if isinstance(first_frame, dict) else "",
             "first_frame_url": first_frame_url,
             "provider_first_frame_url": final_first_frame_url if first_frame_public_asset.get("ok") else "",
             "first_frame_public_asset": first_frame_public_asset,
-            "task_mode": "image_to_video" if first_frame_public_asset.get("ok") else "text_to_video",
+            "task_mode": "reference_to_video" if reference_images_ready else "image_to_video" if first_frame_public_asset.get("ok") else "text_to_video",
             "api_submission": True,
             "actual_provider_submission": bool(safety["will_submit"]),
         },
@@ -497,8 +612,9 @@ def submit_real(client: TestClient, args: argparse.Namespace, report: dict[str, 
         "confirmationToken": CONFIRMATION_TOKEN,
         "durationSeconds": report["submission"]["duration_seconds"],
         "aspectRatio": args.aspect_ratio,
+        "useReferenceImages": bool(args.use_reference_images),
         "useFirstFrame": bool(args.use_first_frame),
-        "notes": "MiniMax H3 gray validation: confirmed real provider submission.",
+        "notes": "MiniMax H3 gray validation: confirmed real provider submission; reference-image mode preferred.",
     }
     if args.model_profile_id:
         body["modelProfileId"] = args.model_profile_id
@@ -534,7 +650,8 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Prompt 长度：{submission.get('prompt_length')}",
         f"- 时长：{submission.get('duration_seconds')}s（{(submission.get('duration_source') or {}).get('source_label') or '-'}）",
         f"- 任务模式：{submission.get('task_mode')}",
-        f"- 首帧：{submission.get('first_frame_asset_id') or '无，文生视频'}",
+        f"- 参考图：{submission.get('provider_reference_image_count')}/{submission.get('reference_image_count')} 张可提交",
+        f"- 首帧兜底：{submission.get('first_frame_asset_id') or '无'}",
         f"- 首帧可访问：{(submission.get('first_frame_public_asset') or {}).get('ok')}",
         f"- Provider 首帧 URL：{submission.get('provider_first_frame_url') or '-'}",
         f"- 模型配置：{profile.get('id') or '-'} / {profile.get('provider') or '-'} / {profile.get('model_name') or '-'}",
@@ -564,6 +681,7 @@ def render_markdown(report: dict[str, Any]) -> str:
                 "## 自动候选选择",
                 "",
                 f"- 候选总数：{candidate_selection.get('candidate_count')}",
+                f"- 参考图数量：{candidate_selection.get('reference_image_count')}",
                 f"- 选中首帧：{candidate_selection.get('first_frame_asset_id')}",
                 f"- 外部 URL：{candidate_selection.get('is_external_http')}",
                 f"- 首帧 URL 可访问：{candidate_selection.get('first_frame_url_accessible')}",
@@ -630,6 +748,9 @@ def main() -> int:
     parser.add_argument("--duration-seconds", type=int, default=None)
     parser.add_argument("--aspect-ratio", default="16:9")
     parser.add_argument("--first-frame-asset-id", default="")
+    parser.add_argument("--no-reference-images", dest="use_reference_images", action="store_false")
+    parser.set_defaults(use_reference_images=True)
+    parser.add_argument("--publish-reference-images", action="store_true", help="Publish compiled reference images through configured public asset storage before preflight/real submit.")
     parser.add_argument("--no-first-frame", dest="use_first_frame", action="store_false")
     parser.set_defaults(use_first_frame=True)
     parser.add_argument("--publish-first-frame", action="store_true", help="Publish the first frame through configured public asset storage before preflight/real submit.")

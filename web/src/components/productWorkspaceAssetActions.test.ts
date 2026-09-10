@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { resolveAssetReferenceShotTarget } from './productWorkspaceAssetActions'
+import { buildAssetGenerationReferenceImages, resolveAssetReferenceShotTarget } from './productWorkspaceAssetActions'
 
 describe('resolveAssetReferenceShotTarget', () => {
   it('prefers explicit shot ids when the asset already has saved bindings', () => {
@@ -49,5 +49,30 @@ describe('resolveAssetReferenceShotTarget', () => {
     expect(result.shotId).toBe('3-1')
     expect(result.relatedShotIds).toEqual([])
     expect(result.usedInferredShot).toBe(false)
+  })
+})
+
+describe('buildAssetGenerationReferenceImages', () => {
+  it('only carries locked or selected references, retaining their stable identity order', () => {
+    const references = buildAssetGenerationReferenceImages({
+      category: 'character',
+      title: '林晚',
+      references: [
+        { id: 7, image_url: '/candidate.png', status: 'candidate' },
+        { id: 9, image_url: '/selected.png', status: 'selected', reference_token: '@林晚' },
+        { id: 4, image_url: '/locked.png', status: 'locked', asset_type: 'character', asset_id: '587' },
+        { id: 3, status: 'locked' },
+      ],
+    })
+
+    expect(references).toHaveLength(2)
+    expect(references.map((item) => item.reference_asset_id)).toEqual(['ref-4', 'ref-9'])
+    expect(references[0]).toMatchObject({
+      image_url: '/locked.png',
+      role: 'character',
+      reference_purpose: 'identity_costume_face_hair',
+      asset_id: '587',
+    })
+    expect(references[1].image_url).toBe('/selected.png')
   })
 })

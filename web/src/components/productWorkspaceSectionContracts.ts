@@ -270,6 +270,7 @@ export interface AssetsBundle {
   onGenerateAssetReference: (assetId: string) => void
   onDeleteReferenceAsset: (referenceId: number) => void
   onUpdateReferenceAssetStatus: (referenceId: number, nextStatus: 'candidate' | 'selected' | 'locked') => void
+  onRefreshAll: () => void
   onNavigateSection: (section: WorkspaceSection) => void
   onNavigateTaskSection: TaskNavigateHandler
   onNavigateAssetShot: (shotId: string) => void

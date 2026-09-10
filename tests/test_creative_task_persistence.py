@@ -1,8 +1,16 @@
 import json
+import base64
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
 from api.generation_adapters import build_task_adapter_asset
-from api.server import _adopt_asset_version, _save_asset_to_storyboard
+from api.server import (
+    _adopt_asset_version,
+    _apply_generated_image_persistence,
+    _apply_generated_video_persistence,
+    _save_asset_to_storyboard,
+)
 from models import Session, StoryboardShot, init_db
 
 
@@ -65,6 +73,78 @@ class CreativeTaskPersistenceTests(unittest.TestCase):
         self.assertEqual(asset['metadata']['referenceImages'][0]['reference_asset_id'], 'ref-a')
         self.assertIn('createdAt', asset['metadata'])
         self.assertFalse(asset['metadata']['usesMock'])
+
+    def test_generated_image_is_recovered_to_durable_manual_media_store(self):
+        png_bytes = b'\x89PNG\r\n\x1a\n' + b'generated-image-test'
+        asset = {
+            'uri': 'https://provider.example/temporary-image.png?token=expires',
+            'previewUrl': 'https://provider.example/temporary-image.png?token=expires',
+            'metadata': {},
+        }
+
+        with patch('core.public_asset_storage._load_source_bytes', return_value=(png_bytes, 'image/png')):
+            result = _apply_generated_image_persistence(
+                asset,
+                book_id=self.book_id,
+                task_id='generated-image-unit-test',
+                label='scene-reference',
+            )
+
+        try:
+            self.assertTrue(result['ok'])
+            self.assertTrue(Path(result['local_path']).is_file())
+            self.assertTrue(asset['uri'].startswith('/api/prototyping/manual-media/'))
+            self.assertEqual(asset['uri'], asset['previewUrl'])
+            self.assertEqual(asset['metadata']['originalProviderUrl'], 'https://provider.example/temporary-image.png?token=expires')
+            self.assertEqual(asset['metadata']['generatedImagePersistence']['local_path'], result['local_path'])
+        finally:
+            Path(result.get('local_path') or '').unlink(missing_ok=True)
+
+    def test_inline_generated_image_is_not_duplicated_in_persistence_metadata(self):
+        png_bytes = b'\x89PNG\r\n\x1a\n' + b'inline-provider-image'
+        data_uri = f"data:image/png;base64,{base64.b64encode(png_bytes).decode('ascii')}"
+        asset = {'uri': data_uri, 'previewUrl': data_uri, 'metadata': {}}
+
+        result = _apply_generated_image_persistence(
+            asset,
+            book_id=self.book_id,
+            task_id='inline-generated-image-unit-test',
+            label='scene-reference',
+        )
+
+        try:
+            self.assertTrue(result['ok'])
+            self.assertEqual(result['source_url'], 'inline-data-uri')
+            self.assertEqual(result['source_kind'], 'inline_data_uri')
+            self.assertEqual(asset['metadata']['originalProviderUrl'], 'inline-data-uri')
+            self.assertNotIn(base64.b64encode(png_bytes).decode('ascii'), json.dumps(asset['metadata']))
+        finally:
+            Path(result.get('local_path') or '').unlink(missing_ok=True)
+
+    def test_generated_video_is_recovered_to_durable_generated_media_store(self):
+        mp4_bytes = b'\x00\x00\x00\x18ftypisom' + b'generated-video-test'
+        asset = {
+            'uri': 'https://provider.example/temporary-video.mp4?token=expires',
+            'previewUrl': 'https://provider.example/temporary-video.mp4?token=expires',
+            'metadata': {},
+        }
+
+        with patch('core.public_asset_storage._load_source_bytes', return_value=(mp4_bytes, 'video/mp4')):
+            result = _apply_generated_video_persistence(
+                asset,
+                book_id=self.book_id,
+                task_id='generated-video-unit-test',
+                label='storyboard-video',
+            )
+
+        try:
+            self.assertTrue(result['ok'])
+            self.assertTrue(Path(result['local_path']).is_file())
+            self.assertTrue(asset['uri'].startswith('/api/prototyping/generated-media/'))
+            self.assertEqual(asset['uri'], asset['previewUrl'])
+            self.assertEqual(asset['metadata']['originalProviderUrl'], 'https://provider.example/temporary-video.mp4?token=expires')
+        finally:
+            Path(result.get('local_path') or '').unlink(missing_ok=True)
 
     def test_save_asset_to_storyboard_persists_images_and_adoption_switch(self):
         first = build_task_adapter_asset(

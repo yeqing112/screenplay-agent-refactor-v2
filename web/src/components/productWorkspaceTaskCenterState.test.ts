@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { inferEpisodeFromTask, inferRecoveryIntentFromTask, inferShotIdFromTask } from './productWorkspaceTaskCenterState'
+import {
+  filterTaskCenterEntriesByWorkflow,
+  getTaskCenterWorkflowBucket,
+  inferEpisodeFromTask,
+  inferRecoveryIntentFromTask,
+  inferShotIdFromTask,
+} from './productWorkspaceTaskCenterState'
 import type { TaskCenterEntry } from './productWorkspaceTasks'
 
 function makeTask(overrides: Partial<TaskCenterEntry> = {}): TaskCenterEntry {
@@ -109,5 +115,27 @@ describe('productWorkspaceTaskCenterState', () => {
     })
 
     expect(inferRecoveryIntentFromTask(task)).toBe('shot_variant_refinement')
+  })
+
+  it('groups raw statuses by the next decision a creator needs to make', () => {
+    const entries = [
+      makeTask({ id: 'blocked', status: 'blocked' }),
+      makeTask({ id: 'queued', status: 'queued' }),
+      makeTask({ id: 'failed', status: 'error' }),
+      makeTask({ id: 'working', status: 'running' }),
+      makeTask({ id: 'complete', status: 'done' }),
+      makeTask({ id: 'skipped', status: 'skipped' }),
+    ]
+
+    expect(getTaskCenterWorkflowBucket('blocked')).toBe('attention')
+    expect(getTaskCenterWorkflowBucket('running')).toBe('running')
+    expect(getTaskCenterWorkflowBucket('done')).toBe('history')
+    expect(filterTaskCenterEntriesByWorkflow(entries, 'attention').map((item) => item.id)).toEqual([
+      'blocked',
+      'queued',
+      'failed',
+    ])
+    expect(filterTaskCenterEntriesByWorkflow(entries, 'running').map((item) => item.id)).toEqual(['working'])
+    expect(filterTaskCenterEntriesByWorkflow(entries, 'history').map((item) => item.id)).toEqual(['complete', 'skipped'])
   })
 })

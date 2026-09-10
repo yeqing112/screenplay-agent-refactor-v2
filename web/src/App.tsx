@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import ProjectsPage from './pages/ProjectsPage'
 import CanvasPage from './pages/CanvasPage'
 import { resolveProjectDisplayTitle } from './pages/projectDisplayText'
+import SmartDirectorDrawer from './components/SmartDirectorDrawer'
+import type { DirectorContext } from './services/agent'
 
 type View =
   | { page: 'projects' }
@@ -56,14 +58,30 @@ export default function App() {
     setView({ page: 'canvas', book: { id: 0, title: '新建项目' } })
   }, [])
 
-  if (view.page === 'projects') {
-    return (
-      <ProjectsPage
-        onSelectBook={handleSelectBook}
-        onNewProject={handleNewProject}
-      />
-    )
-  }
+  const directorContext = useMemo<DirectorContext | null>(() => {
+    if (view.page !== 'canvas') return null
+    return {
+      book_id: view.book.id || null,
+      book_title: view.book.title,
+      section: '创作画布',
+    }
+  }, [view])
 
-  return <CanvasPage book={view.book} onBack={handleBack} onSelectBook={handleSelectBook} />
+  return (
+    <>
+      {view.page === 'projects' ? (
+        <ProjectsPage
+          onSelectBook={handleSelectBook}
+          onNewProject={handleNewProject}
+        />
+      ) : (
+        <CanvasPage
+          book={view.book}
+          onBack={handleBack}
+          onSelectBook={handleSelectBook}
+        />
+      )}
+      <SmartDirectorDrawer context={directorContext} />
+    </>
+  )
 }

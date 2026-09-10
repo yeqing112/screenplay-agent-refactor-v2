@@ -400,7 +400,9 @@ export default function ProductWorkspaceScriptsSection({
                 </div>
               </div>
 
-              <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+              <details className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看脚本 QA 与版本历史</summary>
+                <div className="mt-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-sm font-medium text-white">场次管理视图</div>
                   <div className="text-xs text-slate-500">{selectedScenes.length} 个场次</div>
@@ -479,7 +481,8 @@ export default function ProductWorkspaceScriptsSection({
                     </div>
                   )}
                 </div>
-              </div>
+                </div>
+              </details>
             </>
           ) : null}
         </div>

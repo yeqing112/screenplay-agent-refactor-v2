@@ -24,7 +24,7 @@ class StoryboardSceneRetryTests(unittest.TestCase):
         }
 
         with patch("agents.storyboard.load_prompt", return_value="PROMPT"), patch(
-            "agents.storyboard.call_llm_json",
+            "agents.storyboard.call_llm",
             side_effect=[
                 ValueError("Failed to parse LLM JSON response"),
                 ValueError("LLM output truncated"),

@@ -178,6 +178,85 @@ class StoryboardPromptAuthorityDiagnosticsTests(unittest.TestCase):
         fact_check = next(check for check in diagnostics["checks"] if check["key"] == "visual_fact_target_coverage")
         self.assertTrue(fact_check["passed"])
 
+    def test_retention_coverage_passes_with_hygiene_terms_instead_of_literal_label(self):
+        # A composer may preserve "hair" by naming an actual hairstyle (e.g.
+        # "黑色短发") without repeating the literal label "发型".  The retention
+        # check must recognise the dimension generically, not by exact keyword.
+        diagnostics = _build_prompt_compiler_diagnostics(
+            "青年男性黑色短发，面部轮廓与锁定参考图一致，身穿朴素员工基础服装。",
+            "镜头缓慢推进，动作与首帧保持一致。",
+            {
+                "warnings": [],
+                "retention": {
+                    "face": "fully_preserved",
+                    "hair": "fully_preserved",
+                    "costume": "fully_preserved",
+                },
+                "bound_assets": [],
+                "reference_images": [],
+            },
+            [],
+        )
+
+        retention_check = next(check for check in diagnostics["checks"] if check["key"] == "retention_coverage")
+        self.assertTrue(retention_check["passed"])
+        self.assertFalse(any("retention 维护不足" in warning for warning in diagnostics["warnings"]))
+
+    def test_visual_fact_target_coverage_passes_on_near_equivalent_scene_lighting(self):
+        # "冷白荧光灯从头顶压下" and the required "惨白荧光灯" describe the same
+        # overhead fluorescent fact.  The matcher resolves this by the established
+        # authority overlap logic, not via a project-specific alias.
+        diagnostics = _build_prompt_compiler_diagnostics(
+            "深夜便利店收银区，冷白荧光灯从头顶压下，狭窄收银台、扫码器、烟架形成压迫感。",
+            "镜头缓慢推进，动作与首帧保持一致。",
+            {
+                "warnings": [],
+                "visual_fact_targets": [
+                    {
+                        "asset_type": "scene",
+                        "asset_id": "scene-1",
+                        "asset_name": "便利店收银台",
+                        "required_facts": ["深夜便利店收银区", "惨白荧光灯", "从头顶直射"],
+                        "min_facts_to_include": 2,
+                    }
+                ],
+                "bound_assets": [],
+                "reference_images": [],
+            },
+            [],
+        )
+
+        fact_check = next(check for check in diagnostics["checks"] if check["key"] == "visual_fact_target_coverage")
+        self.assertTrue(fact_check["passed"])
+
+    def test_visual_fact_target_coverage_still_flags_distinct_missing_fact(self):
+        # The generic matcher must not collapse a genuinely absent style fact.
+        # "写实电影感" is not reflected by "中景构图"; when the minimum requires
+        # it, coverage must remain a warning rather than a false pass.
+        diagnostics = _build_prompt_compiler_diagnostics(
+            "深夜便利店收银区，中景构图，冷白荧光灯从头顶压下。",
+            "镜头缓慢推进，动作与首帧保持一致。",
+            {
+                "warnings": [],
+                "visual_fact_targets": [
+                    {
+                        "asset_type": "scene",
+                        "asset_id": "scene-1",
+                        "asset_name": "便利店收银台",
+                        "required_facts": ["写实电影感", "冷白荧光灯从头顶压下"],
+                        "min_facts_to_include": 2,
+                    }
+                ],
+                "bound_assets": [],
+                "reference_images": [],
+            },
+            [],
+        )
+
+        fact_check = next(check for check in diagnostics["checks"] if check["key"] == "visual_fact_target_coverage")
+        self.assertFalse(fact_check["passed"])
+        self.assertTrue(any("写实电影感" in detail for detail in fact_check["details"]))
+
     def test_screenplay_prompt_residue_becomes_warning(self):
         diagnostics = _build_prompt_compiler_diagnostics(
             "寺庙后院水房·清晨，人物互动中景。和尚丙：（大笑）新来的，醒醒！[和尚甲抹去脸上的水]",
@@ -209,6 +288,27 @@ class StoryboardPromptAuthorityDiagnosticsTests(unittest.TestCase):
 
         check = next(check for check in diagnostics["checks"] if check["key"] == "screenplay_prompt_residue")
         self.assertTrue(check["passed"])
+
+    def test_screenplay_prompt_residue_detects_unlabelled_dialogue_and_parenthetical_stage_direction(self):
+        diagnostics = _build_prompt_compiler_diagnostics(
+            "寺庙后院水房，和尚甲挑水停下。",
+            "镜头固定不动。和尚丙拦在路中间，站住！你看看你！这桶不合格，倒回去重新挑！和尚甲停下脚步。",
+            {"warnings": [], "bound_assets": [], "reference_images": []},
+            [],
+        )
+        check = next(check for check in diagnostics["checks"] if check["key"] == "screenplay_prompt_residue")
+        self.assertFalse(check["passed"])
+        self.assertTrue(any("感叹句对白" in detail for detail in check["details"]))
+
+        diagnostics = _build_prompt_compiler_diagnostics(
+            "寺庙后山乱葬岗，和尚甲站在坟前。",
+            "固定机位，和尚甲，（低声自语）师父，你放心，我会找到的。随后他跪下。",
+            {"warnings": [], "bound_assets": [], "reference_images": []},
+            [],
+        )
+        check = next(check for check in diagnostics["checks"] if check["key"] == "screenplay_prompt_residue")
+        self.assertFalse(check["passed"])
+        self.assertTrue(any("括号舞台动作" in detail for detail in check["details"]))
 
     def test_character_variant_state_missing_becomes_warning(self):
         diagnostics = _build_prompt_compiler_diagnostics(
@@ -473,6 +573,54 @@ class StoryboardPromptAuthorityDiagnosticsTests(unittest.TestCase):
 
         self.assertEqual(gated["status"], "blocked")
         self.assertTrue(any("对白稿" in issue or "舞台提示" in issue for issue in gated["blocking_issues"]))
+
+    def test_locked_scene_material_conflict_is_blocked_but_surface_scratch_is_allowed(self):
+        context = {
+            "warnings": [],
+            "bound_assets": [
+                {
+                    "asset_type": "scene",
+                    "asset_id": "scene-1",
+                    "asset_name": "钟楼阁楼",
+                    "locked_reference": True,
+                    "canonical_prompt_profile": {
+                        "description": "钟楼顶层阁楼，木质结构，陈旧破败",
+                    },
+                }
+            ],
+            "motion_contract": {
+                "start_state": "林晚站在木门前",
+                "camera": "static",
+                "action_beats": [{"action": "推门"}],
+                "end_state": "木门打开",
+                "preserve_first_frame": True,
+            },
+        }
+        allowed = _build_prompt_compiler_diagnostics(
+            "钟楼阁楼木门前，木质结构，林晚站在门边，冷灰氛围。",
+            "镜头固定，保持首帧一致。",
+            context,
+            [{"asset_name": "钟楼阁楼", "locked_reference": True}],
+        )
+        self.assertTrue(next(item for item in allowed["checks"] if item["key"] == "locked_asset_fact_conflicts")["passed"])
+
+        blocked = _build_prompt_compiler_diagnostics(
+            "钟楼阁楼铁门前，木质结构，林晚站在门边，冷灰氛围。",
+            "镜头固定，保持首帧一致。",
+            context,
+            [{"asset_name": "钟楼阁楼", "locked_reference": True}],
+        )
+        conflict_check = next(item for item in blocked["checks"] if item["key"] == "locked_asset_fact_conflicts")
+        self.assertFalse(conflict_check["passed"])
+        self.assertEqual(blocked["status"], "blocked")
+
+        surface_detail = _build_prompt_compiler_diagnostics(
+            "钟楼阁楼木门边，木质结构，门轴处有金属刮痕，林晚站在门边，冷灰氛围。",
+            "镜头固定，保持首帧一致。",
+            context,
+            [{"asset_name": "钟楼阁楼", "locked_reference": True}],
+        )
+        self.assertTrue(next(item for item in surface_detail["checks"] if item["key"] == "locked_asset_fact_conflicts")["passed"])
 
 
 if __name__ == "__main__":

@@ -261,7 +261,7 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
             <div className="text-[11px] text-slate-500">{'任务模式'}</div>
             <div className="mt-1 text-sm font-medium text-slate-100">{predictedVideoTaskMode}</div>
             <div className="mt-2 break-all text-[11px] text-slate-500">
-              {'优先使用 image_to_video，其次 reference_to_video，最后 text_to_video'}
+              {'任务模式由当前模型能力与本次首帧/参考图输入共同决定；不支持的模式会在提交前阻断。'}
             </div>
           </div>
         </div>
@@ -276,7 +276,7 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
       </div>
 
       {generationMessage ? (
-        <div className={`mt-3 rounded-lg border px-3 py-2 text-sm ${
+        <div role="status" aria-live="polite" className={`mt-3 rounded-lg border px-3 py-2 text-sm ${
           generationState === 'success'
             ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-200'
             : generationState === 'error'

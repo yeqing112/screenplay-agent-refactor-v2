@@ -50,6 +50,8 @@ import {
   inferShotIdFromTask as inferShotIdFromTaskCenterEntry,
   selectBatchRunRecords as selectTaskCenterBatchRunRecords,
   summarizeTaskCenter as summarizeTaskCenterEntries,
+  filterTaskCenterEntriesByWorkflow,
+  type TaskCenterWorkflowBucket,
 } from './productWorkspaceTaskCenterState'
 import {
   buildQaWorkbenchSummary as buildTaskCenterQaWorkbenchSummary,
@@ -59,6 +61,8 @@ import {
 import TaskCenterListPanel from './productWorkspaceTaskCenterListPanel'
 import TaskCenterOverviewPanel from './productWorkspaceTaskCenterOverviewPanel'
 import TaskCenterSelectedTaskPanel from './productWorkspaceTaskCenterSelectedTaskPanel'
+import { fetchAgentTimeline, reconcileAgentProjectUpdates } from '../services/agent'
+import { buildAgentTaskCenterEntries } from './productWorkspaceAgentTasks'
 
 interface Props {
   bookId: number
@@ -137,6 +141,7 @@ export default function ProductWorkspaceTasksSection({
   onRefresh,
   onNavigate,
 }: Props) {
+  const [workflowBucket, setWorkflowBucket] = useState<TaskCenterWorkflowBucket>('attention')
   const [statusFilter, setStatusFilter] = useState<'all' | TaskCenterStatus>('all')
   const [scopeFilter, setScopeFilter] = useState<'all' | 'global' | 'episode'>('all')
   const [episodeFilter, setEpisodeFilter] = useState<'all' | number>('all')
@@ -151,6 +156,7 @@ export default function ProductWorkspaceTasksSection({
   const [previewImage, setPreviewImage] = useState<{ url: string; title: string } | null>(null)
   const [qaWorkbenchEpisodes, setQaWorkbenchEpisodes] = useState<TaskCenterQaWorkbenchEpisodeSummary[]>([])
   const [batchRunRecords, setBatchRunRecords] = useState<Record<string, BatchRunRecord[]>>({})
+  const [agentEntries, setAgentEntries] = useState<TaskCenterEntry[]>([])
 
   const openPreview = useCallback((url: string, title: string) => {
     if (!url) return
@@ -231,19 +237,35 @@ export default function ProductWorkspaceTasksSection({
     }
   }, [bookId])
 
+  const loadAgentTasks = useCallback(async () => {
+    try {
+      await reconcileAgentProjectUpdates(bookId)
+      setAgentEntries(buildAgentTaskCenterEntries(await fetchAgentTimeline(bookId)))
+    } catch {
+      setAgentEntries([])
+    }
+  }, [bookId])
+
   useEffect(() => {
     loadPendingStoryboardTasks()
     void loadQaWorkbench()
     void loadCreativeTasks()
+    void loadAgentTasks()
     setBatchRunRecords(readBatchRunRecords(bookId))
-    const onFocus = () => loadPendingStoryboardTasks()
-    const intervalId = window.setInterval(() => loadPendingStoryboardTasks(), 15000)
+    const onFocus = () => {
+      loadPendingStoryboardTasks()
+      void loadAgentTasks()
+    }
+    const intervalId = window.setInterval(() => {
+      loadPendingStoryboardTasks()
+      void loadAgentTasks()
+    }, 15000)
     window.addEventListener('focus', onFocus)
     return () => {
       window.removeEventListener('focus', onFocus)
       window.clearInterval(intervalId)
     }
-  }, [loadCreativeTasks, loadPendingStoryboardTasks, loadQaWorkbench])
+  }, [loadAgentTasks, loadCreativeTasks, loadPendingStoryboardTasks, loadQaWorkbench])
 
   const baseEntries = useMemo(
     () =>
@@ -276,7 +298,7 @@ export default function ProductWorkspaceTasksSection({
     [creativeTasks, pendingTasks, recoveryTaskMetaById, recoveryTaskStatuses, shotsByEpisode],
   )
 
-  const allEntries = useMemo(() => [...baseEntries, ...recoveryEntries], [baseEntries, recoveryEntries])
+  const allEntries = useMemo(() => [...baseEntries, ...recoveryEntries, ...agentEntries], [agentEntries, baseEntries, recoveryEntries])
   const episodeOptions = useMemo(
     () =>
       Array.from(new Set(allEntries.map((item) => item.episode).filter((item): item is number => Boolean(item))))
@@ -294,32 +316,44 @@ export default function ProductWorkspaceTasksSection({
     [allEntries, episodeFilter, scopeFilter, statusFilter],
   )
 
+  const workflowEntries = useMemo(
+    () => filterTaskCenterEntriesByWorkflow(filteredEntries, workflowBucket),
+    [filteredEntries, workflowBucket],
+  )
+  const workflowCounts = useMemo(
+    () => ({
+      attention: filterTaskCenterEntriesByWorkflow(filteredEntries, 'attention').length,
+      running: filterTaskCenterEntriesByWorkflow(filteredEntries, 'running').length,
+      history: filterTaskCenterEntriesByWorkflow(filteredEntries, 'history').length,
+    }),
+    [filteredEntries],
+  )
+
   useEffect(() => {
-    if (filteredEntries.length === 0) {
+    if (workflowEntries.length === 0) {
       setSelectedTaskId(null)
       return
     }
 
     const preferredEntry =
-      filteredEntries.find((item) => item.status === 'blocked' && item.actionTarget === 'adaptation') ??
-      filteredEntries.find((item) => item.status === 'blocked' && item.scope === 'global') ??
-      filteredEntries.find((item) => item.status === 'blocked') ??
-      filteredEntries.find((item) => item.status === 'error') ??
-      filteredEntries.find((item) => item.status === 'running') ??
-      filteredEntries.find((item) => item.status === 'queued') ??
-      filteredEntries.find((item) => item.status !== 'done' && item.status !== 'skipped') ??
-      filteredEntries[0] ??
+      workflowEntries.find((item) => item.status === 'blocked' && item.actionTarget === 'adaptation') ??
+      workflowEntries.find((item) => item.status === 'blocked' && item.scope === 'global') ??
+      workflowEntries.find((item) => item.status === 'blocked') ??
+      workflowEntries.find((item) => item.status === 'error') ??
+      workflowEntries.find((item) => item.status === 'running') ??
+      workflowEntries.find((item) => item.status === 'queued') ??
+      workflowEntries[0] ??
       null
 
     setSelectedTaskId((current) => {
-      if (current && filteredEntries.some((item) => item.id === current)) return current
+      if (current && workflowEntries.some((item) => item.id === current)) return current
       return preferredEntry?.id ?? null
     })
-  }, [filteredEntries])
+  }, [workflowEntries])
 
   const selectedTask = useMemo(
-    () => filteredEntries.find((item) => item.id === selectedTaskId) ?? filteredEntries[0] ?? null,
-    [filteredEntries, selectedTaskId],
+    () => workflowEntries.find((item) => item.id === selectedTaskId) ?? workflowEntries[0] ?? null,
+    [selectedTaskId, workflowEntries],
   )
   const navigationTargetSummary = useMemo(() => {
     if (!navigationTarget) return null
@@ -414,6 +448,10 @@ export default function ProductWorkspaceTasksSection({
 
   const navigateFromTaskEntry = useCallback(
     (entry: TaskCenterEntry) => {
+      if (entry.agentMeta) {
+        window.dispatchEvent(new CustomEvent('smart-director:open', { detail: { sessionId: entry.agentMeta.sessionId } }))
+        return
+      }
       const episode = inferEpisodeFromTaskCenterEntry(entry)
       const shotId = inferShotIdFromTaskCenterEntry(entry)
       const assetId = inferAssetIdFromTaskCenterEntry(entry)
@@ -795,15 +833,18 @@ export default function ProductWorkspaceTasksSection({
   return (
     <div className="grid gap-6 xl:grid-cols-[0.95fr_minmax(0,1.2fr)_0.95fr]">
       <TaskCenterListPanel
+        workflowBucket={workflowBucket}
+        workflowCounts={workflowCounts}
         statusFilter={statusFilter}
         scopeFilter={scopeFilter}
         episodeFilter={episodeFilter}
         episodeOptions={episodeOptions}
-        filteredEntries={filteredEntries}
+        filteredEntries={workflowEntries}
         taskRuntimeById={taskRuntimeById}
         selectedTaskId={selectedTask?.id ?? selectedTaskId}
         statusOptions={STATUS_OPTIONS}
         scopeOptions={SCOPE_OPTIONS}
+        onWorkflowBucketChange={setWorkflowBucket}
         onStatusFilterChange={setStatusFilter}
         onScopeFilterChange={setScopeFilter}
         onEpisodeFilterChange={setEpisodeFilter}

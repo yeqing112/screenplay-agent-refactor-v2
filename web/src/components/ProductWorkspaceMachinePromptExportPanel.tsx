@@ -61,12 +61,15 @@ export type H3ProviderSubmitSummary = {
   platformLabel: string
   baseUrl: string
   modelName: string
+  provider?: string
+  supportsTextToVideo?: boolean
   resolution: string
   durationSeconds: number
   durationSourceLabel?: string
   aspectRatio: string
   aigcWatermark: boolean
-  taskMode: 'image_to_video' | 'text_to_video'
+  taskMode: 'reference_to_video' | 'image_to_video' | 'text_to_video'
+  referenceImageCount?: number
   firstFrameAssetLabel?: string
   firstFrameUrl?: string
   promptLength?: number
@@ -75,9 +78,13 @@ export type H3ProviderSubmitSummary = {
 export function buildH3ProviderSubmitSummaryLines(summary: H3ProviderSubmitSummary | null | undefined) {
   if (!summary) return []
   const taskModeLabel =
-    summary.taskMode === 'image_to_video'
+    summary.taskMode === 'reference_to_video'
+      ? `多参考视频（${summary.referenceImageCount ?? 0} 张参考图）`
+      : summary.taskMode === 'image_to_video'
       ? `首帧图生视频${summary.firstFrameAssetLabel ? `（${summary.firstFrameAssetLabel}）` : ''}`
-      : '文生视频（当前未检测到采纳首帧）'
+      : summary.supportsTextToVideo === false
+      ? '缺少图片输入（当前模型不支持文生视频，提交会被阻断）'
+      : '文生视频（当前未检测到可用参考图或采纳首帧）'
   return [
     `平台：${summary.platformLabel}`,
     `Base URL：${summary.baseUrl}`,
@@ -293,7 +300,9 @@ export function ProductWorkspaceMachinePromptExportPanel({
             </div>
           ) : (
             <div className="mt-2 text-[11px] leading-5 text-amber-100/65">
-              提醒：没有采纳首帧时后端会按文生视频提交；建议优先补齐首帧再做真实灰度。
+              {h3ProviderSubmitSummary?.supportsTextToVideo === false
+                ? '提醒：当前模型不支持文生视频；请先锁定至少一张参考图，或采纳一张首帧。'
+                : '提醒：当前未检测到首帧；是否允许文生视频取决于已配置模型能力，提交前请核对模式。'}
             </div>
           )}
         </div>

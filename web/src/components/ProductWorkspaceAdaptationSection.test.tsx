@@ -66,6 +66,63 @@ describe('ProductWorkspaceAdaptationSection', () => {
     expect(html).not.toContain('锁定为主方向')
   })
 
+  it('collapses an already locked Production Skill but keeps its adjustment route', () => {
+    const html = renderToStaticMarkup(
+      <ProductWorkspaceAdaptationSection
+        contentReady
+        productionSkill={{
+          skillOptions: [{
+            id: 'mystery',
+            name: '悬疑 Production Skill',
+            summary: '高压悬疑短剧生产规范',
+            tracks: ['悬疑'],
+            platforms: ['douyin'],
+          }],
+          selectedSkillId: 'mystery',
+          platform: 'douyin',
+          track: '悬疑',
+          emotionGoal: '高压',
+          rhythmStrength: 'strong_hooks',
+          visualStyle: 'cinematic_realism',
+          priorities: ['storyboard'],
+          enforcement: 'strict',
+          customNote: '',
+          lockedAt: '2026-09-06T00:00:00Z',
+          runtimeSummary: {
+            skill_name: '悬疑 Production Skill',
+            platform: 'douyin',
+            track: '悬疑',
+            emotion_goal: '高压',
+            rhythm_strength: 'strong_hooks',
+            visual_style: 'cinematic_realism',
+            priorities: ['storyboard'],
+            enforcement: 'strict',
+            locked: true,
+            custom_note: '',
+          },
+        }}
+        adaptationOptions={[baseOption]}
+        selectedAdaptationId="plan-a"
+        selectedAdaptationName="强情绪悬疑向"
+        adaptationCustomNote=""
+        hasLockedAdaptation
+        adaptationStateLabel="已锁定"
+        adaptationStateDetail="当前主方向已经锁定。"
+        canGenerateCandidates={false}
+        canLockAdaptation={false}
+        onRegenerate={() => {}}
+        onSelect={() => {}}
+        onCustomNoteChange={() => {}}
+        onLock={() => {}}
+        onUnlock={() => {}}
+      />,
+    )
+
+    expect(html).toContain('高级：查看或调整已锁定的 Production Skill')
+    expect(html).toContain('解除 Skill 锁定')
+    expect(html).not.toContain('<details open=""')
+  })
+
   it('shows upstream handoff guidance before and after project-level lock', () => {
     const pendingHtml = renderToStaticMarkup(
       <ProductWorkspaceAdaptationSection

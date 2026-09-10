@@ -17,6 +17,15 @@ export interface DashboardAction {
   priority: 'high' | 'medium' | 'low'
 }
 
+export type ProjectStageKey = 'content' | 'adaptation' | 'scripts' | 'storyboard' | 'assets' | 'qa' | 'delivery'
+
+export interface ProjectStageProjection {
+  currentStage: ProjectStageKey
+  currentStageLabel: string
+  primaryAction: DashboardAction
+  stages: Array<{ key: ProjectStageKey; label: string; state: 'done' | 'current' | 'pending' }>
+}
+
 export interface EpisodeProgressInput {
   episode: number
   hasLockedAdaptation?: boolean
@@ -129,6 +138,43 @@ export function buildDashboardActions(input: DashboardSummaryInput): DashboardAc
       priority: 'low',
     },
   ]
+}
+
+/**
+ * The single project-level source of truth for user-facing production progress.
+ * Individual workbenches may have their own local detail, but they must not
+ * invent a competing project next step.
+ */
+export function buildProjectStageProjection(input: DashboardSummaryInput): ProjectStageProjection {
+  return buildProjectStageProjectionFromAction(buildDashboardActions(input)[0]!)
+}
+
+export function buildProjectStageProjectionFromAction(primaryAction: DashboardAction): ProjectStageProjection {
+  const stageOrder: Array<{ key: ProjectStageKey; label: string }> = [
+    { key: 'content', label: '准备故事' },
+    { key: 'adaptation', label: '锁定方向' },
+    { key: 'scripts', label: '完成剧本' },
+    { key: 'assets', label: '准备资产' },
+    { key: 'storyboard', label: '制作镜头' },
+    { key: 'qa', label: '检查成片' },
+    { key: 'delivery', label: '导出交付' },
+  ]
+  const actionStage: ProjectStageKey = primaryAction.targetSection === 'qa'
+    ? 'qa'
+    : primaryAction.targetSection === 'delivery'
+      ? 'delivery'
+      : primaryAction.targetSection
+  const currentIndex = stageOrder.findIndex((item) => item.key === actionStage)
+
+  return {
+    currentStage: actionStage,
+    currentStageLabel: stageOrder[currentIndex]?.label ?? '继续制作',
+    primaryAction,
+    stages: stageOrder.map((item, index) => ({
+      ...item,
+      state: index < currentIndex ? 'done' : index === currentIndex ? 'current' : 'pending',
+    })),
+  }
 }
 
 export function buildEpisodeProgress(items: EpisodeProgressInput[]): EpisodeProgress[] {

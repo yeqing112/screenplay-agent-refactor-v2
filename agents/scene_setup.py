@@ -209,7 +209,7 @@ class SceneSetupAgent(BaseAgent):
                 "scene/props",
                 episode=episode,
                 era_spec=era_spec,
-                script_content=script.content[:config.SCRIPT_EXCERPT_CHARS],
+                script_content=script.content,
                 genre_name=self.genre.name,
             )
 
@@ -228,6 +228,7 @@ class SceneSetupAgent(BaseAgent):
                 for p in s.query(VisualProp).filter(VisualProp.book_id == self.book_id).all()
             }
 
+            skipped_prop_names: list[str] = []
             for prop in props:
                 eps = prop.get("episodes", [episode])
                 if isinstance(eps, int):
@@ -255,6 +256,10 @@ class SceneSetupAgent(BaseAgent):
                     existing.episodes = json.dumps(eps, ensure_ascii=False)
                     from datetime import datetime
                     existing.updated_at = datetime.utcnow()
+                elif not self._should_materialize_asset(prop):
+                    # 低价值、单镜头服务的物件仍保留在剧本/Shot IR 中；
+                    # 不把它们误升级为需要定妆图和锁定参考的正式资产。
+                    skipped_prop_names.append(prop_name)
                 else:
                     s.add(VisualProp(
                         book_id=self.book_id,
@@ -275,7 +280,10 @@ class SceneSetupAgent(BaseAgent):
                     ))
             s.commit()
 
-        self.log(f"props episode {episode}: {len(props)} props")
+        self.log(
+            f"props episode {episode}: {len(props) - len(skipped_prop_names)} library assets"
+            + (f", {len(skipped_prop_names)} shot-only candidates skipped" if skipped_prop_names else "")
+        )
         return props
 
     # ============================================================
@@ -297,7 +305,7 @@ class SceneSetupAgent(BaseAgent):
                 "scene/locations",
                 episode=episode,
                 era_spec=era_spec,
-                script_content=script.content[:config.SCRIPT_EXCERPT_CHARS],
+                script_content=script.content,
                 genre_name=self.genre.name,
             )
 
@@ -316,6 +324,7 @@ class SceneSetupAgent(BaseAgent):
                 for loc in s.query(VisualLocation).filter(VisualLocation.book_id == self.book_id).all()
             }
 
+            skipped_location_names: list[str] = []
             for loc in locations:
                 eps = loc.get("episodes", [episode])
                 if isinstance(eps, int):
@@ -340,7 +349,14 @@ class SceneSetupAgent(BaseAgent):
                     existing.episodes = json.dumps(eps, ensure_ascii=False)
                     from datetime import datetime
                     existing.updated_at = datetime.utcnow()
+                elif not self._should_materialize_asset(loc):
+                    skipped_location_names.append(loc_name)
                 else:
+                    key_props = loc.get("key_props", "[]")
+                    if isinstance(key_props, list):
+                        key_props = json.dumps(key_props, ensure_ascii=False)
+                    else:
+                        key_props = str(key_props or "[]")
                     s.add(VisualLocation(
                         book_id=self.book_id,
                         book_title=book.title,
@@ -350,7 +366,7 @@ class SceneSetupAgent(BaseAgent):
                         description=loc.get("description", ""),
                         color_palette=loc.get("color_palette", ""),
                         lighting_mood=loc.get("lighting_mood", ""),
-                        key_props=loc.get("key_props", "[]"),
+                        key_props=key_props,
                         episodes=json.dumps(eps, ensure_ascii=False),
                         time_period=loc.get("time_period", ""),
                         visual_prompt_en=loc.get("visual_prompt_en", ""),
@@ -363,7 +379,10 @@ class SceneSetupAgent(BaseAgent):
                     ))
             s.commit()
 
-        self.log(f"locations episode {episode}: {len(locations)} locations")
+        self.log(
+            f"locations episode {episode}: {len(locations) - len(skipped_location_names)} library assets"
+            + (f", {len(skipped_location_names)} shot-only candidates skipped" if skipped_location_names else "")
+        )
         return locations
 
     # ============================================================
@@ -533,6 +552,7 @@ class SceneSetupAgent(BaseAgent):
         core_prompt_zh = self._normalize_asset_text(str(payload.get("core_prompt_zh", "") or ""), description)
         style_ref_zh = self._normalize_asset_text(str(payload.get("style_ref_zh", "") or ""), "写实影视道具设定图")
         importance = self._normalize_importance(str(payload.get("importance", "") or "medium"))
+        assetization = self._normalize_assetization(payload.get("assetization"), importance)
         associated_characters = payload.get("associated_characters", [])
         if not isinstance(associated_characters, list):
             associated_characters = []
@@ -550,6 +570,11 @@ class SceneSetupAgent(BaseAgent):
                 "core_prompt_zh": core_prompt_zh,
                 "style_ref_zh": style_ref_zh,
                 "importance": importance,
+                "assetization": assetization,
+                "assetization_reason": self._normalize_asset_text(
+                    str(payload.get("assetization_reason", "") or ""),
+                    "由重要性与跨镜头复用需求决定",
+                ),
                 "associated_characters": associated_characters,
                 "episodes": episodes,
             }
@@ -568,6 +593,7 @@ class SceneSetupAgent(BaseAgent):
         core_prompt_zh = self._normalize_asset_text(str(payload.get("core_prompt_zh", "") or ""), description)
         scene_mood_zh = self._normalize_asset_text(str(payload.get("scene_mood_zh", "") or ""), lighting_mood)
         importance = self._normalize_importance(str(payload.get("importance", "") or "medium"))
+        assetization = self._normalize_assetization(payload.get("assetization"), importance)
         episodes = payload.get("episodes", [episode])
         if isinstance(episodes, int):
             episodes = [episodes]
@@ -585,6 +611,11 @@ class SceneSetupAgent(BaseAgent):
                 "core_prompt_zh": core_prompt_zh,
                 "scene_mood_zh": scene_mood_zh,
                 "importance": importance,
+                "assetization": assetization,
+                "assetization_reason": self._normalize_asset_text(
+                    str(payload.get("assetization_reason", "") or ""),
+                    "由重要性与跨镜头复用需求决定",
+                ),
                 "episodes": episodes,
             }
         )
@@ -617,6 +648,37 @@ class SceneSetupAgent(BaseAgent):
             "次要": "low",
         }
         return mapping.get(text, "medium")
+
+    def _normalize_assetization(self, value, importance: str) -> str:
+        """Normalize the LLM's bounded library decision.
+
+        ``shot_only`` keeps an incidental item in screenplay/Shot IR only; it
+        deliberately does not create a visual-library record or reference-image
+        obligation. High-importance facts cannot be downgraded this way.
+        """
+        text = str(value or "").strip().lower().replace("-", "_")
+        aliases = {
+            "library": "library",
+            "asset_library": "library",
+            "正式资产": "library",
+            "入库": "library",
+            "shot_only": "shot_only",
+            "shot": "shot_only",
+            "镜头级": "shot_only",
+            "不入库": "shot_only",
+        }
+        decision = aliases.get(text)
+        if importance == "high":
+            return "library"
+        if decision:
+            return decision
+        # Backwards-compatible default for older prompt templates. New templates
+        # must make the decision explicit; only low-importance facts default out.
+        return "shot_only" if importance == "low" else "library"
+
+    def _should_materialize_asset(self, payload: dict) -> bool:
+        """Whether a newly extracted scene/prop deserves a reusable asset record."""
+        return str(payload.get("assetization", "library") or "library") == "library"
 
     def _get_era_spec_text(self, session) -> str:
         """获取时代规范文本。"""
@@ -967,7 +1029,18 @@ class SceneSetupAgent(BaseAgent):
         temperament = canonical_fields["temperament"]
         appearance = canonical_fields["appearance"] or appearance
         hairstyle = _first_non_empty(str(result.get("hair_style", "") or ""), str(getattr(profile, "hairstyle", "") or ""), "保持基础发型")
-        outfit = _first_non_empty(str(result.get("refined_outfit", "") or ""), str(getattr(profile, "signature_outfit", "") or ""), "基础服装")
+        # `outfit_prompt_zh` is the production wardrobe description.  The
+        # `refined_outfit` field is a state label and is often deliberately
+        # broad (for example, "符合身份的基础服装").  Rendering the label ahead
+        # of the concrete wardrobe silently loses material, silhouette and
+        # colour constraints for every character, so the reference-sheet
+        # compiler must always prefer the concrete field.
+        outfit = _first_non_empty(
+            str(result.get("outfit_prompt_zh", "") or ""),
+            str(result.get("refined_outfit", "") or ""),
+            str(getattr(profile, "signature_outfit", "") or ""),
+            "基础服装",
+        )
         accessories = _first_non_empty(str(result.get("refined_accessories", "") or ""), str(getattr(profile, "accessories", "") or ""), "基础配饰")
         makeup_expression = _first_non_empty(str(result.get("makeup_spec", "") or ""), str(result.get("expression_mood", "") or ""), "自然克制")
         shot_ids = result.get("shot_ids", [])

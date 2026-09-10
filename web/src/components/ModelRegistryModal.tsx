@@ -33,6 +33,9 @@ type LlmThinkingType = 'enabled' | 'disabled'
 const MOCK_PROVIDER = 'prototype-task-adapter'
 const POYO_ASYNC_PROVIDER = 'poyo-async'
 const MINIMAX_H3_ASYNC_PROVIDER = 'minimax-h3-async'
+const MINIMAX_H3_75API_PROVIDER = '75api-minimax-h3'
+const SHAPI_OPENAI_IMAGES_PROVIDER = 'shapi-openai-images'
+const SHAPI_GEMINI_IMAGE_PROVIDER = 'shapi-gemini-image'
 
 const CAPABILITY_LABELS: Record<ModelCapability, string> = {
   llm: 'LLM',
@@ -53,17 +56,89 @@ function isMiniMaxH3AsyncProvider(provider: string) {
   return provider.trim() === MINIMAX_H3_ASYNC_PROVIDER
 }
 
+function isMiniMaxH375ApiProvider(provider: string) {
+  return provider.trim() === MINIMAX_H3_75API_PROVIDER
+}
+
+function isShapiOpenAiImagesProvider(provider: string) {
+  return provider.trim() === SHAPI_OPENAI_IMAGES_PROVIDER
+}
+
+function isShapiGeminiImageProvider(provider: string) {
+  return provider.trim() === SHAPI_GEMINI_IMAGE_PROVIDER
+}
+
 function canUseAsDefault(profile: Pick<ModelProfileRecord, 'capability' | 'provider' | 'uses_mock'>) {
   if (profile.capability !== 'video') return true
-  return profile.uses_mock || isPoyoAsyncProvider(profile.provider) || isMiniMaxH3AsyncProvider(profile.provider)
+  return profile.uses_mock || isPoyoAsyncProvider(profile.provider) || isMiniMaxH3AsyncProvider(profile.provider) || isMiniMaxH375ApiProvider(profile.provider)
 }
 
 export function providerOptionsForCapability(capability: ModelCapability) {
   if (capability === 'embedding') return ['ollama']
   if (capability === 'llm') return ['openai-compatible']
   return capability === 'video'
-    ? [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER]
-    : [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER]
+    ? [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER, MINIMAX_H3_75API_PROVIDER]
+    : [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER, SHAPI_OPENAI_IMAGES_PROVIDER, SHAPI_GEMINI_IMAGE_PROVIDER]
+}
+
+export function buildShapiPresetProfiles(): ModelProfileRecord[] {
+  return [
+    {
+      id: 'preset-shapi-image-nano-banana-2',
+      name: 'SHAPI Nano Banana 2',
+      capability: 'image',
+      provider: SHAPI_GEMINI_IMAGE_PROVIDER,
+      base_url: 'https://shapi.vip',
+      model_name: 'nano-banana-2',
+      default_params: {
+        task_modes: ['text_to_image', 'image_to_image'],
+        supports_reference_images: true,
+        max_reference_images: 14,
+        max_reference_image_bytes: 10485760,
+        supports_image_url: true,
+        supports_file_upload: false,
+        supports_negative_prompt: false,
+        supports_async_tasks: false,
+        aspect_ratio: '16:9',
+        image_size: '2K',
+        transport: 'gemini-generate-content',
+        evidence_status: 'provider_probe_required',
+      },
+      enabled: true,
+      is_default: false,
+      key_configured: false,
+      builtin: false,
+      source: 'saved',
+      uses_mock: false,
+    },
+    {
+      id: 'preset-shapi-image-gpt-image-2',
+      name: 'SHAPI GPT Image 2',
+      capability: 'image',
+      provider: SHAPI_OPENAI_IMAGES_PROVIDER,
+      base_url: 'https://shapi.vip/v1',
+      model_name: 'gpt-image-2',
+      default_params: {
+        n: 1,
+        size: 'auto',
+        response_format: 'b64_json',
+        task_modes: ['text_to_image'],
+        supports_reference_images: false,
+        supports_image_url: false,
+        supports_file_upload: false,
+        supports_negative_prompt: false,
+        supports_async_tasks: false,
+        transport: 'openai-images-generations',
+        evidence_status: 'provider_probe_required',
+      },
+      enabled: true,
+      is_default: false,
+      key_configured: false,
+      builtin: false,
+      source: 'saved',
+      uses_mock: false,
+    },
+  ]
 }
 
 export function buildPoyoPresetProfiles(): ModelProfileRecord[] {
@@ -297,6 +372,9 @@ export function buildPoyoPresetProfiles(): ModelProfileRecord[] {
 
 export function suggestedBaseUrlForProvider(provider: string) {
   if (isMiniMaxH3AsyncProvider(provider)) return 'https://metaso.cn/api/minimax'
+  if (isMiniMaxH375ApiProvider(provider)) return 'https://www.75api.com'
+  if (isShapiGeminiImageProvider(provider)) return 'https://shapi.vip'
+  if (isShapiOpenAiImagesProvider(provider)) return 'https://shapi.vip/v1'
   return isPoyoAsyncProvider(provider) ? 'https://api.poyo.ai' : ''
 }
 
@@ -322,6 +400,12 @@ export function suggestedDefaultParamsText(capability: ModelCapability, provider
       const maxReferenceImages = modelName === 'gpt-image-2' ? 8 : 14
       return `{\n  "task_modes": ["text_to_image", "image_to_image"],\n  "supports_reference_images": true,\n  "max_reference_images": ${maxReferenceImages},\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": true,\n  "supports_async_tasks": true,\n  "poll_interval_seconds": 3,\n  "poll_timeout_seconds": 180\n}`
     }
+    if (isShapiGeminiImageProvider(provider)) {
+      return `{\n  "task_modes": ["text_to_image", "image_to_image"],\n  "supports_reference_images": true,\n  "max_reference_images": 14,\n  "max_reference_image_bytes": 10485760,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": false,\n  "aspect_ratio": "16:9",\n  "image_size": "2K",\n  "transport": "gemini-generate-content",\n  "evidence_status": "provider_probe_required"\n}`
+    }
+    if (isShapiOpenAiImagesProvider(provider)) {
+      return `{\n  "n": 1,\n  "size": "auto",\n  "response_format": "b64_json",\n  "task_modes": ["text_to_image"],\n  "supports_reference_images": false,\n  "supports_image_url": false,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": false,\n  "transport": "openai-images-generations",\n  "evidence_status": "provider_probe_required"\n}`
+    }
     return `{\n  "size": "1024x1024"\n}`
   }
   if (isPoyoAsyncProvider(provider)) {
@@ -334,7 +418,29 @@ export function suggestedDefaultParamsText(capability: ModelCapability, provider
     return `{\n  "task_modes": ["image_to_video", "text_to_video"],\n  "supports_reference_images": true,\n  "max_reference_images": 4,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": true,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 600\n}`
   }
   if (isMiniMaxH3AsyncProvider(provider)) {
-    return `{\n  "task_modes": ["text_to_video", "image_to_video"],\n  "supports_reference_images": false,\n  "max_reference_images": 0,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": false,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "resolution": "768P",\n  "duration": 5,\n  "ratio": "16:9",\n  "aigc_watermark": false,\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 900\n}`
+    return `{\n  "task_modes": ["text_to_video", "image_to_video", "reference_to_video"],\n  "supports_reference_images": true,\n  "max_reference_images": 9,\n  "supports_first_frame": true,\n  "supports_last_frame": true,\n  "supports_audio": true,\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": false,\n  "supports_async_tasks": true,\n  "video_capabilities": {\n    "first_frame": true,\n    "last_frame": true,\n    "start_end_frames": true,\n    "reference_images": true,\n    "reference_video": true,\n    "reference_audio": true,\n    "reference_and_keyframe_compatible": false,\n    "max_reference_images": 9,\n    "requires_public_media_url": true,\n    "webui_export": true,\n    "evidence_status": "confirmed"\n  },\n  "resolution": "768P",\n  "duration": 5,\n  "ratio": "16:9",\n  "aigc_watermark": false,\n  "poll_interval_seconds": 5,\n  "poll_timeout_seconds": 900\n}`
+  }
+  if (isMiniMaxH375ApiProvider(provider)) {
+    return `{
+  "task_modes": ["image_to_video", "reference_to_video"],
+  "supports_reference_images": true,
+  "max_reference_images": 8,
+  "supports_first_frame": true,
+  "supports_last_frame": false,
+  "supports_audio": false,
+  "supports_text_to_video": false,
+  "supports_image_url": true,
+  "supports_file_upload": false,
+  "supports_negative_prompt": false,
+  "supports_async_tasks": true,
+  "requires_public_media_url": true,
+  "resolution": "768p",
+  "seconds": 5,
+  "aspect_ratio": "16:9",
+  "poll_interval_seconds": 5,
+  "poll_timeout_seconds": 900,
+  "transport": "75api-videos"
+}`
   }
   return `{\n  "duration_seconds": 5\n}`
 }
@@ -371,6 +477,7 @@ export function getLlmFieldValues(defaultParamsText: string) {
   const params = safeParseDefaultParamsText(defaultParamsText)
   return {
     thinkingType: normalizeLlmThinkingType(params.thinking),
+    supportsVision: params.supports_vision === true,
   }
 }
 
@@ -385,6 +492,7 @@ export function updateLlmDefaultParamsText(
     thinking: {
       type: nextValues.thinkingType,
     },
+    supports_vision: nextValues.supportsVision,
   })
 }
 
@@ -1322,7 +1430,16 @@ export default function ModelRegistryModal({
                     const currentDefaults = current.default_params_text.trim()
                     const shouldRefreshDefaults =
                       !currentDefaults || currentDefaults === suggestedDefaultParamsText(current.capability, current.provider, current.model_name)
-                    const nextModelName = isMiniMaxH3AsyncProvider(provider) && !current.model_name.trim() ? 'MiniMax-H3' : current.model_name
+                    const nextModelName =
+                      isMiniMaxH3AsyncProvider(provider) && !current.model_name.trim()
+                        ? 'MiniMax-H3'
+                        : isMiniMaxH375ApiProvider(provider) && !current.model_name.trim()
+                          ? 'minimax_h3_no_audios'
+                        : isShapiGeminiImageProvider(provider) && !current.model_name.trim()
+                          ? 'nano-banana-2'
+                          : isShapiOpenAiImagesProvider(provider) && !current.model_name.trim()
+                            ? 'gpt-image-2'
+                            : current.model_name
                     return {
                       ...current,
                       provider,
@@ -1348,8 +1465,14 @@ export default function ModelRegistryModal({
                 placeholder={
                   isMiniMaxH3AsyncProvider(draft.provider)
                     ? 'MiniMax-H3'
+                    : isMiniMaxH375ApiProvider(draft.provider)
+                      ? 'minimax_h3_no_audios'
                     : isPoyoAsyncProvider(draft.provider)
                       ? '例如：seedream-5.0-lite 或 seedance-2'
+                      : isShapiGeminiImageProvider(draft.provider)
+                        ? 'nano-banana-2'
+                        : isShapiOpenAiImagesProvider(draft.provider)
+                          ? 'gpt-image-2'
                       : undefined
                 }
                 onChange={(value) => setDraft((current) => {
@@ -1370,6 +1493,15 @@ export default function ModelRegistryModal({
               ) : null}
               {isMiniMaxH3AsyncProvider(draft.provider) ? (
                 <div className="-mt-2 text-xs text-slate-500">官方模型名：MiniMax-H3。测试当前草稿只校验配置结构，不发起真实扣费任务。</div>
+              ) : null}
+              {isMiniMaxH375ApiProvider(draft.provider) ? (
+                <div className="-mt-2 text-xs leading-5 text-slate-500">75api 模型名：minimax_h3_no_audios。该模型不支持文生视频，必须提供首帧图或多参考图；最多 8 张，时长 5–15 秒。测试当前草稿只校验配置结构。</div>
+              ) : null}
+              {isShapiGeminiImageProvider(draft.provider) ? (
+                <div className="-mt-2 text-xs leading-5 text-slate-500">SHAPI Gemini 原生图片通道：支持将已回收至 HTTPS 对象存储的资产作为参考图。测试当前草稿只读取模型列表，不发起扣费生成。</div>
+              ) : null}
+              {isShapiOpenAiImagesProvider(draft.provider) ? (
+                <div className="-mt-2 text-xs leading-5 text-slate-500">SHAPI OpenAI Images 通道：当前仅放行文生图；检测到参考图时会明确拒绝，避免静默丢失资产约束。测试当前草稿只读取模型列表。</div>
               ) : null}
               <EditorField
                 label="API Key"
@@ -1398,6 +1530,14 @@ export default function ModelRegistryModal({
                       onChange={(event) => updateLlmDraftDefaults({ thinkingType: event.target.checked ? 'enabled' : 'disabled' })}
                     />
                     开启思考
+                  </label>
+                  <label className="mt-3 flex items-center gap-2 text-sm text-slate-200">
+                    <input
+                      type="checkbox"
+                      checked={llmFieldValues.supportsVision}
+                      onChange={(event) => updateLlmDraftDefaults({ supportsVision: event.target.checked })}
+                    />
+                    支持图片理解（可读取对话中的图片附件）
                   </label>
                 </div>
               ) : null}

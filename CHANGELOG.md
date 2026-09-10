@@ -1,9 +1,327 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-10 — MiMo 前缀缓存优化与成本遥测
+
+- Prompt Compiler 将镜头专属 delivery contract 与修订要求移到动态任务后缀，system prompt 保持跨镜头稳定，减少 MiMo 前缀缓存分叉。
+- 新增 canonical JSON、请求指纹和 MiMo/OpenAI `prompt_tokens_details.cached_tokens` 解析。
+- LLM 审计新增输入/输出 Token、缓存命中 Token、命中率、延迟和请求指纹；供应商未返回缓存明细时保持不可观测，不伪造为 0。
+- 新增缓存工具与 Prompt Compiler 稳定前缀回归测试；未改变模型选择、显式确认和媒体生成边界。
+- 详细方案：`docs/2026-09-10-MiMo前缀缓存优化方案与执行记录.md`。
+
+## 2026-09-10 — 拆镜草案增加导演语言边界校验
+
+- 拆镜候选现在必须是可视化动作节拍；对白、说话人标签、引号和括号舞台标记会在保存/应用前被拒绝。
+- 对已有不合规草案，应用接口统一返回 422 并要求重新生成，不会创建新镜头或迁移任何关联数据。
+- 新增结构回归用例，防止导演分镜语言残留被误当成机器动作节拍。
+
+## 2026-09-10 — book14 可拍性拆镜草案保存
+
+- 为 9 个可拍性阻塞镜头保存通用拆镜草案，来源为当前可拍性校验结果；未直接拆镜、未清空原媒体或提示词。
+- 草案状态均为 `draft`；镜头 2、5、14、18 具备可应用的多段候选，其余镜头当前仅有单段/延长或删减建议，需人工调整后才能应用。
+- 应用拆镜仍需单独显式确认，并会创建新镜头、迁移关联数据及要求后续 Prompt 重编译。
+
+## 2026-09-10 — book14 阻塞镜头修复版本写入
+
+- 经用户确认，将 packet `286–294` 的 9 个修复候选写入镜头 `2、3、5、7、10、11、14、18、23` 的新 Prompt Version。
+- 新版本分别为 `23、8、8、8、9、9、7、9、7`，所有接口均返回 `generation_triggered=false`。
+- 版本写入后重新体检，9 个可拍性阻塞仍被保留（动作节拍/时长需进一步修订），未被提示词版本写入误判为通过；资产治理告警也继续保留。
+
+## 2026-09-10 — book14 阻塞镜头真实 LLM 修复候选
+
+- 经用户明确确认，调用当前 `mimo-v2.5` 为镜头 `2、3、5、7、10、11、14、18、23` 生成候选 Prompt 草案。
+- 9/9 全部返回 `ready_for_review`；只读诊断显示镜头 7、23 通过，其余仅保留结构化事实、剧本残留或重要道具等 warning，无新增硬错误。
+- 本阶段只保存候选草案，未创建 Prompt Version、未修改镜头、未生成图片或视频；需人工审核后才能写入版本。
+
+## 2026-09-09 — book14 阻塞镜头证据包冻结
+
+- 为第 1 集镜头 `2、3、5、7、10、11、14、18、23` 创建/复用 Prompt Compiler 证据包 `286–294`。
+- 9 个证据包均为 `ready_for_llm_review`，无关键 unknowns；接口确认 `llm_called=false`，未创建新版本、未生成图片或视频。
+- 后续若需真实 LLM 修复，必须逐次显式确认并继续沿用证据指纹校验。
+
+## 2026-09-09 — 生产体检按镜头实际绑定资产收敛
+
+- 生产前质量体检优先只检查当前分镜上下文中实际绑定的角色、场景和道具；未被镜头引用的库内/`shot_only` 资产不再污染本集门禁。
+- 对缺少稳定 `asset_type`/`asset_id` 的旧镜头保留全库回退，避免历史数据因缺少绑定元数据而被静默放过。
+- 新增回归测试，验证资产范围标记为 `bound_to_shots` 时未绑定资产不会进入体检结果；本次不修改真实项目数据。
+
+## 2026-09-09 — book14 Prompt 候选审核与版本写入收口
+
+- 在用户明确确认后，逐包复核并写入 `book 14 / 第 1 集 / 镜头 1–24` 的 24 个 Prompt Version；写入前均校验证据指纹与锁定资产。
+- 版本确认接口返回 `generation_triggered=false`，本次没有再次调用 LLM，也没有触发图片或视频生成。
+- 五项目 125 镜 zero-error gate 复跑通过：`0 error / 409 warning`；剩余 warning 作为可追踪质量债保留。
+
+## 2026-09-09 — 智能导演台真浏览器回归适配可变项目状态
+
+- `e2e-agent-browser-flow` 不再把“项目改编方向未锁定”写死为必现文案；已锁定项目仍验证真实工作台承接、目标镜头定位和原有门禁。
+- 将只读 Prompt 草案过期诊断与模拟过期承接的 409 响应标记为预期冲突，未分类浏览器控制台错误现在会使回归失败。
+- 使用正式工作台端口运行真浏览器流程通过：自由对话、动作确认承接、资产/QA 跳转、过期保护、项目动态、焦点管理和窄屏适配均通过。
+
+## 2026-09-09 — Prompt Compiler 剧本残留检测增强
+
+- 补强通用 `screenplay_prompt_residue` 诊断：除角色名加冒号、方括号和“画面切”外，还识别无标签感叹句对白、中文引号对白、括号舞台动作及对白叙述动词。
+- 规则只依赖文本结构信号，不绑定书号、角色名或镜头号；对“压低声音”等纯视听氛围描述保留为正常画面语言，避免误报。
+- 新增对白残留回归用例；Prompt Compiler、异步编译和修复链路共 75 项测试通过。
+- 该规则升级后，book 14 候选仍保持“仅草案、未写版本、未触发生成”的边界；人工审核时将能准确标出镜头 5、8、11、14 等残留剧本语言。
+- 二次只读审查结果见 `artifacts/book14-prompt-drafts-audit-20260909.md`，新增识别镜头 5、8、11、14、17、20 的对白/舞台风险。
+- 新增候选诊断只读复核接口；正式工作台打开候选时会按当前规则刷新诊断，不会调用 LLM 或产生版本写入。
+
+## 2026-09-09 — book 14 Prompt 候选真实 LLM 灰度
+
+- 经显式确认，使用当前 `mimo / mimo-v2.5` 对 `book 14 / 第 1 集` 的 24 个冻结证据包执行串行候选生成。
+- 镜头 1–16 首次成功保存 `ready_for_review` 候选；镜头 17–24 首次因供应商返回 `402 Payment Required` 失败，额度恢复并再次确认后已全部重试成功。
+- 所有候选均未创建 Prompt Version、未修改镜头、未生成图片或视频；结果记录见 `artifacts/book14-prompt-drafts-llm-gray-20260909.md`。
+
+## 2026-09-09 — 机器提示词导出 E2E 端口隔离
+
+- `npm run e2e:machine-prompt-export` 的自启动模式改为显式读取 API/前端 URL 端口，并默认使用隔离端口 `18769 / 5177`。
+- 后端通过 `uvicorn api.server:app` 按目标端口启动，前端代理同步指向该 API；保留 `E2E_API_URL`、`E2E_WEB_URL` 与 `E2E_START_SERVERS=0` 覆盖能力。
+- 默认自启动回归已通过，不再因浏览器工具占用 8765 或正式工作台端口而误失败；测试使用 mock 门禁，不触发真实模型费用。
+
+## 2026-09-09 — 编译兜底提示词去除长舞台标记
+
+- 修正 Model Adapter 运动合约兜底：长段 `[...]` / `【...】` 舞台标记不再因长度上限泄漏到机器提示词。
+- 修正人物性别事实自动补齐短语的标点形式，避免“角色性别事实：...”被误判为角色对白标签并触发硬门禁。
+- 新增回归覆盖长舞台标记、运动合约兜底和性别事实补齐；五项目克隆修复验证已通过。
+- 为 `book 14 / episode 1` 的 24 个历史镜头冻结 Prompt 证据包（packet `259–282`），仅生成证据、未调用 LLM、未修改镜头或 Prompt Version。
+
+## 2026-09-09 — 编译层自动补齐人物性别权威事实
+
+- Prompt Compiler 现在会基于当前镜头绑定资产，在静态提示词缺失显式性别名词时自动补入“角色性别事实”短语；该规则适用于所有项目和模型，不修改导演原文或资产事实。
+- 如果候选提示词出现与权威性别相反的显式描述，仍由 `character_gender_authority` 硬门禁阻断，不做静默覆盖。
+- 新增回归覆盖“缺失事实自动补齐、冲突事实继续阻断”，避免旧样本因规则升级无法重新编译。
+
+## 2026-09-09 — 75api MiniMax H3 图片条件视频适配
+
+- 新增独立 `75api-minimax-h3` provider，模型名固定为 `minimax_h3_no_audios`，不覆盖现有 Metaso `minimax-h3-async` 配置。
+- 按 75api `/v1/videos` 协议发送顶层 `prompt`、`seconds`、`aspect_ratio`、`resolution`、`images` 字段；不发送音频字段。
+- 强制首帧图或多参考图输入，拒绝文生视频、混合输入、超过 8 张参考图及 5–15 秒之外的时长，不做静默截断。
+- 支持 `queued/processing/completed` 状态轮询、`video_url` 提取及受鉴权的 `/v1/videos/{task_id}/content` 回收，并保留 `id/task_id` 审计信息。
+- 真实提交意图现在冻结当前视频模型配置 ID；确认阶段检测到模型漂移会拒绝提交，避免等待确认时误发到另一 provider。
+- 正式工作台按实际输入选择多参考图或采纳首帧模式，不再始终强制多参考图；参考图数量上限按当前 provider 能力读取。
+- 新增适配器与模型管理回归测试，后端 43 项目标测试、前端模型管理测试和生产构建通过。
+
+## 2026-09-08 — Prompt Compiler 继承结构化人物性别事实
+
+- 修正新版 Prompt Compiler 上下文未传递 `VisualMakeup.meta_info.structured_result.gender` 的缺口；人物绑定摘要与 canonical profile 现在统一暴露权威性别。
+- 旧的扁平静态提示词即使包含相反性别，也不会再被当作可靠事实；候选草案必须通过人物性别生产硬校验后才能进入人工确认。
+- 修正 Shot IR `action_beats.description` 未投影到运动合同 `action` 的兼容缺口；运动合同已纳入证据指纹，旧候选不会因规则升级被静默复用。
+- 新增 authority context 回归，覆盖结构化性别进入绑定摘要与 canonical profile 的链路；未调用 LLM、未写入 Prompt Version。
+
+## 2026-09-08 — 道具参考图提示词合同统一
+
+- 修正道具资产提示词模板与运行时生产合同的冲突：默认产物统一为单张 1:1 / 4:3 主参考图，不再要求六视图网格、多角度拼图或横向 contact sheet。
+- 运行时新增通用历史模板残留过滤，只清理网格/多视角/设定板等模板语句，保留道具的形制、材质、颜色、关键状态和时代事实；原始字段仍完整保留用于审计。
+- `structured_variant_fields` 新增 `safe_reference_description`，便于 UI、导出和后续模型适配区分原始描述与实际提交文本。
+- 既有候选参考图不会被静默覆盖；需要重新生成时由用户确认后生成新版本，再进行视觉审核和锁定。
+- 新增回归覆盖，确保“单张主参考图 + 资产事实”合同不会再次混入 `2行3列`、`六视图` 等互相矛盾要求。
+- `book 990309` 灰度中，最终道具候选图 97 已按稳定字段生成并锁定；旧候选图因证据变化保留为 `stale`，未被删除。
+- 修正未绑定镜头资产重复生成时的版本号计算：现在按 `VisualReferenceAsset` 全局历史（含 stale）递增，不再重复使用 `v1`。
+
+## 2026-09-08 — Agent 资产/QA 承接与过期证据浏览器回归
+
+- `npm run e2e:agent-browser` 新增资产中心、QA 工作台的动作提案承接验证；资产上下文可精确落到“神秘女人”，QA 列表可见，且不绕过原工作台写入门禁。
+- 新增过期证据前端回归：模拟确认时项目事实变化，UI 保持抽屉打开并明确提示重新发起请求，不发生错误导航；预期 409 不计入控制台噪声。
+- 新增截图证据 `artifacts/real-browser-agent-handoff-assets.png`、`artifacts/real-browser-agent-handoff-qa.png`；服务端过期指纹行为继续由 `tests/test_agent_chat_api.py` 覆盖。
+
+## 2026-09-08 — 项目动态处理动作收敛
+
+- 智能导演台项目动态补充“稍后提醒”和“已解决”操作，同时保留“已知悉”；状态写入既有审计接口，不改变项目事实或生产门禁。
+- 真浏览器回归覆盖状态流转 `acknowledged → snoozed → resolved`，并保持控制台无非预期错误。
+
+## 2026-09-08 — 智能导演台可访问性与窄屏收口
+
+- 对话抽屉打开后自动聚焦输入框，关闭后将焦点还给浮动入口；增加 `aria-modal` 语义，避免键盘用户迷失位置。
+- 抽屉在 390px 窄屏下使用视口约束，不产生横向溢出；真浏览器脚本已加入焦点与宽度断言。
+
+## 2026-09-08 — Agent 动作提案真浏览器承接验收
+
+- `npm run e2e:agent-browser` 现覆盖普通对话、动作确认卡、确认承接、精确镜头定位及原工作台放行门禁可见性。
+- 使用独立 Playwright Chromium 与隔离 mock，避免真实模型费用；服务端幂等、指纹过期和无副作用协议继续由 Agent API 回归覆盖。
+- 验收样本：`book 75 / 第 1 集 / 镜头 3`，浏览器控制台错误为 0。记录见 `docs/2026-09-08-智能导演台动作提案真浏览器验收记录.md`。
+
+## 2026-09-08 — Agent 动作提案安全承接
+
+- 对自由对话返回的副作用动作提案补充 `audit_id` 追踪和 `POST /api/agent/audit/{id}/handoff-confirm` 确认接口。
+- 用户确认后只记录承接意图并打开正式工作台，不执行资产/剧本写入、Prompt Version 覆盖或图片/视频生成；原工作台的证据、锁定、版本、预算和最终确认门禁保持生效。
+- 正式工作台通过统一 `smart-director:navigate` 事件接收镜头/资产上下文；“稍后处理”不改变项目事实。
+- 新增后端动作承接回归，Agent 对话与草案相关测试通过，前端 Agent 测试及生产构建通过。
+
+## 2026-09-08 — 主动汇报 SSE 事件流
+
+- 新增只读 `GET /api/agent/updates/stream`，按 `sinceId` 推送新增项目动态；无新事件时返回心跳并关闭，避免长连接占用。
+- 智能导演台打开时优先建立事件流，连接失败或浏览器不支持时继续使用原有轮询；事件流不会创建动态、调用模型或触发生产操作。
+- SSE 冒烟验证返回 `text/event-stream` 和 heartbeat，主动汇报回归及前端生产构建通过。
+- 新增可重复的 `npm run e2e:agent-browser`（独立 Playwright Chromium）真实页面验收脚本，避免依赖桌面浏览器扩展桥接。
+
+## 2026-09-07 — 智能导演台自由对话与主动项目汇报基线
+
+- 新增 `AgentProjectUpdate` 持久化模型与迁移，统一记录项目进度、问题、失败、建议和待确认事项，支持证据指纹、去重键、已知悉/解决/稍后提醒状态。
+- 新增项目事实驱动的主动汇报引擎：基于服务端剧本、分镜、资产、QA 和任务快照生成进度与风险更新；同一证据包重复检查不会刷屏。
+- 新增 `/api/agent/updates/reconcile`、`/api/agent/updates`、`/api/agent/updates/summary` 和状态更新接口；Agent 时间线与任务中心可识别项目动态。
+- 新增 `/api/agent/chat` 自由对话接口：普通问答、进度分析和图片/文档理解直接回复；修改、覆盖、生成等副作用只返回受控动作提案，不执行生产操作。
+- 智能导演台抽屉接入项目动态、未读标记和后台周期检查；发送消息不再强制经过“预览 LLM → 确认调用”流程。
+- 回归：主动汇报/自由对话后端 4 项通过，Agent 相关后端 13 项通过，前端相关测试 6 项通过，生产构建通过。
+
+## 2026-09-07 — 生产门禁与修复预检协议同步
+
+- `--zero-error-gate` 现在按语义只阻塞真正的审计 error；warning 仍完整写入报告，供生产质量债治理，不再被误判为零错误门禁失败。显式 `AUDIT_STORYBOARD_STRICT=1` 仍可启用零 warning 强策略。
+- 场景参考资产只读规划脚本改为从模型注册表解析当前默认图片模型，避免硬编码旧供应商；当前会自动跟随正式工作台的 `nano-banana-2`。
+- 批量修复、质量修复和真实灰度脚本同步 `confirmed=true + allowExternalCall=true` 双确认协议；克隆预检遇到编译器 fail-closed 时保留候选诊断并生成报告，不会中断整批预检或写入真实项目。
+- 生产回归验证：后端 143 项通过、前端构建通过、五项目 125 镜头零 error 门禁通过；历史样本仍保留 321 条 warning 作为可追踪质量债。
+- MiMo `mimo-v2.5` 官方模型页提供 OpenAI-compatible `image_url` 多模态请求示例（图片、音频、视频输入）；因此 Agent 的“支持图片理解”开关可在完成供应商确认后安全开启，系统仍以显式能力配置作为实际发送门禁。
+
+## 2026-09-07 — 智能导演台会话与多模态安全收口
+
+- Agent 会话恢复现在完整保存初始用户消息、助手建议、计划和附件引用；追加消息会更新会话时间，历史排序保持正确。
+- 附件引用增加项目归属与可用状态校验，禁止跨项目越权引用；草案去重限定为同一项目和同一证据包。
+- 视觉附件仅在显式确认外部调用且 Agent 模型开启“支持图片理解”时，以内存 data URL 传入 LLM，不发布到对象存储。
+- 模型管理新增普通用户可理解的“支持图片理解”开关；预览、会话和草案调用均保持可审计、可回放且不自动执行生产操作。
+
+## 2026-09-06 — 生产对象存储域名门禁统一
+
+- 将“生产参考资产必须使用自定义 HTTPS 域名、不得使用七牛 `clouddn.com` 临时域名”的判定下沉至 `core/public_asset_storage.py`，不再只依赖模型管理页的展示状态。
+- 需要强制发布到对象存储的生产输入（包括 H3 多参考图、视频交接帧以及正式迁移）现在会在上传前统一拒绝 HTTP、临时 `clouddn.com` 或无效配置；不会写入对象、改写资产引用或向外部视频模型提交不稳定 URL。
+- 迁移执行器复用同一核心规则，消除前后端及不同写入路径的判定分叉；新增回归覆盖，确认临时 HTTP 域名不会触发七牛上传。
+
+## 2026-09-03 — 剧本 QA 可控闭环方案（beat + edits + criteria）
+
+- 明确从“整段重写 + 行号定位 + 复检重跑全套 QA”收敛为“beat 锚点 + 编辑操作协议 + 每题可判定通过条件”，使迭代可终止、可合并、可验收。
+- 新增设计文档 `docs/2026-09-03-剧本QA可控闭环最佳方案.md`，同步进《产品重构蓝图》与《产品重构阶段任务与验收标准》（阶段 1.0b）。
+- 核心：剧本派生稳定 `beat_id` 索引；QA 挂 `beat_id` 而非行号；LLM 输出锚定 `edits[]`（replace/insert_after/delete + beat_id + new_text）；复检只对 target 的 `resolution_criteria` 断言；结构/矛盾项自动、主观项转人工队列。不新增书号/角色/关键词特例。
+- 已实施阶段 A：新增 `core/script_beat.py`（确定性剧本 beat 索引），识别场景标题、`[场景结束]`、`[视觉证明N]`、`**[动作]**`/`**[动作开始/结束]**`、`**[开场]**`、`**[人物入场]**` 与对白；`beat_id = ep{ep}-s{scene}-b{n}` 稳定锚点，start_line/end_line 随版本重算。真实样本 `book 990309` 第 1 集解析 148 beat（3 场景），幂等且无误分类；回归 `tests/test_script_beat.py` 3 项通过。
+- 已实施阶段 B：新增 `core/script_beat.py::find_issue_beats`（QA 定位 → beat_ids，归一化子串命中或单场景行区间重叠才算可靠）与 `core/qa_resolution.py::build_resolution_criteria`（给出可判定 `contains_required`/`structure_present`，否则 `requires_human`）。已接入 QA 决策包 scope（`beat_ids/beat_anchor_reliable/resolution_criteria`）；无可靠 beat 或非可判定项一律降级为人工，不进入可写路径。回归 `tests/test_qa_resolution.py` 4 项、相关 18 项通过。
+- 已实施阶段 C：新增 `core/script_edit.py`（`validate_edits`：beat 存在、no-op、结构标记保护、操作数上限、同拍冲突拒绝、可传冻结指纹 stale 校验；`apply_edits`：按 beat 顺序重建文本并保留结构）。新增 `POST /api/books/{book_id}/qa/{episode}/apply-edits`：校验→应用→`ScriptVersion`（`change_type=qa_edit`，meta 存 `pre_apply_beats`/`applied_edits`，行号随内容重算），可选复检；绝不调用 LLM。实测冲突编辑返回 `409` 且不写入。回归 `tests/test_script_edit.py` 7 项、相关 14 项通过。
+- 已实施阶段 D：`core/qa_resolution.py::evaluate_resolution_criteria`（按 `contains_required`/`structure_present`/`requires_human` 对当前剧本判定），新增只读 `POST /api/books/{book_id}/qa/decision-packets/{packet_id}/scoped-check`（只评估该包 `resolution_criteria`，不重跑全套 QA、不写任何数据）。只读 harness 给出“达标即终止”的判定信号；`requires_human` 返回 `passed=True` 但由路由转人工。回归 `tests/test_qa_resolution.py` 6 项、相关 16 项通过。
+- 已实施阶段 E：`core/qa_resolution.py::route_issue`（`beat_anchor_reliable` 且可判定 criteria → `auto`，否则 `human`）；`apply-edits` 扩展接受 `resolution_criteria`，应用后校验达标则写 `QAIssue.fix_status=resolved`、否则 `needs_refinement`。回归 `tests/test_qa_resolution.py` 9 项、相关 18 项通过。
+- 新增锚定编辑协议 `propose_edits`：`core/decision_draft.py` 支持决断 LLM 输出 `edits[]`（replace/insert_after/delete + beat_id ∈ scope.beat_ids + new_text），validator 逐条校验并剔除非法项；局部修订包 scope 现写入 `beat_ids/beat_anchor_reliable` 并将 `propose_edits` 加入 allowed_operations。回归 30 项通过。
+- `validate_edits` 新增两类守卫生效：`replace` 新文本不得重复相邻 beat 已有内容（防重复结尾）；结构标记 beat（场景结束/画面渐隐/动作边界/标题）禁止改写。局部修订包 `beat_ids` 现在排除结构 beat。真实验证（`book 990309` / `qa-ep1-1ecd390f`）：LLM 成功输出 `propose_edits` 单条 `replace`（`proposed_content=0`、无冲突），但目标为 `[画面渐隐]` 结构标记，`apply-edits` 返回 `409 结构标记禁止改写`、未写入；重新转发后包 `beat_ids` 为 b40–b47 且不含 `[画面渐隐]`。回归 31 项通过。
+- 全自动闭环跑通：`build_resolution_criteria` 对“场景结束标记缺失”改为 `structure_present`（需存在含 `[场景结束]` 的 beat）；一次性验证书 `990321` 上 `apply-edits`（`insert_after` 加 `[场景结束]`，版本 2）→ `structure_present` 判定 `passed=true` → `QAIssue.fix_status=resolved`。验证书已清理。闭环 `edits[] → apply-edits → 达标判定 → resolved` 全链路验证完成。
+- 人工队列路由：新增 `GET /api/books/{book_id}/qa/{episode}/routing-plan`（只读）与 `POST /api/books/{book_id}/qa/{episode}/route-human-queue`。按 `route_issue`（`beat_anchor_reliable` + 可判定 criteria）决定 auto/human；把 `human` 项标记 `human_review_required=True`/`routing=human`/`status_reason=转人工定稿`。已对 `book 990309` 第 1 集执行：5 项 open 全部 `human`、`auto=0`，未改动剧本（最大版本仍为 v18）。QA 自动化到此收敛，主观项转人工定稿队列。
+- 前端 QA 列表为人工定稿项加醒目徽章：`ProductWorkspaceQaSection` 新增 `isHumanReview` 判定（`meta_info.routing=human` / `human_review_required` / `statusReason` 含“人工定稿”），列表行显示琥珀色“人工定稿”徽章。真浏览器核对：`book 990309` QA 页 5 项主观工单均显示该徽章（badgeCount=5），前端生产构建通过。
+- 服务端回归说明：阶段 E 验证时误对 `book 990309` 发送了合法 `delete` 编辑，实际写入并生成版本 17；已立即用回滚端点到版本 18 恢复至 v16 内容（被删叙述与视觉证明4 已还原，beat 数 148）。当前剧本内容正确；后续仅用明确非法（结构标记/冲突）编辑做非破坏性校验。
+
+## 2026-09-02 — QA 整集修复任务化
+
+- 新增受控 QA 批量修复异步执行模式：用户明确发起后，接口立即返回 `task_id`，避免多条 LLM 修复将浏览器连接占用至超时。
+- 新增 `GET /api/books/{book_id}/qa/auto-fix/tasks/{task_id}`，可读取持久化的排队、执行、复检、完成或失败状态；服务重启后仍可从 `TaskRun` 恢复。
+- 异步模式复用既有逐条选项选择、diff 守卫、修复版本与整集 QA 复检；它不自行创建任务、不跳过人工触发，也不触发任何媒体生成。
+- 新增自动化回归，验证后台任务能完成一条真实 QA 工单并写入可查询结果。
+- QA 结构预检改为按统一结束标记语法识别 `【场景结束】`、`[场景结束]`、Markdown 包裹和淡出标记；带强调的收束句按去除 Markdown 后的真实末尾标点判定，避免格式误报。
+- `DecisionPacket` 的真实 LLM 草案调用新增持久化 in-progress 占位锁；相同证据包在模型返回前的重复请求统一返回进行中状态，避免并发点击产生重复模型调用与重复计费。
+- QA 草案新增单问题局部修订合同，并把分集大纲、Bible、Production Skill 与未关闭 QA 上下文纳入证据；没有经场景交叉校验的精确行段时，候选只能输出人工审阅策略，不能携带可写入剧本正文。
+
+## 2026-08-30 — 结构变换通用回滚锚点
+
+- 为镜头的结构变换新增通用 `state_snapshot` 回滚锚点：它保存变换后、首次重编译前的完整镜头状态，而非伪造一条历史机器提示词。
+- 拆镜确认写入现在会原子地为两个结果镜头建立状态快照锚点；后续任何声明结构来源的变换也可复用同一数据结构。
+- 新增受保护接口 `POST /api/books/{book_id}/production-readiness/repair-plan/rollback-anchors`：默认只预检，只有当前计划指纹与 `confirmed=true + allow_write=true` 同时成立才为历史变换镜头补建锚点。
+- 生产修复计划会在“仍待首次重编译”的变换镜头优先选择状态快照；完成编译后恢复使用普通 Prompt Version 作为后续修复基线。
+- 回滚状态快照时恢复动作、连续性、镜头参数、参考绑定、提示词与元数据，避免只回滚提示词而让分镜结构保持错误状态。
+- 正式工作台体检卡新增“预检补建状态锚点 → 确认建立状态锚点”两步操作；不会自动修改历史镜头。
+- 经操作者确认，已在 `book 75 / episode 1` 验证历史迁移路径：12 个已声明拆镜结果全部建立状态锚点，计划中的缺失锚点降为 0；未触发编译或媒体生成。
+
+## 2026-08-29 — 可拍性结果持久化与视频生成门禁
+
+- 编译后的核心动作、动作节拍、连续性和 `pass / warning / blocked` 结果现在同时写入 `structured_shot`、`prompt_compile_context` 与 `shot_ir`。
+- 正式工作台展示镜头时长、核心动作、动作节拍和可执行建议，低频明细默认折叠。
+- 视频生成遇到 `blocked` 时返回 409 并阻止提交；`warning` 需要用户显式确认后才允许继续。
+- warning 覆盖写入 `meta_info.executability_overrides`，并保留在任务请求快照中。
+- 新增 `npm run audit:shot-executability`：默认对正式样本书生成只读 30 镜头节拍回放报告，不调用 LLM、不改写镜头。
+- 拆镜建议从单一标签升级为两个连续镜头的候选动作分配与推荐时长草案。
+- 对 book 75 的 pass 镜头完成首批确定性结果回填（2、3、5、7、9、10、11）；未调用 LLM、未改写提示词、未触发媒体生成。
+- book 75 的其余 blocked/warning 镜头也已回填为只读治理元数据，使工作台可直接显示阻塞原因与拆镜草案；视频门禁随之对全部 14 个镜头生效。
+- 修复旧 Prompt Compiler 运行时上下文刷新会丢弃 `core_action`、`action_beats`、连续性与 `executability` 字段的问题。
+- 正式工作台新增“保存拆镜草案”：将可拍性建议保存为待人工确认的两段候选镜头，不直接修改原镜头。book 75 / 镜头 1 已完成真实接口回归。
+- 正式工作台新增“确认应用拆镜草案”：会新增第二镜头、顺延同集镜头号，保留参考绑定但清空旧提示词和媒体，避免错误复用旧产物；必须二次确认后执行。
+- 拆镜应用时归档原媒体关联，不删除底层资产，后续可据此审计或恢复。
+- 可拍性校验新增最终运动提示词动作解析与结构化节拍漂移检测，修复“结构化节拍通过、真实视频提示词过载”被误判的问题；book 75 / 镜头 3 已改判为 blocked。
+
+## 2026-08-29 — 分镜图提示词结构化与参考图命名规范
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：分镜图提示词需要保留导演语言的创作意图，但提交给生图模型时必须经过结构化编译，且参考图要能明确区分人物、场景、道具用途。
+
+### 变更概览
+
+- `Model Adapter` 新增 `storyboard_image_prompt_sections_v1`：
+  - 画面定格
+  - 资产锚点
+  - 构图关系
+  - 当前帧动作
+  - 资产视觉事实
+  - 光线与情绪
+  - 一致性与禁止项
+- Prompt Compiler 读取结构化基线后仍输出自然中文 `visual_prompt_static`，避免把字段标题当作模型画面内容。
+- 明确禁止把人物定妆设定板、六视图、参考图生成模板等内容混入分镜首帧提示词。
+- 正式镜头工作台新增“结构化分镜图提示词”展示区，位于导演分镜语言下方，可直接查看画面定格、资产锚点、构图关系、当前帧动作、资产视觉事实、光线情绪和一致性禁止项。
+- 修正输出接口兼容刷新逻辑：历史 Prompt Compiler 上下文重建时保留 `model_adapter.static_prompt_sections`，避免数据库已有结构但前端拿不到。
+- 已对 `book 75 / episode 1 / shot 3` 执行安全重编译，生成 `prompt version v12`，结构化 sections 已进入 API 输出。
+- 参考图 payload 新增语义字段：
+  - `reference_name`
+  - `reference_label`
+  - `reference_role`
+  - `reference_purpose`
+  - `weight`
+- 修复正式镜头工作台普通“生成视频”入口的 H3 提交链路：
+  - 真实视频 provider 会先将多参考图发布为公网可访问 URL，再提交给 H3。
+  - 存在多参考图时不再混用本地首帧 `/api/prototyping/manual-media/...`，避免云端 provider 读取不到本地资源导致 HTTP 400。
+  - 任务记录会保留 `reference_public_assets` / `first_frame_public_asset`，方便失败追踪。
+- 七牛公网 URL 校验增加短重试，并在 H3 多参考图公网化失败时返回具体 `reference_asset_id`，避免偶发访问超时或单张坏图时无法定位。
+- 修复本地手动上传资产的公网中转死锁：`/api/prototyping/manual-media/...` 在后端任务内会直接读取 `uploads/manual-media` 本地文件，不再从同一个 Uvicorn 进程 HTTP 回调自己，避免页面生成视频时 30 秒超时。
+- 修复普通分镜视频生成的提交规格：
+  - 前端未显式传 `durationSeconds` 时，后端使用当前分镜 `shot.duration`，避免模型默认 `5s` 覆盖分镜时长。
+  - MiniMax H3 的 `max_reference_images=0` 不再被错误压成 1；多参考默认按最多 9 张提交。
+- MiniMax H3 提交失败诊断增强：HTTP 400/401/403/404/429 等上游错误会保留响应 body 到 `provider_response`，并尽量把上游 `message/error/detail` 拼入错误文案，方便定位平台字段限制。
+- H3 多参考提交改为统一镜像策略：配置七牛后，场景、人物、道具等所有参考图都会先复制到同一对象存储，再提交给视频 provider，避免混用第三方 CDN 导致 provider 侧拉取失败。
+- 分镜生成质量治理方案落档：新增镜头意图规划、动作时长节拍、可拍性校验，以及过载镜头的延长/删减/拆镜建议；该方案已同步进入产品蓝图与生产级上线冲刺清单。
+- 分镜可拍性治理第一阶段开始实现：新增 `core/shot_executability.py`，并将 `core_action`、`action_beats`、`executability` 接入 Prompt IR；已覆盖动作过载、镜头运动冲突和起止状态缺失的纯函数校验与回归测试。
+- 新增规范文档：`docs/2026-08-29-分镜图提示词结构与生图参考命名规范.md`，记录常见生图参数、GPT Image 2 / PoYo 参数口径、WebUI 参考图命名方式和项目内部命名约定。
+
+### 验证结果
+
+- `python -m py_compile api/server.py core/model_adapter.py api/generation_adapters.py`：通过。
+- `python -m unittest tests.test_storyboard_prompt_compile tests.test_generation_adapters tests.test_visual_asset_library`：62 tests OK。
+- `python -m unittest tests.test_storyboard_prompt_compile tests.test_visual_asset_library`：46 tests OK。
+- `npm --prefix web run build`：通过。
+
+---
+
+## 2026-08-28 — H3 多参考视频与手动资产上传闭环
+
+> 对应分支：`codex/unify-formal-workspace`
+> 背景：MiniMax H3 / metaso 视频生成主路径应是“多参考图 + 机器提示词”，不是单一首帧驱动；同时生产中所有关键图片资产都需要支持人工上传兜底。
+
+### 变更概览
+
+- H3 视频适配层改为多参考图优先：
+  - 存在 `reference_images` 时，payload 使用 `role=reference_image`，最多 9 张。
+  - 多参考图存在时不再同时混入 `first_frame`，避免模式语义冲突。
+  - 仅在没有参考图时，才回退到首帧图生视频；再无首帧时回退文生视频。
+- 机器提示词真实提交入口新增 `useReferenceImages / referenceAssetIds`，正式工作台真实提交 H3 默认启用多参考图，首帧只作为兼容兜底。
+- 普通镜头“生成视频”链路放开旧首帧硬门槛：只要存在已采纳分镜图或已选中/锁定参考图，就具备视频输入条件。
+- 新增手动媒体资产上传入口：
+  - `POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/manual-media-assets`
+  - `POST /api/books/{book_id}/visual-assets/{asset_type}/{asset_id}/manual-reference-assets`
+  - 支持 PNG / JPG / WebP。
+  - 上传为分镜图时写入 `StoryboardShot.asset_links.images` 并可直接采纳。
+  - 上传为参考图时写入 `VisualReferenceAsset`，默认 `locked`，并同步到当前镜头 `asset_links.references`，后续可被 H3 多参考视频生成读取。
+  - 资产中心现已支持人物、场景、道具直接手动上传参考图；手动上传图与模型生成图进入同一套参考图版本、锁定和同步机制。
+  - 新增 `/api/prototyping/manual-media/{filename}` 用于本地预览；真实提交 H3 前仍通过对象存储中转为公网 URL。
+- 模型管理文案从“首帧公网中转”修正为“参考资产公网中转”。
+- H3 灰度脚本默认改为多参考预检，新增 `--publish-reference-images`；首帧预检/发布保留为兼容模式。
+
+### 验证结果
+
+- `python -m py_compile api/server.py api/generation_adapters.py scripts/validate-minimax-h3-gray.py`：通过。
+- `python -m unittest tests.test_generation_adapters tests.test_storyboard_prompt_compile`：通过。
+- `npm --prefix web run build`：通过。
+
+---
+
 ## 2026-08-28 — 对象存储后台配置与迁移规划
 
 > 对应分支：`codex/unify-formal-workspace`
-> 背景：H3 图生视频需要公网可拉取首帧；仅靠 `.env` 配置不利于后台添加、替换和后续迁移对象存储。
+> 背景：H3 视频生成需要公网可拉取参考资产；仅靠 `.env` 配置不利于后台添加、替换和后续迁移对象存储。
 
 ### 变更概览
 
@@ -12,7 +330,7 @@
   - `PUT /api/public-asset-storage/config`
 - 配置第一版支持七牛 Kodo，字段包括 Provider、本地后端地址、Bucket、Region、公网访问域名、对象前缀、私有 Bucket、AccessKey / SecretKey。
 - AccessKey / SecretKey 支持后台保存状态检查，但接口响应不会回显密钥；前端留空保存会保留已保存密钥。
-- 模型管理页新增“对象存储 / 首帧公网中转”配置卡，可在正式工作台内完成对象存储添加或更换配置。
+- 模型管理页新增“对象存储 / 参考资产公网中转”配置卡，可在正式工作台内完成对象存储添加或更换配置。
 - 新增只读迁移规划 API：`GET /api/public-asset-storage/migration-plan`。
   - 扫描视觉参考资产与镜头资产链接。
   - 识别已在目标对象存储、本地/内联待发布、外部可读、外部不可读、未知来源等状态。
@@ -917,3 +1235,31 @@ CREATE TABLE agent_violation_logs (
 | 前端入口 | `web/src/App.tsx` |
 | 前端工作区 | `web/src/components/ProductWorkspace.tsx` |
 | 角色 API | `api/server.py:8194` (characters endpoints) |
+# Unreleased
+
+- 完成生产回归终态确认：`npm run check:production` 通过（102 个后端回归、前端生产构建、5 项目 122 镜头审计 `0 error / 0 warning`）。
+- 真实浏览器回归通过：正式业务闭环、`book 75` 机器提示词导出闭环，以及 `book 14 / 5 / 75 / 3 / 1` 的正式工作台巡检。
+- 为 `book 14 / episode 1` 的可拍性超载镜头 2、3、5、7 保存通用 N 段拆镜草案；仅写入待审阅草案，不改写镜头结构、不生成媒体。
+- 生产修复计划的资产风险已改为具体、可审阅的人工动作；正式工作台体检卡同步展示，并明确不会自动锁定或猜测权威参考图。
+- 新增 GitHub Actions 生产回归门禁，并补齐后端服务运行时依赖声明；CI 不会调用真实外部模型。
+- 旧 DevCanvas 节点 API 可通过 `ENABLE_LEGACY_NODE_API=false` 在生产环境统一禁用，正式工作台不受影响。
+- 对象存储迁移规划新增确认令牌和只读审计元数据，为受保护迁移执行器建立前置边界。
+
+- 新增只读生产修复计划 API：`GET /api/books/{book_id}/production-readiness/repair-plan`，汇总 blocked/warning 镜头与资产风险，区分可重编译动作和需要人工确认的动作；不修改真实数据。
+- 正式镜头工作台体检卡支持直接定位优先 blocked 镜头。
+- 经用户确认，完成 `book 75` 首批 7 个可重编译镜头真实批量重编译；任务 `9c192305ce6a` 全部成功，生成新 Prompt Version，未触碰 6 个 blocked 镜头。
+- 经用户确认，按倒序应用 `book 75` 6 个拆镜草案，15 镜增至 21 镜；拆分后的新镜头均要求重新编译，当前 executability 无 blocked。
+
+- QA 局部修订合同新增场景位置校验：`场景N开头/末尾/结尾` 与实际行区间不匹配时，一律降级为不可写入的策略草案，避免把受限候选拼接到同场景的错误剧情节拍。
+- 全新回归样本 `book 990309` 的草案只读 diff 审查已完成；发现两条“场景 2 末尾”报告的行号实为场景前段，候选未应用，且无剧本、版本或生成任务被修改。
+# Unreleased
+
+- 智能导演台模型配置拆分为两层：模型管理只维护供应商与客观能力事实；Agent 设置独立维护思考开关与图片读取策略。
+- Agent 预览与真实调用均遵循双确认；图片只有在模型支持且 Agent 明确允许时才以内存数据发送，策略不会修改正式生产模型。
+## 2026-09-10
+
+- MiMo 缓存优化 Phase 2：Agent 草案/对话、资产治理和拆镜调用统一记录安全请求指纹与真实用量遥测；Agent 草案去重现在区分模型参数分支，资产重复请求校验证据与请求身份。
+- 新增 `agent_audit_logs.request_fingerprint`、`llm_usage` 数据列及 Alembic 迁移 `c6f7a8b9c0d1`。
+- 新增 LLM 入口前缀复用审查文档，明确剧本 QA/改写、Reader、Outline、Scene Setup 的后续统一审计范围。
+- 新增 `GET /api/agent/usage-summary` 与抽屉累计用量展示；缓存不可观测时明确显示，不伪造命中率。
+- 完成用户确认后的两次 MiMo 前缀缓存真实灰度：2 次 HTTP 200，供应商返回累计 2240 缓存 Token / 4526 输入 Token，命中率 49.4918%；报告写入 `artifacts/mimo-prefix-cache-gray-20260910.*`。

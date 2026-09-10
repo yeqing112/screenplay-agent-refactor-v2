@@ -54,30 +54,32 @@
 
 ## 输出要求
 
-严格输出 JSON 数组，每个元素是一个镜头对象：
+严格输出 JSON 对象，顶层键固定为 `shots`，其值为镜头对象数组（4-8 个元素）：
 
 ```json
-[
-  {{
+{
+  "shots": [
+    {{
     "scene_name": "{scene_name}",
-    "dialogue": "该镜头的对白或旁白（如果是无声镜头则为空字符串）",
-    "duration": 3,
-    "camera_angle": "WS",
-    "camera_movement": "static",
-    "camera_speed": "slow",
-    "transition": "cut",
-    "lighting": "该镜头具体的光影描述（参考场景的 lighting_mood 但更精确）",
-    "start_state": "镜头开始时，人物的位置、姿态、表情状态",
-    "action_process": "镜头发生的过程中，人物的动作、情绪变化、画面变化",
-    "end_state": "镜头结束时，人物的最终位置、姿态、表情状态",
-    "shot_purpose": "emotion",
-    "emotion_arc": {{"start": "平静", "end": "紧张", "intensity": "medium"}},
-    "sound_effects": ["音效1", "音效2"],
-    "bgm_mood": "BGM 情绪标签（紧张/悲伤/悬疑/温暖/激烈/平静）",
-    "visual_prompt_static": "静态核心画面描述（构图、人物位置、场景细节、光线、色调）；中文，150字以内",
-    "visual_prompt_motion": "动态过程描述（运镜方式、人物动作变化、镜头在时间轴上的变化）；中文，100字以内"
-  }}
-]
+      "dialogue": "该镜头的对白或旁白（如果是无声镜头则为空字符串）",
+      "duration": 3,
+      "camera_angle": "WS",
+      "camera_movement": "static",
+      "camera_speed": "slow",
+      "transition": "cut",
+      "lighting": "该镜头具体的光影描述（参考场景的 lighting_mood 但更精确）",
+      "start_state": "镜头开始时，人物的位置、姿态、表情状态",
+      "action_process": "镜头发生的过程中，人物的动作、情绪变化、画面变化",
+      "end_state": "镜头结束时，人物的最终位置、姿态、表情状态",
+      "shot_purpose": "emotion",
+      "emotion_arc": {{"start": "平静", "end": "紧张", "intensity": "medium"}},
+      "sound_effects": ["音效1", "音效2"],
+      "bgm_mood": "BGM 情绪标签（紧张/悲伤/悬疑/温暖/激烈/平静）",
+      "visual_prompt_static": "静态核心画面描述（构图、人物位置、场景细节、光线、色调）；中文，150字以内",
+      "visual_prompt_motion": "动态过程描述（运镜方式、人物动作变化、镜头在时间轴上的变化）；中文，100字以内"
+    }}
+  ]
+}
 ```
 
 ## 约束
