@@ -22,8 +22,14 @@ class StoryboardShot(Base):
     # 镜头语言
     camera_angle = Column(String, default="MS")        # WS/MS/CU/ECU
     camera_movement = Column(String, default="static") # static/push-in/pan/dolly/zoom/crane
+    camera_speed = Column(String, default="slow")      # slow/medium/fast
+    shot_purpose = Column(String, default="emotion")   # establishing/action/reveal/emotion...
     transition = Column(String, default="cut")         # cut/fade/dissolve/whip
     lighting = Column(Text, default="")
+
+    # 导演情绪弧线（JSON：{start, end, intensity}）。保留为结构化字段，
+    # 同时在 meta_info 中继续兼容旧版本扩展数据。
+    emotion_arc = Column(Text, default="{}")
 
     # 音效
     sound_effects = Column(Text, default="[]")         # JSON 数组

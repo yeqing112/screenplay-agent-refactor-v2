@@ -151,6 +151,9 @@ class StoryboardStructureTests(unittest.TestCase):
                 "duration": 5,
                 "cameraAngle": "CU",
                 "cameraMovement": "push-in",
+                "cameraSpeed": "medium",
+                "shotPurpose": "reveal",
+                "emotionArc": {"start": "疑惑", "end": "警觉", "intensity": "high"},
                 "transition": "dissolve",
                 "startState": "Hu Tu enters the camp.",
                 "actionProcess": "Hu Tu raises the bowl.",
@@ -187,6 +190,9 @@ class StoryboardStructureTests(unittest.TestCase):
         self.assertEqual(structured["duration"], 5)
         self.assertEqual(structured["camera_angle"], "CU")
         self.assertEqual(structured["camera_movement"], "push-in")
+        self.assertEqual(structured["camera_speed"], "medium")
+        self.assertEqual(structured["shot_purpose"], "reveal")
+        self.assertEqual(structured["emotion_arc"]["end"], "警觉")
         self.assertEqual(structured["transition"], "dissolve")
         self.assertEqual(structured["scene_asset_id"], "12")
         self.assertEqual(structured["character_asset_ids"], ["21", "34"])
@@ -198,6 +204,16 @@ class StoryboardStructureTests(unittest.TestCase):
         self.assertEqual(storyboard["duration"], 5)
         self.assertEqual(storyboard["camera_angle"], "CU")
         self.assertEqual(storyboard["camera_movement"], "push-in")
+        self.assertEqual(storyboard["camera_speed"], "medium")
+        self.assertEqual(storyboard["shot_purpose"], "reveal")
+        self.assertEqual(storyboard["emotion_arc"]["start"], "疑惑")
+        with Session() as session:
+            stored = session.query(StoryboardShot).filter_by(
+                book_id=self.book_id, episode=self.episode, shot_id=self.shot_id,
+            ).one()
+            self.assertEqual(stored.camera_speed, "medium")
+            self.assertEqual(stored.shot_purpose, "reveal")
+            self.assertEqual(json.loads(stored.emotion_arc)["intensity"], "high")
         self.assertEqual(storyboard["transition"], "dissolve")
         self.assertEqual(storyboard["start_state"], "Hu Tu enters the camp.")
         self.assertEqual(storyboard["action_process"], "Hu Tu raises the bowl.")

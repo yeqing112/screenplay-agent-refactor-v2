@@ -212,6 +212,7 @@ export default function ProductWorkspace({
         body: JSON.stringify({
           book_id: book.id,
           genre,
+          generation_mode: 'director_llm',
           episodes: buildEpisodeSequence(episodeCount),
         }),
       })

@@ -1,5 +1,15 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-10 — 分镜生成模式与导演语义持久化收口
+
+- 正式分镜生成 API 与工作台默认使用 `director_llm`；`deterministic_safe` 仅能显式选择，旧 `forceLlm` 参数继续兼容。
+- 任务状态记录实际 `generation_mode`，便于回放、成本审计和失败恢复；不自动切换模型或绕过外部调用确认。
+- `StoryboardShot` 新增并贯通 `camera_speed`、`shot_purpose`、`emotion_arc`，覆盖 LLM/fallback、数据库、API、刷新、Prompt Compiler、导出和拆镜继承。
+- 新增 Alembic 迁移 `d7e8f9a0b1c2_add_storyboard_director_semantics.py`，会从旧 `meta_info.structured_shot` 安全回填，不覆盖已有非默认值。
+- 全量后端回归 `554 passed`、前端 `48 files / 271 tests`、生产回归 `152 passed + build + 125-shot audit` 均通过。当前 warning 仍作为可追踪质量债，不被伪装为无警告放行。
+
+详细验收记录：`docs/2026-09-10-分镜生成模式与导演语义持久化验收记录.md`。
+
 ## 2026-09-10 — MiMo 前缀缓存优化与成本遥测
 
 - Prompt Compiler 将镜头专属 delivery contract 与修订要求移到动态任务后缀，system prompt 保持跨镜头稳定，减少 MiMo 前缀缓存分叉。

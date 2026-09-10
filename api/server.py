@@ -363,6 +363,9 @@ def create_storyboard_decision_packet_draft(book_id: int, episode: int, shot_id:
             "duration": shot.duration,
             "camera_angle": shot.camera_angle,
             "camera_movement": shot.camera_movement,
+            "camera_speed": shot.camera_speed,
+            "shot_purpose": shot.shot_purpose,
+            "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
             "transition": shot.transition,
             "makeup_prompts": _load_episode_makeup_prompt_stub(book_id, episode),
         }
@@ -733,6 +736,9 @@ def _prompt_compile_draft_context(book_id: int, shot) -> tuple[dict, dict]:
         "duration": shot.duration,
         "camera_angle": shot.camera_angle,
         "camera_movement": shot.camera_movement,
+        "camera_speed": shot.camera_speed,
+        "shot_purpose": shot.shot_purpose,
+        "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
         "transition": shot.transition,
         "makeup_prompts": _load_episode_makeup_prompt_stub(book_id, shot.episode),
     }
@@ -1198,6 +1204,9 @@ def _build_confirmed_prompt_runtime_state(book_id: int, shot, meta_info: dict, c
         "duration": shot.duration,
         "camera_angle": shot.camera_angle,
         "camera_movement": shot.camera_movement,
+        "camera_speed": shot.camera_speed,
+        "shot_purpose": shot.shot_purpose,
+        "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
         "transition": shot.transition,
     }
     structured = _auto_bind_structured_shot_assets(
@@ -1978,6 +1987,9 @@ class StoryboardStructurePatchRequest(BaseModel):
     duration: Optional[int] = None
     camera_angle: Optional[str] = Field(default=None, validation_alias=AliasChoices("camera_angle", "cameraAngle"))
     camera_movement: Optional[str] = Field(default=None, validation_alias=AliasChoices("camera_movement", "cameraMovement"))
+    camera_speed: Optional[str] = Field(default=None, validation_alias=AliasChoices("camera_speed", "cameraSpeed"))
+    shot_purpose: Optional[str] = Field(default=None, validation_alias=AliasChoices("shot_purpose", "shotPurpose"))
+    emotion_arc: Optional[dict] = Field(default=None, validation_alias=AliasChoices("emotion_arc", "emotionArc"))
     transition: Optional[str] = None
     scene_asset_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("scene_asset_id", "sceneAssetId"))
     character_asset_ids: Optional[list[str]] = Field(default=None, validation_alias=AliasChoices("character_asset_ids", "characterAssetIds"))
@@ -3966,7 +3978,10 @@ class StoryboardRequest(BaseModel):
     book_id: int
     genre: str = "short_drama"
     episodes: Optional[list[int]] = None  # None = all
-    force_llm: bool = Field(default=False, validation_alias=AliasChoices("force_llm", "forceLlm"))
+    # Production uses the director-LLM path by default.  The deterministic
+    # fallback remains available only as an explicit safe-generation mode.
+    generation_mode: str = Field(default="director_llm", validation_alias=AliasChoices("generation_mode", "generationMode"))
+    force_llm: Optional[bool] = Field(default=None, validation_alias=AliasChoices("force_llm", "forceLlm"))
     resume_from_scene: dict[str, str] = Field(default_factory=dict, validation_alias=AliasChoices("resume_from_scene", "resumeFromScene"))
 
 
@@ -4130,6 +4145,12 @@ def _update_storyboard_episode_progress(task: dict, event: dict) -> None:
 async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
     """Run storyboard generation independently, optionally for selected episodes."""
     import uuid
+    generation_mode = str(req.generation_mode or "director_llm").strip().lower()
+    if req.force_llm is not None:
+        generation_mode = "director_llm" if req.force_llm else "deterministic_safe"
+    if generation_mode not in {"director_llm", "deterministic_safe"}:
+        raise HTTPException(status_code=422, detail="generation_mode must be director_llm or deterministic_safe")
+    force_llm = generation_mode == "director_llm"
     task_id = uuid.uuid4().hex[:12]
     requested_episodes = sorted(set(int(ep) for ep in (req.episodes or []) if int(ep) > 0))
     _storyboard_tasks[task_id] = {
@@ -4138,6 +4159,7 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
         "current_step": "starting",
         "book_id": req.book_id,
         "genre": req.genre,
+        "generation_mode": generation_mode,
         "requested_episodes": requested_episodes,
         "episodes": [_make_storyboard_episode_task(ep) for ep in requested_episodes],
         "started_at": datetime.utcnow().isoformat(),
@@ -4175,7 +4197,7 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
             sb_agent = StoryboardAgent(
                 req.book_id,
                 genre=req.genre,
-                force_llm=req.force_llm,
+                force_llm=force_llm,
                 progress_callback=lambda event: (
                     _update_storyboard_episode_progress(_storyboard_tasks[task_id], event),
                     _persist_task_state(task_id, "storyboard", _storyboard_tasks[task_id]),
@@ -5397,9 +5419,11 @@ def _derive_structured_shot_payload(meta_info: dict | None, fallback: dict | Non
             "background": "mostly_preserved",
             "composition": "free",
         },
-        "emotion_arc": structured.get("emotion_arc") if isinstance(structured.get("emotion_arc"), dict) else {},
-        "shot_purpose": str(structured.get("shot_purpose") or "").strip(),
-        "camera_speed": str(structured.get("camera_speed") or "slow").strip() or "slow",
+        "emotion_arc": structured.get("emotion_arc") if isinstance(structured.get("emotion_arc"), dict) else (
+            fallback.get("emotion_arc") if isinstance(fallback.get("emotion_arc"), dict) else {}
+        ),
+        "shot_purpose": str(structured.get("shot_purpose") or fallback.get("shot_purpose") or "emotion").strip() or "emotion",
+        "camera_speed": str(structured.get("camera_speed") or fallback.get("camera_speed") or "slow").strip() or "slow",
     }
 
 
@@ -5421,6 +5445,9 @@ def _auto_bind_structured_shot_assets(book_id: int, episode: int, structure: dic
         "duration": payload["duration"],
         "camera_angle": payload["camera_angle"],
         "camera_movement": payload["camera_movement"],
+        "camera_speed": payload["camera_speed"],
+        "shot_purpose": payload["shot_purpose"],
+        "emotion_arc": payload["emotion_arc"],
         "transition": payload["transition"],
         "scene_asset_id": payload["scene_asset_id"],
         "character_asset_ids": payload["character_asset_ids"],
@@ -5432,6 +5459,10 @@ def _auto_bind_structured_shot_assets(book_id: int, episode: int, structure: dic
         "continuity_in": payload["continuity_in"],
         "continuity_out": payload["continuity_out"],
         "executability": payload["executability"],
+        "action_process": payload["action_process"],
+        "start_state": payload["start_state"],
+        "end_state": payload["end_state"],
+        "dialogue": payload["dialogue"],
     }
 
 
@@ -5445,6 +5476,12 @@ def _merge_structured_shot_payload(current_meta: dict | None, req: StoryboardStr
         base["camera_angle"] = req.camera_angle
     if req.camera_movement is not None:
         base["camera_movement"] = req.camera_movement
+    if req.camera_speed is not None:
+        base["camera_speed"] = str(req.camera_speed).strip() or "slow"
+    if req.shot_purpose is not None:
+        base["shot_purpose"] = str(req.shot_purpose).strip() or "emotion"
+    if req.emotion_arc is not None:
+        base["emotion_arc"] = req.emotion_arc if isinstance(req.emotion_arc, dict) else {}
     if req.transition is not None:
         base["transition"] = req.transition
     if req.scene_asset_id is not None:
@@ -5467,6 +5504,9 @@ def _merge_structured_shot_payload(current_meta: dict | None, req: StoryboardStr
         "duration": base["duration"],
         "camera_angle": base["camera_angle"],
         "camera_movement": base["camera_movement"],
+        "camera_speed": base["camera_speed"],
+        "shot_purpose": base["shot_purpose"],
+        "emotion_arc": base["emotion_arc"],
         "transition": base["transition"],
         "scene_asset_id": base["scene_asset_id"],
         "character_asset_ids": base["character_asset_ids"],
@@ -5474,6 +5514,10 @@ def _merge_structured_shot_payload(current_meta: dict | None, req: StoryboardStr
         "style_key": base["style_key"],
         "character_blocking": base["character_blocking"],
         "action_beats": base["action_beats"],
+        "action_process": base["action_process"],
+        "start_state": base["start_state"],
+        "end_state": base["end_state"],
+        "dialogue": base["dialogue"],
     }
     return next_meta
 
@@ -5530,6 +5574,9 @@ def _persist_auto_bound_storyboard_structures(book_id: int, episodes: list[int] 
                 "duration": shot.duration,
                 "camera_angle": shot.camera_angle,
                 "camera_movement": shot.camera_movement,
+                "camera_speed": shot.camera_speed,
+                "shot_purpose": shot.shot_purpose,
+                "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
                 "transition": shot.transition,
                 "makeup_prompts": _load_episode_makeup_prompt_stub(book_id, shot.episode),
             }
@@ -7276,6 +7323,9 @@ def _build_prompt_compile_context(book_id: int, shot, structure: dict, acceptanc
         "scene_name": scene_name,
         "camera_angle": shot.camera_angle,
         "camera_movement": shot.camera_movement,
+        "camera_speed": shot.camera_speed,
+        "shot_purpose": shot.shot_purpose,
+        "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
         "transition": shot.transition,
         "lighting": shot.lighting,
         "duration": shot.duration,
@@ -7652,6 +7702,9 @@ def _build_prompt_compile_context_v2(book_id: int, shot, structure: dict, accept
         "scene_name": scene_name,
         "camera_angle": shot.camera_angle,
         "camera_movement": shot.camera_movement,
+        "camera_speed": shot.camera_speed,
+        "shot_purpose": shot.shot_purpose,
+        "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
         "transition": shot.transition,
         "lighting": shot.lighting,
         "duration": shot.duration,
@@ -8471,6 +8524,9 @@ def _build_storyboard_prompt_version_payloads(s, book_id: int, shot, current_ver
                     "duration": shot.duration,
                     "camera_angle": shot.camera_angle,
                     "camera_movement": shot.camera_movement,
+                    "camera_speed": shot.camera_speed,
+                    "shot_purpose": shot.shot_purpose,
+                    "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
                     "transition": shot.transition,
                 },
             ),
@@ -8535,6 +8591,9 @@ def _snapshot_storyboard_shot_state(shot) -> dict:
         "duration": shot.duration,
         "camera_angle": shot.camera_angle,
         "camera_movement": shot.camera_movement,
+        "camera_speed": shot.camera_speed,
+        "shot_purpose": shot.shot_purpose,
+        "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
         "transition": shot.transition,
         "lighting": shot.lighting,
         "sound_effects": shot.sound_effects,
@@ -10283,6 +10342,9 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         "duration": shot.duration,
         "camera_angle": shot.camera_angle,
         "camera_movement": shot.camera_movement,
+        "camera_speed": shot.camera_speed,
+        "shot_purpose": shot.shot_purpose,
+        "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
         "transition": shot.transition,
     }
     structured = _auto_bind_structured_shot_assets(
@@ -11618,6 +11680,9 @@ def _refresh_storyboard_prompt_compiler_for_reference(book_id: int, row) -> int:
                 "duration": shot.duration,
                 "camera_angle": shot.camera_angle,
                 "camera_movement": shot.camera_movement,
+                "camera_speed": shot.camera_speed,
+                "shot_purpose": shot.shot_purpose,
+                "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
                 "transition": shot.transition,
             }
             structured = _auto_bind_structured_shot_assets(
@@ -14373,6 +14438,9 @@ def get_storyboard_structure(book_id: int, episode: int, shot_id: str):
             "duration": shot.duration,
             "camera_angle": shot.camera_angle,
             "camera_movement": shot.camera_movement,
+            "camera_speed": shot.camera_speed,
+            "shot_purpose": shot.shot_purpose,
+            "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
             "transition": shot.transition,
             "makeup_prompts": _load_episode_makeup_prompt_stub(book_id, episode),
         }
@@ -14411,6 +14479,7 @@ def patch_storyboard_structure(book_id: int, episode: int, shot_id: str, req: St
         # restored without pretending an older prompt version contains it.
         edit_fields = (
             "duration", "camera_angle", "camera_movement", "transition",
+            "camera_speed", "shot_purpose", "emotion_arc",
             "start_state", "action_process", "end_state", "action_beats",
             "character_blocking", "scene_asset_id", "character_asset_ids", "prop_asset_ids", "style_key",
         )
@@ -14430,6 +14499,12 @@ def patch_storyboard_structure(book_id: int, episode: int, shot_id: str, req: St
             shot.camera_angle = req.camera_angle
         if req.camera_movement is not None:
             shot.camera_movement = req.camera_movement
+        if req.camera_speed is not None:
+            shot.camera_speed = str(req.camera_speed).strip() or "slow"
+        if req.shot_purpose is not None:
+            shot.shot_purpose = str(req.shot_purpose).strip() or "emotion"
+        if req.emotion_arc is not None:
+            shot.emotion_arc = json.dumps(req.emotion_arc, ensure_ascii=False)
         if req.transition is not None:
             shot.transition = req.transition
         if req.start_state is not None:
@@ -14943,8 +15018,11 @@ def apply_storyboard_executability_split_draft(
             duration=int(candidate.get("recommended_duration") or shot.duration or 3),
             camera_angle=shot.camera_angle,
             camera_movement="static",
+            camera_speed=shot.camera_speed,
+            shot_purpose=shot.shot_purpose,
             transition=shot.transition,
             lighting=shot.lighting,
+            emotion_arc=shot.emotion_arc,
             sound_effects=shot.sound_effects,
             bgm_mood=shot.bgm_mood,
             start_state=previous_state,
@@ -18331,6 +18409,9 @@ def _build_export_shot_payload(shot) -> dict:
         "scene_name": str(getattr(shot, "scene_name", "") or ""),
         "camera_angle": str(getattr(shot, "camera_angle", "") or ""),
         "camera_movement": str(getattr(shot, "camera_movement", "") or ""),
+        "camera_speed": str(getattr(shot, "camera_speed", "") or ""),
+        "shot_purpose": str(getattr(shot, "shot_purpose", "") or ""),
+        "emotion_arc": safe_json_loads(getattr(shot, "emotion_arc", "{}"), {}),
         "duration": str(getattr(shot, "duration", "") or ""),
         "dialogue": str(getattr(shot, "dialogue", "") or ""),
         "action_process": str(getattr(shot, "action_process", "") or ""),
@@ -18360,6 +18441,9 @@ def _serialize_storyboard_output_row(
         "duration": shot.duration,
         "camera_angle": shot.camera_angle,
         "camera_movement": shot.camera_movement,
+        "camera_speed": shot.camera_speed,
+        "shot_purpose": shot.shot_purpose,
+        "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
         "transition": shot.transition,
         "lighting": shot.lighting,
         "sound_effects": __import__("json").loads(shot.sound_effects)
@@ -18463,6 +18547,9 @@ def _serialize_storyboard_output_row(
         "duration": shot.duration,
         "camera_angle": shot.camera_angle,
         "camera_movement": shot.camera_movement,
+        "camera_speed": shot.camera_speed,
+        "shot_purpose": shot.shot_purpose,
+        "emotion_arc": safe_json_loads(shot.emotion_arc, {}),
         "transition": shot.transition,
         "lighting": shot.lighting,
         "sound_effects": payload["sound_effects"],

@@ -184,6 +184,58 @@ class StoryboardPipelineTaskTests(unittest.TestCase):
         self.assertIn("fallback", finished.get("current_step") or "")
         self.assertIn("fallback", (finished.get("guidance") or "").lower())
 
+    def test_storyboard_defaults_to_director_llm_mode(self):
+        seen = {}
+
+        def fake_init(agent, *args, **kwargs):
+            seen["force_llm"] = kwargs.get("force_llm")
+            agent.progress_callback = kwargs.get("progress_callback")
+
+        def fake_run(agent, episode, resume_after_scene=None):
+            return []
+
+        with patch("agents.storyboard.StoryboardAgent.__init__", new=fake_init), patch(
+            "agents.storyboard.StoryboardAgent.run", new=fake_run,
+        ):
+            response = self.client.post(
+                "/api/pipeline/storyboard",
+                json={"book_id": self.book_id, "genre": "short_drama", "episodes": [1]},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        task_payload = self.client.get(
+            f"/api/pipeline/storyboard/task/{response.json()['task_id']}"
+        ).json()
+        self.assertEqual(task_payload["generation_mode"], "director_llm")
+        self.assertTrue(seen["force_llm"])
+
+    def test_deterministic_safe_mode_is_explicit(self):
+        seen = {}
+
+        def fake_init(agent, *args, **kwargs):
+            seen["force_llm"] = kwargs.get("force_llm")
+            agent.progress_callback = kwargs.get("progress_callback")
+
+        with patch("agents.storyboard.StoryboardAgent.__init__", new=fake_init), patch(
+            "agents.storyboard.StoryboardAgent.run", new=lambda agent, episode, resume_after_scene=None: [],
+        ):
+            response = self.client.post(
+                "/api/pipeline/storyboard",
+                json={
+                    "book_id": self.book_id,
+                    "genre": "short_drama",
+                    "episodes": [1],
+                    "generationMode": "deterministic_safe",
+                },
+            )
+
+        self.assertEqual(response.status_code, 200)
+        task_payload = self.client.get(
+            f"/api/pipeline/storyboard/task/{response.json()['task_id']}"
+        ).json()
+        self.assertEqual(task_payload["generation_mode"], "deterministic_safe")
+        self.assertFalse(seen["force_llm"])
+
 
 if __name__ == "__main__":
     unittest.main()
