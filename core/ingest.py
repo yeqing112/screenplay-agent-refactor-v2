@@ -27,6 +27,18 @@ INVALID_EXTRACTED_TITLE_SIGNALS = [
 
 def _detect_chapters(text: str) -> list[tuple[str, str]]:
     """Split text by chapter headings. Returns list of (title, content)."""
+
+    def _is_document_title_only(value: str) -> bool:
+        """Ignore a standalone book title before the first chapter heading.
+
+        Uploaded novels commonly put ``《书名》`` (and optional blank lines)
+        before ``第一章``.  Treating that title as an empty chapter shifts every
+        subsequent chapter number.  Substantive prologues remain untouched.
+        """
+
+        compact = "".join(str(value or "").split())
+        return bool(re.fullmatch(r"《[^《》]{1,80}》", compact))
+
     lines = text.split("\n")
     chapters: list[tuple[str, str]] = []
     current_title = ""
@@ -36,7 +48,9 @@ def _detect_chapters(text: str) -> list[tuple[str, str]]:
         is_chapter = any(re.match(pattern, line.strip()) for pattern in CHAPTER_PATTERNS)
         if is_chapter:
             if current_lines:
-                chapters.append((current_title, "\n".join(current_lines).strip()))
+                preface = "\n".join(current_lines).strip()
+                if current_title or not _is_document_title_only(preface):
+                    chapters.append((current_title, preface))
             current_title = line.strip()
             current_lines = []
         else:

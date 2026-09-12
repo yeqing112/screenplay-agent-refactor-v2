@@ -462,3 +462,5 @@ Production Materializer 代码与本地测试闭环已收口，可以作为正�
 - 计量入口覆盖模型、请求指纹、prompt/cached/completion/total tokens、cache hit rate、延迟、stage、episode、scene、shot、repair attempt；未保存原始提示词、响应或凭据。
 - 本地 mock 验证：`tests/test_pilot_instrumentation.py` + `tests/test_llm_json_parsing.py` **7 passed**；后端全量回归 **702 passed，879 warnings**（原样保留）。
 - 当前仍未调用真实 MiMo；《潮汐回声》三集 Pilot 的外部调用必须在执行计划确认后开始。
+- 样本只读预检发现并修复导入器的通用前导标题边界：独立书名行不再生成伪章节；《潮汐回声》现稳定切分为 **10 章**，未修改原始文件。
+- 章节切分回归：`tests/test_ingest_chapter_detection.py` **2 passed**，并验证实质序章仍被保留。
