@@ -28,6 +28,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from models import Session, VisualLocation, VisualReferenceAsset, init_db
+from core.scene_reference_plan import scene_location_fingerprint
 
 
 REPORT_PREFIX = "storyboard-scene-reference-plan-apply"
@@ -76,6 +77,7 @@ def planned_updates(plan: dict[str, Any]) -> list[dict[str, Any]]:
             "negative_prompt": str(patch.get("negative_prompt") or "").strip(),
             "jimeng_ref_name": str(patch.get("jimeng_ref_name") or f"@{item.get('scene_name')}").strip(),
             "shot_ids": [str(value).strip() for value in patch.get("shot_ids") or item.get("shot_ids") or [] if str(value).strip()],
+            "source_fingerprint": str(item.get("source_fingerprint") or "").strip(),
         })
     return updates
 
@@ -100,6 +102,10 @@ def apply_updates(plan: dict[str, Any], updates: list[dict[str, Any]], real: boo
             ).first()
             if row is None:
                 results.append({**item, "status": "missing_visual_location"})
+                continue
+            expected_fingerprint = str(item.get("source_fingerprint") or "").strip()
+            if not expected_fingerprint or scene_location_fingerprint(row) != expected_fingerprint:
+                results.append({**item, "status": "stale", "reason": "scene asset changed after plan generation; regenerate the readonly plan"})
                 continue
             refs = session.query(VisualReferenceAsset).filter(
                 VisualReferenceAsset.book_id == int(plan.get("book_id")),

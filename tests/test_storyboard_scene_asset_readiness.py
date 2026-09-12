@@ -42,6 +42,15 @@ def load_scene_reference_apply_module():
     return module
 
 
+def load_scene_reference_merge_module():
+    path = Path(__file__).resolve().parents[1] / "scripts" / "merge-scene-reference-plans.py"
+    spec = importlib.util.spec_from_file_location("merge_scene_reference_plans", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    return module
+
+
 class StoryboardSceneAssetReadinessTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -50,6 +59,7 @@ class StoryboardSceneAssetReadinessTests(unittest.TestCase):
         cls.plan = load_scene_reference_plan_module()
         cls.enqueue = load_scene_reference_enqueue_module()
         cls.apply_plan = load_scene_reference_apply_module()
+        cls.merge = load_scene_reference_merge_module()
 
     def setUp(self):
         self.book_id = 990875
@@ -135,6 +145,50 @@ class StoryboardSceneAssetReadinessTests(unittest.TestCase):
         self.assertTrue(summary["ready_for_binding_repair_apply"])
         self.assertTrue(summary["ready_for_prompt_batch_apply"])
 
+    def test_candidate_scene_reference_dimensions_are_reported_without_becoming_active(self):
+        with Session() as session:
+            location = VisualLocation(
+                book_id=self.book_id,
+                name="便利店收银台",
+                description="正式场景描述。",
+                asset_status="ref_ready",
+            )
+            session.add(location)
+            session.flush()
+            # A tiny valid PNG is intentionally used here: the audit should
+            # report the candidate dimensions while keeping it inactive.
+            one_by_one_png = (
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/"
+                "l5Y4VwAAAABJRU5ErkJggg=="
+            )
+            session.add(
+                VisualReferenceAsset(
+                    book_id=self.book_id,
+                    episode=1,
+                    asset_type="scene",
+                    asset_id=str(location.id),
+                    asset_name="便利店收银台",
+                    image_url=f"data:image/png;base64,{one_by_one_png}",
+                    reference_token="@便利店收银台",
+                    status="candidate",
+                )
+            )
+            session.commit()
+
+        previous = os.environ.get("SCENE_ASSET_AUDIT_VALIDATE_IMAGE_DIMENSIONS")
+        os.environ["SCENE_ASSET_AUDIT_VALIDATE_IMAGE_DIMENSIONS"] = "1"
+        try:
+            result = self.audit.audit_book(self.book_id)
+        finally:
+            if previous is None:
+                os.environ.pop("SCENE_ASSET_AUDIT_VALIDATE_IMAGE_DIMENSIONS", None)
+            else:
+                os.environ["SCENE_ASSET_AUDIT_VALIDATE_IMAGE_DIMENSIONS"] = previous
+        scene = result["scenes"][0]
+        self.assertEqual(scene["candidate_reference_count"], 1)
+        self.assertEqual(scene["landscape_candidate_count"], 0)
+        self.assertEqual(scene["selected_reference_count"], 0)
+
     def test_square_scene_reference_blocks_when_dimension_validation_enabled(self):
         previous = os.environ.get("SCENE_ASSET_AUDIT_VALIDATE_IMAGE_DIMENSIONS")
         os.environ["SCENE_ASSET_AUDIT_VALIDATE_IMAGE_DIMENSIONS"] = "1"
@@ -200,8 +254,11 @@ class StoryboardSceneAssetReadinessTests(unittest.TestCase):
         self.assertEqual(request["targetKind"], "reference-image")
         self.assertIn("便利店收银台", request["prompt"])
         self.assertIn("sourceAssetId", request)
-        self.assertIn("单张 16:9 横构图", request["prompt"])
-        self.assertIn("不分格", request["prompt"])
+        self.assertIn("16:9 横向四视图场景设定板", request["prompt"])
+        self.assertIn("固定 2×2 四宫格布局", request["prompt"])
+        self.assertIn("左上为主视角空间全景", request["prompt"])
+        self.assertEqual(item["planned_asset_update"]["reference_layout"], "2x2_four_view")
+        self.assertEqual(len(item["planned_asset_update"]["reference_view_schema"]), 4)
         self.assertIn("人物", request["negativePrompt"])
 
     def test_scene_reference_plan_sanitizes_grid_and_character_fragments(self):
@@ -236,12 +293,55 @@ class StoryboardSceneAssetReadinessTests(unittest.TestCase):
         prompt = request["prompt"]
 
         self.assertIn("潮湿山洞入口", prompt)
-        self.assertIn("洞壁潮湿反光", prompt)
-        self.assertIn("单张 16:9 横构图", prompt)
+        # Shot-level lighting is evidence for shot planning only.  It must
+        # not be promoted into a reusable scene reference asset implicitly.
+        self.assertNotIn("洞壁潮湿反光", prompt)
+        self.assertIn("16:9 横向四视图场景设定板", prompt)
+        self.assertIn("固定 2×2 四宫格布局", prompt)
+        self.assertIn("四宫格", prompt)
         self.assertNotIn("2行2列", prompt)
-        self.assertNotIn("四宫格", prompt)
         self.assertNotIn("主角面部", prompt)
         self.assertNotIn("手指", prompt)
+
+    def test_scene_reference_plan_prompt_matches_formal_scene_contract(self):
+        """The read-only plan must use the same prompt contract as the API."""
+        scene_name = "旧公寓门厅"
+        with Session() as session:
+            session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
+            session.add(
+                StoryboardShot(
+                    book_id=self.book_id,
+                    episode=1,
+                    scene_name=scene_name,
+                    shot_id=1,
+                    lighting="镜头临时使用强烈侧逆光",
+                    action_process="人物推门进入。",
+                )
+            )
+            location = VisualLocation(
+                book_id=self.book_id,
+                name=scene_name,
+                description="公寓门厅，入口连接狭长走廊，右侧固定鞋柜。",
+                canonical_facts='{"description":"公寓门厅，入口连接狭长走廊","fixed_assets":["固定鞋柜"]}',
+                state_variants='{"lighting":"常态顶灯开启"}',
+                look_profile='{"palette":"中性灰"}',
+                asset_status="draft",
+            )
+            session.add(location)
+            session.commit()
+            location_id = location.id
+
+        plan = self.plan.plan_book(self.book_id)
+        item = plan["items"][0]
+        with Session() as session:
+            location = session.query(VisualLocation).filter(VisualLocation.id == location_id).one()
+            contract = self.plan._build_scene_asset_prompt_contract(location)
+
+        self.assertEqual(item["reference_generation"]["prompt"], contract["rendered_prompt_preview"])
+        self.assertEqual(item["reference_generation"]["negative_prompt"], contract["reference_negative_prompt"])
+        self.assertIn("常态顶灯开启", item["reference_generation"]["prompt"])
+        self.assertIn("中性灰", item["reference_generation"]["prompt"])
+        self.assertNotIn("强烈侧逆光", item["reference_generation"]["prompt"])
 
     def test_scene_reference_plan_preserves_exact_storyboard_scene_name(self):
         scene_name = "原始丛林深处"
@@ -343,6 +443,64 @@ class StoryboardSceneAssetReadinessTests(unittest.TestCase):
             self.assertEqual(location.asset_status, "ref_ready")
             self.assertNotIn("最小场景资产", location.description)
             self.assertIn("视觉资产库生成", ref.notes)
+
+    def test_scene_reference_batch_merge_is_readonly_and_keeps_only_planned_items(self):
+        batch = self.merge.merge_plans([
+            {
+                "mode": "readonly-scene-reference-plan",
+                "book_id": 11,
+                "confirmationToken": "a",
+                "items": [
+                    {
+                        "scene_name": "场景A",
+                        "location_id": 1,
+                        "status": "planned",
+                        "shot_ids": ["1-1"],
+                        "issues": ["缺少参考图"],
+                        "planned_asset_update": {"formal_description": "空间A"},
+                        "reference_generation": {
+                            "prompt": "场景A prompt",
+                            "negative_prompt": "negative",
+                            "api_request": {"targetKind": "reference-image"},
+                        },
+                    },
+                    {"scene_name": "已就绪", "location_id": 2, "status": "already_ready"},
+                ],
+            },
+        ])
+
+        self.assertEqual(batch["summary"]["planned_items"], 1)
+        self.assertEqual(batch["summary"]["affected_shots"], 1)
+        self.assertTrue(batch["requires_user_confirmation"])
+        self.assertFalse(batch["writes_performed"])
+        self.assertFalse(batch["external_calls_performed"])
+        self.assertEqual(batch["items"][0]["status"], "awaiting_user_confirmation")
+        self.assertEqual(batch["items"][0]["book_id"], 11)
+
+    def test_scene_reference_plan_apply_rejects_changed_source_snapshot(self):
+        with Session() as session:
+            location = VisualLocation(
+                book_id=self.book_id,
+                name="便利店收银台",
+                description="初始场景空间描述。",
+                asset_status="draft",
+            )
+            session.add(location)
+            session.commit()
+
+        plan = self.plan.plan_book(self.book_id)
+        updates = self.apply_plan.planned_updates(plan)
+        with Session() as session:
+            location = session.query(VisualLocation).filter(VisualLocation.book_id == self.book_id).first()
+            location.description = "人工修改后的场景空间描述。"
+            session.commit()
+
+        results = self.apply_plan.apply_updates(plan, updates, real=True)
+
+        self.assertEqual(results[0]["status"], "stale")
+        with Session() as session:
+            location = session.query(VisualLocation).filter(VisualLocation.book_id == self.book_id).first()
+            self.assertEqual(location.description, "人工修改后的场景空间描述。")
 
 
 if __name__ == "__main__":

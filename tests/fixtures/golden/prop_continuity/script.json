@@ -1,0 +1,4 @@
+{
+  "episode": 1,
+  "scenes": [{"name": "车站候车室", "beats": [{"id": "B01", "type": "prop", "event": "人物把钥匙放在长椅上"}, {"id": "B02", "type": "handoff", "event": "另一人拿起钥匙离开"}]}]
+}

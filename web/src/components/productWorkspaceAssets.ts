@@ -35,6 +35,7 @@ export interface AssetSummary {
   structuredVariantFields?: Record<string, unknown>
   renderedPromptPreview?: string
   referenceNegativePrompt?: string
+  promptLint?: VisualLocationOutput['prompt_lint']
   shotIds: string[]
   episodeIds: number[]
   referenceCount: number
@@ -418,7 +419,7 @@ export function buildCharacterAssetSummaries(makeups: VisualMakeupOutput[]): Ass
     const refs = summarizeReferenceAssets(item.reference_assets)
     const shotIds = item.shot_ids ?? []
     const prompt = sanitizePromptDisplayText(
-      item.visual_prompt_zh || item.core_prompt_zh || item.outfit_prompt_zh || item.scene_prompt_zh || '',
+      item.rendered_prompt_preview || item.visual_prompt_zh || item.core_prompt_zh || item.outfit_prompt_zh || item.scene_prompt_zh || '',
     )
     const staleReferenceCount = countStaleReferencePrompts(prompt, item.reference_assets)
     const variantGroupKey = normalizeDisplayText(item.character_name) || '未命名角色'
@@ -459,6 +460,7 @@ export function buildCharacterAssetSummaries(makeups: VisualMakeupOutput[]): Ass
       structuredVariantFields: item.structured_variant_fields ?? {},
       renderedPromptPreview: sanitizePromptDisplayText(item.rendered_prompt_preview || prompt),
       referenceNegativePrompt: sanitizePromptDisplayText(item.reference_negative_prompt || item.negative_prompt || ''),
+      promptLint: undefined,
       shotIds,
       episodeIds: toEpisodeIds(shotIds),
       referenceCount: refs.totalCount,
@@ -529,6 +531,7 @@ export function buildLocationAssetSummaries(locations: VisualLocationOutput[]): 
       structuredVariantFields: item.structured_variant_fields ?? {},
       renderedPromptPreview: sanitizePromptDisplayText(item.rendered_prompt_preview || prompt),
       referenceNegativePrompt: sanitizePromptDisplayText(item.reference_negative_prompt || item.negative_prompt || ''),
+      promptLint: item.prompt_lint,
       shotIds,
       episodeIds: toEpisodeIds(shotIds),
       referenceCount: refs.totalCount,

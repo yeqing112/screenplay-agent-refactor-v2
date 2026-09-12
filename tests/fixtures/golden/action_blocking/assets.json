@@ -1,0 +1,5 @@
+{
+  "locations": [{"name": "酒店走廊", "importance": "high"}],
+  "characters": [{"id": "CHAR_A", "name": "逃跑者", "gender": "male"}, {"id": "CHAR_B", "name": "追赶者", "gender": "male"}],
+  "props": [{"id": "PROP_EXIT", "name": "安全门", "importance": "high"}]
+}

@@ -55,8 +55,12 @@ describe('productWorkspaceTaskRecoveryActions', () => {
       shotId: '5',
       kind: 'frame',
       restartCount: 1,
+      confirmation: { confirmed: true, allowExternalCall: true },
     })
 
+    expect(recoveryMocks.restartStoryboardRecoveryTask).toHaveBeenCalledWith(expect.objectContaining({
+      confirmation: { confirmed: true, allowExternalCall: true },
+    }))
     expect(recoveryMocks.upsertPendingStoryboardTask).toHaveBeenCalled()
     expect(result).toMatchObject({
       outcome: 'restarted',

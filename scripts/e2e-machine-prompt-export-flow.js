@@ -13,8 +13,11 @@ const WEB_URL = process.env.E2E_WEB_URL || "http://127.0.0.1:5177";
 const START_SERVERS = process.env.E2E_START_SERVERS !== "0";
 const API_PORT = Number(new URL(API_URL).port || 80);
 const WEB_PORT = Number(new URL(WEB_URL).port || 80);
-const BOOK_ID = Number(process.env.E2E_MACHINE_PROMPT_BOOK_ID || 75);
-const BOOK_TITLE = process.env.E2E_MACHINE_PROMPT_BOOK_TITLE || "深夜便利店";
+// Use a disposable fixture by default.  Production projects can still be
+// exercised explicitly with E2E_MACHINE_PROMPT_BOOK_ID, but the regression no
+// longer assumes that a historical book (such as the deleted book 75) exists.
+const BOOK_ID = Number(process.env.E2E_MACHINE_PROMPT_BOOK_ID || 999903);
+const BOOK_TITLE = process.env.E2E_MACHINE_PROMPT_BOOK_TITLE || "机器提示词导出回归样本";
 const EPISODE = Number(process.env.E2E_MACHINE_PROMPT_EPISODE || 1);
 const SHOT_ID = Number(process.env.E2E_MACHINE_PROMPT_SHOT_ID || 1);
 
@@ -80,6 +83,39 @@ function runPython(code, env = {}) {
     throw new Error(`Python command failed:\n${result.stdout}\n${result.stderr}`);
   }
   return result.stdout.trim();
+}
+
+function seedFixture() {
+  const result = spawnSync("python", [
+    "scripts/seed-machine-prompt-export-fixture.py",
+    "seed",
+    String(BOOK_ID),
+  ], {
+    cwd: ROOT_DIR,
+    env: { ...process.env, PYTHONIOENCODING: "utf-8" },
+    encoding: "utf-8",
+  });
+  if (result.status !== 0) {
+    throw new Error(`Machine prompt fixture seed failed:\n${result.stdout}\n${result.stderr}`);
+  }
+  log(`Seeded disposable fixture book #${BOOK_ID}.`);
+}
+
+function cleanupFixture() {
+  const result = spawnSync("python", [
+    "scripts/seed-machine-prompt-export-fixture.py",
+    "cleanup",
+    String(BOOK_ID),
+  ], {
+    cwd: ROOT_DIR,
+    env: { ...process.env, PYTHONIOENCODING: "utf-8" },
+    encoding: "utf-8",
+  });
+  if (result.status !== 0) {
+    log(`Fixture cleanup failed (manual cleanup may be required):\n${result.stdout}\n${result.stderr}`);
+    return;
+  }
+  log(`Cleaned disposable fixture book #${BOOK_ID}.`);
 }
 
 function captureBaseline() {
@@ -235,11 +271,32 @@ async function runFlow() {
     await page.reload({ waitUntil: "domcontentloaded" });
 
     await page.getByRole("button", { name: /^镜头工作台/ }).click();
-    await page.getByText("机器提示词导出预览").waitFor({ state: "visible", timeout: 20000 });
+    await page.getByRole("tab", { name: "看懂镜头" }).waitFor({ state: "visible", timeout: 20000 });
 
     const shotButton = page.locator(`[data-episode="${EPISODE}"][data-shot-id="${SHOT_ID}"]`);
     if (await shotButton.count()) {
       await shotButton.first().click();
+    }
+
+    // Machine exports live in the explicit video step after the storyboard
+    // workbench became task-oriented. Select it before asserting the export
+    // controls so this regression follows the real user path.
+    const videoTab = page.getByRole("tab", { name: "生成视频" }).first();
+    if (await videoTab.count() !== 1) {
+      throw new Error("Storyboard workbench did not expose the video step.");
+    }
+    await videoTab.click();
+    {
+      const url = new URL(page.url());
+      if (url.searchParams.get("section") !== "storyboard" || url.searchParams.get("shot") !== String(SHOT_ID) || url.searchParams.get("step") !== "video") {
+        throw new Error(`Storyboard URL context was not updated for the video step: ${url}`);
+      }
+    }
+    try {
+      await page.getByText("机器提示词导出预览").waitFor({ state: "visible", timeout: 20000 });
+    } catch (error) {
+      const body = (await page.locator("body").innerText()).slice(0, 5000);
+      throw new Error(`${error.message}\nRendered storyboard body:\n${body}`);
     }
 
     await page.getByRole("button", { name: "加载导出预览" }).click();
@@ -250,6 +307,18 @@ async function runFlow() {
     await page.getByText(/时长来源：分镜 \d+s/).waitFor({ state: "visible", timeout: 10000 });
     await page.getByText("更多机器语言与单字段复制").click();
     await page.getByText("MiniMax H3 / WebUI 导出").waitFor({ state: "visible", timeout: 10000 });
+
+    const overviewTab = page.getByRole("tab", { name: "看懂镜头" }).first();
+    if (await overviewTab.count() !== 1) {
+      throw new Error("Storyboard workbench did not expose the overview step for director-language editing.");
+    }
+    await overviewTab.click();
+    {
+      const url = new URL(page.url());
+      if (url.searchParams.get("step") !== "overview") {
+        throw new Error(`Storyboard URL context was not updated for the overview step: ${url}`);
+      }
+    }
 
     const customDirectorText = [
       "场景：便利店收银台",
@@ -270,6 +339,7 @@ async function runFlow() {
       throw new Error("Machine prompt preview unexpectedly allows API submission.");
     }
 
+    await videoTab.click();
     await page.getByRole("button", { name: "复制 H3 全字段" }).click();
     await page.getByText("H3 全字段 已复制").waitFor({ state: "visible", timeout: 10000 });
     const clipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
@@ -278,6 +348,11 @@ async function runFlow() {
     }
 
     const manualDraftText = `E2E-${Date.now()} 人工临时 H3 画面描述：林小夏在冷白灯下短暂停顿，视线越过收银台投向门口。`;
+    // The advanced export panel is intentionally collapsed by default.  Reopen
+    // it after switching back to the video step before editing its temporary
+    // WebUI-only draft.
+    const advancedExportPanel = page.getByText("更多机器语言与单字段复制").first();
+    if (await advancedExportPanel.count() === 1) await advancedExportPanel.click();
     await page.getByText("临时编辑最终 WebUI 草稿").click();
     await page.locator("textarea[placeholder*='最终 H3']").fill(manualDraftText);
     await page.getByRole("button", { name: "应用到临时草稿" }).click();
@@ -320,11 +395,13 @@ async function runFlow() {
       throw new Error("Restored WebUI draft did not provide a copy-ready H3 export.");
     }
 
+    await overviewTab.click();
     await page.getByText("高级").first().click();
     await page.getByRole("button", { name: "恢复系统版" }).click();
     await page.getByText("已恢复系统生成导演分镜语言").waitFor({ state: "visible", timeout: 20000 });
     await page.getByText("系统生成版").waitFor({ state: "visible", timeout: 10000 });
 
+    await videoTab.click();
     const apiSubmitButton = page.getByRole("button", { name: "登记 API 提交任务" });
     if (!(await apiSubmitButton.isVisible().catch(() => false))) {
       await page.getByText("更多导出").click();
@@ -341,6 +418,14 @@ async function runFlow() {
     }
     if (machinePromptApiTask.actual_provider_submission !== false || machinePromptApiTask.external_status !== "waiting_for_generation_adapter") {
       throw new Error("Machine prompt API submission task crossed the provider-call safety boundary.");
+    }
+
+    // Verify the share/refresh contract, not just in-place tab switching.
+    await page.goto(`${WEB_URL}?section=storyboard&episode=${EPISODE}&shot=${SHOT_ID}&step=video`, { waitUntil: "domcontentloaded" });
+    const restoredVideoTab = page.getByRole("tab", { name: "生成视频" }).first();
+    await restoredVideoTab.waitFor({ state: "visible", timeout: 20000 });
+    if ((await restoredVideoTab.getAttribute("aria-selected")) !== "true") {
+      throw new Error("Refreshing a storyboard deep link did not restore the requested video step.");
     }
 
     if (errors.length) {
@@ -369,15 +454,15 @@ async function main() {
     log("Using already-running servers.");
   }
 
-  const baseline = captureBaseline();
-  log(`Captured baseline for book #${BOOK_ID}, scene "${baseline.scene_name}".`);
+  let fixtureSeeded = false;
   try {
+    seedFixture();
+    fixtureSeeded = true;
     await waitForOk(`${API_URL}/health`);
     await waitForOk(WEB_URL);
     await runFlow();
   } finally {
-    const cleanup = restoreBaseline(baseline);
-    log(`Restored baseline; removed records: ${cleanup.removed_record_ids.join(", ") || "none"}; removed API tasks: ${cleanup.removed_task_ids.join(", ") || "none"}.`);
+    if (fixtureSeeded) cleanupFixture();
     if (START_SERVERS) {
       await stopManagedProcesses();
     }

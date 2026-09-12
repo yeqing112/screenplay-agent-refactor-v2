@@ -32,6 +32,8 @@ from api.server import (
     _enqueue_creative_task,
     _run_creative_task,
 )
+from core.scene_reference_plan import scene_location_fingerprint
+from models import Session, VisualLocation, init_db
 
 
 REPORT_PREFIX = "storyboard-scene-reference-generation"
@@ -73,6 +75,7 @@ def planned_requests(plan: dict[str, Any]) -> list[dict[str, Any]]:
             "location_id": item.get("location_id"),
             "shot_count": item.get("shot_count"),
             "api_request": request_payload,
+            "source_fingerprint": str(item.get("source_fingerprint") or "").strip(),
         })
     return requests
 
@@ -168,6 +171,20 @@ async def run(args: argparse.Namespace) -> int:
     if not requests:
         raise RuntimeError("Plan contains no planned scene reference generation requests.")
 
+    # Validate every source snapshot before either dry-run reporting or real
+    # submission.  A stale plan must never be used to create a provider task.
+    with Session() as session:
+        for item in requests:
+            row = session.query(VisualLocation).filter(
+                VisualLocation.book_id == int(plan.get("book_id")),
+                VisualLocation.id == int(item.get("location_id")),
+            ).first()
+            expected = str(item.get("source_fingerprint") or "").strip()
+            if row is None:
+                raise RuntimeError(f"Scene asset missing for location {item.get('location_id')}; regenerate the readonly plan.")
+            if not expected or scene_location_fingerprint(row) != expected:
+                raise RuntimeError(f"Scene reference plan is stale for location {item.get('location_id')}; regenerate the readonly plan.")
+
     if not real:
         report = write_report(args.plan, False, [], requests)
         print(f"Dry-run only. Real enqueue requires:")
@@ -226,6 +243,7 @@ def main() -> int:
     parser.add_argument("--scene-name", default="", help="Only submit the planned request for this exact scene name.")
     parser.add_argument("--limit", type=int, default=0, help="Submit at most N planned requests after filtering.")
     args = parser.parse_args()
+    init_db()
     return asyncio.run(run(args))
 
 

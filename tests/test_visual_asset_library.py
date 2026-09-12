@@ -107,14 +107,25 @@ class VisualAssetLibraryTests(unittest.TestCase):
         self.assertEqual(payload["locations"][0]["core_prompt_zh"], "森林营地核心空间锚点。")
         self.assertEqual(payload["locations"][0]["confirmed_prompt_raw"], "森林营地结构化场景提示词。")
         self.assertIn("Forest Camp 场景参考图", payload["locations"][0]["rendered_prompt_preview"])
-        self.assertIn("单张 16:9 横构图", payload["locations"][0]["rendered_prompt_preview"])
-        self.assertIn("无人物、无人脸、不出现角色", payload["locations"][0]["rendered_prompt_preview"])
+        rendered_scene_prompt = payload["locations"][0]["rendered_prompt_preview"]
+        self.assertIn("16:9 横向四视图场景设定板", rendered_scene_prompt)
+        self.assertIn("固定 2×2 四宫格布局", rendered_scene_prompt)
+        self.assertIn("左上为主视角空间全景", rendered_scene_prompt)
+        self.assertIn("右上为反向视角", rendered_scene_prompt)
+        self.assertIn("左下为侧向视角", rendered_scene_prompt)
+        self.assertIn("右下为关键细节视角", rendered_scene_prompt)
+        self.assertIn("无人物、无人脸、不出现角色", rendered_scene_prompt)
         self.assertIn("写实电影感", payload["locations"][0]["rendered_prompt_preview"])
         self.assertIn("冷月顶光", payload["locations"][0]["rendered_prompt_preview"])
         self.assertIn("货架反光", payload["locations"][0]["rendered_prompt_preview"])
         self.assertNotIn("林小夏", payload["locations"][0]["rendered_prompt_preview"])
         self.assertNotIn("面部", payload["locations"][0]["rendered_prompt_preview"])
         self.assertEqual(payload["locations"][0]["structured_variant_fields"]["scene_name"], "Forest Camp")
+        self.assertEqual(payload["locations"][0]["structured_variant_fields"]["reference_layout"], "2x2_four_view")
+        self.assertEqual(
+            [item["slot"] for item in payload["locations"][0]["structured_variant_fields"]["reference_view_schema"]],
+            ["top_left", "top_right", "bottom_left", "bottom_right"],
+        )
         self.assertIn("人物", payload["locations"][0]["reference_negative_prompt"])
         self.assertIn("分格", payload["locations"][0]["reference_negative_prompt"])
         self.assertEqual(payload["props"][0]["asset_status"], "draft")
@@ -138,6 +149,94 @@ class VisualAssetLibraryTests(unittest.TestCase):
         self.assertIn("references", payload["props"][0])
         self.assertIn("reference_assets", payload["props"][0])
         self.assertEqual(payload["props"][0]["reference_assets"], payload["props"][0]["references"])
+
+    def test_scene_prompt_contract_drops_readiness_placeholder_text(self):
+        with Session() as session:
+            location = session.query(VisualLocation).filter(VisualLocation.id == self.location_id).first()
+            location.visual_prompt_zh = ""
+            location.core_prompt_zh = ""
+            location.description = "由分镜批量修复前置检查创建的最小场景资产"
+            location.notes = "requires-human-asset-refinement-before-production"
+            session.commit()
+
+        response = self.client.get(f"/api/books/{self.book_id}/visual-assets")
+        self.assertEqual(response.status_code, 200)
+        rendered = response.json()["locations"][0]["rendered_prompt_preview"]
+        self.assertIn("Forest Camp 场景参考图", rendered)
+        self.assertNotIn("最小场景资产", rendered)
+        self.assertIn("16:9 横向四视图场景设定板", rendered)
+
+    def test_scene_semantic_migration_plan_is_read_only_and_explainable(self):
+        with Session() as session:
+            location = session.query(VisualLocation).filter(VisualLocation.id == self.location_id).first()
+            location.description = "雨夜公寓门厅，潮湿地面，固定信箱墙"
+            session.commit()
+        response = self.client.get(f"/api/books/{self.book_id}/visual-assets/scene/{self.location_id}/semantic-migration-plan")
+        self.assertEqual(response.status_code, 200, response.text)
+        payload = response.json()
+        self.assertEqual(payload["mode"], "readonly-scene-semantic-migration-plan")
+        self.assertTrue(payload["requires_human_review"])
+        self.assertFalse(payload["writes_performed"])
+        self.assertIn("state", {item["target_layer"] for item in payload["suggestions"]})
+
+    def test_scene_reference_quality_plan_is_read_only(self):
+        with Session() as session:
+            session.add(VisualReferenceAsset(
+                book_id=self.book_id, asset_type="scene", asset_id=str(self.location_id),
+                asset_name="Forest Camp", image_url="https://example.com/missing.png", status="locked",
+            ))
+            session.commit()
+        response = self.client.get(f"/api/books/{self.book_id}/visual-assets/scene/{self.location_id}/reference-quality-plan")
+        self.assertEqual(response.status_code, 200, response.text)
+        payload = response.json()
+        self.assertTrue(payload["requires_human_review"])
+        self.assertFalse(payload["writes_performed"])
+        self.assertEqual(payload["problematic_active_references"][0]["source_kind"], "remote")
+
+    def test_scene_prompt_contract_uses_explicit_semantic_layers(self):
+        response = self.client.patch(
+            f"/api/books/{self.book_id}/visual-assets/scene/{self.location_id}",
+            json={
+                "canonicalFacts": {
+                    "location_type": "老式公寓公共门厅",
+                    "architecture": {"entrance": "深色金属双扇入口门", "stairs": "入口右侧直跑楼梯"},
+                    "fixed_assets": ["信箱墙", "靠墙长椅", "顶部固定灯具"],
+                    "spatial_relations": ["信箱墙位于入口左侧", "楼梯位于入口右侧"],
+                },
+                "stateVariants": {"active": "rain_night", "weather": "室外下雨", "floor": "入口地面略湿"},
+                "lookProfile": {"palette": "冷青灰，轻微暖色实用灯", "contrast": "中等"},
+                "boardSpec": {"layout": "2x2", "aspect_ratio": "16:9"},
+            },
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        payload = response.json()
+        layers = payload["structured_variant_fields"]["semantic_layers"]
+        self.assertEqual(layers["source"]["canonical"], "explicit")
+        self.assertEqual(layers["canonical"]["architecture"]["entrance"], "深色金属双扇入口门")
+        self.assertEqual(layers["state"]["active"], "rain_night")
+        self.assertIn("深色金属双扇入口门", payload["rendered_prompt_preview"])
+        self.assertIn("本次状态", payload["rendered_prompt_preview"])
+        self.assertIn("本次 Look", payload["rendered_prompt_preview"])
+
+    def test_scene_prompt_contract_can_render_explicit_layer_without_mutating_asset(self):
+        from api.server import _build_scene_asset_prompt_contract
+
+        with Session() as session:
+            location = session.query(VisualLocation).filter(VisualLocation.id == self.location_id).first()
+            location.canonical_facts = json.dumps({"description": "固定拱门、石墙、长椅"}, ensure_ascii=False)
+            location.state_variants = json.dumps({"active": "rain", "variants": {"rain": {"weather": "室外下雨"}}}, ensure_ascii=False)
+            location.look_profile = json.dumps({"palette": "冷青灰", "contrast": "中等"}, ensure_ascii=False)
+            session.commit()
+
+            neutral = _build_scene_asset_prompt_contract(location, scene_layer_mode="canonical")
+            state = _build_scene_asset_prompt_contract(location, scene_layer_mode="state")
+            self.assertIn("固定拱门", neutral["rendered_prompt_preview"])
+            self.assertNotIn("本次状态", neutral["rendered_prompt_preview"])
+            self.assertNotIn("本次 Look", neutral["rendered_prompt_preview"])
+            self.assertNotIn("冷月顶光", neutral["rendered_prompt_preview"])
+            self.assertIn("室外下雨", state["rendered_prompt_preview"])
+            self.assertNotIn("冷青灰", state["rendered_prompt_preview"])
+            self.assertEqual(json.loads(location.state_variants)["active"], "rain")
 
     def test_prop_reference_contract_removes_legacy_multi_view_boilerplate(self):
         from api.server import _build_prop_asset_prompt_contract
@@ -166,6 +265,25 @@ class VisualAssetLibraryTests(unittest.TestCase):
         self.assertNotIn("关联人物", rendered)
         self.assertNotIn("林小夏", rendered)
         self.assertIn("safe_reference_description", contract["structured_variant_fields"])
+
+    def test_prop_prompt_contract_can_render_canonical_and_state_layers(self):
+        from api.server import _build_prop_asset_prompt_contract
+
+        with Session() as session:
+            prop = session.query(VisualProp).filter(VisualProp.id == self.prop_id).first()
+            prop.description = "固定黄铜怀表，圆形表壳"
+            prop.style_ref_zh = "旧化黄铜，划痕克制"
+            prop.time_period = "民国时期"
+            prop.canonical_facts = json.dumps({"description": "固定黄铜怀表，圆形表壳", "category": "怀表"}, ensure_ascii=False)
+            prop.state_variants = json.dumps({"active": "damaged", "variants": {"damaged": {"condition": "表面有新鲜划痕"}}}, ensure_ascii=False)
+            prop.look_profile = json.dumps({"material": "旧化黄铜", "palette": "低饱和暖灰"}, ensure_ascii=False)
+            session.commit()
+            neutral = _build_prop_asset_prompt_contract(prop, prop_layer_mode="canonical")
+            state = _build_prop_asset_prompt_contract(prop, prop_layer_mode="state")
+            self.assertIn("固定黄铜怀表", neutral["rendered_prompt_preview"])
+            self.assertNotIn("旧化黄铜", neutral["rendered_prompt_preview"])
+            self.assertIn("表面有新鲜划痕", state["rendered_prompt_preview"])
+            self.assertNotIn("低饱和暖灰", state["rendered_prompt_preview"])
 
     def test_reference_version_counts_canonical_history_when_asset_is_unbound(self):
         from api.server import _next_reference_asset_version

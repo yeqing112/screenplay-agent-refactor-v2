@@ -1,0 +1,4 @@
+{
+  "min_shots": 2,
+  "required_checks": ["prop_state", "continuity_in", "continuity_out", "action_beats"]
+}

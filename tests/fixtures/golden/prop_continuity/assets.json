@@ -1,0 +1,5 @@
+{
+  "locations": [{"name": "车站候车室", "importance": "medium"}],
+  "characters": [{"id": "CHAR_A", "name": "交接者", "gender": "male"}, {"id": "CHAR_B", "name": "接收者", "gender": "female"}],
+  "props": [{"id": "PROP_KEY", "name": "旧钥匙", "importance": "high"}]
+}

@@ -3,6 +3,7 @@ import asyncio
 import base64
 import difflib
 import hashlib
+import hmac
 import json
 import logging
 import os
@@ -10,6 +11,9 @@ import uuid
 import re
 import unicodedata
 import tempfile
+import threading
+import time
+from contextlib import asynccontextmanager
 from types import SimpleNamespace
 from pathlib import Path
 from datetime import datetime, timezone
@@ -78,16 +82,38 @@ from core.production_skill import (
 )
 from api.director_plan_shadow_api import router as director_plan_shadow_router
 from api.director_agent_draft_api import router as director_agent_draft_router
+from api.director_treatment_api import router as director_treatment_router
+from api.scene_blocking_api import router as scene_blocking_router
+from api.shot_plan_api import router as shot_plan_router
+from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
 from nodes.runner import NodeRunner, WORKFLOWS_DIR, RUNS_DIR
-from models import Session, Book
+from models import Session, Book, ShotPlan, init_db
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Screenplay DevCanvas", version="0.1.0")
+@asynccontextmanager
+async def _lifespan(_app: FastAPI):
+    """Apply the versioned schema before serving requests.
+
+    Local and production launchers both start Uvicorn directly.  Running the
+    idempotent Alembic upgrade here prevents a newly deployed API from
+    exposing routes whose tables have not been migrated yet.  ``init_db`` is
+    synchronous by design and runs once per process startup, never per
+    request.
+    """
+    init_db()
+    yield
+
+
+app = FastAPI(title="Screenplay DevCanvas", version="0.1.0", lifespan=_lifespan)
 app.include_router(director_plan_shadow_router)
 app.include_router(director_agent_draft_router)
+app.include_router(director_treatment_router)
+app.include_router(scene_blocking_router)
+app.include_router(shot_plan_router)
+app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft
 # compiled under an older delivery contract must never be deduplicated as if
@@ -101,6 +127,164 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+def _api_auth_exempt_path(path: str) -> bool:
+    """Return whether a request path remains public when API auth is enabled."""
+    normalized = str(path or "").rstrip("/") or "/"
+    for configured in getattr(config, "API_AUTH_EXEMPT_PATHS", ["/health"]):
+        prefix = str(configured or "").strip().rstrip("/") or "/"
+        if normalized == prefix or normalized.startswith(prefix + "/"):
+            return True
+    return False
+
+
+def _extract_api_auth_token(request: Request) -> str:
+    authorization = str(request.headers.get("authorization") or "").strip()
+    if authorization.lower().startswith("bearer "):
+        return authorization[7:].strip()
+    header_token = str(request.headers.get("x-api-key") or "").strip()
+    if header_token:
+        return header_token
+    cookie_name = str(getattr(config, "API_AUTH_TOKEN_COOKIE", "screenplay_api_token") or "screenplay_api_token")
+    return str(request.cookies.get(cookie_name) or "").strip()
+
+
+_API_ROLE_LEVELS = {"viewer": 0, "editor": 1, "admin": 2}
+
+
+def _resolve_api_role(provided: str) -> tuple[str | None, bool]:
+    """Resolve a credential to a role without exposing token material.
+
+    The boolean indicates whether role-token configuration is malformed.  A
+    malformed configured role map fails closed with 503 instead of silently
+    reducing a deployment to a weaker authorization policy.
+    """
+    role_tokens = getattr(config, "API_AUTH_ROLE_TOKENS", {}) or {}
+    if bool(getattr(config, "API_AUTH_ROLE_TOKENS_ERROR", False)):
+        return None, True
+    if role_tokens:
+        for role, token in role_tokens.items():
+            normalized_role = str(role or "").strip().lower()
+            expected = str(token or "").strip()
+            if normalized_role not in _API_ROLE_LEVELS or len(expected) < 32:
+                return None, True
+            if provided and hmac.compare_digest(provided, expected):
+                return normalized_role, False
+        return None, False
+    expected = str(getattr(config, "API_AUTH_TOKEN", "") or "").strip()
+    if expected and len(expected) >= 32 and provided and hmac.compare_digest(provided, expected):
+        return "admin", False
+    return None, False
+
+
+_api_rate_limit_lock = threading.Lock()
+_api_rate_limit_buckets: dict[str, tuple[float, int]] = {}
+
+
+def _reset_api_rate_limit_state() -> None:
+    """Clear the process-local limiter state (used by isolated tests)."""
+    with _api_rate_limit_lock:
+        _api_rate_limit_buckets.clear()
+
+
+def _api_rate_limit_identity(request: Request) -> str:
+    """Return a non-secret caller key without persisting raw credentials."""
+    token = _extract_api_auth_token(request)
+    if token:
+        return "token:" + hashlib.sha256(token.encode("utf-8")).hexdigest()
+    client = request.client
+    return "ip:" + str(getattr(client, "host", "unknown") or "unknown")
+
+
+def _consume_api_rate_limit(request: Request) -> tuple[bool, int, int, int]:
+    """Consume one request from a fixed-window bucket.
+
+    Returns ``(allowed, limit, remaining, retry_after_seconds)``.  The state
+    is intentionally process-local; deployments with multiple workers must
+    enforce the same policy at their reverse proxy or shared limiter.
+    """
+    limit = int(getattr(config, "API_RATE_LIMIT_REQUESTS", 120) or 120)
+    window = int(getattr(config, "API_RATE_LIMIT_WINDOW_SECONDS", 60) or 60)
+    now = time.monotonic()
+    key = _api_rate_limit_identity(request)
+    with _api_rate_limit_lock:
+        # Bound memory under an identity spray.  Expired buckets are removed
+        # first; if still full, evict the oldest window deterministically.
+        expired = [item for item, (started, _count) in _api_rate_limit_buckets.items() if now - started >= window]
+        for item in expired:
+            _api_rate_limit_buckets.pop(item, None)
+        max_identities = int(getattr(config, "API_RATE_LIMIT_MAX_IDENTITIES", 10000) or 10000)
+        if key not in _api_rate_limit_buckets and len(_api_rate_limit_buckets) >= max_identities:
+            oldest = min(_api_rate_limit_buckets, key=lambda item: _api_rate_limit_buckets[item][0])
+            _api_rate_limit_buckets.pop(oldest, None)
+        started, count = _api_rate_limit_buckets.get(key, (now, 0))
+        if now - started >= window:
+            started, count = now, 0
+        retry_after = max(1, int(window - (now - started) + 0.999))
+        if count >= limit:
+            return False, limit, 0, retry_after
+        count += 1
+        _api_rate_limit_buckets[key] = (started, count)
+        return True, limit, max(limit - count, 0), retry_after
+
+
+@app.middleware("http")
+async def require_api_authentication(request: Request, call_next):
+    """Protect formal API routes when a deployment explicitly enables auth."""
+    if (
+        not bool(getattr(config, "API_AUTH_ENABLED", False))
+        or request.method == "OPTIONS"
+        or not request.url.path.startswith("/api/")
+        or _api_auth_exempt_path(request.url.path)
+    ):
+        return await call_next(request)
+
+    provided = _extract_api_auth_token(request)
+    role, malformed_roles = _resolve_api_role(provided)
+    if malformed_roles or (not getattr(config, "API_AUTH_ROLE_TOKENS", {}) and len(str(getattr(config, "API_AUTH_TOKEN", "") or "").strip()) < 32):
+        return JSONResponse(
+            status_code=503,
+            content={"detail": "API authentication is enabled but no valid token role configuration is available."},
+        )
+    if not role:
+        return JSONResponse(
+            status_code=401,
+            headers={"WWW-Authenticate": "Bearer"},
+            content={"detail": "API authentication required."},
+        )
+    minimum_role = "editor" if request.method in {"POST", "PUT", "PATCH", "DELETE"} else "viewer"
+    if _API_ROLE_LEVELS[role] < _API_ROLE_LEVELS[minimum_role]:
+        return JSONResponse(
+            status_code=403,
+            content={"detail": f"API role '{role}' is insufficient; required role: {minimum_role}."},
+        )
+    request.state.api_role = role
+    return await call_next(request)
+
+
+@app.middleware("http")
+async def enforce_api_rate_limit(request: Request, call_next):
+    """Apply an opt-in API request limit before expensive route work."""
+    if (
+        not bool(getattr(config, "API_RATE_LIMIT_ENABLED", False))
+        or request.method == "OPTIONS"
+        or not request.url.path.startswith("/api/")
+        or _api_auth_exempt_path(request.url.path)
+    ):
+        return await call_next(request)
+    allowed, limit, remaining, retry_after = _consume_api_rate_limit(request)
+    headers = {
+        "X-RateLimit-Limit": str(limit),
+        "X-RateLimit-Remaining": str(remaining),
+    }
+    if not allowed:
+        headers["Retry-After"] = str(retry_after)
+        return JSONResponse(status_code=429, headers=headers, content={"detail": "API rate limit exceeded."})
+    response = await call_next(request)
+    for name, value in headers.items():
+        response.headers[name] = value
+    return response
 
 
 @app.middleware("http")
@@ -916,6 +1100,89 @@ def recheck_storyboard_prompt_compile_draft_diagnostics(book_id: int, episode: i
         if not packet or not shot:
             raise HTTPException(status_code=404, detail="提示词草案或镜头不存在。")
         context, _, fresh_packet = _build_storyboard_prompt_compile_evidence(book_id, shot)
+        # Confirmation intentionally updates the shot's prompt fields.  That
+        # makes the original evidence packet fingerprint differ from a fresh
+        # packet on the next read, even though no external fact changed.  Once
+        # a packet is confirmed, allow a read-only post-confirmation recheck
+        # only when the applied prompt is exactly the reviewed candidate *and*
+        # all non-prompt source evidence is unchanged.  If an operator edited
+        # the shot or its asset graph afterwards, keep the normal stale-packet
+        # rejection so diagnostics never validate a different state.
+        if str(packet.status or "").strip().lower() == "confirmed":
+            confirmed_proposal = safe_json_loads(packet.proposal, {})
+            confirmed_candidate = confirmed_proposal.get("candidate") if isinstance(confirmed_proposal, dict) else None
+            if isinstance(confirmed_candidate, dict):
+                current_matches_candidate = (
+                    str(shot.visual_prompt_static or "") == str(confirmed_candidate.get("prompt_static") or "")
+                    and str(shot.visual_prompt_motion or "") == str(confirmed_candidate.get("prompt_motion") or "")
+                    and str(shot.visual_prompt_final or "") == str(confirmed_candidate.get("negative_prompt") or "")
+                )
+                def source_evidence_matches() -> bool:
+                    frozen_items = {
+                        str(item.get("id") or ""): item
+                        for item in safe_json_loads(packet.evidence, [])
+                        if isinstance(item, dict)
+                    }
+                    fresh_items = {
+                        str(item.get("id") or ""): item
+                        for item in (fresh_packet.get("evidence") or [])
+                        if isinstance(item, dict)
+                    }
+                    # The asset graph and director source text are immutable
+                    # inputs and must remain byte-for-byte equivalent.  The
+                    # prompt/compiler-state evidence is expected to change on
+                    # confirmation and is intentionally excluded here.
+                    for key in (f"director-shot:{shot.id}", f"asset-bindings:{shot.id}"):
+                        if str(frozen_items.get(key, {}).get("summary") or "") != str(fresh_items.get(key, {}).get("summary") or ""):
+                            return False
+                    # Shot IR is enriched during confirmation (executability,
+                    # normalized beats), so compare only its source-backed
+                    # fields rather than the derived projection as a whole.
+                    frozen_ir_item = frozen_items.get(f"shot-ir:{shot.id}", {})
+                    try:
+                        frozen_ir = json.loads(str(frozen_ir_item.get("summary") or "{}"))
+                    except (TypeError, ValueError):
+                        return False
+                    source_fields = (
+                        "scene_name", "duration", "camera_angle", "camera_movement",
+                        "camera_speed", "shot_purpose", "emotion_arc", "transition",
+                        "action_process", "start_state", "end_state", "dialogue",
+                    )
+                    live_values = {
+                        "scene_name": str(shot.scene_name or ""),
+                        "duration": shot.duration,
+                        "camera_angle": str(shot.camera_angle or ""),
+                        "camera_movement": str(shot.camera_movement or ""),
+                        "camera_speed": str(shot.camera_speed or ""),
+                        "shot_purpose": str(shot.shot_purpose or ""),
+                        "emotion_arc": safe_json_loads(shot.emotion_arc or "{}"),
+                        "transition": str(shot.transition or ""),
+                        "action_process": str(shot.action_process or ""),
+                        "start_state": str(shot.start_state or ""),
+                        "end_state": str(shot.end_state or ""),
+                        "dialogue": str(shot.dialogue or ""),
+                    }
+                    for key in source_fields:
+                        if frozen_ir.get(key) != live_values.get(key):
+                            return False
+                    return True
+
+                source_evidence_matches = source_evidence_matches()
+                if current_matches_candidate and source_evidence_matches:
+                    runtime = _build_confirmed_prompt_runtime_state(
+                        book_id,
+                        shot,
+                        safe_json_loads(shot.meta_info or "{}"),
+                        confirmed_candidate,
+                    )
+                    return {
+                        "packet_id": packet.id,
+                        "packet_fingerprint": packet.packet_fingerprint,
+                        "diagnostics": runtime["diagnostics"],
+                        "llm_called": False,
+                        "domain_write_performed": False,
+                        "post_confirmation_recheck": True,
+                    }
         if decision_packet_fingerprint(fresh_packet) != packet.packet_fingerprint:
             raise HTTPException(status_code=409, detail="提示词草案依赖的资产或镜头事实已变化；请重新生成证据包。")
         proposal = safe_json_loads(packet.proposal, {})
@@ -1751,6 +2018,10 @@ class VisualAssetPatchRequest(BaseModel):
     refined_accessories: Optional[str] = Field(default=None, validation_alias=AliasChoices("refined_accessories", "refinedAccessories"))
     makeup_spec: Optional[str] = Field(default=None, validation_alias=AliasChoices("makeup_spec", "makeupSpec"))
     expression_mood: Optional[str] = Field(default=None, validation_alias=AliasChoices("expression_mood", "expressionMood"))
+    canonical_facts: Optional[dict] = Field(default=None, validation_alias=AliasChoices("canonical_facts", "canonicalFacts"))
+    state_variants: Optional[dict] = Field(default=None, validation_alias=AliasChoices("state_variants", "stateVariants"))
+    look_profile: Optional[dict] = Field(default=None, validation_alias=AliasChoices("look_profile", "lookProfile"))
+    board_spec: Optional[dict] = Field(default=None, validation_alias=AliasChoices("board_spec", "boardSpec"))
 
 
 class AssetSemanticGovernanceConfirmRequest(BaseModel):
@@ -1838,6 +2109,11 @@ class StoryboardTransitionFrameExtractRequest(BaseModel):
         default=False,
         validation_alias=AliasChoices("allow_unstable_public_assets", "allowUnstablePublicAssets"),
     )
+    # Formal generation is also reachable by direct API clients. Require the
+    # same explicit operator confirmation used by the machine-prompt submit
+    # path before a non-mock provider is queued.
+    confirmed: bool = False
+    allow_external_call: bool = Field(default=False, validation_alias=AliasChoices("allow_external_call", "allowExternalCall"))
 
 
 class StoryboardTransitionContinuityReviewRequest(BaseModel):
@@ -2145,6 +2421,29 @@ class StoryboardGenerationRequest(BaseModel):
     allow_unstable_public_assets: bool = Field(
         default=False,
         validation_alias=AliasChoices("allow_unstable_public_assets", "allowUnstablePublicAssets"),
+    )
+    # Real image/video generation is an external side effect.  Keep the
+    # operator's explicit confirmation on the storyboard request itself so
+    # callers cannot rely on an internal CreativeGenerationRequest default or
+    # accidentally bypass the confirmation gate.  Prototype-task-adapter
+    # remains safe for deterministic tests/previews and is exempt at the
+    # provider gate.
+    confirmed: bool = False
+    allow_external_call: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("allow_external_call", "allowExternalCall"),
+    )
+
+
+class CreativeTaskRestartRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    # Restarting a failed creative task is a new external side effect.  Do
+    # not inherit the confirmation flags from the original persisted request.
+    confirmed: bool = False
+    allow_external_call: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("allow_external_call", "allowExternalCall"),
     )
 
 
@@ -3983,6 +4282,10 @@ class StoryboardRequest(BaseModel):
     generation_mode: str = Field(default="director_llm", validation_alias=AliasChoices("generation_mode", "generationMode"))
     force_llm: Optional[bool] = Field(default=None, validation_alias=AliasChoices("force_llm", "forceLlm"))
     resume_from_scene: dict[str, str] = Field(default_factory=dict, validation_alias=AliasChoices("resume_from_scene", "resumeFromScene"))
+    require_shot_plan: bool = Field(
+        default_factory=lambda: bool(config.REQUIRE_SHOT_PLAN_BY_DEFAULT),
+        validation_alias=AliasChoices("require_shot_plan", "requireShotPlan"),
+    )
 
 
 def _make_storyboard_episode_task(episode: int) -> dict:
@@ -4144,6 +4447,15 @@ def _update_storyboard_episode_progress(task: dict, event: dict) -> None:
 @app.post("/api/pipeline/storyboard")
 async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
     """Run storyboard generation independently, optionally for selected episodes."""
+    if req.require_shot_plan:
+        requested = req.episodes or []
+        with Session() as gate_session:
+            missing = [
+                int(ep) for ep in requested
+                if not gate_session.query(ShotPlan).filter_by(book_id=req.book_id, episode=int(ep), status="approved").first()
+            ]
+        if missing:
+            raise HTTPException(status_code=409, detail=f"ShotPlan gate blocked storyboard generation for episode(s): {', '.join(map(str, missing))}")
     import uuid
     generation_mode = str(req.generation_mode or "director_llm").strip().lower()
     if req.force_llm is not None:
@@ -4227,6 +4539,10 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
                 _persist_task_state(task_id, "storyboard", _storyboard_tasks[task_id])
                 try:
                     shots = await asyncio.to_thread(sb_agent.run, sc.episode, resume_after_scene=resume_after_scene or None)
+                    if req.require_shot_plan:
+                        provenance = _attach_approved_shot_plan_refs(req.book_id, sc.episode)
+                        if episode_task:
+                            episode_task["shot_plan_provenance"] = provenance
                     if episode_task:
                         episode_task["status"] = "done"
                         episode_task["progress"] = 100
@@ -4334,9 +4650,20 @@ class CreativeGenerationRequest(BaseModel):
     reference_images: list[dict] = Field(default_factory=list, validation_alias=AliasChoices("reference_images", "referenceImages"))
     aspect_ratio: str = Field(default="16:9", validation_alias=AliasChoices("aspect_ratio", "aspectRatio"))
     negative_prompt: str = Field(default="", validation_alias=AliasChoices("negative_prompt", "negativePrompt"))
+    # Scene reference generation can intentionally target a semantic layer.
+    # The default keeps the historical combined contract; callers may request
+    # a neutral canonical board, a state variant, or a Look variant without
+    # mutating the stored asset first.
+    scene_layer_mode: str = Field(default="combined", validation_alias=AliasChoices("scene_layer_mode", "sceneLayerMode"))
     duration_seconds: Optional[int] = Field(default=None, validation_alias=AliasChoices("duration_seconds", "durationSeconds"))
     count: int = 1
     simulate_error: bool = Field(default=False, validation_alias=AliasChoices("simulate_error", "simulateError"))
+    # Real provider calls must be explicitly confirmed by the operator. Keep
+    # the flags on the request itself so direct API clients cannot bypass the
+    # UI confirmation boundary. Prototype-task-adapter remains safe for
+    # deterministic tests and local previews, so it does not require these.
+    confirmed: bool = False
+    allow_external_call: bool = Field(default=False, validation_alias=AliasChoices("allow_external_call", "allowExternalCall"))
 
 
 class AdoptVersionRequest(BaseModel):
@@ -4843,6 +5170,19 @@ def _serialize_makeup_row(row, reference_assets: list[dict] | None = None, peer_
     scope = _makeup_scope_from_row(row, peer_rows)
     meta_info = safe_json_loads(getattr(row, "meta_info", "{}")) if getattr(row, "meta_info", None) else {}
     structured = meta_info.get("structured_result", {}) if isinstance(meta_info.get("structured_result", {}), dict) else {}
+    raw_character_prompt = _compact_visual_asset_text(
+        getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", "")
+    )
+    # The outputs endpoint is the source used by the formal workspace. Keep
+    # it aligned with /visual-assets so the UI cannot fall back to a legacy
+    # single-portrait prompt while the generation endpoint uses the canonical
+    # six-view contract.
+    rendered_character_prompt = ""
+    try:
+        rendered_character_prompt = _build_character_reference_prompt(row)
+    except Exception as exc:
+        logger.warning("Character prompt preview rendering failed for asset %s: %s", getattr(row, "id", ""), exc)
+    rendered_character_prompt = rendered_character_prompt or raw_character_prompt
     # VisualMakeup predates an explicit gender column. Governed assets persist
     # the authoritative value inside structured_result, so expose it in the
     # canonical profile instead of allowing stale flat prompts to win.
@@ -4884,6 +5224,24 @@ def _serialize_makeup_row(row, reference_assets: list[dict] | None = None, peer_
         "is_readonly": bool(getattr(row, "is_readonly", False) or meta_info.get("readonly")),
         "reference_assets": reference_assets or [],
         "shot_ids": shot_ids,
+        "confirmed_prompt_raw": raw_character_prompt,
+        "rendered_prompt_preview": rendered_character_prompt,
+        "reference_negative_prompt": _append_negative_terms(
+            getattr(row, "negative_prompt", ""),
+            CHARACTER_REFERENCE_NEGATIVE_TERMS,
+        ),
+        "structured_variant_fields": {
+            "character_name": _compact_visual_asset_text(getattr(row, "character_name", "")),
+            "asset_type": "character",
+            "stage_name": _compact_visual_asset_text(getattr(row, "stage_name", "")),
+            "makeup_scope": _compact_visual_asset_text(scope),
+            "gender": _compact_visual_asset_text(getattr(row, "gender", "") or structured.get("gender", "")),
+            "identity": _compact_visual_asset_text(getattr(row, "identity", "") or structured.get("identity", "")),
+            "temperament": _compact_visual_asset_text(getattr(row, "temperament", "") or structured.get("temperament", "")),
+            "refined_outfit": _compact_visual_asset_text(getattr(row, "refined_outfit", "")),
+            "hair_style": _compact_visual_asset_text(getattr(row, "hair_style", "")),
+            "expression_mood": _compact_visual_asset_text(getattr(row, "expression_mood", "")),
+        },
         **summary,
     }
     return payload
@@ -5466,6 +5824,40 @@ def _auto_bind_structured_shot_assets(book_id: int, episode: int, structure: dic
     }
 
 
+def _attach_approved_shot_plan_refs(book_id: int, episode: int) -> dict[str, int]:
+    """Attach immutable ShotPlan references to generated shots when the gate is enabled.
+
+    The generated shot content remains owned by StoryboardAgent; this function
+    only records which approved plan item supplied the intent, preserving a
+    replayable provenance link without overwriting model output.
+    """
+    from models import StoryboardShot
+
+    with Session() as session:
+        plans = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, status="approved").all()
+        by_scene = {row.scene_name: safe_json_loads(row.shots, []) for row in plans}
+        shots = session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode).order_by(StoryboardShot.shot_id).all()
+        scene_indexes: dict[str, int] = {}
+        attached = 0
+        for shot in shots:
+            items = by_scene.get(str(shot.scene_name or ""), [])
+            index = scene_indexes.get(str(shot.scene_name or ""), 0)
+            if index >= len(items) or not isinstance(items[index], dict):
+                scene_indexes[str(shot.scene_name or "")] = index + 1
+                continue
+            plan_item = items[index]
+            meta = safe_json_loads(shot.meta_info, {})
+            if not isinstance(meta, dict):
+                meta = {}
+            meta["shot_plan_ref"] = {"plan_shot_id": plan_item.get("plan_shot_id"), "beat_id": plan_item.get("beat_id"), "purpose": plan_item.get("purpose"), "source": "approved_shot_plan"}
+            shot.meta_info = json.dumps(meta, ensure_ascii=False)
+            shot.updated_at = datetime.utcnow()
+            attached += 1
+            scene_indexes[str(shot.scene_name or "")] = index + 1
+        session.commit()
+        return {"attached": attached, "generated": len(shots)}
+
+
 def _merge_structured_shot_payload(current_meta: dict | None, req: StoryboardStructurePatchRequest) -> dict:
     current_meta = current_meta if isinstance(current_meta, dict) else {}
     base = _derive_structured_shot_payload(current_meta, {})
@@ -5897,10 +6289,27 @@ def _derive_visual_asset_reference_summary(reference_assets: list[dict] | None) 
 
 
 VISUAL_ASSET_DEFAULT_NEGATIVE_PROMPT = "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰"
-SCENE_REFERENCE_NEGATIVE_TERMS = "人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
+CHARACTER_REFERENCE_NEGATIVE_TERMS = "单人肖像，单张照片，海报，证件照，标题，姓名文字，说明文字，广告排版，logo，水印，单视图，裁切身体，分格错位，多个不同人物"
+# Scene references are intentionally a deterministic four-view contact sheet.
+# Do not put "四宫格" or "多视角" in the negative prompt: both are part of
+# the canonical positive contract below.  The negative terms only reject
+# extra/garbled layouts and identity contamination.
+SCENE_REFERENCE_NEGATIVE_TERMS = "人物，人脸，人形，角色，额外人物，三宫格，六宫格，九宫格，额外分格，错位拼图，海报，证件照，文字说明，字幕，水印，logo"
 SCENE_REFERENCE_MODE_REQUIREMENT = (
-    "单张 16:9 横构图，无人物、无人脸、不出现角色。"
-    "画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。"
+    "一张 16:9 横向四视图场景设定板，固定 2×2 四宫格布局，四格必须来自同一场景、同一时间、同一天气与同一套固定陈设。"
+    "左上为主视角空间全景，右上为反向视角，左下为侧向视角，右下为关键细节视角。"
+    "四格之间保持入口、墙体、门窗、固定家具、关键道具、材质和光线方向一致；四格边界清晰、排版整齐。"
+    "只展示场景空间，无人物、无人脸、不出现角色，不加入文字、标注、标题或设定板说明。"
+)
+SCENE_REFERENCE_STYLE_REQUIREMENT = (
+    "采用自然透视、统一曝光、克制景深和适度氛围，空间边界与固定陈设优先清晰；"
+    "写实电影感、克制、空间信息优先的场景设计板质感。"
+)
+SCENE_REFERENCE_VIEW_SCHEMA = (
+    {"slot": "top_left", "label": "左上", "role": "主视角空间全景"},
+    {"slot": "top_right", "label": "右上", "role": "反向视角"},
+    {"slot": "bottom_left", "label": "左下", "role": "侧向视角"},
+    {"slot": "bottom_right", "label": "右下", "role": "关键细节视角"},
 )
 PROP_REFERENCE_MODE_REQUIREMENT = (
     "单张 1:1 或 4:3 道具参考图，主体明确，允许纯净背景或真实使用环境。"
@@ -5955,6 +6364,11 @@ SCENE_REFERENCE_BANNED_FRAGMENTS = (
     "眼睛",
     "瞳孔",
     "照片",
+    "人物定妆设定板",
+    "角色设定板",
+    "六视图",
+    "六宫格",
+    "四宫格",
     "分格",
     "拼图",
     "多宫格",
@@ -5979,6 +6393,31 @@ def _split_visual_asset_fragments(text: str) -> list[str]:
     for mark in ("。", "；", "，", ","):
         normalized = normalized.replace(mark, "；")
     return [part.strip(" ；。") for part in normalized.split("；") if part.strip(" ；。")]
+
+
+def _build_scene_reference_negative_prompt(base: object) -> str:
+    """Build scene negatives without contradicting the four-view contract.
+
+    Existing rows may still carry the retired single-view negatives (for
+    example ``四宫格`` or ``多视角排版``).  Remove only those layout commands;
+    preserve user-authored identity, quality and safety constraints, then add
+    the canonical scene negatives.
+    """
+    conflicting_layout_terms = (
+        "四宫格",
+        "多宫格",
+        "多视角排版",
+        "多视角",
+        "不分格",
+        "不拼图",
+        "不做多视角",
+    )
+    cleaned = "；".join(
+        part
+        for part in _split_visual_asset_fragments(_compact_visual_asset_text(base))
+        if not any(term in part for term in conflicting_layout_terms)
+    )
+    return _append_negative_terms(cleaned, SCENE_REFERENCE_NEGATIVE_TERMS)
 
 
 def _safe_scene_reference_text(text: object, *, limit: int = 8) -> str:
@@ -6021,14 +6460,266 @@ def _ensure_visual_asset_sentence(text: str) -> str:
     return f"{value}。"
 
 
-def _build_scene_asset_prompt_contract(row) -> dict:
+def _is_placeholder_visual_asset_row(row) -> bool:
+    """Identify generated readiness metadata that is not a visual fact.
+
+    Imported books can contain temporary descriptions while the asset row is
+    waiting for human refinement.  Those markers are safe to retain in the
+    auditable raw field, but must never be sent to an image provider.
+    """
+    description = _compact_visual_asset_text(getattr(row, "description", ""))
+    notes = _compact_visual_asset_text(getattr(row, "notes", ""))
+    return (
+        "最小场景资产" in description
+        or "requires-human-asset-refinement" in notes
+        or "scene-reference-plan-applied" in notes
+    )
+
+
+_SCENE_STATE_PROMPT_MARKERS = (
+    "雨夜", "雨天", "下雨", "雪天", "下雪", "晴天", "夜晚", "白天", "清晨", "黄昏",
+    "潮湿", "湿地", "湿润", "积水", "雾", "烟", "停电", "灯开启", "灯关闭", "血迹",
+)
+_SCENE_LOOK_PROMPT_MARKERS = (
+    "电影感", "电影化", "冷青灰", "暖黄", "冷暖", "轮廓光", "侧逆光", "逆光", "侧光",
+    "调色", "曝光", "景深", "高对比", "低对比", "饱和度", "压抑氛围", "悬疑氛围",
+)
+
+
+def _load_visual_json_dict(value: object) -> dict:
+    parsed = safe_json_loads(value, {}) if isinstance(value, str) else value
+    return dict(parsed) if isinstance(parsed, dict) else {}
+
+
+def _build_scene_semantic_layers(row) -> dict:
+    """Resolve the four scene semantic layers with legacy-compatible fallback.
+
+    Explicit JSON columns are authoritative when present.  Legacy columns are
+    exposed as fallback facts, never silently rewritten, so existing books can
+    migrate incrementally and locked assets remain unchanged.
+    """
+    explicit_canonical = _load_visual_json_dict(getattr(row, "canonical_facts", "{}"))
+    explicit_state = _load_visual_json_dict(getattr(row, "state_variants", "{}"))
+    explicit_look = _load_visual_json_dict(getattr(row, "look_profile", "{}"))
+    explicit_board = _load_visual_json_dict(getattr(row, "board_spec", "{}"))
+    key_props = _json_loads_list(getattr(row, "key_props", None))
+    # Preserve the compiler's historical authority precedence: the explicit
+    # scene description is the primary spatial fact source; prompt fields are
+    # only fallbacks.  This prevents a stylized legacy prompt from replacing
+    # the concise geometry description during incremental migration.
+    legacy_description = _compact_visual_asset_text(
+        getattr(row, "description", "")
+        or getattr(row, "visual_prompt_zh", "")
+        or getattr(row, "core_prompt_zh", "")
+    )
+    canonical = explicit_canonical or {
+        "location_type": _compact_visual_asset_text(getattr(row, "category", "")),
+        "description": "" if _is_placeholder_visual_asset_row(row) else legacy_description,
+        "fixed_assets": [str(item).strip() for item in key_props if str(item).strip()],
+        "time_period": _compact_visual_asset_text(getattr(row, "time_period", "")),
+    }
+    state = explicit_state
+    look = explicit_look
+    board = explicit_board or {
+        "layout": "2x2",
+        "aspect_ratio": "16:9",
+        "views": ["master_wide", "reverse_wide", "side_wide", "spatial_verification_wide"],
+        "people": False,
+        "text": False,
+    }
+    return {
+        "canonical": canonical,
+        "state": state,
+        "look": look,
+        "board_spec": board,
+        "source": {
+            "canonical": "explicit" if explicit_canonical else "legacy_fields",
+            "state": "explicit" if explicit_state else "none",
+            "look": "explicit" if explicit_look else "none",
+            "board_spec": "explicit" if explicit_board else "default_contract",
+        },
+    }
+
+
+def _flatten_scene_layer_text(value: object) -> str:
+    if isinstance(value, dict):
+        return "；".join(_flatten_scene_layer_text(item) for item in value.values())
+    if isinstance(value, list):
+        return "；".join(_flatten_scene_layer_text(item) for item in value)
+    return _compact_visual_asset_text(value)
+
+
+def _lint_scene_asset_layers(layers: dict) -> dict:
+    """Return explainable warnings for mixed scene semantics.
+
+    This linter is advisory: only missing geometry can be blocking.  It does
+    not delete user facts or classify a scene by name, and therefore remains
+    safe for incremental migration of existing projects.
+    """
+    canonical = layers.get("canonical", {}) if isinstance(layers, dict) else {}
+    board = layers.get("board_spec", {}) if isinstance(layers, dict) else {}
+    canonical_text = _flatten_scene_layer_text(canonical)
+    warnings: list[dict] = []
+    state_hits = [term for term in _SCENE_STATE_PROMPT_MARKERS if term in canonical_text]
+    look_hits = [term for term in _SCENE_LOOK_PROMPT_MARKERS if term in canonical_text]
+    if state_hits:
+        warnings.append({"code": "state_in_canonical", "message": "场景本体描述混入临时时间/天气/状态信息。", "terms": state_hits})
+    if look_hits:
+        warnings.append({"code": "look_in_canonical", "message": "场景本体描述混入摄影灯光/调色/氛围信息。", "terms": look_hits})
+    geometry_text = " ".join(
+        _flatten_scene_layer_text(canonical.get(key, ""))
+        for key in ("description", "architecture", "fixed_assets", "spatial_relations", "location_type")
+    ).strip()
+    if not geometry_text:
+        warnings.append({"code": "geometry_missing", "message": "场景缺少可复用的空间结构事实。", "terms": []})
+    views = board.get("views") if isinstance(board, dict) else None
+    if isinstance(views, list) and len(views) < 4:
+        warnings.append({"code": "board_views_incomplete", "message": "场景设定板视图槽位少于四个。", "terms": []})
+    blocking = [item for item in warnings if item.get("code") == "geometry_missing"]
+    return {
+        "status": "blocked" if blocking else "warning" if warnings else "pass",
+        "warnings": warnings,
+        "blocking": blocking,
+    }
+
+
+def _build_scene_semantic_migration_plan(row) -> dict:
+    """Build a read-only, explainable migration suggestion for legacy scenes."""
+    layers = _build_scene_semantic_layers(row)
+    canonical = layers.get("canonical", {}) if isinstance(layers, dict) else {}
+    source_text = _flatten_scene_layer_text(canonical)
+    state_terms = [term for term in _SCENE_STATE_PROMPT_MARKERS if term in source_text]
+    look_terms = [term for term in _SCENE_LOOK_PROMPT_MARKERS if term in source_text]
+    suggestions = [
+        {"term": term, "target_layer": "state", "reason": "时间、天气或临时状态不应固化到场景本体。"}
+        for term in state_terms
+    ] + [
+        {"term": term, "target_layer": "look", "reason": "摄影灯光、调色或氛围应按镜头/版本选择。"}
+        for term in look_terms
+    ]
+    return {
+        "mode": "readonly-scene-semantic-migration-plan",
+        "asset_id": str(getattr(row, "id", "")),
+        "asset_name": str(getattr(row, "name", "") or ""),
+        "source": layers.get("source", {}),
+        "current_layers": layers,
+        "suggestions": suggestions,
+        "requires_human_review": bool(suggestions),
+        "writes_performed": False,
+    }
+
+
+def _build_scene_reference_quality_plan(session, book_id: int, row) -> dict:
+    """Return a read-only remediation plan for scene reference quality."""
+    from models import VisualReferenceAsset
+
+    references = session.query(VisualReferenceAsset).filter(
+        VisualReferenceAsset.book_id == book_id,
+        VisualReferenceAsset.asset_type == "scene",
+        VisualReferenceAsset.asset_id == str(row.id),
+    ).order_by(VisualReferenceAsset.id.asc()).all()
+    items = []
+    for reference in references:
+        local_path = str(reference.local_path or "").strip()
+        image_url = str(reference.image_url or "").strip()
+        source = local_path or image_url
+        source_kind = "local" if local_path else "remote" if image_url.startswith(("http://", "https://")) else "inline" if image_url.startswith("data:") else "missing"
+        local_exists = bool(local_path and Path(local_path).exists())
+        issues = []
+        if not source:
+            issues.append("missing_source")
+        elif source_kind == "local" and not local_exists:
+            issues.append("local_file_missing")
+        elif source_kind == "remote":
+            issues.append("remote_readability_requires_check")
+        if not str(reference.prompt or "").strip():
+            issues.append("prompt_missing")
+        items.append({
+            "reference_id": reference.id,
+            "status": reference.status,
+            "source_kind": source_kind,
+            "local_exists": local_exists,
+            "issues": issues,
+            "is_active": reference.status in {"locked", "selected"},
+        })
+    active = [item for item in items if item["is_active"]]
+    candidates = [item for item in items if item["status"] == "candidate" and not item["issues"]]
+    return {
+        "mode": "readonly-scene-reference-quality-plan",
+        "book_id": book_id,
+        "asset_id": str(row.id),
+        "asset_name": str(row.name or ""),
+        "reference_count": len(items),
+        "active_reference_count": len(active),
+        "problematic_active_references": [item for item in active if item["issues"]],
+        "replacement_candidates": candidates,
+        "requires_human_review": bool(any(item["issues"] for item in active)),
+        "writes_performed": False,
+        "recommendation": "重新生成或上传合格的 16:9 四视图场景图，人工审核后再锁定；系统不会自动替换锁定图。",
+    }
+
+
+def _select_scene_layer_payload(layer: object, mode: str) -> object:
+    """Resolve a user-selected state/Look payload without name heuristics.
+
+    A layer may be a flat dictionary (the common case) or a dictionary of
+    named variants under ``variants``.  Named selection is explicit via the
+    request's ``scene_layer_mode`` only; no scene name or book-specific
+    inference is performed.
+    """
+    if not isinstance(layer, dict):
+        return layer
+    variants = layer.get("variants")
+    if isinstance(variants, dict):
+        active = layer.get("active") or layer.get("active_key") or layer.get("default")
+        if isinstance(active, str) and isinstance(variants.get(active), dict):
+            selected = dict(variants[active])
+            for key, value in layer.items():
+                if key not in {"variants", "active", "active_key", "default"}:
+                    selected.setdefault(key, value)
+            return selected
+    return layer
+
+
+def _build_scene_asset_prompt_contract(row, *, scene_layer_mode: str = "combined") -> dict:
     scene_name = _compact_visual_asset_text(getattr(row, "name", ""))
     category = _compact_visual_asset_text(getattr(row, "category", ""))
-    confirmed_prompt = _compact_visual_asset_text(getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", "") or getattr(row, "description", ""))
-    description = _safe_scene_reference_text(confirmed_prompt)
-    lighting = _safe_scene_reference_text(getattr(row, "lighting_mood", ""), limit=3)
-    color_palette = _safe_scene_reference_text(getattr(row, "color_palette", ""), limit=2)
+    semantic_layers = _build_scene_semantic_layers(row)
+    layer_lint = _lint_scene_asset_layers(semantic_layers)
+    source_prompt = getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", "")
+    if not source_prompt and not _is_placeholder_visual_asset_row(row):
+        source_prompt = getattr(row, "description", "")
+    confirmed_prompt = _compact_visual_asset_text(source_prompt)
+    canonical = semantic_layers.get("canonical", {})
+    canonical_source = "；".join(
+        _flatten_scene_layer_text(canonical.get(key, ""))
+        for key in ("location_type", "description", "architecture", "spatial_relations")
+        if isinstance(canonical, dict) and _flatten_scene_layer_text(canonical.get(key, ""))
+    )
+    description = _safe_scene_reference_text(canonical_source or confirmed_prompt)
+    normalized_layer_mode = str(scene_layer_mode or "combined").strip().lower()
+    if normalized_layer_mode not in {"combined", "canonical", "state", "look"}:
+        normalized_layer_mode = "combined"
+    state = _select_scene_layer_payload(semantic_layers.get("state", {}), normalized_layer_mode) if normalized_layer_mode in {"combined", "state"} else {}
+    look = _select_scene_layer_payload(semantic_layers.get("look", {}), normalized_layer_mode) if normalized_layer_mode in {"combined", "look"} else {}
+    # Legacy lighting/color columns are treated as combined-mode fallbacks.
+    # A neutral canonical board must not inherit a stylized look from those
+    # columns, and a state-only/Look-only render must not leak the other layer.
+    lighting_source = ""
+    color_source = ""
+    if normalized_layer_mode in {"combined", "state"}:
+        lighting_source = (state.get("lighting", "") if isinstance(state, dict) else "")
+        if not lighting_source and normalized_layer_mode == "combined":
+            lighting_source = getattr(row, "lighting_mood", "")
+    if normalized_layer_mode in {"combined", "look"}:
+        color_source = (look.get("palette", "") if isinstance(look, dict) else "")
+        if not color_source and normalized_layer_mode == "combined":
+            color_source = getattr(row, "color_palette", "")
+    lighting = _safe_scene_reference_text(lighting_source, limit=3)
+    color_palette = _safe_scene_reference_text(color_source, limit=2)
     key_props = _json_loads_list(getattr(row, "key_props", None))
+    if isinstance(canonical, dict) and isinstance(canonical.get("fixed_assets"), list):
+        key_props = [str(item).strip() for item in canonical.get("fixed_assets", []) if str(item).strip()]
     key_props_text = "、".join(str(item).strip() for item in key_props if str(item).strip())
     era = _compact_visual_asset_text(getattr(row, "time_period", ""))
 
@@ -6045,13 +6736,21 @@ def _build_scene_asset_prompt_contract(row) -> dict:
         sections.append(f"色彩基调为{color_palette.rstrip('。')}。")
     if era:
         sections.append(f"时代与环境质感为{era.rstrip('。')}。")
-    sections.append("写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜一致性的生产级场景资产参考。")
+    if state:
+        sections.append(f"本次状态：{_flatten_scene_layer_text(state)}。")
+    if look:
+        sections.append(f"本次 Look：{_flatten_scene_layer_text(look)}。")
+    sections.append(
+        f"{SCENE_REFERENCE_STYLE_REQUIREMENT}适合作为后续分镜一致性的生产级场景资产参考。"
+    )
 
     return {
         "confirmed_prompt_raw": confirmed_prompt,
         "structured_variant_fields": {
             "scene_name": scene_name,
             "asset_type": "scene",
+            "reference_layout": "2x2_four_view",
+            "reference_view_schema": [dict(item) for item in SCENE_REFERENCE_VIEW_SCHEMA],
             "category": category,
             "description": confirmed_prompt,
             "safe_reference_description": description,
@@ -6059,13 +6758,16 @@ def _build_scene_asset_prompt_contract(row) -> dict:
             "lighting_mood": lighting,
             "color_palette": color_palette,
             "time_period": era,
+            "semantic_layers": semantic_layers,
         },
         "rendered_prompt_preview": "".join(sections),
-        "reference_negative_prompt": _append_negative_terms(getattr(row, "negative_prompt", ""), SCENE_REFERENCE_NEGATIVE_TERMS),
+        "reference_negative_prompt": _build_scene_reference_negative_prompt(getattr(row, "negative_prompt", "")),
+        "prompt_lint": layer_lint,
+        "scene_layer_mode": normalized_layer_mode,
     }
 
 
-def _build_prop_asset_prompt_contract(row) -> dict:
+def _build_prop_asset_prompt_contract(row, *, prop_layer_mode: str = "combined") -> dict:
     prop_name = _compact_visual_asset_text(getattr(row, "name", ""))
     category = _compact_visual_asset_text(getattr(row, "category", ""))
     raw_description = _compact_visual_asset_text(
@@ -6080,16 +6782,32 @@ def _build_prop_asset_prompt_contract(row) -> dict:
     associated_characters = _compact_visual_asset_text(getattr(row, "associated_characters", ""))
     importance = _compact_visual_asset_text(getattr(row, "importance", ""))
     era = _compact_visual_asset_text(getattr(row, "time_period", ""))
+    normalized_layer_mode = str(prop_layer_mode or "combined").strip().lower()
+    if normalized_layer_mode not in {"combined", "canonical", "state", "look"}:
+        normalized_layer_mode = "combined"
+    explicit_canonical = _load_visual_json_dict(getattr(row, "canonical_facts", "{}"))
+    explicit_state = _load_visual_json_dict(getattr(row, "state_variants", "{}"))
+    explicit_look = _load_visual_json_dict(getattr(row, "look_profile", "{}"))
+    canonical = explicit_canonical or {"category": category, "description": description, "associated_characters": associated_characters}
+    state = _select_scene_layer_payload(explicit_state, normalized_layer_mode) if normalized_layer_mode in {"combined", "state"} else {}
+    look = _select_scene_layer_payload(explicit_look, normalized_layer_mode) if normalized_layer_mode in {"combined", "look"} else {}
 
     sections = [
         f"{prop_name or '未命名道具'} 道具参考图，{PROP_REFERENCE_MODE_REQUIREMENT}",
     ]
-    if description:
-        sections.append(description)
-    if style_ref:
-        sections.append(f"材质、造型和风格参考：{style_ref.rstrip('。')}。")
-    if era:
-        sections.append(f"时代与使用痕迹：{era.rstrip('。')}。")
+    canonical_text = _flatten_scene_layer_text(canonical)
+    if canonical_text:
+        sections.append(canonical_text)
+    look_text = _flatten_scene_layer_text(look)
+    if style_ref and normalized_layer_mode in {"combined", "look"}:
+        look_text = "；".join(item for item in (look_text, style_ref) if item)
+    if look_text:
+        sections.append(f"材质、造型和风格参考：{look_text.rstrip('。')}。")
+    state_text = _flatten_scene_layer_text(state)
+    if era and normalized_layer_mode in {"combined", "state"}:
+        state_text = "；".join(item for item in (state_text, f"时代与使用痕迹：{era}") if item)
+    if state_text:
+        sections.append(f"本次道具状态：{state_text.rstrip('。')}。")
     sections.append("写实电影感，主体边缘清晰，材质纹理、磨损痕迹和尺度关系稳定，适合作为后续分镜一致性的生产级道具资产参考。")
 
     return {
@@ -6104,21 +6822,75 @@ def _build_prop_asset_prompt_contract(row) -> dict:
             "associated_characters": associated_characters,
             "importance": importance,
             "time_period": era,
+            "semantic_layers": {
+                "canonical": canonical,
+                "state": explicit_state,
+                "look": explicit_look,
+                "source": {
+                    "canonical": "explicit" if explicit_canonical else "legacy_fields",
+                    "state": "explicit" if explicit_state else "none",
+                    "look": "explicit" if explicit_look else "none",
+                },
+            },
         },
         "rendered_prompt_preview": " ".join(sections),
         "reference_negative_prompt": _append_negative_terms(getattr(row, "negative_prompt", ""), "人物，人脸，角色，分格，拼图，多宫格，多视角排版，文字说明"),
+        "prop_layer_mode": normalized_layer_mode,
     }
+
+
+def _build_character_reference_prompt(row) -> str:
+    """Render the canonical six-view character sheet prompt for providers.
+
+    ``visual_prompt_zh`` remains the auditable source field, but legacy rows
+    may contain single-portrait or poster wording. Provider requests must use
+    the deterministic six-view compiler instead of forwarding that raw text.
+    """
+    from agents.scene_setup import SceneSetupAgent
+
+    meta_info = safe_json_loads(getattr(row, "meta_info", None)) if getattr(row, "meta_info", None) else {}
+    if not isinstance(meta_info, dict):
+        meta_info = {}
+    structured = meta_info.get("structured_result", {}) if isinstance(meta_info.get("structured_result", {}), dict) else {}
+    profile = _build_profile_namespace_from_makeup_row(row)
+    result = {
+        "scope": str(structured.get("scope") or meta_info.get("scope") or getattr(row, "stage_name", "") or "base_identity").strip(),
+        "stage_name": str(structured.get("stage_name") or getattr(row, "stage_name", "") or "").strip(),
+        "variant_name": str(structured.get("variant_name") or "").strip(),
+        "shot_ids": structured.get("shot_ids") if isinstance(structured.get("shot_ids"), list) else _json_loads_list(getattr(row, "shot_ids", None)),
+        "age": str(structured.get("age") or meta_info.get("age_range") or "").strip(),
+        "region": str(structured.get("region") or meta_info.get("region") or meta_info.get("nationality") or "").strip(),
+        "gender": str(structured.get("gender") or getattr(row, "gender", "") or "").strip(),
+        "identity": str(structured.get("identity") or getattr(row, "identity", "") or "").strip(),
+        "temperament": str(structured.get("temperament") or getattr(row, "temperament", "") or "").strip(),
+        "core_prompt_zh": str(structured.get("core_prompt_zh") or getattr(row, "core_prompt_zh", "") or "").strip(),
+        "hair_style": str(structured.get("hair_style") or getattr(row, "hair_style", "") or "").strip(),
+        "outfit_prompt_zh": str(structured.get("outfit_prompt_zh") or getattr(row, "outfit_prompt_zh", "") or "").strip(),
+        "refined_outfit": str(structured.get("refined_outfit") or getattr(row, "refined_outfit", "") or "").strip(),
+        "refined_accessories": str(structured.get("refined_accessories") or getattr(row, "refined_accessories", "") or "").strip(),
+        "makeup_spec": str(structured.get("makeup_spec") or getattr(row, "makeup_spec", "") or "").strip(),
+        "expression_mood": str(structured.get("expression_mood") or getattr(row, "expression_mood", "") or "").strip(),
+        "scene_prompt_zh": str(structured.get("scene_prompt_zh") or getattr(row, "scene_prompt_zh", "") or "").strip(),
+    }
+    rendered = SceneSetupAgent(int(getattr(row, "book_id", 0) or 0))._render_makeup_prompt_from_result(
+        str(getattr(row, "character_name", "") or "角色").strip() or "角色",
+        int(getattr(row, "episode", 0) or 0),
+        profile,
+        result,
+    )
+    return str(rendered or "").strip()
 
 
 def _serialize_visual_asset_row(row, asset_type: str, *, episode: int | None = None, reference_assets: list[dict] | None = None, peer_rows: list | None = None) -> dict:
     if asset_type == "character":
-        character_prompt = _compact_visual_asset_text(getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", ""))
+        raw_character_prompt = _compact_visual_asset_text(getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", ""))
+        character_prompt = _build_character_reference_prompt(row) or raw_character_prompt
         payload = {
             "asset_type": "character",
             "asset_id": str(row.id),
             "name": getattr(row, "character_name", ""),
             **_serialize_makeup_row(row, reference_assets, peer_rows),
-            "confirmed_prompt_raw": character_prompt,
+            "confirmed_prompt_raw": raw_character_prompt,
             "structured_variant_fields": {
                 "character_name": _compact_visual_asset_text(getattr(row, "character_name", "")),
                 "asset_type": "character",
@@ -6132,7 +6904,7 @@ def _serialize_visual_asset_row(row, asset_type: str, *, episode: int | None = N
                 "expression_mood": _compact_visual_asset_text(getattr(row, "expression_mood", "")),
             },
             "rendered_prompt_preview": character_prompt,
-            "reference_negative_prompt": _compact_visual_asset_text(getattr(row, "negative_prompt", "")),
+            "reference_negative_prompt": _append_negative_terms(getattr(row, "negative_prompt", ""), CHARACTER_REFERENCE_NEGATIVE_TERMS),
         }
         return payload
 
@@ -6156,6 +6928,19 @@ def _serialize_visual_asset_row(row, asset_type: str, *, episode: int | None = N
         **prompt_contract,
         **summary,
     }
+    if asset_type == "scene":
+        semantic_layers = prompt_contract.get("structured_variant_fields", {}).get("semantic_layers", {})
+        if isinstance(semantic_layers, dict):
+            payload["canonical_facts"] = semantic_layers.get("canonical", {})
+            payload["state_variants"] = semantic_layers.get("state", {})
+            payload["look_profile"] = semantic_layers.get("look", {})
+            payload["board_spec"] = semantic_layers.get("board_spec", {})
+    elif asset_type == "prop":
+        semantic_layers = prompt_contract.get("structured_variant_fields", {}).get("semantic_layers", {})
+        if isinstance(semantic_layers, dict):
+            payload["canonical_facts"] = semantic_layers.get("canonical", {})
+            payload["state_variants"] = semantic_layers.get("state", {})
+            payload["look_profile"] = semantic_layers.get("look", {})
     if asset_type == "scene":
         payload.update(_build_scene_variant_metadata(row, peer_rows))
     elif asset_type == "prop":
@@ -7177,13 +7962,21 @@ def _build_storyboard_character_canonical_payload(row) -> dict:
 
 
 def _build_storyboard_scene_canonical_payload(row) -> dict:
+    semantic_layers = _build_scene_semantic_layers(row)
+    layer_canonical = semantic_layers.get("canonical", {}) if isinstance(semantic_layers, dict) else {}
+    layer_state = semantic_layers.get("state", {}) if isinstance(semantic_layers, dict) else {}
+    layer_look = semantic_layers.get("look", {}) if isinstance(semantic_layers, dict) else {}
+    canonical_description = "；".join(
+        _flatten_scene_layer_text(layer_canonical.get(key, ""))
+        for key in ("location_type", "description", "architecture", "fixed_assets", "spatial_relations")
+        if isinstance(layer_canonical, dict) and _flatten_scene_layer_text(layer_canonical.get(key, ""))
+    )
+    canonical_description = _normalize_compiler_asset_text(canonical_description)
     canonical = {
-        "description": _normalize_compiler_asset_text(
-            str(getattr(row, "description", "") or getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", "") or "")
-        ),
-        "style": _normalize_compiler_asset_text(str(getattr(row, "style", "") or "")),
-        "lighting_mood": _normalize_compiler_asset_text(str(getattr(row, "lighting_mood", "") or "")),
-        "color_palette": _normalize_compiler_asset_text(str(getattr(row, "color_palette", "") or "")),
+        "description": canonical_description,
+        "style": _normalize_compiler_asset_text(str(getattr(row, "style", "") or "") or _flatten_scene_layer_text(layer_look.get("style", ""))),
+        "lighting_mood": _normalize_compiler_asset_text(str(getattr(row, "lighting_mood", "") or "") or _flatten_scene_layer_text(layer_state.get("lighting", ""))),
+        "color_palette": _normalize_compiler_asset_text(str(getattr(row, "color_palette", "") or "") or _flatten_scene_layer_text(layer_look.get("palette", ""))),
         "core_visual": _normalize_compiler_asset_text(
             str(getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", "") or getattr(row, "description", "") or "")
         ),
@@ -7199,10 +7992,17 @@ def _build_storyboard_scene_canonical_payload(row) -> dict:
         "canonical_prompt_profile": canonical,
         "canonical_prompt_parts": parts,
         "canonical_prompt_raw": "\n".join(f"{item['key']}: {item['text']}" for item in parts if str(item.get("text") or "").strip()),
+        "semantic_layers": semantic_layers,
+        "prompt_lint": _lint_scene_asset_layers(semantic_layers),
     }
 
 
 def _build_storyboard_prop_canonical_payload(row) -> dict:
+    semantic_layers = {
+        "canonical": _load_visual_json_dict(getattr(row, "canonical_facts", "{}")),
+        "state": _load_visual_json_dict(getattr(row, "state_variants", "{}")),
+        "look": _load_visual_json_dict(getattr(row, "look_profile", "{}")),
+    }
     canonical = {
         "description": _normalize_compiler_asset_text(
             str(getattr(row, "description", "") or getattr(row, "visual_prompt_zh", "") or getattr(row, "core_prompt_zh", "") or "")
@@ -7223,6 +8023,7 @@ def _build_storyboard_prop_canonical_payload(row) -> dict:
         "canonical_prompt_profile": canonical,
         "canonical_prompt_parts": parts,
         "canonical_prompt_raw": "\n".join(f"{item['key']}: {item['text']}" for item in parts if str(item.get("text") or "").strip()),
+        "semantic_layers": semantic_layers,
     }
 
 
@@ -9950,7 +10751,18 @@ def _call_storyboard_prompt_compiler(context: dict, *, audit_callback=None, audi
     )
 
 
-def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
+def _compile_storyboard_prompts(book_id: int, shot, structure: dict, *, audit_callback=None, audit_extra=None) -> dict:
+    # Keep a bounded collector even for callers that do not need to persist
+    # audit rows.  The returned summary contains only vendor/model metadata,
+    # fingerprints, token counters and latency; never raw prompt/response data.
+    audit_records = []
+    if audit_callback is None:
+        callback = audit_records.append
+    else:
+        def callback(record):
+            audit_records.append(record)
+            audit_callback(record)
+    extra = audit_extra if isinstance(audit_extra, dict) else {"mode": "prompt_compile"}
     acceptance_feedback = _collect_acceptance_constraints(book_id, shot.episode, shot.shot_id)
     feedback_constraints = acceptance_feedback.get("constraints", []) if isinstance(acceptance_feedback.get("constraints", []), list) else []
     asset_link_summary = _build_storyboard_reference_summary(_load_asset_links(shot.asset_links), str(shot.scene_name or "").strip())
@@ -10015,7 +10827,11 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
     ]
     fallback_negative_prompt = ", ".join([part.strip() for part in negative_parts if str(part).strip()])
 
-    llm_output = _call_storyboard_prompt_compiler(compile_context)
+    llm_output = _call_storyboard_prompt_compiler(
+        compile_context,
+        audit_callback=callback,
+        audit_extra=extra,
+    )
     if not isinstance(llm_output, dict):
         raise HTTPException(status_code=422, detail={
             "message": "LLM compile result is not a JSON object.",
@@ -10030,6 +10846,7 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         })
 
     from core.shot_executability import validate_shot_executability
+    from core.shot_planner import build_action_timing_plan, build_shot_intent_plan
     llm_action_beats = llm_output.get("action_beats", []) if isinstance(llm_output.get("action_beats", []), list) else []
     llm_core_action = str(llm_output.get("core_action") or "").strip()
     continuity_in = str(llm_output.get("continuity_in") or compile_context.get("start_state") or "").strip()
@@ -10042,6 +10859,20 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         start_state=continuity_in,
         end_state=continuity_out,
     )
+    shot_intent_plan = build_shot_intent_plan(
+        shot_purpose=compile_context.get("shot_purpose"),
+        core_action=llm_core_action or shot_ir.core_action,
+        action_process=str(compile_context.get("action_process") or ""),
+        action_beats=llm_action_beats or shot_ir.action_beats,
+        emotion_arc=compile_context.get("emotion_arc", {}),
+        start_state=continuity_in,
+        end_state=continuity_out,
+    )
+    action_timing_plan = build_action_timing_plan(
+        duration=compile_context.get("duration"),
+        action_beats=llm_action_beats or shot_ir.action_beats,
+        fallback_action=str(compile_context.get("action_process") or ""),
+    )
     compile_context = {
         **compile_context,
         "core_action": llm_core_action or str(shot_ir.core_action or "").strip(),
@@ -10049,6 +10880,8 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         "continuity_in": continuity_in,
         "continuity_out": continuity_out,
         "executability": executability,
+        "shot_intent_plan": shot_intent_plan,
+        "action_timing_plan": action_timing_plan,
     }
     compile_context["motion_contract"] = _build_motion_prompt_contract(compile_context)
     # Keep the persisted ShotIR and the compiler context aligned with the
@@ -10061,6 +10894,8 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         "continuity_in": compile_context["continuity_in"],
         "continuity_out": compile_context["continuity_out"],
         "executability": compile_context["executability"],
+        "shot_intent_plan": compile_context["shot_intent_plan"],
+        "action_timing_plan": compile_context["action_timing_plan"],
     }
     compile_context["shot_ir"] = shot_ir_payload
 
@@ -10137,7 +10972,11 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
             diagnostics,
             1,
         )
-        repaired_output = _call_storyboard_prompt_compiler(repair_context)
+        repaired_output = _call_storyboard_prompt_compiler(
+            repair_context,
+            audit_callback=callback,
+            audit_extra={**extra, "mode": "prompt_compile_repair"},
+        )
         if isinstance(repaired_output, dict):
             repaired_static_raw = sanitize_machine_prompt_text(repaired_output.get("visual_prompt_static"))
             repaired_motion_raw = sanitize_machine_prompt_text(repaired_output.get("visual_prompt_motion"))
@@ -10319,6 +11158,7 @@ def _compile_storyboard_prompts(book_id: int, shot, structure: dict) -> dict:
         "reference_images": compile_context.get("compiled_reference_images", []),
         "reference_asset_ids": compile_context.get("compiled_reference_asset_ids", []),
         "repair_attempted": repair_attempted,
+        "llm_request_audit": _summarize_llm_audit_records(audit_records),
         "shot_ir_metadata": compile_context.get("shot_ir_metadata", {}),
         "shot_ir": compile_context.get("shot_ir", {}),
     }
@@ -10353,7 +11193,12 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         _derive_structured_shot_payload(meta_info, structured_seed),
         structured_seed,
     )
-    compiled = _compile_storyboard_prompts(book_id, shot, structured)
+    compiled = _compile_storyboard_prompts(
+        book_id,
+        shot,
+        structured,
+        audit_extra={"mode": "prompt_compile", "compile_reason": str(compile_reason or "")[:120]},
+    )
     compiled_structured = _normalize_structured_shot_identity(
         shot,
         _apply_compiled_shot_ir_to_structure(structured, compiled.get("shot_ir", {})),
@@ -10396,6 +11241,7 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         "compiler_warnings": compiled.get("compiler_warnings", []),
         "compiler_diagnostics": compiled.get("compiler_diagnostics", {}),
         "repair_attempted": bool(compiled.get("repair_attempted")),
+        "llm_request_audit": compiled.get("llm_request_audit", {}),
     }
 
     row = StoryboardPromptVersion(
@@ -10427,6 +11273,7 @@ def _persist_storyboard_prompt_compile(s, book_id: int, episode: int, shot, comp
         "reference_asset_ids": compiled.get("reference_asset_ids", []),
         "compiler_warnings": compiled.get("compiler_warnings", []),
         "compiler_diagnostics": compiled.get("compiler_diagnostics", {}),
+        "llm_request_audit": compiled.get("llm_request_audit", {}),
         "recompile_required": False,
         "locked": bool(previous_compiler.get("locked")),
         "locked_version": previous_compiler.get("locked_version"),
@@ -12965,13 +13812,118 @@ def get_legacy_prototyping_asset_placeholder(asset_id: str):
     )
 
 
+def _canonicalize_reference_generation_request(req: CreativeGenerationRequest, kind: str) -> CreativeGenerationRequest:
+    """Apply the authoritative asset prompt at the generation boundary.
+
+    The browser normally sends ``rendered_prompt_preview``.  That value can
+    nevertheless be stale when a tab was opened before a compiler update, or
+    when another client calls the API directly.  Character reference sheets
+    and scene reference boards have non-negotiable layout contracts, so the
+    server resolves the live asset and renders the canonical prompt immediately
+    before queueing the task. This is deterministic and applies uniformly to
+    every client.
+    """
+    if kind != "reference-image":
+        return req
+    scope = str(req.asset_scope or "").strip().lower()
+    asset_type = "scene" if scope == "location" else scope
+    if asset_type not in {"character", "scene", "prop"} or not _is_integer_string(req.source_asset_id):
+        return req
+
+    try:
+        from models import Session, VisualLocation, VisualMakeup, VisualProp
+
+        with Session() as session:
+            model = {"character": VisualMakeup, "scene": VisualLocation, "prop": VisualProp}[asset_type]
+            row = session.query(model).filter(
+                model.book_id == req.book_id,
+                model.id == int(str(req.source_asset_id).strip()),
+            ).first()
+            if row is None and asset_type == "character":
+                row = _find_profile_fallback_makeup_by_id(session, req.book_id, req.source_asset_id)
+            if row is None:
+                return req
+            if asset_type == "character":
+                canonical_prompt = _build_character_reference_prompt(row)
+                canonical_negative = _append_negative_terms(
+                    getattr(row, "negative_prompt", ""), CHARACTER_REFERENCE_NEGATIVE_TERMS
+                )
+            elif asset_type == "scene":
+                contract = _build_scene_asset_prompt_contract(
+                    row,
+                    scene_layer_mode=str(getattr(req, "scene_layer_mode", "combined") or "combined"),
+                )
+                canonical_prompt = contract["rendered_prompt_preview"]
+                canonical_negative = contract["reference_negative_prompt"]
+            else:
+                contract = _build_prop_asset_prompt_contract(
+                    row,
+                    prop_layer_mode=str(getattr(req, "scene_layer_mode", "combined") or "combined"),
+                )
+                canonical_prompt = contract["rendered_prompt_preview"]
+                canonical_negative = contract["reference_negative_prompt"]
+    except Exception as exc:
+        logger.warning(
+            "Reference prompt canonicalization skipped for %s asset %s: %s",
+            asset_type,
+            req.source_asset_id,
+            exc,
+        )
+        return req
+
+    if not str(canonical_prompt or "").strip():
+        return req
+    update = {"prompt": str(canonical_prompt).strip()}
+    if str(canonical_negative or "").strip():
+        update["negative_prompt"] = str(canonical_negative).strip()
+    if asset_type == "scene":
+        # The four-view board is one 16:9 deliverable; do not let a stale
+        # browser payload request a square scene sheet.
+        update["aspect_ratio"] = "16:9"
+    return req.model_copy(update=update)
+
+
+def _ensure_external_generation_confirmation(profile: dict[str, Any], req: Any, *, capability: str) -> None:
+    """Enforce the operator confirmation boundary at the provider boundary.
+
+    UI confirmation is useful feedback, but it is not a security boundary:
+    callers can invoke these endpoints directly or replay an old request.
+    Every non-prototype image/video task therefore has to carry both explicit
+    confirmation flags.  Read-only previews and the deterministic prototype
+    adapter remain available without confirmation.
+    """
+    provider = str(profile.get("provider") or "").strip()
+    if not provider or provider == "prototype-task-adapter":
+        return
+    confirmed = bool(getattr(req, "confirmed", False))
+    allow_external_call = bool(getattr(req, "allow_external_call", False))
+    if confirmed and allow_external_call:
+        return
+    model_name = str(profile.get("model_name") or profile.get("name") or provider).strip()
+    raise HTTPException(
+        status_code=409,
+        detail={
+            "code": "external_call_confirmation_required",
+            "message": f"真实{('图片' if capability == 'image' else '视频')}生成必须由操作者显式确认外部调用后才能提交。",
+            "provider": provider,
+            "model": model_name,
+            "requires_confirmation": True,
+            "generation_not_started": True,
+        },
+    )
+
+
 async def _enqueue_creative_task(req: CreativeGenerationRequest, bg: BackgroundTasks, kind: str):
+    original_prompt = str(req.prompt or "")
+    req = _canonicalize_reference_generation_request(req, kind)
+    prompt_was_canonicalized = str(req.prompt or "") != original_prompt
     task_id = uuid.uuid4().hex[:12]
     capability = "image" if kind in {"image", "reference-image"} else "video"
     try:
         profile = _resolve_creative_profile(req, capability)
     except (ModelProfileError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    _ensure_external_generation_confirmation(profile, req, capability=capability)
 
     version = (
         _next_reference_asset_version(
@@ -13005,6 +13957,13 @@ async def _enqueue_creative_task(req: CreativeGenerationRequest, bg: BackgroundT
         "restarted_from_task_id": None,
         "restart_count": 0,
         "last_restarted_at": None,
+        # Keep the operator/client input separately from the authoritative
+        # provider prompt.  The request payload below contains the canonical
+        # prompt so every replay is safe, while this field preserves an audit
+        # trail explaining why the server replaced stale character text.
+        "original_prompt": original_prompt if prompt_was_canonicalized else "",
+        "prompt_canonicalized": prompt_was_canonicalized,
+        "external_call_confirmed": bool(req.confirmed and req.allow_external_call),
     }
     _stamp_creative_task_state(_creative_tasks[task_id], created=True)
     _store_creative_task_request(_creative_tasks[task_id], req, kind)
@@ -13122,7 +14081,11 @@ async def reconcile_creative_task(task_id: str):
 
 
 @app.post("/api/prototyping/tasks/{task_id}/restart")
-async def restart_creative_task(task_id: str, bg: BackgroundTasks):
+async def restart_creative_task(
+    task_id: str,
+    bg: BackgroundTasks,
+    req: CreativeTaskRestartRequest | None = None,
+):
     task = _creative_tasks.get(task_id)
     if not task:
         task = _load_persisted_task_state(task_id)
@@ -13138,13 +14101,25 @@ async def restart_creative_task(task_id: str, bg: BackgroundTasks):
         raise HTTPException(status_code=400, detail="Task request payload is unavailable")
 
     kind = str(task.get("kind") or task.get("target_kind") or "image")
+    restart_confirmation = req or CreativeTaskRestartRequest()
     try:
         req = CreativeGenerationRequest.model_validate({
             **request_payload,
             "simulate_error": False,
+            # Never inherit a prior confirmation from the persisted payload;
+            # this restart must carry a fresh operator confirmation.
+            "confirmed": bool(restart_confirmation.confirmed),
+            "allow_external_call": bool(restart_confirmation.allow_external_call),
         })
     except Exception as exc:
         raise HTTPException(status_code=400, detail=f"Task request payload is invalid: {exc}") from exc
+
+    capability = "image" if kind in {"image", "reference-image"} else "video"
+    try:
+        profile = _resolve_creative_profile(req, capability)
+    except (ModelProfileError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    _ensure_external_generation_confirmation(profile, req, capability=capability)
 
     restarted = await _enqueue_creative_task(req, bg, kind)
     new_task_id = str(restarted.get("task_id") or "").strip()
@@ -13521,7 +14496,7 @@ _ASSET_SEMANTIC_WRITABLE_FIELDS = {
     },
     "scene": {
         "style", "description", "color_palette", "lighting_mood", "key_props", "visual_prompt_zh", "core_prompt_zh",
-        "scene_mood_zh", "negative_prompt",
+        "scene_mood_zh", "negative_prompt", "canonical_facts", "state_variants", "look_profile", "board_spec",
     },
     "prop": {
         "category", "description", "associated_characters", "time_period", "visual_prompt_zh", "core_prompt_zh",
@@ -13608,6 +14583,36 @@ def _asset_semantic_affected_shots(s, book_id: int, asset_type: str, row) -> lis
 def _asset_semantic_fingerprint(source_snapshot: dict, proposal: dict) -> str:
     canonical = json.dumps({"source_snapshot": source_snapshot, "proposal": proposal}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+@app.get("/api/books/{book_id}/visual-assets/scene/{asset_id}/semantic-migration-plan")
+def get_scene_semantic_migration_plan(book_id: int, asset_id: int):
+    """Return an explainable, read-only migration suggestion for one scene."""
+    from models import Session, VisualLocation
+
+    with Session() as session:
+        row = session.query(VisualLocation).filter(
+            VisualLocation.book_id == book_id,
+            VisualLocation.id == asset_id,
+        ).first()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Visual scene asset not found")
+        return _build_scene_semantic_migration_plan(row)
+
+
+@app.get("/api/books/{book_id}/visual-assets/scene/{asset_id}/reference-quality-plan")
+def get_scene_reference_quality_plan(book_id: int, asset_id: int):
+    """Return a read-only quality/replacement plan for scene references."""
+    from models import Session, VisualLocation
+
+    with Session() as session:
+        row = session.query(VisualLocation).filter(
+            VisualLocation.book_id == book_id,
+            VisualLocation.id == asset_id,
+        ).first()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Visual scene asset not found")
+        return _build_scene_reference_quality_plan(session, book_id, row)
 
 
 def _asset_semantic_evidence_fingerprint(source_snapshot: dict, affected_shots: list[dict]) -> str:
@@ -13940,6 +14945,10 @@ def patch_visual_asset(book_id: int, asset_type: str, asset_id: int, req: Visual
             row.makeup_spec = req.makeup_spec
         if req.expression_mood is not None and hasattr(row, "expression_mood"):
             row.expression_mood = req.expression_mood
+        for field in ("canonical_facts", "state_variants", "look_profile", "board_spec"):
+            value = getattr(req, field, None)
+            if value is not None and hasattr(row, field):
+                setattr(row, field, json.dumps(value, ensure_ascii=False, sort_keys=True))
         row.updated_at = datetime.utcnow()
         stale_reference_ids = _invalidate_stale_reference_assets(
             s, book_id, asset_type, row, previous_authority_fingerprint,
@@ -15381,6 +16390,43 @@ def get_book_production_readiness(book_id: int):
         }
         references = s.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == book_id).order_by(VisualReferenceAsset.id.asc()).all()
         return {"book_id": book_id, **_build_storyboard_production_readiness(shots, assets, references)}
+
+
+@app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/media-preflight")
+def get_storyboard_media_preflight(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    target_model: str = Query(default="minimax-h3"),
+    model_profile_id: str | None = Query(default=None),
+    use_reference_images: bool = Query(default=True),
+    use_first_frame: bool = Query(default=False),
+    allow_unstable_public_assets: bool = Query(default=False),
+):
+    """Check provider-facing media inputs before a user confirms submission.
+
+    The report is intentionally read-only: no LLM/media provider call, object
+    storage upload, storyboard write, or task creation occurs here.  The
+    confirmed submission endpoint repeats these checks authoritatively.
+    """
+    from models import Session, StoryboardShot
+
+    with Session() as session:
+        shot = session.query(StoryboardShot).filter(
+            StoryboardShot.book_id == book_id,
+            StoryboardShot.episode == episode,
+            StoryboardShot.shot_id == _coerce_storyboard_shot_id(shot_id),
+        ).first()
+        if not shot:
+            raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        return _build_storyboard_media_preflight(
+            shot,
+            target_model=target_model,
+            model_profile_id=model_profile_id,
+            use_reference_images=use_reference_images,
+            use_first_frame=use_first_frame,
+            allow_unstable_public_assets=allow_unstable_public_assets,
+        )
 
 
 def _build_storyboard_structure_governance_plan(book_id: int, shots: list[Any]) -> dict:
@@ -17192,6 +18238,237 @@ def _resolve_provider_ready_storyboard_reference_images(
     return list(dict.fromkeys(provider_ready_asset_ids or reference_asset_ids[: len(provider_ready_images)])), provider_ready_images, public_assets
 
 
+def _is_unstable_public_reference_url(url: str) -> bool:
+    """Return whether a reference URL is a temporary/insecure Qiniu URL.
+
+    A URL can be reachable from this machine and still be unsuitable for a
+    production provider request.  Keep this check local to the read-only
+    media preflight so the actual submission path remains the final authority.
+    """
+    from urllib.parse import urlparse
+
+    try:
+        parsed = urlparse(str(url or "").strip())
+    except ValueError:
+        return False
+    host = str(parsed.hostname or "").strip().lower()
+    return bool(
+        parsed.scheme != "https"
+        or host == "clouddn.com"
+        or host.endswith(".clouddn.com")
+    )
+
+
+def _build_storyboard_media_preflight(
+    shot,
+    *,
+    target_model: str = "minimax-h3",
+    model_profile_id: str | None = None,
+    use_reference_images: bool = True,
+    use_first_frame: bool = False,
+    requested_reference_asset_ids: list[str] | None = None,
+    allow_unstable_public_assets: bool = False,
+) -> dict[str, Any]:
+    """Build a provider-input report without publishing or mutating anything.
+
+    This deliberately does not call ``ensure_provider_accessible_url``: that
+    helper may upload local files to object storage.  The preflight only checks
+    already-public URLs and reports which references would need publishing.
+    The confirmed submission endpoint performs the authoritative publish and
+    capability checks again.
+    """
+    from urllib.parse import urlparse
+
+    target_model = str(target_model or "minimax-h3").strip() or "minimax-h3"
+    blockers: list[str] = []
+    warnings: list[str] = []
+    reference_results: list[dict[str, Any]] = []
+    first_frame_result: dict[str, Any] = {}
+
+    try:
+        profile = resolve_generation_profile("video", model_profile_id or None)
+    except (ModelProfileError, ValueError) as exc:
+        profile = {}
+        blockers.append("video_model_profile_unavailable")
+        warnings.append(str(exc))
+
+    provider = str(profile.get("provider") or "").strip()
+    model_name = str(profile.get("model_name") or "").strip()
+    params = profile.get("default_params") if isinstance(profile, dict) else {}
+    params = params if isinstance(params, dict) else {}
+    try:
+        max_reference_images = max(int(params.get("max_reference_images") or 9), 1)
+    except (TypeError, ValueError):
+        max_reference_images = 9
+
+    # Read-only preflight cannot upload or download source bytes.  It can,
+    # however, determine whether the authoritative submit path has a valid
+    # publication bridge.  Treat local/inaccessible references as ready when
+    # that bridge is configured and explicitly safe (or the request-scoped
+    # gray-test override is enabled); the submit endpoint will still perform
+    # the real publish and remains the final authority on failures.
+    storage_config = load_public_asset_storage_config()
+    storage_base = urlparse(str(getattr(storage_config, "qiniu_public_base_url", "") or "").strip())
+    temporary_storage_override = bool(
+        getattr(storage_config, "provider", "") == "qiniu"
+        and storage_base.scheme == "http"
+        and str(storage_base.hostname or "").strip().lower().endswith(".clouddn.com")
+    )
+    storage_can_publish = bool(
+        storage_config.enabled
+        and (
+            public_asset_storage_is_production_safe(storage_config)
+            or (allow_unstable_public_assets and temporary_storage_override)
+        )
+    )
+
+    if provider and provider not in {MINIMAX_H3_ASYNC_PROVIDER, MINIMAX_H3_75API_PROVIDER}:
+        blockers.append("video_provider_not_supported_for_h3_submission")
+    if provider == MINIMAX_H3_75API_PROVIDER and not use_reference_images and not use_first_frame:
+        blockers.append("75api_h3_requires_image_input")
+
+    if use_reference_images:
+        try:
+            _, reference_images = _resolve_storyboard_video_reference_payloads(
+                shot,
+                requested_reference_asset_ids,
+                max_reference_images=max_reference_images,
+            )
+        except HTTPException as exc:
+            reference_images = []
+            blockers.append("reference_image_limit_exceeded")
+            warnings.append(str(exc.detail))
+
+        if not reference_images:
+            # Distinguish an unbound shot from a shot whose structured assets
+            # exist but have not yet been carried into a compiled Prompt
+            # Version.  Both are blocked, but the latter has a deterministic
+            # next action: compile/review the prompt before media submission.
+            shot_meta = safe_json_loads(getattr(shot, "meta_info", "") or "{}")
+            shot_meta = shot_meta if isinstance(shot_meta, dict) else {}
+            structured = shot_meta.get("structured_shot", {}) if isinstance(shot_meta.get("structured_shot", {}), dict) else {}
+            declared_assets = bool(
+                str(structured.get("scene_asset_id") or "").strip()
+                or structured.get("character_asset_ids")
+                or structured.get("prop_asset_ids")
+            )
+            blockers.append("prompt_compiler_references_missing" if declared_assets else "no_reference_images_selected")
+        for index, item in enumerate(reference_images, start=1):
+            if not isinstance(item, dict):
+                continue
+            source_url = str(item.get("image_url") or item.get("imageUrl") or item.get("url") or "").strip()
+            reference_asset_id = str(item.get("reference_asset_id") or item.get("asset_id") or "").strip()
+            result: dict[str, Any] = {
+                "index": index,
+                "reference_asset_id": reference_asset_id,
+                "asset_type": str(item.get("asset_type") or item.get("role") or "").strip(),
+                "label": str(item.get("asset_name") or item.get("label") or "").strip(),
+                "source_url": source_url,
+                "accessible": False,
+                "requires_publish": False,
+                "publishable_via_storage": storage_can_publish,
+                "unstable_url": False,
+                "error": "",
+            }
+            if not source_url:
+                result["error"] = "missing_url"
+                blockers.append("reference_missing_url")
+            elif source_url.startswith("data:") or source_url.startswith("/"):
+                result["requires_publish"] = True
+                result["error"] = "not_public_url"
+                if not storage_can_publish:
+                    blockers.append("compiled_reference_images_not_provider_accessible")
+                else:
+                    warnings.append("reference_will_be_published_before_submit")
+            elif source_url.startswith(("http://", "https://")):
+                accessible, error = check_public_url_accessible(source_url, timeout_seconds=3.0, attempts=1)
+                result["accessible"] = bool(accessible)
+                result["error"] = str(error or "")
+                result["unstable_url"] = _is_unstable_public_reference_url(source_url)
+                if not accessible:
+                    result["requires_publish"] = True
+                    if not storage_can_publish:
+                        blockers.append("compiled_reference_images_not_provider_accessible")
+                    else:
+                        warnings.append("reference_will_be_published_before_submit")
+                elif result["unstable_url"] and not allow_unstable_public_assets:
+                    blockers.append("reference_public_url_unstable")
+            else:
+                result["requires_publish"] = True
+                result["error"] = "unsupported_url_scheme"
+                if not storage_can_publish:
+                    blockers.append("compiled_reference_images_not_provider_accessible")
+                else:
+                    warnings.append("reference_will_be_published_before_submit")
+            reference_results.append(result)
+
+    if use_first_frame:
+        source_url = ""
+        asset_links = _load_asset_links(getattr(shot, "asset_links", None))
+        adopted = _find_adopted_shot_asset(asset_links, "images")
+        if isinstance(adopted, dict):
+            source_url = str(adopted.get("uri") or adopted.get("previewUrl") or "").strip()
+            first_frame_result["asset_id"] = str(adopted.get("id") or "").strip()
+        first_frame_result.update({"source_url": source_url, "accessible": False, "requires_publish": False, "error": ""})
+        if not source_url:
+            blockers.append("no_adopted_first_frame")
+            first_frame_result["error"] = "missing_url"
+        elif source_url.startswith("data:") or source_url.startswith("/"):
+            first_frame_result["requires_publish"] = True
+            first_frame_result["error"] = "not_public_url"
+            first_frame_result["publishable_via_storage"] = storage_can_publish
+            if not storage_can_publish:
+                blockers.append("selected_first_frame_url_not_provider_accessible")
+            else:
+                warnings.append("first_frame_will_be_published_before_submit")
+        else:
+            accessible, error = check_public_url_accessible(source_url, timeout_seconds=3.0, attempts=1)
+            first_frame_result["accessible"] = bool(accessible)
+            first_frame_result["error"] = str(error or "")
+            first_frame_result["unstable_url"] = _is_unstable_public_reference_url(source_url)
+            if not accessible:
+                first_frame_result["requires_publish"] = True
+                first_frame_result["publishable_via_storage"] = storage_can_publish
+                if not storage_can_publish:
+                    blockers.append("selected_first_frame_url_not_provider_accessible")
+                else:
+                    warnings.append("first_frame_will_be_published_before_submit")
+            elif first_frame_result["unstable_url"] and not allow_unstable_public_assets:
+                blockers.append("first_frame_public_url_unstable")
+
+    # Preserve order while deduplicating repeated findings from multiple refs.
+    blockers = list(dict.fromkeys(blockers))
+    warnings = list(dict.fromkeys(warnings))
+    return {
+        "mode": "readonly-storyboard-media-preflight",
+        "book_id": int(getattr(shot, "book_id", 0) or 0),
+        "episode": int(getattr(shot, "episode", 0) or 0),
+        "shot_id": int(getattr(shot, "shot_id", 0) or 0),
+        "scene_name": str(getattr(shot, "scene_name", "") or "").strip(),
+        "target_model": target_model,
+        "model": {
+            "profile_id": str(profile.get("id") or ""),
+            "name": str(profile.get("name") or ""),
+            "provider": provider,
+            "model_name": model_name,
+            "max_reference_images": max_reference_images,
+            "enabled": bool(profile.get("enabled", False)),
+        },
+        "input_mode": {
+            "use_reference_images": bool(use_reference_images),
+            "use_first_frame": bool(use_first_frame),
+            "reference_count": len(reference_results),
+        },
+        "references": reference_results,
+        "first_frame": first_frame_result,
+        "ready_for_real_submit": not blockers,
+        "blockers": blockers,
+        "warnings": warnings,
+        "mutated": False,
+        "provider_call": False,
+    }
+
+
 def _resolve_storyboard_video_continuity_policy(session, shot, profile: dict[str, Any], reference_images: list[dict[str, Any]]) -> dict[str, Any]:
     """Load only confirmed/locked continuity records for the target shot.
 
@@ -17394,6 +18671,7 @@ async def submit_machine_prompt_api_task_to_provider(
                 requested_reference_asset_ids=req.reference_asset_ids,
                 max_reference_images=_model_max_reference_images(frozen_profile or {}, default=9),
                 include_composition_reference=True,
+                allow_unstable_storage=req.allow_unstable_public_assets,
             )
             if not reference_images:
                 raise HTTPException(status_code=409, detail="已选择 MiniMax H3 多参考图模式，但当前镜头没有可用的参考图。")
@@ -17564,6 +18842,7 @@ def compile_storyboard_prompts(book_id: int, episode: int, shot_id: str, req: St
             "compiler_warnings": result["compiled"].get("compiler_warnings", []),
             "compiler_diagnostics": result["compiled"].get("compiler_diagnostics", {}),
             "repair_attempted": bool(result["compiled"].get("repair_attempted")),
+            "llm_request_audit": result["compiled"].get("llm_request_audit", {}),
         }
 
 
@@ -17834,12 +19113,19 @@ async def _queue_storyboard_generation_task(
             reference_images=reference_images,
             aspect_ratio=req.aspect_ratio,
             duration_seconds=req.duration_seconds or int(getattr(shot, "duration", None) or 5),
+            confirmed=req.confirmed,
+            allow_external_call=req.allow_external_call,
         )
 
         try:
             profile = _resolve_creative_profile(creative_req, "image" if kind == "image" else "video")
         except (ModelProfileError, ValueError) as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
+        _ensure_external_generation_confirmation(
+            profile,
+            creative_req,
+            capability="image" if kind == "image" else "video",
+        )
 
         continuity_policy: dict[str, Any] = {}
         if kind == "video":
@@ -17988,6 +19274,7 @@ async def _queue_storyboard_generation_task(
                 )
                 or (isinstance(first_frame_public_asset, dict) and first_frame_public_asset.get("unstable_storage_override"))
             ),
+            "external_call_confirmed": bool(req.confirmed and req.allow_external_call),
         }
         _store_creative_task_request(_creative_tasks[task_id], creative_req, kind)
         if req.generation_chain or req.triggered_by_prompt_recompile or req.prompt_recompile_task_id or req.prompt_recompile_version is not None:

@@ -8,9 +8,9 @@ cd "$DIR"
 echo "=== Screenplay DevCanvas ==="
 
 # Start API server
-echo "[1/2] Starting API server on :8765..."
+echo "[1/2] Starting API server on :18765..."
 cd "$DIR"
-uvicorn api.server:app --host 0.0.0.0 --port 8765 &
+uvicorn api.server:app --host 0.0.0.0 --port 18765 &
 API_PID=$!
 
 # Wait for API
@@ -23,14 +23,14 @@ if [ ! -d web/node_modules ]; then
 fi
 
 # Start frontend
-echo "[3/3] Starting frontend on :5173..."
-cd web && npx vite --host 0.0.0.0 &
+echo "[3/3] Starting frontend on :5175..."
+cd web && VITE_API_PROXY_TARGET=http://127.0.0.1:18765 npx vite --host 0.0.0.0 --port 5175 &
 FRONTEND_PID=$!
 
 echo ""
 echo "=== DevCanvas Running ==="
-echo "  API:      http://localhost:8765"
-echo "  Frontend: http://localhost:5173"
+echo "  API:      http://localhost:18765"
+echo "  Frontend: http://localhost:5175"
 echo "  Ctrl+C to stop"
 echo ""
 

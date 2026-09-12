@@ -82,7 +82,8 @@ export default function ProductWorkspaceShell({
                       }}
                       title={effectiveBlockedReason ?? item.label}
                       aria-disabled={effectiveBlockedReason ? 'true' : 'false'}
-                      className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition ${
+                      aria-current={active ? 'page' : undefined}
+                      className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
                         effectiveBlockedReason
                           ? 'cursor-not-allowed text-slate-600'
                           : active

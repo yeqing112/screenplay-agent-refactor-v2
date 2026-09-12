@@ -135,6 +135,20 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
             session.query(VisualLocation).filter(VisualLocation.book_id == self.book_id).delete()
             session.commit()
 
+    def test_real_provider_generation_requires_explicit_confirmation_and_does_not_queue(self):
+        """The API guard must fail closed before task creation/provider calls."""
+        with patch("api.server.generate_image_asset", new=AsyncMock()) as mocked_generate:
+            response = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
+                json={},
+            )
+
+        self.assertEqual(response.status_code, 409)
+        detail = response.json()["detail"]
+        self.assertEqual(detail["code"], "external_call_confirmation_required")
+        self.assertTrue(detail["generation_not_started"])
+        mocked_generate.assert_not_awaited()
+
     def test_poyo_success_persists_external_task_fields_to_task_and_asset(self):
         generated = {
             "previewUrl": "https://cdn.example.com/poyo-frame.png",
@@ -158,7 +172,7 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         ):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
-                json={},
+                json={"confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)
@@ -206,7 +220,7 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         ):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
-                json={},
+                json={"confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)
@@ -240,7 +254,7 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         ):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
-                json={},
+                json={"confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)
@@ -300,7 +314,7 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         ) as mocked_generate:
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
-                json={},
+                json={"confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)
@@ -351,6 +365,8 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
                     "asset_scope": "location",
                     "asset_subject": "山门夜雨",
                     "target_kind": "image",
+                    "confirmed": True,
+                    "allowExternalCall": True,
                     "prompt": "山门夜雨参考图",
                     "aspect_ratio": "1:1",
                 },
@@ -414,6 +430,8 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
                     "asset_scope": "character",
                     "asset_subject": "Little Monk",
                     "target_kind": "image",
+                    "confirmed": True,
+                    "allowExternalCall": True,
                     "prompt": structured_prompt,
                     "aspect_ratio": "1:1",
                 },
@@ -423,7 +441,11 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         task_id = response.json()["task_id"]
         task_payload = self.client.get(f"/api/prototyping/tasks/{task_id}").json()
         self.assertEqual(task_payload["status"], "done")
-        self.assertEqual(task_payload["reference_asset"]["prompt"], structured_prompt)
+        persisted_prompt = task_payload["reference_asset"]["prompt"]
+        self.assertIn("上排为脸部特写", persisted_prompt)
+        self.assertIn("下排为全身展示", persisted_prompt)
+        self.assertIn("六宫格排版", persisted_prompt)
+        self.assertNotEqual(persisted_prompt, structured_prompt)
 
         with Session() as session:
             row = session.query(VisualReferenceAsset).filter(
@@ -432,7 +454,7 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
                 VisualReferenceAsset.asset_id == makeup_id,
             ).order_by(VisualReferenceAsset.id.desc()).first()
             self.assertIsNotNone(row)
-            self.assertEqual(row.prompt, structured_prompt)
+            self.assertEqual(row.prompt, persisted_prompt)
 
     def test_reconcile_endpoint_recovers_finished_reference_asset_after_timeout(self):
         response = self.client.post(
@@ -446,6 +468,8 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
                 "asset_scope": "location",
                 "asset_subject": "灞遍棬澶滈洦",
                 "target_kind": "image",
+                "confirmed": True,
+                "allowExternalCall": True,
                 "prompt": "灞遍棬澶滈洦鍙傝€冨浘",
                 "aspect_ratio": "1:1",
             },
@@ -478,7 +502,7 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
     def test_reconcile_endpoint_keeps_task_running_when_provider_still_processing(self):
         response = self.client.post(
             f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
-            json={},
+            json={"confirmed": True, "allowExternalCall": True},
         )
         self.assertEqual(response.status_code, 200)
         task_id = response.json()["task_id"]
@@ -524,8 +548,10 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
                     "source_asset_id": self.scene_id,
                     "asset_scope": "location",
                     "asset_subject": "灞遍棬澶滈洦",
-                    "target_kind": "image",
-                    "prompt": "灞遍棬澶滈洦鍙傝€冨浘",
+                "target_kind": "image",
+                "confirmed": True,
+                "allowExternalCall": True,
+                "prompt": "灞遍棬澶滈洦鍙傝€冨浘",
                     "aspect_ratio": "1:1",
                     "simulate_error": True,
                 },
@@ -540,8 +566,15 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         with patch("api.server.asyncio.sleep", new=AsyncMock(return_value=None)), patch(
             "api.server.generate_image_asset",
             new=AsyncMock(return_value=generated),
-        ):
-            restarted = self.client.post(f"/api/prototyping/tasks/{failed_task_id}/restart")
+        ) as mocked_generate:
+            unconfirmed = self.client.post(f"/api/prototyping/tasks/{failed_task_id}/restart", json={})
+            self.assertEqual(unconfirmed.status_code, 409)
+            self.assertEqual(unconfirmed.json()["detail"]["code"], "external_call_confirmation_required")
+            mocked_generate.assert_not_awaited()
+            restarted = self.client.post(
+                f"/api/prototyping/tasks/{failed_task_id}/restart",
+                json={"confirmed": True, "allowExternalCall": True},
+            )
 
         self.assertEqual(restarted.status_code, 200)
         restarted_payload = restarted.json()

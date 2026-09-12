@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
 
+import config
 from api.server import _prepare_shapi_gemini_reference_images, app
 from core.public_asset_storage import ensure_provider_accessible_url, _load_source_bytes
 from models import KV, PublicAssetStorageMigrationRecord, Session, TaskRun, VisualReferenceAsset, init_db
@@ -149,7 +150,7 @@ class PublicAssetStorageTests(unittest.TestCase):
         upload.assert_not_called()
 
     def test_manual_media_relative_url_reads_local_file_without_http_callback(self):
-        media_dir = Path("uploads/manual-media")
+        media_dir = Path(config.UPLOAD_DIR) / "manual-media"
         media_dir.mkdir(parents=True, exist_ok=True)
         path = media_dir / "unit-manual-media-direct-read.png"
         path.write_bytes(b"\x89PNG\r\n\x1a\nunit-test")
@@ -167,7 +168,7 @@ class PublicAssetStorageTests(unittest.TestCase):
         self.assertEqual(content_type, "image/png")
 
     def test_shapi_gemini_prepares_bound_manual_reference_as_data_uri(self):
-        media_dir = Path("uploads/manual-media")
+        media_dir = Path(config.UPLOAD_DIR) / "manual-media"
         media_dir.mkdir(parents=True, exist_ok=True)
         path = media_dir / "unit-nano-reference.png"
         raw = b"\x89PNG\r\n\x1a\nunit-nano-reference"

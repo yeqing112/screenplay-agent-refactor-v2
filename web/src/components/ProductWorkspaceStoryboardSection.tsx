@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import type { MediaAssetOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   fetchCreativeTaskStatus,
@@ -27,7 +27,7 @@ import {
   normalizeReferenceAssetType,
   type ShotBindingSummary,
 } from './productWorkspaceStoryboardBindings'
-import type { CanvasHandoffTarget, TaskNavigateHandler } from './productWorkspaceSectionContracts'
+import type { CanvasHandoffTarget, StoryboardStep, TaskNavigateHandler } from './productWorkspaceSectionContracts'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildShotReadiness, buildStoryboardGateSummary, hasDegradedPromptVersion } from './productWorkspaceStoryboard'
 import {
@@ -85,6 +85,8 @@ interface Props {
   onDismissRecoveryFocus?: () => void
   onGenerateStoryboard?: () => void
   isGeneratingStoryboard?: boolean
+  initialStoryboardEpisode?: number | null
+  initialStoryboardStep?: StoryboardStep
 }
 
 export function buildStoryboardCanvasHandoffSummary(input: {
@@ -117,6 +119,58 @@ export function buildStoryboardCanvasHandoffSummary(input: {
   }
 }
 
+/**
+ * Turn the provider-input preflight blockers into an actionable creator-facing
+ * message.  The preflight remains authoritative; this helper only changes the
+ * wording shown in the workbench and never changes whether submission is
+ * allowed.
+ */
+export function getStoryboardMediaPreflightBlockerMessage(preflight: {
+  blockers?: unknown
+}): string {
+  const blockerLabels: Record<string, string> = {
+    no_reference_images_selected: '没有可提交的多参考图',
+    prompt_compiler_references_missing: '资产已绑定，但还没有写入当前提示词版本的参考图',
+    compiled_reference_images_not_provider_accessible: '参考图无法被外部模型访问',
+    reference_public_url_unstable: '参考图使用了不稳定的临时公网地址',
+    first_frame_public_url_unstable: '首帧图使用了不稳定的临时公网地址',
+    selected_first_frame_url_not_provider_accessible: '首帧图无法被外部模型访问',
+    no_adopted_first_frame: '没有已采纳的首帧图',
+    reference_missing_url: '有参考资产缺少图片地址',
+    reference_image_limit_exceeded: '参考图数量超过当前模型上限',
+    video_model_profile_unavailable: '当前视频模型配置不可用',
+    video_provider_not_supported_for_h3_submission: '当前视频模型不是受支持的 H3 配置',
+    '75api_h3_requires_image_input': '75api H3 必须提供首帧或多参考图',
+  }
+  const rawBlockers = Array.isArray(preflight.blockers)
+    ? preflight.blockers.filter((item): item is string => typeof item === 'string' && Boolean(item))
+    : []
+  const labels = rawBlockers.map((item) => blockerLabels[item] || item)
+  if (rawBlockers.includes('compiled_reference_images_not_provider_accessible')) {
+    return `真实提交前检查未通过：${labels.join('；')}。请配置稳定 HTTPS 公网域名；仅灰度测试可勾选“允许临时七牛地址（灰度）”后重新预检。`
+  }
+  return `真实提交前检查未通过：${labels.join('；') || '参考图或模型输入未就绪'}。请先补齐前置条件，再重新预检。`
+}
+
+export function getShotPlanningAction(input: {
+  intentStatus?: string | null
+  timingStatus?: string | null
+}) {
+  if (input.timingStatus === 'conflict') {
+    return {
+      label: '先调整动作时长',
+      detail: '已声明的动作时长超过本镜头总时长，请在镜头概览中调整节拍或延长镜头。',
+    }
+  }
+  if (input.intentStatus === 'needs_information' || input.timingStatus === 'needs_information') {
+    return {
+      label: '先补充镜头信息',
+      detail: '镜头意图或动作节拍缺少必要信息，补齐后才能可靠判断是否适合生成视频。',
+    }
+  }
+  return null
+}
+
 type StoryboardMissingRecoveryState = {
   episode: number
   shotId: string
@@ -125,6 +179,15 @@ type StoryboardMissingRecoveryState = {
 }
 
 type GenerationUiState = 'idle' | 'frame' | 'video' | 'success' | 'error'
+
+const STORYBOARD_STEPS: Array<{ id: StoryboardStep; label: string; shortLabel: string }> = [
+  { id: 'overview', label: '看懂镜头', shortLabel: '概览' },
+  { id: 'assets', label: '准备素材', shortLabel: '素材' },
+  { id: 'frame', label: '生成分镜图', shortLabel: '分镜图' },
+  { id: 'video', label: '生成视频', shortLabel: '视频' },
+  { id: 'review', label: '检查结果', shortLabel: '验收' },
+  { id: 'more', label: '更多工具', shortLabel: '更多' },
+]
 
 type StoryboardCanvasPrimaryActionPlan =
   | { action: 'scripts_gate'; label: string; detail: string }
@@ -1148,6 +1211,41 @@ function BindingSummaryCard({ binding }: { binding: ShotBindingSummary }) {
   )
 }
 
+function StoryboardAssetBindingsSummary({
+  characterBindings,
+  sceneBinding,
+  propBindings,
+}: {
+  characterBindings: ShotBindingSummary[]
+  sceneBinding: ShotBindingSummary | null
+  propBindings: ShotBindingSummary[]
+}) {
+  return (
+    <div className="mt-4 space-y-3 rounded-lg border border-sky-500/20 bg-sky-500/5 p-4">
+      <div>
+        <div className="text-sm font-medium text-white">已绑定的资产详情</div>
+        <div className="mt-1 text-xs leading-5 text-sky-100/70">这里确认本镜头会使用哪些人物、场景和道具参考图；需要修改时请回资产中心编辑，保存后再重编提示词。</div>
+      </div>
+      <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+        <div className="text-xs text-slate-500">人物</div>
+        {characterBindings.length > 0 ? (
+          <div className="mt-2 space-y-2">{characterBindings.map((binding) => <BindingSummaryCard key={binding.key} binding={binding} />)}</div>
+        ) : <div className="mt-2 text-sm text-slate-500">当前镜头还没有结构化的人物绑定。</div>}
+      </div>
+      <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+        <div className="text-xs text-slate-500">场景</div>
+        {sceneBinding ? <div className="mt-2"><BindingSummaryCard binding={sceneBinding} /></div> : <div className="mt-2 text-sm text-slate-500">当前镜头还没有场景绑定。</div>}
+      </div>
+      <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+        <div className="text-xs text-slate-500">道具</div>
+        {propBindings.length > 0 ? (
+          <div className="mt-2 space-y-2">{propBindings.map((binding) => <BindingSummaryCard key={binding.key} binding={binding} />)}</div>
+        ) : <div className="mt-2 text-sm text-slate-500">当前镜头还没有道具绑定。</div>}
+      </div>
+    </div>
+  )
+}
+
 function downloadTextFile(content: string, mimeType: string, filename: string) {
   const blob = new Blob([content], { type: `${mimeType};charset=utf-8` })
   const url = window.URL.createObjectURL(blob)
@@ -1563,6 +1661,8 @@ export default function ProductWorkspaceStoryboardSection({
   onDismissRecoveryFocus,
   onGenerateStoryboard,
   isGeneratingStoryboard,
+  initialStoryboardEpisode = null,
+  initialStoryboardStep = 'overview',
 }: Props) {
   const [promptVersions, setPromptVersions] = useState<PromptVersionRecord[]>([])
   const [historyState, setHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
@@ -1598,6 +1698,10 @@ export default function ProductWorkspaceStoryboardSection({
   const [machinePromptApiSubmissionState, setMachinePromptApiSubmissionState] = useState<'idle' | 'submitting' | 'submitted' | 'error'>('idle')
   const [machinePromptApiSubmissionMessage, setMachinePromptApiSubmissionMessage] = useState('')
   const [machinePromptApiSubmissionTaskId, setMachinePromptApiSubmissionTaskId] = useState('')
+  // Temporary Qiniu preview domains are intentionally blocked by default.
+  // This request-scoped opt-in is only for a deliberate gray test and is
+  // forwarded to both read-only preflight and authoritative submission.
+  const [allowUnstablePublicAssets, setAllowUnstablePublicAssets] = useState(false)
   const [machinePromptExportRecords, setMachinePromptExportRecords] = useState<ProductionExportRecordListItem[]>([])
   const [machinePromptRecordHistoryState, setMachinePromptRecordHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [directorShotDraft, setDirectorShotDraft] = useState('')
@@ -1623,13 +1727,16 @@ export default function ProductWorkspaceStoryboardSection({
   const [rollbackAnchorState, setRollbackAnchorState] = useState<'idle' | 'previewing' | 'ready' | 'creating' | 'done' | 'error'>('idle')
   const [rollbackAnchorMessage, setRollbackAnchorMessage] = useState('')
   const [rollbackAnchorShotIds, setRollbackAnchorShotIds] = useState<string[]>([])
+  const [activeStoryboardStep, setActiveStoryboardStep] = useState<StoryboardStep>(initialStoryboardStep)
 
   const episodes = useMemo(
     () => Object.keys(shotsByEpisode).map(Number).filter((item) => Number.isFinite(item)).sort((a, b) => a - b),
     [shotsByEpisode],
   )
 
-  const [selectedEpisode, setSelectedEpisode] = useState<number | null>(episodes[0] ?? null)
+  const [selectedEpisode, setSelectedEpisode] = useState<number | null>(
+    initialStoryboardEpisode && episodes.includes(initialStoryboardEpisode) ? initialStoryboardEpisode : (episodes[0] ?? null),
+  )
   const [transitionOverview, setTransitionOverview] = useState<TransitionOverview | null>(null)
   const [videoModelProfile, setVideoModelProfile] = useState<ModelProfileRecord | null>(null)
 
@@ -1873,6 +1980,14 @@ export default function ProductWorkspaceStoryboardSection({
     }
 
     if (selectedShotId) {
+      if (
+        initialStoryboardEpisode &&
+        episodes.includes(initialStoryboardEpisode) &&
+        (shotsByEpisode[initialStoryboardEpisode] ?? []).some((shot) => String(shot.shot_id) === String(selectedShotId))
+      ) {
+        setSelectedEpisode(initialStoryboardEpisode)
+        return
+      }
       const matchedEpisode = episodes.find((episode) =>
         (shotsByEpisode[episode] ?? []).some((shot) => String(shot.shot_id) === String(selectedShotId)),
       )
@@ -1886,7 +2001,7 @@ export default function ProductWorkspaceStoryboardSection({
     setSelectedEpisode(nextEpisode)
     const nextShot = shotsByEpisode[nextEpisode]?.[0]
     if (nextShot && !selectedShotId) onSelectShot(String(nextShot.shot_id))
-  }, [episodes, onSelectShot, selectedShotId, shotsByEpisode])
+  }, [episodes, initialStoryboardEpisode, onSelectShot, selectedShotId, shotsByEpisode])
 
   const currentShots = selectedEpisode ? shotsByEpisode[selectedEpisode] ?? [] : []
   const selectedShot = useMemo(() => {
@@ -1902,12 +2017,27 @@ export default function ProductWorkspaceStoryboardSection({
     setMachinePromptRecordMessage('')
     setMachinePromptApiSubmissionState('idle')
     setMachinePromptApiSubmissionMessage('')
+    setAllowUnstablePublicAssets(false)
     setMachinePromptExportRecords([])
     setMachinePromptRecordHistoryState('idle')
     setDirectorShotDraft('')
     setDirectorShotSaveState('idle')
     setDirectorShotSaveMessage('')
-  }, [selectedShot?.episode, selectedShot?.shot_id])
+    setActiveStoryboardStep(initialStoryboardStep)
+  }, [initialStoryboardStep, selectedShot?.episode, selectedShot?.shot_id])
+
+  // Keep the current storyboard context shareable without introducing a
+  // router dependency.  Existing query parameters (including a host app's
+  // book selector) are preserved; only storyboard-specific keys are changed.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !selectedShot) return
+    const url = new URL(window.location.href)
+    url.searchParams.set('section', 'storyboard')
+    url.searchParams.set('episode', String(selectedShot.episode ?? ''))
+    url.searchParams.set('shot', String(selectedShot.shot_id))
+    url.searchParams.set('step', activeStoryboardStep)
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+  }, [activeStoryboardStep, selectedShot])
   const storyboardCanvasHandoffSummary = useMemo(
     () => buildStoryboardCanvasHandoffSummary({ handoff: canvasHandoff, shot: selectedShot }),
     [canvasHandoff, selectedShot],
@@ -2006,6 +2136,12 @@ export default function ProductWorkspaceStoryboardSection({
     ?? selectedShot?.structured_shot?.action_beats
     ?? []
   ).filter(Boolean)
+  const selectedShotIntentPlan = selectedShot?.prompt_compile_context?.shot_intent_plan ?? null
+  const selectedActionTimingPlan = selectedShot?.prompt_compile_context?.action_timing_plan ?? null
+  const shotPlanningAction = getShotPlanningAction({
+    intentStatus: selectedShotIntentPlan?.status,
+    timingStatus: selectedActionTimingPlan?.status,
+  })
   const selectedSplitDraft = selectedShot?.executability_split_draft ?? null
   const hasSplitSuggestion = Boolean(
     selectedExecutability?.recommendations?.some((item) =>
@@ -2576,10 +2712,55 @@ export default function ProductWorkspaceStoryboardSection({
       return
     }
 
+    // Run a read-only provider-input preflight before showing the billable
+    // confirmation.  This catches missing/unreachable references locally and
+    // avoids asking the user to confirm a request that the provider would
+    // reject.  The submission endpoint repeats the same checks authoritatively.
+    const usingReferenceImages = effectiveReferenceAssetIds.length > 0
+    const usingFirstFrame = !usingReferenceImages && Boolean(adoptedImageUrl)
+    try {
+      const params = new URLSearchParams({
+        target_model: 'minimax-h3',
+        use_reference_images: String(usingReferenceImages),
+        use_first_frame: String(usingFirstFrame),
+        allow_unstable_public_assets: String(allowUnstablePublicAssets),
+      })
+      if (videoModelProfile?.id) params.set('model_profile_id', videoModelProfile.id)
+      const preflightResponse = await fetch(
+        `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/media-preflight?${params.toString()}`,
+      )
+      const preflight = await preflightResponse.json().catch(() => ({}))
+      if (!preflightResponse.ok) {
+        throw new Error(String(preflight?.detail || `HTTP ${preflightResponse.status}`))
+      }
+      if (!preflight?.ready_for_real_submit) {
+        setMachinePromptApiSubmissionState('error')
+        setMachinePromptApiSubmissionMessage(getStoryboardMediaPreflightBlockerMessage(preflight))
+        return
+      }
+    } catch (error) {
+      setMachinePromptApiSubmissionState('error')
+      setMachinePromptApiSubmissionMessage(error instanceof Error ? `真实提交前检查失败：${error.message}` : '真实提交前检查失败。')
+      return
+    }
+
+    const storageConfirmationNote = allowUnstablePublicAssets
+      ? '锁定参考图可能会上传到七牛临时地址（仅本次灰度）'
+      : usingReferenceImages
+        ? '必要时会把锁定参考图上传到已配置的对象存储'
+        : ''
     const confirmed =
       typeof window === 'undefined'
         ? false
-        : window.confirm('确认真实提交 MiniMax H3 视频生成？该操作可能产生平台费用，并会把返回视频写回当前镜头资产。')
+        : window.confirm(
+            [
+              '确认真实提交 MiniMax H3 视频生成？',
+              '该操作可能产生平台费用，并会把返回视频写回当前镜头资产。',
+              storageConfirmationNote,
+            ]
+              .filter(Boolean)
+              .join('\n'),
+          )
     if (!confirmed) {
       setMachinePromptApiSubmissionMessage('已取消真实 H3 提交；当前只保留导出/登记状态。')
       return
@@ -2606,6 +2787,7 @@ export default function ProductWorkspaceStoryboardSection({
           referenceAssetIds: effectiveReferenceAssetIds,
           useFirstFrame: effectiveReferenceAssetIds.length === 0 && Boolean(adoptedImageUrl),
           firstFrameAssetId: effectiveReferenceAssetIds.length === 0 ? (adoptedImage?.id ? String(adoptedImage.id) : undefined) : undefined,
+          allowUnstablePublicAssets,
           notes: effectiveReferenceAssetIds.length > 0
             ? '由正式工作台二次确认后真实提交 MiniMax H3；使用多参考图模式，不与首/尾帧模式混用。'
             : '由正式工作台二次确认后真实提交 MiniMax H3；使用当前采纳首帧图生视频模式。',
@@ -2871,6 +3053,16 @@ export default function ProductWorkspaceStoryboardSection({
   ) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
     const labels = getStoryboardGenerationLabels(kind)
+    const confirmed = typeof window === 'undefined' || window.confirm(
+      kind === 'video'
+        ? '确认提交视频生成？该操作可能产生平台费用，并会把返回视频写回当前镜头。'
+        : '确认提交分镜图生成？该操作可能产生平台费用，并会把返回图片写回当前镜头。',
+    )
+    if (!confirmed) {
+      setGenerationState('idle')
+      setGenerationMessage(`已取消${labels.noun}生成。`)
+      return
+    }
     const targetTaskSetter = kind === 'frame' ? setFrameRecoveryTaskId : setVideoRecoveryTaskId
     setGenerationState(kind)
     setGenerationMessage(
@@ -2884,6 +3076,8 @@ export default function ProductWorkspaceStoryboardSection({
       const endpoint = `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/${kind === 'frame' ? 'generate-frame' : 'generate-video'}`
       const requestBody = kind === 'frame'
         ? {
+            confirmed: true,
+            allowExternalCall: true,
             generationChain: chainMeta?.generationChain,
             triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
             promptRecompileReason: chainMeta?.promptRecompileReason,
@@ -2891,6 +3085,8 @@ export default function ProductWorkspaceStoryboardSection({
             promptRecompileVersion: chainMeta?.promptRecompileVersion,
           }
         : {
+            confirmed: true,
+            allowExternalCall: true,
             compileIfMissing: true,
             firstFrameAssetId: String(adoptedImage?.id || '').trim(),
             referenceAssetIds: effectiveReferenceAssetIds,
@@ -3215,6 +3411,30 @@ export default function ProductWorkspaceStoryboardSection({
     }
   }, [_bookId, selectedShot?.episode, selectedShot?.shot_id])
 
+  const storyboardStepPanelId = selectedShot
+    ? `storyboard-step-panel-${String(selectedShot.shot_id).replace(/[^a-zA-Z0-9_-]/g, '-')}`
+    : 'storyboard-step-panel'
+
+  const focusStoryboardStep = (stepId: StoryboardStep) => {
+    setActiveStoryboardStep(stepId)
+    if (typeof window !== 'undefined') {
+      window.requestAnimationFrame(() => {
+        document.getElementById(`storyboard-step-tab-${stepId}`)?.focus()
+      })
+    }
+  }
+
+  const handleStoryboardStepKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
+    event.preventDefault()
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? STORYBOARD_STEPS.length - 1
+        : (index + (event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1) + STORYBOARD_STEPS.length) % STORYBOARD_STEPS.length
+    focusStoryboardStep(STORYBOARD_STEPS[nextIndex].id)
+  }
+
   return (
     <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
@@ -3436,6 +3656,44 @@ export default function ProductWorkspaceStoryboardSection({
               onNavigateSection={onNavigateSection}
             />
 
+            <nav
+              aria-label="分镜生产步骤"
+              role="tablist"
+              className="sticky top-2 z-10 mt-4 flex gap-1 overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/95 p-1 shadow-lg shadow-slate-950/20 backdrop-blur"
+            >
+              {STORYBOARD_STEPS.map((step, index) => {
+                const active = activeStoryboardStep === step.id
+                const completed =
+                  (step.id === 'overview' && Boolean(hasCompiledPrompt)) ||
+                  (step.id === 'assets' && referenceImages.length > 0) ||
+                  (step.id === 'frame' && Boolean(adoptedImage)) ||
+                  (step.id === 'video' && Boolean(adoptedVideo)) ||
+                  (step.id === 'review' && Boolean(acceptance))
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    role="tab"
+                    id={`storyboard-step-tab-${step.id}`}
+                    aria-selected={active}
+                    aria-controls={storyboardStepPanelId}
+                    tabIndex={active ? 0 : -1}
+                    onClick={() => setActiveStoryboardStep(step.id)}
+                    onKeyDown={(event) => handleStoryboardStepKeyDown(event, index)}
+                    className={`flex min-w-max items-center gap-1.5 rounded-lg px-3 py-2 text-xs transition ${
+                      active
+                        ? 'bg-sky-500/20 text-sky-100 ring-1 ring-sky-400/40'
+                        : 'text-slate-400 hover:bg-slate-800/80 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-[10px] text-slate-500">{step.shortLabel}</span>
+                    <span>{step.label}</span>
+                    {completed ? <span aria-label="已完成" className="text-emerald-300">✓</span> : null}
+                  </button>
+                )
+              })}
+            </nav>
+
             {productionReadinessState === 'loaded' && productionReadiness ? (
               <details className={`rounded-xl border p-4 ${
                 productionReadiness.status === 'blocked'
@@ -3609,7 +3867,13 @@ export default function ProductWorkspaceStoryboardSection({
               </details>
             ) : null}
 
-            <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+            <div
+              id={storyboardStepPanelId}
+              role="tabpanel"
+              aria-labelledby={`storyboard-step-tab-${activeStoryboardStep}`}
+              tabIndex={0}
+              className="rounded-xl border border-slate-800 bg-slate-900 p-5"
+            >
               <CurrentShotActionHeader
                 shotId={String(selectedShot.shot_id)}
                 sceneName={selectedShot.scene_name}
@@ -3621,18 +3885,24 @@ export default function ProductWorkspaceStoryboardSection({
                 onPrimaryAction={runStoryboardCanvasPrimaryAction}
               />
 
-              <ProductWorkspaceStoryboardContinuityPanel
-                bookId={_bookId}
-                episode={selectedShot.episode ?? selectedEpisode ?? 0}
-                shotId={selectedShot.shot_id}
-              />
+              {activeStoryboardStep === 'review' ? (
+                <ProductWorkspaceStoryboardContinuityPanel
+                  bookId={_bookId}
+                  episode={selectedShot.episode ?? selectedEpisode ?? 0}
+                  shotId={selectedShot.shot_id}
+                />
+              ) : null}
 
-              <ProductWorkspaceStoryboardDecisionPanel
-                bookId={_bookId}
-                episode={selectedShot.episode ?? selectedEpisode ?? 0}
-                shotId={selectedShot.shot_id}
-              />
-              <ProductWorkspacePromptDraftPanel bookId={_bookId} episode={selectedShot.episode ?? selectedEpisode ?? 0} shotId={selectedShot.shot_id} onRefresh={onRefresh} />
+              {activeStoryboardStep === 'overview' ? (
+                <>
+                  <ProductWorkspaceStoryboardDecisionPanel
+                    bookId={_bookId}
+                    episode={selectedShot.episode ?? selectedEpisode ?? 0}
+                    shotId={selectedShot.shot_id}
+                  />
+                  <ProductWorkspacePromptDraftPanel bookId={_bookId} episode={selectedShot.episode ?? selectedEpisode ?? 0} shotId={selectedShot.shot_id} onRefresh={onRefresh} />
+                </>
+              ) : null}
 
               {taskRecoveryHandoffSummary ? (
                 <div className="mt-4 rounded-xl border border-sky-500/30 bg-sky-500/10 p-4">
@@ -3654,14 +3924,14 @@ export default function ProductWorkspaceStoryboardSection({
                 </div>
               ) : null}
 
-              <div className="mt-4 grid gap-3 md:grid-cols-4">
+              {activeStoryboardStep === 'overview' ? <div className="mt-4 grid gap-3 md:grid-cols-4">
                 <MiniMetric label="提示词版本" value={selectedShot.prompt_version ? `v${selectedShot.prompt_version}` : '未编译'} />
                 <MiniMetric label="参考资产" value={`${referenceImages.length} 张`} />
                 <MiniMetric label="分镜图版本" value={`${selectedShot.assets?.images?.length ?? 0}`} />
                 <MiniMetric label="视频版本" value={`${selectedShot.assets?.videos?.length ?? 0}`} />
-              </div>
+              </div> : null}
 
-              {selectedExecutability ? (
+              {activeStoryboardStep === 'video' && selectedExecutability ? (
                 <div className={`mt-4 rounded-xl border p-4 ${
                   selectedExecutability.status === 'blocked'
                     ? 'border-rose-500/40 bg-rose-500/10'
@@ -3684,6 +3954,47 @@ export default function ProductWorkspaceStoryboardSection({
                     <MiniMetric label="核心动作" value={String(selectedShot.prompt_compile_context?.core_action || selectedShot.structured_shot?.core_action || '未提取')} />
                     <MiniMetric label="动作节拍" value={`${selectedActionBeats.length} 段`} />
                   </div>
+                  {(selectedShotIntentPlan || selectedActionTimingPlan) ? (
+                    <details className="mt-3 rounded-lg border border-slate-700/70 bg-slate-950/30 p-3">
+                      <summary className="cursor-pointer text-[11px] text-slate-300">查看镜头意图与按秒节拍</summary>
+                      <div className="mt-2 space-y-2 text-xs text-slate-400">
+                        {selectedShotIntentPlan ? (
+                          <div>
+                            <span className="font-medium text-slate-200">镜头意图：</span>
+                            {selectedShotIntentPlan.purpose || '未声明'}
+                            {selectedShotIntentPlan.primary_action ? ` · 核心动作：${selectedShotIntentPlan.primary_action}` : ''}
+                            {selectedShotIntentPlan.emotion_arc?.start || selectedShotIntentPlan.emotion_arc?.end
+                              ? ` · 情绪：${selectedShotIntentPlan.emotion_arc?.start || '未声明'} → ${selectedShotIntentPlan.emotion_arc?.end || '未声明'}`
+                              : ''}
+                            {selectedShotIntentPlan.unknowns?.length ? <span className="ml-2 text-amber-300">待补：{selectedShotIntentPlan.unknowns.join('、')}</span> : null}
+                          </div>
+                        ) : null}
+                        {selectedActionTimingPlan ? (
+                          <div>
+                            <div className="font-medium text-slate-200">动作时间线：{selectedActionTimingPlan.status === 'conflict' ? '时长冲突' : selectedActionTimingPlan.status === 'needs_information' ? '信息不足' : '已规划'}</div>
+                            {selectedActionTimingPlan.segments?.map((segment, index) => {
+                              const start = Number(segment.start_ms ?? 0) / 1000
+                              const end = Number(segment.end_ms ?? 0) / 1000
+                              return <div key={`timing-plan-${index}`} className="mt-1">{start.toFixed(1)}–{end.toFixed(1)}s · {String(segment.action || '未声明动作')}</div>
+                            })}
+                            {selectedActionTimingPlan.unknowns?.length ? <div className="mt-1 text-amber-300">待补：{selectedActionTimingPlan.unknowns.join('、')}</div> : null}
+                          </div>
+                        ) : null}
+                      </div>
+                    </details>
+                  ) : null}
+                  {shotPlanningAction ? (
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2">
+                      <div className="text-[11px] text-amber-100">{shotPlanningAction.detail}</div>
+                      <button
+                        type="button"
+                        onClick={() => focusStoryboardStep('overview')}
+                        className="rounded-lg border border-amber-300/40 bg-amber-300/15 px-3 py-1.5 text-[11px] font-medium text-white transition hover:border-amber-200 hover:bg-amber-300/25"
+                      >
+                        {shotPlanningAction.label}
+                      </button>
+                    </div>
+                  ) : null}
                   {selectedActionBeats.length > 0 ? (
                     <details className="mt-3 rounded-lg border border-slate-700/70 bg-slate-950/30 p-3">
                       <summary className="cursor-pointer text-[11px] text-slate-300">查看按秒动作节拍</summary>
@@ -3756,26 +4067,28 @@ export default function ProductWorkspaceStoryboardSection({
                 </div>
               ) : null}
 
-              <DirectorShotLanguageEditor
-                draft={directorShotDraft}
-                sourceTone={machinePromptExport?.source_layers?.has_user_director_shot_override ? 'cyan' : machinePromptExport ? 'slate' : 'amber'}
-                sourceLabel={machinePromptExport?.source_layers?.has_user_director_shot_override ? '用户编辑版' : machinePromptExport ? '系统生成版' : '待加载'}
-                saveState={directorShotSaveState}
-                saveMessage={directorShotSaveMessage}
-                canSave={Boolean(selectedShot)}
-                readOnly={!canGenerateFromGate}
-                onDraftChange={setDirectorShotDraft}
-                onSaveAndRecompile={() => saveDirectorShotText(false)}
-                onRestoreSystemVersion={() => saveDirectorShotText(true)}
-              />
+              {activeStoryboardStep === 'overview' ? (
+                <DirectorShotLanguageEditor
+                  draft={directorShotDraft}
+                  sourceTone={machinePromptExport?.source_layers?.has_user_director_shot_override ? 'cyan' : machinePromptExport ? 'slate' : 'amber'}
+                  sourceLabel={machinePromptExport?.source_layers?.has_user_director_shot_override ? '用户编辑版' : machinePromptExport ? '系统生成版' : '待加载'}
+                  saveState={directorShotSaveState}
+                  saveMessage={directorShotSaveMessage}
+                  canSave={Boolean(selectedShot)}
+                  readOnly={!canGenerateFromGate}
+                  onDraftChange={setDirectorShotDraft}
+                  onSaveAndRecompile={() => saveDirectorShotText(false)}
+                  onRestoreSystemVersion={() => saveDirectorShotText(true)}
+                />
+              ) : null}
 
-              <details className="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-4">
+              {activeStoryboardStep === 'frame' ? <details className="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-4">
                 <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看结构化分镜图提示词</summary>
                 <div className="mt-1 text-xs leading-5 text-slate-500">用于复核画面结构和资产锚点；不是日常创作时需要阅读的机器字段。</div>
                 <StoryboardImagePromptSectionsPanel sections={selectedShotStaticPromptSections} />
-              </details>
+              </details> : null}
 
-              <CollapsiblePanel
+              {activeStoryboardStep === 'video' ? <CollapsiblePanel
                 title="模型提示词（静态 / 运动 / 负向）"
                 description="低频复核内容默认折叠；需要检查机器可读提示词时再展开。"
                 className="mt-4"
@@ -3794,9 +4107,9 @@ export default function ProductWorkspaceStoryboardSection({
                   <div className="text-xs text-slate-500">负向提示词</div>
                   <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-200">{selectedShot.negative_prompt || '当前还没有负向提示词。'}</div>
                 </div>
-              </CollapsiblePanel>
+              </CollapsiblePanel> : null}
 
-              {canGenerateFromGate ? <ProductWorkspaceMachinePromptExportPanel
+              {activeStoryboardStep === 'video' ? (canGenerateFromGate ? <ProductWorkspaceMachinePromptExportPanel
                 machinePromptExport={machinePromptExport}
                 machinePromptExportState={machinePromptExportState}
                 machinePromptExportMessage={machinePromptExportMessage}
@@ -3805,6 +4118,8 @@ export default function ProductWorkspaceStoryboardSection({
                 machinePromptRecordState={machinePromptRecordState}
                 machinePromptApiSubmissionMessage={machinePromptApiSubmissionMessage}
                 machinePromptApiSubmissionState={machinePromptApiSubmissionState}
+                allowUnstablePublicAssets={allowUnstablePublicAssets}
+                onAllowUnstablePublicAssetsChange={setAllowUnstablePublicAssets}
                 machinePromptExportRecords={machinePromptExportRecords}
                 machinePromptRecordHistoryState={machinePromptRecordHistoryState}
                 minimaxH3CopyText={minimaxH3CopyText}
@@ -3831,9 +4146,9 @@ export default function ProductWorkspaceStoryboardSection({
                   <summary className="cursor-pointer text-sm font-medium text-cyan-100">高级：查看机器提示词导出说明</summary>
                   <div className="mt-2 text-xs leading-5 text-cyan-100/75">上游剧本尚未放行。为避免导出或提交与未定稿内容不一致的机器提示词，此镜头暂只保留现有版本的只读信息。</div>
                 </details>
-              )}
+              )) : null}
 
-              <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {activeStoryboardStep === 'review' ? <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
                   <div className="text-xs text-slate-500">当前分镜图结论</div>
                   {adoptedImage ? (
@@ -3855,10 +4170,10 @@ export default function ProductWorkspaceStoryboardSection({
                     <div className="mt-2 text-sm text-slate-400">当前还没有采纳的视频版本。</div>
                   )}
                 </div>
-              </div>
+              </div> : null}
             </div>
 
-              <ProductWorkspaceStoryboardAdvancedToolsPanel
+              {(activeStoryboardStep === 'frame' || activeStoryboardStep === 'video') ? <ProductWorkspaceStoryboardAdvancedToolsPanel
                 episode={selectedShot.episode}
                 shotId={String(selectedShot.shot_id)}
                 assetStatus={selectedShot.asset_status}
@@ -3893,10 +4208,11 @@ export default function ProductWorkspaceStoryboardSection({
                 }
                 onGenerateFrame={() => runStoryboardGeneration('frame')}
                 onGenerateVideo={() => runStoryboardGeneration('video')}
-              />
+                activeStep={activeStoryboardStep === 'video' ? 'video' : 'frame'}
+              /> : null}
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-              <div className="space-y-6">
+              {activeStoryboardStep === 'more' ? <div className="space-y-6">
                 <ProductWorkspaceCompileDiagnosticsPanel
                   promptVersionAudit={promptVersionAudit}
                   promptVersionAuditSummary={promptVersionAuditSummary}
@@ -4041,33 +4357,6 @@ export default function ProductWorkspaceStoryboardSection({
                     </div>
                   ) : null}
 
-                  <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-                    <div className="text-xs text-slate-500">人物定妆绑定</div>
-                    {characterBindingSummaries.length > 0 ? (
-                      <div className="mt-2 space-y-2">
-                        {characterBindingSummaries.map((binding) => <BindingSummaryCard key={binding.key} binding={binding} />)}
-                      </div>
-                    ) : (
-                      <div className="mt-2 text-sm text-slate-500">当前镜头还没有结构化的人物定妆绑定信息。</div>
-                    )}
-                  </div>
-
-                  <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-                    <div className="text-xs text-slate-500">场景绑定</div>
-                    {sceneBinding ? <div className="mt-2"><BindingSummaryCard binding={sceneBinding} /></div> : <div className="mt-2 text-sm text-slate-500">当前镜头还没有可展示的场景参考绑定。</div>}
-                  </div>
-
-                  <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-                    <div className="text-xs text-slate-500">道具绑定</div>
-                    {propBindings.length > 0 ? (
-                      <div className="mt-2 space-y-2">
-                        {propBindings.map((binding) => <BindingSummaryCard key={binding.key} binding={binding} />)}
-                      </div>
-                    ) : (
-                      <div className="mt-2 text-sm text-slate-500">当前镜头还没有可展示的道具参考绑定。</div>
-                    )}
-                  </div>
-
                   {acceptanceFeedback ? (
                     <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
                       <div className="text-xs text-slate-500">反馈与约束摘要</div>
@@ -4112,10 +4401,35 @@ export default function ProductWorkspaceStoryboardSection({
                   onTogglePromptLock={togglePromptLock}
                   onRollbackPromptVersion={rollbackPromptVersion}
                 />
-              </div>
+              </div> : null}
 
               <div className="space-y-6">
-                <ProductWorkspaceStoryboardAcceptancePanel
+                {activeStoryboardStep === 'assets' ? (
+                  <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+                    <div className="text-sm font-medium text-white">本镜头需要的素材</div>
+                    <div className="mt-1 text-xs text-slate-500">先确认人物、场景和道具，再继续生成画面。</div>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                      <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+                        <div className="text-xs text-slate-500">人物</div>
+                        <div className="mt-2 text-sm text-slate-200">{characterBindingSummaries.length} 个</div>
+                      </div>
+                      <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+                        <div className="text-xs text-slate-500">场景</div>
+                        <div className="mt-2 text-sm text-slate-200">{sceneBinding ? '已绑定' : '待绑定'}</div>
+                      </div>
+                      <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+                        <div className="text-xs text-slate-500">道具</div>
+                        <div className="mt-2 text-sm text-slate-200">{propBindings.length} 个</div>
+                      </div>
+                    </div>
+                    <StoryboardAssetBindingsSummary
+                      characterBindings={characterBindingSummaries}
+                      sceneBinding={sceneBinding}
+                      propBindings={propBindings}
+                    />
+                  </div>
+                ) : null}
+                {(activeStoryboardStep === 'review') ? <ProductWorkspaceStoryboardAcceptancePanel
                   acceptance={acceptance}
                   acceptanceAssetKind={acceptanceAssetKind}
                   acceptanceAssetId={acceptanceAssetId}
@@ -4124,9 +4438,9 @@ export default function ProductWorkspaceStoryboardSection({
                   acceptanceMessage={acceptanceMessage}
                   onDraftChange={setAcceptanceDraft}
                   onSave={saveAcceptanceRecord}
-                />
+                /> : null}
 
-                <ProductWorkspaceStoryboardMediaPanel
+                {(['assets', 'frame', 'video', 'review'] as StoryboardStep[]).includes(activeStoryboardStep) ? <ProductWorkspaceStoryboardMediaPanel
                   bookId={_bookId}
                   shot={selectedShot}
                   imageAssets={imageAssets}
@@ -4135,12 +4449,12 @@ export default function ProductWorkspaceStoryboardSection({
                   referenceImages={referenceImages}
                   onUploaded={onRefresh}
                   allowManualUpload={canGenerateFromGate}
-                />
+                /> : null}
 
-                <ProductWorkspacePromptAuthorityPanel
+                {activeStoryboardStep === 'more' ? <ProductWorkspacePromptAuthorityPanel
                   promptAuthoritySummary={promptAuthoritySummary}
                   compileContextDisplay={selectedShotCompileContextDisplay}
-                />
+                /> : null}
               </div>
             </div>
           </>

@@ -311,6 +311,30 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(mock_client.get.await_args.args[0], "https://shapi.vip/v1/models")
         self.assertIn("未发起任何计费", result["message"])
 
+    async def test_shapi_openai_probe_blocks_model_missing_from_account_catalog(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {"data": [{"id": "grok-imagine-image"}]}
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "SHAPI GPT Image 2",
+                    "capability": "image",
+                    "provider": "shapi-openai-images",
+                    "base_url": "https://shapi.vip/v1",
+                    "model_name": "gpt-image-2",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertFalse(result["ok"])
+        self.assertIn("没有该模型的可用渠道", result["message"])
+        self.assertIn("grok-imagine-image", result["available_models"])
+
     async def test_mock_profile_test_endpoint_returns_ok(self):
         result = await run_profile_connection_test(profile_id="builtin-mock-image")
         self.assertTrue(result["ok"])

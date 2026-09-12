@@ -1,0 +1,5 @@
+{
+  "locations": [{"name": "旧档案室", "importance": "high"}],
+  "characters": [{"id": "CHAR_A", "name": "调查者", "gender": "female"}],
+  "props": [{"id": "PROP_PHOTO", "name": "旧照片", "importance": "high"}, {"id": "PROP_DRAWER", "name": "上锁抽屉", "importance": "medium"}]
+}

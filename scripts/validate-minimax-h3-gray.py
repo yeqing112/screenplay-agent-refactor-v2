@@ -16,6 +16,7 @@ real-run gates are explicitly enabled:
 - MINIMAX_H3_GRAY_REAL=1
 - MINIMAX_H3_GRAY_CONFIRM=CONFIRM_MINIMAX_H3_SUBMIT
 - MINIMAX_H3_GRAY_WHITELIST contains the exact book_id:episode:shot_id target
+- when publishing references, MINIMAX_H3_STORAGE_CONFIRM=CONFIRM_MINIMAX_H3_REFERENCE_PUBLISH
 
 Real mode intentionally goes through the same backend task endpoints used by
 the formal workspace so task persistence and video asset writeback are tested
@@ -49,6 +50,8 @@ from models import Book, Session, StoryboardShot, init_db
 
 REPORT_PREFIX = "minimax-h3-gray"
 CONFIRMATION_TOKEN = "CONFIRM_MINIMAX_H3_SUBMIT"
+STORAGE_CONFIRMATION_TOKEN = "CONFIRM_MINIMAX_H3_REFERENCE_PUBLISH"
+SAMPLE_REGISTRY_PATH = ROOT_DIR / "production-sample-registry.json"
 
 
 def log(message: str) -> None:
@@ -65,6 +68,13 @@ def default_artifact_path(suffix: str) -> Path:
 
 def target_key(book_id: int, episode: int, shot_id: str | int) -> str:
     return f"{int(book_id)}:{int(episode)}:{int(shot_id)}"
+
+
+def storage_publish_is_confirmed(requested: bool) -> bool:
+    """Require a separate explicit confirmation before any object-store write."""
+    if not requested:
+        return True
+    return os.environ.get("MINIMAX_H3_STORAGE_CONFIRM", "").strip() == STORAGE_CONFIRMATION_TOKEN
 
 
 def coerce_h3_duration_seconds_from_storyboard(value: Any) -> dict[str, Any]:
@@ -115,6 +125,53 @@ def parse_csv_ints(raw: str) -> list[int]:
         if token:
             values.append(int(token))
     return values
+
+
+def load_active_sample_book_ids() -> list[int]:
+    """Return the explicitly registered production sample books.
+
+    Automatic gray selection must never widen its scope to every storyboard in
+    the database: retired fixtures and ad-hoc test projects may contain
+    plausible media references but are not production evidence.  An empty or
+    malformed registry therefore fails closed instead of silently discovering
+    all books.
+    """
+    try:
+        payload = json.loads(SAMPLE_REGISTRY_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise RuntimeError("Production sample registry is missing or invalid; pass --candidate-book-ids explicitly.") from exc
+    values = payload.get("active_book_ids") if isinstance(payload, dict) else None
+    if not isinstance(values, list):
+        raise RuntimeError("Production sample registry must contain an active_book_ids list.")
+    result: list[int] = []
+    for value in values:
+        try:
+            book_id = int(value)
+        except (TypeError, ValueError):
+            continue
+        if book_id > 0 and book_id not in result:
+            result.append(book_id)
+    if not result:
+        raise RuntimeError("Production sample registry has no active books; pass --candidate-book-ids explicitly.")
+    return result
+
+
+def resolve_candidate_book_ids(book_ids: list[int] | None) -> list[int]:
+    """Resolve the scope for automatic candidate selection.
+
+    Explicit CLI IDs remain an operator-controlled override.  Automatic mode
+    is intentionally registry-scoped and fails closed when no active samples
+    are registered.
+    """
+    normalized: list[int] = []
+    for value in book_ids or []:
+        try:
+            candidate = int(value)
+        except (TypeError, ValueError):
+            continue
+        if candidate > 0 and candidate not in normalized:
+            normalized.append(candidate)
+    return normalized or load_active_sample_book_ids()
 
 
 def parse_whitelist(raw: str) -> set[str]:
@@ -202,8 +259,12 @@ def _has_gray_sample_safety_risk(prompt: str) -> bool:
 
 def select_gray_candidate(book_ids: list[int], client: TestClient | None = None) -> dict[str, Any]:
     candidates: list[dict[str, Any]] = []
-    order = {book_id: index for index, book_id in enumerate(book_ids)}
     with Session() as session:
+        # Empty means use the explicit production sample registry. Never scan
+        # every storyboard project implicitly: retired fixtures and ad-hoc
+        # test projects must not become real gray candidates.
+        book_ids = resolve_candidate_book_ids(book_ids)
+        order = {book_id: index for index, book_id in enumerate(book_ids)}
         books = {int(book.id): str(book.title or "") for book in session.query(Book).filter(Book.id.in_(book_ids)).all()}
         rows = (
             session.query(StoryboardShot)
@@ -284,7 +345,7 @@ def select_gray_candidate(book_ids: list[int], client: TestClient | None = None)
                 }
             )
     if not candidates:
-        raise RuntimeError(f"No adopted first-frame candidates found in books: {book_ids}")
+        raise RuntimeError(f"No adopted media-reference candidates found in books: {book_ids}")
     candidates.sort(key=lambda item: (-int(item["score"]), item["book_id"], item["episode"], item["shot_id"]))
     selected = candidates[0]
     selected["candidate_count"] = len(candidates)
@@ -336,6 +397,7 @@ def provider_ready_reference_images(
     publish: bool,
     key_prefix: str,
     max_images: int = 9,
+    allow_unstable_storage: bool = False,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     ready_images: list[dict[str, Any]] = []
     public_assets: list[dict[str, Any]] = []
@@ -347,6 +409,8 @@ def provider_ready_reference_images(
             public_asset = ensure_provider_accessible_url(
                 source_url,
                 key_hint=f"{key_prefix}-reference-{index}",
+                force_storage=True,
+                allow_unstable_storage=allow_unstable_storage,
             ).to_dict()
         elif source_url.startswith(("http://", "https://")):
             accessible, error = check_public_url_accessible(source_url)
@@ -421,11 +485,16 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
     provider_reference_limit = 8 if provider_name == MINIMAX_H3_75API_PROVIDER else 9
     duration_info = resolve_h3_duration_seconds(args, shot)
     reference_images = reference_images_from_export_payload(export_payload) if args.use_reference_images else []
+    storage_publish_requested = bool(args.publish_reference_images or args.publish_first_frame)
+    storage_confirmation_matches = storage_publish_is_confirmed(storage_publish_requested)
+    publish_reference_images = bool(args.publish_reference_images and storage_confirmation_matches)
+    publish_first_frame = bool(args.publish_first_frame and storage_confirmation_matches)
     reference_images_ready, reference_public_assets = provider_ready_reference_images(
         reference_images,
-        publish=bool(args.publish_reference_images),
+        publish=publish_reference_images,
         key_prefix=f"book-{args.book_id}-episode-{args.episode}-shot-{args.shot_id}",
         max_images=provider_reference_limit,
+        allow_unstable_storage=bool(args.allow_unstable_public_assets),
     )
     first_frame = find_first_frame(shot, args.first_frame_asset_id) if args.use_first_frame else None
     first_frame_url = ""
@@ -434,10 +503,12 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
         first_frame_url = str(first_frame.get("uri") or first_frame.get("previewUrl") or "").strip()
     final_first_frame_url = first_frame_url
     if first_frame_url:
-        if args.publish_first_frame:
+        if publish_first_frame:
             first_frame_public_asset = ensure_provider_accessible_url(
                 first_frame_url,
                 key_hint=f"book-{args.book_id}-episode-{args.episode}-shot-{args.shot_id}-first-frame",
+                force_storage=True,
+                allow_unstable_storage=bool(args.allow_unstable_public_assets),
             ).to_dict()
             final_first_frame_url = str(first_frame_public_asset.get("public_url") or first_frame_url).strip()
         elif first_frame_url.startswith(("http://", "https://")):
@@ -464,6 +535,8 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
 
     blockers: list[str] = []
     warnings: list[str] = []
+    if storage_publish_requested and not storage_confirmation_matches:
+        blockers.append("reference_publish_requires_storage_confirmation")
     if not prompt:
         blockers.append("missing_h3_integrated_multimodal_description")
     if len(prompt) > 7000:
@@ -491,6 +564,8 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
         blockers.append("compiled_reference_images_not_provider_accessible")
         if public_asset_storage_enabled() and not args.publish_reference_images:
             warnings.append("qiniu_public_asset_storage_configured_but_publish_reference_images_flag_not_enabled")
+    if args.allow_unstable_public_assets:
+        warnings.append("unstable_public_asset_domain_allowed_for_this_gray_only")
     if reference_images_ready:
         pass
     elif args.use_first_frame and not first_frame:
@@ -522,6 +597,9 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
         "whitelist": sorted(whitelist),
         "target_whitelisted": current_target in whitelist,
         "required_confirmation_token": CONFIRMATION_TOKEN,
+        "storage_publish_requested": storage_publish_requested,
+        "storage_confirmation_matches": storage_confirmation_matches,
+        "required_storage_confirmation_token": STORAGE_CONFIRMATION_TOKEN,
     }
     safety["will_submit"] = bool(
         safety["allow_real_cli"]
@@ -530,6 +608,39 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
         and safety["target_whitelisted"]
         and not blockers
     )
+
+    rerun_args = [
+        f"--book-id {args.book_id}",
+        f"--episode {args.episode}",
+        f"--shot-id {args.shot_id}",
+        "--allow-real",
+    ]
+    if args.model_profile_id:
+        rerun_args.append(f"--model-profile-id {args.model_profile_id}")
+    if args.duration_seconds is not None:
+        rerun_args.append(f"--duration-seconds {args.duration_seconds}")
+    if args.aspect_ratio != "16:9":
+        rerun_args.append(f"--aspect-ratio {args.aspect_ratio}")
+    if not args.use_reference_images:
+        rerun_args.append("--no-reference-images")
+    if args.publish_reference_images:
+        rerun_args.append("--publish-reference-images")
+    if args.allow_unstable_public_assets:
+        rerun_args.append("--allow-unstable-public-assets")
+    if args.use_first_frame:
+        rerun_args.append("--use-first-frame")
+    if args.publish_first_frame:
+        rerun_args.append("--publish-first-frame")
+    if args.first_frame_asset_id:
+        rerun_args.append(f"--first-frame-asset-id {args.first_frame_asset_id}")
+    real_run_command = [
+        '$env:MINIMAX_H3_GRAY_REAL="1"',
+        f'$env:MINIMAX_H3_GRAY_CONFIRM="{CONFIRMATION_TOKEN}"',
+        f'$env:MINIMAX_H3_GRAY_WHITELIST="{current_target}"',
+    ]
+    if storage_publish_requested:
+        real_run_command.append(f'$env:MINIMAX_H3_STORAGE_CONFIRM="{STORAGE_CONFIRMATION_TOKEN}"')
+    real_run_command.append("python scripts/validate-minimax-h3-gray.py " + " ".join(rerun_args))
 
     return {
         "mode": "real-submit" if safety["will_submit"] else "dry-run-preflight",
@@ -558,6 +669,9 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
             ],
             "reference_public_assets": reference_public_assets,
             "use_first_frame": bool(args.use_first_frame),
+            "allow_unstable_public_assets": bool(args.allow_unstable_public_assets),
+            "storage_publish_requested": storage_publish_requested,
+            "storage_publish_performed": bool(publish_reference_images or publish_first_frame),
             "first_frame_asset_id": str(first_frame.get("id") or "") if isinstance(first_frame, dict) else "",
             "first_frame_url": first_frame_url,
             "provider_first_frame_url": final_first_frame_url if first_frame_public_asset.get("ok") else "",
@@ -575,12 +689,7 @@ def build_preflight_report(args: argparse.Namespace, client: TestClient) -> dict
             "warnings": warnings,
         },
         "safety_gate": safety,
-        "real_run_command": [
-            '$env:MINIMAX_H3_GRAY_REAL="1"',
-            f'$env:MINIMAX_H3_GRAY_CONFIRM="{CONFIRMATION_TOKEN}"',
-            f'$env:MINIMAX_H3_GRAY_WHITELIST="{current_target}"',
-            f"python scripts/validate-minimax-h3-gray.py --book-id {args.book_id} --episode {args.episode} --shot-id {args.shot_id} --allow-real",
-        ],
+        "real_run_command": real_run_command,
     }
 
 
@@ -614,6 +723,7 @@ def submit_real(client: TestClient, args: argparse.Namespace, report: dict[str, 
         "aspectRatio": args.aspect_ratio,
         "useReferenceImages": bool(args.use_reference_images),
         "useFirstFrame": bool(args.use_first_frame),
+        "allowUnstablePublicAssets": bool(args.allow_unstable_public_assets),
         "notes": "MiniMax H3 gray validation: confirmed real provider submission; reference-image mode preferred.",
     }
     if args.model_profile_id:
@@ -751,14 +861,20 @@ def main() -> int:
     parser.add_argument("--no-reference-images", dest="use_reference_images", action="store_false")
     parser.set_defaults(use_reference_images=True)
     parser.add_argument("--publish-reference-images", action="store_true", help="Publish compiled reference images through configured public asset storage before preflight/real submit.")
+    parser.add_argument(
+        "--allow-unstable-public-assets",
+        action="store_true",
+        help="仅本次 H3 灰度允许七牛临时 clouddn.com HTTP 域名；不适用于生产放行。",
+    )
+    parser.add_argument("--use-first-frame", dest="use_first_frame", action="store_true", help="Opt into first-frame input; default video gray mode uses compiled multi-reference images.")
     parser.add_argument("--no-first-frame", dest="use_first_frame", action="store_false")
-    parser.set_defaults(use_first_frame=True)
+    parser.set_defaults(use_first_frame=False)
     parser.add_argument("--publish-first-frame", action="store_true", help="Publish the first frame through configured public asset storage before preflight/real submit.")
     parser.add_argument("--allow-real", action="store_true")
     parser.add_argument("--out", default="")
     parser.add_argument("--summary-md", default="")
-    parser.add_argument("--auto-candidate", action="store_true", help="Select a real shot with an adopted first-frame image.")
-    parser.add_argument("--candidate-book-ids", default="75,5,3,1,14")
+    parser.add_argument("--auto-candidate", action="store_true", help="Select a real shot with compiled multi-reference images (or an opted-in first frame).")
+    parser.add_argument("--candidate-book-ids", default="", help="Optional comma-separated book allow-list; empty uses production-sample-registry.json active_book_ids.")
     parser.add_argument("positionals", nargs="*", help="Optional positional fallback: book_id episode shot_id")
     args = parser.parse_args()
     if args.positionals:
@@ -784,7 +900,7 @@ def main() -> int:
         log(
             "Selected candidate "
             f"{target_key(args.book_id, args.episode, args.shot_id)} "
-            f"from {selected.get('candidate_count')} first-frame candidate(s)."
+            f"from {selected.get('candidate_count')} media-reference candidate(s)."
         )
     else:
         args.selected_candidate = None

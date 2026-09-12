@@ -27,7 +27,7 @@ from api.server import _normalize_scene_asset_id
 from models import Book, Session, StoryboardShot, VisualLocation, VisualReferenceAsset, init_db
 
 
-DEFAULT_BOOK_IDS = "14,5,75,3,1"
+SAMPLE_REGISTRY_PATH = ROOT_DIR / "production-sample-registry.json"
 REPORT_PREFIX = "storyboard-scene-asset-readiness"
 MIN_LANDSCAPE_ASPECT_RATIO = 1.45
 
@@ -37,14 +37,23 @@ def log(message: str) -> None:
 
 
 def parse_book_ids() -> list[int]:
-    raw = os.environ.get("SCENE_ASSET_AUDIT_BOOK_IDS", DEFAULT_BOOK_IDS)
+    configured = os.environ.get("SCENE_ASSET_AUDIT_BOOK_IDS", "").strip()
+    if configured:
+        raw = configured
+    else:
+        try:
+            registry = json.loads(SAMPLE_REGISTRY_PATH.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            raise RuntimeError(f"Unable to read active production sample registry: {exc}") from exc
+        values = registry.get("active_book_ids", []) if isinstance(registry, dict) else []
+        raw = ",".join(str(value) for value in values if str(value).isdigit() and int(value) > 0)
     book_ids: list[int] = []
     for token in raw.split(","):
         value = token.strip()
         if value:
             book_ids.append(int(value))
     if not book_ids:
-        raise RuntimeError("No SCENE_ASSET_AUDIT_BOOK_IDS configured.")
+        raise RuntimeError("No active production sample IDs configured; set SCENE_ASSET_AUDIT_BOOK_IDS explicitly or populate production-sample-registry.json.")
     return book_ids
 
 
@@ -173,6 +182,10 @@ def audit_book(book_id: int) -> dict[str, Any]:
                 row for row in references
                 if str(row.status or "").strip() in {"selected", "locked"}
             ]
+            candidate_references = [
+                row for row in references
+                if str(row.status or "").strip() == "candidate"
+            ]
             image_count = sum(
                 1
                 for row in active_references
@@ -183,7 +196,13 @@ def audit_book(book_id: int) -> dict[str, Any]:
                 for row in active_references
                 if should_validate_image_dimensions()
             ]
+            candidate_dimension_payloads = [
+                inspect_reference_dimensions(row)
+                for row in candidate_references
+                if should_validate_image_dimensions()
+            ]
             landscape_reference_count = sum(1 for item in dimension_payloads if item.get("landscape_ok"))
+            landscape_candidate_count = sum(1 for item in candidate_dimension_payloads if item.get("landscape_ok"))
             asset_status = str(getattr(matched, "asset_status", "") or "draft").strip() or "draft"
             description = str(getattr(matched, "description", "") or "").strip()
             notes = str(getattr(matched, "notes", "") or "").strip()
@@ -204,7 +223,9 @@ def audit_book(book_id: int) -> dict[str, Any]:
             item["reference_image_count"] = image_count
             item["reference_dimension_validation_enabled"] = should_validate_image_dimensions()
             item["active_reference_dimensions"] = dimension_payloads
+            item["candidate_reference_dimensions"] = candidate_dimension_payloads
             item["landscape_reference_count"] = landscape_reference_count
+            item["landscape_candidate_count"] = landscape_candidate_count
             item["locked_reference_count"] = locked_count
             item["selected_reference_count"] = selected_count
             item["candidate_reference_count"] = candidate_count

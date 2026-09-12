@@ -1,0 +1,4 @@
+{
+  "episode": 1,
+  "scenes": [{"name": "旧档案室", "beats": [{"id": "B01", "type": "setup", "event": "人物发现上锁抽屉"}, {"id": "B02", "type": "reveal", "event": "抽屉中出现关键照片"}]}]
+}

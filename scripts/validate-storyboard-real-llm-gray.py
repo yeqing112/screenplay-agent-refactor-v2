@@ -47,8 +47,8 @@ from models import Book, Session, StoryboardShot, init_db
 
 
 REPORT_PREFIX = "storyboard-real-llm-gray"
-DEFAULT_BOOK_IDS = "75,5,3,1,14"
 DEFAULT_SAMPLE_COUNT = 1
+SAMPLE_REGISTRY_PATH = ROOT_DIR / "production-sample-registry.json"
 
 
 def log(message: str) -> None:
@@ -68,8 +68,40 @@ def parse_csv_ints(raw: str) -> list[int]:
     return values
 
 
+def load_active_sample_book_ids() -> list[int]:
+    """Return explicitly registered production samples for automatic gray runs.
+
+    Historical books are intentionally not used as an implicit fallback.  An
+    operator may still provide STORYBOARD_REAL_LLM_GRAY_BOOK_IDS for a
+    controlled, explicitly scoped run.
+    """
+    try:
+        payload = json.loads(SAMPLE_REGISTRY_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise RuntimeError(
+            "Production sample registry is missing or invalid; set STORYBOARD_REAL_LLM_GRAY_BOOK_IDS explicitly."
+        ) from exc
+    values = payload.get("active_book_ids") if isinstance(payload, dict) else None
+    if not isinstance(values, list):
+        raise RuntimeError("Production sample registry must contain an active_book_ids list.")
+    result: list[int] = []
+    for value in values:
+        try:
+            book_id = int(value)
+        except (TypeError, ValueError):
+            continue
+        if book_id > 0 and book_id not in result:
+            result.append(book_id)
+    if not result:
+        raise RuntimeError(
+            "Production sample registry has no active books; set STORYBOARD_REAL_LLM_GRAY_BOOK_IDS explicitly."
+        )
+    return result
+
+
 def parse_book_ids() -> list[int]:
-    return parse_csv_ints(os.environ.get("STORYBOARD_REAL_LLM_GRAY_BOOK_IDS", DEFAULT_BOOK_IDS))
+    raw = os.environ.get("STORYBOARD_REAL_LLM_GRAY_BOOK_IDS", "").strip()
+    return parse_csv_ints(raw) if raw else load_active_sample_book_ids()
 
 
 def sample_count() -> int:
@@ -226,6 +258,10 @@ def select_samples(book_ids: list[int], limit: int) -> list[dict[str, Any]]:
 
 
 def sample_payload(book: Book, shot: StoryboardShot) -> dict[str, Any]:
+    meta = batch.helper.safe_json_loads(shot.meta_info, {})
+    if not isinstance(meta, dict):
+        meta = {}
+    structured = batch.structured_from_meta(meta)
     return {
         "book_id": int(book.id),
         "book_title": book.title,
@@ -233,7 +269,30 @@ def sample_payload(book: Book, shot: StoryboardShot) -> dict[str, Any]:
         "shot_id": int(shot.shot_id),
         "scene_name": shot.scene_name,
         "source_audit": batch.audit_source_shot(shot),
+        # Keep only presence/size signals in the gray report.  Raw source
+        # text remains in the project and is never copied into a test report.
+        "source_signals": {
+            "director_text": bool(str(shot.action_process or "").strip()),
+            "dialogue": bool(str(shot.dialogue or "").strip()),
+            "start_state": bool(str(shot.start_state or "").strip()),
+            "end_state": bool(str(shot.end_state or "").strip()),
+            "structured_action_beats": bool(structured.get("action_beats")) if isinstance(structured, dict) else False,
+        },
     }
+
+
+def gray_source_gate(sample: dict[str, Any]) -> list[str]:
+    """Return deterministic blockers before any clone or provider call.
+
+    A real compiler gray run is meaningful only when the source contains at
+    least one declared directing signal.  Missing prompts are allowed (they
+    are the compiler's output), but an entirely empty directing contract is
+    an information gap that must not consume a billable LLM request.
+    """
+    signals = sample.get("source_signals", {}) if isinstance(sample.get("source_signals", {}), dict) else {}
+    if not any(bool(signals.get(key)) for key in ("director_text", "dialogue", "start_state", "end_state", "structured_action_beats")):
+        return ["missing_director_semantics"]
+    return []
 
 
 def compile_clone(client: TestClient, clone: dict[str, Any], sample: dict[str, Any], mode: str):
@@ -385,6 +444,7 @@ def validate_sample(client: TestClient, sample: dict[str, Any], mode: str) -> di
             "compiled_version": compiled.get("version"),
             "diagnostics_status": diagnostics.get("status"),
             "compiler_diagnostics_summary": compact_diagnostics_summary(diagnostics),
+            "llm_request_audit": compiled.get("llm_request_audit", {}) if isinstance(compiled.get("llm_request_audit", {}), dict) else {},
             "repair_attempted": bool(compiled.get("repair_attempted")),
             "prompt_lengths": after_audit.get("prompt_lengths", {}),
             "timings": timings,
@@ -420,6 +480,14 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
         for item in results
         if item.get("elapsed_seconds") is not None
     ]
+    audit_items = [
+        item.get("llm_request_audit", {})
+        for item in results
+        if isinstance(item.get("llm_request_audit", {}), dict)
+    ]
+    def audit_total(key: str) -> int:
+        return sum(int(item.get(key) or 0) for item in audit_items)
+
     return {
         "samples": len(results),
         "passed": sum(1 for item in results if item.get("passed")),
@@ -434,6 +502,15 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
             for item in results
             if isinstance(item.get("compiler_diagnostics_summary", {}), dict)
         ),
+        "llm_attempts": sum(int(item.get("attempt_count") or 0) for item in audit_items),
+        "llm_prompt_tokens": audit_total("prompt_tokens"),
+        "llm_cached_tokens": audit_total("cached_tokens"),
+        "llm_completion_tokens": audit_total("completion_tokens"),
+        "llm_total_tokens": audit_total("total_tokens"),
+        "llm_cache_hit_rate": round(
+            audit_total("cached_tokens") / audit_total("prompt_tokens"), 6
+        ) if audit_total("prompt_tokens") else None,
+        "llm_last_latency_ms": max((float(item.get("last_latency_ms") or 0) for item in audit_items), default=0),
     }
 
 
@@ -490,6 +567,8 @@ def write_reports(mode: str, results: list[dict[str, Any]], summary: dict[str, A
         f"- Passed / failed: `{summary['passed']} / {summary['failed']}`",
         f"- After audit errors / warnings: `{summary['after_errors']} / {summary['after_warnings']}`",
         f"- Compiler diagnostics warnings: `{summary['compiler_warnings']}`",
+        f"- LLM attempts/tokens: `{summary['llm_attempts']} / prompt={summary['llm_prompt_tokens']} / cached={summary['llm_cached_tokens']} / completion={summary['llm_completion_tokens']}`",
+        f"- LLM cache hit rate / max latency: `{summary['llm_cache_hit_rate']} / {summary['llm_last_latency_ms']}ms`",
         f"- Total / average / max elapsed: `{summary['total_elapsed_seconds']}s / {summary['average_elapsed_seconds']}s / {summary['max_elapsed_seconds']}s`",
         "",
         "## Samples",
@@ -557,6 +636,26 @@ def run_gray_validation() -> None:
 
     init_db()
     samples = select_samples(parse_book_ids(), sample_count())
+    preflight_failures = []
+    for sample in samples:
+        blockers = gray_source_gate(sample)
+        if blockers:
+            preflight_failures.append({
+                **sample,
+                "passed": False,
+                "failure_stage": "preflight",
+                "preflight_status": "needs_information",
+                "preflight_blockers": blockers,
+                "compiler_mode": mode,
+                "elapsed_seconds": 0,
+            })
+    if preflight_failures:
+        summary = summarize(preflight_failures)
+        json_path, md_path = write_reports(mode, preflight_failures, summary)
+        log("Gray validation blocked before provider call: missing declared directing evidence.")
+        log(f"JSON report written: {json_path}")
+        log(f"Markdown report written: {md_path}")
+        raise RuntimeError("Storyboard real LLM gray validation needs declared directing evidence; no provider call was made.")
     log("Selected samples: " + ", ".join(f"#{item['book_id']}:{item['episode']}:{item['shot_id']}" for item in samples))
     client = TestClient(batch.helper.app)
     results = [validate_sample(client, sample, mode) for sample in samples]

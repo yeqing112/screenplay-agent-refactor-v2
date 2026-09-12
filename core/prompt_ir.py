@@ -226,6 +226,28 @@ def build_shot_ir_from_context(context: dict) -> ShotIR:
         start_state=shot.start_state,
         end_state=shot.end_state,
     )
+    # Keep intent and timing as auditable derived facts.  The planners only
+    # project declared Shot Schema fields; they never rewrite the shot or
+    # infer missing story facts.
+    from core.shot_planner import build_action_timing_plan, build_shot_intent_plan
+    shot.metadata["shot_intent_plan"] = build_shot_intent_plan(
+        shot_purpose=shot.shot_purpose,
+        core_action=shot.core_action,
+        action_process=shot.action_process,
+        action_beats=shot.action_beats,
+        emotion_arc={
+            "start": shot.emotion_arc.start,
+            "end": shot.emotion_arc.end,
+            "intensity": shot.emotion_arc.intensity,
+        },
+        start_state=shot.start_state,
+        end_state=shot.end_state,
+    )
+    shot.metadata["action_timing_plan"] = build_action_timing_plan(
+        duration=shot.duration,
+        action_beats=shot.action_beats,
+        fallback_action=shot.action_process,
+    )
     if not shot.core_action:
         shot.core_action = shot.action_beats[0].get("description", "").strip() if shot.action_beats else shot.action_process.strip()
 
@@ -295,4 +317,6 @@ def serialize_shot_ir(ir: ShotIR) -> dict:
         "static_sections": ir.static_sections,
         "motion_sections": ir.motion_sections,
         "warnings": ir.warnings,
+        "shot_intent_plan": ir.metadata.get("shot_intent_plan", {}),
+        "action_timing_plan": ir.metadata.get("action_timing_plan", {}),
     }

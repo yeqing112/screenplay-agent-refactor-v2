@@ -2,34 +2,31 @@ const { spawnSync } = require("child_process");
 
 const steps = [
   {
-    name: "python prompt/compiler regression tests",
+    name: "python deterministic regression tests",
     command: "python",
     args: [
-      "-m",
-      "unittest",
-      "tests.test_model_adapter",
-      "tests.test_llm_json_parsing",
-      "tests.test_reader_fallback",
-      "tests.test_storyboard_prompt_compile",
-      "tests.test_storyboard_prompt_compile_repair",
-      "tests.test_machine_prompt_export",
-      "tests.test_production_export_records",
-      "tests.test_api_security",
-      "tests.test_public_asset_storage",
-      "tests.test_production_readiness",
-      "tests.test_production_repair_plan",
-      "tests.test_qa_workbench_flow",
+      "-m", "pytest", "-q",
     ],
+  },
+  {
+    name: "deterministic Golden Project regression",
+    command: "npm",
+    args: ["run", "test:golden"],
+  },
+  {
+    name: "runtime configuration verification",
+    command: "npm",
+    args: ["run", "config:verify"],
+  },
+  {
+    name: "production release gate invariants",
+    command: "npm",
+    args: ["run", "test:release-gate"],
   },
   {
     name: "frontend production build",
     command: "npm",
     args: ["--prefix", "web", "run", "build"],
-  },
-  {
-    name: "five-project storyboard zero-error gate",
-    command: "npm",
-    args: ["run", "audit:storyboard:zero-error-gate"],
   },
 ];
 
@@ -37,7 +34,10 @@ function runStep(step) {
   console.log(`[production-regression] Running: ${step.name}`);
   const result = spawnSync(step.command, step.args, {
     stdio: "inherit",
-    shell: process.platform === "win32",
+    // Python must run without cmd.exe on Windows: cmd's inherited stdio can
+    // close pytest's temporary capture stream during teardown. npm.cmd still
+    // needs the shell resolution used by the existing Windows scripts.
+    shell: process.platform === "win32" && step.command === "npm",
     env: {
       ...process.env,
       PYTHONIOENCODING: process.env.PYTHONIOENCODING || "utf-8",

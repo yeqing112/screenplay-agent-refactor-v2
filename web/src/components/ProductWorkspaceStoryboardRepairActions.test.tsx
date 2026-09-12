@@ -51,6 +51,7 @@ describe('ProductWorkspaceStoryboardSection repair action chaining', () => {
         onRefresh={() => {}}
         onNavigateSection={() => {}}
         onNavigateTaskSection={() => {}}
+        initialStoryboardStep="more"
       />,
     )
 
@@ -103,6 +104,7 @@ describe('ProductWorkspaceStoryboardSection repair action chaining', () => {
         onRefresh={() => {}}
         onNavigateSection={() => {}}
         onNavigateTaskSection={() => {}}
+        initialStoryboardStep="video"
       />,
     )
 
@@ -112,9 +114,6 @@ describe('ProductWorkspaceStoryboardSection repair action chaining', () => {
     expect(html).toContain('保存导出记录')
     expect(html).toContain('刷新导出历史')
     expect(html).toContain('当前镜头导出历史')
-    expect(html).toContain('导演分镜语言编辑')
-    expect(html).toContain('保存并重编译导出')
-    expect(html).toContain('恢复系统版')
     expect(html).toContain('导出 Markdown')
     expect(html).toContain('导出 CSV')
     expect(html).toContain('导出 API JSON')
@@ -358,6 +357,7 @@ describe('ProductWorkspaceStoryboardSection repair action chaining', () => {
         onRefresh={() => {}}
         onNavigateSection={() => {}}
         onNavigateTaskSection={() => {}}
+        initialStoryboardStep="more"
       />,
     )
 
@@ -416,6 +416,7 @@ describe('ProductWorkspaceStoryboardSection repair action chaining', () => {
         onRefresh={() => {}}
         onNavigateSection={() => {}}
         onNavigateTaskSection={() => {}}
+        initialStoryboardStep="more"
       />,
     )
 

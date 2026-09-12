@@ -129,6 +129,35 @@ export interface StoryboardShotOutput {
   prompt_compile_context?: {
     core_action?: string
     action_beats?: Array<Record<string, unknown>>
+    shot_intent_plan?: {
+      schema_version?: string
+      status?: string
+      purpose?: string
+      primary_action?: string
+      primary_action_source?: string
+      action_count?: number
+      emotion_arc?: { start?: string; end?: string; intensity?: string }
+      start_state?: string
+      end_state?: string
+      unknowns?: string[]
+      fingerprint?: string
+    }
+    action_timing_plan?: {
+      schema_version?: string
+      status?: string
+      duration_ms?: number
+      allocation?: string
+      unknowns?: string[]
+      fingerprint?: string
+      segments?: Array<{
+        sequence?: number
+        start_ms?: number
+        end_ms?: number
+        duration_ms?: number
+        action?: string
+        source?: string
+      }>
+    }
     continuity_in?: string
     continuity_out?: string
     executability?: {
@@ -365,6 +394,11 @@ export interface VisualLocationOutput {
   structured_variant_fields?: Record<string, unknown>
   rendered_prompt_preview?: string
   reference_negative_prompt?: string
+  canonical_facts?: Record<string, unknown>
+  state_variants?: Record<string, unknown>
+  look_profile?: Record<string, unknown>
+  board_spec?: Record<string, unknown>
+  prompt_lint?: { status?: string; warnings?: Array<{ code?: string; message?: string; terms?: string[] }>; blocking?: Array<{ code?: string; message?: string }> }
   era?: string
   jimeng_ref_name?: string
   negative_prompt?: string
@@ -394,6 +428,10 @@ export interface VisualPropOutput {
   structured_variant_fields?: Record<string, unknown>
   rendered_prompt_preview?: string
   reference_negative_prompt?: string
+  canonical_facts?: Record<string, unknown>
+  state_variants?: Record<string, unknown>
+  look_profile?: Record<string, unknown>
+  prop_layer_mode?: 'combined' | 'canonical' | 'state' | 'look'
   jimeng_ref_name?: string
   negative_prompt?: string
   asset_status?: string

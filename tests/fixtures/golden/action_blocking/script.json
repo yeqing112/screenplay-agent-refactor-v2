@@ -1,0 +1,4 @@
+{
+  "episode": 1,
+  "scenes": [{"name": "酒店走廊", "beats": [{"id": "B01", "type": "action", "event": "人物从电梯口向安全门奔跑"}, {"id": "B02", "type": "obstacle", "event": "追赶者从拐角出现"}]}]
+}

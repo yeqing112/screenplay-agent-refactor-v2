@@ -1,0 +1,370 @@
+{
+  "generatedAt": "2026-09-12T15:10:21.002730+00:00",
+  "mode": "readonly-scene-reference-plan",
+  "book_id": 990401,
+  "summary": {
+    "storyboard_shots": 164,
+    "visual_locations": 0,
+    "visual_reference_assets": 0,
+    "scene_names": 19,
+    "planned_scene_references": 0,
+    "affected_shots": 0
+  },
+  "items": [
+    {
+      "scene_name": "临潮镇街道",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "6-9",
+        "6-10",
+        "6-11",
+        "6-12",
+        "6-13",
+        "6-14",
+        "6-15",
+        "6-16"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "信号箱旁",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "8-14",
+        "8-15",
+        "8-16",
+        "8-17",
+        "8-18",
+        "8-19",
+        "8-20",
+        "8-21"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "回声照相馆",
+      "status": "missing_visual_location",
+      "shot_count": 7,
+      "shot_ids": [
+        "9-21",
+        "9-22",
+        "9-23",
+        "9-24",
+        "9-25",
+        "9-26",
+        "9-27"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "回声照相馆内",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "10-1",
+        "10-2",
+        "10-3",
+        "10-4",
+        "10-5",
+        "10-6",
+        "10-7",
+        "10-8"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "回声照相馆暗房",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "6-1",
+        "6-2",
+        "6-3",
+        "6-4",
+        "6-5",
+        "6-6",
+        "6-7",
+        "6-8"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "地下蓄水池",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "7-1",
+        "7-2",
+        "7-3",
+        "7-4",
+        "7-5",
+        "7-6",
+        "7-7",
+        "7-8"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "废弃仓库",
+      "status": "missing_visual_location",
+      "shot_count": 6,
+      "shot_ids": [
+        "4-1",
+        "4-2",
+        "4-3",
+        "4-4",
+        "4-5",
+        "4-6"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "废弃旧码头",
+      "status": "missing_visual_location",
+      "shot_count": 13,
+      "shot_ids": [
+        "8-1",
+        "8-2",
+        "8-3",
+        "8-4",
+        "8-5",
+        "8-6",
+        "8-7",
+        "8-8",
+        "8-9",
+        "8-10",
+        "8-11",
+        "8-12",
+        "8-13"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "旧码头",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "9-13",
+        "9-14",
+        "9-15",
+        "9-16",
+        "9-17",
+        "9-18",
+        "9-19",
+        "9-20"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "暗道入口",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "7-9",
+        "7-10",
+        "7-11",
+        "7-12",
+        "7-13",
+        "7-14",
+        "7-15",
+        "7-16"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "林晚家中",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "1-9",
+        "1-10",
+        "1-11",
+        "1-12",
+        "1-13",
+        "1-14",
+        "1-15",
+        "1-16"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "灯塔信号箱",
+      "status": "missing_visual_location",
+      "shot_count": 12,
+      "shot_ids": [
+        "9-1",
+        "9-2",
+        "9-3",
+        "9-4",
+        "9-5",
+        "9-6",
+        "9-7",
+        "9-8",
+        "9-9",
+        "9-10",
+        "9-11",
+        "9-12"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "照相馆外街道",
+      "status": "missing_visual_location",
+      "shot_count": 6,
+      "shot_ids": [
+        "10-9",
+        "10-10",
+        "10-11",
+        "10-12",
+        "10-13",
+        "10-14"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "红伞倒影",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4",
+        "1-5",
+        "1-6",
+        "1-7",
+        "1-8"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "蓄水池边",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "5-1",
+        "5-2",
+        "5-3",
+        "5-4",
+        "5-5",
+        "5-6",
+        "5-7",
+        "5-8"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "门外街道",
+      "status": "missing_visual_location",
+      "shot_count": 8,
+      "shot_ids": [
+        "3-9",
+        "3-10",
+        "3-11",
+        "3-12",
+        "3-13",
+        "3-14",
+        "3-15",
+        "3-16"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "门缝之眼",
+      "status": "missing_visual_location",
+      "shot_count": 10,
+      "shot_ids": [
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4",
+        "2-5",
+        "2-6",
+        "2-7",
+        "2-8",
+        "2-9",
+        "2-10"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "陆叔住处",
+      "status": "missing_visual_location",
+      "shot_count": 7,
+      "shot_ids": [
+        "5-9",
+        "5-10",
+        "5-11",
+        "5-12",
+        "5-13",
+        "5-14",
+        "5-15"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    },
+    {
+      "scene_name": "顾沉的暗房",
+      "status": "missing_visual_location",
+      "shot_count": 15,
+      "shot_ids": [
+        "2-11",
+        "2-12",
+        "2-13",
+        "2-14",
+        "2-15",
+        "2-16",
+        "2-17",
+        "3-1",
+        "3-2",
+        "3-3",
+        "3-4",
+        "3-5",
+        "3-6",
+        "3-7",
+        "3-8"
+      ],
+      "issues": [
+        "缺失 VisualLocation 场景资产"
+      ]
+    }
+  ],
+  "confirmationToken": "4f53cda18c2baa0c"
+}

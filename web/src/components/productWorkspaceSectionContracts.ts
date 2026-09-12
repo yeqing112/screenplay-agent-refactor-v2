@@ -16,6 +16,7 @@ import type {
 } from './productWorkspaceAssetViewController'
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
+import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
 
 export type ContentTaskState = {
   mode: 'upload' | 'short'
@@ -224,7 +225,11 @@ export interface StoryboardBundle {
   onNavigateTaskSection: TaskNavigateHandler
   onGenerateStoryboard: () => void
   isGeneratingStoryboard: boolean
+  initialStoryboardEpisode?: number | null
+  initialStoryboardStep?: StoryboardStep
 }
+
+export type StoryboardStep = 'overview' | 'assets' | 'frame' | 'video' | 'review' | 'more'
 
 export interface AssetsBundle {
   bookId: number
@@ -266,8 +271,8 @@ export interface AssetsBundle {
   onAssetSearchQueryChange: (value: string) => void
   onSelectAsset: (value: string | null) => void
   onOpenAssetPreview: (url: string, label: string) => void
-  onGenerateReference: () => void
-  onGenerateAssetReference: (assetId: string) => void
+  onGenerateReference: (options?: GenerateReferenceOptions) => void
+  onGenerateAssetReference: (assetId: string, options?: GenerateReferenceOptions) => void
   onDeleteReferenceAsset: (referenceId: number) => void
   onUpdateReferenceAssetStatus: (referenceId: number, nextStatus: 'candidate' | 'selected' | 'locked') => void
   onRefreshAll: () => void

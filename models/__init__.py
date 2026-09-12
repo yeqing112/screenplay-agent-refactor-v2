@@ -13,6 +13,10 @@ from .qa_workbench import QAIssue, ScriptVersion
 from .violation_log import AgentViolationLog
 from .task import TaskRun
 from .agent import AgentSession, AgentPlan, AgentAuditLog, AgentAttachment, AgentMessage, AgentProjectUpdate
+from .director_treatment import DirectorTreatment
+from .scene_blocking import SceneBlocking
+from .shot_plan import ShotPlan
+from .director_benchmark import DirectorBenchmarkRun
 
 __all__ = [
     "Base", "engine", "Session",
@@ -28,4 +32,8 @@ __all__ = [
     "AgentViolationLog",
     "TaskRun",
     "AgentSession", "AgentPlan", "AgentAuditLog", "AgentAttachment", "AgentMessage", "AgentProjectUpdate",
+    "DirectorTreatment",
+    "SceneBlocking",
+    "ShotPlan",
+    "DirectorBenchmarkRun",
 ]

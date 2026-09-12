@@ -1,0 +1,5 @@
+{
+  "locations": [{"name": "会议室", "importance": "high"}],
+  "characters": [{"id": "CHAR_A", "name": "董事", "gender": "female"}, {"id": "CHAR_B", "name": "律师", "gender": "male"}, {"id": "CHAR_C", "name": "证人", "gender": "female"}],
+  "props": [{"id": "PROP_FILE", "name": "证据文件", "importance": "high"}]
+}

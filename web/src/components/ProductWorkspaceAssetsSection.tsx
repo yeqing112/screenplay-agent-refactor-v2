@@ -14,6 +14,9 @@ import {
   readShotRuntimeState,
   summarizePendingStoryboardTasks,
 } from './productWorkspaceRecovery'
+import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
+import SceneSemanticLayersEditor from './SceneSemanticLayersEditor'
+import PropSemanticLayersEditor from './PropSemanticLayersEditor'
 
 interface Props {
   bookId: number
@@ -63,8 +66,8 @@ interface Props {
   onAssetSearchQueryChange: (value: string) => void
   onSelectAsset: (assetId: string) => void
   onOpenPreview: (url: string, label: string) => void
-  onGenerateReference: () => void
-  onGenerateAssetReference: (assetId: string) => void
+  onGenerateReference: (options?: GenerateReferenceOptions) => void
+  onGenerateAssetReference: (assetId: string, options?: GenerateReferenceOptions) => void
   onDeleteReferenceAsset: (referenceId: number) => void
   onUpdateReferenceAssetStatus: (referenceId: number, nextStatus: 'candidate' | 'selected' | 'locked') => void
   onRefreshAll?: () => void
@@ -1095,6 +1098,10 @@ export default function ProductWorkspaceAssetsSection({
   const [manualReferenceNotes, setManualReferenceNotes] = useState('')
   const [manualReferenceState, setManualReferenceState] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle')
   const [manualReferenceMessage, setManualReferenceMessage] = useState('')
+  const [useExistingReferences, setUseExistingReferences] = useState(false)
+  useEffect(() => {
+    setUseExistingReferences(false)
+  }, [selectedAsset?.id])
   const assetGroups = groupAssetsByMaster(prioritizedAssets)
   const selectedInsight = selectedAsset
     ? assetEpisodeInsights.get(selectedAsset.id) ?? { shotIds: [], blockerCount: 0, missingReference: false, impactShots: [] }
@@ -1229,7 +1236,7 @@ export default function ProductWorkspaceAssetsSection({
     }
 
     if (assetCanvasPrimaryActionPlan.action === 'generate_reference') {
-      onGenerateReference()
+      onGenerateReference({ useExistingReferences })
       return
     }
 
@@ -1753,6 +1760,24 @@ export default function ProductWorkspaceAssetsSection({
               </details>
             ) : null}
 
+            {selectedAsset.category === 'location' ? (
+              <SceneSemanticLayersEditor
+                bookId={bookId}
+                asset={selectedAsset}
+                onRefresh={onRefreshAll}
+                onGenerate={(options) => onGenerateReference(options)}
+              />
+            ) : null}
+
+            {selectedAsset.category === 'prop' ? (
+              <PropSemanticLayersEditor
+                bookId={bookId}
+                asset={selectedAsset}
+                onRefresh={onRefreshAll}
+                onGenerate={(options) => onGenerateReference(options)}
+              />
+            ) : null}
+
             <details className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
               <summary className="cursor-pointer text-sm font-medium text-slate-300">高级：查看资产结构、生产提示词与负向约束</summary>
               <div className="mt-1 text-xs leading-5 text-slate-500">这里用于审核资产事实和生图输入，不影响当前参考图的选择与使用。</div>
@@ -1779,7 +1804,7 @@ export default function ProductWorkspaceAssetsSection({
                     type="button"
                     onClick={() =>
                       handoffSummary.actionMode === 'generate'
-                        ? onGenerateReference()
+                        ? onGenerateReference({ useExistingReferences })
                         : onNavigateSection(handoffSummary.actionSection)
                     }
                     className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-100 transition hover:border-sky-500 hover:text-white"
@@ -1832,6 +1857,20 @@ export default function ProductWorkspaceAssetsSection({
                 </div>
               </div>
 
+              {selectedAsset.category === 'location' && selectedAsset.promptLint?.warnings?.length ? (
+                <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+                  <div className="text-xs font-medium text-amber-100">场景提示词检查</div>
+                  <div className="mt-1 text-xs leading-5 text-amber-100/80">
+                    系统发现以下内容可能属于本次状态或摄影风格，建议不要永久写入场景本体：
+                  </div>
+                  <ul className="mt-2 space-y-1 text-xs leading-5 text-amber-100/90">
+                    {selectedAsset.promptLint.warnings.map((warning, index) => (
+                      <li key={`${warning.code || 'warning'}-${index}`}>· {warning.message || '存在待审核的场景语义混层。'}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
               <div className="mt-3 rounded-lg border border-slate-800 bg-slate-900/40 p-3">
                 <div className="text-xs font-medium text-slate-300">结构化资产描述</div>
                 {selectedStructuredFieldEntries.length > 0 ? (
@@ -1877,7 +1916,7 @@ export default function ProductWorkspaceAssetsSection({
                 </div>
                 <button
                   type="button"
-                  onClick={onGenerateReference}
+                  onClick={() => onGenerateReference({ useExistingReferences })}
                   disabled={isGeneratingReference}
                   className="rounded-lg border border-sky-500/50 px-3 py-1.5 text-xs font-medium text-sky-200 transition hover:border-sky-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -1888,6 +1927,22 @@ export default function ProductWorkspaceAssetsSection({
               <div className="mt-3">
                 <ActionMessage tone={assetActionTone} message={assetActionMessage} />
               </div>
+
+              <label className="mt-3 flex items-start gap-2 rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2 text-xs text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={useExistingReferences}
+                  onChange={(event) => setUseExistingReferences(event.target.checked)}
+                  disabled={isGeneratingReference || selectedAsset.referenceCount === 0}
+                  className="mt-0.5 accent-sky-500"
+                />
+                <span>
+                  <span className="font-medium text-slate-200">使用已有参考图进行精修</span>
+                  <span className="mt-0.5 block text-[11px] leading-5 text-slate-500">
+                    默认关闭。开启后才会把已选/已锁定参考图提交给具备图像编辑能力的模型；首次生成人物、场景或道具图无需勾选。
+                  </span>
+                </span>
+              </label>
 
               <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">

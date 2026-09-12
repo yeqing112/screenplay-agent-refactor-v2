@@ -1269,6 +1269,14 @@ export default function ProductWorkspaceCanvasBetaSection({
   }) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
     const labels = getStoryboardGenerationLabels('frame')
+    const confirmed = typeof window === 'undefined' || window.confirm(
+      '确认提交分镜图生成？该操作可能产生平台费用，并会把返回图片写回当前镜头。',
+    )
+    if (!confirmed) {
+      setGenerationState('idle')
+      setGenerationMessage('已取消分镜图生成。')
+      return
+    }
     setGenerationState('submitting')
     setGenerationMessage('正在从创作画布提交首帧生成任务，请不要重复点击。')
     setFrameRecoveryTaskId(null)
@@ -1280,6 +1288,8 @@ export default function ProductWorkspaceCanvasBetaSection({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            confirmed: true,
+            allowExternalCall: true,
             compileIfMissing: true,
             generationChain: chainMeta?.generationChain ?? 'canvas_generate_frame',
             triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
@@ -1360,6 +1370,14 @@ export default function ProductWorkspaceCanvasBetaSection({
   }) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id || !adoptedImage?.id) return
     const labels = getStoryboardGenerationLabels('video')
+    const confirmed = typeof window === 'undefined' || window.confirm(
+      '确认提交视频生成？该操作可能产生平台费用，并会把返回视频写回当前镜头。',
+    )
+    if (!confirmed) {
+      setGenerationState('idle')
+      setGenerationMessage('已取消视频生成。')
+      return
+    }
     setGenerationState('submitting')
     setGenerationMessage('正在从创作画布提交视频生成任务，请不要重复点击。')
     setVideoRecoveryTaskId(null)
@@ -1371,6 +1389,8 @@ export default function ProductWorkspaceCanvasBetaSection({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            confirmed: true,
+            allowExternalCall: true,
             compileIfMissing: true,
             firstFrameAssetId: String(adoptedImage.id).trim(),
             referenceAssetIds: effectiveReferenceAssetIds,

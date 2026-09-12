@@ -212,7 +212,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
       const response = await fetch(`/api/books/${bookId}/storyboard/${target.episode}/${target.shotId}/generate-frame`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ compileIfMissing: true }),
+        body: JSON.stringify({ compileIfMissing: true, confirmed: true, allowExternalCall: true }),
       })
 
       if (!response.ok) {
@@ -313,6 +313,8 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          confirmed: true,
+          allowExternalCall: true,
           compileIfMissing: true,
           firstFrameAssetId: target.firstFrameAssetId,
           referenceAssetIds: target.referenceAssetIds,

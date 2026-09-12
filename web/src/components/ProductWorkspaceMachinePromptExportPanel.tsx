@@ -106,6 +106,8 @@ interface MachinePromptExportPanelProps {
   machinePromptRecordState: MachinePromptRecordState
   machinePromptApiSubmissionMessage: string
   machinePromptApiSubmissionState: MachinePromptApiSubmissionState
+  allowUnstablePublicAssets: boolean
+  onAllowUnstablePublicAssetsChange: (value: boolean) => void
   machinePromptExportRecords: ProductionExportRecordListItemLike[]
   machinePromptRecordHistoryState: MachinePromptRecordHistoryState
   minimaxH3CopyText: string
@@ -144,6 +146,8 @@ export function ProductWorkspaceMachinePromptExportPanel({
   machinePromptRecordState,
   machinePromptApiSubmissionMessage,
   machinePromptApiSubmissionState,
+  allowUnstablePublicAssets,
+  onAllowUnstablePublicAssetsChange,
   machinePromptExportRecords,
   machinePromptRecordHistoryState,
   minimaxH3CopyText,
@@ -201,6 +205,26 @@ export function ProductWorkspaceMachinePromptExportPanel({
           >
             复制 H3 全字段
           </button>
+          {machinePromptExport ? (
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-rose-400/35 bg-rose-500/10 px-3 py-2 text-xs text-rose-100" title="仅灰度测试使用临时七牛域名；正式生产请配置稳定 HTTPS 自定义域名。">
+              <input
+                type="checkbox"
+                checked={allowUnstablePublicAssets}
+                onChange={(event) => onAllowUnstablePublicAssetsChange(event.target.checked)}
+                className="h-3.5 w-3.5 accent-rose-500"
+              />
+              <span>允许临时七牛地址（灰度）</span>
+            </label>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => { void onSubmitProviderTask() }}
+            disabled={machinePromptApiSubmissionState === 'submitting' || !machinePromptExport}
+            className="rounded-lg border border-rose-400/60 bg-rose-500/20 px-3 py-2 text-xs font-medium text-rose-50 transition hover:border-rose-300 hover:bg-rose-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+            title="需要二次确认；确认后才会真实提交 MiniMax H3。"
+          >
+            {machinePromptApiSubmissionState === 'submitting' ? '提交处理中...' : '真实提交 H3'}
+          </button>
           <details className="rounded-lg border border-cyan-400/20 bg-slate-950/50 px-3 py-2">
             <summary className="cursor-pointer list-none text-xs font-medium text-cyan-100">更多导出</summary>
             <div className="mt-3 flex max-w-xl flex-wrap gap-2">
@@ -236,15 +260,6 @@ export function ProductWorkspaceMachinePromptExportPanel({
                 title="第一步：只登记提交意图，不调用真实模型 provider。"
               >
                 {machinePromptApiSubmissionState === 'submitting' ? '登记提交任务中...' : '登记 API 提交任务'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { void onSubmitProviderTask() }}
-                disabled={machinePromptApiSubmissionState === 'submitting' || !machinePromptExport}
-                className="rounded border border-rose-400/50 bg-rose-500/10 px-2 py-1 text-[11px] text-rose-100 transition hover:border-rose-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                title="第二步：需要二次确认，确认后才会真实提交 MiniMax H3。"
-              >
-                {machinePromptApiSubmissionState === 'submitting' ? '提交处理中...' : '真实提交 H3'}
               </button>
               <button
                 type="button"

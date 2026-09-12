@@ -1,0 +1,12 @@
+{
+  "episode": 1,
+  "scenes": [
+    {
+      "name": "办公室门口",
+      "beats": [
+        {"id": "B01", "type": "obstacle", "event": "秘书挡住去路"},
+        {"id": "B02", "type": "decision", "event": "来客无视阻拦继续前行"}
+      ]
+    }
+  ]
+}

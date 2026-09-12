@@ -308,6 +308,10 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertEqual(len(payload["prompt_compile_context"]["action_beats"]), 2)
         self.assertEqual(payload["prompt_compile_context"]["continuity_in"], "姐姐站在出租屋门口，阿宁抱着旧水壶")
         self.assertEqual(payload["prompt_compile_context"]["executability"]["status"], "pass")
+        self.assertEqual(payload["prompt_compile_context"]["shot_intent_plan"]["status"], "ready")
+        self.assertEqual(payload["prompt_compile_context"]["shot_intent_plan"]["primary_action"], "姐姐侧身进屋，阿宁抱紧旧水壶后退半步")
+        self.assertEqual(payload["prompt_compile_context"]["action_timing_plan"]["status"], "ready")
+        self.assertEqual(len(payload["prompt_compile_context"]["action_timing_plan"]["segments"]), 2)
         motion_contract = payload["prompt_compile_context"]["motion_contract"]
         self.assertEqual(motion_contract["start_state"], "姐姐站在出租屋门口，阿宁抱着旧水壶")
         self.assertEqual(motion_contract["camera"], "push-in")
@@ -735,7 +739,10 @@ class StoryboardPromptCompileTests(unittest.TestCase):
             "taskMode": "reference_to_video",
         })
 
+        seen_storage_kwargs = []
+
         def public_asset_result(source_url, **kwargs):
+            seen_storage_kwargs.append(kwargs)
             suffix = source_url.rsplit("/", 1)[-1]
             return SimpleNamespace(
                 ok=True,
@@ -772,6 +779,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
                     "aspectRatio": "16:9",
                     "useReferenceImages": True,
                     "useFirstFrame": False,
+                    "allowUnstablePublicAssets": True,
                 },
             )
 
@@ -785,6 +793,8 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertIsNone(async_generated.await_args.kwargs["first_frame_url"])
         self.assertGreaterEqual(len(async_generated.await_args.kwargs["reference_images"]), 3)
         self.assertTrue(async_generated.await_args.kwargs["reference_images"][0]["image_url"].startswith("https://qiniu.example.com/"))
+        self.assertTrue(seen_storage_kwargs)
+        self.assertTrue(all(item.get("allow_unstable_storage") is True for item in seen_storage_kwargs))
 
         task = self.client.get(f"/api/prototyping/tasks/{task_id}").json()
         self.assertEqual(task["status"], "done")
@@ -915,7 +925,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         ):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-video",
-                json={"aspectRatio": "16:9"},
+                json={"aspectRatio": "16:9", "confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)
@@ -995,7 +1005,7 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         ), patch("api.server.generate_video_asset", new=async_generated):
             response = self.client.post(
                 f"/api/books/{self.book_id}/storyboard/{self.episode}/2/generate-video",
-                json={"aspectRatio": "16:9"},
+                json={"aspectRatio": "16:9", "confirmed": True, "allowExternalCall": True},
             )
 
         self.assertEqual(response.status_code, 200)

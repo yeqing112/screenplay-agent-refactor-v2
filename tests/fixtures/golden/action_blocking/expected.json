@@ -1,0 +1,4 @@
+{
+  "min_shots": 2,
+  "required_checks": ["character_blocking", "screen_direction", "action_beats", "continuity_out"]
+}

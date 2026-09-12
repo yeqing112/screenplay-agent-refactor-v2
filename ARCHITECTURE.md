@@ -31,11 +31,11 @@ Screenplay Agent 是一个 AI 驱动的剧本智能生产平台。输入小说�
 │  │  └──────────────────────────────────────────────┘  │  │
 │  └────────────────────────────────────────────────────┘  │
 └──────────────────────┬───────────────────────────────────┘
-                       │ HTTP (Vite Proxy → :8765)
+                       │ HTTP (Vite Proxy → :18765)
                        ▼
 ┌──────────────────────────────────────────────────────────┐
 │                  API 服务器 (API Layer)                     │
-│  FastAPI (api/server.py) — 端口 8765                      │
+│  FastAPI (api/server.py) — 端口 18765                     │
 │  ┌────────────────────────────────────────────────────┐  │
 │  │  /api/pipeline/script        # 剧本管线            │  │
 │  │  /api/pipeline/storyboard    # 分镜生成            │  │
@@ -186,7 +186,7 @@ BaseAgent.run(book_id, params)
 cd screenplay-agent
 source .venv/bin/activate
 PYTHONPATH=. python3 api/server.py
-# → http://localhost:8765
+# → http://localhost:18765
 ```
 
 ### 前端
@@ -194,7 +194,7 @@ PYTHONPATH=. python3 api/server.py
 cd screenplay-agent/web
 npm install
 npx vite --host
-# → http://localhost:5173 (API 自动代理到 :8765)
+# → http://localhost:5175 (API 自动代理到 :18765)
 ```
 
 ## 环境变量

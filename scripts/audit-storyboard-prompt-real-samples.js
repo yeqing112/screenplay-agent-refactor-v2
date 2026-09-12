@@ -6,15 +6,29 @@ const ROOT_DIR = process.cwd();
 const ARGS = new Set(process.argv.slice(2));
 const ZERO_ERROR_GATE = ARGS.has("--zero-error-gate");
 const FULL_FIVE_PROJECTS = ZERO_ERROR_GATE || ARGS.has("--full-five-projects");
-const API_URL = process.env.AUDIT_API_URL || process.env.E2E_API_URL || "http://127.0.0.1:8765";
+const SAMPLE_REGISTRY_PATH = path.join(ROOT_DIR, "production-sample-registry.json");
+let sampleRegistry = {};
+try {
+  sampleRegistry = JSON.parse(fs.readFileSync(SAMPLE_REGISTRY_PATH, "utf-8"));
+} catch {
+  // Keep historical defaults available for cloned/embedded runners.
+}
+const API_URL = process.env.AUDIT_API_URL || process.env.E2E_API_URL || "http://127.0.0.1:18765";
 const START_SERVER = process.env.AUDIT_START_SERVER !== "0";
-const SAMPLE_BOOK_IDS = (process.env.AUDIT_STORYBOARD_BOOK_IDS || "14,5,75,3,1")
+const EXPLICIT_SAMPLE_BOOK_IDS = Boolean(process.env.AUDIT_STORYBOARD_BOOK_IDS);
+const DEFAULT_SAMPLE_BOOK_IDS = Array.isArray(sampleRegistry.active_book_ids) && sampleRegistry.active_book_ids.length
+  ? sampleRegistry.active_book_ids
+  : [14, 5, 75, 3, 1];
+const SAMPLE_BOOK_IDS = (process.env.AUDIT_STORYBOARD_BOOK_IDS || DEFAULT_SAMPLE_BOOK_IDS.join(","))
   .split(",")
   .map(value => Number(value.trim()))
   .filter(value => Number.isFinite(value) && value > 0);
 const TARGET_SHOT_COUNT = Number(process.env.AUDIT_STORYBOARD_SHOT_COUNT || (FULL_FIVE_PROJECTS ? 200 : 50));
 const STRICT_MODE = ZERO_ERROR_GATE || process.env.AUDIT_STORYBOARD_STRICT === "1";
-const MIN_AUDITED_SHOTS = Number(process.env.AUDIT_STORYBOARD_MIN_AUDITED_SHOTS || (ZERO_ERROR_GATE ? 100 : 0));
+// The production checklist requires a minimum of 30 real shots.  Keep the
+// threshold configurable so a release team may raise it, but do not retain a
+// hidden 100-shot default that contradicts the documented P0 gate.
+const MIN_AUDITED_SHOTS = Number(process.env.AUDIT_STORYBOARD_MIN_AUDITED_SHOTS || (ZERO_ERROR_GATE ? 30 : 0));
 const MIN_STATIC_LENGTH = Number(process.env.AUDIT_STORYBOARD_MIN_STATIC_LENGTH || 80);
 const MIN_MOTION_LENGTH = Number(process.env.AUDIT_STORYBOARD_MIN_MOTION_LENGTH || 50);
 const INTERNAL_REPAIR_MARKERS = [
@@ -426,9 +440,20 @@ function pickEvenly(items, count) {
 async function collectAuditSamples() {
   const books = await readJson("/api/books");
   const byId = new Map(books.map(book => [Number(book.id), book]));
-  const samples = SAMPLE_BOOK_IDS.map(id => byId.get(id)).filter(Boolean);
+  const retiredIds = new Set((sampleRegistry.retired_book_ids || []).map(Number).filter(Number.isFinite));
+  const requestedIds = EXPLICIT_SAMPLE_BOOK_IDS
+    ? SAMPLE_BOOK_IDS
+    : SAMPLE_BOOK_IDS.filter(id => !retiredIds.has(Number(id)));
+  const samples = requestedIds.map(id => byId.get(id)).filter(Boolean);
+  if (samples.length === 0 && !EXPLICIT_SAMPLE_BOOK_IDS) {
+    const fallback = books
+      .filter(book => !retiredIds.has(Number(book.id)))
+      .filter(book => Number(book.storyboard_shots || 0) > 0)
+      .sort((a, b) => Number(b.storyboard_shots || 0) - Number(a.storyboard_shots || 0));
+    samples.push(...fallback.slice(0, 5));
+  }
   if (samples.length === 0) {
-    throw new Error(`No audit sample books found for: ${SAMPLE_BOOK_IDS.join(",")}`);
+    throw new Error(`No audit sample books found for: ${requestedIds.join(",")}`);
   }
 
   const outputs = [];

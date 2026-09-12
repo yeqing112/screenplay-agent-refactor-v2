@@ -440,8 +440,20 @@ async def _test_openai_compatible_profile(profile: dict[str, Any]) -> dict[str, 
     model_ids = [str(item.get("id")) for item in data.get("data", []) if isinstance(item, dict)]
     configured = str(profile.get("model_name") or "")
     message = "连接成功"
-    if model_ids and configured not in model_ids:
+    model_available = not model_ids or configured in model_ids
+    if model_ids and not model_available:
         message = f"连接成功，但远端模型列表中未发现 {configured}"
+        if profile.get("provider") == SHAPI_OPENAI_IMAGES_PROVIDER:
+            # A successful /models response is not sufficient for SHAPI:
+            # submitting a model absent from this account's catalog yields
+            # the opaque `No available channel` generation error. Fail the
+            # probe early and expose the catalog so the operator can choose a
+            # model the account actually serves.
+            return {
+                "ok": False,
+                "message": f"{message}；当前账户没有该模型的可用渠道。",
+                "available_models": model_ids,
+            }
 
     return {"ok": True, "message": message}
 
@@ -584,8 +596,11 @@ async def test_profile_connection(
         default_params["dimension"] = result["dimension"]
         response_profile["default_params"] = default_params
 
-    return {
+    response = {
         "ok": bool(result.get("ok")),
         "message": str(result.get("message") or "连接成功"),
         "profile": response_profile,
     }
+    if isinstance(result.get("available_models"), list):
+        response["available_models"] = result["available_models"]
+    return response

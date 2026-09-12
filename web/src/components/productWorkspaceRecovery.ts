@@ -315,8 +315,18 @@ export async function reconcileStoryboardRecoveryTask(task: Pick<PendingStoryboa
   return reconcileCreativeTask(task.taskId)
 }
 
-export async function restartCreativeTask(taskId: string): Promise<CreativeTaskStatusPayload & { restarted_from_task_id?: string }> {
-  const response = await fetch(`/api/prototyping/tasks/${taskId}/restart`, { method: 'POST' })
+export async function restartCreativeTask(
+  taskId: string,
+  confirmation: { confirmed: boolean; allowExternalCall: boolean } = { confirmed: false, allowExternalCall: false },
+): Promise<CreativeTaskStatusPayload & { restarted_from_task_id?: string }> {
+  const response = await fetch(`/api/prototyping/tasks/${taskId}/restart`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      confirmed: Boolean(confirmation.confirmed),
+      allowExternalCall: Boolean(confirmation.allowExternalCall),
+    }),
+  })
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`)
   }
@@ -333,6 +343,7 @@ export async function restartStoryboardRecoveryTask(input: {
   bookId: number
   episode: number
   shotId: string
+  confirmation?: { confirmed: boolean; allowExternalCall: boolean }
 }): Promise<CreativeTaskStatusPayload & { restarted_from_task_id?: string }> {
   if (input.kind === 'prompt') {
     throw new Error('提示词恢复不会自动调用 LLM。请打开对应镜头的“受控 Prompt Compiler 草案”重新审核并创建版本。')
@@ -358,7 +369,7 @@ export async function restartStoryboardRecoveryTask(input: {
       error: payload.error ?? undefined,
     }
   }
-  return restartCreativeTask(input.taskId)
+  return restartCreativeTask(input.taskId, input.confirmation)
 }
 
 export function getStoryboardRecoveryKindLabel(kind: StoryboardRecoveryKind) {

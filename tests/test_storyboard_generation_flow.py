@@ -212,6 +212,52 @@ class StoryboardGenerationFlowTests(unittest.TestCase):
                 [{"start": 0.0, "end": 4.0, "action": "姐姐站在门边，随后轻轻回头看向门外。"}],
             )
 
+    def test_confirmed_prompt_packet_can_be_rechecked_without_false_stale_conflict(self):
+        """A post-confirmation diagnostics read must accept the applied candidate.
+
+        Confirmation updates the shot prompt fields by design, so rebuilding an
+        evidence packet afterwards changes the packet fingerprint.  The packet
+        remains safe to recheck when the current shot still exactly matches its
+        reviewed candidate; a later manual edit must still be rejected as stale.
+        """
+        packet = self._create_prompt_draft_packet()
+        candidate = {
+            "visual_prompt_static": "暴雨中的出租屋内景，中景构图，姐姐站在门边，冷色雨光照进狭窄房间，外观严格参考 @出租屋。",
+            "visual_prompt_motion": "固定机位，姐姐先保持门边站位，再轻轻回头，雨声压住呼吸，最后停在她压低视线的瞬间，场景与服装保持首帧一致。",
+            "negative_prompt": "低质量，水印，logo",
+            "used_assets": [{"asset_type": "scene", "asset_id": self.scene_id, "asset_name": "暴雨中的出租屋"}],
+        }
+        with patch("api.server._call_storyboard_prompt_compiler", return_value=candidate):
+            generated = self.client.post(
+                f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts/{packet['id']}/llm",
+                json={"packetFingerprint": packet["packet_fingerprint"], "confirmed": True, "allowExternalCall": True},
+            )
+        self.assertEqual(generated.status_code, 200)
+        confirmation = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts/{packet['id']}/confirm",
+            json={"packetFingerprint": packet["packet_fingerprint"], "action": "confirmed", "confirmed": True, "allowWrite": True},
+        )
+        self.assertEqual(confirmation.status_code, 200)
+
+        diagnostics = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts/{packet['id']}/diagnostics"
+        )
+        self.assertEqual(diagnostics.status_code, 200)
+        self.assertTrue(diagnostics.json()["post_confirmation_recheck"])
+        self.assertEqual(diagnostics.json()["diagnostics"]["status"], "pass")
+
+        with Session() as session:
+            shot = session.query(StoryboardShot).filter_by(
+                book_id=self.book_id, episode=self.episode, shot_id=self.shot_id
+            ).first()
+            shot.action_process = "姐姐忽然关上门，雨声戛然而止。"
+            session.commit()
+        stale = self.client.get(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/prompt-drafts/{packet['id']}/diagnostics"
+        )
+        self.assertEqual(stale.status_code, 409)
+        self.assertIn("事实已变化", stale.json()["detail"])
+
     def test_generate_frame_and_video_use_final_prompts_and_reference_images(self):
         with patch("api.server.asyncio.sleep", new=AsyncMock(return_value=None)), patch(
             "api.server.resolve_generation_profile",

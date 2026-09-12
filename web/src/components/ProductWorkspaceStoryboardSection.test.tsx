@@ -5,7 +5,10 @@ import ProductWorkspaceStoryboardSection, {
   buildStoryboardCanvasHandoffSummary,
   buildStoryboardCanvasPrimaryActionPlan,
   buildStoryboardRepairActions,
+  getStoryboardMediaPreflightBlockerMessage,
+  getShotPlanningAction,
 } from './ProductWorkspaceStoryboardSection'
+import { getStoryboardAssetStatusLabel } from './ProductWorkspaceStoryboardAdvancedToolsPanel'
 
 function makeShot(overrides: Record<string, unknown> = {}) {
   return {
@@ -49,7 +52,52 @@ function renderStoryboard(shots: any[], overrides: Record<string, unknown> = {})
   )
 }
 
+describe('storyboard media preflight messaging', () => {
+  it('explains the stable-domain and temporary-Qiniu options for local references', () => {
+    const message = getStoryboardMediaPreflightBlockerMessage({
+      blockers: ['compiled_reference_images_not_provider_accessible'],
+    })
+
+    expect(message).toContain('稳定 HTTPS 公网域名')
+    expect(message).toContain('允许临时七牛地址（灰度）')
+  })
+
+  it('keeps ordinary blockers actionable without implying a provider call occurred', () => {
+    const message = getStoryboardMediaPreflightBlockerMessage({
+      blockers: ['no_reference_images_selected'],
+    })
+
+    expect(message).toContain('没有可提交的多参考图')
+    expect(message).toContain('重新预检')
+  })
+})
+
 describe('ProductWorkspaceStoryboardSection', () => {
+  it('turns planner conflicts into a plain-language next action', () => {
+    expect(getShotPlanningAction({ timingStatus: 'conflict' })).toEqual({
+      label: '先调整动作时长',
+      detail: '已声明的动作时长超过本镜头总时长，请在镜头概览中调整节拍或延长镜头。',
+    })
+    expect(getShotPlanningAction({ intentStatus: 'needs_information' })?.label).toBe('先补充镜头信息')
+    expect(getShotPlanningAction({ intentStatus: 'ready', timingStatus: 'ready' })).toBeNull()
+  })
+
+  it.each([
+    ['pending', '待准备'],
+    ['asset_pending', '待准备'],
+    ['ready', '已准备'],
+    ['asset_ready', '素材已准备'],
+    ['video_pending', '待生成视频'],
+    ['done', '已完成'],
+    ['ref_ready', '参考图可用'],
+    ['missing_reference', '缺参考图'],
+    ['blocked', '暂不可用'],
+    ['unknown-internal-value', '待确认'],
+    ['', '待准备'],
+  ])('maps asset status %s to readable copy', (status, label) => {
+    expect(getStoryboardAssetStatusLabel(status)).toBe(label)
+  })
+
   it('keeps only the upstream release action when the storyboard gate is blocked', () => {
     const actions = buildStoryboardRepairActions({
       selectedShot: makeShot(),
@@ -108,6 +156,32 @@ describe('ProductWorkspaceStoryboardSection', () => {
     expect(html).toContain('\u56de\u5267\u672c\u5de5\u4f5c\u53f0\u590d\u6838')
   })
 
+  it('renders the storyboard steps as an accessible tab set with one active panel', () => {
+    const html = renderStoryboard([makeShot()], { initialStoryboardStep: 'video' })
+
+    expect((html.match(/role="tab"/g) || []).length).toBe(6)
+    expect(html).toContain('id="storyboard-step-tab-video"')
+    expect(html).toContain('aria-selected="true"')
+    expect(html).toContain('aria-controls="storyboard-step-panel-1-01"')
+    expect(html).toContain('role="tabpanel"')
+    expect(html).toContain('aria-labelledby="storyboard-step-tab-video"')
+  })
+
+  it('keeps execution and video input diagnostics collapsed by default', () => {
+    const html = renderStoryboard([makeShot()], { initialStoryboardStep: 'frame' })
+
+    expect(html).toContain('视频输入详情')
+    expect(html).toMatch(/<details class="mt-3 rounded-lg border border-slate-800 bg-slate-950\/50 p-3"><summary[^>]*>视频输入详情/)
+  })
+
+  it('keeps director language in the overview step instead of the export tools step', () => {
+    const overviewHtml = renderStoryboard([makeShot()])
+    const moreHtml = renderStoryboard([makeShot()], { initialStoryboardStep: 'more' })
+
+    expect(overviewHtml).toContain('导演分镜语言编辑')
+    expect(moreHtml).not.toContain('导演分镜语言编辑')
+  })
+
   it('keeps storyboard in review-only mode when adaptation is not explicitly locked', () => {
     const html = renderStoryboard([makeShot()], { hasExplicitLockedAdaptation: false })
 
@@ -116,10 +190,10 @@ describe('ProductWorkspaceStoryboardSection', () => {
   })
 
   it('shows single-shot generation guidance and keeps video blocked before an adopted frame exists', () => {
-    const html = renderStoryboard([makeShot()])
+    const html = renderStoryboard([makeShot()], { initialStoryboardStep: 'video' })
 
-    expect(html).toContain('\u5355\u955c\u5934\u751f\u6210\u52a8\u4f5c')
-    expect(html).toContain('\u751f\u6210\u9996\u5e27')
+    expect(html).toContain('\u5f53\u524d\u6b65\u9aa4\u52a8\u4f5c')
+    expect(html).toContain('\u751f\u6210\u5206\u955c\u56fe')
     expect(html).toContain('\u751f\u6210\u89c6\u9891')
     expect(html).toContain('\u5f53\u524d\u955c\u5934\u8fd8\u6ca1\u6709\u91c7\u7eb3\u9996\u5e27')
   })
@@ -158,7 +232,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           references: { characters: {}, scene: [], props: {} },
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'video' })
 
     expect(html).toContain('\u672c\u6b21\u89c6\u9891\u8f93\u5165\u6458\u8981')
     expect(html).toContain('\u5f53\u524d\u7f16\u8bd1\u5b9e\u9645\u4f7f\u7528\uff1a1 \u5f20')
@@ -176,7 +250,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           references: { characters: {}, scene: [], props: {} },
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'video' })
 
     expect(html).toContain('image_to_video')
   })
@@ -207,7 +281,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           audios: [],
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'review' })
 
     expect(html).toContain('拆镜前归档媒体')
     expect(html).toContain('仅追溯，不作为当前镜头成片')
@@ -225,7 +299,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           compiled_reference_asset_ids: ['ref-compiled-1', 'ref-compiled-2'],
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'video' })
 
     expect(html).toContain('\u672c\u6b21\u89c6\u9891\u5b9e\u9645\u63d0\u4ea4\uff1a2 \u5f20')
     expect(html).toContain('\u5f53\u524d\u4f1a\u4f18\u5148\u6cbf\u7528\u5df2\u7f16\u8bd1\u7248\u672c\u5b9e\u9645\u4f7f\u7528\u7684\u53c2\u8003\u56fe')
@@ -253,7 +327,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           },
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'more' })
 
     expect(html).toContain('\u5f53\u524d\u4fee\u590d\u5165\u53e3')
     expect(html).toContain('\u8865\u9f50\u53c2\u8003\u56fe\uff1a\u548c\u5c1a\u4e59')
@@ -280,7 +354,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           ],
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'more' })
 
     expect(html).toContain('\u91cd\u7f16\u63d0\u793a\u8bcd\u5e76\u8865\u9f50\u89c6\u89c9\u4e8b\u5b9e\uff1a\u548c\u5c1a\u7532 / \u6728\u6876')
     expect(html).toContain('\u91cd\u7f16\u540e\u751f\u6210\u9996\u5e27')
@@ -315,7 +389,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           references: { characters: {}, scene: [], props: {} },
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'more' })
 
     expect(html).toContain('\u91cd\u7f16\u540e\u7ee7\u7eed\u751f\u6210\u89c6\u9891')
   })
@@ -361,7 +435,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           },
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'more' })
 
     expect(html).toContain('\u8865\u4eba\u7269\u5206\u955c\u7cbe\u8c03\u5b9a\u5986\uff1a\u548c\u5c1a\u7532')
     expect(html).toContain('\u53bb\u8d44\u4ea7\u4e2d\u5fc3')
@@ -381,7 +455,7 @@ describe('ProductWorkspaceStoryboardSection', () => {
           reason: 'best_recoverable_version',
         },
       }),
-    ])
+    ], { initialStoryboardStep: 'more' })
 
     expect(html).toContain('\u5f53\u524d\u63d0\u793a\u8bcd\u7248\u672c\u7591\u4f3c\u8dd1\u504f')
     expect(html).toContain('\u6062\u590d\u63a8\u8350\u7248\u672c v7')

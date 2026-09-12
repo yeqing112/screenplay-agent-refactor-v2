@@ -7,6 +7,8 @@ import {
   type ScriptWorkbenchResponse,
 } from './productWorkspaceScripts'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
+import ProductWorkspaceDirectorTreatmentPanel from './ProductWorkspaceDirectorTreatmentPanel'
+import ProductWorkspaceDirectorRuntimePanel from './ProductWorkspaceDirectorRuntimePanel'
 
 type WorkspaceSection = 'qa' | 'storyboard'
 
@@ -263,7 +265,9 @@ export default function ProductWorkspaceScriptsSection({
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.95fr_1.2fr_0.95fr]">
+    <div className="space-y-6">
+      <ProductWorkspaceDirectorRuntimePanel bookId={bookId} episode={selectedSummary?.episode ?? null} />
+      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.2fr_0.95fr]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="text-sm font-medium text-white">分集剧本列表</div>
@@ -353,6 +357,7 @@ export default function ProductWorkspaceScriptsSection({
       </div>
 
       <div className="space-y-6">
+        <ProductWorkspaceDirectorTreatmentPanel bookId={bookId} episode={selectedSummary?.episode ?? null} />
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -638,6 +643,7 @@ export default function ProductWorkspaceScriptsSection({
             剧本工作台现在已经能承接真实剧本、真实 QA 工作台、场次拆解、脚本版本历史，以及锁稿 / 放行决策。后续继续把这些状态同步回项目控制台和镜头工作台，就能更稳定地串起主链路。
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

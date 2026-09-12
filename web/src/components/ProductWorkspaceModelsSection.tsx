@@ -386,7 +386,7 @@ export default function ProductWorkspaceModelsSection() {
       nextProfiles.push(...presetMap.values())
       await persistRegistrySnapshot(payload, nextProfiles, toSaveableDefaults(payload.defaults ?? {}))
       setActionState('success')
-      setActionMessage('SHAPI Nano Banana 2 与 GPT Image 2 预设已添加；未修改任何默认模型或已有密钥。')
+      setActionMessage('SHAPI GPT Image 2 预设已添加；未修改任何默认模型或已有密钥。')
     } catch (error) {
       setActionState('error')
       setActionMessage(error instanceof Error ? error.message : '添加 SHAPI 图像预设失败')
@@ -838,7 +838,7 @@ export default function ProductWorkspaceModelsSection() {
           <div className="rounded-xl border border-sky-500/20 bg-slate-900 p-5">
             <div className="text-sm font-medium text-white">SHAPI 图片模型接入</div>
             <div className="mt-3 text-sm leading-6 text-slate-400">
-              Nano Banana 2 走 Gemini 原生图片协议并保留参考资产；GPT Image 2 走 OpenAI Images 协议，当前只开放无参考图文生图，避免把资产约束静默丢弃。
+              当前仅提供 SHAPI GPT Image 2：走 OpenAI Images 协议，仅开放无参考图文生图；检测到参考图时会明确拒绝，避免把资产约束静默丢弃。
             </div>
             <div className="mt-4 grid gap-3">
               {shapiGuidance.map((item) => (

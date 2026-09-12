@@ -4,8 +4,8 @@ const { chromium } = require("playwright");
 
 const ROOT_DIR = process.cwd();
 const WEB_DIR = path.join(ROOT_DIR, "web");
-const API_URL = process.env.E2E_API_URL || "http://127.0.0.1:8765";
-const WEB_URL = process.env.E2E_WEB_URL || "http://127.0.0.1:5173";
+const API_URL = process.env.E2E_API_URL || "http://127.0.0.1:18765";
+const WEB_URL = process.env.E2E_WEB_URL || "http://127.0.0.1:5175";
 const START_SERVERS = process.env.E2E_START_SERVERS !== "0";
 
 const processes = [];
@@ -179,7 +179,6 @@ async function runBrowserSmoke() {
 
     const tabs = [
       "内容准备",
-      "人物质检",
       "剧本工作台",
       "镜头工作台",
       "资产中心",

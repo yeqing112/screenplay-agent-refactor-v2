@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from api.server import app
+from api.server import CreativeGenerationRequest, _canonicalize_reference_generation_request, app
 from models import Session, StoryboardPromptVersion, StoryboardShot, VisualLocation, VisualMakeup, VisualReferenceAsset, init_db
 
 
@@ -123,6 +123,66 @@ class MakeupVariantResolutionTests(unittest.TestCase):
         shot_makeup = payload["storyboard"][0]["makeup_prompts"][0]
         self.assertEqual(shot_makeup["stage_name"], "shot_1_rain")
         self.assertTrue(shot_makeup["scope_label"])
+
+    def test_reference_generation_boundary_replaces_stale_character_prompt(self):
+        request = CreativeGenerationRequest(
+            bookId=self.book_id,
+            episode=self.episode,
+            shotId=str(self.shot_id),
+            sourceNodeId="asset-test",
+            sourceAssetId=self.hero_base_id,
+            assetScope="character",
+            assetSubject="Hero",
+            targetKind="image",
+            prompt="单人肖像海报，正面半身，带标题文字",
+        )
+
+        canonical = _canonicalize_reference_generation_request(request, "reference-image")
+
+        self.assertNotEqual(canonical.prompt, request.prompt)
+        self.assertIn("上排为脸部特写", canonical.prompt)
+        self.assertIn("下排为全身展示", canonical.prompt)
+        self.assertIn("六宫格排版", canonical.prompt)
+        self.assertNotIn("海报", canonical.prompt)
+
+    def test_reference_generation_boundary_replaces_stale_scene_prompt_with_four_view_contract(self):
+        with Session() as session:
+            location = session.query(VisualLocation).filter(VisualLocation.id == int(self.location_id)).first()
+            location.visual_prompt_zh = "单张场景照片，便利店入口，人物站在门边，2行2列四宫格"
+            location.lighting_mood = "冷白顶光"
+            location.key_props = json.dumps(["收银台", "玻璃门"], ensure_ascii=False)
+            location.negative_prompt = "低质量，四宫格，多视角排版，人物"
+            session.commit()
+
+        request = CreativeGenerationRequest(
+            bookId=self.book_id,
+            episode=self.episode,
+            shotId=str(self.shot_id),
+            sourceNodeId="asset-scene-test",
+            sourceAssetId=self.location_id,
+            assetScope="location",
+            assetSubject="雨棚",
+            targetKind="image",
+            prompt="旧的单张场景提示词",
+            aspectRatio="1:1",
+        )
+
+        canonical = _canonicalize_reference_generation_request(request, "reference-image")
+
+        self.assertNotEqual(canonical.prompt, request.prompt)
+        self.assertIn("16:9 横向四视图场景设定板", canonical.prompt)
+        self.assertIn("固定 2×2 四宫格布局", canonical.prompt)
+        self.assertIn("左上为主视角空间全景", canonical.prompt)
+        self.assertIn("右上为反向视角", canonical.prompt)
+        self.assertIn("左下为侧向视角", canonical.prompt)
+        self.assertIn("右下为关键细节视角", canonical.prompt)
+        self.assertNotIn("2行2列", canonical.prompt)
+        self.assertNotIn("人物站在门边", canonical.prompt)
+        self.assertEqual(canonical.aspect_ratio, "16:9")
+        self.assertIn("额外分格", canonical.negative_prompt)
+        self.assertNotIn("四宫格", canonical.negative_prompt)
+        self.assertNotIn("多视角排版", canonical.negative_prompt)
+        self.assertIn("人物", canonical.negative_prompt)
 
     def test_compile_context_uses_shot_variant_and_keeps_base_reference(self):
         llm_payload = {

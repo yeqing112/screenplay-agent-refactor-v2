@@ -13,12 +13,14 @@ import type {
   ContentTaskState,
   SummaryState,
   TaskNavigateHandler,
+  StoryboardStep,
 } from './productWorkspaceSectionContracts'
 import type { Dispatch, SetStateAction } from 'react'
 import type { AssetEpisodeInsight, AssetSummary } from './productWorkspaceAssets'
 import type { AssetCategoryFilter, AssetStatusFilter, AssetVersionFilter, RecoveryFocusContext, WorkspaceSection } from './productWorkspaceAssetViewController'
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
+import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
 
 interface UseProductWorkspaceSectionBundlesParams {
   section: WorkspaceSection
@@ -80,6 +82,8 @@ interface UseProductWorkspaceSectionBundlesParams {
   isGeneratingScripts: boolean
   onGenerateStoryboard: () => void
   isGeneratingStoryboard: boolean
+  initialStoryboardEpisode?: number | null
+  initialStoryboardStep?: StoryboardStep
   allAssetsCount: number
   shotEpisodes: Array<{ episode: number; shots: StoryboardShotOutput[] }>
   assetEpisodeFilter: 'all' | number
@@ -115,8 +119,8 @@ interface UseProductWorkspaceSectionBundlesParams {
   onDismissAssetsRecoveryFocus: () => void
   setSelectedAssetId: (value: string | null) => void
   onOpenAssetPreview: (url: string, label: string) => void
-  onGenerateReference: () => void
-  onGenerateAssetReference: (assetId: string) => void
+  onGenerateReference: (options?: GenerateReferenceOptions) => void
+  onGenerateAssetReference: (assetId: string, options?: GenerateReferenceOptions) => void
   onDeleteReferenceAsset: (referenceId: number) => void
   onUpdateReferenceAssetStatus: (referenceId: number, nextStatus: 'candidate' | 'selected' | 'locked') => void
   onNavigateAssetShot: (shotId: string) => void
@@ -238,6 +242,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onNavigateTaskSection: params.onNavigateTaskSection,
         onGenerateStoryboard: params.onGenerateStoryboard,
         isGeneratingStoryboard: params.isGeneratingStoryboard,
+        initialStoryboardEpisode: params.initialStoryboardEpisode,
+        initialStoryboardStep: params.initialStoryboardStep,
       },
       canvas: {
         bookId: params.bookId,

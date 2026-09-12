@@ -736,8 +736,20 @@ async function runBusinessFlow() {
 
     await clickWorkspaceTab(page, "镜头工作台");
     body = await assertBodyIncludes(page, "老茶馆", "Storyboard workbench");
-    if (!body.includes("老茶馆") || !body.includes("染水收据")) {
-      throw new Error("Storyboard workbench did not expose seeded shot and asset bindings.");
+    if (!body.includes("老茶馆")) {
+      throw new Error("Storyboard workbench did not expose the seeded shot context.");
+    }
+    // Asset bindings are intentionally kept in the advanced step after the
+    // storyboard UI became task-oriented. Verify the retained information in
+    // its new, explicit location instead of requiring it on the overview.
+    const moreToolsTab = page.getByRole("tab", { name: "更多工具" }).first();
+    if (await moreToolsTab.count() !== 1) {
+      throw new Error("Storyboard workbench did not expose the advanced tools step.");
+    }
+    await moreToolsTab.click();
+    body = await assertBodyIncludes(page, "染水收据", "Storyboard advanced tools");
+    if (!body.includes("染水收据")) {
+      throw new Error("Storyboard advanced tools did not expose seeded asset bindings.");
     }
 
     const promptVersionsBeforeLock = await readJsonFromPage(
@@ -769,10 +781,24 @@ async function runBusinessFlow() {
     }
     await degradedShotCard.click();
     await page.waitForTimeout(700);
+    const repairToolsTab = page.getByRole("tab", { name: "更多工具" }).first();
+    if (await repairToolsTab.count() !== 1) {
+      throw new Error("Degraded shot did not expose the storyboard step navigation.");
+    }
+    await repairToolsTab.click();
+    await page.waitForTimeout(300);
     body = await page.locator("body").innerText();
     if (!body.includes("当前修复入口") || !body.includes("重编提示词") || !body.includes("静态提示词过短") || !body.includes("运动提示词过短")) {
       throw new Error("Degraded prompt repair entry did not expose a clear short-prompt recompile action.");
     }
+    // The controlled Prompt Compiler evidence card remains in the overview
+    // step alongside the director-language authoring surface.
+    const overviewTab = page.getByRole("tab", { name: "看懂镜头" }).first();
+    if (await overviewTab.count() !== 1) {
+      throw new Error("Storyboard workbench did not expose the overview step.");
+    }
+    await overviewTab.click();
+    await page.waitForTimeout(300);
     const promptVersionsBeforeRepair = await readJsonFromPage(
       page,
       `/api/books/${FIXTURE_BOOK_ID}/storyboard/${FIXTURE_EPISODE}/${FIXTURE_REPAIR_SHOT_ID}/prompt-versions`,
@@ -847,6 +873,12 @@ async function runBusinessFlow() {
     await originalShotCard.click();
     await page.waitForTimeout(500);
 
+    const reviewTab = page.getByRole("tab", { name: "检查结果" }).first();
+    if (await reviewTab.count() !== 1) {
+      throw new Error("Storyboard workbench did not expose the review step.");
+    }
+    await reviewTab.click();
+    await page.waitForTimeout(300);
     await page.getByText("提交验收记录").click();
     await page.locator('input[placeholder="资产 ID"]').first().fill("frame-e2e-1");
     await page.locator("select").filter({ hasText: "通过采纳" }).first().selectOption("failed");
@@ -909,6 +941,13 @@ async function runBusinessFlow() {
       }
     }
     const modelNavigation = page.getByRole("button", { name: "模型管理", exact: true }).first();
+    if (await modelNavigation.getAttribute("aria-current") !== "page") {
+      throw new Error("Active workspace navigation did not expose aria-current=page.");
+    }
+    const dashboardNavigation = page.getByRole("button", { name: "项目控制台", exact: true }).first();
+    if (await dashboardNavigation.getAttribute("aria-current") !== null) {
+      throw new Error("Inactive workspace navigation must not expose aria-current.");
+    }
     await modelNavigation.focus();
     await page.keyboard.press("Tab");
     const focusedAfterNavigation = await page.evaluate(() => document.activeElement?.textContent?.trim() || "");

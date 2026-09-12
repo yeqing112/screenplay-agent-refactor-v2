@@ -1,0 +1,4 @@
+{
+  "min_shots": 2,
+  "required_checks": ["shot_purpose", "character_blocking", "continuity_in", "continuity_out"]
+}

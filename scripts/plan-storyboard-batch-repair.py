@@ -170,8 +170,12 @@ def plan_status(results: list[dict[str, Any]], summary: dict[str, Any]) -> dict[
         "dry_run_only": True,
         "real_project_mutated": False,
         "ready_for_human_review": summary["after_errors"] == 0,
+        # The protected apply command creates a current-snapshot baseline
+        # immediately before each confirmed compile.  Missing anchors are
+        # therefore reported for visibility, but are not an apply blocker.
         "ready_for_apply_command": summary["after_errors"] == 0 and not real_apply_blockers,
-        "requires_baseline_version_before_apply": len(missing_anchors) > 0,
+        "baseline_created_during_apply": len(missing_anchors) > 0,
+        "requires_baseline_version_before_apply": False,
         "missing_rollback_anchor_count": len(missing_anchors),
         "real_apply_blocker_count": len(real_apply_blockers),
     }

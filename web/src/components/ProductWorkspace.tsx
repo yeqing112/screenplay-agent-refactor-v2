@@ -24,6 +24,7 @@ import {
 } from './productWorkspaceAssetViewController'
 import {
   type GenerateReferenceOutcome,
+  type GenerateReferenceOptions,
   runDeleteReferenceAsset,
   runGenerateSelectedAssetReference,
   runSaveAssetShotBindings,
@@ -31,7 +32,7 @@ import {
 } from './productWorkspaceAssetActions'
 import { useProductWorkspaceOverview } from './productWorkspaceOverviewController'
 import { useProductWorkspaceProjectData } from './productWorkspaceProjectDataController'
-import type { CanvasHandoffTarget, CanvasNavigationTarget, TaskNavigationTarget } from './productWorkspaceSectionContracts'
+import type { CanvasHandoffTarget, CanvasNavigationTarget, StoryboardStep, TaskNavigationTarget } from './productWorkspaceSectionContracts'
 import { useProductWorkspaceSectionBundles } from './productWorkspaceSectionBundlesController'
 import {
   readProductWorkspaceNavigationState,
@@ -71,6 +72,22 @@ export function buildEpisodeSequence(episodeCount: number) {
   return Array.from({ length: count }, (_, index) => index + 1)
 }
 
+const storyboardStepIds = new Set<StoryboardStep>(['overview', 'assets', 'frame', 'video', 'review', 'more'])
+const workspaceSectionIds = new Set<WorkspaceSection>(sections.map((item) => item.id))
+
+function readUrlWorkspaceNavigation() {
+  if (typeof window === 'undefined') return {}
+  const params = new URLSearchParams(window.location.search)
+  const sectionParam = params.get('section') as WorkspaceSection | null
+  const section = sectionParam && workspaceSectionIds.has(sectionParam) ? sectionParam : null
+  const shot = String(params.get('shot') ?? '').trim() || null
+  const episodeValue = Number(params.get('episode') ?? 0)
+  const episode = Number.isFinite(episodeValue) && episodeValue > 0 ? episodeValue : null
+  const stepParam = params.get('step') as StoryboardStep | null
+  const step = stepParam && storyboardStepIds.has(stepParam) ? stepParam : undefined
+  return { section, episode, shot, step }
+}
+
 export default function ProductWorkspace({
   book,
   bookData,
@@ -78,8 +95,10 @@ export default function ProductWorkspace({
   onBookChange,
 }: Props) {
   const persistedNavigationState = useMemo(() => readProductWorkspaceNavigationState(book.id), [book.id])
-  const [section, setSection] = useState<WorkspaceSection>(persistedNavigationState?.section ?? 'dashboard')
-  const [selectedStoryboardShotId, setSelectedStoryboardShotId] = useState<string | null>(null)
+  const urlNavigation = useMemo(() => readUrlWorkspaceNavigation(), [])
+  const [section, setSection] = useState<WorkspaceSection>(urlNavigation.section ?? persistedNavigationState?.section ?? 'dashboard')
+  const [selectedStoryboardShotId, setSelectedStoryboardShotId] = useState<string | null>(urlNavigation.shot ?? null)
+  const [initialStoryboardStep] = useState<StoryboardStep | undefined>(urlNavigation.step)
   const [canvasNavigationTarget, setCanvasNavigationTarget] = useState<CanvasNavigationTarget | null>(
     persistedNavigationState?.canvasNavigationTarget ?? null,
   )
@@ -404,7 +423,7 @@ export default function ProductWorkspace({
     setAssetActionFollowUp(null)
   }
 
-  const handleGenerateSelectedAssetReference = async () => {
+  const handleGenerateSelectedAssetReference = async (options?: GenerateReferenceOptions) => {
     setAssetActionFollowUp(null)
     const inferredShotIds =
       selectedAsset
@@ -419,6 +438,8 @@ export default function ProductWorkspace({
       buildAssetReferenceToken,
       toVisualAssetType,
       inferredShotIds,
+      useExistingReferences: options?.useExistingReferences,
+      sceneLayerMode: options?.sceneLayerMode,
       setAssetActionTone,
       setAssetActionMessage,
       setAssetGenerationState,
@@ -429,7 +450,7 @@ export default function ProductWorkspace({
     applyAssetReferenceOutcomeFollowUp(outcome)
   }
 
-  const handleGenerateAssetReference = async (assetId: string) => {
+  const handleGenerateAssetReference = async (assetId: string, options?: GenerateReferenceOptions) => {
     const targetAsset = allAssets.find((asset) => asset.id === assetId) ?? null
     if (!targetAsset) return
     setSelectedAssetId(assetId)
@@ -444,6 +465,8 @@ export default function ProductWorkspace({
       buildAssetReferenceToken,
       toVisualAssetType,
       inferredShotIds,
+      useExistingReferences: options?.useExistingReferences,
+      sceneLayerMode: options?.sceneLayerMode,
       setAssetActionTone,
       setAssetActionMessage,
       setAssetGenerationState,
@@ -573,6 +596,8 @@ export default function ProductWorkspace({
     isGeneratingScripts,
     onGenerateStoryboard: handleGenerateStoryboard,
     isGeneratingStoryboard,
+    initialStoryboardEpisode: urlNavigation.episode ?? null,
+    initialStoryboardStep,
     allAssetsCount: allAssets.length,
     shotEpisodes,
     assetEpisodeFilter,
@@ -601,11 +626,11 @@ export default function ProductWorkspace({
     onDismissAssetsRecoveryFocus: dismissAssetsRecoveryFocus,
     setSelectedAssetId,
     onOpenAssetPreview: openAssetPreview,
-    onGenerateReference: () => {
-      void handleGenerateSelectedAssetReference()
+    onGenerateReference: (options) => {
+      void handleGenerateSelectedAssetReference(options)
     },
-    onGenerateAssetReference: (assetId) => {
-      void handleGenerateAssetReference(assetId)
+    onGenerateAssetReference: (assetId, options) => {
+      void handleGenerateAssetReference(assetId, options)
     },
     onDeleteReferenceAsset: (referenceId) => {
       void handleDeleteReferenceAsset(referenceId)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import json
 import uuid
 from asyncio import sleep
 from datetime import UTC, datetime
@@ -94,6 +95,18 @@ def _map_http_error(
             )
             if detail:
                 message_suffix = f"：{str(detail)[:500]}"
+        # SHAPI reports an unavailable distributor/model channel as a generic
+        # 4xx error. Surface a deterministic operator action instead of
+        # presenting the raw upstream English message or encouraging blind
+        # retries that can never succeed for this account.
+        raw_detail = json.dumps(response_payload, ensure_ascii=False).lower()
+        if "no available channel" in raw_detail or "model_not_found" in raw_detail:
+            return ModelProfileError(
+                f"{prefix}失败：当前账户没有可用的模型渠道（{response_payload.get('message') or response_payload.get('error') or 'model_not_found'}）。"
+                "请在模型管理中运行连接检测，并改用账户实际开放的模型或其他已配置图像 provider。",
+                provider_request_payload=provider_request_payload,
+                provider_response=response_payload or None,
+            )
         if status in {401, 403}:
             return ModelProfileError(
                 f"{prefix}失败：认证未通过，请检查 API Key{message_suffix}。",
@@ -1211,7 +1224,8 @@ def _build_shapi_openai_images_payload(
     reference_urls = _extract_reference_urls(reference_images)
     if reference_urls:
         raise ModelProfileError(
-            "SHAPI GPT Image 2 的多参考图编辑接口尚未通过账户级契约验证，已拒绝忽略参考图的请求。"
+            "SHAPI GPT Image 2 的多参考图编辑接口尚未通过账户级契约验证，已拒绝忽略参考图的请求；"
+            "请改用已配置且支持参考图的 PoYo GPT Image 2，或移除参考图后再使用 SHAPI GPT Image 2。"
         )
 
     params = dict(profile.get("default_params") or {})

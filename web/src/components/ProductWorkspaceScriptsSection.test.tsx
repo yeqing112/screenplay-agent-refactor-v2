@@ -142,4 +142,34 @@ describe('ProductWorkspaceScriptsSection', () => {
     expect(html).not.toContain('<details open=""')
     expect(html).toContain('锁稿 / 放行')
   })
+
+  it('exposes the evidence-first DirectorTreatment controls in the script workbench', () => {
+    const html = renderToStaticMarkup(
+      <ProductWorkspaceScriptsSection
+        bookId={14}
+        scripts={[{ episode: 1, content: '第一集剧本内容', status: 'done' } as any]}
+        shotsByEpisode={{}}
+        episodeProgress={[]}
+        scriptDecisionState={{}}
+        onScriptDecisionStateChange={vi.fn()}
+        hasLockedAdaptation
+        hasExplicitLockedAdaptation
+        adaptationStateLabel="已锁定"
+        adaptationStateDetail=""
+        selectedAdaptationName="方向"
+        onNavigate={() => {}}
+        onGenerateScripts={() => {}}
+        isGeneratingScripts={false}
+      />,
+    )
+    expect(html).toContain('导演方案（第 1 集）')
+    expect(html).toContain('查看导演方案')
+    expect(html).toContain('让 AI 优化方案')
+    expect(html).toContain('确认写入正式版本')
+    expect(html).toContain('查看历史修订')
+    expect(html).toContain('导演运行时（第 1 集）')
+    expect(html).toContain('空间调度证据')
+    expect(html).toContain('镜头计划证据')
+    expect(html).toContain('运行完整性检查')
+  })
 })

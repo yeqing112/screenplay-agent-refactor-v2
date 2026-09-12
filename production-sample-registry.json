@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "active_book_ids": [990400],
+  "retired_book_ids": [990306],
+  "retired": {
+    "990306": {
+      "reason": "旧测试项目缺少剧本来源与结构化镜头证据，不作为生产验收样本",
+      "retired_at": "2026-09-12"
+    }
+  }
+}

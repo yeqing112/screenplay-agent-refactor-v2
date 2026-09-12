@@ -17,7 +17,7 @@ import hashlib
 import json
 import sys
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -25,110 +25,21 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from api.server import _normalize_scene_asset_id
+from api.server import (
+    _build_scene_asset_prompt_contract,
+    _flatten_scene_layer_text,
+    _build_scene_reference_negative_prompt,
+    SCENE_REFERENCE_MODE_REQUIREMENT,
+    SCENE_REFERENCE_STYLE_REQUIREMENT,
+    SCENE_REFERENCE_VIEW_SCHEMA,
+    _normalize_scene_asset_id,
+)
 from api.model_registry import get_default_profile
+from core.scene_reference_plan import scene_location_fingerprint, scene_location_snapshot
 from models import Session, StoryboardShot, VisualLocation, VisualReferenceAsset, init_db
 
 
 DEFAULT_NEGATIVE_PROMPT = "低质量，模糊，畸变，字幕，水印，logo，过曝，欠曝，透视错误，空间错乱，现代广告大字干扰"
-SCENE_REFERENCE_NEGATIVE_TERMS = "人物，人脸，人形，角色，分格，拼图，多宫格，四宫格，多视角排版，文字说明"
-SCENE_REFERENCE_MODE_REQUIREMENT = (
-    "单张 16:9 横构图，无人物、无人脸、不出现角色。"
-    "画面必须是一张完整场景参考图，不分格、不拼图、不做多视角排版。"
-)
-SCENE_DESIGN_PRESETS: dict[str, dict[str, str]] = {
-    "便利店收银台": {
-        "description": (
-            "深夜便利店收银区，狭窄收银台位于画面中心，台面有扫码器、香烟展示架、小票机和一杯冰美式；"
-            "两侧货架向后延伸，玻璃门外是黑暗街道，门上悬着小风铃。冷白荧光灯从头顶压下，商品标签反光刺眼。"
-        ),
-        "lighting": "冷白荧光灯顶光，低饱和、硬阴影、深夜悬疑短剧质感。",
-    },
-    "监控室": {
-        "description": (
-            "便利店后方狭小监控室，墙面布满监控屏，桌面有老旧主机、键盘、鼠标、杂乱线缆、塑料包装和饮料杯；"
-            "角落堆放纸箱和清洁工具，空间封闭压抑。"
-        ),
-        "lighting": "主要光源来自蓝绿色监控屏幕和主机指示灯，昏暗、轻微屏幕噪点、悬疑电影感。",
-    },
-    "原始丛林上空": {
-        "description": (
-            "原始丛林上空与树冠层，远处是连绵墨绿色森林海，近处巨大树冠互相挤压，中间露出一块泥泞林间空地；"
-            "树冠缝隙中有雾气、断枝、藤蔓和斑驳光束，空间纵深从高空一路落到林地。"
-        ),
-        "lighting": "正午阳光穿透浓密树冠，形成强烈明暗反差和潮湿雾气中的光柱。",
-    },
-    "原始丛林深处": {
-        "description": (
-            "原始森林深处，古树参天，粗大树根盘绕泥地，藤蔓从高处垂落，蕨类植物和灌木遮住林间小路；"
-            "地面潮湿、覆盖枯叶苔藓，零散灰白兽骨半埋在泥中。"
-        ),
-        "lighting": "树冠遮蔽下的斑驳顶光，墨绿与棕褐主色，阴影深重、潮湿原始。",
-    },
-    "部落营地": {
-        "description": (
-            "原始部落营地位于茂密森林中，几棵巨大冷杉树之间搭建树屋平台，藤蔓编织屋顶，兽皮帘垂挂；"
-            "地面有圆形石砌火塘、石墩、木栅栏、窝棚和图腾柱。"
-        ),
-        "lighting": "林间正午散射光与火塘残余暖色共同塑造原始、粗粝、仪式感强的氛围。",
-    },
-    "公立医院病房": {
-        "description": (
-            "普通公立医院病房，白色瓷砖墙面、淡蓝色窗帘、冷白日光灯管，两张病床和金属输液架整齐排列；"
-            "浅色防滑砖地面、床头柜、监护仪与消毒水气味共同形成冰冷整洁的空间。"
-        ),
-        "lighting": "冷白顶光为主，少量淡蓝窗帘反光，干净但缺乏温度。",
-    },
-    "地下赌场VIP包厢": {
-        "description": (
-            "地下赌场 VIP 包厢，深色木质护墙板、绿色赌桌、高背皮质沙发、酒柜吧台和暗红地毯构成封闭空间；"
-            "空气中有烟雾，桌面筹码和酒杯形成危险、奢靡的地下氛围。"
-        ),
-        "lighting": "暗红霓虹与绿色赌桌射灯混合，烟雾形成光束，压抑危险。",
-    },
-    "宋氏大厦顶层办公室": {
-        "description": (
-            "高层写字楼顶层办公室，整面落地玻璃幕墙外是城市天际线，室内有极简办公桌、黑色沙发区、深灰大理石地面；"
-            "无主灯间接照明和开阔尺度形成冷峻权力感。"
-        ),
-        "lighting": "落地窗冷调自然光结合隐形线性灯，桌面和地面有克制反光。",
-    },
-    "现代简约别墅客厅": {
-        "description": (
-            "现代极简别墅客厅，大面积落地玻璃门、白色墙面、冷灰大理石地面、白色沙发、黑色茶几和悬挑楼梯；"
-            "空间开阔、昂贵、冷清，家具线条克制。"
-        ),
-        "lighting": "自然光从玻璃门倾泻而入，间接照明补充层次，整体明亮清冷。",
-    },
-    "高端私人会所走廊": {
-        "description": (
-            "高端私人会所走廊，深色木饰面墙、暗红地毯、一排厚重木门、装饰画和水晶壁灯沿走廊延伸；"
-            "空间狭长、私密、奢华，尽头门缝可透出一线冷光。"
-        ),
-        "lighting": "暖黄壁灯与远端冷白门缝形成冷暖对比，暧昧且带窒息感。",
-    },
-    "陈二蛋与大凤的卧室": {
-        "description": (
-            "湘西吊脚楼二层卧室，木梁与竹席天花板裸露，两张硬板床分列两侧，稻草薄被凌乱，中间小木柜放着油灯；"
-            "破损窗纸和木窗棂在地板上投下几何阴影。"
-        ),
-        "lighting": "惨白月光从南窗射入，室内冷蓝紫阴影浓重，乡土恐怖氛围。",
-    },
-    "陈二蛋家厨房": {
-        "description": (
-            "吊脚楼厨房内部，熏黑木梁、竹椽和斑驳木板墙围出低矮空间，砖石灶台嵌着大铁锅，灶膛余烬泛红；"
-            "夯土地面潮湿，墙边摆着瓦罐、陶碗、木水桶，半开的木窗外是暮色山影。"
-        ),
-        "lighting": "黄昏暮光与灶膛余烬混合，暖暗高反差，烟气让光线有颗粒感。",
-    },
-    "麻栗山村口空地": {
-        "description": (
-            "湘西苗寨村口空地，远处是喀斯特山峰和梯田，周围木质吊脚楼环绕，黄泥地干裂，中央有石碾和散落青石板；"
-            "村口空间开阔，带贫瘠、炎热、乡土现实感。"
-        ),
-        "lighting": "正午毒辣阳光直射，地面硬阴影清晰，空气有热浪蒸腾感。",
-    },
-}
 BANNED_SCENE_REFERENCE_FRAGMENTS = (
     "2行2列",
     "四格",
@@ -141,22 +52,25 @@ BANNED_SCENE_REFERENCE_FRAGMENTS = (
     "瞳孔",
     "手部",
     "手指",
-    "胡涂",
-    "颜夕",
-    "颜乐",
-    "王强",
-    "宋庭筠",
-    "陈二蛋",
-    "二蛋娘",
-    "大凤",
-    "姬由",
-    "神农大帝",
-    "姬瑶",
+    "照片",
+    "海报",
+    "标题",
+    "台词",
+    "对白",
+    "画面切到",
+    "镜头切到",
 )
 
 
 def _clean(text: Any) -> str:
     return " ".join(str(text or "").replace("\r", " ").replace("\n", " ").split())
+
+
+def _sentence(text: Any) -> str:
+    value = _clean(text)
+    if not value:
+        return ""
+    return value if value.endswith(("。", "！", "？", ".", "!", "?")) else f"{value}。"
 
 
 def _join_unique(values: list[str], limit: int = 6) -> str:
@@ -173,35 +87,34 @@ def _split_scene_fragments(text: str) -> list[str]:
     return [part.strip(" ；。") for part in normalized.split("；") if part.strip(" ；。")]
 
 
-def _safe_scene_text(text: str) -> str:
+def _safe_scene_text(text: str, *, limit: int = 8) -> str:
     parts = []
     for part in _split_scene_fragments(text):
         if any(fragment in part for fragment in BANNED_SCENE_REFERENCE_FRAGMENTS):
             continue
         parts.append(part)
-    return "；".join(parts[:8])
-
-
-def _safe_lighting_summary(shots: list[StoryboardShot], limit: int = 3) -> str:
-    parts: list[str] = []
-    for shot in shots:
-        for part in _split_scene_fragments(str(shot.lighting or "")):
-            if any(fragment in part for fragment in BANNED_SCENE_REFERENCE_FRAGMENTS):
-                continue
-            if part and part not in parts:
-                parts.append(part)
-            if len(parts) >= limit:
-                return "；".join(parts)
-    return "；".join(parts)
+    return "；".join(parts[: max(0, int(limit))])
 
 
 def _negative_prompt(location: VisualLocation) -> str:
-    base = _clean(location.negative_prompt) or DEFAULT_NEGATIVE_PROMPT
-    extras = [term.strip() for term in SCENE_REFERENCE_NEGATIVE_TERMS.split("，") if term.strip()]
-    for term in extras:
-        if term not in base:
-            base += f"，{term}"
-    return base
+    return _build_scene_reference_negative_prompt(_clean(location.negative_prompt) or DEFAULT_NEGATIVE_PROMPT)
+
+
+def _is_placeholder_scene_description(location: VisualLocation) -> bool:
+    """Return whether the stored description is an import/readiness placeholder.
+
+    Placeholder text is operational metadata, not a visual fact.  It must not
+    leak into the production prompt when a plan is compiled.  The check is
+    marker-based and applies to any scene/book; it does not depend on a scene
+    name or a particular story.
+    """
+    description = _clean(getattr(location, "description", ""))
+    notes = _clean(getattr(location, "notes", ""))
+    return (
+        "最小场景资产" in description
+        or "requires-human-asset-refinement" in notes
+        or "scene-reference-plan-applied" in notes
+    )
 
 
 def _shot_label(shot: StoryboardShot) -> str:
@@ -218,38 +131,58 @@ def _story_samples(shots: list[StoryboardShot]) -> list[str]:
 
 
 def _infer_scene_design(scene_name: str, shots: list[StoryboardShot], location: VisualLocation) -> dict[str, str]:
-    preset = SCENE_DESIGN_PRESETS.get(scene_name)
-    lighting = preset["lighting"] if preset else _safe_lighting_summary(shots)
+    # Build every scene from its own structured asset fields and storyboard
+    # evidence.  No scene name is special-cased: new books follow the same
+    # path as existing books.
+    contract = _build_scene_asset_prompt_contract(location)
+    semantic_layers = contract.get("structured_variant_fields", {}).get("semantic_layers", {})
+    canonical = semantic_layers.get("canonical", {}) if isinstance(semantic_layers, dict) else {}
+    state = semantic_layers.get("state", {}) if isinstance(semantic_layers, dict) else {}
+    look = semantic_layers.get("look", {}) if isinstance(semantic_layers, dict) else {}
+    # A storyboard shot is evidence for shot planning, not authority for the
+    # reusable scene asset.  Do not infer scene lighting from a shot's
+    # lighting field: doing so would silently promote a temporary shot look
+    # (for example "雨夜" or a dramatic key light) into the canonical scene
+    # reference prompt.  Only explicit scene State/legacy scene fields may
+    # contribute here; the formal API contract remains the single renderer.
+    lighting = _safe_scene_text(_flatten_scene_layer_text(state.get("lighting", "")), limit=3) or _safe_scene_text(getattr(location, "lighting_mood", ""), limit=3)
+    color_palette = _safe_scene_text(_flatten_scene_layer_text(look.get("palette", "")), limit=2) or _safe_scene_text(getattr(location, "color_palette", ""), limit=2)
+    style = _safe_scene_text(_flatten_scene_layer_text(look.get("style", "")), limit=2) or _safe_scene_text(getattr(location, "style", ""), limit=2)
+    scene_mood = _safe_scene_text(getattr(location, "scene_mood_zh", ""), limit=2)
+    time_period = _clean(getattr(location, "time_period", ""))
+    key_props_raw = getattr(location, "key_props", "")
+    try:
+        key_props = json.loads(key_props_raw) if isinstance(key_props_raw, str) else key_props_raw
+    except (TypeError, ValueError):
+        key_props = []
+    if not isinstance(key_props, list):
+        key_props = []
+    key_props_text = "、".join(_clean(item) for item in key_props if _clean(item))
     camera_angles = _join_unique([str(shot.camera_angle or "") for shot in shots if str(shot.camera_angle or "").strip()], limit=4)
     camera_movements = _join_unique([str(shot.camera_movement or "") for shot in shots if str(shot.camera_movement or "").strip()], limit=4)
     actions = _join_unique([str(shot.action_process or "") for shot in shots], limit=4)
-    existing_prompt = _safe_scene_text(_clean(location.visual_prompt_zh or location.core_prompt_zh or location.description))
-
-    if preset:
-        base = preset["description"]
-        if scene_name and scene_name not in base:
-            base = f"{scene_name}。{base}"
-        formal_description = f"{base}{' ' + lighting if lighting else ''}".strip()
-    else:
-        base = existing_prompt or f"{scene_name}，依据真实分镜归纳出的场景资产。"
-        formal_description = (
-            f"{scene_name}。{base} "
-            f"{'光线氛围：' + lighting if lighting else ''}"
-        ).strip()
-    reference_prompt = (
-        f"{scene_name} 场景参考图，{SCENE_REFERENCE_MODE_REQUIREMENT}"
-        f"{base} "
-        f"{'光线氛围为' + lighting.rstrip('。') + '。' if lighting else ''}"
-        "写实电影感，空间层次清晰，道具位置明确，材质细节稳定，适合作为后续分镜首帧一致性的生产级场景资产参考。"
-    )
+    base = _safe_scene_text(_flatten_scene_layer_text(canonical)) or f"{scene_name}，依据资产字段和真实分镜证据整理的场景空间。"
+    formal_parts = [f"{scene_name}。{_sentence(base)}"]
+    if key_props_text:
+        formal_parts.append(_sentence(f"固定陈设：{key_props_text}"))
+    if lighting:
+        formal_parts.append(_sentence(f"光线氛围：{lighting}"))
+    if color_palette:
+        formal_parts.append(_sentence(f"色彩基调：{color_palette}"))
+    if time_period:
+        formal_parts.append(_sentence(f"时代与环境质感：{time_period}"))
+    formal_description = " ".join(formal_parts).strip()
+    reference_prompt = contract.get("rendered_prompt_preview") or f"{scene_name} 场景参考图，{SCENE_REFERENCE_MODE_REQUIREMENT}"
 
     return {
         "formal_description": formal_description,
         "lighting_mood": lighting,
         "camera_summary": "；".join(part for part in [camera_angles, camera_movements] if part),
         "action_summary": actions,
+        "reference_layout": "2x2_four_view",
+        "reference_view_schema": [dict(item) for item in SCENE_REFERENCE_VIEW_SCHEMA],
         "reference_prompt": reference_prompt,
-        "negative_prompt": _negative_prompt(location),
+        "negative_prompt": contract.get("reference_negative_prompt") or _negative_prompt(location),
     }
 
 
@@ -391,12 +324,16 @@ def plan_book(book_id: int, model_profile_id: str | None = None) -> dict[str, An
                 "visual_prompt_zh": _clean(location.visual_prompt_zh),
                 "notes": _clean(location.notes),
             },
+            "source_snapshot": scene_location_snapshot(location),
+            "source_fingerprint": scene_location_fingerprint(location),
             "reference_stats": _reference_stats(scene_refs),
             "planned_asset_update": {
                 "formal_description": design["formal_description"],
                 "lighting_mood": design["lighting_mood"],
                 "camera_summary": design["camera_summary"],
                 "action_summary": design["action_summary"],
+                "reference_layout": design["reference_layout"],
+                "reference_view_schema": design["reference_view_schema"],
                 "visual_asset_patch": visual_asset_patch,
             },
             "reference_generation": {
@@ -408,7 +345,7 @@ def plan_book(book_id: int, model_profile_id: str | None = None) -> dict[str, An
 
     planned = [item for item in items if item.get("status") == "planned"]
     plan = {
-        "generatedAt": datetime.utcnow().isoformat(),
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
         "mode": "readonly-scene-reference-plan",
         "book_id": book_id,
         "summary": {

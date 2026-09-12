@@ -1,6 +1,7 @@
 """Configuration module."""
 import os
 import re
+import json
 import logging
 from pathlib import Path
 try:
@@ -85,6 +86,59 @@ API_CORS_ALLOW_CREDENTIALS = _load_bool("API_CORS_ALLOW_CREDENTIALS", False)
 if "*" in API_CORS_ORIGINS and API_CORS_ALLOW_CREDENTIALS:
     logger.warning("API_CORS_ALLOW_CREDENTIALS disabled because API_CORS_ORIGINS contains wildcard '*'.")
     API_CORS_ALLOW_CREDENTIALS = False
+
+# Optional deployment-level API guard. It is disabled by default so the
+# local-only development workflow remains unchanged. Production deployments
+# can send the token as Bearer, X-API-Key, or the configured cookie.
+API_AUTH_ENABLED = _load_bool("API_AUTH_ENABLED", False)
+API_AUTH_TOKEN = os.getenv("API_AUTH_TOKEN", "").strip()
+API_AUTH_TOKEN_COOKIE = os.getenv("API_AUTH_TOKEN_COOKIE", "screenplay_api_token").strip() or "screenplay_api_token"
+API_AUTH_EXEMPT_PATHS = _load_csv("API_AUTH_EXEMPT_PATHS", "/health")
+
+def _load_json_object(key: str) -> tuple[dict[str, str], bool]:
+    raw = os.getenv(key, "").strip()
+    if not raw:
+        return {}, False
+    try:
+        parsed = json.loads(raw)
+    except (TypeError, ValueError):
+        logger.error("Invalid %s; expected a JSON object.", key)
+        return {}, True
+    if not isinstance(parsed, dict):
+        logger.error("Invalid %s; expected a JSON object.", key)
+        return {}, True
+    return ({str(role).strip().lower(): str(token).strip() for role, token in parsed.items() if str(role).strip() and str(token).strip()}, False)
+
+
+# Optional role tokens are a deployment concern.  Keep the legacy single
+# token as an admin-compatible fallback, while allowing a deployment to issue
+# separate viewer/editor/admin tokens without introducing an account database.
+API_AUTH_ROLE_TOKENS, API_AUTH_ROLE_TOKENS_ERROR = _load_json_object("API_AUTH_ROLE_TOKENS")
+
+# Explicit deployment profile used by fail-closed production configuration
+# checks.  Development remains the safe default for local workstations.
+DEPLOYMENT_ENV = os.getenv("DEPLOYMENT_ENV", "development").strip().lower() or "development"
+
+# Optional deployment-level request limiter.  It is deliberately disabled by
+# default so local development and existing test clients retain their current
+# behavior.  When enabled, the API middleware applies a process-local fixed
+# window per caller identity (token hash when available, otherwise client IP).
+# A reverse proxy should still provide the authoritative distributed limiter
+# for multi-process deployments; this guard is the application-level backstop.
+API_RATE_LIMIT_ENABLED = _load_bool("API_RATE_LIMIT_ENABLED", False)
+API_RATE_LIMIT_REQUESTS = max(_load_int("API_RATE_LIMIT_REQUESTS", 120), 1)
+API_RATE_LIMIT_WINDOW_SECONDS = max(_load_int("API_RATE_LIMIT_WINDOW_SECONDS", 60), 1)
+API_RATE_LIMIT_MAX_IDENTITIES = max(_load_int("API_RATE_LIMIT_MAX_IDENTITIES", 10000), 100)
+# The application limiter is only a single-process backstop.  Production
+# operators must explicitly attest that a shared/reverse-proxy limiter is
+# configured before the release gate can pass; this flag does not enable or
+# emulate distributed limiting by itself.
+API_RATE_LIMIT_DISTRIBUTED_ASSERTED = _load_bool("API_RATE_LIMIT_DISTRIBUTED_ASSERTED", False)
+
+# Director Runtime rollout flag.  Keep the compatibility default off until
+# real projects have approved Treatment → Blocking → ShotPlan evidence.  A
+# deployment can opt into the hard gate without changing request payloads.
+REQUIRE_SHOT_PLAN_BY_DEFAULT = _load_bool("REQUIRE_SHOT_PLAN_BY_DEFAULT", False)
 
 # The formal workspace does not depend on the pre-refactor visual node runner.
 # Keep it enabled for existing local installations, but let a production

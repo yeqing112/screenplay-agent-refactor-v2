@@ -2,9 +2,9 @@ name: Production regression
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, "codex/**"]
   pull_request:
-    branches: [main, master]
+    branches: [main, master, "codex/**"]
   workflow_dispatch:
 
 permissions:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   production-regression:
-    name: Prompt, workspace, and real-sample gate
+    name: Deterministic production gate
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -49,4 +49,27 @@ jobs:
         run: npm --prefix web ci
 
       - name: Run production regression gate
+        id: production_gate
         run: npm run check:production
+
+      - name: Upload production gate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-regression-evidence-${{ github.run_id }}
+          path: |
+            artifacts/**
+            web/dist/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Publish production gate summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Production regression"
+            echo "- Gate outcome: ${{ steps.production_gate.outcome }}"
+            echo "- Python deterministic tests, Golden fixtures, runtime configuration, and frontend build are recorded in the uploaded artifact."
+            echo "- External LLM/provider calls are disabled in this Required CI workflow."
+          } >> "$GITHUB_STEP_SUMMARY"

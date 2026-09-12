@@ -526,6 +526,20 @@ export default function ProductWorkspaceTasksSection({
     action: BatchTaskAction,
   ) {
     if (!selectedTask) return
+    if (action === 'batch-generate-frames' || action === 'batch-generate-videos') {
+      const confirmed = typeof window === 'undefined' || window.confirm(
+        action === 'batch-generate-videos'
+          ? '确认批量提交视频生成？该操作可能产生平台费用，并会把结果写回多个镜头。'
+          : '确认批量提交分镜图生成？该操作可能产生平台费用，并会把结果写回多个镜头。',
+      )
+      if (!confirmed) {
+        setTaskActionStateById((current) => ({
+          ...current,
+          [selectedTask.id]: { mode: 'success', action, message: '已取消批量生成。' },
+        }))
+        return
+      }
+    }
     const startedAt = new Date().toISOString()
 
     setTaskActionStateById((current) => ({
@@ -612,6 +626,25 @@ export default function ProductWorkspaceTasksSection({
   async function runRecoveryTaskAction(action: RecoveryTaskAction) {
     if (!selectedTask?.taskId) return
 
+    const recoveryKind = selectedTask.recoveryKind ?? 'video'
+    const requiresExternalConfirmation =
+      (action === 'recovery-restart' || action === 'recovery-regenerate-latest') &&
+      ['frame', 'video', 'reference'].includes(recoveryKind)
+    if (requiresExternalConfirmation) {
+      const confirmed = typeof window === 'undefined' || window.confirm(
+        action === 'recovery-regenerate-latest'
+          ? `确认按当前最新镜头状态重新生成${recoveryKind === 'frame' ? '分镜图' : '视频'}？该操作会再次调用外部模型并可能产生费用。`
+          : '确认重新发起这个失败的生成任务？这会再次调用外部模型，并复用已冻结的输入。',
+      )
+      if (!confirmed) {
+        setTaskActionStateById((current) => ({
+          ...current,
+          [selectedTask.id]: { mode: 'success', action, message: '已取消恢复生成。' },
+        }))
+        return
+      }
+    }
+
     const selectedTaskOptions: WorkspaceTaskRouteOptions = {
       episode: selectedTask.episode ?? selectedTaskEpisode ?? null,
       shotId: String(selectedTask.shotId || selectedTaskShotId || '') || null,
@@ -665,7 +698,11 @@ export default function ProductWorkspaceTasksSection({
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(latestPayload),
+            body: JSON.stringify({
+              ...latestPayload,
+              confirmed: true,
+              allowExternalCall: true,
+            }),
           },
         )
         if (!response.ok) {
@@ -745,10 +782,11 @@ export default function ProductWorkspaceTasksSection({
         taskId: selectedTask.taskId,
         episode: selectedTask.episode ?? 0,
         shotId: String(selectedTask.shotId || selectedTaskShotId || ''),
-        kind: selectedTask.recoveryKind ?? 'video',
+        kind: recoveryKind,
         assetId: selectedTask.assetId,
         assetLabel: selectedTask.creativeTaskMeta?.assetSubject,
         restartCount: selectedTask.recoveryMeta?.restartCount,
+        confirmation: requiresExternalConfirmation ? { confirmed: true, allowExternalCall: true } : undefined,
       })
 
       if (result.outcome === 'restarted') {

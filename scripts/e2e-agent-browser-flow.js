@@ -3,9 +3,10 @@ const path = require('path')
 const { chromium } = require('playwright')
 
 const WEB_URL = process.env.E2E_WEB_URL || 'http://127.0.0.1:5175/'
-// book 75 contains real storyboard rows for validating exact object routing;
-// callers can override it with E2E_AGENT_BOOK_ID when using another fixture.
-const BOOK_ID = Number(process.env.E2E_AGENT_BOOK_ID || 75)
+// Callers may pin a fixture, otherwise select a currently available project
+// with storyboard data at runtime.  This keeps the test valid after old
+// disposable books are cleaned up.
+let BOOK_ID = Number(process.env.E2E_AGENT_BOOK_ID || 0)
 const OUTPUT_DIR = path.join(process.cwd(), 'artifacts')
 
 async function main() {
@@ -47,6 +48,10 @@ async function main() {
   // production UI path, including the confirmation card and navigation event.
   let chatCalls = 0
   const actionAudits = new Map()
+  // Resolve an actual asset from the selected fixture at runtime.  The
+  // browser flow must remain reusable after historical fixtures are cleaned
+  // up; it must never depend on a book-specific asset name or id.
+  let assetHandoffTarget = null
   let projectUpdateStatus = 'unread'
   const projectUpdate = {
     id: 910001, book_id: BOOK_ID, type: 'issue', severity: 'warning',
@@ -118,7 +123,7 @@ async function main() {
       return
     }
     const handoff = action?.operation === 'write_asset_governance'
-      ? { section: 'assets', episode: 1, shot_id: '3', asset_id: '558', label: '前往资产中心审核资产治理', guard: '只承接到资产中心，最终写入仍需原有门禁。' }
+      ? { section: 'assets', episode: 1, shot_id: '3', asset_id: assetHandoffTarget?.id || '', asset_label: assetHandoffTarget?.name || '', label: '前往资产中心审核资产治理', guard: '只承接到资产中心，最终写入仍需原有门禁。' }
       : action?.operation === 'draft_repair'
         ? { section: 'qa', episode: 1, shot_id: '3', label: '前往 QA 工作台审阅候选修复', guard: '只承接到 QA 工作台，最终写回仍需原有门禁。' }
         : { section: 'storyboard', episode: 1, shot_id: '3', label: '回到镜头工作台继续处理镜头 3', guard: '只承接到正式工作台，最终生成仍需原有门禁。' }
@@ -126,6 +131,47 @@ async function main() {
   })
 
   await page.goto(WEB_URL, { waitUntil: 'networkidle' })
+  const origin = new URL(WEB_URL).origin
+  const assetCollections = ['characters', 'locations', 'props']
+  let assetsPayload = null
+  if (!BOOK_ID) {
+    const booksResponse = await page.request.get(`${origin}/api/books`)
+    if (!booksResponse.ok()) throw new Error(`无法读取浏览器回归样本项目：HTTP ${booksResponse.status()}`)
+    const books = await booksResponse.json()
+    const candidates = Array.isArray(books)
+      ? books.filter((book) => Number(book?.storyboard_shots || 0) > 0).concat(books.filter((book) => Number(book?.storyboard_shots || 0) <= 0))
+      : []
+    for (const candidate of candidates) {
+      const candidateId = Number(candidate?.id || 0)
+      if (!candidateId) continue
+      const response = await page.request.get(`${origin}/api/books/${candidateId}/visual-assets`)
+      if (!response.ok()) continue
+      const payload = await response.json()
+      if (assetCollections.some((collection) => Array.isArray(payload?.[collection]) && payload[collection].length > 0)) {
+        BOOK_ID = candidateId
+        assetsPayload = payload
+        break
+      }
+    }
+  }
+  if (!BOOK_ID) throw new Error('没有可用于 Agent 浏览器回归的项目样本')
+  projectUpdate.book_id = BOOK_ID
+  if (!assetsPayload) {
+    const assetsResponse = await page.request.get(`${origin}/api/books/${BOOK_ID}/visual-assets`)
+    if (!assetsResponse.ok()) throw new Error(`无法读取浏览器回归样本资产：HTTP ${assetsResponse.status()}`)
+    assetsPayload = await assetsResponse.json()
+  }
+  for (const collection of assetCollections) {
+    const candidate = Array.isArray(assetsPayload?.[collection]) ? assetsPayload[collection][0] : null
+    if (candidate) {
+      assetHandoffTarget = {
+        id: String(candidate.id ?? candidate.asset_id ?? ''),
+        name: String(candidate.name ?? candidate.asset_name ?? candidate.character_name ?? ''),
+      }
+      break
+    }
+  }
+  if (!assetHandoffTarget?.id || !assetHandoffTarget?.name) throw new Error(`样本 book ${BOOK_ID} 没有可用于承接验收的资产`)
   const projectCard = page.getByText(new RegExp(`#${BOOK_ID}\\s*$`)).first()
   await projectCard.waitFor({ state: 'visible', timeoutMs: 10000 })
   await projectCard.click()
@@ -185,7 +231,7 @@ async function main() {
   await drawer.getByRole('button', { name: '确认并打开工作台' }).click()
   await drawer.waitFor({ state: 'hidden', timeoutMs: 5000 })
   await page.getByText('资产列表', { exact: true }).waitFor({ state: 'visible', timeoutMs: 10000 })
-  await page.getByText('神秘女人', { exact: true }).first().waitFor({ state: 'visible', timeoutMs: 10000 })
+  await page.getByText(assetHandoffTarget.name, { exact: true }).first().waitFor({ state: 'visible', timeoutMs: 10000 })
   await page.screenshot({ path: path.join(OUTPUT_DIR, 'real-browser-agent-handoff-assets.png') })
 
   // QA handoff: route to the real QA workbench and preserve its own review

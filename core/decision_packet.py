@@ -5,7 +5,7 @@ import json
 from typing import Any
 
 EVIDENCE_TIERS = {"locked_fact", "approved_fact", "source_text", "derived_fact", "model_observation", "unknown"}
-DOMAINS = {"script", "storyboard", "asset", "prompt", "continuity"}
+DOMAINS = {"script", "storyboard", "asset", "prompt", "continuity", "director_treatment"}
 
 def normalize_decision_packet(packet: dict[str, Any]) -> dict[str, Any]:
     domain = str(packet.get("domain") or "").strip().lower()

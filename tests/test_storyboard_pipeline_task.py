@@ -3,8 +3,9 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from api.server import app
-from models import Book, Script, Session, StoryboardShot, init_db
+from api.server import app, StoryboardRequest
+import config
+from models import Book, Script, Session, StoryboardShot, ShotPlan, init_db
 
 
 class StoryboardPipelineTaskTests(unittest.TestCase):
@@ -17,6 +18,7 @@ class StoryboardPipelineTaskTests(unittest.TestCase):
         self.book_id = 990801
         with Session() as session:
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
+            session.query(ShotPlan).filter(ShotPlan.book_id == self.book_id).delete()
             session.query(Script).filter(Script.book_id == self.book_id).delete()
             session.query(Book).filter(Book.id == self.book_id).delete()
             session.add(
@@ -54,9 +56,20 @@ class StoryboardPipelineTaskTests(unittest.TestCase):
     def tearDown(self):
         with Session() as session:
             session.query(StoryboardShot).filter(StoryboardShot.book_id == self.book_id).delete()
+            session.query(ShotPlan).filter(ShotPlan.book_id == self.book_id).delete()
             session.query(Script).filter(Script.book_id == self.book_id).delete()
             session.query(Book).filter(Book.id == self.book_id).delete()
             session.commit()
+
+    def test_shot_plan_gate_default_is_configuration_driven(self):
+        original = config.REQUIRE_SHOT_PLAN_BY_DEFAULT
+        try:
+            config.REQUIRE_SHOT_PLAN_BY_DEFAULT = False
+            self.assertFalse(StoryboardRequest(book_id=self.book_id).require_shot_plan)
+            config.REQUIRE_SHOT_PLAN_BY_DEFAULT = True
+            self.assertTrue(StoryboardRequest(book_id=self.book_id).require_shot_plan)
+        finally:
+            config.REQUIRE_SHOT_PLAN_BY_DEFAULT = original
 
     def test_storyboard_task_reports_per_episode_partial_status(self):
         def fake_run(self, episode, resume_after_scene=None):
@@ -101,6 +114,11 @@ class StoryboardPipelineTaskTests(unittest.TestCase):
         self.assertEqual(second["last_completed_scene_name"], "Episode 2 Scene A")
         self.assertEqual(second["failed_scene_name"], "Episode 2 Scene B")
         self.assertIn("已完成到", second["guidance"])
+
+    def test_storyboard_request_can_enforce_approved_shot_plan_gate(self):
+        response = self.client.post("/api/pipeline/storyboard", json={"book_id": self.book_id, "episodes": [1], "requireShotPlan": True})
+        self.assertEqual(response.status_code, 409)
+        self.assertIn("ShotPlan gate", response.json()["detail"])
 
     def test_storyboard_resume_passes_scene_anchor_to_agent(self):
         seen = {}

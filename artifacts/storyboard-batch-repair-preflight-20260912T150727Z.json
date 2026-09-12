@@ -1,0 +1,699 @@
+{
+  "generatedAt": "2026-09-12T15:07:27.503520",
+  "mode": "dry-run-preflight",
+  "tempBookId": 999906,
+  "confirmationToken": "1978882d2a412dda",
+  "status": {
+    "dry_run_only": true,
+    "real_project_mutated": false,
+    "ready_for_human_review": false,
+    "ready_for_apply_command": false,
+    "baseline_created_during_apply": true,
+    "requires_baseline_version_before_apply": false,
+    "missing_rollback_anchor_count": 10,
+    "real_apply_blocker_count": 10
+  },
+  "summary": {
+    "samples": 10,
+    "before_errors": 30,
+    "before_warnings": 30,
+    "after_errors": 3,
+    "after_warnings": 4,
+    "error_reduction": 27,
+    "warning_reduction": 26,
+    "repair_blocked": 1
+  },
+  "results": [
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 1,
+      "shot_id": 1,
+      "scene_name": "红伞倒影",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 62,
+          "motion": 28
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [
+          "missing_structured_character_assets"
+        ],
+        "prompt_lengths": {
+          "static": 263,
+          "motion": 170
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "红伞倒影"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/1/1/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 1,
+      "shot_id": 2,
+      "scene_name": "红伞倒影",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 56,
+          "motion": 32
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 314,
+          "motion": 193
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "红伞倒影"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/1/2/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 1,
+      "shot_id": 3,
+      "scene_name": "红伞倒影",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 59,
+          "motion": 30
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 285,
+          "motion": 190
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "红伞倒影"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/1/3/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 1,
+      "shot_id": 4,
+      "scene_name": "红伞倒影",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 57,
+          "motion": 37
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 57,
+          "motion": 37
+        },
+        "structured_scene_asset_id": ""
+      },
+      "repaired_version": null,
+      "repair_blocked": true,
+      "blocked_message": "Prompt compile was blocked by diagnostics and did not overwrite the previous version.",
+      "diagnostics_status": "blocked",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "红伞倒影"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/1/4/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 1,
+      "shot_id": 5,
+      "scene_name": "红伞倒影",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 45,
+          "motion": 36
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 368,
+          "motion": 172
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "红伞倒影"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/1/5/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 1,
+      "shot_id": 6,
+      "scene_name": "红伞倒影",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 52,
+          "motion": 35
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 376,
+          "motion": 158
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "红伞倒影"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/1/6/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 1,
+      "shot_id": 7,
+      "scene_name": "红伞倒影",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 51,
+          "motion": 43
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 374,
+          "motion": 159
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "红伞倒影"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/1/7/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 1,
+      "shot_id": 8,
+      "scene_name": "红伞倒影",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 49,
+          "motion": 31
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 376,
+          "motion": 188
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "红伞倒影"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/1/8/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 2,
+      "shot_id": 3,
+      "scene_name": "门缝之眼",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 70,
+          "motion": 46
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 273,
+          "motion": 147
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "门缝之眼"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/2/3/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    },
+    {
+      "book_id": 990401,
+      "book_title": "潮汐回声·生产链路测试样本",
+      "episode": 3,
+      "shot_id": 1,
+      "scene_name": "顾沉的暗房",
+      "source_audit": {
+        "issues": [
+          "short_static_prompt",
+          "short_motion_prompt",
+          "missing_structured_scene_asset"
+        ],
+        "warnings": [
+          "scene_name_not_in_static_prompt",
+          "missing_structured_character_assets",
+          "missing_action_beats"
+        ],
+        "prompt_lengths": {
+          "static": 74,
+          "motion": 45
+        },
+        "structured_scene_asset_id": ""
+      },
+      "after_audit": {
+        "issues": [],
+        "warnings": [],
+        "prompt_lengths": {
+          "static": 417,
+          "motion": 133
+        },
+        "structured_scene_asset_id": "4"
+      },
+      "repaired_version": 2,
+      "repair_blocked": false,
+      "blocked_message": null,
+      "diagnostics_status": "warning",
+      "rollback_anchor": {
+        "status": "missing_prompt_version",
+        "message": "真实项目当前没有 prompt version；落库前必须先创建 baseline version 才能安全回滚。",
+        "version_id": null,
+        "version": null,
+        "compile_reason": null
+      },
+      "real_apply_readiness": {
+        "ready": false,
+        "blockers": [
+          {
+            "code": "real_project_missing_bindable_scene_asset",
+            "message": "克隆预检可通过是因为临时项目会补一个临时场景资产；真实项目当前没有可由场景名自动绑定的场景资产，apply 后仍会缺 scene_asset_id。",
+            "scene_name": "顾沉的暗房"
+          }
+        ],
+        "warnings": [],
+        "predicted_scene_asset_id": ""
+      },
+      "proposed_apply": {
+        "method": "POST",
+        "path": "/api/books/990401/storyboard/3/1/compile-prompts",
+        "body": {
+          "compileReason": "batch-quality-repair-confirmed",
+          "force": true,
+          "confirmed": true,
+          "allowExternalCall": true
+        }
+      }
+    }
+  ],
+  "nextStep": "Review this plan. Do not apply to real projects until an explicit apply command requires this confirmation token and creates rollback anchors for every selected shot."
+}

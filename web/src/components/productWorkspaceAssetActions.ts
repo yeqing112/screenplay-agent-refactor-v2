@@ -20,6 +20,7 @@ type AssetSummaryLike = {
   title: string
   category: AssetCategory
   prompt?: string | null
+  referenceNegativePrompt?: string | null
   assetRecordId?: string | number | null
   episodeIds: number[]
   shotIds: string[]
@@ -42,6 +43,16 @@ interface GenerateReferenceParams extends AssetActionDispatchers {
   buildAssetReferenceToken: (title: string) => string
   toVisualAssetType: (category: AssetCategory) => string
   inferredShotIds?: string[]
+  /** Existing selected/locked images are opt-in for refinement only. */
+  useExistingReferences?: boolean
+  sceneLayerMode?: 'combined' | 'canonical' | 'state' | 'look'
+}
+
+export type GenerateReferenceOptions = {
+  /** When true, carry selected/locked asset images as editing references. */
+  useExistingReferences?: boolean
+  /** Scene-only semantic layer to render at generation time. */
+  sceneLayerMode?: 'combined' | 'canonical' | 'state' | 'look'
 }
 
 interface DeleteReferenceParams extends AssetActionDispatchers {
@@ -65,7 +76,7 @@ interface SaveShotBindingsParams extends AssetActionDispatchers {
 }
 
 export type GenerateReferenceOutcome =
-  | { status: 'invalid' | 'error'; taskId?: undefined; episode?: undefined; shotId?: undefined; assetId?: undefined }
+  | { status: 'invalid' | 'error' | 'cancelled'; taskId?: undefined; episode?: undefined; shotId?: undefined; assetId?: undefined }
   | { status: 'pending' | 'done'; taskId: string; episode: number; shotId: string; assetId: string }
 
 function referenceStatusLabel(status?: string) {
@@ -160,6 +171,8 @@ export async function runGenerateSelectedAssetReference({
   buildAssetReferenceToken,
   toVisualAssetType,
   inferredShotIds,
+  useExistingReferences = false,
+  sceneLayerMode = 'combined',
   setAssetActionTone,
   setAssetActionMessage,
   setAssetGenerationState,
@@ -179,9 +192,17 @@ export async function runGenerateSelectedAssetReference({
     selectedAsset,
     inferredShotIds,
   })
-  const referenceImages = buildAssetGenerationReferenceImages(selectedAsset)
+  const referenceImages = useExistingReferences ? buildAssetGenerationReferenceImages(selectedAsset) : []
 
   try {
+    const confirmed = typeof window === 'undefined' || window.confirm(
+      `确认生成资产“${selectedAsset.title}”的参考图？该操作可能产生平台费用，并会生成一张待审核图片。`,
+    )
+    if (!confirmed) {
+      setAssetActionTone('info')
+      setAssetActionMessage('已取消参考图生成。')
+      return { status: 'cancelled' }
+    }
     setAssetGenerationState('saving')
     setAssetActionTone('info')
     setAssetActionMessage(
@@ -202,9 +223,16 @@ export async function runGenerateSelectedAssetReference({
         assetScope: selectedAsset.category,
         assetSubject: selectedAsset.title,
         targetKind: 'image',
+        confirmed: true,
+        allowExternalCall: true,
         prompt,
-        aspectRatio: '1:1',
+        negativePrompt: String(selectedAsset.referenceNegativePrompt || '').trim(),
+        // Scene references are four-view 16:9 boards; character/prop
+        // references keep their square default. The server revalidates this
+        // at the generation boundary for stale or direct API clients.
+        aspectRatio: selectedAsset.category === 'location' ? '16:9' : '1:1',
         referenceImages,
+        sceneLayerMode,
       }),
     })
     if (!startResponse.ok) {

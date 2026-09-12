@@ -250,6 +250,8 @@ export default function ProductWorkspaceSectionContent({
             onNavigateTaskSection={storyboard.onNavigateTaskSection}
             onGenerateStoryboard={storyboard.onGenerateStoryboard}
             isGeneratingStoryboard={storyboard.isGeneratingStoryboard}
+            initialStoryboardEpisode={storyboard.initialStoryboardEpisode}
+            initialStoryboardStep={storyboard.initialStoryboardStep}
           />
         </>
       ) : null}

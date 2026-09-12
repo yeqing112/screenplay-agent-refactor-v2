@@ -55,6 +55,11 @@ class VisualProp(Base):
     shot_ids = Column(Text, default="[]")
     jimeng_ref_name = Column(String, default="")
     negative_prompt = Column(Text, default="")
+    # Layered prop semantics. Legacy descriptive fields remain authoritative
+    # fallbacks so existing assets can migrate incrementally.
+    canonical_facts = Column(Text, default="{}")
+    state_variants = Column(Text, default="{}")
+    look_profile = Column(Text, default="{}")
     asset_status = Column(String, default=ASSET_STATUS_DRAFT)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
@@ -81,6 +86,13 @@ class VisualLocation(Base):
     core_prompt_zh = Column(Text, default="")
     scene_mood_en = Column(Text, default="")
     scene_mood_zh = Column(Text, default="")
+    # Layered scene semantics.  Legacy descriptive fields remain the audit
+    # source; these JSON columns let the compiler distinguish reusable space
+    # facts from per-state and per-look overrides without breaking imports.
+    canonical_facts = Column(Text, default="{}")
+    state_variants = Column(Text, default="{}")
+    look_profile = Column(Text, default="{}")
+    board_spec = Column(Text, default="{}")
     importance = Column(String, default="medium")
     notes = Column(Text, default="")
     shot_ids = Column(Text, default="[]")

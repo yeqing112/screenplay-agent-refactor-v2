@@ -23,6 +23,7 @@ export type RecoveryTaskExecutionInput = {
   assetId?: string
   assetLabel?: string
   restartCount?: number
+  confirmation?: { confirmed: boolean; allowExternalCall: boolean }
 }
 
 export type RecoveryTaskExecutionResult =
@@ -50,7 +51,14 @@ export async function executeRecoveryTaskAction(
   input: RecoveryTaskExecutionInput,
 ): Promise<RecoveryTaskExecutionResult> {
   if (action === 'recovery-restart') {
-    const payload = await restartStoryboardRecoveryTask({ taskId: input.taskId, kind: input.kind, bookId: input.bookId, episode: input.episode, shotId: input.shotId })
+    const payload = await restartStoryboardRecoveryTask({
+      taskId: input.taskId,
+      kind: input.kind,
+      bookId: input.bookId,
+      episode: input.episode,
+      shotId: input.shotId,
+      confirmation: input.confirmation,
+    })
     const newTaskId = String(payload.task_id || '').trim()
     if (!newTaskId) {
       throw new Error('重新发起失败：服务端未返回新的 task_id。')

@@ -112,8 +112,8 @@ cp .env.example .env
 # 编辑 .env 填入你的 API Key
 
 # 启动 API 服务器
-uvicorn api.server:app --host 0.0.0.0 --port 8765
-# API 运行于 http://localhost:8765
+uvicorn api.server:app --host 0.0.0.0 --port 18765
+# API 运行于 http://localhost:18765
 ```
 
 ### 前端
@@ -121,8 +121,8 @@ uvicorn api.server:app --host 0.0.0.0 --port 8765
 ```bash
 cd web
 npm install
-npx vite --host
-# 前端运行于 http://localhost:5173
+npx vite --host --port 5175
+# 前端运行于 http://localhost:5175
 ```
 
 ### 一键开发启动
@@ -131,7 +131,39 @@ npx vite --host
 ./dev.sh
 ```
 
-自动启动后端 (:8765) 和前端 (:5173)。
+自动启动后端 (:18765) 和前端 (:5175)。
+
+### 生产发布门禁
+
+发布前使用统一入口运行配置、样本、可拍性、Prompt 质量和完整回归检查：
+
+```bash
+npm run gate:production
+```
+
+该命令 fail-closed：任一步骤失败都会返回非零，并在 `artifacts/production-release-gate-*.json|md` 生成完整结果。发布门禁要求 `DEPLOYMENT_ENV=production` 或 `staging`；开发环境中的“跳过生产配置检查”不会被视为通过。
+
+---
+
+## 真实 LLM 灰度（受保护）
+
+真实 MiMo 灰度不会随 push/PR 自动执行，也不会进入 Required CI。推荐使用 GitHub Actions 的 `Storyboard real LLM gray` 工作流：
+
+1. 在仓库 `Settings → Environments` 创建环境 `real-llm-gray`，添加 Secret `MIMO_API_KEY`。
+2. 手动运行 workflow 时，将确认输入填写为 `RUN_REAL_LLM_GRAY`；可按需修改 `targets` 和 `shot_count`。
+3. 工作流先创建证据完整的临时样本，再通过 clone-only 验证脚本调用模型；结束后自动回滚并清理临时克隆。
+4. JSON/Markdown 灰度报告会作为 workflow artifact 上传，不创建正式 Prompt Version、图片或视频任务。
+
+定时运行默认关闭。只有显式设置仓库变量 `ENABLE_REAL_LLM_NIGHTLY=true` 才会启用；模型地址和模型名可通过 `MIMO_BASE_URL`、`MIMO_MODEL` 仓库变量覆盖，默认分别为 MiMo 官方兼容地址和 `mimo-v2.5`。
+
+本地安全路径：
+
+```bash
+npm run seed:storyboard-gray-sample
+STORYBOARD_REAL_LLM_GRAY_MOCK=1 \
+STORYBOARD_REAL_LLM_GRAY_TARGETS=990301:1:1,990301:1:2,990301:1:3 \
+npm run validate:storyboard-real-llm-gray
+```
 
 ---
 

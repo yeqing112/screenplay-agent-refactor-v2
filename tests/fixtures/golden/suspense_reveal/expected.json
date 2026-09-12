@@ -1,0 +1,4 @@
+{
+  "min_shots": 2,
+  "required_checks": ["shot_purpose", "information_reveal", "continuity_in", "continuity_out"]
+}

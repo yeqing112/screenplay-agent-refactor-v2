@@ -1,5 +1,433 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-12 — 生产样本登记支持批量原子校验
+
+- `scripts/register-production-sample.py` 的 `--book-id` 现在可重复传入，可一次预览多个候选项目。
+- 批量登记采用“先全部校验、后一次确认、原子写入”策略：任一项目缺少 `books` 主记录、剧本或镜头证据时，整批拒绝且不修改注册表。
+- 重复请求只读复用当前 active/retired 状态；不会创建、复制或补齐镜头，也不会把孤儿证据（如 `991119`）自动激活。
+- 新增两项批量行为回归；`pytest -q tests/test_production_sample_registry.py` 当前为 `12 passed`。
+- 使用 `990401` 与 `990402` 执行 dry-run，按预期整体拒绝（项目不存在且无剧本/镜头证据），`would_write=false`、`written=false`，当前注册表保持不变。
+
+## 2026-09-12 — 近期生产优先任务回归复验
+
+- 批量登记改动后的 `npm run check:production` 已通过：后端 `648 passed`、Golden `5/5`、运行时配置检查、发布门禁不变量和前端生产构建均通过。
+- 本次回归没有调用真实 LLM、图片、视频或对象存储；生产放行门禁仍按真实样本数量、状态覆盖、生产配置和媒体公网可达性独立 fail-closed。
+- 最新 `npm run gate:production` 已完成并生成 `artifacts/production-release-gate-2026-09-12T12-03-24-007Z.{json,md}`：确定性回归通过，样本注册表通过；发布配置、3/30 镜头与状态覆盖、Prompt 30 镜头覆盖、生产真浏览器样本数量仍按事实阻断。
+- 最新 H3 只读预检报告为 `artifacts/minimax-h3-gray-2026-09-12T12-06-36-815934Z.{json,md}`：自动选中 `990400 / E1 / S1`，6 秒时长与 2 张锁定多参考均正确；API Key 已配置，但参考图 `0/2` 可提交，因本地 URL 不具备 provider 可访问性而未调用供应商。
+- 定时数据库备份与恢复演练已复验成功：`artifacts/database-backups/screenplay-20260912T120754Z.sqlite`，源库与恢复库均完整性 `ok`、48 张表一致、`source_mutated=false`，临时恢复库已清理。
+- `npm run test:release-gate` 在本轮样本与备份改动后复验通过，继续保证生产门禁的 fail-closed 不变量。
+- 本地正式工作台运行态复核通过：API `127.0.0.1:18765/health` 返回 200，Web `127.0.0.1:5175/` 返回 200；前后端进程均在监听。
+- 读取正式工作台 `990400` 资产清单并生成只读预检：场景锁定参考图为 asset `13`、人物“林晚”锁定参考图为 asset `8`，两者均为本地 `/api/prototyping/manual-media/...` 地址；清单证据保存在 `artifacts/990400-visual-assets-preflight.json`，未修改资产状态。
+- 两个本地媒体端点均可由本机读取（HTTP 200、`image/png`，约 2.46 MB 与 2.13 MB），问题已明确收敛为“公网/provider 可达性”，不是本地文件缺失。
+- 对象存储迁移只读计划已复核并保存为 `artifacts/990400-storage-migration-plan-preflight.json`：12 个资产需要发布（含锁定参考图），七牛凭据已配置；当前仍使用私有 bucket 的临时 HTTP `clouddn.com` 域名，因此 `migration_apply_supported=false`，系统拒绝永久迁移写入。
+- 对七牛临时域名执行只读 HEAD：域名可连通但返回 HTTP `401`，确认当前阻塞是 bucket 私有访问/缺少签名 URL，而非 DNS 或网络不可达。
+- 补齐 H3 灰度脚本的通用 `--allow-unstable-public-assets` 请求级开关：仅显式用于灰度时才把临时七牛域名传入存储发布和提交 payload，生产门禁仍拒绝该域名；回归 `tests/test_minimax_h3_gray_selection.py` + `tests/test_public_asset_storage.py` 为 `16 passed`，未执行上传或供应商调用。
+- 使用新开关执行只读 H3 预检，报告为 `artifacts/minimax-h3-gray-2026-09-12T12-18-12-742390Z.{json,md}`；报告明确记录临时域名仅灰度允许，未启用发布时仍为 `0/2`、未调用外部服务。
+- H3 临时域名灰度开关改动后的完整 `npm run check:production` 已通过：后端 `649 passed`、Golden `5/5`、发布门禁不变量、运行时配置检查和前端生产构建均通过。
+- 进一步修正 H3 灰度发布路径：所有参考图/首帧发布现在强制 `force_storage=true`，临时域名不能绕过安全门；完整回归仍为 `649 passed`、Golden `5/5`、前端构建通过。
+- H3 脚本新增独立存储发布确认令牌 `MINIMAX_H3_STORAGE_CONFIRM=CONFIRM_MINIMAX_H3_REFERENCE_PUBLISH`；请求发布但未提供令牌时只生成阻塞报告，不执行七牛上传。专项脚本回归现为 `4 passed`。
+- 对象存储二次确认与强制安全门改动后的完整 `npm run check:production` 已通过：后端 `650 passed`、Golden `5/5`、发布门禁不变量、运行时配置检查和前端生产构建均通过。
+- 在未设置 `MINIMAX_H3_STORAGE_CONFIRM` 时执行“请求发布 + 临时域名灰度”预检，报告 `artifacts/minimax-h3-gray-2026-09-12T12-33-21-736253Z.json` 明确显示 `storage_performed=false`、`actual_provider_submission=false`，并返回存储确认阻塞；验证了不会误上传。
+- 存储发布确认门的新增回归后的完整 `npm run check:production` 已通过：后端 `651 passed`、Golden `5/5`、发布门禁不变量、运行时配置检查和前端生产构建均通过。
+- 正式工作台 H3 UI 专项回归通过：机器提示词导出面板与分镜工作台共 `39 tests passed`，临时七牛开关、多参考模式和提交摘要交互均保持可用。
+- 优化 H3 真实提交确认框：根据当前模式明确提示“锁定参考图将上传至对象存储”或“临时七牛地址仅本次灰度”，避免费用确认与资产上传确认混淆；前端专项测试 `39 passed`，生产构建通过。
+- `npm run e2e:business` 隔离业务回归通过：正式工作台主流程、QA 修复/回滚和验收记录均通过，fixture `999902` 已自动清理，未调用外部服务。
+- `npm run e2e:machine-prompt-export` 隔离真浏览器回归通过：H3 多参考字段、WebUI 导出和编辑后导出均通过，fixture `999903` 已自动清理。
+- 当前真实样本只读真浏览器巡检通过：`990400` 的 10 个正式工作台模块可达、无业务阻塞、未写库；报告：`artifacts/e2e-real-sample-regression-2026-09-12T12-49-26-481Z.json`。该结果仍不替代生产要求的 3 项目/30 镜头门禁。
+- 正式工作台媒体预检（`990400 / E1 / S1`，临时七牛灰度开关开启）返回 `ready_for_real_submit=true`、`reference_will_be_published_before_submit`，且 `mutated=false`、`provider_call=false`；证据：`artifacts/990400-h3-media-preflight-unstable.json`。
+
+## 2026-09-12 — 生产回归最新结果
+
+- `npm run check:production` 实跑通过：后端 `643 passed`、Golden `5/5`、运行时配置检查和前端生产构建全部通过。
+- 真实 active 镜头仍为 `3/30`，因此可拍性/提示词质量门禁继续 fail-closed；本次回归未调用真实 LLM、图片、视频或对象存储。
+- 新增 `npm run gate:production` 统一运行生产配置、样本注册、可拍性、Prompt 和完整回归门禁；失败步骤不会短路，并生成可追溯 JSON/Markdown 报告。
+- 新增 `npm run test:release-gate`，回归发布门禁的生产环境 fail-closed 规则。
+- 统一门禁实跑结果按预期阻断：当前本地为开发环境且仅有 3/30 个真实镜头；完整回归为 641 passed、Golden 5/5。
+- 最新统一门禁报告已生成，结构化列出 `needs_information`、`conflict` 和样本数量阻塞原因；没有触发外部模型或媒体调用。
+- 备份调度能力加入后的统一门禁复核已完成，完整回归仍通过，发布质量门禁继续按真实样本不足 fail-closed。
+- 只读数据库核对确认其余历史书籍没有剧本来源，未将其纳入 active 样本或用于凑足质量门禁数量。
+- 样本注册表校验新增 `available_candidates` 只读字段，帮助发现真实项目但不自动激活或修改注册表。
+- 新增受控 `register:production-sample`：仅凭已有剧本/镜头证据登记真实项目，默认预览，显式确认后原子写入；不创建或复制镜头。
+- 新增 `backup:database:scheduled` 时间戳备份入口，支持完整性校验和可选恢复演练；不覆盖、不删除源库或旧备份。
+- `check:production` 现纳入发布门禁不变量测试，避免门禁逻辑回归而主生产回归仍显示通过。
+- 定时备份新增跨平台 Node 转发入口与 `backup:database:scheduled:restore-drill` 稳定命令，修复 Windows npm 吞掉长参数导致恢复演练未实际执行的问题。
+- 真实 Prompt Compiler 灰度自动范围改为读取 `production-sample-registry.json` 的 active 项目；不再隐式扫描旧书号，新增 active 范围选择回归。
+- 上述改动后的完整生产回归为 `643 passed`、Golden `5/5`，前端生产构建通过；真实样本与生产环境配置门禁仍按事实 fail-closed。
+- 最新统一 `gate:production` 报告为 `artifacts/production-release-gate-2026-09-12T10-57-48-356Z.{json,md}`；完整回归 `643 passed`，发布阻塞条件未变化。
+- 正式工作台真浏览器只读回归通过：`990400` 的 10 个模块可达且无业务阻塞；仍只有 3 个真实镜头，不能替代全局 30 镜头门禁。
+- H3 只读预检自动选中 active 样本 `990400 / E1 / S1`，确认 6s 时长和 2 张多参考图；因参考图尚未发布为 provider 可访问 URL 而保持 fail-closed，未调用供应商。
+- 新增 `npm run e2e:real-samples:release`，生产回归强制至少 3 个真实项目样本；普通 `e2e:real-samples` 仍保留本地开发自适应模式。
+- 已用当前数据库验证该入口在 1 个样本时按预期 fail-closed（`expected at least 3`）。
+- `gate:production` 已纳入生产真浏览器回归步骤，统一报告不会遗漏 UI 业务证据。
+- 使用隔离占位值验证 `config:verify:production` 的 staging 全通过路径；正式环境仍必须注入真实密钥和稳定 HTTPS 域名。
+- 门禁报告增强证据可追溯性：统一解析子门禁 JSON 返回的 `report`/`artifact` 路径，直接关联可拍性和 Prompt 审计报告，不扫描 artifacts 目录猜测旧报告；新增回归覆盖该行为。
+- 样本注册校验新增只读 `orphan_evidence` 诊断：发现脚本/镜头存在但缺少 `books` 主记录的孤儿证据时明确排除出候选，不自动激活或删除；当前发现 `991119`，不影响 active 样本集合。
+- 生产安全门禁新增 `API_RATE_LIMIT_DISTRIBUTED_ASSERTED`：只有共享/反向代理限流实际部署并由运维显式声明后，staging/production 配置才可通过；应用层固定窗口限流仍仅作为单进程兜底。正反例回归已覆盖。
+- 生产安全配置校验新增模板占位值和示例域名拒绝规则，避免 `<secret>`、`<32+ chars>`、`example.com` 等值在部署时造成假绿；开发环境默认配置不受影响。
+- 安全收口后完整 `npm run check:production` 复验通过：后端 `646 passed`、Golden `5/5`、运行时配置检查和前端生产构建均通过。
+- 最新 `npm run gate:production`（11:29）仍按事实阻断：开发环境、3/30 真实镜头、缺少 `needs_information`/`conflict`、生产真浏览器样本不足；确定性回归继续通过。
+
+## 2026-09-12 — 可拍性门禁增加状态覆盖校验
+
+- `audit:shot-planning:gate` 现在同时要求至少 30 个真实 active 镜头，以及意图 `ready / needs_information`、节拍 `ready / conflict` 四类状态覆盖。
+- 缺少样本数量或状态覆盖时报告照常落盘并 fail-closed；规则不依赖书号、角色、镜头或关键词特例。
+- 新增门禁纯函数回归测试；本地生产回归 `617 passed`、Golden `5/5`、运行时配置检查和前端生产构建均通过。
+- 只读生产就绪接口复核 `990400` 为 `pass`（3 镜、2 资产、0 blocker、0 warning）；该局部结果不替代全局样本数量与状态覆盖门禁。
+
+## 2026-09-12 — 可配置 API Token Guard
+
+- 新增默认关闭的 API Token Guard；启用后统一保护 `/api/*`，支持 Bearer、`X-API-Key` 和配置 Cookie，健康检查与 CORS 预检保持可用。
+- 未配置或短于 32 字符的 Token 会 fail-closed；本地默认配置和既有前端行为不变。
+- 细粒度角色授权、密钥轮换和生产反向代理注入仍是上线前待办。
+
+## 2026-09-12 — 可选 API 角色授权
+
+- 新增 `API_AUTH_ROLE_TOKENS` JSON 配置，支持 `viewer`、`editor`、`admin` 三档令牌；GET/HEAD 要求 viewer，写入方法要求 editor，admin 兼容全部方法。
+- 角色配置出现未知角色或弱令牌时 fail-closed；未配置角色令牌时保留原单 Token admin 兼容路径。
+
+## 2026-09-12 — 生产安全配置放行检查
+
+- 新增 `npm run config:verify:production`，生产/预发布环境强制检查认证、角色令牌、HTTPS CORS、限流和稳定对象存储域名；开发环境明确跳过并输出原因。
+- 补齐 `DEPLOYMENT_ENV` 运行配置读取，并通过安全配置正/反例回归。
+- 生产安全检查新增旧执行层保护：正式环境必须关闭 `ENABLE_LEGACY_NODE_API`。
+
+## 2026-09-12 — 生产回归复核
+
+- 完整 `check:production` 实跑通过：后端 626 项测试、Golden 5/5、运行时配置检查和前端生产构建全部通过。
+- 可拍性与 Prompt 质量门禁仍保持独立 fail-closed，原因是当前真实 active 镜头只有 3 个，未达到 30 个及异常状态覆盖要求。
+- 加入旧执行层生产门禁后的完整回归为后端 627 项测试通过、Golden 5/5、配置检查和前端构建通过。
+- 可拍性回放报告新增发布阻塞与下一步动作字段，统一由实际证据推导，便于普通用户定位缺口。
+- 相关改动后的完整生产回归为后端 629 项测试通过、Golden 5/5、配置检查和前端构建通过。
+- 新增只读生产样本注册表校验，确认 active 项目存在真实剧本和镜头证据且不与 retired 集合重叠。
+- 场景资产 readiness 审计默认范围改为 active 样本注册表，移除硬编码历史书号，避免非生产项目污染上线结论。
+- 加入注册表校验后的完整生产回归为后端 632 项测试通过、Golden 5/5、配置检查和前端构建通过。
+- 新增生产部署放行运行手册，明确认证、HTTPS、限流、旧执行层关闭、备份恢复和上线抽查步骤。
+
+## 2026-09-12 — 可选 API 限流兜底
+
+- 新增默认关闭的 `API_RATE_LIMIT_*` 配置，对 `/api/*` 按 token 哈希或客户端 IP 施加固定窗口限流。
+- 超限返回 `429`、`Retry-After` 和 `X-RateLimit-*`；健康检查与 CORS 预检不计数。
+- 这是单进程应用层兜底，多进程生产环境仍需由反向代理或共享限流器提供分布式策略。
+
+## 2026-09-12 — SQLite 备份与恢复前置
+
+- 新增 `npm run backup:database -- --output <path>`，通过 SQLite 在线 backup API 创建备份并校验源库/目标库完整性。
+- 默认拒绝覆盖已有备份，采用临时文件和原子替换；源数据库不会被删除或修改。
+- 新增备份工具回归测试；定时、异地备份与恢复演练仍需在部署环境完成。
+- 增加跨平台 Node 转发入口，修复 Windows npm 对 `--output` 参数转发不稳定的问题；文档命令现在可直接使用。
+- 新增 `verify:database-restore` 非破坏性恢复演练：在临时 SQLite 中恢复备份并校验完整性与表清单，不接触源库。
+
+## 2026-09-12 — 外部生成确认与多参考灰度预检收口
+
+- 分镜图片/视频真实 Provider 请求统一要求 `confirmed=true` 与 `allowExternalCall=true`；未确认时不创建任务、不调用供应商。
+- H3 灰度预检自动发现当前有效样本，默认使用多参考图，首帧仅在显式 `--use-first-frame` 时启用。
+- 真实浏览器 Agent E2E 自动读取当前项目和资产，不再依赖已清理的历史样本。
+- 生产门禁后端 `601 passed`、Golden `5/5`、前端构建通过；真实媒体调用仍需单独确认。
+
+## 2026-09-12 — 真实业务 Director Runtime 验收
+
+- 使用 `990400 / 第1集` 完成 DirectorTreatment → SceneBlocking → ShotPlan 批准链复核。
+- Storyboard readiness 为 `allowed=true`；Director Benchmark `run_id=3` 得分 `100/100`，6 项检查全部通过。
+- 本次为确定性验收，不调用外部 LLM、图片或视频供应商；默认 ShotPlan 强制门禁暂不自动开启。
+
+## 2026-09-12 — 990400 媒体提交前置检查
+
+- `990400 / 第1集 / 镜头1–3` 的 H3 多参考预检确认当前锁定场景与人物参考图均存在，但默认状态因本地 URL 不可被供应商访问而阻断。
+- 在请求级显式允许七牛临时域名后，三镜预检均为 `ready_for_real_submit=true`，仅保留“提交前将发布”警告；未上传对象、未创建任务、未调用供应商。
+- 分镜台预检阻断提示改为通用可行动文案：明确区分稳定 HTTPS 域名与仅限灰度的临时七牛地址，并保留重新预检入口；不改变后端阻断或外部调用门槛。
+
+## 2026-09-12 — 云端 CI 实跑延期
+
+- 根据当前本地优先推进节奏，暂缓触发 GitHub 云端 CI；现有 workflow、artifact 归档和 Step Summary 配置保留不变。
+- 本地生产门禁继续作为当前验证依据；云端干净环境实跑仍列为正式上线前必做项，不标记为已完成。
+
+## 2026-09-12 — 正式工作台导航可访问性补强
+
+- 左侧正式工作台导航为当前页面项增加 `aria-current="page"`，让读屏器和自动化工具能识别当前位置。
+- 所有导航按钮补齐统一 `focus-visible` 焦点环，键盘用户可清楚看到当前焦点且不改变既有点击、门禁和路由行为。
+- 新增 `ProductWorkspaceShell` 导航可访问性回归测试；前端全量 `49 files / 288 tests`、生产构建和 `npm run check:production` 均通过。
+
+## 2026-09-12 — 运行态与视频输入详情默认折叠
+
+- 分镜台“生成与恢复”保留两张主动作卡，将当前镜头运行态、任务 ID 和恢复列表默认收进“执行详情”。
+- 首帧、多参考图、编译载荷来源和任务模式默认收进“视频输入详情”，降低普通用户的首屏技术噪声；展开后信息与原逻辑完全一致。
+- 不改变生产门禁、显式确认、任务回收或审计；分镜台专项测试 28/28、前端生产构建通过。
+
+## 2026-09-12 — 分镜台状态文案统一
+
+- “当前资产状态”不再直接显示 `pending`、`ref_ready` 等内部状态码，统一映射为“待准备”“参考图可用”“已锁定”等普通用户可读文案。
+- 未知状态统一显示“待确认”，原始状态仍由后端和诊断链路保留，不改变门禁判断。
+- 前端全量回归 `48 files / 286 tests`，生产构建通过。
+- 扩展状态映射后重新执行完整 `npm run check:production`：后端 `600 passed`、Golden `5/5`、运行时配置校验和前端生产构建全部通过。
+- 状态映射扩展后的再次门禁复核仍为后端 `600 passed`、Golden `5/5`、前端构建通过；未调用真实 LLM 或媒体供应商。
+
+## 2026-09-12 — 正式工作台导航分组状态同步
+
+- 核对正式工作台实现，确认左侧导航已按“创作 / 生产与检查 / 管理”分组；现有路由、入口和门禁保持不变。
+- 任务计划同步标记该项完成；模型/存储进一步拆分仍保留为后续工作。
+
+## 2026-09-12 — 分镜台步骤化 UI 生产门禁复核
+
+- 在最近的动作卡与素材步骤改动完成后重新执行完整 `npm run check:production`。
+- 后端确定性回归 `600 passed`，Golden 回归 `5/5`，运行时配置校验通过，前端全量 `48 files / 275 tests` 与 TypeScript/Vite 生产构建通过。
+- 同步修正文档中的过时下一阶段描述，明确当前剩余工作为真实浏览器视觉证据、运行态信息继续收敛、真实业务项目的 Director Runtime 验收和 CI/nightly 固化。
+- 本次仅更新验证记录与计划文档，不改变生产数据、模型配置或外部调用边界。
+- 真实样本 Playwright 回归已复跑 `990400`：10 个工作台模块可达、无阻塞、无控制台业务错误；报告见 `artifacts/e2e-real-sample-regression-2026-09-12T03-09-39-341Z.json`。
+- 同步任务计划：将已落地的手动/nightly 灰度 workflow、M1 DirectorTreatment 切片和第二次 MiMo clone-only 灰度标记为完成；保留 CI 实际运行、真实业务 Director Runtime 批准和默认 ShotPlan 门禁作为未完成项。
+- active 样本提示词审计已复跑 `990400` 的 3 个镜头：`0 errors / 0 warnings`；报告见 `artifacts/storyboard-prompt-real-sample-audit-2026-09-12T03-19-44-953Z.json`。
+
+## 2026-09-12 — CI 生产门禁证据归档
+
+- Required CI 在生产门禁后新增 artifact 上传，保存 `artifacts/**` 与前端 `web/dist/**`，保留 14 天，便于发布审查和失败回放。
+- 新增 GitHub Step Summary，明确门禁结果、覆盖范围和“禁止外部 LLM/provider 调用”的安全边界。
+- 不改变门禁判定逻辑；CI 实际云端运行仍需在仓库环境中完成一次验证。
+
+## 2026-09-12 — 分镜图/视频动作卡拆分
+
+- 生成与恢复区域默认展开，首帧和视频动作拆成两张独立卡片，分别说明用途、前置条件和当前步骤，避免普通用户误把“生成视频”当作首帧动作。
+- 视频卡在没有已采纳分镜图时直接展示可读提示，并继续沿用原有门禁；任务回收和创作画布入口保留在动作区上方。
+- 详细运行态、多参考输入摘要和恢复信息仍保留在面板内，不改变真实生成、确认和审计逻辑。
+- 更新分镜台组件断言；前端全量测试 `48 files / 274 tests` 和生产构建通过。
+
+## 2026-09-12 — 准备素材步骤承接绑定详情
+
+- 镜头工作台的场景、人物、道具绑定详情从“更多工具”迁移到“准备素材”，与参考图预览和媒体上传放在同一生产步骤。
+- 绑定详情明确显示资产 ID、变体、参考状态、绑定来源和引用 token；修改入口继续统一回资产中心，避免在镜头页出现两套写入逻辑。
+- “更多工具”保留诊断、Prompt 版本、回滚和编译上下文等专家能力，减少普通用户首屏认知负担。
+- 前端全量测试 `48 files / 274 tests`、生产构建和生产回归均保持通过。
+
+## 2026-09-12 — 分镜台镜头/步骤 URL 承接
+
+- 正式工作台支持 `section=storyboard&episode=<集数>&shot=<镜头>&step=<步骤>` 上下文；刷新或分享链接后可直接回到对应镜头和步骤。
+- 选项卡切换会用 `history.replaceState` 更新 URL，不新增历史噪音，也保留宿主应用已有查询参数。
+- 仅接受已知工作台和步骤值，非法参数安全回退到默认工作台/“看懂镜头”；不改变生产门禁或外部调用边界。
+- 机器提示词导出真浏览器回归已增加 URL 上下文断言。
+
+## 2026-09-12 — 机器提示词导出回归改为独立临时夹具
+
+- `e2e:machine-prompt-export` 不再依赖已清理的 `book 75` 或任何正式项目，默认使用保留号段的临时项目 `999903`。
+- 新增 `scripts/seed-machine-prompt-export-fixture.py`，为回归准备锁定改编方向、剧本放行、结构化镜头、锁定场景/人物参考图和 baseline Prompt Version。
+- 测试开始前自动创建夹具，结束后删除夹具、导出记录、提交意图任务、KV 状态和脚本决策文件；支持 `E2E_MACHINE_PROMPT_BOOK_ID` 显式指定隔离号段。
+- 真实浏览器机器提示词导出回归通过；前端 `48 files / 274 tests`、生产构建和 `npm run e2e:business` 均通过。
+
+## 2026-09-12 — 镜头工作台步骤化 UI 第一阶段
+
+- 将镜头工作台首屏重组为六个按生产顺序排列的选项卡：看懂镜头、准备素材、生成分镜图、生成视频、检查结果、更多工具。
+- 当前镜头的状态、唯一主动作和上游放行状态保持在步骤内容上方；导演分镜语言默认位于“看懂镜头”，机器提示词、诊断、版本、恢复和导出等低频能力仅在对应步骤或“更多工具”中展开。
+- 步骤标签显示可读的完成标记，并保留已有生成、采纳、验收和参考资产状态；切换镜头会恢复到“看懂镜头”，避免把上一个镜头的操作上下文误带入当前镜头。
+- 步骤导航补齐标准 Tab 语义、面板关联和键盘方向键/Home/End 切换；任务中心或创作画布可通过 `initialStoryboardStep` 将用户直接带到对应步骤。
+- 未删除任何生产能力，未改变后端生产门禁、外部调用确认、多参考视频输入、版本回滚或审计边界。
+- 前端组件测试覆盖步骤导航语义与 active panel；全量前端测试、生产构建和正式工作台业务回归均通过。
+
+## 2026-09-12 — 临时七牛域名灰度放行链路补齐
+
+- 正式工作台新增请求级“本次灰度允许使用临时七牛公网地址”开关，默认关闭；切换镜头时自动清除，避免授权意外复用。
+- 该开关同时透传只读媒体预检与真实 H3 提交，只有显式勾选并通过二次确认后才允许使用七牛临时域名；生产环境仍要求稳定 HTTPS 自定义域名。
+- 修正机器提示词真实提交接口此前未向多参考图公网化函数透传灰度放行参数的问题，避免 UI 已授权但后端仍拒绝。
+- 只读媒体预检现在会识别已配置的对象存储发布桥：本地/不可达参考图在存储可发布且已明确灰度授权时标记为“提交前将发布”，不再错误阻断；真正上传、签名和可读性仍由提交阶段再次权威校验。
+- 将灰度授权与“真实提交 H3”从深层“更多导出”中提升到机器提示词卡片顶部；授权仍默认关闭并按镜头重置，但用户无需展开多层面板即可理解和执行主动作。
+- 未改变模型默认配置、导演分镜、锁定资产或任何真实生成任务；前端构建与相关后端回归通过。
+
+## 2026-09-12 — 场景资产后批量提示词修复预检与生产回归
+
+- 对 `990301 / 990306 / 990400` 共 8 个镜头重新执行只读审计：历史数据仍为 `24 error / 80 warning`；批量克隆式预检修复后为 `0 error / 4 warning`。
+- 剩余 4 条 warning 均来自 `990306` 两个旧的“仅场景、无角色、无动作”测试镜头：其 `structured_shot` 未声明角色资产与 action beats。系统保留为源数据质量债，不用书号、镜头号或关键词特例静默过滤，也未修改真实项目。
+- `npm run check:production` 通过：后端 `598 passed`、Golden 回归 `5/5`、运行时配置校验通过、前端生产构建通过。
+- 真实 Prompt 批量 apply 仍未执行；必须在用户明确确认后，使用最新预检报告的确认令牌，并为每个镜头建立可回滚基线。
+
+## 2026-09-12 — 8 镜头确定性 Prompt 修复落库
+
+- 经用户确认，按预检令牌对 `990301 / 990306 / 990400` 共 8 个镜头执行确定性 Model Adapter 修复；未调用外部 LLM，不生成图片或视频。
+- 每个镜头均先创建 `batch-quality-repair-current-baseline` 回滚版本，再写入新的 Prompt Version；8/8 个基线与新版本关系校验通过。
+- 后审计结果为 `0 error / 4 warning`；剩余 warning 仍是 990306 两个旧测试镜头缺少结构化角色范围与 action beats 证据，未被静默过滤。
+- 生产 readiness 复核显示 990306 的两个镜头仍为 `blocked`：缺少 `core_action`、入/出镜状态，不能仅凭补齐提示词放行；该项目需先补导演分镜证据或从生产验收样本中剔除。
+- 后审计报告：`artifacts/storyboard-prompt-real-sample-audit-2026-09-11T16-59-44-617Z.json`；apply 报告：`artifacts/storyboard-batch-repair-apply-20260911T165930Z.json`。
+- 真浏览器样本巡检适配了已清理旧项目的本地数据库：样本不足 5 个时默认只运行实际存在的样本，发布/CI 可用 `E2E_REAL_SAMPLE_REQUIRE_MINIMUM=1` 恢复硬门槛；只读巡检对 Agent 更新 reconcile 请求使用本地 mock，避免自动通知写入被误判为业务变更。当前 `990400` 单样本巡检通过，10 个工作台模块可达、无控制台错误。
+- 新增根目录 `production-sample-registry.json`，将 `990306` 标记为 retired（保留数据库与历史报告，不再进入默认生产样本）；显式样本列表也会遵守该注册表。用 `990306,990400` 验证时仅选择 `990400`，真浏览器巡检通过。
+- Prompt 审计默认读取该注册表的 active 样本；当前 `npm run audit:storyboard` 审计 `990400` 的 3 个镜头，结果 `0 error / 0 warning`。
+- 经用户确认完成真实 `mimo-v2.5` clone-only 灰度：`990400 / 第1集 / 镜头1–3`，3/3 通过，after-audit `0 error / 0 warning`，无 repair、无 fallback，源项目未写入；总耗时 50.689 秒，缓存命中率约 8.86%（8192 / 92455 prompt tokens）。
+- 灰度报告：`artifacts/storyboard-real-llm-gray-20260911T201321Z.json`；模型主机为 `api.xiaomimimo.com`，3 次请求均 HTTP 200、JSON 解析成功。
+
+## 2026-09-11 — 场景参考图计划防止镜头风格泄漏与批量待确认清单
+
+- 修正只读场景参考图计划：分镜的临时灯光/天气只作为分镜证据，不再隐式写入可复用场景资产或参考图提示词；场景提示词仅消费场景四层语义及明确的兼容字段。
+- 新增 `scripts/merge-scene-reference-plans.py` 与 `review:scene-reference-batch`，可把任意多个只读场景计划合并为一份人工审核清单，带批量指纹、影响镜头、完整提示词和 API 请求草案。
+- 批量清单明确 `writes_performed=false`、`external_calls_performed=false`，不会自动生成图片、调用模型或替换锁定参考图。
+- 新增回归测试，验证计划脚本与正式 `_build_scene_asset_prompt_contract` 输出完全一致，并阻止镜头级灯光泄漏。
+- 场景计划新增源资产快照指纹；资产在计划生成后发生变化时，生成排队和计划应用都会拒绝继续，要求重新生成只读计划。
+
+## 2026-09-12 — 三本样本场景参考图真实生成完成
+
+- 经用户确认，真实提交并完成 `990301 / 990306 / 990400` 三个场景参考图任务；新图均保存到本地 `uploads/manual-media` 并登记为 `candidate`。
+- 质量审计确认新候选图均为横向可用尺寸，并提供 `candidate_reference_dimensions` 与 `landscape_candidate_count`；系统仍不自动选中、锁定或替换原有参考图。
+- 当前待人工决策：每个场景选择候选图后，再执行受保护的选中/锁定与场景计划应用。
+
+## 2026-09-12 — 三本样本场景参考图锁定与门禁恢复
+
+- 经用户确认锁定 `990301#11`、`990306#12`、`990400#13`；旧失效锁定图降为候选并保留，未删除任何文件。
+- 三份场景计划已通过快照指纹校验并正式写入，场景描述、负向约束和镜头绑定同步更新。
+- 开启尺寸校验后，三本样本从 `3` 个生产阻断恢复为 `0`，受影响的 `8` 个镜头全部满足场景资产 readiness。
+- Prompt Compiler + 场景资产专项回归 `48 passed`；未触发视频生成。
+- 针对这 3 本样本的 8 个镜头运行只读提示词审计：历史数据仍有 `24 error / 80 warning`；克隆式批量预检可将 error 降为 `0`。8 个镜头当前没有历史 Prompt Version，但受保护 apply 会在每个镜头编译前创建当前快照基线，报告已明确标注该行为。
+
+## 2026-09-11 — 场景资产四层语义编译
+
+- 新增 `SceneCanonical / SceneState / SceneLook / SceneBoardSpec` 四层语义字段，旧 `VisualLocation` 字段继续作为兼容与审计来源。
+- 场景基准图默认空间结构优先；状态和摄影 Look 仅在显式提供时叠加，避免雨夜、潮湿、冷暖调色永久污染场景身份。
+- 新增确定性场景提示词检查，并在资产中心展示状态/风格混入本体及空间事实缺失提醒。
+- 新增迁移 `h1b2c3d4e5f6_add_layered_scene_semantics.py`；不自动修改旧资产或已锁定参考图。
+- 资产中心新增四层语义编辑器与生成模式选择器；服务端支持 `combined/canonical/state/look` 按层渲染，保存与生成均不覆盖旧锁定图。
+- 道具资产新增 `PropCanonical / PropState / PropLook` 分层字段、迁移和可视化编辑器，按层生成与场景使用同一显式契约。
+- 新增只读场景语义审计脚本 `audit:scene-semantic-lint`；当前样本 3 个场景资产发现 2 个历史状态混层 warning、无阻断，不自动迁移或改写。
+- 场景资产中心新增只读“参考图质量计划”，识别失效/缺失主图并列出候选，锁定图仍需人工审核后替换。
+
+## 2026-09-11 — 场景资产参考图统一为四视图场景设定板
+
+- 修正场景资产仍沿用旧“单张 16:9、不分格、不做多视角”合同的问题；该合同与项目此前约定的场景空间多视图参考结构不一致。
+- 场景参考图现在统一编译为一张 16:9 横向 `2×2` 四宫格：左上主视角空间全景、右上反向视角、左下侧向视角、右下关键细节视角。
+- 四格强制继承同一场景、时间、天气、固定陈设、材质和光线方向；场景中不出现人物、角色、人脸、文字或标题。
+- 资产接口、场景参考图计划脚本和生成排队边界使用同一确定性模板；服务端会在排队前重编译场景提示词并强制 `aspect_ratio=16:9`，避免旧页面或直接 API 调用绕过合同。
+- 场景负向约束不再禁止“四宫格/多视角”，改为禁止额外分格、错位拼图、三/六/九宫格等冲突布局。
+- 旧场景参考图不会自动变更；需要在资产中心按新模板重新生成并重新审核/锁定。
+- 过滤导入/就绪流程生成的“最小场景资产”占位描述：该操作元数据仍保留在原始审计字段，但不会再进入供应商提示词；计划脚本与正式 API 共用同一通用占位识别规则。
+
+## 2026-09-11 — SHAPI GPT Image 2 渠道可用性诊断
+
+- 发现当前 SHAPI 账户 `/v1/models` 未提供 `gpt-image-2`，因此生成请求被上游以 `No available channel` 拒绝；不是提示词或六宫格编译问题。
+- 模型连接检测现在会把“模型不在账户目录”判为不可用并返回可用模型列表；生图适配器也会给出明确的渠道诊断，不再建议无效重试。
+
+## 2026-09-11 — 人物资产生图恢复六宫格编译合同
+
+- 修正人物资产接口直接转发旧 `visual_prompt_zh` 的问题；原文继续保留为审计源，供应商请求统一使用确定性的六视图/六宫格人物定妆编译结果。
+- 人物参考图负向约束补充禁止单人海报、证件照、标题/姓名文字、广告排版、单视图等内容，降低生成海报式肖像的风险。
+- 前端资产摘要优先采用后端编译后的 `rendered_prompt_preview`；场景和道具的既有提示词优先级不变。
+- 新增生成入口级兜底：即使浏览器携带旧提示词，服务器在排队前也会按人物资产快照重新渲染六宫格提示词，并记录原始输入与替换标记，避免旧页面状态再次提交单人海报提示词。
+
+## 2026-09-11 — 资产参考图生成改为显式精修模式
+
+- 修正资产中心将“首次生成参考图”与“基于已有图精修”混用的问题：人物、场景、道具首次生成默认不再携带已有参考图。
+- 新增“使用已有参考图进行精修”显式开关；仅用户主动开启时才提交已选/已锁定参考图，避免 SHAPI GPT Image 2 因不支持参考图而拒绝普通生图请求。
+- 保留已有参考图与锁定状态，不自动删除资产、不自动切换模型；支持参考图的精修任务仍可使用 PoYo GPT Image 2 等兼容模型。
+
+## 2026-09-11 — SHAPI 图片模型切换至 GPT Image 2
+
+- 因 SHAPI 平台下架 `nano-banana-2`，正式工作台的 SHAPI 图片配置已切换为 `shapi-openai-images / gpt-image-2`，保留原有 API Key 与默认图片模型槽位。
+- SHAPI 预设列表移除已下架的 Nano Banana 2，仅保留 GPT Image 2；PoYo 平台的 Nano Banana 2 预设与适配器不受影响。
+- SHAPI GPT Image 2 按当前已验证能力仅开放文生图，不接受参考图、图片 URL、文件上传或负向提示词；遇到这些输入时由适配器明确拒绝，不静默丢失资产约束。
+- 前端模型管理文案与专项测试已同步，未发起真实生图调用。
+
+## 2026-09-11 — 真实灰度样本证据补齐与安全门禁复验
+
+- 新增通用样本脚本 `scripts/seed-storyboard-gray-sample.py`：创建含结构化场景/人物资产、锁定参考图、导演动作、起止状态和 action beats 的可复现实例；按传入项目 ID 幂等重建，不包含书号/角色/镜头特例逻辑。
+- 使用样本 `990301 / 第1集 / 镜头1` 完成 deterministic mock clone-only 验证：`1/1 passed`，after-audit `0 errors / 0 warnings`；源项目未改写。
+- 新增记录 `docs/2026-09-11-真实灰度样本准备与门禁验收记录.md`，明确真实 `mimo-v2.5` 调用仍需用户显式确认，且仅允许临时克隆、回滚、清理。
+- Prompt Compiler、Decision Evidence、Director Benchmark 专项回归 `41 passed`。
+
+## 2026-09-11 — 第二次真实 MiMo clone-only 灰度通过
+
+- 经用户显式确认，使用当前默认 `mimo / mimo-v2.5` 对 `990301 / 第1集 / 镜头1` 完成一次真实调用；结果 `1/1 passed`，after-audit `0 errors / 0 warnings`，compiler diagnostics `pass`。
+- 真实调用仅发生在临时克隆 `999905`，随后回滚并清理；源项目未修改，未创建正式 Prompt Version、图片或视频任务。
+- 非敏感遥测：输入 `28,841`、输出 `587`、总计 `29,428` tokens，缓存命中 `0`（首次唯一请求），延迟约 `16,046ms`。
+- 报告：`artifacts/storyboard-real-llm-gray-20260911T000429Z.json|md`；缓存收益需另行显式确认后再做重复请求，不自动重试。
+
+## 2026-09-11 — MiMo Prompt Compiler 前缀缓存复测通过
+
+- 经用户再次显式确认，对同一证据包执行第二次真实 `mimo-v2.5` clone-only 调用；结果 `1/1 passed`，after-audit `0 errors / 0 warnings`。
+- 供应商返回输入 `28,841` tokens，其中缓存 `28,800`，命中率 `99.8578%`；输出 `638`，总计 `29,479` tokens；延迟约 `11,712ms`。
+- 结果证明当前稳定 system/template 前缀 + 动态任务后缀的组织方式可被 MiMo 复用；该数值仅为样本观测，不承诺 SLA。临时克隆已回滚清理，源项目无写入。
+- 报告：`artifacts/storyboard-real-llm-gray-20260911T000856Z.json|md`。
+
+## 2026-09-11 — 多样本缓存观察样本准备
+
+- 灰度样本扩展为同一场景/人物资产下的 3 个不同动态镜头（`1–3`），用于区分稳定前缀与动态后缀的实际表现。
+- deterministic mock 批量 clone-only 验证 `3/3 passed`，after-audit `0 errors / 0 warnings`；每个临时克隆均已回滚清理。
+- 多样本真实调用仍需用户一次明确确认；在确认前不调用供应商、不产生额外费用。
+
+## 2026-09-11 — MiMo 多样本真实缓存观察完成
+
+- 经用户显式确认，对共享稳定资产、不同动态后缀的 3 个镜头执行真实 `mimo-v2.5` clone-only 调用，结果 `3/3 passed`，after-audit `0 errors / 0 warnings`，无 fallback。
+- 供应商返回总输入 `87,052`、缓存 `12,288`（聚合命中率 `14.1157%`）、输出 `1,777` tokens；平均延迟 `16.876s`，最大 `18.461s`。
+- 不同动态后缀每次约命中 `4,096` tokens；同一请求重复时曾达到 `99.8578%`。该差异表明供应商当前窗口的跨请求缓存有限，不能把单请求高命中率当作通用 SLA。
+- 保持现有公开协议实现，不添加未经确认的私有缓存参数，不自动切换模型/思考开关；后续继续以多版本样本观察为准。
+- 报告：`artifacts/storyboard-real-llm-gray-20260911T001706Z.json|md`。
+
+## 2026-09-11 — Director Runtime 端到端确定性验收
+
+- 新增 `tests/test_director_runtime_e2e.py`，覆盖 DirectorTreatment → SceneBlocking → ShotPlan → Storyboard readiness → Director Benchmark 的完整批准/门禁链路。
+- 测试只使用本地 mock LLM，不调用供应商、不生成媒体；验证最终 Benchmark `pass / score=100`，并在 teardown 中清理临时项目。
+
+## 2026-09-11 — 真实模型灰度工作流受保护入口
+
+- 新增 `.github/workflows/storyboard-real-llm-gray.yml`，提供手动触发和可显式开启的定时灰度入口。
+- 手动运行必须输入 `RUN_REAL_LLM_GRAY`，并配置 `real-llm-gray` 环境的 `MIMO_API_KEY`；定时运行还需仓库变量 `ENABLE_REAL_LLM_NIGHTLY=true`。
+- 工作流固定执行证据完整样本的 clone-only 验证，上传 JSON/Markdown 报告；不会进入 Required CI，不创建正式版本或媒体任务。
+
+## 2026-09-11 — ShotPlan 门禁配置化灰度开关
+
+- 新增 `REQUIRE_SHOT_PLAN_BY_DEFAULT` 配置项；默认 `false` 保持兼容，部署可在完成真实业务验收后统一开启。
+- `StoryboardRequest.requireShotPlan` 改为读取该配置的默认值，显式请求字段仍可覆盖；不增加书号、镜头号或项目特例。
+- 新增回归覆盖配置开关，验证关闭/开启时请求默认值分别为 `false/true`。
+- 完整生产门禁复验：后端 `581 passed`、Golden `5/5`、运行时配置校验通过、前端构建通过。
+
+## 2026-09-10 — Director Runtime V1.0 M1 DirectorTreatment 首个切片
+
+- 新增独立 `DirectorTreatment` 领域模型及 Alembic `e8f9a0b1c2d3`，保存场景目标、观众问题、人物意图、Beat Map、权力变化、视听策略、约束/未知项和来源指纹。
+- 新增确定性 Shadow builder；相同场景证据输出稳定 `prompt_fingerprint`，并明确 `llm_called=false`，不修改剧本、镜头或 `AgentPlan`。
+- 新增只读证据包预览 API；默认不落库，`persist=true` 仅幂等保存 `draft` 草案，不调用 LLM、不修改剧本或镜头。
+- 新增受控 LLM 候选 API；必须显式 `confirmed=true + allowExternalCall=true`，候选只进入 DecisionPacketRecord 并按证据指纹去重，不直接创建批准 Treatment 或修改镜头。
+- 新增人工确认 API `POST /api/books/{book_id}/episodes/{episode}/director-treatment/confirm`：确认时重建证据包并校验脚本/资产指纹，候选过期即拒绝并标记 `superseded`。
+- 批准后创建新的 `approved` revision，旧版本转为 `superseded`，同时保存 `rollback_anchor`；新增修订列表 API供工作台回放。
+- 剧本工作台新增导演方案卡：证据预览、真实 LLM 二次确认、候选编辑和正式版本确认；不改变剧本/镜头自动写入边界。
+- 前端回归新增导演方案卡覆盖，当前 `48 files / 272 passed`。
+- 当前仍处于 Shadow/Assist 阶段，下一步为完整候选差异/修订历史回放及 Blocking/ShotPlan 接入。
+
+## 2026-09-10 — Director Runtime V1.0 M2 SceneBlocking 只读切片
+
+- 新增独立 `SceneBlocking` 模型、迁移 `e9a0b1c2d3e4` 和确定性 Spatial Engine。
+- 新增空间调度预览/历史 API；仅允许 approved DirectorTreatment 进入，未声明位置保留为 unknown，不凭空生成空间事实。
+- 当前仍为只读草案，未修改 StoryboardShot；下一步接人工确认、版本回滚和 ShotPlan 门禁。
+
+## 2026-09-10 — Director Runtime V1.0 M2 SceneBlocking 确认门禁
+
+- 新增 SceneBlocking 人工确认/版本化 API，复验证据指纹、保留回滚锚点并自动 supersede 旧版本。
+- 新增 ShotPlan readiness 硬门禁：所有场景必须有 approved Blocking 且无 unresolved unknowns 才能放行。
+- 实际 ShotPlan 生成器接入与连续性空间验收仍待完成。
+
+## 2026-09-11 — Director Runtime V1.0 M3 ShotPlan 只读切片
+
+- 新增独立 `ShotPlan` 模型、迁移 `f0a1b2c3d4e5` 和确定性 builder。
+- 新增 ShotPlan 预览/历史 API；只接受 approved DirectorTreatment + approved SceneBlocking，禁止直接修改 StoryboardShot。
+- ShotPlan 人工确认、回滚和正式分镜生成门禁仍待完成。
+
+## 2026-09-11 — Director Runtime V1.0 M3 ShotPlan 确认门禁
+
+- 新增 ShotPlan 人工确认/版本化 API；确认前必须补齐景别、机位、运动和正时长，旧版本自动 supersede 并保留回滚锚点。
+- 新增 Storyboard readiness 硬门禁，防止未批准或含未知信息的 ShotPlan 进入正式分镜生成。
+- approved ShotPlan 接入实际 StoryboardShot 生成器与镜头级差异回放仍待完成。
+- 显式 `requireShotPlan=true` 的分镜任务现在会把 approved ShotPlan 的 beat/purpose 来源指针回填到 StoryboardShot `meta_info`，不覆盖镜头内容。
+- 镜头级差异回放已提供 API；默认强制 ShotPlan 门禁仍待切换。
+
+## 2026-09-11 — Director Runtime V1.0 M4 Director Benchmark
+
+- 新增确定性 Director Benchmark 与只读报告 API，统一检查 DirectorTreatment、SceneBlocking、ShotPlan 的批准、证据和可执行性。
+- 新增 `DirectorBenchmarkRun` 与迁移 `g0a1b2c3d4e5`，提供运行记录 POST/GET 历史 API；保存样本标签、模型标识、报告和时间，便于回放与模型对比。
+- API 增加 FastAPI lifespan 启动迁移钩子，直接启动 Uvicorn 时会先幂等执行 Alembic，再对外提供新路由，避免新表缺失导致运行时 500/404。
+- 报告和运行记录不调用真实 LLM，不改变剧本、镜头或生产资产；`mutated=true` 仅表示保存了 Benchmark 运行记录。
+- 后端全量回归 `579 passed`，Golden `5/5`，运行时配置校验和前端生产构建均通过。
+- 已按显式确认完成一次真实新样本灰度（`990306 / 第1集 / 镜头1`，当前默认 `mimo-v2.5`）；源项目未改动，临时克隆已回滚清理。模型返回可解析候选且编译诊断为 pass，但后审计仍发现静态提示词过短、缺少结构化人物资产，因此灰度判定失败，报告保存在 `artifacts/storyboard-real-llm-gray-20260910T173602Z.json`。
+- 编译响应现回传非敏感 `llm_request_audit` 摘要，灰度报告会记录尝试次数、输入/缓存/输出 token、缓存命中率和延迟；不记录密钥、原始提示词或原始模型响应。
+- 真实灰度脚本新增通用证据前置门禁：源镜头若同时缺少导演动作、对白、起止状态和结构化动作节拍，则直接输出 `needs_information` 报告并停止，不克隆、不调用供应商，避免对空证据重复计费。
+- 新增 Benchmark 汇总 API `GET /api/books/{book_id}/episodes/{episode}/director-benchmark/summary`，按模型返回运行次数、通过率、平均分和最近运行时间，不重新执行模型调用。
+- 下一步是显式确认后的真实新样本灰度，记录命中率、fallback、延迟、缓存和费用；Required CI 继续保持完全确定性。
+
+## 2026-09-10 — Director Runtime V1.0 M0 Release Foundation
+
+- 新增 5 个 ID-free Golden Project 夹具及 `npm run test:golden`，覆盖对白权力变化、悬疑揭示、动作阻挡、多人物调度和道具连续性；当前 `5/5` 通过。
+- pytest 默认使用临时 SQLite、上传目录和 Chroma 目录，避免清理历史项目后测试依赖旧 book ID 或污染开发数据；全量后端 `577 passed`（含 M1/M2/M3/M4 Runtime 回归）。
+- `check:production` 现为全量确定性测试 → Golden 回归 → `config:verify` → 前端构建，不调用收费模型，也不依赖历史真实项目审计。
+- 正式本地运行时默认统一 API `18765`、Web `5175`，旧 `8765/5173` 不再作为可执行默认值；CI 触发覆盖 `codex/**` 分支。
+- 详细验收记录：`docs/2026-09-10-Director-Runtime-V1-M0验收记录.md`。
+
 ## 2026-09-10 — 分镜生成模式与导演语义持久化收口
 
 - 正式分镜生成 API 与工作台默认使用 `director_llm`；`deterministic_safe` 仅能显式选择，旧 `forceLlm` 参数继续兼容。
@@ -1248,6 +1676,16 @@ CREATE TABLE agent_violation_logs (
 | 角色 API | `api/server.py:8194` (characters endpoints) |
 # Unreleased
 
+- 修复 MiniMax H3 灰度预检自动候选范围：未显式传入项目时仅使用 `production-sample-registry.json` 的 active 样本，禁止从数据库扫描退休/临时测试项目；新增候选范围回归测试。当前只读预检会正确选中 `990400`，参考图不可公网访问时仍 fail-closed，不触发供应商调用。
+- 真浏览器真实样本回归同步收口到 active 样本注册表；有注册表时不再从数据库自动补入未注册项目。当前 `npm run e2e:real-samples` 仅巡检 `990400`，10 个正式工作台模块通过且无业务写入。
+- 将 `audit:storyboard:zero-error-gate` 的默认最小抽检量从隐藏的 100 调整为任务计划要求的 30 个真实镜头，并保留环境变量升档能力；当前 3 镜头仍会明确失败并生成报告。
+
+- 2026-09-12：经用户确认，将 `990400 / 第1集 / 镜头1–3` 的真实 `mimo-v2.5` clone-only 灰度候选通过源项目 DecisionPacket 证据指纹校验后写入正式 Prompt Version v4；每镜创建 `state_snapshot` 回滚基线，未生成图片/视频。
+- 修复已确认 Prompt 草案的只读诊断在确认后误报 409 的问题：确认导致的提示词字段变化现在可安全复核；若导演分镜、镜头事实或资产绑定在确认后被修改，仍严格按过期证据拒绝。新增回归测试覆盖两条路径。
+- 本轮验证：后端 `599 passed`、Golden `5/5`、前端生产构建通过；真浏览器正式工作台 `990400` 10 模块通过，无控制台错误或业务写入。
+
+- 新增镜头媒体预检接口，并接入正式工作台真实 H3 提交前置检查：提交前先验证模型能力、参考图可访问性和临时对象存储 URL 风险；预检只读，不上传、不调用 provider、不创建任务。990400 灰度样本因使用 `example.com` 占位参考图被正确阻断。
+
 - 完成生产回归终态确认：`npm run check:production` 通过（102 个后端回归、前端生产构建、5 项目 122 镜头审计 `0 error / 0 warning`）。
 - 真实浏览器回归通过：正式业务闭环、`book 75` 机器提示词导出闭环，以及 `book 14 / 5 / 75 / 3 / 1` 的正式工作台巡检。
 - 为 `book 14 / episode 1` 的可拍性超载镜头 2、3、5、7 保存通用 N 段拆镜草案；仅写入待审阅草案，不改写镜头结构、不生成媒体。
@@ -1274,3 +1712,9 @@ CREATE TABLE agent_violation_logs (
 - 新增 LLM 入口前缀复用审查文档，明确剧本 QA/改写、Reader、Outline、Scene Setup 的后续统一审计范围。
 - 新增 `GET /api/agent/usage-summary` 与抽屉累计用量展示；缓存不可观测时明确显示，不伪造命中率。
 - 完成用户确认后的两次 MiMo 前缀缓存真实灰度：2 次 HTTP 200，供应商返回累计 2240 缓存 Token / 4526 输入 Token，命中率 49.4918%；报告写入 `artifacts/mimo-prefix-cache-gray-20260910.*`。
+## 2026-09-12
+
+- 新增确定性的 `Shot Intent Plan` 与 `Action Timing Plan`：从已声明镜头事实生成可审阅意图和毫秒动作时间线，显式报告缺失信息与时长冲突，不调用 LLM、不猜测、不改写镜头。
+- 规划结果接入 `ShotIR` 序列化，新增专项回归覆盖等比分配、显式时长、超配冲突和缺失证据。
+- 编译器在采用 LLM 节拍后重新生成规划结果，镜头工作台对信息不足/时长冲突显示可读的下一步入口。
+- 新增 `audit:shot-planning:gate` 数量门禁：active 真实镜头不足 30 个时只写回报告并以非零退出，禁止把不足样本误判为上线通过。

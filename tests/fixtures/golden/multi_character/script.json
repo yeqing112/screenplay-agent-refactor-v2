@@ -1,0 +1,4 @@
+{
+  "episode": 1,
+  "scenes": [{"name": "会议室", "beats": [{"id": "B01", "type": "setup", "event": "三人围坐会议桌"}, {"id": "B02", "type": "power_shift", "event": "最沉默的人拿出证据"}, {"id": "B03", "type": "reveal", "event": "证人确认文件上的签名"}]}]
+}

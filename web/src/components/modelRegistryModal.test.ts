@@ -62,14 +62,8 @@ describe('ModelRegistryModal helpers', () => {
 
   it('builds SHAPI image presets with distinct transports and safe reference contracts', () => {
     const presets = buildShapiPresetProfiles()
-    expect(presets).toHaveLength(2)
-
-    const nano = presets.find((item) => item.id === 'preset-shapi-image-nano-banana-2')
-    expect(nano?.provider).toBe('shapi-gemini-image')
-    expect(nano?.base_url).toBe('https://shapi.vip')
-    expect(nano?.default_params.supports_reference_images).toBe(true)
-    expect(nano?.default_params.max_reference_images).toBe(14)
-    expect(nano?.default_params.image_size).toBe('2K')
+    expect(presets).toHaveLength(1)
+    expect(presets.find((item) => item.model_name === 'nano-banana-2')).toBeUndefined()
 
     const gpt = presets.find((item) => item.id === 'preset-shapi-image-gpt-image-2')
     expect(gpt?.provider).toBe('shapi-openai-images')

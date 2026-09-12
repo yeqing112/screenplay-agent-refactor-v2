@@ -18,6 +18,10 @@ def init_db():
         from alembic.config import Config
         from alembic import command
         alembic_cfg = Config(str(Path(__file__).parent.parent / "alembic.ini"))
+        # Alembic's ini file contains the development default.  Always inject
+        # the runtime-configured URL so tests and isolated jobs can migrate a
+        # temporary database without touching the developer database.
+        alembic_cfg.set_main_option("sqlalchemy.url", config.DATABASE_URL.replace("%", "%%"))
         command.upgrade(alembic_cfg, "head")
     except Exception as e:
         logger.warning("Alembic fallback to create_all: %s", e)
