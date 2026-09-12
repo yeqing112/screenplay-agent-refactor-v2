@@ -1,5 +1,12 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M8：First-Pass Qualification Loop
+
+- 新增 `core/qualification_loop.py`、`core/issue_router.py` 与 `core/local_repair.py`，统一候选→诊断路由→责任层局部修复→再验证闭环，默认最多 2 次尝试。
+- 动作超载、可拍性和连续性等问题不能通过修改 Prompt 文本掩盖；修复必须携带显式 JSON patch、责任层与 before/after fingerprint。无 patch 的阻断直接进入 `needs_review` 并标记 `repair_unavailable`。
+- 每次局部修复保留 rollback pre-image 与指纹，拒绝隐式跨层修改。
+- M8 专项测试：`pytest -q tests/test_issue_router.py tests/test_local_repair.py tests/test_qualification_loop.py` → **6 passed**。未调用真实供应商。
+
 ## 2026-09-13 — Production Pipeline V2 M7：Prompt Compiler Phase A/B
 
 - 新增 `core/prompt_ir_compiler.py`：Phase A 完全 deterministic，生成 ShotIR、资产绑定、连续性、可拍性、诊断和 compiler fingerprint；Phase B 提供不改变事实的 deterministic verbalizer fallback。

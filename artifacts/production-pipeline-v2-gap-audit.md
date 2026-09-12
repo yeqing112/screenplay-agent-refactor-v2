@@ -16,15 +16,15 @@
 
 | Milestone | 状态 | 结论 |
 |---|---|---|
-| M0 状态模型与 Production Profile | **未满足** | 仍以各表 legacy `status` 和 `REQUIRE_SHOT_PLAN_BY_DEFAULT` 为主，没有统一三态状态协议与 profile 门禁。 |
-| M1 ScriptIR | **未满足** | `Script.content` 仍是 Markdown/自由 JSON 混合；无 ScriptIR 模型、版本表和 renderer。 |
-| M2 FactSnapshot | **未满足** | 有 DecisionPacket 证据语义，但无统一 FactRecord/FactSnapshot、权威与 unknown 路由。 |
-| M3 Asset Registry 自动资产化 | **部分满足** | 有 Visual* 与分层语义字段及场景审计，但 Qualified ScriptIR 不会自动同步 Canonical 主卡。 |
-| M4 ShotPlan V2 | **部分满足** | 有 ShotPlan/preview/confirm/回滚，但 builder 输出 `camera=None`、`duration_hint_seconds=None`，不是完整生产中间层。 |
-| M5 Executability 前移 | **部分满足** | 有 `core/shot_executability.py` 和回放脚本，但未形成 ShotPlan→修复→Approved ShotPlan 门禁。 |
-| M6 Storyboard Materializer | **未满足** | 正式 API 仍调用 `StoryboardAgent` 自由生成，再附加 ShotPlan provenance。 |
-| M7 Prompt Compiler A/B | **部分满足** | 有 Prompt IR、deterministic/LLM 路径和诊断，但没有 StoryboardShot 创建即强制 Phase A 状态。 |
-| M8 First-Pass Qualification Loop | **未满足** | 没有统一 qualification_loop/issue_router/local_repair 闭环。 |
+| M0 状态模型与 Production Profile | **已满足** | 已统一四类状态字段与 profile 门禁，production fail-closed。 |
+| M1 ScriptIR | **已满足** | 已有 ScriptIR 版本、renderer、确认门和 production 路由。 |
+| M2 FactSnapshot | **已满足** | 已有版本化 FactRecord、authority、冲突和 unknown 路由。 |
+| M3 Asset Registry 自动资产化 | **已满足** | qualified ScriptIR 可幂等同步现有 Visual* 主卡并保留人工字段。 |
+| M4 ShotPlan V2 | **已满足** | ShotPlan 已包含完整 camera/duration/action/state/asset/continuity 合同。 |
+| M5 Executability 前移 | **已满足** | ShotPlan confirm 前执行确定性可拍性预检并返回责任层 repair plan。 |
+| M6 Storyboard Materializer | **已满足** | production StoryboardShot 由 Approved ShotPlan 确定性一一物化。 |
+| M7 Prompt Compiler A/B | **已满足** | Materializer 同步 Phase A 状态，Phase B 可 deterministic fallback。 |
+| M8 First-Pass Qualification Loop | **已满足** | 已统一诊断路由、责任层显式 patch、再验证和 needs_review 闭环。 |
 | M9 Root Cause Aggregator | **未满足** | 现有报告以症状计数为主，无稳定根因 ID 与跨镜头聚合。 |
 | M10 QA 职责重构 | **部分满足** | 已有多类 QA、预检和审计，但 Validator/Director QA/Human Review 的责任边界尚未成为统一生产门禁。 |
 
@@ -343,7 +343,7 @@
 
 ## 审计结论
 
-当前仓库具备较丰富的局部能力和较好的确定性测试基础，但尚未满足 Production Pipeline V2 的生产不变量。首个未满足 Milestone 是 **M0**；Audit 完成后应从 M0 开始，不得先改 M1/M6 或用配置开关跳级。所有后续实现必须保持 fail-closed、可回滚、可追溯，并且不调用真实外部供应商。
+当前仓库已完成 M0–M8 的确定性生产链路收口；下一个未满足 Milestone 是 **M9**。M9/M10 仍必须按顺序完成，并保持 fail-closed、可回滚、可追溯且不调用真实外部供应商。
 
 ## M0 完成后复核（2026-09-13）
 
@@ -386,3 +386,9 @@
 
 - Materializer 已在生产镜头落库时同步 Phase A Prompt IR、Executability、诊断与指纹；Phase B 有 deterministic fallback。
 - M7 专项及关联回归：**5 passed**。未调用真实供应商。M8 是下一个待完成阶段。
+
+## M8 完成后复核（2026-09-13）
+
+- 已新增统一 qualification loop、issue router 和 local repair；责任层只允许显式 JSON patch，动作超载不会被 Prompt 文本掩盖。
+- 修复记录包含 before/after fingerprint 与 rollback pre-image；无可执行 patch 的 blocker 返回 `needs_review`、`repair_unavailable=true`，不虚假重复尝试。
+- M8 专项测试：**6 passed**。未调用真实 LLM、图片、视频或对象存储。M9 是下一个待完成阶段。
