@@ -366,3 +366,8 @@
 
 - 已新增 ScriptIR→Visual* 幂等 registry sync 与确认门；复用现有分层语义字段，不创建平行 SceneCanonical 系统。
 - M3 专项测试：**2 passed**。未调用真实 LLM、图片、视频或对象存储。M4 是下一个未满足 Milestone。
+
+## M4 完成后复核（2026-09-13）
+
+- ShotPlan V2 已物化完整生产合同并保留旧 JSON 兼容；新增 schema version 迁移。
+- M4 专项及关联回归：**11 passed**。未调用真实供应商。M5 仍是下一个待完成阶段。

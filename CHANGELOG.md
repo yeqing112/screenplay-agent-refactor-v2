@@ -1,5 +1,11 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M4：ShotPlan V2 合同
+
+- ShotPlan builder 现在确定性物化 `scene_id`、camera contract、正时长、action beats、entry/exit state、asset bindings 和 continuity contract；不再把这些核心字段留为 null unknown。
+- 保留现有 ShotPlan preview/confirm、版本 supersede 与 rollback anchor；新增 `schema_version` 标记和 Alembic `m6g7h8i9j0k1`。
+- M4 测试：ShotPlan V2/资产绑定/连续性合同及旧回归 **11 passed**。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M3：ScriptIR 驱动资产主卡同步
 
 - 新增 `core/asset_registry_sync.py` 与 `/api/books/{book_id}/episodes/{episode}/asset-registry/sync`，从 qualified ScriptIR 幂等创建/补齐 VisualLocation、VisualMakeup、VisualProp 主卡。

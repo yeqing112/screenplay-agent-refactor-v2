@@ -15,6 +15,7 @@ class ShotPlan(Base):
     scene_name = Column(String, nullable=False, default="")
     revision = Column(Integer, nullable=False, default=1)
     status = Column(String, nullable=False, default="draft")  # draft / approved / superseded
+    schema_version = Column(String, nullable=False, default="shot_plan_v1")
     execution_status = Column(String, nullable=False, default="queued")
     quality_status = Column(String, nullable=False, default="draft")
     production_status = Column(String, nullable=False, default="blocked")

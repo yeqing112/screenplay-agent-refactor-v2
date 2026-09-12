@@ -10,6 +10,7 @@ from pydantic import AliasChoices, BaseModel, Field
 
 from core.shot_plan import build_shot_plan
 from core.script_ir import resolve_script_payload
+from core.executability import preflight_shot_plan, build_executability_repair_plan
 from models import DirectorTreatment, SceneBlocking, Script, Session, ShotPlan, StoryboardShot
 
 router = APIRouter(prefix="/api/books", tags=["shot-plan"])
@@ -53,7 +54,7 @@ def _script_scenes(script: Any) -> list[dict[str, Any]]:
 
 
 def _payload(row: ShotPlan) -> dict[str, Any]:
-    return {"id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_name": row.scene_name, "revision": row.revision, "status": row.status,
+    return {"id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_name": row.scene_name, "revision": row.revision, "status": row.status, "schema_version": row.schema_version,
             "execution_status": row.execution_status, "quality_status": row.quality_status,
             "production_status": row.production_status, "workflow_profile": row.workflow_profile,
             "treatment_id": row.treatment_id, "blocking_id": row.blocking_id, "shots": _json(row.shots, []), "unknowns": _json(row.unknowns, []), "evidence_fingerprint": row.evidence_fingerprint, "model_info": _json(row.model_info, {}), "created_at": row.created_at.isoformat() if row.created_at else None, "updated_at": row.updated_at.isoformat() if row.updated_at else None}
@@ -180,6 +181,9 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
         candidate = _validate_plan_candidate(req.plan or {field: baseline[field] for field in ("scene_name", "shots", "unknowns")}, baseline)
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=f"ShotPlan candidate is invalid: {exc}") from exc
+    executability = preflight_shot_plan(candidate["shots"])
+    if executability["status"] == "blocked":
+        raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_EXECUTABILITY_BLOCKED", "executability": executability, "repair_plan": build_executability_repair_plan(executability)})
     with Session() as session:
         draft = session.query(ShotPlan).filter_by(id=req.plan_id, book_id=book_id, episode=episode).first()
         previous = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(ShotPlan.revision.desc(), ShotPlan.id.desc()).first()
