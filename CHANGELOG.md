@@ -1,5 +1,12 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M6：Storyboard Materializer
+
+- 新增 `core/storyboard_materializer.py` 与显式确认 API `/api/books/{book_id}/episodes/{episode}/storyboard/materialize`。
+- production StoryboardShot 由 Approved ShotPlan 一一物化，直接复制镜头目的、时长、机位、动作、状态、资产绑定和连续性合同；不调用 StoryboardAgent/LLM。
+- 物化结果保留 `shot_plan_ref`、materializer source fingerprint 和 rollback lineage，重复请求不重复创建镜头。
+- M6 测试：Materializer 映射、合规性和生产门禁 **11 passed**。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M5：ShotPlan 可拍性前移
 
 - 新增 `core/executability.py`，将现有可拍性规则适配 ShotPlan，确认前统一检查动作预算、对白/状态完整性和运动冲突。

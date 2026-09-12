@@ -376,3 +376,8 @@
 
 - ShotPlan confirm 已接入确定性 Executability preflight，blocked 时返回责任层为 SHOT_PLAN 的 repair plan。
 - M5 专项及关联回归：**14 passed**。未调用真实供应商。M6 已实现并待提交复核。
+
+## M6 完成后复核（2026-09-13）
+
+- Approved ShotPlan→StoryboardShot Materializer 已实现并提供显式确认 API；重复物化按 `plan_shot_id` 幂等跳过。
+- M6 专项及关联回归：**11 passed**。未调用真实供应商。M7 是下一个待完成阶段。
