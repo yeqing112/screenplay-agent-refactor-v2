@@ -341,7 +341,7 @@ def build_scene_blocking(*, scene: dict[str, Any], treatment: dict[str, Any], so
     return _build_scene_blocking_v1(scene=scene, treatment=treatment, source_script_hash=source_script_hash)
 
 
-def repair_scene_blocking(candidate: dict[str, Any], *, max_attempts: int = 2) -> dict[str, Any]:
+def repair_scene_blocking(candidate: dict[str, Any], *, max_attempts: int = 2, repair_recorder: Any | None = None, repair_context: dict[str, Any] | None = None) -> dict[str, Any]:
     """Bounded local repair for creative blocking diagnostics."""
     current = copy.deepcopy(candidate)
 
@@ -364,4 +364,4 @@ def repair_scene_blocking(candidate: dict[str, Any], *, max_attempts: int = 2) -
             issues.append(issue)
         return issues
 
-    return qualify_candidate(current, [validator], max_attempts=max_attempts)
+    return qualify_candidate(current, [validator], max_attempts=max_attempts, repair_recorder=repair_recorder, repair_context=repair_context)
