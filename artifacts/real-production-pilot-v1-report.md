@@ -56,7 +56,7 @@ Production profile 下未调用 `StoryboardAgent.run()`；Materializer 只接受
 
 按 `request_fingerprint` 去重所有 Pilot artifact，共 46 次唯一调用：prompt 134,731、cached 21,632、completion 76,870、total 211,601 tokens，cache hit rate 16.06%，平均延迟 27,035.5ms。审计只保存模型、指纹、token/cache、延迟和阶段信息，不保存密钥、原始提示词或响应。15 次内容链调用未绑定 episode；按阶段记录的 episode-scoped 调用为 E1=11、E2=12、E3=8。
 
-## Root Cause Top 10（本样本实际出现）
+## Root Cause Top 10（本样本实际出现 5 类）
 
 1. `SPATIAL_UNKNOWN`：第 1 集两场未声明人物位置/空间锚点，生产链按责任层阻断。
 2. `DUPLICATE_SCENE_NAME`：ScriptIR 场景名重复，已在 ScriptIR 层修复。
@@ -98,6 +98,13 @@ E1 两场 SceneBlocking 的 `needs_review` 只阻断各自场景向 ShotPlan 的
 | Final blocker | 重复 Prompt symptoms，缺少统一门禁 | 40/40 媒体阻断（本轮禁止媒体调用）；内容 Qualification 0 blocker |
 
 本表比较的是结构能力和可审计证据，不是同一文本样本上的质量实验。
+
+## 最终判断
+
+1. **Production Pipeline V2 是否显著提高首次合格率？** 在本次可比口径（已物化镜头）下，首次无需修复合格率为 `92.5%`，达到并超过 85% 目标；但 `990401` 没有同口径首次合格率，不能宣称统计显著性，只能确认当前链路已能量化并控制首次 blocker。
+2. **是否解决 990401 的主要结构问题？** 已解决其核心结构缺口：Production 不再绕过 ShotPlan，40/40 镜头有 Materializer 一一映射和 Phase A 状态；重复/未绑定/动作预算问题在责任层被拦截或修复。旧样本的媒体与 Prompt 重复症状仍需独立回放验证。
+3. **当前最大剩余瓶颈是哪一层？** 媒体 readiness/对象存储可访问性是进入 Production Pass 的首要瓶颈；内容链内部的首要瓶颈是 E1 SceneBlocking 空间证据。
+4. **下一阶段最值得投入的 3 个优化点？** 补齐 E1 空间证据；统一 repair-attempt ledger；在受控 staging 完成资产、图片、视频、QA 与连续性闭环。
 
 ## 当前真正瓶颈
 

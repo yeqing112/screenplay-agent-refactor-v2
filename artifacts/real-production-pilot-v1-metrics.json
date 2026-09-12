@@ -175,7 +175,9 @@
     "total_tokens": 211601,
     "cache_hit_rate": 0.1606,
     "average_latency_ms": 27035.5,
-    "episode_scoped_unique_calls": {"1": 11, "2": 12, "3": 8, "unscoped_content_chain": 15}
+    "episode_scoped_unique_calls": {"1": 11, "2": 12, "3": 8, "unscoped_content_chain": 15},
+    "estimated_cost": null,
+    "estimated_cost_reason": "Provider pricing was not included in the captured audit contract"
   },
   "evidence": [
     "artifacts/real-production-pilot-v1-content-ep1.json",
