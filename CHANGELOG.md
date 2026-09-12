@@ -1,5 +1,12 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M3：ScriptIR 驱动资产主卡同步
+
+- 新增 `core/asset_registry_sync.py` 与 `/api/books/{book_id}/episodes/{episode}/asset-registry/sync`，从 qualified ScriptIR 幂等创建/补齐 VisualLocation、VisualMakeup、VisualProp 主卡。
+- 同步仅写资产主卡与 registry provenance，不触发生图、上传或锁定参考图；既有人工字段不会被覆盖。
+- 复用现有 Visual* 分层语义和 readiness 字段，不新建平行 SceneCanonical 表；支持同一场景/资产跨镜头复用。
+- M3 测试：资产同步与场景 readiness **2 passed**。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M2：FactSnapshot 权威层
 
 - 新增 `models/fact_snapshot.py`、`core/fact_snapshot.py` 与 `/api/books/{book_id}/episodes/{episode}/fact-snapshots/*` deterministic build/list/confirm API。

@@ -88,6 +88,7 @@ from api.scene_blocking_api import router as scene_blocking_router
 from api.shot_plan_api import router as shot_plan_router
 from api.script_ir_api import router as script_ir_router
 from api.fact_snapshot_api import router as fact_snapshot_router
+from api.asset_registry_api import router as asset_registry_router
 from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
@@ -118,6 +119,7 @@ app.include_router(scene_blocking_router)
 app.include_router(shot_plan_router)
 app.include_router(script_ir_router)
 app.include_router(fact_snapshot_router)
+app.include_router(asset_registry_router)
 app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft

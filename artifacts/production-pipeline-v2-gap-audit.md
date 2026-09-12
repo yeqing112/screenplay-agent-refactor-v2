@@ -361,3 +361,8 @@
 
 - 已新增 FactSnapshot/FactRecord 版本化模型、authority 校验、unknown 路由及 deterministic API；冲突与未确认锁定事实 fail-closed。
 - M2 专项测试：**7 passed**。未调用真实 LLM、图片、视频或对象存储。M3 是下一个未满足 Milestone。
+
+## M3 完成后复核（2026-09-13）
+
+- 已新增 ScriptIR→Visual* 幂等 registry sync 与确认门；复用现有分层语义字段，不创建平行 SceneCanonical 系统。
+- M3 专项测试：**2 passed**。未调用真实 LLM、图片、视频或对象存储。M4 是下一个未满足 Milestone。
