@@ -7,6 +7,7 @@
 - 修复通用小说导入边界：独立的 `《书名》` 前导行不再被误计为一章；有实质内容的序章仍会保留。
 - 本阶段仅完成本地计量入口与 mock 测试，尚未调用真实 MiMo；Pilot 仍需用户明确确认后开始。
 - 相关测试：`tests/test_pilot_instrumentation.py`、`tests/test_llm_json_parsing.py`、`tests/test_ingest_chapter_detection.py` 共 **9 passed**；后端全量回归 **702 passed**。
+- 已将新样本《潮汐回声》导入本地为 `book_id=990402`（10 章、2648 字）；仅完成导入与只读预检，未调用真实 MiMo。
 
 ## 2026-09-13 — Production Pipeline V2 全量验收
 
