@@ -69,7 +69,7 @@ def build_production_pass_metrics(source: Any) -> dict[str, Any]:
     metrics = {
         "hard_error_count": sum(1 for item in issues if severity(item) in {"error", "critical"}),
         "production_blocker_count": len(blocked),
-        "missing_required_asset_count": count(lambda c, _s, _i: any(term in c for term in ("missing_asset", "required_asset", "asset_binding", "scene_asset"))),
+        "missing_required_asset_count": count(lambda c, _s, item: bool(item.get("required")) or "required_asset" in c or "missing_required_asset" in c or c.startswith("scene_asset_missing")),
         "broken_reference_count": count(lambda c, _s, _i: any(term in c for term in ("reference_url", "broken_reference", "reference_unavailable"))),
         "shotplan_violation_count": count(lambda c, _s, _i: "shot_plan" in c or "shotplan" in c),
         "continuity_hard_conflict_count": count(lambda c, s, _i: ("continuity" in c or "screen_direction" in c or "state_jump" in c) and s in {"blocked", "blocker", "error", "critical"}),
@@ -84,4 +84,3 @@ def build_production_pass_metrics(source: Any) -> dict[str, Any]:
 def annotate_issues(issues: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
     """Add a role field for UI consumers without mutating the input objects."""
     return [{**item, "qa_role": classify_qa_role(item)} for item in (issues or []) if isinstance(item, dict)]
-
