@@ -5,6 +5,8 @@ import time
 import threading
 import logging
 import httpx
+from contextlib import contextmanager
+from contextvars import ContextVar
 from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
@@ -104,6 +106,48 @@ _limiter = RateLimiter(
     daily_limit=int(__import__("os").getenv("LLM_DAILY_LIMIT", "0")),
     min_interval=float(__import__("os").getenv("LLM_MIN_INTERVAL", "1.0")),
 )
+
+
+# Optional per-request audit context.  Existing callers do not need to pass a
+# callback; pilot/integration code can scope a call and receive the same safe
+# audit envelope without changing provider-facing payloads.
+_llm_audit_context: ContextVar[dict] = ContextVar("llm_audit_context", default={})
+
+
+@contextmanager
+def llm_audit_context(**metadata):
+    """Attach bounded, non-secret metadata to LLM audit records."""
+
+    token = _llm_audit_context.set(dict(metadata))
+    try:
+        yield
+    finally:
+        _llm_audit_context.reset(token)
+
+
+def _dispatch_audit_record(record: dict, explicit_callback=None) -> None:
+    """Send one record to both the legacy callback and scoped pilot sink."""
+
+    context = _llm_audit_context.get() or {}
+    sink = context.get("sink") if callable(context.get("sink")) else None
+    if context:
+        safe_context = {
+            key: value for key, value in context.items()
+            if key != "sink" and isinstance(key, str) and key
+            and (isinstance(value, (str, int, float, bool)) or value is None)
+        }
+        if safe_context:
+            merged = dict(record)
+            existing = merged.get("extra") if isinstance(merged.get("extra"), dict) else {}
+            merged["extra"] = {**existing, **safe_context}
+            record = merged
+    for callback in (explicit_callback, sink):
+        if not callable(callback):
+            continue
+        try:
+            callback(record)
+        except Exception:  # pragma: no cover - audit must never break a call
+            logger.warning("LLM audit callback raised; suppressed")
 
 
 def get_limiter():
@@ -299,19 +343,15 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                 if resp.status_code == 429:
                     retry_after = int(resp.headers.get("Retry-After", 2 ** (attempt + 2)))
                     logger.warning("[throttle] 429, retry after %ss", retry_after)
-                    if audit_callback is not None:
-                        try:
-                            audit_callback(_build_audit_record(
-                                system=system, user=prompt,
-                                vendor_model=model_name, vendor_host=base_url,
-                                profile_id=str(profile.get("id") or ""),
-                                status=audit_http_status, response_text=audit_response_text,
-                                parse_ok=False, repair_request=audit_repair_request,
-                                extra=audit_extra,
-                                latency_ms=(time.monotonic() - request_started) * 1000,
-                            ))
-                        except Exception:  # pragma: no cover
-                            logger.warning("LLM audit callback raised on 429; suppressed")
+                    _dispatch_audit_record(_build_audit_record(
+                        system=system, user=prompt,
+                        vendor_model=model_name, vendor_host=base_url,
+                        profile_id=str(profile.get("id") or ""),
+                        status=audit_http_status, response_text=audit_response_text,
+                        parse_ok=False, repair_request=audit_repair_request,
+                        extra=audit_extra,
+                        latency_ms=(time.monotonic() - request_started) * 1000,
+                    ), audit_callback)
                     time.sleep(retry_after)
                     continue
 
@@ -331,56 +371,46 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
 
                 audit_parse_ok = bool(content)
                 audit_response_text = str(content or "")
-                if audit_callback is not None:
-                    try:
-                        audit_callback(_build_audit_record(
-                            system=system, user=prompt,
-                            vendor_model=model_name, vendor_host=base_url,
-                            profile_id=str(profile.get("id") or ""),
-                            status=audit_http_status, response_text=audit_response_text,
-                            parse_ok=audit_parse_ok,
-                            repair_request=audit_repair_request, extra=audit_extra,
-                            usage=usage,
-                            latency_ms=(time.monotonic() - request_started) * 1000,
-                        ))
-                    except Exception:  # pragma: no cover
-                        logger.warning("LLM audit callback raised on success; suppressed")
+                _dispatch_audit_record(_build_audit_record(
+                    system=system, user=prompt,
+                    vendor_model=model_name, vendor_host=base_url,
+                    profile_id=str(profile.get("id") or ""),
+                    status=audit_http_status, response_text=audit_response_text,
+                    parse_ok=audit_parse_ok,
+                    repair_request=audit_repair_request, extra=audit_extra,
+                    usage=usage,
+                    latency_ms=(time.monotonic() - request_started) * 1000,
+                ), audit_callback)
                 return content
 
         except httpx.HTTPStatusError as e:
-            if audit_callback is not None and attempt == attempt_budget - 1:
+            if attempt == attempt_budget - 1:
                 err_resp = getattr(e, "response", None)
                 err_status = int(getattr(err_resp, "status_code", 0) or 0)
                 err_text = str(getattr(err_resp, "text", "") or "")[:2000]
-                try:
-                    audit_callback(_build_audit_record(
-                        system=system, user=prompt,
-                        vendor_model=model_name, vendor_host=base_url,
-                        profile_id=str(profile.get("id") or ""),
-                        status=err_status, response_text=err_text,
-                        parse_ok=False, repair_request=audit_repair_request,
-                        extra=audit_extra,
-                        latency_ms=(time.monotonic() - request_started) * 1000,
-                    ))
-                except Exception:  # pragma: no cover
-                    logger.warning("LLM audit callback raised on HTTPStatusError; suppressed")
+                _dispatch_audit_record(_build_audit_record(
+                    system=system, user=prompt,
+                    vendor_model=model_name, vendor_host=base_url,
+                    profile_id=str(profile.get("id") or ""),
+                    status=err_status, response_text=err_text,
+                    parse_ok=False, repair_request=audit_repair_request,
+                    extra=audit_extra,
+                    latency_ms=(time.monotonic() - request_started) * 1000,
+                ), audit_callback)
             if attempt == attempt_budget - 1:
                 raise
             time.sleep(2 ** (attempt + 1))
         except (httpx.ConnectError, httpx.ReadTimeout) as e:
-            if audit_callback is not None and attempt == attempt_budget - 1:
-                try:
-                    audit_callback(_build_audit_record(
-                        system=system, user=prompt,
-                        vendor_model=model_name, vendor_host=base_url,
-                        profile_id=str(profile.get("id") or ""),
-                        status=0, response_text=str(e)[:400],
-                        parse_ok=False, repair_request=audit_repair_request,
-                        extra=audit_extra,
-                        latency_ms=(time.monotonic() - request_started) * 1000,
-                    ))
-                except Exception:  # pragma: no cover
-                    logger.warning("LLM audit callback raised on transport error; suppressed")
+            if attempt == attempt_budget - 1:
+                _dispatch_audit_record(_build_audit_record(
+                    system=system, user=prompt,
+                    vendor_model=model_name, vendor_host=base_url,
+                    profile_id=str(profile.get("id") or ""),
+                    status=0, response_text=str(e)[:400],
+                    parse_ok=False, repair_request=audit_repair_request,
+                    extra=audit_extra,
+                    latency_ms=(time.monotonic() - request_started) * 1000,
+                ), audit_callback)
             if attempt == attempt_budget - 1:
                 raise
             time.sleep(2 ** (attempt + 1))
