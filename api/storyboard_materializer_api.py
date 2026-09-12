@@ -55,7 +55,13 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
             blocking = session.query(SceneBlocking).filter_by(id=plan.blocking_id, book_id=book_id, episode=episode, scene_name=plan.scene_name, status="approved").first() if plan.blocking_id else None
             if not treatment or not blocking or blocking.treatment_id != treatment.id:
                 raise HTTPException(status_code=409, detail=f"Production materialization requires approved Treatment and SceneBlocking lineage for scene: {plan.scene_name}")
-            raw = json.loads(plan.shots or "[]")
+            try:
+                raw = json.loads(plan.shots or "[]")
+            except (TypeError, ValueError, json.JSONDecodeError) as exc:
+                raise HTTPException(
+                    status_code=409,
+                    detail=f"Approved ShotPlan payload is invalid for scene: {plan.scene_name}",
+                ) from exc
             try:
                 drafts = materialize_storyboard_from_shot_plan({"scene_name": plan.scene_name, "shots": raw, "evidence_fingerprint": plan.evidence_fingerprint}, treatment={"id": treatment.id, "revision": treatment.revision}, blocking={"id": blocking.id, "revision": blocking.revision}, asset_snapshot={"script_ir_id": script_ir.id})
             except (TypeError, ValueError, json.JSONDecodeError) as exc:

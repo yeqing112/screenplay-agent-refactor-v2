@@ -447,7 +447,7 @@ production Materializer 路径现固定为：
 
 本轮仅执行本地确定性验证，不处理 GitHub Actions/CI，不调用真实 LLM、生图、视频或对象存储。
 
-- `npm run check:production`：**699 passed**、878 warnings；Golden **5/5**；运行时配置验证、release-gate 不变量测试、前端生产构建全部通过。
+- `npm run check:production`：**700 passed**、879 warnings；Golden **5/5**；运行时配置验证、release-gate 不变量测试、前端生产构建全部通过。
 - `npm --prefix web test -- --run`：**49 个测试文件、291 passed**。
 - Materializer/Compiler/Readiness 专项：**8 passed**，包含将 `StoryboardAgent.run()` mock 为异常且确认 production materializer 调用次数为 **0** 的反向测试。
 - `npm run gate:production`：确定性 production regression **PASS**；整体 **BLOCKED（fail-closed）**，阻断仅来自环境/样本前置条件：当前 `DEPLOYMENT_ENV=development`、active 真样本仅 **3/30**、真浏览器 release 样本仅 **1/3**，并缺少 `needs_information` 与 `conflict` 覆盖。该结果不表示 Materializer 失败，而是发布门禁正确拒绝在证据不足时放行。
