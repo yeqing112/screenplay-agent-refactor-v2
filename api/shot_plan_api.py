@@ -27,6 +27,7 @@ class ShotPlanConfirmRequest(BaseModel):
     evidence_fingerprint: str = Field(default="", validation_alias=AliasChoices("evidence_fingerprint", "evidenceFingerprint"))
     confirmed: bool = False
     plan: dict[str, Any] | None = None
+    workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
 
 
 def _json(value: str | None, fallback: Any) -> Any:
@@ -116,7 +117,7 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
             if existing:
                 persisted_id = existing.id
             else:
-                row = ShotPlan(book_id=book_id, episode=episode, scene_name=scene_name, revision=1, status="draft", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(plan["shots"], ensure_ascii=False), unknowns=json.dumps(plan["unknowns"], ensure_ascii=False), evidence_fingerprint=plan["evidence_fingerprint"], model_info=json.dumps(plan["model_info"], ensure_ascii=False), created_at=datetime.now(), updated_at=datetime.now())
+                row = ShotPlan(book_id=book_id, episode=episode, scene_name=scene_name, revision=1, status="draft", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(plan["shots"], ensure_ascii=False), unknowns=json.dumps(plan["unknowns"], ensure_ascii=False), evidence_fingerprint=plan["evidence_fingerprint"], model_info=json.dumps(plan["model_info"], ensure_ascii=False), workflow_profile=req.workflow_profile, created_at=datetime.now(), updated_at=datetime.now())
                 session.add(row); session.commit(); session.refresh(row); persisted_id = row.id
         return {"mode": "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "plan": plan, "treatment_id": treatment.id, "blocking_id": blocking.id, "message": "这是只读 ShotPlan 草案；尚未修改 StoryboardShot。"}
 
@@ -167,7 +168,7 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
         if not treatment or not blocking:
             raise HTTPException(status_code=409, detail="ShotPlan upstream evidence is no longer approved.")
         scene_name = draft.scene_name
-    preview = preview_shot_plan(book_id, episode, ShotPlanPreviewRequest(scene_name=scene_name))
+    preview = preview_shot_plan(book_id, episode, ShotPlanPreviewRequest(scene_name=scene_name, workflow_profile=req.workflow_profile))
     baseline = preview["plan"]
     if req.evidence_fingerprint and req.evidence_fingerprint != draft.evidence_fingerprint:
         raise HTTPException(status_code=409, detail="ShotPlan evidence fingerprint does not match.")
@@ -190,7 +191,7 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
         if previous:
             previous.status = "superseded"; previous.updated_at = datetime.now()
         anchor = {"previous_plan_id": previous.id if previous else None, "previous_revision": previous.revision if previous else None}
-        row = ShotPlan(book_id=book_id, episode=episode, scene_name=scene_name, revision=(previous.revision + 1 if previous else 1), status="approved", treatment_id=draft.treatment_id, blocking_id=draft.blocking_id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": datetime.now().isoformat()}, ensure_ascii=False), created_at=datetime.now(), updated_at=datetime.now())
+        row = ShotPlan(book_id=book_id, episode=episode, scene_name=scene_name, revision=(previous.revision + 1 if previous else 1), status="approved", treatment_id=draft.treatment_id, blocking_id=draft.blocking_id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": datetime.now().isoformat()}, ensure_ascii=False), workflow_profile=req.workflow_profile, created_at=datetime.now(), updated_at=datetime.now())
         session.add(row); draft.status = "superseded"; draft.updated_at = datetime.now(); session.commit(); session.refresh(row)
         return {"approved": True, "mutated": True, "shot_plan": _payload(row), "rollback_anchor": anchor, "storyboard_generation_allowed": True}
 

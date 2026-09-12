@@ -54,6 +54,7 @@ class DirectorTreatmentConfirmRequest(BaseModel):
     packet_fingerprint: str = Field(default="", validation_alias=AliasChoices("packet_fingerprint", "packetFingerprint"))
     confirmed: bool = False
     candidate: dict[str, Any] | None = None
+    workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
 
 
 def _json_object(value: str | None, fallback: Any) -> Any:
@@ -317,6 +318,7 @@ def preview_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
                     prompt_fingerprint=treatment["prompt_fingerprint"],
                     created_at=datetime.now(),
                     updated_at=datetime.now(),
+                    workflow_profile=req.workflow_profile,
                 )
                 session.add(row)
                 session.commit()
@@ -500,7 +502,7 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
     # Rebuild outside the transaction so the expensive evidence read does not
     # hold the packet row lock.  The fingerprint check below is the commit
     # boundary and protects against a changed script during the read.
-    baseline, evidence, _ = _build_preview(book_id, DirectorTreatmentPreviewRequest(episode=episode, scene_name=scene_name))
+    baseline, evidence, _ = _build_preview(book_id, DirectorTreatmentPreviewRequest(episode=episode, scene_name=scene_name, workflow_profile=req.workflow_profile))
     current_packet = _make_decision_packet(book_id, episode, baseline, evidence)
     if current_packet["packet_fingerprint"] != packet.packet_fingerprint:
         with Session() as session:
@@ -551,7 +553,7 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
             sound_strategy=candidate["sound_strategy"], edit_rhythm=candidate["edit_rhythm"], constraints=json.dumps(candidate["constraints"], ensure_ascii=False),
             unknowns=json.dumps(candidate["unknowns"], ensure_ascii=False), skill_id=baseline["skill_id"], skill_version=baseline["skill_version"],
             decision_packet_id=packet.id, model_info=json.dumps(model_info, ensure_ascii=False), prompt_fingerprint=_candidate_fingerprint(candidate, current_packet["packet_fingerprint"]),
-            created_at=datetime.now(), updated_at=datetime.now(),
+            created_at=datetime.now(), updated_at=datetime.now(), workflow_profile=req.workflow_profile,
         )
         session.add(row)
         packet.status = "confirmed"

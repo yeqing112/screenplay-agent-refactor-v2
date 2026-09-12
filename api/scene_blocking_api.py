@@ -28,6 +28,7 @@ class SceneBlockingConfirmRequest(BaseModel):
     evidence_fingerprint: str = Field(default="", validation_alias=AliasChoices("evidence_fingerprint", "evidenceFingerprint"))
     confirmed: bool = False
     blocking: dict[str, Any] | None = None
+    workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
 
 
 def _json(value: str | None, fallback: Any) -> Any:
@@ -120,7 +121,7 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
                     participants=json.dumps(blocking["participants"], ensure_ascii=False), beat_transitions=json.dumps(blocking["beat_transitions"], ensure_ascii=False),
                     spatial_rules=json.dumps(blocking["spatial_rules"], ensure_ascii=False), unknowns=json.dumps(blocking["unknowns"], ensure_ascii=False),
                     evidence_fingerprint=blocking["evidence_fingerprint"], model_info=json.dumps(blocking["model_info"], ensure_ascii=False),
-                    created_at=datetime.now(), updated_at=datetime.now(),
+                    created_at=datetime.now(), updated_at=datetime.now(), workflow_profile=req.workflow_profile,
                 )
                 session.add(row); session.commit(); session.refresh(row); persisted_id = row.id
         return {"mode": "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "treatment_id": treatment.id, "blocking": blocking, "message": "这是只读空间调度草案；未修改任何镜头。"}
@@ -165,7 +166,7 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
         treatment = session.query(DirectorTreatment).filter_by(id=draft.treatment_id, book_id=book_id, episode=episode, status="approved").first()
         if not treatment:
             raise HTTPException(status_code=409, detail="The DirectorTreatment used by this draft is no longer approved.")
-    preview = preview_scene_blocking(book_id, episode, SceneBlockingPreviewRequest(scene_name=draft.scene_name, treatment_id=draft.treatment_id))
+    preview = preview_scene_blocking(book_id, episode, SceneBlockingPreviewRequest(scene_name=draft.scene_name, treatment_id=draft.treatment_id, workflow_profile=req.workflow_profile))
     baseline = preview["blocking"]
     if req.evidence_fingerprint and req.evidence_fingerprint != draft.evidence_fingerprint:
         raise HTTPException(status_code=409, detail="SceneBlocking evidence fingerprint does not match.")
@@ -194,7 +195,7 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
             participants=json.dumps(candidate["participants"], ensure_ascii=False), beat_transitions=json.dumps(candidate["beat_transitions"], ensure_ascii=False),
             spatial_rules=json.dumps(candidate["spatial_rules"], ensure_ascii=False), unknowns=json.dumps(candidate["unknowns"], ensure_ascii=False),
             evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": datetime.now().isoformat()}, ensure_ascii=False),
-            created_at=datetime.now(), updated_at=datetime.now(),
+            created_at=datetime.now(), updated_at=datetime.now(), workflow_profile=req.workflow_profile,
         )
         session.add(row); draft.status = "superseded"; draft.updated_at = datetime.now(); session.commit(); session.refresh(row)
         return {"approved": True, "mutated": True, "scene_blocking": _row_payload(row), "rollback_anchor": anchor, "shot_plan_allowed": True}
