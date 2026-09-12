@@ -455,3 +455,10 @@ production Materializer 路径现固定为：
 ### Closure decision
 
 Production Materializer 代码与本地测试闭环已收口，可以作为正式代码使用；生产发布仍需在独立阶段补齐 production/staging 安全配置与真实样本覆盖，不能通过放宽门禁或切换到自由 Storyboard LLM 路径绕过。
+
+## Real Production Pilot V1 — Instrumentation Readiness（2026-09-13）
+
+- 远程 HEAD 与本地一致于 `f6ec09c` 后，新增通用 `PilotInvocationRecorder` 与 `core.llm.llm_audit_context`；该能力只扩展现有安全审计记录，不改变 provider-facing payload。
+- 计量入口覆盖模型、请求指纹、prompt/cached/completion/total tokens、cache hit rate、延迟、stage、episode、scene、shot、repair attempt；未保存原始提示词、响应或凭据。
+- 本地 mock 验证：`tests/test_pilot_instrumentation.py` + `tests/test_llm_json_parsing.py` **7 passed**；后端全量回归 **702 passed，879 warnings**（原样保留）。
+- 当前仍未调用真实 MiMo；《潮汐回声》三集 Pilot 的外部调用必须在执行计划确认后开始。

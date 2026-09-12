@@ -1,5 +1,12 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Real Production Pilot V1 instrumentation（准备阶段）
+
+- 新增 `core/pilot_instrumentation.py`，提供按 stage/episode/scene/shot/repair attempt 的通用 LLM 审计采集器。
+- `core.llm` 增加可选的上下文审计钩子；不改变供应商请求，不保存提示词、响应或密钥，继续复用现有安全指纹与 token/cache/延迟记录。
+- 本阶段仅完成本地计量入口与 mock 测试，尚未调用真实 MiMo；Pilot 仍需用户明确确认后开始。
+- 相关测试：`tests/test_pilot_instrumentation.py`、`tests/test_llm_json_parsing.py` 共 **7 passed**；后端全量回归 **702 passed**。
+
 ## 2026-09-13 — Production Pipeline V2 全量验收
 
 - `npm run check:production` 全部通过：后端 **696 passed**（875 warnings，均为既有弃用/测试返回值提示，未隐藏）、Golden **5/5**、运行时配置校验通过、发布门禁通过、前端生产构建通过。
