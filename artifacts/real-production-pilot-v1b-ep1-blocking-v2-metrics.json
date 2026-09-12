@@ -1,0 +1,117 @@
+{
+  "pilot": "real-production-pilot-v1b-scene-blocking-v2",
+  "book_id": 990402,
+  "episode": 1,
+  "generated_at": "2026-09-12T23:31:28.337921+00:00",
+  "external_calls": {
+    "mimo": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0
+  },
+  "scene_blocking": {
+    "first_pass_approved": 2,
+    "total_scenes": 2,
+    "completion_rate": 1.0,
+    "local_repair_attempts": 0
+  },
+  "shot_plan": {
+    "shot_count": 16
+  },
+  "materializer": {
+    "mapped_count": 16
+  },
+  "prompt_compiler_phase_a": {
+    "pass": 16,
+    "total": 16
+  },
+  "qualification": {
+    "first_pass": 16,
+    "final": 16,
+    "total": 16
+  },
+  "aggregate": {
+    "approval_gate_event_count": 0,
+    "approval_gate_rate": 0.0,
+    "manual_shot_edit_count": 0,
+    "manual_shot_edit_rate": 0.0,
+    "manual_scene_edit_count": 0,
+    "manual_scene_edit_rate": 0.0,
+    "repair_yield": {
+      "overall_repair_yield": null,
+      "script_ir_repair_yield": null,
+      "treatment_repair_yield": null,
+      "scene_blocking_repair_yield": null,
+      "shot_plan_repair_yield": null,
+      "prompt_ir_repair_yield": null
+    },
+    "scene_pipeline_completion_rate": 1.0,
+    "episode_pipeline_completion_rate": 1.0,
+    "scene_pipeline_completion": {
+      "approved": 6,
+      "total": 6
+    },
+    "episode_pipeline_completion": {
+      "completed": 3,
+      "total": 3
+    },
+    "shot_first_pass_qualification_rate": 1.0,
+    "shot_final_qualification_rate": 1.0
+  },
+  "pipeline_completion": {
+    "scene_pipeline": {
+      "approved": 6,
+      "total": 6
+    },
+    "episode_pipeline": {
+      "completed": 3,
+      "total": 3
+    }
+  },
+  "results": [
+    {
+      "scene_name": "红伞幻影（一）",
+      "blocking": {
+        "status": "ready_for_review",
+        "schema_version": "scene_blocking_v2",
+        "source_fact_count": 0,
+        "creative_decision_count": 19,
+        "unknowns": [],
+        "validation": {
+          "status": "qualified",
+          "errors": [],
+          "warnings": [],
+          "blocker_count": 0,
+          "warning_count": 0
+        }
+      },
+      "shot_plan_count": 6,
+      "materialized_count": 6,
+      "phase_a_pass": 6,
+      "qualification_final": 6,
+      "status": "qualified"
+    },
+    {
+      "scene_name": "红伞幻影（二）",
+      "blocking": {
+        "status": "ready_for_review",
+        "schema_version": "scene_blocking_v2",
+        "source_fact_count": 0,
+        "creative_decision_count": 19,
+        "unknowns": [],
+        "validation": {
+          "status": "qualified",
+          "errors": [],
+          "warnings": [],
+          "blocker_count": 0,
+          "warning_count": 0
+        }
+      },
+      "shot_plan_count": 10,
+      "materialized_count": 10,
+      "phase_a_pass": 10,
+      "qualification_final": 10,
+      "status": "qualified"
+    }
+  ]
+}

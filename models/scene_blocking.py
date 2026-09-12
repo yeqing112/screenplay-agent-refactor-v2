@@ -19,6 +19,10 @@ class SceneBlocking(Base):
     quality_status = Column(String, nullable=False, default="draft")
     production_status = Column(String, nullable=False, default="blocked")
     workflow_profile = Column(String, nullable=False, default="creative_draft")
+    # V2 keeps the legacy columns above readable while storing the semantic
+    # spatial model in additive JSON columns.  Existing rows remain V1 until
+    # explicitly regenerated; no historical artifact is rewritten.
+    schema_version = Column(String, nullable=False, default="scene_blocking_v1")
     treatment_id = Column(Integer, nullable=True)
     treatment_revision = Column(Integer, nullable=True)
     source_script_hash = Column(String, nullable=False, default="")
@@ -28,5 +32,12 @@ class SceneBlocking(Base):
     unknowns = Column(Text, nullable=False, default="[]")
     evidence_fingerprint = Column(String, nullable=False, default="")
     model_info = Column(Text, nullable=False, default="{}")
+    spatial_model = Column(Text, nullable=False, default="{}")
+    source_spatial_facts = Column(Text, nullable=False, default="[]")
+    creative_decisions = Column(Text, nullable=False, default="[]")
+    derived_constraints = Column(Text, nullable=False, default="{}")
+    unresolved_facts = Column(Text, nullable=False, default="[]")
+    camera_axis = Column(Text, nullable=False, default="{}")
+    validation = Column(Text, nullable=False, default="{}")
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)

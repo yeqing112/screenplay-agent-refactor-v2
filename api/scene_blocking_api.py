@@ -9,9 +9,10 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
-from core.scene_blocking import build_scene_blocking
+from core.scene_blocking import build_scene_blocking, build_scene_blocking_v2, validate_scene_blocking, repair_scene_blocking
+from core.repair_ledger import record_repair_attempt
 from core.script_ir import resolve_script_payload
-from models import DirectorTreatment, SceneBlocking, Script, Session
+from models import DirectorTreatment, FactSnapshot, VisualLocation, SceneBlocking, Script, Session
 
 router = APIRouter(prefix="/api/books", tags=["scene-blocking"])
 
@@ -21,6 +22,7 @@ class SceneBlockingPreviewRequest(BaseModel):
     treatment_id: int | None = Field(default=None, validation_alias=AliasChoices("treatment_id", "treatmentId"))
     persist: bool = False
     workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
+    schema_version: str = Field(default="", validation_alias=AliasChoices("schema_version", "schemaVersion"))
 
 
 class SceneBlockingConfirmRequest(BaseModel):
@@ -29,6 +31,7 @@ class SceneBlockingConfirmRequest(BaseModel):
     confirmed: bool = False
     blocking: dict[str, Any] | None = None
     workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
+    schema_version: str = Field(default="", validation_alias=AliasChoices("schema_version", "schemaVersion"))
 
 
 def _json(value: str | None, fallback: Any) -> Any:
@@ -47,9 +50,17 @@ def _row_payload(row: SceneBlocking) -> dict[str, Any]:
         "production_status": row.production_status, "workflow_profile": row.workflow_profile,
         "treatment_id": row.treatment_id,
         "treatment_revision": row.treatment_revision, "source_script_hash": row.source_script_hash,
+        "schema_version": getattr(row, "schema_version", "scene_blocking_v1"),
         "participants": _json(row.participants, []), "beat_transitions": _json(row.beat_transitions, []),
         "spatial_rules": _json(row.spatial_rules, []), "unknowns": _json(row.unknowns, []),
         "evidence_fingerprint": row.evidence_fingerprint, "model_info": _json(row.model_info, {}),
+        "spatial_model": _json(getattr(row, "spatial_model", "{}"), {}),
+        "source_spatial_facts": _json(getattr(row, "source_spatial_facts", "[]"), []),
+        "creative_decisions": _json(getattr(row, "creative_decisions", "[]"), []),
+        "derived_constraints": _json(getattr(row, "derived_constraints", "{}"), {}),
+        "unresolved_facts": _json(getattr(row, "unresolved_facts", "[]"), []),
+        "camera_axis": _json(getattr(row, "camera_axis", "{}"), {}),
+        "validation": _json(getattr(row, "validation", "{}"), {}),
         "created_at": row.created_at.isoformat() if row.created_at else None,
         "updated_at": row.updated_at.isoformat() if row.updated_at else None,
     }
@@ -58,7 +69,7 @@ def _row_payload(row: SceneBlocking) -> dict[str, Any]:
 def _validate_blocking_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(raw, dict):
         raise ValueError("SceneBlocking candidate must be an object")
-    allowed = {"scene_name", "participants", "beat_transitions", "spatial_rules", "unknowns"}
+    allowed = {"scene_name", "participants", "beat_transitions", "spatial_rules", "unknowns", "schema_version", "space", "spatial_model", "source_spatial_facts", "creative_decisions", "derived_constraints", "unresolved_facts", "camera_axis", "validation", "conflicts", "scene_id"}
     unexpected = sorted(set(raw) - allowed)
     if unexpected:
         raise ValueError(f"candidate contains non-whitelisted fields: {', '.join(unexpected)}")
@@ -81,6 +92,25 @@ def _validate_blocking_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str
         raise ValueError("spatial_rules must be a list of strings")
     if not isinstance(unknowns, list) or not all(str(item).strip() for item in unknowns):
         raise ValueError("unknowns must be a list of strings")
+    if baseline.get("schema_version") == "scene_blocking_v2":
+        source_facts = raw.get("source_spatial_facts", baseline.get("source_spatial_facts", []))
+        if source_facts != baseline.get("source_spatial_facts", []):
+            raise ValueError("source_spatial_facts are immutable and must match the evidence snapshot")
+        if raw.get("schema_version", baseline.get("schema_version")) != "scene_blocking_v2":
+            raise ValueError("V2 candidate must retain schema_version=scene_blocking_v2")
+        candidate = {
+            "scene_name": baseline["scene_name"], "scene_id": baseline.get("scene_id", ""),
+            "space": raw.get("space", baseline.get("space", {})), "participants": participants,
+            "camera_axis": raw.get("camera_axis", baseline.get("camera_axis", {})),
+            "source_spatial_facts": source_facts,
+            "creative_decisions": raw.get("creative_decisions", baseline.get("creative_decisions", [])),
+            "derived_constraints": raw.get("derived_constraints", baseline.get("derived_constraints", {})),
+            "conflicts": baseline.get("conflicts", []),
+        }
+        report = validate_scene_blocking(candidate)
+        if report["status"] != "qualified":
+            raise ValueError(f"spatial validation blocked: {report['errors']}")
+        return {**candidate, "beat_transitions": beats, "spatial_rules": [str(item) for item in rules], "unknowns": []}
     return {
         "scene_name": baseline["scene_name"], "participants": participants, "beat_transitions": beats,
         "spatial_rules": [str(item) for item in rules], "unknowns": [str(item) for item in unknowns],
@@ -91,6 +121,8 @@ def _validate_blocking_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str
 def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreviewRequest) -> dict[str, Any]:
     with Session() as session:
         treatment_query = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, status="approved")
+        if req.scene_name.strip() and not req.treatment_id:
+            treatment_query = treatment_query.filter_by(scene_name=req.scene_name.strip())
         treatment = session.get(DirectorTreatment, req.treatment_id) if req.treatment_id else treatment_query.order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
         if not treatment or treatment.book_id != book_id or treatment.episode != episode or treatment.status != "approved":
             raise HTTPException(status_code=409, detail="SceneBlocking requires an approved DirectorTreatment.")
@@ -108,7 +140,29 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
             "beat_map": _json(treatment.beat_map, []), "prompt_fingerprint": treatment.prompt_fingerprint,
         }
         source_hash = hashlib.sha256((script_row.content or "").encode("utf-8")).hexdigest()
-        blocking = build_scene_blocking(scene=scene, treatment=treatment_payload, source_script_hash=source_hash)
+        use_v2 = str(req.schema_version or "").lower() in {"scene_blocking_v2", "v2"} or req.workflow_profile == "production"
+        scene_canonical = None
+        location = session.query(VisualLocation).filter(VisualLocation.book_id == book_id, VisualLocation.name == wanted).order_by(VisualLocation.id.desc()).first()
+        if location:
+            scene_canonical = {"name": location.name, "canonical_facts": _json(location.canonical_facts, {}), "state_variants": _json(location.state_variants, {}), "look_profile": _json(location.look_profile, {}), "board_spec": _json(location.board_spec, {}), "key_props": _json(location.key_props, [])}
+        fact_row = session.query(FactSnapshot).filter_by(book_id=book_id, episode=episode, status="confirmed").order_by(FactSnapshot.revision.desc(), FactSnapshot.id.desc()).first()
+        fact_snapshot = {"records": _json(fact_row.records_json, [])} if fact_row else None
+        if use_v2:
+            previous = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=wanted, status="approved", schema_version="scene_blocking_v2").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+            previous_payload = _row_payload(previous) if previous else None
+            blocking = build_scene_blocking_v2(scene=scene, treatment=treatment_payload, source_script_hash=source_hash, scene_canonical=scene_canonical, fact_snapshot=fact_snapshot, previous_blocking=previous_payload)
+            # Local repair is bounded and only touches creative/derived fields.
+            # Source facts and production-critical conflicts stay fail-closed.
+            repairs: list[dict[str, Any]] = []
+            if blocking.get("validation", {}).get("status") == "blocked":
+                repaired = repair_scene_blocking(blocking, max_attempts=2)
+                if repaired.get("status") == "qualified":
+                    blocking = {**repaired["candidate"], "validation": validate_scene_blocking(repaired["candidate"], scene_canonical=scene_canonical, previous_blocking=previous_payload)}
+                    blocking["unknowns"] = []
+                    repairs = [item for attempt in repaired.get("attempts", []) for item in attempt.get("repairs", [])]
+            blocking["repair_attempts"] = repairs
+        else:
+            blocking = build_scene_blocking(scene=scene, treatment=treatment_payload, source_script_hash=source_hash)
         persisted_id = None
         if req.persist:
             existing = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=blocking["scene_name"], evidence_fingerprint=blocking["evidence_fingerprint"]).first()
@@ -122,9 +176,17 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
                     spatial_rules=json.dumps(blocking["spatial_rules"], ensure_ascii=False), unknowns=json.dumps(blocking["unknowns"], ensure_ascii=False),
                     evidence_fingerprint=blocking["evidence_fingerprint"], model_info=json.dumps(blocking["model_info"], ensure_ascii=False),
                     created_at=datetime.now(), updated_at=datetime.now(), workflow_profile=req.workflow_profile,
+                    schema_version=blocking.get("schema_version", "scene_blocking_v1"),
+                    spatial_model=json.dumps(blocking.get("space", {}), ensure_ascii=False), source_spatial_facts=json.dumps(blocking.get("source_spatial_facts", []), ensure_ascii=False),
+                    creative_decisions=json.dumps(blocking.get("creative_decisions", []), ensure_ascii=False), derived_constraints=json.dumps(blocking.get("derived_constraints", {}), ensure_ascii=False),
+                    unresolved_facts=json.dumps(blocking.get("unresolved_facts", []), ensure_ascii=False), camera_axis=json.dumps(blocking.get("camera_axis", {}), ensure_ascii=False), validation=json.dumps(blocking.get("validation", {}), ensure_ascii=False),
                 )
                 session.add(row); session.commit(); session.refresh(row); persisted_id = row.id
-        return {"mode": "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "treatment_id": treatment.id, "blocking": blocking, "message": "这是只读空间调度草案；未修改任何镜头。"}
+                for repair in blocking.get("repair_attempts", []):
+                    record_repair_attempt(repair=repair, issue=repair.get("issue"), context={"book_id": book_id, "episode": episode, "scene_id": blocking.get("scene_id"), "revalidation_status": blocking.get("validation", {}).get("status"), "revalidation_details": blocking.get("validation", {})}, session=session)
+                if blocking.get("repair_attempts"):
+                    session.commit()
+        return {"mode": "deterministic_spatial_authority_v2" if use_v2 else "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "treatment_id": treatment.id, "blocking": blocking, "message": "这是只读空间调度草案；未修改任何镜头。"}
 
 
 @router.get("/{book_id}/episodes/{episode}/scene-blockings")
@@ -166,7 +228,7 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
         treatment = session.query(DirectorTreatment).filter_by(id=draft.treatment_id, book_id=book_id, episode=episode, status="approved").first()
         if not treatment:
             raise HTTPException(status_code=409, detail="The DirectorTreatment used by this draft is no longer approved.")
-    preview = preview_scene_blocking(book_id, episode, SceneBlockingPreviewRequest(scene_name=draft.scene_name, treatment_id=draft.treatment_id, workflow_profile=req.workflow_profile))
+    preview = preview_scene_blocking(book_id, episode, SceneBlockingPreviewRequest(scene_name=draft.scene_name, treatment_id=draft.treatment_id, workflow_profile=req.workflow_profile, schema_version=req.schema_version or getattr(draft, "schema_version", "")))
     baseline = preview["blocking"]
     if req.evidence_fingerprint and req.evidence_fingerprint != draft.evidence_fingerprint:
         raise HTTPException(status_code=409, detail="SceneBlocking evidence fingerprint does not match.")
@@ -177,7 +239,13 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
                 stale.status = "superseded"; stale.updated_at = datetime.now(); session.commit()
         raise HTTPException(status_code=409, detail="SceneBlocking evidence changed; draft is stale and must be regenerated.")
     try:
-        candidate_source = req.blocking or {field: baseline[field] for field in ("scene_name", "participants", "beat_transitions", "spatial_rules", "unknowns")}
+        if req.blocking:
+            candidate_source = req.blocking
+        else:
+            fields = ("scene_name", "participants", "beat_transitions", "spatial_rules", "unknowns")
+            if baseline.get("schema_version") == "scene_blocking_v2":
+                fields = fields + ("schema_version", "space", "spatial_model", "source_spatial_facts", "creative_decisions", "derived_constraints", "unresolved_facts", "camera_axis", "validation", "scene_id")
+            candidate_source = {field: baseline.get(field) for field in fields}
         candidate = _validate_blocking_candidate(candidate_source, baseline)
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=f"SceneBlocking candidate is invalid: {exc}") from exc
@@ -196,6 +264,10 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
             spatial_rules=json.dumps(candidate["spatial_rules"], ensure_ascii=False), unknowns=json.dumps(candidate["unknowns"], ensure_ascii=False),
             evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": datetime.now().isoformat()}, ensure_ascii=False),
             created_at=datetime.now(), updated_at=datetime.now(), workflow_profile=req.workflow_profile,
+            schema_version=candidate.get("schema_version", getattr(draft, "schema_version", "scene_blocking_v1")),
+            spatial_model=json.dumps(candidate.get("space", getattr(draft, "spatial_model", {})), ensure_ascii=False), source_spatial_facts=json.dumps(candidate.get("source_spatial_facts", []), ensure_ascii=False),
+            creative_decisions=json.dumps(candidate.get("creative_decisions", []), ensure_ascii=False), derived_constraints=json.dumps(candidate.get("derived_constraints", {}), ensure_ascii=False),
+            unresolved_facts=json.dumps(candidate.get("unresolved_facts", []), ensure_ascii=False), camera_axis=json.dumps(candidate.get("camera_axis", {}), ensure_ascii=False), validation=json.dumps(candidate.get("validation", {}), ensure_ascii=False),
         )
         session.add(row); draft.status = "superseded"; draft.updated_at = datetime.now(); session.commit(); session.refresh(row)
         return {"approved": True, "mutated": True, "scene_blocking": _row_payload(row), "rollback_anchor": anchor, "shot_plan_allowed": True}

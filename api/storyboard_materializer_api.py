@@ -16,6 +16,16 @@ from models import DirectorTreatment, SceneBlocking, Script, ScriptIRVersion, Se
 router = APIRouter(prefix="/api/books", tags=["storyboard-materializer"])
 
 
+def _json_list(value: str | list | None) -> list:
+    if isinstance(value, list):
+        return value
+    try:
+        parsed = json.loads(value or "[]")
+        return parsed if isinstance(parsed, list) else []
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return []
+
+
 class MaterializeRequest(BaseModel):
     confirmed: bool = False
     plan_id: int | None = Field(default=None, validation_alias=AliasChoices("plan_id", "planId"))
@@ -55,6 +65,17 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
             blocking = session.query(SceneBlocking).filter_by(id=plan.blocking_id, book_id=book_id, episode=episode, scene_name=plan.scene_name, status="approved").first() if plan.blocking_id else None
             if not treatment or not blocking or blocking.treatment_id != treatment.id:
                 raise HTTPException(status_code=409, detail=f"Production materialization requires approved Treatment and SceneBlocking lineage for scene: {plan.scene_name}")
+            blocking_unknowns = _json_list(getattr(blocking, "unknowns", "[]"))
+            blocking_unresolved = _json_list(getattr(blocking, "unresolved_facts", "[]"))
+            if blocking_unknowns or blocking_unresolved:
+                raise HTTPException(status_code=409, detail=f"Production materialization is blocked by unresolved SceneBlocking facts: {plan.scene_name}")
+            if getattr(blocking, "schema_version", "scene_blocking_v1") == "scene_blocking_v2":
+                try:
+                    blocking_validation = json.loads(getattr(blocking, "validation", "{}") or "{}")
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    blocking_validation = {}
+                if blocking_validation.get("status") != "qualified":
+                    raise HTTPException(status_code=409, detail=f"Production materialization requires qualified SceneBlocking validation: {plan.scene_name}")
             try:
                 raw = json.loads(plan.shots or "[]")
             except (TypeError, ValueError, json.JSONDecodeError) as exc:
@@ -66,6 +87,8 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                 drafts = materialize_storyboard_from_shot_plan({"scene_name": plan.scene_name, "shots": raw, "evidence_fingerprint": plan.evidence_fingerprint}, treatment={"id": treatment.id, "revision": treatment.revision}, blocking={"id": blocking.id, "revision": blocking.revision}, asset_snapshot={"script_ir_id": script_ir.id})
             except (TypeError, ValueError, json.JSONDecodeError) as exc:
                 raise HTTPException(status_code=409, detail=f"Approved ShotPlan cannot be materialized: {exc}") from exc
+            if len(drafts) != len(raw) or {str(item.get("plan_shot_id")) for item in drafts} != {str(item.get("plan_shot_id")) for item in raw}:
+                raise HTTPException(status_code=409, detail=f"Materializer mapping does not preserve the approved ShotPlan cardinality: {plan.scene_name}")
             existing_refs = {str((json.loads(row.meta_info or "{}").get("shot_plan_ref") or {}).get("plan_shot_id") or "") for row in session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, scene_name=plan.scene_name).all()}
             planned_refs = {str(draft["plan_shot_id"]) for draft in drafts}
             if existing_refs - planned_refs:

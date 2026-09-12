@@ -18,6 +18,7 @@ from .agent import AgentSession, AgentPlan, AgentAuditLog, AgentAttachment, Agen
 from .director_treatment import DirectorTreatment
 from .scene_blocking import SceneBlocking
 from .shot_plan import ShotPlan
+from .repair import RepairAttempt
 from .director_benchmark import DirectorBenchmarkRun
 
 __all__ = [
@@ -37,5 +38,6 @@ __all__ = [
     "DirectorTreatment",
     "SceneBlocking",
     "ShotPlan",
+    "RepairAttempt",
     "DirectorBenchmarkRun",
 ]

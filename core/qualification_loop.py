@@ -23,7 +23,7 @@ def _repair_unavailable(blockers: list[dict[str, Any]]) -> bool:
     return any(not isinstance(item.get("patch"), list) or not item.get("patch") for item in blockers)
 
 
-def qualify_candidate(candidate: dict[str, Any], validators: list[Validator] | None = None, *, max_attempts: int = 2) -> dict[str, Any]:
+def qualify_candidate(candidate: dict[str, Any], validators: list[Validator] | None = None, *, max_attempts: int = 2, repair_recorder: Callable[[dict[str, Any]], None] | None = None, repair_context: dict[str, Any] | None = None) -> dict[str, Any]:
     current = copy.deepcopy(candidate)
     attempts: list[dict[str, Any]] = []
     limit = max(0, int(max_attempts))
@@ -45,7 +45,10 @@ def qualify_candidate(candidate: dict[str, Any], validators: list[Validator] | N
                 continue
             repair = apply_local_repair(current, issue)
             current = repair["candidate"]
-            repairs.append({**{key: repair[key] for key in ("issue_code", "target_id", "patch", "before_fingerprint", "after_fingerprint", "target_layer", "changed", "rollback_candidate")}})
+            repair_record = {**{key: repair[key] for key in ("issue_code", "target_id", "patch", "before_fingerprint", "after_fingerprint", "target_layer", "changed", "rollback_candidate")}, "attempt_number": attempt + 1, "issue": copy.deepcopy(issue)}
+            repairs.append(repair_record)
+            if repair_recorder:
+                repair_recorder({**repair_record, "context": {**(repair_context or {}), "attempt_number": attempt + 1}})
             changed = changed or repair["changed"]
         attempts.append({"attempt": attempt + 1, "issues": routed, "repairs": repairs, "changed": changed})
         if not changed:
