@@ -1,5 +1,11 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M7：Prompt Compiler Phase A/B
+
+- 新增 `core/prompt_ir_compiler.py`：Phase A 完全 deterministic，生成 ShotIR、资产绑定、连续性、可拍性、诊断和 compiler fingerprint；Phase B 提供不改变事实的 deterministic verbalizer fallback。
+- Storyboard Materializer 写入生产镜头时同步保存 `meta_info.prompt_compiler` Phase A 状态和静态/运动/负向提示词；没有 Phase A 状态的镜头不能视为 qualified。
+- M7 测试：Phase A、verbalizer fallback、Storyboard compiler invariant **5 passed**。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M6：Storyboard Materializer
 
 - 新增 `core/storyboard_materializer.py` 与显式确认 API `/api/books/{book_id}/episodes/{episode}/storyboard/materialize`。

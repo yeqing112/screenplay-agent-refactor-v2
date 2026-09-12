@@ -381,3 +381,8 @@
 
 - Approved ShotPlan→StoryboardShot Materializer 已实现并提供显式确认 API；重复物化按 `plan_shot_id` 幂等跳过。
 - M6 专项及关联回归：**11 passed**。未调用真实供应商。M7 是下一个待完成阶段。
+
+## M7 完成后复核（2026-09-13）
+
+- Materializer 已在生产镜头落库时同步 Phase A Prompt IR、Executability、诊断与指纹；Phase B 有 deterministic fallback。
+- M7 专项及关联回归：**5 passed**。未调用真实供应商。M8 是下一个待完成阶段。
