@@ -442,3 +442,16 @@ production Materializer 路径现固定为：
 ### As-built 结论
 
 本轮未提交的 `api/server.py` Materializer router 接线已确认架构正确并纳入正式代码；本轮只提交 Materializer 直接相关的路由、确定性实现、反向/门禁测试和本审计记录。工作区其他历史产物仍保持未提交、未清理。
+
+## Final Local Closure Verification（2026-09-13）
+
+本轮仅执行本地确定性验证，不处理 GitHub Actions/CI，不调用真实 LLM、生图、视频或对象存储。
+
+- `npm run check:production`：**699 passed**、878 warnings；Golden **5/5**；运行时配置验证、release-gate 不变量测试、前端生产构建全部通过。
+- `npm --prefix web test -- --run`：**49 个测试文件、291 passed**。
+- Materializer/Compiler/Readiness 专项：**8 passed**，包含将 `StoryboardAgent.run()` mock 为异常且确认 production materializer 调用次数为 **0** 的反向测试。
+- `npm run gate:production`：确定性 production regression **PASS**；整体 **BLOCKED（fail-closed）**，阻断仅来自环境/样本前置条件：当前 `DEPLOYMENT_ENV=development`、active 真样本仅 **3/30**、真浏览器 release 样本仅 **1/3**，并缺少 `needs_information` 与 `conflict` 覆盖。该结果不表示 Materializer 失败，而是发布门禁正确拒绝在证据不足时放行。
+
+### Closure decision
+
+Production Materializer 代码与本地测试闭环已收口，可以作为正式代码使用；生产发布仍需在独立阶段补齐 production/staging 安全配置与真实样本覆盖，不能通过放宽门禁或切换到自由 Storyboard LLM 路径绕过。
