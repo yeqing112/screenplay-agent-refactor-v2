@@ -433,7 +433,7 @@ production Materializer 路径现固定为：
 
 - `tests/test_production_storyboard_gate.py::test_production_materializer_never_calls_storyboard_agent`：mock `StoryboardAgent.run()` 为异常，production API 正常完成，调用次数为 **0**。
 - Materializer / Compiler invariant / production gate 专项：**6 passed**。
-- 最终全量后端：**696 passed**、875 warnings（未隐藏）。
+- 最终全量后端（含本轮 Materializer 收口测试）：**699 passed**、878 warnings（未隐藏）。
 - 前端 Vitest：**291 passed**；前端生产构建通过。
 - Golden：**5/5**；production release gate 与 runtime config verification 通过。
 - 全程未调用真实 LLM、生图、视频或对象存储；未处理 GitHub Actions/CI。
