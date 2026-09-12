@@ -428,6 +428,7 @@ production Materializer 路径现固定为：
 - ShotPlan 中每个对象必须有唯一 `plan_shot_id`；非对象、重复 ID 或已有孤儿 StoryboardShot 均拒绝，不静默增删镜头。
 - 每个 StoryboardShot 保留 `plan_shot_id`、`shot_plan_ref`、camera、duration、action beats、entry/exit state、asset bindings、continuity contract、上游版本引用与 Phase A 指纹。
 - Phase A 后统一运行 Qualification Loop；存在 blocker 时镜头为 `quality_status=needs_review`、`production_status=blocked`，不得晋级 ready。
+- 每个物化镜头同时持久化 `production_pass` 评估；在资产/媒体 readiness 未完成时明确返回 `allowed=false`，不会把 materialization 当作生产放行。
 
 ### 反向测试与本地验证
 

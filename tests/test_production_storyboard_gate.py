@@ -52,6 +52,7 @@ def test_production_materializer_never_calls_storyboard_agent():
         assert meta[0]["action_beats"] == [{"at": 0.5, "action": "停步"}]
         assert meta[0]["asset_bindings"] == {"character": ["C1"]}
         assert meta[0]["continuity_contract"] == {"screen_direction": "left_to_right"}
+        assert meta[0]["production_pass"]["allowed"] is False
         session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).delete(); session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()
 
 

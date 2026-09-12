@@ -9,6 +9,7 @@ from pydantic import AliasChoices, BaseModel, Field
 
 from core.storyboard_materializer import materialize_storyboard_from_shot_plan
 from core.prompt_ir_compiler import compile_phase_a, verbalize_phase_b_deterministic, validate_phase_a_state
+from core.production_policy import evaluate_production_boundary
 from core.qualification_loop import qualify_candidate
 from models import DirectorTreatment, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot
 
@@ -79,12 +80,25 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                         for error in errors
                     ]
                 qualification = qualify_candidate(phase_a, [_validate_compiler_candidate], max_attempts=2)
+                production_pass = evaluate_production_boundary(
+                    "production",
+                    script_ir_qualified=True,
+                    director_treatment_approved=True,
+                    scene_blocking_approved=True,
+                    shot_plan_approved=True,
+                    compiler_phase_a_pass=qualification["status"] == "qualified" and phase_a.get("phase_a_status") == "pass",
+                    executability_pass=phase_a.get("executability", {}).get("status") != "blocked" if isinstance(phase_a.get("executability"), dict) else False,
+                    # Asset/media readiness is intentionally left to the
+                    # downstream readiness gate; materialization must never
+                    # self-promote a shot merely because bindings exist.
+                    required_assets_ready=False,
+                )
                 persisted_meta = {
                     **draft["meta_info"], "workflow_profile": "production",
                     "plan_shot_id": draft["plan_shot_id"], "action_beats": draft.get("action_beats", []),
                     "asset_bindings": draft.get("asset_bindings", {}), "continuity_contract": draft.get("continuity_contract", {}),
                     "upstream": {"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id, "shot_plan_id": plan.id},
-                    "prompt_compiler": phase_a, "qualification": qualification,
+                    "prompt_compiler": phase_a, "qualification": qualification, "production_pass": production_pass,
                 }
                 row = StoryboardShot(book_id=book_id, episode=episode, scene_name=draft["scene_name"], shot_id=draft["shot_id"], duration=draft["duration"], camera_angle=draft["camera_angle"], camera_movement=draft["camera_movement"], camera_speed=draft["camera_speed"], shot_purpose=draft["shot_purpose"], start_state=json.dumps(draft["start_state"], ensure_ascii=False) if isinstance(draft["start_state"], (dict, list)) else draft["start_state"], action_process=draft["action_process"], end_state=json.dumps(draft["end_state"], ensure_ascii=False) if isinstance(draft["end_state"], (dict, list)) else draft["end_state"], visual_prompt_static=verbalized["static_prompt"], visual_prompt_motion=verbalized["motion_prompt"], visual_prompt_final=verbalized["negative_prompt"], meta_info=json.dumps(persisted_meta, ensure_ascii=False), execution_status="succeeded", quality_status="qualified" if qualification["status"] == "qualified" else "needs_review", production_status="blocked", workflow_profile="production", created_at=datetime.now(), updated_at=datetime.now())
                 session.add(row); created.append(draft["plan_shot_id"])
