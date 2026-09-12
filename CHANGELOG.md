@@ -1,5 +1,11 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M9：Root Cause Aggregator
+
+- 新增 `core/root_cause_aggregator.py`，按稳定语义根因 ID 聚合跨场景/镜头诊断，输出严重度、影响范围、症状数与建议动作。
+- 聚合报告保留每条原始 `symptoms`，不会通过归并隐藏 blocker 或降低问题数量；未知码按自身稳定 token 分组。
+- M9 专项测试：`pytest -q tests/test_root_cause_aggregator.py` → **2 passed**。未调用真实供应商。
+
 ## 2026-09-13 — Production Pipeline V2 M8：First-Pass Qualification Loop
 
 - 新增 `core/qualification_loop.py`、`core/issue_router.py` 与 `core/local_repair.py`，统一候选→诊断路由→责任层局部修复→再验证闭环，默认最多 2 次尝试。

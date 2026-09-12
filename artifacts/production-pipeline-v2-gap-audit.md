@@ -25,7 +25,7 @@
 | M6 Storyboard Materializer | **已满足** | production StoryboardShot 由 Approved ShotPlan 确定性一一物化。 |
 | M7 Prompt Compiler A/B | **已满足** | Materializer 同步 Phase A 状态，Phase B 可 deterministic fallback。 |
 | M8 First-Pass Qualification Loop | **已满足** | 已统一诊断路由、责任层显式 patch、再验证和 needs_review 闭环。 |
-| M9 Root Cause Aggregator | **未满足** | 现有报告以症状计数为主，无稳定根因 ID 与跨镜头聚合。 |
+| M9 Root Cause Aggregator | **已满足** | 已提供稳定根因 ID、影响范围、症状数与原始症状索引；production-readiness 已暴露聚合结果。 |
 | M10 QA 职责重构 | **部分满足** | 已有多类 QA、预检和审计，但 Validator/Director QA/Human Review 的责任边界尚未成为统一生产门禁。 |
 
 ## 逐项差距审计
@@ -343,7 +343,7 @@
 
 ## 审计结论
 
-当前仓库已完成 M0–M8 的确定性生产链路收口；下一个未满足 Milestone 是 **M9**。M9/M10 仍必须按顺序完成，并保持 fail-closed、可回滚、可追溯且不调用真实外部供应商。
+当前仓库已完成 M0–M9 的确定性生产链路收口；下一个未满足 Milestone 是 **M10**。M10 仍必须按顺序完成，并保持 fail-closed、可回滚、可追溯且不调用真实外部供应商。
 
 ## M0 完成后复核（2026-09-13）
 
@@ -392,3 +392,9 @@
 - 已新增统一 qualification loop、issue router 和 local repair；责任层只允许显式 JSON patch，动作超载不会被 Prompt 文本掩盖。
 - 修复记录包含 before/after fingerprint 与 rollback pre-image；无可执行 patch 的 blocker 返回 `needs_review`、`repair_unavailable=true`，不虚假重复尝试。
 - M8 专项测试：**6 passed**。未调用真实 LLM、图片、视频或对象存储。M9 是下一个待完成阶段。
+
+## M9 完成后复核（2026-09-13）
+
+- 已新增确定性根因聚合器；语义相近诊断归并到稳定 `root_cause_id`，每组保留完整 `symptoms`，不会隐藏底层 blocker。
+- production-readiness 现在提供 `root_causes`、`root_cause_count`、`symptom_count`、QA 角色和 production pass metrics，并保留原有 issue 列表。
+- M9 专项测试：**2 passed**；相关 readiness/repair 回归仍通过。未调用真实供应商。M10 是下一个待完成阶段。
