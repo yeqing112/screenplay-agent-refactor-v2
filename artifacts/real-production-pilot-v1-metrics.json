@@ -1,0 +1,110 @@
+{
+  "pilot": "real-production-pilot-v1",
+  "project": {
+    "book_id": 990402,
+    "title": "潮汐回声",
+    "episodes": [1, 2, 3],
+    "workflow_profile": "production"
+  },
+  "execution_policy": {
+    "llm_model": "mimo-v2.5",
+    "real_llm_allowed": true,
+    "media_provider_calls": 0,
+    "image_provider_calls": 0,
+    "video_provider_calls": 0,
+    "object_storage_calls": 0,
+    "storyboard_agent_run_calls": 0
+  },
+  "episodes": {
+    "1": {
+      "script_ir": {"status": "qualified", "repair_attempts": 1},
+      "director_treatment": {"approved_scenes": 2},
+      "scene_blocking": {"approved_scenes": 0, "needs_review_scenes": 2, "blockers": ["SPATIAL_UNKNOWN"]},
+      "shot_plan": {"approved_scenes": 0, "shots": 0},
+      "materializer": {"shots": 0},
+      "prompt_compiler_phase_a": {"pass": 0},
+      "qualification": {"qualified": 0},
+      "production": {"status": "blocked", "reason": "SceneBlocking participant positions remain unknown"}
+    },
+    "2": {
+      "script_ir": {"status": "qualified"},
+      "director_treatment": {"approved_scenes": 2},
+      "scene_blocking": {"approved_scenes": 2},
+      "shot_plan": {"approved_scenes": 2, "shots": 19, "duration_repairs": 2},
+      "materializer": {"shots": 19, "mapping": "1:1"},
+      "prompt_compiler_phase_a": {"pass": 19},
+      "qualification": {"qualified": 19},
+      "production": {"status": "blocked", "reason": "Media asset readiness was intentionally not executed"}
+    },
+    "3": {
+      "script_ir": {"status": "qualified", "repair_attempts": 1},
+      "director_treatment": {"approved_scenes": 2},
+      "scene_blocking": {"approved_scenes": 2},
+      "shot_plan": {"approved_scenes": 2, "shots": 21},
+      "materializer": {"shots": 21, "mapping": "1:1"},
+      "prompt_compiler_phase_a": {"pass": 21},
+      "qualification": {"qualified": 21},
+      "production": {"status": "blocked", "reason": "Media asset readiness was intentionally not executed"}
+    }
+  },
+  "aggregate": {
+    "scene_count": 6,
+    "scenes_materialized": 4,
+    "scene_blocker_count": 2,
+    "scene_production_blocker_rate": 0.3333,
+    "storyboard_shot_count": 40,
+    "phase_a_pass_count": 40,
+    "qualification_qualified_count": 40,
+    "first_pass_qualification_rate": {
+      "numerator": 40,
+      "denominator": 40,
+      "rate": 1.0,
+      "scope": "materialized shots only; episode 1 was blocked before shot planning"
+    },
+    "final_automatic_qualification_rate": {
+      "numerator": 40,
+      "denominator": 40,
+      "rate": 1.0,
+      "scope": "materialized shots only"
+    },
+    "human_intervention_rate": {
+      "numerator": 4,
+      "denominator": 4,
+      "rate": 1.0,
+      "scope": "materialized scene plans with explicit approval; not a measure of edit volume"
+    },
+    "auto_repair_yield": {
+      "rate": null,
+      "status": "not_normalized",
+      "reason": "Historical artifacts record repairs at different layers; a normalized attempt ledger is required before publishing a defensible numerator/denominator"
+    },
+    "continuity": {
+      "structural_contracts_present": 40,
+      "structural_contract_coverage": 1.0,
+      "media_continuity_validated": false,
+      "reason": "Image/video providers and object storage were prohibited in this pilot"
+    }
+  },
+  "mimo_audit": {
+    "deduplication": "unique request_fingerprint across real-production-pilot-v1 artifacts",
+    "unique_calls": 46,
+    "prompt_tokens": 134731,
+    "cached_tokens": 21632,
+    "completion_tokens": 76870,
+    "total_tokens": 211601,
+    "cache_hit_rate": 0.1606,
+    "average_latency_ms": 27035.5,
+    "episode_scoped_unique_calls": {"1": 11, "2": 12, "3": 8, "unscoped_content_chain": 15}
+  },
+  "evidence": [
+    "artifacts/real-production-pilot-v1-content-ep1.json",
+    "artifacts/real-production-pilot-v1-ep1-script-ir.json",
+    "artifacts/real-production-pilot-v1-ep1-script-ir-repair.json",
+    "artifacts/real-production-pilot-v1-ep1-treatment-repair-final.json",
+    "artifacts/real-production-pilot-v1-ep1-blocking-repair.json",
+    "artifacts/real-production-pilot-v1-ep2-pipeline-final4.json",
+    "artifacts/real-production-pilot-v1-ep2-scene2-shot-repair.json",
+    "artifacts/real-production-pilot-v1-ep3-pipeline-final2.json",
+    "artifacts/real-production-pilot-v1-ep3-script-ir-repair.json"
+  ]
+}

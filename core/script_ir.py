@@ -60,6 +60,13 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "state_out": raw_scene.get("state_out") if isinstance(raw_scene.get("state_out"), dict) else {},
             "required_visual_proofs": raw_scene.get("required_visual_proofs") if isinstance(raw_scene.get("required_visual_proofs"), list) else [],
             "blocking_hints": raw_scene.get("blocking_hints") if isinstance(raw_scene.get("blocking_hints"), list) else [],
+            # Keep explicit spatial declarations available to the
+            # evidence-first SceneBlocking stage.  Older ScriptIR payloads
+            # simply omit these fields; adding them is backwards compatible
+            # and prevents a structured build from silently discarding
+            # production-critical blocking evidence.
+            "character_blocking": raw_scene.get("character_blocking") if isinstance(raw_scene.get("character_blocking"), list) else [],
+            "props": raw_scene.get("props") if isinstance(raw_scene.get("props"), list) else [],
             "asset_mentions": raw_scene.get("asset_mentions") if isinstance(raw_scene.get("asset_mentions"), list) else [],
         })
     result = {
@@ -101,6 +108,7 @@ def validate_script_ir(payload: Any) -> dict[str, Any]:
     if not isinstance(scenes, list) or not scenes:
         errors.append({"code": "SCENES_REQUIRED", "message": "ScriptIR must contain at least one scene."})
     seen_ids: set[str] = set()
+    seen_names: set[str] = set()
     for scene in scenes if isinstance(scenes, list) else []:
         if not isinstance(scene, dict):
             errors.append({"code": "SCENE_OBJECT_INVALID", "message": "Each scene must be an object."})
@@ -112,6 +120,10 @@ def validate_script_ir(payload: Any) -> dict[str, Any]:
         seen_ids.add(scene_id)
         if not name:
             errors.append({"code": "SCENE_NAME_REQUIRED", "message": f"{scene_id or 'scene'} requires a name."})
+        elif name in seen_names:
+            errors.append({"code": "SCENE_NAME_DUPLICATE", "message": f"Scene names must be unique: {name}."})
+        else:
+            seen_names.add(name)
         beats = scene.get("beats")
         if not isinstance(beats, list) or not beats:
             warnings.append({"code": "SCENE_BEATS_EMPTY", "message": f"{scene_id or name} has no beats."})

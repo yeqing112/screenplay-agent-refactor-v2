@@ -61,6 +61,28 @@ class DirectorTreatmentShadowTests(unittest.TestCase):
         self.assertEqual(treatment["character_intents"]["CHAR_A"]["goal"], "见到董事长")
         self.assertTrue(treatment["prompt_fingerprint"])
 
+    def test_treatment_preserves_canonical_script_ir_beat_ids(self):
+        treatment = build_shadow_treatment(
+            scene={"name": "门厅", "beats": [{"beat_id": "E02_SC001_B07", "type": "action", "event": "停下"}]},
+        )
+        self.assertEqual(treatment["beat_map"][0]["beat_id"], "E02_SC001_B07")
+
+    def test_llm_candidate_merges_intents_without_overwriting_identity(self):
+        preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/preview", json={}).json()
+        character_id = next(iter(preview["treatment"]["character_intents"]))
+        baseline_name = preview["treatment"]["character_intents"][character_id]["name"]
+        candidate = {
+            "character_intents": {character_id: {"goal": "新目标"}},
+            "beat_map": preview["treatment"]["beat_map"],
+            "dramatic_objective": "目标",
+            "audience_question": "问题",
+            "visual_strategy": "空间",
+        }
+        from api.director_treatment_api import _validate_llm_candidate
+        normalized = _validate_llm_candidate(candidate, preview["treatment"])
+        self.assertEqual(normalized["character_intents"][character_id]["name"], baseline_name)
+        self.assertEqual(normalized["character_intents"][character_id]["goal"], "新目标")
+
     def test_same_evidence_is_stable_and_does_not_invent_assets(self):
         scene = {"name": "空房间", "beats": [{"id": "B01", "type": "setup", "event": "人物停在门边"}]}
         first = build_shadow_treatment(scene=scene)
@@ -89,6 +111,19 @@ class DirectorTreatmentShadowTests(unittest.TestCase):
         self.assertTrue(first["mutated"])
         self.assertEqual(first["persisted_draft_id"], second["persisted_draft_id"])
         self.assertFalse(second["llm_called"])
+
+    def test_preview_scopes_character_evidence_to_declared_scene_participants(self):
+        with Session() as session:
+            session.add(VisualMakeup(book_id=self.book_id, episode=1, character_name="旁观者"))
+            row = session.query(Script).filter_by(book_id=self.book_id, episode=1).one()
+            payload = json.loads(row.content)
+            payload["scenes"][0]["participants"] = ["来客"]
+            row.content = json.dumps(payload, ensure_ascii=False)
+            session.commit()
+        preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/preview", json={})
+        self.assertEqual(preview.status_code, 200)
+        names = [item["name"] for item in preview.json()["evidence"]["characters"]]
+        self.assertEqual(names, ["来客"])
 
     def test_llm_draft_requires_confirmation_and_only_writes_packet_proposal(self):
         preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/preview", json={}).json()

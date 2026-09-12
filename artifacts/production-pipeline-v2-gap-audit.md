@@ -465,3 +465,15 @@ Production Materializer 代码与本地测试闭环已收口，可以作为正�
 - 样本只读预检发现并修复导入器的通用前导标题边界：独立书名行不再生成伪章节；《潮汐回声》现稳定切分为 **10 章**，未修改原始文件。
 - 章节切分回归：`tests/test_ingest_chapter_detection.py` **2 passed**，并验证实质序章仍被保留。
 - Step 2 样本准备：`book_id=990402`（《潮汐回声》）已从 `uploads/《潮汐回声》.txt` 导入，10 章、2648 字；未复用 `990401`，未调用真实 MiMo。
+
+## Final As-Built Verification：Real Production Pilot V1（2026-09-13）
+
+本节与前述 Baseline Audit 分离，记录当前实际 Pilot 证据，不回写或覆盖历史审计结论。
+
+- Pilot 项目为 `book_id=990402`《潮汐回声》，执行第 1–3 集，`workflow_profile=production`。
+- 第 2–3 集完成 `Qualified ScriptIR → Approved DirectorTreatment → Approved SceneBlocking → Approved ShotPlan → Storyboard Materializer → Prompt Compiler Phase A → Qualification Loop`，共 40 个 StoryboardShot，映射 40/40，Phase A `pass=40/40`，Qualification `qualified=40/40`。
+- 第 1 集两场在 SceneBlocking 因 `SPATIAL_UNKNOWN` fail-closed，未生成 ShotPlan、未物化；这是证据不足的预期阻断，不是被隐藏的 warning。
+- 本轮允许真实 MiMo，但禁止生图、视频和对象存储；按 request fingerprint 去重的 MiMo 审计为 46 次唯一调用，详见 `artifacts/real-production-pilot-v1-metrics.json`。
+- 当前所有物化镜头仍为 `production_status=blocked`，因为媒体 readiness 未执行；结构连续性合同已保留，不能据此宣称视觉/视频连续性通过。
+- 修复后的 ScriptIR、Treatment 和 SceneBlocking 通用边界测试已纳入本轮代码；后端完整回归 `710 passed`，Golden `5/5`，release-gate 不变量通过，前端生产构建通过。
+- 未调用 `StoryboardAgent.run()`，未处理 GitHub Actions/CI，未删除或覆盖历史产物。

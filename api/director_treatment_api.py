@@ -137,6 +137,20 @@ def _validate_llm_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str, Any
     intents = candidate.get("character_intents")
     if not isinstance(intents, dict) or not set(intents).issubset(set(base_intents)):
         raise ValueError("LLM candidate character_intents must use only declared character ids")
+    # Character identity is evidence, not a creative field.  Merge editable
+    # intent suggestions onto the frozen baseline and always retain the
+    # baseline name (and any omitted fields) so an LLM response cannot turn an
+    # asset id into a display name or silently drop a declared participant.
+    candidate["character_intents"] = {
+        key: {
+            **(base_intents.get(key) if isinstance(base_intents.get(key), dict) else {}),
+            **(intents.get(key) if isinstance(intents.get(key), dict) else {}),
+        }
+        for key in base_intents
+    }
+    for key, base_intent in base_intents.items():
+        if isinstance(base_intent, dict) and base_intent.get("name"):
+            candidate["character_intents"][key]["name"] = base_intent["name"]
     base_beats = baseline.get("beat_map") if isinstance(baseline.get("beat_map"), list) else []
     beat_ids = {str(item.get("beat_id")) for item in base_beats if isinstance(item, dict)}
     beats = candidate.get("beat_map")
@@ -162,7 +176,31 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
         script = resolve_script_payload(session, script_row, workflow_profile=req.workflow_profile)
         scene = _find_scene(script, req.scene_name)
         characters = []
-        for row in session.query(VisualMakeup).filter_by(book_id=book_id, episode=req.episode).order_by(VisualMakeup.id):
+        makeup_rows = session.query(VisualMakeup).filter_by(book_id=book_id, episode=req.episode).order_by(VisualMakeup.id).all()
+        # A treatment is scene-scoped.  When ScriptIR explicitly declares the
+        # scene participants, only those bound assets belong in the treatment
+        # evidence.  Falling back to all episode assets when the declaration is
+        # absent preserves legacy behaviour and keeps missing participant data
+        # visible as a blocker instead of silently guessing.
+        participant_refs: set[str] = set()
+        raw_participants = scene.get("participants") if isinstance(scene, dict) else []
+        if isinstance(raw_participants, list):
+            for item in raw_participants:
+                if isinstance(item, dict):
+                    for key in ("id", "character_id", "name", "character"):
+                        value = str(item.get(key) or "").strip()
+                        if value:
+                            participant_refs.add(value)
+                else:
+                    value = str(item or "").strip()
+                    if value:
+                        participant_refs.add(value)
+        if participant_refs:
+            makeup_rows = [
+                row for row in makeup_rows
+                if str(row.id) in participant_refs or str(row.character_name or "").strip() in participant_refs
+            ]
+        for row in makeup_rows:
             meta = _json_object(row.meta_info, {})
             structured = meta.get("structured_result") if isinstance(meta, dict) else {}
             characters.append({

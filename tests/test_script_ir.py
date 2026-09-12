@@ -36,10 +36,27 @@ class ScriptIRTests(unittest.TestCase):
         self.assertIn("## 场景 1：门厅", markdown)
         self.assertIn("进入", markdown)
 
+    def test_build_preserves_explicit_blocking_and_props_for_downstream_gates(self):
+        payload = build_script_ir({"scenes": [{
+            "name": "门厅",
+            "character_blocking": [{"character_id": "c1", "position": "screen_left", "facing": "screen_right", "anchor": "门边"}],
+            "props": [{"prop_id": "p1", "state": "closed"}],
+            "beats": [{"id": "B1", "event": "人物停下"}],
+        }]}, book_id=1, episode=1)
+        scene = payload["scenes"][0]
+        self.assertEqual(scene["character_blocking"][0]["position"], "screen_left")
+        self.assertEqual(scene["props"][0]["prop_id"], "p1")
+
     def test_legacy_markdown_reconstruction_requires_review(self):
         payload = legacy_markdown_to_script_ir("# 第1集\n\n## 门厅\n人物进入。", book_id=1, episode=1)
         self.assertEqual(validate_script_ir(payload)["status"], "qualified")
         self.assertEqual(payload["scenes"][0]["name"], "门厅")
+
+    def test_validation_blocks_duplicate_scene_names(self):
+        payload = build_script_ir({"scenes": [{"name": "门厅", "beats": [{"event": "进入"}]}, {"name": "门厅", "beats": [{"event": "离开"}]}]}, book_id=1, episode=1)
+        report = validate_script_ir(payload)
+        self.assertEqual(report["status"], "needs_review")
+        self.assertTrue(any(item["code"] == "SCENE_NAME_DUPLICATE" for item in report["errors"]))
 
     def test_build_and_confirm_persists_version_and_current_reference(self):
         built = self.client.post(f"/api/books/{self.book_id}/episodes/1/script-ir/build", json={"persist": True})

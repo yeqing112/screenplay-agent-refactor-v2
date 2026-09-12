@@ -72,6 +72,15 @@ class SceneBlockingShadowTests(unittest.TestCase):
         self.assertEqual(payload["scene_blocking"]["status"], "approved")
         self.assertIsNone(payload["rollback_anchor"]["previous_blocking_id"])
 
+    def test_legacy_free_text_blocking_is_preserved_as_explicit_position(self):
+        from core.scene_blocking import build_scene_blocking
+        result = build_scene_blocking(
+            scene={"name": "门厅", "character_blocking": [{"character": "甲", "blocking": "站在门边，面向室内"}]},
+            treatment={"scene_name": "门厅", "character_intents": {"c1": {"name": "甲"}}, "beat_map": []},
+        )
+        self.assertEqual(result["unknowns"], [])
+        self.assertEqual(result["participants"][0]["position"], "站在门边，面向室内")
+
     def test_confirm_rejects_stale_scene_evidence(self):
         draft = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/preview", json={"persist": True}).json()
         with Session() as session:

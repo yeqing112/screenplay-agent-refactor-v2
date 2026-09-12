@@ -47,7 +47,10 @@ def build_shadow_treatment(
     beat_map: list[dict[str, Any]] = []
     for index, raw in enumerate(beats, start=1):
         beat = raw if isinstance(raw, dict) else {"event": str(raw)}
-        beat_id = str(beat.get("id") or f"B{index:02d}")
+        # ScriptIR normalizes source beats to ``beat_id``.  Prefer that
+        # canonical identifier (while retaining ``id`` for legacy callers) so
+        # Treatment/SceneBlocking validation never invents a second ID space.
+        beat_id = str(beat.get("beat_id") or beat.get("id") or f"B{index:02d}")
         beat_type = str(beat.get("type") or "setup").strip().lower()
         event = str(beat.get("event") or "").strip()
         beat_map.append({

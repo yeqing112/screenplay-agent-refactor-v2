@@ -31,7 +31,10 @@ def build_scene_blocking(*, scene: dict[str, Any], treatment: dict[str, Any], so
         name = str(intent.get("name") or character_id)
         block = by_key.get(str(character_id)) or by_key.get(name)
         if block:
-            position = str(block.get("position") or block.get("screen_position") or "").strip()
+            # ``blocking`` is a legacy free-text spatial declaration.  It is
+            # still evidence from the script, so retain it as the position
+            # value instead of discarding it and manufacturing an unknown.
+            position = str(block.get("position") or block.get("screen_position") or block.get("blocking") or "").strip()
             facing = str(block.get("facing") or block.get("screen_direction") or "").strip()
             anchor = str(block.get("anchor") or block.get("spatial_anchor") or "").strip()
         else:
