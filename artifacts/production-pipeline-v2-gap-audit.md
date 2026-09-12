@@ -404,3 +404,9 @@
 - 已新增 QA 三层职责映射，并接入 QA issue 序列化和 production-readiness；Validator/Director QA/Human Review 的原始证据保持可回放。
 - Production Pass 指标覆盖 hard error、production blocker、必需资产、断链参考图、ShotPlan、连续性和 executability 阻断，任何一项非零即不通过。
 - M10 专项及相关回归：**21 passed**。未调用真实 LLM、图片、视频或对象存储。M0–M10 已全部完成。
+
+## 全量验收复核（2026-09-13）
+
+- `npm run check:production`：后端 **696 passed**、Golden **5/5**、运行时配置验证通过、发布门禁测试通过、前端生产构建通过。
+- 前端 Vitest：**291 passed**。全程未调用真实 LLM、生图、视频或对象存储。
+- 仍有 **875 warnings**，主要为 datetime 弃用和历史测试返回值提示；已原样保留，未通过隐藏或放宽校验处理。

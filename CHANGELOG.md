@@ -1,5 +1,10 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 全量验收
+
+- `npm run check:production` 全部通过：后端 **696 passed**（875 warnings，均为既有弃用/测试返回值提示，未隐藏）、Golden **5/5**、运行时配置校验通过、发布门禁通过、前端生产构建通过。
+- 前端 Vitest：**291 passed**；未调用真实 LLM、生图、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M10：QA 职责边界与 Production Pass 指标
 
 - 新增 `core/qa_roles.py`：结构/事实/资产/连续性/可拍性/编译/供应商问题归 Validator；风格、节奏和创作建议归 Director QA；审批与创作取舍归 Human Review。
