@@ -3,6 +3,7 @@ from .book import Book, Chapter, BookBible
 from .character import CharacterProfile, CharacterStage
 from .script import EpisodeOutline, Script, QAResult
 from .script_ir import ScriptIRVersion
+from .fact_snapshot import FactSnapshot, FactRecord
 from .kv import KV
 from .visual import VisualEraSpec, VisualProp, VisualLocation, VisualMakeup, VisualReferenceAsset, AssetSemanticGovernanceRecord, StoryboardTransitionContract, StoryboardTransitionFrame, StoryboardTransitionContinuityReview, StoryboardVideoRetryAttempt, PublicAssetStorageMigrationRecord, DecisionPacketRecord
 from .bridge import SceneCharacter, SceneProp
@@ -24,7 +25,7 @@ __all__ = [
     "init_db", "get_kv", "set_kv",
     "Book", "Chapter", "BookBible",
     "CharacterProfile", "CharacterStage",
-    "EpisodeOutline", "Script", "QAResult", "ScriptIRVersion",
+    "EpisodeOutline", "Script", "QAResult", "ScriptIRVersion", "FactSnapshot", "FactRecord",
     "KV",
     "VisualEraSpec", "VisualProp", "VisualLocation", "VisualMakeup", "VisualReferenceAsset", "AssetSemanticGovernanceRecord", "StoryboardTransitionContract", "StoryboardTransitionFrame", "StoryboardTransitionContinuityReview", "StoryboardVideoRetryAttempt", "PublicAssetStorageMigrationRecord", "DecisionPacketRecord",
     "SceneCharacter", "SceneProp",

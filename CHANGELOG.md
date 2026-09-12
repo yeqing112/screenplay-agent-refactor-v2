@@ -1,5 +1,13 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M2：FactSnapshot 权威层
+
+- 新增 `models/fact_snapshot.py`、`core/fact_snapshot.py` 与 `/api/books/{book_id}/episodes/{episode}/fact-snapshots/*` deterministic build/list/confirm API。
+- FactRecord 明确 `source_text/locked_fact/approved_fact/derived_fact/model_observation` authority，冲突值、锁定事实未确认和缺证据均不会静默通过。
+- 新增 `blocking_unknown/assumable_unknown/creative_unknown` 路由；仅生产关键未知阻断，创作型未知不被误判为 blocker。
+- 新增 Alembic `l5f6g7h8i9j0_add_fact_snapshots.py`，确认后写入版本化 FactRecord，保留 previous snapshot 与 source fingerprint。
+- M2 测试：FactSnapshot/authority/unknown routing **7 passed**。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M1：ScriptIR 版本化与导演运行时路由
 
 - 新增 `models/script_ir.py`、`core/script_ir.py`、`core/script_renderer.py` 与 `/api/books/{book_id}/episodes/{episode}/script-ir/*` deterministic build/confirm/read API。
