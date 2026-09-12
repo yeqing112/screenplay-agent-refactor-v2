@@ -16391,12 +16391,19 @@ def _build_storyboard_production_readiness(shots: list[Any], assets: dict[str, l
     # the production UI. Aggregation never removes source issue rows.
     from core.qa_roles import annotate_issues, build_production_pass_metrics
     from core.root_cause_aggregator import aggregate_root_causes
-    source_issues = [
-        issue
-        for item in all_items
-        for issue in (item.get("issues", []) if isinstance(item.get("issues", []), list) else [])
-        if isinstance(issue, dict)
-    ]
+    source_issues: list[dict[str, Any]] = []
+    for item in all_items:
+        item_issues = item.get("issues", []) if isinstance(item.get("issues", []), list) else []
+        parent_context = {
+            key: item.get(key)
+            for key in ("episode", "scene_name", "scene_id", "shot_id", "asset_id", "asset_type")
+            if item.get(key) is not None
+        }
+        for issue in item_issues:
+            if isinstance(issue, dict):
+                # Preserve explicit diagnostic IDs; otherwise inherit the
+                # owning readiness item so aggregation can count impact scope.
+                source_issues.append({**parent_context, **issue})
     annotated_issues = annotate_issues(source_issues)
     pass_metrics = build_production_pass_metrics(annotated_issues)
     root_causes = aggregate_root_causes(annotated_issues)
