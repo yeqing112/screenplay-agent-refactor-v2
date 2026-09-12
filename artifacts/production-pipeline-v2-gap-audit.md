@@ -371,3 +371,8 @@
 
 - ShotPlan V2 已物化完整生产合同并保留旧 JSON 兼容；新增 schema version 迁移。
 - M4 专项及关联回归：**11 passed**。未调用真实供应商。M5 仍是下一个待完成阶段。
+
+## M5 完成后复核（2026-09-13）
+
+- ShotPlan confirm 已接入确定性 Executability preflight，blocked 时返回责任层为 SHOT_PLAN 的 repair plan。
+- M5 专项及关联回归：**14 passed**。未调用真实供应商。M6 已实现并待提交复核。

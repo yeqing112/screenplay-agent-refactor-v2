@@ -1,5 +1,12 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M5：ShotPlan 可拍性前移
+
+- 新增 `core/executability.py`，将现有可拍性规则适配 ShotPlan，确认前统一检查动作预算、对白/状态完整性和运动冲突。
+- blocked 结果只生成 ShotPlan 层 repair plan（默认最多 2 次），禁止用缩短 Prompt 或隐藏 warning 掩盖动作超载。
+- ShotPlan confirm 现在在写入 approved 版本前执行 preflight，失败返回结构化阻断原因与修复操作。
+- M5 测试：Executability preflight + ShotPlan 回归 **14 passed**。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M4：ShotPlan V2 合同
 
 - ShotPlan builder 现在确定性物化 `scene_id`、camera contract、正时长、action beats、entry/exit state、asset bindings 和 continuity contract；不再把这些核心字段留为 null unknown。
