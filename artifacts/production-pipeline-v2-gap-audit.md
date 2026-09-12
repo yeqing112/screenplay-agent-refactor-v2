@@ -391,7 +391,7 @@
 
 - 已新增统一 qualification loop、issue router 和 local repair；责任层只允许显式 JSON patch，动作超载不会被 Prompt 文本掩盖。
 - 修复记录包含 before/after fingerprint 与 rollback pre-image；无可执行 patch 的 blocker 返回 `needs_review`、`repair_unavailable=true`，不虚假重复尝试。
-- M8 专项测试：**6 passed**。未调用真实 LLM、图片、视频或对象存储。M9 是下一个待完成阶段。
+- M8 专项测试：**7 passed**。未调用真实 LLM、图片、视频或对象存储。M9 是下一个待完成阶段。
 
 ## M9 完成后复核（2026-09-13）
 
@@ -403,4 +403,4 @@
 
 - 已新增 QA 三层职责映射，并接入 QA issue 序列化和 production-readiness；Validator/Director QA/Human Review 的原始证据保持可回放。
 - Production Pass 指标覆盖 hard error、production blocker、必需资产、断链参考图、ShotPlan、连续性和 executability 阻断，任何一项非零即不通过。
-- M10 专项及相关回归：**20 passed**。未调用真实 LLM、图片、视频或对象存储。M0–M10 已全部完成。
+- M10 专项及相关回归：**21 passed**。未调用真实 LLM、图片、视频或对象存储。M0–M10 已全部完成。

@@ -13,3 +13,7 @@ def test_issue_router_does_not_route_unknown_creative_issue_to_prompt():
 
 def test_issue_router_routes_executability_to_executability_layer():
     assert route_issue({"code": "executability_blocked", "severity": "error"})["target_layer"] == "EXECUTABILITY"
+
+
+def test_issue_router_cannot_relabel_action_overload_as_prompt_text():
+    assert route_issue({"code": "action_overloaded", "severity": "blocked", "target_layer": "PROMPT_TEXT"})["target_layer"] == "SHOT_PLAN"

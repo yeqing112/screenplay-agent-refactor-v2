@@ -45,7 +45,7 @@ def qualify_candidate(candidate: dict[str, Any], validators: list[Validator] | N
                 continue
             repair = apply_local_repair(current, issue)
             current = repair["candidate"]
-            repairs.append({"issue_code": issue.get("code"), **{key: repair[key] for key in ("before_fingerprint", "after_fingerprint", "target_layer", "changed", "rollback_candidate")}})
+            repairs.append({**{key: repair[key] for key in ("issue_code", "target_id", "patch", "before_fingerprint", "after_fingerprint", "target_layer", "changed", "rollback_candidate")}})
             changed = changed or repair["changed"]
         attempts.append({"attempt": attempt + 1, "issues": routed, "repairs": repairs, "changed": changed})
         if not changed:

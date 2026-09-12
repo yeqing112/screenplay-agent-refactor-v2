@@ -5,7 +5,7 @@
 - 新增 `core/qa_roles.py`：结构/事实/资产/连续性/可拍性/编译/供应商问题归 Validator；风格、节奏和创作建议归 Director QA；审批与创作取舍归 Human Review。
 - 生产 readiness 增加 `qa_roles`、`production_pass_metrics`、根因和原始诊断索引；QA issue 序列化增加 `qa_role`，保留现有字段与历史记录。
 - Production Pass 对 hard error、production blocker、必需资产、断链参考图、ShotPlan 违规、连续性硬冲突和 executability blocked 全部 fail-closed；创作 warning 不被误报为结构通过。
-- M10 专项及相关 readiness/QA 回归：**20 passed**。未调用真实 LLM、图片、视频或对象存储。
+- M10 专项及相关 readiness/QA 回归：**21 passed**。未调用真实 LLM、图片、视频或对象存储。
 
 ## 2026-09-13 — Production Pipeline V2 M9：Root Cause Aggregator
 
@@ -18,7 +18,7 @@
 - 新增 `core/qualification_loop.py`、`core/issue_router.py` 与 `core/local_repair.py`，统一候选→诊断路由→责任层局部修复→再验证闭环，默认最多 2 次尝试。
 - 动作超载、可拍性和连续性等问题不能通过修改 Prompt 文本掩盖；修复必须携带显式 JSON patch、责任层与 before/after fingerprint。无 patch 的阻断直接进入 `needs_review` 并标记 `repair_unavailable`。
 - 每次局部修复保留 rollback pre-image 与指纹，拒绝隐式跨层修改。
-- M8 专项测试：`pytest -q tests/test_issue_router.py tests/test_local_repair.py tests/test_qualification_loop.py` → **6 passed**。未调用真实供应商。
+- M8 专项测试：`pytest -q tests/test_issue_router.py tests/test_local_repair.py tests/test_qualification_loop.py` → **7 passed**。未调用真实供应商。
 
 ## 2026-09-13 — Production Pipeline V2 M7：Prompt Compiler Phase A/B
 

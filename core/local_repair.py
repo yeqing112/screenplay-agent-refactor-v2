@@ -43,6 +43,9 @@ def apply_local_repair(candidate: dict[str, Any], issue: dict[str, Any]) -> dict
             raise ValueError("repair patch target is invalid")
     after = fingerprint(updated)
     return {
+        "issue_code": str(issue.get("code") or issue.get("issue_code") or ""),
+        "target_id": str(issue.get("target_id") or issue.get("target_shot_id") or ""),
+        "patch": copy.deepcopy(patch),
         "candidate": updated,
         # Keep the complete pre-image so a caller can restore it without
         # reconstructing an inverse JSON patch.
