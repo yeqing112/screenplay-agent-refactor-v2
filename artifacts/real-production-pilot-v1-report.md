@@ -35,6 +35,8 @@ Production profile 下未调用 `StoryboardAgent.run()`；Materializer 只接受
 - Production Blocker Rate：`40/40 = 100%`（已物化镜头口径），这是媒体 readiness 被本轮策略性禁止执行造成的 fail-closed 状态，不是内容 Qualification 失败。
 - 连续性：40/40 镜头保留结构化 continuity contract；由于禁止媒体调用，只完成结构连续性验证，未宣称视觉/视频连续性通过。
 
+本轮全部 10 条 repair 事件已汇入 `real-production-pilot-v1-repair-ledger.json`，每条均具备统一字段；其中第 1 次 Treatment 修复因候选包含非白名单字段而没有合法 after fingerprint，按 `needs_review` 原样记录，未伪造成功结果。
+
 ## A–L 指标完整清单
 
 机器可读的逐集与总体明细见 `real-production-pilot-v1-metrics.json` 的 `required_metrics`。关键口径如下：
@@ -110,7 +112,7 @@ E1 两场 SceneBlocking 的 `needs_review` 只阻断各自场景向 ShotPlan 的
 
 1. 媒体 readiness 尚未执行，导致所有已物化镜头在 Production Pass 仍保持 blocked；这是进入图片/视频阶段前的首要外部条件。
 2. E1 的 SceneBlocking 空间证据不足，必须在责任层补齐人物位置/锚点，不能由 ShotPlan 或 Prompt 猜测。
-3. Repair attempt ledger 目前跨 artifact 分散，虽已能对本轮 ShotPlan 修复计算 3/3，但仍需统一事件模型才能稳定比较各层 repair yield。
+3. 虽已补齐本轮 repair ledger，但历史系统仍需将该统一事件模型直接写入运行时，才能持续稳定比较各层 repair yield。
 
 ## 下一轮最值得投入的 3 项优化
 

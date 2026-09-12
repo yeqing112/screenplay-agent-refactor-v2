@@ -164,6 +164,13 @@
       "structural_contract_coverage": 1.0,
       "media_continuity_validated": false,
       "reason": "Image/video providers and object storage were prohibited in this pilot"
+    },
+    "repair_ledger": {
+      "record_count": 10,
+      "required_field_coverage": 1.0,
+      "successful_revalidations": 9,
+      "needs_review_revalidations": 1,
+      "evidence": "artifacts/real-production-pilot-v1-repair-ledger.json"
     }
   },
   "mimo_audit": {
@@ -180,6 +187,7 @@
     "estimated_cost_reason": "Provider pricing was not included in the captured audit contract"
   },
   "evidence": [
+    "artifacts/real-production-pilot-v1-repair-ledger.json",
     "artifacts/real-production-pilot-v1-content-ep1.json",
     "artifacts/real-production-pilot-v1-ep1-script-ir.json",
     "artifacts/real-production-pilot-v1-ep1-script-ir-repair.json",
