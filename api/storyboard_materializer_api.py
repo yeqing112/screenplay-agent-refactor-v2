@@ -8,8 +8,9 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.storyboard_materializer import materialize_storyboard_from_shot_plan
-from core.prompt_ir_compiler import compile_phase_a, verbalize_phase_b_deterministic
-from models import Script, Session, ShotPlan, StoryboardShot
+from core.prompt_ir_compiler import compile_phase_a, verbalize_phase_b_deterministic, validate_phase_a_state
+from core.qualification_loop import qualify_candidate
+from models import DirectorTreatment, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot
 
 router = APIRouter(prefix="/api/books", tags=["storyboard-materializer"])
 
@@ -24,23 +25,77 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
     if not req.confirmed:
         raise HTTPException(status_code=409, detail="Storyboard materialization requires confirmed=true.")
     with Session() as session:
+        script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
+        if not script:
+            raise HTTPException(status_code=409, detail="Production materialization requires a script.")
+        script_ir_id = script.current_script_ir_version_id
+        script_ir = session.query(ScriptIRVersion).filter_by(id=script_ir_id, book_id=book_id, episode=episode, status="qualified").first() if script_ir_id else None
+        if not script_ir:
+            raise HTTPException(status_code=409, detail="Production materialization requires the script's qualified ScriptIR version.")
+        try:
+            script_ir_payload = json.loads(script_ir.payload_json or "{}")
+        except (TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise HTTPException(status_code=409, detail="Qualified ScriptIR payload is invalid.") from exc
+        script_scene_names = {str(item.get("name") or "").strip() for item in (script_ir_payload.get("scenes", []) if isinstance(script_ir_payload, dict) and isinstance(script_ir_payload.get("scenes"), list) else []) if isinstance(item, dict) and str(item.get("name") or "").strip()}
+        if not script_scene_names:
+            raise HTTPException(status_code=409, detail="Qualified ScriptIR has no structured scenes for production materialization.")
         query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, status="approved")
         if req.plan_id:
             query = query.filter_by(id=req.plan_id)
         plans = query.order_by(ShotPlan.scene_name, ShotPlan.revision.desc(), ShotPlan.id.desc()).all()
         if not plans:
             raise HTTPException(status_code=409, detail="No approved ShotPlan is available for materialization.")
+        missing_script_scenes = sorted({str(plan.scene_name or "").strip() for plan in plans} - script_scene_names)
+        if missing_script_scenes:
+            raise HTTPException(status_code=409, detail=f"Qualified ScriptIR does not contain planned scenes: {', '.join(missing_script_scenes)}")
         created = []
         for plan in plans:
+            treatment = session.query(DirectorTreatment).filter_by(id=plan.treatment_id, book_id=book_id, episode=episode, scene_name=plan.scene_name, status="approved").first() if plan.treatment_id else None
+            blocking = session.query(SceneBlocking).filter_by(id=plan.blocking_id, book_id=book_id, episode=episode, scene_name=plan.scene_name, status="approved").first() if plan.blocking_id else None
+            if not treatment or not blocking or blocking.treatment_id != treatment.id:
+                raise HTTPException(status_code=409, detail=f"Production materialization requires approved Treatment and SceneBlocking lineage for scene: {plan.scene_name}")
             raw = json.loads(plan.shots or "[]")
-            drafts = materialize_storyboard_from_shot_plan({"scene_name": plan.scene_name, "shots": raw, "evidence_fingerprint": plan.evidence_fingerprint})
+            try:
+                drafts = materialize_storyboard_from_shot_plan({"scene_name": plan.scene_name, "shots": raw, "evidence_fingerprint": plan.evidence_fingerprint}, treatment={"id": treatment.id, "revision": treatment.revision}, blocking={"id": blocking.id, "revision": blocking.revision}, asset_snapshot={"script_ir_id": script_ir.id})
+            except (TypeError, ValueError, json.JSONDecodeError) as exc:
+                raise HTTPException(status_code=409, detail=f"Approved ShotPlan cannot be materialized: {exc}") from exc
             existing_refs = {str((json.loads(row.meta_info or "{}").get("shot_plan_ref") or {}).get("plan_shot_id") or "") for row in session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, scene_name=plan.scene_name).all()}
+            planned_refs = {str(draft["plan_shot_id"]) for draft in drafts}
+            if existing_refs - planned_refs:
+                raise HTTPException(status_code=409, detail=f"Existing StoryboardShot set does not match the approved ShotPlan for scene: {plan.scene_name}")
             for draft in drafts:
                 if draft["plan_shot_id"] in existing_refs:
                     continue
                 phase_a = compile_phase_a(draft)
                 verbalized = verbalize_phase_b_deterministic(phase_a)
-                row = StoryboardShot(book_id=book_id, episode=episode, scene_name=draft["scene_name"], shot_id=draft["shot_id"], duration=draft["duration"], camera_angle=draft["camera_angle"], camera_movement=draft["camera_movement"], camera_speed=draft["camera_speed"], shot_purpose=draft["shot_purpose"], start_state=json.dumps(draft["start_state"], ensure_ascii=False) if isinstance(draft["start_state"], (dict, list)) else draft["start_state"], action_process=draft["action_process"], end_state=json.dumps(draft["end_state"], ensure_ascii=False) if isinstance(draft["end_state"], (dict, list)) else draft["end_state"], visual_prompt_static=verbalized["static_prompt"], visual_prompt_motion=verbalized["motion_prompt"], visual_prompt_final=verbalized["negative_prompt"], meta_info=json.dumps({**draft["meta_info"], "workflow_profile": "production", "prompt_compiler": phase_a}, ensure_ascii=False), execution_status="succeeded", quality_status="qualified" if phase_a["phase_a_status"] == "pass" else "needs_review", production_status="blocked", workflow_profile="production", created_at=datetime.now(), updated_at=datetime.now())
+                def _validate_compiler_candidate(candidate: dict) -> list[dict]:
+                    report = validate_phase_a_state(candidate)
+                    errors = list(report.get("errors", []))
+                    if candidate.get("phase_a_status") == "blocked" and not errors:
+                        diagnostics = candidate.get("compiler_diagnostics") if isinstance(candidate.get("compiler_diagnostics"), dict) else {}
+                        errors = list(diagnostics.get("errors", [])) or [{"code": "PHASE_A_BLOCKED", "message": "Prompt Compiler Phase A is blocked."}]
+                    return [
+                        {"code": error.get("code") or "phase_a_validation", "severity": "blocked", "target_layer": "PROMPT_IR", "message": error.get("message", "")}
+                        for error in errors
+                    ]
+                qualification = qualify_candidate(phase_a, [_validate_compiler_candidate], max_attempts=2)
+                persisted_meta = {
+                    **draft["meta_info"], "workflow_profile": "production",
+                    "plan_shot_id": draft["plan_shot_id"], "action_beats": draft.get("action_beats", []),
+                    "asset_bindings": draft.get("asset_bindings", {}), "continuity_contract": draft.get("continuity_contract", {}),
+                    "upstream": {"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id, "shot_plan_id": plan.id},
+                    "prompt_compiler": phase_a, "qualification": qualification,
+                }
+                row = StoryboardShot(book_id=book_id, episode=episode, scene_name=draft["scene_name"], shot_id=draft["shot_id"], duration=draft["duration"], camera_angle=draft["camera_angle"], camera_movement=draft["camera_movement"], camera_speed=draft["camera_speed"], shot_purpose=draft["shot_purpose"], start_state=json.dumps(draft["start_state"], ensure_ascii=False) if isinstance(draft["start_state"], (dict, list)) else draft["start_state"], action_process=draft["action_process"], end_state=json.dumps(draft["end_state"], ensure_ascii=False) if isinstance(draft["end_state"], (dict, list)) else draft["end_state"], visual_prompt_static=verbalized["static_prompt"], visual_prompt_motion=verbalized["motion_prompt"], visual_prompt_final=verbalized["negative_prompt"], meta_info=json.dumps(persisted_meta, ensure_ascii=False), execution_status="succeeded", quality_status="qualified" if qualification["status"] == "qualified" else "needs_review", production_status="blocked", workflow_profile="production", created_at=datetime.now(), updated_at=datetime.now())
                 session.add(row); created.append(draft["plan_shot_id"])
         session.commit()
-        return {"confirmed": True, "mutated": bool(created), "materialized_count": len(created), "plan_shot_ids": created, "production_status": "blocked", "llm_called": False}
+        return {
+            "confirmed": True,
+            "mutated": bool(created),
+            "materialized_count": len(created),
+            "plan_shot_ids": created,
+            # Materialization never self-promotes a shot into production. The
+            # downstream readiness/Production Pass gate remains authoritative.
+            "production_status": "blocked",
+            "llm_called": False,
+        }

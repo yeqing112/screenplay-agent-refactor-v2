@@ -14,17 +14,23 @@ def materialize_storyboard_from_shot_plan(approved_shot_plan: dict[str, Any], tr
     """Project approved intent into execution rows without creative rewriting."""
     plan = approved_shot_plan if isinstance(approved_shot_plan, dict) else {}
     shots = plan.get("shots") if isinstance(plan.get("shots"), list) else []
+    if any(not isinstance(item, dict) for item in shots):
+        raise ValueError("Approved ShotPlan contains a non-object shot; materialization is fail-closed.")
+    plan_shot_ids = [str(item.get("plan_shot_id") or "").strip() for item in shots]
+    if any(not value for value in plan_shot_ids) or len(set(plan_shot_ids)) != len(plan_shot_ids):
+        raise ValueError("Approved ShotPlan must contain unique plan_shot_id values.")
     scene_name = str(plan.get("scene_name") or "未命名场景").strip()
     output: list[dict[str, Any]] = []
     for index, item in enumerate(shots, start=1):
-        if not isinstance(item, dict):
-            continue
         camera = item.get("camera") if isinstance(item.get("camera"), dict) else {}
         duration = item.get("duration_hint_seconds") or item.get("duration_seconds") or 3
         action_beats = item.get("action_beats") if isinstance(item.get("action_beats"), list) else []
         asset_bindings = item.get("asset_bindings") if isinstance(item.get("asset_bindings"), dict) else {}
+        shot_id = item.get("shot_id")
+        if not isinstance(shot_id, int) or shot_id <= 0:
+            shot_id = index
         output.append({
-            "shot_id": index,
+            "shot_id": shot_id,
             "plan_shot_id": str(item.get("plan_shot_id") or f"S{index:02d}"),
             "scene_name": scene_name,
             "dialogue": str(item.get("dialogue") or ""),
@@ -45,4 +51,3 @@ def materialize_storyboard_from_shot_plan(approved_shot_plan: dict[str, Any], tr
             },
         })
     return output
-

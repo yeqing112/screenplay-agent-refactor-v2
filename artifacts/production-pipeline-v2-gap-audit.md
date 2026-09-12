@@ -4,6 +4,10 @@
 基线：`codex/unify-formal-workspace` @ `ce0ad6976c2ed80e04b52c1023c8fc3fa31b4a6a`  
 范围：仓库实现、Alembic 迁移、现有测试与 API 契约；本审计阶段不修改业务代码、不调用真实 LLM/图片/视频/对象存储。
 
+## Baseline Audit
+
+本文件前半部分记录的是 2026-09-13、基于 `ce0ad6976c2ed80e04b52c1023c8fc3fa31b4a6a` 的初始差距审计。其 M0–M10 未满足结论用于决定实施顺序，不代表当前构建状态；后续各 Milestone 复核和本文末尾的 Final As-Built Verification 才是当前实现口径。
+
 ## 审计方法与基线事实
 
 - 已检查 `models/`、`core/`、`api/`、`agents/`、`alembic/versions/`、`tests/`、`docs/` 和 `CHANGELOG.md`。
@@ -410,3 +414,30 @@
 - `npm run check:production`：后端 **696 passed**、Golden **5/5**、运行时配置验证通过、发布门禁测试通过、前端生产构建通过。
 - 前端 Vitest：**291 passed**。全程未调用真实 LLM、生图、视频或对象存储。
 - 仍有 **875 warnings**，主要为 datetime 弃用和历史测试返回值提示；已原样保留，未通过隐藏或放宽校验处理。
+
+## Final As-Built Verification：Production Materializer Closure（2026-09-13）
+
+### 实际架构
+
+production Materializer 路径现固定为：
+
+`qualified ScriptIR → approved DirectorTreatment → approved SceneBlocking → approved ShotPlan → deterministic Storyboard Materializer → Prompt Compiler Phase A → Qualification Loop → Production Pass`
+
+- `workflow_profile=production` 的 Materializer 路由不导入、不调用 `StoryboardAgent.run()`，仅从 Approved ShotPlan 确定性投影。
+- 物化前强制校验 Script 的当前 `ScriptIRVersion.status=qualified`、Treatment/Blocking 的批准状态及 `blocking.treatment_id`  lineage；任一缺失返回 409，保持 fail-closed。
+- ShotPlan 中每个对象必须有唯一 `plan_shot_id`；非对象、重复 ID 或已有孤儿 StoryboardShot 均拒绝，不静默增删镜头。
+- 每个 StoryboardShot 保留 `plan_shot_id`、`shot_plan_ref`、camera、duration、action beats、entry/exit state、asset bindings、continuity contract、上游版本引用与 Phase A 指纹。
+- Phase A 后统一运行 Qualification Loop；存在 blocker 时镜头为 `quality_status=needs_review`、`production_status=blocked`，不得晋级 ready。
+
+### 反向测试与本地验证
+
+- `tests/test_production_storyboard_gate.py::test_production_materializer_never_calls_storyboard_agent`：mock `StoryboardAgent.run()` 为异常，production API 正常完成，调用次数为 **0**。
+- Materializer / Compiler invariant / production gate 专项：**6 passed**。
+- 最终全量后端：**696 passed**、875 warnings（未隐藏）。
+- 前端 Vitest：**291 passed**；前端生产构建通过。
+- Golden：**5/5**；production release gate 与 runtime config verification 通过。
+- 全程未调用真实 LLM、生图、视频或对象存储；未处理 GitHub Actions/CI。
+
+### As-built 结论
+
+本轮未提交的 `api/server.py` Materializer router 接线已确认架构正确并纳入正式代码；本轮只提交 Materializer 直接相关的路由、确定性实现、反向/门禁测试和本审计记录。工作区其他历史产物仍保持未提交、未清理。
