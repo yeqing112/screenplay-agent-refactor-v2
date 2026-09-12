@@ -350,3 +350,9 @@
 - 已新增 `core/production_policy.py`、统一状态字段及 Alembic `j3d4e5f6g7h8`；`StoryboardRequest.workflow_profile=production` 现在在证据不足时 fail-closed，`require_shot_plan=false` 不能绕过。
 - M0 专项测试：`pytest -q tests/test_production_policy.py` → **6 passed**；关联 Treatment/Blocking/ShotPlan/Storyboard 回归 → **29 passed**；发布门禁纯函数回归 → **passed**。
 - 未调用真实 LLM、图片、视频或对象存储。M1 仍是下一个未满足 Milestone，只有 M0 通过后才可开始。
+
+## M1 完成后复核（2026-09-13）
+
+- 已新增 ScriptIR v1 schema、版本表/迁移、确定性 renderer 与 build/confirm/read API；production Director Runtime 对无 qualified ScriptIR 的请求 fail-closed。
+- M1 专项测试：**6 passed**；关联 Treatment/Blocking/ShotPlan 回归：**21 passed**。旧 Markdown 兼容路径显式标记 legacy reconstruction/needs_review。
+- 未调用真实 LLM、图片、视频或对象存储。M2 是下一个未满足 Milestone。

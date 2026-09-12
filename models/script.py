@@ -36,6 +36,7 @@ class Script(Base):
     quality_status = Column(String, default="draft", nullable=False)
     production_status = Column(String, default="blocked", nullable=False)
     workflow_profile = Column(String, default="creative_draft", nullable=False)
+    current_script_ir_version_id = Column(Integer, nullable=True, index=True)
     created_at = Column(DateTime, default=datetime.now)
 
 

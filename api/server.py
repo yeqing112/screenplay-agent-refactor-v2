@@ -86,6 +86,7 @@ from api.director_agent_draft_api import router as director_agent_draft_router
 from api.director_treatment_api import router as director_treatment_router
 from api.scene_blocking_api import router as scene_blocking_router
 from api.shot_plan_api import router as shot_plan_router
+from api.script_ir_api import router as script_ir_router
 from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
@@ -114,6 +115,7 @@ app.include_router(director_agent_draft_router)
 app.include_router(director_treatment_router)
 app.include_router(scene_blocking_router)
 app.include_router(shot_plan_router)
+app.include_router(script_ir_router)
 app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft

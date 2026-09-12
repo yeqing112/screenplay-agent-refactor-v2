@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.shot_plan import build_shot_plan
+from core.script_ir import resolve_script_payload
 from models import DirectorTreatment, SceneBlocking, Script, Session, ShotPlan, StoryboardShot
 
 router = APIRouter(prefix="/api/books", tags=["shot-plan"])
@@ -17,6 +18,7 @@ router = APIRouter(prefix="/api/books", tags=["shot-plan"])
 class ShotPlanPreviewRequest(BaseModel):
     scene_name: str = Field(default="", validation_alias=AliasChoices("scene_name", "sceneName"))
     persist: bool = False
+    workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
 
 
 class ShotPlanConfirmRequest(BaseModel):
@@ -91,7 +93,7 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
         script_row = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
         if not script_row:
             raise HTTPException(status_code=404, detail="No script found for this episode.")
-        script = _json(script_row.content, {})
+        script = resolve_script_payload(session, script_row, workflow_profile=req.workflow_profile)
         scenes = _script_scenes(script)
         scene_names = [str(item.get("name") or "未命名场景").strip() for item in scenes]
         scene_name = req.scene_name.strip() or (scene_names[0] if scene_names else "")

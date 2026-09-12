@@ -1,5 +1,13 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M1：ScriptIR 版本化与导演运行时路由
+
+- 新增 `models/script_ir.py`、`core/script_ir.py`、`core/script_renderer.py` 与 `/api/books/{book_id}/episodes/{episode}/script-ir/*` deterministic build/confirm/read API。
+- 新增 Alembic `k4e5f6g7h8i9_add_script_ir_versions.py`；Script 保留 Markdown/旧 JSON 兼容内容，同时记录当前确认的 ScriptIR 版本引用。
+- production profile 的 DirectorTreatment、SceneBlocking、ShotPlan 预览现在只消费 qualified ScriptIR；无 qualified 版本时 fail-closed，creative_draft 继续兼容旧内容。
+- 旧 Markdown 仅可一次性 legacy reconstruction，并标记 `needs_review`；确认前不会成为生产事实。
+- M1 测试：ScriptIR/renderer/director-runtime **6 passed**，Treatment/Blocking/ShotPlan 回归 **21 passed**。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M0：统一状态协议与工作流 Profile
 
 - 新增 `core/production_policy.py`，集中定义 `execution_status`、`quality_status`、`production_status` 与 `workflow_profile`，并提供 fail-closed 生产边界评估。

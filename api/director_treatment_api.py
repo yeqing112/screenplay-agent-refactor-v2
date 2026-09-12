@@ -18,6 +18,7 @@ from pydantic import AliasChoices, BaseModel, Field
 
 from core.director_treatment import build_shadow_treatment
 from core.decision_packet import decision_packet_fingerprint, normalize_decision_packet
+from core.script_ir import resolve_script_payload
 import core.llm as llm_client
 from models import DecisionPacketRecord, DirectorTreatment, Script, Session, VisualMakeup, VisualReferenceAsset
 
@@ -32,6 +33,7 @@ class DirectorTreatmentPreviewRequest(BaseModel):
     skill_id: str = Field(default="", validation_alias=AliasChoices("skill_id", "skillId"))
     skill_version: str = Field(default="", validation_alias=AliasChoices("skill_version", "skillVersion"))
     persist: bool = False
+    workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
 
 
 class DirectorTreatmentLlmDraftRequest(DirectorTreatmentPreviewRequest):
@@ -156,7 +158,7 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
         )
         if not script_row:
             raise HTTPException(status_code=404, detail="No script found for this episode.")
-        script = _script_payload(script_row)
+        script = resolve_script_payload(session, script_row, workflow_profile=req.workflow_profile)
         scene = _find_scene(script, req.scene_name)
         characters = []
         for row in session.query(VisualMakeup).filter_by(book_id=book_id, episode=req.episode).order_by(VisualMakeup.id):
