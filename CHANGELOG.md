@@ -1,5 +1,12 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M10：QA 职责边界与 Production Pass 指标
+
+- 新增 `core/qa_roles.py`：结构/事实/资产/连续性/可拍性/编译/供应商问题归 Validator；风格、节奏和创作建议归 Director QA；审批与创作取舍归 Human Review。
+- 生产 readiness 增加 `qa_roles`、`production_pass_metrics`、根因和原始诊断索引；QA issue 序列化增加 `qa_role`，保留现有字段与历史记录。
+- Production Pass 对 hard error、production blocker、必需资产、断链参考图、ShotPlan 违规、连续性硬冲突和 executability blocked 全部 fail-closed；创作 warning 不被误报为结构通过。
+- M10 专项及相关 readiness/QA 回归：**20 passed**。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-13 — Production Pipeline V2 M9：Root Cause Aggregator
 
 - 新增 `core/root_cause_aggregator.py`，按稳定语义根因 ID 聚合跨场景/镜头诊断，输出严重度、影响范围、症状数与建议动作。

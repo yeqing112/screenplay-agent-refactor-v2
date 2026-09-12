@@ -26,7 +26,7 @@
 | M7 Prompt Compiler A/B | **已满足** | Materializer 同步 Phase A 状态，Phase B 可 deterministic fallback。 |
 | M8 First-Pass Qualification Loop | **已满足** | 已统一诊断路由、责任层显式 patch、再验证和 needs_review 闭环。 |
 | M9 Root Cause Aggregator | **已满足** | 已提供稳定根因 ID、影响范围、症状数与原始症状索引；production-readiness 已暴露聚合结果。 |
-| M10 QA 职责重构 | **部分满足** | 已有多类 QA、预检和审计，但 Validator/Director QA/Human Review 的责任边界尚未成为统一生产门禁。 |
+| M10 QA 职责重构 | **已满足** | QA 输出已标注 Validator/Director QA/Human Review，production-readiness 提供 fail-closed Production Pass 指标并保留原始诊断。 |
 
 ## 逐项差距审计
 
@@ -343,7 +343,7 @@
 
 ## 审计结论
 
-当前仓库已完成 M0–M9 的确定性生产链路收口；下一个未满足 Milestone 是 **M10**。M10 仍必须按顺序完成，并保持 fail-closed、可回滚、可追溯且不调用真实外部供应商。
+当前仓库已完成 M0–M10 的确定性生产链路收口。后续工作转入全量回归、前端构建与真实生产数据补证，但不得以真实供应商调用替代本计划的确定性验收。
 
 ## M0 完成后复核（2026-09-13）
 
@@ -398,3 +398,9 @@
 - 已新增确定性根因聚合器；语义相近诊断归并到稳定 `root_cause_id`，每组保留完整 `symptoms`，不会隐藏底层 blocker。
 - production-readiness 现在提供 `root_causes`、`root_cause_count`、`symptom_count`、QA 角色和 production pass metrics，并保留原有 issue 列表。
 - M9 专项测试：**2 passed**；相关 readiness/repair 回归仍通过。未调用真实供应商。M10 是下一个待完成阶段。
+
+## M10 完成后复核（2026-09-13）
+
+- 已新增 QA 三层职责映射，并接入 QA issue 序列化和 production-readiness；Validator/Director QA/Human Review 的原始证据保持可回放。
+- Production Pass 指标覆盖 hard error、production blocker、必需资产、断链参考图、ShotPlan、连续性和 executability 阻断，任何一项非零即不通过。
+- M10 专项及相关回归：**20 passed**。未调用真实 LLM、图片、视频或对象存储。M0–M10 已全部完成。

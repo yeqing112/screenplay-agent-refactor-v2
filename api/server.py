@@ -16386,6 +16386,20 @@ def _build_storyboard_production_readiness(shots: list[Any], assets: dict[str, l
             code = str(issue.get("code") or "").strip()
             if code:
                 issue_codes[code] = issue_codes.get(code, 0) + 1
+    # Keep the existing per-shot/per-asset details for compatibility, while
+    # exposing deterministic role-aware metrics and root-cause aggregation for
+    # the production UI. Aggregation never removes source issue rows.
+    from core.qa_roles import annotate_issues, build_production_pass_metrics
+    from core.root_cause_aggregator import aggregate_root_causes
+    source_issues = [
+        issue
+        for item in all_items
+        for issue in (item.get("issues", []) if isinstance(item.get("issues", []), list) else [])
+        if isinstance(issue, dict)
+    ]
+    annotated_issues = annotate_issues(source_issues)
+    pass_metrics = build_production_pass_metrics(annotated_issues)
+    root_causes = aggregate_root_causes(annotated_issues)
     return {
         "mode": "readonly-production-readiness",
         "status": "blocked" if blocked_count else ("warning" if warning_count else "pass"),
@@ -16397,6 +16411,11 @@ def _build_storyboard_production_readiness(shots: list[Any], assets: dict[str, l
             "warning_items": warning_count,
             "issue_counts": dict(sorted(issue_codes.items())),
         },
+        "qa_roles": {"validator": "对不对", "director_qa": "好不好", "human_review": "我要不要这样拍"},
+        "production_pass_metrics": {key: value for key, value in pass_metrics.items() if key != "issues"},
+        "root_causes": root_causes["root_causes"],
+        "root_cause_count": root_causes["root_cause_count"],
+        "symptom_count": root_causes["symptom_count"],
         "recommended_order": [
             "先修复 blocked 镜头的可拍性或提示词编译问题。",
             "再补锁定的角色/场景/关键道具参考图与权威资产字段。",
@@ -16404,6 +16423,7 @@ def _build_storyboard_production_readiness(shots: list[Any], assets: dict[str, l
         ],
         "shots": shot_results,
         "assets": asset_results,
+        "diagnostics": annotated_issues,
     }
 
 
@@ -20773,6 +20793,13 @@ def _serialize_qa_issue(issue) -> dict:
     meta_info = safe_json_loads(issue.meta_info, {})
     issue_payload = {"type": issue.issue_type}
     rule_family = classify_script_qa_rule_family(issue_payload)
+    from core.qa_roles import classify_qa_role
+    qa_role = classify_qa_role({
+        "code": issue.issue_type,
+        "title": issue.title,
+        "description": issue.description,
+        "severity": issue.severity,
+    })
     return {
         "id": issue.id,
         "issue_id": issue.issue_key,
@@ -20789,6 +20816,7 @@ def _serialize_qa_issue(issue) -> dict:
         "fix_mode": issue.fix_mode or "manual",
         "fix_status": issue.fix_status or "pending",
         "rule_family": rule_family,
+        "qa_role": qa_role,
         "repair_goal": build_script_rule_family_repair_goal(rule_family),
         "workflow_status": str(meta_info.get("workflow_status") or "").strip() or None,
         "repair_version": str(meta_info.get("repair_version") or "").strip(),
