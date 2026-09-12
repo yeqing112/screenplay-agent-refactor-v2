@@ -51,7 +51,10 @@ def _script_scenes(script: Any) -> list[dict[str, Any]]:
 
 
 def _payload(row: ShotPlan) -> dict[str, Any]:
-    return {"id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_name": row.scene_name, "revision": row.revision, "status": row.status, "treatment_id": row.treatment_id, "blocking_id": row.blocking_id, "shots": _json(row.shots, []), "unknowns": _json(row.unknowns, []), "evidence_fingerprint": row.evidence_fingerprint, "model_info": _json(row.model_info, {}), "created_at": row.created_at.isoformat() if row.created_at else None, "updated_at": row.updated_at.isoformat() if row.updated_at else None}
+    return {"id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_name": row.scene_name, "revision": row.revision, "status": row.status,
+            "execution_status": row.execution_status, "quality_status": row.quality_status,
+            "production_status": row.production_status, "workflow_profile": row.workflow_profile,
+            "treatment_id": row.treatment_id, "blocking_id": row.blocking_id, "shots": _json(row.shots, []), "unknowns": _json(row.unknowns, []), "evidence_fingerprint": row.evidence_fingerprint, "model_info": _json(row.model_info, {}), "created_at": row.created_at.isoformat() if row.created_at else None, "updated_at": row.updated_at.isoformat() if row.updated_at else None}
 
 
 def _validate_plan_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str, Any]:

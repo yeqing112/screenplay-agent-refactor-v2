@@ -39,7 +39,10 @@ def _json(value: str | None, fallback: Any) -> Any:
 def _row_payload(row: SceneBlocking) -> dict[str, Any]:
     return {
         "id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_name": row.scene_name,
-        "revision": row.revision, "status": row.status, "treatment_id": row.treatment_id,
+        "revision": row.revision, "status": row.status,
+        "execution_status": row.execution_status, "quality_status": row.quality_status,
+        "production_status": row.production_status, "workflow_profile": row.workflow_profile,
+        "treatment_id": row.treatment_id,
         "treatment_revision": row.treatment_revision, "source_script_hash": row.source_script_hash,
         "participants": _json(row.participants, []), "beat_transitions": _json(row.beat_transitions, []),
         "spatial_rules": _json(row.spatial_rules, []), "unknowns": _json(row.unknowns, []),

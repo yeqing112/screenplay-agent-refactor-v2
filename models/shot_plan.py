@@ -15,6 +15,10 @@ class ShotPlan(Base):
     scene_name = Column(String, nullable=False, default="")
     revision = Column(Integer, nullable=False, default=1)
     status = Column(String, nullable=False, default="draft")  # draft / approved / superseded
+    execution_status = Column(String, nullable=False, default="queued")
+    quality_status = Column(String, nullable=False, default="draft")
+    production_status = Column(String, nullable=False, default="blocked")
+    workflow_profile = Column(String, nullable=False, default="creative_draft")
     treatment_id = Column(Integer, nullable=True)
     blocking_id = Column(Integer, nullable=True)
     shots = Column(Text, nullable=False, default="[]")

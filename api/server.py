@@ -51,6 +51,7 @@ from core.video_continuity import CONTINUITY_LEVELS, resolve_video_continuity_st
 from core.transition_frame_extraction import TransitionFrameExtractionError, extract_transition_frame
 from core.decision_packet import decision_packet_fingerprint, normalize_decision_packet
 from core.decision_draft import build_decision_draft_prompt, validate_decision_draft
+from core.production_policy import evaluate_production_boundary, resolve_workflow_profile
 from core.script_beat import build_script_beats, find_issue_beats, is_structural_beat
 from core.qa_resolution import build_resolution_criteria, evaluate_resolution_criteria, route_issue
 from core.script_edit import apply_edits, validate_edits
@@ -4286,6 +4287,10 @@ class StoryboardRequest(BaseModel):
         default_factory=lambda: bool(config.REQUIRE_SHOT_PLAN_BY_DEFAULT),
         validation_alias=AliasChoices("require_shot_plan", "requireShotPlan"),
     )
+    workflow_profile: str = Field(
+        default="creative_draft",
+        validation_alias=AliasChoices("workflow_profile", "workflowProfile"),
+    )
 
 
 def _make_storyboard_episode_task(episode: int) -> dict:
@@ -4447,6 +4452,25 @@ def _update_storyboard_episode_progress(task: dict, event: dict) -> None:
 @app.post("/api/pipeline/storyboard")
 async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
     """Run storyboard generation independently, optionally for selected episodes."""
+    try:
+        workflow_profile = resolve_workflow_profile(req.workflow_profile)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    if workflow_profile == "production":
+        # M0 deliberately fails closed until the later milestones provide the
+        # required ScriptIR/ShotPlan/Compiler evidence.  Request flags cannot
+        # weaken this boundary.
+        gate = evaluate_production_boundary(
+            workflow_profile,
+            shot_plan_approved=False,
+            script_ir_qualified=False,
+            director_treatment_approved=False,
+            scene_blocking_approved=False,
+            compiler_phase_a_pass=False,
+            executability_pass=False,
+            required_assets_ready=False,
+        )
+        raise HTTPException(status_code=409, detail={"code": "PRODUCTION_BOUNDARY_BLOCKED", **gate})
     if req.require_shot_plan:
         requested = req.episodes or []
         with Session() as gate_session:
@@ -4472,6 +4496,7 @@ async def run_storyboard(req: StoryboardRequest, bg: BackgroundTasks):
         "book_id": req.book_id,
         "genre": req.genre,
         "generation_mode": generation_mode,
+        "workflow_profile": workflow_profile,
         "requested_episodes": requested_episodes,
         "episodes": [_make_storyboard_episode_task(ep) for ep in requested_episodes],
         "started_at": datetime.utcnow().isoformat(),

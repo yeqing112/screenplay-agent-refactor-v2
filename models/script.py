@@ -32,6 +32,10 @@ class Script(Base):
     content = Column(Text, default="")
     word_count = Column(Integer, default=0)
     status = Column(String, default="draft")
+    execution_status = Column(String, default="succeeded", nullable=False)
+    quality_status = Column(String, default="draft", nullable=False)
+    production_status = Column(String, default="blocked", nullable=False)
+    workflow_profile = Column(String, default="creative_draft", nullable=False)
     created_at = Column(DateTime, default=datetime.now)
 
 

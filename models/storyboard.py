@@ -49,6 +49,13 @@ class StoryboardShot(Base):
     asset_links = Column(Text, default="{}")           # JSON: Phase 2 回填资产路径
     asset_status = Column(String, default="pending")   # pending/asset_pending/asset_ready/video_pending/done/failed
 
+    # V2 unified state protocol; ``asset_status`` and legacy status semantics
+    # remain for compatibility while these fields become production authority.
+    execution_status = Column(String, default="queued", nullable=False)
+    quality_status = Column(String, default="draft", nullable=False)
+    production_status = Column(String, default="blocked", nullable=False)
+    workflow_profile = Column(String, default="creative_draft", nullable=False)
+
     # 元数据
     meta_info = Column(Text, default="{}")              # JSON 扩展
     notes = Column(Text, default="")

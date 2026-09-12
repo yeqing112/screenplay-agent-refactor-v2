@@ -1,5 +1,13 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-13 — Production Pipeline V2 M0：统一状态协议与工作流 Profile
+
+- 新增 `core/production_policy.py`，集中定义 `execution_status`、`quality_status`、`production_status` 与 `workflow_profile`，并提供 fail-closed 生产边界评估。
+- `Script`、`StoryboardShot`、`DirectorTreatment`、`SceneBlocking`、`ShotPlan` 增加兼容性状态字段；旧 `status` 保留作为 legacy 数据。
+- 新增 Alembic 迁移 `j3d4e5f6g7h8_add_unified_artifact_states.py`，所有字段可升级/降级。
+- `/api/pipeline/storyboard` 支持 `workflow_profile`；显式 `production` 在后续里程碑证据尚未齐备时返回可行动的 409 阻断，不能被 `require_shot_plan=false` 绕过；默认 `creative_draft` 保持兼容且永远不进入正式生产。
+- M0 测试：`tests/test_production_policy.py` 6 passed；相关 Treatment/Blocking/ShotPlan/Storyboard 回归 29 passed。未调用真实 LLM、图片、视频或对象存储。
+
 ## 2026-09-12 — 生产样本登记支持批量原子校验
 
 - `scripts/register-production-sample.py` 的 `--book-id` 现在可重复传入，可一次预览多个候选项目。

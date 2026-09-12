@@ -23,6 +23,10 @@ class DirectorTreatment(Base):
 
     revision = Column(Integer, nullable=False, default=1)
     status = Column(String, nullable=False, default="draft")
+    execution_status = Column(String, nullable=False, default="queued")
+    quality_status = Column(String, nullable=False, default="draft")
+    production_status = Column(String, nullable=False, default="blocked")
+    workflow_profile = Column(String, nullable=False, default="creative_draft")
 
     source_script_revision = Column(String, nullable=False, default="")
     source_script_hash = Column(String, nullable=False, default="")
