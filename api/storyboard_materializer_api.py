@@ -52,8 +52,24 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
             raise HTTPException(status_code=409, detail="Qualified ScriptIR has no structured scenes for production materialization.")
         query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, status="approved")
         if req.plan_id:
+            # An explicit plan_id is an operator-selected revision and must
+            # remain exact; do not silently substitute a newer plan.
             query = query.filter_by(id=req.plan_id)
-        plans = query.order_by(ShotPlan.scene_name, ShotPlan.revision.desc(), ShotPlan.id.desc()).all()
+            plans = query.order_by(ShotPlan.revision.desc(), ShotPlan.id.desc()).all()
+        else:
+            # Without an explicit revision, materialize one authoritative
+            # approved ShotPlan per scene.  Keeping every approved revision
+            # would duplicate old shots and violate the one-to-one production
+            # projection contract.
+            approved_rows = query.order_by(ShotPlan.scene_name, ShotPlan.revision.desc(), ShotPlan.id.desc()).all()
+            plans = []
+            seen_scene_names: set[str] = set()
+            for row in approved_rows:
+                scene_key = str(row.scene_name or "").strip()
+                if scene_key in seen_scene_names:
+                    continue
+                seen_scene_names.add(scene_key)
+                plans.append(row)
         if not plans:
             raise HTTPException(status_code=409, detail="No approved ShotPlan is available for materialization.")
         missing_script_scenes = sorted({str(plan.scene_name or "").strip() for plan in plans} - script_scene_names)
@@ -89,10 +105,44 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                 raise HTTPException(status_code=409, detail=f"Approved ShotPlan cannot be materialized: {exc}") from exc
             if len(drafts) != len(raw) or {str(item.get("plan_shot_id")) for item in drafts} != {str(item.get("plan_shot_id")) for item in raw}:
                 raise HTTPException(status_code=409, detail=f"Materializer mapping does not preserve the approved ShotPlan cardinality: {plan.scene_name}")
-            existing_refs = {str((json.loads(row.meta_info or "{}").get("shot_plan_ref") or {}).get("plan_shot_id") or "") for row in session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, scene_name=plan.scene_name).all()}
+            existing_refs: set[str] = set()
+            existing_plan_ids: dict[str, set[str]] = {}
+            for existing_row in session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, scene_name=plan.scene_name).all():
+                try:
+                    existing_meta = json.loads(existing_row.meta_info or "{}")
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    existing_meta = {}
+                shot_plan_ref = existing_meta.get("shot_plan_ref") if isinstance(existing_meta, dict) else {}
+                plan_shot_id = str((shot_plan_ref if isinstance(shot_plan_ref, dict) else {}).get("plan_shot_id") or "").strip()
+                if not plan_shot_id:
+                    raise HTTPException(
+                        status_code=409,
+                        detail=(
+                            f"Existing StoryboardShot has no shot_plan_ref for scene: {plan.scene_name}; "
+                            "explicit migration is required before production materialization"
+                        ),
+                    )
+                existing_refs.add(plan_shot_id)
+                upstream = existing_meta.get("upstream") if isinstance(existing_meta, dict) else {}
+                source_plan_id = str((upstream if isinstance(upstream, dict) else {}).get("shot_plan_id") or "").strip()
+                if source_plan_id:
+                    existing_plan_ids.setdefault(plan_shot_id, set()).add(source_plan_id)
             planned_refs = {str(draft["plan_shot_id"]) for draft in drafts}
             if existing_refs - planned_refs:
                 raise HTTPException(status_code=409, detail=f"Existing StoryboardShot set does not match the approved ShotPlan for scene: {plan.scene_name}")
+            conflicting_refs = sorted(
+                plan_shot_id
+                for plan_shot_id in planned_refs & existing_refs
+                if existing_plan_ids.get(plan_shot_id) and str(plan.id) not in existing_plan_ids[plan_shot_id]
+            )
+            if conflicting_refs:
+                raise HTTPException(
+                    status_code=409,
+                    detail=(
+                        f"Existing StoryboardShot belongs to a different approved ShotPlan revision for scene: {plan.scene_name}; "
+                        f"explicit migration is required for plan_shot_id: {', '.join(conflicting_refs)}"
+                    ),
+                )
             for draft in drafts:
                 if draft["plan_shot_id"] in existing_refs:
                     continue

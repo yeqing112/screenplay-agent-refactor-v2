@@ -108,6 +108,7 @@ def qualify_director_candidate(
     max_attempts: int = 2,
     repair_recorder: Any | None = None,
     repair_context: dict[str, Any] | None = None,
+    session: Any | None = None,
 ) -> dict[str, Any]:
     """Run the existing bounded qualification loop at DIRECTOR_CREATIVE.
 
@@ -124,6 +125,25 @@ def qualify_director_candidate(
             option = by_key.get((issue.get("code"), issue.get("target_id") or issue.get("shot_id")))
             enriched.append({**issue, "target_layer": "DIRECTOR_CREATIVE", "patch": (option or {}).get("patch", [])})
         return enriched
+
+    # Runtime callers should not have to remember a second, easy-to-miss
+    # wiring step.  When a DB session or explicit context is supplied, record
+    # every applied Director Creative repair directly in the shared ledger.
+    # Pure/unit callers that provide neither remain side-effect free.
+    if repair_recorder is None and (session is not None or repair_context is not None):
+        def _record_runtime_repair(record: dict[str, Any]) -> None:
+            context = {
+                **(repair_context or {}),
+                **(record.get("context") if isinstance(record.get("context"), dict) else {}),
+            }
+            record_repair_attempt(
+                repair=record,
+                issue=record.get("issue") if isinstance(record.get("issue"), dict) else {},
+                context=context,
+                session=session,
+            )
+
+        repair_recorder = _record_runtime_repair
 
     return qualify_candidate(
         candidate,

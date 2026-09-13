@@ -6,7 +6,8 @@ from core.director_creative_planner import (
     DirectorFactOverride,
     build_creative_shot_plan_candidate,
 )
-from core.director_local_repair import apply_director_local_repair, build_director_repair_options
+from core.director_local_repair import apply_director_local_repair, build_director_repair_options, qualify_director_candidate
+import core.director_local_repair as director_local_repair_module
 from core.director_blind_review import prepare_blind_review, record_blind_preference
 from core.director_quality_validator import (
     score_director_quality,
@@ -145,6 +146,37 @@ def test_quality_score_is_separate_from_structural_score_and_repair_is_bounded()
         apply_director_local_repair(candidate, {"target_layer": "DIRECTOR_CREATIVE", "patch": [{"op": "replace", "path": "/shots/0/event", "value": "改事实"}]})
 
 
+def test_director_qualification_auto_wires_runtime_repair_ledger(monkeypatch):
+    _, _, baseline = _inputs()
+    records = []
+
+    monkeypatch.setattr(
+        director_local_repair_module,
+        "validate_director_quality",
+        lambda current, **_: [] if current["shots"][0].get("why_this_shot") else [{
+            "code": "UNMOTIVATED_SHOT",
+            "target_id": "S01",
+            "shot_id": "S01",
+            "severity": "error",
+            "blocking": True,
+            "patch": [{"op": "add", "path": "/shots/0/why_this_shot", "value": "明确切镜动机"}],
+        }],
+    )
+    monkeypatch.setattr(director_local_repair_module, "record_repair_attempt", lambda **kwargs: records.append(kwargs))
+
+    result = qualify_director_candidate(
+        baseline,
+        max_attempts=1,
+        repair_context={"book_id": 1, "episode": 1, "scene_id": "E01_SC01", "model": "mock", "prompt_fingerprint": "fp"},
+        session=object(),
+    )
+    assert result["status"] == "qualified"
+    assert len(records) == 1
+    assert records[0]["issue"]["target_layer"] == "DIRECTOR_CREATIVE"
+    assert records[0]["context"]["model"] == "mock"
+    assert records[0]["context"]["prompt_fingerprint"] == "fp"
+
+
 def test_blind_review_hides_source_roles_and_records_only_explicit_preference():
     treatment, blocking, baseline = _inputs()
     candidate = build_creative_shot_plan_candidate(structural_shot_plan=baseline, treatment=treatment, blocking=blocking)
@@ -154,6 +186,7 @@ def test_blind_review_hides_source_roles_and_records_only_explicit_preference():
     assert review["source_roles_hidden"] is True
     assert {item["label"] for item in review["versions"]} == {"Version A", "Version B"}
     assert all("role" not in item for item in review["versions"])
+    assert all("director_quality" not in item["payload"] for item in review["versions"])
     saved = record_blind_preference(review, preferred_version="Version A", reason="构图更清晰", judge_fingerprint="judge-test")
     assert saved["preferred_version"] == "Version A"
 

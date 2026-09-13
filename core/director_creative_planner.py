@@ -17,6 +17,8 @@ import hashlib
 import json
 from typing import Any, Callable
 
+from core.director_patch_schema import CreativePatchSchemaError, parse_creative_patch, parse_creative_patch_partial
+
 
 PROTOCOL_VERSION = "director-quality-v2-controlled-planner-2026-09"
 DIRECTOR_CREATIVE_LAYER = "DIRECTOR_CREATIVE"
@@ -459,11 +461,114 @@ def build_creative_shot_plan_candidate(
     return candidate
 
 
+def build_creative_patch_candidate(
+    *,
+    structural_shot_plan: dict[str, Any],
+    contract: dict[str, Any],
+    strategy: dict[str, Any],
+    llm_output: dict[str, Any] | None = None,
+    llm_callable: Callable[[dict[str, Any]], Any] | None = None,
+    confirmed: bool = False,
+    allow_external_call: bool = False,
+    mode: str = "shadow",
+) -> dict[str, Any]:
+    """Run the V2.1 shot-level planner and return *only* CreativePatch data.
+
+    This is deliberately separate from ``build_creative_shot_plan_candidate``
+    (the legacy V2 shadow API).  A model response containing ``shots`` or any
+    other complete-plan field is rejected by the strict patch parser before it
+    can be merged.  The function is pure and never persists a version or
+    starts a media task.
+    """
+
+    if not isinstance(structural_shot_plan, dict):
+        raise DirectorCreativeError("structural_shot_plan must be an object")
+    if not isinstance(contract, dict) or not isinstance(strategy, dict):
+        raise DirectorCreativeError("contract and strategy must be objects")
+    evidence = {
+        "protocol_version": "director-quality-v2-1-patch-planner",
+        "contract": copy.deepcopy(contract),
+        "strategy": copy.deepcopy(strategy),
+        "structural_shot_plan": _protected_projection(structural_shot_plan),
+    }
+    evidence_fp = fingerprint(evidence)
+    planner_mode = "creative_planner_patch"
+    llm_called = False
+    planner_error = ""
+    schema_error_code = ""
+    forbidden_field_attempt = False
+    schema_rejections: list[dict[str, Any]] = []
+    output = llm_output
+    if output is None and llm_callable is not None:
+        if confirmed and allow_external_call:
+            output = llm_callable(copy.deepcopy(evidence))
+            llm_called = True
+        else:
+            planner_mode = "deterministic_fallback"
+            planner_error = "external LLM call requires confirmed=true and allow_external_call=true"
+    if output is None:
+        # An empty, schema-valid patch document is the deterministic baseline:
+        # it cannot change facts and lets later stages explicitly record a
+        # fallback instead of pretending that creative planning succeeded.
+        output = {
+            "schema_version": "director_creative_patch_v1",
+            "patches": [],
+            "auxiliary_shot_proposals": [],
+        }
+        if planner_mode != "deterministic_fallback":
+            planner_mode = "deterministic_fallback"
+            planner_error = "no creative patch output supplied"
+    try:
+        patch_document = parse_creative_patch(output)
+    except CreativePatchSchemaError as exc:
+        # Salvage independent valid items where possible.  Fatal protocol or
+        # fingerprint errors still fall back to an empty document; item-level
+        # failures remain diagnostics for Partial Acceptance/Local Repair.
+        schema_error_code = exc.code
+        partial = parse_creative_patch_partial(output)
+        schema_rejections = list(partial.get("errors") or [])
+        forbidden_field_attempt = exc.code in {
+            "DIRECTOR_FACT_OVERRIDE",
+            "DIRECTOR_PATCH_FIELD_FORBIDDEN",
+            "DIRECTOR_PATCH_PATH_FORBIDDEN",
+        } or any(item.get("code") in {"DIRECTOR_FACT_OVERRIDE", "DIRECTOR_PATCH_FIELD_FORBIDDEN", "DIRECTOR_PATCH_PATH_FORBIDDEN"} for item in schema_rejections)
+        if partial.get("fatal") or not isinstance(partial.get("document"), dict):
+            patch_document = parse_creative_patch(
+                {"schema_version": "director_creative_patch_v1", "patches": [], "auxiliary_shot_proposals": []}
+            )
+            planner_mode = "deterministic_fallback"
+        else:
+            patch_document = partial["document"]
+            planner_mode = "partial_creative_planner" if (patch_document.get("patches") or patch_document.get("auxiliary_shot_proposals")) else "deterministic_fallback"
+        planner_error = f"creative patch schema rejected: {exc.code}"
+    return {
+        "schema_version": "director_creative_patch_candidate_v1",
+        "status": "ready_for_review",
+        "director_mode": planner_mode,
+        "patch_document": patch_document,
+        "model_info": {
+            "mode": planner_mode,
+            "llm_called": llm_called,
+            "protocol_version": "director-quality-v2-1-patch-planner",
+            "creative_evidence_fingerprint": evidence_fp,
+            "planner_error": planner_error,
+            "schema_pass": not bool(schema_error_code),
+            "schema_error_code": schema_error_code,
+            "forbidden_field_attempt": forbidden_field_attempt,
+            "schema_rejections": schema_rejections,
+            "normalization_metadata": copy.deepcopy(patch_document.get("normalization_metadata") or {}),
+        },
+        "evidence_fingerprint": evidence_fp,
+        "structural_plan_fingerprint": fingerprint(_protected_projection(structural_shot_plan)),
+    }
+
+
 # Friendly aliases for callers and hidden/regression tests that use the
 # terminology from the blueprint.
 build_director_creative_plan = build_creative_shot_plan_candidate
 plan_creative_shot_plan = build_creative_shot_plan_candidate
 run_director_creative_planner = build_creative_shot_plan_candidate
+run_director_patch_planner = build_creative_patch_candidate
 
 
 __all__ = [
@@ -476,7 +581,9 @@ __all__ = [
     "fingerprint",
     "validate_creative_candidate",
     "build_creative_shot_plan_candidate",
+    "build_creative_patch_candidate",
     "build_director_creative_plan",
     "plan_creative_shot_plan",
     "run_director_creative_planner",
+    "run_director_patch_planner",
 ]

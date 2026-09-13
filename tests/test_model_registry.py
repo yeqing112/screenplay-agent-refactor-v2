@@ -1,6 +1,9 @@
 import unittest
 from unittest.mock import AsyncMock, Mock, patch
 
+from fastapi.testclient import TestClient
+
+from api.server import app
 from api.model_registry import (
     MODEL_REGISTRY_DEFAULTS_KEY,
     MODEL_REGISTRY_PROFILES_KEY,
@@ -367,8 +370,188 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
             result["suggested_models"],
             ["doubao-seed-2-0-lite-260215", "doubao-seed-2-0-lite-260428"],
         )
+        self.assertIn("服务可达，但当前模型不可用", result["message"])
         self.assertIn("可选近似模型", result["message"])
         self.assertEqual(len(result["available_models"]), 3)
+
+    async def test_openai_compatible_probe_accepts_exact_versioned_volcengine_model_id(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {
+            "data": [{"id": "doubao-seed-2-0-lite-260428"}]
+        }
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "火山",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                    "model_name": "doubao-seed-2-0-lite-260428",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["model_available"])
+        self.assertEqual(result["catalog_status"], "verified")
+        self.assertEqual(result["suggested_models"], [])
+        self.assertIn("模型 ID 已在远端目录中确认", result["message"])
+
+    async def test_profile_test_response_never_echoes_api_key(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {"data": [{"id": "doubao-seed-2-0-lite-260428"}]}
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "火山",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                    "model_name": "doubao-seed-2-0-lite-260428",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["profile"]["key_configured"])
+        self.assertNotIn("api_key", result["profile"])
+
+    def test_profile_test_http_route_never_echoes_api_key(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {"data": [{"id": "doubao-seed-2-0-lite-260428"}]}
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            response = TestClient(app).post(
+                "/api/model-registry/test",
+                json={
+                    "profile": {
+                        "name": "火山",
+                        "capability": "llm",
+                        "provider": "openai-compatible",
+                        "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                        "model_name": "doubao-seed-2-0-lite-260428",
+                        "api_key": "secret-test-key",
+                    }
+                },
+            )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload["ok"])
+        self.assertTrue(payload["profile"]["key_configured"])
+        self.assertNotIn("api_key", payload["profile"])
+
+    async def test_openai_compatible_probe_ignores_catalog_entries_without_model_id(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {
+            "data": [{"object": "model"}, {"id": "doubao-seed-2-0-lite-260428"}]
+        }
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "火山",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                    "model_name": "doubao-seed-2-0-lite-260428",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["available_models"], ["doubao-seed-2-0-lite-260428"])
+
+    async def test_openai_compatible_probe_accepts_top_level_list_catalog(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = [{"id": "doubao-seed-2-0-lite-260428"}]
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "火山",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                    "model_name": "doubao-seed-2-0-lite-260428",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["available_models"], ["doubao-seed-2-0-lite-260428"])
+
+    async def test_openai_compatible_probe_accepts_nested_models_catalog(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {
+            "data": {"models": [{"id": "doubao-seed-2-0-lite-260428"}, {"id": "doubao-seed-2-0-lite-260428"}]}
+        }
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "火山",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                    "model_name": "doubao-seed-2-0-lite-260428",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["available_models"], ["doubao-seed-2-0-lite-260428"])
+
+    async def test_openai_compatible_probe_accepts_nested_items_catalog(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {
+            "data": {"items": [{"model_id": "doubao-seed-2-0-lite-260428"}]}
+        }
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "火山",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                    "model_name": "doubao-seed-2-0-lite-260428",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["available_models"], ["doubao-seed-2-0-lite-260428"])
 
     async def test_openai_compatible_probe_marks_empty_model_catalog_as_unverified(self):
         mock_response = Mock()

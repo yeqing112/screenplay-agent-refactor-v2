@@ -48,6 +48,11 @@ def materialize_storyboard_from_shot_plan(approved_shot_plan: dict[str, Any], tr
             "meta_info": {
                 "materializer": {"version": "storyboard_materializer_v1", "source_fingerprint": _fingerprint({"plan": plan, "treatment": treatment or {}, "blocking": blocking or {}, "assets": asset_snapshot or {}})},
                 "shot_plan_ref": {"plan_shot_id": str(item.get("plan_shot_id") or f"S{index:02d}"), "plan_fingerprint": str(plan.get("evidence_fingerprint") or _fingerprint(plan))},
+                # Keep the complete structural camera object in addition to
+                # the legacy relational columns.  Production materialization
+                # must not silently discard fields such as shot_size or
+                # camera_side that downstream prompt/export consumers need.
+                "camera": camera,
             },
         })
     return output

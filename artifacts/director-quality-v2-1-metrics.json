@@ -1,0 +1,48 @@
+{
+  "protocol_version": "director-quality-v2-1",
+  "generated_at": "2026-09-13T07:47:07.371783+00:00",
+  "offline_only": true,
+  "scene_count": 18,
+  "contract_parse_success_rate": 1.0,
+  "creative_contract_pass_rate": 1.0,
+  "fact_override_attempt_count": 0,
+  "fact_override_accepted_count": 0,
+  "forbidden_field_attempt_count": 0,
+  "schema_rejection_count": 0,
+  "auxiliary_unbound_accepted_count": 0,
+  "patch_first_pass_success_rate": 1.0,
+  "patch_final_success_rate": 1.0,
+  "local_repair_yield": 0.0,
+  "partial_acceptance_rate": 0.0,
+  "deterministic_fallback_rate": 0.0,
+  "scene_planner_success_rate": 1.0,
+  "director_quality_average": 43.99,
+  "director_quality_delta": 0.0,
+  "dimension_averages": {
+    "DRAMATIC_CLARITY": 9.11,
+    "SHOT_MOTIVATION": 1.11,
+    "EMOTIONAL_PROGRESSION": 4.0,
+    "VISUAL_STORYTELLING": 7.78,
+    "SPATIAL_CLARITY": 7.0,
+    "PERFORMANCE_DIRECTION": 0.0,
+    "EDIT_RHYTHM": 1.85,
+    "INFORMATION_STRATEGY": 0.0,
+    "POWER_DYNAMICS": 8.0,
+    "SHOT_DIVERSITY": 4.07
+  },
+  "mimo_pilot": {
+    "status": "not_run_by_instruction",
+    "calls": 0,
+    "cached_tokens": 0,
+    "latency_ms": 0
+  },
+  "media_calls": 0,
+  "object_storage_calls": 0,
+  "prompt_prefix_fingerprint_count": 1,
+  "prompt_request_fingerprint_count": 18,
+  "cache_observation": {
+    "status": "not_measured_offline",
+    "cached_tokens": 0,
+    "provider_calls": 0
+  }
+}

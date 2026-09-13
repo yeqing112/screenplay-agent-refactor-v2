@@ -25,8 +25,10 @@ def prepare_blind_review(comparison: dict[str, Any], *, salt: str = "director-qu
         value = comparison.get(key) if isinstance(comparison.get(key), dict) else {}
         if not value:
             raise ValueError(f"missing {key}")
-        quality = value.get("director_quality") if isinstance(value.get("director_quality"), dict) else {}
-        versions.append({"label": "Version A" if key == "version_a" else "Version B", "payload": {"director_quality": quality, "shot_count": value.get("shot_count"), "shots": value.get("shots")}})
+        # Never expose system-computed quality scores to the reviewer: doing
+        # so would leak which candidate is stronger and invalidate the blind
+        # comparison.  Scores remain in the non-blind benchmark artifact.
+        versions.append({"label": "Version A" if key == "version_a" else "Version B", "payload": {"shot_count": value.get("shot_count"), "shots": value.get("shots")}})
     # Stable pseudo-random order prevents a reviewer from learning that A is
     # always the baseline while remaining reproducible in audit/replay.
     token = _fingerprint({"salt": salt, "comparison": comparison})

@@ -70,15 +70,20 @@ def run_director_benchmark(book_id: int, episode: int) -> dict[str, Any]:
     if not scene_names:
         scene_names = [""]
 
-    def latest_by_scene(rows: list[Any]) -> dict[str, Any]:
+    def latest_by_scene(rows: list[Any], *, skip_v21_patch_drafts: bool = False) -> dict[str, Any]:
         result: dict[str, Any] = {}
         for row in rows:
+            if skip_v21_patch_drafts and str(getattr(row, "schema_version", "") or "") == "shot_plan_v2_1_patch_candidate":
+                # Contract-First drafts are shadow evidence, not executable
+                # ShotPlans.  They must never displace an approved plan in
+                # the existing runtime benchmark/readiness views.
+                continue
             result.setdefault(str(row.scene_name or ""), row)
         return result
 
     treatment_by_scene = latest_by_scene(treatments)
     blocking_by_scene = latest_by_scene(blockings)
-    plan_by_scene = latest_by_scene(plans)
+    plan_by_scene = latest_by_scene(plans, skip_v21_patch_drafts=True)
     scene_reports = []
     for scene_name in scene_names:
         scene_report = score_runtime(

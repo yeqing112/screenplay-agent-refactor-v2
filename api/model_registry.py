@@ -419,6 +419,39 @@ def _friendly_http_error(prefix: str, exc: Exception) -> str:
     return f"{prefix}失败：{exc}"
 
 
+def _extract_catalog_model_ids(payload: Any) -> list[str]:
+    """Normalize common OpenAI-compatible model catalog response shapes.
+
+    Most providers return ``{"data": [{"id": ...}]}``, but compatible
+    gateways also commonly return a bare list, ``{"models": [...]}``, or a
+    nested ``{"data": {"models": [...]}}`` object.  Transport reachability
+    must not be reported as an unverified catalog merely because the wrapper
+    shape differs.  Only explicit model identifiers are accepted; arbitrary
+    response fields are never treated as model names.
+    """
+
+    entries: Any = payload
+    if isinstance(payload, dict):
+        entries = payload.get("data")
+        if isinstance(entries, dict):
+            entries = entries.get("models") or entries.get("items") or entries.get("data")
+        if not isinstance(entries, list):
+            entries = payload.get("models") or payload.get("items") or []
+    if not isinstance(entries, list):
+        return []
+
+    model_ids: list[str] = []
+    seen: set[str] = set()
+    for item in entries:
+        if not isinstance(item, dict):
+            continue
+        model_id = str(item.get("id") or item.get("model_id") or "").strip()
+        if model_id and model_id not in seen:
+            seen.add(model_id)
+            model_ids.append(model_id)
+    return model_ids
+
+
 async def _test_openai_compatible_profile(profile: dict[str, Any]) -> dict[str, Any]:
     _require_fields(profile, ["base_url", "model_name"])
     api_key = str(profile.get("api_key") or "").strip()
@@ -437,7 +470,7 @@ async def _test_openai_compatible_profile(profile: dict[str, Any]) -> dict[str, 
         except Exception as exc:  # pragma: no cover - covered by tests via public API
             raise ValueError(_friendly_http_error("测试真实模型连接", exc)) from exc
 
-    model_ids = [str(item.get("id")) for item in data.get("data", []) if isinstance(item, dict)]
+    model_ids = _extract_catalog_model_ids(data)
     configured = str(profile.get("model_name") or "")
     # Some OpenAI-compatible providers (notably Volcengine Ark) expose
     # versioned model IDs in `/models` while their product documentation uses
@@ -457,9 +490,14 @@ async def _test_openai_compatible_profile(profile: dict[str, Any]) -> dict[str, 
     ][:8]
     model_available = (configured in model_ids) if model_ids else None
     if model_ids and not model_available:
-        message = f"连接成功，但远端模型列表中未发现 {configured}"
+        # Keep transport reachability separate from model usability.  A
+        # successful `/models` response proves that the endpoint and key are
+        # reachable, but it must not be phrased as an overall success when
+        # the configured model cannot actually be selected for generation.
+        message = f"服务可达，但当前模型不可用：远端模型列表中未发现 {configured}"
         if suggested_models:
             message += f"；可选近似模型：{'、'.join(suggested_models)}"
+            message += "；请选用一个远端返回的完整模型 ID，保存配置后重新测试。"
         if profile.get("provider") == SHAPI_OPENAI_IMAGES_PROVIDER:
             # A successful /models response is not sufficient for SHAPI:
             # submitting a model absent from this account's catalog yields
@@ -478,7 +516,11 @@ async def _test_openai_compatible_profile(profile: dict[str, Any]) -> dict[str, 
 
     return {
         "ok": True,
-        "message": "连接成功" if model_ids else "连接成功；远端未提供模型目录，未校验模型名",
+        "message": (
+            "连接成功，模型 ID 已在远端目录中确认"
+            if model_ids
+            else "服务可达；远端未提供模型目录，未校验模型名"
+        ),
         "model_available": model_available,
         "available_models": model_ids,
         "suggested_models": suggested_models,
@@ -569,16 +611,23 @@ async def test_profile_connection(
     if not profile:
         raise ValueError("未找到要测试的模型配置。")
 
+    def _public_test_profile() -> dict[str, Any]:
+        """Return a test snapshot without ever echoing provider credentials."""
+
+        snapshot = _serialize_profile(profile, is_default=False)
+        snapshot.pop("api_key", None)
+        return snapshot
+
     if profile.get("provider") == MOCK_PROVIDER:
         return {
             "ok": True,
             "message": "Mock provider 可用。",
-            "profile": _serialize_profile(profile, is_default=False),
+            "profile": _public_test_profile(),
         }
 
     if profile.get("provider") == POYO_ASYNC_PROVIDER:
         _require_fields(profile, ["base_url", "model_name"])
-        response_profile = _serialize_profile(profile, is_default=False)
+        response_profile = _public_test_profile()
         return {
             "ok": True,
             "message": "PoYo 配置结构校验通过。当前测试不会发起真实扣费任务。",
@@ -587,7 +636,7 @@ async def test_profile_connection(
 
     if profile.get("provider") == MINIMAX_H3_ASYNC_PROVIDER:
         _require_fields(profile, ["base_url", "model_name"])
-        response_profile = _serialize_profile(profile, is_default=False)
+        response_profile = _public_test_profile()
         return {
             "ok": True,
             "message": "MiniMax H3 配置结构校验通过。当前测试不会发起真实扣费视频任务。",
@@ -596,7 +645,7 @@ async def test_profile_connection(
 
     if profile.get("provider") == MINIMAX_H3_75API_PROVIDER:
         _require_fields(profile, ["base_url", "model_name"])
-        response_profile = _serialize_profile(profile, is_default=False)
+        response_profile = _public_test_profile()
         return {
             "ok": True,
             "message": "75api MiniMax H3 配置结构校验通过。该模型仅支持图片条件视频，当前测试不会发起真实扣费任务。",
@@ -611,14 +660,14 @@ async def test_profile_connection(
         return {
             "ok": False,
             "message": "真实视频 provider 尚未接入当前工作台，请继续使用 Mock 视频模型。",
-            "profile": _serialize_profile(profile, is_default=False),
+            "profile": _public_test_profile(),
         }
     elif profile.get("capability") == "embedding":
         result = await _test_embedding_profile(profile)
     else:
         result = await _test_openai_compatible_profile(profile)
 
-    response_profile = _serialize_profile(profile, is_default=False)
+    response_profile = _public_test_profile()
     if "dimension" in result:
         default_params = dict(response_profile.get("default_params") or {})
         default_params["dimension"] = result["dimension"]

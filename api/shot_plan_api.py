@@ -10,13 +10,19 @@ from pydantic import AliasChoices, BaseModel, Field
 
 from core.shot_plan import build_shot_plan
 from core.director_creative_planner import build_creative_shot_plan_candidate, DirectorFactOverride, DirectorCreativeError
+from core.director_creative_planner import build_creative_patch_candidate
+from core.director_creative_contract import build_director_creative_contract
+from core.scene_directing_strategy import build_scene_directing_strategy, SceneDirectingStrategyError
+from core.director_patch_validator import validate_compiled_patch_result
+from core.director_patch_compiler import compile_creative_patches, DirectorPatchCompileError
 from core.director_quality_validator import score_director_quality
 from core.director_local_repair import build_director_repair_options
+from core.director_prompt import build_director_patch_prompt
 import core.llm as llm_client
 from core.prompt_cache import llm_request_fingerprint, summarize_audit_records
 from core.script_ir import resolve_script_payload
 from core.executability import preflight_shot_plan, build_executability_repair_plan
-from models import DirectorTreatment, SceneBlocking, Script, Session, ShotPlan, StoryboardShot
+from models import DirectorTreatment, FactSnapshot, SceneBlocking, Script, Session, ShotPlan, StoryboardShot, VisualLocation
 
 router = APIRouter(prefix="/api/books", tags=["shot-plan"])
 
@@ -51,12 +57,72 @@ class CreativeShotPlanLlmDraftRequest(CreativeShotPlanPreviewRequest):
     model_profile: dict[str, Any] | None = Field(default=None, validation_alias=AliasChoices("model_profile", "modelProfile"))
 
 
+class CreativePatchPreviewRequest(BaseModel):
+    scene_name: str = Field(default="", validation_alias=AliasChoices("scene_name", "sceneName"))
+    persist: bool = False
+    patch_document: dict[str, Any] | None = Field(default=None, validation_alias=AliasChoices("patch_document", "patchDocument"))
+    workflow_profile: str = Field(default="shadow", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
+
+
+class CreativePatchLlmDraftRequest(CreativePatchPreviewRequest):
+    confirmed: bool = False
+    allow_external_call: bool = Field(default=False, validation_alias=AliasChoices("allow_external_call", "allowExternalCall"))
+    model_profile: dict[str, Any] | None = Field(default=None, validation_alias=AliasChoices("model_profile", "modelProfile"))
+
+
 def _json(value: str | None, fallback: Any) -> Any:
     try:
         parsed = json.loads(value or "")
         return parsed if parsed is not None else fallback
     except (TypeError, ValueError, json.JSONDecodeError):
         return fallback
+
+
+def _dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _v21_runtime_summary(*, candidate: dict[str, Any], compilation: dict[str, Any], validation: dict[str, Any]) -> dict[str, Any]:
+    """Expose patch-level acceptance and contract diagnostics at the API boundary.
+
+    Schema-level item rejections happen before the compiler sees a document;
+    keeping them only in ``model_info`` makes the API appear to have accepted
+    more work than it actually did.  Normalize both sources into one redacted,
+    machine-readable summary for UI, audit and benchmark callers.
+    """
+    model_info = _dict(candidate.get("model_info"))
+    schema_rejections = [item for item in (model_info.get("schema_rejections") or []) if isinstance(item, dict)]
+    compiler_rejections = [item for item in (compilation.get("rejected_patches") or []) if isinstance(item, dict)]
+    auxiliary = _dict(validation.get("auxiliary"))
+    auxiliary_rejections = [item for item in (auxiliary.get("rejected") or []) if isinstance(item, dict)]
+    rejected = [*compiler_rejections, *schema_rejections, *auxiliary_rejections]
+    validation_errors = [item for item in (validation.get("errors") or []) if isinstance(item, dict)]
+    authority_codes = {"DIRECTOR_FACT_OVERRIDE", "DIRECTOR_PATCH_FIELD_FORBIDDEN", "DIRECTOR_PATCH_PATH_FORBIDDEN"}
+    fact_override_attempts = sum(1 for item in [*rejected, *validation_errors] if str(item.get("code") or item.get("issue_code") or "") == "DIRECTOR_FACT_OVERRIDE")
+    return {
+        "partial_acceptance": {
+            "accepted_patch_count": int(compilation.get("accepted_patch_count") or 0),
+            "rejected_patch_count": len(rejected),
+            "repaired_patch_count": 0,
+            "fallback_patch_count": len(rejected),
+        },
+        "contract_reliability": {
+            "schema_pass": bool(model_info.get("schema_pass", True)),
+            "contract_pass": bool(validation.get("contract_pass", True)),
+            "patch_path_pass": not any(str(item.get("code") or item.get("issue_code") or "") in {"DIRECTOR_PATCH_PATH_FORBIDDEN", "DIRECTOR_FACT_OVERRIDE"} for item in [*rejected, *validation_errors]),
+            "fact_override_count": 0,
+            "fact_override_attempt_count": fact_override_attempts,
+            "forbidden_field_attempt": bool(model_info.get("forbidden_field_attempt")),
+            "forbidden_field_attempt_count": sum(1 for item in [*rejected, *validation_errors] if str(item.get("code") or item.get("issue_code") or "") in authority_codes),
+            "schema_rejection_count": len(schema_rejections),
+            "schema_rejections": schema_rejections,
+            "auxiliary_binding_pass": not bool(auxiliary_rejections),
+            "parse_success": not bool(schema_rejections),
+            "repair_success": None,
+            "scene_planner_success": True,
+        },
+        "rejected_patches": rejected,
+    }
 
 
 def _script_scenes(script: Any) -> list[dict[str, Any]]:
@@ -141,6 +207,297 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
                 row = ShotPlan(book_id=book_id, episode=episode, scene_name=scene_name, revision=1, status="draft", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(plan["shots"], ensure_ascii=False), unknowns=json.dumps(plan["unknowns"], ensure_ascii=False), evidence_fingerprint=plan["evidence_fingerprint"], model_info=json.dumps(plan["model_info"], ensure_ascii=False), workflow_profile=req.workflow_profile, created_at=datetime.now(), updated_at=datetime.now())
                 session.add(row); session.commit(); session.refresh(row); persisted_id = row.id
         return {"mode": "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "plan": plan, "treatment_id": treatment.id, "blocking_id": blocking.id, "message": "这是只读 ShotPlan 草案；尚未修改 StoryboardShot。"}
+
+
+def _load_v21_director_context(session: Session, book_id: int, episode: int, scene_name: str, workflow_profile: str = "shadow") -> dict[str, Any]:
+    """Load only approved evidence required by the Contract-First planner."""
+    script_row = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
+    if not script_row:
+        raise HTTPException(status_code=404, detail="No script found for this episode.")
+    script = resolve_script_payload(session, script_row, workflow_profile=workflow_profile)
+    scenes = _script_scenes(script)
+    resolved_scene_name = scene_name.strip() or (str(scenes[0].get("name") or "未命名场景") if scenes else "")
+    scene = next((item for item in scenes if isinstance(item, dict) and str(item.get("name") or "").strip() == resolved_scene_name), None)
+    if not scene:
+        raise HTTPException(status_code=404, detail=f"Scene not found: {resolved_scene_name}")
+    treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=resolved_scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
+    blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=resolved_scene_name, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+    if not treatment or not blocking:
+        raise HTTPException(status_code=409, detail=f"Contract-First planner requires approved DirectorTreatment and SceneBlocking for scene: {resolved_scene_name or '未命名场景'}")
+    if _json(blocking.unknowns, []):
+        raise HTTPException(status_code=409, detail=f"Contract-First planner blocked by unresolved SceneBlocking unknowns: {resolved_scene_name}")
+    treatment_payload = {
+        "scene_name": treatment.scene_name,
+        "scene_id": getattr(treatment, "scene_id", ""),
+        "character_intents": _json(treatment.character_intents, {}),
+        "beat_map": _json(treatment.beat_map, []),
+        "prompt_fingerprint": treatment.prompt_fingerprint,
+        "status": treatment.status,
+        "visual_strategy": treatment.visual_strategy,
+    }
+    blocking_payload = {
+        "scene_name": blocking.scene_name,
+        "scene_id": getattr(blocking, "scene_id", ""),
+        "participants": _json(blocking.participants, []),
+        "scene_asset_id": str(scene.get("location_id") or "").strip(),
+        "props": scene.get("props") if isinstance(scene.get("props"), list) else [],
+        "unknowns": _json(blocking.unknowns, []),
+        "source_spatial_facts": _json(getattr(blocking, "source_spatial_facts", "[]"), []),
+        "evidence_fingerprint": blocking.evidence_fingerprint,
+        "status": blocking.status,
+    }
+    baseline = build_shot_plan(treatment=treatment_payload, blocking=blocking_payload)
+    # Contract-First must carry the same approved ScriptIR/fact/asset evidence
+    # that qualified SceneBlocking used.  Omitting these projections would
+    # leave the planner with an apparently valid contract whose immutable
+    # boundary is weaker than the upstream approval boundary.
+    scene_canonical: dict[str, Any] = {}
+    location = session.query(VisualLocation).filter(
+        VisualLocation.book_id == book_id,
+        VisualLocation.name == resolved_scene_name,
+    ).order_by(VisualLocation.id.desc()).first()
+    if location:
+        scene_canonical = {
+            "name": location.name,
+            "canonical_facts": _json(location.canonical_facts, {}),
+            "state_variants": _json(location.state_variants, {}),
+            "look_profile": _json(location.look_profile, {}),
+            "board_spec": _json(location.board_spec, {}),
+            "key_props": _json(location.key_props, []),
+        }
+    fact_snapshot: dict[str, Any] = {}
+    fact_row = session.query(FactSnapshot).filter_by(
+        book_id=book_id,
+        episode=episode,
+        status="confirmed",
+    ).order_by(FactSnapshot.revision.desc(), FactSnapshot.id.desc()).first()
+    if fact_row:
+        fact_snapshot = {
+            "snapshot_id": str(fact_row.id),
+            "revision": fact_row.revision,
+            "source_fingerprint": fact_row.source_fingerprint,
+            "payload_hash": fact_row.payload_hash,
+            "records": _json(fact_row.records_json, []),
+        }
+    asset_bindings: dict[str, Any] = {}
+    location_id = str(scene.get("location_id") or "").strip()
+    if location_id:
+        asset_bindings["scene"] = location_id
+    character_ids = []
+    for raw in scene.get("participants", []) if isinstance(scene.get("participants"), list) else []:
+        value = raw.get("character_id") or raw.get("id") if isinstance(raw, dict) else raw
+        value = str(value or "").strip()
+        if value and value not in character_ids:
+            character_ids.append(value)
+    if character_ids:
+        asset_bindings["characters"] = character_ids
+    prop_ids = []
+    for raw in scene.get("props", []) if isinstance(scene.get("props"), list) else []:
+        value = raw.get("prop_id") or raw.get("id") if isinstance(raw, dict) else raw
+        value = str(value or "").strip()
+        if value and value not in prop_ids:
+            prop_ids.append(value)
+    if prop_ids:
+        asset_bindings["props"] = prop_ids
+    contract = build_director_creative_contract(
+        fact_snapshot=fact_snapshot,
+        script_scene=scene,
+        treatment=treatment_payload,
+        blocking=blocking_payload,
+        structural_shot_plan=baseline,
+        scene_canonical=scene_canonical,
+        asset_bindings=asset_bindings,
+    )
+    try:
+        strategy = build_scene_directing_strategy(treatment=treatment_payload, contract=contract, structural_shot_plan=baseline)
+    except SceneDirectingStrategyError as exc:
+        raise HTTPException(status_code=409, detail={"code": exc.code, "message": str(exc)}) from exc
+    return {
+        "scene_name": resolved_scene_name,
+        "scene": scene,
+        "treatment": treatment,
+        "blocking": blocking,
+        "treatment_payload": treatment_payload,
+        "blocking_payload": blocking_payload,
+        "fact_snapshot": fact_snapshot,
+        "scene_canonical": scene_canonical,
+        "asset_bindings": asset_bindings,
+        "baseline": baseline,
+        "contract": contract,
+        "strategy": strategy,
+    }
+
+
+def _persist_v21_patch_draft(book_id: int, episode: int, context: dict[str, Any], candidate: dict[str, Any], *, request_fingerprint: str = "") -> tuple[int | None, bool]:
+    """Persist a reviewable patch draft without creating an approved version."""
+    model_info = {
+        **_dict(candidate.get("model_info")),
+        "v21_patch_document": candidate.get("patch_document", {}),
+        "contract_fingerprint": context["contract"].get("contract_fingerprint", ""),
+        "strategy_fingerprint": context["strategy"].get("strategy_fingerprint", ""),
+        "request_fingerprint": request_fingerprint,
+    }
+    with Session() as session:
+        if request_fingerprint:
+            drafts = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=context["scene_name"], status="draft").order_by(ShotPlan.id.desc()).all()
+            for row in drafts:
+                info = _json(row.model_info, {})
+                if isinstance(info, dict) and info.get("request_fingerprint") == request_fingerprint:
+                    return row.id, True
+        row = ShotPlan(
+            book_id=book_id,
+            episode=episode,
+            scene_name=context["scene_name"],
+            revision=1,
+            status="draft",
+            schema_version="shot_plan_v2_1_patch_candidate",
+            quality_status="creative_patch_candidate",
+            production_status="blocked",
+            treatment_id=context["treatment"].id,
+            blocking_id=context["blocking"].id,
+            shots=json.dumps(context["baseline"].get("shots", []), ensure_ascii=False),
+            unknowns=json.dumps(context["baseline"].get("unknowns", []), ensure_ascii=False),
+            evidence_fingerprint=str(context["baseline"].get("evidence_fingerprint") or ""),
+            model_info=json.dumps(model_info, ensure_ascii=False),
+            workflow_profile="shadow",
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+        )
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return row.id, False
+
+
+@router.post("/{book_id}/episodes/{episode}/shot-plan/creative-patch-preview")
+def preview_creative_patch(book_id: int, episode: int, req: CreativePatchPreviewRequest) -> dict[str, Any]:
+    """Preview a V2.1 CreativePatch document without creating a ShotPlan version."""
+    with Session() as session:
+        context = _load_v21_director_context(session, book_id, episode, req.scene_name, req.workflow_profile)
+        candidate = build_creative_patch_candidate(
+            structural_shot_plan=context["baseline"],
+            contract=context["contract"],
+            strategy=context["strategy"],
+            llm_output=req.patch_document,
+            mode="shadow",
+        )
+        patch_document = candidate["patch_document"]
+        try:
+            compilation = compile_creative_patches(context["baseline"], patch_document, context["contract"], allow_partial=True)
+            validation = validate_compiled_patch_result(compilation, context["baseline"], context["contract"], treatment=context["treatment_payload"], blocking=context["blocking_payload"])
+        except (DirectorPatchCompileError, ValueError) as exc:
+            raise HTTPException(status_code=409, detail={"code": getattr(exc, "code", "DIRECTOR_PATCH_INVALID"), "message": str(exc)}) from exc
+        persisted_id = None
+        deduplicated = False
+        if req.persist:
+            preview_fingerprint = f"{context['contract'].get('contract_fingerprint', '')}:{candidate['patch_document'].get('patch_fingerprint', '')}"
+            persisted_id, deduplicated = _persist_v21_patch_draft(book_id, episode, context, candidate, request_fingerprint=preview_fingerprint)
+        runtime_summary = _v21_runtime_summary(candidate=candidate, compilation=compilation, validation=validation)
+        return {
+            "mode": candidate.get("director_mode"),
+            "llm_called": bool(candidate.get("model_info", {}).get("llm_called")),
+            "mutated": bool(persisted_id),
+            "persisted_draft_id": persisted_id,
+            "deduplicated": deduplicated,
+            "candidate": candidate,
+            "compiled": compilation,
+            "validation": validation,
+            "contract": context["contract"],
+            "strategy": context["strategy"],
+            "treatment_id": context["treatment"].id,
+            "blocking_id": context["blocking"].id,
+            "requires_approval": True,
+            **runtime_summary,
+            "message": "Contract-First 仅生成 CreativePatch 候选；尚未写入 ShotPlan 或触发生产。",
+        }
+
+
+@router.post("/{book_id}/episodes/{episode}/shot-plan/creative-patch-llm-draft")
+def generate_creative_patch_llm_draft(book_id: int, episode: int, req: CreativePatchLlmDraftRequest) -> dict[str, Any]:
+    """Call the configured LLM only after explicit confirmation, saving no version."""
+    if not (req.confirmed and req.allow_external_call):
+        raise HTTPException(status_code=409, detail="Calling the Contract-First CreativePatch LLM requires confirmed=true and allowExternalCall=true.")
+    with Session() as session:
+        context = _load_v21_director_context(session, book_id, episode, req.scene_name, req.workflow_profile)
+    prompt_bundle = build_director_patch_prompt(
+        contract=context["contract"],
+        strategy=context["strategy"],
+        structural_shot_plan={
+            "scene_name": context["baseline"].get("scene_name"),
+            "shots": context["baseline"].get("shots", []),
+            "unknowns": context["baseline"].get("unknowns", []),
+        },
+        model_profile=req.model_profile,
+        stage="director_patch_planner",
+    )
+    system_prompt = prompt_bundle["system_prompt"]
+    user_prompt = prompt_bundle["user_prompt"]
+    request_fingerprint = prompt_bundle["request_fingerprint"]
+    audit_records: list[dict[str, Any]] = []
+    try:
+        raw = llm_client.call_llm_json(
+            user_prompt,
+            system=system_prompt,
+            model_profile=req.model_profile,
+            required_keys={"schema_version", "patches", "auxiliary_shot_proposals"},
+            estimated_tokens=5000,
+            audit_callback=audit_records.append,
+            audit_extra={
+                "stage": "director_patch_planner",
+                "book_id": book_id,
+                "episode": episode,
+                "scene_name": context["scene_name"],
+                "prompt_prefix_fingerprint": prompt_bundle["prompt_prefix_fingerprint"],
+                "prompt_request_fingerprint": request_fingerprint,
+                "system_prompt_hash": prompt_bundle["system_prompt_hash"],
+                "user_prompt_hash": prompt_bundle["user_prompt_hash"],
+            },
+        )
+        candidate = build_creative_patch_candidate(structural_shot_plan=context["baseline"], contract=context["contract"], strategy=context["strategy"], llm_output=raw, mode="shadow")
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Contract-First CreativePatch LLM draft failed: {str(exc)[:500]}") from exc
+    patch_document = candidate["patch_document"]
+    compilation = compile_creative_patches(context["baseline"], patch_document, context["contract"], allow_partial=True)
+    validation = validate_compiled_patch_result(compilation, context["baseline"], context["contract"], treatment=context["treatment_payload"], blocking=context["blocking_payload"])
+    runtime_summary = _v21_runtime_summary(candidate=candidate, compilation=compilation, validation=validation)
+    candidate["model_info"] = {
+        **_dict(candidate.get("model_info")),
+        "request_fingerprint": request_fingerprint,
+        "system_prompt_hash": prompt_bundle["system_prompt_hash"],
+        "user_prompt_hash": prompt_bundle["user_prompt_hash"],
+        "prompt_prefix_fingerprint": prompt_bundle["prompt_prefix_fingerprint"],
+        "model_snapshot": prompt_bundle["model_snapshot"],
+        "llm_called": True,
+        "llm_usage": summarize_audit_records(audit_records),
+    }
+    persisted_id = None
+    deduplicated = False
+    if req.persist:
+        persisted_id, deduplicated = _persist_v21_patch_draft(book_id, episode, context, candidate, request_fingerprint=request_fingerprint)
+    return {
+        "mode": candidate.get("director_mode"),
+        "llm_called": True,
+        "mutated": bool(persisted_id),
+        "persisted_draft_id": persisted_id,
+        "deduplicated": deduplicated,
+        "candidate": candidate,
+        "compiled": compilation,
+        "validation": validation,
+        "contract": context["contract"],
+        "strategy": context["strategy"],
+        "system_prompt": system_prompt,
+        "user_prompt": user_prompt,
+        "system_prompt_hash": prompt_bundle["system_prompt_hash"],
+        "user_prompt_hash": prompt_bundle["user_prompt_hash"],
+        "prompt_prefix_fingerprint": prompt_bundle["prompt_prefix_fingerprint"],
+        "model_snapshot": prompt_bundle["model_snapshot"],
+        "requires_approval": True,
+        **runtime_summary,
+        "request_fingerprint": request_fingerprint,
+        "treatment_id": context["treatment"].id,
+        "blocking_id": context["blocking"].id,
+        "message": "真实 LLM 只生成 CreativePatch 草案；尚未写入 Prompt/ShotPlan 版本或触发生产。",
+    }
 
 
 @router.post("/{book_id}/episodes/{episode}/shot-plan/creative-preview")

@@ -31,6 +31,7 @@ type TestResultMeta = {
   text: string
   modelAvailable?: boolean
   suggestedModels?: string[]
+  availableModels?: string[]
   availableModelCount?: number
 }
 type ProfileFilter = 'all' | 'default' | 'missing-key' | 'live'
@@ -1092,6 +1093,7 @@ export default function ModelRegistryModal({
             text: result.message,
             modelAvailable: result.model_available,
             suggestedModels,
+            availableModels,
             availableModelCount: availableModels.length,
           },
         }))
@@ -1110,6 +1112,30 @@ export default function ModelRegistryModal({
       setTestingTarget(null)
     }
   }, [draft, parseDraftDefaultParams])
+
+  const applySuggestedModel = useCallback((profile: ModelProfileRecord, modelName: string) => {
+    const nextModelName = modelName.trim()
+    if (!nextModelName) return
+    if (editingId && editingId !== profile.id && isDraftDirty) {
+      setPendingSwitchProfileId(profile.id)
+      setFeedback({ tone: 'info', text: '当前表单有未保存修改。请先保存或放弃当前修改，再应用远端模型 ID。' })
+      return
+    }
+    if (editingId !== profile.id) beginEdit(profile)
+    setDraft((current) => {
+      const currentDefaults = current.default_params_text.trim()
+      const shouldRefreshDefaults =
+        !currentDefaults || currentDefaults === suggestedDefaultParamsText(current.capability, current.provider, current.model_name)
+      return {
+        ...current,
+        model_name: nextModelName,
+        default_params_text: shouldRefreshDefaults
+          ? suggestedDefaultParamsText(current.capability, current.provider, nextModelName)
+          : current.default_params_text,
+      }
+    })
+    setFeedback({ tone: 'info', text: `已回填远端模型 ID：${nextModelName}。请保存配置后重新测试。` })
+  }, [beginEdit, editingId, isDraftDirty])
 
   const feedbackClass = feedback ? getResultToneClass(feedback.tone) : ''
 
@@ -1248,11 +1274,53 @@ export default function ModelRegistryModal({
                             最近一次测试：{testMeta.text}
                             {testMeta.suggestedModels?.length ? (
                               <div className="mt-1 text-amber-100">
-                                建议改用：{testMeta.suggestedModels.join(' · ')}
+                                <div>建议改用以下远端模型 ID：</div>
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {testMeta.suggestedModels.map((modelName) => (
+                                    <button
+                                      key={modelName}
+                                      type="button"
+                                      onClick={(event) => {
+                                        event.stopPropagation()
+                                        applySuggestedModel(profile, modelName)
+                                      }}
+                                      className="rounded-full border border-amber-400/50 bg-amber-500/10 px-3 py-1 text-[11px] text-amber-50 transition hover:border-amber-300 hover:bg-amber-500/20"
+                                    >
+                                      应用 {modelName}
+                                    </button>
+                                  ))}
+                                </div>
                               </div>
                             ) : null}
                             {testMeta.availableModelCount && !testMeta.suggestedModels?.length ? (
-                              <div className="mt-1 text-slate-300">远端可用模型：{testMeta.availableModelCount} 个（请编辑并填写准确模型 ID）</div>
+                              <div className="mt-1 text-slate-300">远端可用模型：{testMeta.availableModelCount} 个（请从下方列表选择准确模型 ID）</div>
+                            ) : null}
+                            {testMeta.availableModels?.length ? (
+                              <details className="mt-2 rounded-xl border border-slate-700/80 bg-slate-950/40 px-3 py-2 text-slate-300">
+                                <summary className="cursor-pointer select-none text-[11px] text-slate-300">
+                                  查看全部远端模型 ID（{testMeta.availableModels.length}）
+                                </summary>
+                                <div className="mt-2 grid max-h-48 gap-1 overflow-y-auto pr-1">
+                                  {testMeta.availableModels.slice(0, 100).map((modelName) => (
+                                    <div key={modelName} className="flex items-center justify-between gap-2 rounded-lg bg-slate-900/70 px-2 py-1">
+                                      <code className="min-w-0 truncate text-[11px] text-slate-200">{modelName}</code>
+                                      <button
+                                        type="button"
+                                        onClick={(event) => {
+                                          event.stopPropagation()
+                                          applySuggestedModel(profile, modelName)
+                                        }}
+                                        className="shrink-0 rounded-full border border-sky-500/40 px-2 py-0.5 text-[10px] text-sky-200 transition hover:border-sky-300 hover:text-white"
+                                      >
+                                        应用
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                                {testMeta.availableModels.length > 100 ? (
+                                  <div className="mt-2 text-[10px] text-slate-500">列表过长，仅显示前 100 个模型；请缩小服务商侧模型范围后重新测试。</div>
+                                ) : null}
+                              </details>
                             ) : null}
                           </div>
                         ) : (
@@ -1483,6 +1551,11 @@ export default function ModelRegistryModal({
                   }
                 })}
               />
+              {draft.capability === 'llm' && draft.provider === 'openai-compatible' ? (
+                <div className="-mt-2 text-xs leading-5 text-slate-500">
+                  模型 ID 必须与服务商 `/models` 返回值完全一致。产品别名（例如 `doubao-seed-2.0-lite`）不能替代带版本号的真实 ID；请以测试结果中的远端 ID 为准。
+                </div>
+              ) : null}
               {isPoyoAsyncProvider(draft.provider) ? (
                 <div className="-mt-2 text-xs text-slate-500">推荐模型：{suggestedPoyoModelNames(draft.capability).join(' · ')}</div>
               ) : null}
