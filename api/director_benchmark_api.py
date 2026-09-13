@@ -6,7 +6,7 @@ from typing import Any
 from fastapi import APIRouter
 from pydantic import AliasChoices, BaseModel, Field
 
-from core.director_benchmark import score_runtime
+from core.director_benchmark import score_runtime, compare_director_plans
 from models import DirectorBenchmarkRun, DirectorTreatment, SceneBlocking, Script, Session, ShotPlan
 
 router = APIRouter(prefix="/api/books", tags=["director-benchmark"])
@@ -15,6 +15,13 @@ router = APIRouter(prefix="/api/books", tags=["director-benchmark"])
 class BenchmarkRunRequest(BaseModel):
     sample_label: str = Field(default="", validation_alias=AliasChoices("sample_label", "sampleLabel"))
     model_id: str = Field(default="deterministic", validation_alias=AliasChoices("model_id", "modelId"))
+
+
+class BenchmarkCompareRequest(BaseModel):
+    baseline: dict[str, Any] = Field(default_factory=dict)
+    planner: dict[str, Any] = Field(default_factory=dict)
+    treatment: dict[str, Any] = Field(default_factory=dict)
+    blocking: dict[str, Any] = Field(default_factory=dict)
 
 
 def _json(value: str | None, fallback: Any) -> Any:
@@ -28,7 +35,20 @@ def _json(value: str | None, fallback: Any) -> Any:
 def _payload(row: Any) -> dict[str, Any] | None:
     if not row:
         return None
-    return {"id": row.id, "status": row.status, "beat_map": _json(getattr(row, "beat_map", "[]"), []), "unknowns": _json(getattr(row, "unknowns", "[]"), []), "shots": _json(getattr(row, "shots", "[]"), [])}
+    payload = {"id": row.id, "status": row.status, "scene_name": getattr(row, "scene_name", ""),
+               "scene_id": getattr(row, "scene_id", ""), "beat_map": _json(getattr(row, "beat_map", "[]"), []),
+               "character_intents": _json(getattr(row, "character_intents", "{}"), {}),
+               "participants": _json(getattr(row, "participants", "[]"), []),
+               "source_spatial_facts": _json(getattr(row, "source_spatial_facts", "[]"), []),
+               "camera_axis": _json(getattr(row, "camera_axis", "{}"), {}),
+               "unknowns": _json(getattr(row, "unknowns", "[]"), []),
+               "shots": _json(getattr(row, "shots", "[]"), [])}
+    # Keep compatibility with models that do not have all V2 columns while
+    # making the richer evidence available to the creative scorer.
+    for field in ("prompt_fingerprint", "evidence_fingerprint", "schema_version"):
+        if hasattr(row, field):
+            payload[field] = getattr(row, field)
+    return payload
 
 
 @router.get("/{book_id}/episodes/{episode}/director-benchmark")
@@ -89,6 +109,13 @@ def run_director_benchmark(book_id: int, episode: int) -> dict[str, Any]:
     return {"book_id": book_id, "episode": episode, "report": report, "mutated": False}
 
 
+@router.post("/{book_id}/episodes/{episode}/director-benchmark/compare")
+def compare_director_benchmark(book_id: int, episode: int, req: BenchmarkCompareRequest) -> dict[str, Any]:
+    """Compare baseline and creative candidates without persisting or running providers."""
+    comparison = compare_director_plans(baseline=req.baseline, planner=req.planner, treatment=req.treatment, blocking=req.blocking)
+    return {"book_id": book_id, "episode": episode, "comparison": comparison, "mutated": False, "llm_called": False}
+
+
 @router.post("/{book_id}/episodes/{episode}/director-benchmark/runs")
 def persist_director_benchmark(book_id: int, episode: int, req: BenchmarkRunRequest) -> dict[str, Any]:
     current = run_director_benchmark(book_id, episode)
@@ -121,7 +148,7 @@ def summarize_director_benchmark_runs(book_id: int, episode: int) -> dict[str, A
         report = _json(row.report, {})
         if not isinstance(report, dict):
             report = {}
-        bucket = groups.setdefault(model_id, {"model_id": model_id, "run_count": 0, "pass_count": 0, "needs_work_count": 0, "score_sum": 0.0, "scored_count": 0, "last_run_at": None})
+        bucket = groups.setdefault(model_id, {"model_id": model_id, "run_count": 0, "pass_count": 0, "needs_work_count": 0, "score_sum": 0.0, "scored_count": 0, "director_score_sum": 0.0, "director_scored_count": 0, "last_run_at": None})
         bucket["run_count"] += 1
         status = str(report.get("status") or "")
         if status == "pass":
@@ -132,6 +159,10 @@ def summarize_director_benchmark_runs(book_id: int, episode: int) -> dict[str, A
         if isinstance(score, (int, float)):
             bucket["score_sum"] += float(score)
             bucket["scored_count"] += 1
+        director_score = report.get("director_quality_score")
+        if isinstance(director_score, (int, float)):
+            bucket["director_score_sum"] += float(director_score)
+            bucket["director_scored_count"] += 1
         if bucket["last_run_at"] is None and row.created_at:
             bucket["last_run_at"] = row.created_at.isoformat()
     items = []
@@ -139,6 +170,9 @@ def summarize_director_benchmark_runs(book_id: int, episode: int) -> dict[str, A
         scored_count = int(bucket.pop("scored_count"))
         score_sum = float(bucket.pop("score_sum"))
         bucket["average_score"] = round(score_sum / scored_count, 2) if scored_count else None
+        director_scored_count = int(bucket.pop("director_scored_count"))
+        director_score_sum = float(bucket.pop("director_score_sum"))
+        bucket["average_director_quality_score"] = round(director_score_sum / director_scored_count, 2) if director_scored_count else None
         bucket["pass_rate"] = round(bucket["pass_count"] / bucket["run_count"], 4) if bucket["run_count"] else None
         items.append(bucket)
     items.sort(key=lambda item: str(item.get("model_id") or ""))

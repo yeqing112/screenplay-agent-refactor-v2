@@ -176,3 +176,38 @@ Benchmark 与 planner 候选阶段不需要新的数据库 migration。现有 `S
 
 当前系统的结构生产链已稳定，但导演质量仍主要由固定镜头模板决定。下一阶段的正确边界是“受控创意候选 + 程序事实/结构/可执行性验证 + 可回退 baseline”，而不是改写 Production Pipeline 或放宽门禁。Audit 完成后再开始实现。
 
+## 13. Final As-Built Verification（2026-09-13）
+
+本节与上方 Baseline Audit 分开记录，表示本轮实现后的实际状态。
+
+### 已落地
+
+- 新增 `core/director_creative_planner.py`：受控导演创意候选、白名单字段、事实投影校验、有限辅助镜头、显式外部调用门槛和 deterministic fallback。
+- 新增 `core/director_quality_validator.py`：十维导演质量评分，以及 `CAMERA_REPETITION`、`UNMOTIVATED_SHOT`、`REDUNDANT_SHOT`、`EMOTIONAL_FLATLINE`、`POWER_SHIFT_NOT_VISUALIZED` 诊断。
+- 新增 `core/director_local_repair.py`：仅允许 `DIRECTOR_CREATIVE` 路径的 bounded repair，并可接入既有 `RepairAttempt` ledger。
+- `core/issue_router.py` 增加导演创意层路由；未识别的创意问题仍保留 `DIRECTOR_QA`，不扩大兜底范围。
+- `core/director_benchmark.py` 保留 Structural Quality，同时独立输出 `director_quality_score`、十维分数和 KPI；没有修改生产门禁阈值。
+- 新增 ShotPlan shadow/benchmark API：`shot-plan/creative-preview`、`shot-plan/creative-llm-draft`（默认不调用外部模型，后者必须 `confirmed=true + allowExternalCall=true`）。
+- 新增 Director Benchmark compare API 与盲评结构；不写入 approved ShotPlan，不触发 Storyboard/媒体生产。
+- 新增 `scripts/run_director_quality_v2_benchmark.py` 与 8 个 Golden Director Scenes、报告和指标 artifact。
+
+### 不变与安全边界
+
+- `core/shot_plan.py` deterministic baseline 未删除、未改为 LLM 默认路径。
+- Production Pipeline V2、SceneBlocking V2、Materializer、Prompt Compiler、Qualification Loop 主链未重构。
+- Production Materializer 反向测试继续 mock `StoryboardAgent.run()`；生产正常路径调用次数为 0。
+- 事实、beat 顺序、资产绑定、首尾状态、连续性合同和 production-critical chronology 的越权会 `DIRECTOR_FACT_OVERRIDE` 并 fail-closed。
+- 本轮未调用真实 LLM、MiMo、生图、视频或对象存储；未处理 GitHub Actions/CI；未清理历史产物。
+
+### 本地验证证据
+
+- 后端全量：`728 passed`。
+- 前端 Vitest：`49 files / 291 tests passed`。
+- 前端生产构建：`npm run build --prefix web` 成功。
+- Golden artifact：8 个场景，`provider_calls=0`、`media_calls=0`、`object_storage_calls=0`，`fact_override_count=0`。
+- 离线 shadow 对比：Baseline 平均 `41.91`，Planner surrogate 平均 `86.13`，平均差值 `+44.22`；该结果不能替代真实 LLM blind judge。
+
+### 尚未宣称完成的项目
+
+- 真实 MiMo Golden Scene Pilot 尚未执行（当前仍是离线收口阶段）；因此尚不能据此把 Planner 切换为 Production default，也不能宣称达到 Media Production Pilot。
+- Blind review 已提供 Version A / Version B 数据结构，但尚未有真人或独立 Judge 偏好样本，`preferred_rate` 保持 `null`。

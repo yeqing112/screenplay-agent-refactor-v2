@@ -1,0 +1,40 @@
+{
+  "protocol_version": "director-quality-v2",
+  "generated_at": "2026-09-13T01:03:42.301955+00:00",
+  "provider_calls": 0,
+  "media_calls": 0,
+  "object_storage_calls": 0,
+  "scene_count": 8,
+  "baseline_average_director_quality_score": 41.91,
+  "planner_average_director_quality_score": 86.13,
+  "average_score_delta": 44.22,
+  "structural_evidence_shared_all": true,
+  "fact_override_count": 0,
+  "planner_quality_issue_count": 6,
+  "director_repair_count": 0,
+  "planner_hallucination_count": 0,
+  "dimension_averages": {
+    "DRAMATIC_CLARITY": 8.0,
+    "SHOT_MOTIVATION": 10.0,
+    "EMOTIONAL_PROGRESSION": 7.36,
+    "VISUAL_STORYTELLING": 10.0,
+    "SPATIAL_CLARITY": 10.0,
+    "PERFORMANCE_DIRECTION": 10.0,
+    "EDIT_RHYTHM": 6.04,
+    "INFORMATION_STRATEGY": 10.0,
+    "POWER_DYNAMICS": 8.0,
+    "SHOT_DIVERSITY": 2.92
+  },
+  "blind_review": {
+    "available": true,
+    "labeling": "Version A / Version B",
+    "preferred_version": null,
+    "preferred_rate": null,
+    "judge_calls": 0
+  },
+  "miMo": {
+    "pilot_status": "not_run_offline_phase",
+    "calls": 0,
+    "cached_tokens": 0
+  }
+}

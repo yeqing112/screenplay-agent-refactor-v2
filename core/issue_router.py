@@ -10,8 +10,11 @@ LAYER_BY_CODE = {
     "continuity": "CONTINUITY", "screen_direction": "CONTINUITY",
     "phase_a": "PROMPT_IR", "prompt_ir": "PROMPT_IR",
     "prompt": "PROMPT_TEXT", "reference_url": "MEDIA", "media": "MEDIA",
+    "camera_repetition": "DIRECTOR_CREATIVE", "unmotivated_shot": "DIRECTOR_CREATIVE",
+    "redundant_shot": "DIRECTOR_CREATIVE", "emotional_flatline": "DIRECTOR_CREATIVE",
+    "power_shift_not_visualized": "DIRECTOR_CREATIVE",
 }
-_VALID_LAYERS = {"FACT", "SCRIPT_IR", "ASSET", "TREATMENT", "BLOCKING", "SHOT_PLAN", "CONTINUITY", "EXECUTABILITY", "PROMPT_IR", "PROMPT_TEXT", "MEDIA", "DIRECTOR_QA"}
+_VALID_LAYERS = {"FACT", "SCRIPT_IR", "ASSET", "TREATMENT", "BLOCKING", "SHOT_PLAN", "CONTINUITY", "EXECUTABILITY", "PROMPT_IR", "PROMPT_TEXT", "MEDIA", "DIRECTOR_QA", "DIRECTOR_CREATIVE"}
 _MANDATORY_LAYER_BY_CODE = {
     "action_overloaded": "SHOT_PLAN", "missing_core_action": "SHOT_PLAN", "duration": "SHOT_PLAN",
     "executability": "EXECUTABILITY", "shot_executability": "EXECUTABILITY",
