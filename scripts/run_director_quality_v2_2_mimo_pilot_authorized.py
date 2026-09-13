@@ -86,19 +86,10 @@ def _scene_context(scene: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any
     return treatment, blocking, contract, strategy, baseline
 
 
-def _repair_prompts(request: dict[str, Any]) -> tuple[str, str]:
-    system = (
-        "You are a bounded Director Quality V2.2.1 local repairer. Return JSON only using schema "
-        "director_patch_repair_v1 with target.plan_shot_id, target.path, replacement_value, and reason. "
-        "Repair exactly the supplied target value; preserve plan_shot_id and path, and never return "
-        "patches, shots, a complete scene, or a ShotPlan."
-    )
-    user = (
-        "Return one replacement object with the same target plan_shot_id/path and only an allowed "
-        "replacement_value. Do not invent assets, events, participants, duration, continuity, or identity.\n"
-        "REPAIR_REQUEST\n" + json.dumps(request, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-    )
-    return system, user
+def _repair_prompts(request: dict[str, Any]) -> dict[str, Any]:
+    from core.director_repair_prompt import build_director_repair_prompt
+
+    return build_director_repair_prompt(request)
 
 
 def _digest(value: Any) -> str:
@@ -203,11 +194,14 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
                         "stage": "director_patch_planner", "episode": episode, "scene_name": scene_name,
                         "prompt_prefix_fingerprint": prompt["prompt_prefix_fingerprint"],
                         "prompt_request_fingerprint": prompt["request_fingerprint"],
+                        "stable_prefix_hash": prompt["stable_prefix_hash"],
+                        "stable_prefix_length": prompt["stable_prefix_length"],
+                        "variable_tail_hash": prompt["variable_tail_hash"],
                     },
                 )
 
             def repair_call(request: dict[str, Any]) -> Any:
-                system_prompt, user_prompt = _repair_prompts(request)
+                repair_prompt = _repair_prompts(request)
                 attempt = len([
                     item for item in recorder.records
                     if _dict(item.get("extra")).get("pilot_stage") == "director_patch_repair"
@@ -215,9 +209,14 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
                 ]) + 1
                 with recorder.span(stage="director_patch_repair", episode=episode, scene=scene_name, repair_attempt=attempt):
                     return call_llm_json(
-                        user_prompt, system=system_prompt, model_profile=profile,
-                        required_keys={"plan_shot_id", "changes"}, estimated_tokens=1800,
-                        audit_extra={"stage": "director_patch_repair", "episode": episode, "scene_name": scene_name},
+                        repair_prompt["user_prompt"], system=repair_prompt["system_prompt"], model_profile=profile,
+                        required_keys={"target", "replacement_value"}, estimated_tokens=1800,
+                        audit_extra={
+                            "stage": "director_patch_repair", "episode": episode, "scene_name": scene_name,
+                            "stable_prefix_hash": repair_prompt["stable_prefix_hash"],
+                            "stable_prefix_length": repair_prompt["stable_prefix_length"],
+                            "variable_tail_hash": repair_prompt["variable_tail_hash"],
+                        },
                     )
 
             result = process_patch_pipeline(

@@ -22,31 +22,31 @@ from core.director_creative_contract import ALLOWED_PATCH_PATHS, AUXILIARY_SHOT_
 from core.prompt_cache import canonical_json, llm_request_fingerprint, model_request_snapshot
 
 
-DIRECTOR_PROMPT_PROTOCOL_VERSION = "director-quality-v2-1-prompt-v1"
+DIRECTOR_PROMPT_PROTOCOL_VERSION = "director-quality-v2-2-1-prompt-v1"
 
 # Keep this text literal and versioned.  Do not interpolate scene data here:
 # changing the system prompt per scene would defeat prefix reuse and make
 # prompt fingerprints harder to compare across a pilot.
-STABLE_SYSTEM_PREFIX = """[DIRECTOR_PROMPT_PROTOCOL: director-quality-v2-1-prompt-v1]
-ROLE
+STABLE_SYSTEM_PREFIX = """[DIRECTOR_PROMPT_PROTOCOL: director-quality-v2-2-1-prompt-v1]
+SECTION 1 — ROLE
 You are a Contract-First Director Creative Planner for a film/television
 pre-production system. Return machine-readable JSON only. You propose
 creative shot changes; you do not rewrite story facts or perform production.
 
-DIRECTOR CONTRACT
+SECTION 2 — IMMUTABLE CONTRACT RULES
 The approved evidence is authoritative. Treat scene identity, beat identity
 and order, events, dialogue, participants, character identity and
 relationships, asset identity and ownership, entry/exit state, continuity
 contracts, spatial source facts, chronology, and plot results as immutable.
 
-OUTPUT SCHEMA
+SECTION 3 — CREATIVEPATCH SCHEMA
 Return exactly one JSON object with this shape:
 {"schema_version":"director_creative_patch_v1","patches":[],"auxiliary_shot_proposals":[]}
 Each patch targets an existing plan_shot_id and contains changes as
 path-to-value entries. Do not return complete shot objects, scenes, treatment,
 blocking, or a ShotPlan.
 
-ALLOWED PATCH PATHS
+SECTION 4 — ALLOWED PATCH PATHS
 /shots/*/camera/shot_size
 /shots/*/camera/angle
 /shots/*/camera/movement
@@ -73,7 +73,7 @@ participants, assets or prop ownership, entry/exit state, continuity,
 spatial source facts, chronology, plot result, duration, or any unknown
 authoritative field. Never add arbitrary top-level keys.
 
-AUXILIARY SHOT POLICY
+SECTION 5 — AUXILIARY PROPOSAL SCHEMA / AUXILIARY SHOT POLICY
 Auxiliary proposals are separate from patches. Allowed types are reaction,
 insert, establishing, transition, and detail. Every proposal must cite an
 existing source_beat_id and insert_after_plan_shot_id, use only approved
@@ -81,18 +81,21 @@ participants, explain why it is needed, and preserve the story. At most two
 proposals may originate from one source beat. Do not introduce a new person,
 event, key asset, or plot result.
 
-QUALITY RULES
+SECTION 6 — QUALITY RULES
 Every change must serve the source beat and the scene strategy. Prefer clear
 spatial relationships, motivated camera movement, visible performance, and
 information order. Avoid gratuitous movement, random shot-scale changes,
 redundant coverage, emotional flatlines, and shot inflation. If evidence is
 insufficient, return no change rather than inventing a fact.
+
+SECTION 7 — OUTPUT RULES
+Return strict JSON only; do not include prose outside the JSON document.
 """
 
 # This portion is also stable across scenes.  It is kept in the user message
 # so callers can keep the system role reusable while still separating the
 # schema/quality context from dynamic evidence.
-SEMI_STABLE_USER_PREFIX = """[DIRECTOR_SEMI_STABLE_CONTEXT: director-quality-v2-1-prompt-v1]
+SEMI_STABLE_USER_PREFIX = """[DIRECTOR_SEMI_STABLE_CONTEXT: director-quality-v2-2-1-prompt-v1]
 SCENE STRATEGY CONTRACT
 Use the supplied Scene Directing Strategy as a scene-level brief. Do not
 invent strategy fields or rewrite its beat references.
@@ -165,16 +168,17 @@ def build_director_patch_prompt(
         "contract_auxiliary_shot_policy": policy,
     }
     dynamic_payload = canonical_json(evidence)
+    task_text = task.strip() if isinstance(task, str) and task.strip() else TASK_SUFFIX.strip()
+    variable_tail = "\n".join(["EVIDENCE (authoritative, read-only)", dynamic_payload, task_text])
     user_prompt = "\n".join(
         [
             SEMI_STABLE_USER_PREFIX.rstrip(),
-            "EVIDENCE (authoritative, read-only)",
-            dynamic_payload,
-            (task.strip() if isinstance(task, str) and task.strip() else TASK_SUFFIX.strip()),
+            variable_tail,
         ]
     )
     system_prompt = STABLE_SYSTEM_PREFIX.strip()
-    stable_prefix_fingerprint = _sha256("\n".join([system_prompt, SEMI_STABLE_USER_PREFIX.strip()]))
+    stable_prefix = "\n".join([system_prompt, SEMI_STABLE_USER_PREFIX.strip()])
+    stable_prefix_fingerprint = _sha256(stable_prefix)
     system_prompt_hash = _sha256(system_prompt)
     user_prompt_hash = _sha256(user_prompt)
     request_fingerprint = llm_request_fingerprint(
@@ -194,6 +198,9 @@ def build_director_patch_prompt(
         "user_prompt_hash": user_prompt_hash,
         "stable_prefix_fingerprint": stable_prefix_fingerprint,
         "prompt_prefix_fingerprint": stable_prefix_fingerprint,
+        "stable_prefix_hash": stable_prefix_fingerprint,
+        "stable_prefix_length": len(stable_prefix),
+        "variable_tail_hash": _sha256(variable_tail),
         "request_fingerprint": request_fingerprint,
         "model_snapshot": model_request_snapshot(model_profile),
         "evidence": evidence,
