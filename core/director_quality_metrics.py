@@ -107,6 +107,111 @@ def _score(plan: dict[str, Any] | None, *, treatment: dict[str, Any] | None, blo
     return score_director_quality(plan if isinstance(plan, dict) else {}, treatment=treatment, blocking=blocking)
 
 
+def _text(value: Any) -> str:
+    return str(value or "").strip()
+
+
+def _dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
+
+
+def _shots(plan: dict[str, Any] | None) -> list[dict[str, Any]]:
+    return [item for item in _list((plan or {}).get("shots")) if isinstance(item, dict)]
+
+
+def _key_shot(shot: dict[str, Any], treatment: dict[str, Any] | None = None) -> bool:
+    """Deterministically identify shots where performance guidance matters."""
+
+    beat_id = _text(shot.get("beat_id"))
+    for beat in _list((treatment or {}).get("beat_map")):
+        if isinstance(beat, dict) and _text(beat.get("beat_id")) == beat_id:
+            if _text(beat.get("type")).lower() in {"reaction", "reveal", "decision", "power_shift", "dialogue_turn", "emotional_peak", "turn"}:
+                return True
+    text = " ".join(_text(shot.get(key)).lower() for key in ("purpose", "dramatic_function", "why_this_shot"))
+    return any(token in text for token in ("reaction", "reveal", "power", "decision", "反应", "揭示", "权力", "决策", "转折"))
+
+
+def _valid_performance(shot: dict[str, Any]) -> bool:
+    value = shot.get("performance_direction")
+    return isinstance(value, list) and any(isinstance(item, dict) and _text(item.get("objective")) and _text(item.get("visible_behavior")) for item in value)
+
+
+def _valid_edit(shot: dict[str, Any]) -> bool:
+    edit = _dict(shot.get("edit"))
+    duration = edit.get("duration_seconds", shot.get("duration_hint_seconds"))
+    return bool(_text(edit.get("cut_reason"))) and isinstance(duration, (int, float)) and not isinstance(duration, bool) and float(duration) > 0
+
+
+def _valid_emotion(shot: dict[str, Any]) -> bool:
+    value = _dict(shot.get("emotion")).get("intensity")
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and 0 <= float(value) <= 10
+
+
+def _valid_information(shot: dict[str, Any]) -> bool:
+    info = _dict(shot.get("information_strategy"))
+    return any(bool(info.get(key)) for key in ("reveals", "withholds", "audience_focus"))
+
+
+def build_director_quality_v23_coverage_metrics(
+    *,
+    candidate: dict[str, Any] | None,
+    strategy: dict[str, Any] | None = None,
+    treatment: dict[str, Any] | None = None,
+    proposed_patch_document: dict[str, Any] | None = None,
+    accepted_patch_document: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Compute V2.3 coverage without changing the ten-dimension scorer."""
+
+    shots = _shots(candidate)
+    key_shots = [shot for shot in shots if _key_shot(shot, treatment)]
+    performance_denominator = len(key_shots)
+    performance_numerator = sum(1 for shot in key_shots if _valid_performance(shot))
+    # A single shot still has an edit decision (where it enters/leaves the
+    # scene); coverage is therefore measurable without requiring a neighbor.
+    edit_denominator = len(shots)
+    edit_numerator = sum(1 for shot in shots if _valid_edit(shot)) if edit_denominator else 0
+    strategy_obj = strategy if isinstance(strategy, dict) else {}
+    emotion_entries = [item for item in _list(strategy_obj.get("emotion_curve")) if isinstance(item, dict) and _text(item.get("beat_id"))]
+    info_entries = [item for item in _list(strategy_obj.get("information_plan")) if isinstance(item, dict) and _text(item.get("beat_id"))]
+    shot_by_beat = {_text(shot.get("beat_id")): shot for shot in shots if _text(shot.get("beat_id"))}
+    emotion_denominator = len(emotion_entries) or (len(shots) if strategy_obj else 0)
+    info_denominator = len(info_entries) or (len(shots) if strategy_obj else 0)
+    emotion_numerator = sum(1 for item in emotion_entries if _valid_emotion(shot_by_beat.get(_text(item.get("beat_id")), {})))
+    info_numerator = sum(1 for item in info_entries if _valid_information(shot_by_beat.get(_text(item.get("beat_id")), {})))
+
+    proposed = [item for item in _list((proposed_patch_document or {}).get("patches")) if isinstance(item, dict)]
+    accepted = [item for item in _list((accepted_patch_document or {}).get("patches")) if isinstance(item, dict)]
+    accepted_ids = {_text(item.get("plan_shot_id")) for item in accepted if _text(item.get("plan_shot_id"))}
+    useful = 0
+    for patch in proposed:
+        sid = _text(patch.get("plan_shot_id"))
+        if sid not in accepted_ids:
+            continue
+        changes = _dict(patch.get("changes"))
+        roots = {_text(path).replace("/", ".").split(".")[0] for path in changes}
+        shot = next((item for item in shots if _text(item.get("plan_shot_id")) == sid), {})
+        contributes = (("performance_direction" in roots and _valid_performance(shot)) or ("edit" in roots and _valid_edit(shot)) or ("emotion" in roots and _valid_emotion(shot)) or ("information_strategy" in roots and _valid_information(shot)))
+        if contributes:
+            useful += 1
+    return {
+        "performance_direction_coverage": _rate(performance_numerator, performance_denominator),
+        "edit_strategy_coverage": _rate(edit_numerator, edit_denominator),
+        "emotion_arc_coverage": _rate(emotion_numerator, emotion_denominator),
+        "information_strategy_coverage": _rate(info_numerator, info_denominator),
+        "useful_creative_acceptance_rate": _rate(useful, len(proposed)),
+        "performance_direction_key_shot_count": performance_denominator,
+        "edit_strategy_required_shot_count": edit_denominator,
+        "emotion_curve_entry_count": emotion_denominator,
+        "information_plan_entry_count": info_denominator,
+        "useful_creative_patch_count": useful,
+        "evaluable_creative_patch_count": len(proposed),
+    }
+
+
 def build_director_quality_metrics(
     *,
     baseline: dict[str, Any],
@@ -127,6 +232,9 @@ def build_director_quality_metrics(
     creative_recovered_patch_count: int = 0,
     safe_fallback_count: int | None = None,
     avoidable_fallback_count: int | None = None,
+    strategy: dict[str, Any] | None = None,
+    proposed_patch_document: dict[str, Any] | None = None,
+    accepted_patch_document: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Record Baseline / Before Repair / After Repair separately.
 
@@ -199,6 +307,13 @@ def build_director_quality_metrics(
         "director_quality_delta": round(overall["after_repair"] - overall["baseline"], 2),
         "contract_reliability": reliability,
         "partial_acceptance": partial,
+        "v23_coverage": build_director_quality_v23_coverage_metrics(
+            candidate=final,
+            strategy=strategy,
+            treatment=treatment,
+            proposed_patch_document=proposed_patch_document,
+            accepted_patch_document=accepted_patch_document,
+        ),
     }
     if isinstance(telemetry, dict):
         result["telemetry"] = copy.deepcopy(telemetry)
@@ -222,4 +337,4 @@ record_director_quality_metrics = build_director_quality_metrics
 build_quality_metrics = build_director_quality_metrics
 
 
-__all__ = ["build_director_quality_metrics", "record_director_quality_metrics", "build_quality_metrics", "build_director_quality_v22_metrics"]
+__all__ = ["build_director_quality_metrics", "record_director_quality_metrics", "build_quality_metrics", "build_director_quality_v22_metrics", "build_director_quality_v23_coverage_metrics"]

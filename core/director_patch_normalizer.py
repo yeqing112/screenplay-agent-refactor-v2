@@ -74,6 +74,9 @@ FIELD_ALIASES = {
     "visualEmphasis": "visual_emphasis",
     "performanceDirection": "performance_direction",
     "informationStrategy": "information_strategy",
+    "reveal": "reveals",
+    "withhold": "withholds",
+    "audienceFocus": "audience_focus",
 }
 
 _ENUM_ALIASES: dict[str, dict[str, str]] = {
@@ -222,7 +225,7 @@ def flatten_nested_changes(
     reasons: list[str] = []
     for key, value in raw.items():
         key = _canonical_segment(str(key))
-        if key in {"plan_shot_id", "patch_id", "rationale", "confidence", "source_format", "_source_format"}:
+        if key in {"plan_shot_id", "patch_id", "rationale", "confidence", "strategy_refs", "source_format", "_source_format"}:
             continue
         if key in IMMUTABLE_ROOT_FIELDS or key not in CREATIVE_ROOT_FIELDS:
             raise PatchNormalizationError(
@@ -330,7 +333,7 @@ def normalize_patch_item(
     source_format = "canonical"
     changes: dict[str, Any]
     if "changes" in raw:
-        forbidden = sorted(set(raw) - {"plan_shot_id", "patch_id", "changes", "rationale", "confidence", "_source_format"})
+        forbidden = sorted(set(raw) - {"plan_shot_id", "patch_id", "changes", "rationale", "confidence", "strategy_refs", "_source_format"})
         if forbidden:
             raise PatchNormalizationError(f"patch contains forbidden fields: {', '.join(forbidden)}", code="DIRECTOR_PATCH_FIELD_FORBIDDEN", path=path)
         changes = {}
@@ -353,7 +356,7 @@ def normalize_patch_item(
                 reasons.append(reason)
         source_format = "canonical" if not reasons else "normalized_changes"
     elif "patch" in raw:
-        forbidden = sorted(set(raw) - {"plan_shot_id", "patch_id", "patch", "rationale", "confidence"})
+        forbidden = sorted(set(raw) - {"plan_shot_id", "patch_id", "patch", "rationale", "confidence", "strategy_refs"})
         if forbidden:
             raise PatchNormalizationError(f"patch contains forbidden fields: {', '.join(forbidden)}", code="DIRECTOR_PATCH_FIELD_FORBIDDEN", path=path)
         patch_value = raw.get("patch")
@@ -384,7 +387,7 @@ def normalize_patch_item(
                     reasons.append(reason)
             source_format = "json_patch_wrapper"
     elif "path" in raw and "value" in raw:
-        forbidden = sorted(set(raw) - {"plan_shot_id", "patch_id", "path", "value", "op", "rationale", "confidence"})
+        forbidden = sorted(set(raw) - {"plan_shot_id", "patch_id", "path", "value", "op", "rationale", "confidence", "strategy_refs"})
         if forbidden:
             raise PatchNormalizationError(f"patch contains forbidden fields: {', '.join(forbidden)}", code="DIRECTOR_PATCH_FIELD_FORBIDDEN", path=path)
         normalized_path, value, reason = normalize_operation(
@@ -417,6 +420,11 @@ def normalize_patch_item(
         if isinstance(confidence, bool) or not isinstance(confidence, (int, float)) or not 0 <= float(confidence) <= 1:
             raise PatchNormalizationError("confidence must be a number between 0 and 1", path=f"{path}.confidence")
         normalized["confidence"] = float(confidence)
+    if "strategy_refs" in raw:
+        refs = raw.get("strategy_refs")
+        if not isinstance(refs, list) or any(not _text(item) for item in refs):
+            raise PatchNormalizationError("strategy_refs must be a list of non-empty strings", path=f"{path}.strategy_refs")
+        normalized["strategy_refs"] = [_text(item) for item in refs]
     normalized["_source_format"] = _text(raw.get("_source_format")) or source_format
     if reasons:
         normalized["_normalization_reasons"] = sorted(set(reasons))
