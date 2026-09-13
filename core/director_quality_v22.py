@@ -9,6 +9,7 @@ and only explicitly routed creative issues may invoke it.
 from __future__ import annotations
 
 import copy
+import re
 from typing import Any, Callable
 
 from core.director_patch_deterministic_repair import DeterministicRepairError, deterministic_repair_document
@@ -32,6 +33,13 @@ FALLBACK_ROOT_CAUSES = {
     "LLM_REPAIR_PARSE_FAILURE",
     "LLM_REPAIR_CONTRACT_FAILURE",
     "UNKNOWN",
+}
+
+_AVOIDABLE_TRACE_CLASSIFICATIONS = {
+    "SAFE_ALIAS",
+    "SAFE_ENVELOPE_VARIANT",
+    "CONTRACT_MISMATCH",
+    "COMPILER_BUG",
 }
 
 
@@ -142,6 +150,16 @@ def process_patch_pipeline(
     failed_repairs = 0
     level01: dict[str, Any] = {"rejected": []}
 
+    def _fallback_bucket(classification: str) -> tuple[str, bool]:
+        """Map evidence classification to the legacy two-bucket metrics."""
+
+        if _text(classification).upper() in _AVOIDABLE_TRACE_CLASSIFICATIONS:
+            return "AVOIDABLE_TECHNICAL_FALLBACK", False
+        # Forbidden, ambiguous, fact-override, unknown-shot, and invalid
+        # values are all required fail-closed outcomes once repair is
+        # exhausted; none is an avoidable technical fallback.
+        return "SAFE_REQUIRED_FALLBACK", True
+
     def _stage_for_issue(code: str, *, final: bool = False, repair: bool = False) -> str:
         if final:
             return "FINAL_FALLBACK"
@@ -181,6 +199,32 @@ def process_patch_pipeline(
                 allowed_patch_paths=_dict(contract).get("allowed_patch_paths") or None,
             )
             trace["raw_capture_status"] = "synthetic_unaddressable_item"
+        # Auxiliary schema errors report the proposal container path plus the
+        # forbidden field in the error message.  Preserve that exact raw JSON
+        # location instead of presenting the first camera field as if it were
+        # the rejected path.
+        if trace.get("raw_item_type") == "auxiliary_shot_proposal":
+            message = _text(item.get("message") or item.get("reason"))
+            issue_path = _text(item.get("path")) or _text(trace.get("raw_item_path"))
+            match = re.search(r"forbidden fields?:\s*(.+)$", message, flags=re.IGNORECASE)
+            if issue_path and match:
+                field = _text(match.group(1).split(",", 1)[0])
+                if field:
+                    rejected_path = f"{issue_path}.{field}"
+                    trace["raw_path"] = rejected_path
+                    trace["raw_paths"] = list(dict.fromkeys([rejected_path, *list(trace.get("raw_paths") or [])]))[:32]
+                    trace["raw_value_type"] = "forbidden_field"
+                    anchor = _text(trace.get("raw_anchor_plan_shot_id"))
+                    trace["parsed"] = {"plan_shot_id": anchor, "path": rejected_path}
+                    # Auxiliary proposals do not pass through the shot-path
+                    # resolver, but the rejected JSON location is still a
+                    # stable canonical evidence path for audit purposes.
+                    trace["canonical"] = {"plan_shot_id": anchor, "path": rejected_path}
+                    trace["canonical_path"] = rejected_path
+                    trace["path_resolution_rule"] = "auxiliary_schema"
+                    trace["path_source_format"] = "auxiliary"
+                    trace["path_alias_hit"] = False
+                    trace["allowed_path_match"] = False
         return trace
 
     def _save_trace(
@@ -335,7 +379,6 @@ def process_patch_pipeline(
                 stage_counts["post_llm_repair_pass"] = int(bool(validation.get("contract_pass")))
                 continue
             failed_repairs += 1
-            avoidable_fallback_count += 1
             completed_trace = _save_trace(
                 item,
                 failed_patch=failed_patch,
@@ -343,30 +386,33 @@ def process_patch_pipeline(
                 final_action="FALLBACK",
                 repair_attempts_for_trace=repaired.get("attempts") or [],
             )
+            fallback_class, is_safe_required = _fallback_bucket(completed_trace.get("fallback_classification"))
+            safe_fallback_count += int(is_safe_required)
+            avoidable_fallback_count += int(not is_safe_required)
             fallbacks.append({
                 "scene_id": trace_scene_id, "plan_shot_id": target, "proposal_id": "",
                 "root_cause": "LLM_REPAIR_CONTRACT_FAILURE", "repair_level_attempted": 2,
                 "attempt_count": int(repaired.get("attempt_count") or 0), "final_action": "FALLBACK_BASELINE_PATCH", "code": code,
-                "fallback_class": "AVOIDABLE_TECHNICAL_FALLBACK",
+                "fallback_class": fallback_class,
                 "trace_id": completed_trace["trace_id"],
             })
             continue
         fallback_root = "QUALITY_REPAIR_EXHAUSTED" if route.get("llm_allowed") else _fallback_reason(code)
-        fallback_safe = _is_safe_fallback(code, fallback_root)
-        safe_fallback_count += int(fallback_safe)
-        avoidable_fallback_count += int(not fallback_safe)
         completed_trace = _save_trace(
             item,
             failed_patch=failed_patch,
             stage=_stage_for_issue(code),
             final_action="FALLBACK",
         )
+        fallback_class, is_safe_required = _fallback_bucket(completed_trace.get("fallback_classification"))
+        safe_fallback_count += int(is_safe_required)
+        avoidable_fallback_count += int(not is_safe_required)
         fallbacks.append({
             "scene_id": trace_scene_id, "plan_shot_id": target, "proposal_id": _text(item.get("proposal_id")),
             "root_cause": "QUALITY_REPAIR_EXHAUSTED" if route.get("llm_allowed") else _fallback_reason(code),
             "repair_level_attempted": route.get("repair_level"),
             "attempt_count": 0, "final_action": "REJECT_PATCH", "code": code,
-            "fallback_class": "SAFE_REQUIRED_FALLBACK" if fallback_safe else "AVOIDABLE_TECHNICAL_FALLBACK",
+            "fallback_class": fallback_class,
             "trace_id": completed_trace["trace_id"],
         })
 

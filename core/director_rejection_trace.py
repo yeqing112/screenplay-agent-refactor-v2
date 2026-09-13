@@ -276,6 +276,26 @@ def capture_raw_patch_traces(
             known_plan_shot_ids=known_plan_shot_ids,
             allowed_patch_paths=allowed_patch_paths,
         ))
+    # Auxiliary proposals are provider items too.  Capture them at the same
+    # pre-normalization boundary so an auxiliary schema rejection cannot be
+    # accidentally associated with an unrelated ordinary patch.  Keep a
+    # disjoint provider index while retaining the stable JSON item path.
+    raw_auxiliary = raw_output.get("auxiliary_shot_proposals") if isinstance(raw_output.get("auxiliary_shot_proposals"), list) else []
+    provider_offset = len(raw_patches)
+    for index, item in enumerate(raw_auxiliary):
+        trace = capture_raw_patch_trace(
+            item,
+            scene_id=scene_id,
+            episode=episode,
+            provider_patch_index=provider_offset + index,
+            known_plan_shot_ids=known_plan_shot_ids,
+            allowed_patch_paths=allowed_patch_paths,
+        )
+        trace["raw_item_type"] = "auxiliary_shot_proposal"
+        trace["raw_item_index"] = index
+        trace["raw_item_path"] = f"auxiliary_shot_proposals[{index}]"
+        trace["raw_anchor_plan_shot_id"] = _text(item.get("insert_after_plan_shot_id"))
+        traces.append(trace)
     return traces
 
 
@@ -290,6 +310,11 @@ def classify_rejection_trace(
 
     code = _text(issue_code).upper()
     stage = _text(rejection_stage).upper()
+    if trace.get("raw_item_type") == "auxiliary_shot_proposal" and code == "DIRECTOR_PATCH_FIELD_FORBIDDEN":
+        # Auxiliary proposals have their own explicit schema.  A field
+        # rejected by that schema is forbidden for this proposal type; it is
+        # not a creative patch alias and must remain fail-closed.
+        return "TRUE_FORBIDDEN"
     if code in {"DIRECTOR_FACT_OVERRIDE", "FACT_OVERRIDE", "IMMUTABLE_VIOLATION"}:
         return "FACT_OVERRIDE"
     if code in {"UNKNOWN_PLAN_SHOT_ID", "DIRECTOR_PATCH_ID_MISSING", "UNKNOWN_SHOT"}:
@@ -373,6 +398,9 @@ def find_trace_for_rejection(
     if plan_shot_id:
         candidates = [item for item in candidates if _text(item.get("raw_plan_shot_id")) == _text(plan_shot_id)]
     if raw_path:
+        exact_item = [item for item in candidates if _text(item.get("raw_item_path")) == _text(raw_path)]
+        if exact_item:
+            return copy.deepcopy(exact_item[0])
         exact = [item for item in candidates if _text(item.get("raw_path")) == _text(raw_path) or raw_path in (item.get("raw_paths") or [])]
         if exact:
             return copy.deepcopy(exact[0])

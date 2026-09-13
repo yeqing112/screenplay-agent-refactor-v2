@@ -349,7 +349,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         "rejection_trace_count": trace_count,
         "rejection_trace_coverage": round(trace_count / rejection_event_count, 4) if rejection_event_count else 1.0,
         "raw_path_capture_rate": _trace_rate(lambda item: bool(_text(item.get("raw_path")))),
-        "raw_shot_identity_capture_rate": _trace_rate(lambda item: bool(_text(item.get("raw_plan_shot_id") or _dict(item.get("parsed")).get("plan_shot_id")))),
+        "raw_shot_identity_capture_rate": _trace_rate(lambda item: bool(_text(item.get("raw_plan_shot_id") or _dict(item.get("parsed")).get("plan_shot_id") or item.get("raw_anchor_plan_shot_id")))),
         "canonical_path_capture_rate": _trace_rate(lambda item: bool(_text(item.get("canonical_path") or _dict(item.get("canonical")).get("path")))),
         "rejection_stage_identified_rate": _trace_rate(lambda item: _text(item.get("rejection_stage")) in {"RAW_PARSE", "PATH_PARSE", "PATH_RESOLUTION", "ALLOWED_PATH_CHECK", "VALUE_SCHEMA", "CONTRACT_VALIDATION", "PATCH_MERGE", "DETERMINISTIC_REPAIR", "LLM_REPAIR", "QUALITY_VALIDATION", "FINAL_FALLBACK"}),
         "fallback_classification_rate": _trace_rate(lambda item: _text(item.get("fallback_classification"))),

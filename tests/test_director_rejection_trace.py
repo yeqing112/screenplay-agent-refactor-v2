@@ -10,8 +10,10 @@ from core.director_patch_recovery_rules import (
 )
 from core.director_rejection_trace import (
     capture_raw_patch_trace,
+    capture_raw_patch_traces,
     classify_rejection_trace,
     finalize_rejection_trace,
+    find_trace_for_rejection,
 )
 from core.director_creative_contract import build_director_creative_contract
 from core.director_quality_v22 import process_patch_pipeline
@@ -87,6 +89,38 @@ def test_alias_and_envelope_classification():
     assert classify_rejection_trace(envelope, issue_code="DIRECTOR_PATCH_PATH_FORBIDDEN", rejection_stage="ALLOWED_PATH_CHECK") == "SAFE_ENVELOPE_VARIANT"
 
 
+def test_auxiliary_rejection_keeps_item_identity_and_is_true_forbidden():
+    raw = {
+        "schema_version": "director_creative_patch_v1",
+        "patches": [],
+        "auxiliary_shot_proposals": [{
+            "proposal_id": "AUX-1",
+            "proposal_type": "establishing",
+            "source_beat_id": "B01",
+            "insert_after_plan_shot_id": "S01",
+            "purpose": "establish space",
+            "why_needed": "clarify entry",
+            "participants": ["C1"],
+            "camera": {"shot_size": "MS"},
+            "composition": {"framing": "forbidden here"},
+        }],
+    }
+    traces = capture_raw_patch_traces(raw, scene_id="E", episode=1, known_plan_shot_ids=["S01"], allowed_patch_paths=ALLOWED)
+    trace = find_trace_for_rejection(traces, raw_path="auxiliary_shot_proposals[0]")
+    assert trace is not None
+    assert trace["raw_item_type"] == "auxiliary_shot_proposal"
+    assert trace["raw_item_path"] == "auxiliary_shot_proposals[0]"
+    assert trace["raw_anchor_plan_shot_id"] == "S01"
+    completed = finalize_rejection_trace(
+        trace,
+        issue_code="DIRECTOR_PATCH_FIELD_FORBIDDEN",
+        rejection_stage="CONTRACT_VALIDATION",
+        rejection_reason="auxiliary proposal contains forbidden fields: composition",
+    )
+    assert completed["canonical_path"] == "proposal_id"
+    assert classify_rejection_trace(completed, issue_code=completed["validator_issue_code"], rejection_stage=completed["rejection_stage"]) == "TRUE_FORBIDDEN"
+
+
 def test_rejection_stage_taxonomy_rejects_unknown_stage():
     trace = capture_raw_patch_trace({"plan_shot_id": "S01", "changes": {"camera.angle": "low_angle"}})
     with pytest.raises(ValueError):
@@ -146,3 +180,30 @@ def test_pipeline_propagates_complete_trace_to_fallback_without_side_effects():
     with pytest.raises(RecoveryRuleError):
         apply_recovery_rule("MISSING", {})
     clear_recovery_rules()
+
+
+def test_invalid_value_fallback_is_not_counted_as_avoidable_technical():
+    treatment = {"scene_id": "E", "scene_name": "门厅", "beat_map": [{"beat_id": "B01", "event": "进入"}]}
+    blocking = {"scene_id": "E", "scene_name": "门厅", "participants": [{"character_id": "C1", "name": "林晚"}]}
+    plan = build_shot_plan(treatment=treatment, blocking=blocking)
+    contract = build_director_creative_contract(treatment=treatment, blocking=blocking, structural_shot_plan=plan)
+    strategy = build_scene_directing_strategy(treatment=treatment, contract=contract)
+    result = process_patch_pipeline(
+        structural_shot_plan=plan,
+        contract=contract,
+        strategy=strategy,
+        treatment=treatment,
+        blocking=blocking,
+        scene_id="E",
+        episode=1,
+        raw_output={
+            "schema_version": "director_creative_patch_v1",
+            "patches": [{"plan_shot_id": "S01", "camera": {"shot_size": ""}}],
+            "auxiliary_shot_proposals": [],
+        },
+        llm_repair_callable=lambda _payload: {"not_a_patch": True},
+        max_llm_attempts=1,
+    )
+    assert result["fallbacks"]
+    assert result["fallbacks"][0]["fallback_class"] == "SAFE_REQUIRED_FALLBACK"
+    assert result["avoidable_fallback_count"] == 0
