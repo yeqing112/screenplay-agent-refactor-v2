@@ -356,6 +356,7 @@ V2.1 已证明 Contract-First、patch-level partial acceptance、最终 Contract
 - Level 2 边界：`core/director_quality_v22.py` 仅向明确的创意语义问题开放局部 repair；Level 0/1、事实越权、未知目标不会调用 LLM。
 - Partial acceptance：`core/director_patch_compiler.py` 在 partial 模式按字段保留合法 sibling；原子编译默认行为不变，事实/权限错误仍拒绝。
 - 离线回放：`scripts/run_director_quality_v2_2_benchmark.py` 只读取冻结 V2.1 evidence 与候选文档，明确输出 `llm_provider_calls=0`、媒体/存储/生产写入均为 0。
+- Stage A 入口：`scripts/run_director_quality_v2_2_mimo_pilot_authorized.py` 已实现显式 `--execute-real`、精确 confirmation token 与 MiMo profile 三重门禁；导入和默认 CLI 均不初始化 provider。
 
 ### 本地证据
 
@@ -364,10 +365,12 @@ V2.1 已证明 Contract-First、patch-level partial acceptance、最终 Contract
 - `python -m compileall -q api core scripts`：通过。
 - `git diff --check`：通过。
 - 离线回放 12 场景：raw/normalized/schema/contract/final 均 `12/12`，fallback `0`，creative retention `100%`；该结果仅证明回放管线，不代表真实 MiMo 指标。
+- V2.2 guarded MiMo runner authorization/mock tests：`7 passed`；默认 CLI `preflight_only`，真实 provider 调用 `0`。
 
 ### 尚未满足 / 明确不宣称
 
 - 本地验证尚未替代 Stage A 真实 MiMo 12 场景 A/B Pilot；尚未生成 `director-quality-v2-2-stage-a-mimo-pilot-<timestamp>.json`。
+- 当前可执行命令需要操作者明确提供 `CONFIRM_DIRECTOR_V22_REAL_MIMO_PILOT` 与已保存的 MiMo profile；未获得该确认前不会产生外部调用或费用。
 - 因缺少真实 V2.2 Pilot 的 repair/token/latency/cache/quality 数据，不能宣称达到 Stage A 目标，也不进入 Stage B 或 Production Shadow。
 - Final As-Built 结论：**NOT_READY_FOR_PRODUCTION_SHADOW**（原因是外部 Pilot 证据尚缺，不是本地安全门失败）。
 

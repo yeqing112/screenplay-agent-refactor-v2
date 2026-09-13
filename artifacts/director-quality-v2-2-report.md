@@ -76,10 +76,11 @@ partial 模式在字段级保留可编译 sibling，默认原子编译行为不�
 - `python -m compileall -q api core scripts`：通过。
 - `git diff --check`：通过。
 - Production reverse test：mock `StoryboardAgent.run()` 时调用次数为 `0`。
+- Guarded Stage A runner authorization/mock tests：`7 passed`；默认 CLI 为 `preflight_only`，真实 provider 调用 `0`。
 
 ## Stage A A/B Comparison
 
-Stage A 真实 MiMo 12 场景 benchmark-only 尚未执行。因缺少 V2.2 的真实 repair/token/latency/cache/quality telemetry，以下项目保持未评估：LLM Repair Calls Reduction、Fallback Reduction、Director Quality Delta、Cache Hit、真实 Creative Retention。
+Stage A 真实 MiMo 12 场景 benchmark-only 尚未执行。入口已由 `scripts/run_director_quality_v2_2_mimo_pilot_authorized.py` 提供三重显式门禁；因缺少 V2.2 的真实 repair/token/latency/cache/quality telemetry，以下项目保持未评估：LLM Repair Calls Reduction、Fallback Reduction、Director Quality Delta、Cache Hit、真实 Creative Retention。
 
 ## Release Decision
 
