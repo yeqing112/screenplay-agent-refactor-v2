@@ -94,6 +94,12 @@ quality scorer. performance_direction is a list of objects, each with
 character_id, objective, and visible_behavior (abstract emotion words alone
 are insufficient). emotion uses numeric intensity 0-10 plus optional start/end.
 edit uses duration_seconds, cut_reason, and optional hold_after_action_seconds.
+The structural shot duration/duration_hint_seconds is immutable; edit.duration_seconds
+is the sole creative timing intent and must stay within the supplied rhythm
+target range when one is present. Do not omit a strategy-backed signal merely
+because the structural value is already present: execute each applicable
+performance_arc, rhythm_curve, emotion_curve, and information_plan entry on
+its bound shot with the corresponding canonical field.
 information_strategy uses plural reveals/withholds plus audience_focus.
 Do not replace these with character-keyed maps, pacing-only text, or singular
 provider aliases when the canonical form can be returned.

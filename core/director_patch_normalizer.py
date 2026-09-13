@@ -162,6 +162,20 @@ def _canonical_segment(value: str) -> str:
     return _alias(value)
 
 
+def _looks_like_path_map_key(value: Any) -> bool:
+    """Return whether a key is an explicit patch path, not a creative field.
+
+    A few OpenAI-compatible providers serialize a JSON-patch map as
+    ``{"/shots/S01/camera/shot_size": "CU"}`` inside the ``patch``
+    envelope.  This is protocol-equivalent to ``changes`` and can be
+    canonicalized without inventing a value.  Mixed maps are intentionally
+    not accepted here; they remain fail-closed as unknown fields.
+    """
+
+    key = _text(value)
+    return key.startswith("/") or key.startswith("shots/") or key.startswith("shots.")
+
+
 def canonical_path(
     path: Any,
     *,
@@ -223,6 +237,25 @@ def flatten_nested_changes(
 
     changes: dict[str, Any] = {}
     reasons: list[str] = []
+    # Some providers use a path-to-value object under ``patch`` rather than
+    # an operation list.  Every key must be an explicit path before we enter
+    # this branch; otherwise an object mixing paths and creative field names
+    # would be ambiguous and must remain rejected.
+    if raw and all(_looks_like_path_map_key(key) for key in raw):
+        for raw_path, raw_value in raw.items():
+            normalized_path = canonical_path(
+                raw_path,
+                plan_shot_id=plan_shot_id,
+                allowed_patch_paths=allowed_patch_paths,
+            )
+            normalized, reason = normalize_value(normalized_path, raw_value)
+            if normalized_path in changes and changes[normalized_path] != normalized:
+                raise PatchNormalizationError("conflicting normalized changes", code="DIRECTOR_PATCH_NORMALIZATION_CONFLICT", path=normalized_path)
+            changes[normalized_path] = normalized
+            reasons.append("json_pointer_map")
+            if reason:
+                reasons.append(reason)
+        return changes, reasons
     for key, value in raw.items():
         key = _canonical_segment(str(key))
         if key in {"plan_shot_id", "patch_id", "rationale", "confidence", "strategy_refs", "source_format", "_source_format"}:

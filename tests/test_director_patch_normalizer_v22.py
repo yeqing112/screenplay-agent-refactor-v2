@@ -93,6 +93,46 @@ def test_json_patch_wildcard_and_numeric_selector_are_flattened():
     assert document["normalization_metadata"]["after_fingerprint"]
 
 
+def test_json_pointer_map_inside_patch_wrapper_is_protocol_equivalent():
+    document = normalize_patch_document(
+        {
+            "schema_version": "director_creative_patch_v1",
+            "patches": [
+                {
+                    "plan_shot_id": "S01",
+                    "patch": {
+                        "/shots/S01/camera/shot_size": " close-up ",
+                        "/shots/S01/edit/cut_reason": "hold for reveal",
+                    },
+                }
+            ],
+            "auxiliary_shot_proposals": [],
+        },
+        known_plan_shot_ids=["S01"],
+    )
+    assert document["patches"][0]["changes"] == {
+        "camera.shot_size": "CU",
+        "edit.cut_reason": "hold for reveal",
+    }
+    assert "json_pointer_map" in document["patches"][0]["_normalization_reasons"]
+
+
+def test_parse_creative_patch_accepts_json_pointer_map_wrapper_directly():
+    document = parse_creative_patch(
+        {
+            "schema_version": "director_creative_patch_v1",
+            "patches": [
+                {
+                    "plan_shot_id": "S01",
+                    "patch": {"/shots/S01/camera/shot_size": "CU"},
+                }
+            ],
+            "auxiliary_shot_proposals": [],
+        }
+    )
+    assert document["patches"][0]["changes"] == {"camera.shot_size": "CU"}
+
+
 def test_normalizer_preserves_conflicting_duplicates_for_level_one():
     document = normalize_patch_document(
         {

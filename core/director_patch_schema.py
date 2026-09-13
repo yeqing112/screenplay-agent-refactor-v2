@@ -84,6 +84,11 @@ def _ensure_string(value: Any, *, label: str, path: str) -> str:
     return text
 
 
+def _looks_like_path_map_key(value: Any) -> bool:
+    key = _text(value)
+    return key.startswith("/") or key.startswith("shots/") or key.startswith("shots.")
+
+
 def _normalize_changes(raw: Any, *, path: str) -> dict[str, Any]:
     if not isinstance(raw, dict) or not raw:
         raise CreativePatchSchemaError("changes must be a non-empty object", path=path)
@@ -110,7 +115,7 @@ def _normalize_changes(raw: Any, *, path: str) -> dict[str, Any]:
     return changes
 
 
-def _nested_changes(raw: dict[str, Any], *, path: str) -> dict[str, Any]:
+def _nested_changes(raw: dict[str, Any], *, path: str, plan_shot_id: str = "") -> dict[str, Any]:
     """Convert a provider's nested creative shot object to dotted changes.
 
     This is deliberately a structural conversion only.  It does not map
@@ -118,6 +123,18 @@ def _nested_changes(raw: dict[str, Any], *, path: str) -> dict[str, Any]:
     allowed for a particular contract.
     """
     changes: dict[str, Any] = {}
+    # Accept the provider-equivalent path-to-value map form used inside a
+    # ``patch`` wrapper, e.g. {"/shots/S01/camera/shot_size": "CU"}.
+    # Ambiguous mixed maps are deliberately left on the strict rejection path.
+    if raw and all(_looks_like_path_map_key(key) for key in raw):
+        for raw_path, raw_value in raw.items():
+            try:
+                normalized_path = _canonical_path(raw_path, plan_shot_id=plan_shot_id)
+            except PatchNormalizationError as exc:
+                raise CreativePatchSchemaError(str(exc), code=exc.code, path=f"{path}.{raw_path}") from exc
+            normalized_value, _ = _normalize_value(normalized_path, raw_value)
+            changes[normalized_path] = copy.deepcopy(normalized_value)
+        return changes
     for field, value in raw.items():
         if field in {"plan_shot_id", "patch_id", "rationale", "confidence", "strategy_refs", "source_format", "_source_format"}:
             continue
@@ -210,7 +227,7 @@ def _normalize_patch(raw: Any, index: int) -> dict[str, Any]:
             )
         patch_value = raw.get("patch")
         if isinstance(patch_value, dict) and not {"op", "path", "value"}.intersection(patch_value):
-            changes = _nested_changes(patch_value, path=f"{path}.patch")
+            changes = _nested_changes(patch_value, path=f"{path}.patch", plan_shot_id=plan_shot_id)
             source_format = "nested_patch_wrapper"
         else:
             operations = patch_value if isinstance(patch_value, list) else [patch_value]
@@ -227,7 +244,7 @@ def _normalize_patch(raw: Any, index: int) -> dict[str, Any]:
         changes = _operation_changes([{"op": raw.get("op") or "replace", "path": raw.get("path"), "value": raw.get("value")}], path=path, plan_shot_id=plan_shot_id)
         source_format = "json_patch_operation"
     else:
-        changes = _nested_changes(raw, path=path)
+        changes = _nested_changes(raw, path=path, plan_shot_id=plan_shot_id)
         source_format = "nested_creative_fields"
     normalized: dict[str, Any] = {
         "plan_shot_id": plan_shot_id,

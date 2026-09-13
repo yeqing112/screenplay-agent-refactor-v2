@@ -119,6 +119,21 @@ class DirectorPromptTests(unittest.TestCase):
         self.assertIn("strategy_refs", result["user_prompt"])
         self.assertIn('"schema_version":"scene_directing_strategy_v2"', result["user_prompt"])
 
+    def test_v23_prompt_clarifies_structural_duration_and_strategy_signal_completeness(self):
+        result = build_director_patch_prompt(
+            contract=_contract("A"),
+            strategy={
+                "schema_version": "scene_directing_strategy_v2",
+                "emotion_curve": [{"beat_id": "B01", "character_id": "C1", "intensity": 4}],
+                "rhythm_curve": [{"beat_id": "B01", "target_duration_range": [3, 4]}],
+                "information_plan": [{"beat_id": "B01"}],
+                "performance_arc": [{"beat_id": "B01", "character_id": "C1"}],
+            },
+            structural_shot_plan=_plan("A"),
+        )
+        self.assertIn("duration/duration_hint_seconds is immutable", result["system_prompt"])
+        self.assertIn("execute each applicable", result["system_prompt"])
+
 
 if __name__ == "__main__":
     unittest.main()
