@@ -11,6 +11,7 @@ from typing import Any, Iterable
 
 from core.director_patch_normalizer import (
     PatchNormalizationError,
+    collect_path_resolution_metrics,
     fingerprint,
     normalize_patch_document,
 )
@@ -37,10 +38,11 @@ PATH_ORDER = {
 class DeterministicRepairError(ValueError):
     code = "DIRECTOR_DETERMINISTIC_REPAIR_INVALID"
 
-    def __init__(self, message: str, *, code: str | None = None, path: str = "") -> None:
+    def __init__(self, message: str, *, code: str | None = None, path: str = "", path_metrics: dict[str, Any] | None = None) -> None:
         super().__init__(message)
         self.code = code or self.code
         self.path = path
+        self.path_metrics = copy.deepcopy(path_metrics or {})
 
 
 def _text(value: Any) -> str:
@@ -121,6 +123,7 @@ def deterministic_repair_document(
     raw: dict[str, Any],
     *,
     known_plan_shot_ids: Iterable[str] | None = None,
+    allowed_patch_paths: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Normalize then apply only Level 1 deterministic repairs.
 
@@ -129,10 +132,19 @@ def deterministic_repair_document(
     existing strict schema/compiler to remain the authority boundary.
     """
 
+    path_metrics = collect_path_resolution_metrics(
+        raw,
+        known_plan_shot_ids=known_plan_shot_ids,
+        allowed_patch_paths=allowed_patch_paths,
+    )
     try:
-        normalized = normalize_patch_document(raw, known_plan_shot_ids=known_plan_shot_ids)
+        normalized = normalize_patch_document(
+            raw,
+            known_plan_shot_ids=known_plan_shot_ids,
+            allowed_patch_paths=allowed_patch_paths,
+        )
     except PatchNormalizationError as exc:
-        raise DeterministicRepairError(str(exc), code=exc.code, path=exc.path) from exc
+        raise DeterministicRepairError(str(exc), code=exc.code, path=exc.path, path_metrics=path_metrics) from exc
     merged = merge_duplicate_patches(normalized.get("patches") or [])
     document = copy.deepcopy(normalized)
     document["patches"] = merged["patches"]
@@ -144,6 +156,7 @@ def deterministic_repair_document(
         "deterministic_repair_applied": bool(merged["events"]),
         "events": events,
         "rejected": copy.deepcopy(merged["rejected"]),
+        "path_resolution": copy.deepcopy(path_metrics),
     })
     metadata["after_fingerprint"] = fingerprint(document)
     schema_document = {

@@ -15,6 +15,11 @@ import json
 import re
 from typing import Any, Iterable
 
+from core.director_patch_path_resolver import (
+    PatchPathResolutionError,
+    resolve_patch_path,
+)
+
 
 NORMALIZER_VERSION = "director-quality-v2-2-level0"
 PATCH_SCHEMA_VERSION = "director_creative_patch_v1"
@@ -159,48 +164,24 @@ def canonical_path(
     *,
     plan_shot_id: str = "",
     known_plan_shot_ids: Iterable[str] | None = None,
+    allowed_patch_paths: Iterable[str] | None = None,
 ) -> str:
-    """Return a dotted creative path relative to one declared shot.
+    """Return a dotted creative path via the single canonical resolver."""
 
-    Accepted equivalent forms include ``camera.shot_size``,
-    ``/shots/S03/camera/shot_size`` and ``/shots/*/camera/shot_size`` when the
-    item declares ``plan_shot_id=S03``.  Numeric selectors are resolved when a
-    plan id list is supplied; otherwise the declared id remains authoritative
-    and the numeric selector is treated as a provider-local equivalent.
-    """
-
-    raw = _text(path)
-    if not raw:
-        raise PatchNormalizationError("patch path is required", code="DIRECTOR_PATCH_PATH_MISSING")
-    if ".." in raw or "\\" in raw:
-        raise PatchNormalizationError("patch path contains unsafe traversal", code="DIRECTOR_PATCH_PATH_FORBIDDEN", path=raw)
-    parts = [_canonical_segment(part) for part in raw.replace(".", "/").split("/") if _text(part)]
-    if not parts:
-        raise PatchNormalizationError("patch path is empty", code="DIRECTOR_PATCH_PATH_MISSING", path=raw)
-    declared = _text(plan_shot_id)
-    if parts[0] == "shots":
-        if len(parts) < 3:
-            raise PatchNormalizationError("shot patch path must address a field", code="DIRECTOR_PATCH_PATH_FORBIDDEN", path=raw)
-        selector = parts[1]
-        known = [str(item).strip() for item in (known_plan_shot_ids or []) if str(item).strip()]
-        if selector == "*":
-            if not declared:
-                raise PatchNormalizationError("wildcard shot path requires plan_shot_id", code="DIRECTOR_PATCH_TARGET_MISMATCH", path=raw)
-        elif selector.isdigit():
-            if known and int(selector) >= len(known):
-                raise PatchNormalizationError("shot index is out of range", code="DIRECTOR_PATCH_TARGET_MISMATCH", path=raw)
-            if known and declared and known[int(selector)] != declared:
-                raise PatchNormalizationError("shot path targets a different plan_shot_id", code="DIRECTOR_PATCH_TARGET_MISMATCH", path=raw)
-        elif declared and selector != declared:
-            raise PatchNormalizationError("shot path targets a different plan_shot_id", code="DIRECTOR_PATCH_TARGET_MISMATCH", path=raw)
-        parts = parts[2:]
-    # A path written as ``camera.shotSize`` is equivalent to the canonical
-    # dotted path.  Canonicalize every segment only through the explicit alias
-    # table; arbitrary semantic guessing is prohibited.
-    parts = [_canonical_segment(part) for part in parts]
-    if not all(parts):
-        raise PatchNormalizationError("patch path contains an empty segment", code="DIRECTOR_PATCH_PATH_FORBIDDEN", path=raw)
-    return ".".join(parts)
+    try:
+        return resolve_patch_path(
+            path,
+            plan_shot_id=plan_shot_id,
+            known_plan_shot_ids=known_plan_shot_ids,
+            allowed_patch_paths=allowed_patch_paths,
+        ).path
+    except PatchPathResolutionError as exc:
+        # Preserve the legacy public diagnostic for an unbound wildcard while
+        # the resolver itself exposes the stricter AMBIGUOUS_PATCH_PATH code.
+        code = exc.code
+        if code == "AMBIGUOUS_PATCH_PATH" and "*" in _text(path):
+            code = "DIRECTOR_PATCH_TARGET_MISMATCH"
+        raise PatchNormalizationError(str(exc), code=code, path=exc.raw_path) from exc
 
 
 def normalize_value(path: str, value: Any) -> tuple[Any, str | None]:
@@ -228,7 +209,13 @@ def normalize_value(path: str, value: Any) -> tuple[Any, str | None]:
     return copy.deepcopy(value), None
 
 
-def flatten_nested_changes(raw: dict[str, Any], *, path: str = "patch") -> tuple[dict[str, Any], list[str]]:
+def flatten_nested_changes(
+    raw: dict[str, Any],
+    *,
+    path: str = "patch",
+    plan_shot_id: str = "",
+    allowed_patch_paths: Iterable[str] | None = None,
+) -> tuple[dict[str, Any], list[str]]:
     """Flatten a nested creative shot object without dropping unknown fields."""
 
     changes: dict[str, Any] = {}
@@ -252,7 +239,11 @@ def flatten_nested_changes(raw: dict[str, Any], *, path: str = "patch") -> tuple
                         code="DIRECTOR_PATCH_FIELD_FORBIDDEN",
                         path=f"{path}.camera.{child_key}",
                     )
-                cpath = f"camera.{child_key}"
+                cpath = canonical_path(
+                    f"camera.{child_key}",
+                    plan_shot_id=plan_shot_id,
+                    allowed_patch_paths=allowed_patch_paths,
+                )
                 normalized, reason = normalize_value(cpath, child_value)
                 if cpath in changes and changes[cpath] != normalized:
                     raise PatchNormalizationError("conflicting normalized changes", code="DIRECTOR_PATCH_NORMALIZATION_CONFLICT", path=cpath)
@@ -263,7 +254,11 @@ def flatten_nested_changes(raw: dict[str, Any], *, path: str = "patch") -> tuple
         if key in {"emotion", "composition", "edit", "information_strategy", "performance_direction"} and isinstance(value, dict):
             for child, child_value in value.items():
                 child_key = _canonical_segment(str(child))
-                cpath = f"{key}.{child_key}"
+                cpath = canonical_path(
+                    f"{key}.{child_key}",
+                    plan_shot_id=plan_shot_id,
+                    allowed_patch_paths=allowed_patch_paths,
+                )
                 normalized, reason = normalize_value(cpath, child_value)
                 if cpath in changes and changes[cpath] != normalized:
                     raise PatchNormalizationError("conflicting normalized changes", code="DIRECTOR_PATCH_NORMALIZATION_CONFLICT", path=cpath)
@@ -271,10 +266,15 @@ def flatten_nested_changes(raw: dict[str, Any], *, path: str = "patch") -> tuple
                 if reason:
                     reasons.append(reason)
             continue
-        normalized, reason = normalize_value(key, value)
-        if key in changes and changes[key] != normalized:
-            raise PatchNormalizationError("conflicting normalized changes", code="DIRECTOR_PATCH_NORMALIZATION_CONFLICT", path=key)
-        changes[key] = normalized
+        normalized_path = canonical_path(
+            key,
+            plan_shot_id=plan_shot_id,
+            allowed_patch_paths=allowed_patch_paths,
+        )
+        normalized, reason = normalize_value(normalized_path, value)
+        if normalized_path in changes and changes[normalized_path] != normalized:
+            raise PatchNormalizationError("conflicting normalized changes", code="DIRECTOR_PATCH_NORMALIZATION_CONFLICT", path=normalized_path)
+        changes[normalized_path] = normalized
         if reason:
             reasons.append(reason)
     if not changes:
@@ -282,7 +282,13 @@ def flatten_nested_changes(raw: dict[str, Any], *, path: str = "patch") -> tuple
     return changes, reasons
 
 
-def normalize_operation(operation: dict[str, Any], *, plan_shot_id: str, known_plan_shot_ids: Iterable[str] | None = None) -> tuple[str, Any, str | None]:
+def normalize_operation(
+    operation: dict[str, Any],
+    *,
+    plan_shot_id: str,
+    known_plan_shot_ids: Iterable[str] | None = None,
+    allowed_patch_paths: Iterable[str] | None = None,
+) -> tuple[str, Any, str | None]:
     if not isinstance(operation, dict):
         raise PatchNormalizationError("patch operation must be an object", path="patch")
     forbidden = sorted(set(operation) - {"op", "path", "value"})
@@ -295,7 +301,12 @@ def normalize_operation(operation: dict[str, Any], *, plan_shot_id: str, known_p
     op = _text(operation.get("op") or "replace").lower()
     if op not in {"add", "replace"} or "value" not in operation:
         raise PatchNormalizationError("only add/replace operations with value are supported", path="patch")
-    normalized_path = canonical_path(operation.get("path"), plan_shot_id=plan_shot_id, known_plan_shot_ids=known_plan_shot_ids)
+    normalized_path = canonical_path(
+        operation.get("path"),
+        plan_shot_id=plan_shot_id,
+        known_plan_shot_ids=known_plan_shot_ids,
+        allowed_patch_paths=allowed_patch_paths,
+    )
     value, reason = normalize_value(normalized_path, operation.get("value"))
     return normalized_path, value, reason
 
@@ -305,6 +316,7 @@ def normalize_patch_item(
     *,
     index: int = 0,
     known_plan_shot_ids: Iterable[str] | None = None,
+    allowed_patch_paths: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Normalize one provider patch into ``plan_shot_id + changes``."""
 
@@ -325,7 +337,12 @@ def normalize_patch_item(
         if not isinstance(raw.get("changes"), dict) or not raw["changes"]:
             raise PatchNormalizationError("changes must be a non-empty object", path=f"{path}.changes")
         for raw_path, raw_value in raw["changes"].items():
-            normalized_path = canonical_path(raw_path, plan_shot_id=plan_shot_id, known_plan_shot_ids=known_plan_shot_ids)
+            normalized_path = canonical_path(
+                raw_path,
+                plan_shot_id=plan_shot_id,
+                known_plan_shot_ids=known_plan_shot_ids,
+                allowed_patch_paths=allowed_patch_paths,
+            )
             value, reason = normalize_value(normalized_path, raw_value)
             if normalized_path in changes and changes[normalized_path] != value:
                 raise PatchNormalizationError("conflicting normalized changes", code="DIRECTOR_PATCH_NORMALIZATION_CONFLICT", path=normalized_path)
@@ -341,14 +358,24 @@ def normalize_patch_item(
             raise PatchNormalizationError(f"patch contains forbidden fields: {', '.join(forbidden)}", code="DIRECTOR_PATCH_FIELD_FORBIDDEN", path=path)
         patch_value = raw.get("patch")
         if isinstance(patch_value, dict) and not {"op", "path", "value"}.intersection(patch_value):
-            changes, nested_reasons = flatten_nested_changes(patch_value, path=f"{path}.patch")
+            changes, nested_reasons = flatten_nested_changes(
+                patch_value,
+                path=f"{path}.patch",
+                plan_shot_id=plan_shot_id,
+                allowed_patch_paths=allowed_patch_paths,
+            )
             reasons.extend(nested_reasons)
             source_format = "nested_patch_wrapper"
         else:
             operations = patch_value if isinstance(patch_value, list) else [patch_value]
             changes = {}
             for operation in operations:
-                normalized_path, value, reason = normalize_operation(operation, plan_shot_id=plan_shot_id, known_plan_shot_ids=known_plan_shot_ids)
+                normalized_path, value, reason = normalize_operation(
+                    operation,
+                    plan_shot_id=plan_shot_id,
+                    known_plan_shot_ids=known_plan_shot_ids,
+                    allowed_patch_paths=allowed_patch_paths,
+                )
                 if normalized_path in changes and changes[normalized_path] != value:
                     raise PatchNormalizationError("conflicting normalized changes", code="DIRECTOR_PATCH_NORMALIZATION_CONFLICT", path=normalized_path)
                 changes[normalized_path] = value
@@ -360,14 +387,24 @@ def normalize_patch_item(
         forbidden = sorted(set(raw) - {"plan_shot_id", "patch_id", "path", "value", "op", "rationale", "confidence"})
         if forbidden:
             raise PatchNormalizationError(f"patch contains forbidden fields: {', '.join(forbidden)}", code="DIRECTOR_PATCH_FIELD_FORBIDDEN", path=path)
-        normalized_path, value, reason = normalize_operation({"op": raw.get("op") or "replace", "path": raw.get("path"), "value": raw.get("value")}, plan_shot_id=plan_shot_id, known_plan_shot_ids=known_plan_shot_ids)
+        normalized_path, value, reason = normalize_operation(
+            {"op": raw.get("op") or "replace", "path": raw.get("path"), "value": raw.get("value")},
+            plan_shot_id=plan_shot_id,
+            known_plan_shot_ids=known_plan_shot_ids,
+            allowed_patch_paths=allowed_patch_paths,
+        )
         changes = {normalized_path: value}
         source_format = "json_patch_operation"
         reasons.append("path_canonicalization")
         if reason:
             reasons.append(reason)
     else:
-        changes, nested_reasons = flatten_nested_changes(raw, path=path)
+        changes, nested_reasons = flatten_nested_changes(
+            raw,
+            path=path,
+            plan_shot_id=plan_shot_id,
+            allowed_patch_paths=allowed_patch_paths,
+        )
         reasons.extend(nested_reasons)
         source_format = "nested_creative_fields"
     normalized: dict[str, Any] = {"plan_shot_id": plan_shot_id, "changes": changes}
@@ -390,6 +427,7 @@ def normalize_patch_document(
     raw: Any,
     *,
     known_plan_shot_ids: Iterable[str] | None = None,
+    allowed_patch_paths: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Normalize a full patch document and return an auditable copy.
 
@@ -408,7 +446,15 @@ def normalize_patch_document(
         patches_raw = raw.get("patch")
     if not isinstance(patches_raw, list):
         raise PatchNormalizationError("patches must be a list", path="patches")
-    patches = [normalize_patch_item(item, index=index, known_plan_shot_ids=known_plan_shot_ids) for index, item in enumerate(patches_raw)]
+    patches = [
+        normalize_patch_item(
+            item,
+            index=index,
+            known_plan_shot_ids=known_plan_shot_ids,
+            allowed_patch_paths=allowed_patch_paths,
+        )
+        for index, item in enumerate(patches_raw)
+    ]
     # Preserve all items here; merging is a semantic Level 1 operation.  The
     # normalizer must not silently discard a conflicting duplicate.
     normalized: dict[str, Any] = {
@@ -431,6 +477,88 @@ def normalize_patch_document(
     return normalized
 
 
+def collect_path_resolution_metrics(
+    raw: Any,
+    *,
+    known_plan_shot_ids: Iterable[str] | None = None,
+    allowed_patch_paths: Iterable[str] | None = None,
+) -> dict[str, Any]:
+    """Audit every path-like field without applying or inventing a patch."""
+
+    metrics = {
+        "path_resolution_attempt_count": 0,
+        "path_resolution_success_count": 0,
+        "path_resolution_failure_count": 0,
+        "path_resolution_success_rate": 1.0,
+        "path_alias_hit_count": 0,
+        "ambiguous_path_count": 0,
+        "forbidden_path_count": 0,
+        "failures": [],
+    }
+    if not isinstance(raw, dict):
+        return metrics
+
+    def visit_path(path_value: Any, target: str) -> None:
+        metrics["path_resolution_attempt_count"] += 1
+        try:
+            resolved = resolve_patch_path(
+                path_value,
+                plan_shot_id=target,
+                known_plan_shot_ids=known_plan_shot_ids,
+                allowed_patch_paths=allowed_patch_paths,
+            )
+            metrics["path_resolution_success_count"] += 1
+            if resolved.alias_hit or _text(path_value) != resolved.path:
+                metrics["path_alias_hit_count"] += 1
+        except PatchPathResolutionError as exc:
+            metrics["path_resolution_failure_count"] += 1
+            if exc.code == "AMBIGUOUS_PATCH_PATH":
+                metrics["ambiguous_path_count"] += 1
+            if exc.code == "DIRECTOR_PATCH_PATH_FORBIDDEN":
+                metrics["forbidden_path_count"] += 1
+            metrics["failures"].append({"plan_shot_id": target, "raw_path": _text(path_value), "code": exc.code})
+
+    for item in raw.get("patches") or []:
+        if not isinstance(item, dict):
+            continue
+        target = _text(item.get("plan_shot_id"))
+        changes = item.get("changes")
+        if isinstance(changes, dict):
+            for path_value in changes:
+                visit_path(path_value, target)
+            continue
+        patch_value = item.get("patch")
+        if patch_value is not None:
+            if isinstance(patch_value, dict) and not {"op", "path", "value"}.intersection(patch_value):
+                for field, value in patch_value.items():
+                    if isinstance(value, dict):
+                        for child in value:
+                            visit_path(f"{field}.{child}", target)
+                    else:
+                        visit_path(field, target)
+            else:
+                operations = patch_value if isinstance(patch_value, list) else [patch_value]
+                for operation in operations:
+                    if isinstance(operation, dict) and "path" in operation:
+                        visit_path(operation.get("path"), target)
+            continue
+        if "path" in item:
+            visit_path(item.get("path"), target)
+            continue
+        for field, value in item.items():
+            if field in {"plan_shot_id", "patch_id", "rationale", "confidence", "_source_format"}:
+                continue
+            if isinstance(value, dict):
+                for child in value:
+                    visit_path(f"{field}.{child}", target)
+            else:
+                visit_path(field, target)
+    attempts = int(metrics["path_resolution_attempt_count"])
+    if attempts:
+        metrics["path_resolution_success_rate"] = round(metrics["path_resolution_success_count"] / attempts, 4)
+    return metrics
+
+
 # Friendly names for callers and hidden/regression tests.
 normalize_path = canonical_path
 normalize_patch = normalize_patch_item
@@ -451,4 +579,5 @@ __all__ = [
     "normalize_patch",
     "normalize_patch_document",
     "normalize_creative_patch_document",
+    "collect_path_resolution_metrics",
 ]

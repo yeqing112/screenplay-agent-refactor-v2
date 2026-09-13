@@ -541,7 +541,11 @@ def build_creative_patch_candidate(
             for item in (structural_shot_plan.get("shots") or [])
             if isinstance(item, dict) and str(item.get("plan_shot_id") or "").strip()
         ]
-        level01 = deterministic_repair_document(output, known_plan_shot_ids=known_ids)
+        level01 = deterministic_repair_document(
+            output,
+            known_plan_shot_ids=known_ids,
+            allowed_patch_paths=contract.get("allowed_patch_paths") if isinstance(contract, dict) else None,
+        )
         parse_input = level01["schema_document"]
         normalization_audit = {
             "normalizer_version": "director-quality-v2-2-level0",
@@ -550,12 +554,15 @@ def build_creative_patch_candidate(
             "before_fingerprint": level01.get("before_fingerprint", ""),
             "after_fingerprint": level01.get("after_fingerprint", ""),
             "rejected": copy.deepcopy(level01.get("rejected") or []),
+            "path_resolution": copy.deepcopy((level01.get("document") or {}).get("normalization_metadata", {}).get("path_resolution") or {}),
         }
     except Exception as exc:
         # Keep the strict schema as the authority for malformed/non-equivalent
         # payloads.  Only the normalizer's structured error is exposed in
         # telemetry; no fallback or creative value is invented here.
         normalization_audit["error"] = str(exc)[:500]
+        if hasattr(exc, "path_metrics"):
+            normalization_audit["path_resolution"] = copy.deepcopy(getattr(exc, "path_metrics"))
     try:
         patch_document = parse_creative_patch(parse_input)
     except CreativePatchSchemaError as exc:
