@@ -153,7 +153,12 @@ def main() -> None:
     from scripts.run_director_quality_v2_2_mimo_pilot_authorized import validate_real_authorization
 
     profile = get_profile(args.profile_id)
-    validate_real_authorization(execute_real=True, confirmation_token=CONFIRMATION_TOKEN, profile=profile)
+    validate_real_authorization(
+        execute_real=True,
+        confirmation_token=CONFIRMATION_TOKEN,
+        expected_token=CONFIRMATION_TOKEN,
+        profile=profile,
+    )
     result = run_v221_pilot(profile=profile, scene_limit=max(12, int(args.scene_limit)))
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     ARTIFACTS.mkdir(exist_ok=True)

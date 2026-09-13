@@ -276,7 +276,11 @@ def run_authorized_pilot(
                         contract=contract,
                         strategy=strategy,
                         repair_callable=repair_call,
-                        max_attempts=2,
+                        # Preserve the historical V2.1 benchmark wire
+                        # semantics.  V2.2+ uses the stricter target-locked
+                        # replacement contract and a two-attempt ceiling.
+                        max_attempts=1,
+                        legacy_path_replacement=True,
                     )
                     repair_records.append({"kind": kind, "identity": identity, **{key: repaired.get(key) for key in ("status", "attempt_count", "attempts", "fallback_to_baseline")}})
                     if repaired.get("status") == "repaired" and isinstance(repaired.get("accepted_patch"), dict):
@@ -290,7 +294,7 @@ def run_authorized_pilot(
                         contract=contract,
                         strategy=strategy,
                         repair_callable=repair_call,
-                        max_attempts=2,
+                        max_attempts=1,
                     )
                     repair_records.append({"kind": kind, "identity": identity, **{key: repaired.get(key) for key in ("status", "attempt_count", "attempts", "fallback_to_baseline")}})
                     if repaired.get("status") == "repaired" and isinstance(repaired.get("accepted_proposal"), dict):

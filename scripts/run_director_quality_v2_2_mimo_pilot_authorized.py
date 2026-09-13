@@ -48,12 +48,19 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 def validate_real_authorization(
     *, execute_real: bool, confirmation_token: str, profile: dict[str, Any] | None,
+    expected_token: str | None = None,
 ) -> dict[str, str]:
-    """Fail closed unless the operator explicitly authorizes a V2.2 run."""
+    """Fail closed unless the operator explicitly authorizes a guarded run.
+
+    ``expected_token`` lets a versioned wrapper (for example V2.2.1) retain
+    its own explicit operator confirmation while reusing the profile and
+    provider validation.  The default remains the V2.2 token for backwards
+    compatibility; no caller can bypass the execute/profile checks.
+    """
 
     if not execute_real:
         raise PermissionError("真实 V2.2 Pilot 默认关闭；必须显式提供 --execute-real。")
-    if _text(confirmation_token) != CONFIRMATION_TOKEN:
+    if _text(confirmation_token) != _text(expected_token or CONFIRMATION_TOKEN):
         raise PermissionError("真实 V2.2 Pilot confirmation token 不匹配。")
     if not isinstance(profile, dict):
         raise ValueError("必须显式指定已保存的 MiMo LLM profile。")

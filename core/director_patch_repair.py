@@ -194,8 +194,16 @@ def repair_failed_patch(
     repair_level: int = 2,
     repair_engine: str = "llm",
     stop_on_same_error: bool = False,
+    legacy_path_replacement: bool = False,
 ) -> dict[str, Any]:
-    """Repair a single failed patch without rerunning scene planning."""
+    """Repair a single failed patch without rerunning scene planning.
+
+    ``legacy_path_replacement`` is retained solely for the historical V2.1
+    benchmark runner.  V2.2+ callers leave it disabled, which enforces the
+    target/path-locked ``RepairReplacement`` contract.  Keeping the switch
+    explicit preserves the old benchmark's wire semantics without weakening
+    the production repair contract.
+    """
 
     if not isinstance(structural_shot_plan, dict) or not isinstance(failed_patch, dict):
         raise ValueError("structural_shot_plan and failed_patch must be objects")
@@ -209,7 +217,11 @@ def repair_failed_patch(
     if not allowed_repair_paths and len(declared_paths) == 1:
         allowed_repair_paths = declared_paths
     request = {
-        "protocol_version": "director-quality-v2-2-1-repair-replacement",
+        "protocol_version": (
+            "director-quality-v2-1-local-repair"
+            if legacy_path_replacement
+            else "director-quality-v2-2-1-repair-replacement"
+        ),
         "failed_patch": copy.deepcopy(failed_patch),
         "target": {"plan_shot_id": plan_shot_id, "path": declared_paths[0] if len(declared_paths) == 1 else ""},
         "allowed_repair_paths": copy.deepcopy(allowed_repair_paths),
@@ -269,8 +281,15 @@ def repair_failed_patch(
             replacement = normalize_repair_output(
                 repaired_raw,
                 expected_plan_shot_id=plan_shot_id,
-                expected_path=declared_paths[0] if len(declared_paths) == 1 else "",
-                allowed_repair_paths=allowed_repair_paths,
+                # V2.1 accepted a valid creative replacement for a rejected
+                # patch even when the provider changed its field path.  This
+                # compatibility mode is never enabled by V2.2+ callers.
+                expected_path=(
+                    ""
+                    if legacy_path_replacement
+                    else (declared_paths[0] if len(declared_paths) == 1 else "")
+                ),
+                allowed_repair_paths=(None if legacy_path_replacement else allowed_repair_paths),
             )
             replacement_value = replacement.get("replacement_value")
             target = _dict(replacement.get("target"))
