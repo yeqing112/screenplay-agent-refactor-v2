@@ -439,23 +439,51 @@ async def _test_openai_compatible_profile(profile: dict[str, Any]) -> dict[str, 
 
     model_ids = [str(item.get("id")) for item in data.get("data", []) if isinstance(item, dict)]
     configured = str(profile.get("model_name") or "")
-    message = "连接成功"
-    model_available = not model_ids or configured in model_ids
+    # Some OpenAI-compatible providers (notably Volcengine Ark) expose
+    # versioned model IDs in `/models` while their product documentation uses
+    # a friendly alias. Keep exact matching authoritative, but return nearby
+    # IDs so the operator can select a real endpoint instead of guessing.
+    def _normalise_model_id(value: Any) -> str:
+        return str(value or "").strip().lower().replace(".", "-")
+
+    configured_normalised = _normalise_model_id(configured)
+    suggested_models = [
+        model_id for model_id in model_ids
+        if configured_normalised
+        and (
+            _normalise_model_id(model_id).startswith(configured_normalised + "-")
+            or configured_normalised.startswith(_normalise_model_id(model_id) + "-")
+        )
+    ][:8]
+    model_available = (configured in model_ids) if model_ids else None
     if model_ids and not model_available:
         message = f"连接成功，但远端模型列表中未发现 {configured}"
+        if suggested_models:
+            message += f"；可选近似模型：{'、'.join(suggested_models)}"
         if profile.get("provider") == SHAPI_OPENAI_IMAGES_PROVIDER:
             # A successful /models response is not sufficient for SHAPI:
             # submitting a model absent from this account's catalog yields
             # the opaque `No available channel` generation error. Fail the
             # probe early and expose the catalog so the operator can choose a
             # model the account actually serves.
-            return {
-                "ok": False,
-                "message": f"{message}；当前账户没有该模型的可用渠道。",
-                "available_models": model_ids,
-            }
+            message += "；当前账户没有该模型的可用渠道。"
+        return {
+            "ok": False,
+            "message": message,
+            "model_available": False,
+            "available_models": model_ids,
+            "suggested_models": suggested_models,
+            "catalog_status": "verified",
+        }
 
-    return {"ok": True, "message": message}
+    return {
+        "ok": True,
+        "message": "连接成功" if model_ids else "连接成功；远端未提供模型目录，未校验模型名",
+        "model_available": model_available,
+        "available_models": model_ids,
+        "suggested_models": suggested_models,
+        "catalog_status": "verified" if model_ids else "unavailable",
+    }
 
 
 async def _test_shapi_gemini_image_profile(profile: dict[str, Any]) -> dict[str, Any]:
@@ -603,4 +631,7 @@ async def test_profile_connection(
     }
     if isinstance(result.get("available_models"), list):
         response["available_models"] = result["available_models"]
+    for key in ("model_available", "suggested_models", "catalog_status"):
+        if key in result:
+            response[key] = result[key]
     return response

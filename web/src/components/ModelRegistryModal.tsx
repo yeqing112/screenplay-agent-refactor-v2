@@ -26,7 +26,13 @@ type EditableProfileDraft = {
 }
 
 type FeedbackTone = 'info' | 'success' | 'error'
-type TestResultMeta = { tone: FeedbackTone; text: string }
+type TestResultMeta = {
+  tone: FeedbackTone
+  text: string
+  modelAvailable?: boolean
+  suggestedModels?: string[]
+  availableModelCount?: number
+}
 type ProfileFilter = 'all' | 'default' | 'missing-key' | 'live'
 type LlmThinkingType = 'enabled' | 'disabled'
 
@@ -1074,11 +1080,20 @@ export default function ModelRegistryModal({
               default_params: parsedDefaultParams,
             },
           })
-      setFeedback({ tone: 'success', text: result.message })
+      const resultTone: FeedbackTone = result.ok ? 'success' : 'error'
+      const suggestedModels = Array.isArray(result.suggested_models) ? result.suggested_models : []
+      const availableModels = Array.isArray(result.available_models) ? result.available_models : []
+      setFeedback({ tone: resultTone, text: result.message })
       if (profile?.id) {
         setTestResultsByProfile((current) => ({
           ...current,
-          [profile.id]: { tone: 'success', text: result.message },
+          [profile.id]: {
+            tone: resultTone,
+            text: result.message,
+            modelAvailable: result.model_available,
+            suggestedModels,
+            availableModelCount: availableModels.length,
+          },
         }))
       }
     } catch (testError) {
@@ -1231,6 +1246,14 @@ export default function ModelRegistryModal({
                         {testMeta ? (
                           <div className={`mt-2 rounded-2xl border px-3 py-2 text-xs leading-5 ${getResultToneClass(testMeta.tone)}`}>
                             最近一次测试：{testMeta.text}
+                            {testMeta.suggestedModels?.length ? (
+                              <div className="mt-1 text-amber-100">
+                                建议改用：{testMeta.suggestedModels.join(' · ')}
+                              </div>
+                            ) : null}
+                            {testMeta.availableModelCount && !testMeta.suggestedModels?.length ? (
+                              <div className="mt-1 text-slate-300">远端可用模型：{testMeta.availableModelCount} 个（请编辑并填写准确模型 ID）</div>
+                            ) : null}
                           </div>
                         ) : (
                           <div className="mt-2 rounded-2xl border border-slate-800 bg-slate-900/40 px-3 py-2 text-xs leading-5 text-slate-400">

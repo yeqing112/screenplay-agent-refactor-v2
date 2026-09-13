@@ -335,6 +335,66 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("没有该模型的可用渠道", result["message"])
         self.assertIn("grok-imagine-image", result["available_models"])
 
+    async def test_openai_compatible_probe_reports_versioned_volcengine_model_suggestions(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {
+            "data": [
+                {"id": "doubao-seed-2-0-lite-260215"},
+                {"id": "doubao-seed-2-0-lite-260428"},
+                {"id": "deepseek-v3-1-terminus"},
+            ]
+        }
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "火山",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                    "model_name": "doubao-seed-2.0-lite",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertFalse(result["ok"])
+        self.assertFalse(result["model_available"])
+        self.assertEqual(
+            result["suggested_models"],
+            ["doubao-seed-2-0-lite-260215", "doubao-seed-2-0-lite-260428"],
+        )
+        self.assertIn("可选近似模型", result["message"])
+        self.assertEqual(len(result["available_models"]), 3)
+
+    async def test_openai_compatible_probe_marks_empty_model_catalog_as_unverified(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {"data": []}
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "兼容接口",
+                    "capability": "llm",
+                    "provider": "openai-compatible",
+                    "base_url": "https://example.invalid/v1",
+                    "model_name": "alias-model",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertIsNone(result["model_available"])
+        self.assertEqual(result["catalog_status"], "unavailable")
+        self.assertIn("未提供模型目录", result["message"])
+
     async def test_mock_profile_test_endpoint_returns_ok(self):
         result = await run_profile_connection_test(profile_id="builtin-mock-image")
         self.assertTrue(result["ok"])

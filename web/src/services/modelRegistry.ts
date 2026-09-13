@@ -27,6 +27,10 @@ export interface ModelRegistryTestPayload {
   ok: boolean
   message: string
   profile: ModelProfileRecord
+  model_available?: boolean
+  catalog_status?: 'verified' | 'unavailable'
+  available_models?: string[]
+  suggested_models?: string[]
 }
 
 const API = '/api/model-registry'
