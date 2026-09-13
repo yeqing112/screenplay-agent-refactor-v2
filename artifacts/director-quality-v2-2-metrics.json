@@ -32,5 +32,43 @@
     "object_storage_calls": 0,
     "llm_provider_calls": 0
   },
-  "real_stage_a_executed": false
+  "real_stage_a_executed": true,
+  "real_stage_a": {
+    "artifact": "artifacts/director-quality-v2-2-stage-a-mimo-pilot-20260913T145407Z.json",
+    "pilot_mode": "real_mimo_benchmark_only",
+    "model": "mimo-v2.5",
+    "scene_count": 12,
+    "stages": {
+      "raw_parse_pass": {"count": 10, "total": 12, "rate": 0.8333},
+      "normalized_parse_pass": {"count": 12, "total": 12, "rate": 1.0},
+      "first_pass_schema_pass": {"count": 10, "total": 12, "rate": 0.8333},
+      "first_pass_contract_pass": {"count": 10, "total": 12, "rate": 0.8333},
+      "post_normalization_contract_pass": {"count": 12, "total": 12, "rate": 1.0},
+      "post_deterministic_repair_pass": {"count": 12, "total": 12, "rate": 1.0},
+      "post_llm_repair_pass": {"count": 2, "total": 12, "rate": 0.1667},
+      "final_contract_pass": {"count": 12, "total": 12, "rate": 1.0}
+    },
+    "repair_cost": {
+      "llm_repair_calls": 14,
+      "llm_repair_calls_per_scene": 1.1667,
+      "repair_token_cost": 34125,
+      "repair_latency_ms": 119589.02,
+      "fallback_after_repair_count": 0
+    },
+    "fallback_patch_count": 27,
+    "fallback_patch_rate": 0.2093,
+    "creative_retention_rate": 0.7829,
+    "full_creative_scene_success_rate": 0.75,
+    "director_quality_average": 58.7,
+    "quality_delta_vs_v21": 1.72,
+    "cache_hit_rate": 0.460539,
+    "avg_latency_ms": 17189.84,
+    "side_effects": {
+      "production_rows_written": 0,
+      "storyboard_shots_created": 0,
+      "media_calls": 0,
+      "object_storage_calls": 0
+    },
+    "production_shadow_enabled": false
+  }
 }

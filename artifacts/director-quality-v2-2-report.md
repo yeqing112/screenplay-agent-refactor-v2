@@ -2,13 +2,13 @@
 
 ## Executive Summary
 
-V2.2 已完成离线的三级 Repair Pipeline：`MiMo Raw Output → Level 0 Normalization → Level 1 Deterministic Repair → Contract Validation → Level 2 Local Repair → fallback`。本地全仓库回归为 `820 passed`，Production Storyboard gate 与 V2.2 定向回归均通过。离线回放 12 个冻结场景未产生 LLM、数据库、Storyboard、媒体或对象存储副作用。
+V2.2 已完成离线的三级 Repair Pipeline：`MiMo Raw Output → Level 0 Normalization → Level 1 Deterministic Repair → Contract Validation → Level 2 Local Repair → fallback`。本地全仓库回归为 `823 passed`，Production Storyboard gate 与 V2.2 定向回归均通过。随后按显式授权完成 12 场景真实 MiMo Stage A benchmark-only Pilot；Pilot 未写生产对象、未生成媒体，且未开启 Production Shadow。
 
 本报告严格区分：
 
 - **V2.1 Baseline**：真实 MiMo Pilot 的已提交基线；
 - **V2.2 Offline As-Built**：使用冻结 V2.1 候选文档的本地回放，不等同于真实 MiMo A/B；
-- **Stage A Real MiMo**：尚未执行，因此不宣称 V2.2 已达到生产 Shadow 门槛。
+- **Stage A Real MiMo**：真实 MiMo 12 场景结果已执行并单独落档；该结果用于 A/B 判断，不等同于已通过 Production Shadow 门槛。
 
 ## V2.1 Baseline
 
@@ -78,18 +78,33 @@ partial 模式在字段级保留可编译 sibling，默认原子编译行为不�
 - Production reverse test：mock `StoryboardAgent.run()` 时调用次数为 `0`。
 - Guarded Stage A runner authorization/mock tests：`7 passed`；默认 CLI 为 `preflight_only`，真实 provider 调用 `0`。
 
-## Stage A A/B Comparison
+## Stage A Real MiMo A/B Comparison
 
-Stage A 真实 MiMo 12 场景 benchmark-only 尚未执行。入口已由 `scripts/run_director_quality_v2_2_mimo_pilot_authorized.py` 提供三重显式门禁；因缺少 V2.2 的真实 repair/token/latency/cache/quality telemetry，以下项目保持未评估：LLM Repair Calls Reduction、Fallback Reduction、Director Quality Delta、Cache Hit、真实 Creative Retention。
+来源：`artifacts/director-quality-v2-2-stage-a-mimo-pilot-20260913T145407Z.json`。运行范围严格为冻结 Golden 的 12 个场景；真实调用仅发生在 guarded runner，未写入生产数据库/Storyboard/媒体/对象存储。
+
+| 指标 | V2.1 基线 | V2.2 Stage A 实测 | 结果 |
+|---|---:|---:|---|
+| 场景 | 12 | 12 | 同口径 |
+| Planner / Repair 调用 | 12 / 33 | 12 / 14 | Repair 下降 57.6% |
+| 首轮 Schema Pass | 10/12 | 10/12 | 持平 |
+| 最终 Contract Pass | 12/12 | 12/12 | 保持 100% |
+| Fallback patch | 15 | 27（20.93%） | 退化 |
+| Creative Retention Rate | 未记录 | 78.29% | 未达 ≥90% 门槛 |
+| Full Creative Scene Success | 未记录 | 75% | 未达 ≥85% 门槛 |
+| Director Quality 平均 | 56.98 | 58.70 | +1.72 |
+| 平均延迟 | 12.25s | 17.19s | 退化 |
+| Cache hit | 79.07% | 46.05% | 未达 ≥70% 门槛 |
+
+Fallback 根因：17 个 `FORBIDDEN_PATH / DIRECTOR_PATCH_FIELD_FORBIDDEN`，10 个 `LLM_REPAIR_CONTRACT_FAILURE / INVALID_PATCH_VALUE`。9/12 场景为 `valid`，3/12 为 `partial`；所有场景最终 Contract pass，但部分场景依靠 patch-level fallback 保持结构合规。该结果证明“减少无效 repair 调用”已生效，但当前归一化覆盖与创意保留仍不足，不能将 fallback 或低 retention 误报为质量提升。
 
 ## Release Decision
 
 **NOT_READY_FOR_PRODUCTION_SHADOW**
 
-原因是 Stage A 外部 Pilot 证据尚缺；本地安全门、Contract 边界、Production Materializer 反向测试和离线副作用隔离均已通过。下一步只能在明确授权后运行独立的 12 场景真实 MiMo benchmark-only pilot；不得切换 Production default、不得进入媒体生成、不得自动开启 Shadow。
+Stage A 已有完整外部证据，但未达到 Shadow 门槛：fallback、Creative Retention、Full Creative Scene Success、Cache hit 和延迟均出现退化或不足。Final Contract pass 仍为 12/12，且所有副作用计数为 0。下一阶段应先修复上述根因并重新进行同口径 benchmark；不得切换 Production default、不得进入媒体生成、不得自动开启 Shadow。
 
 ## Remaining Bottlenecks
 
-1. 真实 MiMo 首轮输出尚未用 V2.2 runner 复测，无法验证 repair calls 是否从 33 次下降。
-2. 真实 token/latency/cache 需与 V2.1 同口径采集。
-3. 需要独立盲审才能报告 Director Quality 与 Creative Retention 的真实变化。
+1. `FORBIDDEN_PATH` 仍有 17 个，说明真实 MiMo 的 operation/path envelope 还有未覆盖的等价格式，应扩充 canonical normalization 并增加真实样本回放。
+2. 10 个 `INVALID_PATCH_VALUE` 在 Level 2 repair 后仍 fallback，需收紧 repair 输出 schema 与字段级接受策略，提升 creative retention（不得放宽事实边界）。
+3. V2.2 cache hit 46.05%、平均延迟 17.19s，需检查 prompt 前缀稳定性与 repair prompt 去重；独立盲审仍需后续执行，当前 Director Quality +1.72 仅为内部指标。

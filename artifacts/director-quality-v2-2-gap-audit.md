@@ -378,3 +378,44 @@ V2.1 已证明 Contract-First、patch-level partial acceptance、最终 Contract
 
 - `cb727c1`：字段级 partial acceptance 与 V2.2 pipeline/test 收口。
 - `6a3ce78`：离线 V2.2 benchmark replay runner、回放测试及 pipeline 可观测字段。
+
+## 18. Final As-Built Verification（Stage A 真实 MiMo）
+
+本节记录在完成本地门禁后、经操作者明确确认执行的真实 MiMo Stage A Pilot；与第 1–16 节的 Baseline Audit 及第 17 节的 Local As-Built Verification 分开。Pilot 只读取冻结 Golden evidence，严格限制为 12 个场景，未修改生产数据或历史产物。
+
+### 18.1 执行与边界证据
+
+- Artifact：`artifacts/director-quality-v2-2-stage-a-mimo-pilot-20260913T145407Z.json`。
+- `pilot_mode=real_mimo_benchmark_only`，模型为已保存 profile 的 `mimo-v2.5`。
+- `scene_count=12`；`production_shadow.enabled=false`。
+- `side_effects`：production rows、Storyboard shots、media、object storage 全部为 `0`。
+- Artifact 未包含 API key 或 bearer token；仅保留 profile/model、host、指纹、用量和延迟遥测。
+- 真实调用总数 26（Planner 12、Repair 14），所有 HTTP 状态均为成功且可解析；无 retry。
+
+### 18.2 Stage A 实测指标
+
+| 指标 | V2.1 基线 | V2.2 Stage A | 判断 |
+|---|---:|---:|---|
+| 首轮 Schema Pass | 10/12 | 10/12 | 持平 |
+| 最终 Contract Pass | 12/12 | 12/12 | 通过 |
+| Repair 调用 | 33 | 14 | 改善 |
+| Fallback patch | 15 | 27（20.93%） | 退化 |
+| Creative Retention | 未记录 | 78.29% | 未达 90% |
+| Full Creative Scene Success | 未记录 | 75% | 未达 85% |
+| Director Quality 平均 | 56.98 | 58.70（+1.72） | 内部指标上升 |
+| Cache hit | 79.07% | 46.05% | 未达 70% |
+| 平均延迟 | 12.25s | 17.19s | 退化 |
+
+Fallback 共 27 个：17 个 `FORBIDDEN_PATH / DIRECTOR_PATCH_FIELD_FORBIDDEN`，10 个 `LLM_REPAIR_CONTRACT_FAILURE / INVALID_PATCH_VALUE`。9 个场景为 `valid`，3 个为 `partial`；最终 Contract 仍为 12/12，说明结构安全边界保持，但创意候选保留不足。
+
+### 18.3 Release 判断
+
+**NOT_READY_FOR_PRODUCTION_SHADOW**。Stage A 已完成但未达到方案门槛：Creative Retention、Full Creative Scene Success、Cache hit 未达目标，fallback 与延迟相对 V2.1 退化。不得据此开启 Production Shadow 或切换 Production default。
+
+下一轮仅允许在修复以下通用根因后，以同口径重新 benchmark：
+
+1. 扩充 canonical normalizer 对真实 MiMo operation/path envelope 的等价覆盖，降低 17 个 `FORBIDDEN_PATH`。
+2. 强化 Level 2 repair 的 patch identity 与字段级 contract，降低 10 个 `INVALID_PATCH_VALUE` fallback，同时保持事实越权 fail-closed。
+3. 稳定 planner/repair 前缀并去重 repair 请求，恢复 cache hit 与延迟；不得通过 fallback baseline 或放宽 validator 制造虚高指标。
+
+本次真实 Pilot 仅新增上述带时间戳 artifact 与本报告/metrics/audit 更新；未清理、覆盖或删除任何既有历史 artifact。
