@@ -498,6 +498,14 @@ def build_creative_patch_candidate(
     schema_error_code = ""
     forbidden_field_attempt = False
     schema_rejections: list[dict[str, Any]] = []
+    normalization_audit: dict[str, Any] = {
+        "normalizer_version": "director-quality-v2-2-level0",
+        "normalization_events": [],
+        "deterministic_repair_events": [],
+        "before_fingerprint": "",
+        "after_fingerprint": "",
+        "rejected": [],
+    }
     output = llm_output
     if output is None and llm_callable is not None:
         if confirmed and allow_external_call:
@@ -518,8 +526,38 @@ def build_creative_patch_candidate(
         if planner_mode != "deterministic_fallback":
             planner_mode = "deterministic_fallback"
             planner_error = "no creative patch output supplied"
+    # V2.2 routing begins with a provider-neutral Level 0/1 pass.  The rich
+    # audit form is reduced to the existing strict schema shape before the
+    # Contract/Compiler boundary, so old callers retain the same public
+    # document format while equivalent envelopes no longer trigger an LLM
+    # repair.  Any non-equivalent or unsafe representation is handed to the
+    # strict parser unchanged so its fail-closed diagnostics remain intact.
+    parse_input = output
     try:
-        patch_document = parse_creative_patch(output)
+        from core.director_patch_deterministic_repair import deterministic_repair_document
+
+        known_ids = [
+            str(item.get("plan_shot_id") or "").strip()
+            for item in (structural_shot_plan.get("shots") or [])
+            if isinstance(item, dict) and str(item.get("plan_shot_id") or "").strip()
+        ]
+        level01 = deterministic_repair_document(output, known_plan_shot_ids=known_ids)
+        parse_input = level01["schema_document"]
+        normalization_audit = {
+            "normalizer_version": "director-quality-v2-2-level0",
+            "normalization_events": [event for event in level01.get("events", []) if "kind" not in event],
+            "deterministic_repair_events": [event for event in level01.get("events", []) if "kind" in event],
+            "before_fingerprint": level01.get("before_fingerprint", ""),
+            "after_fingerprint": level01.get("after_fingerprint", ""),
+            "rejected": copy.deepcopy(level01.get("rejected") or []),
+        }
+    except Exception as exc:
+        # Keep the strict schema as the authority for malformed/non-equivalent
+        # payloads.  Only the normalizer's structured error is exposed in
+        # telemetry; no fallback or creative value is invented here.
+        normalization_audit["error"] = str(exc)[:500]
+    try:
+        patch_document = parse_creative_patch(parse_input)
     except CreativePatchSchemaError as exc:
         # Salvage independent valid items where possible.  Fatal protocol or
         # fingerprint errors still fall back to an empty document; item-level
@@ -557,6 +595,7 @@ def build_creative_patch_candidate(
             "forbidden_field_attempt": forbidden_field_attempt,
             "schema_rejections": schema_rejections,
             "normalization_metadata": copy.deepcopy(patch_document.get("normalization_metadata") or {}),
+            "v22_normalization": normalization_audit,
         },
         "evidence_fingerprint": evidence_fp,
         "structural_plan_fingerprint": fingerprint(_protected_projection(structural_shot_plan)),

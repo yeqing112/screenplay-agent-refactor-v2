@@ -13,6 +13,12 @@ import hashlib
 import json
 from typing import Any
 
+from core.director_patch_normalizer import (
+    PatchNormalizationError,
+    canonical_path as _canonical_path,
+    normalize_value as _normalize_value,
+)
+
 
 PATCH_SCHEMA_VERSION = "director_creative_patch_v1"
 # ``patch_fingerprint`` is emitted by ``parse_creative_patch`` as an internal
@@ -95,7 +101,12 @@ def _normalize_changes(raw: Any, *, path: str) -> dict[str, Any]:
                 code="DIRECTOR_FACT_OVERRIDE",
                 path=f"{path}.changes.{normalized}",
             )
-        changes[normalized] = copy.deepcopy(value)
+        try:
+            normalized_path = _canonical_path(normalized)
+        except PatchNormalizationError as exc:
+            raise CreativePatchSchemaError(str(exc), code=exc.code, path=f"{path}.changes.{normalized}") from exc
+        normalized_value, _ = _normalize_value(normalized_path, value)
+        changes[normalized_path] = copy.deepcopy(normalized_value)
     return changes
 
 
@@ -108,7 +119,7 @@ def _nested_changes(raw: dict[str, Any], *, path: str) -> dict[str, Any]:
     """
     changes: dict[str, Any] = {}
     for field, value in raw.items():
-        if field in {"plan_shot_id", "patch_id", "rationale", "confidence", "source_format"}:
+        if field in {"plan_shot_id", "patch_id", "rationale", "confidence", "source_format", "_source_format"}:
             continue
         if field not in CREATIVE_NESTED_FIELDS:
             # Immutable/provenance fields must remain visible to the strict
@@ -120,15 +131,23 @@ def _nested_changes(raw: dict[str, Any], *, path: str) -> dict[str, Any]:
             )
         if field in {"camera", "emotion", "composition", "edit", "information_strategy"} and isinstance(value, dict):
             for child, child_value in value.items():
-                if field == "camera" and child not in CAMERA_FIELDS:
+                child_path = f"{field}.{child}"
+                try:
+                    child_path = _canonical_path(child_path)
+                except PatchNormalizationError as exc:
+                    raise CreativePatchSchemaError(str(exc), code=exc.code, path=f"{path}.{field}.{child}") from exc
+                child_name = child_path.split(".")[-1]
+                if field == "camera" and child_name not in CAMERA_FIELDS:
                     raise CreativePatchSchemaError(
-                        f"camera contains forbidden fields: {child}",
+                        f"camera contains forbidden fields: {child_name}",
                         code="DIRECTOR_PATCH_FIELD_FORBIDDEN",
                         path=f"{path}.{field}",
                     )
-                changes[f"{field}.{str(child).strip()}"] = copy.deepcopy(child_value)
+                normalized_value, _ = _normalize_value(child_path, child_value)
+                changes[child_path] = copy.deepcopy(normalized_value)
         else:
-            changes[field] = copy.deepcopy(value)
+            normalized_value, _ = _normalize_value(field, value)
+            changes[field] = copy.deepcopy(normalized_value)
     if not changes:
         raise CreativePatchSchemaError("nested creative patch has no supported fields", path=path)
     return changes
@@ -136,25 +155,10 @@ def _nested_changes(raw: dict[str, Any], *, path: str) -> dict[str, Any]:
 
 def _pointer_to_change(path_value: Any, *, path: str, plan_shot_id: str = "") -> str:
     """Convert one JSON-Patch operation to a canonical change entry."""
-    pointer = _text(path_value)
-    if not pointer:
-        raise CreativePatchSchemaError("patch operation path is required", path=f"{path}.path")
-    if pointer.startswith("/shots/"):
-        parts = pointer.split("/")
-        # /shots/<index>/<creative-field>[/<nested-field>]
-        if len(parts) < 4 or (not parts[2].isdigit() and parts[2] != plan_shot_id):
-            raise CreativePatchSchemaError(
-                "JSON-Patch path must target the declared plan_shot_id",
-                code="DIRECTOR_PATCH_TARGET_MISMATCH",
-                path=f"{path}.path",
-            )
-        pointer = "/".join(parts[3:])
-    elif pointer.startswith("/"):
-        pointer = pointer[1:]
-    pointer = pointer.replace("/", ".").strip(".")
-    if not pointer:
-        raise CreativePatchSchemaError("patch operation path is empty", path=f"{path}.path")
-    return pointer
+    try:
+        return _canonical_path(path_value, plan_shot_id=plan_shot_id)
+    except PatchNormalizationError as exc:
+        raise CreativePatchSchemaError(str(exc), code=exc.code, path=f"{path}.path") from exc
 
 
 def _operation_changes(operations: Any, *, path: str, plan_shot_id: str = "") -> dict[str, Any]:
