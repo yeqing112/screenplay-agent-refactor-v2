@@ -112,6 +112,10 @@ def _aggregate_cost() -> dict[str, Any]:
         "normalization_events": 0, "deterministic_repair_events": 0,
         "llm_repair_calls": 0, "repair_token_cost": 0, "repair_latency_ms": 0,
         "fallback_after_repair_count": 0,
+        "successful_repairs": 0,
+        "failed_repairs": 0,
+        "creative_patches_saved_by_llm_repair": 0,
+        "fallbacks_prevented_by_repair": 0,
     }
 
 
@@ -169,6 +173,15 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
     retained_creative = 0
     fallback_free = 0
     quality_scores: list[float] = []
+    creative_recoverable_total = 0
+    creative_recovered_total = 0
+    safe_fallback_total = 0
+    avoidable_fallback_total = 0
+    path_resolution_total = {
+        "path_resolution_attempt_count": 0, "path_resolution_success_count": 0,
+        "path_resolution_failure_count": 0, "path_alias_hit_count": 0,
+        "ambiguous_path_count": 0, "forbidden_path_count": 0,
+    }
 
     for scene in scenes[:scene_limit]:
         metadata = _dict(scene.get("scene"))
@@ -228,6 +241,14 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             accepted_meta = _dict(result.get("partial_acceptance"))
             patch_count = len(_dict(raw).get("patches") or []) if isinstance(raw, dict) else 0
             fallback_count = len(result.get("fallbacks") or [])
+            creative_recoverable_total += int(result.get("creative_recoverable_patch_count") or 0)
+            creative_recovered_total += int(result.get("creative_recovered_patch_count") or 0)
+            safe_fallback_total += int(result.get("safe_fallback_count") or 0)
+            avoidable_fallback_total += int(result.get("avoidable_fallback_count") or 0)
+            for key in path_resolution_total:
+                path_resolution_total[key] += int(_dict(result.get("path_resolution")).get(key) or 0)
+            cost["successful_repairs"] += int(result.get("successful_repairs") or 0)
+            cost["failed_repairs"] += int(result.get("failed_repairs") or 0)
             total_creative += patch_count + fallback_count
             retained_creative += int(accepted_meta.get("accepted_patch_count") or 0)
             fallback_free += int(not result.get("fallbacks"))
@@ -277,6 +298,13 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             "planner_calls": planner_calls,
             "repair_calls": repair_calls,
             "side_effects": copy.deepcopy(result.get("side_effects") or {}),
+            "path_resolution": copy.deepcopy(result.get("path_resolution") or {}),
+            "creative_recoverable_patch_count": int(result.get("creative_recoverable_patch_count") or 0),
+            "creative_recovered_patch_count": int(result.get("creative_recovered_patch_count") or 0),
+            "safe_fallback_count": int(result.get("safe_fallback_count") or 0),
+            "avoidable_fallback_count": int(result.get("avoidable_fallback_count") or 0),
+            "successful_repairs": int(result.get("successful_repairs") or 0),
+            "failed_repairs": int(result.get("failed_repairs") or 0),
             "quality": quality,
         })
 
@@ -284,7 +312,17 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         stage_counts=counts, repair_cost=cost, creative_patch_count=total_creative,
         retained_creative_patch_count=retained_creative, fallback_free_scene_count=fallback_free,
         scene_count=counts["total_scenes"],
+        creative_recoverable_patch_count=creative_recoverable_total,
+        creative_recovered_patch_count=creative_recovered_total,
+        safe_fallback_count=safe_fallback_total,
+        avoidable_fallback_count=avoidable_fallback_total,
     )
+    metrics["path_resolution"] = {
+        **path_resolution_total,
+        "path_resolution_success_rate": round(
+            path_resolution_total["path_resolution_success_count"] / path_resolution_total["path_resolution_attempt_count"], 4
+        ) if path_resolution_total["path_resolution_attempt_count"] else None,
+    }
     v22_quality_average = round(sum(quality_scores) / len(quality_scores), 2) if quality_scores else None
     v21 = _baseline_summary(baseline_path)
     comparison = {
