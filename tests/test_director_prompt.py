@@ -100,6 +100,25 @@ class DirectorPromptTests(unittest.TestCase):
         self.assertNotIn("example.invalid", serialized)
         self.assertEqual(first["model_snapshot"]["model_name"], "mimo-2.5")
 
+    def test_v23_prompt_requires_canonical_quality_signal_shapes_and_strategy_refs(self):
+        strategy = {
+            "schema_version": "scene_directing_strategy_v2",
+            "strategy_fingerprint": "strategy-v23",
+            "scene_objective": "完成反应节拍",
+            "visual_strategy": "反应优先",
+            "performance_arc": [{"beat_id": "B01", "character_id": "CHAR_001", "objective": "确认声音", "internal_shift": "警觉", "visible_behavior": "抬眼"}],
+            "rhythm_curve": [{"beat_id": "B01", "pace": "hold", "cut_strategy": "反应完成后切", "target_duration_range": [3, 4], "hold_reason": "读取反应"}],
+            "emotion_curve": [{"beat_id": "B01", "character_id": "CHAR_001", "state": "警觉", "intensity": 6}],
+            "information_plan": [{"beat_id": "B01", "audience_should_know": ["听见声音"], "audience_should_not_know_yet": ["声音来源"], "reveal_trigger": "抬眼", "reaction_priority": "人物"}],
+            "camera_language": {"base_style": "自然透视", "movement_rule": "有动机才移动", "closeup_rule": "服务反应", "reaction_rule": "完成反应再切"},
+            "forbidden_tendencies": ["gratuitous_camera_movement"],
+        }
+        result = build_director_patch_prompt(contract=_contract("A"), strategy=strategy, structural_shot_plan=_plan("A"))
+        self.assertIn("performance_direction is a list of objects", result["system_prompt"])
+        self.assertIn("plural reveals/withholds", result["system_prompt"])
+        self.assertIn("strategy_refs", result["user_prompt"])
+        self.assertIn('"schema_version":"scene_directing_strategy_v2"', result["user_prompt"])
+
 
 if __name__ == "__main__":
     unittest.main()

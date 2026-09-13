@@ -156,6 +156,55 @@ def _valid_information(shot: dict[str, Any]) -> bool:
     return any(bool(info.get(key)) for key in ("reveals", "withholds", "audience_focus"))
 
 
+def _shot_duration(shot: dict[str, Any]) -> float | None:
+    value = _dict(shot.get("edit")).get("duration_seconds", shot.get("duration_hint_seconds"))
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or float(value) <= 0:
+        return None
+    return float(value)
+
+
+def _emotion_progression_consistency(
+    shots: list[dict[str, Any]],
+    strategy: dict[str, Any],
+) -> float | None:
+    """Measure whether beat-level emotion intent survives into shot output.
+
+    This is a diagnostic signal, not a replacement for the ten-dimension
+    scorer.  A strategy with one emotion value has no progression to verify;
+    in that case the metric is intentionally unavailable rather than giving a
+    synthetic pass.
+    """
+
+    entries = [
+        item
+        for item in _list(strategy.get("emotion_curve"))
+        if isinstance(item, dict) and _text(item.get("beat_id")) and isinstance(item.get("intensity"), (int, float)) and not isinstance(item.get("intensity"), bool)
+    ]
+    if len(entries) < 2:
+        return None
+    shot_by_beat = {_text(shot.get("beat_id")): shot for shot in shots if _text(shot.get("beat_id"))}
+    matched = 0
+    output_values: list[float] = []
+    intent_values: list[float] = []
+    for entry in entries:
+        intent = float(entry["intensity"])
+        intent_values.append(intent)
+        value = _dict(_dict(shot_by_beat.get(_text(entry["beat_id"]))).get("emotion")).get("intensity")
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            output = float(value)
+            output_values.append(output)
+            if abs(output - intent) <= 1.0:
+                matched += 1
+    if not output_values:
+        return 0.0
+    alignment = matched / len(entries)
+    intent_progresses = len(set(intent_values)) > 1
+    output_progresses = len(set(output_values)) > 1
+    if intent_progresses and not output_progresses:
+        return round(alignment * 0.5, 4)
+    return round(alignment, 4)
+
+
 def build_director_quality_v23_coverage_metrics(
     *,
     candidate: dict[str, Any] | None,
@@ -183,6 +232,11 @@ def build_director_quality_v23_coverage_metrics(
     emotion_numerator = sum(1 for item in emotion_entries if _valid_emotion(shot_by_beat.get(_text(item.get("beat_id")), {})))
     info_numerator = sum(1 for item in info_entries if _valid_information(shot_by_beat.get(_text(item.get("beat_id")), {})))
 
+    durations = [_shot_duration(shot) for shot in shots]
+    known_durations = [value for value in durations if value is not None]
+    equal_adjacent = sum(1 for left, right in zip(known_durations, known_durations[1:]) if abs(left - right) < 0.01)
+    mechanical_equal_duration_ratio = round(equal_adjacent / max(1, len(known_durations) - 1), 4) if len(known_durations) >= 2 else None
+
     proposed = [item for item in _list((proposed_patch_document or {}).get("patches")) if isinstance(item, dict)]
     accepted = [item for item in _list((accepted_patch_document or {}).get("patches")) if isinstance(item, dict)]
     accepted_ids = {_text(item.get("plan_shot_id")) for item in accepted if _text(item.get("plan_shot_id"))}
@@ -201,8 +255,11 @@ def build_director_quality_v23_coverage_metrics(
         "performance_direction_coverage": _rate(performance_numerator, performance_denominator),
         "edit_strategy_coverage": _rate(edit_numerator, edit_denominator),
         "emotion_arc_coverage": _rate(emotion_numerator, emotion_denominator),
+        "emotion_progression_consistency": _emotion_progression_consistency(shots, strategy_obj),
         "information_strategy_coverage": _rate(info_numerator, info_denominator),
         "useful_creative_acceptance_rate": _rate(useful, len(proposed)),
+        "mechanical_equal_duration_ratio": mechanical_equal_duration_ratio,
+        "mechanical_duration_warning": bool(mechanical_equal_duration_ratio is not None and mechanical_equal_duration_ratio >= 0.8),
         "performance_direction_key_shot_count": performance_denominator,
         "edit_strategy_required_shot_count": edit_denominator,
         "emotion_curve_entry_count": emotion_denominator,
