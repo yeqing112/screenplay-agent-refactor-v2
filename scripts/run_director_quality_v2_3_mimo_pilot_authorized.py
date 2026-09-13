@@ -165,6 +165,24 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             "dimensions": quality["scorer_direct"].get("dimensions") or {},
             "quality_trace": trace,
             "stage_counts": copy.deepcopy(result.get("stage_counts") or {}),
+            # Keep the Phase A artifact self-diagnosing without persisting
+            # provider prompts/responses or credentials.  These fields expose
+            # only bounded rejection/path metadata already produced by the
+            # Contract-First pipeline, so a failed sample can be repaired and
+            # replayed without guessing from its final score alone.
+            "pipeline_diagnostics": {
+                "status": result.get("status"),
+                "creative_recoverable_patch_count": int(result.get("creative_recoverable_patch_count") or 0),
+                "creative_recovered_patch_count": int(result.get("creative_recovered_patch_count") or 0),
+                "safe_fallback_count": int(result.get("safe_fallback_count") or 0),
+                "avoidable_fallback_count": int(result.get("avoidable_fallback_count") or 0),
+                "successful_repairs": int(result.get("successful_repairs") or 0),
+                "failed_repairs": int(result.get("failed_repairs") or 0),
+                "normalization_events": copy.deepcopy(result.get("normalization_events") or []),
+                "deterministic_repair_events": copy.deepcopy(result.get("deterministic_repair_events") or []),
+                "path_resolution": copy.deepcopy(result.get("path_resolution") or {}),
+                "rejection_traces": copy.deepcopy(result.get("rejection_traces") or []),
+            },
             "partial_acceptance": copy.deepcopy(result.get("partial_acceptance") or {}),
             "validation": validation,
             "fallbacks": copy.deepcopy(result.get("fallbacks") or []),
