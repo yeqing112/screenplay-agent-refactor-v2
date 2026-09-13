@@ -67,7 +67,7 @@ partial 模式在字段级保留可编译 sibling，默认原子编译行为不�
 | Full Creative Scene Success | 100% |
 | Provider/media/storage calls | 0 |
 
-以上是离线管线证据，不是对真实 MiMo 首轮输出的性能承诺。对应机器可读回放 artifact 为 `artifacts/director-quality-v2-2-offline-replay-current.json`（工作区生成，未覆盖 V2.1 历史 artifact）。
+以上是离线管线证据，不是对真实 MiMo 首轮输出的性能承诺。对应机器可读回放 artifact 为 `artifacts/director-quality-v2-2-offline-replay.json`（未覆盖 V2.1 历史 artifact）。
 
 ## Regression Evidence
 
@@ -92,4 +92,3 @@ Stage A 真实 MiMo 12 场景 benchmark-only 尚未执行。因缺少 V2.2 的�
 1. 真实 MiMo 首轮输出尚未用 V2.2 runner 复测，无法验证 repair calls 是否从 33 次下降。
 2. 真实 token/latency/cache 需与 V2.1 同口径采集。
 3. 需要独立盲审才能报告 Director Quality 与 Creative Retention 的真实变化。
-
