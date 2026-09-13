@@ -9,6 +9,8 @@
 - Creative Planner 平均导演质量分：86.13。
 - 平均提升：44.22 分。
 - 本次运行完全离线，未调用真实 LLM、生图、视频或对象存储。
+- 真实 MiMo Golden Scene Pilot：6 个真实场景、6 次调用，4 个候选通过，1 次事实越权、1 次创意契约越界；未发生数据库、媒体或对象存储写入。
+- 真实 MiMo 通过样本平均分：62.41（对应 baseline 36.78，提升 25.63）；未达到 Production Shadow 默认切换条件。
 
 ## Golden Scene 说明
 
@@ -35,7 +37,15 @@
 - Director Quality：10 维、0–100 加权评分；平均 delta = **44.22**。
 - Blind review：已输出 Version A / Version B 结构，未伪称为真人偏好；本地离线阶段未运行 Judge。
 - Fact override：0。
-- MiMo token/cache/latency：本离线阶段为 0；真实 MiMo pilot 仍需在人工确认和密钥可用后单独运行。
+- MiMo token/cache/latency（真实 Pilot）：6 calls，prompt 30,702，cached 0，completion 18,633，total 49,335，cache hit rate 0%，平均延迟 49,457.54ms。
+
+## Real MiMo Golden Scene Pilot
+
+- 范围：仅复用《潮汐回声》三集中的 6 个已批准 Treatment/SceneBlocking 场景；未重新导入剧本，未调用生图、视频或对象存储。
+- 结果：4/6 候选通过；第 2 个场景因输出 `scene_name/unknowns` 事实字段触发 `DIRECTOR_FACT_OVERRIDE`，第 4 个场景因辅助镜头缺少来源节拍触发创意契约错误。
+- 质量：通过样本 planner 平均 62.41，baseline 平均 36.78，提升 25.63；绝对分数和稳定性均不足以进入 Production Shadow 默认路径。
+- 审计：6 次调用均记录模型、请求指纹、token、延迟和状态；cached tokens 为 0，未保存提示词正文或密钥。
+- 证据文件：`artifacts/director-quality-v2-mimo-pilot-20260913T012652Z.json`。
 
 ## Per-scene Before/After
 
@@ -67,10 +77,10 @@
 
 ## 当前结论
 
-本地 shadow planner 能在不改事实的前提下补齐镜头动机、构图、表演方向、信息策略和镜头多样性字段；是否达到 Production Shadow 的最终门槛仍需使用真实《潮汐回声》样本进行 blind judge 和 MiMo pilot，不能仅凭离线 surrogate 宣布达标。
+离线 shadow planner 能在不改事实的前提下补齐镜头动机、构图、表演方向和信息策略，但真实 MiMo Pilot 只在 4/6 场景通过，且平均分 62.41；因此当前不得把 creative planner 切为 Production default，必须继续优化输出契约和导演质量后再复测。
 
 ## 失败案例与瓶颈
 
 - 旧版 deterministic ShotPlan 的创意字段缺失导致 baseline 分数偏低；这是基线证据而非评分规则放宽。
-- Planner 目前为受控 deterministic shadow surrogate，尚未证明真实 LLM 输出在多场景上的稳定性。
-- 主要瓶颈：情绪递进与信息揭示仍依赖 Treatment beat 的语义完整度。
+- 真实 MiMo 输出存在事实字段回写和未绑定辅助镜头，尽管门禁已正确 fail-closed。
+- 主要瓶颈：LLM 输出 schema 遵循度、情绪递进与信息揭示的导演决策质量仍不稳定；当前不能仅凭离线 surrogate 分数放行。

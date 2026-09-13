@@ -95,6 +95,29 @@ def test_auxiliary_shot_requires_source_and_is_bounded():
     assert candidate["shots"][-1]["source_beat_id"] == "B01"
 
 
+def test_malformed_creative_proposal_falls_back_without_relaxing_fact_guard():
+    _, _, baseline = _inputs()
+    # An auxiliary shot without provenance is a creative contract error.  It
+    # must not abort the whole pipeline or be admitted by weakening the
+    # validator; the safe deterministic baseline is returned instead.
+    candidate = build_creative_shot_plan_candidate(
+        structural_shot_plan=baseline,
+        llm_output={
+            "shots": baseline["shots"] + [
+                {
+                    "plan_shot_id": "S01-R01",
+                    "auxiliary_type": "reaction",
+                    "why_this_shot": "承接进入后的反应",
+                    "camera": {"shot_size": "CU", "angle": "eye_level", "movement": "static"},
+                }
+            ]
+        },
+    )
+    assert candidate["director_mode"] == "deterministic_fallback"
+    assert candidate["model_info"]["llm_called"] is False
+    assert [item["plan_shot_id"] for item in candidate["shots"]] == [item["plan_shot_id"] for item in baseline["shots"]]
+
+
 def test_quality_validator_detects_repetition_motivation_redundancy_and_flatline():
     plan = {"shots": []}
     for index in range(4):

@@ -397,7 +397,22 @@ def build_creative_shot_plan_candidate(
             planner_mode = "deterministic_fallback"
             planner_error = "external LLM call requires confirmed=true and allow_external_call=true"
     if llm_output is not None:
-        candidate = _merge_llm_creative(baseline, llm_output)
+        try:
+            candidate = _merge_llm_creative(baseline, llm_output)
+        except DirectorFactOverride:
+            # Authoritative fact/provenance violations are never recoverable:
+            # fail closed instead of allowing a fallback to conceal the
+            # attempted mutation.
+            raise
+        except DirectorCreativeError:
+            # A malformed creative proposal (for example an unbounded
+            # auxiliary shot) is a planner failure, not permission to relax
+            # the contract.  Return the deterministic structural baseline so
+            # callers can recover without changing facts or silently writing
+            # a partial candidate.
+            planner_mode = "deterministic_fallback"
+            planner_error = "creative candidate failed bounded merge validation"
+            candidate = copy.deepcopy(baseline)
     elif planner_mode == "deterministic_fallback":
         # A gated-but-unconfirmed external call must return the exact
         # deterministic baseline, never a creative surrogate that could be

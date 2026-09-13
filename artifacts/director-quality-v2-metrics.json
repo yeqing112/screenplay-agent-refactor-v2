@@ -33,8 +33,26 @@
     "judge_calls": 0
   },
   "miMo": {
-    "pilot_status": "not_run_offline_phase",
-    "calls": 0,
-    "cached_tokens": 0
+    "pilot_status": "completed_but_not_qualified",
+    "artifact": "artifacts/director-quality-v2-mimo-pilot-20260913T012652Z.json",
+    "model": "mimo-v2.5",
+    "scene_count": 6,
+    "succeeded_scene_count": 4,
+    "fact_override_count": 1,
+    "creative_contract_failure_count": 1,
+    "calls": 6,
+    "prompt_tokens": 30702,
+    "cached_tokens": 0,
+    "completion_tokens": 18633,
+    "total_tokens": 49335,
+    "cache_hit_rate": 0.0,
+    "avg_latency_ms": 49457.54,
+    "baseline_average_director_quality_score": 36.78,
+    "planner_average_director_quality_score": 62.41,
+    "average_score_delta": 25.63,
+    "database_mutations": 0,
+    "media_calls": 0,
+    "object_storage_calls": 0,
+    "production_default_allowed": false
   }
 }

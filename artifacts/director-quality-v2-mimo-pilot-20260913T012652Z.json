@@ -1,0 +1,625 @@
+{
+  "protocol_version": "director-quality-v2-mimo-pilot",
+  "generated_at": "2026-09-13T01:31:54.175830+00:00",
+  "model": {
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "profile_id": "local-llm-2vydoz"
+  },
+  "scene_count": 6,
+  "succeeded_scene_count": 4,
+  "fact_override_count": 1,
+  "database_mutations": 0,
+  "media_calls": 0,
+  "object_storage_calls": 0,
+  "baseline_average_director_quality_score": 36.78,
+  "planner_average_director_quality_score": 62.41,
+  "average_score_delta": 25.63,
+  "llm": {
+    "total_calls": 6,
+    "total_prompt_tokens": 30702,
+    "total_cached_tokens": 0,
+    "cache_hit_rate": 0.0,
+    "total_completion_tokens": 18633,
+    "total_tokens": 49335,
+    "retry_count": 0,
+    "avg_latency_ms": 49457.54,
+    "stages": {
+      "Director Creative Planner": {
+        "attempt_count": 6,
+        "vendor_models": [
+          "mimo-v2.5"
+        ],
+        "vendor_hosts": [
+          "api.xiaomimimo.com"
+        ],
+        "prompt_tokens": 30702,
+        "cached_tokens": 0,
+        "completion_tokens": 18633,
+        "total_tokens": 49335,
+        "cache_hit_rate": 0.0,
+        "last_request_fingerprint": "b25e895f504b7af5d1db28ad35bde94f5e5e35b7683d7e840fce6b456af56eae",
+        "last_latency_ms": 55043.07,
+        "last_http_status": 200,
+        "last_parse_ok": true,
+        "total_calls": 6
+      }
+    },
+    "records": [
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+        "system_prompt_length": 358,
+        "user_prompt_sha256": "c5d7152e7e910d5ac818c951fc1828dd",
+        "user_prompt_length": 9299,
+        "request_messages_sha256": "351ea1717504df54aae5219128354b05",
+        "request_fingerprint": "effe0690f0aa43886035d9da8f07f7c90d9b25e9b78f407cb8cef43f848e33e9",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "88c26e88521bd4fe77c6eb73f5f62b5b",
+        "response_length": 3804,
+        "http_status": 200,
+        "parse_ok": true,
+        "usage": {
+          "prompt_tokens": 3765,
+          "cached_tokens": null,
+          "completion_tokens": 1321,
+          "total_tokens": 5086,
+          "cache_hit_rate": null
+        },
+        "latency_ms": 20588.61,
+        "extra": {
+          "stage": "director_creative_planner",
+          "book_id": 990402,
+          "episode": 1,
+          "scene_name": "红伞幻影（一）",
+          "pilot": "director-quality-v2-mimo",
+          "pilot_stage": "Director Creative Planner",
+          "pilot_episode": 1,
+          "pilot_scene": "红伞幻影（一）",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0,
+          "pilot_mode": "real_mimo_golden_scene"
+        }
+      },
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+        "system_prompt_length": 358,
+        "user_prompt_sha256": "3430dfa6c2984e7e0bc759f69a4f66a7",
+        "user_prompt_length": 13623,
+        "request_messages_sha256": "768f60a15d943d8e4629c5a816738b4b",
+        "request_fingerprint": "5b07dd7aedbc8d52085b686df37e86644f60472155e1fa4df0293ca8259beadb",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "7e5c0cfb2eb8cbdfde0080cdac257cd0",
+        "response_length": 15109,
+        "http_status": 200,
+        "parse_ok": true,
+        "usage": {
+          "prompt_tokens": 5369,
+          "cached_tokens": null,
+          "completion_tokens": 5777,
+          "total_tokens": 11146,
+          "cache_hit_rate": null
+        },
+        "latency_ms": 79347.23,
+        "extra": {
+          "stage": "director_creative_planner",
+          "book_id": 990402,
+          "episode": 1,
+          "scene_name": "红伞幻影（二）",
+          "pilot": "director-quality-v2-mimo",
+          "pilot_stage": "Director Creative Planner",
+          "pilot_episode": 1,
+          "pilot_scene": "红伞幻影（二）",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0,
+          "pilot_mode": "real_mimo_golden_scene"
+        }
+      },
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+        "system_prompt_length": 358,
+        "user_prompt_sha256": "cfa44b37d1e7dad9d391fa879aabf5d0",
+        "user_prompt_length": 14173,
+        "request_messages_sha256": "6fec381889334c05db2e3333897cb04b",
+        "request_fingerprint": "5a8541385e1cabed3b56dd0b6eaf096da48ac799082acfa8e0b8fa0b121d7492",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "08694d8dc7638423dcd8b61a3c8abec4",
+        "response_length": 7902,
+        "http_status": 200,
+        "parse_ok": true,
+        "usage": {
+          "prompt_tokens": 5908,
+          "cached_tokens": null,
+          "completion_tokens": 2986,
+          "total_tokens": 8894,
+          "cache_hit_rate": null
+        },
+        "latency_ms": 43989.92,
+        "extra": {
+          "stage": "director_creative_planner",
+          "book_id": 990402,
+          "episode": 2,
+          "scene_name": "回声照相馆",
+          "pilot": "director-quality-v2-mimo",
+          "pilot_stage": "Director Creative Planner",
+          "pilot_episode": 2,
+          "pilot_scene": "回声照相馆",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0,
+          "pilot_mode": "real_mimo_golden_scene"
+        }
+      },
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+        "system_prompt_length": 358,
+        "user_prompt_sha256": "a9472dbb1b95ac177c9a965ee3fd968e",
+        "user_prompt_length": 10543,
+        "request_messages_sha256": "63aab25acd3245fa6416718e3ae627cc",
+        "request_fingerprint": "263c981c959cce805c176e37c586a01341c8f50e988a3bf30f3ffb94926641f8",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "b93a164f23afccab945248acc404b453",
+        "response_length": 7244,
+        "http_status": 200,
+        "parse_ok": true,
+        "usage": {
+          "prompt_tokens": 4335,
+          "cached_tokens": null,
+          "completion_tokens": 2775,
+          "total_tokens": 7110,
+          "cache_hit_rate": null
+        },
+        "latency_ms": 44560.41,
+        "extra": {
+          "stage": "director_creative_planner",
+          "book_id": 990402,
+          "episode": 2,
+          "scene_name": "暗房门口的试探",
+          "pilot": "director-quality-v2-mimo",
+          "pilot_stage": "Director Creative Planner",
+          "pilot_episode": 2,
+          "pilot_scene": "暗房门口的试探",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0,
+          "pilot_mode": "real_mimo_golden_scene"
+        }
+      },
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+        "system_prompt_length": 358,
+        "user_prompt_sha256": "0a0d83aa20bf182aab8cc237a47ae489",
+        "user_prompt_length": 14019,
+        "request_messages_sha256": "390579bc437f009bdbeba160ac420d1b",
+        "request_fingerprint": "fbad9ffd4d5dfe53a3ed472d1cadd630649fbae798b722fc91e2318f2709e9ed",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "cc299facbad30daf108185f79517f9a0",
+        "response_length": 8610,
+        "http_status": 200,
+        "parse_ok": true,
+        "usage": {
+          "prompt_tokens": 5851,
+          "cached_tokens": null,
+          "completion_tokens": 2912,
+          "total_tokens": 8763,
+          "cache_hit_rate": null
+        },
+        "latency_ms": 53215.97,
+        "extra": {
+          "stage": "director_creative_planner",
+          "book_id": 990402,
+          "episode": 3,
+          "scene_name": "暗房惊魂",
+          "pilot": "director-quality-v2-mimo",
+          "pilot_stage": "Director Creative Planner",
+          "pilot_episode": 3,
+          "pilot_scene": "暗房惊魂",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0,
+          "pilot_mode": "real_mimo_golden_scene"
+        }
+      },
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+        "system_prompt_length": 358,
+        "user_prompt_sha256": "7b55ae2a04fb78059445118233a75193",
+        "user_prompt_length": 12979,
+        "request_messages_sha256": "652b3a1a4b0c700b3011c4cbd478ab00",
+        "request_fingerprint": "b25e895f504b7af5d1db28ad35bde94f5e5e35b7683d7e840fce6b456af56eae",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "a0397d214b1869690611eebb771fc6f2",
+        "response_length": 7274,
+        "http_status": 200,
+        "parse_ok": true,
+        "usage": {
+          "prompt_tokens": 5474,
+          "cached_tokens": null,
+          "completion_tokens": 2862,
+          "total_tokens": 8336,
+          "cache_hit_rate": null
+        },
+        "latency_ms": 55043.07,
+        "extra": {
+          "stage": "director_creative_planner",
+          "book_id": 990402,
+          "episode": 3,
+          "scene_name": "暗房惊魂（2）",
+          "pilot": "director-quality-v2-mimo",
+          "pilot_stage": "Director Creative Planner",
+          "pilot_episode": 3,
+          "pilot_scene": "暗房惊魂（2）",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0,
+          "pilot_mode": "real_mimo_golden_scene"
+        }
+      }
+    ]
+  },
+  "results": [
+    {
+      "scene": {
+        "book_id": 990402,
+        "title": "潮汐回声",
+        "episode": 1,
+        "scene_name": "红伞幻影（一）"
+      },
+      "status": "succeeded",
+      "baseline_score": 61.88,
+      "fact_override": false,
+      "started_at": "2026-09-13T01:26:52.423591+00:00",
+      "planner_score": 62.3,
+      "delta": 0.42,
+      "shot_count": 6,
+      "baseline_shot_count": 6,
+      "audit_records": [
+        {
+          "vendor_model": "mimo-v2.5",
+          "vendor_host": "api.xiaomimimo.com",
+          "profile_id": "local-llm-2vydoz",
+          "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+          "system_prompt_length": 358,
+          "user_prompt_sha256": "c5d7152e7e910d5ac818c951fc1828dd",
+          "user_prompt_length": 9299,
+          "request_messages_sha256": "351ea1717504df54aae5219128354b05",
+          "request_fingerprint": "effe0690f0aa43886035d9da8f07f7c90d9b25e9b78f407cb8cef43f848e33e9",
+          "has_repair_request": false,
+          "repair_request_sha256": "",
+          "repair_request_length": 0,
+          "response_sha256": "88c26e88521bd4fe77c6eb73f5f62b5b",
+          "response_length": 3804,
+          "http_status": 200,
+          "parse_ok": true,
+          "usage": {
+            "prompt_tokens": 3765,
+            "cached_tokens": null,
+            "completion_tokens": 1321,
+            "total_tokens": 5086,
+            "cache_hit_rate": null
+          },
+          "latency_ms": 20588.61,
+          "extra": {
+            "stage": "director_creative_planner",
+            "book_id": 990402,
+            "episode": 1,
+            "scene_name": "红伞幻影（一）",
+            "pilot": "director-quality-v2-mimo",
+            "pilot_stage": "Director Creative Planner",
+            "pilot_episode": 1,
+            "pilot_scene": "红伞幻影（一）",
+            "pilot_shot": null,
+            "pilot_repair_attempt": 0,
+            "pilot_mode": "real_mimo_golden_scene"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "book_id": 990402,
+        "title": "潮汐回声",
+        "episode": 1,
+        "scene_name": "红伞幻影（二）"
+      },
+      "status": "fact_override",
+      "baseline_score": 61.45,
+      "fact_override": true,
+      "started_at": "2026-09-13T01:27:13.020913+00:00",
+      "error_code": "DIRECTOR_FACT_OVERRIDE",
+      "error": "S01 contains forbidden fields: scene_name, unknowns",
+      "audit_records": [
+        {
+          "vendor_model": "mimo-v2.5",
+          "vendor_host": "api.xiaomimimo.com",
+          "profile_id": "local-llm-2vydoz",
+          "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+          "system_prompt_length": 358,
+          "user_prompt_sha256": "3430dfa6c2984e7e0bc759f69a4f66a7",
+          "user_prompt_length": 13623,
+          "request_messages_sha256": "768f60a15d943d8e4629c5a816738b4b",
+          "request_fingerprint": "5b07dd7aedbc8d52085b686df37e86644f60472155e1fa4df0293ca8259beadb",
+          "has_repair_request": false,
+          "repair_request_sha256": "",
+          "repair_request_length": 0,
+          "response_sha256": "7e5c0cfb2eb8cbdfde0080cdac257cd0",
+          "response_length": 15109,
+          "http_status": 200,
+          "parse_ok": true,
+          "usage": {
+            "prompt_tokens": 5369,
+            "cached_tokens": null,
+            "completion_tokens": 5777,
+            "total_tokens": 11146,
+            "cache_hit_rate": null
+          },
+          "latency_ms": 79347.23,
+          "extra": {
+            "stage": "director_creative_planner",
+            "book_id": 990402,
+            "episode": 1,
+            "scene_name": "红伞幻影（二）",
+            "pilot": "director-quality-v2-mimo",
+            "pilot_stage": "Director Creative Planner",
+            "pilot_episode": 1,
+            "pilot_scene": "红伞幻影（二）",
+            "pilot_shot": null,
+            "pilot_repair_attempt": 0,
+            "pilot_mode": "real_mimo_golden_scene"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "book_id": 990402,
+        "title": "潮汐回声",
+        "episode": 2,
+        "scene_name": "回声照相馆"
+      },
+      "status": "succeeded",
+      "baseline_score": 28.39,
+      "fact_override": false,
+      "started_at": "2026-09-13T01:28:33.367538+00:00",
+      "planner_score": 61.62,
+      "delta": 33.23,
+      "shot_count": 11,
+      "baseline_shot_count": 11,
+      "audit_records": [
+        {
+          "vendor_model": "mimo-v2.5",
+          "vendor_host": "api.xiaomimimo.com",
+          "profile_id": "local-llm-2vydoz",
+          "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+          "system_prompt_length": 358,
+          "user_prompt_sha256": "cfa44b37d1e7dad9d391fa879aabf5d0",
+          "user_prompt_length": 14173,
+          "request_messages_sha256": "6fec381889334c05db2e3333897cb04b",
+          "request_fingerprint": "5a8541385e1cabed3b56dd0b6eaf096da48ac799082acfa8e0b8fa0b121d7492",
+          "has_repair_request": false,
+          "repair_request_sha256": "",
+          "repair_request_length": 0,
+          "response_sha256": "08694d8dc7638423dcd8b61a3c8abec4",
+          "response_length": 7902,
+          "http_status": 200,
+          "parse_ok": true,
+          "usage": {
+            "prompt_tokens": 5908,
+            "cached_tokens": null,
+            "completion_tokens": 2986,
+            "total_tokens": 8894,
+            "cache_hit_rate": null
+          },
+          "latency_ms": 43989.92,
+          "extra": {
+            "stage": "director_creative_planner",
+            "book_id": 990402,
+            "episode": 2,
+            "scene_name": "回声照相馆",
+            "pilot": "director-quality-v2-mimo",
+            "pilot_stage": "Director Creative Planner",
+            "pilot_episode": 2,
+            "pilot_scene": "回声照相馆",
+            "pilot_shot": null,
+            "pilot_repair_attempt": 0,
+            "pilot_mode": "real_mimo_golden_scene"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "book_id": 990402,
+        "title": "潮汐回声",
+        "episode": 2,
+        "scene_name": "暗房门口的试探"
+      },
+      "status": "failed",
+      "baseline_score": 28.61,
+      "fact_override": false,
+      "started_at": "2026-09-13T01:29:18.358020+00:00",
+      "error_code": "DirectorCreativeError",
+      "error": "auxiliary shot 06 requires source_beat_id and a bounded auxiliary_type",
+      "audit_records": [
+        {
+          "vendor_model": "mimo-v2.5",
+          "vendor_host": "api.xiaomimimo.com",
+          "profile_id": "local-llm-2vydoz",
+          "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+          "system_prompt_length": 358,
+          "user_prompt_sha256": "a9472dbb1b95ac177c9a965ee3fd968e",
+          "user_prompt_length": 10543,
+          "request_messages_sha256": "63aab25acd3245fa6416718e3ae627cc",
+          "request_fingerprint": "263c981c959cce805c176e37c586a01341c8f50e988a3bf30f3ffb94926641f8",
+          "has_repair_request": false,
+          "repair_request_sha256": "",
+          "repair_request_length": 0,
+          "response_sha256": "b93a164f23afccab945248acc404b453",
+          "response_length": 7244,
+          "http_status": 200,
+          "parse_ok": true,
+          "usage": {
+            "prompt_tokens": 4335,
+            "cached_tokens": null,
+            "completion_tokens": 2775,
+            "total_tokens": 7110,
+            "cache_hit_rate": null
+          },
+          "latency_ms": 44560.41,
+          "extra": {
+            "stage": "director_creative_planner",
+            "book_id": 990402,
+            "episode": 2,
+            "scene_name": "暗房门口的试探",
+            "pilot": "director-quality-v2-mimo",
+            "pilot_stage": "Director Creative Planner",
+            "pilot_episode": 2,
+            "pilot_scene": "暗房门口的试探",
+            "pilot_shot": null,
+            "pilot_repair_attempt": 0,
+            "pilot_mode": "real_mimo_golden_scene"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "book_id": 990402,
+        "title": "潮汐回声",
+        "episode": 3,
+        "scene_name": "暗房惊魂"
+      },
+      "status": "succeeded",
+      "baseline_score": 28.39,
+      "fact_override": false,
+      "started_at": "2026-09-13T01:30:03.915669+00:00",
+      "planner_score": 62.52,
+      "delta": 34.13,
+      "shot_count": 11,
+      "baseline_shot_count": 11,
+      "audit_records": [
+        {
+          "vendor_model": "mimo-v2.5",
+          "vendor_host": "api.xiaomimimo.com",
+          "profile_id": "local-llm-2vydoz",
+          "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+          "system_prompt_length": 358,
+          "user_prompt_sha256": "0a0d83aa20bf182aab8cc237a47ae489",
+          "user_prompt_length": 14019,
+          "request_messages_sha256": "390579bc437f009bdbeba160ac420d1b",
+          "request_fingerprint": "fbad9ffd4d5dfe53a3ed472d1cadd630649fbae798b722fc91e2318f2709e9ed",
+          "has_repair_request": false,
+          "repair_request_sha256": "",
+          "repair_request_length": 0,
+          "response_sha256": "cc299facbad30daf108185f79517f9a0",
+          "response_length": 8610,
+          "http_status": 200,
+          "parse_ok": true,
+          "usage": {
+            "prompt_tokens": 5851,
+            "cached_tokens": null,
+            "completion_tokens": 2912,
+            "total_tokens": 8763,
+            "cache_hit_rate": null
+          },
+          "latency_ms": 53215.97,
+          "extra": {
+            "stage": "director_creative_planner",
+            "book_id": 990402,
+            "episode": 3,
+            "scene_name": "暗房惊魂",
+            "pilot": "director-quality-v2-mimo",
+            "pilot_stage": "Director Creative Planner",
+            "pilot_episode": 3,
+            "pilot_scene": "暗房惊魂",
+            "pilot_shot": null,
+            "pilot_repair_attempt": 0,
+            "pilot_mode": "real_mimo_golden_scene"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "book_id": 990402,
+        "title": "潮汐回声",
+        "episode": 3,
+        "scene_name": "暗房惊魂（2）"
+      },
+      "status": "succeeded",
+      "baseline_score": 28.45,
+      "fact_override": false,
+      "started_at": "2026-09-13T01:30:58.134459+00:00",
+      "planner_score": 63.2,
+      "delta": 34.75,
+      "shot_count": 10,
+      "baseline_shot_count": 10,
+      "audit_records": [
+        {
+          "vendor_model": "mimo-v2.5",
+          "vendor_host": "api.xiaomimimo.com",
+          "profile_id": "local-llm-2vydoz",
+          "system_prompt_sha256": "373d5b90570fd9b174807564d7f7f48c",
+          "system_prompt_length": 358,
+          "user_prompt_sha256": "7b55ae2a04fb78059445118233a75193",
+          "user_prompt_length": 12979,
+          "request_messages_sha256": "652b3a1a4b0c700b3011c4cbd478ab00",
+          "request_fingerprint": "b25e895f504b7af5d1db28ad35bde94f5e5e35b7683d7e840fce6b456af56eae",
+          "has_repair_request": false,
+          "repair_request_sha256": "",
+          "repair_request_length": 0,
+          "response_sha256": "a0397d214b1869690611eebb771fc6f2",
+          "response_length": 7274,
+          "http_status": 200,
+          "parse_ok": true,
+          "usage": {
+            "prompt_tokens": 5474,
+            "cached_tokens": null,
+            "completion_tokens": 2862,
+            "total_tokens": 8336,
+            "cache_hit_rate": null
+          },
+          "latency_ms": 55043.07,
+          "extra": {
+            "stage": "director_creative_planner",
+            "book_id": 990402,
+            "episode": 3,
+            "scene_name": "暗房惊魂（2）",
+            "pilot": "director-quality-v2-mimo",
+            "pilot_stage": "Director Creative Planner",
+            "pilot_episode": 3,
+            "pilot_scene": "暗房惊魂（2）",
+            "pilot_shot": null,
+            "pilot_repair_attempt": 0,
+            "pilot_mode": "real_mimo_golden_scene"
+          }
+        }
+      ]
+    }
+  ]
+}
