@@ -26,7 +26,7 @@ PATCH_SCHEMA_VERSION = "director_creative_patch_v1"
 # validator stages can safely pass normalized documents through the same
 # boundary, but it is never trusted: the value is recomputed and checked.
 PATCH_DOCUMENT_KEYS = {"schema_version", "patches", "auxiliary_shot_proposals", "patch_fingerprint", "normalization_metadata"}
-PATCH_KEYS = {"patch_id", "plan_shot_id", "changes", "rationale", "confidence", "_source_format"}
+PATCH_KEYS = {"patch_id", "plan_shot_id", "changes", "rationale", "confidence", "_source_format", "_normalization_reasons"}
 # These are the creative fields permitted by the Director Contract.  The
 # schema layer only uses them to recognize semantically equivalent provider
 # envelopes; authority, type, and path validation remain in the compiler.
@@ -180,7 +180,8 @@ def _operation_changes(operations: Any, *, path: str, plan_shot_id: str = "") ->
         if op not in {"add", "replace"} or "value" not in operation:
             raise CreativePatchSchemaError("only add/replace JSON-Patch operations with value are supported", path=op_path)
         change_path = _pointer_to_change(operation.get("path"), path=op_path, plan_shot_id=plan_shot_id)
-        changes[change_path] = copy.deepcopy(operation.get("value"))
+        normalized_value, _ = _normalize_value(change_path, operation.get("value"))
+        changes[change_path] = copy.deepcopy(normalized_value)
     return changes
 
 
@@ -200,7 +201,7 @@ def _normalize_patch(raw: Any, index: int) -> dict[str, Any]:
             )
         changes = _normalize_changes(raw.get("changes"), path=f"{path}")
     elif "patch" in raw:
-        forbidden = sorted(set(raw) - ({"plan_shot_id", "patch_id", "patch", "rationale", "confidence"}))
+        forbidden = sorted(set(raw) - ({"plan_shot_id", "patch_id", "patch", "rationale", "confidence", "_normalization_reasons"}))
         if forbidden:
             raise CreativePatchSchemaError(
                 f"patch contains forbidden fields: {', '.join(forbidden)}",

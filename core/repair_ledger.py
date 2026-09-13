@@ -18,7 +18,18 @@ def record_repair_attempt(*, repair: dict[str, Any], issue: dict[str, Any] | Non
     """
     issue = issue if isinstance(issue, dict) else {}
     context = context if isinstance(context, dict) else {}
-    operation = {"patch": repair.get("patch", []), "target_layer": repair.get("target_layer", ""), "issue_code": repair.get("issue_code", "")}
+    operation = {
+        "patch": repair.get("patch", []),
+        "target_layer": repair.get("target_layer", ""),
+        "issue_code": repair.get("issue_code", ""),
+        # V2.2 fields are metadata in the existing JSON operation envelope so
+        # no migration is needed for benchmark/shadow operation.
+        "repair_level": repair.get("repair_level", context.get("repair_level")),
+        "repair_engine": repair.get("repair_engine", context.get("repair_engine")),
+        "fallback_reason": repair.get("fallback_reason", context.get("fallback_reason", "")),
+        "token_usage": repair.get("token_usage", context.get("token_usage")),
+        "latency_ms": repair.get("latency_ms", context.get("latency_ms")),
+    }
     owns_session = session is None
     db = session or Session()
     try:

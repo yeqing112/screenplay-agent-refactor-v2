@@ -1,5 +1,9 @@
 import pytest
 
+from core.director_creative_contract import build_director_creative_contract
+from core.director_creative_planner import build_creative_patch_candidate
+from core.scene_directing_strategy import build_scene_directing_strategy
+from core.shot_plan import build_shot_plan
 from core.director_patch_normalizer import (
     PatchNormalizationError,
     canonical_path,
@@ -81,3 +85,24 @@ def test_normalizer_does_not_drop_immutable_fields():
     with pytest.raises(PatchNormalizationError) as error:
         normalize_patch_item({"plan_shot_id": "S01", "event": "改写事实"})
     assert error.value.code == "DIRECTOR_PATCH_FIELD_FORBIDDEN"
+
+
+def test_planner_uses_level0_before_schema_repair_for_equivalent_operation():
+    treatment = {"scene_id": "E", "scene_name": "门厅", "beat_map": [{"beat_id": "B01", "event": "进入"}]}
+    blocking = {"scene_id": "E", "scene_name": "门厅", "participants": [{"character_id": "C1", "name": "林晚"}]}
+    structural = build_shot_plan(treatment=treatment, blocking=blocking)
+    contract = build_director_creative_contract(treatment=treatment, blocking=blocking, structural_shot_plan=structural)
+    strategy = build_scene_directing_strategy(treatment=treatment, contract=contract)
+    result = build_creative_patch_candidate(
+        structural_shot_plan=structural,
+        contract=contract,
+        strategy=strategy,
+        llm_output={
+            "schema_version": "director_creative_patch_v1",
+            "patches": [{"plan_shot_id": "S01", "patch": [{"op": "replace", "path": "/shots/*/camera/shot_size", "value": "close-up"}]}],
+            "auxiliary_shot_proposals": [],
+        },
+    )
+    assert result["model_info"]["schema_pass"] is True
+    assert result["model_info"]["v22_normalization"]["normalization_events"]
+    assert result["patch_document"]["patches"][0]["changes"]["camera.shot_size"] == "CU"

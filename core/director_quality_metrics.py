@@ -8,6 +8,68 @@ from typing import Any
 from core.director_quality_validator import DIRECTOR_DIMENSIONS, score_director_quality
 
 
+def _rate(numerator: int, denominator: int) -> float | None:
+    return round(float(numerator) / float(denominator), 4) if denominator else None
+
+
+def build_director_quality_v22_metrics(
+    *,
+    stage_counts: dict[str, int] | None = None,
+    repair_cost: dict[str, Any] | None = None,
+    creative_patch_count: int = 0,
+    retained_creative_patch_count: int = 0,
+    fallback_free_scene_count: int = 0,
+    scene_count: int = 0,
+) -> dict[str, Any]:
+    """Build the staged stability/repair-cost metrics required by V2.2.
+
+    Counts are supplied by the runner; this helper performs no quality-rule
+    relaxation and returns ``None`` rates when a denominator is unavailable.
+    """
+
+    counts = {str(key): int(value or 0) for key, value in (stage_counts or {}).items()}
+    stages = {
+        "raw_parse_pass": counts.get("raw_parse_pass", 0),
+        "normalized_parse_pass": counts.get("normalized_parse_pass", 0),
+        "first_pass_schema_pass": counts.get("first_pass_schema_pass", 0),
+        "first_pass_contract_pass": counts.get("first_pass_contract_pass", 0),
+        "post_normalization_contract_pass": counts.get("post_normalization_contract_pass", 0),
+        "post_deterministic_repair_pass": counts.get("post_deterministic_repair_pass", 0),
+        "post_llm_repair_pass": counts.get("post_llm_repair_pass", 0),
+        "final_contract_pass": counts.get("final_contract_pass", 0),
+    }
+    denominator = counts.get("total_scenes", scene_count)
+    stage_metrics = {
+        key: {"count": value, "total": denominator, "rate": _rate(value, denominator)}
+        for key, value in stages.items()
+    }
+    costs = {
+        "normalization_events": 0,
+        "deterministic_repair_events": 0,
+        "llm_repair_calls": 0,
+        "llm_repair_calls_per_scene": None,
+        "llm_repair_calls_per_failed_patch": None,
+        "average_repair_attempts": None,
+        "repair_token_cost": 0,
+        "repair_latency_ms": 0,
+        "fallback_after_repair_count": 0,
+    }
+    if isinstance(repair_cost, dict):
+        costs.update(copy.deepcopy(repair_cost))
+    if costs.get("llm_repair_calls_per_scene") is None:
+        costs["llm_repair_calls_per_scene"] = _rate(int(costs.get("llm_repair_calls") or 0), denominator)
+    result = {
+        "stages": stage_metrics,
+        "stage_counts": stages | {"total_scenes": denominator},
+        "repair_cost": costs,
+        "fallback_patch_count": int(counts.get("fallback_patch_count", 0)),
+        "fallback_patch_rate": _rate(int(counts.get("fallback_patch_count", 0)), int(counts.get("evaluated_patch_count", 0))),
+        "creative_retention_rate": _rate(int(retained_creative_patch_count), int(creative_patch_count)),
+        "full_creative_scene_success_rate": _rate(int(fallback_free_scene_count), int(scene_count)),
+    }
+    return result
+
+
 def _score(plan: dict[str, Any] | None, *, treatment: dict[str, Any] | None, blocking: dict[str, Any] | None) -> dict[str, Any]:
     return score_director_quality(plan if isinstance(plan, dict) else {}, treatment=treatment, blocking=blocking)
 
@@ -22,6 +84,12 @@ def build_director_quality_metrics(
     contract_reliability: dict[str, Any] | None = None,
     partial_acceptance: dict[str, Any] | None = None,
     telemetry: dict[str, Any] | None = None,
+    v22_stage_counts: dict[str, int] | None = None,
+    v22_repair_cost: dict[str, Any] | None = None,
+    creative_patch_count: int = 0,
+    retained_creative_patch_count: int = 0,
+    fallback_free_scene_count: int = 0,
+    scene_count: int = 0,
 ) -> dict[str, Any]:
     """Record Baseline / Before Repair / After Repair separately.
 
@@ -97,6 +165,15 @@ def build_director_quality_metrics(
     }
     if isinstance(telemetry, dict):
         result["telemetry"] = copy.deepcopy(telemetry)
+    if any(value is not None for value in (v22_stage_counts, v22_repair_cost)) or creative_patch_count or retained_creative_patch_count or fallback_free_scene_count or scene_count:
+        result["v22"] = build_director_quality_v22_metrics(
+            stage_counts=v22_stage_counts,
+            repair_cost=v22_repair_cost,
+            creative_patch_count=creative_patch_count,
+            retained_creative_patch_count=retained_creative_patch_count,
+            fallback_free_scene_count=fallback_free_scene_count,
+            scene_count=scene_count,
+        )
     return result
 
 
@@ -104,4 +181,4 @@ record_director_quality_metrics = build_director_quality_metrics
 build_quality_metrics = build_director_quality_metrics
 
 
-__all__ = ["build_director_quality_metrics", "record_director_quality_metrics", "build_quality_metrics"]
+__all__ = ["build_director_quality_metrics", "record_director_quality_metrics", "build_quality_metrics", "build_director_quality_v22_metrics"]

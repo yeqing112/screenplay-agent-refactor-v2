@@ -43,6 +43,36 @@ def _contract_subset(contract: dict[str, Any], plan_shot_id: str) -> dict[str, A
     }
 
 
+def _strategy_subset(strategy: dict[str, Any] | None, issue: dict[str, Any]) -> dict[str, Any]:
+    """Select only the strategy slice relevant to one Level 2 repair.
+
+    The old V2.1 request serialized the complete scene strategy.  Keeping the
+    selection deterministic reduces repair context without removing any
+    authority constraint.
+    """
+
+    source = _dict(strategy)
+    code = _text(issue.get("code") or issue.get("issue_code")).upper()
+    result: dict[str, Any] = {"schema_version": source.get("schema_version", "")}
+    if code in {"EMOTIONAL_FLATLINE", "POWER_SHIFT_NOT_VISUALIZED"}:
+        for key in ("emotional_curve", "power_curve", "camera_language"):
+            if key in source:
+                result[key] = copy.deepcopy(source[key])
+    elif code in {"INFORMATION_REVEAL_CONFLICT"}:
+        for key in ("information_strategy", "visual_strategy", "camera_language"):
+            if key in source:
+                result[key] = copy.deepcopy(source[key])
+    elif code in {"GRATUITOUS_CAMERA_MOVEMENT", "REDUNDANT_SHOT"}:
+        for key in ("camera_language", "rhythm_strategy", "forbidden_tendencies"):
+            if key in source:
+                result[key] = copy.deepcopy(source[key])
+    else:
+        for key in ("scene_objective", "visual_strategy", "camera_language", "forbidden_tendencies"):
+            if key in source:
+                result[key] = copy.deepcopy(source[key])
+    return result
+
+
 def repair_failed_patch(
     *,
     structural_shot_plan: dict[str, Any],
@@ -56,6 +86,9 @@ def repair_failed_patch(
     repair_context: dict[str, Any] | None = None,
     model: str = "",
     prompt_fingerprint: str = "",
+    repair_level: int = 2,
+    repair_engine: str = "llm",
+    stop_on_same_error: bool = False,
 ) -> dict[str, Any]:
     """Repair a single failed patch without rerunning scene planning."""
 
@@ -71,7 +104,9 @@ def repair_failed_patch(
         "issue": copy.deepcopy(issue) if isinstance(issue, dict) else {},
         "contract_subset": _contract_subset(contract, plan_shot_id),
         "source_shot": _target_shot(structural_shot_plan, plan_shot_id),
-        "strategy": copy.deepcopy(strategy) if isinstance(strategy, dict) else {},
+        "strategy": _strategy_subset(strategy, issue),
+        "repair_level": int(repair_level),
+        "repair_engine": _text(repair_engine) or "llm",
     }
     attempts: list[dict[str, Any]] = []
     def record_attempt(*, attempt_number: int, status: str, repair: dict[str, Any] | None = None, error: str = "") -> None:
@@ -90,6 +125,8 @@ def repair_failed_patch(
         context = {
             **(_dict(repair_context)),
             "attempt_number": attempt_number,
+            "repair_level": int(repair_level),
+            "repair_engine": _text(repair_engine) or "llm",
             "revalidation_status": status,
             "revalidation_details": {"error": error} if error else {},
             "model": model,
@@ -111,7 +148,10 @@ def repair_failed_patch(
             "fallback_to_baseline": True,
             "request": request,
         }
+    previous_error_signature = ""
     for attempt_number in range(1, attempts_limit + 1):
+        if stop_on_same_error and attempt_number > 1 and previous_error_signature:
+            break
         try:
             repaired_raw = repair_callable(copy.deepcopy(request))
             # Repairers may return a single patch or a one-item patch document;
@@ -152,8 +192,13 @@ def repair_failed_patch(
                 "request": request,
             }
         except (CreativePatchSchemaError, DirectorPatchCompileError, ValueError, TypeError) as exc:
-            attempts.append({"attempt_number": attempt_number, "status": "rejected", "error": str(exc), "code": getattr(exc, "code", "DIRECTOR_PATCH_REPAIR_INVALID")})
+            code = getattr(exc, "code", "DIRECTOR_PATCH_REPAIR_INVALID")
+            error_text = str(exc)
+            signature = f"{code}:{error_text}"
+            attempts.append({"attempt_number": attempt_number, "status": "rejected", "error": error_text, "code": code})
             record_attempt(attempt_number=attempt_number, status="rejected", error=str(exc))
+            if stop_on_same_error and not previous_error_signature:
+                previous_error_signature = signature
     return {
         "status": "fallback",
         "attempts": attempts,
@@ -181,6 +226,9 @@ def repair_failed_auxiliary_proposal(
     repair_context: dict[str, Any] | None = None,
     model: str = "",
     prompt_fingerprint: str = "",
+    repair_level: int = 2,
+    repair_engine: str = "llm",
+    stop_on_same_error: bool = False,
 ) -> dict[str, Any]:
     """Repair exactly one AuxiliaryShotProposal without rerunning a scene.
 
@@ -209,7 +257,9 @@ def repair_failed_auxiliary_proposal(
                 if isinstance(item, dict) and _text(item.get("plan_shot_id"))
             ],
         },
-        "strategy": copy.deepcopy(strategy) if isinstance(strategy, dict) else {},
+        "strategy": _strategy_subset(strategy, issue),
+        "repair_level": int(repair_level),
+        "repair_engine": _text(repair_engine) or "llm",
     }
     attempts: list[dict[str, Any]] = []
 
@@ -229,6 +279,8 @@ def repair_failed_auxiliary_proposal(
         context = {
             **(_dict(repair_context)),
             "attempt_number": attempt_number,
+            "repair_level": int(repair_level),
+            "repair_engine": _text(repair_engine) or "llm",
             "revalidation_status": status,
             "revalidation_details": {"error": error} if error else {},
             "model": model,
@@ -246,7 +298,10 @@ def repair_failed_auxiliary_proposal(
     if repair_callable is None or attempts_limit == 0:
         return {"status": "fallback", "attempts": attempts, "attempt_count": 0, "accepted_proposal": None, "fallback_to_baseline": True, "request": request}
 
+    previous_error_signature = ""
     for attempt_number in range(1, attempts_limit + 1):
+        if stop_on_same_error and attempt_number > 1 and previous_error_signature:
+            break
         try:
             repaired_raw = repair_callable(copy.deepcopy(request))
             if isinstance(repaired_raw, dict) and isinstance(repaired_raw.get("auxiliary_shot_proposals"), list):
@@ -281,8 +336,12 @@ def repair_failed_auxiliary_proposal(
             )
             return {"status": "repaired", "attempts": attempts, "attempt_count": attempt_number, "accepted_proposal": validated, "fallback_to_baseline": False, "request": request}
         except (ValueError, TypeError) as exc:
-            attempts.append({"attempt_number": attempt_number, "status": "rejected", "error": str(exc), "code": getattr(exc, "code", "DIRECTOR_AUXILIARY_REPAIR_INVALID")})
+            code = getattr(exc, "code", "DIRECTOR_AUXILIARY_REPAIR_INVALID")
+            error_text = str(exc)
+            attempts.append({"attempt_number": attempt_number, "status": "rejected", "error": error_text, "code": code})
             record_attempt(attempt_number=attempt_number, status="rejected", error=str(exc))
+            if stop_on_same_error and not previous_error_signature:
+                previous_error_signature = f"{code}:{error_text}"
     return {"status": "fallback", "attempts": attempts, "attempt_count": len(attempts), "accepted_proposal": None, "fallback_to_baseline": True, "request": request}
 
 
