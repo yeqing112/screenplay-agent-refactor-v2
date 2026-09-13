@@ -88,13 +88,14 @@ def _scene_context(scene: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any
 
 def _repair_prompts(request: dict[str, Any]) -> tuple[str, str]:
     system = (
-        "You are a bounded Director Quality V2.2 local repairer. Return JSON only. "
-        "Repair exactly the supplied failed patch, preserve plan_shot_id and all authoritative facts, "
-        "and never return a complete scene or ShotPlan."
+        "You are a bounded Director Quality V2.2.1 local repairer. Return JSON only using schema "
+        "director_patch_repair_v1 with target.plan_shot_id, target.path, replacement_value, and reason. "
+        "Repair exactly the supplied target value; preserve plan_shot_id and path, and never return "
+        "patches, shots, a complete scene, or a ShotPlan."
     )
     user = (
-        "Return one patch object with the same plan_shot_id and only allowed creative changes. "
-        "Do not invent assets, events, participants, duration, continuity, or identity.\n"
+        "Return one replacement object with the same target plan_shot_id/path and only an allowed "
+        "replacement_value. Do not invent assets, events, participants, duration, continuity, or identity.\n"
         "REPAIR_REQUEST\n" + json.dumps(request, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     )
     return system, user

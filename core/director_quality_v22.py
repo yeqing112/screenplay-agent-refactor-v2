@@ -106,6 +106,7 @@ def process_patch_pipeline(
     repair_attempts: list[dict[str, Any]] = []
     normalization_events: list[dict[str, Any]] = []
     deterministic_events: list[dict[str, Any]] = []
+    path_resolution_metrics: dict[str, Any] = {}
     level01: dict[str, Any] = {"rejected": []}
 
     level01_rejected: list[dict[str, Any]] = []
@@ -116,14 +117,20 @@ def process_patch_pipeline(
         pass
 
     try:
-        level01 = deterministic_repair_document(raw_output, known_plan_shot_ids=known_ids)
+        level01 = deterministic_repair_document(
+            raw_output,
+            known_plan_shot_ids=known_ids,
+            allowed_patch_paths=_dict(contract).get("allowed_patch_paths") or None,
+        )
         normalization_events = copy.deepcopy(level01.get("events") or [])
         deterministic_events = [event for event in normalization_events if "kind" in event]
+        path_resolution_metrics = copy.deepcopy((level01.get("document") or {}).get("normalization_metadata", {}).get("path_resolution") or {})
         normalized_document = parse_creative_patch(level01["schema_document"])
         stage_counts["normalized_parse_pass"] = 1
         stage_counts["first_pass_schema_pass"] = 1
     except (DeterministicRepairError, CreativePatchSchemaError) as exc:
         code = getattr(exc, "code", "DIRECTOR_PATCH_SCHEMA_INVALID")
+        path_resolution_metrics = copy.deepcopy(getattr(exc, "path_metrics", {}) or {})
         # Recover independent valid items for partial acceptance.  This path
         # is still fail-closed for fatal protocol/fingerprint errors, but a
         # malformed sibling must not erase an otherwise valid patch.
@@ -148,6 +155,7 @@ def process_patch_pipeline(
                 "validation": {"status": "invalid", "contract_pass": False, "errors": [{"code": code, "message": str(exc)}], "warnings": []},
                 "stage_counts": stage_counts,
                 "normalization_events": normalization_events,
+                "path_resolution": path_resolution_metrics,
                 "deterministic_repair_events": deterministic_events,
                 "repair_attempts": repair_attempts,
                 "fallbacks": fallbacks,
@@ -241,6 +249,7 @@ def process_patch_pipeline(
         "validation": final_validation,
         "stage_counts": stage_counts,
         "normalization_events": normalization_events,
+        "path_resolution": path_resolution_metrics,
         "deterministic_repair_events": deterministic_events,
         "repair_attempts": repair_attempts,
         "fallbacks": fallbacks,

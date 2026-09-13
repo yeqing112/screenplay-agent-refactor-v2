@@ -9,6 +9,8 @@ from core.director_creative_contract import IMMUTABLE_FIELDS
 from core.director_auxiliary import validate_auxiliary_shot_proposal
 from core.director_patch_compiler import DirectorPatchCompileError, compile_single_patch
 from core.director_patch_schema import CreativePatchSchemaError, parse_creative_patch
+from core.director_patch_normalizer import normalize_value
+from core.director_patch_path_resolver import PatchPathResolutionError, resolve_patch_path
 from core.local_repair import fingerprint
 from core.repair_ledger import record_repair_attempt
 
@@ -23,6 +25,109 @@ def _dict(value: Any) -> dict[str, Any]:
 
 def _list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
+
+
+REPAIR_SCHEMA_VERSION = "director_patch_repair_v1"
+
+
+class RepairReplacementError(ValueError):
+    code = "REPAIR_SCHEMA_FAILURE"
+
+    def __init__(self, message: str, *, code: str | None = None, path: str = "") -> None:
+        super().__init__(message)
+        self.code = code or self.code
+        self.path = path
+
+
+def normalize_repair_output(
+    raw: Any,
+    *,
+    expected_plan_shot_id: str,
+    expected_path: str = "",
+    allowed_repair_paths: list[str] | None = None,
+) -> dict[str, Any]:
+    """Normalize a repair response into a target-locked replacement.
+
+    The canonical response is ``target + replacement_value``.  A legacy
+    single-patch ``changes`` object is accepted only as a compatibility wire
+    form and is immediately converted to the same replacement contract.
+    Complete scenes, patch arrays and target/path changes are rejected.
+    """
+
+    if not isinstance(raw, dict):
+        raise RepairReplacementError("repair response must be an object")
+    if isinstance(raw.get("repair"), dict):
+        raw = raw["repair"]
+    if any(key in raw for key in ("patches", "shots", "scene", "scene_name", "strategy")):
+        raise RepairReplacementError("repair response may only contain a replacement", code="REPAIR_FORBIDDEN_FIELD")
+
+    target = raw.get("target") if isinstance(raw.get("target"), dict) else {}
+    target_id = _text(target.get("plan_shot_id") or raw.get("plan_shot_id"))
+    if target_id != _text(expected_plan_shot_id):
+        raise RepairReplacementError("repair may not change target plan_shot_id", code="REPAIR_TARGET_MISMATCH", path="target.plan_shot_id")
+    raw_path = target.get("path") or raw.get("path")
+    replacement = raw.get("replacement_value", raw.get("value"))
+    # Compatibility with the old patch-shaped response.  Only one path is
+    # allowed unless the caller explicitly declares a multi-path repair.
+    changes = raw.get("changes")
+    if replacement is None and isinstance(changes, dict):
+        if not changes:
+            raise RepairReplacementError("repair changes must be non-empty", code="REPAIR_SCHEMA_FAILURE")
+        if len(changes) != 1 and not allowed_repair_paths:
+            raise RepairReplacementError("multi-field repair requires allowed_repair_paths", code="REPAIR_FORBIDDEN_FIELD")
+        if len(changes) == 1:
+            raw_path, replacement = next(iter(changes.items()))
+        else:
+            # Multi-field coordination is represented as a replacement map;
+            # every path is still checked against the explicit whitelist.
+            normalized_changes: dict[str, Any] = {}
+            for path_value, value in changes.items():
+                try:
+                    resolved = resolve_patch_path(
+                        path_value,
+                        plan_shot_id=target_id,
+                        allowed_patch_paths=allowed_repair_paths,
+                    )
+                except PatchPathResolutionError as exc:
+                    raise RepairReplacementError(str(exc), code=exc.code, path=exc.raw_path) from exc
+                normalized, _ = normalize_value(resolved.path, value)
+                normalized_changes[resolved.path] = normalized
+            if expected_path and set(normalized_changes) != {expected_path}:
+                expected = set(allowed_repair_paths or [])
+                if not expected or set(normalized_changes) != expected:
+                    raise RepairReplacementError("repair changed the declared target path set", code="REPAIR_TARGET_MISMATCH", path="target.path")
+            return {
+                "schema_version": REPAIR_SCHEMA_VERSION,
+                "target": {"plan_shot_id": target_id, "path": expected_path or sorted(normalized_changes)[0]},
+                "replacement_value": normalized_changes if len(normalized_changes) > 1 else next(iter(normalized_changes.values())),
+                "reason": _text(raw.get("reason") or raw.get("rationale")),
+                "_normalization_reasons": ["legacy_changes_wrapper"],
+            }
+    if raw_path is None or replacement is None:
+        raise RepairReplacementError("repair target.path and replacement_value are required", code="REPAIR_SCHEMA_FAILURE")
+    try:
+        resolved = resolve_patch_path(
+            raw_path,
+            plan_shot_id=target_id,
+            allowed_patch_paths=allowed_repair_paths,
+        )
+    except PatchPathResolutionError as exc:
+        raise RepairReplacementError(str(exc), code=exc.code, path=exc.raw_path) from exc
+    if expected_path and resolved.path != expected_path:
+        raise RepairReplacementError("repair may not change target path", code="REPAIR_TARGET_MISMATCH", path=resolved.path)
+    normalized, value_reason = normalize_value(resolved.path, replacement)
+    reasons = ["path_canonicalization"] if resolved.alias_hit or resolved.path != _text(raw_path) else []
+    if value_reason:
+        reasons.append(value_reason)
+    result = {
+        "schema_version": REPAIR_SCHEMA_VERSION,
+        "target": {"plan_shot_id": target_id, "path": resolved.path},
+        "replacement_value": normalized,
+        "reason": _text(raw.get("reason") or raw.get("rationale")),
+    }
+    if reasons:
+        result["_normalization_reasons"] = sorted(set(reasons))
+    return result
 
 
 def _target_shot(plan: dict[str, Any], plan_shot_id: str) -> dict[str, Any]:
@@ -98,9 +203,16 @@ def repair_failed_patch(
     if not plan_shot_id:
         raise ValueError("failed_patch.plan_shot_id is required")
     attempts_limit = max(0, min(int(max_attempts), 2))
+    failed_changes = failed_patch.get("changes") if isinstance(failed_patch.get("changes"), dict) else {}
+    declared_paths = [str(path) for path in failed_changes]
+    allowed_repair_paths = _list(issue.get("allowed_repair_paths")) if isinstance(issue, dict) else []
+    if not allowed_repair_paths and len(declared_paths) == 1:
+        allowed_repair_paths = declared_paths
     request = {
-        "protocol_version": "director-quality-v2-1-local-repair",
+        "protocol_version": "director-quality-v2-2-1-repair-replacement",
         "failed_patch": copy.deepcopy(failed_patch),
+        "target": {"plan_shot_id": plan_shot_id, "path": declared_paths[0] if len(declared_paths) == 1 else ""},
+        "allowed_repair_paths": copy.deepcopy(allowed_repair_paths),
         "issue": copy.deepcopy(issue) if isinstance(issue, dict) else {},
         "contract_subset": _contract_subset(contract, plan_shot_id),
         "source_shot": _target_shot(structural_shot_plan, plan_shot_id),
@@ -154,23 +266,27 @@ def repair_failed_patch(
             break
         try:
             repaired_raw = repair_callable(copy.deepcopy(request))
-            # Repairers may return a single patch or a one-item patch document;
-            # both are normalized through the same strict schema boundary.
-            if isinstance(repaired_raw, dict) and "patches" in repaired_raw:
-                parsed = parse_creative_patch(repaired_raw)
-                patches = parsed["patches"]
-                if len(patches) != 1:
-                    raise ValueError("local repair must return exactly one patch")
-                repaired_patch = patches[0]
+            replacement = normalize_repair_output(
+                repaired_raw,
+                expected_plan_shot_id=plan_shot_id,
+                expected_path=declared_paths[0] if len(declared_paths) == 1 else "",
+                allowed_repair_paths=allowed_repair_paths,
+            )
+            replacement_value = replacement.get("replacement_value")
+            target = _dict(replacement.get("target"))
+            replacement_path = _text(target.get("path"))
+            if isinstance(replacement_value, dict) and len(replacement_value) > 1:
+                repaired_patch = {
+                    "plan_shot_id": plan_shot_id,
+                    "changes": copy.deepcopy(replacement_value),
+                    "rationale": _text(replacement.get("reason")),
+                }
             else:
-                parsed = parse_creative_patch({
-                    "schema_version": "director_creative_patch_v1",
-                    "patches": [repaired_raw],
-                    "auxiliary_shot_proposals": [],
-                })
-                repaired_patch = parsed["patches"][0]
-            if _text(repaired_patch.get("plan_shot_id")) != plan_shot_id:
-                raise ValueError("local repair may only target the failed patch shot")
+                repaired_patch = {
+                    "plan_shot_id": plan_shot_id,
+                    "changes": {replacement_path: replacement_value},
+                    "rationale": _text(replacement.get("reason")),
+                }
             compiled = compile_single_patch(structural_shot_plan, repaired_patch, contract)
             attempts.append({"attempt_number": attempt_number, "status": "accepted", "error": ""})
             record_attempt(attempt_number=attempt_number, status="accepted", repair={

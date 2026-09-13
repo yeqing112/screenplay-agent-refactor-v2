@@ -1,5 +1,7 @@
+import pytest
+
 from core.director_creative_contract import build_director_creative_contract
-from core.director_patch_repair import repair_failed_patch
+from core.director_patch_repair import RepairReplacementError, normalize_repair_output, repair_failed_patch
 from core.scene_directing_strategy import build_scene_directing_strategy
 from core.shot_plan import build_shot_plan
 import core.director_patch_repair as repair_module
@@ -93,3 +95,51 @@ def test_local_repair_records_each_attempt_when_ledger_context_is_supplied(monke
     assert records[0]["context"]["attempt_number"] == 1
     assert records[0]["context"]["model"] == "mock-model"
     assert records[0]["issue"]["target_layer"] == "DIRECTOR_CREATIVE"
+
+
+def test_repair_replacement_schema_locks_target_and_normalizes_value():
+    result = normalize_repair_output(
+        {
+            "schema_version": "director_patch_repair_v1",
+            "target": {"plan_shot_id": "S01", "path": "camera.shot-size"},
+            "replacement_value": " close-up ",
+            "reason": "需要更明确的反应",
+        },
+        expected_plan_shot_id="S01",
+        expected_path="camera.shot_size",
+        allowed_repair_paths=["camera.shot_size"],
+    )
+    assert result["target"] == {"plan_shot_id": "S01", "path": "camera.shot_size"}
+    assert result["replacement_value"] == "CU"
+
+
+def test_repair_cannot_change_target_or_path_and_rejects_complete_scene():
+    with pytest.raises(RepairReplacementError) as error:
+        normalize_repair_output(
+            {"target": {"plan_shot_id": "S02", "path": "camera.angle"}, "replacement_value": "low_angle"},
+            expected_plan_shot_id="S01",
+            expected_path="camera.angle",
+            allowed_repair_paths=["camera.angle"],
+        )
+    assert error.value.code == "REPAIR_TARGET_MISMATCH"
+    with pytest.raises(RepairReplacementError) as error:
+        normalize_repair_output(
+            {"target": {"plan_shot_id": "S01", "path": "camera.movement"}, "replacement_value": "tracking"},
+            expected_plan_shot_id="S01",
+            expected_path="camera.angle",
+            allowed_repair_paths=["camera.angle"],
+        )
+    assert error.value.code in {"REPAIR_TARGET_MISMATCH", "DIRECTOR_PATCH_PATH_FORBIDDEN"}
+    with pytest.raises(RepairReplacementError) as error:
+        normalize_repair_output({"patches": [], "shots": []}, expected_plan_shot_id="S01", expected_path="camera.angle")
+    assert error.value.code == "REPAIR_FORBIDDEN_FIELD"
+
+
+def test_multi_field_repair_requires_explicit_whitelist():
+    with pytest.raises(RepairReplacementError) as error:
+        normalize_repair_output(
+            {"plan_shot_id": "S01", "changes": {"camera.movement": "tracking", "camera.speed": "slow"}},
+            expected_plan_shot_id="S01",
+            allowed_repair_paths=[],
+        )
+    assert error.value.code == "REPAIR_FORBIDDEN_FIELD"
