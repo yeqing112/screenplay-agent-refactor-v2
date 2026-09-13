@@ -251,6 +251,39 @@ def compile_creative_patches(
             rejected.append({"plan_shot_id": _text(patch.get("plan_shot_id")), "code": exc.code, "path": exc.path, "message": str(exc)})
             if not allow_partial:
                 raise
+            # Partial acceptance is deliberately field-scoped for a known
+            # target.  A provider may return one valid creative field beside
+            # an immutable/forbidden/invalid field; rejecting the whole
+            # envelope would erase the safe sibling.  The default (atomic)
+            # compiler path above remains unchanged.  Unknown targets are
+            # rejected as a whole because no field can be safely addressed.
+            changes = patch.get("changes") if isinstance(patch.get("changes"), dict) else {}
+            if exc.code == "UNKNOWN_PLAN_SHOT_ID" or len(changes) <= 1:
+                continue
+            # Remove the provisional whole-patch rejection.  Each field is
+            # evaluated independently below, producing precise rejection
+            # identities and preserving only independently compilable fields.
+            rejected.pop()
+            for path, value in changes.items():
+                field_patch = {
+                    "plan_shot_id": patch.get("plan_shot_id"),
+                    "changes": {path: copy.deepcopy(value)},
+                }
+                for metadata_key in ("patch_id", "rationale", "confidence", "_source_format"):
+                    if metadata_key in patch:
+                        field_patch[metadata_key] = copy.deepcopy(patch[metadata_key])
+                try:
+                    field_result = compile_single_patch(current, field_patch, contract)
+                except DirectorPatchCompileError as field_exc:
+                    rejected.append({
+                        "plan_shot_id": _text(patch.get("plan_shot_id")),
+                        "code": field_exc.code,
+                        "path": field_exc.path or str(path),
+                        "message": str(field_exc),
+                    })
+                    continue
+                current = field_result["candidate"]
+                compiled.append({key: field_result[key] for key in ("plan_shot_id", "operations", "provenance", "before_fingerprint", "after_fingerprint", "changed")})
             continue
         current = result["candidate"]
         compiled.append({key: result[key] for key in ("plan_shot_id", "operations", "provenance", "before_fingerprint", "after_fingerprint", "changed")})
