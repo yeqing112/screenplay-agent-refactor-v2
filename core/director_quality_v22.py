@@ -236,6 +236,7 @@ def process_patch_pipeline(
         "candidate": final_candidate,
         "baseline": baseline,
         "normalized_document": normalized_document,
+        "partial_acceptance": copy.deepcopy(accepted.get("partial_acceptance") or {}),
         "validation": final_validation,
         "stage_counts": stage_counts,
         "normalization_events": normalization_events,
