@@ -41,6 +41,46 @@ def _digest(value: Any) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def build_preflight(*, profile: dict[str, Any] | None, golden_path: Path = GOLDEN_PATH, offline_artifact: Path | None = None) -> dict[str, Any]:
+    """Return a non-secret Phase A readiness packet without provider calls."""
+
+    scenes: list[Any] = []
+    if golden_path.exists():
+        try:
+            payload = json.loads(golden_path.read_text(encoding="utf-8"))
+            scenes = [item for item in _list(payload.get("scenes")) if isinstance(item, dict)]
+        except (OSError, json.JSONDecodeError):
+            scenes = []
+    profile_obj = profile if isinstance(profile, dict) else {}
+    profile_ready = bool(
+        _text(profile_obj.get("id"))
+        and _text(profile_obj.get("model_name"))
+        and _text(profile_obj.get("provider")) == "openai-compatible"
+        and _text(profile_obj.get("capability")) == "llm"
+        and bool(profile_obj.get("enabled", True))
+        and bool(profile_obj.get("key_configured") or _text(profile_obj.get("api_key")))
+    )
+    offline_ready = bool(offline_artifact and offline_artifact.exists()) if offline_artifact else True
+    return {
+        "protocol_version": "director-quality-v2-3-phase-a-preflight",
+        "real_mimo_calls": 0,
+        "confirmation_required": True,
+        "confirmation_token_name": "CONFIRM_DIRECTOR_V23_STAGE_A_REAL_MIMO_PILOT",
+        "profile": {
+            "id": _text(profile_obj.get("id")),
+            "provider": _text(profile_obj.get("provider")),
+            "model_name": _text(profile_obj.get("model_name")),
+            "capability": _text(profile_obj.get("capability")),
+            "enabled": bool(profile_obj.get("enabled", True)),
+            "key_configured": bool(profile_obj.get("key_configured") or _text(profile_obj.get("api_key"))),
+        },
+        "frozen_evidence": {"golden_path": str(golden_path), "scene_count": len(scenes), "required_scene_count": 12, "ready": len(scenes) >= 12},
+        "offline_gate": {"artifact": str(offline_artifact) if offline_artifact else None, "available": offline_ready},
+        "safety": {"production": 0, "storyboard": 0, "media": 0, "object_storage": 0},
+        "ready_for_confirmation": bool(profile_ready and len(scenes) >= 12 and offline_ready),
+    }
+
+
 def validate_real_authorization(*, execute_real: bool, confirmation_token: str, profile: dict[str, Any] | None) -> dict[str, str]:
     if not execute_real:
         raise PermissionError("真实 V2.3 Pilot 默认关闭；必须显式提供 --execute-real。")
@@ -146,9 +186,21 @@ def main() -> None:
     parser.add_argument("--confirmation-token", default="")
     parser.add_argument("--profile-id", default="")
     parser.add_argument("--scene-limit", type=int, default=12)
+    parser.add_argument("--preflight-output", type=Path, default=None)
     args = parser.parse_args()
     if not args.execute_real:
-        print(json.dumps({"status": "preflight_only", "real_mimo_calls": 0, "confirmation_required": True, "confirmation_token_name": "CONFIRM_DIRECTOR_V23_STAGE_A_REAL_MIMO_PILOT"}, ensure_ascii=False, indent=2))
+        profile = None
+        if args.profile_id:
+            from api.model_registry import get_profile
+
+            profile = get_profile(args.profile_id)
+        packet = build_preflight(profile=profile, offline_artifact=ARTIFACTS / "director-quality-v2-3-offline-benchmark-current.json")
+        packet["status"] = "preflight_only"
+        if args.preflight_output:
+            args.preflight_output.parent.mkdir(parents=True, exist_ok=True)
+            args.preflight_output.write_text(json.dumps(packet, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            packet["artifact"] = str(args.preflight_output)
+        print(json.dumps(packet, ensure_ascii=False, indent=2))
         return
     from api.model_registry import get_profile
 

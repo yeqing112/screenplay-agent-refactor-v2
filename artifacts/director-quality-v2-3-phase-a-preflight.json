@@ -1,0 +1,32 @@
+{
+  "protocol_version": "director-quality-v2-3-phase-a-preflight",
+  "real_mimo_calls": 0,
+  "confirmation_required": true,
+  "confirmation_token_name": "CONFIRM_DIRECTOR_V23_STAGE_A_REAL_MIMO_PILOT",
+  "profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "capability": "llm",
+    "enabled": true,
+    "key_configured": true
+  },
+  "frozen_evidence": {
+    "golden_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v2-1-golden-scenes.json",
+    "scene_count": 18,
+    "required_scene_count": 12,
+    "ready": true
+  },
+  "offline_gate": {
+    "artifact": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v2-3-offline-benchmark-current.json",
+    "available": true
+  },
+  "safety": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "object_storage": 0
+  },
+  "ready_for_confirmation": true,
+  "status": "preflight_only"
+}

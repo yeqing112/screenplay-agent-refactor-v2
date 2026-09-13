@@ -1,7 +1,10 @@
+from pathlib import Path
+
 from core.director_quality_v23_benchmark import (
     aggregate_variance,
     samples_from_offline_benchmark,
 )
+from scripts.run_director_quality_v2_3_mimo_pilot_authorized import build_preflight
 
 
 def _row(scene_id, run_id, variant, score):
@@ -58,3 +61,23 @@ def test_offline_artifact_extraction_keeps_two_variants_and_no_side_effects():
     result = aggregate_variance(samples)
     assert result["paired_delta"]["mean"] == 30.0
     assert result["safety"]["side_effects"]["llm_provider"] == 0
+
+
+def test_phase_a_preflight_is_non_secret_and_requires_confirmation():
+    packet = build_preflight(
+        profile={
+            "id": "mimo-profile",
+            "capability": "llm",
+            "provider": "openai-compatible",
+            "model_name": "mimo-v2.5",
+            "enabled": True,
+            "key_configured": True,
+            "api_key": "DO-NOT-EMIT",
+        },
+        golden_path=Path("artifacts/director-quality-v2-1-golden-scenes.json"),
+        offline_artifact=Path("artifacts/director-quality-v2-3-offline-benchmark-current.json"),
+    )
+    assert packet["ready_for_confirmation"] is True
+    assert packet["real_mimo_calls"] == 0
+    assert packet["confirmation_required"] is True
+    assert "DO-NOT-EMIT" not in str(packet)
