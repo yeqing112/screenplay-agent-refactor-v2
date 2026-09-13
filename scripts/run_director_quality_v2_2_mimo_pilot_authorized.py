@@ -24,6 +24,7 @@ if str(ROOT) not in sys.path:
 
 ARTIFACTS = ROOT / "artifacts"
 GOLDEN_PATH = ARTIFACTS / "director-quality-v2-1-golden-scenes.json"
+V21_BASELINE_PATH = ARTIFACTS / "director-quality-v2-1-mimo-pilot-20260913T093747Z.json"
 CONFIRMATION_TOKEN = "CONFIRM_DIRECTOR_V22_REAL_MIMO_PILOT"
 
 
@@ -122,7 +123,39 @@ def _aggregate_cost() -> dict[str, Any]:
     }
 
 
-def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_PATH, scene_limit: int = 12) -> dict[str, Any]:
+def _baseline_summary(path: Path) -> dict[str, Any]:
+    """Read only non-secret V2.1 baseline telemetry/quality for A/B output."""
+
+    try:
+        payload = _load_json(path)
+    except Exception:
+        return {"available": False, "source": str(path)}
+    scenes = [item for item in (payload.get("scenes") or []) if isinstance(item, dict)]
+    telemetry = _dict(payload.get("telemetry"))
+    stage = _dict(_dict(telemetry.get("stages")).get("director_patch_planner"))
+    repair_stage = _dict(_dict(telemetry.get("stages")).get("director_patch_repair"))
+    scores = []
+    for scene in scenes:
+        overall = _dict(_dict(scene.get("metrics")).get("overall_director_quality"))
+        value = overall.get("after_repair")
+        if isinstance(value, (int, float)):
+            scores.append(float(value))
+    return {
+        "available": True,
+        "source": str(path.relative_to(ROOT)) if path.is_absolute() and path.is_relative_to(ROOT) else str(path),
+        "scene_count": len(scenes),
+        "repair_calls": int(repair_stage.get("total_calls") or 0),
+        "fallback_patch_count": sum(int(_dict(scene.get("partial_acceptance")).get("fallback_patch_count") or 0) for scene in scenes),
+        "first_schema_pass": sum(int(bool(_dict(scene.get("metrics")).get("contract_reliability", {}).get("schema_pass"))) for scene in scenes),
+        "final_contract_pass": sum(int(bool(_dict(scene.get("validation")).get("contract_pass"))) for scene in scenes),
+        "cache_hit_rate": telemetry.get("cache_hit_rate"),
+        "avg_latency_ms": telemetry.get("avg_latency_ms"),
+        "planner_calls": int(stage.get("total_calls") or 0),
+        "director_quality_average": round(sum(scores) / len(scores), 2) if scores else None,
+    }
+
+
+def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_PATH, baseline_path: Path = V21_BASELINE_PATH, scene_limit: int = 12) -> dict[str, Any]:
     """Run V2.2 against frozen evidence with real provider calls only here."""
 
     from core.director_prompt import build_director_patch_prompt
@@ -143,6 +176,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
     total_creative = 0
     retained_creative = 0
     fallback_free = 0
+    quality_scores: list[float] = []
 
     for scene in scenes[:scene_limit]:
         metadata = _dict(scene.get("scene"))
@@ -202,6 +236,17 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             counts["fallback_patch_count"] += fallback_count
             for key in ("raw_parse_pass", "normalized_parse_pass", "first_pass_schema_pass", "first_pass_contract_pass", "post_normalization_contract_pass", "post_deterministic_repair_pass", "post_llm_repair_pass", "final_contract_pass"):
                 counts[key] += int(_dict(result.get("stage_counts")).get(key) or 0)
+            quality = build_director_quality_metrics(
+                baseline=baseline,
+                first_candidate=result.get("candidate"),
+                final_candidate=result.get("candidate"),
+                treatment=treatment,
+                blocking=blocking,
+                partial_acceptance=accepted_meta,
+            )
+            score = _dict(quality.get("overall_director_quality")).get("after_repair")
+            if isinstance(score, (int, float)):
+                quality_scores.append(float(score))
         except Exception as exc:
             error = str(exc)[:500]
             counts["total_scenes"] += 1
@@ -232,6 +277,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             "planner_calls": planner_calls,
             "repair_calls": repair_calls,
             "side_effects": copy.deepcopy(result.get("side_effects") or {}),
+            "quality": quality,
         })
 
     metrics = build_director_quality_v22_metrics(
@@ -239,6 +285,23 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         retained_creative_patch_count=retained_creative, fallback_free_scene_count=fallback_free,
         scene_count=counts["total_scenes"],
     )
+    v22_quality_average = round(sum(quality_scores) / len(quality_scores), 2) if quality_scores else None
+    v21 = _baseline_summary(baseline_path)
+    comparison = {
+        "v21_baseline": v21,
+        "v22_observed": {
+            "scene_count": counts["total_scenes"],
+            "repair_calls": cost["llm_repair_calls"],
+            "fallback_patch_count": counts["fallback_patch_count"],
+            "first_schema_pass": counts["first_pass_schema_pass"],
+            "final_contract_pass": counts["final_contract_pass"],
+            "cache_hit_rate": _dict(recorder.summary()).get("cache_hit_rate"),
+            "avg_latency_ms": _dict(recorder.summary()).get("avg_latency_ms"),
+            "director_quality_average": v22_quality_average,
+        },
+    }
+    if v21.get("available") and v22_quality_average is not None and isinstance(v21.get("director_quality_average"), (int, float)):
+        comparison["quality_delta_vs_v21"] = round(v22_quality_average - float(v21["director_quality_average"]), 2)
     return {
         "protocol_version": "director-quality-v2-2",
         "pilot_mode": "real_mimo_benchmark_only",
@@ -246,6 +309,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         "scene_count": len(results),
         "model": {"profile_id": _text(profile.get("id")), "provider": _text(profile.get("provider")), "model_name": _text(profile.get("model_name"))},
         "metrics": metrics,
+        "comparison": comparison,
         "scenes": results,
         "telemetry": recorder.summary(),
         "side_effects": {"production_rows_written": 0, "storyboard_shots_created": 0, "media_calls": 0, "object_storage_calls": 0},

@@ -54,4 +54,5 @@ def test_mocked_v22_pilot_is_benchmark_only_and_has_no_side_effects():
         "object_storage_calls": 0,
     }
     assert result["production_shadow"]["enabled"] is False
-
+    assert result["comparison"]["v21_baseline"]["available"] is True
+    assert result["comparison"]["v22_observed"]["final_contract_pass"] == 1
