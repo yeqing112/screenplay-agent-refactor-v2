@@ -207,7 +207,8 @@ def process_patch_pipeline(
             continue
         fallbacks.append({
             "scene_id": _text(baseline.get("scene_id")), "plan_shot_id": target, "proposal_id": _text(item.get("proposal_id")),
-            "root_cause": _fallback_reason(code), "repair_level_attempted": route.get("repair_level"),
+            "root_cause": "QUALITY_REPAIR_EXHAUSTED" if route.get("llm_allowed") else _fallback_reason(code),
+            "repair_level_attempted": route.get("repair_level"),
             "attempt_count": 0, "final_action": "REJECT_PATCH", "code": code,
         })
 

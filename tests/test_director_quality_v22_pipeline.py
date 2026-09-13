@@ -80,6 +80,23 @@ def test_pipeline_rejects_unknown_target_without_level2_call():
     assert result["fallbacks"][0]["root_cause"] == "UNKNOWN"
 
 
+def test_pipeline_classifies_unavailable_level2_as_quality_repair_exhausted():
+    _, _, plan, contract, strategy = _inputs()
+    result = process_patch_pipeline(
+        structural_shot_plan=plan,
+        contract=contract,
+        strategy=strategy,
+        raw_output={
+            "schema_version": "director_creative_patch_v1",
+            "patches": [{"plan_shot_id": "S01", "changes": {"camera.angle": ""}}],
+            "auxiliary_shot_proposals": [],
+        },
+        llm_repair_callable=None,
+    )
+    assert result["fallbacks"][0]["root_cause"] == "QUALITY_REPAIR_EXHAUSTED"
+    assert result["fallbacks"][0]["repair_level_attempted"] == 2
+
+
 def test_pipeline_keeps_valid_sibling_when_one_patch_has_authority_violation():
     _, _, plan, contract, strategy = _inputs()
     result = process_patch_pipeline(
