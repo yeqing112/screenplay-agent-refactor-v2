@@ -96,6 +96,8 @@ def process_patch_pipeline(
     blocking: dict[str, Any] | None = None,
     llm_repair_callable: Callable[[dict[str, Any]], Any] | None = None,
     max_llm_attempts: int = 2,
+    scene_id: str = "",
+    episode: int | str | None = None,
 ) -> dict[str, Any]:
     """Run Raw → Level 0 → Level 1 → Contract → optional Level 2 locally.
 
@@ -104,8 +106,24 @@ def process_patch_pipeline(
     the failed item through :func:`repair_failed_patch`.
     """
 
+    from core.director_rejection_trace import (
+        capture_raw_patch_trace,
+        capture_raw_patch_traces,
+        finalize_rejection_trace,
+        find_trace_for_rejection,
+    )
+
     baseline = copy.deepcopy(structural_shot_plan)
     known_ids = [_text(item.get("plan_shot_id")) for item in _shots(baseline) if _text(item.get("plan_shot_id"))]
+    trace_scene_id = _text(scene_id) or _text(baseline.get("scene_id"))
+    raw_traces = capture_raw_patch_traces(
+        raw_output,
+        scene_id=trace_scene_id,
+        episode=episode,
+        known_plan_shot_ids=known_ids,
+        allowed_patch_paths=_dict(contract).get("allowed_patch_paths") or None,
+    )
+    rejection_traces: dict[str, dict[str, Any]] = {}
     stage_counts = {key: 0 for key in (
         "raw_parse_pass", "normalized_parse_pass", "first_pass_schema_pass",
         "first_pass_contract_pass", "post_normalization_contract_pass",
@@ -123,6 +141,68 @@ def process_patch_pipeline(
     successful_repairs = 0
     failed_repairs = 0
     level01: dict[str, Any] = {"rejected": []}
+
+    def _stage_for_issue(code: str, *, final: bool = False, repair: bool = False) -> str:
+        if final:
+            return "FINAL_FALLBACK"
+        if repair:
+            return "LLM_REPAIR"
+        value = _text(code).upper()
+        if value in {"DIRECTOR_PATCH_PATH_FORBIDDEN", "DIRECTOR_PATCH_PATH_MISSING", "AMBIGUOUS_PATCH_PATH"}:
+            return "PATH_RESOLUTION"
+        if value in {"DIRECTOR_PATCH_FIELD_FORBIDDEN", "DIRECTOR_FACT_OVERRIDE", "IMMUTABLE_VIOLATION", "UNKNOWN_PLAN_SHOT_ID"}:
+            return "CONTRACT_VALIDATION"
+        if value in {"DIRECTOR_PATCH_NORMALIZATION_CONFLICT", "DIRECTOR_PATCH_DUPLICATE_TARGET", "CROSS_PATCH_CONFLICT"}:
+            return "PATCH_MERGE"
+        if value in {"INVALID_PATCH_VALUE", "DIRECTOR_PATCH_SCHEMA_INVALID", "DIRECTOR_PATCH_ID_MISSING"}:
+            return "VALUE_SCHEMA"
+        return "CONTRACT_VALIDATION"
+
+    def _trace_for_issue(item: dict[str, Any], failed_patch: dict[str, Any] | None = None) -> dict[str, Any]:
+        target = _text(item.get("plan_shot_id") or item.get("target_id"))
+        raw_path = _text(item.get("raw_path") or item.get("path"))
+        provider_index = item.get("provider_patch_index")
+        trace = find_trace_for_rejection(
+            raw_traces,
+            plan_shot_id=target,
+            raw_path=raw_path,
+            provider_patch_index=provider_index if isinstance(provider_index, int) else None,
+        )
+        if trace is None:
+            # A malformed document may not contain an addressable raw item.
+            # Keep the gap explicit instead of fabricating a raw provider
+            # shape; this trace is still useful for stage/classification audit.
+            trace = capture_raw_patch_trace(
+                failed_patch if isinstance(failed_patch, dict) else item,
+                scene_id=trace_scene_id,
+                episode=episode,
+                provider_patch_index=int(provider_index or -1),
+                known_plan_shot_ids=known_ids,
+                allowed_patch_paths=_dict(contract).get("allowed_patch_paths") or None,
+            )
+            trace["raw_capture_status"] = "synthetic_unaddressable_item"
+        return trace
+
+    def _save_trace(
+        item: dict[str, Any],
+        *,
+        failed_patch: dict[str, Any] | None = None,
+        stage: str,
+        final_action: str,
+        repair_attempts_for_trace: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
+        trace = _trace_for_issue(item, failed_patch)
+        completed = finalize_rejection_trace(
+            trace,
+            issue_code=_text(item.get("code") or item.get("issue_code")) or "UNKNOWN",
+            rejection_stage=stage,
+            rejection_reason=_text(item.get("message") or item.get("reason")),
+            final_action=final_action,
+            repair_attempts=repair_attempts_for_trace,
+            normalization_rules=trace.get("normalization", {}).get("rules") if isinstance(trace.get("normalization"), dict) else None,
+        )
+        rejection_traces[completed["trace_id"]] = completed
+        return completed
 
     level01_rejected: list[dict[str, Any]] = []
     try:
@@ -185,6 +265,7 @@ def process_patch_pipeline(
                 "deterministic_repair_events": deterministic_events,
                 "repair_attempts": repair_attempts,
                 "fallbacks": fallbacks,
+                "rejection_traces": list(rejection_traces.values()),
                 "metrics": build_director_quality_v22_metrics(
                     stage_counts=stage_counts,
                     repair_cost={"normalization_events": len(normalization_events), "deterministic_repair_events": len(deterministic_events)},
@@ -233,6 +314,13 @@ def process_patch_pipeline(
             )
             repair_attempts.append({"kind": "patch", "identity": target, **{key: repaired.get(key) for key in ("status", "attempt_count", "attempts", "fallback_to_baseline")}})
             if repaired.get("status") == "repaired" and isinstance(repaired.get("accepted_patch"), dict):
+                _save_trace(
+                    item,
+                    failed_patch=failed_patch,
+                    stage=_stage_for_issue(code, repair=True),
+                    final_action="REPAIR",
+                    repair_attempts_for_trace=repaired.get("attempts") or [],
+                )
                 successful_repairs += 1
                 creative_recovered_patch_count += 1
                 normalized_document = copy.deepcopy(normalized_document)
@@ -248,23 +336,38 @@ def process_patch_pipeline(
                 continue
             failed_repairs += 1
             avoidable_fallback_count += 1
+            completed_trace = _save_trace(
+                item,
+                failed_patch=failed_patch,
+                stage=_stage_for_issue(code, repair=True),
+                final_action="FALLBACK",
+                repair_attempts_for_trace=repaired.get("attempts") or [],
+            )
             fallbacks.append({
-                "scene_id": _text(baseline.get("scene_id")), "plan_shot_id": target, "proposal_id": "",
+                "scene_id": trace_scene_id, "plan_shot_id": target, "proposal_id": "",
                 "root_cause": "LLM_REPAIR_CONTRACT_FAILURE", "repair_level_attempted": 2,
                 "attempt_count": int(repaired.get("attempt_count") or 0), "final_action": "FALLBACK_BASELINE_PATCH", "code": code,
                 "fallback_class": "AVOIDABLE_TECHNICAL_FALLBACK",
+                "trace_id": completed_trace["trace_id"],
             })
             continue
         fallback_root = "QUALITY_REPAIR_EXHAUSTED" if route.get("llm_allowed") else _fallback_reason(code)
         fallback_safe = _is_safe_fallback(code, fallback_root)
         safe_fallback_count += int(fallback_safe)
         avoidable_fallback_count += int(not fallback_safe)
+        completed_trace = _save_trace(
+            item,
+            failed_patch=failed_patch,
+            stage=_stage_for_issue(code),
+            final_action="FALLBACK",
+        )
         fallbacks.append({
-            "scene_id": _text(baseline.get("scene_id")), "plan_shot_id": target, "proposal_id": _text(item.get("proposal_id")),
+            "scene_id": trace_scene_id, "plan_shot_id": target, "proposal_id": _text(item.get("proposal_id")),
             "root_cause": "QUALITY_REPAIR_EXHAUSTED" if route.get("llm_allowed") else _fallback_reason(code),
             "repair_level_attempted": route.get("repair_level"),
             "attempt_count": 0, "final_action": "REJECT_PATCH", "code": code,
             "fallback_class": "SAFE_REQUIRED_FALLBACK" if fallback_safe else "AVOIDABLE_TECHNICAL_FALLBACK",
+            "trace_id": completed_trace["trace_id"],
         })
 
     final_candidate = accepted.get("candidate") if isinstance(accepted.get("candidate"), dict) else baseline
@@ -314,6 +417,7 @@ def process_patch_pipeline(
         "deterministic_repair_events": deterministic_events,
         "repair_attempts": repair_attempts,
         "fallbacks": fallbacks,
+        "rejection_traces": list(rejection_traces.values()),
         "metrics": metrics,
         "side_effects": {"production_rows_written": 0, "storyboard_shots_created": 0, "media_calls": 0, "object_storage_calls": 0},
     }

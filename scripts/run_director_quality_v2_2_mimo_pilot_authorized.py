@@ -184,6 +184,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
     creative_recovered_total = 0
     safe_fallback_total = 0
     avoidable_fallback_total = 0
+    all_rejection_traces: list[dict[str, Any]] = []
     path_resolution_total = {
         "path_resolution_attempt_count": 0, "path_resolution_success_count": 0,
         "path_resolution_failure_count": 0, "path_alias_hit_count": 0,
@@ -243,6 +244,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
                 structural_shot_plan=baseline, contract=contract, strategy=strategy,
                 treatment=treatment, blocking=blocking, raw_output=raw,
                 llm_repair_callable=repair_call, max_llm_attempts=2,
+                scene_id=scene_id, episode=episode,
             )
             result["candidate"] = copy.deepcopy(result.get("candidate") or baseline)
             accepted_meta = _dict(result.get("partial_acceptance"))
@@ -300,6 +302,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             "partial_acceptance": copy.deepcopy(result.get("partial_acceptance") or {}),
             "repair_attempts": copy.deepcopy(result.get("repair_attempts") or []),
             "fallbacks": copy.deepcopy(result.get("fallbacks") or []),
+            "rejection_traces": copy.deepcopy(result.get("rejection_traces") or []),
             "candidate": copy.deepcopy(result.get("candidate") or {}),
             "validation": copy.deepcopy(result.get("validation") or {}),
             "planner_calls": planner_calls,
@@ -314,6 +317,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             "failed_repairs": int(result.get("failed_repairs") or 0),
             "quality": quality,
         })
+        all_rejection_traces.extend(copy.deepcopy(result.get("rejection_traces") or []))
 
     metrics = build_director_quality_v22_metrics(
         stage_counts=counts, repair_cost=cost, creative_patch_count=total_creative,
@@ -329,6 +333,37 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         "path_resolution_success_rate": round(
             path_resolution_total["path_resolution_success_count"] / path_resolution_total["path_resolution_attempt_count"], 4
         ) if path_resolution_total["path_resolution_attempt_count"] else None,
+    }
+    trace_count = len(all_rejection_traces)
+    # One trace represents one rejected patch/proposal.  A repair attempt and
+    # its fallback are two lifecycle events for the same trace, so counting
+    # both would under-report coverage.
+    rejection_event_count = trace_count
+    def _trace_rate(predicate: Any) -> float | None:
+        if not trace_count:
+            return None
+        return round(sum(1 for item in all_rejection_traces if predicate(item)) / trace_count, 4)
+    classifications = [str(item.get("fallback_classification") or "UNKNOWN") for item in all_rejection_traces]
+    metrics["rejection_observability"] = {
+        "rejected_patch_count": rejection_event_count,
+        "rejection_trace_count": trace_count,
+        "rejection_trace_coverage": round(trace_count / rejection_event_count, 4) if rejection_event_count else 1.0,
+        "raw_path_capture_rate": _trace_rate(lambda item: bool(_text(item.get("raw_path")))),
+        "raw_shot_identity_capture_rate": _trace_rate(lambda item: bool(_text(item.get("raw_plan_shot_id") or _dict(item.get("parsed")).get("plan_shot_id")))),
+        "canonical_path_capture_rate": _trace_rate(lambda item: bool(_text(item.get("canonical_path") or _dict(item.get("canonical")).get("path")))),
+        "rejection_stage_identified_rate": _trace_rate(lambda item: _text(item.get("rejection_stage")) in {"RAW_PARSE", "PATH_PARSE", "PATH_RESOLUTION", "ALLOWED_PATH_CHECK", "VALUE_SCHEMA", "CONTRACT_VALIDATION", "PATCH_MERGE", "DETERMINISTIC_REPAIR", "LLM_REPAIR", "QUALITY_VALIDATION", "FINAL_FALLBACK"}),
+        "fallback_classification_rate": _trace_rate(lambda item: _text(item.get("fallback_classification"))),
+        "unknown_root_cause_count": sum(1 for value in classifications if value == "UNKNOWN"),
+        "true_forbidden_count": sum(1 for value in classifications if value == "TRUE_FORBIDDEN"),
+        "safe_alias_count": sum(1 for value in classifications if value == "SAFE_ALIAS"),
+        "safe_envelope_variant_count": sum(1 for value in classifications if value == "SAFE_ENVELOPE_VARIANT"),
+        "contract_mismatch_count": sum(1 for value in classifications if value == "CONTRACT_MISMATCH"),
+        "compiler_bug_count": sum(1 for value in classifications if value == "COMPILER_BUG"),
+        "ambiguous_count": sum(1 for value in classifications if value == "AMBIGUOUS"),
+        "invalid_value_count": sum(1 for value in classifications if value == "INVALID_VALUE"),
+        "fact_override_count": sum(1 for value in classifications if value == "FACT_OVERRIDE"),
+        "unknown_shot_count": sum(1 for value in classifications if value == "UNKNOWN_SHOT"),
+        "quality_repair_exhausted_count": sum(1 for value in classifications if value == "QUALITY_REPAIR_EXHAUSTED"),
     }
     v22_quality_average = round(sum(quality_scores) / len(quality_scores), 2) if quality_scores else None
     v21 = _baseline_summary(baseline_path)
