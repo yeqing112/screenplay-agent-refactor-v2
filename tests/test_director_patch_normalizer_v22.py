@@ -10,6 +10,7 @@ from core.director_patch_normalizer import (
     normalize_patch_document,
     normalize_patch_item,
 )
+from core.director_patch_schema import parse_creative_patch
 
 
 def test_canonical_path_accepts_dotted_pointer_and_declared_wildcard_equivalents():
@@ -42,6 +43,31 @@ def test_nested_patch_and_alias_enum_numeric_values_are_normalized_without_creat
     }
     assert patch["_source_format"] == "nested_creative_fields"
     assert "enum_alias:shot_size" in patch["_normalization_reasons"]
+
+
+def test_information_strategy_singular_provider_fields_are_protocol_aliases():
+    patch = normalize_patch_item(
+        {
+            "plan_shot_id": "S01",
+            "information_strategy": {"reveal": ["照片"], "withhold": ["来源"], "audienceFocus": "人物反应"},
+        }
+    )
+    assert patch["changes"] == {
+        "information_strategy.reveals": ["照片"],
+        "information_strategy.withholds": ["来源"],
+        "information_strategy.audience_focus": "人物反应",
+    }
+
+
+def test_strategy_refs_are_preserved_as_provenance_metadata():
+    document = parse_creative_patch(
+        {
+            "schema_version": "director_creative_patch_v1",
+            "patches": [{"plan_shot_id": "S01", "changes": {"emotion.intensity": 7}, "strategy_refs": ["emotion:B01:C1"]}],
+            "auxiliary_shot_proposals": [],
+        }
+    )
+    assert document["patches"][0]["strategy_refs"] == ["emotion:B01:C1"]
 
 
 def test_json_patch_wildcard_and_numeric_selector_are_flattened():

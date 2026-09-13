@@ -6,6 +6,8 @@ from core.scene_directing_strategy import (
     build_scene_directing_strategy,
     parse_scene_directing_strategy,
     validate_scene_directing_strategy,
+    build_scene_directing_strategy_v2,
+    parse_scene_directing_strategy_v2,
 )
 from core.shot_plan import build_shot_plan
 
@@ -67,3 +69,31 @@ def test_strategy_rejects_authoritative_or_malformed_fields():
     invalid["emotional_curve"] = [{"beat_id": "B01", "intensity": 11}, {"beat_id": "B02", "intensity": 5}]
     report = validate_scene_directing_strategy(invalid, contract)
     assert report["status"] == "invalid"
+
+
+def test_strategy_v2_is_beat_bound_and_contains_four_director_curves():
+    treatment, contract = _inputs()
+    strategy = build_scene_directing_strategy_v2(treatment=treatment, contract=contract)
+    assert strategy["schema_version"] == "scene_directing_strategy_v2"
+    assert {item["beat_id"] for item in strategy["performance_arc"]} == {"B01", "B02"}
+    assert {item["beat_id"] for item in strategy["rhythm_curve"]} == {"B01", "B02"}
+    assert {item["beat_id"] for item in strategy["emotion_curve"]} == {"B01", "B02"}
+    assert {item["beat_id"] for item in strategy["information_plan"]} == {"B01", "B02"}
+    assert strategy["emotion_curve"][0]["intensity"] != strategy["emotion_curve"][1]["intensity"]
+    assert strategy["strategy_fingerprint"]
+
+
+def test_strategy_v2_rejects_unbound_beat_and_unknown_character():
+    _, contract = _inputs()
+    strategy = build_scene_directing_strategy_v2(contract=contract)
+    invalid = dict(strategy)
+    invalid["performance_arc"] = [dict(strategy["performance_arc"][0], beat_id="B99")]
+    with pytest.raises(SceneDirectingStrategyError) as error:
+        parse_scene_directing_strategy_v2(invalid, contract)
+    assert error.value.code == "DIRECTOR_STRATEGY_UNBOUND_BEAT"
+
+    invalid = dict(strategy)
+    invalid["performance_arc"] = [dict(strategy["performance_arc"][0], character_id="C99"), strategy["performance_arc"][1]]
+    with pytest.raises(SceneDirectingStrategyError) as error:
+        parse_scene_directing_strategy_v2(invalid, contract)
+    assert error.value.code == "INVALID_CHARACTER_REFERENCE"

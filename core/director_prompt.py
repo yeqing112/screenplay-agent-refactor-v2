@@ -22,12 +22,12 @@ from core.director_creative_contract import ALLOWED_PATCH_PATHS, AUXILIARY_SHOT_
 from core.prompt_cache import canonical_json, llm_request_fingerprint, model_request_snapshot
 
 
-DIRECTOR_PROMPT_PROTOCOL_VERSION = "director-quality-v2-2-1-prompt-v1"
+DIRECTOR_PROMPT_PROTOCOL_VERSION = "director-quality-v2-3-prompt-v1"
 
 # Keep this text literal and versioned.  Do not interpolate scene data here:
 # changing the system prompt per scene would defeat prefix reuse and make
 # prompt fingerprints harder to compare across a pilot.
-STABLE_SYSTEM_PREFIX = """[DIRECTOR_PROMPT_PROTOCOL: director-quality-v2-2-1-prompt-v1]
+STABLE_SYSTEM_PREFIX = """[DIRECTOR_PROMPT_PROTOCOL: director-quality-v2-3-prompt-v1]
 SECTION 1 — ROLE
 You are a Contract-First Director Creative Planner for a film/television
 pre-production system. Return machine-readable JSON only. You propose
@@ -88,6 +88,16 @@ information order. Avoid gratuitous movement, random shot-scale changes,
 redundant coverage, emotional flatlines, and shot inflation. If evidence is
 insufficient, return no change rather than inventing a fact.
 
+SECTION 6A — CANONICAL QUALITY SIGNAL SHAPES
+When proposing a change, use the canonical shapes consumed by the deterministic
+quality scorer. performance_direction is a list of objects, each with
+character_id, objective, and visible_behavior (abstract emotion words alone
+are insufficient). emotion uses numeric intensity 0-10 plus optional start/end.
+edit uses duration_seconds, cut_reason, and optional hold_after_action_seconds.
+information_strategy uses plural reveals/withholds plus audience_focus.
+Do not replace these with character-keyed maps, pacing-only text, or singular
+provider aliases when the canonical form can be returned.
+
 SECTION 7 — OUTPUT RULES
 Return strict JSON only; do not include prose outside the JSON document.
 """
@@ -95,13 +105,20 @@ Return strict JSON only; do not include prose outside the JSON document.
 # This portion is also stable across scenes.  It is kept in the user message
 # so callers can keep the system role reusable while still separating the
 # schema/quality context from dynamic evidence.
-SEMI_STABLE_USER_PREFIX = """[DIRECTOR_SEMI_STABLE_CONTEXT: director-quality-v2-2-1-prompt-v1]
+SEMI_STABLE_USER_PREFIX = """[DIRECTOR_SEMI_STABLE_CONTEXT: director-quality-v2-3-prompt-v1]
 SCENE STRATEGY CONTRACT
 Use the supplied Scene Directing Strategy as a scene-level brief. Do not
 invent strategy fields or rewrite its beat references.
 Required strategy concepts: scene_objective, visual_strategy,
-emotional_curve, information_strategy, power_curve, rhythm_strategy,
-camera_language, forbidden_tendencies.
+performance_arc, rhythm_curve, emotion_curve, information_plan,
+camera_language, forbidden_tendencies. Legacy emotional_curve,
+information_strategy, power_curve, rhythm_strategy may be present for
+compatibility but beat-bound V2 arrays are authoritative.
+
+Every patch should include strategy_refs when the supplied strategy is V2;
+refs must point to the target beat (and approved character where applicable),
+for example performance:B04:CHAR_001, emotion:B04:CHAR_001,
+information:B04, or rhythm:B04.
 
 DIRECTOR QUALITY DIMENSIONS
 Consider dramatic clarity, shot motivation, emotional progression, visual

@@ -26,7 +26,7 @@ PATCH_SCHEMA_VERSION = "director_creative_patch_v1"
 # validator stages can safely pass normalized documents through the same
 # boundary, but it is never trusted: the value is recomputed and checked.
 PATCH_DOCUMENT_KEYS = {"schema_version", "patches", "auxiliary_shot_proposals", "patch_fingerprint", "normalization_metadata"}
-PATCH_KEYS = {"patch_id", "plan_shot_id", "changes", "rationale", "confidence", "_source_format", "_normalization_reasons"}
+PATCH_KEYS = {"patch_id", "plan_shot_id", "changes", "rationale", "confidence", "strategy_refs", "_source_format", "_normalization_reasons"}
 # These are the creative fields permitted by the Director Contract.  The
 # schema layer only uses them to recognize semantically equivalent provider
 # envelopes; authority, type, and path validation remain in the compiler.
@@ -119,7 +119,7 @@ def _nested_changes(raw: dict[str, Any], *, path: str) -> dict[str, Any]:
     """
     changes: dict[str, Any] = {}
     for field, value in raw.items():
-        if field in {"plan_shot_id", "patch_id", "rationale", "confidence", "source_format", "_source_format"}:
+        if field in {"plan_shot_id", "patch_id", "rationale", "confidence", "strategy_refs", "source_format", "_source_format"}:
             continue
         if field not in CREATIVE_NESTED_FIELDS:
             # Immutable/provenance fields must remain visible to the strict
@@ -201,7 +201,7 @@ def _normalize_patch(raw: Any, index: int) -> dict[str, Any]:
             )
         changes = _normalize_changes(raw.get("changes"), path=f"{path}")
     elif "patch" in raw:
-        forbidden = sorted(set(raw) - ({"plan_shot_id", "patch_id", "patch", "rationale", "confidence", "_normalization_reasons"}))
+        forbidden = sorted(set(raw) - ({"plan_shot_id", "patch_id", "patch", "rationale", "confidence", "strategy_refs", "_normalization_reasons"}))
         if forbidden:
             raise CreativePatchSchemaError(
                 f"patch contains forbidden fields: {', '.join(forbidden)}",
@@ -217,7 +217,7 @@ def _normalize_patch(raw: Any, index: int) -> dict[str, Any]:
             changes = _operation_changes(operations, path=path, plan_shot_id=plan_shot_id)
             source_format = "json_patch_wrapper"
     elif "path" in raw and "value" in raw:
-        forbidden = sorted(set(raw) - ({"plan_shot_id", "patch_id", "path", "value", "op", "rationale", "confidence"}))
+        forbidden = sorted(set(raw) - ({"plan_shot_id", "patch_id", "path", "value", "op", "rationale", "confidence", "strategy_refs"}))
         if forbidden:
             raise CreativePatchSchemaError(
                 f"patch contains forbidden fields: {', '.join(forbidden)}",
@@ -244,6 +244,11 @@ def _normalize_patch(raw: Any, index: int) -> dict[str, Any]:
         if isinstance(confidence, bool) or not isinstance(confidence, (int, float)) or not 0 <= float(confidence) <= 1:
             raise CreativePatchSchemaError("confidence must be a number between 0 and 1", path=f"{path}.confidence")
         normalized["confidence"] = float(confidence)
+    if "strategy_refs" in raw:
+        refs = raw.get("strategy_refs")
+        if not isinstance(refs, list) or any(not _text(item) for item in refs):
+            raise CreativePatchSchemaError("strategy_refs must be a list of non-empty strings", path=f"{path}.strategy_refs")
+        normalized["strategy_refs"] = [_text(item) for item in refs]
     supplied_source = _text(raw.get("_source_format"))
     normalized["_source_format"] = supplied_source or source_format
     return normalized
@@ -269,6 +274,13 @@ def _coalesce_patches(patches: list[dict[str, Any]]) -> list[dict[str, Any]]:
                     path=f"patches[{target}].changes.{change_path}",
                 )
             existing["changes"][change_path] = copy.deepcopy(value)
+        merged_refs = []
+        for ref in (existing.get("strategy_refs") or []) + (patch.get("strategy_refs") or []):
+            ref = _text(ref)
+            if ref and ref not in merged_refs:
+                merged_refs.append(ref)
+        if merged_refs:
+            existing["strategy_refs"] = merged_refs
         existing["_source_format"] = "merged_equivalent"
     return result
 

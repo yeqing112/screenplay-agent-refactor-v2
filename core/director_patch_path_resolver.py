@@ -32,6 +32,12 @@ FIELD_ALIASES: dict[str, str] = {
     "visualEmphasis": "visual_emphasis",
     "performanceDirection": "performance_direction",
     "informationStrategy": "information_strategy",
+    # These are protocol-equivalent singular/camelCase forms emitted by
+    # some providers.  They do not infer content; they only normalize the
+    # collection field names consumed by the scorer.
+    "reveal": "reveals",
+    "withhold": "withholds",
+    "audienceFocus": "audience_focus",
 }
 
 

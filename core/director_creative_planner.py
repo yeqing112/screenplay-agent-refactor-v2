@@ -147,7 +147,7 @@ def _participant_ids(blocking: dict[str, Any]) -> list[str]:
     return result
 
 
-def _creative_for_beat(raw: dict[str, Any], base: dict[str, Any], index: int, participant_ids: list[str]) -> dict[str, Any]:
+def _creative_for_beat(raw: dict[str, Any], base: dict[str, Any], index: int, participant_ids: list[str], strategy: dict[str, Any] | None = None) -> dict[str, Any]:
     """Produce a conservative, deterministic creative shadow candidate.
 
     This is intentionally a safe surrogate for an LLM in shadow/benchmark
@@ -213,6 +213,25 @@ def _creative_for_beat(raw: dict[str, Any], base: dict[str, Any], index: int, pa
         },
         "visual_emphasis": event or info_change,
     }
+    # Strategy V2 is an approved beat-bound directing brief.  When supplied,
+    # the planner executes its entries instead of re-inventing scene logic.
+    strategy_obj = strategy if isinstance(strategy, dict) and _text(strategy.get("schema_version")) == "scene_directing_strategy_v2" else {}
+    if strategy_obj:
+        beat_id = _text(raw.get("beat_id"))
+        perf = next((item for item in _list(strategy_obj.get("performance_arc")) if isinstance(item, dict) and _text(item.get("beat_id")) == beat_id), None)
+        if perf:
+            result["performance_direction"] = [{key: copy.deepcopy(perf.get(key)) for key in ("character_id", "objective", "visible_behavior", "subtext") if _text(perf.get(key))}]
+        emo = next((item for item in _list(strategy_obj.get("emotion_curve")) if isinstance(item, dict) and _text(item.get("beat_id")) == beat_id), None)
+        if emo:
+            result["emotion"] = {"start": "承接上一镜" if index else "场景既有状态", "end": _text(emo.get("state")), "intensity": emo.get("intensity")}
+        rhythm = next((item for item in _list(strategy_obj.get("rhythm_curve")) if isinstance(item, dict) and _text(item.get("beat_id")) == beat_id), None)
+        if rhythm:
+            target = rhythm.get("target_duration_range")
+            duration = (float(target[0]) + float(target[1])) / 2 if isinstance(target, list) and len(target) == 2 else base.get("duration_hint_seconds", 4)
+            result["edit"] = {"duration_seconds": duration, "cut_reason": _text(rhythm.get("cut_strategy")) or "beat_change", "hold_after_action_seconds": 0.4 if _text(rhythm.get("pace")) == "hold" else 0.2}
+        info = next((item for item in _list(strategy_obj.get("information_plan")) if isinstance(item, dict) and _text(item.get("beat_id")) == beat_id), None)
+        if info:
+            result["information_strategy"] = {"reveals": copy.deepcopy(info.get("audience_should_know") or []), "withholds": copy.deepcopy(info.get("audience_should_not_know_yet") or []), "audience_focus": _text(info.get("reaction_priority"))}
     return result
 
 
@@ -224,6 +243,71 @@ def _normalise_llm_output(raw: Any) -> dict[str, Any]:
     if not isinstance(raw, dict):
         raise DirectorCreativeError("planner output must be a JSON object")
     return raw
+
+
+def _bind_strategy_refs(patch_document: dict[str, Any], strategy: dict[str, Any], structural_shot_plan: dict[str, Any]) -> dict[str, Any]:
+    """Attach deterministic beat-bound provenance to V2 patches.
+
+    The refs describe which approved strategy entry a patch executes; they do
+    not add or alter a creative value.  Missing refs are derived from the
+    target shot's existing beat and the changed creative root.  Supplied refs
+    outside the approved strategy are rejected rather than guessed.
+    """
+
+    if _text(strategy.get("schema_version")) != "scene_directing_strategy_v2":
+        return patch_document
+    chars_by_beat: dict[str, str] = {}
+    for item in _list(strategy.get("performance_arc")) + _list(strategy.get("emotion_curve")):
+        if isinstance(item, dict) and _text(item.get("beat_id")) and _text(item.get("character_id")):
+            chars_by_beat.setdefault(_text(item["beat_id"]), _text(item["character_id"]))
+    valid_refs: set[str] = set()
+    for item in _list(strategy.get("performance_arc")):
+        if isinstance(item, dict):
+            beat, char = _text(item.get("beat_id")), _text(item.get("character_id"))
+            if beat and char:
+                valid_refs.add(f"performance:{beat}:{char}")
+    for item in _list(strategy.get("emotion_curve")):
+        if isinstance(item, dict):
+            beat, char = _text(item.get("beat_id")), _text(item.get("character_id"))
+            if beat and char:
+                valid_refs.add(f"emotion:{beat}:{char}")
+    for item in _list(strategy.get("rhythm_curve")):
+        if isinstance(item, dict) and _text(item.get("beat_id")):
+            valid_refs.add(f"rhythm:{_text(item['beat_id'])}")
+    for item in _list(strategy.get("information_plan")):
+        if isinstance(item, dict) and _text(item.get("beat_id")):
+            valid_refs.add(f"information:{_text(item['beat_id'])}")
+    shot_by_id = {_text(item.get("plan_shot_id")): item for item in _list(structural_shot_plan.get("shots")) if isinstance(item, dict) and _text(item.get("plan_shot_id"))}
+    bound = copy.deepcopy(patch_document)
+    for patch in _list(bound.get("patches")):
+        if not isinstance(patch, dict):
+            continue
+        sid = _text(patch.get("plan_shot_id"))
+        shot = shot_by_id.get(sid, {})
+        beat = _text(shot.get("beat_id"))
+        if not beat:
+            raise DirectorCreativeError(f"strategy refs require a bound beat for {sid}")
+        refs = [_text(ref) for ref in _list(patch.get("strategy_refs")) if _text(ref)]
+        unknown = sorted(set(refs) - valid_refs)
+        if unknown:
+            raise DirectorCreativeError(f"patch {sid} contains strategy refs outside approved strategy: {', '.join(unknown)}")
+        roots = {_text(path).replace("/", ".").split(".")[0] for path in _dict(patch.get("changes"))}
+        char = chars_by_beat.get(beat)
+        for root in roots:
+            if root == "performance_direction" and char:
+                refs.append(f"performance:{beat}:{char}")
+            elif root == "emotion" and char:
+                refs.append(f"emotion:{beat}:{char}")
+            elif root == "edit":
+                refs.append(f"rhythm:{beat}")
+            elif root == "information_strategy":
+                refs.append(f"information:{beat}")
+            elif root in {"camera", "composition", "purpose", "dramatic_function", "why_this_shot", "visual_emphasis"}:
+                # Camera/composition execution is still beat-bound, but does
+                # not pretend to be one of the four specialised curves.
+                refs.append(f"rhythm:{beat}" if f"rhythm:{beat}" in valid_refs else f"information:{beat}")
+        patch["strategy_refs"] = sorted(set(refs))
+    return bound
 
 
 def _merge_llm_creative(base: dict[str, Any], llm_output: Any) -> dict[str, Any]:
@@ -356,6 +440,7 @@ def build_creative_shot_plan_candidate(
     blocking: dict[str, Any] | None = None,
     fact_snapshot: dict[str, Any] | None = None,
     scene_canonical: dict[str, Any] | None = None,
+    strategy: dict[str, Any] | None = None,
     llm_output: dict[str, Any] | list[dict[str, Any]] | None = None,
     llm_callable: Callable[[dict[str, Any]], Any] | None = None,
     confirmed: bool = False,
@@ -380,6 +465,7 @@ def build_creative_shot_plan_candidate(
     participants = _participant_ids(blocking_obj)
     evidence = {
         "protocol_version": PROTOCOL_VERSION,
+        "strategy": copy.deepcopy(strategy if isinstance(strategy, dict) else {}),
         "treatment": copy.deepcopy(treatment_obj),
         "blocking": copy.deepcopy(blocking_obj),
         "fact_snapshot": copy.deepcopy(fact_snapshot if isinstance(fact_snapshot, dict) else {}),
@@ -428,7 +514,7 @@ def build_creative_shot_plan_candidate(
                 raise DirectorCreativeError("structural ShotPlan contains a non-object shot")
             beat_id = _text(raw.get("beat_id"))
             generated_shot = copy.deepcopy(raw)
-            generated_shot.update(_creative_for_beat(beats.get(beat_id, {}), raw, index, participants))
+            generated_shot.update(_creative_for_beat(beats.get(beat_id, {}), raw, index, participants, strategy))
             generated.append(generated_shot)
         candidate["shots"] = generated
     try:
@@ -455,6 +541,7 @@ def build_creative_shot_plan_candidate(
         "protocol_version": PROTOCOL_VERSION,
         "creative_evidence_fingerprint": evidence_fp,
         "planner_error": planner_error,
+        "strategy_fingerprint": _text((strategy or {}).get("strategy_fingerprint")) if isinstance(strategy, dict) else "",
     }
     candidate["creative_validation"] = validation
     candidate["structural_plan_fingerprint"] = fingerprint(_protected_projection(baseline))
@@ -586,6 +673,17 @@ def build_creative_patch_candidate(
             patch_document = partial["document"]
             planner_mode = "partial_creative_planner" if (patch_document.get("patches") or patch_document.get("auxiliary_shot_proposals")) else "deterministic_fallback"
         planner_error = f"creative patch schema rejected: {exc.code}"
+    try:
+        patch_document = _bind_strategy_refs(patch_document, strategy, structural_shot_plan)
+    except DirectorCreativeError as exc:
+        # Strategy provenance is part of the review contract.  An invalid
+        # reference cannot be repaired by inventing a beat/character; retain
+        # a safe empty patch document and expose the failure to the caller.
+        planner_mode = "deterministic_fallback"
+        planner_error = str(exc)
+        patch_document = parse_creative_patch(
+            {"schema_version": "director_creative_patch_v1", "patches": [], "auxiliary_shot_proposals": []}
+        )
     return {
         "schema_version": "director_creative_patch_candidate_v1",
         "status": "ready_for_review",
