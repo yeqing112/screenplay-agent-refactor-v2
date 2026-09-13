@@ -1,0 +1,36 @@
+{
+  "protocol_version": "director-quality-v2-2",
+  "measurement_mode": "offline_replay",
+  "scene_count": 12,
+  "stages": {
+    "raw_parse_pass": {"count": 12, "total": 12, "rate": 1.0},
+    "normalized_parse_pass": {"count": 12, "total": 12, "rate": 1.0},
+    "first_pass_schema_pass": {"count": 12, "total": 12, "rate": 1.0},
+    "first_pass_contract_pass": {"count": 12, "total": 12, "rate": 1.0},
+    "post_normalization_contract_pass": {"count": 12, "total": 12, "rate": 1.0},
+    "post_deterministic_repair_pass": {"count": 12, "total": 12, "rate": 1.0},
+    "post_llm_repair_pass": {"count": 0, "total": 12, "rate": 0.0},
+    "final_contract_pass": {"count": 12, "total": 12, "rate": 1.0}
+  },
+  "repair_cost": {
+    "normalization_events": 24,
+    "deterministic_repair_events": 0,
+    "llm_repair_calls": 0,
+    "llm_repair_calls_per_scene": 0.0,
+    "repair_token_cost": 0,
+    "repair_latency_ms": 0,
+    "fallback_after_repair_count": 0
+  },
+  "fallback_patch_count": 0,
+  "fallback_patch_rate": 0.0,
+  "creative_retention_rate": 1.0,
+  "full_creative_scene_success_rate": 1.0,
+  "side_effects": {
+    "production_rows_written": 0,
+    "storyboard_shots_created": 0,
+    "media_calls": 0,
+    "object_storage_calls": 0,
+    "llm_provider_calls": 0
+  },
+  "real_stage_a_executed": false
+}

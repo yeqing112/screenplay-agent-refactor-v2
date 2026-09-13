@@ -343,3 +343,35 @@ V2.1 已证明 Contract-First、patch-level partial acceptance、最终 Contract
 5. 用阶段化和 creative retention 指标证明“少 repair”没有换来“少创意”。
 
 本文件完成后，方可进入 V2.2 Level 0 实现。当前 **未开始 Final As-Built Verification**，也不满足 Production Shadow 条件；不得执行真实 MiMo Pilot。
+
+## 17. Final As-Built Verification（本地闭环）
+
+本节与上文 Baseline Audit 分开记录；上文保留的是实施前事实，本节记录当前仓库实际构建结果。
+
+### 已落地
+
+- Level 0：`core/director_patch_normalizer.py`，覆盖 canonical path、白名单 alias、enum/numeric/whitespace 规范化、嵌套结构 flatten、before/after fingerprint 与 fail-closed 未知字段。
+- Level 1：`core/director_patch_deterministic_repair.py`，覆盖重复 patch 合并、非冲突合并、冲突拒绝和稳定排序。
+- 路由与指标：`core/issue_router.py`、`core/director_quality_metrics.py`、`core/repair_ledger.py` 已记录 repair level/engine、fallback taxonomy、阶段门禁、repair cost 与 creative retention。
+- Level 2 边界：`core/director_quality_v22.py` 仅向明确的创意语义问题开放局部 repair；Level 0/1、事实越权、未知目标不会调用 LLM。
+- Partial acceptance：`core/director_patch_compiler.py` 在 partial 模式按字段保留合法 sibling；原子编译默认行为不变，事实/权限错误仍拒绝。
+- 离线回放：`scripts/run_director_quality_v2_2_benchmark.py` 只读取冻结 V2.1 evidence 与候选文档，明确输出 `llm_provider_calls=0`、媒体/存储/生产写入均为 0。
+
+### 本地证据
+
+- V2.2 定向、V2.1、Production、SceneBlocking V2、Materializer gate：`81 passed`。
+- 全仓库后端 pytest：`820 passed`，无失败。
+- `python -m compileall -q api core scripts`：通过。
+- `git diff --check`：通过。
+- 离线回放 12 场景：raw/normalized/schema/contract/final 均 `12/12`，fallback `0`，creative retention `100%`；该结果仅证明回放管线，不代表真实 MiMo 指标。
+
+### 尚未满足 / 明确不宣称
+
+- 本地验证尚未替代 Stage A 真实 MiMo 12 场景 A/B Pilot；尚未生成 `director-quality-v2-2-stage-a-mimo-pilot-<timestamp>.json`。
+- 因缺少真实 V2.2 Pilot 的 repair/token/latency/cache/quality 数据，不能宣称达到 Stage A 目标，也不进入 Stage B 或 Production Shadow。
+- Final As-Built 结论：**NOT_READY_FOR_PRODUCTION_SHADOW**（原因是外部 Pilot 证据尚缺，不是本地安全门失败）。
+
+### 变更提交
+
+- `cb727c1`：字段级 partial acceptance 与 V2.2 pipeline/test 收口。
+- `6a3ce78`：离线 V2.2 benchmark replay runner、回放测试及 pipeline 可观测字段。
