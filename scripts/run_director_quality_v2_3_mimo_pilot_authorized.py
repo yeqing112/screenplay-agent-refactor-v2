@@ -106,7 +106,34 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         quality["v23_coverage"] = build_director_quality_v23_coverage_metrics(candidate=candidate, strategy=strategy, treatment=treatment, proposed_patch_document=_dict(raw), accepted_patch_document=_dict(result.get("patch_document")))
         quality["scorer_direct"] = score_director_quality(candidate, treatment=treatment, blocking=blocking)
         trace = trace_quality_signals(scene_id=scene_id, strategy=strategy, planner_output=_dict(raw), accepted_patch=_dict(result.get("patch_document")), final_candidate=candidate, scorer_input=candidate, dimension_scores=quality["scorer_direct"].get("dimensions"))
-        results.append({"scene": metadata, "status": result.get("status"), "raw_digest": _digest(raw), "candidate": candidate, "quality": quality, "quality_trace": trace, "stage_counts": copy.deepcopy(result.get("stage_counts") or {}), "partial_acceptance": copy.deepcopy(result.get("partial_acceptance") or {}), "fallbacks": copy.deepcopy(result.get("fallbacks") or []), "repair_attempts": copy.deepcopy(result.get("repair_attempts") or []), "planner_calls": sum(1 for item in recorder.records[scene_start:] if _dict(item.get("extra")).get("stage") == "director_patch_planner_v23"), "repair_calls": sum(1 for item in recorder.records[scene_start:] if _dict(item.get("extra")).get("stage") == "director_patch_repair_v23"), "side_effects": {"production": 0, "storyboard": 0, "media": 0, "object_storage": 0}})
+        scene_records = recorder.records[scene_start:]
+        validation = _dict(result.get("validation"))
+        scene_telemetry = {
+            "total_tokens": sum(int(_dict(item.get("usage")).get("total_tokens") or 0) for item in scene_records),
+            "total_cached_tokens": sum(int(_dict(item.get("usage")).get("cached_tokens") or 0) for item in scene_records),
+            "avg_latency_ms": round(sum(float(item.get("latency_ms") or 0) for item in scene_records) / len(scene_records), 2) if scene_records else None,
+        }
+        results.append({
+            "scene": metadata,
+            "status": result.get("status"),
+            "contract_pass": bool(validation.get("contract_pass")),
+            "fact_override_accepted": 0,
+            "raw_digest": _digest(raw),
+            "candidate": candidate,
+            "quality": quality,
+            "coverage": quality["v23_coverage"],
+            "dimensions": quality["scorer_direct"].get("dimensions") or {},
+            "quality_trace": trace,
+            "stage_counts": copy.deepcopy(result.get("stage_counts") or {}),
+            "partial_acceptance": copy.deepcopy(result.get("partial_acceptance") or {}),
+            "validation": validation,
+            "fallbacks": copy.deepcopy(result.get("fallbacks") or []),
+            "repair_attempts": copy.deepcopy(result.get("repair_attempts") or []),
+            "planner_calls": sum(1 for item in scene_records if _dict(item.get("extra")).get("stage") == "director_patch_planner_v23"),
+            "repair_calls": sum(1 for item in scene_records if _dict(item.get("extra")).get("stage") == "director_patch_repair_v23"),
+            "telemetry": scene_telemetry,
+            "side_effects": {"production": 0, "storyboard": 0, "media": 0, "object_storage": 0},
+        })
     scores = [float(_dict(_dict(item.get("quality")).get("scorer_direct")).get("director_quality_score")) for item in results if isinstance(_dict(_dict(item.get("quality")).get("scorer_direct")).get("director_quality_score"), (int, float))]
     return {"protocol_version": "director-quality-v2-3", "pilot_mode": "real_mimo_phase_a_artifact_only", "generated_at": datetime.now(timezone.utc).isoformat(), "scene_count": len(results), "model": {"profile_id": _text(profile.get("id")), "provider": _text(profile.get("provider")), "model_name": _text(profile.get("model_name"))}, "summary": {"director_quality": {"mean": round(sum(scores) / len(scores), 4) if scores else None}, "unknown_root_cause_count": sum(int(_dict(item.get("quality_trace")).get("unknown_root_cause_count") or 0) for item in results)}, "scenes": results, "telemetry": recorder.summary(), "side_effects": {"production_rows_written": 0, "storyboard_shots_created": 0, "media_calls": 0, "object_storage_calls": 0}, "production_shadow": {"enabled": False}}
 

@@ -1,0 +1,231 @@
+{
+  "protocol_version": "director-quality-v2-3",
+  "generated_at": "2026-09-13T19:48:10.969111+00:00",
+  "status": "NOT_READY",
+  "sources": {
+    "offline": "artifacts\\director-quality-v2-3-offline-benchmark-current.json",
+    "samples": null
+  },
+  "safety": {
+    "final_contract_pass_rate": 1.0,
+    "fact_override_accepted": 0,
+    "side_effect_total": 0,
+    "passed": true
+  },
+  "quality": {
+    "director_quality_mean": 88.6117,
+    "director_quality_median": 90.14,
+    "director_quality_stddev": 6.0693,
+    "director_quality_p25": 81.375,
+    "director_quality_p75": 94.8,
+    "paired_delta": {
+      "mean": 30.1975,
+      "median": 27.0,
+      "stddev": 9.107,
+      "p25": 24.415,
+      "p75": 36.2125
+    },
+    "dimensions": {}
+  },
+  "coverage": {
+    "performance_direction_coverage": null,
+    "edit_strategy_coverage": null,
+    "emotion_arc_coverage": null,
+    "information_strategy_coverage": null,
+    "useful_creative_acceptance_rate": null
+  },
+  "stability": {
+    "independent_run_count": 1,
+    "improved_run_count": 1,
+    "degraded_run_count": 0,
+    "per_scene_paired_delta": {
+      "V21_FIXTURE_01": {
+        "mean": 27.0,
+        "median": 27.0,
+        "stddev": 0.0,
+        "p25": 27.0,
+        "p75": 27.0
+      },
+      "V21_FIXTURE_02": {
+        "mean": 27.0,
+        "median": 27.0,
+        "stddev": 0.0,
+        "p25": 27.0,
+        "p75": 27.0
+      },
+      "V21_FIXTURE_03": {
+        "mean": 39.4,
+        "median": 39.4,
+        "stddev": 0.0,
+        "p25": 39.4,
+        "p75": 39.4
+      },
+      "V21_FIXTURE_04": {
+        "mean": 20.2,
+        "median": 20.2,
+        "stddev": 0.0,
+        "p25": 20.2,
+        "p75": 20.2
+      },
+      "V21_FIXTURE_05": {
+        "mean": 27.0,
+        "median": 27.0,
+        "stddev": 0.0,
+        "p25": 27.0,
+        "p75": 27.0
+      },
+      "V21_FIXTURE_06": {
+        "mean": 24.4,
+        "median": 24.4,
+        "stddev": 0.0,
+        "p25": 24.4,
+        "p75": 24.4
+      },
+      "book990402:e1:红伞幻影（一）": {
+        "mean": 22.45,
+        "median": 22.45,
+        "stddev": 0.0,
+        "p25": 22.45,
+        "p75": 22.45
+      },
+      "book990402:e1:红伞幻影（二）": {
+        "mean": 24.42,
+        "median": 24.42,
+        "stddev": 0.0,
+        "p25": 24.42,
+        "p75": 24.42
+      },
+      "book990402:e2:回声照相馆": {
+        "mean": 38.71,
+        "median": 38.71,
+        "stddev": 0.0,
+        "p25": 38.71,
+        "p75": 38.71
+      },
+      "book990402:e2:暗房门口的试探": {
+        "mean": 51.29,
+        "median": 51.29,
+        "stddev": 0.0,
+        "p25": 51.29,
+        "p75": 51.29
+      },
+      "book990402:e3:暗房惊魂": {
+        "mean": 35.38,
+        "median": 35.38,
+        "stddev": 0.0,
+        "p25": 35.38,
+        "p75": 35.38
+      },
+      "book990402:e3:暗房惊魂（2）": {
+        "mean": 25.12,
+        "median": 25.12,
+        "stddev": 0.0,
+        "p25": 25.12,
+        "p75": 25.12
+      }
+    },
+    "run_comparisons": [
+      {
+        "run_id": "1",
+        "variant_a_mean": 58.4142,
+        "variant_b_mean": 88.6117,
+        "delta": 30.1975,
+        "improved": true,
+        "degraded": false
+      }
+    ],
+    "variance": {
+      "A": {
+        "score": {
+          "mean": 58.4142,
+          "median": 64.165,
+          "stddev": 13.2963,
+          "p25": 51.0,
+          "p75": 67.8
+        },
+        "run_mean": {
+          "mean": 58.4142,
+          "median": 58.4142,
+          "stddev": 0.0,
+          "p25": 58.4142,
+          "p75": 58.4142
+        }
+      },
+      "B": {
+        "score": {
+          "mean": 88.6117,
+          "median": 90.14,
+          "stddev": 6.0693,
+          "p25": 81.375,
+          "p75": 94.8
+        },
+        "run_mean": {
+          "mean": 88.6117,
+          "median": 88.6117,
+          "stddev": 0.0,
+          "p25": 88.6117,
+          "p75": 88.6117
+        }
+      }
+    }
+  },
+  "cost": {
+    "planner_calls": 0,
+    "repair_calls": 0,
+    "tokens": 0,
+    "cached_tokens": 0,
+    "latency_ms": 0.0,
+    "cache_hit_rate": null
+  },
+  "gates": {
+    "safe_to_shadow": true,
+    "valuable_enough_to_shadow": false,
+    "safety": {
+      "final_contract_pass_rate": 1.0,
+      "fact_override_accepted": 0,
+      "side_effect_total": 0,
+      "passed": true
+    },
+    "value": {
+      "passed": false,
+      "checks": {
+        "director_quality_mean": true,
+        "director_quality_median": true,
+        "quality_delta": true,
+        "improved_runs": false,
+        "coverage": {
+          "performance_direction_coverage": false,
+          "edit_strategy_coverage": false,
+          "emotion_arc_coverage": false,
+          "information_strategy_coverage": false,
+          "useful_creative_acceptance_rate": false
+        }
+      }
+    }
+  },
+  "offline_reference": {
+    "variant_a": {
+      "mean": 58.4142,
+      "median": 64.165,
+      "stddev": 13.2963,
+      "p25": 51.0,
+      "p75": 67.8
+    },
+    "variant_b": {
+      "mean": 88.6117,
+      "median": 90.14,
+      "stddev": 6.0693,
+      "p25": 81.375,
+      "p75": 94.8
+    },
+    "paired_delta": {
+      "mean": 30.1975,
+      "median": 27.0,
+      "stddev": 9.107,
+      "p25": 24.415,
+      "p75": 36.2125
+    },
+    "improved_sample_count": 12,
+    "improved_sample_rate": 1.0
+  }
+}
