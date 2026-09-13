@@ -477,3 +477,13 @@ Production Materializer 代码与本地测试闭环已收口，可以作为正�
 - 当前所有物化镜头仍为 `production_status=blocked`，因为媒体 readiness 未执行；结构连续性合同已保留，不能据此宣称视觉/视频连续性通过。
 - 修复后的 ScriptIR、Treatment 和 SceneBlocking 通用边界测试已纳入本轮代码；后端完整回归 `710 passed`，Golden `5/5`，release-gate 不变量通过，前端生产构建通过。
 - 未调用 `StoryboardAgent.run()`，未处理 GitHub Actions/CI，未删除或覆盖历史产物。
+
+## Final Local Materializer Revision Safety Update（2026-09-13）
+
+本节仅记录后续通用安全收口，不覆盖前述历史 Pilot 证据。
+
+- 未指定 `plan_id` 时，Materializer 每个场景只选择最新 approved ShotPlan；显式 `plan_id` 保持精确版本语义。
+- 已物化镜头若来自不同 ShotPlan revision，或缺少 `shot_plan_ref` 无法证明来源，均返回 409 fail-closed；同一 revision 重放保持幂等。
+- 完整 `camera` 对象（含 `shot_size`、`camera_side` 等）写入 `meta_info`，不再因遗留列映射而丢失。
+- Materializer/Production gate 回归：`10 passed`；最新全量后端回归：`786 passed`（既有 warnings 原样保留）。
+- 未调用真实 LLM/MiMo、生图、视频或对象存储；未清理、覆盖历史产物。
