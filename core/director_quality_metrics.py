@@ -20,6 +20,10 @@ def build_director_quality_v22_metrics(
     retained_creative_patch_count: int = 0,
     fallback_free_scene_count: int = 0,
     scene_count: int = 0,
+    creative_recoverable_patch_count: int | None = None,
+    creative_recovered_patch_count: int = 0,
+    safe_fallback_count: int | None = None,
+    avoidable_fallback_count: int | None = None,
 ) -> dict[str, Any]:
     """Build the staged stability/repair-cost metrics required by V2.2.
 
@@ -67,6 +71,35 @@ def build_director_quality_v22_metrics(
         "creative_retention_rate": _rate(int(retained_creative_patch_count), int(creative_patch_count)),
         "full_creative_scene_success_rate": _rate(int(fallback_free_scene_count), int(scene_count)),
     }
+    if creative_recoverable_patch_count is not None:
+        recoverable = int(creative_recoverable_patch_count)
+        recovered = int(creative_recovered_patch_count or 0)
+        result["creative_recovery_rate"] = _rate(recovered, recoverable)
+        result["creative_loss_rate"] = _rate(max(recoverable - recovered, 0), int(creative_patch_count))
+    else:
+        result["creative_recovery_rate"] = None
+        result["creative_loss_rate"] = None
+    if safe_fallback_count is not None or avoidable_fallback_count is not None:
+        safe = int(safe_fallback_count or 0)
+        avoidable = int(avoidable_fallback_count or 0)
+        result["fallback_classification"] = {
+            "safe_required_fallback_count": safe,
+            "avoidable_technical_fallback_count": avoidable,
+            "safe_required_fallback_rate": _rate(safe, int(counts.get("fallback_patch_count", 0))),
+            "avoidable_technical_fallback_rate": _rate(avoidable, int(counts.get("fallback_patch_count", 0))),
+        }
+    else:
+        result["fallback_classification"] = None
+    successful_repairs = int(costs.get("successful_repairs") or 0)
+    failed_repairs = int(costs.get("failed_repairs") or 0)
+    total_repairs = successful_repairs + failed_repairs
+    costs.setdefault("successful_repairs", successful_repairs)
+    costs.setdefault("failed_repairs", failed_repairs)
+    costs["repair_success_rate"] = _rate(successful_repairs, total_repairs)
+    costs.setdefault("creative_patches_saved_by_llm_repair", successful_repairs)
+    costs.setdefault("fallbacks_prevented_by_repair", successful_repairs)
+    costs["tokens_per_successful_repair"] = _rate(int(costs.get("repair_token_cost") or 0), successful_repairs)
+    costs["latency_per_successful_repair_ms"] = _rate(int(costs.get("repair_latency_ms") or 0), successful_repairs)
     return result
 
 
@@ -90,6 +123,10 @@ def build_director_quality_metrics(
     retained_creative_patch_count: int = 0,
     fallback_free_scene_count: int = 0,
     scene_count: int = 0,
+    creative_recoverable_patch_count: int | None = None,
+    creative_recovered_patch_count: int = 0,
+    safe_fallback_count: int | None = None,
+    avoidable_fallback_count: int | None = None,
 ) -> dict[str, Any]:
     """Record Baseline / Before Repair / After Repair separately.
 
@@ -173,6 +210,10 @@ def build_director_quality_metrics(
             retained_creative_patch_count=retained_creative_patch_count,
             fallback_free_scene_count=fallback_free_scene_count,
             scene_count=scene_count,
+            creative_recoverable_patch_count=creative_recoverable_patch_count,
+            creative_recovered_patch_count=creative_recovered_patch_count,
+            safe_fallback_count=safe_fallback_count,
+            avoidable_fallback_count=avoidable_fallback_count,
         )
     return result
 

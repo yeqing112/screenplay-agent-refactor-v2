@@ -77,6 +77,15 @@ def _fallback_reason(code: str) -> str:
     return "UNKNOWN"
 
 
+def _is_safe_fallback(code: str, root_cause: str = "") -> bool:
+    value = _text(code).upper()
+    cause = _text(root_cause).upper()
+    return value in {
+        "DIRECTOR_FACT_OVERRIDE", "IMMUTABLE_VIOLATION", "UNKNOWN_PLAN_SHOT_ID",
+        "INVALID_SOURCE_BEAT", "AUXILIARY_BINDING_FAILURE", "INVALID_ASSET_REFERENCE",
+    } or cause in {"FACT_OVERRIDE", "UNKNOWN_PLAN_SHOT_ID", "AUXILIARY_BINDING_FAILURE"}
+
+
 def process_patch_pipeline(
     *,
     structural_shot_plan: dict[str, Any],
@@ -107,6 +116,12 @@ def process_patch_pipeline(
     normalization_events: list[dict[str, Any]] = []
     deterministic_events: list[dict[str, Any]] = []
     path_resolution_metrics: dict[str, Any] = {}
+    creative_recoverable_patch_count = 0
+    creative_recovered_patch_count = 0
+    safe_fallback_count = 0
+    avoidable_fallback_count = 0
+    successful_repairs = 0
+    failed_repairs = 0
     level01: dict[str, Any] = {"rejected": []}
 
     level01_rejected: list[dict[str, Any]] = []
@@ -136,16 +151,21 @@ def process_patch_pipeline(
         # malformed sibling must not erase an otherwise valid patch.
         partial = parse_creative_patch_partial(raw_output)
         if partial.get("fatal") or not isinstance(partial.get("document"), dict):
+            fallback_root = _fallback_reason(code)
+            fallback_safe = _is_safe_fallback(code, fallback_root)
+            safe_fallback_count += int(fallback_safe)
+            avoidable_fallback_count += int(not fallback_safe)
             fallbacks.append({
                 "scene_id": _text(baseline.get("scene_id")),
                 "plan_shot_id": "",
                 "proposal_id": "",
-                "root_cause": _fallback_reason(code),
+                "root_cause": fallback_root,
                 "repair_level_attempted": 0,
                 "attempt_count": 0,
                 "final_action": "REJECT_DOCUMENT",
                 "code": code,
                 "message": str(exc),
+                "fallback_class": "SAFE_REQUIRED_FALLBACK" if fallback_safe else "AVOIDABLE_TECHNICAL_FALLBACK",
             })
             return {
                 "status": "fallback",
@@ -159,7 +179,17 @@ def process_patch_pipeline(
                 "deterministic_repair_events": deterministic_events,
                 "repair_attempts": repair_attempts,
                 "fallbacks": fallbacks,
-                "metrics": build_director_quality_v22_metrics(stage_counts=stage_counts, repair_cost={"normalization_events": len(normalization_events), "deterministic_repair_events": len(deterministic_events)}, scene_count=1),
+                "metrics": build_director_quality_v22_metrics(
+                    stage_counts=stage_counts,
+                    repair_cost={"normalization_events": len(normalization_events), "deterministic_repair_events": len(deterministic_events)},
+                    creative_patch_count=len(fallbacks),
+                    retained_creative_patch_count=0,
+                    fallback_free_scene_count=0,
+                    scene_count=1,
+                    creative_recoverable_patch_count=0,
+                    safe_fallback_count=safe_fallback_count,
+                    avoidable_fallback_count=avoidable_fallback_count,
+                ),
                 "side_effects": {"production_rows_written": 0, "storyboard_shots_created": 0, "media_calls": 0, "object_storage_calls": 0},
             }
         normalized_document = partial["document"]
@@ -182,6 +212,7 @@ def process_patch_pipeline(
         target = _text(item.get("plan_shot_id") or item.get("target_id"))
         failed_patch = _item_for_target(normalized_document, target)
         if route.get("llm_allowed") and failed_patch and llm_repair_callable:
+            creative_recoverable_patch_count += 1
             repaired = repair_failed_patch(
                 structural_shot_plan=baseline,
                 failed_patch=failed_patch,
@@ -196,6 +227,8 @@ def process_patch_pipeline(
             )
             repair_attempts.append({"kind": "patch", "identity": target, **{key: repaired.get(key) for key in ("status", "attempt_count", "attempts", "fallback_to_baseline")}})
             if repaired.get("status") == "repaired" and isinstance(repaired.get("accepted_patch"), dict):
+                successful_repairs += 1
+                creative_recovered_patch_count += 1
                 normalized_document = copy.deepcopy(normalized_document)
                 normalized_document["patches"] = [patch for patch in normalized_document["patches"] if _text(patch.get("plan_shot_id")) != target]
                 normalized_document["patches"].append(copy.deepcopy(repaired["accepted_patch"]))
@@ -207,17 +240,25 @@ def process_patch_pipeline(
                 validation = accepted.get("validation") if isinstance(accepted.get("validation"), dict) else validation
                 stage_counts["post_llm_repair_pass"] = int(bool(validation.get("contract_pass")))
                 continue
+            failed_repairs += 1
+            avoidable_fallback_count += 1
             fallbacks.append({
                 "scene_id": _text(baseline.get("scene_id")), "plan_shot_id": target, "proposal_id": "",
                 "root_cause": "LLM_REPAIR_CONTRACT_FAILURE", "repair_level_attempted": 2,
                 "attempt_count": int(repaired.get("attempt_count") or 0), "final_action": "FALLBACK_BASELINE_PATCH", "code": code,
+                "fallback_class": "AVOIDABLE_TECHNICAL_FALLBACK",
             })
             continue
+        fallback_root = "QUALITY_REPAIR_EXHAUSTED" if route.get("llm_allowed") else _fallback_reason(code)
+        fallback_safe = _is_safe_fallback(code, fallback_root)
+        safe_fallback_count += int(fallback_safe)
+        avoidable_fallback_count += int(not fallback_safe)
         fallbacks.append({
             "scene_id": _text(baseline.get("scene_id")), "plan_shot_id": target, "proposal_id": _text(item.get("proposal_id")),
             "root_cause": "QUALITY_REPAIR_EXHAUSTED" if route.get("llm_allowed") else _fallback_reason(code),
             "repair_level_attempted": route.get("repair_level"),
             "attempt_count": 0, "final_action": "REJECT_PATCH", "code": code,
+            "fallback_class": "SAFE_REQUIRED_FALLBACK" if fallback_safe else "AVOIDABLE_TECHNICAL_FALLBACK",
         })
 
     final_candidate = accepted.get("candidate") if isinstance(accepted.get("candidate"), dict) else baseline
@@ -231,6 +272,10 @@ def process_patch_pipeline(
         "deterministic_repair_events": len(deterministic_events),
         "llm_repair_calls": llm_calls,
         "fallback_after_repair_count": sum(1 for item in fallbacks if int(item.get("repair_level_attempted") or -1) == 2),
+        "successful_repairs": successful_repairs,
+        "failed_repairs": failed_repairs,
+        "creative_patches_saved_by_llm_repair": creative_recovered_patch_count,
+        "fallbacks_prevented_by_repair": creative_recovered_patch_count,
     }
     metrics = build_director_quality_v22_metrics(
         stage_counts={**stage_counts, "total_scenes": 1, "evaluated_patch_count": evaluated, "fallback_patch_count": len(fallbacks)},
@@ -239,6 +284,10 @@ def process_patch_pipeline(
         retained_creative_patch_count=retained,
         fallback_free_scene_count=int(not fallbacks),
         scene_count=1,
+        creative_recoverable_patch_count=creative_recoverable_patch_count,
+        creative_recovered_patch_count=creative_recovered_patch_count,
+        safe_fallback_count=safe_fallback_count,
+        avoidable_fallback_count=avoidable_fallback_count,
     )
     return {
         "status": "valid" if not fallbacks else "partial",

@@ -38,3 +38,23 @@ def test_legacy_quality_metrics_can_attach_v22_metrics_without_changing_old_fiel
     )
     assert result["v22"]["stages"]["final_contract_pass"]["rate"] == 1.0
     assert set(result["dimensions"]) == {"baseline", "before_repair", "after_repair"}
+
+
+def test_v221_creative_recovery_loss_and_repair_efficiency_metrics():
+    result = build_director_quality_v22_metrics(
+        stage_counts={"total_scenes": 2, "fallback_patch_count": 2, "evaluated_patch_count": 10},
+        repair_cost={"llm_repair_calls": 3, "successful_repairs": 2, "failed_repairs": 1, "repair_token_cost": 900, "repair_latency_ms": 3000},
+        creative_patch_count=10,
+        retained_creative_patch_count=8,
+        creative_recoverable_patch_count=4,
+        creative_recovered_patch_count=3,
+        safe_fallback_count=1,
+        avoidable_fallback_count=1,
+        fallback_free_scene_count=1,
+        scene_count=2,
+    )
+    assert result["creative_recovery_rate"] == 0.75
+    assert result["creative_loss_rate"] == 0.1
+    assert result["fallback_classification"]["safe_required_fallback_count"] == 1
+    assert result["repair_cost"]["repair_success_rate"] == 0.6667
+    assert result["repair_cost"]["tokens_per_successful_repair"] == 450
