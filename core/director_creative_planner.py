@@ -675,6 +675,12 @@ def build_creative_patch_candidate(
         planner_error = f"creative patch schema rejected: {exc.code}"
     try:
         patch_document = _bind_strategy_refs(patch_document, strategy, structural_shot_plan)
+        # Binding approved Strategy V2 provenance changes the canonical patch
+        # payload.  Re-normalize without trusting the pre-binding fingerprint
+        # so the downstream compiler sees a self-consistent document.
+        rebound = copy.deepcopy(patch_document)
+        rebound.pop("patch_fingerprint", None)
+        patch_document = parse_creative_patch(rebound)
     except DirectorCreativeError as exc:
         # Strategy provenance is part of the review contract.  An invalid
         # reference cannot be repaired by inventing a beat/character; retain
