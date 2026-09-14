@@ -1,0 +1,112 @@
+{
+  "schema_version": "director_professional_qa_v1",
+  "layer": "STRATEGY_CONSISTENCY_QA",
+  "issue_codes": [
+    "STRATEGY_PHASE_UNCOVERED",
+    "GENERIC_SHOT_MOTIVATION",
+    "UNMOTIVATED_CAMERA_CHANGE",
+    "VISUAL_GRAMMAR_BREAK",
+    "EMOTION_ARC_MISMATCH",
+    "EMOTION_ZIGZAG",
+    "REVEAL_TOO_EARLY",
+    "REVEAL_TOO_LATE",
+    "INFORMATION_ARC_GAP",
+    "PERFORMANCE_ARC_GAP",
+    "POWER_SHIFT_NOT_VISUALIZED",
+    "EDIT_ARC_MISMATCH",
+    "OVER_CUTTING",
+    "REACTION_MISSING",
+    "REDUNDANT_COVERAGE",
+    "CAMERA_MOVEMENT_OVERUSE",
+    "SHOT_SIZE_NOISE",
+    "RANDOM_VARIATION",
+    "UNMOTIVATED_VARIATION",
+    "TRACE_FIELD_MISSING"
+  ],
+  "positive_cases": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "status": "PROFESSIONAL_QA_PASS",
+      "coverage": {
+        "strategy_phase_coverage": 1.0,
+        "audience_knowledge_coverage": 1.0,
+        "emotional_arc_coverage": 1.0,
+        "performance_arc_coverage": 1.0
+      },
+      "findings": []
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "status": "PROFESSIONAL_QA_PASS",
+      "coverage": {
+        "strategy_phase_coverage": 1.0,
+        "audience_knowledge_coverage": 1.0,
+        "emotional_arc_coverage": 1.0,
+        "performance_arc_coverage": 1.0
+      },
+      "findings": []
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "status": "PROFESSIONAL_QA_PASS",
+      "coverage": {
+        "strategy_phase_coverage": 1.0,
+        "audience_knowledge_coverage": 1.0,
+        "emotional_arc_coverage": 1.0,
+        "performance_arc_coverage": 1.0
+      },
+      "findings": []
+    }
+  ],
+  "routing": [
+    {
+      "schema_version": "director_repairability_routing_v1",
+      "next_route": "NONE",
+      "route_counts": {
+        "TAIL_REPAIR": 0,
+        "SCENE_REPAIR": 0,
+        "SCENE_REDESIGN": 0,
+        "HUMAN_REVIEW": 0
+      },
+      "principles": {
+        "TAIL_REPAIR": "individual field omission",
+        "SCENE_REPAIR": "coordinated improvement of existing shots with topology fixed",
+        "SCENE_REDESIGN": "strategy cannot be executed by current shot architecture",
+        "HUMAN_REVIEW": "source evidence cannot determine the creative choice"
+      }
+    },
+    {
+      "schema_version": "director_repairability_routing_v1",
+      "next_route": "NONE",
+      "route_counts": {
+        "TAIL_REPAIR": 0,
+        "SCENE_REPAIR": 0,
+        "SCENE_REDESIGN": 0,
+        "HUMAN_REVIEW": 0
+      },
+      "principles": {
+        "TAIL_REPAIR": "individual field omission",
+        "SCENE_REPAIR": "coordinated improvement of existing shots with topology fixed",
+        "SCENE_REDESIGN": "strategy cannot be executed by current shot architecture",
+        "HUMAN_REVIEW": "source evidence cannot determine the creative choice"
+      }
+    },
+    {
+      "schema_version": "director_repairability_routing_v1",
+      "next_route": "NONE",
+      "route_counts": {
+        "TAIL_REPAIR": 0,
+        "SCENE_REPAIR": 0,
+        "SCENE_REDESIGN": 0,
+        "HUMAN_REVIEW": 0
+      },
+      "principles": {
+        "TAIL_REPAIR": "individual field omission",
+        "SCENE_REPAIR": "coordinated improvement of existing shots with topology fixed",
+        "SCENE_REDESIGN": "strategy cannot be executed by current shot architecture",
+        "HUMAN_REVIEW": "source evidence cannot determine the creative choice"
+      }
+    }
+  ],
+  "provider_calls": 0
+}

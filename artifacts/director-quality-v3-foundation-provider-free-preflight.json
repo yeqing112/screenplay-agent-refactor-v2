@@ -1,0 +1,15 @@
+{
+  "schema_version": "director-quality-v3-foundation-provider-free-preflight-v1",
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "scene_repair_real_canary": 0,
+  "full_pilot": 0,
+  "shadow": 0,
+  "production": 0,
+  "storyboard": 0,
+  "image": 0,
+  "video": 0,
+  "object_storage": 0,
+  "ci": "not_run",
+  "status": "PASS"
+}

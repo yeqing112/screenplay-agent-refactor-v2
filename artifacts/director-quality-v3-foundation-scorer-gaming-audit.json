@@ -1,0 +1,254 @@
+{
+  "schema_version": "director-quality-v3-foundation-scorer-gaming-audit-v1",
+  "cases": [
+    {
+      "case_id": "mechanical_high_dq",
+      "dq_signal": 91.6,
+      "professional_qa": {
+        "schema_version": "director_professional_qa_v1",
+        "status": "PROFESSIONAL_QA_REDESIGN_REQUIRED",
+        "layer": "STRATEGY_CONSISTENCY_QA",
+        "findings": [
+          {
+            "dimension": "strategy_trace",
+            "status": "FAIL",
+            "evidence": "G01 lacks required trace fields: camera_motivation",
+            "shot_ids": [
+              "G01"
+            ],
+            "strategy_reference": "P01",
+            "issue_code": "TRACE_FIELD_MISSING",
+            "repairability": "TAIL_REPAIR",
+            "suggested_action": "fill trace metadata from approved strategy; do not alter facts"
+          },
+          {
+            "dimension": "shot_motivation_specificity",
+            "status": "FAIL",
+            "evidence": "G01 motivation is a reusable template: show the event",
+            "shot_ids": [
+              "G01"
+            ],
+            "strategy_reference": "P01",
+            "issue_code": "GENERIC_SHOT_MOTIVATION",
+            "repairability": "TAIL_REPAIR",
+            "suggested_action": "route tail_repair and preserve source facts"
+          },
+          {
+            "dimension": "strategy_trace",
+            "status": "FAIL",
+            "evidence": "G02 lacks required trace fields: camera_motivation",
+            "shot_ids": [
+              "G02"
+            ],
+            "strategy_reference": "P02",
+            "issue_code": "TRACE_FIELD_MISSING",
+            "repairability": "TAIL_REPAIR",
+            "suggested_action": "fill trace metadata from approved strategy; do not alter facts"
+          },
+          {
+            "dimension": "shot_motivation_specificity",
+            "status": "FAIL",
+            "evidence": "G02 motivation is a reusable template: show the event",
+            "shot_ids": [
+              "G02"
+            ],
+            "strategy_reference": "P02",
+            "issue_code": "GENERIC_SHOT_MOTIVATION",
+            "repairability": "TAIL_REPAIR",
+            "suggested_action": "route tail_repair and preserve source facts"
+          },
+          {
+            "dimension": "strategy_trace",
+            "status": "FAIL",
+            "evidence": "G03 lacks required trace fields: camera_motivation",
+            "shot_ids": [
+              "G03"
+            ],
+            "strategy_reference": "P03",
+            "issue_code": "TRACE_FIELD_MISSING",
+            "repairability": "TAIL_REPAIR",
+            "suggested_action": "fill trace metadata from approved strategy; do not alter facts"
+          },
+          {
+            "dimension": "shot_motivation_specificity",
+            "status": "FAIL",
+            "evidence": "G03 motivation is a reusable template: show the event",
+            "shot_ids": [
+              "G03"
+            ],
+            "strategy_reference": "P03",
+            "issue_code": "GENERIC_SHOT_MOTIVATION",
+            "repairability": "TAIL_REPAIR",
+            "suggested_action": "route tail_repair and preserve source facts"
+          },
+          {
+            "dimension": "strategy_trace",
+            "status": "FAIL",
+            "evidence": "G04 lacks required trace fields: camera_motivation",
+            "shot_ids": [
+              "G04"
+            ],
+            "strategy_reference": "P04",
+            "issue_code": "TRACE_FIELD_MISSING",
+            "repairability": "TAIL_REPAIR",
+            "suggested_action": "fill trace metadata from approved strategy; do not alter facts"
+          },
+          {
+            "dimension": "shot_motivation_specificity",
+            "status": "FAIL",
+            "evidence": "G04 motivation is a reusable template: show the event",
+            "shot_ids": [
+              "G04"
+            ],
+            "strategy_reference": "P04",
+            "issue_code": "GENERIC_SHOT_MOTIVATION",
+            "repairability": "TAIL_REPAIR",
+            "suggested_action": "route tail_repair and preserve source facts"
+          },
+          {
+            "dimension": "camera_progression",
+            "status": "FAIL",
+            "evidence": "every shot uses a unique camera signature without a repeated visual grammar rule",
+            "shot_ids": [
+              "G01",
+              "G02",
+              "G03",
+              "G04"
+            ],
+            "strategy_reference": "",
+            "issue_code": "RANDOM_VARIATION",
+            "repairability": "SCENE_REDESIGN",
+            "suggested_action": "route scene_redesign and preserve source facts"
+          },
+          {
+            "dimension": "camera_progression",
+            "status": "FAIL",
+            "evidence": "camera movement appears in more than 75% of shots",
+            "shot_ids": [
+              "G01",
+              "G02",
+              "G03",
+              "G04"
+            ],
+            "strategy_reference": "",
+            "issue_code": "CAMERA_MOVEMENT_OVERUSE",
+            "repairability": "SCENE_REPAIR",
+            "suggested_action": "route scene_repair and preserve source facts"
+          },
+          {
+            "dimension": "visual_grammar",
+            "status": "FAIL",
+            "evidence": "shot size alternates on every cut without a phase rule",
+            "shot_ids": [
+              "G01",
+              "G02",
+              "G03",
+              "G04"
+            ],
+            "strategy_reference": "",
+            "issue_code": "SHOT_SIZE_NOISE",
+            "repairability": "SCENE_REDESIGN",
+            "suggested_action": "route scene_redesign and preserve source facts"
+          },
+          {
+            "dimension": "visual_grammar",
+            "status": "FAIL",
+            "evidence": "G01 moves camera during an objective-relationship phase",
+            "shot_ids": [
+              "G01"
+            ],
+            "strategy_reference": "P01",
+            "issue_code": "VISUAL_GRAMMAR_BREAK",
+            "repairability": "SCENE_REPAIR",
+            "suggested_action": "route scene_repair and preserve source facts"
+          },
+          {
+            "dimension": "emotion_arc_execution",
+            "status": "FAIL",
+            "evidence": "intensity changes reverse repeatedly: [2.0, 8.0, 2.0, 8.0]",
+            "shot_ids": [
+              "G01",
+              "G02",
+              "G03",
+              "G04"
+            ],
+            "strategy_reference": "emotional_arc",
+            "issue_code": "EMOTION_ZIGZAG",
+            "repairability": "SCENE_REPAIR",
+            "suggested_action": "route scene_repair and preserve source facts"
+          },
+          {
+            "dimension": "edit_arc_execution",
+            "status": "FAIL",
+            "evidence": "strategy requires hold points but no shot executes a hold function",
+            "shot_ids": [
+              "G01",
+              "G02",
+              "G03",
+              "G04"
+            ],
+            "strategy_reference": "edit_arc",
+            "issue_code": "EDIT_ARC_MISMATCH",
+            "repairability": "SCENE_REPAIR",
+            "suggested_action": "route scene_repair and preserve source facts"
+          },
+          {
+            "dimension": "edit_arc_execution",
+            "status": "FAIL",
+            "evidence": "every shot is marked as an undifferentiated cut with no hold/reaction function",
+            "shot_ids": [
+              "G01",
+              "G02",
+              "G03",
+              "G04"
+            ],
+            "strategy_reference": "edit_arc",
+            "issue_code": "OVER_CUTTING",
+            "repairability": "SCENE_REDESIGN",
+            "suggested_action": "route scene_redesign and preserve source facts"
+          }
+        ],
+        "issue_counts": {
+          "TRACE_FIELD_MISSING": 4,
+          "GENERIC_SHOT_MOTIVATION": 4,
+          "RANDOM_VARIATION": 1,
+          "CAMERA_MOVEMENT_OVERUSE": 1,
+          "SHOT_SIZE_NOISE": 1,
+          "VISUAL_GRAMMAR_BREAK": 1,
+          "EMOTION_ZIGZAG": 1,
+          "EDIT_ARC_MISMATCH": 1,
+          "OVER_CUTTING": 1
+        },
+        "coverage": {
+          "strategy_phase_coverage": 1.0,
+          "audience_knowledge_coverage": 1.0,
+          "emotional_arc_coverage": 1.0,
+          "performance_arc_coverage": 1.0
+        },
+        "scorer_gaming": {
+          "schema_version": "director_scorer_gaming_audit_v1",
+          "gaming_detected": true,
+          "signals": [
+            "generic_motivation_fill",
+            "camera_diversity_without_strategy",
+            "mechanical_emotion_zigzag"
+          ],
+          "evidence": {
+            "generic_motivation_count": 4,
+            "shot_count": 4,
+            "unique_camera_count": 4,
+            "emotion_values": [
+              2.0,
+              8.0,
+              2.0,
+              8.0
+            ]
+          },
+          "professional_qa_required": true
+        }
+      },
+      "expected": "high DQ may coexist with Professional QA failure",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "director_scene_strategy_v1",
+  "domain_object": "SceneDirectingStrategy",
+  "required_fields": [
+    "scene_id",
+    "strategy_version",
+    "dramatic_objective",
+    "scene_question",
+    "audience_experience",
+    "beat_priorities",
+    "audience_knowledge_arc",
+    "emotional_arc",
+    "power_arc",
+    "visual_grammar",
+    "camera_principles",
+    "composition_principles",
+    "performance_arc",
+    "edit_arc",
+    "information_reveal_plan",
+    "spatial_expression",
+    "prop_visual_strategy",
+    "shot_architecture_guidance",
+    "must_preserve",
+    "must_avoid",
+    "creative_risks",
+    "strategy_summary"
+  ],
+  "authority_types": [
+    "SOURCE_FACT",
+    "TREATMENT_INTENT",
+    "BLOCKING_FACT",
+    "DIRECTOR_CREATIVE_DECISION"
+  ],
+  "source_of_truth": "core/director_scene_strategy.py"
+}

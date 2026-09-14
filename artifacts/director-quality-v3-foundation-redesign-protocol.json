@@ -1,0 +1,68 @@
+{
+  "schema_version": "director_scene_redesign_request_v1",
+  "request": {
+    "schema_version": "director_scene_redesign_request_v1",
+    "scene_strategy_fingerprint": "cc63010a5c88320ae32c9b5f35a771879cd12a9d7bc8ddd74c513f506eeaf225",
+    "draft_shot_plan_fingerprint": "3d3f0c329a3f794553a812e21e4a70adef97edb2117749176c6917aa3155fdc3",
+    "qa_findings": [
+      {
+        "issue_code": "SHOT_SIZE_NOISE"
+      }
+    ],
+    "immutable_facts": {
+      "source_facts": "frozen"
+    },
+    "blocking": {},
+    "assets": {},
+    "allowed_topology_operations": [
+      "add",
+      "delete",
+      "merge",
+      "reorder",
+      "split"
+    ],
+    "forbidden_authority_mutations": [
+      "asset_facts",
+      "character_identity",
+      "continuity_source_truth",
+      "dialogue_facts",
+      "event_results",
+      "source_facts",
+      "time_space_facts"
+    ],
+    "execution_status": "interface_only",
+    "provider_calls": 0
+  },
+  "validation": {
+    "valid": true,
+    "errors": []
+  },
+  "lifecycle": {
+    "states": [
+      "DRAFT",
+      "QA_FAILED",
+      "REDESIGN_REQUIRED",
+      "READY_FOR_APPROVAL",
+      "APPROVED"
+    ],
+    "draft": {
+      "from": "DRAFT",
+      "to": "QA_FAILED",
+      "topology_mutable": true,
+      "topology_frozen": false
+    },
+    "ready": {
+      "from": "QA_FAILED",
+      "to": "READY_FOR_APPROVAL",
+      "topology_mutable": true,
+      "topology_frozen": false
+    },
+    "approved": {
+      "from": "READY_FOR_APPROVAL",
+      "to": "APPROVED",
+      "topology_mutable": false,
+      "topology_frozen": true
+    },
+    "topology_rule": "DRAFT mutable; APPROVED frozen"
+  }
+}

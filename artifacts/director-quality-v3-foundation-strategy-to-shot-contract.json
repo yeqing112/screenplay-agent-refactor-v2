@@ -1,0 +1,24 @@
+{
+  "schema_version": "director_strategy_to_shot_contract_v1",
+  "required_trace_fields": [
+    "beat_id",
+    "strategy_phase_id",
+    "dramatic_function",
+    "audience_information_state",
+    "emotion_phase",
+    "power_state",
+    "edit_function",
+    "camera_motivation",
+    "performance_function"
+  ],
+  "states": [
+    "DRAFT",
+    "QA_FAILED",
+    "REDESIGN_REQUIRED",
+    "READY_FOR_APPROVAL",
+    "APPROVED"
+  ],
+  "draft_topology_mutable": true,
+  "approved_topology_frozen": true,
+  "source_of_truth": "core/director_strategy_to_shot_contract.py"
+}
