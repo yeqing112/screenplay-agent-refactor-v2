@@ -32,7 +32,7 @@
 
 ## Provider-free 验证
 
-全量本地回归：**982 passed, 890 warnings**。
+全量本地回归：**983 passed, 890 warnings**。
 
 新增 V2.4.1 协议、retry、IR/compiler、integration 测试均通过；未调用真实 LLM、生图、视频、对象存储；未写 Production/Storyboard/Shadow。
 
@@ -57,4 +57,3 @@ V2.4 原始 provider body 没有持久化，只有 bounded error/fingerprint，�
 ## 最终状态
 
 **NOT_READY** — provider-free 协议闭环与 hard gate 已通过，但尚未获得 V2.4.1 第二次 Targeted Pilot 的新确认，不能宣称 Creative Gate 通过，也不能进入 Full 24 或 Production Shadow。
-
