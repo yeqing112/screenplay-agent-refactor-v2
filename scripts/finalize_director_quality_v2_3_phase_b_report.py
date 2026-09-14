@@ -101,39 +101,68 @@ def _pilot_summary(pilot: dict[str, Any] | None) -> dict[str, Any]:
         "side_effects": _dict(pilot.get("side_effects")),
         "telemetry": _dict(pilot.get("telemetry")),
         "production_shadow": _dict(pilot.get("production_shadow")),
-        "opportunity_analysis": _dict(_dict(pilot.get("artifacts")).get("opportunity_analysis")),
-        "tail_analysis": _dict(_dict(pilot.get("artifacts")).get("tail_analysis")),
+        "opportunity_analysis": _dict(pilot.get("artifacts")).get("opportunity_analysis") or [],
+        "tail_analysis": _dict(pilot.get("artifacts")).get("tail_analysis") or {},
     }
 
 
-def build_final_metrics(*, b1: dict[str, Any] | None, b2: dict[str, Any] | None, b1_path: Path | None = None, b2_path: Path | None = None) -> dict[str, Any]:
-    phase_a = _pilot_summary(b1)
-    phase_b = _pilot_summary(b2)
+def _portable_source_path(path: Path | None) -> str | None:
+    if path is None:
+        return None
+    try:
+        from core.director_quality_provenance import repo_relative_path
+
+        return repo_relative_path(path)
+    except (OSError, ValueError):
+        return str(path).replace("\\", "/")
+
+
+def build_final_metrics(
+    *,
+    b1: dict[str, Any] | None,
+    b2: dict[str, Any] | None,
+    phase_a: dict[str, Any] | None = None,
+    phase_a_path: Path | None = None,
+    b1_path: Path | None = None,
+    b2_path: Path | None = None,
+) -> dict[str, Any]:
+    """Build final metrics while preserving distinct A/B1/B2 provenance."""
+
+    phase_a_summary = _pilot_summary(phase_a)
+    phase_b1_summary = _pilot_summary(b1)
+    phase_b2_summary = _pilot_summary(b2)
     reasons: list[str] = []
-    if not phase_b["available"]:
+    if not phase_b2_summary["available"]:
         reasons.append("Phase B2 real MiMo artifact is missing")
-    elif phase_b["scene_count"] < 24:
-        reasons.append(f"Phase B2 contains {phase_b['scene_count']} scenes; minimum is 24")
-    gate = _dict(phase_b.get("shadow_gate"))
+    elif phase_b2_summary["scene_count"] < 24:
+        reasons.append(f"Phase B2 contains {phase_b2_summary['scene_count']} scenes; minimum is 24")
+    gate = _dict(phase_b2_summary.get("shadow_gate"))
     status = _text(gate.get("status")) if gate else "NOT_READY"
     if status not in {"NOT_READY", "SAFE_BUT_NOT_VALUABLE", "VALUABLE_ENOUGH_TO_SHADOW"}:
         status = "NOT_READY"
     if reasons:
         status = "NOT_READY"
-    summary = _dict(phase_b.get("summary"))
-    side_effects = phase_b.get("side_effects") if isinstance(phase_b.get("side_effects"), dict) else {}
-    telemetry = phase_b.get("telemetry") if isinstance(phase_b.get("telemetry"), dict) else {}
+    if status == "NOT_READY" and not reasons:
+        gate_reasons = gate.get("reasons")
+        if isinstance(gate_reasons, list):
+            reasons = [item for item in gate_reasons if isinstance(item, dict)]
+        if not reasons:
+            reasons = [{"code": "SHADOW_GATE_NOT_READY", "actual": status, "required": "all safety and value checks pass"}]
+    summary = _dict(phase_b2_summary.get("summary"))
+    side_effects = phase_b2_summary.get("side_effects") if isinstance(phase_b2_summary.get("side_effects"), dict) else {}
+    telemetry = phase_b2_summary.get("telemetry") if isinstance(phase_b2_summary.get("telemetry"), dict) else {}
     return {
         "protocol_version": "director-quality-v2-3-phase-b-final",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": status,
         "reasons": reasons,
-        "sources": {"phase_a": str(b1_path) if b1_path else None, "phase_b1": str(b1_path) if b1_path else None, "phase_b2": str(b2_path) if b2_path else None},
-        "phase_a": phase_a,
-        "phase_b2": phase_b,
+        "sources": {"phase_a": _portable_source_path(phase_a_path), "phase_b1": _portable_source_path(b1_path), "phase_b2": _portable_source_path(b2_path)},
+        "phase_a": phase_a_summary,
+        "phase_b1": phase_b1_summary,
+        "phase_b2": phase_b2_summary,
         "metrics": {
             "contract_pass_rate": _number(summary.get("contract_pass_rate")),
-            "director_quality": phase_b.get("quality", {}),
+            "director_quality": phase_b2_summary.get("quality", {}),
             "creative_value": _dict(summary.get("creative_value")),
             "opportunity_detection_coverage": _number(summary.get("opportunity_detection_coverage")),
             "eligible_opportunity_count": int(summary.get("eligible_opportunity_count") or 0),
@@ -156,7 +185,7 @@ def build_final_metrics(*, b1: dict[str, Any] | None, b2: dict[str, Any] | None,
         },
         "safety": {
             "side_effects": side_effects,
-            "production_shadow_enabled": bool(_dict(phase_b.get("production_shadow")).get("enabled")),
+            "production_shadow_enabled": bool(_dict(phase_b2_summary.get("production_shadow")).get("enabled")),
             "unknown_root_cause_count": int(summary.get("unknown_root_cause_count") or 0),
         },
         "telemetry": telemetry,
@@ -224,9 +253,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--phase-b2", type=Path, default=DEFAULT_B2)
     parser.add_argument("--output-dir", type=Path, default=ARTIFACTS)
     args = parser.parse_args(argv)
+    phase_a = _load(args.phase_a)
     b1 = _load(args.phase_b1)
     b2 = _load(args.phase_b2)
-    metrics = build_final_metrics(b1=b1, b2=b2, b1_path=args.phase_b1, b2_path=args.phase_b2)
+    metrics = build_final_metrics(b1=b1, b2=b2, phase_a=phase_a, phase_a_path=args.phase_a, b1_path=args.phase_b1, b2_path=args.phase_b2)
     outputs = write_final_artifacts(metrics=metrics, output_dir=args.output_dir)
     print(json.dumps({"status": metrics["status"], "outputs": outputs, "reasons": metrics["reasons"]}, ensure_ascii=False, indent=2))
     return 0

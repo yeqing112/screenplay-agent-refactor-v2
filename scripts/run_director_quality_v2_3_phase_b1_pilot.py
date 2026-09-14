@@ -261,6 +261,8 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
     from core.director_tail_analysis import build_tail_analysis
     from core.director_tail_repair import build_tail_repair_plan
     from core.director_tail_root_cause import classify_tail_root_cause
+    from core.director_quality_provenance import build_provenance
+    from core.director_contract_failure import aggregate_contract_failures, build_contract_failure
     from core.llm import call_llm_json
     from core.pilot_instrumentation import PilotInvocationRecorder
     from core.scene_directing_strategy import build_scene_directing_strategy_v2
@@ -418,6 +420,8 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             "over_directing": over,
             "quality_trace": quality_trace,
             "validation": {"contract_pass": not bool(compiled.get("rejected_patches")), "rejected_patch_count": len(_list(compiled.get("rejected_patches"))), "quality_issues": after_score.get("issues") or [], "auxiliary_shot_count": len(_list(compiled.get("auxiliary_shot_proposals"))), "baseline_shot_count": len(_list(baseline.get("shots")))},
+            "contract_failures": [build_contract_failure(item) for item in _list(compiled.get("rejected_patches"))],
+            "compiled_patch_count": len(_list(compiled.get("compiled_patches"))),
             "pipeline_diagnostics": {"rejected_patch_count": len(_list(compiled.get("rejected_patches"))), "fallbacks": candidate_result.get("model_info", {}).get("planner_error", "")},
             "planner_calls": 1,
             "repair_calls": 0,
@@ -483,6 +487,10 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
                 numerator += float(coverage) * len(eligible); denominator += len(eligible)
         return round(numerator / denominator, 4) if denominator else None
     contract_rate = round(sum(bool(row.get("contract_pass")) for row in rows) / len(rows), 4) if rows else None
+    patch_rejected = sum(len(_list(row.get("contract_failures"))) for row in rows)
+    patch_compiled = sum(int(row.get("compiled_patch_count") or 0) for row in rows)
+    patch_total = patch_compiled + patch_rejected
+    contract_failure_aggregate = aggregate_contract_failures(item for row in rows for item in _list(row.get("contract_failures")))
     unknown = sum(int(_dict(row.get("quality_trace")).get("unknown_root_cause_count") or 0) for row in rows)
     over_rate = round(sum(float(_dict(row.get("over_directing")).get("over_directing_rate") or 0) for row in rows) / len(rows), 4) if rows else None
     inflation_rate = round(sum(float(_dict(row.get("over_directing")).get("shot_inflation_rate") or 0) for row in rows) / len(rows), 4) if rows else None
@@ -490,13 +498,13 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
     emotion_eligible_coverage = weighted_eligible("emotion_arc")
     information_eligible_coverage = weighted_eligible("information_strategy")
     gate = evaluate_shadow_gate(contract_pass_rate=contract_rate, fact_override_accepted=0, unknown_root_cause_count=unknown, director_quality_mean=quality_stats["mean"], director_quality_median=quality_stats["median"], director_quality_p10=quality_stats["p10"], director_quality_min=quality_stats["min"], creative_value_mean=creative_stats["mean"], creative_value_median=creative_stats["median"], useful_creative_acceptance=(useful_total / eligible_total) if eligible_total else None, edit_strategy_eligible_coverage=edit_eligible_coverage, emotion_arc_eligible_coverage=emotion_eligible_coverage, information_strategy_eligible_coverage=information_eligible_coverage, over_directing_rate=over_rate, shot_inflation_rate=inflation_rate)
-    return {
+    artifact = {
         "protocol_version": "director-quality-v2-3-phase-b1",
         "pilot_mode": "real_mimo_phase_b1_artifact_only",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "scene_count": len(rows),
         "model": {"profile_id": _text(profile.get("id")), "provider": _text(profile.get("provider")), "model_name": _text(profile.get("model_name"))},
-        "summary": {"director_quality": quality_stats, "creative_value": creative_stats, "contract_pass_rate": contract_rate, "opportunity_detection_coverage": opportunity_detection_coverage, "eligible_opportunity_count": eligible_total, "acted_opportunity_count": acted_total, "useful_accepted_count": useful_total, "valid_skip_count": skipped_total, "missed_opportunity_count": missed_total, "useful_creative_acceptance": (useful_total / eligible_total) if eligible_total else None, "valid_skip_rate": (skipped_total / eligible_total) if eligible_total else None, "missed_opportunity_rate": (missed_total / eligible_total) if eligible_total else None, "unknown_root_cause_count": unknown, "edit_strategy_eligible_coverage": edit_eligible_coverage, "emotion_arc_eligible_coverage": emotion_eligible_coverage, "information_strategy_eligible_coverage": information_eligible_coverage, "tail_repair_trigger_rate": (tail_triggered / len(rows)) if rows else None, "tail_repair_attempted_count": tail_attempted, "tail_repair_success_rate": (tail_successful / tail_attempted) if tail_attempted else None, "legacy_coverage": {"edit_strategy_coverage": weighted_legacy("edit_strategy_coverage"), "emotion_arc_coverage": weighted_legacy("emotion_arc_coverage"), "information_strategy_coverage": weighted_legacy("information_strategy_coverage")}, "over_directing_rate": over_rate, "shot_inflation_rate": inflation_rate},
+        "summary": {"director_quality": quality_stats, "creative_value": creative_stats, "contract_pass_rate": contract_rate, "scene_contract_first_pass_rate": contract_rate, "scene_contract_final_pass_rate": contract_rate, "patch_contract_first_pass_rate": (patch_compiled / patch_total) if patch_total else None, "patch_contract_final_pass_rate": (patch_compiled / patch_total) if patch_total else None, "contract_repair_attempts": 0, "contract_repair_success_rate": None, "contract_failure_counts": contract_failure_aggregate.get("counts", {}), "forbidden_field_attempt_count": int(contract_failure_aggregate.get("counts", {}).get("FORBIDDEN_PATCH_PATH", 0)), "fact_override_attempt_count": int(contract_failure_aggregate.get("counts", {}).get("FACT_OVERRIDE_ATTEMPT", 0)), "fact_override_accepted_count": 0, "opportunity_detection_coverage": opportunity_detection_coverage, "eligible_opportunity_count": eligible_total, "acted_opportunity_count": acted_total, "useful_accepted_count": useful_total, "valid_skip_count": skipped_total, "missed_opportunity_count": missed_total, "useful_creative_acceptance": (useful_total / eligible_total) if eligible_total else None, "valid_skip_rate": (skipped_total / eligible_total) if eligible_total else None, "missed_opportunity_rate": (missed_total / eligible_total) if eligible_total else None, "unknown_root_cause_count": unknown, "edit_strategy_eligible_coverage": edit_eligible_coverage, "emotion_arc_eligible_coverage": emotion_eligible_coverage, "information_strategy_eligible_coverage": information_eligible_coverage, "tail_repair_trigger_rate": (tail_triggered / len(rows)) if rows else None, "tail_repair_attempted_count": tail_attempted, "tail_repair_success_rate": (tail_successful / tail_attempted) if tail_attempted else None, "legacy_coverage": {"edit_strategy_coverage": weighted_legacy("edit_strategy_coverage"), "emotion_arc_coverage": weighted_legacy("emotion_arc_coverage"), "information_strategy_coverage": weighted_legacy("information_strategy_coverage")}, "over_directing_rate": over_rate, "shot_inflation_rate": inflation_rate},
         "scenes": rows,
         "telemetry": recorder.summary(),
         "shadow_gate": gate,
@@ -504,6 +512,18 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         "production_shadow": {"enabled": False},
         "artifacts": {"opportunity_analysis": opportunity_rows, "tail_analysis": {"director_quality": build_tail_analysis(rows, score_key="director_quality_score"), "creative_value": build_tail_analysis(rows, score_key="creative_value_score")}},
     }
+    artifact["provenance"] = build_provenance(
+        protocol_version="director-quality-v2-3-phase-b1",
+        model=artifact["model"],
+        model_profile=profile,
+        scenes=rows,
+        source_artifacts=[golden_path],
+        evidence_path=golden_path,
+        gate_version=str(gate.get("schema_version") or ""),
+        metric_schema_version="director-quality-v2-3-phase-b-metrics-v1",
+        generated_at=artifact["generated_at"],
+    )
+    return artifact
 
 
 def main(argv: list[str] | None = None) -> int:

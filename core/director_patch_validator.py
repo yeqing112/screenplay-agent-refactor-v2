@@ -8,6 +8,7 @@ from typing import Any
 from core.director_auxiliary import AuxiliaryShotValidationError, validate_auxiliary_shot_proposals
 from core.director_creative_contract import IMMUTABLE_FIELDS, is_allowed_patch_path
 from core.director_patch_compiler import DirectorPatchCompileError, compile_creative_patches
+from core.director_contract_failure import build_contract_failure
 from core.director_quality_validator import validate_director_quality
 
 
@@ -92,7 +93,10 @@ def validate_compiled_patch_result(
         # A rejected patch was never applied.  It is retained as a
         # patch-level diagnostic and may be sent to Local Repair; it must not
         # invalidate the otherwise safe candidate under Partial Acceptance.
-        errors.append(_error(_text(rejected_obj.get("code")) or "DIRECTOR_PATCH_REJECTED", _text(rejected_obj.get("message")) or "patch rejected", path=_text(rejected_obj.get("path")), target_id=_text(rejected_obj.get("plan_shot_id")), blocking=False))
+        failure = build_contract_failure(rejected_obj)
+        error = _error(failure["code"] or "DIRECTOR_PATCH_REJECTED", failure["message"] or "patch rejected", path=failure["path"], target_id=failure["plan_shot_id"], blocking=False)
+        error["failure_category"] = failure["category"]
+        errors.append(error)
     auxiliary_result: dict[str, Any]
     try:
         auxiliary_result = validate_auxiliary_shot_proposals(
@@ -102,7 +106,10 @@ def validate_compiled_patch_result(
         auxiliary_result = {"status": "invalid", "accepted": [], "rejected": [{"code": exc.code, "path": exc.path, "message": str(exc)}], "accepted_count": 0, "rejected_count": 1}
     for rejected in _list(auxiliary_result.get("rejected")):
         rejected_obj = _dict(rejected)
-        errors.append(_error(_text(rejected_obj.get("code")) or "DIRECTOR_AUXILIARY_INVALID", _text(rejected_obj.get("message")) or "auxiliary proposal rejected", path=_text(rejected_obj.get("path")), target_id=_text(rejected_obj.get("proposal_id")), blocking=False))
+        failure = build_contract_failure(rejected_obj)
+        error = _error(failure["code"] or "DIRECTOR_AUXILIARY_INVALID", failure["message"] or "auxiliary proposal rejected", path=failure["path"], target_id=failure["plan_shot_id"] or _text(rejected_obj.get("proposal_id")), blocking=False)
+        error["failure_category"] = failure["category"]
+        errors.append(error)
     quality_issues = validate_director_quality(candidate, treatment=treatment, blocking=blocking)
     warnings = [copy.deepcopy(item) for item in quality_issues]
     contract_errors = [item for item in errors if item.get("blocking")]
@@ -135,7 +142,10 @@ def compile_and_validate_creative_patches(
     try:
         compilation = compile_creative_patches(structural_shot_plan, patch_document, contract, allow_partial=allow_partial)
     except DirectorPatchCompileError as exc:
-        return {"status": "invalid", "contract_pass": False, "errors": [_error(exc.code, str(exc), path=exc.path, target_id=exc.plan_shot_id)], "warnings": [], "compilation": None}
+        failure = build_contract_failure(exc)
+        error = _error(failure["code"], failure["message"], path=failure["path"], target_id=failure["plan_shot_id"])
+        error["failure_category"] = failure["category"]
+        return {"status": "invalid", "contract_pass": False, "errors": [error], "warnings": [], "compilation": None}
     validation = validate_compiled_patch_result(compilation, structural_shot_plan, contract, treatment=treatment, blocking=blocking)
     return {**validation, "compilation": compilation}
 

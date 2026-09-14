@@ -81,6 +81,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], evidence_path: Path = EVIDE
     # Import only after authorization at the CLI boundary; tests may replace
     # this function with a provider-free stub.
     from scripts.run_director_quality_v2_3_phase_b1_pilot import run_authorized_pilot as run_b1
+    from core.director_quality_provenance import build_provenance
 
     result = run_b1(profile=profile, golden_path=evidence_path, scene_limit=int(scene_limit))
     result = copy.deepcopy(result)
@@ -90,6 +91,17 @@ def run_authorized_pilot(*, profile: dict[str, Any], evidence_path: Path = EVIDE
     result["source_evidence"] = {"path": str(evidence_path), "available_scene_count": len(scenes), "selected_scene_count": int(scene_limit)}
     result["telemetry"] = _rename_telemetry_stage(result.get("telemetry"))
     result["production_shadow"] = {"enabled": False}
+    result["provenance"] = build_provenance(
+        protocol_version="director-quality-v2-3-phase-b2-pilot",
+        model=result.get("model"),
+        model_profile=profile,
+        scenes=result.get("scenes") or [],
+        source_artifacts=[evidence_path],
+        evidence_path=evidence_path,
+        gate_version=str((result.get("shadow_gate") or {}).get("schema_version") or ""),
+        metric_schema_version="director-quality-v2-3-phase-b-metrics-v1",
+        generated_at=str(result.get("generated_at") or ""),
+    )
     return result
 
 

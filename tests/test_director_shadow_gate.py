@@ -31,3 +31,12 @@ def test_shadow_gate_is_not_ready_when_safety_fails_or_data_missing():
     assert failed["status"] == "NOT_READY"
     assert missing["status"] == "SAFE_BUT_NOT_VALUABLE"
     assert "creative_value_mean" in missing["value"]["missing"]
+
+
+def test_not_ready_gate_emits_structured_reasons_from_policy():
+    result = evaluate_shadow_gate(**_kwargs(contract_pass_rate=0.9, director_quality_mean=70))
+    assert result["status"] == "NOT_READY"
+    codes = {item["code"] for item in result["reasons"]}
+    assert "CONTRACT_PASS_BELOW_THRESHOLD" in codes
+    assert "DIRECTOR_QUALITY_MEAN_BELOW_THRESHOLD" in codes
+    assert result["policy_version"]

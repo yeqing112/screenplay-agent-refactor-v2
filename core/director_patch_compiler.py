@@ -10,6 +10,7 @@ from core.director_creative_contract import (
     is_allowed_patch_path,
 )
 from core.director_patch_schema import parse_creative_patch
+from core.director_contract_failure import build_contract_failure
 from core.local_repair import apply_local_repair, fingerprint
 
 
@@ -249,7 +250,7 @@ def compile_creative_patches(
         try:
             result = compile_single_patch(current, patch, contract)
         except DirectorPatchCompileError as exc:
-            rejected.append({"plan_shot_id": _text(patch.get("plan_shot_id")), "code": exc.code, "path": exc.path, "message": str(exc)})
+            rejected.append(build_contract_failure(exc, plan_shot_id=_text(patch.get("plan_shot_id"))))
             if not allow_partial:
                 raise
             # Partial acceptance is deliberately field-scoped for a known
@@ -276,12 +277,7 @@ def compile_creative_patches(
                 try:
                     field_result = compile_single_patch(current, field_patch, contract)
                 except DirectorPatchCompileError as field_exc:
-                    rejected.append({
-                        "plan_shot_id": _text(patch.get("plan_shot_id")),
-                        "code": field_exc.code,
-                        "path": field_exc.path or str(path),
-                        "message": str(field_exc),
-                    })
+                    rejected.append(build_contract_failure(field_exc, plan_shot_id=_text(patch.get("plan_shot_id")), path=field_exc.path or str(path)))
                     continue
                 current = field_result["candidate"]
                 compiled.append({key: field_result[key] for key in ("plan_shot_id", "operations", "provenance", "before_fingerprint", "after_fingerprint", "changed")})
