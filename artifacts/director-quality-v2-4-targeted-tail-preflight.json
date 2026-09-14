@@ -1,6 +1,6 @@
 {
   "protocol_version": "director-quality-v2-4-targeted-tail-preflight",
-  "generated_at": "2026-09-14T06:34:46.090642+00:00",
+  "generated_at": "2026-09-14T06:39:42.532968+00:00",
   "source_artifact": "artifacts/director-quality-v2-4-b2-freeze.json",
   "source_commit": "f329b863409ddd09696cc25b05caba71555e0246",
   "selected_scene_count": 15,
@@ -22,16 +22,14 @@
     "fixture:prop_continuity"
   ],
   "profile": {
-    "id": "",
-    "provider": "",
-    "model_name": "",
-    "base_url": "",
-    "key_configured": false
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "base_url": "https://api.xiaomimimo.com/v1",
+    "key_configured": true
   },
-  "ready_for_confirmation": false,
-  "blockers": [
-    "MIMO_PROFILE_KEY_OR_CONFIGURATION_MISSING"
-  ],
+  "ready_for_confirmation": true,
+  "blockers": [],
   "real_mimo_calls": 0,
   "side_effects": {
     "production": 0,
