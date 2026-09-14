@@ -160,6 +160,48 @@ def _rejected_dimension_map(rejected: list[Any]) -> dict[str, set[str]]:
     return result
 
 
+_VALID_HANDLED_OUTCOMES = {
+    "USEFUL_ACCEPTED",
+    "ACCEPTED_NO_MEASURABLE_VALUE",
+    "SKIPPED_VALID_REASON",
+}
+
+
+def _eligible_dimension_coverage(
+    opportunities: list[dict[str, Any]],
+    outcomes: list[dict[str, Any]],
+) -> dict[str, float | None]:
+    """Compute strategy coverage against eligible opportunities.
+
+    The legacy coverage fields remain in the artifact for regression
+    comparison, but Phase B gates must use an opportunity-level denominator.
+    A valid explicit skip counts as handled; a fallback, rejection, or missed
+    opportunity does not.
+    """
+
+    outcome_by_id = {
+        _text(item.get("opportunity_id")): item
+        for item in outcomes
+        if isinstance(item, dict) and _text(item.get("opportunity_id"))
+    }
+    result: dict[str, float | None] = {}
+    for dimension in ("edit_strategy", "emotion_arc", "information_strategy"):
+        eligible = [
+            item for item in opportunities
+            if bool(item.get("eligible")) and dimension in set(_list(item.get("recommended_directing_dimensions")))
+        ]
+        if not eligible:
+            result[dimension] = None
+            continue
+        handled = sum(
+            1
+            for item in eligible
+            if _text(_dict(outcome_by_id.get(_text(item.get("opportunity_id")))).get("final_status")) in _VALID_HANDLED_OUTCOMES
+        )
+        result[dimension] = round(handled / len(eligible), 4)
+    return result
+
+
 def _dimension_delta(before: dict[str, Any], after: dict[str, Any]) -> dict[str, float]:
     b = _dict(before.get("dimensions")); a = _dict(after.get("dimensions"))
     keys = set(b) | set(a)
@@ -321,7 +363,8 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             value = evaluate_useful_creative_acceptance(opportunities=opportunities, decisions=decisions, interventions=interventions)
         eligible = int(value.get("eligible_opportunity_count") or 0)
         handled = eligible - int(value.get("missed_opportunity_count") or 0)
-        cv = build_creative_value_score(opportunity_coverage=(handled / eligible) if eligible else 1.0, useful_creative_acceptance=value.get("useful_creative_acceptance_rate") if eligible else 1.0, edit_strategy=coverage.get("edit_strategy_coverage"), emotion_arc=coverage.get("emotion_arc_coverage"), information_strategy=coverage.get("information_strategy_coverage"), tail_stability=1.0 if float(after_score.get("director_quality_score", 0) or 0) >= 70 else 0.0)
+        eligible_coverage = _eligible_dimension_coverage(opportunities, _list(value.get("outcomes")))
+        cv = build_creative_value_score(opportunity_coverage=(handled / eligible) if eligible else 1.0, useful_creative_acceptance=value.get("useful_creative_acceptance_rate") if eligible else 1.0, edit_strategy=eligible_coverage.get("edit_strategy"), emotion_arc=eligible_coverage.get("emotion_arc"), information_strategy=eligible_coverage.get("information_strategy"), tail_stability=1.0 if float(after_score.get("director_quality_score", 0) or 0) >= 70 else 0.0)
         max_per_beat = int(_dict(contract).get("auxiliary_shot_policy", {}).get("max_per_source_beat", 2) or 0)
         beat_count = len(_list(treatment.get("beat_map"))) or len(_list(baseline.get("shots"))) or 1
         over = detect_over_directing(candidate.get("shots") or [], opportunities=opportunities, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=max_per_beat * beat_count)
@@ -343,6 +386,7 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             "director_quality_score": after_score.get("director_quality_score"),
             "creative_value": cv,
             "coverage": coverage,
+            "eligible_coverage": eligible_coverage,
             "over_directing": over,
             "quality_trace": quality_trace,
             "validation": {"contract_pass": not bool(compiled.get("rejected_patches")), "rejected_patch_count": len(_list(compiled.get("rejected_patches"))), "quality_issues": after_score.get("issues") or [], "auxiliary_shot_count": len(_list(compiled.get("auxiliary_shot_proposals"))), "baseline_shot_count": len(_list(baseline.get("shots")))},
@@ -365,30 +409,48 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
     useful_total = sum(int(_dict(row.get("creative_value")).get("useful_accepted_count") or 0) for row in rows)
     skipped_total = sum(int(_dict(row.get("creative_value")).get("valid_skip_count") or 0) for row in rows)
     missed_total = sum(int(_dict(row.get("creative_value")).get("missed_opportunity_count") or 0) for row in rows)
-    denominator_keys = {
-        "edit_strategy_coverage": "edit_strategy_required_shot_count",
-        "emotion_arc_coverage": "emotion_curve_entry_count",
-        "information_strategy_coverage": "information_plan_entry_count",
-    }
-    def weighted(metric: str) -> float | None:
+    def weighted_legacy(metric: str) -> float | None:
+        denominator_keys = {
+            "edit_strategy_coverage": "edit_strategy_required_shot_count",
+            "emotion_arc_coverage": "emotion_curve_entry_count",
+            "information_strategy_coverage": "information_plan_entry_count",
+        }
         numerator = denominator = 0
         for row in rows:
             coverage = _dict(row.get("coverage")); value = coverage.get(metric); count = int(coverage.get(denominator_keys.get(metric, "")) or 0)
             if isinstance(value, (int, float)) and count > 0:
                 numerator += float(value) * count; denominator += count
         return round(numerator / denominator, 4) if denominator else None
+
+    def weighted_eligible(dimension: str) -> float | None:
+        numerator = denominator = 0
+        for row in rows:
+            opportunities = _list(row.get("opportunities")); outcomes = _list(row.get("opportunity_outcomes"))
+            eligible = [
+                item for item in opportunities
+                if isinstance(item, dict) and bool(item.get("eligible")) and dimension in set(_list(item.get("recommended_directing_dimensions")))
+            ]
+            if not eligible:
+                continue
+            coverage = _eligible_dimension_coverage(opportunities, outcomes).get(dimension)
+            if isinstance(coverage, (int, float)):
+                numerator += float(coverage) * len(eligible); denominator += len(eligible)
+        return round(numerator / denominator, 4) if denominator else None
     contract_rate = round(sum(bool(row.get("contract_pass")) for row in rows) / len(rows), 4) if rows else None
     unknown = sum(int(_dict(row.get("quality_trace")).get("unknown_root_cause_count") or 0) for row in rows)
     over_rate = round(sum(float(_dict(row.get("over_directing")).get("over_directing_rate") or 0) for row in rows) / len(rows), 4) if rows else None
     inflation_rate = round(sum(float(_dict(row.get("over_directing")).get("shot_inflation_rate") or 0) for row in rows) / len(rows), 4) if rows else None
-    gate = evaluate_shadow_gate(contract_pass_rate=contract_rate, fact_override_accepted=0, unknown_root_cause_count=unknown, director_quality_mean=quality_stats["mean"], director_quality_median=quality_stats["median"], director_quality_p10=quality_stats["p10"], director_quality_min=quality_stats["min"], creative_value_mean=creative_stats["mean"], creative_value_median=creative_stats["median"], useful_creative_acceptance=(useful_total / eligible_total) if eligible_total else None, edit_strategy_eligible_coverage=weighted("edit_strategy_coverage"), emotion_arc_eligible_coverage=weighted("emotion_arc_coverage"), information_strategy_eligible_coverage=weighted("information_strategy_coverage"), over_directing_rate=over_rate, shot_inflation_rate=inflation_rate)
+    edit_eligible_coverage = weighted_eligible("edit_strategy")
+    emotion_eligible_coverage = weighted_eligible("emotion_arc")
+    information_eligible_coverage = weighted_eligible("information_strategy")
+    gate = evaluate_shadow_gate(contract_pass_rate=contract_rate, fact_override_accepted=0, unknown_root_cause_count=unknown, director_quality_mean=quality_stats["mean"], director_quality_median=quality_stats["median"], director_quality_p10=quality_stats["p10"], director_quality_min=quality_stats["min"], creative_value_mean=creative_stats["mean"], creative_value_median=creative_stats["median"], useful_creative_acceptance=(useful_total / eligible_total) if eligible_total else None, edit_strategy_eligible_coverage=edit_eligible_coverage, emotion_arc_eligible_coverage=emotion_eligible_coverage, information_strategy_eligible_coverage=information_eligible_coverage, over_directing_rate=over_rate, shot_inflation_rate=inflation_rate)
     return {
         "protocol_version": "director-quality-v2-3-phase-b1",
         "pilot_mode": "real_mimo_phase_b1_artifact_only",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "scene_count": len(rows),
         "model": {"profile_id": _text(profile.get("id")), "provider": _text(profile.get("provider")), "model_name": _text(profile.get("model_name"))},
-        "summary": {"director_quality": quality_stats, "creative_value": creative_stats, "contract_pass_rate": contract_rate, "eligible_opportunity_count": eligible_total, "useful_accepted_count": useful_total, "valid_skip_count": skipped_total, "missed_opportunity_count": missed_total, "useful_creative_acceptance": (useful_total / eligible_total) if eligible_total else None, "valid_skip_rate": (skipped_total / eligible_total) if eligible_total else None, "missed_opportunity_rate": (missed_total / eligible_total) if eligible_total else None, "unknown_root_cause_count": unknown, "edit_strategy_eligible_coverage": weighted("edit_strategy_coverage"), "emotion_arc_eligible_coverage": weighted("emotion_arc_coverage"), "information_strategy_eligible_coverage": weighted("information_strategy_coverage"), "over_directing_rate": over_rate, "shot_inflation_rate": inflation_rate},
+        "summary": {"director_quality": quality_stats, "creative_value": creative_stats, "contract_pass_rate": contract_rate, "eligible_opportunity_count": eligible_total, "useful_accepted_count": useful_total, "valid_skip_count": skipped_total, "missed_opportunity_count": missed_total, "useful_creative_acceptance": (useful_total / eligible_total) if eligible_total else None, "valid_skip_rate": (skipped_total / eligible_total) if eligible_total else None, "missed_opportunity_rate": (missed_total / eligible_total) if eligible_total else None, "unknown_root_cause_count": unknown, "edit_strategy_eligible_coverage": edit_eligible_coverage, "emotion_arc_eligible_coverage": emotion_eligible_coverage, "information_strategy_eligible_coverage": information_eligible_coverage, "legacy_coverage": {"edit_strategy_coverage": weighted_legacy("edit_strategy_coverage"), "emotion_arc_coverage": weighted_legacy("emotion_arc_coverage"), "information_strategy_coverage": weighted_legacy("information_strategy_coverage")}, "over_directing_rate": over_rate, "shot_inflation_rate": inflation_rate},
         "scenes": rows,
         "telemetry": recorder.summary(),
         "shadow_gate": gate,

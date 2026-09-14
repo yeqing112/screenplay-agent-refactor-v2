@@ -4,6 +4,7 @@ import core.llm
 
 from scripts.run_director_quality_v2_3_phase_b1_pilot import (
     CONFIRMATION_TOKEN,
+    _eligible_dimension_coverage,
     _patch_dimension_map,
     run_authorized_pilot,
     validate_real_authorization,
@@ -34,3 +35,16 @@ def test_b1_patch_attribution_is_field_scoped_not_shot_scoped():
     ]
     dimensions = _patch_dimension_map(patches)
     assert dimensions["S01"] == {"camera_language", "shot_motivation", "information_strategy"}
+
+
+def test_b1_strategy_coverage_uses_eligible_opportunity_denominator():
+    opportunities = [
+        {"opportunity_id": "O1", "type": "OPP_REACTION", "scene_id": "S", "beat_id": "B1", "subjects": [], "reason": "r", "evidence_refs": ["e"], "priority": "medium", "eligible": True, "recommended_directing_dimensions": ["edit_strategy"]},
+        {"opportunity_id": "O2", "type": "OPP_REACTION", "scene_id": "S", "beat_id": "B2", "subjects": [], "reason": "r", "evidence_refs": ["e"], "priority": "medium", "eligible": True, "recommended_directing_dimensions": ["emotion_arc"]},
+    ]
+    outcomes = [
+        {"opportunity_id": "O1", "eligible": True, "planner_decision": "SKIP_WITH_REASON", "decision_reason": "已有覆盖", "accepted": False, "repaired": False, "fallback": False, "quality_delta": 0, "dimension_deltas": {}, "final_status": "SKIPPED_VALID_REASON"},
+        {"opportunity_id": "O2", "eligible": True, "planner_decision": "ACT", "decision_reason": "", "accepted": False, "repaired": False, "fallback": True, "quality_delta": 0, "dimension_deltas": {}, "final_status": "FALLBACK_BASELINE"},
+    ]
+    result = _eligible_dimension_coverage(opportunities, outcomes)
+    assert result == {"edit_strategy": 1.0, "emotion_arc": 0.0, "information_strategy": None}
