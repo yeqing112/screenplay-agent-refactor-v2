@@ -1,0 +1,3307 @@
+{
+  "schema_version": "director-quality-v2-4-5a-phase1-scene-reachability-v1",
+  "generated_at": "2026-09-14T22:18:23.328979+00:00",
+  "provider_calls": 0,
+  "cohorts": {
+    "ALL": {
+      "scene_count": 15,
+      "actual_v243_delta": {
+        "mean": 6.75,
+        "median": 6.4,
+        "min": 2.4,
+        "max": 10.0
+      },
+      "root_local_ceiling_delta": {
+        "mean": 8.466,
+        "median": 8.4,
+        "min": 2.4,
+        "max": 14.0
+      },
+      "bounded_scene_ceiling_delta": {
+        "mean": 42.6853,
+        "median": 44.5,
+        "min": 23.55,
+        "max": 50.3
+      },
+      "scene_upper_bound_delta": {
+        "mean": 34.6607,
+        "median": 32.0,
+        "min": 29.5,
+        "max": 45.49
+      },
+      "scope_expansion_gain": {
+        "mean": 34.2193,
+        "median": 34.5,
+        "min": 21.15,
+        "max": 41.96
+      },
+      "tail": {
+        "baseline_below_60": 14,
+        "ceiling_below_60": 0,
+        "tail_reduction": 1.0,
+        "escaped_count": 15
+      },
+      "average_affected_shot_ratio": 0.907,
+      "contract_pass": true,
+      "fact_boundary_pass": true,
+      "topology_pass": true,
+      "over_directing_within_policy": true,
+      "shot_inflation_zero": true
+    },
+    "APPROVED_RECORD": {
+      "scene_count": 5,
+      "actual_v243_delta": {
+        "mean": 5.716,
+        "median": 4.22,
+        "min": 2.4,
+        "max": 9.06
+      },
+      "root_local_ceiling_delta": {
+        "mean": 7.69,
+        "median": 7.8,
+        "min": 2.4,
+        "max": 11.0
+      },
+      "bounded_scene_ceiling_delta": {
+        "mean": 35.896,
+        "median": 38.67,
+        "min": 23.55,
+        "max": 40.94
+      },
+      "scene_upper_bound_delta": {
+        "mean": 41.822,
+        "median": 43.66,
+        "min": 32.15,
+        "max": 45.49
+      },
+      "scope_expansion_gain": {
+        "mean": 28.206,
+        "median": 28.4,
+        "min": 21.15,
+        "max": 33.14
+      },
+      "tail": {
+        "baseline_below_60": 4,
+        "ceiling_below_60": 0,
+        "tail_reduction": 1.0,
+        "escaped_count": 5
+      },
+      "average_affected_shot_ratio": 0.7209,
+      "contract_pass": true,
+      "fact_boundary_pass": true,
+      "topology_pass": true,
+      "over_directing_within_policy": true,
+      "shot_inflation_zero": true
+    },
+    "FIXTURE": {
+      "scene_count": 10,
+      "actual_v243_delta": {
+        "mean": 7.267,
+        "median": 6.4,
+        "min": 5.07,
+        "max": 10.0
+      },
+      "root_local_ceiling_delta": {
+        "mean": 8.854,
+        "median": 8.4,
+        "min": 6.0,
+        "max": 14.0
+      },
+      "bounded_scene_ceiling_delta": {
+        "mean": 46.08,
+        "median": 45.75,
+        "min": 44.5,
+        "max": 50.3
+      },
+      "scene_upper_bound_delta": {
+        "mean": 31.08,
+        "median": 30.75,
+        "min": 29.5,
+        "max": 35.3
+      },
+      "scope_expansion_gain": {
+        "mean": 37.226,
+        "median": 38.5,
+        "min": 30.5,
+        "max": 41.96
+      },
+      "tail": {
+        "baseline_below_60": 10,
+        "ceiling_below_60": 0,
+        "tail_reduction": 1.0,
+        "escaped_count": 10
+      },
+      "average_affected_shot_ratio": 1.0,
+      "contract_pass": true,
+      "fact_boundary_pass": true,
+      "topology_pass": true,
+      "over_directing_within_policy": true,
+      "shot_inflation_zero": true
+    }
+  },
+  "scenes": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 63.85,
+        "delta": 2.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.5,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 85.0,
+        "delta": 23.55,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 8.0,
+            "delta": 4.0,
+            "weighted_contribution": 4.8,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 7.0,
+            "delta": 7.0,
+            "weighted_contribution": 7.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 0.5,
+            "reachable": 6.0,
+            "delta": 5.5,
+            "weighted_contribution": 4.4,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 7.0,
+            "delta": 7.0,
+            "weighted_contribution": 5.6,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 0.5,
+            "reachable": 4.0,
+            "delta": 3.5,
+            "weighted_contribution": 1.75,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 93.6,
+        "delta": 32.15,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.5,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 8.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "scope_expansion_gain": 21.15,
+      "tail_status": true
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 35.37,
+        "delta": 6.98,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 0.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.18,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 67.06,
+        "delta": 38.67,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 6.0,
+            "reachable": 6.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 7.27,
+            "delta": 7.27,
+            "weighted_contribution": 10.905,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 4.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 0.0,
+            "reachable": 7.27,
+            "delta": 7.27,
+            "weighted_contribution": 8.724,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 7.27,
+            "delta": 7.27,
+            "weighted_contribution": 7.27,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 0.45,
+            "reachable": 5.91,
+            "delta": 5.46,
+            "weighted_contribution": 4.368,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 7.27,
+            "delta": 7.27,
+            "weighted_contribution": 5.816,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 0.45,
+            "reachable": 3.64,
+            "delta": 3.19,
+            "weighted_contribution": 1.595,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 72.05,
+        "delta": 43.66,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.27,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 7.27
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "scope_expansion_gain": 31.69,
+      "tail_status": true
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 36.41,
+        "delta": 7.8,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 0.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 4.38,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.62
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 69.55,
+        "delta": 40.94,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 6.0,
+            "reachable": 6.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 7.5,
+            "delta": 7.5,
+            "weighted_contribution": 11.25,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 4.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 0.0,
+            "reachable": 7.5,
+            "delta": 7.5,
+            "weighted_contribution": 9.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 7.5,
+            "delta": 7.5,
+            "weighted_contribution": 7.5,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 0.62,
+            "reachable": 6.88,
+            "delta": 6.26,
+            "weighted_contribution": 5.008,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 7.5,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 0.62,
+            "reachable": 5.0,
+            "delta": 4.38,
+            "weighted_contribution": 2.19,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 74.1,
+        "delta": 45.49,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 8.12,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      },
+      "scope_expansion_gain": 33.14,
+      "tail_status": true
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 38.66,
+        "delta": 10.27,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 3.64,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.45,
+          "INFORMATION_STRATEGY": 3.64,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 67.06,
+        "delta": 38.67,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 6.0,
+            "reachable": 6.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 7.27,
+            "delta": 7.27,
+            "weighted_contribution": 10.905,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 4.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 0.0,
+            "reachable": 7.27,
+            "delta": 7.27,
+            "weighted_contribution": 8.724,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 7.27,
+            "delta": 7.27,
+            "weighted_contribution": 7.27,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 0.45,
+            "reachable": 5.91,
+            "delta": 5.46,
+            "weighted_contribution": 4.368,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 7.27,
+            "delta": 7.27,
+            "weighted_contribution": 5.816,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 0.45,
+            "reachable": 3.64,
+            "delta": 3.19,
+            "weighted_contribution": 1.595,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 72.05,
+        "delta": 43.66,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.27,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 7.27
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "scope_expansion_gain": 28.4,
+      "tail_status": true
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 39.45,
+        "delta": 11.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 4.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.5,
+          "INFORMATION_STRATEGY": 4.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 66.1,
+        "delta": 37.65,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 6.0,
+            "reachable": 6.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 7.0,
+            "delta": 7.0,
+            "weighted_contribution": 10.5,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 4.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 0.0,
+            "reachable": 7.0,
+            "delta": 7.0,
+            "weighted_contribution": 8.4,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 7.0,
+            "delta": 7.0,
+            "weighted_contribution": 7.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 0.5,
+            "reachable": 6.0,
+            "delta": 5.5,
+            "weighted_contribution": 4.4,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 7.0,
+            "delta": 7.0,
+            "weighted_contribution": 5.6,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 0.5,
+            "reachable": 4.0,
+            "delta": 3.5,
+            "weighted_contribution": 1.75,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 72.6,
+        "delta": 44.15,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.5,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 8.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "scope_expansion_gain": 26.65,
+      "tail_status": true
+    },
+    {
+      "scene_id": "V21_FIXTURE_01",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 47.0,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 3.0,
+            "reachable": 8.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 32.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 38.6,
+      "tail_status": true
+    },
+    {
+      "scene_id": "V21_FIXTURE_04",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.8,
+        "delta": 9.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 47.0,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 3.0,
+            "reachable": 8.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 32.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 38.0,
+      "tail_status": true
+    },
+    {
+      "scene_id": "V21_FIXTURE_07",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 44.5,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 34.5,
+      "tail_status": true
+    },
+    {
+      "scene_id": "V21_FIXTURE_08",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 44.5,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 38.5,
+      "tail_status": true
+    },
+    {
+      "scene_id": "V21_FIXTURE_09",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 47.0,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 3.0,
+            "reachable": 8.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 32.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 38.6,
+      "tail_status": true
+    },
+    {
+      "scene_id": "V21_FIXTURE_10",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 44.5,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 38.5,
+      "tail_status": true
+    },
+    {
+      "scene_id": "V21_FIXTURE_11",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 44.5,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 34.5,
+      "tail_status": true
+    },
+    {
+      "scene_id": "fixture:dialogue_power_shift",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 47.0,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 3.0,
+            "reachable": 8.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 32.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 38.6,
+      "tail_status": true
+    },
+    {
+      "scene_id": "fixture:multi_character",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 54.64,
+        "delta": 8.34,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 1.67,
+          "INFORMATION_STRATEGY": 6.67,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 3.33
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 3,
+          "candidate_shot_count": 3
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 96.6,
+        "delta": 50.3,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 8.0,
+            "delta": 4.0,
+            "weighted_contribution": 4.8,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 1.67,
+            "reachable": 10.0,
+            "delta": 8.33,
+            "weighted_contribution": 6.664,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 3.0,
+            "reachable": 8.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 3.33,
+            "reachable": 10.0,
+            "delta": 6.67,
+            "weighted_contribution": 3.335,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02",
+              "S03"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 81.6,
+        "delta": 35.3,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 3,
+          "candidate_shot_count": 3
+        }
+      },
+      "scope_expansion_gain": 41.96,
+      "tail_status": true
+    },
+    {
+      "scene_id": "fixture:prop_continuity",
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 64.3,
+        "delta": 14.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "bounded_scene_repair_ceiling": {
+        "dq": 94.8,
+        "delta": 44.5,
+        "dimension_contributions": [
+          {
+            "dimension": "DRAMATIC_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_MOTIVATION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 15.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EMOTIONAL_PROGRESSION",
+            "before": 4.0,
+            "reachable": 6.5,
+            "delta": 2.5,
+            "weighted_contribution": 3.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "VISUAL_STORYTELLING",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SPATIAL_CLARITY",
+            "before": 10.0,
+            "reachable": 10.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "PERFORMANCE_DIRECTION",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 10.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "EDIT_RHYTHM",
+            "before": 2.5,
+            "reachable": 10.0,
+            "delta": 7.5,
+            "weighted_contribution": 6.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "INFORMATION_STRATEGY",
+            "before": 0.0,
+            "reachable": 10.0,
+            "delta": 10.0,
+            "weighted_contribution": 8.0,
+            "selected": true,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "selected by deterministic diagnosis"
+          },
+          {
+            "dimension": "POWER_DYNAMICS",
+            "before": 8.0,
+            "reachable": 8.0,
+            "delta": 0.0,
+            "weighted_contribution": 0.0,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          },
+          {
+            "dimension": "SHOT_DIVERSITY",
+            "before": 5.0,
+            "reachable": 10.0,
+            "delta": 5.0,
+            "weighted_contribution": 2.5,
+            "selected": false,
+            "affected_shots": [
+              "S01",
+              "S02"
+            ],
+            "reason": "held frozen by dimension budget"
+          }
+        ]
+      },
+      "scene_theoretical_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scope_expansion_gain": 30.5,
+      "tail_status": true
+    }
+  ],
+  "status": "READY_FOR_SCENE_REPAIR_PROTOCOL_CANARY"
+}

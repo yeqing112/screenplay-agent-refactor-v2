@@ -1,0 +1,677 @@
+{
+  "schema_version": "director-quality-v2-4-5a-phase1-scene-diagnosis-v1",
+  "generated_at": "2026-09-14T22:18:23.328979+00:00",
+  "provider_calls": 0,
+  "scenes": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "weak_dimensions": [
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM",
+        "EMOTIONAL_PROGRESSION",
+        "SHOT_DIVERSITY"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS"
+      ],
+      "cross_shot_patterns": [
+        "camera_repetition",
+        "weak_composition_progression",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "estimated_weighted_value": 37.55,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "weak_dimensions": [
+        "DRAMATIC_CLARITY",
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "EMOTIONAL_PROGRESSION",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "camera_repetition",
+        "weak_composition_progression",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "estimated_weighted_value": 52.64,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "weak_dimensions": [
+        "DRAMATIC_CLARITY",
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "EMOTIONAL_PROGRESSION",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "camera_repetition",
+        "weak_composition_progression",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06"
+      ],
+      "estimated_weighted_value": 52.504,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "weak_dimensions": [
+        "DRAMATIC_CLARITY",
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "EMOTIONAL_PROGRESSION",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "camera_repetition",
+        "weak_composition_progression",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "estimated_weighted_value": 52.64,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "weak_dimensions": [
+        "DRAMATIC_CLARITY",
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "EMOTIONAL_PROGRESSION",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "camera_repetition",
+        "weak_composition_progression",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "estimated_weighted_value": 52.6,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_01",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "unvisualized_power_shift",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_04",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "unvisualized_power_shift",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_07",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_08",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_09",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "unvisualized_power_shift",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_10",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "weak_composition_progression",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_11",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "fixture:dialogue_power_shift",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "unvisualized_power_shift",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "fixture:multi_character",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM",
+        "EMOTIONAL_PROGRESSION"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "unvisualized_power_shift",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02",
+        "S03"
+      ],
+      "estimated_weighted_value": 46.864,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    },
+    {
+      "scene_id": "fixture:prop_continuity",
+      "weak_dimensions": [
+        "SHOT_MOTIVATION",
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION",
+        "EDIT_RHYTHM",
+        "INFORMATION_STRATEGY",
+        "SHOT_DIVERSITY"
+      ],
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EMOTIONAL_PROGRESSION",
+        "EDIT_RHYTHM"
+      ],
+      "excluded_dimensions": [
+        "DRAMATIC_CLARITY",
+        "VISUAL_STORYTELLING",
+        "SPATIAL_CLARITY",
+        "POWER_DYNAMICS",
+        "SHOT_DIVERSITY"
+      ],
+      "cross_shot_patterns": [
+        "weak_composition_progression",
+        "weak_shot_motivation",
+        "missing_information_strategy",
+        "weak_performance_coverage",
+        "uniform_edit_rhythm"
+      ],
+      "affected_shots": [
+        "S01",
+        "S02"
+      ],
+      "estimated_weighted_value": 46.2,
+      "constraints": {
+        "facts_frozen": true,
+        "topology_frozen": true,
+        "continuity_frozen": true
+      }
+    }
+  ]
+}

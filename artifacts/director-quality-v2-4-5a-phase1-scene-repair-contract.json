@@ -1,0 +1,68 @@
+{
+  "schema_version": "director-quality-v2-4-5a-phase1-scene-repair-contract-v1",
+  "generated_at": "2026-09-14T22:18:23.328979+00:00",
+  "provider_calls": 0,
+  "mutable_fields": [
+    "camera.*",
+    "composition.*",
+    "performance_direction.*",
+    "emotion.*",
+    "edit.*",
+    "information_strategy.*",
+    "why_this_shot",
+    "purpose",
+    "dramatic_function",
+    "visual_emphasis"
+  ],
+  "immutable_fields": [
+    "scene_id",
+    "scene_name",
+    "plan_shot_id",
+    "beat_id",
+    "beat_order",
+    "event",
+    "dialogue",
+    "participants",
+    "action_beats",
+    "entry_state",
+    "exit_state",
+    "asset_bindings",
+    "prop_ownership",
+    "continuity_contract",
+    "continuity",
+    "spatial_source",
+    "source_facts",
+    "plot_result",
+    "chronology",
+    "character_id",
+    "location",
+    "scene_canonical",
+    "source_spatial_facts",
+    "shot_count",
+    "shot_order"
+  ],
+  "topology_rules": {
+    "shot_count_immutable": true,
+    "shot_order_immutable": true,
+    "plan_shot_id_set_immutable": true,
+    "auxiliary_shots_allowed": false
+  },
+  "fact_rules": {
+    "dialogue_immutable": true,
+    "event_immutable": true,
+    "participants_immutable": true,
+    "assets_immutable": true,
+    "location_immutable": true
+  },
+  "continuity_rules": {
+    "source_truth_immutable": true,
+    "entry_exit_state_immutable": true
+  },
+  "shot_budget": {
+    "max_shots": 8,
+    "max_affected_shots": 7
+  },
+  "dimension_budget": {
+    "max_dimensions": 5
+  }
+}

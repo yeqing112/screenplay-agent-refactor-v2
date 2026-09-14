@@ -1,0 +1,400 @@
+{
+  "schema_version": "director-quality-v2-4-5a-phase1-approved-record-analysis-v1",
+  "generated_at": "2026-09-14T22:18:23.328979+00:00",
+  "cohort": {
+    "scene_count": 5,
+    "actual_v243_delta": {
+      "mean": 5.716,
+      "median": 4.22,
+      "min": 2.4,
+      "max": 9.06
+    },
+    "root_local_ceiling_delta": {
+      "mean": 7.69,
+      "median": 7.8,
+      "min": 2.4,
+      "max": 11.0
+    },
+    "bounded_scene_ceiling_delta": {
+      "mean": 35.896,
+      "median": 38.67,
+      "min": 23.55,
+      "max": 40.94
+    },
+    "scene_upper_bound_delta": {
+      "mean": 41.822,
+      "median": 43.66,
+      "min": 32.15,
+      "max": 45.49
+    },
+    "scope_expansion_gain": {
+      "mean": 28.206,
+      "median": 28.4,
+      "min": 21.15,
+      "max": 33.14
+    },
+    "tail": {
+      "baseline_below_60": 4,
+      "ceiling_below_60": 0,
+      "tail_reduction": 1.0,
+      "escaped_count": 5
+    },
+    "average_affected_shot_ratio": 0.7209,
+    "contract_pass": true,
+    "fact_boundary_pass": true,
+    "topology_pass": true,
+    "over_directing_within_policy": true,
+    "shot_inflation_zero": true
+  },
+  "scenes": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "baseline_dq": 61.45,
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 63.85,
+        "delta": 2.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.5,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "scene_level_bounded_ceiling": {
+        "dq": 85.0,
+        "delta": 23.55
+      },
+      "scene_upper_bound": {
+        "dq": 93.6,
+        "delta": 32.15,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.5,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 8.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "scope_expansion_gain": 21.15,
+      "tail_escape": true,
+      "selected_dimensions": [
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM",
+        "EMOTIONAL_PROGRESSION",
+        "SHOT_DIVERSITY"
+      ],
+      "affected_shot_ratio": 0.7
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "baseline_dq": 28.39,
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 35.37,
+        "delta": 6.98,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 0.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.18,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "scene_level_bounded_ceiling": {
+        "dq": 67.06,
+        "delta": 38.67
+      },
+      "scene_upper_bound": {
+        "dq": 72.05,
+        "delta": 43.66,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.27,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 7.27
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "scope_expansion_gain": 31.69,
+      "tail_escape": true,
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM"
+      ],
+      "affected_shot_ratio": 0.7273
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "baseline_dq": 28.61,
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 36.41,
+        "delta": 7.8,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 0.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 4.38,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.62
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      },
+      "scene_level_bounded_ceiling": {
+        "dq": 69.55,
+        "delta": 40.94
+      },
+      "scene_upper_bound": {
+        "dq": 74.1,
+        "delta": 45.49,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 8.12,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      },
+      "scope_expansion_gain": 33.14,
+      "tail_escape": true,
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM"
+      ],
+      "affected_shot_ratio": 0.75
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "baseline_dq": 28.39,
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 38.66,
+        "delta": 10.27,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 3.64,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.45,
+          "INFORMATION_STRATEGY": 3.64,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "scene_level_bounded_ceiling": {
+        "dq": 67.06,
+        "delta": 38.67
+      },
+      "scene_upper_bound": {
+        "dq": 72.05,
+        "delta": 43.66,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.27,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 7.27
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "scope_expansion_gain": 28.4,
+      "tail_escape": true,
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM"
+      ],
+      "affected_shot_ratio": 0.7273
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "baseline_dq": 28.45,
+      "root_local_ceiling": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 39.45,
+        "delta": 11.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 4.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.5,
+          "INFORMATION_STRATEGY": 4.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "scene_level_bounded_ceiling": {
+        "dq": 66.1,
+        "delta": 37.65
+      },
+      "scene_upper_bound": {
+        "dq": 72.6,
+        "delta": 44.15,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.5,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 8.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "scope_expansion_gain": 26.65,
+      "tail_escape": true,
+      "selected_dimensions": [
+        "SHOT_MOTIVATION",
+        "VISUAL_STORYTELLING",
+        "PERFORMANCE_DIRECTION",
+        "INFORMATION_STRATEGY",
+        "EDIT_RHYTHM"
+      ],
+      "affected_shot_ratio": 0.7
+    }
+  ]
+}
