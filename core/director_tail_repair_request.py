@@ -3,9 +3,15 @@ from __future__ import annotations
 import copy, hashlib, json
 from typing import Any
 
+from core.director_tail_repair_provider_contract import build_provider_output_contract
+
 REPAIR_REQUEST_SCHEMA_VERSION = "director_tail_repair_request_v1"
 
-def build_repair_request(*, root_cause: str, target_dimensions: list[str], relevant_opportunities: list[dict[str, Any]] = (), relevant_beats: list[Any] = (), relevant_shots: list[Any] = (), strategy_subset: dict[str, Any] | None = None, immutable_contract: dict[str, Any] | None = None, validator_findings: list[Any] = (), previous_intervention: Any = None, target_metric: dict[str, Any] | None = None) -> dict[str, Any]:
+def _fingerprint(payload: dict[str, Any]) -> str:
+    return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")).hexdigest()
+
+
+def build_repair_request(*, root_cause: str, target_dimensions: list[str], relevant_opportunities: list[dict[str, Any]] = (), relevant_beats: list[Any] = (), relevant_shots: list[Any] = (), strategy_subset: dict[str, Any] | None = None, immutable_contract: dict[str, Any] | None = None, validator_findings: list[Any] = (), previous_intervention: Any = None, target_metric: dict[str, Any] | None = None, attempt: dict[str, Any] | None = None) -> dict[str, Any]:
     payload = {
         "schema_version": REPAIR_REQUEST_SCHEMA_VERSION,
         "root_cause": str(root_cause or "").strip(),
@@ -18,9 +24,29 @@ def build_repair_request(*, root_cause: str, target_dimensions: list[str], relev
         "validator_findings": copy.deepcopy(list(validator_findings)),
         "previous_intervention": copy.deepcopy(previous_intervention),
         "target_metric": copy.deepcopy(target_metric or {}),
-        "output_contract": {"schema_version": "director_tail_repair_ir_v1", "no_canonical_paths": True},
+        "output_contract": build_provider_output_contract(),
+        "attempt": copy.deepcopy(attempt or {}),
     }
-    payload["request_fingerprint"] = hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")).hexdigest()
+    payload["request_fingerprint"] = _fingerprint(payload)
     return payload
 
-__all__ = ["REPAIR_REQUEST_SCHEMA_VERSION", "build_repair_request"]
+
+def with_attempt(request: dict[str, Any], attempt: dict[str, Any]) -> dict[str, Any]:
+    """Attach an attempt context and recompute the authoritative fingerprint."""
+
+    payload = copy.deepcopy(request if isinstance(request, dict) else {})
+    payload.pop("request_fingerprint", None)
+    payload["attempt"] = copy.deepcopy(attempt or {})
+    # Deprecated read-only projection retained for provider-free callers that
+    # still inspect the V2.4 request shape.  The nested ``attempt`` object is
+    # authoritative and is the only shape used by the provider adapter.
+    if isinstance(attempt, dict) and attempt.get("kind"):
+        payload["attempt_kind"] = str(attempt["kind"])
+    for key in ("previous_raw_output", "previous_validation_errors"):
+        if isinstance(attempt, dict) and key in attempt:
+            payload[key] = copy.deepcopy(attempt[key])
+    payload["request_fingerprint"] = _fingerprint(payload)
+    return payload
+
+
+__all__ = ["REPAIR_REQUEST_SCHEMA_VERSION", "build_repair_request", "with_attempt"]

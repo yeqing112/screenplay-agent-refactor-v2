@@ -19,6 +19,14 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 ARTIFACTS = ROOT / "artifacts"
+
+from core.director_tail_repair_ir import REPAIR_IR_SCHEMA_VERSION
+from core.director_tail_repair_provider_contract import (
+    REPAIR_IR_REQUIRED_KEYS,
+    build_provider_system_prompt,
+    provider_contract_fingerprint,
+)
+from core.director_tail_repair_request import REPAIR_REQUEST_SCHEMA_VERSION
 # Targeted repair must consume the immutable, provenance-bearing B2 freeze.
 # The historical V2.3 pilot remains available through --pilot for audit/replay,
 # but must not be the default input for a V2.4 real-call gate.
@@ -52,6 +60,54 @@ def _repo_path(path: Path) -> str:
     return path.resolve().relative_to(ROOT.resolve()).as_posix()
 
 
+def build_provider_contract_alignment(
+    *,
+    provider_system_prompt: str | None = None,
+    provider_required_keys: Any = None,
+    executor_required_schema: str = REPAIR_IR_SCHEMA_VERSION,
+    executor_require_repair_ir: bool = True,
+    request_schema: str = REPAIR_REQUEST_SCHEMA_VERSION,
+    json_parse_retries: int = 0,
+    canonical_paths_requested: bool = False,
+) -> dict[str, Any]:
+    """Validate the provider/executor handshake without contacting a provider."""
+
+    system_prompt = build_provider_system_prompt() if provider_system_prompt is None else str(provider_system_prompt)
+    required = set(REPAIR_IR_REQUIRED_KEYS if provider_required_keys is None else provider_required_keys)
+    expected = set(REPAIR_IR_REQUIRED_KEYS)
+    blockers: list[str] = []
+    if REPAIR_IR_SCHEMA_VERSION not in system_prompt or "director_creative_patch_v1" in system_prompt:
+        blockers.append("REPAIR_PROVIDER_SYSTEM_PROMPT_MISMATCH")
+    if required != expected:
+        blockers.append("REPAIR_PROVIDER_REQUIRED_KEYS_MISMATCH")
+    if str(executor_required_schema) != REPAIR_IR_SCHEMA_VERSION:
+        blockers.append("REPAIR_PROVIDER_OUTPUT_SCHEMA_MISMATCH")
+    if not executor_require_repair_ir:
+        blockers.append("REPAIR_PROVIDER_OUTPUT_SCHEMA_MISMATCH")
+    if str(request_schema) != REPAIR_REQUEST_SCHEMA_VERSION:
+        blockers.append("REPAIR_REQUEST_SCHEMA_MISMATCH")
+    if int(json_parse_retries or 0) != 0:
+        blockers.append("NESTED_JSON_RETRY_ENABLED")
+    if canonical_paths_requested:
+        blockers.append("CANONICAL_PATCH_OUTPUT_REQUESTED")
+    import hashlib
+    return {
+        "provider_output_schema": REPAIR_IR_SCHEMA_VERSION,
+        "executor_required_output_schema": str(executor_required_schema),
+        "executor_require_repair_ir": bool(executor_require_repair_ir),
+        "request_schema": str(request_schema),
+        "provider_required_keys": sorted(required),
+        "ir_required_keys": sorted(expected),
+        "provider_system_prompt_fingerprint": hashlib.sha256(system_prompt.encode("utf-8")).hexdigest(),
+        "provider_contract_fingerprint": provider_contract_fingerprint(),
+        "canonical_paths_requested": bool(canonical_paths_requested),
+        "json_parse_retries": int(json_parse_retries or 0),
+        "nested_json_retry_enabled": int(json_parse_retries or 0) != 0,
+        "aligned": not blockers,
+        "blockers": blockers,
+    }
+
+
 def select_tail_scenes(pilot: dict[str, Any]) -> list[dict[str, Any]]:
     rows = [item for item in _list(pilot.get("scenes")) if isinstance(item, dict)]
     selected = []
@@ -75,9 +131,19 @@ def build_preflight(*, pilot_path: Path = DEFAULT_PILOT, profile: dict[str, Any]
         and key_configured
         and bool(_text(safe_profile.get("base_url")))
     )
+    configured_contract = _dict(safe_profile.get("provider_contract"))
+    alignment = build_provider_contract_alignment(
+        provider_system_prompt=configured_contract.get("system_prompt") if "system_prompt" in configured_contract else None,
+        provider_required_keys=configured_contract.get("required_keys") if "required_keys" in configured_contract else None,
+        executor_required_schema=_text(configured_contract.get("executor_required_output_schema")) or REPAIR_IR_SCHEMA_VERSION,
+        executor_require_repair_ir=bool(configured_contract.get("executor_require_repair_ir", True)),
+        request_schema=_text(configured_contract.get("request_schema")) or REPAIR_REQUEST_SCHEMA_VERSION,
+        json_parse_retries=configured_contract.get("json_parse_retries", 0),
+        canonical_paths_requested=bool(configured_contract.get("canonical_paths_requested", False)),
+    )
     source_provenance_present = bool(_text(_dict(pilot.get("provenance")).get("commit_sha")))
     return {
-        "protocol_version": "director-quality-v2-4-targeted-tail-preflight",
+        "protocol_version": "director-quality-v2-4-2-provider-contract-preflight",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "source_artifact": _repo_path(pilot_path),
         "source_commit": _text(_dict(pilot.get("provenance")).get("commit_sha")),
@@ -90,10 +156,12 @@ def build_preflight(*, pilot_path: Path = DEFAULT_PILOT, profile: dict[str, Any]
             "base_url": _text(safe_profile.get("base_url")),
             "key_configured": key_configured,
         },
-        "ready_for_confirmation": bool(selected) and profile_valid and source_provenance_present,
+        "provider_contract_alignment": alignment,
+        "ready_for_confirmation": bool(selected) and profile_valid and source_provenance_present and bool(alignment["aligned"]),
         "blockers": ([] if selected else ["NO_TRIGGERED_TAIL_SCENES"])
         + ([] if profile_valid else ["MIMO_PROFILE_KEY_OR_CONFIGURATION_MISSING"])
-        + ([] if source_provenance_present else ["SOURCE_PROVENANCE_MISSING"]),
+        + ([] if source_provenance_present else ["SOURCE_PROVENANCE_MISSING"])
+        + list(alignment["blockers"]),
         "real_mimo_calls": 0,
         "side_effects": {"production": 0, "storyboard": 0, "media": 0, "object_storage": 0, "production_shadow": 0},
     }
@@ -108,12 +176,36 @@ def validate_authorization(*, confirmation_token: str, profile: dict[str, Any] |
         raise PermissionError("必须提供已保存的 MiMo profile")
 
 
+def call_provider_repair(request: dict[str, Any], *, profile: dict[str, Any], audit_callback=None) -> Any:
+    """Call the configured provider using the authoritative Repair IR contract."""
+
+    from core.llm import call_llm_json
+
+    return call_llm_json(
+        json.dumps(request, ensure_ascii=False, sort_keys=True),
+        system=build_provider_system_prompt(),
+        model_profile=profile,
+        required_keys=set(REPAIR_IR_REQUIRED_KEYS),
+        json_parse_retries=0,
+        retries=3,
+        estimated_tokens=1800,
+        audit_callback=audit_callback,
+        audit_extra={
+            "stage": "director_quality_v2_4_targeted_tail_repair",
+            "output_contract_version": REPAIR_IR_SCHEMA_VERSION,
+            "provider_contract_fingerprint": provider_contract_fingerprint(),
+        },
+        audit_repair_request=request,
+    )
+
+
 def run_targeted_tail_pilot(
     *,
     pilot_path: Path = DEFAULT_PILOT,
     evidence_path: Path = ARTIFACTS / "director-quality-v2-3-phase-b2-evidence.json",
     repair_callable: Any,
     model: str = "",
+    audit_records: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Run only triggered tail scenes through the injected repair provider.
 
@@ -246,8 +338,28 @@ def run_targeted_tail_pilot(
         })
     attempted = sum(1 for item in results if _dict(item.get("repair")).get("attempts"))
     accepted = sum(1 for item in results if _list(_dict(item.get("repair")).get("accepted")))
+    root_rows = [
+        root
+        for item in results
+        for root in _list(_dict(item.get("repair")).get("attempts"))
+        if isinstance(root, dict)
+    ]
+    semantic_attempt_count = sum(len(_list(root.get("attempts"))) for root in root_rows)
+    attempt_kinds = [
+        attempt.get("attempt_kind")
+        for root in root_rows
+        for attempt in _list(root.get("attempts"))
+        if isinstance(attempt, dict)
+    ]
+    selected_root_count = sum(len(_dict(item.get("root_causes")).get("ranked_root_causes") or []) for item in results)
+    attempted_root_count = len(root_rows)
+    accepted_root_count = sum(bool(root.get("accepted")) for root in root_rows)
+    accepted_scene_count = sum(bool(_list(_dict(item.get("repair")).get("accepted"))) for item in results)
+    audit_items = [item for item in (audit_records or []) if isinstance(item, dict)] if audit_records is not None else []
+    observed_http_count = len(audit_items) if audit_records is not None else None
+    transport_retry_count = sum(bool(_dict(item.get("extra")).get("transport_retry")) for item in audit_items) if audit_records is not None else None
     return {
-        "protocol_version": "director-quality-v2-4-targeted-tail-pilot",
+        "protocol_version": "director-quality-v2-4-2-targeted-tail-pilot",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "source_artifacts": [_repo_path(pilot_path), _repo_path(evidence_path)],
         "selected_scene_count": len(results),
@@ -255,6 +367,20 @@ def run_targeted_tail_pilot(
         "accepted_scene_count": accepted,
         "execution_coverage": (attempted / len(results)) if results else 0.0,
         "success_rate": (accepted / attempted) if attempted else None,
+        "scene_execution_coverage": (attempted / len(results)) if results else 0.0,
+        "root_cause_attempt_coverage": (attempted_root_count / selected_root_count) if selected_root_count else 0.0,
+        "repair_acceptance_rate": (accepted_root_count / attempted_root_count) if attempted_root_count else 0.0,
+        "scene_repair_success_rate": (accepted_scene_count / attempted) if attempted else 0.0,
+        "metrics": {
+            "semantic_attempt_count": semantic_attempt_count,
+            "provider_http_request_count": observed_http_count,
+            "provider_http_request_count_status": "observed" if audit_records is not None else "not_collected",
+            "transport_retry_count": transport_retry_count,
+            "json_parser_retry_count": 0,
+            "format_repair_count": attempt_kinds.count("FORMAT_REPAIR"),
+            "semantic_repair_count": attempt_kinds.count("SEMANTIC_REPAIR"),
+            "creative_generation_count": attempt_kinds.count("CREATIVE_GENERATION"),
+        },
         "scenes": results,
         "side_effects": {"production": 0, "storyboard": 0, "media": 0, "object_storage": 0, "production_shadow": 0},
     }
@@ -278,19 +404,17 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({"status": "preflight_only", "artifact": _repo_path(output), **preflight}, ensure_ascii=False, indent=2))
         return 0
     validate_authorization(confirmation_token=args.confirmation_token, profile=profile, preflight=preflight)
-    from core.llm import call_llm_json
+    audit_records: list[dict[str, Any]] = []
 
     def provider_call(request: dict[str, Any]) -> Any:
-        return call_llm_json(
-            json.dumps(request, ensure_ascii=False, sort_keys=True),
-            system="Return only a bounded director_creative_patch_v1 JSON repair patch within the supplied scope.",
-            model_profile=profile,
-            required_keys={"schema_version", "patches", "auxiliary_shot_proposals"},
-            estimated_tokens=1800,
-            audit_extra={"stage": "director_quality_v2_4_targeted_tail_repair"},
-        )
+        return call_provider_repair(request, profile=profile, audit_callback=audit_records.append)
 
-    result = run_targeted_tail_pilot(repair_callable=provider_call, pilot_path=args.pilot, model=_text(profile.get("model_name")))
+    result = run_targeted_tail_pilot(
+        repair_callable=provider_call,
+        pilot_path=args.pilot,
+        model=_text(profile.get("model_name")),
+        audit_records=audit_records,
+    )
     output = args.output or (ARTIFACTS / f"director-quality-v2-4-targeted-tail-pilot-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json")
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"status": "targeted_tail_pilot_complete", "artifact": _repo_path(output), "selected_scene_count": result["selected_scene_count"], "execution_coverage": result["execution_coverage"], "success_rate": result["success_rate"], "side_effects": result["side_effects"]}, ensure_ascii=False, indent=2))

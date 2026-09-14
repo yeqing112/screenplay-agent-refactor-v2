@@ -216,6 +216,48 @@ def _audit_vendor_host(value: str) -> str:
     return str(parsed.hostname or parsed.path or "")[:200]
 
 
+def _sanitize_response_debug(value, *, depth: int = 0):
+    """Return bounded, non-secret response evidence for provider diagnostics."""
+
+    if depth > 4:
+        return "<depth-limit>"
+    if isinstance(value, dict):
+        out = {}
+        for key, item in list(value.items())[:128]:
+            name = str(key)
+            lowered = name.lower()
+            if any(marker in lowered for marker in ("api_key", "apikey", "authorization", "token", "secret", "password")):
+                out[name[:80]] = "<redacted>"
+            else:
+                out[name[:80]] = _sanitize_response_debug(item, depth=depth + 1)
+        return out
+    if isinstance(value, list):
+        return [_sanitize_response_debug(item, depth=depth + 1) for item in value[:128]]
+    if isinstance(value, str):
+        return value[:2000]
+    if isinstance(value, (int, float, bool)) or value is None:
+        return value
+    return str(value)[:2000]
+
+
+def _response_debug_fields(response_text: str) -> dict:
+    text = str(response_text or "")
+    fields = {"top_level_keys": [], "returned_schema_version": "", "response_debug_excerpt": text[:4096]}
+    try:
+        parsed = json.loads(text)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return fields
+    if isinstance(parsed, dict):
+        fields["top_level_keys"] = sorted(str(key) for key in parsed.keys())[:128]
+        fields["returned_schema_version"] = str(parsed.get("schema_version") or "")[:120]
+    try:
+        sanitized = _sanitize_response_debug(parsed)
+        fields["response_debug_excerpt"] = json.dumps(sanitized, ensure_ascii=False, sort_keys=True)[:32768]
+    except (TypeError, ValueError):
+        pass
+    return fields
+
+
 def _build_audit_record(
     *,
     system,
@@ -254,6 +296,7 @@ def _build_audit_record(
         "http_status": int(status or 0),
         "parse_ok": bool(parse_ok),
     }
+    record.update(_response_debug_fields(response_str))
     metrics = cache_metrics(usage)
     record["usage"] = metrics
     if latency_ms is not None:
@@ -343,13 +386,15 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                 if resp.status_code == 429:
                     retry_after = int(resp.headers.get("Retry-After", 2 ** (attempt + 2)))
                     logger.warning("[throttle] 429, retry after %ss", retry_after)
+                    retry_extra = dict(audit_extra or {})
+                    retry_extra.update({"transport_attempt_number": attempt + 1, "transport_retry": True})
                     _dispatch_audit_record(_build_audit_record(
                         system=system, user=prompt,
                         vendor_model=model_name, vendor_host=base_url,
                         profile_id=str(profile.get("id") or ""),
                         status=audit_http_status, response_text=audit_response_text,
                         parse_ok=False, repair_request=audit_repair_request,
-                        extra=audit_extra,
+                        extra=retry_extra,
                         latency_ms=(time.monotonic() - request_started) * 1000,
                     ), audit_callback)
                     time.sleep(retry_after)
@@ -371,46 +416,50 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
 
                 audit_parse_ok = bool(content)
                 audit_response_text = str(content or "")
+                success_extra = dict(audit_extra or {})
+                success_extra.update({"transport_attempt_number": attempt + 1, "transport_retry": False})
                 _dispatch_audit_record(_build_audit_record(
                     system=system, user=prompt,
                     vendor_model=model_name, vendor_host=base_url,
                     profile_id=str(profile.get("id") or ""),
                     status=audit_http_status, response_text=audit_response_text,
                     parse_ok=audit_parse_ok,
-                    repair_request=audit_repair_request, extra=audit_extra,
+                    repair_request=audit_repair_request, extra=success_extra,
                     usage=usage,
                     latency_ms=(time.monotonic() - request_started) * 1000,
                 ), audit_callback)
                 return content
 
         except httpx.HTTPStatusError as e:
-            if attempt == attempt_budget - 1:
-                err_resp = getattr(e, "response", None)
-                err_status = int(getattr(err_resp, "status_code", 0) or 0)
-                err_text = str(getattr(err_resp, "text", "") or "")[:2000]
-                _dispatch_audit_record(_build_audit_record(
-                    system=system, user=prompt,
-                    vendor_model=model_name, vendor_host=base_url,
-                    profile_id=str(profile.get("id") or ""),
-                    status=err_status, response_text=err_text,
-                    parse_ok=False, repair_request=audit_repair_request,
-                    extra=audit_extra,
-                    latency_ms=(time.monotonic() - request_started) * 1000,
-                ), audit_callback)
+            err_resp = getattr(e, "response", None)
+            err_status = int(getattr(err_resp, "status_code", 0) or 0)
+            err_text = str(getattr(err_resp, "text", "") or "")[:2000]
+            retry_extra = dict(audit_extra or {})
+            retry_extra.update({"transport_attempt_number": attempt + 1, "transport_retry": attempt < attempt_budget - 1})
+            _dispatch_audit_record(_build_audit_record(
+                system=system, user=prompt,
+                vendor_model=model_name, vendor_host=base_url,
+                profile_id=str(profile.get("id") or ""),
+                status=err_status, response_text=err_text,
+                parse_ok=False, repair_request=audit_repair_request,
+                extra=retry_extra,
+                latency_ms=(time.monotonic() - request_started) * 1000,
+            ), audit_callback)
             if attempt == attempt_budget - 1:
                 raise
             time.sleep(2 ** (attempt + 1))
         except (httpx.ConnectError, httpx.ReadTimeout) as e:
-            if attempt == attempt_budget - 1:
-                _dispatch_audit_record(_build_audit_record(
-                    system=system, user=prompt,
-                    vendor_model=model_name, vendor_host=base_url,
-                    profile_id=str(profile.get("id") or ""),
-                    status=0, response_text=str(e)[:400],
-                    parse_ok=False, repair_request=audit_repair_request,
-                    extra=audit_extra,
-                    latency_ms=(time.monotonic() - request_started) * 1000,
-                ), audit_callback)
+            retry_extra = dict(audit_extra or {})
+            retry_extra.update({"transport_attempt_number": attempt + 1, "transport_retry": attempt < attempt_budget - 1})
+            _dispatch_audit_record(_build_audit_record(
+                system=system, user=prompt,
+                vendor_model=model_name, vendor_host=base_url,
+                profile_id=str(profile.get("id") or ""),
+                status=0, response_text=str(e)[:400],
+                parse_ok=False, repair_request=audit_repair_request,
+                extra=retry_extra,
+                latency_ms=(time.monotonic() - request_started) * 1000,
+            ), audit_callback)
             if attempt == attempt_budget - 1:
                 raise
             time.sleep(2 ** (attempt + 1))

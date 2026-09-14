@@ -18,7 +18,7 @@ from core.repair_ledger import record_repair_attempt
 from core.director_tail_repair_ir import RepairIRSchemaError, validate_repair_ir
 from core.director_tail_repair_ir_compiler import compile_repair_ir
 from core.director_overdirecting import detect_over_directing
-from core.director_tail_repair_request import REPAIR_REQUEST_SCHEMA_VERSION
+from core.director_tail_repair_request import REPAIR_REQUEST_SCHEMA_VERSION, build_repair_request, with_attempt
 
 
 TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION = "director-quality-v2-4-tail-repair-executor-v1"
@@ -80,19 +80,18 @@ def _minimal_context(
         "shots": copy.deepcopy(_list(_dict(contract.get("immutable_projection")).get("shots"))),
         "source_beat_map": copy.deepcopy(_dict(contract.get("source_beat_map"))),
     }
-    return {
-        "protocol_version": REPAIR_REQUEST_SCHEMA_VERSION,
-        "root_cause": root_cause,
-        "failed_dimensions": sorted(dimensions),
-        "relevant_opportunities": relevant_opportunities,
-        "relevant_beats": copy.deepcopy(_list(record.get("relevant_beats"))),
-        "relevant_shots": copy.deepcopy(_list(record.get("relevant_shots"))),
-        "strategy_subset": copy.deepcopy(_dict(strategy)),
-        "immutable_contract": immutable_subset,
-        "previous_intervention": copy.deepcopy(previous_intervention),
-        "validator_findings": copy.deepcopy(_list(record.get("quality_issues")) + _list(_dict(record.get("validation")).get("quality_issues"))),
-        "target_metric": copy.deepcopy(target_metric),
-    }
+    return build_repair_request(
+        root_cause=root_cause,
+        target_dimensions=sorted(dimensions),
+        relevant_opportunities=relevant_opportunities,
+        relevant_beats=_list(record.get("relevant_beats")),
+        relevant_shots=_list(record.get("relevant_shots")),
+        strategy_subset=_dict(strategy),
+        immutable_contract=immutable_subset,
+        previous_intervention=previous_intervention,
+        validator_findings=_list(record.get("quality_issues")) + _list(_dict(record.get("validation")).get("quality_issues")),
+        target_metric=target_metric,
+    )
 
 
 def _within_scope(document: dict[str, Any], root_cause: str) -> tuple[bool, str]:
@@ -240,27 +239,30 @@ def execute_tail_repair(
             if repair_callable is None:
                 rollback_reason = "REPAIR_CALLABLE_UNAVAILABLE"
                 break
-            request = copy.deepcopy(context)
-            request["attempt_number"] = attempt_number
             if attempt_number == 1:
-                request["attempt_kind"] = "CREATIVE_GENERATION"
-                request["output_contract"] = {
-                    "schema_version": "director_tail_repair_ir_v1",
-                    "repair_type": "typed union: edit|emotion|information|performance|camera",
-                    "no_canonical_paths": True,
-                }
+                attempt_kind = "CREATIVE_GENERATION"
+                attempt_payload = {"number": attempt_number, "kind": attempt_kind}
             elif previous_kind == "FORMAT_REPAIR":
-                request["attempt_kind"] = "FORMAT_REPAIR"
-                request["previous_raw_output"] = copy.deepcopy(previous_raw)
-                request["previous_validation_errors"] = [previous_error]
-                request["required_output_schema"] = "director_tail_repair_ir_v1"
-                request["allowed_plan_shot_ids"] = [_text(item.get("plan_shot_id")) for item in _list(before_candidate.get("shots")) if isinstance(item, dict)]
+                attempt_kind = "FORMAT_REPAIR"
+                attempt_payload = {
+                    "number": attempt_number,
+                    "kind": attempt_kind,
+                    "previous_raw_output": copy.deepcopy(previous_raw),
+                    "previous_validation_errors": [previous_error],
+                    "required_output_schema": "director_tail_repair_ir_v1",
+                    "allowed_plan_shot_ids": [_text(item.get("plan_shot_id")) for item in _list(before_candidate.get("shots")) if isinstance(item, dict)],
+                }
             else:
-                request["attempt_kind"] = "SEMANTIC_REPAIR"
-                request["previous_raw_output"] = copy.deepcopy(previous_raw)
-                request["previous_validation_errors"] = [previous_error]
-                request["target_dimension"] = sorted(TARGET_DIMENSIONS.get(root_cause, set()))
-                request["scorer_signals"] = {"dimensions": copy.deepcopy(before_score.get("dimensions", {})), "allowed_repair_scope": sorted(REPAIR_SCOPES.get(root_cause, set()))}
+                attempt_kind = "SEMANTIC_REPAIR"
+                attempt_payload = {
+                    "number": attempt_number,
+                    "kind": attempt_kind,
+                    "previous_raw_output": copy.deepcopy(previous_raw),
+                    "previous_validation_errors": [previous_error],
+                    "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())),
+                    "scorer_signals": {"dimensions": copy.deepcopy(before_score.get("dimensions", {})), "allowed_repair_scope": sorted(REPAIR_SCOPES.get(root_cause, set()))},
+                }
+            request = with_attempt(context, attempt_payload)
             try:
                 raw = repair_callable(request)
                 previous_raw = copy.deepcopy(raw)
@@ -308,8 +310,8 @@ def execute_tail_repair(
                 if not acceptance["accepted"]:
                     raise ValueError(acceptance["rollback_reason"] or "repair acceptance policy rejected candidate")
                 after_fp = fingerprint(after_candidate)
-                attempts.append({"attempt_number": attempt_number, "attempt_kind": request.get("attempt_kind"), "status": "accepted", "protocol": protocol.get("protocol"), "target_delta": delta, "acceptance": acceptance, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
-                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=after_fp, status="accepted", model=model, ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": request.get("attempt_kind"), "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(raw), "repair_ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_patch_fingerprint": fingerprint(document), "ir_parse_status": "valid" if protocol.get("protocol") == "ir" else "legacy_compat", "canonical_compile_status": "compiled", "compile_status": "compiled", "contract_status": "pass", "target_dimension_delta": delta, "dq_before": before_score.get("director_quality_score"), "dq_after": after_score.get("director_quality_score"), "cv_before": before_cv, "cv_after": after_cv, "accepted": True, "rollback_reason": ""})
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "accepted", "protocol": protocol.get("protocol"), "target_delta": delta, "acceptance": acceptance, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
+                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=after_fp, status="accepted", model=model, ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(raw), "repair_ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_patch_fingerprint": fingerprint(document), "ir_parse_status": "valid" if protocol.get("protocol") == "ir" else "legacy_compat", "canonical_compile_status": "compiled", "compile_status": "compiled", "contract_status": "pass", "target_dimension_delta": delta, "dq_before": before_score.get("director_quality_score"), "dq_after": after_score.get("director_quality_score"), "cv_before": before_cv, "cv_after": after_cv, "accepted": True, "rollback_reason": ""})
                 current = copy.deepcopy(after_candidate)
                 accepted = True
                 accepted_roots += 1
@@ -318,8 +320,8 @@ def execute_tail_repair(
                 rollback_reason = str(exc)
                 previous_error = str(exc)
                 previous_kind = "FORMAT_REPAIR" if isinstance(exc, (CreativePatchSchemaError, RepairIRSchemaError)) else "SEMANTIC_REPAIR"
-                attempts.append({"attempt_number": attempt_number, "attempt_kind": request.get("attempt_kind"), "status": "rejected", "error": str(exc), "error_code": getattr(exc, "code", "")})
-                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": request.get("attempt_kind"), "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(previous_raw) if previous_raw is not None else "", "repair_ir_fingerprint": "", "canonical_patch_fingerprint": "", "ir_parse_status": "invalid", "canonical_compile_status": "not_run", "compile_status": "not_run", "contract_status": "not_run", "target_dimension_delta": {}, "dq_before": before_score.get("director_quality_score"), "dq_after": before_score.get("director_quality_score"), "cv_before": _creative_value_score(source.get("creative_value")), "cv_after": None, "accepted": False, "rollback_reason": str(exc)})
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "rejected", "error": str(exc), "error_code": getattr(exc, "code", "")})
+                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(previous_raw) if previous_raw is not None else "", "repair_ir_fingerprint": "", "canonical_patch_fingerprint": "", "ir_parse_status": "invalid", "canonical_compile_status": "not_run", "compile_status": "not_run", "contract_status": "not_run", "target_dimension_delta": {}, "dq_before": before_score.get("director_quality_score"), "dq_after": before_score.get("director_quality_score"), "cv_before": _creative_value_score(source.get("creative_value")), "cv_after": None, "accepted": False, "rollback_reason": str(exc)})
         if not accepted and not rollback_reason:
             rollback_reason = "REPAIR_ATTEMPT_BUDGET_EXHAUSTED"
         if attempts:

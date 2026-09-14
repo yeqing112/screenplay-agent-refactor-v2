@@ -1,0 +1,12 @@
+{
+  "schema_version": "director-quality-v2-4-1-metrics-erratum-v1",
+  "reported_tail_repair_attempts": 54,
+  "provider_http_request_count": null,
+  "provider_http_request_count_status": "not_proven",
+  "ir_compliance_rate_reported": 0,
+  "ir_compliance_interpretation": "invalid_for_provider_capability_due_contract_mismatch",
+  "root_cause": "PROVIDER_EXECUTOR_CONTRACT_MISMATCH",
+  "safety_interpretation": "valid",
+  "rollback_interpretation": "valid",
+  "source_artifact": "artifacts/director-quality-v2-4-1-targeted-tail-pilot-20260914T115313Z.json"
+}

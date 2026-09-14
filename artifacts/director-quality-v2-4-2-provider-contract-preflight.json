@@ -1,0 +1,68 @@
+{
+  "protocol_version": "director-quality-v2-4-2-provider-contract-preflight",
+  "generated_at": "2026-09-14T14:21:35.071086+00:00",
+  "source_artifact": "artifacts/director-quality-v2-4-b2-freeze.json",
+  "source_commit": "f329b863409ddd09696cc25b05caba71555e0246",
+  "selected_scene_count": 15,
+  "selected_scene_ids": [
+    "book990402:e1:红伞幻影（二）",
+    "book990402:e2:回声照相馆",
+    "book990402:e2:暗房门口的试探",
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "V21_FIXTURE_01",
+    "V21_FIXTURE_04",
+    "V21_FIXTURE_07",
+    "V21_FIXTURE_08",
+    "V21_FIXTURE_09",
+    "V21_FIXTURE_10",
+    "V21_FIXTURE_11",
+    "fixture:dialogue_power_shift",
+    "fixture:multi_character",
+    "fixture:prop_continuity"
+  ],
+  "profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "base_url": "https://api.xiaomimimo.com/v1",
+    "key_configured": true
+  },
+  "provider_contract_alignment": {
+    "provider_output_schema": "director_tail_repair_ir_v1",
+    "executor_required_output_schema": "director_tail_repair_ir_v1",
+    "executor_require_repair_ir": true,
+    "request_schema": "director_tail_repair_request_v1",
+    "provider_required_keys": [
+      "repair_type",
+      "root_cause",
+      "schema_version",
+      "shot_decisions",
+      "target_dimensions"
+    ],
+    "ir_required_keys": [
+      "repair_type",
+      "root_cause",
+      "schema_version",
+      "shot_decisions",
+      "target_dimensions"
+    ],
+    "provider_system_prompt_fingerprint": "d4dacb86597fced9d62493066109fd415d46a02c8c28e77e58dccc700378f49d",
+    "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+    "canonical_paths_requested": false,
+    "json_parse_retries": 0,
+    "nested_json_retry_enabled": false,
+    "aligned": true,
+    "blockers": []
+  },
+  "ready_for_confirmation": true,
+  "blockers": [],
+  "real_mimo_calls": 0,
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  }
+}
