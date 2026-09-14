@@ -85,6 +85,7 @@ def build_director_quality_v24_metrics(
     bucket_counts = Counter(_bucket(value) for value in scores)
     counts = _dict(funnel_obj.get("counts"))
     detected = int(funnel_obj.get("trace_record_count") or funnel_obj.get("detected_opportunity_count") or counts.get("eligible_opportunities") or 0)
+    detected_scene_count = sum(1 for row in rows if int(row.get("opportunity_count") or len(_list(row.get("opportunities"))) or 0) > 0)
     eligible = int(counts.get("eligible_opportunities") or funnel_obj.get("eligible_opportunity_count") or 0)
     act = int(counts.get("act") or 0)
     produced = int(counts.get("intervention_produced") or 0)
@@ -108,7 +109,7 @@ def build_director_quality_v24_metrics(
             "mean": round(mean(scores), 4) if scores else None,
             "buckets": {bucket: int(bucket_counts.get(bucket, 0)) for bucket in QUALITY_BUCKETS},
         },
-        "opportunity_detection_rate": funnel_obj.get("opportunity_detection_rate"),
+        "opportunity_detection_rate": funnel_obj.get("opportunity_detection_rate") if funnel_obj.get("opportunity_detection_rate") is not None else _rate(detected_scene_count, len(rows)),
         "eligibility_rate": _rate(eligible, detected),
         "act_rate": _rate(act, eligible),
         "intervention_produced_rate": _rate(produced, eligible),

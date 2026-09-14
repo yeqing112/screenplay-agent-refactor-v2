@@ -1,0 +1,54 @@
+from pathlib import Path
+
+from scripts.run_director_quality_v2_4_offline_replay import build_offline_replay
+from scripts.run_director_quality_v2_4_targeted_tail_pilot import build_preflight
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons():
+    result = build_offline_replay(
+        pilot_path=ROOT / "artifacts" / "director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json",
+        evidence_path=ROOT / "artifacts" / "director-quality-v2-3-phase-b2-evidence.json",
+    )
+
+    provenance = result["provenance"]
+    assert provenance["commit_sha"]
+    assert provenance["branch"] == "codex/unify-formal-workspace"
+    assert provenance["source_artifacts"]
+    assert all("\\" not in path and ":" not in path for path in provenance["source_artifacts"])
+    assert result["scene_count"] == 24
+    assert result["gate"]["status"] == "NOT_READY"
+    assert result["gate"]["reasons"]
+    assert result["side_effects"] == {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0,
+        "production_shadow": 0,
+    }
+    # The historical B2 artifact has only rejection counts for the three
+    # failing scenes.  The replay must surface this as unknown taxonomy data,
+    # never silently call it a known failure or fabricate a path.
+    assert result["contract_failures"]["counts"].get("UNKNOWN_CONTRACT_FAILURE") == 20
+
+
+def test_targeted_tail_preflight_selects_only_triggered_scenes_and_fails_closed_without_key():
+    preflight = build_preflight(
+        pilot_path=ROOT / "artifacts" / "director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json",
+        profile={
+            "id": "mimo-test",
+            "provider": "openai-compatible",
+            "capability": "llm",
+            "model_name": "mimo-v2.5",
+            "base_url": "https://api.xiaomimimo.com/v1",
+            "enabled": True,
+            "key_configured": False,
+        },
+    )
+    assert preflight["selected_scene_count"] == 15
+    assert preflight["ready_for_confirmation"] is False
+    assert "MIMO_PROFILE_KEY_OR_CONFIGURATION_MISSING" in preflight["blockers"]
+    assert "SOURCE_PROVENANCE_MISSING" in preflight["blockers"]
+    assert preflight["real_mimo_calls"] == 0

@@ -287,3 +287,36 @@ V2.3 已完成机会发现、策略覆盖、价值评估和安全隔离的第一
 - `core/director_shadow_gate.py` 引入版本化 policy 与结构化 `reasons`；Contract final pass threshold 保持 `1.0`，未降低任何门槛。
 - 新增 `core/director_contract_failure.py`，并将 compiler/validator/B1 runner 接入稳定 ContractFailure category 与 patch-level 首次/最终通过率字段；未放宽任何事实边界。
 - 定向测试：`22 passed`；Step 2/3/4 touched Python compileall 通过；Step 3 收口后的全量回归：`940 passed`。
+
+## 9. Final As-Built Verification（本地闭环）
+
+本节与上文 Baseline Audit 分开记录，避免把“发现的问题”和“已实现的修复”混为一谈。
+
+### 已落地并验证
+
+- `core/director_contract_local_repair.py`：字段级局部契约修复，最多 2 次尝试，失败回退 baseline；
+- `core/director_opportunity_eligibility.py`：第二层资格判定与完整状态统计；
+- `core/director_intervention_trace.py`：Opportunity → Decision → Strategy → Patch → Compile → Validate → Apply → Measure；
+- `core/director_conversion_funnel.py`：逐层计数、比例和 drop reason；
+- `core/director_creative_value.py`：版本化维度归因与 UCA V3；
+- `core/director_tail_root_cause.py`：证据加权 Root Cause Ranker V2 与非 Tail `NOT_APPLICABLE`；
+- `core/director_tail_repair_executor.py`、`core/director_tail_repair_acceptance.py`：最小上下文、范围、预算、rescore、accept/rollback；
+- `core/repair_ledger.py`：Tail Repair V2.4 运行元数据；
+- `core/director_quality_v24_pipeline.py`：将上述模块串为 provider-neutral scene pipeline；
+- `scripts/run_director_quality_v2_4_offline_replay.py`：从冻结 B2 产物生成可回放审计报告；
+- `scripts/run_director_quality_v2_4_targeted_tail_pilot.py`：15 个 Tail 场景的严格 preflight 与显式授权边界。
+
+### 本地证据
+
+- 全量回归：`971 passed, 890 warnings`；
+- V2.4 专项与离线回放测试：全部通过；
+- 离线回放场景数：24；
+- Shadow Gate：`NOT_READY`，结构化 reasons 非空；
+- 副作用：production/storyboard/media/object_storage/production_shadow 均为 0；
+- 旧 B2 仅保留拒绝数量而未保留字段级错误，因此回放报告将 20 条拒绝标记为 `UNKNOWN_CONTRACT_FAILURE`，没有伪造具体 path 或原因。
+
+### 尚未完成（不得误报为完成）
+
+- Targeted Tail Real MiMo Pilot 尚未执行：当前模型管理中的 MiMo profile 未配置 API Key，preflight 为 `ready_for_confirmation=false`，阻塞码为 `MIMO_PROFILE_KEY_OR_CONFIGURATION_MISSING`；
+- 因 Targeted Pilot 尚未证明修复价值，不能执行 Full 24 V2.4 Pilot，也不能开启 Production Shadow；
+- Final Report 与 Shadow Gate 最终决策仍需在 Targeted Pilot 完成后生成。
