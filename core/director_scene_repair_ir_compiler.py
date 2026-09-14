@@ -12,7 +12,16 @@ from core.director_scene_repair_semantic_spec import validate_scene_repair_ir
 def compile_scene_repair_ir(ir: dict[str, Any], *, contract: dict[str, Any]) -> dict[str, Any]:
     known = set(str(value) for value in contract.get("allowed_shot_ids", []))
     chars = set(str(value) for value in contract.get("allowed_character_ids", []))
-    normalized = validate_scene_repair_ir(ir, known_plan_shot_ids=known, allowed_character_ids=chars, allowed_dimensions=set(contract.get("allowed_dimensions") or []))
+    dimension_budget = contract.get("dimension_budget") if isinstance(contract.get("dimension_budget"), dict) else {}
+    shot_budget = contract.get("shot_budget") if isinstance(contract.get("shot_budget"), dict) else {}
+    normalized = validate_scene_repair_ir(
+        ir,
+        known_plan_shot_ids=known,
+        allowed_character_ids=chars,
+        allowed_dimensions=set(contract.get("allowed_dimensions") or []),
+        max_dimensions=dimension_budget.get("max_dimensions"),
+        max_shot_decisions=shot_budget.get("max_affected_shots"),
+    )
     patches: list[dict[str, Any]] = []
     def flatten(prefix: str, value: Any) -> dict[str, Any]:
         # Existing canonical compiler validates leaf paths.  Keep semantic IR

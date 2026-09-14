@@ -24,7 +24,7 @@ def _list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
-def validate_scene_repair_ir(raw: Any, *, known_plan_shot_ids: set[str] | None = None, allowed_character_ids: set[str] | None = None, allowed_dimensions: set[str] | None = None) -> dict[str, Any]:
+def validate_scene_repair_ir(raw: Any, *, known_plan_shot_ids: set[str] | None = None, allowed_character_ids: set[str] | None = None, allowed_dimensions: set[str] | None = None, max_dimensions: int | None = None, max_shot_decisions: int | None = None) -> dict[str, Any]:
     if not isinstance(raw, dict):
         raise SceneRepairIRSchemaError("Scene Repair IR must be an object")
     required = {"schema_version", "scene_id", "strategy_summary", "target_dimensions", "shot_decisions", "scene_level_intent"}
@@ -37,14 +37,19 @@ def validate_scene_repair_ir(raw: Any, *, known_plan_shot_ids: set[str] | None =
     allowed = allowed_dimensions or set(SCENE_ALLOWED_DIMENSIONS)
     if not dimensions or any(value not in allowed for value in dimensions):
         raise SceneRepairIRSchemaError("target_dimensions must be non-empty and allowed")
+    if max_dimensions is not None and len(dict.fromkeys(dimensions)) > max(0, int(max_dimensions)):
+        raise SceneRepairIRSchemaError("target_dimensions exceeds the scene dimension budget")
     decisions = _list(raw.get("shot_decisions"))
     if not decisions:
         raise SceneRepairIRSchemaError("shot_decisions must be non-empty")
+    if max_shot_decisions is not None and len(decisions) > max(0, int(max_shot_decisions)):
+        raise SceneRepairIRSchemaError("shot_decisions exceeds the bounded affected-shot budget")
     known = known_plan_shot_ids or set()
     chars = allowed_character_ids or set()
     normalized = {"schema_version": SCENE_REPAIR_IR_SCHEMA_VERSION, "scene_id": _text(raw.get("scene_id")), "strategy_summary": _text(raw.get("strategy_summary")), "target_dimensions": list(dict.fromkeys(dimensions)), "scene_level_intent": _text(raw.get("scene_level_intent")), "shot_decisions": []}
     if not normalized["scene_id"] or not normalized["strategy_summary"] or not normalized["scene_level_intent"]:
         raise SceneRepairIRSchemaError("scene_id, strategy_summary and scene_level_intent are required")
+    seen_shots: set[str] = set()
     for index, item in enumerate(decisions):
         if not isinstance(item, dict):
             raise SceneRepairIRSchemaError(f"shot_decisions[{index}] must be object")
@@ -53,6 +58,9 @@ def validate_scene_repair_ir(raw: Any, *, known_plan_shot_ids: set[str] | None =
         sid = _text(item.get("plan_shot_id"))
         if not sid or (known and sid not in known):
             raise SceneRepairIRSchemaError(f"unknown plan_shot_id: {sid}")
+        if sid in seen_shots:
+            raise SceneRepairIRSchemaError(f"duplicate plan_shot_id: {sid}")
+        seen_shots.add(sid)
         out = {"plan_shot_id": sid}
         for key, value in item.items():
             if key in {"plan_shot_id", "reason"}: continue

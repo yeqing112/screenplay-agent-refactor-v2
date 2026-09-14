@@ -57,6 +57,30 @@ def test_ir_rejects_unknown_character_id():
         validate_scene_repair_ir({"schema_version": "director_scene_repair_ir_v1", "scene_id": "S", "strategy_summary": "x", "target_dimensions": ["PERFORMANCE_DIRECTION"], "scene_level_intent": "x", "shot_decisions": [{"plan_shot_id": "S01", "performance_direction": [{"character_id": "C9", "objective": "x", "visible_behavior": "x"}]}]}, known_plan_shot_ids={"S01"}, allowed_character_ids={"C1"})
 
 
+def test_compiler_enforces_scene_dimension_and_affected_shot_budgets():
+    c = contract(candidate(10))
+    too_many_dimensions = {
+        "schema_version": "director_scene_repair_ir_v1", "scene_id": "SCENE", "strategy_summary": "x",
+        "target_dimensions": ["DRAMATIC_CLARITY", "SHOT_MOTIVATION", "EMOTIONAL_PROGRESSION", "VISUAL_STORYTELLING", "PERFORMANCE_DIRECTION", "EDIT_RHYTHM"],
+        "scene_level_intent": "x", "shot_decisions": [{"plan_shot_id": "S01", "purpose": "x"}],
+    }
+    with pytest.raises(SceneRepairIRSchemaError):
+        compile_scene_repair_ir(too_many_dimensions, contract=c)
+    too_many_shots = {
+        "schema_version": "director_scene_repair_ir_v1", "scene_id": "SCENE", "strategy_summary": "x",
+        "target_dimensions": ["SHOT_MOTIVATION"], "scene_level_intent": "x",
+        "shot_decisions": [{"plan_shot_id": f"S{i:02d}", "purpose": "x"} for i in range(1, 9)],
+    }
+    with pytest.raises(SceneRepairIRSchemaError):
+        compile_scene_repair_ir(too_many_shots, contract=c)
+
+
+def test_contract_publishes_id_rules():
+    rules = contract(candidate())["id_rules"]
+    assert rules["plan_shot_id_required"] is True
+    assert rules["duplicate_shot_ids_rejected"] is True
+
+
 def test_compiler_generates_canonical_patch_paths():
     c = contract(candidate())
     ir = {"schema_version": "director_scene_repair_ir_v1", "scene_id": "SCENE", "strategy_summary": "x", "target_dimensions": ["EDIT_RHYTHM"], "scene_level_intent": "x", "shot_decisions": [{"plan_shot_id": "S01", "edit": {"cut_reason": "on action", "duration_seconds": 2.0}}]}

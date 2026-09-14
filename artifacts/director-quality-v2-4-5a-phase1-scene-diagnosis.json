@@ -1,6 +1,6 @@
 {
   "schema_version": "director-quality-v2-4-5a-phase1-scene-diagnosis-v1",
-  "generated_at": "2026-09-14T22:18:23.328979+00:00",
+  "generated_at": "2026-09-14T22:27:15.754586+00:00",
   "provider_calls": 0,
   "scenes": [
     {
@@ -31,7 +31,8 @@
         "weak_composition_progression",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation"
       ],
       "affected_shots": [
         "S01",
@@ -81,7 +82,8 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation"
       ],
       "affected_shots": [
         "S01",
@@ -132,7 +134,8 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation"
       ],
       "affected_shots": [
         "S01",
@@ -181,7 +184,8 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation"
       ],
       "affected_shots": [
         "S01",
@@ -232,7 +236,8 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation"
       ],
       "affected_shots": [
         "S01",
@@ -280,7 +285,9 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation",
+        "weak_composition_progression"
       ],
       "affected_shots": [
         "S01",
@@ -323,7 +330,9 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation",
+        "weak_composition_progression"
       ],
       "affected_shots": [
         "S01",
@@ -364,7 +373,9 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation",
+        "weak_composition_progression"
       ],
       "affected_shots": [
         "S01",
@@ -405,7 +416,9 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation",
+        "weak_composition_progression"
       ],
       "affected_shots": [
         "S01",
@@ -448,7 +461,9 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation",
+        "weak_composition_progression"
       ],
       "affected_shots": [
         "S01",
@@ -490,7 +505,8 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation"
       ],
       "affected_shots": [
         "S01",
@@ -531,7 +547,9 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation",
+        "weak_composition_progression"
       ],
       "affected_shots": [
         "S01",
@@ -574,7 +592,9 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation",
+        "weak_composition_progression"
       ],
       "affected_shots": [
         "S01",
@@ -617,7 +637,9 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation",
+        "weak_composition_progression"
       ],
       "affected_shots": [
         "S01",
@@ -660,7 +682,8 @@
         "weak_shot_motivation",
         "missing_information_strategy",
         "weak_performance_coverage",
-        "uniform_edit_rhythm"
+        "uniform_edit_rhythm",
+        "poor_visual_escalation"
       ],
       "affected_shots": [
         "S01",

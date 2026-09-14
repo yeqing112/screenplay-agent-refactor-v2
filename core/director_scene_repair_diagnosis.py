@@ -27,6 +27,16 @@ def diagnose_scene_repair(*, candidate: dict[str, Any], treatment: dict[str, Any
     if not any(_dict(shot.get("information_strategy")) for shot in shots): patterns.append("missing_information_strategy")
     if not any(_list(shot.get("performance_direction")) for shot in shots): patterns.append("weak_performance_coverage")
     if len({_text(_dict(shot.get("edit")).get("duration_seconds")) for shot in shots}) <= 1 and len(shots) > 1: patterns.append("uniform_edit_rhythm")
+    camera_signatures = {
+        (
+            _text(_dict(shot.get("camera")).get("shot_size")),
+            _text(_dict(shot.get("camera")).get("angle")),
+            _text(_dict(shot.get("camera")).get("movement")),
+        )
+        for shot in shots
+    }
+    if len(shots) > 1 and len(camera_signatures) <= 1: patterns.append("poor_visual_escalation")
+    if len(shots) > 1 and not any(_dict(shot.get("composition")) for shot in shots): patterns.append("weak_composition_progression")
     patterns = list(dict.fromkeys(patterns))
     budget = min(len(shots), 8, max(0, int(len(shots) * 0.7 + 0.9999))) if shots else 0
     affected = [_shot_id(shot, index) for index, shot in enumerate(shots[:budget])]

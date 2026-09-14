@@ -1,7 +1,53 @@
 {
   "schema_version": "director-quality-v2-4-5a-phase1-scene-repair-contract-v1",
-  "generated_at": "2026-09-14T22:18:23.328979+00:00",
+  "generated_at": "2026-09-14T22:27:15.754586+00:00",
   "provider_calls": 0,
+  "scene_count": 15,
+  "scene_ids": [
+    "book990402:e1:红伞幻影（二）",
+    "book990402:e2:回声照相馆",
+    "book990402:e2:暗房门口的试探",
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "V21_FIXTURE_01",
+    "V21_FIXTURE_04",
+    "V21_FIXTURE_07",
+    "V21_FIXTURE_08",
+    "V21_FIXTURE_09",
+    "V21_FIXTURE_10",
+    "V21_FIXTURE_11",
+    "fixture:dialogue_power_shift",
+    "fixture:multi_character",
+    "fixture:prop_continuity"
+  ],
+  "allowed_shot_ids": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07"
+  ],
+  "allowed_character_ids": [
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16"
+  ],
+  "id_rules": {
+    "plan_shot_id_required": true,
+    "plan_shot_id_set_frozen": true,
+    "unknown_shot_ids_rejected": true,
+    "duplicate_shot_ids_rejected": true,
+    "character_id_required_for_performance": true,
+    "character_ids_must_be_in_scene": true
+  },
+  "topology_fingerprint": "c00df8eefd7b1fa524420729b3633133f0256f83dbb3f2a84b61404defe36aa4",
+  "fact_fingerprint": "ece838cccc6aee2a9f15aee7b472fdd59ad029181beb89cd4b0c065ad305bc4e",
+  "scene_source_fingerprint": "",
   "mutable_fields": [
     "camera.*",
     "composition.*",
