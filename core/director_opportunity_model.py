@@ -84,6 +84,7 @@ _OUTCOME_KEYS = {
     "dimension_deltas",
     "final_status",
     "evidence_fingerprint",
+    "causal_attribution",
 }
 
 
@@ -273,6 +274,8 @@ def normalize_opportunity_outcome(raw: Any) -> dict[str, Any]:
         "final_status": status,
         "evidence_fingerprint": _text(raw.get("evidence_fingerprint")),
     }
+    if isinstance(raw.get("causal_attribution"), dict):
+        normalized["causal_attribution"] = copy.deepcopy(raw["causal_attribution"])
     if not normalized["opportunity_id"]:
         raise OpportunityModelError("opportunity_id must be non-empty", path="opportunity_id")
     if normalized["accepted"] and decision != "ACT":

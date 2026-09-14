@@ -47,3 +47,33 @@ def test_detector_keeps_opportunity_ids_unique_when_multiple_rules_match_one_bea
     opportunities = detect_creative_opportunities(**_evidence())
     ids = [item["opportunity_id"] for item in opportunities]
     assert len(ids) == len(set(ids))
+
+
+def test_detector_does_not_infer_entry_or_exit_from_participant_delta_only():
+    evidence = _evidence()
+    evidence["treatment"]["beat_map"] = [
+        {"beat_id": "B01", "type": "setup", "participants": ["C1"]},
+        {"beat_id": "B02", "type": "setup", "participants": ["C1", "C2"]},
+    ]
+    types = {item["type"] for item in detect_creative_opportunities(**evidence)}
+    assert "OPP_CHARACTER_ENTRANCE" not in types
+    assert "OPP_CHARACTER_EXIT" not in types
+
+
+def test_detector_requires_dialogue_pressure_evidence_and_emits_precise_refs():
+    evidence = _evidence()
+    evidence["treatment"]["beat_map"][1].update({"dialogue": "你回来了？", "conflict": "对峙升级"})
+    opportunities = detect_creative_opportunities(**evidence)
+    pressure = next(item for item in opportunities if item["type"] == "OPP_DIALOGUE_PRESSURE")
+    assert any("dialogue" in ref for ref in pressure["evidence_refs"])
+    assert any("conflict" in ref for ref in pressure["evidence_refs"])
+
+
+def test_detector_withhold_and_reveal_refs_name_the_trigger_fields():
+    evidence = _evidence()
+    evidence["treatment"]["beat_map"][1]["withhold"] = "观众暂时不知道钥匙来源"
+    opportunities = detect_creative_opportunities(**evidence)
+    withhold = next(item for item in opportunities if item["type"] == "OPP_INFORMATION_WITHHOLD")
+    reveal = next(item for item in opportunities if item["type"] == "OPP_INFORMATION_REVEAL")
+    assert any(ref.endswith(".withhold") for ref in withhold["evidence_refs"])
+    assert any(ref.endswith(".information_change") for ref in reveal["evidence_refs"])

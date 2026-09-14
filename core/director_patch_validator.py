@@ -28,6 +28,63 @@ def _shots(plan: dict[str, Any]) -> list[dict[str, Any]]:
     return [item for item in _list(plan.get("shots")) if isinstance(item, dict)]
 
 
+def _is_allowed_container_scaffold(path: str, contract: dict[str, Any], operation: dict[str, Any]) -> bool:
+    """Allow compiler-created parent containers for an allowed leaf path.
+
+    A sparse structural plan may not yet contain ``camera``/``emotion`` (or
+    another editable object).  The compiler emits an ``add`` operation for
+    that missing parent before the leaf replacement.  The parent itself is
+    not a creative field and therefore is not listed as an allowed leaf, but
+    rejecting it would turn a valid field patch into a false contract failure.
+    This helper accepts only empty object/list scaffolding that is a strict
+    prefix of an explicitly allowed path; it never broadens the writable
+    contract.
+    """
+
+    if _text(operation.get("op") or "").lower() != "add":
+        return False
+    value = operation.get("value")
+    if not isinstance(value, (dict, list)):
+        return False
+    path_parts = [part for part in _text(path).split("/") if part]
+    if not path_parts or path_parts[0] != "shots":
+        return False
+    def _is_prefix(candidate: str) -> bool:
+        candidate_parts = [part for part in candidate.split("/") if part]
+        for raw_pattern in _list(contract.get("allowed_patch_paths")):
+            pattern_parts = [part for part in _text(raw_pattern).split("/") if part]
+            if len(candidate_parts) < len(pattern_parts) and all(expected == "*" or expected == actual for actual, expected in zip(candidate_parts, pattern_parts)):
+                return True
+        return False
+
+    def _safe_value(container_path: str, container_value: Any) -> bool:
+        if isinstance(container_value, list):
+            # The compiler only creates an empty list as a missing container;
+            # accepting arbitrary list contents would allow an unvalidated
+            # subtree to enter the candidate.
+            return not container_value
+        if not isinstance(container_value, dict):
+            return False
+        for key, child_value in container_value.items():
+            child_path = container_path.rstrip("/") + "/" + str(key)
+            if is_allowed_patch_path(child_path, contract):
+                continue
+            if _is_prefix(child_path) and _safe_value(child_path, child_value):
+                continue
+            return False
+        return True
+
+    if not _safe_value(path, value):
+        return False
+    for raw_pattern in _list(contract.get("allowed_patch_paths")):
+        pattern_parts = [part for part in _text(raw_pattern).split("/") if part]
+        if len(path_parts) >= len(pattern_parts):
+            continue
+        if all(expected == "*" or expected == actual for actual, expected in zip(path_parts, pattern_parts)):
+            return True
+    return False
+
+
 def _shot_id(shot: dict[str, Any], index: int) -> str:
     return _text(shot.get("plan_shot_id")) or f"S{index + 1:02d}"
 
@@ -86,7 +143,7 @@ def validate_compiled_patch_result(
     for compiled in _list(compilation.get("compiled_patches")):
         for operation in _list(_dict(compiled).get("operations")):
             path = _text(_dict(operation).get("path"))
-            if not is_allowed_patch_path(path, contract):
+            if not is_allowed_patch_path(path, contract) and not _is_allowed_container_scaffold(path, contract, _dict(operation)):
                 errors.append(_error("DIRECTOR_PATCH_PATH_FORBIDDEN", f"compiled path is not allowed: {path}", path=path, target_id=_text(_dict(compiled).get("plan_shot_id"))))
     for rejected in _list(compilation.get("rejected_patches")):
         rejected_obj = _dict(rejected)

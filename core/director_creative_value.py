@@ -5,11 +5,12 @@ from __future__ import annotations
 import copy
 from typing import Any, Iterable
 
-from core.director_opportunity_model import build_opportunity_outcome, normalize_opportunity
+from core.director_opportunity_model import DIRECTING_DIMENSIONS, build_opportunity_outcome, normalize_opportunity
 from core.director_opportunity_planner import normalize_planner_decisions
 
 
 CREATIVE_VALUE_SCHEMA_VERSION = "director_useful_creative_acceptance_v2"
+CREATIVE_VALUE_V3_SCHEMA_VERSION = "director_useful_creative_acceptance_v3"
 CREATIVE_VALUE_SCORE_SCHEMA_VERSION = "director_creative_value_score_v1"
 CREATIVE_VALUE_WEIGHTS = {
     "opportunity_coverage": 0.25,
@@ -19,6 +20,24 @@ CREATIVE_VALUE_WEIGHTS = {
     "information_strategy": 0.15,
     "tail_stability": 0.05,
 }
+
+# One authoritative bridge between opportunity language and the scorer's
+# dimension labels.  Causal value may only be credited when a recommended
+# dimension improves; an unrelated positive delta is insufficient.
+DIMENSION_ATTRIBUTION_VERSION = "director-dimension-attribution-v1"
+DIMENSION_ATTRIBUTION = {
+    "performance_direction": "PERFORMANCE_DIRECTION",
+    "edit_strategy": "EDIT_RHYTHM",
+    "emotion_arc": "EMOTIONAL_PROGRESSION",
+    "information_strategy": "INFORMATION_STRATEGY",
+    "shot_motivation": "SHOT_MOTIVATION",
+    "camera_language": "SHOT_DIVERSITY",
+    "spatial_clarity": "SPATIAL_CLARITY",
+    "visual_storytelling": "VISUAL_STORYTELLING",
+    "power_dynamics": "POWER_DYNAMICS",
+    "shot_diversity": "SHOT_DIVERSITY",
+}
+_REVERSE_DIMENSION_ATTRIBUTION = {value: key for key, value in DIMENSION_ATTRIBUTION.items()}
 
 
 def _rate(numerator: int, denominator: int) -> float | None:
@@ -31,6 +50,26 @@ def _text(value: Any) -> str:
 
 def _dict(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
+
+
+def _canonical_dimension(value: Any) -> str:
+    text = _text(value)
+    if text in DIMENSION_ATTRIBUTION:
+        return text
+    upper = text.upper()
+    return _REVERSE_DIMENSION_ATTRIBUTION.get(upper, text)
+
+
+def _causal_target_deltas(opportunity: dict[str, Any], deltas: dict[str, Any]) -> dict[str, float]:
+    targets = {_canonical_dimension(item) for item in opportunity.get("recommended_directing_dimensions", [])}
+    result: dict[str, float] = {}
+    for raw_key, value in deltas.items():
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            continue
+        key = _canonical_dimension(raw_key)
+        if key in targets:
+            result[key] = float(value)
+    return result
 
 
 def _normalized_opportunities(opportunities: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -88,11 +127,19 @@ def evaluate_useful_creative_acceptance(
         new_blocker = intervention.get("new_blocker") is True
         quality_delta = intervention.get("quality_delta", 0.0)
         dimension_deltas = _dict(intervention.get("dimension_deltas"))
+        normalized_dimension_deltas = {
+            _REVERSE_DIMENSION_ATTRIBUTION.get(_text(key).upper(), _text(key)): float(value)
+            for key, value in dimension_deltas.items()
+            if _text(_REVERSE_DIMENSION_ATTRIBUTION.get(_text(key).upper(), _text(key))) in DIRECTING_DIMENSIONS
+            and isinstance(value, (int, float)) and not isinstance(value, bool)
+        }
         try:
-            positive_delta = float(quality_delta) > 0 and any(isinstance(value, (int, float)) and not isinstance(value, bool) and float(value) > 0 for value in dimension_deltas.values())
+            target_deltas = _causal_target_deltas(opportunity, normalized_dimension_deltas)
+            positive_delta = float(quality_delta) > 0 and any(float(value) > 0 for value in target_deltas.values())
         except (TypeError, ValueError):
             positive_delta = False
             quality_delta = 0.0
+            target_deltas = {}
         if not patch_valid or not fact_contract_pass:
             status = "REJECTED_CONTRACT"
         elif not applied:
@@ -103,15 +150,26 @@ def evaluate_useful_creative_acceptance(
             status = "USEFUL_ACCEPTED"
         else:
             status = "ACCEPTED_NO_MEASURABLE_VALUE"
-        outcomes.append(build_opportunity_outcome(opportunity=opportunity, planner_decision="ACT", accepted=status == "USEFUL_ACCEPTED", repaired=bool(intervention.get("repaired")), fallback=status == "FALLBACK_BASELINE", quality_delta=quality_delta if isinstance(quality_delta, (int, float)) and not isinstance(quality_delta, bool) else 0.0, dimension_deltas=dimension_deltas, final_status=status))
+        outcome = build_opportunity_outcome(opportunity=opportunity, planner_decision="ACT", accepted=status == "USEFUL_ACCEPTED", repaired=bool(intervention.get("repaired")), fallback=status == "FALLBACK_BASELINE", quality_delta=quality_delta if isinstance(quality_delta, (int, float)) and not isinstance(quality_delta, bool) else 0.0, dimension_deltas=normalized_dimension_deltas, final_status=status)
+        outcome["causal_attribution"] = {
+            "version": DIMENSION_ATTRIBUTION_VERSION,
+            "target_dimensions": sorted({_canonical_dimension(item) for item in opportunity.get("recommended_directing_dimensions", [])}),
+            "target_dimension_deltas": target_deltas,
+            "target_dimension_improved": bool(target_deltas and any(float(value) > 0 for value in target_deltas.values())),
+        }
+        outcomes.append(outcome)
 
     eligible_outcomes = [item for item in outcomes if item["eligible"]]
     useful = [item for item in eligible_outcomes if item["final_status"] == "USEFUL_ACCEPTED"]
     accepted = [item for item in eligible_outcomes if item["accepted"]]
     valid_skips = [item for item in eligible_outcomes if item["final_status"] == "SKIPPED_VALID_REASON"]
     missed = [item for item in eligible_outcomes if item["final_status"] == "MISSED_OPPORTUNITY"]
+    act_outcomes = [item for item in eligible_outcomes if item["planner_decision"] == "ACT"]
+    useful_rate_v3 = _rate(len(useful), len(act_outcomes))
+    address_rate = _rate(len(useful) + len(valid_skips), len(eligible_outcomes))
     return {
         "schema_version": CREATIVE_VALUE_SCHEMA_VERSION,
+        "dimension_attribution_version": DIMENSION_ATTRIBUTION_VERSION,
         "eligible_opportunity_count": len(eligible_outcomes),
         "useful_accepted_count": len(useful),
         "accepted_count": len(accepted),
@@ -122,9 +180,30 @@ def evaluate_useful_creative_acceptance(
         "valid_skip_count": len(valid_skips),
         "missed_opportunity_count": len(missed),
         "useful_creative_acceptance_rate": _rate(len(useful), len(eligible_outcomes)),
+        "useful_creative_acceptance_v3_rate": useful_rate_v3,
+        "act_count": len(act_outcomes),
+        "act_realization_rate": useful_rate_v3,
+        "opportunity_address_rate": address_rate,
         "valid_skip_rate": _rate(len(valid_skips), len(eligible_outcomes)),
         "missed_opportunity_rate": _rate(len(missed), len(eligible_outcomes)),
         "outcomes": outcomes,
+    }
+
+
+def evaluate_useful_creative_acceptance_v3(**kwargs: Any) -> dict[str, Any]:
+    """Return the causal, ACT-denominated acceptance metric as V3.
+
+    V2 fields remain intact for historical comparison; this wrapper only
+    changes the schema marker and exposes the corrected headline metric.
+    """
+
+    result = evaluate_useful_creative_acceptance(**kwargs)
+    return {
+        **result,
+        "schema_version": CREATIVE_VALUE_V3_SCHEMA_VERSION,
+        "useful_creative_acceptance_v3": result.get("useful_creative_acceptance_v3_rate"),
+        "act_realization_rate": result.get("act_realization_rate"),
+        "opportunity_address_rate": result.get("opportunity_address_rate"),
     }
 
 
@@ -170,4 +249,4 @@ def build_creative_value_score(
     return {"schema_version": CREATIVE_VALUE_SCORE_SCHEMA_VERSION, "status": "ready", "score": round(score, 4), "components": normalized, "weights": copy.deepcopy(CREATIVE_VALUE_WEIGHTS), "missing_components": [], "errors": []}
 
 
-__all__ = ["CREATIVE_VALUE_SCHEMA_VERSION", "CREATIVE_VALUE_SCORE_SCHEMA_VERSION", "CREATIVE_VALUE_WEIGHTS", "evaluate_useful_creative_acceptance", "build_creative_value_score"]
+__all__ = ["CREATIVE_VALUE_SCHEMA_VERSION", "CREATIVE_VALUE_V3_SCHEMA_VERSION", "CREATIVE_VALUE_SCORE_SCHEMA_VERSION", "CREATIVE_VALUE_WEIGHTS", "DIMENSION_ATTRIBUTION_VERSION", "DIMENSION_ATTRIBUTION", "evaluate_useful_creative_acceptance", "evaluate_useful_creative_acceptance_v3", "build_creative_value_score"]

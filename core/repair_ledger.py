@@ -30,6 +30,12 @@ def record_repair_attempt(*, repair: dict[str, Any], issue: dict[str, Any] | Non
         "token_usage": repair.get("token_usage", context.get("token_usage")),
         "latency_ms": repair.get("latency_ms", context.get("latency_ms")),
     }
+    # V2.4 runtime metadata is deliberately kept inside the existing JSON
+    # envelope so no destructive migration is needed.  Callers provide only
+    # redacted identifiers/fingerprints and scalar measurements.
+    ledger_metadata = repair.get("ledger_metadata", context.get("ledger_metadata"))
+    if isinstance(ledger_metadata, dict):
+        operation["ledger_metadata"] = json.loads(json.dumps(ledger_metadata, ensure_ascii=False, default=str))
     owns_session = session is None
     db = session or Session()
     try:

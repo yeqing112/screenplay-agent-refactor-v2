@@ -1,0 +1,272 @@
+"""Provider-neutral Tail Repair Executor for Director Quality V2.4."""
+
+from __future__ import annotations
+
+import copy
+from typing import Any, Callable, Iterable
+
+from core.director_creative_contract import IMMUTABLE_FIELDS
+from core.director_patch_compiler import DirectorPatchCompileError, compile_creative_patches
+from core.director_patch_schema import CreativePatchSchemaError, parse_creative_patch
+from core.director_patch_validator import validate_compiled_patch_result
+from core.director_quality_validator import score_director_quality
+from core.director_tail_repair_acceptance import evaluate_repair_acceptance
+from core.director_tail_repair import REPAIR_SCOPES, build_tail_repair_plan
+from core.director_tail_root_cause import rank_tail_root_causes_v2
+from core.local_repair import fingerprint
+from core.repair_ledger import record_repair_attempt
+
+
+TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION = "director-quality-v2-4-tail-repair-executor-v1"
+TARGET_DIMENSIONS = {
+    "WEAK_EDIT_STRATEGY": {"EDIT_RHYTHM"},
+    "WEAK_EMOTION_ARC": {"EMOTIONAL_PROGRESSION", "PERFORMANCE_DIRECTION"},
+    "WEAK_INFORMATION_STRATEGY": {"INFORMATION_STRATEGY"},
+    "PERFORMANCE_DIRECTION_WEAK": {"PERFORMANCE_DIRECTION"},
+    "CAMERA_LANGUAGE_GENERIC": {"SHOT_DIVERSITY", "VISUAL_STORYTELLING"},
+    "OVER_DIRECTING": {"EDIT_RHYTHM", "SHOT_DIVERSITY"},
+    "UNDER_DIRECTING": {"EDIT_RHYTHM", "EMOTIONAL_PROGRESSION"},
+}
+
+
+def _dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
+
+
+def _text(value: Any) -> str:
+    return str(value or "").strip()
+
+
+def _scope_root(path: Any) -> str:
+    parts = [part for part in _text(path).replace("/", ".").split(".") if part]
+    if parts and parts[0] == "shots":
+        return parts[2] if len(parts) >= 3 else ""
+    return parts[0] if parts else ""
+
+
+def _target_delta(before: dict[str, Any], after: dict[str, Any], dimensions: set[str]) -> dict[str, float]:
+    before_dims = _dict(before.get("dimensions"))
+    after_dims = _dict(after.get("dimensions"))
+    return {dimension: round(float(after_dims.get(dimension, 0)) - float(before_dims.get(dimension, 0)), 4) for dimension in sorted(dimensions)}
+
+
+def _minimal_context(
+    *,
+    root_cause: str,
+    record: dict[str, Any],
+    opportunities: list[dict[str, Any]],
+    contract: dict[str, Any],
+    strategy: dict[str, Any] | None,
+    target_metric: dict[str, Any],
+    previous_intervention: Any,
+) -> dict[str, Any]:
+    dimensions = TARGET_DIMENSIONS.get(root_cause, set())
+    relevant_opportunities = [
+        copy.deepcopy(item)
+        for item in opportunities
+        if isinstance(item, dict) and dimensions.intersection({_text(value).upper() for value in _list(item.get("recommended_directing_dimensions"))})
+    ]
+    immutable_subset = {
+        "immutable_fields": list(IMMUTABLE_FIELDS),
+        "scene": copy.deepcopy(_dict(contract.get("scene"))),
+        "shots": copy.deepcopy(_list(_dict(contract.get("immutable_projection")).get("shots"))),
+        "source_beat_map": copy.deepcopy(_dict(contract.get("source_beat_map"))),
+    }
+    return {
+        "protocol_version": TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION,
+        "root_cause": root_cause,
+        "failed_dimensions": sorted(dimensions),
+        "relevant_opportunities": relevant_opportunities,
+        "relevant_beats": copy.deepcopy(_list(record.get("relevant_beats"))),
+        "relevant_shots": copy.deepcopy(_list(record.get("relevant_shots"))),
+        "scene_strategy_subset": copy.deepcopy(_dict(strategy)),
+        "immutable_contract_subset": immutable_subset,
+        "previous_intervention": copy.deepcopy(previous_intervention),
+        "validator_findings": copy.deepcopy(_list(record.get("quality_issues")) + _list(_dict(record.get("validation")).get("quality_issues"))),
+        "target_metric": copy.deepcopy(target_metric),
+    }
+
+
+def _within_scope(document: dict[str, Any], root_cause: str) -> tuple[bool, str]:
+    allowed = set(REPAIR_SCOPES.get(root_cause, set()))
+    for patch in _list(document.get("patches")):
+        if not isinstance(patch, dict):
+            return False, "patch must be an object"
+        for path in _dict(patch.get("changes")):
+            root = _scope_root(path)
+            if root not in allowed:
+                return False, f"path {path} is outside {root_cause} repair scope"
+    if _list(document.get("auxiliary_shot_proposals")) and "shots" not in allowed:
+        return False, "auxiliary proposals are outside this root-cause scope"
+    return True, ""
+
+
+def _record_attempt(
+    *,
+    session: Any | None,
+    repair_context: dict[str, Any] | None,
+    root_cause: str,
+    attempt_number: int,
+    before: str,
+    after: str,
+    status: str,
+    model: str,
+    error: str = "",
+    ledger_metadata: dict[str, Any] | None = None,
+) -> None:
+    if session is None and repair_context is None:
+        return
+    record_repair_attempt(
+        repair={
+            "issue_code": root_cause,
+            "target_layer": "DIRECTOR_CREATIVE",
+            "patch": [],
+            "before_fingerprint": before,
+            "after_fingerprint": after,
+            "changed": before != after,
+            "ledger_metadata": copy.deepcopy(ledger_metadata or {}),
+        },
+        issue={"code": root_cause, "target_layer": "DIRECTOR_CREATIVE", "target_id": _text(_dict(repair_context).get("scene_id"))},
+        context={**(_dict(repair_context)), "attempt_number": attempt_number, "revalidation_status": status, "revalidation_details": {"error": error} if error else {}, "model": model},
+        session=session,
+    )
+
+
+def execute_tail_repair(
+    *,
+    candidate: dict[str, Any],
+    record: dict[str, Any],
+    contract: dict[str, Any],
+    repair_callable: Callable[[dict[str, Any]], Any] | None = None,
+    treatment: dict[str, Any] | None = None,
+    blocking: dict[str, Any] | None = None,
+    opportunities: Iterable[dict[str, Any]] = (),
+    strategy: dict[str, Any] | None = None,
+    max_root_causes: int = 2,
+    max_attempts_per_root_cause: int = 2,
+    session: Any | None = None,
+    repair_context: dict[str, Any] | None = None,
+    model: str = "",
+) -> dict[str, Any]:
+    """Execute at most two targeted root-cause repairs and accept/rollback."""
+
+    baseline = copy.deepcopy(candidate)
+    source = record if isinstance(record, dict) else {}
+    ranked = rank_tail_root_causes_v2(source)
+    ranked_causes = [
+        _text(item.get("code"))
+        for item in _list(ranked.get("ranked_root_causes"))
+        if _text(item.get("code")) in REPAIR_SCOPES
+    ][: max(0, min(int(max_root_causes), 2))]
+    if not ranked_causes:
+        plan = build_tail_repair_plan(source, root_causes=[ranked.get("root_cause") or "UNKNOWN_ROOT_CAUSE"])
+        return {
+            "schema_version": TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION,
+            "status": "not_triggered" if not plan.get("triggered") else "non_repairable",
+            "candidate": baseline,
+            "before_fingerprint": fingerprint(baseline),
+            "after_fingerprint": fingerprint(baseline),
+            "ranked_root_causes": ranked,
+            "attempts": [],
+            "accepted": [],
+            "rolled_back": [],
+            "execution_coverage": 0.0,
+            "non_repairable_reasons": ["NO_ELIGIBLE_REPAIR_SCOPE"] if plan.get("triggered") else [],
+        }
+
+    current = copy.deepcopy(baseline)
+    rows: list[dict[str, Any]] = []
+    opportunities_list = [copy.deepcopy(item) for item in opportunities if isinstance(item, dict)]
+    executed_roots = 0
+    for root_cause in ranked_causes:
+        before_candidate = copy.deepcopy(current)
+        before_fp = fingerprint(before_candidate)
+        before_score = score_director_quality(before_candidate, treatment=treatment, blocking=blocking)
+        target_metric = {dimension: before_score.get("dimensions", {}).get(dimension) for dimension in sorted(TARGET_DIMENSIONS.get(root_cause, set()))}
+        context = _minimal_context(root_cause=root_cause, record=source, opportunities=opportunities_list, contract=contract, strategy=strategy, target_metric=target_metric, previous_intervention=rows[-1] if rows else None)
+        attempts: list[dict[str, Any]] = []
+        accepted = False
+        rollback_reason = ""
+        attempt_limit = max(0, min(int(max_attempts_per_root_cause), 2))
+        for attempt_number in range(1, attempt_limit + 1):
+            if repair_callable is None:
+                rollback_reason = "REPAIR_CALLABLE_UNAVAILABLE"
+                break
+            request = copy.deepcopy(context)
+            request["attempt_number"] = attempt_number
+            try:
+                raw = repair_callable(request)
+                document = parse_creative_patch(raw)
+                in_scope, scope_error = _within_scope(document, root_cause)
+                if not in_scope:
+                    raise ValueError(scope_error)
+                compilation = compile_creative_patches(before_candidate, document, contract, allow_partial=False)
+                validation = validate_compiled_patch_result(compilation, before_candidate, contract, treatment=treatment, blocking=blocking)
+                if not validation.get("contract_pass"):
+                    raise ValueError("contract validation failed")
+                after_candidate = compilation.get("candidate") if isinstance(compilation.get("candidate"), dict) else before_candidate
+                after_score = score_director_quality(after_candidate, treatment=treatment, blocking=blocking)
+                validation_issues = _list(validation.get("errors")) + _list(validation.get("quality_issues"))
+                fact_override_count = sum(1 for item in validation_issues if _text(_dict(item).get("code") or _dict(item).get("issue_code")) in {"DIRECTOR_FACT_OVERRIDE", "FACT_OVERRIDE_ATTEMPT"})
+                structural_blocker_count = sum(1 for item in validation_issues if _text(_dict(item).get("severity")).lower() in {"blocker", "blocked"} or "STRUCTURAL" in _text(_dict(item).get("code")).upper())
+                acceptance = evaluate_repair_acceptance(
+                    before_quality=before_score,
+                    after_quality=after_score,
+                    target_dimensions=TARGET_DIMENSIONS.get(root_cause, set()),
+                    contract_pass=bool(validation.get("contract_pass")),
+                    fact_override_count=fact_override_count,
+                    structural_blocker_count=structural_blocker_count,
+                )
+                delta = acceptance["target_dimension_deltas"]
+                if not acceptance["accepted"]:
+                    raise ValueError(acceptance["rollback_reason"] or "repair acceptance policy rejected candidate")
+                after_fp = fingerprint(after_candidate)
+                attempts.append({"attempt_number": attempt_number, "status": "accepted", "target_delta": delta, "acceptance": acceptance, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
+                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=after_fp, status="accepted", model=model, ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "compile_status": "compiled", "contract_status": "pass", "quality_before": before_score.get("director_quality_score"), "quality_after": after_score.get("director_quality_score"), "accepted": True, "rollback_reason": ""})
+                current = copy.deepcopy(after_candidate)
+                accepted = True
+                executed_roots += 1
+                break
+            except (CreativePatchSchemaError, DirectorPatchCompileError, ValueError, TypeError) as exc:
+                rollback_reason = str(exc)
+                attempts.append({"attempt_number": attempt_number, "status": "rejected", "error": str(exc)})
+                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "compile_status": "failed", "contract_status": "failed", "accepted": False, "rollback_reason": str(exc)})
+        if not accepted and not rollback_reason:
+            rollback_reason = "REPAIR_ATTEMPT_BUDGET_EXHAUSTED"
+        rows.append({
+            "root_cause": root_cause,
+            "repair_scope": sorted(REPAIR_SCOPES.get(root_cause, set())),
+            "minimal_context": context,
+            "attempts": attempts,
+            "accepted": accepted,
+            "rolled_back": not accepted,
+            "before_fingerprint": before_fp,
+            "after_fingerprint": fingerprint(current if accepted else before_candidate),
+            "rollback_reason": "" if accepted else rollback_reason,
+        })
+
+    triggered_count = len(ranked_causes)
+    return {
+        "schema_version": TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION,
+        "status": "accepted" if executed_roots else "rolled_back",
+        "candidate": current,
+        "before_fingerprint": fingerprint(baseline),
+        "after_fingerprint": fingerprint(current),
+        "ranked_root_causes": ranked,
+        "attempts": rows,
+        "accepted": [item["root_cause"] for item in rows if item["accepted"]],
+        "rolled_back": [item["root_cause"] for item in rows if item["rolled_back"]],
+        "execution_coverage": round(executed_roots / triggered_count, 4) if triggered_count else 0.0,
+        "non_repairable_reasons": [item["rollback_reason"] for item in rows if item["rolled_back"]],
+    }
+
+
+run_tail_repair = execute_tail_repair
+execute_director_tail_repair = execute_tail_repair
+
+
+__all__ = ["TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION", "TARGET_DIMENSIONS", "execute_tail_repair", "run_tail_repair", "execute_director_tail_repair"]

@@ -21,6 +21,22 @@ ROOT_CAUSES = (
     "UNKNOWN_ROOT_CAUSE",
 )
 
+ROOT_CAUSE_RANKER_V2_SCHEMA_VERSION = "director_quality_tail_root_cause_ranker_v2"
+ROOT_CAUSE_PRIORITY_WEIGHTS = {"high": 1.0, "medium": 0.7, "low": 0.4}
+ROOT_CAUSE_EXPECTED_IMPACT = {
+    "WEAK_EDIT_STRATEGY": 1.0,
+    "WEAK_EMOTION_ARC": 1.0,
+    "WEAK_INFORMATION_STRATEGY": 1.0,
+    "PERFORMANCE_DIRECTION_WEAK": 0.9,
+    "CAMERA_LANGUAGE_GENERIC": 0.7,
+    "LOW_USEFUL_ACCEPTANCE": 0.8,
+    "PATCH_QUALITY_WEAK": 0.8,
+    "OVER_DIRECTING": 0.7,
+    "UNDER_DIRECTING": 0.7,
+    "AUXILIARY_SHOT_OVERUSE": 0.5,
+    "MISSING_OPPORTUNITY_DETECTION": 0.6,
+}
+
 
 def _dict(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
@@ -105,4 +121,94 @@ def classify_tail_root_causes(records: Iterable[dict[str, Any]], *, quality_thre
     return {"schema_version": "director_quality_tail_root_cause_v1", "records": rows, "counts": {key: value for key, value in counts.items() if value}}
 
 
-__all__ = ["ROOT_CAUSES", "classify_tail_root_cause", "classify_tail_root_causes"]
+def _priority_for_cause(record: dict[str, Any], cause: str) -> float:
+    priorities = _dict(record.get("opportunity_priority_weights"))
+    raw = priorities.get(cause) or priorities.get(cause.lower())
+    if isinstance(raw, (int, float)) and not isinstance(raw, bool):
+        return max(0.0, float(raw))
+    return ROOT_CAUSE_PRIORITY_WEIGHTS.get(str(record.get("priority") or "medium").lower(), 0.7)
+
+
+def _affected_weight(record: dict[str, Any], cause: str) -> float:
+    values = _dict(record.get("affected_opportunity_counts"))
+    count = values.get(cause) or values.get(cause.lower())
+    if isinstance(count, (int, float)) and not isinstance(count, bool):
+        return max(0.0, min(1.0, float(count) / max(1.0, float(record.get("eligible_opportunity_count") or 1))))
+    return 1.0
+
+
+def _severity_deficit(record: dict[str, Any], cause: str, *, quality_threshold: float) -> float:
+    coverage = _dict(record.get("eligible_coverage")) or _dict(record.get("coverage"))
+    thresholds = {
+        "WEAK_EDIT_STRATEGY": (coverage.get("edit_strategy", coverage.get("edit_strategy_coverage")), 0.8),
+        "WEAK_EMOTION_ARC": (coverage.get("emotion_arc", coverage.get("emotion_arc_coverage")), 0.85),
+        "WEAK_INFORMATION_STRATEGY": (coverage.get("information_strategy", coverage.get("information_strategy_coverage")), 0.85),
+        "PERFORMANCE_DIRECTION_WEAK": (coverage.get("performance_direction", coverage.get("performance_direction_coverage")), 0.85),
+        "CAMERA_LANGUAGE_GENERIC": (coverage.get("shot_diversity_index"), 0.3),
+        "LOW_USEFUL_ACCEPTANCE": (coverage.get("useful_creative_acceptance_rate"), 0.75),
+    }
+    actual, threshold = thresholds.get(cause, (None, None))
+    if isinstance(actual, (int, float)) and not isinstance(actual, bool) and threshold:
+        return max(0.0, min(1.0, (float(threshold) - float(actual)) / float(threshold)))
+    quality = _number(record.get("director_quality_score"))
+    if quality is None:
+        quality = _number(_dict(record.get("quality")).get("director_quality_score"))
+    if quality is not None:
+        return max(0.0, min(1.0, (quality_threshold - quality) / quality_threshold))
+    return 0.0
+
+
+def rank_tail_root_causes_v2(record: dict[str, Any], *, quality_threshold: float = 70.0) -> dict[str, Any]:
+    """Rank evidence-backed causes by deterministic severity, not code order."""
+
+    source = record if isinstance(record, dict) else {}
+    quality = _number(source.get("director_quality_score"))
+    if quality is None:
+        quality = _number(_dict(source.get("quality")).get("director_quality_score"))
+    classified = classify_tail_root_cause(source, quality_threshold=quality_threshold)
+    candidates = [str(item) for item in classified.get("candidate_causes") or [] if str(item) in ROOT_CAUSES and str(item) != "UNKNOWN_ROOT_CAUSE"]
+    # A scene outside tail thresholds is explicitly not applicable; it must
+    # never acquire UNKNOWN_ROOT_CAUSE merely because no repair is needed.
+    if (quality is not None and quality >= quality_threshold and not candidates) and not _repair_signal_present(source):
+        return {
+            "schema_version": ROOT_CAUSE_RANKER_V2_SCHEMA_VERSION,
+            "root_cause": "NOT_APPLICABLE",
+            "ranked_root_causes": [],
+            "candidate_causes": [],
+            "evidence": ["scene does not satisfy tail-repair thresholds"],
+        }
+    ranked: list[dict[str, Any]] = []
+    for cause in candidates:
+        deficit = _severity_deficit(source, cause, quality_threshold=quality_threshold)
+        score = deficit * _priority_for_cause(source, cause) * _affected_weight(source, cause) * ROOT_CAUSE_EXPECTED_IMPACT.get(cause, 0.5)
+        ranked.append({"code": cause, "score": round(score, 6), "normalized_deficit": round(deficit, 6), "priority_weight": _priority_for_cause(source, cause), "affected_opportunity_weight": _affected_weight(source, cause), "expected_quality_impact": ROOT_CAUSE_EXPECTED_IMPACT.get(cause, 0.5)})
+    ranked.sort(key=lambda item: (-float(item["score"]), str(item["code"])))
+    if not ranked:
+        return {
+            "schema_version": ROOT_CAUSE_RANKER_V2_SCHEMA_VERSION,
+            "root_cause": "UNKNOWN_ROOT_CAUSE",
+            "ranked_root_causes": [],
+            "candidate_causes": [],
+            "evidence": ["tail thresholds are met but no structured cause explains the deficit"],
+        }
+    return {
+        "schema_version": ROOT_CAUSE_RANKER_V2_SCHEMA_VERSION,
+        "root_cause": ranked[0]["code"],
+        "ranked_root_causes": ranked,
+        "candidate_causes": [item["code"] for item in ranked],
+        "evidence": list(classified.get("evidence") or []),
+    }
+
+
+def _repair_signal_present(record: dict[str, Any]) -> bool:
+    quality = _number(record.get("director_quality_score"))
+    if quality is not None and quality < 70:
+        return True
+    coverage = _dict(record.get("eligible_coverage")) or _dict(record.get("coverage"))
+    return any(isinstance(value, (int, float)) and not isinstance(value, bool) and float(value) < threshold for value, threshold in ((coverage.get("edit_strategy", coverage.get("edit_strategy_coverage")), 0.8), (coverage.get("emotion_arc", coverage.get("emotion_arc_coverage")), 0.85), (coverage.get("information_strategy", coverage.get("information_strategy_coverage")), 0.85)))
+
+
+rank_root_causes_v2 = rank_tail_root_causes_v2
+
+
+__all__ = ["ROOT_CAUSES", "ROOT_CAUSE_RANKER_V2_SCHEMA_VERSION", "ROOT_CAUSE_PRIORITY_WEIGHTS", "classify_tail_root_cause", "classify_tail_root_causes", "rank_tail_root_causes_v2", "rank_root_causes_v2"]

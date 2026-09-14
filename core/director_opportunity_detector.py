@@ -128,6 +128,56 @@ def _duration(shot: dict[str, Any]) -> float | None:
     return float(value)
 
 
+def _beat_field_ref(beat_ref: str, field: str) -> str:
+    """Turn the canonical beat identity ref into an exact field ref."""
+
+    base = _text(beat_ref)
+    if base.endswith(".beat_id"):
+        base = base[: -len(".beat_id")]
+    return f"{base}.{field}" if base else field
+
+
+def _first_present_field(source: dict[str, Any], fields: Iterable[str]) -> str:
+    for field in fields:
+        if field in source and source.get(field) not in (None, "", [], {}):
+            return field
+    return ""
+
+
+def _explicit_presence_signal(beat: dict[str, Any], blocking: dict[str, Any], *, entering: bool) -> tuple[bool, str]:
+    fields = ("entry", "entry_state", "entrance", "entered", "presence_in") if entering else ("exit", "exit_state", "exits", "exited", "presence_out")
+    field = _first_present_field(beat, fields)
+    if field:
+        return True, field
+    field = _first_present_field(blocking, fields)
+    if field:
+        return True, f"blocking.{field}"
+    text = _search_text(beat, {})
+    tokens = ("enter", "arrive", "进入", "出现") if entering else ("exit", "leave", "depart", "离开", "退场")
+    return any(token in text for token in tokens), "event"
+
+
+def _dialogue_pressure_fields(beat: dict[str, Any], shot: dict[str, Any]) -> list[str]:
+    fields = ("conflict", "conflict_escalation", "interruption", "dominance_change", "pressure", "subtext_tension", "power_shift")
+    result = [field for field in fields if beat.get(field) not in (None, "", [], {})]
+    if result:
+        return result
+    text = _search_text(beat, shot)
+    tokens = ("conflict", "interruption", "dominance", "pressure", "subtext", "confrontation", "对峙", "冲突", "打断", "压迫", "逼问", "质问", "权力", "潜台词")
+    return ["event"] if any(token in text for token in tokens) else []
+
+
+def _scene_button_field(beat: dict[str, Any], script_scene: dict[str, Any], treatment: dict[str, Any]) -> str:
+    field = _first_present_field(beat, ("scene_button", "button", "plot_result", "ending", "release", "cliffhanger", "reaction_hold", "visual_punctuation", "transition"))
+    if field:
+        return f"beat.{field}"
+    if _dict(script_scene.get("state_out")):
+        return "script_scene.state_out"
+    if _dict(treatment.get("state_out")):
+        return "treatment.state_out"
+    return ""
+
+
 _DIMENSIONS: dict[str, list[str]] = {
     "OPP_EMOTION_TURN": ["emotion_arc", "performance_direction"],
     "OPP_REACTION": ["performance_direction", "edit_strategy", "shot_motivation"],
@@ -235,19 +285,22 @@ def detect_creative_opportunities(
         refs_base = [beat_ref]
         if beat_shots:
             refs_base.append(f"structural_shot_plan.shots[{shot_index}].beat_id")
-        info_change = _first_text(beat.get("information_change"), beat.get("reveal"), beat.get("reveals"))
-        emotion_change = _first_text(beat.get("emotion_change"), beat.get("emotion_turn"), beat.get("emotional_shift"))
+        info_field = _first_present_field(beat, ("information_change", "reveal", "reveals"))
+        info_change = _text(beat.get(info_field))
+        emotion_field = _first_present_field(beat, ("emotion_change", "emotion_turn", "emotional_shift"))
+        emotion_change = _text(beat.get(emotion_field))
         dialogue = _first_text(beat.get("dialogue"), shot.get("dialogue"))
         duration = _duration(shot)
         candidates: list[tuple[str, str, list[str]]] = []
         if emotion_change or declared in {"reaction", "emotional_peak", "emotion_turn", "turn", "decision", "power_shift"}:
-            candidates.append(("OPP_EMOTION_TURN", "节拍证据声明了可观察的情绪状态变化窗口", refs_base + ([f"treatment.beat_map[{beat_id}].emotion_change"] if emotion_change else [])))
+            candidates.append(("OPP_EMOTION_TURN", "节拍证据声明了可观察的情绪状态变化窗口", refs_base + ([_beat_field_ref(beat_ref, emotion_field)] if emotion_field else [])))
         if declared in {"reaction", "dialogue_turn", "reveal", "decision", "power_shift"} or _has_any(text, ("reaction", "反应", "获知", "听到", "看到", "得知")):
             candidates.append(("OPP_REACTION", "节拍或动作证据表明信息/行动之后存在可观察反应窗口", refs_base))
-        if _first_text(beat.get("withhold"), beat.get("withholds"), beat.get("audience_should_not_know_yet")) or declared in {"mystery", "withhold", "suspense"}:
-            candidates.append(("OPP_INFORMATION_WITHHOLD", "已批准证据声明信息需要延后或保持未知", refs_base + [f"treatment.beat_map[{beat_id}].information_change"]))
+        withhold_field = _first_present_field(beat, ("withhold", "withholds", "audience_should_not_know_yet"))
+        if withhold_field or declared in {"mystery", "withhold", "suspense"}:
+            candidates.append(("OPP_INFORMATION_WITHHOLD", "已批准证据声明信息需要延后或保持未知", refs_base + ([_beat_field_ref(beat_ref, withhold_field)] if withhold_field else [])))
         if info_change or declared in {"reveal", "visual_reveal", "information_reveal"}:
-            candidates.append(("OPP_INFORMATION_REVEAL", "已批准节拍声明了新的信息变化或揭示触发点", refs_base + ([f"treatment.beat_map[{beat_id}].information_change"] if info_change else [])))
+            candidates.append(("OPP_INFORMATION_REVEAL", "已批准节拍声明了新的信息变化或揭示触发点", refs_base + ([_beat_field_ref(beat_ref, info_field)] if info_field else [])))
         if declared in {"power_shift", "decision", "confrontation"} or _has_any(text, ("power shift", "权力", "压制", "反转", "对峙")):
             candidates.append(("OPP_POWER_SHIFT", "节拍类型或戏剧功能声明了人物关系/权力变化", refs_base))
         if declared in {"action", "obstacle", "chase", "reveal", "decision", "reaction"} and previous_duration is not None and duration is not None and abs(duration - previous_duration) >= 0.75:
@@ -262,20 +315,24 @@ def detect_creative_opportunities(
         current_participants = set(subjects)
         entered = sorted(current_participants - previous_participants) if previous_participants else []
         exited = sorted(previous_participants - current_participants) if previous_participants else []
-        if entered and index > 0:
-            candidates.append(("OPP_CHARACTER_ENTRANCE", "相邻节拍参与者集合新增角色，存在入场呈现窗口", refs_base + [f"treatment.beat_map[{beat_id}].participants"]))
-        if exited and index > 0:
-            candidates.append(("OPP_CHARACTER_EXIT", "相邻节拍参与者集合移除角色，存在退场呈现窗口", refs_base + [f"treatment.beat_map[{beat_id}].participants"]))
+        has_entry, entry_field = _explicit_presence_signal(beat, blocking_obj, entering=True)
+        has_exit, exit_field = _explicit_presence_signal(beat, blocking_obj, entering=False)
+        if entered and index > 0 and has_entry:
+            candidates.append(("OPP_CHARACTER_ENTRANCE", "明确的入场/出现证据与参与者变化共同形成呈现窗口", refs_base + [_beat_field_ref(beat_ref, entry_field) if not entry_field.startswith("blocking.") else entry_field]))
+        if exited and index > 0 and has_exit:
+            candidates.append(("OPP_CHARACTER_EXIT", "明确的离场/退场证据与参与者变化共同形成呈现窗口", refs_base + [_beat_field_ref(beat_ref, exit_field) if not exit_field.startswith("blocking.") else exit_field]))
         if declared in {"reveal", "visual_reveal", "discovery"} or _has_any(text, ("visual reveal", "视觉揭示", "发现", "看见")):
             candidates.append(("OPP_VISUAL_REVEAL", "节拍证据要求观众通过画面发现或看见新的视觉事实", refs_base))
         if _has_any(text, ("silence", "pause", "沉默", "停顿", "无对白")) or (not dialogue and declared in {"hold", "silence", "reaction"}):
-            candidates.append(("OPP_SILENCE_HOLD", "对白/节拍证据形成可观察的静默或停顿保持窗口", refs_base + ([f"treatment.beat_map[{beat_id}].dialogue"] if not dialogue else [])))
-        if dialogue and (declared in {"dialogue", "dialogue_turn", "confrontation", "question"} or _has_any(text, ("question", "质问", "逼问", "对话压力"))):
-            candidates.append(("OPP_DIALOGUE_PRESSURE", "节拍含有对白及对话对抗证据，存在表演/剪辑压力选择", refs_base + [f"treatment.beat_map[{beat_id}].dialogue"]))
+            candidates.append(("OPP_SILENCE_HOLD", "对白/节拍证据形成可观察的静默或停顿保持窗口", refs_base + [_beat_field_ref(beat_ref, "dialogue")]))
+        pressure_fields = _dialogue_pressure_fields(beat, shot)
+        if dialogue and pressure_fields:
+            candidates.append(("OPP_DIALOGUE_PRESSURE", "节拍含有对白及对话对抗证据，存在表演/剪辑压力选择", refs_base + [_beat_field_ref(beat_ref, "dialogue")] + [_beat_field_ref(beat_ref, field) for field in pressure_fields if field != "event"]))
         if declared in {"action", "chase", "acceleration"} or _has_any(text, ("accelerate", "加速", "冲", "追逐")):
             candidates.append(("OPP_ACTION_ACCELERATION", "节拍类型或动作证据要求更快的动作呈现与剪辑节奏", refs_base))
-        if index == len(beats) - 1 and (_dict(script.get("state_out")) or _dict(treatment_obj.get("state_out")) or _first_text(beat.get("plot_result"), beat.get("scene_button"), beat.get("button"))):
-            candidates.append(("OPP_SCENE_BUTTON", "场景末拍存在已批准的状态/结果落点，需决定收束方式", refs_base + (["script_scene.state_out"] if _dict(script.get("state_out")) else [])))
+        scene_button_field = _scene_button_field(beat, script, treatment_obj)
+        if index == len(beats) - 1 and scene_button_field:
+            candidates.append(("OPP_SCENE_BUTTON", "场景末拍存在已批准的状态/结果落点，需决定收束方式", refs_base + [scene_button_field]))
         for opportunity_type, reason, refs in candidates:
             opportunity = _candidate(scene_id=scene_id, beat_id=beat_id, beat=beat, shot=shot, opportunity_type=opportunity_type, reason=reason, refs=refs, subjects=subjects)
             if opportunity["opportunity_id"] not in seen_ids:
