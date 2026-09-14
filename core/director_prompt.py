@@ -157,6 +157,7 @@ def build_director_patch_prompt(
     model_profile: dict[str, Any] | None = None,
     stage: str = "director_patch_planner",
     task: str | None = None,
+    opportunities: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build deterministic prompts and non-secret fingerprints.
 
@@ -179,6 +180,7 @@ def build_director_patch_prompt(
     policy = contract_obj.get("auxiliary_shot_policy")
     policy = policy if isinstance(policy, dict) else AUXILIARY_SHOT_POLICY
 
+    opportunity_list = opportunities if isinstance(opportunities, list) else None
     evidence = {
         "protocol_version": DIRECTOR_PROMPT_PROTOCOL_VERSION,
         "stage": str(stage or "director_patch_planner"),
@@ -190,8 +192,38 @@ def build_director_patch_prompt(
         "contract_allowed_patch_paths": contract_paths,
         "contract_auxiliary_shot_policy": policy,
     }
+    if opportunity_list is not None:
+        # Opportunity records are read-only evidence.  The patch compiler
+        # still remains the authority for all mutations; this optional
+        # envelope only asks the planner to account for every eligible choice
+        # explicitly as ACT or SKIP_WITH_REASON.
+        evidence["creative_opportunities"] = opportunity_list
     dynamic_payload = canonical_json(evidence)
-    task_text = task.strip() if isinstance(task, str) and task.strip() else TASK_SUFFIX.strip()
+    if isinstance(task, str) and task.strip():
+        task_text = task.strip()
+    elif opportunity_list is not None:
+        task_text = (
+            "TASK\n"
+            "Using only the frozen contract, scene strategy, structural shot plan, and creative opportunities below, "
+            "return one candidate CreativePatch document plus an opportunity_decisions array. "
+            "For every eligible opportunity, emit exactly one decision: ACT with a concrete strategy, or "
+            "SKIP_WITH_REASON with an evidence-based reason. Do not silently omit an eligible opportunity. "
+            "The opportunity decisions are accounting metadata only and must not alter authoritative facts. "
+            "Output strict JSON only.\n"
+            '{"schema_version":"director_creative_patch_v1","patches":[],"auxiliary_shot_proposals":[],"opportunity_decisions":[]}'
+        )
+    else:
+        task_text = TASK_SUFFIX.strip()
+    system_prompt = STABLE_SYSTEM_PREFIX.strip()
+    if opportunity_list is not None:
+        system_prompt += (
+            "\n\nSECTION 8 — CREATIVE OPPORTUNITY DECISION CONTRACT\n"
+            "The supplied creative_opportunities are evidence-backed, read-only records. "
+            "Do not invent, delete, or change their eligibility. For every eligible opportunity, "
+            "return one opportunity_decisions item with opportunity_id, decision (ACT or SKIP_WITH_REASON), "
+            "and strategy/reason as required. A valid skip is allowed when the supplied evidence shows the "
+            "opportunity is already covered or adding emphasis would be repetitive."
+        )
     variable_tail = "\n".join(["EVIDENCE (authoritative, read-only)", dynamic_payload, task_text])
     user_prompt = "\n".join(
         [
@@ -199,7 +231,6 @@ def build_director_patch_prompt(
             variable_tail,
         ]
     )
-    system_prompt = STABLE_SYSTEM_PREFIX.strip()
     stable_prefix = "\n".join([system_prompt, SEMI_STABLE_USER_PREFIX.strip()])
     stable_prefix_fingerprint = _sha256(stable_prefix)
     system_prompt_hash = _sha256(system_prompt)

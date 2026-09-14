@@ -134,6 +134,28 @@ class DirectorPromptTests(unittest.TestCase):
         self.assertIn("duration/duration_hint_seconds is immutable", result["system_prompt"])
         self.assertIn("execute each applicable", result["system_prompt"])
 
+    def test_phase_b_prompt_includes_read_only_opportunity_decision_contract(self):
+        result = build_director_patch_prompt(
+            contract=_contract("A"),
+            strategy=_strategy("A"),
+            structural_shot_plan=_plan("A"),
+            opportunities=[{
+                "opportunity_id": "OPP_B01_REACTION",
+                "type": "OPP_REACTION",
+                "scene_id": "A",
+                "beat_id": "B01",
+                "subjects": ["CHAR_001"],
+                "reason": "反应窗口",
+                "evidence_refs": ["treatment.beat_map[0]"],
+                "priority": "high",
+                "eligible": True,
+                "recommended_directing_dimensions": ["performance_direction"],
+            }],
+        )
+        assert "CREATIVE OPPORTUNITY DECISION CONTRACT" in result["system_prompt"]
+        assert '"creative_opportunities"' in result["user_prompt"]
+        assert "opportunity_decisions" in result["user_prompt"]
+
 
 if __name__ == "__main__":
     unittest.main()
