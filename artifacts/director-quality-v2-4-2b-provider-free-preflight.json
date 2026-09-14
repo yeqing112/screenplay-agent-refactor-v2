@@ -1,0 +1,32 @@
+{
+  "schema_version": "director-quality-v2-4-2b-provider-free-preflight-v1",
+  "generated_at": "2026-09-14T15:50:00Z",
+  "manifest": "artifacts/director-quality-v2-4-2b-protocol-canary-manifest.json",
+  "manifest_selector": "PASS",
+  "available_repair_types": ["edit", "emotion", "information", "performance"],
+  "selected_repair_types": ["edit", "emotion", "information", "performance"],
+  "missing_repair_types": ["camera"],
+  "canary_coverage_status": "FULL_TYPE_COVERAGE",
+  "sample_count": 4,
+  "first_attempt_relevant_shots_nonempty_rate": 1.0,
+  "allowed_plan_shot_ids_nonempty_rate": 1.0,
+  "provider_request_sanitizer": "PASS",
+  "legacy_top_level_retry_fields": "REMOVED_AT_PROVIDER_BOUNDARY",
+  "request_fingerprint_nonempty_rate": 1.0,
+  "provider_executor_contract": "ALIGNED",
+  "json_parse_retries": 0,
+  "canonical_patch_boundary": "UNCHANGED",
+  "fact_boundary": "UNCHANGED",
+  "regression": "PASS",
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  },
+  "hard_gate": "PASS",
+  "real_provider_authorization": "ELIGIBLE_FOR_SINGLE_V242B_CANARY"
+}

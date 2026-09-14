@@ -26,6 +26,7 @@ from core.director_tail_repair_provider_contract import (
     build_provider_system_prompt,
     provider_contract_fingerprint,
 )
+from core.director_tail_repair_context import resolve_tail_repair_context
 from core.director_tail_repair_request import REPAIR_REQUEST_SCHEMA_VERSION
 # Targeted repair must consume the immutable, provenance-bearing B2 freeze.
 # The historical V2.3 pilot remains available through --pilot for audit/replay,
@@ -180,9 +181,12 @@ def call_provider_repair(request: dict[str, Any], *, profile: dict[str, Any], au
     """Call the configured provider using the authoritative Repair IR contract."""
 
     from core.llm import call_llm_json
+    from core.director_tail_repair_request import to_provider_request
+
+    provider_request = to_provider_request(request)
 
     return call_llm_json(
-        json.dumps(request, ensure_ascii=False, sort_keys=True),
+        json.dumps(provider_request, ensure_ascii=False, sort_keys=True),
         system=build_provider_system_prompt(),
         model_profile=profile,
         required_keys=set(REPAIR_IR_REQUIRED_KEYS),
@@ -195,7 +199,7 @@ def call_provider_repair(request: dict[str, Any], *, profile: dict[str, Any], au
             "output_contract_version": REPAIR_IR_SCHEMA_VERSION,
             "provider_contract_fingerprint": provider_contract_fingerprint(),
         },
-        audit_repair_request=request,
+        audit_repair_request=provider_request,
     )
 
 
@@ -235,14 +239,29 @@ def run_targeted_tail_pilot(
         if not candidate or not contract:
             results.append({"scene_id": scene_id, "status": "non_repairable", "non_repairable_reason": "FROZEN_CANDIDATE_OR_CONTRACT_MISSING", "attempts": []})
             continue
+        context_root = _text((root_causes_by_scene or {}).get(scene_id, [""])[0]) if root_causes_by_scene is not None else ""
+        if not context_root:
+            context_root = _text(_dict(source_row.get("tail_repair")).get("root_cause") or source_row.get("tail_root_cause"))
+        scoped_context = resolve_tail_repair_context(
+            root_cause=context_root,
+            opportunities=_list(source_row.get("opportunities")),
+            treatment=_dict(evidence.get("treatment")),
+            structural_candidate=candidate,
+            strategy=_dict(frozen.get("strategy")) or _dict(evidence.get("strategy")),
+            quality_issues=_list(_dict(source_row.get("quality")).get("issues")) + _list(source_row.get("quality_issues")),
+        )
         record = {
             "scene_id": scene_id,
             "director_quality_score": source_row.get("director_quality_score"),
             "creative_value": source_row.get("creative_value"),
             "eligible_coverage": source_row.get("eligible_coverage") or source_row.get("coverage") or {},
             "quality_issues": _dict(source_row.get("quality")).get("issues") or [],
-            "relevant_beats": [],
-            "relevant_shots": [],
+            "relevant_opportunities": scoped_context["relevant_opportunities"],
+            "relevant_beats": scoped_context["relevant_beats"],
+            "relevant_shots": scoped_context["relevant_shots"],
+            "allowed_plan_shot_ids": scoped_context["allowed_plan_shot_ids"],
+            "opportunities": _list(source_row.get("opportunities")),
+            "opportunity_count": source_row.get("opportunity_count"),
         }
         before_candidate = copy.deepcopy(candidate)
         from core.director_patch_compiler import compile_creative_patches

@@ -1,0 +1,147 @@
+{
+  "schema_version": "director-quality-v2-4-2b-protocol-canary-manifest-v1",
+  "source_artifacts": [
+    "artifacts/director-quality-v2-4-b2-freeze.json",
+    "artifacts/director-quality-v2-3-phase-b2-evidence.json"
+  ],
+  "selection_policy": "authoritative rank_tail_root_causes_v2; one highest-ranked complete sample per repair_type; prefer distinct scenes; stable lexical ties",
+  "available_repair_types": [
+    "edit",
+    "emotion",
+    "information",
+    "performance"
+  ],
+  "selected_repair_types": [
+    "edit",
+    "emotion",
+    "information",
+    "performance"
+  ],
+  "missing_repair_types": [
+    "camera"
+  ],
+  "canary_coverage_status": "FULL_TYPE_COVERAGE",
+  "sample_count": 4,
+  "semantic_attempt_budget": 8,
+  "candidate_count": 69,
+  "freeze_scene_count": 24,
+  "samples": [
+    {
+      "sample_id": "canary-edit-acdf41e2f2f9",
+      "scene_id": "V21_FIXTURE_01",
+      "root_cause": "WEAK_EDIT_STRATEGY",
+      "repair_type": "edit",
+      "root_cause_rank": 1,
+      "root_cause_score": 0.7,
+      "target_dimensions": [
+        "EDIT_RHYTHM"
+      ],
+      "source_artifact": "artifacts/director-quality-v2-4-b2-freeze.json",
+      "source_fingerprint": "d9542011787a16d6fa8d80de441d1e5b56e9e95bad58ffc1a3e13c2fd8dc5264",
+      "reason_selected": "authoritative ranked root cause with complete Frozen B2 evidence and non-empty scoped shot context",
+      "relevant_opportunity_ids": [],
+      "relevant_beat_ids": [
+        "B01",
+        "B02"
+      ],
+      "relevant_plan_shot_ids": [
+        "S01",
+        "S02"
+      ]
+    },
+    {
+      "sample_id": "canary-emotion-4d9e0f8dc466",
+      "scene_id": "book990402:e3:暗房惊魂",
+      "root_cause": "WEAK_EMOTION_ARC",
+      "repair_type": "emotion",
+      "root_cause_rank": 1,
+      "root_cause_score": 0.7,
+      "target_dimensions": [
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION"
+      ],
+      "source_artifact": "artifacts/director-quality-v2-4-b2-freeze.json",
+      "source_fingerprint": "e4f5fc4af9d3b34a71bee52c91ca8e63c6c809d2c11ce2a6c8b7df62e0ccd752",
+      "reason_selected": "authoritative ranked root cause with complete Frozen B2 evidence and non-empty scoped shot context",
+      "relevant_opportunity_ids": [
+        "OPP_10_EMOTION_TURN",
+        "OPP_10_INFORMATION_REVEAL",
+        "OPP_11_EMOTION_TURN",
+        "OPP_11_INFORMATION_REVEAL",
+        "OPP_11_POWER_SHIFT"
+      ],
+      "relevant_beat_ids": [
+        "10",
+        "11"
+      ],
+      "relevant_plan_shot_ids": [
+        "S10",
+        "S11"
+      ]
+    },
+    {
+      "sample_id": "canary-information-4d673a155b28",
+      "scene_id": "V21_FIXTURE_07",
+      "root_cause": "WEAK_INFORMATION_STRATEGY",
+      "repair_type": "information",
+      "root_cause_rank": 2,
+      "root_cause_score": 0.7,
+      "target_dimensions": [
+        "INFORMATION_STRATEGY"
+      ],
+      "source_artifact": "artifacts/director-quality-v2-4-b2-freeze.json",
+      "source_fingerprint": "9ac1ef6f922299bd2eb1131456a6ce3a8b5cd57114d4c84b2b786d50ade016cd",
+      "reason_selected": "authoritative ranked root cause with complete Frozen B2 evidence and non-empty scoped shot context",
+      "relevant_opportunity_ids": [
+        "OPP_B02_INFORMATION_REVEAL",
+        "OPP_B02_VISUAL_REVEAL"
+      ],
+      "relevant_beat_ids": [
+        "B02"
+      ],
+      "relevant_plan_shot_ids": [
+        "S02"
+      ]
+    },
+    {
+      "sample_id": "canary-performance-3efcb9d7eaac",
+      "scene_id": "book990402:e2:回声照相馆",
+      "root_cause": "PERFORMANCE_DIRECTION_WEAK",
+      "repair_type": "performance",
+      "root_cause_rank": 4,
+      "root_cause_score": 0.37449,
+      "target_dimensions": [
+        "PERFORMANCE_DIRECTION"
+      ],
+      "source_artifact": "artifacts/director-quality-v2-4-b2-freeze.json",
+      "source_fingerprint": "66cc96d7321c544ed39d41b7739030c5e8ff0d4ea1c60ee02644d15b668508d2",
+      "reason_selected": "authoritative ranked root cause with complete Frozen B2 evidence and non-empty scoped shot context",
+      "relevant_opportunity_ids": [
+        "OPP_B10_EMOTION_TURN",
+        "OPP_B10_INFORMATION_REVEAL",
+        "OPP_B11_EMOTION_TURN",
+        "OPP_B11_INFORMATION_REVEAL",
+        "OPP_B1_EMOTION_TURN"
+      ],
+      "relevant_beat_ids": [
+        "B10",
+        "B11",
+        "B1"
+      ],
+      "relevant_plan_shot_ids": [
+        "S10",
+        "S11",
+        "S01"
+      ]
+    }
+  ],
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  }
+}

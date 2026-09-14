@@ -1,0 +1,453 @@
+{
+  "schema_version": "director-quality-v2-4-2b-protocol-canary-v1",
+  "generated_at": "2026-09-14T15:56:55.613323+00:00",
+  "manifest": "artifacts/director-quality-v2-4-2b-protocol-canary-manifest.json",
+  "model": {
+    "profile_id": "local-llm-2vydoz",
+    "model_name": "mimo-v2.5",
+    "provider": "openai-compatible"
+  },
+  "canary_coverage_status": "FULL_TYPE_COVERAGE",
+  "protocol_gate": "PROTOCOL_CANARY_FAILED",
+  "ready_for_targeted_tail_reevaluation": false,
+  "metrics": {
+    "sample_count": 4,
+    "semantic_attempt_count": 6,
+    "provider_http_request_count": 6,
+    "transport_retry_count": 0,
+    "json_parser_retry_count": 0,
+    "format_repair_attempted": 2,
+    "format_repair_success": 0,
+    "format_repair_success_rate": 0.0,
+    "ir_first_pass_valid_count": 2,
+    "ir_first_pass_valid_rate": 0.5,
+    "ir_final_valid_count": 2,
+    "ir_final_valid_rate": 0.5,
+    "canonical_compile_count": 2,
+    "canonical_compile_rate": 1.0,
+    "candidate_contract_pass_count": 2,
+    "candidate_contract_pass_rate": 1.0,
+    "unknown_provider_shape_count": 0,
+    "request_echo_count": 0,
+    "custom_provider_envelope_count": 0,
+    "fact_override_accepted_count": 0,
+    "fact_override_attempt_count": 0,
+    "request_fingerprint_nonempty_count": 6,
+    "request_fingerprint_nonempty_rate": 1.0,
+    "repair_accepted_count": 2,
+    "repair_rollback_count": 4,
+    "first_pass_by_repair_type": {
+      "edit": {
+        "valid": 1,
+        "total": 1
+      },
+      "emotion": {
+        "valid": 0,
+        "total": 1
+      },
+      "information": {
+        "valid": 1,
+        "total": 1
+      },
+      "performance": {
+        "valid": 0,
+        "total": 1
+      },
+      "camera": {
+        "valid": 0,
+        "total": 0
+      }
+    },
+    "final_pass_by_repair_type": {
+      "edit": {
+        "valid": 1,
+        "total": 1
+      },
+      "emotion": {
+        "valid": 0,
+        "total": 1
+      },
+      "information": {
+        "valid": 1,
+        "total": 1
+      },
+      "performance": {
+        "valid": 0,
+        "total": 1
+      },
+      "camera": {
+        "valid": 0,
+        "total": 0
+      }
+    }
+  },
+  "samples": [
+    {
+      "sample_id": "canary-performance-3efcb9d7eaac",
+      "scene_id": "book990402:e2:回声照相馆",
+      "root_cause": "PERFORMANCE_DIRECTION_WEAK",
+      "repair_type": "performance",
+      "target_dimensions": [
+        "PERFORMANCE_DIRECTION"
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "request_fingerprint": "9923786f67b23314d507dd0a9319f36ddab6c8fdacff3b5603e8333e78c62df1",
+          "base_request_fingerprint": "261efd62459e6c6e414ebc9536fb106a05b98c8d79d92143de5e4e7c37b5cb9a",
+          "attempt_request_fingerprint": "43260b797498b75f0d11368b0eada68813c13ff96b8029856c286459d70c6340",
+          "provider_request_fingerprint": "9923786f67b23314d507dd0a9319f36ddab6c8fdacff3b5603e8333e78c62df1",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ],
+          "response_fingerprint": "484a0712d2f96272faf06b31edcca01b",
+          "response_shape": "EMPTY_OR_INVALID_REPAIR_IR",
+          "returned_schema_version": "director_tail_repair_ir_v1",
+          "ir_parse_status": "invalid",
+          "ir_validation_errors": [
+            "performance_direction must be a non-empty list"
+          ],
+          "ir_fingerprint": "",
+          "canonical_compile_status": "not_run",
+          "canonical_patch_fingerprint": "",
+          "contract_status": "not_run",
+          "accepted": false,
+          "rollback_reason": "performance_direction must be a non-empty list",
+          "audit": {
+            "top_level_keys": [
+              "repair_type",
+              "root_cause",
+              "schema_version",
+              "shot_decisions",
+              "target_dimensions"
+            ],
+            "usage": {
+              "prompt_tokens": 3723,
+              "cached_tokens": null,
+              "completion_tokens": 420,
+              "total_tokens": 4143,
+              "cache_hit_rate": null
+            },
+            "latency_ms": 12318.69,
+            "extra": {
+              "stage": "director_quality_v2_4_targeted_tail_repair",
+              "output_contract_version": "director_tail_repair_ir_v1",
+              "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+              "transport_attempt_number": 1,
+              "transport_retry": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sample_id": "canary-performance-3efcb9d7eaac",
+      "scene_id": "book990402:e2:回声照相馆",
+      "root_cause": "PERFORMANCE_DIRECTION_WEAK",
+      "repair_type": "performance",
+      "target_dimensions": [
+        "PERFORMANCE_DIRECTION"
+      ],
+      "attempts": [
+        {
+          "attempt_number": 2,
+          "attempt_kind": "FORMAT_REPAIR",
+          "request_fingerprint": "7342eff6b8e20f89b50d7447300ab47fc82c2c005fc09176ce2deab47ed16a49",
+          "base_request_fingerprint": "261efd62459e6c6e414ebc9536fb106a05b98c8d79d92143de5e4e7c37b5cb9a",
+          "attempt_request_fingerprint": "aa6e14062e8ca1859edeac2c24f7e900e2a750037036554353e5b8c7bfb84dfa",
+          "provider_request_fingerprint": "7342eff6b8e20f89b50d7447300ab47fc82c2c005fc09176ce2deab47ed16a49",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ],
+          "response_fingerprint": "484a0712d2f96272faf06b31edcca01b",
+          "response_shape": "EMPTY_OR_INVALID_REPAIR_IR",
+          "returned_schema_version": "director_tail_repair_ir_v1",
+          "ir_parse_status": "invalid",
+          "ir_validation_errors": [
+            "performance_direction must be a non-empty list"
+          ],
+          "ir_fingerprint": "",
+          "canonical_compile_status": "not_run",
+          "canonical_patch_fingerprint": "",
+          "contract_status": "not_run",
+          "accepted": false,
+          "rollback_reason": "performance_direction must be a non-empty list",
+          "audit": {
+            "top_level_keys": [
+              "repair_type",
+              "root_cause",
+              "schema_version",
+              "shot_decisions",
+              "target_dimensions"
+            ],
+            "usage": {
+              "prompt_tokens": 4182,
+              "cached_tokens": null,
+              "completion_tokens": 420,
+              "total_tokens": 4602,
+              "cache_hit_rate": null
+            },
+            "latency_ms": 9746.81,
+            "extra": {
+              "stage": "director_quality_v2_4_targeted_tail_repair",
+              "output_contract_version": "director_tail_repair_ir_v1",
+              "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+              "transport_attempt_number": 1,
+              "transport_retry": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sample_id": "canary-emotion-4d9e0f8dc466",
+      "scene_id": "book990402:e3:暗房惊魂",
+      "root_cause": "WEAK_EMOTION_ARC",
+      "repair_type": "emotion",
+      "target_dimensions": [
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION"
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "request_fingerprint": "2149a3d788119ce7089603c0272af22115777ac2a47fce7a203cc9514f15c169",
+          "base_request_fingerprint": "ed3d4faf09d37ebc4bf6cdc7b3d8e4a0f466c0a2728a5de51ea43f14d4f30c08",
+          "attempt_request_fingerprint": "7401522d4c9384ebe3a3e6f2ddd311dc045f03a2c1e5381eda7bc20569f83813",
+          "provider_request_fingerprint": "2149a3d788119ce7089603c0272af22115777ac2a47fce7a203cc9514f15c169",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ],
+          "response_fingerprint": "92f282c0305c30b0ae35625535c6656c",
+          "response_shape": "EMPTY_OR_INVALID_REPAIR_IR",
+          "returned_schema_version": "director_tail_repair_ir_v1",
+          "ir_parse_status": "invalid",
+          "ir_validation_errors": [
+            "emotion.intensity must be between 0 and 10"
+          ],
+          "ir_fingerprint": "",
+          "canonical_compile_status": "not_run",
+          "canonical_patch_fingerprint": "",
+          "contract_status": "not_run",
+          "accepted": false,
+          "rollback_reason": "emotion.intensity must be between 0 and 10",
+          "audit": {
+            "top_level_keys": [
+              "repair_type",
+              "root_cause",
+              "schema_version",
+              "shot_decisions",
+              "target_dimensions"
+            ],
+            "usage": {
+              "prompt_tokens": 3218,
+              "cached_tokens": null,
+              "completion_tokens": 312,
+              "total_tokens": 3530,
+              "cache_hit_rate": null
+            },
+            "latency_ms": 9534.48,
+            "extra": {
+              "stage": "director_quality_v2_4_targeted_tail_repair",
+              "output_contract_version": "director_tail_repair_ir_v1",
+              "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+              "transport_attempt_number": 1,
+              "transport_retry": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sample_id": "canary-emotion-4d9e0f8dc466",
+      "scene_id": "book990402:e3:暗房惊魂",
+      "root_cause": "WEAK_EMOTION_ARC",
+      "repair_type": "emotion",
+      "target_dimensions": [
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION"
+      ],
+      "attempts": [
+        {
+          "attempt_number": 2,
+          "attempt_kind": "FORMAT_REPAIR",
+          "request_fingerprint": "bbefa329e8397b54ddf4272e62d47dedcb806eda06faa680a5307be51ddfb219",
+          "base_request_fingerprint": "ed3d4faf09d37ebc4bf6cdc7b3d8e4a0f466c0a2728a5de51ea43f14d4f30c08",
+          "attempt_request_fingerprint": "06130b8484d9d6b01015a73176a8fb928b26476645ea0bb1012a792f22d665ad",
+          "provider_request_fingerprint": "bbefa329e8397b54ddf4272e62d47dedcb806eda06faa680a5307be51ddfb219",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ],
+          "response_fingerprint": "0cb346c6ed24e35e0bbd54826e38c7f6",
+          "response_shape": "EMPTY_OR_INVALID_REPAIR_IR",
+          "returned_schema_version": "director_tail_repair_ir_v1",
+          "ir_parse_status": "invalid",
+          "ir_validation_errors": [
+            "performance_emphasis must be non-empty text"
+          ],
+          "ir_fingerprint": "",
+          "canonical_compile_status": "not_run",
+          "canonical_patch_fingerprint": "",
+          "contract_status": "not_run",
+          "accepted": false,
+          "rollback_reason": "performance_emphasis must be non-empty text",
+          "audit": {
+            "top_level_keys": [
+              "repair_type",
+              "root_cause",
+              "schema_version",
+              "shot_decisions",
+              "target_dimensions"
+            ],
+            "usage": {
+              "prompt_tokens": 3574,
+              "cached_tokens": null,
+              "completion_tokens": 313,
+              "total_tokens": 3887,
+              "cache_hit_rate": null
+            },
+            "latency_ms": 10072.59,
+            "extra": {
+              "stage": "director_quality_v2_4_targeted_tail_repair",
+              "output_contract_version": "director_tail_repair_ir_v1",
+              "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+              "transport_attempt_number": 1,
+              "transport_retry": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sample_id": "canary-edit-acdf41e2f2f9",
+      "scene_id": "V21_FIXTURE_01",
+      "root_cause": "WEAK_EDIT_STRATEGY",
+      "repair_type": "edit",
+      "target_dimensions": [
+        "EDIT_RHYTHM"
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "request_fingerprint": "6c4708463d993acf5d4fa38be1d43b81580c1bab660b2e79c026815ba11c84f9",
+          "base_request_fingerprint": "cf7c0424cb1f13a1272615d7328c1f78f311bf079669e10fc9a76cf300488107",
+          "attempt_request_fingerprint": "a43c4edbc5f3b2a1d8465bd631a2caea4aee637d3834705080e65a2b6f42eb1d",
+          "provider_request_fingerprint": "6c4708463d993acf5d4fa38be1d43b81580c1bab660b2e79c026815ba11c84f9",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ],
+          "response_fingerprint": "c9a64959512b6627727525f63e298e69",
+          "response_shape": "VALID_REPAIR_IR",
+          "returned_schema_version": "director_tail_repair_ir_v1",
+          "ir_parse_status": "valid",
+          "ir_validation_errors": [],
+          "ir_fingerprint": "8b9f70b58e9810773b6929cb0287eb99f188933b18d643d55f724005d7689914",
+          "canonical_compile_status": "compiled",
+          "canonical_patch_fingerprint": "8b2482b9069b5951f376d3b3061c726b7051a64ed88fe1bb1a2a4e7ce0cb1b72",
+          "contract_status": "pass",
+          "accepted": true,
+          "rollback_reason": "",
+          "audit": {
+            "top_level_keys": [
+              "repair_type",
+              "root_cause",
+              "schema_version",
+              "shot_decisions",
+              "target_dimensions"
+            ],
+            "usage": {
+              "prompt_tokens": 1992,
+              "cached_tokens": null,
+              "completion_tokens": 185,
+              "total_tokens": 2177,
+              "cache_hit_rate": null
+            },
+            "latency_ms": 6979.8,
+            "extra": {
+              "stage": "director_quality_v2_4_targeted_tail_repair",
+              "output_contract_version": "director_tail_repair_ir_v1",
+              "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+              "transport_attempt_number": 1,
+              "transport_retry": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sample_id": "canary-information-4d673a155b28",
+      "scene_id": "V21_FIXTURE_07",
+      "root_cause": "WEAK_INFORMATION_STRATEGY",
+      "repair_type": "information",
+      "target_dimensions": [
+        "INFORMATION_STRATEGY"
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "request_fingerprint": "57ebc59071461d7e2fe2c7e37d2e756b912594a7558a767c755256b6a71e3cf9",
+          "base_request_fingerprint": "01647eee9f43e75514cf18ed30ffeecdb9ec30c607f3b145503d508497e02117",
+          "attempt_request_fingerprint": "d88b8ec4621766adf0164fb3ef6a0ba748b8c367d65e86c545dad3b933d316f0",
+          "provider_request_fingerprint": "57ebc59071461d7e2fe2c7e37d2e756b912594a7558a767c755256b6a71e3cf9",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ],
+          "response_fingerprint": "13a5851eab4ae9aa9a412b2fdf083671",
+          "response_shape": "VALID_REPAIR_IR",
+          "returned_schema_version": "director_tail_repair_ir_v1",
+          "ir_parse_status": "valid",
+          "ir_validation_errors": [],
+          "ir_fingerprint": "f05726bb488af8d0812b4d81582d435c710c213862ca10ab6fc9ca4477e97dfe",
+          "canonical_compile_status": "compiled",
+          "canonical_patch_fingerprint": "8a03d2414067b553605a452e29c98c1e88d0fce20e76351c2ffdd6a3b555149f",
+          "contract_status": "pass",
+          "accepted": true,
+          "rollback_reason": "",
+          "audit": {
+            "top_level_keys": [
+              "repair_type",
+              "root_cause",
+              "schema_version",
+              "shot_decisions",
+              "target_dimensions"
+            ],
+            "usage": {
+              "prompt_tokens": 1990,
+              "cached_tokens": null,
+              "completion_tokens": 174,
+              "total_tokens": 2164,
+              "cache_hit_rate": null
+            },
+            "latency_ms": 7737.62,
+            "extra": {
+              "stage": "director_quality_v2_4_targeted_tail_repair",
+              "output_contract_version": "director_tail_repair_ir_v1",
+              "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+              "transport_attempt_number": 1,
+              "transport_retry": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  }
+}

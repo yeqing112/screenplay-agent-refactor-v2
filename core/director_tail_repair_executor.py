@@ -73,7 +73,7 @@ def _minimal_context(
         copy.deepcopy(item)
         for item in opportunities
         if isinstance(item, dict) and dimensions.intersection({_text(value).upper() for value in _list(item.get("recommended_directing_dimensions"))})
-    ]
+    ][:5]
     immutable_subset = {
         "immutable_fields": list(IMMUTABLE_FIELDS),
         "scene": copy.deepcopy(_dict(contract.get("scene"))),
@@ -86,6 +86,11 @@ def _minimal_context(
         relevant_opportunities=relevant_opportunities,
         relevant_beats=_list(record.get("relevant_beats")),
         relevant_shots=_list(record.get("relevant_shots")),
+        allowed_plan_shot_ids=[
+            _text(value) for value in (_list(record.get("allowed_plan_shot_ids")) or [
+                _dict(item).get("plan_shot_id") for item in _list(record.get("relevant_shots"))
+            ]) if _text(value)
+        ],
         strategy_subset=_dict(strategy),
         immutable_contract=immutable_subset,
         previous_intervention=previous_intervention,

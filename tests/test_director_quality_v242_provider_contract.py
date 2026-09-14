@@ -114,6 +114,7 @@ def test_executor_base_request_comes_from_request_builder_ssot():
         relevant_opportunities=[],
         relevant_beats=kwargs["record"]["relevant_beats"],
         relevant_shots=kwargs["record"]["relevant_shots"],
+        allowed_plan_shot_ids=["S1"],
         strategy_subset=kwargs["strategy"],
         immutable_contract={"immutable_fields": list(__import__("core.director_creative_contract", fromlist=["IMMUTABLE_FIELDS"]).IMMUTABLE_FIELDS), "scene": {"scene_id": "S"}, "shots": [], "source_beat_map": {}},
         validator_findings=[],
