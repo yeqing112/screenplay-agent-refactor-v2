@@ -113,6 +113,23 @@ def test_targeted_tail_runner_uses_frozen_evidence_and_keeps_side_effects_zero()
     assert result["attempted_scene_count"] == 15
     assert result["execution_coverage"] == 1.0
     assert len(calls) > 0
+    first_scene = result["scenes"][0]
+    assert {
+        "before_director_quality",
+        "after_director_quality",
+        "director_quality_delta",
+        "before_creative_value",
+        "after_creative_value",
+        "creative_value_delta",
+        "target_dimensions_before",
+        "target_dimensions_after",
+        "target_dimension_deltas",
+        "contract_pass",
+        "accepted",
+        "rolled_back",
+    }.issubset(first_scene)
+    assert first_scene["contract_pass"] is True
+    assert first_scene["creative_value_measurement_status"] == "not_replayed_after_tail_repair"
     assert result["side_effects"] == {
         "production": 0,
         "storyboard": 0,

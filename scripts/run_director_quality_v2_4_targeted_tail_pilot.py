@@ -38,6 +38,16 @@ def _text(value: Any) -> str:
     return str(value or "").strip()
 
 
+def _number(value: Any) -> float | None:
+    return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
+
+
+def _creative_value_score(value: Any) -> float | None:
+    if isinstance(value, dict):
+        return _number(value.get("score"))
+    return _number(value)
+
+
 def _repo_path(path: Path) -> str:
     return path.resolve().relative_to(ROOT.resolve()).as_posix()
 
@@ -140,6 +150,16 @@ def run_targeted_tail_pilot(
             "relevant_beats": [],
             "relevant_shots": [],
         }
+        before_candidate = copy.deepcopy(candidate)
+        from core.director_patch_compiler import compile_creative_patches
+        from core.director_patch_validator import validate_compiled_patch_result
+        from core.director_quality_validator import score_director_quality
+
+        before_quality = score_director_quality(
+            before_candidate,
+            treatment=_dict(evidence.get("treatment")),
+            blocking=_dict(evidence.get("blocking")),
+        )
         repair_result = execute_tail_repair(
             candidate=candidate,
             record=record,
@@ -151,13 +171,77 @@ def run_targeted_tail_pilot(
             strategy=_dict(frozen.get("strategy")) or _dict(evidence.get("strategy")),
             model=model,
         )
+        after_candidate = _dict(repair_result.get("candidate")) or before_candidate
+        after_quality = score_director_quality(
+            after_candidate,
+            treatment=_dict(evidence.get("treatment")),
+            blocking=_dict(evidence.get("blocking")),
+        )
+        empty_document = {
+            "schema_version": "director_creative_patch_v1",
+            "patches": [],
+            "auxiliary_shot_proposals": [],
+        }
+        final_compilation = compile_creative_patches(
+            after_candidate,
+            empty_document,
+            contract,
+            allow_partial=False,
+        )
+        final_validation = validate_compiled_patch_result(
+            final_compilation,
+            after_candidate,
+            contract,
+            treatment=_dict(evidence.get("treatment")),
+            blocking=_dict(evidence.get("blocking")),
+        )
+        before_dq = _number(source_row.get("director_quality_score"))
+        if before_dq is None:
+            before_dq = _number(before_quality.get("director_quality_score"))
+        after_dq = _number(after_quality.get("director_quality_score"))
+        before_cv = _creative_value_score(source_row.get("creative_value"))
+        # Tail repair changes the candidate, not the opportunity planner.  Do
+        # not invent a post-repair Creative Value score without replaying that
+        # planner; expose the measurement boundary explicitly instead.
+        after_cv = before_cv
+        target_before: dict[str, float] = {}
+        target_delta: dict[str, float] = {}
+        for root_row in _list(repair_result.get("attempts")):
+            context = _dict(root_row.get("minimal_context"))
+            for dimension, value in _dict(context.get("target_metric")).items():
+                numeric = _number(value)
+                if numeric is not None:
+                    target_before.setdefault(str(dimension), numeric)
+            acceptance = _dict(
+                _dict(root_row.get("attempts", [{}])[-1] if _list(root_row.get("attempts")) else {}).get("acceptance")
+            )
+            for dimension, value in _dict(acceptance.get("target_dimension_deltas")).items():
+                numeric = _number(value)
+                if numeric is not None:
+                    target_delta[str(dimension)] = round(target_delta.get(str(dimension), 0.0) + numeric, 4)
+        target_after = {
+            dimension: round(value + target_delta.get(dimension, 0.0), 4)
+            for dimension, value in target_before.items()
+        }
         results.append({
             "scene_id": scene_id,
-            "before_director_quality": source_row.get("director_quality_score"),
+            "before_director_quality": before_dq,
+            "after_director_quality": after_dq,
+            "director_quality_delta": round((after_dq - before_dq), 4) if before_dq is not None and after_dq is not None else None,
+            "before_creative_value": before_cv,
+            "after_creative_value": after_cv,
+            "creative_value_delta": 0.0 if before_cv is not None else None,
+            "creative_value_measurement_status": "not_replayed_after_tail_repair",
+            "target_dimensions_before": target_before,
+            "target_dimensions_after": target_after,
+            "target_dimension_deltas": target_delta,
             "after_candidate_fingerprint": repair_result.get("after_fingerprint"),
             "root_causes": repair_result.get("ranked_root_causes"),
             "repair": repair_result,
-            "contract_pass": all(bool(item.get("acceptance", {}).get("accepted", True)) for item in _list(repair_result.get("attempts")) if item.get("accepted")),
+            "contract_pass": bool(final_validation.get("contract_pass")),
+            "contract_validation_errors": _list(final_validation.get("errors")),
+            "accepted": _list(repair_result.get("accepted")),
+            "rolled_back": _list(repair_result.get("rolled_back")),
         })
     attempted = sum(1 for item in results if _dict(item.get("repair")).get("attempts"))
     accepted = sum(1 for item in results if _list(_dict(item.get("repair")).get("accepted")))
