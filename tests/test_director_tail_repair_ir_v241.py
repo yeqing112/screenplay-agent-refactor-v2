@@ -102,6 +102,12 @@ def test_authoritative_ir_to_patch_to_contract_to_quality_path():
     after = score_director_quality(compiled["candidate"])
     assert validation["contract_pass"] is True
     assert after["dimensions"]["EDIT_RHYTHM"] > before["dimensions"]["EDIT_RHYTHM"]
+
+
+def test_execution_coverage_does_not_claim_execution_without_callable():
+    result = execute_tail_repair(candidate=_plan(), record={"scene_id": "SCENE_01", "director_quality_score": 50, "eligible_coverage": {"edit_strategy": 0.2}}, contract=_contract(), repair_callable=None, require_repair_ir=True)
+    assert result["scene_execution_coverage"] == 0.0
+    assert result["root_cause_attempt_coverage"] == 0.0
     bad = _ir(); bad["shot_decisions"][0].pop("edit")
     with pytest.raises(RepairIRSchemaError):
         validate_repair_ir(bad, known_plan_shot_ids={"S01"})

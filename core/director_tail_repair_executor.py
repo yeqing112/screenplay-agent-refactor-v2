@@ -209,9 +209,13 @@ def execute_tail_repair(
             "ranked_root_causes": ranked,
             "attempts": [],
             "accepted": [],
-            "rolled_back": [],
-            "execution_coverage": 0.0,
-            "non_repairable_reasons": ["NO_ELIGIBLE_REPAIR_SCOPE"] if plan.get("triggered") else [],
+                "rolled_back": [],
+                "execution_coverage": 0.0,
+                "scene_execution_coverage": 0.0,
+                "root_cause_attempt_coverage": 0.0,
+                "repair_acceptance_rate": 0.0,
+                "scene_repair_success_rate": 0.0,
+                "non_repairable_reasons": ["NO_ELIGIBLE_REPAIR_SCOPE"] if plan.get("triggered") else [],
         }
 
     current = copy.deepcopy(baseline)
@@ -346,7 +350,7 @@ def execute_tail_repair(
         # Legacy field retained for historical reports; new fields separate
         # attempt coverage from acceptance and scene success semantics.
         "execution_coverage": round(accepted_roots / triggered_count, 4) if triggered_count else 0.0,
-        "scene_execution_coverage": 1.0 if triggered_count else 0.0,
+        "scene_execution_coverage": 1.0 if triggered_count and attempted_roots else 0.0,
         "root_cause_attempt_coverage": round(attempted_roots / triggered_count, 4) if triggered_count else 0.0,
         "repair_acceptance_rate": round(accepted_roots / attempted_roots, 4) if attempted_roots else 0.0,
         "scene_repair_success_rate": 1.0 if accepted_roots else 0.0,
