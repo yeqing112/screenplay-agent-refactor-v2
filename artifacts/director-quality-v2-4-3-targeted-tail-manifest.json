@@ -1,0 +1,1702 @@
+{
+  "schema_version": "director-quality-v2-4-3-targeted-tail-manifest-v1",
+  "generated_at": "2026-09-14T18:08:13.402171+00:00",
+  "frozen": true,
+  "selection_policy": {
+    "source_freeze": "artifacts/director-quality-v2-4-b2-freeze.json",
+    "historical_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json",
+    "triggered_tail_only": true,
+    "max_root_causes_per_scene": 2,
+    "max_semantic_attempts_per_root_cause": 2,
+    "ranking_recomputed": false
+  },
+  "counts": {
+    "selected_scene_count": 15,
+    "approved_record_scene_count": 5,
+    "fixture_scene_count": 10,
+    "expected_historical_root_count": 27,
+    "recovered_root_count": 27,
+    "max_semantic_attempts": 54
+  },
+  "source_provenance": {
+    "schema_version": "director_quality_provenance_v1",
+    "protocol_version": "director-quality-v2-4-b2-freeze",
+    "commit_sha": "f329b863409ddd09696cc25b05caba71555e0246",
+    "branch": "codex/unify-formal-workspace",
+    "model": {
+      "profile_id": "local-llm-2vydoz",
+      "provider": "openai-compatible",
+      "model_name": "mimo-v2.5"
+    },
+    "model_profile": {
+      "profile_id": "local-llm-2vydoz",
+      "provider": "openai-compatible",
+      "model_name": "mimo-v2.5"
+    },
+    "scene_manifest_hash": "ee9f1fa03522864df240248f45f0b606a8d0dadf0f841adf81869b224fe450af",
+    "evidence_hash": "cbeb39c003c11a27bccb934b91798d1e0863b2835e2190b613782b55808d6353",
+    "generated_at": "2026-09-14T06:21:14.280612+00:00",
+    "source_artifacts": [
+      "artifacts/director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json",
+      "artifacts/director-quality-v2-3-phase-b2-evidence.json"
+    ],
+    "source_artifact_hashes": {
+      "artifacts/director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json": "3f978c25261d97acb2d70da2b5a9c2ab48a2a54fda15598321610d3408969531",
+      "artifacts/director-quality-v2-3-phase-b2-evidence.json": "cbeb39c003c11a27bccb934b91798d1e0863b2835e2190b613782b55808d6353"
+    },
+    "gate_version": "director_quality_v2_3_shadow_gate_v1",
+    "metric_schema_version": "director-quality-v2-4-b2-freeze-v1"
+  },
+  "scenes": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "scene_origin": "approved_record",
+      "source_type": "approved_treatment_scene_blocking",
+      "scene_metadata": {
+        "book_id": 990402,
+        "episode": 1,
+        "scene_name": "红伞幻影（二）"
+      },
+      "baseline_candidate_fingerprint": "94329802a5fc4a13aa78f4247662b7c334c8eabfc205cdac7662e909dd0bb95a",
+      "contract_fingerprint": "9e7f8f9f854ad5f10dd9215c0d08073b16836f3cf4bed83f1ce6dd08e62a3725",
+      "baseline_director_quality": 61.45,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 55.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 1.0,
+          "information_strategy": 1.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 10,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 10,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02",
+            "B03"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02",
+            "S03"
+          ],
+          "allowed_character_ids": [
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16"
+          ],
+          "source_fingerprint": "622dfa9fe8693f17a634595719130ec4a8d7c7fdc5e8cc1c47d523f815dae032",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "scene_origin": "approved_record",
+      "source_type": "approved_treatment_scene_blocking",
+      "scene_metadata": {
+        "book_id": 990402,
+        "episode": 2,
+        "scene_name": "回声照相馆"
+      },
+      "baseline_candidate_fingerprint": "768d61894bc782ce43b2199530290bd56ead6fb77028b60be3bccf714ed3f679",
+      "contract_fingerprint": "7e4b34f2465666d8f84d7dc4d11935d27d8c6ffecb1d3b8da3c8e4f542c7395d",
+      "baseline_director_quality": 28.39,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 25.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 0.0,
+          "information_strategy": 0.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 11,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 11,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B1",
+            "B2",
+            "B3"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02",
+            "S03"
+          ],
+          "allowed_character_ids": [
+            "17",
+            "18"
+          ],
+          "source_fingerprint": "088aedacb7dfab8108af6d8aa05b67017cd2ee41e4a51c8f88efbaa59e859382",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B10_EMOTION_TURN",
+            "OPP_B10_INFORMATION_REVEAL",
+            "OPP_B11_EMOTION_TURN",
+            "OPP_B11_INFORMATION_REVEAL",
+            "OPP_B1_EMOTION_TURN"
+          ],
+          "relevant_beat_ids": [
+            "B10",
+            "B11",
+            "B1"
+          ],
+          "relevant_plan_shot_ids": [
+            "S10",
+            "S11",
+            "S01"
+          ],
+          "allowed_character_ids": [
+            "17",
+            "18"
+          ],
+          "source_fingerprint": "1532a1599d11948b63a73d67441efc3d9d1dec4324fc3220af9958b27af89d62",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "scene_origin": "approved_record",
+      "source_type": "approved_treatment_scene_blocking",
+      "scene_metadata": {
+        "book_id": 990402,
+        "episode": 2,
+        "scene_name": "暗房门口的试探"
+      },
+      "baseline_candidate_fingerprint": "0df413a72458baf4ff8efe81e62f256c198ff2cb1a1ad64a2804a148d4c36865",
+      "contract_fingerprint": "7c7349b7e41c58793e1b5097aefdd7d586c78ae83b6bf1cf8c71c37a0fd3bc96",
+      "baseline_director_quality": 28.61,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 25.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 0.0,
+          "information_strategy": 0.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 8,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 8,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B12",
+            "B13",
+            "B14"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02",
+            "S03"
+          ],
+          "allowed_character_ids": [
+            "17",
+            "18"
+          ],
+          "source_fingerprint": "a39a8adca3060e2f60d0a3b00b99530db7402fab139e2b238aa9fedb9d6c4184",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B12_EMOTION_TURN",
+            "OPP_B12_INFORMATION_REVEAL",
+            "OPP_B13_EMOTION_TURN",
+            "OPP_B13_INFORMATION_REVEAL",
+            "OPP_B14_EMOTION_TURN"
+          ],
+          "relevant_beat_ids": [
+            "B12",
+            "B13",
+            "B14"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02",
+            "S03"
+          ],
+          "allowed_character_ids": [
+            "17",
+            "18"
+          ],
+          "source_fingerprint": "2d1baee9b526b280d0508a48f3d95e45cc633d20c461a04727ddbdefcaaa7a22",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "scene_origin": "approved_record",
+      "source_type": "approved_treatment_scene_blocking",
+      "scene_metadata": {
+        "book_id": 990402,
+        "episode": 3,
+        "scene_name": "暗房惊魂"
+      },
+      "baseline_candidate_fingerprint": "85c3791e40d71fbbf6798ccabfd6eb4b05b610a16ef83c8b30e59fd326d27fdc",
+      "contract_fingerprint": "147c53558dea42915f5bfa82da8f894661209ffd1579986dd6aaf6aa83c4f7b5",
+      "baseline_director_quality": 28.39,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 28.333,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.2222,
+          "emotion_arc": 0.0,
+          "information_strategy": 0.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 11,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 11,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_10_EMOTION_TURN",
+            "OPP_10_INFORMATION_REVEAL",
+            "OPP_11_EMOTION_TURN",
+            "OPP_11_INFORMATION_REVEAL",
+            "OPP_11_POWER_SHIFT"
+          ],
+          "relevant_beat_ids": [
+            "10",
+            "11"
+          ],
+          "relevant_plan_shot_ids": [
+            "S10",
+            "S11"
+          ],
+          "allowed_character_ids": [
+            "19",
+            "20"
+          ],
+          "source_fingerprint": "6633c6687f146395320ac0fe87406d1456606e119ec7cc2c7dc720b361a0d5d9",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_INFORMATION_STRATEGY",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "information",
+          "target_dimensions": [
+            "INFORMATION_STRATEGY"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_10_INFORMATION_REVEAL",
+            "OPP_11_INFORMATION_REVEAL",
+            "OPP_1_INFORMATION_REVEAL",
+            "OPP_2_INFORMATION_REVEAL",
+            "OPP_3_INFORMATION_REVEAL"
+          ],
+          "relevant_beat_ids": [
+            "10",
+            "11",
+            "1",
+            "2",
+            "3"
+          ],
+          "relevant_plan_shot_ids": [
+            "S10",
+            "S11",
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "19",
+            "20"
+          ],
+          "source_fingerprint": "7723929c7762fdc5691aa1ff00a17039f23704f517ac41424c8e38acd5b718f7",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "scene_origin": "approved_record",
+      "source_type": "approved_treatment_scene_blocking",
+      "scene_metadata": {
+        "book_id": 990402,
+        "episode": 3,
+        "scene_name": "暗房惊魂（2）"
+      },
+      "baseline_candidate_fingerprint": "a25c4fa077cbf50de562a1d0daba850c387ebcf49edd6edc201d045cc8e8aec9",
+      "contract_fingerprint": "7c8b75c3dd76a5ba46fcd213f3503c99fa698b6ee6ac1c601fd4196612b06b28",
+      "baseline_director_quality": 28.45,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 27.8125,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.1875,
+          "emotion_arc": 0.0,
+          "information_strategy": 0.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 10,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 10,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_10_EMOTION_TURN",
+            "OPP_10_INFORMATION_REVEAL",
+            "OPP_1_EMOTION_TURN",
+            "OPP_1_INFORMATION_REVEAL",
+            "OPP_1_POWER_SHIFT"
+          ],
+          "relevant_beat_ids": [
+            "10",
+            "1"
+          ],
+          "relevant_plan_shot_ids": [
+            "S10",
+            "S01"
+          ],
+          "allowed_character_ids": [
+            "19",
+            "20"
+          ],
+          "source_fingerprint": "831dce3fca48c1681eeb7f06243f9899dc259537a386c7d8c9ab55e9e740340b",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_INFORMATION_STRATEGY",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "information",
+          "target_dimensions": [
+            "INFORMATION_STRATEGY"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_10_INFORMATION_REVEAL",
+            "OPP_1_INFORMATION_REVEAL",
+            "OPP_2_INFORMATION_REVEAL",
+            "OPP_3_INFORMATION_REVEAL",
+            "OPP_4_INFORMATION_REVEAL"
+          ],
+          "relevant_beat_ids": [
+            "10",
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "relevant_plan_shot_ids": [
+            "S10",
+            "S01",
+            "S02",
+            "S03"
+          ],
+          "allowed_character_ids": [
+            "19",
+            "20"
+          ],
+          "source_fingerprint": "d12262d1bf1b0586e7d94ef25351a08e106fe5015f822b928f53e390e04d2cf7",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "V21_FIXTURE_01",
+      "scene_origin": "双人对话",
+      "source_type": "offline_golden_fixture",
+      "scene_metadata": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 01 双人对话"
+      },
+      "baseline_candidate_fingerprint": "1a861aa772ed12feb02bf4c12c3e8fdda0f51ecb5f4ab79f00d534a51350a06b",
+      "contract_fingerprint": "8de5af0d40d17b7527a0cbe74988c69c7dea1e970f109847fef42782f79a102c",
+      "baseline_director_quality": 47.8,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 40.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 0.0,
+          "information_strategy": 1.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "4f04369f51914ddd34918aac6717f463312e692d4a883f8cf880f16ffa9179a6",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B02_EMOTION_TURN",
+            "OPP_B02_POWER_SHIFT",
+            "OPP_B02_REACTION"
+          ],
+          "relevant_beat_ids": [
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "7efc33e67781cb98a4b2cc8225f416aee7d449e6557b5b55e18c3869d1542d8a",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "V21_FIXTURE_04",
+      "scene_origin": "情绪转折",
+      "source_type": "offline_golden_fixture",
+      "scene_metadata": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 04 情绪转折"
+      },
+      "baseline_candidate_fingerprint": "22f4cd9dc100aafb89ab12ab61567aa40b64e6b30f739a06ba8d3b1e370beeab",
+      "contract_fingerprint": "49216ee5faa3c4b0e47cbba191d435fd297ba1061dfeeb2df50cafe79e83d3fa",
+      "baseline_director_quality": 47.8,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 40.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 0.0,
+          "information_strategy": 1.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "79f265fe86bbaebd778e873a1ae259a11cf9e0c851d0af29608b09dc1ff29087",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B02_EMOTION_TURN",
+            "OPP_B02_POWER_SHIFT",
+            "OPP_B02_REACTION",
+            "OPP_B01_SILENCE_HOLD"
+          ],
+          "relevant_beat_ids": [
+            "B02",
+            "B01"
+          ],
+          "relevant_plan_shot_ids": [
+            "S02",
+            "S01"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "2baad116a57688307d6d61e38bd9fce1443b531b32b21e5330eed99128b61522",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "V21_FIXTURE_07",
+      "scene_origin": "关键道具",
+      "source_type": "offline_golden_fixture",
+      "scene_metadata": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 07 关键道具"
+      },
+      "baseline_candidate_fingerprint": "c34a035e0ee43e8241efe471031e8f27eef973d96aefffbb83a95fc0ff2e340b",
+      "contract_fingerprint": "011aafe7064727c08838fd5c403682dc07766eb57e82a9aded734b893f3a8f28",
+      "baseline_director_quality": 50.3,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 40.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 1.0,
+          "information_strategy": 0.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "8d0efd545debfbb5e479cbccc81c3c49159105ab04910ae20d49d9da22f15464",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_INFORMATION_STRATEGY",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "information",
+          "target_dimensions": [
+            "INFORMATION_STRATEGY"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B02_INFORMATION_REVEAL",
+            "OPP_B02_VISUAL_REVEAL"
+          ],
+          "relevant_beat_ids": [
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "7eb332eb041bca08a23399fcdda5b4c96e03fcf98b832868e6f47b96aa57f22a",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "V21_FIXTURE_08",
+      "scene_origin": "无对白",
+      "source_type": "offline_golden_fixture",
+      "scene_metadata": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 08 无对白"
+      },
+      "baseline_candidate_fingerprint": "ef71b936b26e26b59320ae031a968b5a75f0897290989539df3ea71a2e5dbaf5",
+      "contract_fingerprint": "a7d6b7a17391ad9e78ec82d636134f3f0fc30d19e6cfefad5963414f232bf070",
+      "baseline_director_quality": 50.3,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 55.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 1.0,
+          "information_strategy": 1.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "926004ba9e74117affb83b8bcac1490f6e0a6a332856a82fc7ebbaba67b8081b",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "V21_FIXTURE_09",
+      "scene_origin": "多人物",
+      "source_type": "offline_golden_fixture",
+      "scene_metadata": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 09 多人物"
+      },
+      "baseline_candidate_fingerprint": "3f380f0b291767f585543d2676d4d6c44c5085856d64bf936143048ffd6ff260",
+      "contract_fingerprint": "5c23d167eeefa53ef61545e5d1785c47ae8d1e705963cda0c913c72a70c6941a",
+      "baseline_director_quality": 47.8,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 40.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 0.0,
+          "information_strategy": 1.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "87c56a76d855462d2d4eb480766b0556eeb0fe58b7c643f51bc3b21c206c88c9",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B02_EMOTION_TURN",
+            "OPP_B02_POWER_SHIFT",
+            "OPP_B02_REACTION"
+          ],
+          "relevant_beat_ids": [
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "570ae03f7bc3a6844572a20a54c741d45e4bb2a07e22bf5ebfe94a7a3d19564a",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "V21_FIXTURE_10",
+      "scene_origin": "快节奏动作",
+      "source_type": "offline_golden_fixture",
+      "scene_metadata": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 10 快节奏动作"
+      },
+      "baseline_candidate_fingerprint": "f5db6fbb4f5fa4419983a170d63ece6458b1a44764b61bf5cf28ee94d9e05059",
+      "contract_fingerprint": "7aa777bab2739e0c53ce8a296c50c1b4a02b5aa2f15bdc533bcca9f5ca467929",
+      "baseline_director_quality": 50.3,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 55.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 1.0,
+          "information_strategy": 1.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "f94b0639d9217cfd0bd216e5b6571d9b52553e628c94bcb02345d7cfc83337f5",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "V21_FIXTURE_11",
+      "scene_origin": "慢节奏情绪",
+      "source_type": "offline_golden_fixture",
+      "scene_metadata": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 11 慢节奏情绪"
+      },
+      "baseline_candidate_fingerprint": "39a2e3dad221c5bda029d8c0949009d308b5adef4ab2a5817d54b8b55161edb8",
+      "contract_fingerprint": "12ddded0aeab1a3dd54789754d9c46e86864e1d3ea07f11756b0fea70f2b1708",
+      "baseline_director_quality": 50.3,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 40.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 1.0,
+          "information_strategy": 0.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "b656199234915069fdc913a05211fdf4c7cf8d5655e09f7c0378722b0ec9f524",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_INFORMATION_STRATEGY",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "information",
+          "target_dimensions": [
+            "INFORMATION_STRATEGY"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B02_INFORMATION_REVEAL",
+            "OPP_B02_VISUAL_REVEAL"
+          ],
+          "relevant_beat_ids": [
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "C1",
+            "C2"
+          ],
+          "source_fingerprint": "a14b7232d591f93677e7e9ab546f422020867c8672e709a5a10bbd9435ec43e4",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "fixture:dialogue_power_shift",
+      "scene_origin": "fixture_adapter",
+      "source_type": "existing_test_fixture",
+      "scene_metadata": {
+        "book_id": "fixture:dialogue_power_shift",
+        "episode": 1,
+        "scene_name": "办公室门口"
+      },
+      "baseline_candidate_fingerprint": "564f851b7663722ee38ed7b2680d1336f519d2bc8b30b1b33edcb3894f461d42",
+      "contract_fingerprint": "b5d299fbc62665b5f77052599ca0118dc0a2003ea61850c932c87df4a3c48fcc",
+      "baseline_director_quality": 47.8,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 40.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 0.0,
+          "information_strategy": 1.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "CHAR_A",
+            "CHAR_B"
+          ],
+          "source_fingerprint": "d1b450998891719cae9fb98ec3ffbf75e5c5282938a3c9996fb6540b544404b8",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B02_EMOTION_TURN",
+            "OPP_B02_POWER_SHIFT",
+            "OPP_B02_REACTION"
+          ],
+          "relevant_beat_ids": [
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "CHAR_A",
+            "CHAR_B"
+          ],
+          "source_fingerprint": "4cbad064a4f93af3dd6d3daf9c0f0776359854dec2c5edd3c3e511a38db72d30",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "fixture:multi_character",
+      "scene_origin": "fixture_adapter",
+      "source_type": "existing_test_fixture",
+      "scene_metadata": {
+        "book_id": "fixture:multi_character",
+        "episode": 1,
+        "scene_name": "会议室"
+      },
+      "baseline_candidate_fingerprint": "4a92e3e86a4cd8ce05261012b1fa115645433aa36c478c2428a11aa206a16a32",
+      "contract_fingerprint": "e1ee2161ff5443632f03ca9d7e9312dca866dce20ad84fbfca3d7374a52af2d7",
+      "baseline_director_quality": 46.3,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 28.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.2,
+          "emotion_arc": 0.0,
+          "information_strategy": 0.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 3,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 3,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EMOTION_ARC",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "emotion",
+          "target_dimensions": [
+            "EMOTIONAL_PROGRESSION",
+            "PERFORMANCE_DIRECTION"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B02_EMOTION_TURN",
+            "OPP_B02_POWER_SHIFT",
+            "OPP_B03_INFORMATION_REVEAL",
+            "OPP_B02_REACTION",
+            "OPP_B02_SILENCE_HOLD"
+          ],
+          "relevant_beat_ids": [
+            "B02",
+            "B03"
+          ],
+          "relevant_plan_shot_ids": [
+            "S02",
+            "S03"
+          ],
+          "allowed_character_ids": [
+            "CHAR_A",
+            "CHAR_B",
+            "CHAR_C"
+          ],
+          "source_fingerprint": "dcf183217298e0050525d36a05ad9e305ff24e3536829a858b12d9c958592a5b",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_INFORMATION_STRATEGY",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "information",
+          "target_dimensions": [
+            "INFORMATION_STRATEGY"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B03_INFORMATION_REVEAL",
+            "OPP_B02_PROP_EMPHASIS",
+            "OPP_B03_PROP_EMPHASIS",
+            "OPP_B03_VISUAL_REVEAL"
+          ],
+          "relevant_beat_ids": [
+            "B03",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S03",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "CHAR_A",
+            "CHAR_B",
+            "CHAR_C"
+          ],
+          "source_fingerprint": "aae10c879f8dde9062cbed5a2bc136825b74f4b49eee960f47b95eaf0d864199",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible emotion arc coverage is below 0.85",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "fixture:prop_continuity",
+      "scene_origin": "fixture_adapter",
+      "source_type": "existing_test_fixture",
+      "scene_metadata": {
+        "book_id": "fixture:prop_continuity",
+        "episode": 1,
+        "scene_name": "车站候车室"
+      },
+      "baseline_candidate_fingerprint": "3034a00aadabdb11e89735b17a11a945dd846200f8fe2aae2830a11b187fe73d",
+      "contract_fingerprint": "f5f763e9d93a6012fa134f2d0ffb04320c25b27bd8e1535f8fb3edcc65cd9d04",
+      "baseline_director_quality": 50.3,
+      "baseline_creative_value": {
+        "schema_version": "director_creative_value_score_v1",
+        "status": "ready",
+        "score": 40.0,
+        "components": {
+          "opportunity_coverage": 1.0,
+          "useful_creative_acceptance": 0.0,
+          "edit_strategy": 0.0,
+          "emotion_arc": 1.0,
+          "information_strategy": 0.0,
+          "tail_stability": 0.0
+        },
+        "weights": {
+          "opportunity_coverage": 0.25,
+          "useful_creative_acceptance": 0.25,
+          "edit_strategy": 0.15,
+          "emotion_arc": 0.15,
+          "information_strategy": 0.15,
+          "tail_stability": 0.05
+        },
+        "missing_components": [],
+        "errors": []
+      },
+      "baseline_over_directing": {
+        "schema_version": "director_over_directing_v1",
+        "issues": [],
+        "issue_counts": {},
+        "shot_count": 2,
+        "auxiliary_shot_count": 0,
+        "over_directing_rate": 0.0,
+        "shot_inflation_rate": 0.0,
+        "blocking": false
+      },
+      "baseline_shot_count": 2,
+      "root_causes": [
+        {
+          "root_cause": "WEAK_EDIT_STRATEGY",
+          "original_rank": 1,
+          "rank_score": 0.7,
+          "repair_type": "edit",
+          "target_dimensions": [
+            "EDIT_RHYTHM"
+          ],
+          "relevant_opportunity_ids": [],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "CHAR_A",
+            "CHAR_B"
+          ],
+          "source_fingerprint": "ca62ee6b0ea8f81488c818a138ec46626a54a2f0f1dd68239db4bd1e24e3e004",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        },
+        {
+          "root_cause": "WEAK_INFORMATION_STRATEGY",
+          "original_rank": 2,
+          "rank_score": 0.7,
+          "repair_type": "information",
+          "target_dimensions": [
+            "INFORMATION_STRATEGY"
+          ],
+          "relevant_opportunity_ids": [
+            "OPP_B01_PROP_EMPHASIS",
+            "OPP_B02_PROP_EMPHASIS"
+          ],
+          "relevant_beat_ids": [
+            "B01",
+            "B02"
+          ],
+          "relevant_plan_shot_ids": [
+            "S01",
+            "S02"
+          ],
+          "allowed_character_ids": [
+            "CHAR_A",
+            "CHAR_B"
+          ],
+          "source_fingerprint": "a5b5746f425f562a14fa1494fd6afd86aaad66b6df42d408d32ca9ded6720c06",
+          "historical_evidence": {
+            "root_cause_evidence": [
+              "eligible edit strategy coverage is below 0.8",
+              "eligible information strategy coverage is below 0.85"
+            ],
+            "source_targeted_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
+          }
+        }
+      ]
+    }
+  ]
+}

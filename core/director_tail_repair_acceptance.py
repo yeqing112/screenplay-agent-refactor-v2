@@ -34,6 +34,8 @@ def evaluate_repair_acceptance(
     shot_inflation_before: float | None = None,
     shot_inflation_after: float | None = None,
     structural_blocker_count: int = 0,
+    creative_value_required: bool = False,
+    creative_value_measurement_status: str | None = None,
     epsilon: float = 0.0,
     major_quality_regression: float = 5.0,
     over_directing_threshold: float = 0.10,
@@ -55,6 +57,8 @@ def evaluate_repair_acceptance(
         reasons.append("FACT_OVERRIDE")
     if int(structural_blocker_count or 0) != 0:
         reasons.append("NEW_STRUCTURAL_BLOCKER")
+    if creative_value_required and (creative_value_measurement_status == "blocked" or creative_value_after is None):
+        reasons.append("MEASUREMENT_BLOCKED")
     if not any(value > float(epsilon) for value in deltas.values()):
         reasons.append("TARGET_DIMENSION_NOT_IMPROVED")
     before_score = _number(before_quality.get("director_quality_score")) or 0.0
@@ -74,6 +78,15 @@ def evaluate_repair_acceptance(
         "target_dimension_deltas": deltas,
         "quality_before": before_score,
         "quality_after": after_score,
+        "fact_override_count": int(fact_override_count or 0),
+        "structural_blocker_count": int(structural_blocker_count or 0),
+        "creative_value_before": creative_value_before,
+        "creative_value_after": creative_value_after,
+        "creative_value_measurement_status": creative_value_measurement_status,
+        "over_directing_before": over_directing_before,
+        "over_directing_after": over_directing_after,
+        "shot_inflation_before": shot_inflation_before,
+        "shot_inflation_after": shot_inflation_after,
         "rollback_reason": ";".join(reasons),
         "reasons": reasons,
     }

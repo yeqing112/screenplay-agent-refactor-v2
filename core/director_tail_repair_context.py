@@ -9,6 +9,8 @@ from __future__ import annotations
 import copy
 from typing import Any, Iterable
 
+from core.director_creative_value import DIMENSION_ATTRIBUTION
+
 
 TARGET_DIMENSIONS_BY_ROOT_CAUSE = {
     "WEAK_EDIT_STRATEGY": {"EDIT_RHYTHM"},
@@ -116,12 +118,19 @@ def resolve_tail_repair_context(
 ) -> dict[str, Any]:
     """Resolve bounded, root-cause-scoped evidence for a provider request."""
 
-    dimensions = {str(value).strip() for value in (target_dimensions or TARGET_DIMENSIONS_BY_ROOT_CAUSE.get(root_cause, set())) if str(value).strip()}
+    dimensions = {str(value).strip().upper() for value in (target_dimensions or TARGET_DIMENSIONS_BY_ROOT_CAUSE.get(root_cause, set())) if str(value).strip()}
+    # Opportunity records use causal names (for example ``edit_strategy``),
+    # while the scorer uses canonical dimension names (``EDIT_RHYTHM``).
+    # Keep selection aligned with the authoritative attribution bridge.
+    opportunity_dimensions = set(dimensions)
+    for name, canonical in DIMENSION_ATTRIBUTION.items():
+        if canonical in dimensions:
+            opportunity_dimensions.add(name.upper())
     source_opportunities = [copy.deepcopy(item) for item in opportunities if isinstance(item, dict)]
     selected_opportunities = [
         item for item in source_opportunities
         if bool(item.get("eligible", True))
-        and dimensions.intersection({str(value).strip().upper() for value in _list(item.get("recommended_directing_dimensions"))})
+        and opportunity_dimensions.intersection({str(value).strip().upper() for value in _list(item.get("recommended_directing_dimensions"))})
     ]
     selected_opportunities.sort(key=lambda item: (_priority(item.get("priority")), _text(item.get("opportunity_id")), _text(item.get("beat_id"))))
     selected_opportunities = selected_opportunities[: max(0, int(max_opportunities))]

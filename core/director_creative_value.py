@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 from typing import Any, Iterable
 
 from core.director_opportunity_model import DIRECTING_DIMENSIONS, build_opportunity_outcome, normalize_opportunity
@@ -46,6 +48,10 @@ def _rate(numerator: int, denominator: int) -> float | None:
 
 def _text(value: Any) -> str:
     return str(value or "").strip()
+
+
+def _number(value: Any) -> float | None:
+    return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
 
 
 def _dict(value: Any) -> dict[str, Any]:
@@ -249,4 +255,105 @@ def build_creative_value_score(
     return {"schema_version": CREATIVE_VALUE_SCORE_SCHEMA_VERSION, "status": "ready", "score": round(score, 4), "components": normalized, "weights": copy.deepcopy(CREATIVE_VALUE_WEIGHTS), "missing_components": [], "errors": []}
 
 
-__all__ = ["CREATIVE_VALUE_SCHEMA_VERSION", "CREATIVE_VALUE_V3_SCHEMA_VERSION", "CREATIVE_VALUE_SCORE_SCHEMA_VERSION", "CREATIVE_VALUE_WEIGHTS", "DIMENSION_ATTRIBUTION_VERSION", "DIMENSION_ATTRIBUTION", "evaluate_useful_creative_acceptance", "evaluate_useful_creative_acceptance_v3", "build_creative_value_score"]
+def replay_creative_value(
+    *,
+    baseline_creative_value: Any,
+    opportunities: Iterable[dict[str, Any]],
+    decisions: Iterable[dict[str, Any]] | dict[str, Any],
+    baseline_outcomes: Iterable[dict[str, Any]] = (),
+    candidate_interventions: Iterable[dict[str, Any]] = (),
+    after_director_quality: float | None,
+    candidate_fingerprint: str,
+    frozen_inputs: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Replay Creative Value for a changed candidate without a model judge.
+
+    The opportunity set, eligibility and planner decisions are intentionally
+    supplied by the caller and are never regenerated here.  Only the applied
+    repair outcomes are overlaid, then the existing authoritative UCA and
+    score functions are reused.  The replay fingerprint makes identical
+    frozen inputs and candidate output byte-for-byte reproducible.
+    """
+
+    baseline = baseline_creative_value if isinstance(baseline_creative_value, dict) else {}
+    baseline_score = _number(baseline.get("score"))
+    components = _dict(baseline.get("components"))
+    required_components = set(CREATIVE_VALUE_WEIGHTS)
+    missing = sorted(required_components - set(components))
+    if baseline_score is None or missing:
+        return {
+            "schema_version": CREATIVE_VALUE_SCORE_SCHEMA_VERSION,
+            "status": "needs_information",
+            "score": None,
+            "measurement_status": "blocked",
+            "missing_components": missing or ["score"],
+            "creative_value_replay_fingerprint": hashlib.sha256(json.dumps({"candidate_fingerprint": candidate_fingerprint, "frozen_inputs": frozen_inputs or {}}, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")).hexdigest(),
+        }
+
+    normalized_opportunities = [item for item in opportunities if isinstance(item, dict)]
+    # Convert frozen opportunity outcomes into the intervention shape consumed
+    # by the authoritative UCA evaluator.
+    interventions: dict[str, dict[str, Any]] = {}
+    for outcome in baseline_outcomes:
+        if not isinstance(outcome, dict):
+            continue
+        opportunity_id = _text(outcome.get("opportunity_id"))
+        if not opportunity_id:
+            continue
+        status = _text(outcome.get("final_status"))
+        interventions[opportunity_id] = {
+            "opportunity_id": opportunity_id,
+            "patch_valid": status in {"USEFUL_ACCEPTED", "ACCEPTED_NO_MEASURABLE_VALUE"},
+            "applied": status in {"USEFUL_ACCEPTED", "ACCEPTED_NO_MEASURABLE_VALUE"},
+            "fact_contract_pass": status not in {"REJECTED_CONTRACT"},
+            "new_blocker": status == "REJECTED_QUALITY",
+            "quality_delta": outcome.get("quality_delta", 0.0),
+            "dimension_deltas": _dict(outcome.get("dimension_deltas")),
+            "repaired": bool(outcome.get("repaired")),
+        }
+    for intervention in candidate_interventions:
+        if isinstance(intervention, dict) and _text(intervention.get("opportunity_id")):
+            interventions[_text(intervention["opportunity_id"])] = copy.deepcopy(intervention)
+
+    value = evaluate_useful_creative_acceptance_v3(
+        opportunities=normalized_opportunities,
+        decisions=decisions,
+        interventions=list(interventions.values()),
+    )
+    eligible = int(value.get("eligible_opportunity_count") or 0)
+    handled = eligible - int(value.get("missed_opportunity_count") or 0)
+    replay_components = {key: components.get(key) for key in required_components}
+    replay_components["opportunity_coverage"] = (handled / eligible) if eligible else 1.0
+    replay_components["useful_creative_acceptance"] = value.get("useful_creative_acceptance_v3_rate") if eligible else 1.0
+    # Tail stability is the only score component that depends on the measured
+    # post-repair DQ. Other dimension coverage remains frozen evidence rather
+    # than being inferred from arbitrary text changes.
+    replay_components["tail_stability"] = 1.0 if isinstance(after_director_quality, (int, float)) and not isinstance(after_director_quality, bool) and float(after_director_quality) >= 70.0 else float(components.get("tail_stability") or 0.0)
+    score = build_creative_value_score(
+        opportunity_coverage=replay_components["opportunity_coverage"],
+        useful_creative_acceptance=replay_components["useful_creative_acceptance"],
+        edit_strategy=replay_components["edit_strategy"],
+        emotion_arc=replay_components["emotion_arc"],
+        information_strategy=replay_components["information_strategy"],
+        tail_stability=replay_components["tail_stability"],
+    )
+    payload = {
+        "baseline_score": baseline_score,
+        "candidate_fingerprint": candidate_fingerprint,
+        "frozen_inputs": frozen_inputs or {},
+        "components": replay_components,
+        "opportunity_value": value,
+    }
+    replay_fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")).hexdigest()
+    return {
+        **score,
+        "measurement_status": "ready",
+        "creative_value_replay_fingerprint": replay_fingerprint,
+        "baseline_score": baseline_score,
+        "score_delta": round(float(score.get("score") or 0.0) - baseline_score, 4) if score.get("score") is not None else None,
+        "components": replay_components,
+        "opportunity_value": value,
+    }
+
+
+__all__ = ["CREATIVE_VALUE_SCHEMA_VERSION", "CREATIVE_VALUE_V3_SCHEMA_VERSION", "CREATIVE_VALUE_SCORE_SCHEMA_VERSION", "CREATIVE_VALUE_WEIGHTS", "DIMENSION_ATTRIBUTION_VERSION", "DIMENSION_ATTRIBUTION", "evaluate_useful_creative_acceptance", "evaluate_useful_creative_acceptance_v3", "build_creative_value_score", "replay_creative_value"]

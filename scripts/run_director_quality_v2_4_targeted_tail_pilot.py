@@ -28,10 +28,12 @@ from core.director_tail_repair_provider_contract import (
 )
 from core.director_tail_repair_context import resolve_tail_repair_context
 from core.director_tail_repair_request import REPAIR_REQUEST_SCHEMA_VERSION
+from core.local_repair import fingerprint
 # Targeted repair must consume the immutable, provenance-bearing B2 freeze.
 # The historical V2.3 pilot remains available through --pilot for audit/replay,
 # but must not be the default input for a V2.4 real-call gate.
 DEFAULT_PILOT = ARTIFACTS / "director-quality-v2-4-b2-freeze.json"
+DEFAULT_MANIFEST = ARTIFACTS / "director-quality-v2-4-3-targeted-tail-manifest.json"
 CONFIRMATION_TOKEN = "CONFIRM_DIRECTOR_V24_TARGETED_TAIL_REAL_MIMO_PILOT"
 
 
@@ -55,6 +57,34 @@ def _creative_value_score(value: Any) -> float | None:
     if isinstance(value, dict):
         return _number(value.get("score"))
     return _number(value)
+
+
+def _distribution(values: list[float]) -> dict[str, float | None]:
+    if not values:
+        return {key: None for key in ("mean", "median", "p10", "p25", "p75", "p90", "min", "max")}
+    values = sorted(float(value) for value in values)
+    def percentile(q: float) -> float:
+        if len(values) == 1:
+            return round(values[0], 4)
+        pos = (len(values) - 1) * q
+        lo, hi = int(pos), min(int(pos) + 1, len(values) - 1)
+        return round(values[lo] + (values[hi] - values[lo]) * (pos - lo), 4)
+    return {
+        "mean": round(sum(values) / len(values), 4),
+        "median": percentile(0.5), "p10": percentile(0.1), "p25": percentile(0.25),
+        "p75": percentile(0.75), "p90": percentile(0.9), "min": round(values[0], 4), "max": round(values[-1], 4),
+    }
+
+
+def _quality_buckets(values: list[float]) -> dict[str, int]:
+    buckets = {"<60": 0, "60-69": 0, "70-79": 0, "80-89": 0, ">=90": 0}
+    for value in values:
+        if value < 60: buckets["<60"] += 1
+        elif value < 70: buckets["60-69"] += 1
+        elif value < 80: buckets["70-79"] += 1
+        elif value < 90: buckets["80-89"] += 1
+        else: buckets[">=90"] += 1
+    return buckets
 
 
 def _repo_path(path: Path) -> str:
@@ -212,6 +242,7 @@ def run_targeted_tail_pilot(
     audit_records: list[dict[str, Any]] | None = None,
     scene_ids: set[str] | None = None,
     root_causes_by_scene: dict[str, list[str]] | None = None,
+    manifest_path: Path | None = None,
 ) -> dict[str, Any]:
     """Run only triggered tail scenes through the injected repair provider.
 
@@ -223,6 +254,18 @@ def run_targeted_tail_pilot(
     from core.director_tail_repair_executor import execute_tail_repair
 
     pilot = json.loads(pilot_path.read_text(encoding="utf-8"))
+    manifest_by_id: dict[str, dict[str, Any]] = {}
+    if manifest_path is not None:
+        manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if not bool(manifest_payload.get("frozen")):
+            raise ValueError("V2.4.3 manifest must be frozen")
+        manifest_by_id = {
+            _text(item.get("scene_id")): item
+            for item in _list(manifest_payload.get("scenes"))
+            if isinstance(item, dict) and _text(item.get("scene_id"))
+        }
+        if not manifest_by_id:
+            raise ValueError("V2.4.3 manifest contains no scenes")
     evidence_payload = json.loads(evidence_path.read_text(encoding="utf-8"))
     evidence_by_id = {
         _text(_dict(item.get("scene")).get("scene_id")): item
@@ -230,7 +273,13 @@ def run_targeted_tail_pilot(
         if isinstance(item, dict)
     }
     results: list[dict[str, Any]] = []
-    for source_row in select_tail_scenes(pilot, scene_ids=scene_ids):
+    selected_source_rows = select_tail_scenes(pilot, scene_ids=scene_ids)
+    if manifest_by_id:
+        selected_source_rows = [row for row in selected_source_rows if _text(row.get("scene_id")) in manifest_by_id]
+        if scene_ids is None and len(selected_source_rows) != len(manifest_by_id):
+            missing = sorted(set(manifest_by_id) - {_text(row.get("scene_id")) for row in selected_source_rows})
+            raise ValueError("frozen manifest scene mismatch: " + ", ".join(missing))
+    for source_row in selected_source_rows:
         scene_id = _text(source_row.get("scene_id"))
         frozen = evidence_by_id.get(scene_id, {})
         evidence = _dict(frozen.get("evidence"))
@@ -263,11 +312,17 @@ def run_targeted_tail_pilot(
             "allowed_character_ids": scoped_context.get("allowed_character_ids", []),
             "opportunities": _list(source_row.get("opportunities")),
             "opportunity_count": source_row.get("opportunity_count"),
+            "planner_decisions": copy.deepcopy(source_row.get("planner_decisions") or []),
+            "opportunity_outcomes": copy.deepcopy(source_row.get("opportunity_outcomes") or []),
         }
+        manifest_row = manifest_by_id.get(scene_id, {})
+        frozen_roots = [_text(item.get("root_cause")) for item in _list(manifest_row.get("root_causes")) if _text(_dict(item).get("root_cause"))]
+        selected_roots = frozen_roots or (root_causes_by_scene or {}).get(scene_id)
         before_candidate = copy.deepcopy(candidate)
         from core.director_patch_compiler import compile_creative_patches
         from core.director_patch_validator import validate_compiled_patch_result
         from core.director_quality_validator import score_director_quality
+        from core.director_overdirecting import detect_over_directing
 
         before_quality = score_director_quality(
             before_candidate,
@@ -285,7 +340,8 @@ def run_targeted_tail_pilot(
             strategy=_dict(frozen.get("strategy")) or _dict(evidence.get("strategy")),
             model=model,
             require_repair_ir=True,
-            root_causes=(root_causes_by_scene or {}).get(scene_id) if root_causes_by_scene is not None else None,
+            root_causes=selected_roots,
+            require_creative_value_replay=bool(manifest_by_id),
         )
         after_candidate = _dict(repair_result.get("candidate")) or before_candidate
         after_quality = score_director_quality(
@@ -316,10 +372,30 @@ def run_targeted_tail_pilot(
             before_dq = _number(before_quality.get("director_quality_score"))
         after_dq = _number(after_quality.get("director_quality_score"))
         before_cv = _creative_value_score(source_row.get("creative_value"))
-        # Tail repair changes the candidate, not the opportunity planner.  Do
-        # not invent a post-repair Creative Value score without replaying that
-        # planner; expose the measurement boundary explicitly instead.
-        after_cv = before_cv
+        replay_rows = [
+            _dict(attempt).get("creative_value_replay")
+            for root in _list(repair_result.get("attempts"))
+            for attempt in _list(_dict(root).get("attempts"))
+            if _text(_dict(attempt).get("status")) == "accepted" and isinstance(_dict(attempt).get("creative_value_replay"), dict)
+        ]
+        if manifest_by_id and not replay_rows and before_cv is not None:
+            from core.director_creative_value import replay_creative_value
+            baseline_replay = replay_creative_value(
+                baseline_creative_value=source_row.get("creative_value"),
+                opportunities=_list(source_row.get("opportunities")),
+                decisions=source_row.get("planner_decisions") or [],
+                baseline_outcomes=source_row.get("opportunity_outcomes") or [],
+                candidate_interventions=[],
+                after_director_quality=after_dq,
+                candidate_fingerprint=fingerprint(after_candidate),
+                frozen_inputs={"scene_id": scene_id, "baseline_candidate_fingerprint": fingerprint(before_candidate), "relevant_opportunity_ids": []},
+            )
+            replay_rows.append(baseline_replay)
+        replay = replay_rows[-1] if replay_rows else {}
+        after_cv = _creative_value_score(replay) if manifest_by_id else before_cv
+        cv_status = _text(replay.get("measurement_status")) if manifest_by_id else "not_replayed_after_tail_repair"
+        if manifest_by_id and not cv_status:
+            cv_status = "blocked" if repair_result.get("rolled_back") else "not_replayed"
         target_before: dict[str, float] = {}
         target_delta: dict[str, float] = {}
         for root_row in _list(repair_result.get("attempts")):
@@ -339,18 +415,27 @@ def run_targeted_tail_pilot(
             dimension: round(value + target_delta.get(dimension, 0.0), 4)
             for dimension, value in target_before.items()
         }
+        before_over = detect_over_directing(_list(before_candidate.get("shots")), opportunities=_list(source_row.get("opportunities")), baseline_shot_count=len(_list(before_candidate.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0))
+        after_over = detect_over_directing(_list(after_candidate.get("shots")), opportunities=_list(source_row.get("opportunities")), baseline_shot_count=len(_list(before_candidate.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0))
         results.append({
             "scene_id": scene_id,
+            "scene_origin": _text(_dict(manifest_row).get("scene_origin")) if manifest_by_id else _text(_dict(source_row.get("scene")).get("scene_type")),
+            "source_type": _text(_dict(manifest_row).get("source_type")) if manifest_by_id else _text(_dict(source_row.get("scene")).get("source")),
             "before_director_quality": before_dq,
             "after_director_quality": after_dq,
             "director_quality_delta": round((after_dq - before_dq), 4) if before_dq is not None and after_dq is not None else None,
             "before_creative_value": before_cv,
             "after_creative_value": after_cv,
-            "creative_value_delta": 0.0 if before_cv is not None else None,
-            "creative_value_measurement_status": "not_replayed_after_tail_repair",
+            "creative_value_delta": round(after_cv - before_cv, 4) if before_cv is not None and after_cv is not None else None,
+            "creative_value_measurement_status": cv_status,
+            "creative_value_replay": replay if manifest_by_id else None,
             "target_dimensions_before": target_before,
             "target_dimensions_after": target_after,
             "target_dimension_deltas": target_delta,
+            "before_over_directing_rate": _number(before_over.get("over_directing_rate")),
+            "after_over_directing_rate": _number(after_over.get("over_directing_rate")),
+            "before_shot_inflation_rate": _number(before_over.get("shot_inflation_rate")),
+            "after_shot_inflation_rate": _number(after_over.get("shot_inflation_rate")),
             "after_candidate_fingerprint": repair_result.get("after_fingerprint"),
             "root_causes": repair_result.get("ranked_root_causes"),
             "repair": repair_result,
@@ -381,8 +466,75 @@ def run_targeted_tail_pilot(
     audit_items = [item for item in (audit_records or []) if isinstance(item, dict)] if audit_records is not None else []
     observed_http_count = len(audit_items) if audit_records is not None else None
     transport_retry_count = sum(bool(_dict(item.get("extra")).get("transport_retry")) for item in audit_items) if audit_records is not None else None
+    before_dq_values = [float(item["before_director_quality"]) for item in results if _number(item.get("before_director_quality")) is not None]
+    after_dq_values = [float(item["after_director_quality"]) for item in results if _number(item.get("after_director_quality")) is not None]
+    before_cv_values = [float(item["before_creative_value"]) for item in results if _number(item.get("before_creative_value")) is not None]
+    after_cv_values = [float(item["after_creative_value"]) for item in results if _number(item.get("after_creative_value")) is not None]
+    deltas_dq = [float(item["director_quality_delta"]) for item in results if _number(item.get("director_quality_delta")) is not None]
+    deltas_cv = [float(item["creative_value_delta"]) for item in results if _number(item.get("creative_value_delta")) is not None]
+    low_before = sum(value < 60 for value in before_dq_values)
+    low_after = sum(value < 60 for value in after_dq_values)
+    root_statuses: list[str] = []
+    attempt_rows = [attempt for root in root_rows for attempt in _list(root.get("attempts")) if isinstance(attempt, dict)]
+    first_pass_rows = [(_list(root.get("attempts"))[0]) for root in root_rows if _list(root.get("attempts"))]
+    ir_first_pass_valid = sum(_text(_dict(attempt).get("ir_parse_status")) == "valid" for attempt in first_pass_rows)
+    ir_final_valid = sum(any(_text(_dict(attempt).get("ir_parse_status")) == "valid" for attempt in _list(root.get("attempts"))) for root in root_rows)
+    canonical_compile_count = sum(any(_text(_dict(attempt).get("canonical_compile_status")) == "compiled" for attempt in _list(root.get("attempts"))) for root in root_rows)
+    contract_pass_count = sum(bool(_dict(_list(root.get("attempts"))[-1]).get("contract_status") == "pass") for root in root_rows if _list(root.get("attempts")))
+    fact_override_attempt_count = sum(int(_dict(_dict(attempt).get("acceptance")).get("fact_override_count") or 0) for attempt in attempt_rows)
+    fact_override_accepted_count = sum(int(_dict(_dict(attempt).get("acceptance")).get("fact_override_count") or 0) for attempt in attempt_rows if _text(attempt.get("status")) == "accepted")
+    for root in root_rows:
+        attempts_for_root = _list(root.get("attempts"))
+        last = _dict(attempts_for_root[-1]) if attempts_for_root else {}
+        acceptance = _dict(last.get("acceptance"))
+        if bool(root.get("accepted")):
+            root_statuses.append("ACCEPTED")
+        elif "MEASUREMENT_BLOCKED" in _text(acceptance.get("rollback_reason")) or "MEASUREMENT_BLOCKED" in _text(last.get("error")):
+            root_statuses.append("MEASUREMENT_BLOCKED")
+        elif "TARGET_DIMENSION_NOT_IMPROVED" in _text(acceptance.get("rollback_reason")) or "TARGET_DIMENSION_NOT_IMPROVED" in _text(last.get("error")):
+            root_statuses.append("TARGET_DIMENSION_NOT_IMPROVED")
+        elif "CREATIVE_VALUE_REGRESSION" in _text(acceptance.get("rollback_reason")) or "CREATIVE_VALUE_REGRESSION" in _text(last.get("error")):
+            root_statuses.append("CV_REGRESSION")
+        elif "DIRECTOR_QUALITY_REGRESSION" in _text(acceptance.get("rollback_reason")) or "DIRECTOR_QUALITY_REGRESSION" in _text(last.get("error")):
+            root_statuses.append("DQ_REGRESSION")
+        elif last.get("ir_parse_status") == "invalid":
+            root_statuses.append("IR_FAILED")
+        elif last.get("canonical_compile_status") == "not_run":
+            root_statuses.append("COMPILE_FAILED")
+        elif last.get("contract_status") == "fail":
+            root_statuses.append("CONTRACT_FAILED")
+        else:
+            root_statuses.append("ROLLBACK")
+    def cohort_rows(origin: str | None) -> list[dict[str, Any]]:
+        return [item for item in results if origin is None or _text(item.get("scene_origin")) == origin]
+    def cohort_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+        row_dq = [float(item["director_quality_delta"]) for item in rows if _number(item.get("director_quality_delta")) is not None]
+        row_cv = [float(item["creative_value_delta"]) for item in rows if _number(item.get("creative_value_delta")) is not None]
+        attempted_rows = [item for item in rows if _dict(item.get("repair")).get("attempts")]
+        return {
+            "scene_count": len(rows),
+            "scene_repair_success": sum(bool(item.get("accepted")) for item in rows),
+            "scene_repair_success_rate": (sum(bool(item.get("accepted")) for item in rows) / len(attempted_rows)) if attempted_rows else 0.0,
+            "scene_meaningful_uplift": sum(bool(item.get("accepted")) and float(item.get("director_quality_delta") or 0) >= 10 and float(item.get("creative_value_delta") or 0) > 0 for item in rows),
+            "dq_delta": _distribution(row_dq),
+            "cv_delta": _distribution(row_cv),
+            "tail_before": sum(float(item.get("before_director_quality") or 0) < 60 for item in rows),
+            "tail_after": sum(float(item.get("after_director_quality") or 0) < 60 for item in rows),
+            "root_cause_acceptance_rate": (sum(bool(root.get("accepted")) for item in rows for root in _list(_dict(item.get("repair")).get("attempts"))) / sum(len(_list(_dict(item.get("repair")).get("attempts"))) for item in rows)) if sum(len(_list(_dict(item.get("repair")).get("attempts"))) for item in rows) else 0.0,
+        }
+    value_metrics = {
+        "dq_before": _distribution(before_dq_values), "dq_after": _distribution(after_dq_values), "dq_delta": _distribution(deltas_dq),
+        "dq_buckets_before": _quality_buckets(before_dq_values), "dq_buckets_after": _quality_buckets(after_dq_values),
+        "tail_scene_count_before": low_before, "tail_scene_count_after": low_after,
+        "tail_reduction_rate": (low_before - low_after) / low_before if low_before else 0.0,
+        "creative_value_before": _distribution(before_cv_values), "creative_value_after": _distribution(after_cv_values), "creative_value_delta": _distribution(deltas_cv),
+        "creative_value_improved_scene_count": sum(value > 0 for value in deltas_cv),
+        "creative_value_unchanged_scene_count": sum(value == 0 for value in deltas_cv),
+        "creative_value_regressed_scene_count": sum(value < 0 for value in deltas_cv),
+        "cohorts": {"ALL": cohort_summary(cohort_rows(None)), "APPROVED_RECORD": cohort_summary(cohort_rows("approved_record")), "FIXTURE": cohort_summary([item for item in results if _text(item.get("scene_origin")) != "approved_record"])},
+    }
     return {
-        "protocol_version": "director-quality-v2-4-2-targeted-tail-pilot",
+        "protocol_version": "director-quality-v2-4-3-targeted-tail-pilot" if manifest_by_id else "director-quality-v2-4-2-targeted-tail-pilot",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "source_artifacts": [_repo_path(pilot_path), _repo_path(evidence_path)],
         "selected_scene_count": len(results),
@@ -403,9 +555,27 @@ def run_targeted_tail_pilot(
             "format_repair_count": attempt_kinds.count("FORMAT_REPAIR"),
             "semantic_repair_count": attempt_kinds.count("SEMANTIC_REPAIR"),
             "creative_generation_count": attempt_kinds.count("CREATIVE_GENERATION"),
+            "root_cause_status_counts": {status: root_statuses.count(status) for status in sorted(set(root_statuses))},
+            "ir_first_pass_valid_count": ir_first_pass_valid,
+            "ir_first_pass_valid_rate": (ir_first_pass_valid / len(first_pass_rows)) if first_pass_rows else None,
+            "ir_final_valid_count": ir_final_valid,
+            "ir_final_valid_rate": (ir_final_valid / len(root_rows)) if root_rows else None,
+            "canonical_compile_count": canonical_compile_count,
+            "candidate_contract_pass_count": contract_pass_count,
+            "fact_override_attempt_count": fact_override_attempt_count,
+            "fact_override_accepted_count": fact_override_accepted_count,
+            "request_echo_count": 0,
+            "unknown_provider_shape_count": 0,
         },
+        "value_metrics": value_metrics,
+        "selected_root_cause_count": selected_root_count,
+        "attempted_root_cause_count": attempted_root_count,
+        "accepted_root_cause_count": accepted_root_count,
+        "root_cause_acceptance_rate": (accepted_root_count / attempted_root_count) if attempted_root_count else 0.0,
+        "non_repairable_root_cause_count": sum(status not in {"ACCEPTED"} for status in root_statuses),
         "scenes": results,
         "side_effects": {"production": 0, "storyboard": 0, "media": 0, "object_storage": 0, "production_shadow": 0},
+        "frozen_manifest": _repo_path(manifest_path) if manifest_path is not None else None,
     }
 
 
@@ -416,6 +586,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--execute-real", action="store_true")
     parser.add_argument("--confirmation-token", default="")
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST if DEFAULT_MANIFEST.exists() else None)
     args = parser.parse_args(argv)
     from api.model_registry import get_profile
 
@@ -426,6 +597,11 @@ def main(argv: list[str] | None = None) -> int:
         output.write_text(json.dumps(preflight, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({"status": "preflight_only", "artifact": _repo_path(output), **preflight}, ensure_ascii=False, indent=2))
         return 0
+    if args.manifest is not None:
+        from scripts.run_director_quality_v2_4_3_preflight import build_preflight as build_v243_preflight
+        hard_gate = build_v243_preflight()
+        if not hard_gate.get("ready_for_real_mimo"):
+            raise PermissionError("V2.4.3 Provider-Free Hard Gate 未通过: " + ", ".join(hard_gate.get("blockers") or []))
     validate_authorization(confirmation_token=args.confirmation_token, profile=profile, preflight=preflight)
     audit_records: list[dict[str, Any]] = []
 
@@ -437,6 +613,7 @@ def main(argv: list[str] | None = None) -> int:
         pilot_path=args.pilot,
         model=_text(profile.get("model_name")),
         audit_records=audit_records,
+        manifest_path=args.manifest,
     )
     output = args.output or (ARTIFACTS / f"director-quality-v2-4-targeted-tail-pilot-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json")
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -20,6 +20,7 @@ from core.director_tail_repair_semantic_spec import minimal_valid_skeleton, type
 from core.director_tail_repair_ir_compiler import compile_repair_ir
 from core.director_overdirecting import detect_over_directing
 from core.director_tail_repair_request import REPAIR_REQUEST_SCHEMA_VERSION, build_repair_request, with_attempt
+from core.director_creative_value import DIMENSION_ATTRIBUTION, replay_creative_value
 
 
 TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION = "director-quality-v2-4-tail-repair-executor-v1"
@@ -70,10 +71,14 @@ def _minimal_context(
     previous_intervention: Any,
 ) -> dict[str, Any]:
     dimensions = TARGET_DIMENSIONS.get(root_cause, set())
+    opportunity_dimensions = set(dimensions)
+    for name, canonical in DIMENSION_ATTRIBUTION.items():
+        if canonical in dimensions:
+            opportunity_dimensions.add(name.upper())
     relevant_opportunities = [
         copy.deepcopy(item)
         for item in opportunities
-        if isinstance(item, dict) and dimensions.intersection({_text(value).upper() for value in _list(item.get("recommended_directing_dimensions"))})
+        if isinstance(item, dict) and opportunity_dimensions.intersection({_text(value).upper() for value in _list(item.get("recommended_directing_dimensions"))})
     ][:5]
     immutable_subset = {
         "immutable_fields": list(IMMUTABLE_FIELDS),
@@ -156,6 +161,51 @@ def _creative_value_score(value: Any) -> float | None:
     return _numeric(value)
 
 
+def _candidate_interventions(
+    *,
+    context: dict[str, Any],
+    opportunities: list[dict[str, Any]],
+    before_score: dict[str, Any],
+    after_score: dict[str, Any],
+    contract_pass: bool,
+) -> list[dict[str, Any]]:
+    """Build deterministic opportunity overlays for one applied candidate."""
+
+    relevant_ids = {_text(value) for value in _list(context.get("relevant_opportunity_ids")) if _text(value)}
+    if not relevant_ids:
+        relevant_ids = {_text(_dict(item).get("opportunity_id")) for item in _list(context.get("relevant_opportunities")) if _text(_dict(item).get("opportunity_id"))}
+    before_dims = _dict(before_score.get("dimensions"))
+    after_dims = _dict(after_score.get("dimensions"))
+    quality_delta = float(after_score.get("director_quality_score", 0) or 0) - float(before_score.get("director_quality_score", 0) or 0)
+    rows: list[dict[str, Any]] = []
+    for opportunity in opportunities:
+        if not isinstance(opportunity, dict):
+            continue
+        opportunity_id = _text(opportunity.get("opportunity_id"))
+        if opportunity_id not in relevant_ids:
+            continue
+        recommended = {
+            DIMENSION_ATTRIBUTION.get(_text(item).lower(), _text(item).upper())
+            for item in _list(opportunity.get("recommended_directing_dimensions"))
+        }
+        dimension_deltas = {
+            key: round(float(after_dims.get(key, 0) or 0) - float(before_dims.get(key, 0) or 0), 4)
+            for key in sorted(set(before_dims) | set(after_dims))
+            if key.upper() in recommended and isinstance(after_dims.get(key, before_dims.get(key)), (int, float))
+        }
+        rows.append({
+            "opportunity_id": opportunity_id,
+            "patch_valid": bool(contract_pass),
+            "applied": bool(contract_pass),
+            "fact_contract_pass": bool(contract_pass),
+            "new_blocker": False,
+            "quality_delta": quality_delta,
+            "dimension_deltas": dimension_deltas,
+            "repaired": True,
+        })
+    return rows
+
+
 def _repair_response_to_patch(
     raw: Any,
     *,
@@ -194,20 +244,30 @@ def execute_tail_repair(
     repair_context: dict[str, Any] | None = None,
     model: str = "",
     require_repair_ir: bool = False,
+    require_creative_value_replay: bool = False,
     root_causes: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Execute at most two targeted root-cause repairs and accept/rollback."""
 
     baseline = copy.deepcopy(candidate)
     source = record if isinstance(record, dict) else {}
-    ranked = rank_tail_root_causes_v2(source)
     if root_causes is not None:
         ranked_causes = [
             _text(value)
             for value in root_causes
             if _text(value) in REPAIR_SCOPES
         ][: max(0, min(int(max_root_causes), 2))]
+        # V2.4.3 passes an immutable manifest list.  Do not invoke the live
+        # ranker in that path: re-ranking would silently change the A/B cohort.
+        ranked = {
+            "schema_version": "director_quality_tail_root_cause_ranker_v2",
+            "root_cause": ranked_causes[0] if ranked_causes else "UNKNOWN_ROOT_CAUSE",
+            "ranked_root_causes": [{"code": value, "frozen": True} for value in ranked_causes],
+            "candidate_causes": list(ranked_causes),
+            "evidence": ["frozen manifest root cause"],
+        }
     else:
+        ranked = rank_tail_root_causes_v2(source)
         ranked_causes = [
             _text(item.get("code"))
             for item in _list(ranked.get("ranked_root_causes"))
@@ -252,6 +312,7 @@ def execute_tail_repair(
         previous_error = ""
         previous_validation_errors: list[dict[str, Any]] = []
         previous_kind = "CREATIVE_GENERATION"
+        replay_info: dict[str, Any] = {}
         for attempt_number in range(1, attempt_limit + 1):
             if repair_callable is None:
                 rollback_reason = "REPAIR_CALLABLE_UNAVAILABLE"
@@ -317,9 +378,32 @@ def execute_tail_repair(
                 after_candidate = compilation.get("candidate") if isinstance(compilation.get("candidate"), dict) else before_candidate
                 after_score = score_director_quality(after_candidate, treatment=treatment, blocking=blocking)
                 before_cv = _creative_value_score(source.get("creative_value"))
-                after_cv = _creative_value_score(source.get("creative_value_after"))
-                if after_cv is None and isinstance(source.get("creative_value_replay"), dict):
-                    after_cv = _creative_value_score(source["creative_value_replay"].get("score"))
+                candidate_changed = fingerprint(after_candidate) != before_fp
+                replay = replay_creative_value(
+                    baseline_creative_value=source.get("creative_value"),
+                    opportunities=opportunities_list,
+                    decisions=source.get("planner_decisions") or source.get("decisions") or [],
+                    baseline_outcomes=source.get("opportunity_outcomes") or [],
+                    candidate_interventions=_candidate_interventions(
+                        context=context,
+                        opportunities=opportunities_list,
+                        before_score=before_score,
+                        after_score=after_score,
+                        contract_pass=bool(validation.get("contract_pass")),
+                    ),
+                    after_director_quality=after_score.get("director_quality_score"),
+                    candidate_fingerprint=fingerprint(after_candidate),
+                    frozen_inputs={
+                        "scene_id": _text(source.get("scene_id")),
+                        "baseline_candidate_fingerprint": fingerprint(baseline),
+                        "relevant_opportunity_ids": sorted(_text(value) for value in _list(context.get("relevant_opportunity_ids")) if _text(value)),
+                    },
+                )
+                replay_info = replay
+                after_cv = _creative_value_score(replay)
+                cv_measurement_status = _text(replay.get("measurement_status")) or "blocked"
+                if require_creative_value_replay and candidate_changed and cv_measurement_status != "ready":
+                    raise ValueError("MEASUREMENT_BLOCKED: deterministic Creative Value replay unavailable")
                 over_before = detect_over_directing(_list(before_candidate.get("shots")), opportunities=opportunities_list, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0)).get("over_directing_rate")
                 over_after = detect_over_directing(_list(after_candidate.get("shots")), opportunities=opportunities_list, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0)).get("over_directing_rate")
                 inflation_before = detect_over_directing(_list(before_candidate.get("shots")), opportunities=opportunities_list, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0)).get("shot_inflation_rate")
@@ -340,13 +424,15 @@ def execute_tail_repair(
                     over_directing_after=over_after,
                     shot_inflation_before=inflation_before,
                     shot_inflation_after=inflation_after,
+                    creative_value_required=bool(require_creative_value_replay and candidate_changed),
+                    creative_value_measurement_status=cv_measurement_status,
                 )
                 delta = acceptance["target_dimension_deltas"]
                 if not acceptance["accepted"]:
                     raise ValueError(acceptance["rollback_reason"] or "repair acceptance policy rejected candidate")
                 after_fp = fingerprint(after_candidate)
-                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "accepted", "protocol": protocol.get("protocol"), "ir_parse_status": ir_parse_status, "ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_compile_status": canonical_compile_status, "canonical_patch_fingerprint": fingerprint(document), "contract_status": contract_status, "target_delta": delta, "acceptance": acceptance, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
-                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=after_fp, status="accepted", model=model, ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(raw), "repair_ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_patch_fingerprint": fingerprint(document), "ir_parse_status": "valid" if protocol.get("protocol") == "ir" else "legacy_compat", "canonical_compile_status": "compiled", "compile_status": "compiled", "contract_status": "pass", "target_dimension_delta": delta, "dq_before": before_score.get("director_quality_score"), "dq_after": after_score.get("director_quality_score"), "cv_before": before_cv, "cv_after": after_cv, "accepted": True, "rollback_reason": ""})
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "accepted", "protocol": protocol.get("protocol"), "ir_parse_status": ir_parse_status, "ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_compile_status": canonical_compile_status, "canonical_patch_fingerprint": fingerprint(document), "contract_status": contract_status, "target_delta": delta, "acceptance": acceptance, "creative_value_replay": replay, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
+                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=after_fp, status="accepted", model=model, ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(raw), "repair_ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_patch_fingerprint": fingerprint(document), "ir_parse_status": "valid" if protocol.get("protocol") == "ir" else "legacy_compat", "canonical_compile_status": "compiled", "compile_status": "compiled", "contract_status": "pass", "target_dimension_delta": delta, "dq_before": before_score.get("director_quality_score"), "dq_after": after_score.get("director_quality_score"), "cv_before": before_cv, "cv_after": after_cv, "creative_value_replay_fingerprint": replay.get("creative_value_replay_fingerprint"), "accepted": True, "rollback_reason": ""})
                 current = copy.deepcopy(after_candidate)
                 accepted = True
                 accepted_roots += 1
@@ -357,8 +443,10 @@ def execute_tail_repair(
                 previous_kind = "FORMAT_REPAIR" if isinstance(exc, (CreativePatchSchemaError, RepairIRSchemaError)) else "SEMANTIC_REPAIR"
                 structured_errors = copy.deepcopy(getattr(exc, "errors", [])) if isinstance(exc, RepairIRSchemaError) else []
                 previous_validation_errors = structured_errors
-                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "rejected", "ir_parse_status": ir_parse_status, "canonical_compile_status": canonical_compile_status, "contract_status": contract_status, "error": str(exc), "error_code": getattr(exc, "code", ""), "ir_validation_errors_structured": structured_errors})
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "rejected", "ir_parse_status": ir_parse_status, "canonical_compile_status": canonical_compile_status, "contract_status": contract_status, "error": str(exc), "error_code": getattr(exc, "code", ""), "ir_validation_errors_structured": structured_errors, "creative_value_replay": copy.deepcopy(replay_info) if replay_info else None})
                 _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(previous_raw) if previous_raw is not None else "", "repair_ir_fingerprint": "", "canonical_patch_fingerprint": "", "ir_parse_status": ir_parse_status, "canonical_compile_status": canonical_compile_status, "compile_status": canonical_compile_status, "contract_status": contract_status, "target_dimension_delta": {}, "dq_before": before_score.get("director_quality_score"), "dq_after": before_score.get("director_quality_score"), "cv_before": _creative_value_score(source.get("creative_value")), "cv_after": None, "accepted": False, "rollback_reason": str(exc)})
+                if str(exc).startswith("MEASUREMENT_BLOCKED:"):
+                    break
         if not accepted and not rollback_reason:
             rollback_reason = "REPAIR_ATTEMPT_BUDGET_EXHAUSTED"
         if attempts:

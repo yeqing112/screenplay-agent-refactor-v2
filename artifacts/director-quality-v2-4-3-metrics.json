@@ -1,0 +1,275 @@
+{
+  "schema_version": "director-quality-v2-4-3-metrics-v1",
+  "generated_at": "2026-09-14T18:35:38.729251+00:00",
+  "source": "artifacts/director-quality-v2-4-3-targeted-tail-pilot-real.json",
+  "cohort": {
+    "all": 15,
+    "approved_record": 5,
+    "fixture": 10
+  },
+  "root_causes": {
+    "selected": 27,
+    "attempted": 27,
+    "accepted": 27,
+    "acceptance_rate": 1.0
+  },
+  "protocol": {
+    "semantic_attempt_count": 28,
+    "provider_http_request_count": 28,
+    "provider_http_request_count_status": "observed",
+    "transport_retry_count": 0,
+    "json_parser_retry_count": 0,
+    "format_repair_count": 1,
+    "semantic_repair_count": 0,
+    "creative_generation_count": 27,
+    "root_cause_status_counts": {
+      "ACCEPTED": 27
+    },
+    "ir_first_pass_valid_count": 26,
+    "ir_first_pass_valid_rate": 0.9629629629629629,
+    "ir_final_valid_count": 27,
+    "ir_final_valid_rate": 1.0,
+    "canonical_compile_count": 27,
+    "candidate_contract_pass_count": 27,
+    "fact_override_attempt_count": 0,
+    "fact_override_accepted_count": 0,
+    "request_echo_count": 0,
+    "unknown_provider_shape_count": 0
+  },
+  "director_quality": {
+    "before": {
+      "mean": 44.286,
+      "median": 47.8,
+      "min": 28.39,
+      "max": 61.45
+    },
+    "after": {
+      "mean": 51.036,
+      "median": 54.2,
+      "min": 32.51,
+      "max": 63.85
+    },
+    "delta": {
+      "mean": 6.75,
+      "median": 6.4,
+      "min": 2.4,
+      "max": 10.0
+    }
+  },
+  "creative_value": {
+    "before": {
+      "mean": 38.6097,
+      "median": 40.0,
+      "min": 25.0,
+      "max": 55.0
+    },
+    "after": {
+      "mean": 50.1899,
+      "median": 48.3325,
+      "min": 26.5625,
+      "max": 80.0
+    },
+    "delta": {
+      "mean": 11.5802,
+      "median": 11.11,
+      "min": 1.5625,
+      "max": 25.0
+    },
+    "measurement_statuses": [
+      "ready"
+    ]
+  },
+  "value_metrics": {
+    "dq_before": {
+      "mean": 44.286,
+      "median": 47.8,
+      "p10": 28.414,
+      "p25": 37.455,
+      "p75": 50.3,
+      "p90": 50.3,
+      "min": 28.39,
+      "max": 61.45
+    },
+    "dq_after": {
+      "mean": 51.036,
+      "median": 54.2,
+      "p10": 34.546,
+      "p25": 44.41,
+      "p75": 57.3,
+      "p90": 60.3,
+      "min": 32.51,
+      "max": 63.85
+    },
+    "dq_delta": {
+      "mean": 6.75,
+      "median": 6.4,
+      "p10": 4.028,
+      "p25": 5.535,
+      "p75": 8.7,
+      "p90": 9.624,
+      "min": 2.4,
+      "max": 10.0
+    },
+    "dq_buckets_before": {
+      "<60": 14,
+      "60-69": 1,
+      "70-79": 0,
+      "80-89": 0,
+      ">=90": 0
+    },
+    "dq_buckets_after": {
+      "<60": 12,
+      "60-69": 3,
+      "70-79": 0,
+      "80-89": 0,
+      ">=90": 0
+    },
+    "tail_scene_count_before": 14,
+    "tail_scene_count_after": 12,
+    "tail_reduction_rate": 0.14285714285714285,
+    "creative_value_before": {
+      "mean": 38.6097,
+      "median": 40.0,
+      "p10": 26.125,
+      "p25": 28.1665,
+      "p75": 40.0,
+      "p90": 55.0,
+      "min": 25.0,
+      "max": 55.0
+    },
+    "creative_value_after": {
+      "mean": 50.1899,
+      "median": 48.3325,
+      "p10": 30.8327,
+      "p25": 36.065,
+      "p75": 56.6675,
+      "p90": 74.545,
+      "min": 26.5625,
+      "max": 80.0
+    },
+    "creative_value_delta": {
+      "mean": 11.5802,
+      "median": 11.11,
+      "p10": 4.4995,
+      "p25": 5.7287,
+      "p75": 16.6675,
+      "p90": 21.667,
+      "min": 1.5625,
+      "max": 25.0
+    },
+    "creative_value_improved_scene_count": 15,
+    "creative_value_unchanged_scene_count": 0,
+    "creative_value_regressed_scene_count": 0,
+    "cohorts": {
+      "ALL": {
+        "scene_count": 15,
+        "scene_repair_success": 15,
+        "scene_repair_success_rate": 1.0,
+        "scene_meaningful_uplift": 2,
+        "dq_delta": {
+          "mean": 6.75,
+          "median": 6.4,
+          "p10": 4.028,
+          "p25": 5.535,
+          "p75": 8.7,
+          "p90": 9.624,
+          "min": 2.4,
+          "max": 10.0
+        },
+        "cv_delta": {
+          "mean": 11.5802,
+          "median": 11.11,
+          "p10": 4.4995,
+          "p25": 5.7287,
+          "p75": 16.6675,
+          "p90": 21.667,
+          "min": 1.5625,
+          "max": 25.0
+        },
+        "tail_before": 14,
+        "tail_after": 12,
+        "root_cause_acceptance_rate": 1.0
+      },
+      "APPROVED_RECORD": {
+        "scene_count": 5,
+        "scene_repair_success": 5,
+        "scene_repair_success_rate": 1.0,
+        "scene_meaningful_uplift": 0,
+        "dq_delta": {
+          "mean": 5.716,
+          "median": 4.22,
+          "p10": 3.0,
+          "p25": 3.9,
+          "p75": 9.0,
+          "p90": 9.036,
+          "min": 2.4,
+          "max": 9.06
+        },
+        "cv_delta": {
+          "mean": 5.435,
+          "median": 4.63,
+          "p10": 2.7025,
+          "p25": 4.4125,
+          "p75": 5.2075,
+          "p90": 8.9005,
+          "min": 1.5625,
+          "max": 11.3625
+        },
+        "tail_before": 4,
+        "tail_after": 4,
+        "root_cause_acceptance_rate": 1.0
+      },
+      "FIXTURE": {
+        "scene_count": 10,
+        "scene_repair_success": 10,
+        "scene_repair_success_rate": 1.0,
+        "scene_meaningful_uplift": 2,
+        "dq_delta": {
+          "mean": 7.267,
+          "median": 6.4,
+          "p10": 5.907,
+          "p25": 6.1,
+          "p75": 8.3,
+          "p90": 10.0,
+          "min": 5.07,
+          "max": 10.0
+        },
+        "cv_delta": {
+          "mean": 14.6528,
+          "median": 14.5838,
+          "p10": 8.1242,
+          "p25": 9.0269,
+          "p75": 16.6675,
+          "p90": 25.0,
+          "min": 6.25,
+          "max": 25.0
+        },
+        "tail_before": 10,
+        "tail_after": 8,
+        "root_cause_acceptance_rate": 1.0
+      }
+    }
+  },
+  "gates": {
+    "scene_execution_coverage_100": true,
+    "root_cause_attempt_coverage_100": true,
+    "scene_repair_success_ge_80": true,
+    "target_dimension_improvement_ge_80": 1.0,
+    "root_cause_acceptance_ge_60": 1.0,
+    "dq_mean_delta_ge_15": false,
+    "dq_median_delta_ge_10": false,
+    "cv_mean_delta_ge_15": false,
+    "tail_reduction_ge_50": false,
+    "fact_override_accepted_zero": true,
+    "over_directing_threshold": true
+  },
+  "value_gate": "FAIL",
+  "overall_status": "NOT_READY_FOR_FULL_24_REEVALUATION",
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  }
+}

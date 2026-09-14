@@ -1,0 +1,44 @@
+{
+  "schema_version": "director-quality-v2-4-3-provider-free-preflight-v1",
+  "generated_at": "2026-09-14T18:27:35.455017+00:00",
+  "status": "READY_FOR_REAL_MIMO",
+  "ready_for_real_mimo": true,
+  "manifest": {
+    "path": "artifacts/director-quality-v2-4-3-targeted-tail-manifest.json",
+    "scene_count": 15,
+    "root_count": 27
+  },
+  "checks": {
+    "manifest_exists": true,
+    "manifest_frozen": true,
+    "manifest_scene_count": true,
+    "manifest_root_count": true,
+    "manifest_budget": true,
+    "unique_scene_ids": true,
+    "all_scenes_have_origin": true,
+    "all_roots_have_targets": true,
+    "deterministic_replay_ready": true,
+    "deterministic_replay_reproducible": true
+  },
+  "safeguards": {
+    "manifest_path_supported": true,
+    "frozen_roots_bypass_ranker": true,
+    "creative_value_replay_required": true,
+    "json_parser_retries_zero": true,
+    "no_media_side_effects": true
+  },
+  "replay_probe": {
+    "status": "ready",
+    "score": 80.0,
+    "fingerprint": "b0a5f7f472a1d1bb011f455b4647072dcde660eabdfe7774caf997ce89747546"
+  },
+  "real_mimo_calls": 0,
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  },
+  "blockers": []
+}
