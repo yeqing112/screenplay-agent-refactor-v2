@@ -3,8 +3,9 @@
 审计日期：2026-09-14  
 仓库：`yeqing112/screenplay-agent-refactor-v2`  
 分支：`codex/unify-formal-workspace`  
-本地 HEAD：`a50cb36e2c61b9609d922bf554978ede882b228b`  
-已缓存远程 ref：`origin/codex/unify-formal-workspace` = 本地 HEAD
+Baseline Audit HEAD（审计起点）：`a50cb36e2c61b9609d922bf554978ede882b228b`  
+说明：本文件第 1–8 节保留该起点的历史基线事实；不要将其误读为当前 HEAD。  
+Final As-Built Verification source commit：`17e6af9`（代码验证基线；后续仅有文档索引提交）
 
 ## 1. 审计边界与方法
 
@@ -309,7 +310,7 @@ V2.3 已完成机会发现、策略覆盖、价值评估和安全隔离的第一
 
 ### 本地证据
 
-- 全量回归：`973 passed, 890 warnings`；Targeted Tail 离线集成：`5 passed`；
+- 全量回归：`974 passed, 890 warnings`；本轮 V2.4 定向专项：`17 passed`；
 - V2.4 专项与离线回放测试：全部通过；
 - 离线回放场景数：24；
 - Shadow Gate：`NOT_READY`，结构化 reasons 非空；
