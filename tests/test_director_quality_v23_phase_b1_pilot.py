@@ -61,3 +61,42 @@ def test_b1_dimension_delta_normalizes_scorer_labels_to_opportunity_contract():
         {"dimensions": {"EDIT_RHYTHM": 6, "SHOT_MOTIVATION": 4, "UNSUPPORTED": 9}},
     )
     assert result == {"edit_strategy": 2.0, "shot_motivation": -1.0}
+
+
+def test_b1_mocked_run_populates_opportunity_summary_and_creative_value(monkeypatch):
+    opportunity = {
+        "schema_version": "director_creative_opportunity_v1",
+        "opportunity_id": "O_EDIT",
+        "type": "OPP_REACTION",
+        "scene_id": "book990402:e1:红伞幻影（一）",
+        "beat_id": "B01",
+        "subjects": [],
+        "reason": "节拍存在反应窗口",
+        "evidence_refs": ["treatment.beat_map[0].beat_id"],
+        "priority": "medium",
+        "eligible": True,
+        "recommended_directing_dimensions": ["edit_strategy"],
+    }
+    monkeypatch.setattr(
+        "core.director_opportunity_detector.detect_creative_opportunities",
+        lambda **kwargs: [opportunity],
+    )
+    monkeypatch.setattr(
+        core.llm,
+        "call_llm_json",
+        lambda *args, **kwargs: {
+            "schema_version": "director_creative_patch_v1",
+            "patches": [{"plan_shot_id": "S01", "changes": {"edit.cut_reason": "reaction_complete"}}],
+            "auxiliary_shot_proposals": [],
+            "opportunity_decisions": [{"opportunity_id": "O_EDIT", "decision": "ACT", "strategy": "反应完成后切换"}],
+        },
+    )
+    result = run_authorized_pilot(
+        profile={"id": "m", "provider": "openai-compatible", "capability": "llm", "model_name": "mimo-v2.5", "api_key": "secret", "base_url": "https://example.invalid/v1"},
+        golden_path=Path("artifacts/director-quality-v2-1-golden-scenes.json"),
+        scene_limit=1,
+    )
+    assert result["summary"]["eligible_opportunity_count"] == 1
+    assert result["summary"]["acted_opportunity_count"] == 1
+    assert result["summary"]["useful_creative_acceptance"] == 1.0
+    assert result["scenes"][0]["creative_value"]["status"] == "ready"
