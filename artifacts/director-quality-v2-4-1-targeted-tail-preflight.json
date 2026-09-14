@@ -1,0 +1,41 @@
+{
+  "protocol_version": "director-quality-v2-4-targeted-tail-preflight",
+  "generated_at": "2026-09-14T11:52:57.200308+00:00",
+  "source_artifact": "artifacts/director-quality-v2-4-b2-freeze.json",
+  "source_commit": "f329b863409ddd09696cc25b05caba71555e0246",
+  "selected_scene_count": 15,
+  "selected_scene_ids": [
+    "book990402:e1:红伞幻影（二）",
+    "book990402:e2:回声照相馆",
+    "book990402:e2:暗房门口的试探",
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "V21_FIXTURE_01",
+    "V21_FIXTURE_04",
+    "V21_FIXTURE_07",
+    "V21_FIXTURE_08",
+    "V21_FIXTURE_09",
+    "V21_FIXTURE_10",
+    "V21_FIXTURE_11",
+    "fixture:dialogue_power_shift",
+    "fixture:multi_character",
+    "fixture:prop_continuity"
+  ],
+  "profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "base_url": "https://api.xiaomimimo.com/v1",
+    "key_configured": true
+  },
+  "ready_for_confirmation": true,
+  "blockers": [],
+  "real_mimo_calls": 0,
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  }
+}

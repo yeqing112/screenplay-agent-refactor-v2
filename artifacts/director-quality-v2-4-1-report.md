@@ -40,20 +40,21 @@
 
 V2.4 原始 provider body 没有持久化，只有 bounded error/fingerprint，因此无法安全重建原文。54 条 attempt 均保守分类为 `AMBIGUOUS_REJECTED`，`UNKNOWN_EXCEPTION=0`；没有任何旧输出被加入白名单。
 
-## 第二次 Targeted Pilot
+## 第二次 Targeted Pilot（V2.4.1）
 
-尚未执行。根据计划，必须在本地 hard gate 通过后取得新的显式人工确认，且继续使用同一 Frozen B2 的 15 scenes / 27 root causes。当前可报告：
+已在本地 hard gate 通过并取得显式确认后执行，继续使用同一 Frozen B2 的 15 scenes / 27 root causes。结果产物：
+`artifacts/director-quality-v2-4-1-targeted-tail-pilot-20260914T115313Z.json`。
 
 | 指标 | 结果 |
 |---|---:|
-| IR First Pass / Final | N/A（未调用 provider）|
-| Canonical Compile | N/A |
-| Candidate Contract Pass | N/A |
-| Target Dimension Improvement | N/A |
-| Repair Acceptance / Scene Success | N/A |
-| DQ / CV Delta | N/A |
+| IR First Pass / Final | 0% / 0% |
+| Canonical Compile | 0%（accepted IR 为 0） |
+| Candidate Contract Pass | 15/15（仅回退 baseline） |
+| Target Dimension Improvement | 0/27 |
+| Repair Acceptance / Scene Success | 0 / 0% |
+| DQ / CV Delta | 0 / 未重放 |
 | Fact Override Accepted | 0 |
 
 ## 最终状态
 
-**NOT_READY** — provider-free 协议闭环与 hard gate 已通过，但尚未获得 V2.4.1 第二次 Targeted Pilot 的新确认，不能宣称 Creative Gate 通过，也不能进入 Full 24 或 Production Shadow。
+**NOT_READY** — provider-free 协议闭环与 hard gate 已通过，但 V2.4.1 Targeted Pilot 的 MiMo 输出契约合规率为 0%，修复接受率为 0%，因此 Creative Gate 未通过；不得进入 Full 24 或 Production Shadow。所有外部调用均保持在候选修复层，未产生生产、媒体或存储副作用。

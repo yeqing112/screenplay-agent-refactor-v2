@@ -13,6 +13,7 @@ from typing import Any
 
 REPAIR_IR_SCHEMA_VERSION = "director_tail_repair_ir_v1"
 REPAIR_TYPES = {"edit", "emotion", "information", "performance", "camera"}
+DIRECTOR_TARGET_DIMENSIONS = {"DRAMATIC_CLARITY", "SHOT_MOTIVATION", "EMOTIONAL_PROGRESSION", "VISUAL_STORYTELLING", "SPATIAL_CLARITY", "PERFORMANCE_DIRECTION", "EDIT_RHYTHM", "INFORMATION_STRATEGY", "POWER_DYNAMICS", "SHOT_DIVERSITY"}
 
 ALLOWED_FIELDS: dict[str, dict[str, set[str]]] = {
     "edit": {"edit": {"duration_seconds", "cut_reason", "hold_after_action_seconds", "hold_before_cut_seconds", "hold_after_reveal_seconds", "rhythm_change", "reaction_timing"}},
@@ -82,11 +83,16 @@ def validate_repair_ir(raw: Any, *, known_plan_shot_ids: set[str] | None = None)
     if repair_type not in REPAIR_TYPES:
         raise RepairIRSchemaError("repair_type must be one of edit/emotion/information/performance/camera", path="repair_type")
     root = _text(raw.get("root_cause"))
+    if not root:
+        raise RepairIRSchemaError("root_cause is required", path="root_cause")
     if root and root in ROOT_CAUSE_TYPES and repair_type not in ROOT_CAUSE_TYPES[root]:
         raise RepairIRSchemaError("repair_type is incompatible with root_cause", path="repair_type", code="REPAIR_TYPE_ROOT_CAUSE_MISMATCH")
     targets = raw.get("target_dimensions")
     if not isinstance(targets, list) or not targets or any(not isinstance(item, str) or not item.strip() for item in targets):
         raise RepairIRSchemaError("target_dimensions must be a non-empty list of strings", path="target_dimensions")
+    unknown_targets = sorted({str(item).strip().upper() for item in targets} - DIRECTOR_TARGET_DIMENSIONS)
+    if unknown_targets:
+        raise RepairIRSchemaError(f"target_dimensions contains unsupported values: {', '.join(unknown_targets)}", path="target_dimensions")
     decisions = raw.get("shot_decisions")
     if not isinstance(decisions, list) or not decisions:
         raise RepairIRSchemaError("shot_decisions must be a non-empty list", path="shot_decisions")
@@ -156,4 +162,4 @@ def validate_repair_ir(raw: Any, *, known_plan_shot_ids: set[str] | None = None)
 
 parse_repair_ir = validate_repair_ir
 
-__all__ = ["REPAIR_IR_SCHEMA_VERSION", "REPAIR_TYPES", "ALLOWED_FIELDS", "ROOT_CAUSE_TYPES", "RepairIRSchemaError", "validate_repair_ir", "parse_repair_ir", "ir_fingerprint"]
+__all__ = ["REPAIR_IR_SCHEMA_VERSION", "REPAIR_TYPES", "DIRECTOR_TARGET_DIMENSIONS", "ALLOWED_FIELDS", "ROOT_CAUSE_TYPES", "RepairIRSchemaError", "validate_repair_ir", "parse_repair_ir", "ir_fingerprint"]
