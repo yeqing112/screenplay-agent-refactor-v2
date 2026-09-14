@@ -2,6 +2,7 @@ from pathlib import Path
 
 from scripts.run_director_quality_v2_4_offline_replay import build_offline_replay
 from scripts.run_director_quality_v2_4_targeted_tail_pilot import build_preflight
+from scripts.freeze_director_quality_v2_4_b2 import freeze_b2
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,3 +53,15 @@ def test_targeted_tail_preflight_selects_only_triggered_scenes_and_fails_closed_
     assert "MIMO_PROFILE_KEY_OR_CONFIGURATION_MISSING" in preflight["blockers"]
     assert "SOURCE_PROVENANCE_MISSING" in preflight["blockers"]
     assert preflight["real_mimo_calls"] == 0
+
+
+def test_b2_freeze_adds_portable_provenance_without_changing_scene_count():
+    frozen = freeze_b2(
+        pilot_path=ROOT / "artifacts" / "director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json",
+        evidence_path=ROOT / "artifacts" / "director-quality-v2-3-phase-b2-evidence.json",
+    )
+    assert frozen["frozen"] is True
+    assert len(frozen["scenes"]) == 24
+    provenance = frozen["provenance"]
+    assert provenance["commit_sha"]
+    assert all("\\" not in path and ":" not in path for path in provenance["source_artifacts"])
