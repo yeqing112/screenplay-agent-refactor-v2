@@ -1,0 +1,687 @@
+{
+  "protocol_version": "director-quality-v2-3-phase-b1-preflight",
+  "phase": "B1",
+  "generated_at": "2026-09-14T01:27:36.354060+00:00",
+  "scene_count": 12,
+  "required_scene_count": 12,
+  "real_mimo_calls": 0,
+  "confirmation_required": true,
+  "confirmation_token_name": "CONFIRM_DIRECTOR_V23_PHASE_B1_REAL_MIMO_PILOT",
+  "profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "capability": "llm",
+    "enabled": true,
+    "key_configured": true
+  },
+  "frozen_evidence": {
+    "golden_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v2-1-golden-scenes.json",
+    "scene_count": 18,
+    "selected_scene_count": 12,
+    "required_scene_count": 12,
+    "ready": true
+  },
+  "offline_gate": {
+    "artifact": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v2-3-offline-benchmark-current.json",
+    "available": true
+  },
+  "opportunity_summary": {
+    "total_count": 139,
+    "type_counts": {
+      "OPP_ACTION_ACCELERATION": 22,
+      "OPP_EMOTION_TURN": 43,
+      "OPP_INFORMATION_REVEAL": 42,
+      "OPP_POWER_SHIFT": 6,
+      "OPP_REACTION": 19,
+      "OPP_SILENCE_HOLD": 2,
+      "OPP_VISUAL_REVEAL": 5
+    },
+    "scenes_with_opportunities": 11,
+    "scenes_without_opportunities": 1
+  },
+  "scenes": [
+    {
+      "index": 0,
+      "scene": {
+        "book_id": 990402,
+        "episode": 1,
+        "scene_name": "红伞幻影（一）",
+        "scene_id": "book990402:e1:红伞幻影（一）",
+        "scene_type": "approved_record",
+        "source": "approved_treatment_scene_blocking"
+      },
+      "scene_id": "book990402:e1:红伞幻影（一）",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 6,
+      "eligible_opportunity_count": 6,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_ACTION_ACCELERATION": 6
+      },
+      "strategy_fingerprint": "849b3f0ee834af3a84d2eeb5fb96ee0e326f3cb4943c60a598069929c83e7e81",
+      "contract_fingerprint": "b6f2895fb0bffce5df43129adadd4a7b0004b4c9a7d3e69fa0d5cda552a9da8c",
+      "baseline_director_quality": 61.88,
+      "baseline_coverage": {
+        "performance_direction_coverage": null,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 0,
+        "edit_strategy_required_shot_count": 6,
+        "emotion_curve_entry_count": 6,
+        "information_plan_entry_count": 6,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 1,
+      "scene": {
+        "book_id": 990402,
+        "episode": 1,
+        "scene_name": "红伞幻影（二）",
+        "scene_id": "book990402:e1:红伞幻影（二）",
+        "scene_type": "approved_record",
+        "source": "approved_treatment_scene_blocking"
+      },
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 11,
+      "eligible_opportunity_count": 11,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_ACTION_ACCELERATION": 10,
+        "OPP_REACTION": 1
+      },
+      "strategy_fingerprint": "a9f0054635d8504981622a84164ff9ba624e86511fc60c1807880def51f361a3",
+      "contract_fingerprint": "8cae7baec070c4d0f040b62a34f13c017da9d7156a4d441de2248b34fe01bbc4",
+      "baseline_director_quality": 61.45,
+      "baseline_coverage": {
+        "performance_direction_coverage": null,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 0,
+        "edit_strategy_required_shot_count": 10,
+        "emotion_curve_entry_count": 10,
+        "information_plan_entry_count": 10,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 2,
+      "scene": {
+        "book_id": 990402,
+        "episode": 2,
+        "scene_name": "回声照相馆",
+        "scene_id": "book990402:e2:回声照相馆",
+        "scene_type": "approved_record",
+        "source": "approved_treatment_scene_blocking"
+      },
+      "scene_id": "book990402:e2:回声照相馆",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 32,
+      "eligible_opportunity_count": 32,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_EMOTION_TURN": 11,
+        "OPP_REACTION": 7,
+        "OPP_INFORMATION_REVEAL": 11,
+        "OPP_VISUAL_REVEAL": 3
+      },
+      "strategy_fingerprint": "48168c13f7f2dee06c09d442deac69a3442bc8ee2e8d2a3ae85392f12c110160",
+      "contract_fingerprint": "bfc3b635658a25cb9230c1aa702ef6f909c53b886df490bd0ce4a0ddc3ff37a6",
+      "baseline_director_quality": 28.39,
+      "baseline_coverage": {
+        "performance_direction_coverage": 0.0,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 1,
+        "edit_strategy_required_shot_count": 11,
+        "emotion_curve_entry_count": 11,
+        "information_plan_entry_count": 11,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 3,
+      "scene": {
+        "book_id": 990402,
+        "episode": 2,
+        "scene_name": "暗房门口的试探",
+        "scene_id": "book990402:e2:暗房门口的试探",
+        "scene_type": "approved_record",
+        "source": "approved_treatment_scene_blocking"
+      },
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 17,
+      "eligible_opportunity_count": 17,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_EMOTION_TURN": 8,
+        "OPP_INFORMATION_REVEAL": 8,
+        "OPP_SILENCE_HOLD": 1
+      },
+      "strategy_fingerprint": "b27011939b42ce7a03e38d789ee913f4e55ef8033b0df0a7144f12db5eff697f",
+      "contract_fingerprint": "3dfb8064097359fa2c6704d0bd8a75c4d33ea85508d9182bce09a0075fda8d3c",
+      "baseline_director_quality": 28.61,
+      "baseline_coverage": {
+        "performance_direction_coverage": null,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 0,
+        "edit_strategy_required_shot_count": 8,
+        "emotion_curve_entry_count": 8,
+        "information_plan_entry_count": 8,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 4,
+      "scene": {
+        "book_id": 990402,
+        "episode": 3,
+        "scene_name": "暗房惊魂",
+        "scene_id": "book990402:e3:暗房惊魂",
+        "scene_type": "approved_record",
+        "source": "approved_treatment_scene_blocking"
+      },
+      "scene_id": "book990402:e3:暗房惊魂",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 31,
+      "eligible_opportunity_count": 31,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_EMOTION_TURN": 11,
+        "OPP_REACTION": 4,
+        "OPP_INFORMATION_REVEAL": 11,
+        "OPP_ACTION_ACCELERATION": 3,
+        "OPP_POWER_SHIFT": 2
+      },
+      "strategy_fingerprint": "0830ee25da9e8cb3687c90606eed7c1c33ffdd78349c9a2616d5e484faa55675",
+      "contract_fingerprint": "6b21c382e7f6f757230e6c98f274250250e23e28da97c6871ad1ff10f5a77101",
+      "baseline_director_quality": 28.39,
+      "baseline_coverage": {
+        "performance_direction_coverage": 0.0,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 3,
+        "edit_strategy_required_shot_count": 11,
+        "emotion_curve_entry_count": 11,
+        "information_plan_entry_count": 11,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 5,
+      "scene": {
+        "book_id": 990402,
+        "episode": 3,
+        "scene_name": "暗房惊魂（2）",
+        "scene_id": "book990402:e3:暗房惊魂（2）",
+        "scene_type": "approved_record",
+        "source": "approved_treatment_scene_blocking"
+      },
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 27,
+      "eligible_opportunity_count": 27,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_EMOTION_TURN": 10,
+        "OPP_INFORMATION_REVEAL": 10,
+        "OPP_POWER_SHIFT": 1,
+        "OPP_ACTION_ACCELERATION": 3,
+        "OPP_REACTION": 3
+      },
+      "strategy_fingerprint": "acd2c0f73b793ccdc7b134e66430cc2625a9151ff2b03b9547109f861e32a425",
+      "contract_fingerprint": "e9cc88d744db9e3e72fe41e57d32c08f3a68ae8ba3cee2984b4692d46d3920ea",
+      "baseline_director_quality": 28.45,
+      "baseline_coverage": {
+        "performance_direction_coverage": null,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 0,
+        "edit_strategy_required_shot_count": 10,
+        "emotion_curve_entry_count": 10,
+        "information_plan_entry_count": 10,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 6,
+      "scene": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 01 双人对话",
+        "scene_id": "V21_FIXTURE_01",
+        "scene_type": "双人对话",
+        "source": "offline_golden_fixture"
+      },
+      "scene_id": "V21_FIXTURE_01",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 3,
+      "eligible_opportunity_count": 3,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_EMOTION_TURN": 1,
+        "OPP_REACTION": 1,
+        "OPP_POWER_SHIFT": 1
+      },
+      "strategy_fingerprint": "0e14d636f53bcd56925b56189d9237ad8380754bb0685e885abd9d51ef5bbc2d",
+      "contract_fingerprint": "9f899edac8b0bec5de09e9b45c18a03962454e89d0a94938b58ad0be922a2386",
+      "baseline_director_quality": 47.8,
+      "baseline_coverage": {
+        "performance_direction_coverage": 0.0,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 1,
+        "edit_strategy_required_shot_count": 2,
+        "emotion_curve_entry_count": 2,
+        "information_plan_entry_count": 2,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 7,
+      "scene": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 02 悬疑",
+        "scene_id": "V21_FIXTURE_02",
+        "scene_type": "悬疑",
+        "source": "offline_golden_fixture"
+      },
+      "scene_id": "V21_FIXTURE_02",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 3,
+      "eligible_opportunity_count": 3,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_REACTION": 1,
+        "OPP_INFORMATION_REVEAL": 1,
+        "OPP_VISUAL_REVEAL": 1
+      },
+      "strategy_fingerprint": "b2fe7bd550794a3234032f95ae3f7930cd27a7332fc1417a6092a59d3b136153",
+      "contract_fingerprint": "6ad2261821bac94bd4b863bf3c4b05cb317ff2f689348542b26b895fc450d287",
+      "baseline_director_quality": 50.3,
+      "baseline_coverage": {
+        "performance_direction_coverage": 0.0,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 1,
+        "edit_strategy_required_shot_count": 2,
+        "emotion_curve_entry_count": 2,
+        "information_plan_entry_count": 2,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 8,
+      "scene": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 03 信息揭示",
+        "scene_id": "V21_FIXTURE_03",
+        "scene_type": "信息揭示",
+        "source": "offline_golden_fixture"
+      },
+      "scene_id": "V21_FIXTURE_03",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 2,
+      "eligible_opportunity_count": 2,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_INFORMATION_REVEAL": 1,
+        "OPP_VISUAL_REVEAL": 1
+      },
+      "strategy_fingerprint": "d95c66bcfe1eb33bd4a6d8a9218faeb90cec705de21cc4d67a366b9610dca023",
+      "contract_fingerprint": "1ff9dd2ad8d917193c90dfc95d7502e40bf68d3ec390afdaa6ff219158633bfe",
+      "baseline_director_quality": 52.8,
+      "baseline_coverage": {
+        "performance_direction_coverage": null,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": null,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": null,
+        "mechanical_duration_warning": false,
+        "performance_direction_key_shot_count": 0,
+        "edit_strategy_required_shot_count": 1,
+        "emotion_curve_entry_count": 1,
+        "information_plan_entry_count": 1,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 9,
+      "scene": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 04 情绪转折",
+        "scene_id": "V21_FIXTURE_04",
+        "scene_type": "情绪转折",
+        "source": "offline_golden_fixture"
+      },
+      "scene_id": "V21_FIXTURE_04",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 4,
+      "eligible_opportunity_count": 4,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_SILENCE_HOLD": 1,
+        "OPP_EMOTION_TURN": 1,
+        "OPP_REACTION": 1,
+        "OPP_POWER_SHIFT": 1
+      },
+      "strategy_fingerprint": "e9cb2ed0637eaf8ab0ddc05cf172dd7809e29b7a573a7a5a2a89d7f3245642d7",
+      "contract_fingerprint": "e14692e39f8337b279c42d5d99a456426c2e69abb2b4ea9e801cb6a5db2961bd",
+      "baseline_director_quality": 47.8,
+      "baseline_coverage": {
+        "performance_direction_coverage": 0.0,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 1,
+        "edit_strategy_required_shot_count": 2,
+        "emotion_curve_entry_count": 2,
+        "information_plan_entry_count": 2,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 10,
+      "scene": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 05 权力变化",
+        "scene_id": "V21_FIXTURE_05",
+        "scene_type": "权力变化",
+        "source": "offline_golden_fixture"
+      },
+      "scene_id": "V21_FIXTURE_05",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 3,
+      "eligible_opportunity_count": 3,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {
+        "OPP_EMOTION_TURN": 1,
+        "OPP_REACTION": 1,
+        "OPP_POWER_SHIFT": 1
+      },
+      "strategy_fingerprint": "e34f721dab7cc252317909c9ac463b25074a9a69cebe03aefc531a86c8ee9a61",
+      "contract_fingerprint": "e26858385416144de14a6fa22b20c9619f0730dfa81d9e2fdf59cffcaf687058",
+      "baseline_director_quality": 47.8,
+      "baseline_coverage": {
+        "performance_direction_coverage": 0.0,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": 0.0,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": 1.0,
+        "mechanical_duration_warning": true,
+        "performance_direction_key_shot_count": 1,
+        "edit_strategy_required_shot_count": 2,
+        "emotion_curve_entry_count": 2,
+        "information_plan_entry_count": 2,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    },
+    {
+      "index": 11,
+      "scene": {
+        "book_id": null,
+        "episode": 1,
+        "scene_name": "V2.1 Golden 06 人物入场",
+        "scene_id": "V21_FIXTURE_06",
+        "scene_type": "人物入场",
+        "source": "offline_golden_fixture"
+      },
+      "scene_id": "V21_FIXTURE_06",
+      "evidence": {
+        "treatment": true,
+        "blocking": true,
+        "contract": true,
+        "baseline": true
+      },
+      "status": "ready_no_opportunity",
+      "errors": [],
+      "side_effects": {
+        "production": 0,
+        "storyboard": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "opportunity_count": 0,
+      "eligible_opportunity_count": 0,
+      "non_applicable_opportunity_count": 0,
+      "opportunity_type_counts": {},
+      "strategy_fingerprint": "01e705387ce058749d92fa3fd56a0e8058561c6c18fb398c3990cd44b510d92e",
+      "contract_fingerprint": "d50e451d954a2c55d58e5591640edc04249138db68fa126a285526c7a150b329",
+      "baseline_director_quality": 52.8,
+      "baseline_coverage": {
+        "performance_direction_coverage": null,
+        "edit_strategy_coverage": 0.0,
+        "emotion_arc_coverage": 0.0,
+        "emotion_progression_consistency": null,
+        "information_strategy_coverage": 0.0,
+        "useful_creative_acceptance_rate": null,
+        "mechanical_equal_duration_ratio": null,
+        "mechanical_duration_warning": false,
+        "performance_direction_key_shot_count": 0,
+        "edit_strategy_required_shot_count": 1,
+        "emotion_curve_entry_count": 1,
+        "information_plan_entry_count": 1,
+        "useful_creative_patch_count": 0,
+        "evaluable_creative_patch_count": 0
+      }
+    }
+  ],
+  "errors": [],
+  "safety": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "object_storage": 0
+  },
+  "ready_for_confirmation": true
+}
