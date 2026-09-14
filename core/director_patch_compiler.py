@@ -290,6 +290,11 @@ def compile_creative_patches(
         current = result["candidate"]
         compiled.append({key: result[key] for key in ("plan_shot_id", "operations", "provenance", "before_fingerprint", "after_fingerprint", "changed")})
         accepted_documents.append(copy.deepcopy(result["patch"]))
+    accepted_document = parse_creative_patch({
+        "schema_version": "director_creative_patch_v1",
+        "patches": accepted_documents,
+        "auxiliary_shot_proposals": [],
+    })
     return {
         "status": "compiled" if not rejected else "partial",
         "candidate": current,
@@ -300,11 +305,7 @@ def compile_creative_patches(
         # target shot can have both accepted and rejected fields when
         # ``allow_partial`` is enabled; consumers must not infer acceptance
         # from ``plan_shot_id`` alone.
-        "accepted_patch_document": {
-            "schema_version": "director_creative_patch_v1",
-            "patches": accepted_documents,
-            "auxiliary_shot_proposals": [],
-        },
+        "accepted_patch_document": accepted_document,
         "rejected_patches": rejected,
         "accepted_patch_count": len(compiled),
         "rejected_patch_count": len(rejected),

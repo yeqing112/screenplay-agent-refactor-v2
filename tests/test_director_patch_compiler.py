@@ -84,6 +84,7 @@ def test_compiler_default_is_atomic_and_partial_mode_keeps_valid_patches():
     assert partial["rejected_patch_count"] == 1
     assert partial["candidate"]["shots"][0]["camera"]["angle"] == "low_angle"
     assert [item["plan_shot_id"] for item in partial["accepted_patch_document"]["patches"]] == ["S01"]
+    assert partial["accepted_patch_document"]["patch_fingerprint"]
 
 
 def test_partial_compiler_exposes_field_scoped_accepted_document():
@@ -97,4 +98,5 @@ def test_partial_compiler_exposes_field_scoped_accepted_document():
     accepted = partial["accepted_patch_document"]["patches"]
     assert len(accepted) == 1
     assert accepted[0]["changes"] == {"camera.angle": "low_angle"}
+    assert partial["accepted_patch_document"]["normalization_metadata"]["source_formats"] == ["canonical"]
     assert partial["rejected_patches"][0]["path"] == "event"
