@@ -26,6 +26,8 @@ def test_b1_runner_with_incomplete_decisions_fails_closed_without_side_effects(m
     assert result["scene_count"] == 1
     assert result["side_effects"] == {"production_rows_written": 0, "storyboard_shots_created": 0, "media_calls": 0, "object_storage_calls": 0}
     assert result["production_shadow"]["enabled"] is False
+    assert result["scenes"][0]["tail_repair"]["triggered"] is True
+    assert result["scenes"][0]["tail_repair"]["root_causes"]
 
 
 def test_b1_patch_attribution_is_field_scoped_not_shot_scoped():

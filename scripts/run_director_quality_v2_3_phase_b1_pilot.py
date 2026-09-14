@@ -368,12 +368,12 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         max_per_beat = int(_dict(contract).get("auxiliary_shot_policy", {}).get("max_per_source_beat", 2) or 0)
         beat_count = len(_list(treatment.get("beat_map"))) or len(_list(baseline.get("shots"))) or 1
         over = detect_over_directing(candidate.get("shots") or [], opportunities=opportunities, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=max_per_beat * beat_count)
-        quality_trace = trace_quality_signals(scene_id=scene_id, strategy=strategy, planner_output=patch_raw, accepted_patch=_dict(compiled.get("patch_document")), final_candidate=candidate, scorer_input=candidate, dimension_scores=after_score.get("dimensions"))
+        quality_trace = trace_quality_signals(scene_id=scene_id, strategy=strategy, planner_output=patch_raw, accepted_patch=accepted_patch_document, final_candidate=candidate, scorer_input=candidate, dimension_scores=after_score.get("dimensions"))
         scene_records = recorder.records[scene_start:]
         row = {
             "scene": metadata,
             "scene_id": scene_id,
-            "status": "valid" if not decision_errors else "partial",
+            "status": "valid" if not decision_errors and not _list(compiled.get("rejected_patches")) else "partial",
             "contract_pass": not bool(compiled.get("rejected_patches")),
             "fact_override_accepted": 0,
             "opportunities": opportunities,
@@ -391,7 +391,6 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
             "quality_trace": quality_trace,
             "validation": {"contract_pass": not bool(compiled.get("rejected_patches")), "rejected_patch_count": len(_list(compiled.get("rejected_patches"))), "quality_issues": after_score.get("issues") or [], "auxiliary_shot_count": len(_list(compiled.get("auxiliary_shot_proposals"))), "baseline_shot_count": len(_list(baseline.get("shots")))},
             "pipeline_diagnostics": {"rejected_patch_count": len(_list(compiled.get("rejected_patches"))), "fallbacks": candidate_result.get("model_info", {}).get("planner_error", "")},
-            "tail_repair": build_tail_repair_plan({"director_quality_score": after_score.get("director_quality_score"), "creative_value_score": cv.get("score"), "coverage": coverage}, root_causes=[]),
             "planner_calls": 1,
             "repair_calls": 0,
             "telemetry": {"total_tokens": sum(int(_dict(item.get("usage")).get("total_tokens") or 0) for item in scene_records), "total_cached_tokens": sum(int(_dict(item.get("usage")).get("cached_tokens") or 0) for item in scene_records), "avg_latency_ms": round(sum(float(item.get("latency_ms") or 0) for item in scene_records) / len(scene_records), 2) if scene_records else None},
@@ -399,6 +398,10 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         }
         root = classify_tail_root_cause(row)
         row["tail_root_cause"] = root
+        row["tail_repair"] = build_tail_repair_plan(
+            {"director_quality_score": after_score.get("director_quality_score"), "creative_value_score": cv.get("score"), "coverage": coverage},
+            root_causes=[root["root_cause"]],
+        )
         rows.append(row)
         opportunity_rows.append({"scene_id": scene_id, "opportunities": opportunities, "eligibility": row["eligibility"], "outcomes": value.get("outcomes") or []})
 
