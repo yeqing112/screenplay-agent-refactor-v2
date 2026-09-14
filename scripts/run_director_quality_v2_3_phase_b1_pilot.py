@@ -101,6 +101,65 @@ def _shot_for_beat(plan: dict[str, Any], beat_id: str) -> dict[str, Any]:
     return {}
 
 
+_PATCH_DIMENSIONS = {
+    "camera": {"camera_language", "shot_motivation"},
+    "composition": {"spatial_clarity", "shot_motivation", "visual_storytelling"},
+    "why_this_shot": {"shot_motivation"},
+    "dramatic_function": {"shot_motivation"},
+    "emotion": {"emotion_arc"},
+    "performance_direction": {"performance_direction"},
+    "edit": {"edit_strategy"},
+    "information_strategy": {"information_strategy"},
+    "visual_emphasis": {"visual_storytelling"},
+}
+
+
+def _patch_dimension_map(patches: list[Any]) -> dict[str, set[str]]:
+    """Map accepted/proposed patch fields to quality dimensions by shot.
+
+    Opportunity acceptance is opportunity-level, so a patch on the same shot
+    must only count when one of its creative fields addresses that
+    opportunity's recommended dimensions.  This prevents unrelated edits on a
+    shared beat from inflating Useful Creative Acceptance.
+    """
+
+    result: dict[str, set[str]] = {}
+    for patch in patches:
+        if not isinstance(patch, dict):
+            continue
+        shot_id = _text(patch.get("plan_shot_id"))
+        if not shot_id:
+            continue
+        dimensions = result.setdefault(shot_id, set())
+        changes = patch.get("changes") if isinstance(patch.get("changes"), dict) else {}
+        for raw_path in changes:
+            parts = [part for part in str(raw_path).replace("/", ".").split(".") if part]
+            if parts and parts[0] == "shots":
+                parts = parts[2:]
+            if parts:
+                dimensions.update(_PATCH_DIMENSIONS.get(parts[0], set()))
+    return result
+
+
+def _rejected_dimension_map(rejected: list[Any]) -> dict[str, set[str]]:
+    """Map field-scoped compiler rejections to their affected dimensions."""
+
+    result: dict[str, set[str]] = {}
+    for item in rejected:
+        if not isinstance(item, dict):
+            continue
+        shot_id = _text(item.get("plan_shot_id"))
+        path = _text(item.get("path"))
+        if not shot_id or not path:
+            continue
+        parts = [part for part in path.replace("/", ".").split(".") if part]
+        if parts and parts[0] == "shots":
+            parts = parts[2:]
+        if parts:
+            result.setdefault(shot_id, set()).update(_PATCH_DIMENSIONS.get(parts[0], set()))
+    return result
+
+
 def _dimension_delta(before: dict[str, Any], after: dict[str, Any]) -> dict[str, float]:
     b = _dict(before.get("dimensions")); a = _dict(after.get("dimensions"))
     keys = set(b) | set(a)
@@ -179,17 +238,12 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         candidate = copy.deepcopy(_dict(compiled.get("candidate")) or baseline)
         before_score = score_director_quality(baseline, treatment=treatment, blocking=blocking)
         after_score = score_director_quality(candidate, treatment=treatment, blocking=blocking)
-        # ``compile_creative_patches`` exposes compiled metadata rather than a
-        # second patch document. Reconstruct the accepted subset solely for
-        # the opportunity-value denominator.
-        accepted_patches = _list(compiled.get("compiled_patches"))
-        accepted_targets = {_text(item.get("plan_shot_id")) for item in accepted_patches if isinstance(item, dict)}
         proposed_patches = _list(pipeline.get("patches"))
-        accepted_patch_document = {
-            "schema_version": "director_creative_patch_v1",
-            "patches": [item for item in proposed_patches if isinstance(item, dict) and _text(item.get("plan_shot_id")) in accepted_targets],
-            "auxiliary_shot_proposals": [],
-        }
+        accepted_patch_document = _dict(compiled.get("accepted_patch_document"))
+        accepted_patches = _list(accepted_patch_document.get("patches"))
+        accepted_dimensions = _patch_dimension_map(accepted_patches)
+        proposed_dimensions = _patch_dimension_map(proposed_patches)
+        rejected_dimensions = _rejected_dimension_map(_list(compiled.get("rejected_patches")))
         coverage = build_director_quality_v23_coverage_metrics(candidate=candidate, strategy=strategy, treatment=treatment, proposed_patch_document=pipeline, accepted_patch_document=accepted_patch_document)
         normalized_decisions = _decision_items(decisions_raw)
         try:
@@ -200,21 +254,35 @@ def run_authorized_pilot(*, profile: dict[str, Any], golden_path: Path = GOLDEN_
         except Exception as exc:
             decisions = []
             decision_errors = [{"code": getattr(exc, "code", "OPPORTUNITY_DECISION_INVALID"), "message": str(exc)[:300]}]
-        # The compiler returns compiled patch metadata (not a second
-        # normalized patch document).  Accepted targets are therefore derived
-        # from ``compiled_patches``; an empty rejection list is the contract
-        # proof for this already-normalized candidate.
-        # ``accepted_targets`` and ``proposed_patches`` were computed above.
+        # Attribute interventions by accepted creative fields, not by target
+        # shot alone; multiple opportunities may share one shot.
         interventions: list[dict[str, Any]] = []
         for opportunity in opportunities:
             oid = _text(opportunity.get("opportunity_id")); beat_id = _text(opportunity.get("beat_id")); shot = _shot_for_beat(baseline, beat_id); sid = _text(shot.get("plan_shot_id"))
-            patch_for_shot = any(isinstance(item, dict) and _text(item.get("plan_shot_id")) == sid for item in proposed_patches)
-            dimension_deltas = _dimension_delta(before_score, after_score)
             recommended = set(_list(opportunity.get("recommended_directing_dimensions")))
+            dimension_deltas = _dimension_delta(before_score, after_score)
             scoped_delta = {key: value for key, value in dimension_deltas.items() if key.lower() in recommended or key in recommended}
-            if not scoped_delta:
-                scoped_delta = dimension_deltas
-            interventions.append({"opportunity_id": oid, "patch_valid": True, "applied": bool(patch_for_shot and sid in accepted_targets), "fact_contract_pass": not bool(compiled.get("rejected_patches")), "new_blocker": False, "quality_delta": float(after_score.get("director_quality_score", 0) or 0) - float(before_score.get("director_quality_score", 0) or 0), "dimension_deltas": scoped_delta})
+            proposed_for_opportunity = bool(proposed_dimensions.get(sid, set()) & recommended)
+            accepted_for_opportunity = bool(accepted_dimensions.get(sid, set()) & recommended)
+            rejected_for_opportunity = bool(rejected_dimensions.get(sid, set()) & recommended)
+            if not proposed_for_opportunity and not rejected_for_opportunity:
+                # No candidate intervention was proposed for this ACT.  Leave
+                # the evidence absent so the value evaluator records the
+                # explicit FALLBACK_BASELINE outcome rather than fabricating a
+                # contract rejection.
+                continue
+            # If a provider used a creative field whose dimension mapping is
+            # unknown, fail closed instead of treating a same-shot patch as a
+            # useful intervention.
+            interventions.append({
+                "opportunity_id": oid,
+                "patch_valid": bool(proposed_for_opportunity and not rejected_for_opportunity),
+                "applied": bool(accepted_for_opportunity),
+                "fact_contract_pass": not bool(rejected_for_opportunity),
+                "new_blocker": False,
+                "quality_delta": float(after_score.get("director_quality_score", 0) or 0) - float(before_score.get("director_quality_score", 0) or 0) if accepted_for_opportunity else 0.0,
+                "dimension_deltas": scoped_delta if accepted_for_opportunity else {},
+            })
         if decision_errors:
             # The evaluator intentionally rejects incomplete decision sets.
             # Preserve that fail-closed behavior while still emitting an

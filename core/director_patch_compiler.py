@@ -243,6 +243,7 @@ def compile_creative_patches(
     baseline = copy.deepcopy(structural_shot_plan)
     current = copy.deepcopy(baseline)
     compiled: list[dict[str, Any]] = []
+    accepted_documents: list[dict[str, Any]] = []
     rejected: list[dict[str, Any]] = []
     for patch in normalized["patches"]:
         try:
@@ -284,15 +285,26 @@ def compile_creative_patches(
                     continue
                 current = field_result["candidate"]
                 compiled.append({key: field_result[key] for key in ("plan_shot_id", "operations", "provenance", "before_fingerprint", "after_fingerprint", "changed")})
+                accepted_documents.append(copy.deepcopy(field_result["patch"]))
             continue
         current = result["candidate"]
         compiled.append({key: result[key] for key in ("plan_shot_id", "operations", "provenance", "before_fingerprint", "after_fingerprint", "changed")})
+        accepted_documents.append(copy.deepcopy(result["patch"]))
     return {
         "status": "compiled" if not rejected else "partial",
         "candidate": current,
         "baseline_fingerprint": fingerprint(baseline),
         "candidate_fingerprint": fingerprint(current),
         "compiled_patches": compiled,
+        # Preserve the exact field-scoped subset that actually compiled.  A
+        # target shot can have both accepted and rejected fields when
+        # ``allow_partial`` is enabled; consumers must not infer acceptance
+        # from ``plan_shot_id`` alone.
+        "accepted_patch_document": {
+            "schema_version": "director_creative_patch_v1",
+            "patches": accepted_documents,
+            "auxiliary_shot_proposals": [],
+        },
         "rejected_patches": rejected,
         "accepted_patch_count": len(compiled),
         "rejected_patch_count": len(rejected),

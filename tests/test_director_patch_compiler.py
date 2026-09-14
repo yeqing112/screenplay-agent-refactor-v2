@@ -83,3 +83,18 @@ def test_compiler_default_is_atomic_and_partial_mode_keeps_valid_patches():
     assert partial["accepted_patch_count"] == 1
     assert partial["rejected_patch_count"] == 1
     assert partial["candidate"]["shots"][0]["camera"]["angle"] == "low_angle"
+    assert [item["plan_shot_id"] for item in partial["accepted_patch_document"]["patches"]] == ["S01"]
+
+
+def test_partial_compiler_exposes_field_scoped_accepted_document():
+    plan, contract = _plan_and_contract()
+    document = parse_creative_patch({
+        "schema_version": "director_creative_patch_v1",
+        "patches": [{"plan_shot_id": "S01", "changes": {"camera.angle": "low_angle", "event": "must reject"}}],
+        "auxiliary_shot_proposals": [],
+    })
+    partial = compile_creative_patches(plan, document, contract, allow_partial=True)
+    accepted = partial["accepted_patch_document"]["patches"]
+    assert len(accepted) == 1
+    assert accepted[0]["changes"] == {"camera.angle": "low_angle"}
+    assert partial["rejected_patches"][0]["path"] == "event"
