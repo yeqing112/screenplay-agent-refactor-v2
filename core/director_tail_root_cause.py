@@ -30,6 +30,16 @@ def _number(value: Any) -> float | None:
     return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
 
 
+def _eligible_coverage_value(record: dict[str, Any], dimension: str, legacy_key: str) -> float | None:
+    """Prefer opportunity-level eligible coverage over legacy field coverage."""
+
+    eligible = _dict(record.get("eligible_coverage"))
+    value = _number(eligible.get(dimension))
+    if value is not None:
+        return value
+    return _number(_dict(record.get("coverage")).get(legacy_key))
+
+
 def classify_tail_root_cause(record: dict[str, Any], *, quality_threshold: float = 70.0) -> dict[str, Any]:
     """Return one primary cause and all evidence-backed candidate causes."""
 
@@ -46,11 +56,14 @@ def classify_tail_root_cause(record: dict[str, Any], *, quality_threshold: float
         causes.append(("UNKNOWN_ROOT_CAUSE", "quality trace contains UNKNOWN root cause"))
     if not record.get("opportunities") and not record.get("opportunity_count") and int(trace_summary.get("STRATEGY_MISSING") or 0) > 0:
         causes.append(("MISSING_OPPORTUNITY_DETECTION", "no opportunity evidence reached the scene trace"))
-    if _number(coverage.get("edit_strategy_coverage")) is not None and float(coverage["edit_strategy_coverage"]) < 0.8:
+    edit_coverage = _eligible_coverage_value(record, "edit_strategy", "edit_strategy_coverage")
+    emotion_coverage = _eligible_coverage_value(record, "emotion_arc", "emotion_arc_coverage")
+    information_coverage = _eligible_coverage_value(record, "information_strategy", "information_strategy_coverage")
+    if edit_coverage is not None and edit_coverage < 0.8:
         causes.append(("WEAK_EDIT_STRATEGY", "eligible edit strategy coverage is below 0.8"))
-    if _number(coverage.get("emotion_arc_coverage")) is not None and float(coverage["emotion_arc_coverage"]) < 0.85:
+    if emotion_coverage is not None and emotion_coverage < 0.85:
         causes.append(("WEAK_EMOTION_ARC", "eligible emotion arc coverage is below 0.85"))
-    if _number(coverage.get("information_strategy_coverage")) is not None and float(coverage["information_strategy_coverage"]) < 0.85:
+    if information_coverage is not None and information_coverage < 0.85:
         causes.append(("WEAK_INFORMATION_STRATEGY", "eligible information strategy coverage is below 0.85"))
     if _number(coverage.get("useful_creative_acceptance_rate")) is not None and float(coverage["useful_creative_acceptance_rate"]) < 0.75:
         causes.append(("LOW_USEFUL_ACCEPTANCE", "useful creative acceptance is below 0.75"))

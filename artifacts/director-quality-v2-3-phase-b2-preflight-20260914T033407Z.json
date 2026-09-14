@@ -1,0 +1,90 @@
+{
+  "protocol_version": "director-quality-v2-3-phase-b2-preflight",
+  "phase": "B2",
+  "generated_at": "2026-09-14T03:34:07.194804+00:00",
+  "scene_count": 25,
+  "required_scene_count": 24,
+  "real_mimo_calls": 0,
+  "confirmation_required": true,
+  "confirmation_token_name": "CONFIRM_DIRECTOR_V23_PHASE_B2_REAL_MIMO_PILOT",
+  "profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "capability": "llm",
+    "enabled": true,
+    "key_configured": true
+  },
+  "frozen_evidence": {
+    "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v2-3-phase-b2-evidence.json",
+    "scene_count": 25,
+    "ready": true
+  },
+  "offline_gate": {
+    "artifact": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v2-3-offline-benchmark-current.json",
+    "available": true
+  },
+  "opportunity_summary": {
+    "selected_scene_count": 24,
+    "scenes_with_opportunities": 23,
+    "scenes_without_opportunities": 1,
+    "type_counts": {
+      "OPP_ACTION_ACCELERATION": 26,
+      "OPP_EMOTION_TURN": 48,
+      "OPP_INFORMATION_REVEAL": 47,
+      "OPP_POWER_SHIFT": 11,
+      "OPP_PROP_EMPHASIS": 5,
+      "OPP_REACTION": 29,
+      "OPP_SCENE_BUTTON": 6,
+      "OPP_SILENCE_HOLD": 3,
+      "OPP_VISUAL_REVEAL": 10
+    }
+  },
+  "baseline_quality": {
+    "scene_scores": [
+      61.88,
+      61.45,
+      28.39,
+      28.61,
+      28.39,
+      28.45,
+      47.8,
+      50.3,
+      52.8,
+      47.8,
+      47.8,
+      52.8,
+      50.3,
+      50.3,
+      47.8,
+      50.3,
+      50.3,
+      47.8,
+      50.3,
+      47.8,
+      50.3,
+      47.8,
+      46.3,
+      50.3
+    ],
+    "distribution": {
+      "min": 28.39,
+      "p10": 28.45,
+      "p25": 47.8,
+      "median": 49.05,
+      "p75": 50.3,
+      "p90": 52.8,
+      "max": 61.88
+    },
+    "scenes_below_60": 22,
+    "scenes_below_70": 24
+  },
+  "safety": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "object_storage": 0
+  },
+  "ready_for_confirmation": true,
+  "errors": []
+}

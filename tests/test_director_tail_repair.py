@@ -8,6 +8,18 @@ def test_tail_repair_triggers_only_for_low_tail_or_eligible_coverage():
     assert plan["scopes"]["WEAK_EDIT_STRATEGY"] == ["edit"]
 
 
+def test_tail_repair_prefers_opportunity_level_coverage_when_present():
+    plan = build_tail_repair_plan(
+        {
+            "director_quality_score": 90,
+            "coverage": {"edit_strategy_coverage": 0.1},
+            "eligible_coverage": {"edit_strategy": 1.0},
+        },
+        root_causes=["WEAK_EDIT_STRATEGY"],
+    )
+    assert plan["triggered"] is False
+
+
 def test_tail_repair_changes_only_root_cause_scope():
     record = {"director_quality_score": 60, "coverage": {"edit_strategy_coverage": 0.2}}
     plan = build_tail_repair_plan(record, root_causes=["WEAK_EDIT_STRATEGY"])

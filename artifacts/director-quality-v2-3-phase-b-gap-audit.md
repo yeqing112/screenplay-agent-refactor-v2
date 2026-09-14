@@ -171,6 +171,43 @@ Phase B1/B2 的机会、outcome、tail 指标可作为只读 pilot JSON artifact
 
 Phase B 必须以规范阈值重新计算并只输出三态之一：`NOT_READY`、`SAFE_BUT_NOT_VALUABLE`、`VALUABLE_ENOUGH_TO_SHADOW`。即使达到最后一态，也不得自动开启 Shadow 或进入 Media Pilot。
 
-## 审计结论
+## Baseline Audit 结论
 
 Phase A 已证明事实/契约安全和 provider 调用隔离有效，但没有证明“模型能发现并完成有价值的导演介入”。下一步必须从 Step 2 Opportunity Model 开始，先建立证据驱动机会对象，再逐步接入 Planner、价值评估和尾部修复；不得通过提高 Contract Pass、降低阈值、硬编码镜头或修改历史 acceptance 规则来制造价值门通过。
+
+## Final As-Built Verification（Phase B2 完成后）
+
+核验日期：2026-09-14  
+权威 B1 artifact：`artifacts/director-quality-v2-3-phase-b1-pilot-20260914T030654Z.json`  
+权威 B2 artifact：`artifacts/director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json`
+
+本节只记录已完成实现与真实灰度结果，不回写或覆盖 Baseline Audit 的历史判断。
+
+### 执行完整性与安全隔离
+
+- B2 场景数：`24/24`，场景 ID 唯一数 `24`；每个场景恰好 1 次 planner 调用，telemetry 总调用 `24`。
+- 模型：`mimo-v2.5`（profile `local-llm-2vydoz`）；HTTP `200`、解析成功 `24/24`、重试 `0`。
+- B2 真实 MiMo 调用只产生机会/策略候选与审计记录；未写入 Production/Storyboard/Media/Object Storage。
+- 汇总副作用：`production=0`、`storyboard=0`、`media=0`、`object_storage=0`。
+- `production_shadow.enabled=false`，未自动开启 Shadow。
+- `unknown_root_cause_count=0`，`missed_opportunity_count=0`；机会决策均有可验证记录。
+
+### B2 指标结果
+
+| 指标 | B2 结果 | Shadow Gate 目标 | 判定 |
+|---|---:|---:|---|
+| Contract Pass Rate | 0.8750 | ≥ 0.95 | 未达标 |
+| Director Quality mean / median / P10 / min | 62.8513 / 50.3 / 28.45 / 28.39 | 80 / 85 / 70 / 60 | 未达标 |
+| Creative Value mean | 60.4852 | ≥ 75 | 未达标 |
+| Useful Creative Acceptance | 0.1568 | ≥ 0.75 | 未达标 |
+| Edit / Emotion / Information eligible coverage | 0.2522 / 0.0392 / 0.1452 | 0.80 / 0.85 / 0.85 | 未达标 |
+| Opportunity detection coverage | 0.9583 | 需完整且可解释 | 通过观测 |
+| Over-directing / shot inflation | 0.0069 / 0.0000 | ≤ 0.10 / ≤ 0.50 | 通过 |
+| Tail repair trigger / attempted | 0.6250 / 0 | — | 仅触发，尚未执行修复 |
+| Cache hit rate | 0.7274 | 观测项 | 已记录 |
+
+### Final As-Built 结论
+
+Phase B 的机会发现、策略覆盖、价值评估、尾部分类、审计与副作用隔离链路已经按计划落地，并完成 B1（12 场景）与 B2（24 场景）真实 MiMo 灰度。结果证明安全边界和指标链路可运行，但价值门未通过：Contract、Director Quality、Creative Value、UCA V2 及三类策略覆盖均低于 Shadow Gate 阈值。因此最终状态保持 **`NOT_READY`**，不得开启 Production Shadow，也不得进入媒体生产灰度。
+
+后续应优先处理通用的契约失败、创意价值接受率、策略覆盖和 Tail Repair 执行链路，再进行新的离线/真实灰度；不得针对特定 book 或场景写特例，也不得用降低阈值替代质量改进。

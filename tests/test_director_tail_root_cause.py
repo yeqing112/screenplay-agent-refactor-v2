@@ -6,6 +6,18 @@ def test_root_cause_prefers_structured_coverage_evidence():
     assert result["root_cause"] == "WEAK_EDIT_STRATEGY"
 
 
+def test_root_cause_prefers_eligible_coverage_over_legacy_fields():
+    result = classify_tail_root_cause(
+        {
+            "scene_id": "S1",
+            "director_quality_score": 90,
+            "coverage": {"edit_strategy_coverage": 0.1},
+            "eligible_coverage": {"edit_strategy": 1.0},
+        }
+    )
+    assert result["root_cause"] == "UNKNOWN_ROOT_CAUSE"
+
+
 def test_root_cause_classifies_over_directing_and_unknown_trace():
     result = classify_tail_root_cause({"scene_id": "S2", "director_quality_score": 40, "quality_trace": {"unknown_root_cause_count": 1}, "quality_issues": [{"code": "OVER_CUTTING"}]})
     assert result["root_cause"] == "UNKNOWN_ROOT_CAUSE"

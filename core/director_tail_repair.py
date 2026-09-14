@@ -39,6 +39,23 @@ def _number(value: Any) -> float | None:
     return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
 
 
+def _eligible_coverage_value(record: dict[str, Any], dimension: str, legacy_key: str) -> float | None:
+    """Read opportunity-level coverage, falling back to legacy field coverage.
+
+    Phase B introduced ``eligible_coverage`` with a denominator restricted to
+    evidence-backed opportunities.  Older callers only provide the legacy
+    shot/field coverage keys, so retain that compatibility while ensuring
+    Tail Repair never prefers the semantically weaker denominator when the
+    new value is available.
+    """
+
+    eligible = _dict(record.get("eligible_coverage"))
+    value = _number(eligible.get(dimension))
+    if value is not None:
+        return value
+    return _number(_dict(record.get("coverage")).get(legacy_key))
+
+
 def _repair_triggered(record: dict[str, Any]) -> bool:
     quality = _number(record.get("director_quality_score"))
     if quality is None:
@@ -50,9 +67,15 @@ def _repair_triggered(record: dict[str, Any]) -> bool:
         return True
     if creative is not None and creative < 70:
         return True
-    coverage = _dict(record.get("coverage"))
-    thresholds = {"edit_strategy_coverage": 0.8, "emotion_arc_coverage": 0.85, "information_strategy_coverage": 0.85}
-    return any(_number(coverage.get(key)) is not None and float(coverage[key]) < threshold for key, threshold in thresholds.items())
+    thresholds = {
+        "edit_strategy": ("edit_strategy_coverage", 0.8),
+        "emotion_arc": ("emotion_arc_coverage", 0.85),
+        "information_strategy": ("information_strategy_coverage", 0.85),
+    }
+    return any(
+        (value := _eligible_coverage_value(record, dimension, legacy_key)) is not None and value < threshold
+        for dimension, (legacy_key, threshold) in thresholds.items()
+    )
 
 
 def build_tail_repair_plan(record: dict[str, Any], *, root_causes: list[str] | None = None) -> dict[str, Any]:
