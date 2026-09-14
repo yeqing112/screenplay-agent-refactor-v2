@@ -1,0 +1,149 @@
+{
+  "schema_version": "director-quality-v2-4-2-protocol-canary-v1",
+  "generated_at": "2026-09-14T14:56:25.029848+00:00",
+  "manifest": "artifacts/director-quality-v2-4-2-protocol-canary-manifest.json",
+  "model": {
+    "profile_id": "local-llm-2vydoz",
+    "model_name": "mimo-v2.5",
+    "provider": "openai-compatible"
+  },
+  "protocol_gate": "PROTOCOL_CANARY_FAILED",
+  "metrics": {
+    "sample_count": 1,
+    "semantic_attempt_count": 2,
+    "provider_http_request_count": 2,
+    "transport_retry_count": 0,
+    "json_parser_retry_count": 0,
+    "format_repair_count": 1,
+    "semantic_repair_count": 0,
+    "ir_first_pass_valid_count": 0,
+    "ir_first_pass_valid_rate": 0.0,
+    "ir_final_valid_count": 1,
+    "ir_final_valid_rate": 1.0,
+    "canonical_compile_count": 1,
+    "canonical_compile_rate": 1.0,
+    "candidate_contract_pass_count": 1,
+    "candidate_contract_pass_rate": 1.0,
+    "unknown_provider_shape_count": 0,
+    "request_echo_count": 0,
+    "custom_provider_envelope_count": 0,
+    "fact_override_attempt_count": 0,
+    "fact_override_accepted_count": 0,
+    "repair_accepted_count": 1,
+    "repair_rollback_count": 0
+  },
+  "samples": [
+    {
+      "sample_id": "canary-edit-acdf41e2f2f9",
+      "scene_id": "V21_FIXTURE_01",
+      "root_cause": "WEAK_EDIT_STRATEGY",
+      "repair_type": "edit",
+      "target_dimensions": [
+        "EDIT_RHYTHM"
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "request_fingerprint": "",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ],
+          "response_fingerprint": "0623f562c9ea9fab2c463b6b10b46ad4",
+          "response_length": 179,
+          "response_shape": "FORMAT_INVALID",
+          "returned_schema_version": "director_tail_repair_ir_v1",
+          "ir_parse_status": "not_run",
+          "ir_validation_errors": [
+            "shot_decisions must be a non-empty list"
+          ],
+          "ir_fingerprint": "",
+          "canonical_compile_status": "not_run",
+          "canonical_patch_fingerprint": "",
+          "contract_status": "not_run",
+          "accepted": false,
+          "rollback_reason": "shot_decisions must be a non-empty list",
+          "audit": {
+            "top_level_keys": [
+              "repair_type",
+              "root_cause",
+              "schema_version",
+              "shot_decisions",
+              "target_dimensions"
+            ],
+            "usage": {
+              "prompt_tokens": 1220,
+              "cached_tokens": null,
+              "completion_tokens": 57,
+              "total_tokens": 1277,
+              "cache_hit_rate": null
+            },
+            "latency_ms": 5058.97,
+            "extra": {
+              "stage": "director_quality_v2_4_targeted_tail_repair",
+              "output_contract_version": "director_tail_repair_ir_v1",
+              "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+              "transport_attempt_number": 1,
+              "transport_retry": false
+            }
+          }
+        },
+        {
+          "attempt_number": 2,
+          "attempt_kind": "FORMAT_REPAIR",
+          "request_fingerprint": "",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ],
+          "response_fingerprint": "0256610dc02d9eba1fb9aa94153cebe6",
+          "response_length": 715,
+          "response_shape": "VALID_REPAIR_IR",
+          "returned_schema_version": "director_tail_repair_ir_v1",
+          "ir_parse_status": "valid",
+          "ir_validation_errors": [],
+          "ir_fingerprint": "",
+          "canonical_compile_status": "compiled",
+          "canonical_patch_fingerprint": "",
+          "contract_status": "pass",
+          "accepted": true,
+          "rollback_reason": "",
+          "audit": {
+            "top_level_keys": [
+              "repair_type",
+              "root_cause",
+              "schema_version",
+              "shot_decisions",
+              "target_dimensions"
+            ],
+            "usage": {
+              "prompt_tokens": 1385,
+              "cached_tokens": null,
+              "completion_tokens": 211,
+              "total_tokens": 1596,
+              "cache_hit_rate": null
+            },
+            "latency_ms": 8522.2,
+            "extra": {
+              "stage": "director_quality_v2_4_targeted_tail_repair",
+              "output_contract_version": "director_tail_repair_ir_v1",
+              "provider_contract_fingerprint": "a5754fbcee608bdce2c1f892498dc34d7ae7b61ee30f6d8204584a4172765d48",
+              "transport_attempt_number": 1,
+              "transport_retry": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  }
+}

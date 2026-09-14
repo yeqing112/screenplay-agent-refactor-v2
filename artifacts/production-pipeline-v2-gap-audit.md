@@ -487,3 +487,37 @@ Production Materializer 代码与本地测试闭环已收口，可以作为正�
 - 完整 `camera` 对象（含 `shot_size`、`camera_side` 等）写入 `meta_info`，不再因遗留列映射而丢失。
 - Materializer/Production gate 回归：`10 passed`；最新全量后端回归：`786 passed`（既有 warnings 原样保留）。
 - 未调用真实 LLM/MiMo、生图、视频或对象存储；未清理、覆盖历史产物。
+
+## Final As-Built Verification：Director Quality V2.4.2 Provider Contract Canary（2026-09-14）
+
+本节是对前述 Baseline Audit 的独立最终复核，不回写或覆盖历史 Pilot/Golden 产物。验证范围严格限定为：
+
+`MiMo Provider → director_tail_repair_ir_v1 → IR Validator → Deterministic Compiler → canonical patch → Contract Validation`
+
+### Baseline Audit（保留）
+
+- Baseline 中记录的 V2.4.1 Provider/Executor contract mismatch 仍作为历史事实保留：旧 runner 曾要求 `director_creative_patch_v1` 与 canonical 字段，Executor 却以 `require_repair_ir=true` 接收 `director_tail_repair_ir_v1`。
+- Baseline 的 `0% IR compliance` 不被重新解释为 MiMo 能力结论；根因归类为 `PROVIDER_EXECUTOR_CONTRACT_MISMATCH`。
+- Frozen B2 evidence 未重跑、未修改、未重生成；本轮未触发 15-scene、Full 24、Shadow、Storyboard 或媒体路径。
+
+### Final As-Built Verification
+
+- Provider-facing contract 由 `core/director_tail_repair_provider_contract.py` 从 Repair IR 常量派生，required keys 与 `director_tail_repair_ir_v1` 对齐；canonical `director_creative_patch_v1` 仍仅由确定性编译器处理。
+- `build_repair_request()` 是唯一 authoritative request builder；Executor 的 semantic retry 是唯一业务重试层，provider adapter 保持 `json_parse_retries=0`，不存在 nested parser retry。
+- Canary manifest 由 Frozen B2 确定性选择 1 个完整样本（`V21_FIXTURE_01 / WEAK_EDIT_STRATEGY / edit`），semantic attempt 上限为 2。
+- Provider-free Canary：协议链路、确定性编译和副作用计数全部通过；外部 HTTP 请求为 0。
+- 授权的单次真实 MiMo Canary 结果：semantic attempts **2**、provider HTTP requests **2**、transport retry **0**、parser retry **0**；最终 IR 合规 **1/1**、canonical compile **1/1**、candidate contract pass **1/1**、Unknown Provider Shape **0**、Fact Override Accepted **0**。
+- 首轮 IR 合规 **0/1（0%）**，第二轮 `FORMAT_REPAIR` 后合规；因此协议门禁按规则保持 **`PROTOCOL_CANARY_FAILED`**，不得据此进入更大 Pilot 或宣称生产质量通过。
+- 运行时审计已增加 request/provider request id、IR fingerprint、canonical patch fingerprint 和 attempt 状态字段；真实 Canary 结果文件在该字段修正前生成，缺失字段保持为空，不做回填或伪造。当前修正由 mock/离线专项测试覆盖。
+
+### Verification Evidence
+
+- `python scripts/run_director_quality_v2_4_2_protocol_canary.py`（provider-free）：通过，副作用全为 0。
+- `pytest -q tests/test_director_quality_v242_provider_contract.py`：**8 passed**。
+- V2.4.2/相关 Director Quality、Tail Repair、Materializer 回归：**45 passed**。
+- `npm run check:production`：后端 **991 passed**、**890 warnings**；Golden **5/5**；release-gate、runtime config 与前端 production build 均通过。
+- `npm --prefix web test -- --run`：**49 个测试文件、291 passed**；前端构建通过。
+
+### Closure decision
+
+Provider Contract Wiring 已完成本地代码与测试收口，但本次真实 Protocol Canary 未达到首轮 IR 合规门槛，最终状态必须保持 **`PROTOCOL_CANARY_FAILED`**。除非获得新的明确授权并先改进/复测首轮 IR 完整性，否则不得执行更大规模真实 MiMo Pilot。全程未调用生图、视频、对象存储或 GitHub Actions/CI，也未清理或覆盖用户历史产物。

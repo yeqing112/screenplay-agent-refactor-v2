@@ -186,17 +186,25 @@ def execute_tail_repair(
     repair_context: dict[str, Any] | None = None,
     model: str = "",
     require_repair_ir: bool = False,
+    root_causes: Iterable[str] | None = None,
 ) -> dict[str, Any]:
     """Execute at most two targeted root-cause repairs and accept/rollback."""
 
     baseline = copy.deepcopy(candidate)
     source = record if isinstance(record, dict) else {}
     ranked = rank_tail_root_causes_v2(source)
-    ranked_causes = [
-        _text(item.get("code"))
-        for item in _list(ranked.get("ranked_root_causes"))
-        if _text(item.get("code")) in REPAIR_SCOPES
-    ][: max(0, min(int(max_root_causes), 2))]
+    if root_causes is not None:
+        ranked_causes = [
+            _text(value)
+            for value in root_causes
+            if _text(value) in REPAIR_SCOPES
+        ][: max(0, min(int(max_root_causes), 2))]
+    else:
+        ranked_causes = [
+            _text(item.get("code"))
+            for item in _list(ranked.get("ranked_root_causes"))
+            if _text(item.get("code")) in REPAIR_SCOPES
+        ][: max(0, min(int(max_root_causes), 2))]
     if not ranked_causes:
         plan = build_tail_repair_plan(source, root_causes=[ranked.get("root_cause") or "UNKNOWN_ROOT_CAUSE"])
         return {
@@ -263,20 +271,34 @@ def execute_tail_repair(
                     "scorer_signals": {"dimensions": copy.deepcopy(before_score.get("dimensions", {})), "allowed_repair_scope": sorted(REPAIR_SCOPES.get(root_cause, set()))},
                 }
             request = with_attempt(context, attempt_payload)
+            ir_parse_status = "not_run"
+            canonical_compile_status = "not_run"
+            contract_status = "not_run"
             try:
                 raw = repair_callable(request)
                 previous_raw = copy.deepcopy(raw)
-                document, protocol = _repair_response_to_patch(
-                    raw,
-                    structural_shot_plan=before_candidate,
-                    contract=contract,
-                    allow_legacy_canonical=not bool(require_repair_ir),
-                )
+                try:
+                    document, protocol = _repair_response_to_patch(
+                        raw,
+                        structural_shot_plan=before_candidate,
+                        contract=contract,
+                        allow_legacy_canonical=not bool(require_repair_ir),
+                    )
+                except (CreativePatchSchemaError, RepairIRSchemaError):
+                    # A provider response was received but failed protocol
+                    # parsing/validation. Preserve that distinction in the
+                    # attempt ledger so "not_run" means the parser was never
+                    # reached, while "invalid" means it rejected the output.
+                    ir_parse_status = "invalid"
+                    raise
+                ir_parse_status = "valid" if protocol.get("protocol") == "ir" else "legacy_compat"
                 in_scope, scope_error = _within_scope(document, root_cause)
                 if not in_scope:
                     raise ValueError(scope_error)
                 compilation = compile_creative_patches(before_candidate, document, contract, allow_partial=False)
+                canonical_compile_status = "compiled"
                 validation = validate_compiled_patch_result(compilation, before_candidate, contract, treatment=treatment, blocking=blocking)
+                contract_status = "pass" if validation.get("contract_pass") else "fail"
                 if not validation.get("contract_pass"):
                     raise ValueError("contract validation failed")
                 after_candidate = compilation.get("candidate") if isinstance(compilation.get("candidate"), dict) else before_candidate
@@ -310,7 +332,7 @@ def execute_tail_repair(
                 if not acceptance["accepted"]:
                     raise ValueError(acceptance["rollback_reason"] or "repair acceptance policy rejected candidate")
                 after_fp = fingerprint(after_candidate)
-                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "accepted", "protocol": protocol.get("protocol"), "target_delta": delta, "acceptance": acceptance, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "accepted", "protocol": protocol.get("protocol"), "ir_parse_status": ir_parse_status, "ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_compile_status": canonical_compile_status, "canonical_patch_fingerprint": fingerprint(document), "contract_status": contract_status, "target_delta": delta, "acceptance": acceptance, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
                 _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=after_fp, status="accepted", model=model, ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(raw), "repair_ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_patch_fingerprint": fingerprint(document), "ir_parse_status": "valid" if protocol.get("protocol") == "ir" else "legacy_compat", "canonical_compile_status": "compiled", "compile_status": "compiled", "contract_status": "pass", "target_dimension_delta": delta, "dq_before": before_score.get("director_quality_score"), "dq_after": after_score.get("director_quality_score"), "cv_before": before_cv, "cv_after": after_cv, "accepted": True, "rollback_reason": ""})
                 current = copy.deepcopy(after_candidate)
                 accepted = True
@@ -320,8 +342,8 @@ def execute_tail_repair(
                 rollback_reason = str(exc)
                 previous_error = str(exc)
                 previous_kind = "FORMAT_REPAIR" if isinstance(exc, (CreativePatchSchemaError, RepairIRSchemaError)) else "SEMANTIC_REPAIR"
-                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "rejected", "error": str(exc), "error_code": getattr(exc, "code", "")})
-                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(previous_raw) if previous_raw is not None else "", "repair_ir_fingerprint": "", "canonical_patch_fingerprint": "", "ir_parse_status": "invalid", "canonical_compile_status": "not_run", "compile_status": "not_run", "contract_status": "not_run", "target_dimension_delta": {}, "dq_before": before_score.get("director_quality_score"), "dq_after": before_score.get("director_quality_score"), "cv_before": _creative_value_score(source.get("creative_value")), "cv_after": None, "accepted": False, "rollback_reason": str(exc)})
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "rejected", "ir_parse_status": ir_parse_status, "canonical_compile_status": canonical_compile_status, "contract_status": contract_status, "error": str(exc), "error_code": getattr(exc, "code", "")})
+                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(previous_raw) if previous_raw is not None else "", "repair_ir_fingerprint": "", "canonical_patch_fingerprint": "", "ir_parse_status": ir_parse_status, "canonical_compile_status": canonical_compile_status, "compile_status": canonical_compile_status, "contract_status": contract_status, "target_dimension_delta": {}, "dq_before": before_score.get("director_quality_score"), "dq_after": before_score.get("director_quality_score"), "cv_before": _creative_value_score(source.get("creative_value")), "cv_after": None, "accepted": False, "rollback_reason": str(exc)})
         if not accepted and not rollback_reason:
             rollback_reason = "REPAIR_ATTEMPT_BUDGET_EXHAUSTED"
         if attempts:

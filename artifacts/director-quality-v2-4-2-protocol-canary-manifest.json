@@ -1,0 +1,33 @@
+{
+  "schema_version": "director-quality-v2-4-2-protocol-canary-manifest-v1",
+  "source_artifacts": [
+    "artifacts/director-quality-v2-4-b2-freeze.json",
+    "artifacts/director-quality-v2-3-phase-b2-evidence.json"
+  ],
+  "selection_policy": "one complete repairable frozen sample per repair_type, at most one sample per scene, stable lexical order",
+  "sample_count": 1,
+  "semantic_attempt_budget": 2,
+  "samples": [
+    {
+      "sample_id": "canary-edit-acdf41e2f2f9",
+      "scene_id": "V21_FIXTURE_01",
+      "root_cause": "WEAK_EDIT_STRATEGY",
+      "repair_type": "edit",
+      "target_dimensions": [
+        "EDIT_RHYTHM"
+      ],
+      "reason_selected": "deterministic first complete frozen sample for repair_type; frozen root cause is repairable and has target dimensions",
+      "source_artifact": "artifacts/director-quality-v2-4-b2-freeze.json",
+      "source_fingerprint": "913c899b9ac59963b09a6dd3cfe1a1ac0fa0f643a8d51d848fa2e40a71325cbb"
+    }
+  ],
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  }
+}

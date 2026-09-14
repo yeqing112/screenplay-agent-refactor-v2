@@ -108,12 +108,12 @@ def build_provider_contract_alignment(
     }
 
 
-def select_tail_scenes(pilot: dict[str, Any]) -> list[dict[str, Any]]:
+def select_tail_scenes(pilot: dict[str, Any], scene_ids: set[str] | None = None) -> list[dict[str, Any]]:
     rows = [item for item in _list(pilot.get("scenes")) if isinstance(item, dict)]
     selected = []
     for row in rows:
         tail = _dict(row.get("tail_repair"))
-        if bool(tail.get("triggered")):
+        if bool(tail.get("triggered")) and (scene_ids is None or _text(row.get("scene_id")) in scene_ids):
             selected.append(copy.deepcopy(row))
     return selected
 
@@ -206,6 +206,8 @@ def run_targeted_tail_pilot(
     repair_callable: Any,
     model: str = "",
     audit_records: list[dict[str, Any]] | None = None,
+    scene_ids: set[str] | None = None,
+    root_causes_by_scene: dict[str, list[str]] | None = None,
 ) -> dict[str, Any]:
     """Run only triggered tail scenes through the injected repair provider.
 
@@ -224,7 +226,7 @@ def run_targeted_tail_pilot(
         if isinstance(item, dict)
     }
     results: list[dict[str, Any]] = []
-    for source_row in select_tail_scenes(pilot):
+    for source_row in select_tail_scenes(pilot, scene_ids=scene_ids):
         scene_id = _text(source_row.get("scene_id"))
         frozen = evidence_by_id.get(scene_id, {})
         evidence = _dict(frozen.get("evidence"))
@@ -263,6 +265,7 @@ def run_targeted_tail_pilot(
             strategy=_dict(frozen.get("strategy")) or _dict(evidence.get("strategy")),
             model=model,
             require_repair_ir=True,
+            root_causes=(root_causes_by_scene or {}).get(scene_id) if root_causes_by_scene is not None else None,
         )
         after_candidate = _dict(repair_result.get("candidate")) or before_candidate
         after_quality = score_director_quality(

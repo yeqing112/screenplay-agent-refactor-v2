@@ -272,6 +272,7 @@ def _build_audit_record(
     extra=None,
     usage=None,
     latency_ms=None,
+    provider_request_id=None,
 ) -> dict:
     system_str = system or ""
     user_str = user or ""
@@ -297,6 +298,8 @@ def _build_audit_record(
         "parse_ok": bool(parse_ok),
     }
     record.update(_response_debug_fields(response_str))
+    if provider_request_id:
+        record["provider_request_id"] = str(provider_request_id)[:200]
     metrics = cache_metrics(usage)
     record["usage"] = metrics
     if latency_ms is not None:
@@ -378,6 +381,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                     headers=headers, json=payload,
                 )
                 audit_http_status = int(getattr(resp, "status_code", 0) or 0)
+                provider_request_id = (getattr(resp, "headers", {}) or {}).get("x-request-id") or (getattr(resp, "headers", {}) or {}).get("request-id") or ""
                 # Keep audit payloads bounded even for provider-side HTML/error
                 # pages.  The actual response is never persisted, only its hash
                 # and length are recorded by the callback.
@@ -396,6 +400,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                         parse_ok=False, repair_request=audit_repair_request,
                         extra=retry_extra,
                         latency_ms=(time.monotonic() - request_started) * 1000,
+                        provider_request_id=provider_request_id,
                     ), audit_callback)
                     time.sleep(retry_after)
                     continue
@@ -427,6 +432,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                     repair_request=audit_repair_request, extra=success_extra,
                     usage=usage,
                     latency_ms=(time.monotonic() - request_started) * 1000,
+                    provider_request_id=provider_request_id,
                 ), audit_callback)
                 return content
 
@@ -444,6 +450,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                 parse_ok=False, repair_request=audit_repair_request,
                 extra=retry_extra,
                 latency_ms=(time.monotonic() - request_started) * 1000,
+                provider_request_id=(getattr(err_resp, "headers", {}) or {}).get("x-request-id") or (getattr(err_resp, "headers", {}) or {}).get("request-id") or "",
             ), audit_callback)
             if attempt == attempt_budget - 1:
                 raise
@@ -459,6 +466,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                 parse_ok=False, repair_request=audit_repair_request,
                 extra=retry_extra,
                 latency_ms=(time.monotonic() - request_started) * 1000,
+                provider_request_id="",
             ), audit_callback)
             if attempt == attempt_budget - 1:
                 raise

@@ -74,3 +74,26 @@ def test_tail_executor_writes_runtime_ledger_metadata(monkeypatch):
     assert metadata["root_cause"] == "WEAK_EDIT_STRATEGY"
     assert metadata["compile_status"] == "compiled"
     assert metadata["contract_status"] == "pass"
+
+
+def test_ir_parse_failure_is_recorded_as_invalid_before_compile(monkeypatch):
+    candidate, contract, record = _inputs()
+    monkeypatch.setattr("core.director_tail_repair_executor.record_repair_attempt", lambda **kwargs: None)
+    result = execute_tail_repair(
+        candidate=candidate,
+        record=record,
+        contract=contract,
+        repair_callable=lambda request: {
+            "schema_version": "director_tail_repair_ir_v1",
+            "repair_type": "edit",
+            "root_cause": "WEAK_EDIT_STRATEGY",
+            "target_dimensions": ["EDIT_RHYTHM"],
+            "shot_decisions": [],
+        },
+        require_repair_ir=True,
+        max_attempts_per_root_cause=1,
+    )
+    attempt = result["attempts"][0]["attempts"][0]
+    assert result["status"] == "rolled_back"
+    assert attempt["ir_parse_status"] == "invalid"
+    assert attempt["canonical_compile_status"] == "not_run"
