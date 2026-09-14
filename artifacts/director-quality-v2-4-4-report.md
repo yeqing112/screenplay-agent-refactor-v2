@@ -1,6 +1,6 @@
 # Director Quality V2.4.4 — Repair Value Ceiling & Strategy Audit
 
-Generated: `2026-09-14T19:22:27.337229+00:00`
+Generated: `2026-09-14T19:25:13.856828+00:00`
 
 ## Status
 
@@ -28,6 +28,10 @@ The approved-record gap is reported as evidence; no acceptance rule or historica
 
 SCORER_SENSITIVITY_GAP: **no**; insensitive field count: **0**.
 CV ceiling: `CV_CEILING_NOT_MEASURABLE` (synthetic interventions have no authoritative outcome evidence).
+Diagnostic flags: `CV_CEILING_NOT_MEASURABLE, CURRENT_LOCAL_REPAIR_CANNOT_MEET_TAIL_GATE`.
+SCORER_INSENSITIVE_FIELD: **no**; ROOT_CAUSE_ALREADY_SATURATED: **no**; TOP2_ROOT_CAP_LIMIT: **no**.
+ROOT_CAUSE_PRIORITY_GAP: **no**; COORDINATED_SCENE_REPAIR_OPPORTUNITY: **no**; APPROVED_RECORD_COMPLEXITY_GAP: **yes**.
+MiMo actual/Top-2 efficiency **0.7973**; evidence is insufficient to label MODEL_CREATIVE_VALUE_GAP (realization is close to ceiling).
 
 ## Route decision
 

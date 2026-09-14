@@ -197,6 +197,14 @@ def run() -> dict[str, Any]:
                     dq_delta = (float(after_quality) - float(before_quality)) if _num(before_quality) and _num(after_quality) else 0.0
                     row["actual_root_results"].append({"root_cause": _text(root_attempt.get("root_cause")), "dq_delta": round(dq_delta, 4), "target_delta": _dict(attempt.get("target_delta")), "accepted": True})
         row["excluded_ranked_roots"] = [root for root in known if root.get("counterfactual_rank") and root.get("counterfactual_rank") > 2]
+        row["unselected_repairable_roots"] = [root.get("root_cause") for root in row["excluded_ranked_roots"]]
+        row["main_limiting_factors"] = []
+        if row["current_top2_ceiling"]["delta"] < 15:
+            row["main_limiting_factors"].append("CURRENT_TOP2_CEILING_BELOW_MEAN_GATE")
+        if row["current_top2_ceiling"]["dq"] < 60 and row["baseline"]["dq"] < 60:
+            row["main_limiting_factors"].append("TAIL_NOT_ESCAPED_BY_TOP2")
+        if row["all_known_roots_ceiling"]["delta"] - row["current_top2_ceiling"]["delta"] > 0:
+            row["main_limiting_factors"].append("UNSELECTED_ROOTS_HAVE_REMAINING_REACH")
         rows.append(row)
     sensitivity_maps = [build_sensitivity_map(baseline=_dict(evidence_by_id[row["scene_id"]].get("baseline")), treatment=_dict(evidence_by_id[row["scene_id"]].get("evidence")).get("treatment"), blocking=_dict(evidence_by_id[row["scene_id"]].get("evidence")).get("blocking")) for row in rows]
     sensitivity_fields: list[dict[str, Any]] = []
@@ -218,7 +226,22 @@ def run() -> dict[str, Any]:
         cohort_metrics[name]["repair_efficiency_top2"] = round(mean(actual_delta) / mean(top2_delta), 4) if actual_delta and top2_delta and mean(top2_delta) > 0 else None
     route = _route(rows, sensitivity)
     generated_at = datetime.now(timezone.utc).isoformat()
-    value_ceiling = {"schema_version": VALUE_CEILING_SCHEMA_VERSION, "generated_at": generated_at, "source_artifacts": [str(MANIFEST.relative_to(ROOT)), str(EVIDENCE.relative_to(ROOT)), str(FREEZE.relative_to(ROOT)), str(PILOT.relative_to(ROOT))], "provider_calls": {"llm": 0, "mimo": 0, "image": 0, "video": 0, "storage": 0}, "scene_count": len(rows), "cohort_metrics": cohort_metrics, "scenes": rows, "route_decision": route, "flags": ["CV_CEILING_NOT_MEASURABLE"] + (["CURRENT_LOCAL_REPAIR_CANNOT_MEET_TAIL_GATE"] if cohort_metrics["ALL"]["tail"]["current_top2_ceiling"]["tail_reduction"] is not None and cohort_metrics["ALL"]["tail"]["current_top2_ceiling"]["tail_reduction"] < 0.5 else [])}
+    all_uplift = cohort_metrics["ALL"]["all_known_roots_ceiling"]["delta"]["mean"] - cohort_metrics["ALL"]["current_top2_ceiling"]["delta"]["mean"]
+    priority_uplift = cohort_metrics["ALL"]["value_priority_top2_ceiling"]["delta"]["mean"] - cohort_metrics["ALL"]["current_top2_ceiling"]["delta"]["mean"]
+    coordinated_uplift = cohort_metrics["ALL"]["coordinated_top2_ceiling"]["delta"]["mean"] - cohort_metrics["ALL"]["current_top2_ceiling"]["delta"]["mean"]
+    flags = ["CV_CEILING_NOT_MEASURABLE"]
+    if cohort_metrics["ALL"]["tail"]["current_top2_ceiling"]["tail_reduction"] is not None and cohort_metrics["ALL"]["tail"]["current_top2_ceiling"]["tail_reduction"] < 0.5:
+        flags.append("CURRENT_LOCAL_REPAIR_CANNOT_MEET_TAIL_GATE")
+    if all_uplift >= 3:
+        flags.append("TOP2_ROOT_CAP_LIMIT")
+    if priority_uplift >= 3:
+        flags.append("ROOT_CAUSE_PRIORITY_GAP")
+    if coordinated_uplift >= 3:
+        flags.append("COORDINATED_SCENE_REPAIR_OPPORTUNITY")
+    saturated_count = sum(bool(root.get("root_cause_already_saturated")) for row in rows for root in row.get("counterfactual_root_cause_ceilings", []))
+    if saturated_count:
+        flags.append("ROOT_CAUSE_ALREADY_SATURATED")
+    value_ceiling = {"schema_version": VALUE_CEILING_SCHEMA_VERSION, "generated_at": generated_at, "source_artifacts": [str(MANIFEST.relative_to(ROOT)), str(EVIDENCE.relative_to(ROOT)), str(FREEZE.relative_to(ROOT)), str(PILOT.relative_to(ROOT)), str(HISTORICAL_TARGETED.relative_to(ROOT))], "provider_calls": {"llm": 0, "mimo": 0, "image": 0, "video": 0, "storage": 0}, "scene_count": len(rows), "cohort_metrics": cohort_metrics, "scenes": rows, "route_decision": route, "flags": flags, "diagnostics": {"root_cause_already_saturated_count": saturated_count, "excluded_historical_root_count": sum(len(x["excluded_ranked_roots"]) for x in rows)}}
     approved_cohort_rows = []
     for item in cohorts["APPROVED_RECORD"]:
         top2_delta = float(item["current_top2_ceiling"]["delta"])
@@ -236,6 +259,8 @@ def run() -> dict[str, Any]:
             "ceiling_can_escape_tail": float(item["current_top2_ceiling"]["dq"]) >= 60,
             "selected_roots": [x["root_cause"] for x in item["root_cause_ceilings"]],
             "scope_ratio": [x["scope_ratio"] for x in item["root_cause_ceilings"]],
+            "unselected_repairable_roots": item.get("unselected_repairable_roots", []),
+            "main_limiting_factors": item.get("main_limiting_factors", []),
         })
     cohort_gap = {}
     for name, cohort in cohorts.items():
@@ -275,6 +300,14 @@ def run() -> dict[str, Any]:
             "target_dimensions": items[0].get("target_dimensions"),
         }
     root_value = {"schema_version": "director-quality-v2-4-4-root-cause-value-v1", "generated_at": generated_at, "roots": root_value_rows, "repair_types": {}}
+    for name, items in by_root.items():
+        root_value["roots"][name]["by_origin"] = {}
+        for origin in ("approved_record", "fixture"):
+            subset = [scene_root for scene in rows if ("approved_record" if scene.get("scene_origin") == "approved_record" else "fixture") == origin for scene_root in scene.get("root_cause_ceilings", []) if scene_root.get("root_cause") == name]
+            root_value["roots"][name]["by_origin"][origin] = {
+                "count": len(subset),
+                "ceiling_mean_dq_delta": round(mean(float(i["dq_ceiling_delta"]) for i in subset), 4) if subset else None,
+            }
     for name, items in by_root.items(): root_value["repair_types"].setdefault(items[0].get("repair_type"), []).extend(items)
     for typ, items in list(root_value["repair_types"].items()): root_value["repair_types"][typ] = {"count": len(items), "ceiling_mean_dq_delta": round(mean(float(i["dq_ceiling_delta"]) for i in items), 4)}
     counterfactuals = {"schema_version": "director-quality-v2-4-4-counterfactuals-v1", "generated_at": generated_at, "provider_calls": 0, "scenes": [{"scene_id": r["scene_id"], "historical_top2": r["current_top2_ceiling"], "value_priority_top2": r["value_priority_top2_ceiling"], "all_known_roots": r["all_known_roots_ceiling"], "coordinated_top2": r["coordinated_top2_ceiling"], "scene_upper_bound": r["scene_upper_bound"]} for r in rows]}
@@ -299,6 +332,10 @@ def run() -> dict[str, Any]:
         "",
         f"SCORER_SENSITIVITY_GAP: **{'yes' if sensitivity.get('flags') else 'no'}**; insensitive field count: **{sum(row['classification'] == 'SCORER_INSENSITIVE_FIELD' for row in sensitivity_fields)}**.",
         "CV ceiling: `CV_CEILING_NOT_MEASURABLE` (synthetic interventions have no authoritative outcome evidence).",
+        f"Diagnostic flags: `{', '.join(flags)}`.",
+        f"SCORER_INSENSITIVE_FIELD: **{'yes' if 'SCORER_SENSITIVITY_GAP' in sensitivity.get('flags', []) else 'no'}**; ROOT_CAUSE_ALREADY_SATURATED: **{'yes' if saturated_count else 'no'}**; TOP2_ROOT_CAP_LIMIT: **{'yes' if 'TOP2_ROOT_CAP_LIMIT' in flags else 'no'}**.",
+        f"ROOT_CAUSE_PRIORITY_GAP: **{'yes' if 'ROOT_CAUSE_PRIORITY_GAP' in flags else 'no'}**; COORDINATED_SCENE_REPAIR_OPPORTUNITY: **{'yes' if 'COORDINATED_SCENE_REPAIR_OPPORTUNITY' in flags else 'no'}**; APPROVED_RECORD_COMPLEXITY_GAP: **{'yes' if cohort_metrics['APPROVED_RECORD']['current_top2_ceiling']['delta']['mean'] < cohort_metrics['FIXTURE']['current_top2_ceiling']['delta']['mean'] else 'no'}**.",
+        f"MiMo actual/Top-2 efficiency **{cohort_metrics['ALL']['repair_efficiency_top2']}**; evidence is insufficient to label MODEL_CREATIVE_VALUE_GAP (realization is close to ceiling).",
         "",
         "## Route decision",
         "",

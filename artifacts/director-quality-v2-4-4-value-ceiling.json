@@ -1,11 +1,12 @@
 {
   "schema_version": "director-quality-v2-4-4-value-ceiling-v1",
-  "generated_at": "2026-09-14T19:22:27.337229+00:00",
+  "generated_at": "2026-09-14T19:25:13.856828+00:00",
   "source_artifacts": [
     "artifacts\\director-quality-v2-4-3-targeted-tail-manifest.json",
     "artifacts\\director-quality-v2-3-phase-b2-evidence.json",
     "artifacts\\director-quality-v2-4-b2-freeze.json",
-    "artifacts\\director-quality-v2-4-3-targeted-tail-pilot-real.json"
+    "artifacts\\director-quality-v2-4-3-targeted-tail-pilot-real.json",
+    "artifacts\\director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json"
   ],
   "provider_calls": {
     "llm": 0,
@@ -553,6 +554,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 3.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 61.45,
           "reachable_dq": 63.85,
           "dq_ceiling_delta": 2.4,
@@ -743,6 +745,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 3.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 61.45,
           "reachable_dq": 63.85,
           "dq_ceiling_delta": 2.4,
@@ -784,6 +787,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 3.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 61.45,
           "reachable_dq": 63.85,
           "dq_ceiling_delta": 2.4,
@@ -823,7 +827,11 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE"
+      ]
     },
     {
       "scene_id": "book990402:e2:回声照相馆",
@@ -877,6 +885,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 2.73
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 30.57,
           "dq_ceiling_delta": 2.18,
@@ -1072,6 +1081,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 2.73
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 30.57,
           "dq_ceiling_delta": 2.18,
@@ -1116,6 +1126,7 @@
             "EMOTIONAL_PROGRESSION": 4.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 33.19,
           "dq_ceiling_delta": 4.8,
@@ -1157,6 +1168,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 2.73
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 30.57,
           "dq_ceiling_delta": 2.18,
@@ -1201,6 +1213,7 @@
             "EMOTIONAL_PROGRESSION": 4.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 33.19,
           "dq_ceiling_delta": 4.8,
@@ -1241,6 +1254,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 3.64
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 35.66,
           "dq_ceiling_delta": 7.27,
@@ -1320,6 +1334,14 @@
           "counterfactual_rank": 3,
           "rank_score": 0.7
         }
+      ],
+      "unselected_repairable_roots": [
+        "WEAK_INFORMATION_STRATEGY"
+      ],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2",
+        "UNSELECTED_ROOTS_HAVE_REMAINING_REACH"
       ]
     },
     {
@@ -1374,6 +1396,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 3.76
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.61,
           "reachable_dq": 31.61,
           "dq_ceiling_delta": 3.0,
@@ -1569,6 +1592,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 3.76
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.61,
           "reachable_dq": 31.61,
           "dq_ceiling_delta": 3.0,
@@ -1613,6 +1637,7 @@
             "EMOTIONAL_PROGRESSION": 4.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.61,
           "reachable_dq": 33.41,
           "dq_ceiling_delta": 4.8,
@@ -1654,6 +1679,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 3.76
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.61,
           "reachable_dq": 31.61,
           "dq_ceiling_delta": 3.0,
@@ -1698,6 +1724,7 @@
             "EMOTIONAL_PROGRESSION": 4.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.61,
           "reachable_dq": 33.41,
           "dq_ceiling_delta": 4.8,
@@ -1738,6 +1765,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 5.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.61,
           "reachable_dq": 38.61,
           "dq_ceiling_delta": 10.0,
@@ -1817,6 +1845,14 @@
           "counterfactual_rank": 3,
           "rank_score": 0.7
         }
+      ],
+      "unselected_repairable_roots": [
+        "WEAK_INFORMATION_STRATEGY"
+      ],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2",
+        "UNSELECTED_ROOTS_HAVE_REMAINING_REACH"
       ]
     },
     {
@@ -1875,6 +1911,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 31.39,
           "dq_ceiling_delta": 3.0,
@@ -2074,6 +2111,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 31.39,
           "dq_ceiling_delta": 3.0,
@@ -2114,6 +2152,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 3.64
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 35.66,
           "dq_ceiling_delta": 7.27,
@@ -2159,6 +2198,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 31.39,
           "dq_ceiling_delta": 3.0,
@@ -2199,6 +2239,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 3.64
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 35.66,
           "dq_ceiling_delta": 7.27,
@@ -2239,6 +2280,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 3.64
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.39,
           "reachable_dq": 31.3,
           "dq_ceiling_delta": 2.91,
@@ -2318,6 +2360,14 @@
           "counterfactual_rank": 3,
           "rank_score": 0.505575
         }
+      ],
+      "unselected_repairable_roots": [
+        "WEAK_EDIT_STRATEGY"
+      ],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2",
+        "UNSELECTED_ROOTS_HAVE_REMAINING_REACH"
       ]
     },
     {
@@ -2376,6 +2426,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.45,
           "reachable_dq": 31.45,
           "dq_ceiling_delta": 3.0,
@@ -2575,6 +2626,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.45,
           "reachable_dq": 31.45,
           "dq_ceiling_delta": 3.0,
@@ -2615,6 +2667,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 4.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.45,
           "reachable_dq": 36.45,
           "dq_ceiling_delta": 8.0,
@@ -2660,6 +2713,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.45,
           "reachable_dq": 31.45,
           "dq_ceiling_delta": 3.0,
@@ -2700,6 +2754,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 4.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.45,
           "reachable_dq": 36.45,
           "dq_ceiling_delta": 8.0,
@@ -2740,6 +2795,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 4.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 28.45,
           "reachable_dq": 31.65,
           "dq_ceiling_delta": 3.2,
@@ -2819,6 +2875,14 @@
           "counterfactual_rank": 3,
           "rank_score": 0.535937
         }
+      ],
+      "unselected_repairable_roots": [
+        "WEAK_EDIT_STRATEGY"
+      ],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2",
+        "UNSELECTED_ROOTS_HAVE_REMAINING_REACH"
       ]
     },
     {
@@ -2872,6 +2936,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -3065,6 +3130,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -3107,6 +3173,7 @@
             "EMOTIONAL_PROGRESSION": 2.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 50.2,
           "dq_ceiling_delta": 2.4,
@@ -3147,6 +3214,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -3189,6 +3257,7 @@
             "EMOTIONAL_PROGRESSION": 2.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 50.2,
           "dq_ceiling_delta": 2.4,
@@ -3237,7 +3306,12 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2"
+      ]
     },
     {
       "scene_id": "V21_FIXTURE_04",
@@ -3290,6 +3364,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -3483,6 +3558,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -3526,6 +3602,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 50.8,
           "dq_ceiling_delta": 3.0,
@@ -3566,6 +3643,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -3609,6 +3687,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 50.8,
           "dq_ceiling_delta": 3.0,
@@ -3657,7 +3736,12 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2"
+      ]
     },
     {
       "scene_id": "V21_FIXTURE_07",
@@ -3710,6 +3794,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -3903,6 +3988,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -3940,6 +4026,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 5.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 54.3,
           "dq_ceiling_delta": 4.0,
@@ -3980,6 +4067,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -4017,6 +4105,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 5.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 54.3,
           "dq_ceiling_delta": 4.0,
@@ -4064,7 +4153,11 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE"
+      ]
     },
     {
       "scene_id": "V21_FIXTURE_08",
@@ -4117,6 +4210,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -4306,6 +4400,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -4346,6 +4441,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -4385,7 +4481,12 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2"
+      ]
     },
     {
       "scene_id": "V21_FIXTURE_09",
@@ -4438,6 +4539,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -4631,6 +4733,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -4673,6 +4776,7 @@
             "EMOTIONAL_PROGRESSION": 2.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 50.2,
           "dq_ceiling_delta": 2.4,
@@ -4713,6 +4817,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -4755,6 +4860,7 @@
             "EMOTIONAL_PROGRESSION": 2.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 50.2,
           "dq_ceiling_delta": 2.4,
@@ -4803,7 +4909,12 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2"
+      ]
     },
     {
       "scene_id": "V21_FIXTURE_10",
@@ -4856,6 +4967,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -5045,6 +5157,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -5085,6 +5198,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -5124,7 +5238,12 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2"
+      ]
     },
     {
       "scene_id": "V21_FIXTURE_11",
@@ -5177,6 +5296,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -5370,6 +5490,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -5407,6 +5528,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 5.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 54.3,
           "dq_ceiling_delta": 4.0,
@@ -5447,6 +5569,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -5484,6 +5607,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 5.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 54.3,
           "dq_ceiling_delta": 4.0,
@@ -5531,7 +5655,11 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE"
+      ]
     },
     {
       "scene_id": "fixture:dialogue_power_shift",
@@ -5584,6 +5712,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -5777,6 +5906,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -5819,6 +5949,7 @@
             "EMOTIONAL_PROGRESSION": 2.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 50.2,
           "dq_ceiling_delta": 2.4,
@@ -5859,6 +5990,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 53.8,
           "dq_ceiling_delta": 6.0,
@@ -5901,6 +6033,7 @@
             "EMOTIONAL_PROGRESSION": 2.0,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 47.8,
           "reachable_dq": 50.2,
           "dq_ceiling_delta": 2.4,
@@ -5949,7 +6082,12 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2"
+      ]
     },
     {
       "scene_id": "fixture:multi_character",
@@ -6007,6 +6145,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 46.3,
           "reachable_dq": 49.3,
           "dq_ceiling_delta": 3.0,
@@ -6206,6 +6345,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 46.3,
           "reachable_dq": 49.3,
           "dq_ceiling_delta": 3.0,
@@ -6244,6 +6384,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 6.67
           },
+          "root_cause_already_saturated": false,
           "before_dq": 46.3,
           "reachable_dq": 51.64,
           "dq_ceiling_delta": 5.34,
@@ -6289,6 +6430,7 @@
             "EMOTIONAL_PROGRESSION": 2.5,
             "PERFORMANCE_DIRECTION": 0.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 46.3,
           "reachable_dq": 49.3,
           "dq_ceiling_delta": 3.0,
@@ -6327,6 +6469,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 6.67
           },
+          "root_cause_already_saturated": false,
           "before_dq": 46.3,
           "reachable_dq": 51.64,
           "dq_ceiling_delta": 5.34,
@@ -6365,6 +6508,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 6.66
           },
+          "root_cause_already_saturated": false,
           "before_dq": 46.3,
           "reachable_dq": 51.63,
           "dq_ceiling_delta": 5.33,
@@ -6439,6 +6583,14 @@
           "counterfactual_rank": 3,
           "rank_score": 0.525
         }
+      ],
+      "unselected_repairable_roots": [
+        "WEAK_EDIT_STRATEGY"
+      ],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE",
+        "TAIL_NOT_ESCAPED_BY_TOP2",
+        "UNSELECTED_ROOTS_HAVE_REMAINING_REACH"
       ]
     },
     {
@@ -6492,6 +6644,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -6685,6 +6838,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -6723,6 +6877,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 10.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 58.3,
           "dq_ceiling_delta": 8.0,
@@ -6763,6 +6918,7 @@
           "target_dimension_ceiling_delta": {
             "EDIT_RHYTHM": 7.5
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 56.3,
           "dq_ceiling_delta": 6.0,
@@ -6801,6 +6957,7 @@
           "target_dimension_ceiling_delta": {
             "INFORMATION_STRATEGY": 10.0
           },
+          "root_cause_already_saturated": false,
           "before_dq": 50.3,
           "reachable_dq": 58.3,
           "dq_ceiling_delta": 8.0,
@@ -6848,7 +7005,11 @@
           "accepted": true
         }
       ],
-      "excluded_ranked_roots": []
+      "excluded_ranked_roots": [],
+      "unselected_repairable_roots": [],
+      "main_limiting_factors": [
+        "CURRENT_TOP2_CEILING_BELOW_MEAN_GATE"
+      ]
     }
   ],
   "route_decision": {
@@ -6866,5 +7027,9 @@
   "flags": [
     "CV_CEILING_NOT_MEASURABLE",
     "CURRENT_LOCAL_REPAIR_CANNOT_MEET_TAIL_GATE"
-  ]
+  ],
+  "diagnostics": {
+    "root_cause_already_saturated_count": 0,
+    "excluded_historical_root_count": 5
+  }
 }

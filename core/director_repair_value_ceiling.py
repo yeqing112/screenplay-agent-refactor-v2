@@ -241,6 +241,7 @@ def _root_ceiling(*, baseline: dict[str, Any], root: dict[str, Any], treatment: 
     target_before = {d: round(float(before_dims.get(d, 0)), 4) for d in targets}
     target_after = {d: round(float(after_dims.get(d, 0)), 4) for d in targets}
     target_delta = {d: round(target_after[d] - target_before[d], 4) for d in targets}
+    saturated = bool(targets) and max((target_before.get(d, 0.0) for d in targets), default=0.0) >= 9.0 and all(value <= 0 for value in target_delta.values())
     return {
         "root_cause": root_name,
         "repair_type": ROOT_REPAIR_TYPE.get(root_name),
@@ -253,6 +254,7 @@ def _root_ceiling(*, baseline: dict[str, Any], root: dict[str, Any], treatment: 
         "before_target_score": target_before,
         "reachable_target_score": target_after,
         "target_dimension_ceiling_delta": target_delta,
+        "root_cause_already_saturated": saturated,
         "before_dq": before.get("director_quality_score"),
         "reachable_dq": after.get("director_quality_score"),
         "dq_ceiling_delta": round(float(after.get("director_quality_score", 0)) - float(before.get("director_quality_score", 0)), 4),
