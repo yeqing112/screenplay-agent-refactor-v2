@@ -17,6 +17,12 @@ from core.director_tail_repair_ir import (
     REPAIR_TYPES,
     ROOT_CAUSE_TYPES,
 )
+from core.director_tail_repair_semantic_spec import (
+    SEMANTIC_SPEC_VERSION,
+    minimal_valid_skeleton,
+    render_constraints,
+    typed_constraints_for,
+)
 
 
 REPAIR_IR_REQUIRED_KEYS = frozenset(
@@ -35,6 +41,7 @@ def build_provider_output_contract() -> dict[str, Any]:
         for repair_type, groups in sorted(ALLOWED_FIELDS.items())
     }
     return {
+        "semantic_spec_version": SEMANTIC_SPEC_VERSION,
         "schema_version": REPAIR_IR_SCHEMA_VERSION,
         "required_keys": sorted(REPAIR_IR_REQUIRED_KEYS),
         "repair_types": sorted(REPAIR_TYPES),
@@ -43,6 +50,14 @@ def build_provider_output_contract() -> dict[str, Any]:
         },
         "target_dimensions": sorted(DIRECTOR_TARGET_DIMENSIONS),
         "semantic_fields": semantic_fields,
+        "typed_constraints": {
+            repair_type: typed_constraints_for(repair_type)
+            for repair_type in sorted(REPAIR_TYPES)
+        },
+        "minimal_valid_skeletons": {
+            repair_type: minimal_valid_skeleton(repair_type)
+            for repair_type in sorted(REPAIR_TYPES)
+        },
         "no_canonical_paths": True,
         "ir_fingerprint": "system-computed; do not provide",
     }
@@ -77,6 +92,10 @@ def build_provider_system_prompt() -> str:
         "且每项 plan_shot_id 必须属于该集合。不要输出 patches、auxiliary_shot_proposals、path、"
         "changes 或任何 canonical patch 字段。不要输出 Markdown、解释文字或代码块。\n"
         f"允许的语义字段映射：{fields}\n"
+        "以下 typed constraints 是唯一校验依据，必须严格遵守：\n"
+        f"{render_constraints()}\n"
+        "performance_direction 中的 character_id 只能使用输入请求提供的 allowed_character_ids；"
+        "不得虚构角色 ID。minimal skeleton 中的尖括号值必须替换为输入中的真实 ID。\n"
         "ir_fingerprint 由系统计算，不要提供。"
     )
 

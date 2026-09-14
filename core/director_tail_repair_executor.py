@@ -16,6 +16,7 @@ from core.director_tail_root_cause import rank_tail_root_causes_v2
 from core.local_repair import fingerprint
 from core.repair_ledger import record_repair_attempt
 from core.director_tail_repair_ir import RepairIRSchemaError, validate_repair_ir
+from core.director_tail_repair_semantic_spec import minimal_valid_skeleton, typed_constraints_for
 from core.director_tail_repair_ir_compiler import compile_repair_ir
 from core.director_overdirecting import detect_over_directing
 from core.director_tail_repair_request import REPAIR_REQUEST_SCHEMA_VERSION, build_repair_request, with_attempt
@@ -91,6 +92,7 @@ def _minimal_context(
                 _dict(item).get("plan_shot_id") for item in _list(record.get("relevant_shots"))
             ]) if _text(value)
         ],
+        allowed_character_ids=[_text(value) for value in _list(record.get("allowed_character_ids")) if _text(value)],
         strategy_subset=_dict(strategy),
         immutable_contract=immutable_subset,
         previous_intervention=previous_intervention,
@@ -159,6 +161,7 @@ def _repair_response_to_patch(
     *,
     structural_shot_plan: dict[str, Any],
     contract: dict[str, Any],
+    allowed_character_ids: set[str] | None = None,
     allow_legacy_canonical: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Convert one model response through IR, then deterministic compiler.
@@ -168,7 +171,7 @@ def _repair_response_to_patch(
     """
     if isinstance(raw, dict) and _text(raw.get("schema_version")) == "director_tail_repair_ir_v1":
         known = {_text(item.get("plan_shot_id")) for item in _list(structural_shot_plan.get("shots")) if isinstance(item, dict)}
-        ir = validate_repair_ir(raw, known_plan_shot_ids=known)
+        ir = validate_repair_ir(raw, known_plan_shot_ids=known, allowed_character_ids=allowed_character_ids)
         return compile_repair_ir(ir, structural_shot_plan=structural_shot_plan, contract=contract), {"ir": ir, "protocol": "ir"}
     if allow_legacy_canonical and isinstance(raw, dict) and _text(raw.get("schema_version")) == "director_creative_patch_v1":
         return copy.deepcopy(raw), {"protocol": "legacy_canonical_compat"}
@@ -247,6 +250,7 @@ def execute_tail_repair(
         attempt_limit = max(0, min(int(max_attempts_per_root_cause), 2))
         previous_raw: Any = None
         previous_error = ""
+        previous_validation_errors: list[dict[str, Any]] = []
         previous_kind = "CREATIVE_GENERATION"
         for attempt_number in range(1, attempt_limit + 1):
             if repair_callable is None:
@@ -261,9 +265,12 @@ def execute_tail_repair(
                     "number": attempt_number,
                     "kind": attempt_kind,
                     "previous_raw_output": copy.deepcopy(previous_raw),
-                    "previous_validation_errors": [previous_error],
+                    "previous_validation_errors": copy.deepcopy(previous_validation_errors) or ([{"path": "", "code": "DIRECTOR_REPAIR_IR_INVALID", "message": previous_error, "expected": "typed Repair IR", "actual_type": "unknown"}]),
                     "required_output_schema": "director_tail_repair_ir_v1",
                     "allowed_plan_shot_ids": [_text(item.get("plan_shot_id")) for item in _list(before_candidate.get("shots")) if isinstance(item, dict)],
+                    "allowed_character_ids": [_text(value) for value in _list(context.get("allowed_character_ids")) if _text(value)],
+                    "typed_constraints_subset": typed_constraints_for({"WEAK_EDIT_STRATEGY": "edit", "WEAK_EMOTION_ARC": "emotion", "WEAK_INFORMATION_STRATEGY": "information", "PERFORMANCE_DIRECTION_WEAK": "performance", "CAMERA_LANGUAGE_GENERIC": "camera"}.get(root_cause, "edit")),
+                    "repair_type_minimal_skeleton": minimal_valid_skeleton({"WEAK_EDIT_STRATEGY": "edit", "WEAK_EMOTION_ARC": "emotion", "WEAK_INFORMATION_STRATEGY": "information", "PERFORMANCE_DIRECTION_WEAK": "performance", "CAMERA_LANGUAGE_GENERIC": "camera"}.get(root_cause, "edit"), character_placeholder="<replace with allowed_character_id>"),
                 }
             else:
                 attempt_kind = "SEMANTIC_REPAIR"
@@ -271,7 +278,7 @@ def execute_tail_repair(
                     "number": attempt_number,
                     "kind": attempt_kind,
                     "previous_raw_output": copy.deepcopy(previous_raw),
-                    "previous_validation_errors": [previous_error],
+                    "previous_validation_errors": copy.deepcopy(getattr(RepairIRSchemaError, "errors", [])) or ([{"path": "", "code": "DIRECTOR_REPAIR_IR_INVALID", "message": previous_error, "expected": "typed Repair IR", "actual_type": "unknown"}]),
                     "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())),
                     "scorer_signals": {"dimensions": copy.deepcopy(before_score.get("dimensions", {})), "allowed_repair_scope": sorted(REPAIR_SCOPES.get(root_cause, set()))},
                 }
@@ -287,6 +294,7 @@ def execute_tail_repair(
                         raw,
                         structural_shot_plan=before_candidate,
                         contract=contract,
+                        allowed_character_ids=set(_text(value) for value in _list(context.get("allowed_character_ids")) if _text(value)) or None,
                         allow_legacy_canonical=not bool(require_repair_ir),
                     )
                 except (CreativePatchSchemaError, RepairIRSchemaError):
@@ -347,7 +355,9 @@ def execute_tail_repair(
                 rollback_reason = str(exc)
                 previous_error = str(exc)
                 previous_kind = "FORMAT_REPAIR" if isinstance(exc, (CreativePatchSchemaError, RepairIRSchemaError)) else "SEMANTIC_REPAIR"
-                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "rejected", "ir_parse_status": ir_parse_status, "canonical_compile_status": canonical_compile_status, "contract_status": contract_status, "error": str(exc), "error_code": getattr(exc, "code", "")})
+                structured_errors = copy.deepcopy(getattr(exc, "errors", [])) if isinstance(exc, RepairIRSchemaError) else []
+                previous_validation_errors = structured_errors
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": attempt_kind, "status": "rejected", "ir_parse_status": ir_parse_status, "canonical_compile_status": canonical_compile_status, "contract_status": contract_status, "error": str(exc), "error_code": getattr(exc, "code", ""), "ir_validation_errors_structured": structured_errors})
                 _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": attempt_kind, "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(previous_raw) if previous_raw is not None else "", "repair_ir_fingerprint": "", "canonical_patch_fingerprint": "", "ir_parse_status": ir_parse_status, "canonical_compile_status": canonical_compile_status, "compile_status": canonical_compile_status, "contract_status": contract_status, "target_dimension_delta": {}, "dq_before": before_score.get("director_quality_score"), "dq_after": before_score.get("director_quality_score"), "cv_before": _creative_value_score(source.get("creative_value")), "cv_after": None, "accepted": False, "rollback_reason": str(exc)})
         if not accepted and not rollback_reason:
             rollback_reason = "REPAIR_ATTEMPT_BUDGET_EXHAUSTED"

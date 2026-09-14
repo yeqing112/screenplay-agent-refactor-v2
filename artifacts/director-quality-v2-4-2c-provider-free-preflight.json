@@ -1,0 +1,22 @@
+{
+  "schema_version": "director-quality-v2-4-2c-provider-free-preflight-v1",
+  "generated_at": "2026-09-14T16:47:25.133253+00:00",
+  "checks": {
+    "semantic_spec_ssot": true,
+    "validator_derives_from_spec": true,
+    "provider_contract_derives_from_spec": true,
+    "prompt_typed_constraints": true,
+    "collect_all_diagnostics": true,
+    "minimal_skeleton": true,
+    "allowed_character_ids": true,
+    "format_repair_diagnostic_packet": true,
+    "canary_sample_grouping": true,
+    "metric_semantics": true,
+    "full_regression": true,
+    "side_effects": 0
+  },
+  "ready_for_real_mimo": true,
+  "pytest_returncode": 0,
+  "pytest_stdout": ".............................                                            [100%]\n29 passed in 0.95s\n",
+  "pytest_stderr": ""
+}

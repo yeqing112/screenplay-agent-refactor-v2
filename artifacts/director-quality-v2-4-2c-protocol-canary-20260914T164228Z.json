@@ -1,0 +1,154 @@
+{
+  "schema_version": "director-quality-v2-4-2c-protocol-canary-v1",
+  "generated_at": "2026-09-14T16:42:28.298319+00:00",
+  "manifest": "artifacts/director-quality-v2-4-2b-protocol-canary-manifest.json",
+  "protocol_gate": "PROTOCOL_CANARY_PASSED",
+  "ready_for_targeted_tail_reevaluation": true,
+  "metrics": {
+    "sample_count": 4,
+    "semantic_attempt_count": 4,
+    "provider_http_request_count": 4,
+    "attempt_rejected_count": 0,
+    "root_cause_rollback_count": 0,
+    "scene_rollback_count": 0,
+    "repair_accepted_root_cause_count": 4,
+    "ir_first_pass_valid_count": 4,
+    "ir_first_pass_valid_rate": 1.0,
+    "ir_final_valid_count": 4,
+    "ir_final_valid_rate": 1.0,
+    "canonical_compile_count": 4,
+    "candidate_contract_pass_count": 4,
+    "fact_override_accepted_count": 0,
+    "request_echo_count": 0,
+    "unknown_provider_shape_count": 0,
+    "first_pass_by_repair_type": {
+      "edit": {
+        "valid": 1,
+        "total": 1
+      },
+      "emotion": {
+        "valid": 1,
+        "total": 1
+      },
+      "information": {
+        "valid": 1,
+        "total": 1
+      },
+      "performance": {
+        "valid": 1,
+        "total": 1
+      },
+      "camera": {
+        "valid": 0,
+        "total": 0
+      }
+    }
+  },
+  "samples": [
+    {
+      "sample_id": "canary-performance-3efcb9d7eaac",
+      "scene_id": "book990402:e2:回声照相馆",
+      "repair_type": "performance",
+      "root_cause": "PERFORMANCE_DIRECTION_WEAK",
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "ir_parse_status": "valid",
+          "canonical_compile_status": "compiled",
+          "contract_status": "pass",
+          "accepted": true,
+          "error": "",
+          "ir_validation_errors_structured": [],
+          "provider_request_fingerprint": "568017643cd02a617e23c3b756a011882493b8b9dc98e5f056db44e29fe448a1",
+          "response_fingerprint": "bec57ddc4e23cd13f194832bb1f3cad2",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "canary-emotion-4d9e0f8dc466",
+      "scene_id": "book990402:e3:暗房惊魂",
+      "repair_type": "emotion",
+      "root_cause": "WEAK_EMOTION_ARC",
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "ir_parse_status": "valid",
+          "canonical_compile_status": "compiled",
+          "contract_status": "pass",
+          "accepted": true,
+          "error": "",
+          "ir_validation_errors_structured": [],
+          "provider_request_fingerprint": "ff2dfd3408b08fe405cb9039416f185b2a58d713a843bcc7c5548f6602ff99fa",
+          "response_fingerprint": "f979756db5c34ab39db317664fd9b7bc",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "canary-edit-acdf41e2f2f9",
+      "scene_id": "V21_FIXTURE_01",
+      "repair_type": "edit",
+      "root_cause": "WEAK_EDIT_STRATEGY",
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "ir_parse_status": "valid",
+          "canonical_compile_status": "compiled",
+          "contract_status": "pass",
+          "accepted": true,
+          "error": "",
+          "ir_validation_errors_structured": [],
+          "provider_request_fingerprint": "49b75413299cf39d869541786786ed99605a54f40ecdade2cf881efbb8d4c8c3",
+          "response_fingerprint": "73a277ef161e8979d4962f7e775c2f4a",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "canary-information-4d673a155b28",
+      "scene_id": "V21_FIXTURE_07",
+      "repair_type": "information",
+      "root_cause": "WEAK_INFORMATION_STRATEGY",
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_kind": "CREATIVE_GENERATION",
+          "ir_parse_status": "valid",
+          "canonical_compile_status": "compiled",
+          "contract_status": "pass",
+          "accepted": true,
+          "error": "",
+          "ir_validation_errors_structured": [],
+          "provider_request_fingerprint": "e269352c40ee280f9ff5110619b3db9fd9168092b34d83e933c8e0259bdfbee8",
+          "response_fingerprint": "e814c38aa920969d4ba5484c346fa441",
+          "http_request_count": 1,
+          "provider_status": [
+            200
+          ]
+        }
+      ]
+    }
+  ],
+  "side_effects": {
+    "production": 0,
+    "storyboard": 0,
+    "media": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0,
+    "production_shadow": 0
+  }
+}

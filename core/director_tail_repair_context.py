@@ -43,6 +43,17 @@ def _shot_id(item: dict[str, Any], index: int) -> str:
     return _text(item.get("plan_shot_id") or item.get("shot_id") or item.get("id")) or f"S{index + 1:02d}"
 
 
+def _character_ids(shots: list[dict[str, Any]]) -> list[str]:
+    ids: set[str] = set()
+    for shot in shots:
+        for value in _list(shot.get("participants")):
+            if _text(value): ids.add(_text(value))
+        for row in _list(shot.get("performance_direction")):
+            if isinstance(row, dict) and _text(row.get("character_id")):
+                ids.add(_text(row.get("character_id")))
+    return sorted(ids)
+
+
 def _beat_map(treatment: dict[str, Any]) -> dict[str, dict[str, Any]]:
     beats = treatment.get("beat_map")
     if not isinstance(beats, list):
@@ -166,6 +177,7 @@ def resolve_tail_repair_context(
         "relevant_beats": relevant_beats,
         "relevant_shots": relevant_shots,
         "allowed_plan_shot_ids": allowed_ids,
+        "allowed_character_ids": _character_ids(relevant_shots),
         "relevant_opportunity_ids": [_text(item.get("opportunity_id")) for item in selected_opportunities if _text(item.get("opportunity_id"))],
         "relevant_beat_ids": selected_beat_ids,
         "relevant_plan_shot_ids": allowed_ids,

@@ -60,7 +60,7 @@ def _mock_ir(request: dict[str, Any]) -> dict[str, Any]:
         "edit": {"cut_reason": "reaction_complete"},
         "emotion": {"intensity": 5},
         "information_strategy": {"audience_focus": "subject"},
-        "performance": {"performance_direction": [{"character_id": "C1", "objective": "observe", "visible_behavior": "turns toward the reveal"}]},
+        "performance": {"performance_direction": [{"character_id": (_list(request.get("allowed_character_ids")) or ["C1"])[0], "objective": "observe", "visible_behavior": "turns toward the reveal"}]},
         "camera": {"camera": {"shot_size": "MS"}},
     }
     if repair_type == "performance":

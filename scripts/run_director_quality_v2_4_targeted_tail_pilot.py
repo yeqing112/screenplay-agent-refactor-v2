@@ -260,6 +260,7 @@ def run_targeted_tail_pilot(
             "relevant_beats": scoped_context["relevant_beats"],
             "relevant_shots": scoped_context["relevant_shots"],
             "allowed_plan_shot_ids": scoped_context["allowed_plan_shot_ids"],
+            "allowed_character_ids": scoped_context.get("allowed_character_ids", []),
             "opportunities": _list(source_row.get("opportunities")),
             "opportunity_count": source_row.get("opportunity_count"),
         }

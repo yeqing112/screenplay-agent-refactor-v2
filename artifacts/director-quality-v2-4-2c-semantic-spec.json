@@ -1,0 +1,265 @@
+{
+  "version": "director_tail_repair_semantic_spec_v1",
+  "repair_types": {
+    "edit": {
+      "groups": {
+        "edit": {
+          "type": "object",
+          "required": false,
+          "fields": {
+            "duration_seconds": {
+              "type": "number",
+              "minimum": 0,
+              "minimum_exclusive": true
+            },
+            "cut_reason": {
+              "type": "string",
+              "min_length": 1
+            },
+            "hold_after_action_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "hold_before_cut_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "hold_after_reveal_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "rhythm_change": {
+              "type": "string",
+              "min_length": 1
+            },
+            "reaction_timing": {
+              "type": "string",
+              "min_length": 1
+            }
+          }
+        }
+      }
+    },
+    "emotion": {
+      "groups": {
+        "emotion": {
+          "type": "object",
+          "required": false,
+          "fields": {
+            "intensity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10
+            },
+            "start": {
+              "type": "string",
+              "min_length": 1,
+              "nullable": true
+            },
+            "end": {
+              "type": "string",
+              "min_length": 1,
+              "nullable": true
+            },
+            "arc_position": {
+              "type": "string",
+              "min_length": 1,
+              "nullable": true
+            },
+            "valence": {
+              "type": "string",
+              "min_length": 1,
+              "nullable": true
+            },
+            "shift": {
+              "type": "string",
+              "min_length": 1,
+              "nullable": true
+            }
+          }
+        },
+        "performance_emphasis": {
+          "type": "string",
+          "min_length": 1
+        }
+      }
+    },
+    "information": {
+      "groups": {
+        "information_strategy": {
+          "type": "object",
+          "required": false,
+          "fields": {
+            "reveals": {
+              "type": "array",
+              "min_items": 1,
+              "item_type": "string",
+              "item_min_length": 1
+            },
+            "withholds": {
+              "type": "array",
+              "min_items": 1,
+              "item_type": "string",
+              "item_min_length": 1
+            },
+            "audience_focus": {
+              "type": "string_or_array",
+              "min_length": 1,
+              "min_items": 1,
+              "item_type": "string",
+              "item_min_length": 1
+            },
+            "reveal_order": {
+              "type": "array",
+              "min_items": 1,
+              "item_type": "string",
+              "item_min_length": 1
+            },
+            "withhold_until": {
+              "type": "string_or_array",
+              "min_length": 1,
+              "min_items": 1,
+              "item_type": "string",
+              "item_min_length": 1
+            },
+            "audience_should_notice": {
+              "type": "string_or_array",
+              "min_length": 1,
+              "min_items": 1,
+              "item_type": "string",
+              "item_min_length": 1
+            },
+            "audience_should_not_yet_know": {
+              "type": "string_or_array",
+              "min_length": 1,
+              "min_items": 1,
+              "item_type": "string",
+              "item_min_length": 1
+            }
+          }
+        }
+      }
+    },
+    "performance": {
+      "groups": {
+        "performance_direction": {
+          "type": "array",
+          "min_items": 1,
+          "items": {
+            "type": "object",
+            "item_required_fields": [
+              "character_id",
+              "objective",
+              "visible_behavior"
+            ],
+            "item_allowed_fields": [
+              "character_id",
+              "objective",
+              "visible_behavior",
+              "reaction_behavior",
+              "subtext",
+              "emphasis"
+            ],
+            "fields": {
+              "character_id": {
+                "type": "string",
+                "min_length": 1
+              },
+              "objective": {
+                "type": "string",
+                "min_length": 1
+              },
+              "visible_behavior": {
+                "type": "string",
+                "min_length": 1
+              },
+              "reaction_behavior": {
+                "type": "string",
+                "min_length": 1,
+                "nullable": true
+              },
+              "subtext": {
+                "type": "string",
+                "min_length": 1,
+                "nullable": true
+              },
+              "emphasis": {
+                "type": "string",
+                "min_length": 1,
+                "nullable": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "camera": {
+      "groups": {
+        "camera": {
+          "type": "object",
+          "required": false,
+          "fields": {
+            "shot_size": {
+              "type": "string",
+              "min_length": 1
+            },
+            "angle": {
+              "type": "string",
+              "min_length": 1
+            },
+            "movement": {
+              "type": "string",
+              "min_length": 1
+            },
+            "speed": {
+              "type": "string",
+              "min_length": 1
+            },
+            "camera_side": {
+              "type": "string",
+              "min_length": 1
+            }
+          }
+        },
+        "composition": {
+          "type": "object",
+          "required": false,
+          "fields": {
+            "frame_relationship": {
+              "type": "string",
+              "min_length": 1
+            },
+            "dominant_subject": {
+              "type": "string",
+              "min_length": 1
+            },
+            "visual_emphasis": {
+              "type": "string",
+              "min_length": 1
+            },
+            "foreground": {
+              "type": "string",
+              "min_length": 1
+            },
+            "background": {
+              "type": "string",
+              "min_length": 1
+            },
+            "depth": {
+              "type": "string",
+              "min_length": 1
+            },
+            "screen_position": {
+              "type": "string",
+              "min_length": 1
+            },
+            "blocking_focus": {
+              "type": "string",
+              "min_length": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}
