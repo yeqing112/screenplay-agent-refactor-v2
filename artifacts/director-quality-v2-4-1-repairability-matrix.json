@@ -1,0 +1,273 @@
+{
+  "schema_version": "director-quality-v2-4-1-repairability-matrix-v1",
+  "generated_at": "2026-09-14T11:34:00.369759+00:00",
+  "rows": [
+    {
+      "root_cause": "WEAK_EDIT_STRATEGY",
+      "repair_scope": "derived from typed IR",
+      "allowed_semantic_fields": "derived from core/director_tail_repair_ir.py",
+      "canonical_fields": "deterministic compiler paths",
+      "target_dimensions": [
+        "EDIT_RHYTHM"
+      ],
+      "scorer_features": [
+        "EDIT_RHYTHM"
+      ],
+      "synthetic_before": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "synthetic_after": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 5.0,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "target_dimension_delta": 2.5,
+      "status": "REPAIRABLE"
+    },
+    {
+      "root_cause": "WEAK_EMOTION_ARC",
+      "repair_scope": "derived from typed IR",
+      "allowed_semantic_fields": "derived from core/director_tail_repair_ir.py",
+      "canonical_fields": "deterministic compiler paths",
+      "target_dimensions": [
+        "EMOTIONAL_PROGRESSION"
+      ],
+      "scorer_features": [
+        "EMOTIONAL_PROGRESSION"
+      ],
+      "synthetic_before": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "synthetic_after": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 8.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "target_dimension_delta": 4.0,
+      "status": "REPAIRABLE"
+    },
+    {
+      "root_cause": "WEAK_INFORMATION_STRATEGY",
+      "repair_scope": "derived from typed IR",
+      "allowed_semantic_fields": "derived from core/director_tail_repair_ir.py",
+      "canonical_fields": "deterministic compiler paths",
+      "target_dimensions": [
+        "INFORMATION_STRATEGY"
+      ],
+      "scorer_features": [
+        "INFORMATION_STRATEGY"
+      ],
+      "synthetic_before": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "synthetic_after": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 5.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 5.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "target_dimension_delta": 5.0,
+      "status": "REPAIRABLE"
+    },
+    {
+      "root_cause": "PERFORMANCE_DIRECTION_WEAK",
+      "repair_scope": "derived from typed IR",
+      "allowed_semantic_fields": "derived from core/director_tail_repair_ir.py",
+      "canonical_fields": "deterministic compiler paths",
+      "target_dimensions": [
+        "PERFORMANCE_DIRECTION"
+      ],
+      "scorer_features": [
+        "PERFORMANCE_DIRECTION"
+      ],
+      "synthetic_before": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "synthetic_after": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 5.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "target_dimension_delta": 5.0,
+      "status": "REPAIRABLE"
+    },
+    {
+      "root_cause": "CAMERA_LANGUAGE_GENERIC",
+      "repair_scope": "derived from typed IR",
+      "allowed_semantic_fields": "derived from core/director_tail_repair_ir.py",
+      "canonical_fields": "deterministic compiler paths",
+      "target_dimensions": [
+        "SHOT_DIVERSITY"
+      ],
+      "scorer_features": [
+        "SHOT_DIVERSITY"
+      ],
+      "synthetic_before": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "synthetic_after": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 10.0
+      },
+      "target_dimension_delta": 5.0,
+      "status": "REPAIRABLE"
+    },
+    {
+      "root_cause": "OVER_DIRECTING",
+      "repair_scope": "derived from typed IR",
+      "allowed_semantic_fields": "derived from core/director_tail_repair_ir.py",
+      "canonical_fields": "deterministic compiler paths",
+      "target_dimensions": [
+        "SHOT_DIVERSITY"
+      ],
+      "scorer_features": [
+        "SHOT_DIVERSITY"
+      ],
+      "synthetic_before": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "synthetic_after": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 5.0,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 10.0
+      },
+      "target_dimension_delta": 5.0,
+      "status": "REPAIRABLE"
+    },
+    {
+      "root_cause": "UNDER_DIRECTING",
+      "repair_scope": "derived from typed IR",
+      "allowed_semantic_fields": "derived from core/director_tail_repair_ir.py",
+      "canonical_fields": "deterministic compiler paths",
+      "target_dimensions": [
+        "EDIT_RHYTHM"
+      ],
+      "scorer_features": [
+        "EDIT_RHYTHM"
+      ],
+      "synthetic_before": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 2.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "synthetic_after": {
+        "DRAMATIC_CLARITY": 6.0,
+        "SHOT_MOTIVATION": 0.0,
+        "EMOTIONAL_PROGRESSION": 4.0,
+        "VISUAL_STORYTELLING": 0.0,
+        "SPATIAL_CLARITY": 7.0,
+        "PERFORMANCE_DIRECTION": 0.0,
+        "EDIT_RHYTHM": 7.5,
+        "INFORMATION_STRATEGY": 0.0,
+        "POWER_DYNAMICS": 8.0,
+        "SHOT_DIVERSITY": 5.0
+      },
+      "target_dimension_delta": 5.0,
+      "status": "REPAIRABLE"
+    }
+  ],
+  "scorer_sensitivity_gaps": []
+}

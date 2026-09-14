@@ -338,6 +338,7 @@ def run_v24_scene_pipeline(
         session=session,
         repair_context={"scene_id": scene_id},
         model=model,
+        require_repair_ir=True,
     )
     return row
 

@@ -170,6 +170,7 @@ def run_targeted_tail_pilot(
             opportunities=source_row.get("opportunities") or [],
             strategy=_dict(frozen.get("strategy")) or _dict(evidence.get("strategy")),
             model=model,
+            require_repair_ir=True,
         )
         after_candidate = _dict(repair_result.get("candidate")) or before_candidate
         after_quality = score_director_quality(

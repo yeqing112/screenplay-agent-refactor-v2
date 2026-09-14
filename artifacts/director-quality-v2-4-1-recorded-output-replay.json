@@ -1,0 +1,285 @@
+{
+  "schema_version": "director-quality-v2-4-1-recorded-output-replay-v1",
+  "source_artifact": "artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json",
+  "raw_outputs_available": false,
+  "replayed_count": 54,
+  "results": [
+    {
+      "attempt_index": 1,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 2,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 3,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 4,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 5,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 6,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 7,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 8,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 9,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 10,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 11,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 12,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 13,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 14,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 15,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 16,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 17,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 18,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 19,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 20,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 21,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 22,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 23,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 24,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 25,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 26,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 27,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 28,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 29,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 30,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 31,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 32,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 33,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 34,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 35,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 36,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 37,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 38,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 39,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 40,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 41,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 42,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 43,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 44,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 45,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 46,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 47,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 48,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 49,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 50,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 51,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 52,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 53,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    },
+    {
+      "attempt_index": 54,
+      "status": "AMBIGUOUS_REJECTED",
+      "reason": "raw provider body unavailable; error-only evidence cannot be converted safely"
+    }
+  ],
+  "summary": {
+    "SAFE_IR_CONVERTIBLE": 0,
+    "UNSAFE_REJECTED": 0,
+    "AMBIGUOUS_REJECTED": 54,
+    "UNKNOWN_EXCEPTION": 0
+  },
+  "reason": "Raw provider bodies were not persisted by V2.4; error-only evidence is conservatively classified as ambiguous and never adapted."
+}

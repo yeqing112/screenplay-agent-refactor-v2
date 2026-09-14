@@ -15,6 +15,10 @@ from core.director_tail_repair import REPAIR_SCOPES, build_tail_repair_plan
 from core.director_tail_root_cause import rank_tail_root_causes_v2
 from core.local_repair import fingerprint
 from core.repair_ledger import record_repair_attempt
+from core.director_tail_repair_ir import RepairIRSchemaError, validate_repair_ir
+from core.director_tail_repair_ir_compiler import compile_repair_ir
+from core.director_overdirecting import detect_over_directing
+from core.director_tail_repair_request import REPAIR_REQUEST_SCHEMA_VERSION
 
 
 TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION = "director-quality-v2-4-tail-repair-executor-v1"
@@ -77,14 +81,14 @@ def _minimal_context(
         "source_beat_map": copy.deepcopy(_dict(contract.get("source_beat_map"))),
     }
     return {
-        "protocol_version": TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION,
+        "protocol_version": REPAIR_REQUEST_SCHEMA_VERSION,
         "root_cause": root_cause,
         "failed_dimensions": sorted(dimensions),
         "relevant_opportunities": relevant_opportunities,
         "relevant_beats": copy.deepcopy(_list(record.get("relevant_beats"))),
         "relevant_shots": copy.deepcopy(_list(record.get("relevant_shots"))),
-        "scene_strategy_subset": copy.deepcopy(_dict(strategy)),
-        "immutable_contract_subset": immutable_subset,
+        "strategy_subset": copy.deepcopy(_dict(strategy)),
+        "immutable_contract": immutable_subset,
         "previous_intervention": copy.deepcopy(previous_intervention),
         "validator_findings": copy.deepcopy(_list(record.get("quality_issues")) + _list(_dict(record.get("validation")).get("quality_issues"))),
         "target_metric": copy.deepcopy(target_metric),
@@ -136,6 +140,37 @@ def _record_attempt(
     )
 
 
+def _numeric(value: Any) -> float | None:
+    return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
+
+
+def _creative_value_score(value: Any) -> float | None:
+    if isinstance(value, dict):
+        return _numeric(value.get("score"))
+    return _numeric(value)
+
+
+def _repair_response_to_patch(
+    raw: Any,
+    *,
+    structural_shot_plan: dict[str, Any],
+    contract: dict[str, Any],
+    allow_legacy_canonical: bool = False,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Convert one model response through IR, then deterministic compiler.
+
+    A canonical response is accepted only for provider-free legacy callers
+    that omit a model name; real/provider-bound execution is IR-only.
+    """
+    if isinstance(raw, dict) and _text(raw.get("schema_version")) == "director_tail_repair_ir_v1":
+        known = {_text(item.get("plan_shot_id")) for item in _list(structural_shot_plan.get("shots")) if isinstance(item, dict)}
+        ir = validate_repair_ir(raw, known_plan_shot_ids=known)
+        return compile_repair_ir(ir, structural_shot_plan=structural_shot_plan, contract=contract), {"ir": ir, "protocol": "ir"}
+    if allow_legacy_canonical and isinstance(raw, dict) and _text(raw.get("schema_version")) == "director_creative_patch_v1":
+        return copy.deepcopy(raw), {"protocol": "legacy_canonical_compat"}
+    raise RepairIRSchemaError("model response must be director_tail_repair_ir_v1; canonical patch output is not accepted")
+
+
 def execute_tail_repair(
     *,
     candidate: dict[str, Any],
@@ -151,6 +186,7 @@ def execute_tail_repair(
     session: Any | None = None,
     repair_context: dict[str, Any] | None = None,
     model: str = "",
+    require_repair_ir: bool = False,
 ) -> dict[str, Any]:
     """Execute at most two targeted root-cause repairs and accept/rollback."""
 
@@ -181,7 +217,8 @@ def execute_tail_repair(
     current = copy.deepcopy(baseline)
     rows: list[dict[str, Any]] = []
     opportunities_list = [copy.deepcopy(item) for item in opportunities if isinstance(item, dict)]
-    executed_roots = 0
+    accepted_roots = 0
+    attempted_roots = 0
     for root_cause in ranked_causes:
         before_candidate = copy.deepcopy(current)
         before_fp = fingerprint(before_candidate)
@@ -192,15 +229,43 @@ def execute_tail_repair(
         accepted = False
         rollback_reason = ""
         attempt_limit = max(0, min(int(max_attempts_per_root_cause), 2))
+        previous_raw: Any = None
+        previous_error = ""
+        previous_kind = "CREATIVE_GENERATION"
         for attempt_number in range(1, attempt_limit + 1):
             if repair_callable is None:
                 rollback_reason = "REPAIR_CALLABLE_UNAVAILABLE"
                 break
             request = copy.deepcopy(context)
             request["attempt_number"] = attempt_number
+            if attempt_number == 1:
+                request["attempt_kind"] = "CREATIVE_GENERATION"
+                request["output_contract"] = {
+                    "schema_version": "director_tail_repair_ir_v1",
+                    "repair_type": "typed union: edit|emotion|information|performance|camera",
+                    "no_canonical_paths": True,
+                }
+            elif previous_kind == "FORMAT_REPAIR":
+                request["attempt_kind"] = "FORMAT_REPAIR"
+                request["previous_raw_output"] = copy.deepcopy(previous_raw)
+                request["previous_validation_errors"] = [previous_error]
+                request["required_output_schema"] = "director_tail_repair_ir_v1"
+                request["allowed_plan_shot_ids"] = [_text(item.get("plan_shot_id")) for item in _list(before_candidate.get("shots")) if isinstance(item, dict)]
+            else:
+                request["attempt_kind"] = "SEMANTIC_REPAIR"
+                request["previous_raw_output"] = copy.deepcopy(previous_raw)
+                request["previous_validation_errors"] = [previous_error]
+                request["target_dimension"] = sorted(TARGET_DIMENSIONS.get(root_cause, set()))
+                request["scorer_signals"] = {"dimensions": copy.deepcopy(before_score.get("dimensions", {})), "allowed_repair_scope": sorted(REPAIR_SCOPES.get(root_cause, set()))}
             try:
                 raw = repair_callable(request)
-                document = parse_creative_patch(raw)
+                previous_raw = copy.deepcopy(raw)
+                document, protocol = _repair_response_to_patch(
+                    raw,
+                    structural_shot_plan=before_candidate,
+                    contract=contract,
+                    allow_legacy_canonical=not bool(require_repair_ir),
+                )
                 in_scope, scope_error = _within_scope(document, root_cause)
                 if not in_scope:
                     raise ValueError(scope_error)
@@ -210,6 +275,14 @@ def execute_tail_repair(
                     raise ValueError("contract validation failed")
                 after_candidate = compilation.get("candidate") if isinstance(compilation.get("candidate"), dict) else before_candidate
                 after_score = score_director_quality(after_candidate, treatment=treatment, blocking=blocking)
+                before_cv = _creative_value_score(source.get("creative_value"))
+                after_cv = _creative_value_score(source.get("creative_value_after"))
+                if after_cv is None and isinstance(source.get("creative_value_replay"), dict):
+                    after_cv = _creative_value_score(source["creative_value_replay"].get("score"))
+                over_before = detect_over_directing(_list(before_candidate.get("shots")), opportunities=opportunities_list, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0)).get("over_directing_rate")
+                over_after = detect_over_directing(_list(after_candidate.get("shots")), opportunities=opportunities_list, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0)).get("over_directing_rate")
+                inflation_before = detect_over_directing(_list(before_candidate.get("shots")), opportunities=opportunities_list, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0)).get("shot_inflation_rate")
+                inflation_after = detect_over_directing(_list(after_candidate.get("shots")), opportunities=opportunities_list, baseline_shot_count=len(_list(baseline.get("shots"))), allowed_auxiliary_count=int(_dict(contract.get("auxiliary_shot_policy")).get("max_per_source_beat") or 0)).get("shot_inflation_rate")
                 validation_issues = _list(validation.get("errors")) + _list(validation.get("quality_issues"))
                 fact_override_count = sum(1 for item in validation_issues if _text(_dict(item).get("code") or _dict(item).get("issue_code")) in {"DIRECTOR_FACT_OVERRIDE", "FACT_OVERRIDE_ATTEMPT"})
                 structural_blocker_count = sum(1 for item in validation_issues if _text(_dict(item).get("severity")).lower() in {"blocker", "blocked"} or "STRUCTURAL" in _text(_dict(item).get("code")).upper())
@@ -220,23 +293,33 @@ def execute_tail_repair(
                     contract_pass=bool(validation.get("contract_pass")),
                     fact_override_count=fact_override_count,
                     structural_blocker_count=structural_blocker_count,
+                    creative_value_before=before_cv,
+                    creative_value_after=after_cv,
+                    over_directing_before=over_before,
+                    over_directing_after=over_after,
+                    shot_inflation_before=inflation_before,
+                    shot_inflation_after=inflation_after,
                 )
                 delta = acceptance["target_dimension_deltas"]
                 if not acceptance["accepted"]:
                     raise ValueError(acceptance["rollback_reason"] or "repair acceptance policy rejected candidate")
                 after_fp = fingerprint(after_candidate)
-                attempts.append({"attempt_number": attempt_number, "status": "accepted", "target_delta": delta, "acceptance": acceptance, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
-                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=after_fp, status="accepted", model=model, ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "compile_status": "compiled", "contract_status": "pass", "quality_before": before_score.get("director_quality_score"), "quality_after": after_score.get("director_quality_score"), "accepted": True, "rollback_reason": ""})
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": request.get("attempt_kind"), "status": "accepted", "protocol": protocol.get("protocol"), "target_delta": delta, "acceptance": acceptance, "before_fingerprint": before_fp, "after_fingerprint": after_fp})
+                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=after_fp, status="accepted", model=model, ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": request.get("attempt_kind"), "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(raw), "repair_ir_fingerprint": _text(_dict(protocol.get("ir")).get("ir_fingerprint")), "canonical_patch_fingerprint": fingerprint(document), "ir_parse_status": "valid" if protocol.get("protocol") == "ir" else "legacy_compat", "canonical_compile_status": "compiled", "compile_status": "compiled", "contract_status": "pass", "target_dimension_delta": delta, "dq_before": before_score.get("director_quality_score"), "dq_after": after_score.get("director_quality_score"), "cv_before": before_cv, "cv_after": after_cv, "accepted": True, "rollback_reason": ""})
                 current = copy.deepcopy(after_candidate)
                 accepted = True
-                executed_roots += 1
+                accepted_roots += 1
                 break
-            except (CreativePatchSchemaError, DirectorPatchCompileError, ValueError, TypeError) as exc:
+            except (CreativePatchSchemaError, DirectorPatchCompileError, RepairIRSchemaError, ValueError, TypeError) as exc:
                 rollback_reason = str(exc)
-                attempts.append({"attempt_number": attempt_number, "status": "rejected", "error": str(exc)})
-                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "compile_status": "failed", "contract_status": "failed", "accepted": False, "rollback_reason": str(exc)})
+                previous_error = str(exc)
+                previous_kind = "FORMAT_REPAIR" if isinstance(exc, (CreativePatchSchemaError, RepairIRSchemaError)) else "SEMANTIC_REPAIR"
+                attempts.append({"attempt_number": attempt_number, "attempt_kind": request.get("attempt_kind"), "status": "rejected", "error": str(exc), "error_code": getattr(exc, "code", "")})
+                _record_attempt(session=session, repair_context=repair_context, root_cause=root_cause, attempt_number=attempt_number, before=before_fp, after=before_fp, status="rejected", model=model, error=str(exc), ledger_metadata={"root_cause": root_cause, "target_dimensions": sorted(TARGET_DIMENSIONS.get(root_cause, set())), "attempt_kind": request.get("attempt_kind"), "repair_request_fingerprint": fingerprint(request), "raw_response_fingerprint": fingerprint(previous_raw) if previous_raw is not None else "", "repair_ir_fingerprint": "", "canonical_patch_fingerprint": "", "ir_parse_status": "invalid", "canonical_compile_status": "not_run", "compile_status": "not_run", "contract_status": "not_run", "target_dimension_delta": {}, "dq_before": before_score.get("director_quality_score"), "dq_after": before_score.get("director_quality_score"), "cv_before": _creative_value_score(source.get("creative_value")), "cv_after": None, "accepted": False, "rollback_reason": str(exc)})
         if not accepted and not rollback_reason:
             rollback_reason = "REPAIR_ATTEMPT_BUDGET_EXHAUSTED"
+        if attempts:
+            attempted_roots += 1
         rows.append({
             "root_cause": root_cause,
             "repair_scope": sorted(REPAIR_SCOPES.get(root_cause, set())),
@@ -252,7 +335,7 @@ def execute_tail_repair(
     triggered_count = len(ranked_causes)
     return {
         "schema_version": TAIL_REPAIR_EXECUTOR_SCHEMA_VERSION,
-        "status": "accepted" if executed_roots else "rolled_back",
+        "status": "accepted" if accepted_roots else "rolled_back",
         "candidate": current,
         "before_fingerprint": fingerprint(baseline),
         "after_fingerprint": fingerprint(current),
@@ -260,7 +343,13 @@ def execute_tail_repair(
         "attempts": rows,
         "accepted": [item["root_cause"] for item in rows if item["accepted"]],
         "rolled_back": [item["root_cause"] for item in rows if item["rolled_back"]],
-        "execution_coverage": round(executed_roots / triggered_count, 4) if triggered_count else 0.0,
+        # Legacy field retained for historical reports; new fields separate
+        # attempt coverage from acceptance and scene success semantics.
+        "execution_coverage": round(accepted_roots / triggered_count, 4) if triggered_count else 0.0,
+        "scene_execution_coverage": 1.0 if triggered_count else 0.0,
+        "root_cause_attempt_coverage": round(attempted_roots / triggered_count, 4) if triggered_count else 0.0,
+        "repair_acceptance_rate": round(accepted_roots / attempted_roots, 4) if attempted_roots else 0.0,
+        "scene_repair_success_rate": 1.0 if accepted_roots else 0.0,
         "non_repairable_reasons": [item["rollback_reason"] for item in rows if item["rolled_back"]],
     }
 
