@@ -1,0 +1,60 @@
+{
+  "schema_version": "director-quality-v2-4-4-root-cause-value-v1",
+  "generated_at": "2026-09-14T19:22:27.337229+00:00",
+  "roots": {
+    "WEAK_EDIT_STRATEGY": {
+      "count": 12,
+      "actual_mean_target_delta": 4.9717,
+      "actual_mean_dq_delta": 3.9767,
+      "ceiling_mean_dq_delta": 5.1317,
+      "repair_efficiency": 0.7749,
+      "approved_count": 3,
+      "fixture_count": 9,
+      "repair_type": "edit",
+      "target_dimensions": [
+        "EDIT_RHYTHM"
+      ]
+    },
+    "WEAK_EMOTION_ARC": {
+      "count": 9,
+      "actual_mean_target_delta": 1.0833,
+      "actual_mean_dq_delta": 2.5989,
+      "ceiling_mean_dq_delta": 3.2,
+      "repair_efficiency": 0.8122,
+      "approved_count": 4,
+      "fixture_count": 5,
+      "repair_type": "emotion",
+      "target_dimensions": [
+        "EMOTIONAL_PROGRESSION",
+        "PERFORMANCE_DIRECTION"
+      ]
+    },
+    "WEAK_INFORMATION_STRATEGY": {
+      "count": 6,
+      "actual_mean_target_delta": 4.8433,
+      "actual_mean_dq_delta": 5.0233,
+      "ceiling_mean_dq_delta": 6.1017,
+      "repair_efficiency": 0.8233,
+      "approved_count": 2,
+      "fixture_count": 4,
+      "repair_type": "information",
+      "target_dimensions": [
+        "INFORMATION_STRATEGY"
+      ]
+    }
+  },
+  "repair_types": {
+    "edit": {
+      "count": 12,
+      "ceiling_mean_dq_delta": 5.1317
+    },
+    "emotion": {
+      "count": 9,
+      "ceiling_mean_dq_delta": 3.2
+    },
+    "information": {
+      "count": 6,
+      "ceiling_mean_dq_delta": 6.1017
+    }
+  }
+}

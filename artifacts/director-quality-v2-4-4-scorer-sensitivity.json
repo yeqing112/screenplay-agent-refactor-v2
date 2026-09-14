@@ -1,0 +1,86 @@
+{
+  "schema_version": "director-quality-v2-4-4-scorer-sensitivity-v1",
+  "dimensions": {
+    "DRAMATIC_CLARITY": 15,
+    "SHOT_MOTIVATION": 15,
+    "EMOTIONAL_PROGRESSION": 12,
+    "VISUAL_STORYTELLING": 12,
+    "SPATIAL_CLARITY": 10,
+    "PERFORMANCE_DIRECTION": 10,
+    "EDIT_RHYTHM": 8,
+    "INFORMATION_STRATEGY": 8,
+    "POWER_DYNAMICS": 5,
+    "SHOT_DIVERSITY": 5
+  },
+  "fields": [
+    {
+      "field": "camera.signature",
+      "repair_type": "CAMERA_LANGUAGE_GENERIC",
+      "expected_dimension": "SHOT_DIVERSITY",
+      "weight": 5,
+      "before_mean": 3.39,
+      "after_mean": 6.9513,
+      "delta_mean": 3.5613,
+      "sensitive_scene_count": 15,
+      "classification": "SENSITIVE"
+    },
+    {
+      "field": "edit.cut_reason",
+      "repair_type": "WEAK_EDIT_STRATEGY",
+      "expected_dimension": "EDIT_RHYTHM",
+      "weight": 8,
+      "before_mean": 1.7793,
+      "after_mean": 5.34,
+      "delta_mean": 3.5607,
+      "sensitive_scene_count": 15,
+      "classification": "SENSITIVE"
+    },
+    {
+      "field": "edit.duration_seconds",
+      "repair_type": "WEAK_EDIT_STRATEGY",
+      "expected_dimension": "EDIT_RHYTHM",
+      "weight": 8,
+      "before_mean": 1.7793,
+      "after_mean": 5.34,
+      "delta_mean": 3.5607,
+      "sensitive_scene_count": 15,
+      "classification": "SENSITIVE"
+    },
+    {
+      "field": "emotion.intensity",
+      "repair_type": "WEAK_EMOTION_ARC",
+      "expected_dimension": "EMOTIONAL_PROGRESSION",
+      "weight": 12,
+      "before_mean": 4.0,
+      "after_mean": 6.0,
+      "delta_mean": 2.0,
+      "sensitive_scene_count": 15,
+      "classification": "SENSITIVE"
+    },
+    {
+      "field": "information_strategy.reveals",
+      "repair_type": "WEAK_INFORMATION_STRATEGY",
+      "expected_dimension": "INFORMATION_STRATEGY",
+      "weight": 8,
+      "before_mean": 0.0,
+      "after_mean": 3.56,
+      "delta_mean": 3.56,
+      "sensitive_scene_count": 15,
+      "classification": "SENSITIVE"
+    },
+    {
+      "field": "performance_direction",
+      "repair_type": "PERFORMANCE_DIRECTION_WEAK",
+      "expected_dimension": "PERFORMANCE_DIRECTION",
+      "weight": 10,
+      "before_mean": 0.0,
+      "after_mean": 3.56,
+      "delta_mean": 3.56,
+      "sensitive_scene_count": 15,
+      "classification": "SENSITIVE"
+    }
+  ],
+  "flags": [],
+  "scene_count": 15,
+  "provider_calls": 0
+}

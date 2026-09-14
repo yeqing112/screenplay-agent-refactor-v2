@@ -1,0 +1,211 @@
+{
+  "schema_version": "director-quality-v2-4-4-approved-vs-fixture-gap-v1",
+  "generated_at": "2026-09-14T19:22:27.337229+00:00",
+  "cohorts": {
+    "ALL": {
+      "scene_count": 15,
+      "scene_shot_count": {
+        "mean": 4.7333,
+        "median": 2.0,
+        "min": 2.0,
+        "max": 11.0
+      },
+      "baseline_dq": {
+        "mean": 44.286,
+        "median": 47.8,
+        "min": 28.39,
+        "max": 61.45
+      },
+      "baseline_cv": {
+        "mean": 38.6097,
+        "median": 40.0,
+        "min": 25.0,
+        "max": 55.0
+      },
+      "actual_dq_delta": {
+        "mean": 6.75,
+        "median": 6.4,
+        "min": 2.4,
+        "max": 10.0
+      },
+      "top2_ceiling_delta": {
+        "mean": 8.466,
+        "median": 8.4,
+        "min": 2.4,
+        "max": 14.0
+      },
+      "repair_efficiency": 0.7973,
+      "tail_escape_rate": 0.1429
+    },
+    "APPROVED_RECORD": {
+      "scene_count": 5,
+      "scene_shot_count": {
+        "mean": 10.0,
+        "median": 10.0,
+        "min": 8.0,
+        "max": 11.0
+      },
+      "baseline_dq": {
+        "mean": 35.058,
+        "median": 28.45,
+        "min": 28.39,
+        "max": 61.45
+      },
+      "baseline_cv": {
+        "mean": 32.2291,
+        "median": 27.8125,
+        "min": 25.0,
+        "max": 55.0
+      },
+      "actual_dq_delta": {
+        "mean": 5.716,
+        "median": 4.22,
+        "min": 2.4,
+        "max": 9.06
+      },
+      "top2_ceiling_delta": {
+        "mean": 7.69,
+        "median": 7.8,
+        "min": 2.4,
+        "max": 11.0
+      },
+      "repair_efficiency": 0.7433,
+      "tail_escape_rate": 0.0
+    },
+    "FIXTURE": {
+      "scene_count": 10,
+      "scene_shot_count": {
+        "mean": 2.1,
+        "median": 2.0,
+        "min": 2.0,
+        "max": 3.0
+      },
+      "baseline_dq": {
+        "mean": 48.9,
+        "median": 49.05,
+        "min": 46.3,
+        "max": 50.3
+      },
+      "baseline_cv": {
+        "mean": 41.8,
+        "median": 40.0,
+        "min": 28.0,
+        "max": 55.0
+      },
+      "actual_dq_delta": {
+        "mean": 7.267,
+        "median": 6.4,
+        "min": 5.07,
+        "max": 10.0
+      },
+      "top2_ceiling_delta": {
+        "mean": 8.854,
+        "median": 8.4,
+        "min": 6.0,
+        "max": 14.0
+      },
+      "repair_efficiency": 0.8208,
+      "tail_escape_rate": 0.2
+    }
+  },
+  "approved_scenes": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "baseline_dq": 61.45,
+      "actual_dq": 63.85,
+      "actual_delta": 2.4,
+      "top2_ceiling_delta": 2.4,
+      "all_roots_ceiling_delta": 2.4,
+      "repair_efficiency": 1.0,
+      "baseline_below_60": false,
+      "actual_escaped_tail": true,
+      "ceiling_can_escape_tail": true,
+      "selected_roots": [
+        "WEAK_EDIT_STRATEGY"
+      ],
+      "scope_ratio": [
+        0.3
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "baseline_dq": 28.39,
+      "actual_dq": 32.61,
+      "actual_delta": 4.22,
+      "top2_ceiling_delta": 6.98,
+      "all_roots_ceiling_delta": 14.26,
+      "repair_efficiency": 0.6046,
+      "baseline_below_60": true,
+      "actual_escaped_tail": false,
+      "ceiling_can_escape_tail": false,
+      "selected_roots": [
+        "WEAK_EDIT_STRATEGY",
+        "WEAK_EMOTION_ARC"
+      ],
+      "scope_ratio": [
+        0.2727,
+        0.2727
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "baseline_dq": 28.61,
+      "actual_dq": 32.51,
+      "actual_delta": 3.9,
+      "top2_ceiling_delta": 7.8,
+      "all_roots_ceiling_delta": 17.8,
+      "repair_efficiency": 0.5,
+      "baseline_below_60": true,
+      "actual_escaped_tail": false,
+      "ceiling_can_escape_tail": false,
+      "selected_roots": [
+        "WEAK_EDIT_STRATEGY",
+        "WEAK_EMOTION_ARC"
+      ],
+      "scope_ratio": [
+        0.375,
+        0.375
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "baseline_dq": 28.39,
+      "actual_dq": 37.45,
+      "actual_delta": 9.06,
+      "top2_ceiling_delta": 10.27,
+      "all_roots_ceiling_delta": 13.19,
+      "repair_efficiency": 0.8822,
+      "baseline_below_60": true,
+      "actual_escaped_tail": false,
+      "ceiling_can_escape_tail": false,
+      "selected_roots": [
+        "WEAK_EMOTION_ARC",
+        "WEAK_INFORMATION_STRATEGY"
+      ],
+      "scope_ratio": [
+        0.1818,
+        0.3636
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "baseline_dq": 28.45,
+      "actual_dq": 37.45,
+      "actual_delta": 9.0,
+      "top2_ceiling_delta": 11.0,
+      "all_roots_ceiling_delta": 14.2,
+      "repair_efficiency": 0.8182,
+      "baseline_below_60": true,
+      "actual_escaped_tail": false,
+      "ceiling_can_escape_tail": false,
+      "selected_roots": [
+        "WEAK_EMOTION_ARC",
+        "WEAK_INFORMATION_STRATEGY"
+      ],
+      "scope_ratio": [
+        0.2,
+        0.4
+      ]
+    }
+  ]
+}

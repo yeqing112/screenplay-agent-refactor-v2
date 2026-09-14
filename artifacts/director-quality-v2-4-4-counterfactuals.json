@@ -1,0 +1,2085 @@
+{
+  "schema_version": "director-quality-v2-4-4-counterfactuals-v1",
+  "generated_at": "2026-09-14T19:22:27.337229+00:00",
+  "provider_calls": 0,
+  "scenes": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 63.85,
+        "delta": 2.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.5,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 63.85,
+        "delta": 2.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.5,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 63.85,
+        "delta": 2.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.5,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 63.85,
+        "delta": 2.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.5,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 93.6,
+        "delta": 32.15,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 10.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.5,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 8.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      }
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 35.37,
+        "delta": 6.98,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 0.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.18,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 40.47,
+        "delta": 12.08,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 3.64,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.45,
+          "INFORMATION_STRATEGY": 3.64,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 42.65,
+        "delta": 14.26,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 3.64,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.18,
+          "INFORMATION_STRATEGY": 3.64,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 35.37,
+        "delta": 6.98,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 0.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 3.18,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 72.05,
+        "delta": 43.66,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.27,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 7.27
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      }
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 36.41,
+        "delta": 7.8,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 0.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 4.38,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.62
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 43.41,
+        "delta": 14.8,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 5.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.62,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.62
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 46.41,
+        "delta": 17.8,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 5.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 4.38,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.62
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 36.41,
+        "delta": 7.8,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 0.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 4.38,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.62
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 74.1,
+        "delta": 45.49,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 8.12,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 8,
+          "candidate_shot_count": 8
+        }
+      }
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 38.66,
+        "delta": 10.27,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 3.64,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.45,
+          "INFORMATION_STRATEGY": 3.64,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 38.66,
+        "delta": 10.27,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 3.64,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.45,
+          "INFORMATION_STRATEGY": 3.64,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 41.58,
+        "delta": 13.19,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 3.64,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 4.09,
+          "INFORMATION_STRATEGY": 3.64,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 38.66,
+        "delta": 10.27,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 3.64,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.45,
+          "INFORMATION_STRATEGY": 3.64,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.45
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 72.05,
+        "delta": 43.66,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.27,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 7.27
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 11,
+          "candidate_shot_count": 11
+        }
+      }
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 39.45,
+        "delta": 11.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 4.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.5,
+          "INFORMATION_STRATEGY": 4.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 39.65,
+        "delta": 11.2,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 4.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 4.5,
+          "INFORMATION_STRATEGY": 4.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 42.65,
+        "delta": 14.2,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 4.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 4.5,
+          "INFORMATION_STRATEGY": 4.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 39.45,
+        "delta": 11.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 4.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 0.5,
+          "INFORMATION_STRATEGY": 4.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 0.5
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 72.6,
+        "delta": 44.15,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 6.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 7.5,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 8.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 10,
+          "candidate_shot_count": 10
+        }
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_01",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 32.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_04",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.8,
+        "delta": 9.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.8,
+        "delta": 9.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.8,
+        "delta": 9.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.8,
+        "delta": 9.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 32.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_07",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_08",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_09",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 32.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_10",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.3,
+        "delta": 6.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    },
+    {
+      "scene_id": "V21_FIXTURE_11",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 60.3,
+        "delta": 10.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 5.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    },
+    {
+      "scene_id": "fixture:dialogue_power_shift",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_EMOTION_ARC"
+        ],
+        "dq": 56.2,
+        "delta": 8.4,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 0.0,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 32.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    },
+    {
+      "scene_id": "fixture:multi_character",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 54.64,
+        "delta": 8.34,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 1.67,
+          "INFORMATION_STRATEGY": 6.67,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 3.33
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 3,
+          "candidate_shot_count": 3
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 56.97,
+        "delta": 10.67,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 8.33,
+          "INFORMATION_STRATEGY": 6.67,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 3.33
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 3,
+          "candidate_shot_count": 3
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 59.97,
+        "delta": 13.67,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 8.33,
+          "INFORMATION_STRATEGY": 6.67,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 3.33
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 3,
+          "candidate_shot_count": 3
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EMOTION_ARC",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 54.64,
+        "delta": 8.34,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 1.67,
+          "INFORMATION_STRATEGY": 6.67,
+          "POWER_DYNAMICS": 3.0,
+          "SHOT_DIVERSITY": 3.33
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 3,
+          "candidate_shot_count": 3
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 81.6,
+        "delta": 35.3,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 8.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 3,
+          "candidate_shot_count": 3
+        }
+      }
+    },
+    {
+      "scene_id": "fixture:prop_continuity",
+      "historical_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 64.3,
+        "delta": 14.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "value_priority_top2": {
+        "roots": [
+          "WEAK_INFORMATION_STRATEGY",
+          "WEAK_EDIT_STRATEGY"
+        ],
+        "dq": 64.3,
+        "delta": 14.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "all_known_roots": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 64.3,
+        "delta": 14.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "coordinated_top2": {
+        "roots": [
+          "WEAK_EDIT_STRATEGY",
+          "WEAK_INFORMATION_STRATEGY"
+        ],
+        "dq": 64.3,
+        "delta": 14.0,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 4.0,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 0.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 5.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      },
+      "scene_upper_bound": {
+        "dq": 79.8,
+        "delta": 29.5,
+        "dimensions": {
+          "DRAMATIC_CLARITY": 10.0,
+          "SHOT_MOTIVATION": 0.0,
+          "EMOTIONAL_PROGRESSION": 6.5,
+          "VISUAL_STORYTELLING": 10.0,
+          "SPATIAL_CLARITY": 10.0,
+          "PERFORMANCE_DIRECTION": 10.0,
+          "EDIT_RHYTHM": 10.0,
+          "INFORMATION_STRATEGY": 10.0,
+          "POWER_DYNAMICS": 8.0,
+          "SHOT_DIVERSITY": 10.0
+        },
+        "validation": {
+          "valid": true,
+          "topology_equal": true,
+          "immutable_equal": true,
+          "allowed_paths_valid": true,
+          "baseline_shot_count": 2,
+          "candidate_shot_count": 2
+        }
+      }
+    }
+  ]
+}
