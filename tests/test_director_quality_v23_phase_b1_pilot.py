@@ -29,6 +29,8 @@ def test_b1_runner_with_incomplete_decisions_fails_closed_without_side_effects(m
     assert result["production_shadow"]["enabled"] is False
     assert result["scenes"][0]["tail_repair"]["triggered"] is True
     assert result["scenes"][0]["tail_repair"]["root_causes"]
+    assert result["summary"]["eligible_opportunity_count"] == result["scenes"][0]["opportunity_value"]["eligible_opportunity_count"]
+    assert result["summary"]["opportunity_detection_coverage"] == 1.0
 
 
 def test_b1_patch_attribution_is_field_scoped_not_shot_scoped():
