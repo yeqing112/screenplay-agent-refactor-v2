@@ -317,6 +317,7 @@ V2.3 已完成机会发现、策略覆盖、价值评估和安全隔离的第一
 
 ### 尚未完成（不得误报为完成）
 
+- Targeted Pilot 的默认输入已在 `c7812d0` 修正为带 provenance 的 `artifacts/director-quality-v2-4-b2-freeze.json`；历史 V2.3 pilot 仍可通过 `--pilot` 显式指定，仅用于审计/回放。最新 provider-free preflight 已选中 15 个 Tail 场景且不再误报 `SOURCE_PROVENANCE_MISSING`。
 - Targeted Tail Real MiMo Pilot 尚未执行：当前模型管理中的 MiMo profile 未配置 API Key，preflight 为 `ready_for_confirmation=false`，阻塞码为 `MIMO_PROFILE_KEY_OR_CONFIGURATION_MISSING`；
 - 因 Targeted Pilot 尚未证明修复价值，不能执行 Full 24 V2.4 Pilot，也不能开启 Production Shadow；
 - Final Report 与 Shadow Gate 最终决策仍需在 Targeted Pilot 完成后生成。
