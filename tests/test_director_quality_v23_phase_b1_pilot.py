@@ -4,6 +4,7 @@ import core.llm
 
 from scripts.run_director_quality_v2_3_phase_b1_pilot import (
     CONFIRMATION_TOKEN,
+    _dimension_delta,
     _eligible_dimension_coverage,
     _patch_dimension_map,
     run_authorized_pilot,
@@ -50,3 +51,11 @@ def test_b1_strategy_coverage_uses_eligible_opportunity_denominator():
     ]
     result = _eligible_dimension_coverage(opportunities, outcomes)
     assert result == {"edit_strategy": 1.0, "emotion_arc": 0.0, "information_strategy": None}
+
+
+def test_b1_dimension_delta_normalizes_scorer_labels_to_opportunity_contract():
+    result = _dimension_delta(
+        {"dimensions": {"EDIT_RHYTHM": 4, "SHOT_MOTIVATION": 5, "UNSUPPORTED": 8}},
+        {"dimensions": {"EDIT_RHYTHM": 6, "SHOT_MOTIVATION": 4, "UNSUPPORTED": 9}},
+    )
+    assert result == {"edit_strategy": 2.0, "shot_motivation": -1.0}

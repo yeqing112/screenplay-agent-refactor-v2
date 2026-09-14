@@ -204,8 +204,24 @@ def _eligible_dimension_coverage(
 
 def _dimension_delta(before: dict[str, Any], after: dict[str, Any]) -> dict[str, float]:
     b = _dict(before.get("dimensions")); a = _dict(after.get("dimensions"))
-    keys = set(b) | set(a)
-    return {str(key): round(float(a.get(key, 0) or 0) - float(b.get(key, 0) or 0), 4) for key in sorted(keys)}
+    # The quality scorer historically emits upper-case dimension labels while
+    # the Phase B opportunity contract uses canonical lower-case names.  Keep
+    # only dimensions understood by the opportunity model and normalize them
+    # before constructing an outcome; otherwise a real pilot can fail at the
+    # value-contract boundary even though compilation succeeded.
+    from core.director_opportunity_model import DIRECTING_DIMENSIONS
+
+    aliases = {
+        "edit_rhythm": "edit_strategy",
+        "emotional_progression": "emotion_arc",
+    }
+    before_norm = {aliases.get(str(key).lower(), str(key).lower()): value for key, value in b.items()}
+    after_norm = {aliases.get(str(key).lower(), str(key).lower()): value for key, value in a.items()}
+    keys = (set(before_norm) | set(after_norm)) & set(DIRECTING_DIMENSIONS)
+    return {
+        str(key): round(float(after_norm.get(key, 0) or 0) - float(before_norm.get(key, 0) or 0), 4)
+        for key in sorted(keys)
+    }
 
 
 def _stats(values: list[float]) -> dict[str, float | None]:
