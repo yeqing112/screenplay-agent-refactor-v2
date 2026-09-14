@@ -305,10 +305,11 @@ V2.3 已完成机会发现、策略覆盖、价值评估和安全隔离的第一
 - `core/director_quality_v24_pipeline.py`：将上述模块串为 provider-neutral scene pipeline；
 - `scripts/run_director_quality_v2_4_offline_replay.py`：从冻结 B2 产物生成可回放审计报告；
 - `scripts/run_director_quality_v2_4_targeted_tail_pilot.py`：15 个 Tail 场景的严格 preflight 与显式授权边界。
+- Targeted Pilot 结果契约已补齐逐场景 Before/After DQ、CV 测量边界、目标维度前后值、delta、最终 contract 状态及 accepted/rollback 列表；CV 未重放时明确标记 `not_replayed_after_tail_repair`，不伪造价值提升。
 
 ### 本地证据
 
-- 全量回归：`971 passed, 890 warnings`；
+- 全量回归：`973 passed, 890 warnings`；Targeted Tail 离线集成：`5 passed`；
 - V2.4 专项与离线回放测试：全部通过；
 - 离线回放场景数：24；
 - Shadow Gate：`NOT_READY`，结构化 reasons 非空；
