@@ -149,3 +149,28 @@ def test_v23_coverage_metrics_are_explicit_and_do_not_treat_rejected_patch_as_us
     assert metrics["emotion_arc_coverage"] == 1.0
     assert metrics["information_strategy_coverage"] == 1.0
     assert metrics["useful_creative_acceptance_rate"] == 0.0
+
+
+def test_v23_coverage_flags_mechanical_equal_duration_and_checks_emotion_execution():
+    shots = [
+        _shot(plan_shot_id="S01", beat_id="B01", edit={"duration_seconds": 4, "cut_reason": "beat_change"}, emotion={"intensity": 3}),
+        _shot(plan_shot_id="S02", beat_id="B02", edit={"duration_seconds": 4, "cut_reason": "beat_change"}, emotion={"intensity": 8}),
+        _shot(plan_shot_id="S03", beat_id="B03", edit={"duration_seconds": 4, "cut_reason": "beat_change"}, emotion={"intensity": 8}),
+    ]
+    strategy = {
+        "emotion_curve": [
+            {"beat_id": "B01", "character_id": "C1", "state": "平静", "intensity": 3},
+            {"beat_id": "B02", "character_id": "C1", "state": "警觉", "intensity": 8},
+            {"beat_id": "B03", "character_id": "C1", "state": "警觉", "intensity": 8},
+        ]
+    }
+    metrics = build_director_quality_v23_coverage_metrics(candidate={"shots": shots}, strategy=strategy)
+    assert metrics["mechanical_equal_duration_ratio"] == 1.0
+    assert metrics["mechanical_duration_warning"] is True
+    assert metrics["emotion_progression_consistency"] == 1.0
+
+    flat = build_director_quality_v23_coverage_metrics(
+        candidate={"shots": [shot | {"emotion": {"intensity": 3}} for shot in shots]},
+        strategy=strategy,
+    )
+    assert flat["emotion_progression_consistency"] == 0.1667
