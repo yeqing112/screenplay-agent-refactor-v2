@@ -19,7 +19,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 ARTIFACTS = ROOT / "artifacts"
-DEFAULT_PILOT = ARTIFACTS / "director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json"
+# Targeted repair must consume the immutable, provenance-bearing B2 freeze.
+# The historical V2.3 pilot remains available through --pilot for audit/replay,
+# but must not be the default input for a V2.4 real-call gate.
+DEFAULT_PILOT = ARTIFACTS / "director-quality-v2-4-b2-freeze.json"
 CONFIRMATION_TOKEN = "CONFIRM_DIRECTOR_V24_TARGETED_TAIL_REAL_MIMO_PILOT"
 
 

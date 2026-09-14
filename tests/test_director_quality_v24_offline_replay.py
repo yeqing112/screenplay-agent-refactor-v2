@@ -55,6 +55,29 @@ def test_targeted_tail_preflight_selects_only_triggered_scenes_and_fails_closed_
     assert preflight["real_mimo_calls"] == 0
 
 
+def test_targeted_tail_preflight_defaults_to_provenance_bearing_b2_freeze():
+    """The real-call gate must start from the immutable V2.4 freeze."""
+    from scripts import run_director_quality_v2_4_targeted_tail_pilot as module
+
+    preflight = module.build_preflight(
+        profile={
+            "id": "mimo-test",
+            "provider": "openai-compatible",
+            "capability": "llm",
+            "model_name": "mimo-v2.5",
+            "base_url": "https://api.xiaomimimo.com/v1",
+            "enabled": True,
+            "key_configured": False,
+        },
+    )
+    assert preflight["source_artifact"] == "artifacts/director-quality-v2-4-b2-freeze.json"
+    assert preflight["source_commit"]
+    assert preflight["selected_scene_count"] == 15
+    assert "SOURCE_PROVENANCE_MISSING" not in preflight["blockers"]
+    assert "MIMO_PROFILE_KEY_OR_CONFIGURATION_MISSING" in preflight["blockers"]
+    assert preflight["ready_for_confirmation"] is False
+
+
 def test_b2_freeze_adds_portable_provenance_without_changing_scene_count():
     frozen = freeze_b2(
         pilot_path=ROOT / "artifacts" / "director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json",
