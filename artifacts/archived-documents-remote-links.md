@@ -75,3 +75,11 @@
 - [artifacts/storyboard-scene-asset-readiness-20260912T091652Z.md](https://github.com/yeqing112/screenplay-agent-refactor-v2/blob/codex/unify-formal-workspace/artifacts/storyboard-scene-asset-readiness-20260912T091652Z.md)
 - [report-source.md](https://github.com/yeqing112/screenplay-agent-refactor-v2/blob/codex/unify-formal-workspace/report-source.md)
 
+## 当前 V2.4 / 生产控制文档
+
+- [artifacts/director-quality-v2-4-gap-audit.md](https://github.com/yeqing112/screenplay-agent-refactor-v2/blob/codex/unify-formal-workspace/artifacts/director-quality-v2-4-gap-audit.md)
+- [artifacts/production-pipeline-v2-gap-audit.md](https://github.com/yeqing112/screenplay-agent-refactor-v2/blob/codex/unify-formal-workspace/artifacts/production-pipeline-v2-gap-audit.md)
+- [docs/产品重构蓝图.md](https://github.com/yeqing112/screenplay-agent-refactor-v2/blob/codex/unify-formal-workspace/docs/%E4%BA%A7%E5%93%81%E9%87%8D%E6%9E%84%E8%93%9D%E5%9B%BE.md)
+- [docs/产品重构阶段任务与验收标准.md](https://github.com/yeqing112/screenplay-agent-refactor-v2/blob/codex/unify-formal-workspace/docs/%E4%BA%A7%E5%93%81%E9%87%8D%E6%9E%84%E9%98%B6%E6%AE%B5%E4%BB%BB%E5%8A%A1%E4%B8%8E%E9%AA%8C%E6%94%B6%E6%A0%87%E5%87%86.md)
+- [docs/生产级上线冲刺清单.md](https://github.com/yeqing112/screenplay-agent-refactor-v2/blob/codex/unify-formal-workspace/docs/%E7%94%9F%E4%BA%A7%E7%BA%A7%E4%B8%8A%E7%BA%BF%E5%86%B2%E5%88%BA%E6%B8%85%E5%8D%95.md)
+- [docs/2026-09-12-近期生产优先任务执行计划.md](https://github.com/yeqing112/screenplay-agent-refactor-v2/blob/codex/unify-formal-workspace/docs/2026-09-12-%E8%BF%91%E6%9C%9F%E7%94%9F%E4%BA%A7%E4%BC%98%E5%85%88%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92.md)
