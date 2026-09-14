@@ -10,6 +10,15 @@ from core.director_opportunity_planner import normalize_planner_decisions
 
 
 CREATIVE_VALUE_SCHEMA_VERSION = "director_useful_creative_acceptance_v2"
+CREATIVE_VALUE_SCORE_SCHEMA_VERSION = "director_creative_value_score_v1"
+CREATIVE_VALUE_WEIGHTS = {
+    "opportunity_coverage": 0.25,
+    "useful_creative_acceptance": 0.25,
+    "edit_strategy": 0.15,
+    "emotion_arc": 0.15,
+    "information_strategy": 0.15,
+    "tail_stability": 0.05,
+}
 
 
 def _rate(numerator: int, denominator: int) -> float | None:
@@ -119,4 +128,46 @@ def evaluate_useful_creative_acceptance(
     }
 
 
-__all__ = ["CREATIVE_VALUE_SCHEMA_VERSION", "evaluate_useful_creative_acceptance"]
+def build_creative_value_score(
+    *,
+    opportunity_coverage: float | None,
+    useful_creative_acceptance: float | None,
+    edit_strategy: float | None,
+    emotion_arc: float | None,
+    information_strategy: float | None,
+    tail_stability: float | None,
+) -> dict[str, Any]:
+    """Compute the separate 0–100 Creative Value Score.
+
+    Inputs are ratios in the inclusive ``0..1`` range.  Any missing component
+    keeps the score unavailable rather than silently treating it as zero.
+    """
+
+    components = {
+        "opportunity_coverage": opportunity_coverage,
+        "useful_creative_acceptance": useful_creative_acceptance,
+        "edit_strategy": edit_strategy,
+        "emotion_arc": emotion_arc,
+        "information_strategy": information_strategy,
+        "tail_stability": tail_stability,
+    }
+    normalized: dict[str, float | None] = {}
+    errors: list[dict[str, str]] = []
+    for key, value in components.items():
+        if value is None:
+            normalized[key] = None
+            continue
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= float(value) <= 1:
+            errors.append({"path": key, "message": "component must be a ratio between 0 and 1"})
+            continue
+        normalized[key] = float(value)
+    if errors:
+        return {"schema_version": CREATIVE_VALUE_SCORE_SCHEMA_VERSION, "status": "invalid", "score": None, "components": normalized, "weights": copy.deepcopy(CREATIVE_VALUE_WEIGHTS), "errors": errors}
+    missing = [key for key, value in normalized.items() if value is None]
+    if missing:
+        return {"schema_version": CREATIVE_VALUE_SCORE_SCHEMA_VERSION, "status": "needs_information", "score": None, "components": normalized, "weights": copy.deepcopy(CREATIVE_VALUE_WEIGHTS), "missing_components": missing, "errors": []}
+    score = sum(float(normalized[key]) * weight for key, weight in CREATIVE_VALUE_WEIGHTS.items()) * 100
+    return {"schema_version": CREATIVE_VALUE_SCORE_SCHEMA_VERSION, "status": "ready", "score": round(score, 4), "components": normalized, "weights": copy.deepcopy(CREATIVE_VALUE_WEIGHTS), "missing_components": [], "errors": []}
+
+
+__all__ = ["CREATIVE_VALUE_SCHEMA_VERSION", "CREATIVE_VALUE_SCORE_SCHEMA_VERSION", "CREATIVE_VALUE_WEIGHTS", "evaluate_useful_creative_acceptance", "build_creative_value_score"]
