@@ -323,3 +323,10 @@ V2.3 已完成机会发现、策略覆盖、价值评估和安全隔离的第一
 - Targeted Tail Real MiMo Pilot 尚未执行；最新 provider-free preflight 已使用模型管理中的 `local-llm-2vydoz`（`mimo-v2.5`），选中 15 个 Tail 场景，`ready_for_confirmation=true` 且无阻塞码。真实调用仍必须经过用户显式确认；
 - 因 Targeted Pilot 尚未证明修复价值，不能执行 Full 24 V2.4 Pilot，也不能开启 Production Shadow；
 - Final Report 与 Shadow Gate 最终决策仍需在 Targeted Pilot 完成后生成。
+
+### Targeted Tail Real MiMo Pilot（2026-09-14）
+
+- 已按用户显式确认执行，结果见 `artifacts/director-quality-v2-4-targeted-tail-pilot-20260914T090340Z.json` 与配套报告；
+- 15/15 场景执行，Execution Coverage `100%`，但 Success Rate `0%`，DQ 平均变化 `0`，CV 未重放；所有模型输出因不符合 `director_creative_patch_v1` 顶层契约而被拒绝并回退；
+- 失败原因主要是模型返回描述性/自定义结构而非白名单 envelope（53 次 forbidden fields，1 次 target dimension 未改善）；没有事实覆盖接受或生产/媒体/存储副作用；
+- 依据计划已 STOP：不得执行 Full 24、不得开启 Production Shadow、不得自动重试真实 MiMo。若要重试，需先完成结构化输出与调用观测补强，并重新取得显式确认。
