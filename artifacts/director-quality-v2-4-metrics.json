@@ -1,0 +1,41 @@
+{
+  "schema_version": "director-quality-v2-4-metrics-v1",
+  "scene_count": 24,
+  "quality_distribution": {
+    "min": 28.39,
+    "p10": 28.45,
+    "p25": 47.8,
+    "median": 50.3,
+    "p75": 92.2,
+    "p90": 94.8,
+    "max": 95.34,
+    "mean": 62.8513,
+    "buckets": {
+      "<60": 14,
+      "60-69": 1,
+      "70-79": 0,
+      "80-89": 0,
+      ">=90": 9
+    }
+  },
+  "opportunity_detection_rate": 0.9583,
+  "eligibility_rate": 1.0,
+  "act_rate": 0.9514,
+  "intervention_produced_rate": 0.0,
+  "patch_contract_first_pass_rate": null,
+  "patch_contract_final_pass_rate": null,
+  "patch_apply_rate": null,
+  "target_dimension_improvement_rate": null,
+  "act_realization_rate": 0.1648,
+  "opportunity_address_rate": 0.2054,
+  "uca_v2": null,
+  "uca_v3": null,
+  "valid_skip_rate": 0.0486,
+  "fallback_rate": 0.0,
+  "tail_repair": {
+    "execution_coverage": 0.0,
+    "success_rate": null,
+    "before_mean": 62.8513,
+    "after_mean": 62.8513
+  }
+}

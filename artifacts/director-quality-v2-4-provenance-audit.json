@@ -1,0 +1,29 @@
+{
+  "schema_version": "director_quality_provenance_v1",
+  "protocol_version": "director-quality-v2-4-offline-replay",
+  "commit_sha": "f329b863409ddd09696cc25b05caba71555e0246",
+  "branch": "codex/unify-formal-workspace",
+  "model": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5"
+  },
+  "model_profile": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5"
+  },
+  "scene_manifest_hash": "ee9f1fa03522864df240248f45f0b606a8d0dadf0f841adf81869b224fe450af",
+  "evidence_hash": "cbeb39c003c11a27bccb934b91798d1e0863b2835e2190b613782b55808d6353",
+  "generated_at": "2026-09-14T06:21:14.817851+00:00",
+  "source_artifacts": [
+    "artifacts/director-quality-v2-4-b2-freeze.json",
+    "artifacts/director-quality-v2-3-phase-b2-evidence.json"
+  ],
+  "source_artifact_hashes": {
+    "artifacts/director-quality-v2-4-b2-freeze.json": "808bc23eebb99a81a10f51fde5072e510c315bb24b80febc19038e6c5f6e9035",
+    "artifacts/director-quality-v2-3-phase-b2-evidence.json": "cbeb39c003c11a27bccb934b91798d1e0863b2835e2190b613782b55808d6353"
+  },
+  "gate_version": "director_quality_v2_3_shadow_gate_v1",
+  "metric_schema_version": "director-quality-v2-4-metrics-v1"
+}

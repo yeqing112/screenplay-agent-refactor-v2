@@ -1,0 +1,169 @@
+{
+  "schema_version": "director_contract_failure_v1",
+  "total": 20,
+  "counts": {
+    "UNKNOWN_CONTRACT_FAILURE": 20
+  },
+  "failures": [
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "book990402:e1:红伞幻影（一）",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "FIXTURE_SILENT_01",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "FIXTURE_SILENT_01",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "FIXTURE_SILENT_01",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "FIXTURE_SILENT_01",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "fixture:action_blocking",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "fixture:action_blocking",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "fixture:action_blocking",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    },
+    {
+      "schema_version": "director_contract_failure_v1",
+      "category": "UNKNOWN_CONTRACT_FAILURE",
+      "code": "UNKNOWN_CONTRACT_FAILURE",
+      "plan_shot_id": "fixture:action_blocking",
+      "path": "",
+      "message": "B2 source artifact omitted field-level rejection details"
+    }
+  ]
+}

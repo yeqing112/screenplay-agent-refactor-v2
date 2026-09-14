@@ -1,0 +1,364 @@
+{
+  "schema_version": "director-quality-v2-4-success-tail-comparison-v1",
+  "status": "ready",
+  "thresholds": {
+    "success": 90.0,
+    "tail": 60.0
+  },
+  "success_count": 9,
+  "tail_count": 14,
+  "excluded_count": 1,
+  "success_scene_ids": [
+    "book990402:e1:红伞幻影（一）",
+    "V21_FIXTURE_02",
+    "V21_FIXTURE_03",
+    "V21_FIXTURE_05",
+    "V21_FIXTURE_06",
+    "V21_FIXTURE_12",
+    "FIXTURE_PROP_01",
+    "FIXTURE_SILENT_01",
+    "fixture:action_blocking"
+  ],
+  "tail_scene_ids": [
+    "book990402:e2:回声照相馆",
+    "book990402:e2:暗房门口的试探",
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "V21_FIXTURE_01",
+    "V21_FIXTURE_04",
+    "V21_FIXTURE_07",
+    "V21_FIXTURE_08",
+    "V21_FIXTURE_09",
+    "V21_FIXTURE_10",
+    "V21_FIXTURE_11",
+    "fixture:dialogue_power_shift",
+    "fixture:multi_character",
+    "fixture:prop_continuity"
+  ],
+  "opportunity_type_distribution": {
+    "success": {
+      "counts": {
+        "OPP_ACTION_ACCELERATION": 7,
+        "OPP_EMOTION_TURN": 3,
+        "OPP_INFORMATION_REVEAL": 4,
+        "OPP_POWER_SHIFT": 3,
+        "OPP_PROP_EMPHASIS": 1,
+        "OPP_REACTION": 6,
+        "OPP_SCENE_BUTTON": 3,
+        "OPP_VISUAL_REVEAL": 4
+      },
+      "total": 31,
+      "rates": {
+        "OPP_ACTION_ACCELERATION": 0.2258,
+        "OPP_EMOTION_TURN": 0.0968,
+        "OPP_INFORMATION_REVEAL": 0.129,
+        "OPP_POWER_SHIFT": 0.0968,
+        "OPP_PROP_EMPHASIS": 0.0323,
+        "OPP_REACTION": 0.1935,
+        "OPP_SCENE_BUTTON": 0.0968,
+        "OPP_VISUAL_REVEAL": 0.129
+      }
+    },
+    "tail": {
+      "counts": {
+        "OPP_ACTION_ACCELERATION": 9,
+        "OPP_EMOTION_TURN": 45,
+        "OPP_INFORMATION_REVEAL": 43,
+        "OPP_POWER_SHIFT": 8,
+        "OPP_PROP_EMPHASIS": 4,
+        "OPP_REACTION": 22,
+        "OPP_SCENE_BUTTON": 3,
+        "OPP_SILENCE_HOLD": 3,
+        "OPP_VISUAL_REVEAL": 6
+      },
+      "total": 143,
+      "rates": {
+        "OPP_ACTION_ACCELERATION": 0.0629,
+        "OPP_EMOTION_TURN": 0.3147,
+        "OPP_INFORMATION_REVEAL": 0.3007,
+        "OPP_POWER_SHIFT": 0.0559,
+        "OPP_PROP_EMPHASIS": 0.028,
+        "OPP_REACTION": 0.1538,
+        "OPP_SCENE_BUTTON": 0.021,
+        "OPP_SILENCE_HOLD": 0.021,
+        "OPP_VISUAL_REVEAL": 0.042
+      }
+    }
+  },
+  "metrics": {
+    "eligible_ratio": {
+      "success_mean": 3.4444,
+      "tail_mean": 10.2143,
+      "delta_success_minus_tail": -6.7699,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "act_ratio": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "valid_skip_ratio": {
+      "success_mean": 0.0312,
+      "tail_mean": 0.0243,
+      "delta_success_minus_tail": 0.0069,
+      "success_n": 8,
+      "tail_n": 14
+    },
+    "patch_count": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "contract_failure": {
+      "success_mean": 2.2222,
+      "tail_mean": 0.0,
+      "delta_success_minus_tail": 2.2222,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "edit_strategy_completeness": {
+      "success_mean": 1.0,
+      "tail_mean": 0.0435,
+      "delta_success_minus_tail": 0.9565,
+      "success_n": 8,
+      "tail_n": 14
+    },
+    "emotion_strategy_completeness": {
+      "success_mean": 0.6667,
+      "tail_mean": 0.0,
+      "delta_success_minus_tail": 0.6667,
+      "success_n": 3,
+      "tail_n": 9
+    },
+    "information_strategy_completeness": {
+      "success_mean": 1.0,
+      "tail_mean": 0.0,
+      "delta_success_minus_tail": 1.0,
+      "success_n": 5,
+      "tail_n": 8
+    },
+    "performance_direction": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "prompt_tokens": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "completion_tokens": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "latency_ms": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "scene_length": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "beat_count": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "shot_count": {
+      "success_mean": null,
+      "tail_mean": null,
+      "delta_success_minus_tail": null,
+      "success_n": 0,
+      "tail_n": 0
+    },
+    "auxiliary_proposal_count": {
+      "success_mean": 1.3333,
+      "tail_mean": 0.0,
+      "delta_success_minus_tail": 1.3333,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:DRAMATIC_CLARITY": {
+      "success_mean": 10.0,
+      "tail_mean": 8.8571,
+      "delta_success_minus_tail": 1.1429,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:EDIT_RHYTHM": {
+      "success_mean": 9.0744,
+      "tail_mean": 1.8707,
+      "delta_success_minus_tail": 7.2037,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:EMOTIONAL_PROGRESSION": {
+      "success_mean": 6.2778,
+      "tail_mean": 4.0,
+      "delta_success_minus_tail": 2.2778,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:INFORMATION_STRATEGY": {
+      "success_mean": 10.0,
+      "tail_mean": 0.0,
+      "delta_success_minus_tail": 10.0,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:PERFORMANCE_DIRECTION": {
+      "success_mean": 10.0,
+      "tail_mean": 0.0,
+      "delta_success_minus_tail": 10.0,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:POWER_DYNAMICS": {
+      "success_mean": 8.0,
+      "tail_mean": 6.2143,
+      "delta_success_minus_tail": 1.7857,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:SHOT_DIVERSITY": {
+      "success_mean": 10.0,
+      "tail_mean": 3.5964,
+      "delta_success_minus_tail": 6.4036,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:SHOT_MOTIVATION": {
+      "success_mean": 10.0,
+      "tail_mean": 0.0,
+      "delta_success_minus_tail": 10.0,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:SPATIAL_CLARITY": {
+      "success_mean": 10.0,
+      "tail_mean": 10.0,
+      "delta_success_minus_tail": 0.0,
+      "success_n": 9,
+      "tail_n": 14
+    },
+    "dimension:VISUAL_STORYTELLING": {
+      "success_mean": 10.0,
+      "tail_mean": 7.1429,
+      "delta_success_minus_tail": 2.8571,
+      "success_n": 9,
+      "tail_n": 14
+    }
+  },
+  "generalized_success_patterns": [
+    {
+      "pattern": "lower_in_success",
+      "metric": "eligible_ratio",
+      "delta": -6.7699,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "contract_failure",
+      "delta": 2.2222,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "edit_strategy_completeness",
+      "delta": 0.9565,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "emotion_strategy_completeness",
+      "delta": 0.6667,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "information_strategy_completeness",
+      "delta": 1.0,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "auxiliary_proposal_count",
+      "delta": 1.3333,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:DRAMATIC_CLARITY",
+      "delta": 1.1429,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:EDIT_RHYTHM",
+      "delta": 7.2037,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:EMOTIONAL_PROGRESSION",
+      "delta": 2.2778,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:INFORMATION_STRATEGY",
+      "delta": 10.0,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:PERFORMANCE_DIRECTION",
+      "delta": 10.0,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:POWER_DYNAMICS",
+      "delta": 1.7857,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:SHOT_DIVERSITY",
+      "delta": 6.4036,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:SHOT_MOTIVATION",
+      "delta": 10.0,
+      "evidence": "success/tail group mean contrast"
+    },
+    {
+      "pattern": "higher_in_success",
+      "metric": "dimension:VISUAL_STORYTELLING",
+      "delta": 2.8571,
+      "evidence": "success/tail group mean contrast"
+    }
+  ]
+}
