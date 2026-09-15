@@ -70,7 +70,9 @@ def _spine_request(row, strategy):
 
 def _skeleton_template(row, strategy, events):
     i = row["inputs"]
-    return {"task": "director_v3_shot_topology_skeleton_canary", "scene_id": row["scene_id"], "approved_revised_strategy": _strategy_payload(strategy), "scene_blocking": i["scene_blocking"], "authoritative_scene_beats": i["scene"], "character_identity_projection": _identity(row), "allowed_semantic_events": events, "must_preserve": strategy.get("must_preserve", []), "must_avoid": strategy.get("must_avoid", []), "visual_editorial_spine": "<WAIT_FOR_CANONICAL_SPINE>", "spine_fingerprint": "<WAIT_FOR_SPINE_FINGERPRINT>", "shot_topology_skeleton_contract": _skeleton_contract()}
+    phase_count = len([p for p in _l(strategy.get("scene_phases")) if isinstance(p, dict)])
+    allowed_segment_refs = [f"SEG{index:02d}" for index in range(1, phase_count + 1)]
+    return {"task": "director_v3_shot_topology_skeleton_canary", "scene_id": row["scene_id"], "approved_revised_strategy": _strategy_payload(strategy), "scene_blocking": i["scene_blocking"], "authoritative_scene_beats": i["scene"], "character_identity_projection": _identity(row), "allowed_semantic_events": events, "must_preserve": strategy.get("must_preserve", []), "must_avoid": strategy.get("must_avoid", []), "visual_editorial_spine": "<WAIT_FOR_CANONICAL_SPINE>", "spine_fingerprint": "<WAIT_FOR_SPINE_FINGERPRINT>", "allowed_segment_refs": allowed_segment_refs, "shot_topology_skeleton_contract": _skeleton_contract()}
 
 def _parse(raw, label, required_keys=None):
     from core.structured_output import parse_json_object
