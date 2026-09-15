@@ -1,0 +1,6 @@
+{
+  "signal": "SPINE_RAW_PROMISING",
+  "variation_dimensions": 4,
+  "strategy_fidelity": true,
+  "macro_layer_only": true
+}

@@ -1,0 +1,69 @@
+{
+  "status": "FAIL",
+  "errors": [
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N01"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N01"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N01"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N01"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N02"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N02"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N02"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N02"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N03"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N03"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N03"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N03"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N04"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N04"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N04"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N04"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "nodes": [
+    {
+      "raw": "DISCOVERY",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "INVESTIGATION",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "CHARACTER_HINT",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "CHARACTER_ENTRANCE",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "CHARACTER_SECRET",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "DIRECT_PROBE",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "VISUAL_EVIDENCE",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "COUNTER_PROBE",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "SECRET_REVEAL",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    }
+  ],
+  "secondary": [
+    {
+      "raw": "ENVIRONMENT",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "PROP_FOCUS",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "PROP_TEASE",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "DIALOGUE_SETUP",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "PROP_TEASE",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "DIALOGUE_CLASH",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "CHARACTER_LINK",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "DIALOGUE_TEST",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "CLIMAX",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    }
+  ],
+  "counts": {
+    "EXACT": 0,
+    "ROLE_SEMANTICALLY_RECOVERABLE": 0,
+    "ROLE_SEMANTIC_REVIEW_REQUIRED": 4,
+    "ROLE_UNSUPPORTED": 14
+  },
+  "provider_contract_exposed": false,
+  "future_contract_exposed": true
+}

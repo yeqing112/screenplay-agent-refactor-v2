@@ -1,0 +1,36 @@
+{
+  "nodes": [
+    {
+      "raw": "segment_01",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG01"
+    },
+    {
+      "raw": "segment_02",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG02"
+    },
+    {
+      "raw": "segment_03",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG03"
+    },
+    {
+      "raw": "segment_04",
+      "classification": "SEGMENT_REF_AMBIGUOUS",
+      "canonical": null
+    }
+  ],
+  "counts": {
+    "EXACT": 0,
+    "SEGMENT_REF_SEMANTICALLY_RECOVERABLE": 3,
+    "SEGMENT_REF_AMBIGUOUS": 1,
+    "SEGMENT_REF_UNRESOLVED": 0
+  },
+  "allowed_segment_refs": [
+    "SEG01",
+    "SEG02",
+    "SEG03"
+  ],
+  "future_contract_exposed": true
+}

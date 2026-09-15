@@ -1,0 +1,24 @@
+{
+  "provider_references": [
+    "character:19",
+    "character:20",
+    "prop:archive_bag",
+    "prop:cut_film"
+  ],
+  "runtime_projection": {
+    "19": "林晚",
+    "20": "顾沉"
+  },
+  "status": "FAIL",
+  "findings": [
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "reference": "prop:archive_bag"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "reference": "prop:cut_film"
+    }
+  ],
+  "provider_runtime_parity": true
+}

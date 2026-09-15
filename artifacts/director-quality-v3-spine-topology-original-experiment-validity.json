@@ -1,0 +1,19 @@
+{
+  "historical_status": "DIRECTOR_V3_SPINE_TOPOLOGY_CANARY_FAILED",
+  "real_spine_calls": 3,
+  "real_skeleton_calls": 3,
+  "raw_evidence_valid": true,
+  "chain_fail_closed_enforced": false,
+  "spine_preserve_validator_valid": false,
+  "identity_runtime_parity_valid": false,
+  "skeleton_role_contract_complete": false,
+  "segment_ref_contract_complete": false,
+  "experiment_valid": false,
+  "invalid_reasons": [
+    "SPINE_INVALID_DID_NOT_BLOCK_SKELETON",
+    "PRESERVE_EXACT_STRING_VALIDATOR",
+    "ROLE_ENUM_NOT_EXPOSED",
+    "IDENTITY_RUNTIME_REBUILT_FROM_SCENE_SHAPE",
+    "SEGMENT_REF_ENUM_NOT_EXPOSED"
+  ]
+}

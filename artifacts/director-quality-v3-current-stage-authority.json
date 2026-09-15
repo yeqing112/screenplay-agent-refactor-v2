@@ -48,11 +48,7 @@
     "raw_capability": "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
     "ready_for_final_recanary": false,
     "production_shotplan": "HOLD",
-    "final_recanary": {
-      "status": "FAILED",
-      "prompt_contract_path_exhausted": true,
-      "next_step": "SHOT_ARCHITECTURE_GENERATION_ARCHITECTURE_REDESIGN"
-    },
+    "final_recanary": {"status": "FAILED", "prompt_contract_path_exhausted": true, "next_step": "SHOT_ARCHITECTURE_GENERATION_ARCHITECTURE_REDESIGN"},
     "generation_architecture_redesign": {
       "status": "FOUNDATION_CLOSED",
       "visual_editorial_spine": "READY",
@@ -62,6 +58,13 @@
       "provider_canary_authorized": false,
       "spine_topology_canary": {
         "status": "FAILED",
+        "historical_status": "FAILED",
+        "experiment_validity": "INVALID",
+        "forensic_adjudication": "CLOSED",
+        "raw_spine_capability": "PROMISING",
+        "raw_topology_capability": "PROMISING",
+        "ready_for_final_recanary": true,
+        "final_recanary_authorized": false,
         "attempted_spine_calls": 3,
         "attempted_skeleton_calls": 3,
         "replay_provider_calls": 0,

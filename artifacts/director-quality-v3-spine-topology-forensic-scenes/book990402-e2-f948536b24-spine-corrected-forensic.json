@@ -1,0 +1,51 @@
+{
+  "status": "REVIEW",
+  "protocol_status": "FAIL",
+  "protocol_errors": [
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+      "segment_index": 3,
+      "field": "audience注意力"
+    },
+    {
+      "code": "SPINE_FIELD_MISSING",
+      "segment_key": "SEG03",
+      "field": "audience_attention"
+    },
+    {
+      "code": "PROTOCOL_NONCOMPLIANCE",
+      "field": "audience注意力"
+    }
+  ],
+  "preserve_coverage": {
+    "schema_version": "must_preserve_coverage_v1",
+    "status": "PASS",
+    "constraints": [
+      {
+        "constraint_id": "MP01",
+        "status": "PRESERVE_TRACE_UNRESOLVED",
+        "supporting_beat_refs": [],
+        "matched_segment_count": 0
+      },
+      {
+        "constraint_id": "MP02",
+        "status": "PRESERVE_TRACE_UNRESOLVED",
+        "supporting_beat_refs": [],
+        "matched_segment_count": 0
+      },
+      {
+        "constraint_id": "MP03",
+        "status": "PRESERVE_TRACE_UNRESOLVED",
+        "supporting_beat_refs": [],
+        "matched_segment_count": 0
+      },
+      {
+        "constraint_id": "MP04",
+        "status": "PRESERVE_TRACE_UNRESOLVED",
+        "supporting_beat_refs": [],
+        "matched_segment_count": 0
+      }
+    ],
+    "unresolved_count": 4
+  }
+}

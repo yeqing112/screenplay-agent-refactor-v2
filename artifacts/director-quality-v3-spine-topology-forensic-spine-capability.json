@@ -1,0 +1,23 @@
+{
+  "scenes": {
+    "book990402:e3:暗房惊魂": {
+      "signal": "SPINE_RAW_PROMISING",
+      "variation_dimensions": 4,
+      "strategy_fidelity": true,
+      "macro_layer_only": true
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "signal": "SPINE_RAW_PROMISING",
+      "variation_dimensions": 4,
+      "strategy_fidelity": true,
+      "macro_layer_only": true
+    },
+    "book990402:e2:回声照相馆": {
+      "signal": "SPINE_RAW_PROMISING",
+      "variation_dimensions": 4,
+      "strategy_fidelity": true,
+      "macro_layer_only": true
+    }
+  },
+  "overall": "PROMISING"
+}

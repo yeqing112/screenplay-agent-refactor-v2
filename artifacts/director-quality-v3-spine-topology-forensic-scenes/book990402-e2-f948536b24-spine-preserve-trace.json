@@ -1,0 +1,40 @@
+{
+  "schema_version": "must_preserve_trace_v1",
+  "scene_id": "book990402:e2:回声照相馆",
+  "constraints": [
+    {
+      "constraint_id": "MP01",
+      "description": "林晚发现拖痕和空相册夹的顺序",
+      "supporting_beat_refs": [],
+      "supporting_event_keys": [],
+      "source": "authority_only_no_explicit_binding",
+      "status": "PRESERVE_TRACE_UNRESOLVED"
+    },
+    {
+      "constraint_id": "MP02",
+      "description": "顾沉口袋始终插着手的细节",
+      "supporting_beat_refs": [],
+      "supporting_event_keys": [],
+      "source": "authority_only_no_explicit_binding",
+      "status": "PRESERVE_TRACE_UNRESOLVED"
+    },
+    {
+      "constraint_id": "MP03",
+      "description": "灰外套照片的视觉呈现",
+      "supporting_beat_refs": [],
+      "supporting_event_keys": [],
+      "source": "authority_only_no_explicit_binding",
+      "status": "PRESERVE_TRACE_UNRESOLVED"
+    },
+    {
+      "constraint_id": "MP04",
+      "description": "林晚最后展开旧照片并露出冰冷表情的时刻",
+      "supporting_beat_refs": [],
+      "supporting_event_keys": [],
+      "source": "authority_only_no_explicit_binding",
+      "status": "PRESERVE_TRACE_UNRESOLVED"
+    }
+  ],
+  "unresolved_count": 4,
+  "resolution_policy": "structured beat/event refs only; no prose similarity"
+}

@@ -1,0 +1,13 @@
+{
+  "provider_references": [
+    "character:19",
+    "character:20"
+  ],
+  "runtime_projection": {
+    "19": "林晚",
+    "20": "顾沉"
+  },
+  "status": "PASS",
+  "findings": [],
+  "provider_runtime_parity": true
+}

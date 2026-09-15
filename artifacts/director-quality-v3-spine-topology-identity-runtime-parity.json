@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "scenes": {
+    "book990402:e3:暗房惊魂": {
+      "provider_references": [
+        "character:19",
+        "character:20",
+        "prop:archive_bag",
+        "prop:cut_film"
+      ],
+      "runtime_projection": {
+        "19": "林晚",
+        "20": "顾沉"
+      },
+      "status": "FAIL",
+      "findings": [
+        {
+          "code": "SKELETON_IDENTITY_BINDING_INVALID",
+          "reference": "prop:archive_bag"
+        },
+        {
+          "code": "SKELETON_IDENTITY_BINDING_INVALID",
+          "reference": "prop:cut_film"
+        }
+      ],
+      "provider_runtime_parity": true
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "provider_references": [
+        "character:19",
+        "character:20"
+      ],
+      "runtime_projection": {
+        "19": "林晚",
+        "20": "顾沉"
+      },
+      "status": "PASS",
+      "findings": [],
+      "provider_runtime_parity": true
+    },
+    "book990402:e2:回声照相馆": {
+      "provider_references": [
+        "17",
+        "18"
+      ],
+      "runtime_projection": {
+        "17": "林晚",
+        "18": "顾沉"
+      },
+      "status": "PASS",
+      "findings": [],
+      "provider_runtime_parity": true
+    }
+  }
+}

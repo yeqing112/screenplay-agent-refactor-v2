@@ -1,0 +1,61 @@
+{
+  "nodes": [
+    {
+      "raw": "P01",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG01"
+    },
+    {
+      "raw": "P01",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG01"
+    },
+    {
+      "raw": "P01",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG01"
+    },
+    {
+      "raw": "P02",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG02"
+    },
+    {
+      "raw": "P02",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG02"
+    },
+    {
+      "raw": "P02",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG02"
+    },
+    {
+      "raw": "P03",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG03"
+    },
+    {
+      "raw": "P03",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG03"
+    },
+    {
+      "raw": "P03",
+      "classification": "SEGMENT_REF_SEMANTICALLY_RECOVERABLE",
+      "canonical": "SEG03"
+    }
+  ],
+  "counts": {
+    "EXACT": 0,
+    "SEGMENT_REF_SEMANTICALLY_RECOVERABLE": 9,
+    "SEGMENT_REF_AMBIGUOUS": 0,
+    "SEGMENT_REF_UNRESOLVED": 0
+  },
+  "allowed_segment_refs": [
+    "SEG01",
+    "SEG02",
+    "SEG03"
+  ],
+  "future_contract_exposed": true
+}

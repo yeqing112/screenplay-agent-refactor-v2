@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "protocol_status": "PASS",
+  "protocol_errors": [],
+  "preserve_coverage": {
+    "schema_version": "must_preserve_coverage_v1",
+    "status": "PASS",
+    "constraints": [
+      {
+        "constraint_id": "MP01",
+        "status": "PRESERVE_TRACE_UNRESOLVED",
+        "supporting_beat_refs": [],
+        "matched_segment_count": 0
+      },
+      {
+        "constraint_id": "MP02",
+        "status": "PRESERVE_TRACE_UNRESOLVED",
+        "supporting_beat_refs": [],
+        "matched_segment_count": 0
+      },
+      {
+        "constraint_id": "MP03",
+        "status": "PRESERVE_TRACE_UNRESOLVED",
+        "supporting_beat_refs": [],
+        "matched_segment_count": 0
+      },
+      {
+        "constraint_id": "MP04",
+        "status": "PRESERVE_TRACE_UNRESOLVED",
+        "supporting_beat_refs": [],
+        "matched_segment_count": 0
+      }
+    ],
+    "unresolved_count": 4
+  }
+}

@@ -58,7 +58,8 @@ def _spine_contract():
     return {"schema_version": "visual_editorial_spine_ir_v1", "required_fields": ["spine_summary", "segments"], "segment_fields": ["phase_ids", "beat_refs", "dramatic_function", "audience_attention", "performance_pressure", "information_change", "spatial_focus", "visual_motif", "editorial_rhythm", "entry_condition", "exit_condition"], "forbidden_fields": ["shot_id", "shot_size", "camera_movement", "camera_position", "lens", "focal_length", "shot_count", "stimulus_ref", "node_id"], "segment_ids": "program-owned SEG01...", "ordered_semantics": ["segments", "beat_refs"]}
 
 def _skeleton_contract():
-    return {"schema_version": "shot_topology_skeleton_ir_v1", "required_fields": ["nodes"], "node_fields": ["segment_ref", "phase_id", "beat_refs", "primary_role", "secondary_role", "subjects", "dramatic_reason", "performance_reason", "information_reason", "spatial_reason", "editorial_reason", "stimulus_beat_refs", "stimulus_event_keys", "reaction_subjects", "prop_refs", "must_preserve_refs"], "forbidden_fields": ["shot_id", "node_id", "stimulus_ref", "stimulus_node_id", "stimulus_shot_id", "shot_size", "camera_position", "camera_movement", "composition", "lighting", "lens", "duration"], "node_ids": "program-owned N01... then ST01...", "ordered_semantics": ["nodes", "beat_refs"]}
+    from core.shot_topology_skeleton import ROLE_ENUM
+    return {"schema_version": "shot_topology_skeleton_ir_v1", "required_fields": ["nodes"], "node_fields": ["segment_ref", "phase_id", "beat_refs", "primary_role", "secondary_role", "subjects", "dramatic_reason", "performance_reason", "information_reason", "spatial_reason", "editorial_reason", "stimulus_beat_refs", "stimulus_event_keys", "reaction_subjects", "prop_refs", "must_preserve_refs"], "forbidden_fields": ["shot_id", "node_id", "stimulus_ref", "stimulus_node_id", "stimulus_shot_id", "shot_size", "camera_position", "camera_movement", "composition", "lighting", "lens", "duration"], "node_ids": "program-owned N01... then ST01...", "ordered_semantics": ["nodes", "beat_refs"], "primary_role_allowed_values": sorted(ROLE_ENUM), "secondary_role_allowed_values": sorted(ROLE_ENUM) + [None], "segment_ref_rule": "exactly one value from allowed_segment_refs; never use phase IDs", "allowed_segment_refs": "program supplies canonical SEG01... values"}
 
 def _strategy_payload(strategy):
     return {k: copy.deepcopy(v) for k, v in strategy.items() if k not in {"source_trace", "authority_projection", "strategy_fingerprint", "creative_core_fingerprint", "compiler_version", "semantic_spec_version", "strategy_version", "compiled_at"}}
@@ -141,6 +142,11 @@ def main():
         skeleton_req = {**skeleton_template, "visual_editorial_spine": spine.get("canonical") or spine.get("ir") or {}, "spine_fingerprint": _fp(spine.get("canonical") or spine.get("ir") or {})}
         if args.replay_existing:
             raw_skeleton = next((p.read_text(encoding="utf-8") for p in OUT.glob(f"{_safe(sid)}-skeleton-raw-response.txt")), "")
+        elif not spine.get("valid"):
+            # Fail closed: an invalid Spine is not allowed to reach the
+            # Skeleton provider. Historical raw Skeleton files remain
+            # replayable through --replay-existing for forensic analysis.
+            raw_skeleton = ""
         else:
             try: raw_skeleton = str(call_llm(json.dumps(skeleton_req, ensure_ascii=False), system=SKELETON_SYSTEM, model_profile=profile, retries=0, max_tokens=12000, estimated_tokens=9000, audit_extra={"phase": "director_v3_spine_topology_canary", "scene_id": sid, "layer": "SKELETON", "attempt_type": "CREATIVE_GENERATION"}) or ""); total_skeleton += 1
             except Exception as exc: errors.append({"layer": "SKELETON", "code": "PROVIDER_ERROR", "message": str(exc)[:800]}); total_skeleton += 1

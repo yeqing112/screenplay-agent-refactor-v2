@@ -1,0 +1,19 @@
+{
+  "role_enum_allowed_values": [
+    "CLOSING",
+    "ESTABLISH",
+    "EVIDENCE",
+    "HOLD",
+    "INSERT",
+    "OBSERVE",
+    "ORIENT",
+    "PRESSURE",
+    "REACTION",
+    "RELEASE",
+    "REVEAL",
+    "TRANSITION",
+    "TURN"
+  ],
+  "allowed_segment_refs": "exact canonical SEGxx values",
+  "secondary_role": "null or same enum"
+}

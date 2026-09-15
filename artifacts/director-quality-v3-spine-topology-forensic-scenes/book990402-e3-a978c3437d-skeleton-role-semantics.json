@@ -1,0 +1,118 @@
+{
+  "nodes": [
+    {
+      "raw": "establishing",
+      "classification": "ROLE_SEMANTICALLY_RECOVERABLE",
+      "canonical": "ESTABLISH"
+    },
+    {
+      "raw": "character_action",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "entrance",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "dialogue_conflict",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "hidden_leak",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "dialogue_conflict",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "dialogue_conflict",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "dialogue_conflict",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "scene_end",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    }
+  ],
+  "secondary": [
+    {
+      "raw": "prop_focus",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "hidden_leak",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "power_shift",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "reaction",
+      "classification": "EXACT",
+      "canonical": "REACTION"
+    },
+    {
+      "raw": "prop_focus",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "character_action",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "reaction",
+      "classification": "EXACT",
+      "canonical": "REACTION"
+    },
+    {
+      "raw": "prop_focus",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "character_reaction",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    }
+  ],
+  "counts": {
+    "EXACT": 2,
+    "ROLE_SEMANTICALLY_RECOVERABLE": 1,
+    "ROLE_SEMANTIC_REVIEW_REQUIRED": 14,
+    "ROLE_UNSUPPORTED": 1
+  },
+  "provider_contract_exposed": false,
+  "future_contract_exposed": true
+}

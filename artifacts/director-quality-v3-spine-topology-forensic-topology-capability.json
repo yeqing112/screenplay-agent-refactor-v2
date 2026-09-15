@@ -1,0 +1,23 @@
+{
+  "scenes": {
+    "book990402:e3:暗房惊魂": {
+      "signal": "TOPOLOGY_RAW_USABLE",
+      "node_count": 9,
+      "reaction_count": 0,
+      "semantic_stimulus_present": true
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "signal": "TOPOLOGY_RAW_USABLE",
+      "node_count": 4,
+      "reaction_count": 0,
+      "semantic_stimulus_present": true
+    },
+    "book990402:e2:回声照相馆": {
+      "signal": "TOPOLOGY_RAW_USABLE",
+      "node_count": 9,
+      "reaction_count": 0,
+      "semantic_stimulus_present": true
+    }
+  },
+  "overall": "PROMISING"
+}

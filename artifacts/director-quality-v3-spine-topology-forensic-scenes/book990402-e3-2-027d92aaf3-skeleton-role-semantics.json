@@ -1,0 +1,55 @@
+{
+  "nodes": [
+    {
+      "raw": "establishing",
+      "classification": "ROLE_SEMANTICALLY_RECOVERABLE",
+      "canonical": "ESTABLISH"
+    },
+    {
+      "raw": "evidence_reveal",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "climax",
+      "classification": "ROLE_SEMANTIC_REVIEW_REQUIRED",
+      "canonical": null,
+      "reason": "ambiguous"
+    },
+    {
+      "raw": "resolution",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    }
+  ],
+  "secondary": [
+    {
+      "raw": "character_introduction",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "confrontation",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "decision_point",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    },
+    {
+      "raw": "hook",
+      "classification": "ROLE_UNSUPPORTED",
+      "canonical": null
+    }
+  ],
+  "counts": {
+    "EXACT": 0,
+    "ROLE_SEMANTICALLY_RECOVERABLE": 1,
+    "ROLE_SEMANTIC_REVIEW_REQUIRED": 1,
+    "ROLE_UNSUPPORTED": 6
+  },
+  "provider_contract_exposed": false,
+  "future_contract_exposed": true
+}

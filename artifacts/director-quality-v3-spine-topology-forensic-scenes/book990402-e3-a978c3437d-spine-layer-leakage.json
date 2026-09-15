@@ -1,0 +1,12 @@
+{
+  "schema_version": "spine_layer_leakage_v1",
+  "status": "REVIEW",
+  "severity": "MATERIAL",
+  "material_terms": [
+    "全景",
+    "正反打",
+    "特写"
+  ],
+  "severe_terms": [],
+  "finding_code": "SPINE_LAYER_LEAKAGE_EXECUTION_LANGUAGE"
+}

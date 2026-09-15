@@ -1,0 +1,40 @@
+{
+  "schema_version": "must_preserve_trace_v1",
+  "scene_id": "book990402:e3:暗房惊魂（2）",
+  "constraints": [
+    {
+      "constraint_id": "MP01",
+      "description": "逆光剪影效果",
+      "supporting_beat_refs": [],
+      "supporting_event_keys": [],
+      "source": "authority_only_no_explicit_binding",
+      "status": "PRESERVE_TRACE_UNRESOLVED"
+    },
+    {
+      "constraint_id": "MP02",
+      "description": "胶片边缘与档案袋撕裂的视觉呼应",
+      "supporting_beat_refs": [],
+      "supporting_event_keys": [],
+      "source": "authority_only_no_explicit_binding",
+      "status": "PRESERVE_TRACE_UNRESOLVED"
+    },
+    {
+      "constraint_id": "MP03",
+      "description": "林晚手指捻纽扣和掐掌心的细微动作",
+      "supporting_beat_refs": [],
+      "supporting_event_keys": [],
+      "source": "authority_only_no_explicit_binding",
+      "status": "PRESERVE_TRACE_UNRESOLVED"
+    },
+    {
+      "constraint_id": "MP04",
+      "description": "走廊阴影处的反光暗示",
+      "supporting_beat_refs": [],
+      "supporting_event_keys": [],
+      "source": "authority_only_no_explicit_binding",
+      "status": "PRESERVE_TRACE_UNRESOLVED"
+    }
+  ],
+  "unresolved_count": 4,
+  "resolution_policy": "structured beat/event refs only; no prose similarity"
+}

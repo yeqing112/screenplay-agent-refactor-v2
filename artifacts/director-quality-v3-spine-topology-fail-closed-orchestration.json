@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "policy": "invalid Spine prevents Skeleton provider call",
+  "historical_violation": true,
+  "new_provider_calls": 0
+}
