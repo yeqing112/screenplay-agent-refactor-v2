@@ -1,0 +1,21 @@
+{
+  "base_commit": "31ffb01",
+  "provider_calls": 0,
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "raw_response_fingerprint": "fb7f3081bf13b504685133e98ae1a7a0b057d77eb9532f5ccb69f2755dae5a04",
+      "raw_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-strategy-approval-repair-scenes\\book990402-e3-a978c3437d-raw-response.txt"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "raw_response_fingerprint": "da32ff370b264e3162d242d4f0e8925cfae5fc9f6d79a5f439ef21887d52843a",
+      "raw_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-strategy-approval-repair-scenes\\book990402-e3-2-027d92aaf3-raw-response.txt"
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "raw_response_fingerprint": "8859115cc43bedac994b015e9b01c20e9b25ccbf9ac678daa34f9546b48df6ee",
+      "raw_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-strategy-approval-repair-scenes\\book990402-e2-f948536b24-raw-response.txt"
+    }
+  ]
+}

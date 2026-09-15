@@ -1,0 +1,47 @@
+{
+  "directly_allowed_changes": [
+    "scene_phases[P01].information.audience_suspicions[0].claim",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[0]",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[2]",
+    "scene_phases[P02].information.audience_suspicions[1].support_refs[1]"
+  ],
+  "dependency_allowed_changes": [
+    "scene_phases[P01].audience_state.suspects[0]"
+  ],
+  "forbidden_changes": [],
+  "dependency_reason": [
+    {
+      "root": "scene_phases[P01].information.audience_suspicions[*]",
+      "dependent": "scene_phases[P01].audience_state.suspects[*]",
+      "reason": "suspicion claim narrowing must keep audience mirror semantically aligned"
+    }
+  ],
+  "scope_status": "PASS",
+  "classified_changes": [
+    {
+      "path": "scene_phases[P01].audience_state.suspects[0]",
+      "classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].information.audience_suspicions[0].claim",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].information.audience_suspicions[0].support_refs[0]",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].information.audience_suspicions[0].support_refs[1]",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].information.audience_suspicions[0].support_refs[2]",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].information.audience_suspicions[1].support_refs[1]",
+      "classification": "DIRECT_SCOPE_PASS"
+    }
+  ]
+}

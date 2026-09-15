@@ -1,0 +1,35 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "canonical_valid": true,
+    "errors": [],
+    "approval_blockers": [],
+    "future_support_evidence": 0,
+    "future_hint_evidence": 0,
+    "future_reveal": 0,
+    "unsupported_inference": 0,
+    "hard_approval_blockers": [],
+    "codes": []
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "canonical_valid": true,
+    "errors": [],
+    "approval_blockers": [],
+    "future_support_evidence": 0,
+    "future_hint_evidence": 0,
+    "future_reveal": 0,
+    "unsupported_inference": 0,
+    "hard_approval_blockers": [],
+    "codes": []
+  },
+  "book990402:e2:回声照相馆": {
+    "canonical_valid": true,
+    "errors": [],
+    "approval_blockers": [],
+    "future_support_evidence": 0,
+    "future_hint_evidence": 0,
+    "future_reveal": 0,
+    "unsupported_inference": 0,
+    "hard_approval_blockers": [],
+    "codes": []
+  }
+}

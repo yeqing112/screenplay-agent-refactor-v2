@@ -1,0 +1,19 @@
+{
+  "program_owned_fields": [
+    "authority_projection",
+    "compiled_at",
+    "compiler_version",
+    "creative_core_fingerprint",
+    "semantic_spec_version",
+    "source_trace",
+    "strategy_fingerprint",
+    "strategy_version"
+  ],
+  "unknown_fields": "reject",
+  "recompute_fields": [
+    "strategy_fingerprint",
+    "creative_core_fingerprint",
+    "source_trace",
+    "authority_projection"
+  ]
+}

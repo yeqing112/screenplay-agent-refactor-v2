@@ -1,0 +1,15 @@
+{
+  "directly_allowed_changes": [
+    "scene_phases[P02].information.audience_suspicions[0].support_refs[1]"
+  ],
+  "dependency_allowed_changes": [],
+  "forbidden_changes": [],
+  "dependency_reason": [],
+  "scope_status": "PASS",
+  "classified_changes": [
+    {
+      "path": "scene_phases[P02].information.audience_suspicions[0].support_refs[1]",
+      "classification": "DIRECT_SCOPE_PASS"
+    }
+  ]
+}

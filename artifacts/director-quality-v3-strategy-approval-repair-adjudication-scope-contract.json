@@ -1,0 +1,7 @@
+{
+  "matcher": "segment-aware",
+  "wildcards": [
+    "[*]"
+  ],
+  "dependency_closure": "declared-only"
+}

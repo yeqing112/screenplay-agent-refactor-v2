@@ -1,0 +1,13 @@
+{
+  "schema_version": "repair_dependency_closure_v1",
+  "scene_id": "book990402:e2:回声照相馆",
+  "dependencies": [
+    {
+      "root": "scene_phases[P01].information.audience_suspicions[*]",
+      "dependent": "scene_phases[P01].audience_state.suspects[*]",
+      "reason": "suspicion claim narrowing must keep audience mirror semantically aligned"
+    }
+  ],
+  "dynamic_scope_expansion": false,
+  "direction": "narrow_or_synchronize_only"
+}

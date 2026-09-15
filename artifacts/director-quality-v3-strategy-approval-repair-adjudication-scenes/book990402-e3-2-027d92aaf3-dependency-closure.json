@@ -1,0 +1,23 @@
+{
+  "schema_version": "repair_dependency_closure_v1",
+  "scene_id": "book990402:e3:暗房惊魂（2）",
+  "dependencies": [
+    {
+      "root": "scene_phases[*].performance[*].character_id",
+      "dependent": "scene_phases[*].power.center_ref",
+      "reason": "character identity repair may synchronize the power controller"
+    },
+    {
+      "root": "scene_phases[*].performance[*].character_id",
+      "dependent": "scene_phases[*].information.audience_suspicions[*].support_refs[*]",
+      "reason": "character identity repair may synchronize character SourceRefs only"
+    },
+    {
+      "root": "scene_phases[*].performance[*].character_id",
+      "dependent": "scene_phases[*].information.director_inferences[*].support_refs[*]",
+      "reason": "character identity repair may synchronize character SourceRefs only"
+    }
+  ],
+  "dynamic_scope_expansion": false,
+  "direction": "narrow_or_synchronize_only"
+}

@@ -1,0 +1,123 @@
+{
+  "directly_allowed_changes": [
+    "scene_phases[P01].performance[0].character_id",
+    "scene_phases[P01].performance[1].character_id",
+    "scene_phases[P01].power.center_ref",
+    "scene_phases[P02].information.hint_refs",
+    "scene_phases[P02].information.hint_refs[0]",
+    "scene_phases[P02].performance[0].character_id",
+    "scene_phases[P02].performance[1].character_id",
+    "scene_phases[P03].performance[0].character_id",
+    "scene_phases[P03].performance[1].character_id"
+  ],
+  "dependency_allowed_changes": [
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P01].information.director_inferences[0].support_refs[1]",
+    "scene_phases[P02].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P02].information.director_inferences[0].support_refs[4]",
+    "scene_phases[P03].information.audience_suspicions[1].support_refs[1]",
+    "scene_phases[P03].information.director_inferences[0].support_refs[1]",
+    "scene_phases[P03].information.director_inferences[1].support_refs[1]"
+  ],
+  "forbidden_changes": [
+    "scene_phases[P01].information.hint_refs[0]",
+    "scene_phases[P01].information.reveal_refs[1]",
+    "scene_phases[P01].information.reveal_refs[2]"
+  ],
+  "dependency_reason": [
+    {
+      "root": "scene_phases[*].performance[*].character_id",
+      "dependent": "scene_phases[*].power.center_ref",
+      "reason": "character identity repair may synchronize the power controller"
+    },
+    {
+      "root": "scene_phases[*].performance[*].character_id",
+      "dependent": "scene_phases[*].information.audience_suspicions[*].support_refs[*]",
+      "reason": "character identity repair may synchronize character SourceRefs only"
+    },
+    {
+      "root": "scene_phases[*].performance[*].character_id",
+      "dependent": "scene_phases[*].information.director_inferences[*].support_refs[*]",
+      "reason": "character identity repair may synchronize character SourceRefs only"
+    }
+  ],
+  "scope_status": "FAIL",
+  "classified_changes": [
+    {
+      "path": "scene_phases[P01].information.audience_suspicions[0].support_refs[1]",
+      "classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].information.director_inferences[0].support_refs[1]",
+      "classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].information.hint_refs[0]",
+      "classification": "FORBIDDEN_SCOPE_FAIL"
+    },
+    {
+      "path": "scene_phases[P01].information.reveal_refs[1]",
+      "classification": "FORBIDDEN_SCOPE_FAIL"
+    },
+    {
+      "path": "scene_phases[P01].information.reveal_refs[2]",
+      "classification": "FORBIDDEN_SCOPE_FAIL"
+    },
+    {
+      "path": "scene_phases[P01].performance[0].character_id",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].performance[1].character_id",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].power.center_ref",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].information.audience_suspicions[0].support_refs[1]",
+      "classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].information.director_inferences[0].support_refs[4]",
+      "classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].information.hint_refs",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].information.hint_refs[0]",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].performance[0].character_id",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].performance[1].character_id",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P03].information.audience_suspicions[1].support_refs[1]",
+      "classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P03].information.director_inferences[0].support_refs[1]",
+      "classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P03].information.director_inferences[1].support_refs[1]",
+      "classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P03].performance[0].character_id",
+      "classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P03].performance[1].character_id",
+      "classification": "DIRECT_SCOPE_PASS"
+    }
+  ]
+}

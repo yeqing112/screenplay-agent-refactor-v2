@@ -1,0 +1,17 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "base_fingerprint": "f456c2f3f69f4c537537df3fa6f9d77787365edf3f8c9c406740917d46706993",
+    "revised_fingerprint": "8a98151b7e7e2801b8daa5d576003da529717f61796dce491c2aa791037f3c04",
+    "creative_change_is_audit_only": true
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "base_fingerprint": "e7cf30b5b5fd42dae780594dde0ca63e60b194ded5d091a8ebb731e5ad858af9",
+    "revised_fingerprint": "95a18cc7b7f9096934bb668f6d3ba81bc7a1ce489d33074734fe9abccef465e2",
+    "creative_change_is_audit_only": true
+  },
+  "book990402:e2:回声照相馆": {
+    "base_fingerprint": "1a517bca15ee51deb8295d44ea8f08a93d3bb0e6a9d5e8f5a735ecfa05d5f6dc",
+    "revised_fingerprint": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5",
+    "creative_change_is_audit_only": true
+  }
+}

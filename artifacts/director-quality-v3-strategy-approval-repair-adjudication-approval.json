@@ -1,0 +1,20 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "canonical": "VALID",
+    "scope": "PASS",
+    "authority": "SAFE",
+    "approval": "APPROVED"
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "canonical": "VALID",
+    "scope": "FAIL",
+    "authority": "SAFE",
+    "approval": "BLOCKED"
+  },
+  "book990402:e2:回声照相馆": {
+    "canonical": "VALID",
+    "scope": "PASS",
+    "authority": "SAFE",
+    "approval": "APPROVED"
+  }
+}
