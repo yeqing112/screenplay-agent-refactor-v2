@@ -1,0 +1,8 @@
+{
+  "natural_language_exact_match_removed": true,
+  "fact_validity_basis": "structural SourceRef existence, authority and chronology",
+  "false_positive_exact_text_count": 4,
+  "true_fact_invention_count": 16,
+  "inference_overreach_count": 0,
+  "unknown_source_reference_count": 0
+}

@@ -1,0 +1,109 @@
+{
+  "schema_version": "director_scene_strategy_semantic_spec_v2",
+  "model_ir_schema_version": "director_scene_strategy_ir_v2",
+  "canonical_schema_version": "director_scene_strategy_v3",
+  "compiler_version": "director_scene_strategy_ir_compiler_v2",
+  "top_level_fields": [
+    "schema_version",
+    "scene_id",
+    "dramatic_objective",
+    "scene_question",
+    "strategy_summary",
+    "visual_thesis",
+    "scene_phases",
+    "spatial_expression",
+    "prop_visual_strategy",
+    "shot_architecture_guidance",
+    "must_preserve",
+    "must_avoid",
+    "creative_risks"
+  ],
+  "phase_fields": [
+    "phase_id",
+    "beat_ids",
+    "dramatic_function",
+    "audience_state",
+    "emotion",
+    "power",
+    "performance",
+    "edit",
+    "visual",
+    "information"
+  ],
+  "flexible_list_fields": [
+    "spatial_expression",
+    "prop_visual_strategy",
+    "shot_architecture_guidance",
+    "must_preserve",
+    "must_avoid",
+    "creative_risks"
+  ],
+  "information_fields": [
+    "reveal_refs",
+    "hint_refs",
+    "withhold_refs",
+    "audience_suspicions",
+    "director_inferences"
+  ],
+  "epistemic_types": [
+    "SOURCE_FACT",
+    "DIRECTOR_INFERENCE",
+    "AUDIENCE_SUSPICION",
+    "TREATMENT_INTENT",
+    "BLOCKING_FACT",
+    "DIRECTOR_CREATIVE_DECISION"
+  ],
+  "power_center_types": [
+    "CHARACTER",
+    "SHARED",
+    "RELATIONSHIP",
+    "INFORMATION",
+    "OBJECT",
+    "ENVIRONMENT",
+    "NONE"
+  ],
+  "forbidden_model_fields": [
+    "creative_core_fingerprint",
+    "cv_score",
+    "dq_score",
+    "duration_ladder",
+    "fact_claim",
+    "patches",
+    "plan_shot_id",
+    "quality_score",
+    "repair",
+    "shot_ids",
+    "shot_plan",
+    "shotplan",
+    "shots",
+    "source_fact",
+    "source_facts",
+    "strategy_fingerprint"
+  ],
+  "phase_constraints": {
+    "minimum": 2,
+    "maximum": 6,
+    "recommended": "3-5",
+    "beat_assignment": "exactly_once"
+  },
+  "information_policy": {
+    "reference_first": true,
+    "reveal_refs": "source refs visible by this phase",
+    "hint_refs": "already available evidence only",
+    "withhold_refs": "future evidence allowed",
+    "audience_suspicions": "interpretive claims with support_refs",
+    "director_inferences": "directing interpretations with support_refs and purpose"
+  },
+  "epistemic_boundary": {
+    "SOURCE_FACT": "authoritative upstream only",
+    "DIRECTOR_INFERENCE": "director interpretation, never a fact",
+    "AUDIENCE_SUSPICION": "audience hypothesis, never a fact",
+    "TREATMENT_INTENT": "approved intent",
+    "BLOCKING_FACT": "approved spatial truth",
+    "DIRECTOR_CREATIVE_DECISION": "staging decision"
+  },
+  "na_rules": {
+    "prop_visual_strategy": "N/A or null normalizes to [] when no prop evidence exists",
+    "source_refs": "never invent IDs"
+  }
+}

@@ -38,4 +38,11 @@ def build_strategy_format_repair_packet(*, errors: list[dict[str, Any]], contrac
     }
 
 
-__all__ = ["build_strategy_format_repair_packet"]
+def build_strategy_format_repair_packet_v2(*, errors: list[dict[str, Any]], contract: dict[str, Any]) -> dict[str, Any]:
+    """V2 packet: protocol-only and never a semantic rewrite instruction."""
+    from core.director_scene_strategy_semantic_spec_v2 import build_provider_skeleton
+    skeleton = build_provider_skeleton(scene_id=str(contract.get("scene_id") or ""), beat_ids=[str(x) for x in contract.get("beat_ids", [])], character_ids=[str(x) for x in contract.get("character_ids", [])], fact_ids=[str(x) for x in contract.get("fact_ids", [])])
+    return {"schema_version": "director_strategy_format_repair_packet_v2", "repair_scope": "protocol_only", "semantic_rewrite_allowed": False, "creative_content_mutation": False, "errors": [{k: e[k] for k in ("code", "path", "expected", "reference") if isinstance(e, dict) and k in e} for e in (errors or [])], "provider_contract": skeleton, "provider_calls": 0}
+
+
+__all__ = ["build_strategy_format_repair_packet", "build_strategy_format_repair_packet_v2"]

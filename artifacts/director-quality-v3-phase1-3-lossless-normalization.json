@@ -1,0 +1,16 @@
+{
+  "schema_version": "director-lossless-normalization-v2",
+  "scalar_to_array": [
+    "spatial_expression",
+    "prop_visual_strategy",
+    "shot_architecture_guidance",
+    "must_preserve",
+    "must_avoid",
+    "creative_risks"
+  ],
+  "null_to_empty": [
+    "prop_visual_strategy"
+  ],
+  "creative_semantics_mutated": false,
+  "implementation": "core/director_scene_strategy_ir_normalizer.py"
+}

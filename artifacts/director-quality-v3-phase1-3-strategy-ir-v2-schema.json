@@ -1,0 +1,34 @@
+{
+  "schema_version": "director-quality-v3-phase1-3-strategy-ir-v2-schema-v1",
+  "model_ir_schema_version": "director_scene_strategy_ir_v2",
+  "top_level_fields": [
+    "schema_version",
+    "scene_id",
+    "dramatic_objective",
+    "scene_question",
+    "strategy_summary",
+    "visual_thesis",
+    "scene_phases",
+    "spatial_expression",
+    "prop_visual_strategy",
+    "shot_architecture_guidance",
+    "must_preserve",
+    "must_avoid",
+    "creative_risks"
+  ],
+  "flexible_list_fields": [
+    "spatial_expression",
+    "prop_visual_strategy",
+    "shot_architecture_guidance",
+    "must_preserve",
+    "must_avoid",
+    "creative_risks"
+  ],
+  "information_fields": [
+    "reveal_refs",
+    "hint_refs",
+    "withhold_refs",
+    "audience_suspicions",
+    "director_inferences"
+  ]
+}

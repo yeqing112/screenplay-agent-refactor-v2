@@ -1,0 +1,15 @@
+{
+  "schema_version": "director-quality-v3-phase1-3-final-recanary-manifest-v1",
+  "head": "1fc7a4f",
+  "expected_head": "1fc7a4f",
+  "scenes": [
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "book990402:e2:回声照相馆"
+  ],
+  "technical_ready": true,
+  "human_authorized": false,
+  "provider_calls": 0,
+  "ready_for_final_scene_director_recanary": true,
+  "ready_for_shot_architecture_canary": false
+}

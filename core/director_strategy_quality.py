@@ -271,8 +271,12 @@ def diagnose_scene_strategy_v2(*, strategy: dict[str, Any], source_evidence: dic
     return {"schema_version": "director-quality-v3-phase1-1-directing-content-v2", "directing_content_status": status, "findings": findings, "dimensions": dimensions, "phase_count": len(phases), "evidence_available": sorted(_dict(source_evidence))}
 
 
-def compare_canonical_strategies(strategies: list[dict[str, Any]]) -> dict[str, Any]:
-    """Distinctiveness evaluator for V2; provider fingerprints are ignored."""
+def compare_canonical_strategies(strategies: list[dict[str, Any]], *, expected_scene_count: int = 3) -> dict[str, Any]:
+    """Distinctiveness evaluator with an explicit expected-pair state.
+
+    An empty or partial canonical cohort is *not* an evaluated cohort.  This
+    prevents ``pair_count=0`` from being misreported as ``all_pairs_checked``.
+    """
     rows: list[dict[str, Any]] = []
     core_fields = ("dramatic_objective", "scene_question", "visual_thesis", "scene_phases", "must_avoid", "creative_risks")
     for index, left in enumerate(strategies):
@@ -286,7 +290,9 @@ def compare_canonical_strategies(strategies: list[dict[str, Any]]) -> dict[str, 
             core_a = _text(left.get("creative_core_fingerprint")); core_b = _text(right.get("creative_core_fingerprint"))
             true_reuse = bool(core_a and core_a == core_b and len(exact) >= 4)
             rows.append({"scene_a": _text(left.get("scene_id")), "scene_b": _text(right.get("scene_id")), "creative_core_fingerprint_a": core_a, "creative_core_fingerprint_b": core_b, "exact_core_field_overlap": exact, "normalized_text_similarity": similarity, "phase_structure_similarity": phase_shape, "scene_specific_evidence_overlap": [], "provider_fingerprint_ignored": True, "status": "HARD_FAILURE" if true_reuse else "WARNING" if similarity >= 0.75 else "PASS", "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE" if true_reuse else ""})
-    return {"schema_version": "director-quality-v3-phase1-2-distinctiveness-v1", "pair_count": len(rows), "comparisons": rows, "hard_failure": any(row["status"] == "HARD_FAILURE" for row in rows), "all_pairs_checked": len(rows) == (len(strategies) * (len(strategies) - 1)) // 2, "policy": "program-owned creative_core_fingerprint only"}
+    expected_pairs = expected_scene_count * (expected_scene_count - 1) // 2
+    complete = len(strategies) == expected_scene_count and len(rows) == expected_pairs
+    return {"schema_version": "director-quality-v3-phase1-2-distinctiveness-v1", "expected_scene_count": expected_scene_count, "expected_pair_count": expected_pairs, "canonical_scene_count": len(strategies), "pair_count": len(rows), "comparisons": rows, "hard_failure": any(row["status"] == "HARD_FAILURE" for row in rows), "all_pairs_checked": complete, "status": "DISTINCTIVENESS_EVALUATED" if complete else "DISTINCTIVENESS_NOT_EVALUATED", "policy": "program-owned creative_core_fingerprint only"}
 
 
 def compare_strategy_to_baseline(*, strategy: dict[str, Any], baseline: dict[str, Any]) -> dict[str, Any]:

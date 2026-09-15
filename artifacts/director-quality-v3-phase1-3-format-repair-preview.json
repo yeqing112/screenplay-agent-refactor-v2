@@ -1,0 +1,217 @@
+{
+  "schema_version": "director_strategy_format_repair_packet_v2",
+  "repair_scope": "protocol_only",
+  "semantic_rewrite_allowed": false,
+  "creative_content_mutation": false,
+  "errors": [
+    {
+      "code": "LOSSLESS_SHAPE_UNSUPPORTED",
+      "path": "spatial_expression"
+    }
+  ],
+  "provider_contract": {
+    "schema_version": "director_scene_strategy_ir_v2",
+    "scene_id": "fixture",
+    "allowed_beat_ids": [
+      "1",
+      "2",
+      "3"
+    ],
+    "allowed_character_ids": [
+      "C1"
+    ],
+    "source_ref_contract": {
+      "schema_version": "director_source_ref_contract_v2",
+      "allowed_ids": {
+        "beat": [
+          "1",
+          "2",
+          "3"
+        ],
+        "fact": [
+          "F1"
+        ],
+        "character": [
+          "C1"
+        ],
+        "prop": [],
+        "location": []
+      },
+      "allowed_source_refs": [
+        "beat:1",
+        "beat:2",
+        "beat:3",
+        "fact:F1",
+        "character:C1"
+      ],
+      "syntax": "<type>:<authoritative_id>",
+      "beat_alias_table": {
+        "canonical_beat_ids": [
+          "1",
+          "2",
+          "3"
+        ],
+        "aliases": {
+          "01": "1",
+          "02": "2",
+          "03": "3",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "B01": "1",
+          "B02": "2",
+          "B03": "3",
+          "B1": "1",
+          "B2": "2",
+          "B3": "3",
+          "b01": "1",
+          "b02": "2",
+          "b03": "3",
+          "b1": "1",
+          "b2": "2",
+          "b3": "3",
+          "beat:1": "1",
+          "beat:2": "2",
+          "beat:3": "3"
+        },
+        "ambiguous_aliases": [],
+        "normalization_policy": "one-to-one aliases only"
+      },
+      "types": [
+        "beat",
+        "fact",
+        "prop",
+        "character",
+        "location"
+      ]
+    },
+    "allowed_source_refs": [
+      "beat:1",
+      "beat:2",
+      "beat:3",
+      "fact:F1",
+      "character:C1"
+    ],
+    "phase_constraints": {
+      "min": 2,
+      "max": 6,
+      "recommended": "3-5",
+      "beat_assignment": "exactly_once"
+    },
+    "flexible_shape_policy": {
+      "spatial_expression": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "prop_visual_strategy": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "shot_architecture_guidance": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "must_preserve": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "must_avoid": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "creative_risks": [
+        "string",
+        "string[]",
+        "null"
+      ]
+    },
+    "information_schema": {
+      "reveal_refs": "source_ref[]",
+      "hint_refs": "source_ref[]",
+      "withhold_refs": "source_ref[]",
+      "audience_suspicions": "claim[]",
+      "director_inferences": "claim[]"
+    },
+    "epistemic_rules": {
+      "SOURCE_FACT": "authoritative upstream only",
+      "DIRECTOR_INFERENCE": "director interpretation, never a fact",
+      "AUDIENCE_SUSPICION": "audience hypothesis, never a fact",
+      "TREATMENT_INTENT": "approved intent",
+      "BLOCKING_FACT": "approved spatial truth",
+      "DIRECTOR_CREATIVE_DECISION": "staging decision"
+    },
+    "minimal_skeleton": {
+      "schema_version": "",
+      "scene_id": "",
+      "dramatic_objective": "",
+      "scene_question": "",
+      "strategy_summary": "",
+      "visual_thesis": "",
+      "spatial_expression": [],
+      "prop_visual_strategy": [],
+      "shot_architecture_guidance": [],
+      "must_preserve": [],
+      "must_avoid": [],
+      "creative_risks": [],
+      "scene_phases": [
+        {
+          "phase_id": "P01",
+          "beat_ids": [],
+          "dramatic_function": "",
+          "audience_state": {
+            "knows": [],
+            "suspects": [],
+            "withholds": [],
+            "question_shift": ""
+          },
+          "emotion": {
+            "state": "",
+            "trigger": "",
+            "transition_reason": "",
+            "intensity_hint": null
+          },
+          "power": {
+            "center_type": "NONE",
+            "center_ref": null,
+            "description": "",
+            "shift": ""
+          },
+          "performance": [
+            {
+              "character_id": "C1",
+              "objective": "",
+              "tactic": "",
+              "visible_behavior": "",
+              "turning_point": false
+            }
+          ],
+          "edit": {
+            "tempo": "",
+            "hold_logic": "",
+            "cut_logic": "",
+            "transition_motivation": ""
+          },
+          "visual": {
+            "visual_grammar": "",
+            "camera_rule": "",
+            "composition_rule": "",
+            "movement_condition": ""
+          },
+          "information": {
+            "reveal_refs": [],
+            "hint_refs": [],
+            "withhold_refs": [],
+            "audience_suspicions": [],
+            "director_inferences": []
+          }
+        }
+      ]
+    }
+  },
+  "provider_calls": 0
+}

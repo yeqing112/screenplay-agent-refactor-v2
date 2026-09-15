@@ -10,6 +10,7 @@ from core.director_scene_strategy import parse_scene_directing_strategy, SceneSt
 
 
 STRATEGY_TO_SHOT_SCHEMA_VERSION = "director_strategy_to_shot_contract_v1"
+SUPPORTED_STRATEGY_SCHEMA_VERSIONS = ("director_scene_strategy_v1", "director_scene_strategy_v2", "director_scene_strategy_v3")
 SHOT_PLAN_STATES = ("DRAFT", "QA_FAILED", "REDESIGN_REQUIRED", "READY_FOR_APPROVAL", "APPROVED")
 REQUIRED_TRACE_FIELDS = ("beat_id", "strategy_phase_id", "dramatic_function", "audience_information_state", "emotion_phase", "power_state", "edit_function", "camera_motivation", "performance_function")
 
@@ -36,7 +37,7 @@ def build_strategy_to_shot_contract(*, strategy: dict[str, Any], draft_shot_plan
     for index, shot in enumerate(shots, 1):
         beat_id = _text(shot.get("beat_id"))
         traces.append({"plan_shot_id": _text(shot.get("plan_shot_id") or f"S{index:02d}"), "beat_id": beat_id, "strategy_phase_id": _text(shot.get("strategy_phase_id") or phase_by_beat.get(beat_id)), "dramatic_function": _text(shot.get("dramatic_function")), "audience_information_state": _text(shot.get("audience_information_state")), "emotion_phase": _text(shot.get("emotion_phase")), "power_state": _text(shot.get("power_state")), "edit_function": _text(shot.get("edit_function")), "camera_motivation": _text(shot.get("camera_motivation")), "performance_function": _text(shot.get("performance_function"))})
-    payload = {"schema_version": STRATEGY_TO_SHOT_SCHEMA_VERSION, "strategy_schema_version": _text(strategy.get("schema_version")), "strategy_fingerprint": _text(strategy.get("strategy_fingerprint")), "creative_core_fingerprint": _text(strategy.get("creative_core_fingerprint")), "draft_shot_plan_fingerprint": contract_fingerprint(draft_shot_plan), "state": "DRAFT", "topology_mutable": True, "required_trace_fields": list(REQUIRED_TRACE_FIELDS), "shot_traces": traces, "immutable_facts_fingerprint": contract_fingerprint(immutable_facts or {})}
+    payload = {"schema_version": STRATEGY_TO_SHOT_SCHEMA_VERSION, "strategy_schema_version": _text(strategy.get("schema_version")), "strategy_schema_supported": _text(strategy.get("schema_version")) in SUPPORTED_STRATEGY_SCHEMA_VERSIONS, "strategy_fingerprint": _text(strategy.get("strategy_fingerprint")), "creative_core_fingerprint": _text(strategy.get("creative_core_fingerprint")), "draft_shot_plan_fingerprint": contract_fingerprint(draft_shot_plan), "state": "DRAFT", "topology_mutable": True, "required_trace_fields": list(REQUIRED_TRACE_FIELDS), "shot_traces": traces, "immutable_facts_fingerprint": contract_fingerprint(immutable_facts or {})}
     payload["contract_fingerprint"] = contract_fingerprint(payload)
     return payload
 
@@ -82,4 +83,4 @@ def transition_shot_plan_state(*, current_state: str, target_state: str, layer1_
     return {"from": current, "to": target, "topology_mutable": topology_mutable, "topology_frozen": not topology_mutable}
 
 
-__all__ = ["STRATEGY_TO_SHOT_SCHEMA_VERSION", "SHOT_PLAN_STATES", "REQUIRED_TRACE_FIELDS", "StrategyShotContractError", "build_strategy_to_shot_contract", "validate_strategy_traceability", "transition_shot_plan_state", "contract_fingerprint"]
+__all__ = ["STRATEGY_TO_SHOT_SCHEMA_VERSION", "SUPPORTED_STRATEGY_SCHEMA_VERSIONS", "SHOT_PLAN_STATES", "REQUIRED_TRACE_FIELDS", "StrategyShotContractError", "build_strategy_to_shot_contract", "validate_strategy_traceability", "transition_shot_plan_state", "contract_fingerprint"]

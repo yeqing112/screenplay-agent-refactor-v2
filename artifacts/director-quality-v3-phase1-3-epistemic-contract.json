@@ -1,0 +1,12 @@
+{
+  "schema_version": "director-epistemic-contract-v2",
+  "statuses": [
+    "SOURCE_FACT",
+    "DIRECTOR_INFERENCE",
+    "AUDIENCE_SUSPICION",
+    "TREATMENT_INTENT",
+    "BLOCKING_FACT",
+    "DIRECTOR_CREATIVE_DECISION"
+  ],
+  "model_cannot_create_source_fact": true
+}

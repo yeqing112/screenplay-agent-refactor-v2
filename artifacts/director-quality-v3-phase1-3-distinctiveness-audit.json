@@ -1,0 +1,11 @@
+{
+  "schema_version": "director-quality-v3-phase1-3-distinctiveness-v1",
+  "expected_scene_count": 3,
+  "expected_pair_count": 3,
+  "canonical_scene_count": 1,
+  "pair_count": 0,
+  "all_pairs_checked": false,
+  "status": "DISTINCTIVENESS_NOT_EVALUATED",
+  "comparisons": [],
+  "policy": "never claim evaluation when canonical_count < expected"
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "director-quality-v3-phase1-3-canonical-strategy-v3-schema-v1",
+  "canonical_schema_version": "director_scene_strategy_v3",
+  "program_owned_fields": [
+    "strategy_fingerprint",
+    "creative_core_fingerprint",
+    "source_trace",
+    "authority_projection"
+  ]
+}

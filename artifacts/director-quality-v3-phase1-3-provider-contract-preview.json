@@ -1,0 +1,937 @@
+{
+  "schema_version": "director-quality-v3-phase1-3-provider-contract-preview-v1",
+  "provider_free": true,
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "prompt": {
+        "protocol_version": "director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1",
+        "attempt_type": "CREATIVE_GENERATION",
+        "system_prompt": "[DIRECTOR_STRATEGY_IR_V2]\nYou are the scene director. Return exactly one JSON object with schema_version=director_scene_strategy_ir_v2. Express scene phases and directing choices, never a shot list. Use only supplied beat, character and source references. Source facts are authoritative and cannot be added or rewritten.\n\nInformation is reference-first: information.reveal_refs, hint_refs and withhold_refs contain only allowed source refs. audience_suspicions and director_inferences are interpretive claims and must include support_refs; they are never source facts. Flexible list fields may be string, string[] or null; the deterministic program will normalize them without changing meaning. Do not output fingerprints, scores, source_fact claims, ShotPlan fields or patches. Preserve beat order and assign every beat exactly once. If evidence is absent, use N/A only where the contract allows it.",
+        "user_prompt": "[DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\n{\"attempt_type\":\"CREATIVE_GENERATION\",\"protocol_version\":\"director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1\",\"provider_contract\":{\"allowed_beat_ids\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\"],\"allowed_character_ids\":[\"19\",\"20\"],\"allowed_source_refs\":[\"beat:1\",\"beat:2\",\"beat:3\",\"beat:4\",\"beat:5\",\"beat:6\",\"beat:7\",\"beat:8\",\"beat:9\",\"beat:10\",\"beat:11\",\"character:19\",\"character:20\"],\"epistemic_rules\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"flexible_shape_policy\":{\"creative_risks\":[\"string\",\"string[]\",\"null\"],\"must_avoid\":[\"string\",\"string[]\",\"null\"],\"must_preserve\":[\"string\",\"string[]\",\"null\"],\"prop_visual_strategy\":[\"string\",\"string[]\",\"null\"],\"shot_architecture_guidance\":[\"string\",\"string[]\",\"null\"],\"spatial_expression\":[\"string\",\"string[]\",\"null\"]},\"information_schema\":{\"audience_suspicions\":\"claim[]\",\"director_inferences\":\"claim[]\",\"hint_refs\":\"source_ref[]\",\"reveal_refs\":\"source_ref[]\",\"withhold_refs\":\"source_ref[]\"},\"minimal_skeleton\":{\"creative_risks\":[],\"dramatic_objective\":\"\",\"must_avoid\":[],\"must_preserve\":[],\"prop_visual_strategy\":[],\"scene_id\":\"\",\"scene_phases\":[{\"audience_state\":{\"knows\":[],\"question_shift\":\"\",\"suspects\":[],\"withholds\":[]},\"beat_ids\":[],\"dramatic_function\":\"\",\"edit\":{\"cut_logic\":\"\",\"hold_logic\":\"\",\"tempo\":\"\",\"transition_motivation\":\"\"},\"emotion\":{\"intensity_hint\":null,\"state\":\"\",\"transition_reason\":\"\",\"trigger\":\"\"},\"information\":{\"audience_suspicions\":[],\"director_inferences\":[],\"hint_refs\":[],\"reveal_refs\":[],\"withhold_refs\":[]},\"performance\":[{\"character_id\":\"19\",\"objective\":\"\",\"tactic\":\"\",\"turning_point\":false,\"visible_behavior\":\"\"}],\"phase_id\":\"P01\",\"power\":{\"center_ref\":null,\"center_type\":\"NONE\",\"description\":\"\",\"shift\":\"\"},\"visual\":{\"camera_rule\":\"\",\"composition_rule\":\"\",\"movement_condition\":\"\",\"visual_grammar\":\"\"}}],\"scene_question\":\"\",\"schema_version\":\"\",\"shot_architecture_guidance\":[],\"spatial_expression\":[],\"strategy_summary\":\"\",\"visual_thesis\":\"\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"max\":6,\"min\":2,\"recommended\":\"3-5\"},\"scene_id\":\"book990402:e3:暗房惊魂\",\"schema_version\":\"director_scene_strategy_ir_v2\",\"source_ref_contract\":{\"allowed_ids\":{\"beat\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\"],\"character\":[\"19\",\"20\"],\"fact\":[],\"location\":[],\"prop\":[]},\"allowed_source_refs\":[\"beat:1\",\"beat:2\",\"beat:3\",\"beat:4\",\"beat:5\",\"beat:6\",\"beat:7\",\"beat:8\",\"beat:9\",\"beat:10\",\"beat:11\",\"character:19\",\"character:20\"],\"beat_alias_table\":{\"aliases\":{\"01\":\"1\",\"02\":\"2\",\"03\":\"3\",\"04\":\"4\",\"05\":\"5\",\"06\":\"6\",\"07\":\"7\",\"08\":\"8\",\"09\":\"9\",\"1\":\"1\",\"10\":\"10\",\"11\":\"11\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\",\"6\":\"6\",\"7\":\"7\",\"8\":\"8\",\"9\":\"9\",\"B01\":\"1\",\"B02\":\"2\",\"B03\":\"3\",\"B04\":\"4\",\"B05\":\"5\",\"B06\":\"6\",\"B07\":\"7\",\"B08\":\"8\",\"B09\":\"9\",\"B1\":\"1\",\"B10\":\"10\",\"B11\":\"11\",\"B2\":\"2\",\"B3\":\"3\",\"B4\":\"4\",\"B5\":\"5\",\"B6\":\"6\",\"B7\":\"7\",\"B8\":\"8\",\"B9\":\"9\",\"b01\":\"1\",\"b02\":\"2\",\"b03\":\"3\",\"b04\":\"4\",\"b05\":\"5\",\"b06\":\"6\",\"b07\":\"7\",\"b08\":\"8\",\"b09\":\"9\",\"b1\":\"1\",\"b10\":\"10\",\"b11\":\"11\",\"b2\":\"2\",\"b3\":\"3\",\"b4\":\"4\",\"b5\":\"5\",\"b6\":\"6\",\"b7\":\"7\",\"b8\":\"8\",\"b9\":\"9\",\"beat:1\":\"1\",\"beat:10\":\"10\",\"beat:11\":\"11\",\"beat:2\":\"2\",\"beat:3\":\"3\",\"beat:4\":\"4\",\"beat:5\":\"5\",\"beat:6\":\"6\",\"beat:7\":\"7\",\"beat:8\":\"8\",\"beat:9\":\"9\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\"],\"normalization_policy\":\"one-to-one aliases only\"},\"schema_version\":\"director_source_ref_contract_v2\",\"syntax\":\"<type>:<authoritative_id>\",\"types\":[\"beat\",\"fact\",\"prop\",\"character\",\"location\"]}},\"scene_inputs\":{\"allowed_source_refs\":[\"beat:1\",\"beat:2\",\"beat:3\",\"beat:4\",\"beat:5\",\"beat:6\",\"beat:7\",\"beat:8\",\"beat:9\",\"beat:10\",\"beat:11\",\"character:19\",\"character:20\"],\"scene_id\":\"book990402:e3:暗房惊魂\",\"source_authority\":{\"Character\":\"approved_record.evidence.blocking.participants\",\"DirectorTreatment\":\"approved_record.evidence.treatment\",\"FactSnapshot\":\"approved_record.contract.immutable_projection.facts\",\"Location\":\"absent; N/A required\",\"Prop\":\"absent; N/A required\",\"SceneBlocking\":\"approved_record.evidence.blocking\",\"ScriptIR\":\"approved_record.treatment.beat_map + scene metadata\"},\"strategy_contract\":{\"beat_ids\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\"],\"character_ids\":[\"19\",\"20\"],\"fact_ids\":[],\"scene_id\":\"book990402:e3:暗房惊魂\"}},\"semantic_spec\":{\"canonical_schema_version\":\"director_scene_strategy_v3\",\"compiler_version\":\"director_scene_strategy_ir_compiler_v2\",\"epistemic_boundary\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"epistemic_types\":[\"SOURCE_FACT\",\"DIRECTOR_INFERENCE\",\"AUDIENCE_SUSPICION\",\"TREATMENT_INTENT\",\"BLOCKING_FACT\",\"DIRECTOR_CREATIVE_DECISION\"],\"flexible_list_fields\":[\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"],\"forbidden_model_fields\":[\"creative_core_fingerprint\",\"cv_score\",\"dq_score\",\"duration_ladder\",\"fact_claim\",\"patches\",\"plan_shot_id\",\"quality_score\",\"repair\",\"shot_ids\",\"shot_plan\",\"shotplan\",\"shots\",\"source_fact\",\"source_facts\",\"strategy_fingerprint\"],\"information_fields\":[\"reveal_refs\",\"hint_refs\",\"withhold_refs\",\"audience_suspicions\",\"director_inferences\"],\"information_policy\":{\"audience_suspicions\":\"interpretive claims with support_refs\",\"director_inferences\":\"directing interpretations with support_refs and purpose\",\"hint_refs\":\"already available evidence only\",\"reference_first\":true,\"reveal_refs\":\"source refs visible by this phase\",\"withhold_refs\":\"future evidence allowed\"},\"model_ir_schema_version\":\"director_scene_strategy_ir_v2\",\"na_rules\":{\"prop_visual_strategy\":\"N/A or null normalizes to [] when no prop evidence exists\",\"source_refs\":\"never invent IDs\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"maximum\":6,\"minimum\":2,\"recommended\":\"3-5\"},\"phase_fields\":[\"phase_id\",\"beat_ids\",\"dramatic_function\",\"audience_state\",\"emotion\",\"power\",\"performance\",\"edit\",\"visual\",\"information\"],\"power_center_types\":[\"CHARACTER\",\"SHARED\",\"RELATIONSHIP\",\"INFORMATION\",\"OBJECT\",\"ENVIRONMENT\",\"NONE\"],\"schema_version\":\"director_scene_strategy_semantic_spec_v2\",\"top_level_fields\":[\"schema_version\",\"scene_id\",\"dramatic_objective\",\"scene_question\",\"strategy_summary\",\"visual_thesis\",\"scene_phases\",\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"]}}\n[/DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\nReturn one complete director_scene_strategy_ir_v2 JSON object now.",
+        "provider_contract": {
+          "schema_version": "director_scene_strategy_ir_v2",
+          "scene_id": "book990402:e3:暗房惊魂",
+          "allowed_beat_ids": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11"
+          ],
+          "allowed_character_ids": [
+            "19",
+            "20"
+          ],
+          "source_ref_contract": {
+            "schema_version": "director_source_ref_contract_v2",
+            "allowed_ids": {
+              "beat": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11"
+              ],
+              "fact": [],
+              "character": [
+                "19",
+                "20"
+              ],
+              "prop": [],
+              "location": []
+            },
+            "allowed_source_refs": [
+              "beat:1",
+              "beat:2",
+              "beat:3",
+              "beat:4",
+              "beat:5",
+              "beat:6",
+              "beat:7",
+              "beat:8",
+              "beat:9",
+              "beat:10",
+              "beat:11",
+              "character:19",
+              "character:20"
+            ],
+            "syntax": "<type>:<authoritative_id>",
+            "beat_alias_table": {
+              "canonical_beat_ids": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11"
+              ],
+              "aliases": {
+                "01": "1",
+                "02": "2",
+                "03": "3",
+                "04": "4",
+                "05": "5",
+                "06": "6",
+                "07": "7",
+                "08": "8",
+                "09": "9",
+                "1": "1",
+                "10": "10",
+                "11": "11",
+                "2": "2",
+                "3": "3",
+                "4": "4",
+                "5": "5",
+                "6": "6",
+                "7": "7",
+                "8": "8",
+                "9": "9",
+                "B01": "1",
+                "B02": "2",
+                "B03": "3",
+                "B04": "4",
+                "B05": "5",
+                "B06": "6",
+                "B07": "7",
+                "B08": "8",
+                "B09": "9",
+                "B1": "1",
+                "B10": "10",
+                "B11": "11",
+                "B2": "2",
+                "B3": "3",
+                "B4": "4",
+                "B5": "5",
+                "B6": "6",
+                "B7": "7",
+                "B8": "8",
+                "B9": "9",
+                "b01": "1",
+                "b02": "2",
+                "b03": "3",
+                "b04": "4",
+                "b05": "5",
+                "b06": "6",
+                "b07": "7",
+                "b08": "8",
+                "b09": "9",
+                "b1": "1",
+                "b10": "10",
+                "b11": "11",
+                "b2": "2",
+                "b3": "3",
+                "b4": "4",
+                "b5": "5",
+                "b6": "6",
+                "b7": "7",
+                "b8": "8",
+                "b9": "9",
+                "beat:1": "1",
+                "beat:10": "10",
+                "beat:11": "11",
+                "beat:2": "2",
+                "beat:3": "3",
+                "beat:4": "4",
+                "beat:5": "5",
+                "beat:6": "6",
+                "beat:7": "7",
+                "beat:8": "8",
+                "beat:9": "9"
+              },
+              "ambiguous_aliases": [],
+              "normalization_policy": "one-to-one aliases only"
+            },
+            "types": [
+              "beat",
+              "fact",
+              "prop",
+              "character",
+              "location"
+            ]
+          },
+          "allowed_source_refs": [
+            "beat:1",
+            "beat:2",
+            "beat:3",
+            "beat:4",
+            "beat:5",
+            "beat:6",
+            "beat:7",
+            "beat:8",
+            "beat:9",
+            "beat:10",
+            "beat:11",
+            "character:19",
+            "character:20"
+          ],
+          "phase_constraints": {
+            "min": 2,
+            "max": 6,
+            "recommended": "3-5",
+            "beat_assignment": "exactly_once"
+          },
+          "flexible_shape_policy": {
+            "spatial_expression": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "prop_visual_strategy": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "shot_architecture_guidance": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "must_preserve": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "must_avoid": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "creative_risks": [
+              "string",
+              "string[]",
+              "null"
+            ]
+          },
+          "information_schema": {
+            "reveal_refs": "source_ref[]",
+            "hint_refs": "source_ref[]",
+            "withhold_refs": "source_ref[]",
+            "audience_suspicions": "claim[]",
+            "director_inferences": "claim[]"
+          },
+          "epistemic_rules": {
+            "SOURCE_FACT": "authoritative upstream only",
+            "DIRECTOR_INFERENCE": "director interpretation, never a fact",
+            "AUDIENCE_SUSPICION": "audience hypothesis, never a fact",
+            "TREATMENT_INTENT": "approved intent",
+            "BLOCKING_FACT": "approved spatial truth",
+            "DIRECTOR_CREATIVE_DECISION": "staging decision"
+          },
+          "minimal_skeleton": {
+            "schema_version": "",
+            "scene_id": "",
+            "dramatic_objective": "",
+            "scene_question": "",
+            "strategy_summary": "",
+            "visual_thesis": "",
+            "spatial_expression": [],
+            "prop_visual_strategy": [],
+            "shot_architecture_guidance": [],
+            "must_preserve": [],
+            "must_avoid": [],
+            "creative_risks": [],
+            "scene_phases": [
+              {
+                "phase_id": "P01",
+                "beat_ids": [],
+                "dramatic_function": "",
+                "audience_state": {
+                  "knows": [],
+                  "suspects": [],
+                  "withholds": [],
+                  "question_shift": ""
+                },
+                "emotion": {
+                  "state": "",
+                  "trigger": "",
+                  "transition_reason": "",
+                  "intensity_hint": null
+                },
+                "power": {
+                  "center_type": "NONE",
+                  "center_ref": null,
+                  "description": "",
+                  "shift": ""
+                },
+                "performance": [
+                  {
+                    "character_id": "19",
+                    "objective": "",
+                    "tactic": "",
+                    "visible_behavior": "",
+                    "turning_point": false
+                  }
+                ],
+                "edit": {
+                  "tempo": "",
+                  "hold_logic": "",
+                  "cut_logic": "",
+                  "transition_motivation": ""
+                },
+                "visual": {
+                  "visual_grammar": "",
+                  "camera_rule": "",
+                  "composition_rule": "",
+                  "movement_condition": ""
+                },
+                "information": {
+                  "reveal_refs": [],
+                  "hint_refs": [],
+                  "withhold_refs": [],
+                  "audience_suspicions": [],
+                  "director_inferences": []
+                }
+              }
+            ]
+          }
+        },
+        "system_prompt_fingerprint": "e092f96b2ac29bea2c4e63abcb85ff5dd8d7d0f918c05c7ca60b36bc3f5f1929",
+        "schema_fingerprint": "2f70c205ea6c383c22e121705412a923f134d079425d05a110a7724d83ce3053",
+        "scene_input_fingerprint": "0b392bc4f9432a89066672d97407d41b8939b114ddf6e0c32c332574c4ca4176",
+        "request_fingerprint": "4ed59c9fbe7486bc5c69b03e7964d33c298fc12b8a001e36c0dee7827b8df77e",
+        "model_snapshot": {
+          "profile_id": "",
+          "provider": "",
+          "model_name": "mimo-v2.5",
+          "parameters": {}
+        }
+      }
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "prompt": {
+        "protocol_version": "director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1",
+        "attempt_type": "CREATIVE_GENERATION",
+        "system_prompt": "[DIRECTOR_STRATEGY_IR_V2]\nYou are the scene director. Return exactly one JSON object with schema_version=director_scene_strategy_ir_v2. Express scene phases and directing choices, never a shot list. Use only supplied beat, character and source references. Source facts are authoritative and cannot be added or rewritten.\n\nInformation is reference-first: information.reveal_refs, hint_refs and withhold_refs contain only allowed source refs. audience_suspicions and director_inferences are interpretive claims and must include support_refs; they are never source facts. Flexible list fields may be string, string[] or null; the deterministic program will normalize them without changing meaning. Do not output fingerprints, scores, source_fact claims, ShotPlan fields or patches. Preserve beat order and assign every beat exactly once. If evidence is absent, use N/A only where the contract allows it.",
+        "user_prompt": "[DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\n{\"attempt_type\":\"CREATIVE_GENERATION\",\"protocol_version\":\"director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1\",\"provider_contract\":{\"allowed_beat_ids\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"],\"allowed_character_ids\":[\"19\",\"20\"],\"allowed_source_refs\":[\"beat:1\",\"beat:2\",\"beat:3\",\"beat:4\",\"beat:5\",\"beat:6\",\"beat:7\",\"beat:8\",\"beat:9\",\"beat:10\",\"character:19\",\"character:20\"],\"epistemic_rules\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"flexible_shape_policy\":{\"creative_risks\":[\"string\",\"string[]\",\"null\"],\"must_avoid\":[\"string\",\"string[]\",\"null\"],\"must_preserve\":[\"string\",\"string[]\",\"null\"],\"prop_visual_strategy\":[\"string\",\"string[]\",\"null\"],\"shot_architecture_guidance\":[\"string\",\"string[]\",\"null\"],\"spatial_expression\":[\"string\",\"string[]\",\"null\"]},\"information_schema\":{\"audience_suspicions\":\"claim[]\",\"director_inferences\":\"claim[]\",\"hint_refs\":\"source_ref[]\",\"reveal_refs\":\"source_ref[]\",\"withhold_refs\":\"source_ref[]\"},\"minimal_skeleton\":{\"creative_risks\":[],\"dramatic_objective\":\"\",\"must_avoid\":[],\"must_preserve\":[],\"prop_visual_strategy\":[],\"scene_id\":\"\",\"scene_phases\":[{\"audience_state\":{\"knows\":[],\"question_shift\":\"\",\"suspects\":[],\"withholds\":[]},\"beat_ids\":[],\"dramatic_function\":\"\",\"edit\":{\"cut_logic\":\"\",\"hold_logic\":\"\",\"tempo\":\"\",\"transition_motivation\":\"\"},\"emotion\":{\"intensity_hint\":null,\"state\":\"\",\"transition_reason\":\"\",\"trigger\":\"\"},\"information\":{\"audience_suspicions\":[],\"director_inferences\":[],\"hint_refs\":[],\"reveal_refs\":[],\"withhold_refs\":[]},\"performance\":[{\"character_id\":\"19\",\"objective\":\"\",\"tactic\":\"\",\"turning_point\":false,\"visible_behavior\":\"\"}],\"phase_id\":\"P01\",\"power\":{\"center_ref\":null,\"center_type\":\"NONE\",\"description\":\"\",\"shift\":\"\"},\"visual\":{\"camera_rule\":\"\",\"composition_rule\":\"\",\"movement_condition\":\"\",\"visual_grammar\":\"\"}}],\"scene_question\":\"\",\"schema_version\":\"\",\"shot_architecture_guidance\":[],\"spatial_expression\":[],\"strategy_summary\":\"\",\"visual_thesis\":\"\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"max\":6,\"min\":2,\"recommended\":\"3-5\"},\"scene_id\":\"book990402:e3:暗房惊魂（2）\",\"schema_version\":\"director_scene_strategy_ir_v2\",\"source_ref_contract\":{\"allowed_ids\":{\"beat\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"],\"character\":[\"19\",\"20\"],\"fact\":[],\"location\":[],\"prop\":[]},\"allowed_source_refs\":[\"beat:1\",\"beat:2\",\"beat:3\",\"beat:4\",\"beat:5\",\"beat:6\",\"beat:7\",\"beat:8\",\"beat:9\",\"beat:10\",\"character:19\",\"character:20\"],\"beat_alias_table\":{\"aliases\":{\"01\":\"1\",\"02\":\"2\",\"03\":\"3\",\"04\":\"4\",\"05\":\"5\",\"06\":\"6\",\"07\":\"7\",\"08\":\"8\",\"09\":\"9\",\"1\":\"1\",\"10\":\"10\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\",\"6\":\"6\",\"7\":\"7\",\"8\":\"8\",\"9\":\"9\",\"B01\":\"1\",\"B02\":\"2\",\"B03\":\"3\",\"B04\":\"4\",\"B05\":\"5\",\"B06\":\"6\",\"B07\":\"7\",\"B08\":\"8\",\"B09\":\"9\",\"B1\":\"1\",\"B10\":\"10\",\"B2\":\"2\",\"B3\":\"3\",\"B4\":\"4\",\"B5\":\"5\",\"B6\":\"6\",\"B7\":\"7\",\"B8\":\"8\",\"B9\":\"9\",\"b01\":\"1\",\"b02\":\"2\",\"b03\":\"3\",\"b04\":\"4\",\"b05\":\"5\",\"b06\":\"6\",\"b07\":\"7\",\"b08\":\"8\",\"b09\":\"9\",\"b1\":\"1\",\"b10\":\"10\",\"b2\":\"2\",\"b3\":\"3\",\"b4\":\"4\",\"b5\":\"5\",\"b6\":\"6\",\"b7\":\"7\",\"b8\":\"8\",\"b9\":\"9\",\"beat:1\":\"1\",\"beat:10\":\"10\",\"beat:2\":\"2\",\"beat:3\":\"3\",\"beat:4\":\"4\",\"beat:5\":\"5\",\"beat:6\":\"6\",\"beat:7\":\"7\",\"beat:8\":\"8\",\"beat:9\":\"9\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"],\"normalization_policy\":\"one-to-one aliases only\"},\"schema_version\":\"director_source_ref_contract_v2\",\"syntax\":\"<type>:<authoritative_id>\",\"types\":[\"beat\",\"fact\",\"prop\",\"character\",\"location\"]}},\"scene_inputs\":{\"allowed_source_refs\":[\"beat:1\",\"beat:2\",\"beat:3\",\"beat:4\",\"beat:5\",\"beat:6\",\"beat:7\",\"beat:8\",\"beat:9\",\"beat:10\",\"character:19\",\"character:20\"],\"scene_id\":\"book990402:e3:暗房惊魂（2）\",\"source_authority\":{\"Character\":\"approved_record.evidence.blocking.participants\",\"DirectorTreatment\":\"approved_record.evidence.treatment\",\"FactSnapshot\":\"approved_record.contract.immutable_projection.facts\",\"Location\":\"absent; N/A required\",\"Prop\":\"absent; N/A required\",\"SceneBlocking\":\"approved_record.evidence.blocking\",\"ScriptIR\":\"approved_record.treatment.beat_map + scene metadata\"},\"strategy_contract\":{\"beat_ids\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"],\"character_ids\":[\"19\",\"20\"],\"fact_ids\":[],\"scene_id\":\"book990402:e3:暗房惊魂（2）\"}},\"semantic_spec\":{\"canonical_schema_version\":\"director_scene_strategy_v3\",\"compiler_version\":\"director_scene_strategy_ir_compiler_v2\",\"epistemic_boundary\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"epistemic_types\":[\"SOURCE_FACT\",\"DIRECTOR_INFERENCE\",\"AUDIENCE_SUSPICION\",\"TREATMENT_INTENT\",\"BLOCKING_FACT\",\"DIRECTOR_CREATIVE_DECISION\"],\"flexible_list_fields\":[\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"],\"forbidden_model_fields\":[\"creative_core_fingerprint\",\"cv_score\",\"dq_score\",\"duration_ladder\",\"fact_claim\",\"patches\",\"plan_shot_id\",\"quality_score\",\"repair\",\"shot_ids\",\"shot_plan\",\"shotplan\",\"shots\",\"source_fact\",\"source_facts\",\"strategy_fingerprint\"],\"information_fields\":[\"reveal_refs\",\"hint_refs\",\"withhold_refs\",\"audience_suspicions\",\"director_inferences\"],\"information_policy\":{\"audience_suspicions\":\"interpretive claims with support_refs\",\"director_inferences\":\"directing interpretations with support_refs and purpose\",\"hint_refs\":\"already available evidence only\",\"reference_first\":true,\"reveal_refs\":\"source refs visible by this phase\",\"withhold_refs\":\"future evidence allowed\"},\"model_ir_schema_version\":\"director_scene_strategy_ir_v2\",\"na_rules\":{\"prop_visual_strategy\":\"N/A or null normalizes to [] when no prop evidence exists\",\"source_refs\":\"never invent IDs\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"maximum\":6,\"minimum\":2,\"recommended\":\"3-5\"},\"phase_fields\":[\"phase_id\",\"beat_ids\",\"dramatic_function\",\"audience_state\",\"emotion\",\"power\",\"performance\",\"edit\",\"visual\",\"information\"],\"power_center_types\":[\"CHARACTER\",\"SHARED\",\"RELATIONSHIP\",\"INFORMATION\",\"OBJECT\",\"ENVIRONMENT\",\"NONE\"],\"schema_version\":\"director_scene_strategy_semantic_spec_v2\",\"top_level_fields\":[\"schema_version\",\"scene_id\",\"dramatic_objective\",\"scene_question\",\"strategy_summary\",\"visual_thesis\",\"scene_phases\",\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"]}}\n[/DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\nReturn one complete director_scene_strategy_ir_v2 JSON object now.",
+        "provider_contract": {
+          "schema_version": "director_scene_strategy_ir_v2",
+          "scene_id": "book990402:e3:暗房惊魂（2）",
+          "allowed_beat_ids": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "allowed_character_ids": [
+            "19",
+            "20"
+          ],
+          "source_ref_contract": {
+            "schema_version": "director_source_ref_contract_v2",
+            "allowed_ids": {
+              "beat": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10"
+              ],
+              "fact": [],
+              "character": [
+                "19",
+                "20"
+              ],
+              "prop": [],
+              "location": []
+            },
+            "allowed_source_refs": [
+              "beat:1",
+              "beat:2",
+              "beat:3",
+              "beat:4",
+              "beat:5",
+              "beat:6",
+              "beat:7",
+              "beat:8",
+              "beat:9",
+              "beat:10",
+              "character:19",
+              "character:20"
+            ],
+            "syntax": "<type>:<authoritative_id>",
+            "beat_alias_table": {
+              "canonical_beat_ids": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10"
+              ],
+              "aliases": {
+                "01": "1",
+                "02": "2",
+                "03": "3",
+                "04": "4",
+                "05": "5",
+                "06": "6",
+                "07": "7",
+                "08": "8",
+                "09": "9",
+                "1": "1",
+                "10": "10",
+                "2": "2",
+                "3": "3",
+                "4": "4",
+                "5": "5",
+                "6": "6",
+                "7": "7",
+                "8": "8",
+                "9": "9",
+                "B01": "1",
+                "B02": "2",
+                "B03": "3",
+                "B04": "4",
+                "B05": "5",
+                "B06": "6",
+                "B07": "7",
+                "B08": "8",
+                "B09": "9",
+                "B1": "1",
+                "B10": "10",
+                "B2": "2",
+                "B3": "3",
+                "B4": "4",
+                "B5": "5",
+                "B6": "6",
+                "B7": "7",
+                "B8": "8",
+                "B9": "9",
+                "b01": "1",
+                "b02": "2",
+                "b03": "3",
+                "b04": "4",
+                "b05": "5",
+                "b06": "6",
+                "b07": "7",
+                "b08": "8",
+                "b09": "9",
+                "b1": "1",
+                "b10": "10",
+                "b2": "2",
+                "b3": "3",
+                "b4": "4",
+                "b5": "5",
+                "b6": "6",
+                "b7": "7",
+                "b8": "8",
+                "b9": "9",
+                "beat:1": "1",
+                "beat:10": "10",
+                "beat:2": "2",
+                "beat:3": "3",
+                "beat:4": "4",
+                "beat:5": "5",
+                "beat:6": "6",
+                "beat:7": "7",
+                "beat:8": "8",
+                "beat:9": "9"
+              },
+              "ambiguous_aliases": [],
+              "normalization_policy": "one-to-one aliases only"
+            },
+            "types": [
+              "beat",
+              "fact",
+              "prop",
+              "character",
+              "location"
+            ]
+          },
+          "allowed_source_refs": [
+            "beat:1",
+            "beat:2",
+            "beat:3",
+            "beat:4",
+            "beat:5",
+            "beat:6",
+            "beat:7",
+            "beat:8",
+            "beat:9",
+            "beat:10",
+            "character:19",
+            "character:20"
+          ],
+          "phase_constraints": {
+            "min": 2,
+            "max": 6,
+            "recommended": "3-5",
+            "beat_assignment": "exactly_once"
+          },
+          "flexible_shape_policy": {
+            "spatial_expression": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "prop_visual_strategy": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "shot_architecture_guidance": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "must_preserve": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "must_avoid": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "creative_risks": [
+              "string",
+              "string[]",
+              "null"
+            ]
+          },
+          "information_schema": {
+            "reveal_refs": "source_ref[]",
+            "hint_refs": "source_ref[]",
+            "withhold_refs": "source_ref[]",
+            "audience_suspicions": "claim[]",
+            "director_inferences": "claim[]"
+          },
+          "epistemic_rules": {
+            "SOURCE_FACT": "authoritative upstream only",
+            "DIRECTOR_INFERENCE": "director interpretation, never a fact",
+            "AUDIENCE_SUSPICION": "audience hypothesis, never a fact",
+            "TREATMENT_INTENT": "approved intent",
+            "BLOCKING_FACT": "approved spatial truth",
+            "DIRECTOR_CREATIVE_DECISION": "staging decision"
+          },
+          "minimal_skeleton": {
+            "schema_version": "",
+            "scene_id": "",
+            "dramatic_objective": "",
+            "scene_question": "",
+            "strategy_summary": "",
+            "visual_thesis": "",
+            "spatial_expression": [],
+            "prop_visual_strategy": [],
+            "shot_architecture_guidance": [],
+            "must_preserve": [],
+            "must_avoid": [],
+            "creative_risks": [],
+            "scene_phases": [
+              {
+                "phase_id": "P01",
+                "beat_ids": [],
+                "dramatic_function": "",
+                "audience_state": {
+                  "knows": [],
+                  "suspects": [],
+                  "withholds": [],
+                  "question_shift": ""
+                },
+                "emotion": {
+                  "state": "",
+                  "trigger": "",
+                  "transition_reason": "",
+                  "intensity_hint": null
+                },
+                "power": {
+                  "center_type": "NONE",
+                  "center_ref": null,
+                  "description": "",
+                  "shift": ""
+                },
+                "performance": [
+                  {
+                    "character_id": "19",
+                    "objective": "",
+                    "tactic": "",
+                    "visible_behavior": "",
+                    "turning_point": false
+                  }
+                ],
+                "edit": {
+                  "tempo": "",
+                  "hold_logic": "",
+                  "cut_logic": "",
+                  "transition_motivation": ""
+                },
+                "visual": {
+                  "visual_grammar": "",
+                  "camera_rule": "",
+                  "composition_rule": "",
+                  "movement_condition": ""
+                },
+                "information": {
+                  "reveal_refs": [],
+                  "hint_refs": [],
+                  "withhold_refs": [],
+                  "audience_suspicions": [],
+                  "director_inferences": []
+                }
+              }
+            ]
+          }
+        },
+        "system_prompt_fingerprint": "e092f96b2ac29bea2c4e63abcb85ff5dd8d7d0f918c05c7ca60b36bc3f5f1929",
+        "schema_fingerprint": "a514a55c2d0869652e05c47045ea62b0ac6d95651ea4031f75ad5e5bd58c0772",
+        "scene_input_fingerprint": "c0e79caff3905d730c535595be6e8c851d07731cb25b3c07b0aed607b92f26ea",
+        "request_fingerprint": "b8bd6a5726477e6388aab7f230e6f051a1e5ad2a275961931463979059d16272",
+        "model_snapshot": {
+          "profile_id": "",
+          "provider": "",
+          "model_name": "mimo-v2.5",
+          "parameters": {}
+        }
+      }
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "prompt": {
+        "protocol_version": "director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1",
+        "attempt_type": "CREATIVE_GENERATION",
+        "system_prompt": "[DIRECTOR_STRATEGY_IR_V2]\nYou are the scene director. Return exactly one JSON object with schema_version=director_scene_strategy_ir_v2. Express scene phases and directing choices, never a shot list. Use only supplied beat, character and source references. Source facts are authoritative and cannot be added or rewritten.\n\nInformation is reference-first: information.reveal_refs, hint_refs and withhold_refs contain only allowed source refs. audience_suspicions and director_inferences are interpretive claims and must include support_refs; they are never source facts. Flexible list fields may be string, string[] or null; the deterministic program will normalize them without changing meaning. Do not output fingerprints, scores, source_fact claims, ShotPlan fields or patches. Preserve beat order and assign every beat exactly once. If evidence is absent, use N/A only where the contract allows it.",
+        "user_prompt": "[DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\n{\"attempt_type\":\"CREATIVE_GENERATION\",\"protocol_version\":\"director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1\",\"provider_contract\":{\"allowed_beat_ids\":[\"B1\",\"B2\",\"B3\",\"B4\",\"B5\",\"B6\",\"B7\",\"B8\",\"B9\",\"B10\",\"B11\"],\"allowed_character_ids\":[\"17\",\"18\"],\"allowed_source_refs\":[\"beat:B1\",\"beat:B2\",\"beat:B3\",\"beat:B4\",\"beat:B5\",\"beat:B6\",\"beat:B7\",\"beat:B8\",\"beat:B9\",\"beat:B10\",\"beat:B11\",\"character:17\",\"character:18\"],\"epistemic_rules\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"flexible_shape_policy\":{\"creative_risks\":[\"string\",\"string[]\",\"null\"],\"must_avoid\":[\"string\",\"string[]\",\"null\"],\"must_preserve\":[\"string\",\"string[]\",\"null\"],\"prop_visual_strategy\":[\"string\",\"string[]\",\"null\"],\"shot_architecture_guidance\":[\"string\",\"string[]\",\"null\"],\"spatial_expression\":[\"string\",\"string[]\",\"null\"]},\"information_schema\":{\"audience_suspicions\":\"claim[]\",\"director_inferences\":\"claim[]\",\"hint_refs\":\"source_ref[]\",\"reveal_refs\":\"source_ref[]\",\"withhold_refs\":\"source_ref[]\"},\"minimal_skeleton\":{\"creative_risks\":[],\"dramatic_objective\":\"\",\"must_avoid\":[],\"must_preserve\":[],\"prop_visual_strategy\":[],\"scene_id\":\"\",\"scene_phases\":[{\"audience_state\":{\"knows\":[],\"question_shift\":\"\",\"suspects\":[],\"withholds\":[]},\"beat_ids\":[],\"dramatic_function\":\"\",\"edit\":{\"cut_logic\":\"\",\"hold_logic\":\"\",\"tempo\":\"\",\"transition_motivation\":\"\"},\"emotion\":{\"intensity_hint\":null,\"state\":\"\",\"transition_reason\":\"\",\"trigger\":\"\"},\"information\":{\"audience_suspicions\":[],\"director_inferences\":[],\"hint_refs\":[],\"reveal_refs\":[],\"withhold_refs\":[]},\"performance\":[{\"character_id\":\"17\",\"objective\":\"\",\"tactic\":\"\",\"turning_point\":false,\"visible_behavior\":\"\"}],\"phase_id\":\"P01\",\"power\":{\"center_ref\":null,\"center_type\":\"NONE\",\"description\":\"\",\"shift\":\"\"},\"visual\":{\"camera_rule\":\"\",\"composition_rule\":\"\",\"movement_condition\":\"\",\"visual_grammar\":\"\"}}],\"scene_question\":\"\",\"schema_version\":\"\",\"shot_architecture_guidance\":[],\"spatial_expression\":[],\"strategy_summary\":\"\",\"visual_thesis\":\"\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"max\":6,\"min\":2,\"recommended\":\"3-5\"},\"scene_id\":\"book990402:e2:回声照相馆\",\"schema_version\":\"director_scene_strategy_ir_v2\",\"source_ref_contract\":{\"allowed_ids\":{\"beat\":[\"B1\",\"B2\",\"B3\",\"B4\",\"B5\",\"B6\",\"B7\",\"B8\",\"B9\",\"B10\",\"B11\"],\"character\":[\"17\",\"18\"],\"fact\":[],\"location\":[],\"prop\":[]},\"allowed_source_refs\":[\"beat:B1\",\"beat:B2\",\"beat:B3\",\"beat:B4\",\"beat:B5\",\"beat:B6\",\"beat:B7\",\"beat:B8\",\"beat:B9\",\"beat:B10\",\"beat:B11\",\"character:17\",\"character:18\"],\"beat_alias_table\":{\"aliases\":{\"01\":\"B1\",\"02\":\"B2\",\"03\":\"B3\",\"04\":\"B4\",\"05\":\"B5\",\"06\":\"B6\",\"07\":\"B7\",\"08\":\"B8\",\"09\":\"B9\",\"1\":\"B1\",\"10\":\"B10\",\"11\":\"B11\",\"2\":\"B2\",\"3\":\"B3\",\"4\":\"B4\",\"5\":\"B5\",\"6\":\"B6\",\"7\":\"B7\",\"8\":\"B8\",\"9\":\"B9\",\"B01\":\"B1\",\"B02\":\"B2\",\"B03\":\"B3\",\"B04\":\"B4\",\"B05\":\"B5\",\"B06\":\"B6\",\"B07\":\"B7\",\"B08\":\"B8\",\"B09\":\"B9\",\"B1\":\"B1\",\"B10\":\"B10\",\"B11\":\"B11\",\"B2\":\"B2\",\"B3\":\"B3\",\"B4\":\"B4\",\"B5\":\"B5\",\"B6\":\"B6\",\"B7\":\"B7\",\"B8\":\"B8\",\"B9\":\"B9\",\"b01\":\"B1\",\"b02\":\"B2\",\"b03\":\"B3\",\"b04\":\"B4\",\"b05\":\"B5\",\"b06\":\"B6\",\"b07\":\"B7\",\"b08\":\"B8\",\"b09\":\"B9\",\"b1\":\"B1\",\"b10\":\"B10\",\"b11\":\"B11\",\"b2\":\"B2\",\"b3\":\"B3\",\"b4\":\"B4\",\"b5\":\"B5\",\"b6\":\"B6\",\"b7\":\"B7\",\"b8\":\"B8\",\"b9\":\"B9\",\"beat:1\":\"B1\",\"beat:10\":\"B10\",\"beat:11\":\"B11\",\"beat:2\":\"B2\",\"beat:3\":\"B3\",\"beat:4\":\"B4\",\"beat:5\":\"B5\",\"beat:6\":\"B6\",\"beat:7\":\"B7\",\"beat:8\":\"B8\",\"beat:9\":\"B9\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"B1\",\"B2\",\"B3\",\"B4\",\"B5\",\"B6\",\"B7\",\"B8\",\"B9\",\"B10\",\"B11\"],\"normalization_policy\":\"one-to-one aliases only\"},\"schema_version\":\"director_source_ref_contract_v2\",\"syntax\":\"<type>:<authoritative_id>\",\"types\":[\"beat\",\"fact\",\"prop\",\"character\",\"location\"]}},\"scene_inputs\":{\"allowed_source_refs\":[\"beat:B1\",\"beat:B2\",\"beat:B3\",\"beat:B4\",\"beat:B5\",\"beat:B6\",\"beat:B7\",\"beat:B8\",\"beat:B9\",\"beat:B10\",\"beat:B11\",\"character:17\",\"character:18\"],\"scene_id\":\"book990402:e2:回声照相馆\",\"source_authority\":{\"Character\":\"approved_record.evidence.blocking.participants\",\"DirectorTreatment\":\"approved_record.evidence.treatment\",\"FactSnapshot\":\"approved_record.contract.immutable_projection.facts\",\"Location\":\"absent; N/A required\",\"Prop\":\"absent; N/A required\",\"SceneBlocking\":\"approved_record.evidence.blocking\",\"ScriptIR\":\"approved_record.treatment.beat_map + scene metadata\"},\"strategy_contract\":{\"beat_ids\":[\"B1\",\"B2\",\"B3\",\"B4\",\"B5\",\"B6\",\"B7\",\"B8\",\"B9\",\"B10\",\"B11\"],\"character_ids\":[\"17\",\"18\"],\"fact_ids\":[],\"scene_id\":\"book990402:e2:回声照相馆\"}},\"semantic_spec\":{\"canonical_schema_version\":\"director_scene_strategy_v3\",\"compiler_version\":\"director_scene_strategy_ir_compiler_v2\",\"epistemic_boundary\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"epistemic_types\":[\"SOURCE_FACT\",\"DIRECTOR_INFERENCE\",\"AUDIENCE_SUSPICION\",\"TREATMENT_INTENT\",\"BLOCKING_FACT\",\"DIRECTOR_CREATIVE_DECISION\"],\"flexible_list_fields\":[\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"],\"forbidden_model_fields\":[\"creative_core_fingerprint\",\"cv_score\",\"dq_score\",\"duration_ladder\",\"fact_claim\",\"patches\",\"plan_shot_id\",\"quality_score\",\"repair\",\"shot_ids\",\"shot_plan\",\"shotplan\",\"shots\",\"source_fact\",\"source_facts\",\"strategy_fingerprint\"],\"information_fields\":[\"reveal_refs\",\"hint_refs\",\"withhold_refs\",\"audience_suspicions\",\"director_inferences\"],\"information_policy\":{\"audience_suspicions\":\"interpretive claims with support_refs\",\"director_inferences\":\"directing interpretations with support_refs and purpose\",\"hint_refs\":\"already available evidence only\",\"reference_first\":true,\"reveal_refs\":\"source refs visible by this phase\",\"withhold_refs\":\"future evidence allowed\"},\"model_ir_schema_version\":\"director_scene_strategy_ir_v2\",\"na_rules\":{\"prop_visual_strategy\":\"N/A or null normalizes to [] when no prop evidence exists\",\"source_refs\":\"never invent IDs\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"maximum\":6,\"minimum\":2,\"recommended\":\"3-5\"},\"phase_fields\":[\"phase_id\",\"beat_ids\",\"dramatic_function\",\"audience_state\",\"emotion\",\"power\",\"performance\",\"edit\",\"visual\",\"information\"],\"power_center_types\":[\"CHARACTER\",\"SHARED\",\"RELATIONSHIP\",\"INFORMATION\",\"OBJECT\",\"ENVIRONMENT\",\"NONE\"],\"schema_version\":\"director_scene_strategy_semantic_spec_v2\",\"top_level_fields\":[\"schema_version\",\"scene_id\",\"dramatic_objective\",\"scene_question\",\"strategy_summary\",\"visual_thesis\",\"scene_phases\",\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"]}}\n[/DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\nReturn one complete director_scene_strategy_ir_v2 JSON object now.",
+        "provider_contract": {
+          "schema_version": "director_scene_strategy_ir_v2",
+          "scene_id": "book990402:e2:回声照相馆",
+          "allowed_beat_ids": [
+            "B1",
+            "B2",
+            "B3",
+            "B4",
+            "B5",
+            "B6",
+            "B7",
+            "B8",
+            "B9",
+            "B10",
+            "B11"
+          ],
+          "allowed_character_ids": [
+            "17",
+            "18"
+          ],
+          "source_ref_contract": {
+            "schema_version": "director_source_ref_contract_v2",
+            "allowed_ids": {
+              "beat": [
+                "B1",
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7",
+                "B8",
+                "B9",
+                "B10",
+                "B11"
+              ],
+              "fact": [],
+              "character": [
+                "17",
+                "18"
+              ],
+              "prop": [],
+              "location": []
+            },
+            "allowed_source_refs": [
+              "beat:B1",
+              "beat:B2",
+              "beat:B3",
+              "beat:B4",
+              "beat:B5",
+              "beat:B6",
+              "beat:B7",
+              "beat:B8",
+              "beat:B9",
+              "beat:B10",
+              "beat:B11",
+              "character:17",
+              "character:18"
+            ],
+            "syntax": "<type>:<authoritative_id>",
+            "beat_alias_table": {
+              "canonical_beat_ids": [
+                "B1",
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7",
+                "B8",
+                "B9",
+                "B10",
+                "B11"
+              ],
+              "aliases": {
+                "01": "B1",
+                "02": "B2",
+                "03": "B3",
+                "04": "B4",
+                "05": "B5",
+                "06": "B6",
+                "07": "B7",
+                "08": "B8",
+                "09": "B9",
+                "1": "B1",
+                "10": "B10",
+                "11": "B11",
+                "2": "B2",
+                "3": "B3",
+                "4": "B4",
+                "5": "B5",
+                "6": "B6",
+                "7": "B7",
+                "8": "B8",
+                "9": "B9",
+                "B01": "B1",
+                "B02": "B2",
+                "B03": "B3",
+                "B04": "B4",
+                "B05": "B5",
+                "B06": "B6",
+                "B07": "B7",
+                "B08": "B8",
+                "B09": "B9",
+                "B1": "B1",
+                "B10": "B10",
+                "B11": "B11",
+                "B2": "B2",
+                "B3": "B3",
+                "B4": "B4",
+                "B5": "B5",
+                "B6": "B6",
+                "B7": "B7",
+                "B8": "B8",
+                "B9": "B9",
+                "b01": "B1",
+                "b02": "B2",
+                "b03": "B3",
+                "b04": "B4",
+                "b05": "B5",
+                "b06": "B6",
+                "b07": "B7",
+                "b08": "B8",
+                "b09": "B9",
+                "b1": "B1",
+                "b10": "B10",
+                "b11": "B11",
+                "b2": "B2",
+                "b3": "B3",
+                "b4": "B4",
+                "b5": "B5",
+                "b6": "B6",
+                "b7": "B7",
+                "b8": "B8",
+                "b9": "B9",
+                "beat:1": "B1",
+                "beat:10": "B10",
+                "beat:11": "B11",
+                "beat:2": "B2",
+                "beat:3": "B3",
+                "beat:4": "B4",
+                "beat:5": "B5",
+                "beat:6": "B6",
+                "beat:7": "B7",
+                "beat:8": "B8",
+                "beat:9": "B9"
+              },
+              "ambiguous_aliases": [],
+              "normalization_policy": "one-to-one aliases only"
+            },
+            "types": [
+              "beat",
+              "fact",
+              "prop",
+              "character",
+              "location"
+            ]
+          },
+          "allowed_source_refs": [
+            "beat:B1",
+            "beat:B2",
+            "beat:B3",
+            "beat:B4",
+            "beat:B5",
+            "beat:B6",
+            "beat:B7",
+            "beat:B8",
+            "beat:B9",
+            "beat:B10",
+            "beat:B11",
+            "character:17",
+            "character:18"
+          ],
+          "phase_constraints": {
+            "min": 2,
+            "max": 6,
+            "recommended": "3-5",
+            "beat_assignment": "exactly_once"
+          },
+          "flexible_shape_policy": {
+            "spatial_expression": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "prop_visual_strategy": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "shot_architecture_guidance": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "must_preserve": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "must_avoid": [
+              "string",
+              "string[]",
+              "null"
+            ],
+            "creative_risks": [
+              "string",
+              "string[]",
+              "null"
+            ]
+          },
+          "information_schema": {
+            "reveal_refs": "source_ref[]",
+            "hint_refs": "source_ref[]",
+            "withhold_refs": "source_ref[]",
+            "audience_suspicions": "claim[]",
+            "director_inferences": "claim[]"
+          },
+          "epistemic_rules": {
+            "SOURCE_FACT": "authoritative upstream only",
+            "DIRECTOR_INFERENCE": "director interpretation, never a fact",
+            "AUDIENCE_SUSPICION": "audience hypothesis, never a fact",
+            "TREATMENT_INTENT": "approved intent",
+            "BLOCKING_FACT": "approved spatial truth",
+            "DIRECTOR_CREATIVE_DECISION": "staging decision"
+          },
+          "minimal_skeleton": {
+            "schema_version": "",
+            "scene_id": "",
+            "dramatic_objective": "",
+            "scene_question": "",
+            "strategy_summary": "",
+            "visual_thesis": "",
+            "spatial_expression": [],
+            "prop_visual_strategy": [],
+            "shot_architecture_guidance": [],
+            "must_preserve": [],
+            "must_avoid": [],
+            "creative_risks": [],
+            "scene_phases": [
+              {
+                "phase_id": "P01",
+                "beat_ids": [],
+                "dramatic_function": "",
+                "audience_state": {
+                  "knows": [],
+                  "suspects": [],
+                  "withholds": [],
+                  "question_shift": ""
+                },
+                "emotion": {
+                  "state": "",
+                  "trigger": "",
+                  "transition_reason": "",
+                  "intensity_hint": null
+                },
+                "power": {
+                  "center_type": "NONE",
+                  "center_ref": null,
+                  "description": "",
+                  "shift": ""
+                },
+                "performance": [
+                  {
+                    "character_id": "17",
+                    "objective": "",
+                    "tactic": "",
+                    "visible_behavior": "",
+                    "turning_point": false
+                  }
+                ],
+                "edit": {
+                  "tempo": "",
+                  "hold_logic": "",
+                  "cut_logic": "",
+                  "transition_motivation": ""
+                },
+                "visual": {
+                  "visual_grammar": "",
+                  "camera_rule": "",
+                  "composition_rule": "",
+                  "movement_condition": ""
+                },
+                "information": {
+                  "reveal_refs": [],
+                  "hint_refs": [],
+                  "withhold_refs": [],
+                  "audience_suspicions": [],
+                  "director_inferences": []
+                }
+              }
+            ]
+          }
+        },
+        "system_prompt_fingerprint": "e092f96b2ac29bea2c4e63abcb85ff5dd8d7d0f918c05c7ca60b36bc3f5f1929",
+        "schema_fingerprint": "37b686c42b3cf5f882bb30e987594ada8c2f7908026bbc06de4b14a9146a2b78",
+        "scene_input_fingerprint": "099bccc453d74edc8de37f0c792245f4bf356717010a863620ad8bc2f41fb97d",
+        "request_fingerprint": "badb13dfcee432ae70c494e2380e1c9092b7dc35ca277040584755f34cf3b7a8",
+        "model_snapshot": {
+          "profile_id": "",
+          "provider": "",
+          "model_name": "mimo-v2.5",
+          "parameters": {}
+        }
+      }
+    }
+  ],
+  "provider_calls": 0
+}
