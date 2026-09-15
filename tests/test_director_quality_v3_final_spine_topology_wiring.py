@@ -35,6 +35,40 @@ def test_allowed_segment_refs_are_read_from_actual_spine_not_phase_count():
         allowed_segment_refs_from_spine({"segments": []})
 
 
+def test_allowed_segment_refs_reject_phase_ids_and_noncanonical_labels():
+    with pytest.raises(ValueError):
+        allowed_segment_refs_from_spine({"segments": [{"segment_key": "P01"}]})
+    with pytest.raises(ValueError):
+        allowed_segment_refs_from_spine({"segments": [{"segment_key": "entrance"}]})
+
+
+def test_preserve_coverage_is_structural_and_does_not_need_prose_repetition():
+    from core.visual_editorial_spine import validate_spine
+
+    scene = {"scene_id": "s1", "beats": [{"beat_id": "1"}, {"beat_id": "2"}, {"beat_id": "3"}]}
+    strategy = {"strategy_fingerprint": "fp", "scene_phases": [{"phase_id": "P01", "beat_ids": ["1"]}], "must_avoid": []}
+    spine = {"schema_version": "visual_editorial_spine_ir_v1", "scene_id": "s1", "strategy_fingerprint": "fp", "segments": [{"segment_key": "SEG01", "phase_ids": ["P01"], "beat_refs": ["beat:1", "beat:2", "beat:3"], "dramatic_function": "MP01 is covered structurally", "audience_attention": "a", "performance_pressure": "p", "information_change": "i", "spatial_focus": "s", "visual_motif": "m", "editorial_rhythm": "r", "entry_condition": "e", "exit_condition": "x"}]}
+    trace = {"schema_version": "must_preserve_trace_v1", "scene_id": "s1", "constraints": [{"constraint_id": "MP01", "description": "long prose never repeated", "supporting_beat_refs": ["beat:3"], "supporting_event_keys": [], "resolution_status": "RESOLVED"}]}
+    result = validate_spine(spine, scene=scene, strategy=strategy, must_preserve_trace=trace)
+    assert result["status"] == "PASS"
+
+
+def test_preserve_coverage_reports_uncovered_and_unresolved_distinctly():
+    from core.visual_editorial_spine import validate_spine
+
+    scene = {"scene_id": "s1", "beats": [{"beat_id": "1"}, {"beat_id": "2"}]}
+    strategy = {"strategy_fingerprint": "fp", "scene_phases": [{"phase_id": "P01", "beat_ids": ["1"]}], "must_avoid": []}
+    spine = {"schema_version": "visual_editorial_spine_ir_v1", "scene_id": "s1", "strategy_fingerprint": "fp", "segments": [{"segment_key": "SEG01", "phase_ids": ["P01"], "beat_refs": ["beat:1", "beat:2"], "dramatic_function": "d", "audience_attention": "a", "performance_pressure": "p", "information_change": "i", "spatial_focus": "s", "visual_motif": "m", "editorial_rhythm": "r", "entry_condition": "e", "exit_condition": "x"}]}
+    trace = {"schema_version": "must_preserve_trace_v1", "scene_id": "s1", "constraints": [
+        {"constraint_id": "MP01", "description": "missing beat", "supporting_beat_refs": ["beat:9"], "supporting_event_keys": [], "resolution_status": "RESOLVED"},
+        {"constraint_id": "MP02", "description": "unresolved source", "supporting_beat_refs": [], "supporting_event_keys": [], "resolution_status": "PRESERVE_TRACE_UNRESOLVED"},
+    ]}
+    result = validate_spine(spine, scene=scene, strategy=strategy, must_preserve_trace=trace)
+    codes = {error["code"] for error in result["hard_errors"]}
+    assert "SPINE_MUST_PRESERVE_UNCOVERED" in codes
+    assert "PRESERVE_TRACE_UNRESOLVED" in codes
+
+
 def test_skeleton_request_never_uses_phase_ids_as_segment_refs():
     request = build_skeleton_request(
         {"scene_id": "s1", "inputs": {"scene_blocking": {}, "scene": {}}},

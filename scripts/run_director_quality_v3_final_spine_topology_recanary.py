@@ -10,6 +10,7 @@ import argparse
 import copy
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -79,7 +80,10 @@ def allowed_segment_refs_from_spine(spine_ir: dict[str, Any]) -> list[str]:
     """Derive segment refs only from an actual canonical Spine."""
     segments = _l(_d(spine_ir).get("segments"))
     refs = [_t(_d(segment).get("segment_key")) for segment in segments]
-    if not refs or any(not ref for ref in refs) or len(set(refs)) != len(refs):
+    # Canonical Spine segment keys are the only provider-visible topology
+    # references.  Reject phase ids (Pxx) and arbitrary labels at the
+    # boundary instead of letting them leak into a Skeleton request.
+    if not refs or any(not re.fullmatch(r"SEG\d{2,}", ref) for ref in refs) or len(set(refs)) != len(refs):
         raise ValueError("canonical spine has no valid unique segment refs")
     return refs
 
