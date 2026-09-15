@@ -1,0 +1,60 @@
+{
+  "semantic_diffs": [
+    {
+      "path": "scene_phases[P02].information.audience_suspicions[0].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:6",
+        "beat:10"
+      ],
+      "revised_value": [
+        "beat:6"
+      ],
+      "added_refs": [],
+      "removed_refs": [
+        "beat:10"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    }
+  ],
+  "changed_paths": [
+    "scene_phases[P02].information.audience_suspicions[0].support_refs"
+  ],
+  "directly_allowed_changes": [
+    "scene_phases[P02].information.audience_suspicions[0].support_refs"
+  ],
+  "dependency_allowed_changes": [],
+  "no_semantic_change": [],
+  "forbidden_changes": [],
+  "scope_status": "PASS",
+  "field_semantics_registry": {
+    "scene_phases": "ORDERED",
+    "scene_phases[*].beat_ids": "ORDERED",
+    "scene_phases[*].performance": "ORDERED",
+    "scene_phases[*].information.reveal_refs": "SET_LIKE",
+    "scene_phases[*].information.hint_refs": "SET_LIKE",
+    "scene_phases[*].information.withhold_refs": "SET_LIKE",
+    "scene_phases[*].information.audience_suspicions[*].support_refs": "SET_LIKE",
+    "scene_phases[*].information.director_inferences[*].support_refs": "SET_LIKE"
+  },
+  "dependency_closure": {
+    "schema_version": "repair_dependency_closure_v2",
+    "scene_id": "book990402:e3:暗房惊魂",
+    "dependencies": [],
+    "dynamic_scope_expansion": false,
+    "direction": "narrow_or_synchronize_only"
+  },
+  "allowed_paths": [
+    "scene_phases[P02].information.audience_suspicions[*].claim",
+    "scene_phases[P02].information.audience_suspicions[*].support_refs",
+    "scene_phases[P02].information.director_inferences[*].claim",
+    "scene_phases[P02].information.director_inferences[*].support_refs"
+  ]
+}

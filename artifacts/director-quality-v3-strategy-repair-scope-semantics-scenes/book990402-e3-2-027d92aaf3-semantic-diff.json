@@ -1,0 +1,456 @@
+{
+  "scene_id": "book990402:e3:暗房惊魂（2）",
+  "diffs": [
+    {
+      "path": "scene_phases[P01].information.audience_suspicions[0].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:2",
+        "character:20"
+      ],
+      "revised_value": [
+        "beat:2",
+        "character:19"
+      ],
+      "added_refs": [
+        "character:19"
+      ],
+      "removed_refs": [
+        "character:20"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS",
+      "dependency_validation": {
+        "identity_checks": [
+          {
+            "base_ref": "character:20",
+            "revised_ref": "character:19",
+            "classification": "IDENTITY_DEPENDENCY_PASS",
+            "reason": "revised_ref_restores_authoritative_identity",
+            "base_bound_name": "顾沉",
+            "revised_bound_name": "林晚",
+            "semantic_subject": "林晚"
+          }
+        ]
+      }
+    },
+    {
+      "path": "scene_phases[P01].information.director_inferences[0].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:1",
+        "character:19"
+      ],
+      "revised_value": [
+        "beat:1",
+        "character:20"
+      ],
+      "added_refs": [
+        "character:20"
+      ],
+      "removed_refs": [
+        "character:19"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS",
+      "dependency_validation": {
+        "identity_checks": [
+          {
+            "base_ref": "character:19",
+            "revised_ref": "character:20",
+            "classification": "IDENTITY_DEPENDENCY_PASS",
+            "reason": "revised_ref_restores_authoritative_identity",
+            "base_bound_name": "林晚",
+            "revised_bound_name": "顾沉",
+            "semantic_subject": "顾沉"
+          }
+        ]
+      }
+    },
+    {
+      "path": "scene_phases[P01].information.hint_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "character:20"
+      ],
+      "revised_value": [
+        "character:19"
+      ],
+      "added_refs": [
+        "character:19"
+      ],
+      "removed_refs": [
+        "character:20"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS",
+      "dependency_validation": {
+        "identity_checks": [
+          {
+            "base_ref": "character:20",
+            "revised_ref": "character:19",
+            "classification": "IDENTITY_DEPENDENCY_PASS",
+            "reason": "revised_ref_restores_authoritative_identity",
+            "base_bound_name": "顾沉",
+            "revised_bound_name": "林晚",
+            "semantic_subject": "林晚"
+          }
+        ]
+      }
+    },
+    {
+      "path": "scene_phases[P01].information.reveal_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:1",
+        "character:19",
+        "character:20"
+      ],
+      "revised_value": [
+        "beat:1",
+        "character:20",
+        "character:19"
+      ],
+      "added_refs": [],
+      "removed_refs": [],
+      "same_refs_reordered": true,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": false,
+      "reordered_only": true,
+      "classification": "NO_SEMANTIC_CHANGE",
+      "scope_classification": "NO_SEMANTIC_CHANGE"
+    },
+    {
+      "path": "scene_phases[P01].performance[0].character_id",
+      "field_semantics": "UNKNOWN",
+      "base_value": "19",
+      "revised_value": "20",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].performance[1].character_id",
+      "field_semantics": "UNKNOWN",
+      "base_value": "20",
+      "revised_value": "19",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].power.center_ref",
+      "field_semantics": "UNKNOWN",
+      "base_value": "character:19",
+      "revised_value": "character:20",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].information.audience_suspicions[0].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:6",
+        "character:20"
+      ],
+      "revised_value": [
+        "beat:6",
+        "character:19"
+      ],
+      "added_refs": [
+        "character:19"
+      ],
+      "removed_refs": [
+        "character:20"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS",
+      "dependency_validation": {
+        "identity_checks": [
+          {
+            "base_ref": "character:20",
+            "revised_ref": "character:19",
+            "classification": "IDENTITY_DEPENDENCY_PASS",
+            "reason": "revised_ref_restores_authoritative_identity",
+            "base_bound_name": "顾沉",
+            "revised_bound_name": "林晚",
+            "semantic_subject": "林晚"
+          }
+        ]
+      }
+    },
+    {
+      "path": "scene_phases[P02].information.director_inferences[0].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:3",
+        "beat:4",
+        "beat:5",
+        "beat:6",
+        "character:19"
+      ],
+      "revised_value": [
+        "beat:3",
+        "beat:4",
+        "beat:5",
+        "beat:6",
+        "character:20"
+      ],
+      "added_refs": [
+        "character:20"
+      ],
+      "removed_refs": [
+        "character:19"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS",
+      "dependency_validation": {
+        "identity_checks": [
+          {
+            "base_ref": "character:19",
+            "revised_ref": "character:20",
+            "classification": "IDENTITY_DEPENDENCY_PASS",
+            "reason": "revised_ref_restores_authoritative_identity",
+            "base_bound_name": "林晚",
+            "revised_bound_name": "顾沉",
+            "semantic_subject": "顾沉"
+          }
+        ]
+      }
+    },
+    {
+      "path": "scene_phases[P02].information.hint_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:7"
+      ],
+      "revised_value": [],
+      "added_refs": [],
+      "removed_refs": [
+        "beat:7"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].performance[0].character_id",
+      "field_semantics": "UNKNOWN",
+      "base_value": "19",
+      "revised_value": "20",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].performance[1].character_id",
+      "field_semantics": "UNKNOWN",
+      "base_value": "20",
+      "revised_value": "19",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P03].information.audience_suspicions[1].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:10",
+        "character:20"
+      ],
+      "revised_value": [
+        "beat:10",
+        "character:19"
+      ],
+      "added_refs": [
+        "character:19"
+      ],
+      "removed_refs": [
+        "character:20"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS",
+      "dependency_validation": {
+        "identity_checks": [
+          {
+            "base_ref": "character:20",
+            "revised_ref": "character:19",
+            "classification": "IDENTITY_DEPENDENCY_PASS",
+            "reason": "revised_ref_restores_authoritative_identity",
+            "base_bound_name": "顾沉",
+            "revised_bound_name": "林晚",
+            "semantic_subject": "林晚"
+          }
+        ]
+      }
+    },
+    {
+      "path": "scene_phases[P03].information.director_inferences[0].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:10",
+        "character:19"
+      ],
+      "revised_value": [
+        "beat:10",
+        "character:20"
+      ],
+      "added_refs": [
+        "character:20"
+      ],
+      "removed_refs": [
+        "character:19"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS",
+      "dependency_validation": {
+        "identity_checks": [
+          {
+            "base_ref": "character:19",
+            "revised_ref": "character:20",
+            "classification": "IDENTITY_DEPENDENCY_PASS",
+            "reason": "revised_ref_restores_authoritative_identity",
+            "base_bound_name": "林晚",
+            "revised_bound_name": "顾沉",
+            "semantic_subject": "顾沉"
+          }
+        ]
+      }
+    },
+    {
+      "path": "scene_phases[P03].information.director_inferences[1].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:10",
+        "character:20"
+      ],
+      "revised_value": [
+        "beat:10",
+        "character:19"
+      ],
+      "added_refs": [
+        "character:19"
+      ],
+      "removed_refs": [
+        "character:20"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS",
+      "dependency_validation": {
+        "identity_checks": [
+          {
+            "base_ref": "character:20",
+            "revised_ref": "character:19",
+            "classification": "IDENTITY_DEPENDENCY_PASS",
+            "reason": "revised_ref_restores_authoritative_identity",
+            "base_bound_name": "顾沉",
+            "revised_bound_name": "林晚",
+            "semantic_subject": "林晚"
+          }
+        ]
+      }
+    },
+    {
+      "path": "scene_phases[P03].performance[0].character_id",
+      "field_semantics": "UNKNOWN",
+      "base_value": "19",
+      "revised_value": "20",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P03].performance[1].character_id",
+      "field_semantics": "UNKNOWN",
+      "base_value": "20",
+      "revised_value": "19",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    }
+  ]
+}

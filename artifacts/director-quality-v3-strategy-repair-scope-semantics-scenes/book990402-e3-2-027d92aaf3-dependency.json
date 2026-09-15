@@ -1,0 +1,109 @@
+{
+  "status": "PASS",
+  "identity_checks": [
+    {
+      "identity_checks": [
+        {
+          "base_ref": "character:20",
+          "revised_ref": "character:19",
+          "classification": "IDENTITY_DEPENDENCY_PASS",
+          "reason": "revised_ref_restores_authoritative_identity",
+          "base_bound_name": "顾沉",
+          "revised_bound_name": "林晚",
+          "semantic_subject": "林晚"
+        }
+      ]
+    },
+    {
+      "identity_checks": [
+        {
+          "base_ref": "character:19",
+          "revised_ref": "character:20",
+          "classification": "IDENTITY_DEPENDENCY_PASS",
+          "reason": "revised_ref_restores_authoritative_identity",
+          "base_bound_name": "林晚",
+          "revised_bound_name": "顾沉",
+          "semantic_subject": "顾沉"
+        }
+      ]
+    },
+    {
+      "identity_checks": [
+        {
+          "base_ref": "character:20",
+          "revised_ref": "character:19",
+          "classification": "IDENTITY_DEPENDENCY_PASS",
+          "reason": "revised_ref_restores_authoritative_identity",
+          "base_bound_name": "顾沉",
+          "revised_bound_name": "林晚",
+          "semantic_subject": "林晚"
+        }
+      ]
+    },
+    {
+      "identity_checks": [
+        {
+          "base_ref": "character:20",
+          "revised_ref": "character:19",
+          "classification": "IDENTITY_DEPENDENCY_PASS",
+          "reason": "revised_ref_restores_authoritative_identity",
+          "base_bound_name": "顾沉",
+          "revised_bound_name": "林晚",
+          "semantic_subject": "林晚"
+        }
+      ]
+    },
+    {
+      "identity_checks": [
+        {
+          "base_ref": "character:19",
+          "revised_ref": "character:20",
+          "classification": "IDENTITY_DEPENDENCY_PASS",
+          "reason": "revised_ref_restores_authoritative_identity",
+          "base_bound_name": "林晚",
+          "revised_bound_name": "顾沉",
+          "semantic_subject": "顾沉"
+        }
+      ]
+    },
+    {
+      "identity_checks": [
+        {
+          "base_ref": "character:20",
+          "revised_ref": "character:19",
+          "classification": "IDENTITY_DEPENDENCY_PASS",
+          "reason": "revised_ref_restores_authoritative_identity",
+          "base_bound_name": "顾沉",
+          "revised_bound_name": "林晚",
+          "semantic_subject": "林晚"
+        }
+      ]
+    },
+    {
+      "identity_checks": [
+        {
+          "base_ref": "character:19",
+          "revised_ref": "character:20",
+          "classification": "IDENTITY_DEPENDENCY_PASS",
+          "reason": "revised_ref_restores_authoritative_identity",
+          "base_bound_name": "林晚",
+          "revised_bound_name": "顾沉",
+          "semantic_subject": "顾沉"
+        }
+      ]
+    },
+    {
+      "identity_checks": [
+        {
+          "base_ref": "character:20",
+          "revised_ref": "character:19",
+          "classification": "IDENTITY_DEPENDENCY_PASS",
+          "reason": "revised_ref_restores_authoritative_identity",
+          "base_bound_name": "顾沉",
+          "revised_bound_name": "林晚",
+          "semantic_subject": "林晚"
+        }
+      ]
+    }
+  ]
+}

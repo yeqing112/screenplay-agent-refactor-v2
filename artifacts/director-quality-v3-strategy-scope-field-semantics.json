@@ -1,0 +1,15 @@
+{
+  "schema_version": "strategy_scope_field_semantics_v1",
+  "registry": {
+    "scene_phases": "ORDERED",
+    "scene_phases[*].beat_ids": "ORDERED",
+    "scene_phases[*].performance": "ORDERED",
+    "scene_phases[*].information.reveal_refs": "SET_LIKE",
+    "scene_phases[*].information.hint_refs": "SET_LIKE",
+    "scene_phases[*].information.withhold_refs": "SET_LIKE",
+    "scene_phases[*].information.audience_suspicions[*].support_refs": "SET_LIKE",
+    "scene_phases[*].information.director_inferences[*].support_refs": "SET_LIKE"
+  },
+  "matcher": "segment-aware",
+  "global_array_sort": false
+}

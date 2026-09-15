@@ -1,0 +1,11 @@
+{
+  "status": "APPROVED",
+  "approval": {
+    "canonical_valid": true,
+    "future_support": 0,
+    "future_hint": 0,
+    "future_reveal": 0,
+    "hard_blockers": []
+  },
+  "canonical_valid": true
+}

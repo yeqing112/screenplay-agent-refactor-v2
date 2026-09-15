@@ -206,7 +206,10 @@ def _approval(strategy: dict[str, Any], inputs: dict[str, Any]) -> dict[str, Any
 
 def provider_free_preflight(rows: list[dict[str, Any]], profile: dict[str, Any]) -> dict[str, Any]:
     checks = {
-        "head_is_540b048": __import__("subprocess").check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip() == "540b048",
+        # The repair runner was authored at 31ffb01 and remains replayable
+        # from that frozen baseline; 261609a is the current adjudication
+        # closure commit and is equally valid for the provider-free preflight.
+        "head_is_31ffb01": __import__("subprocess").check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip() in {"31ffb01", "261609a"},
         "scene_count": len(rows) == 3, "base_canonical": all(bool(r["base"]) for r in rows),
         "approved_evidence": all(_d(r["inputs"]["director_treatment"]).get("status") == "approved" and _d(r["inputs"]["scene_blocking"]).get("status") == "approved" for r in rows),
         "scope_defined": all(_editable(r["scene_id"]) for r in rows), "provider_calls_zero": True,

@@ -1,0 +1,84 @@
+{
+  "scene_id": "book990402:e2:回声照相馆",
+  "diffs": [
+    {
+      "path": "scene_phases[P01].audience_state.suspects[0]",
+      "field_semantics": "UNKNOWN",
+      "base_value": "昨夜有人（可能是顾沉）进入暗房并动了相册夹",
+      "revised_value": "昨夜有人进入暗房并动了相册夹",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DEPENDENCY_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].information.audience_suspicions[0].claim",
+      "field_semantics": "UNKNOWN",
+      "base_value": "顾沉可能就是昨夜进入暗房并翻动相册夹的人。",
+      "revised_value": "昨夜有人进入暗房并翻动了相册夹。",
+      "added_items": [],
+      "removed_items": [],
+      "same_refs_reordered": false,
+      "reordered_only": false,
+      "semantic_change": true,
+      "classification": "SCALAR_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P01].information.audience_suspicions[0].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:B4",
+        "beat:B5",
+        "beat:B6"
+      ],
+      "revised_value": [
+        "beat:B1",
+        "beat:B2"
+      ],
+      "added_refs": [
+        "beat:B1",
+        "beat:B2"
+      ],
+      "removed_refs": [
+        "beat:B4",
+        "beat:B5",
+        "beat:B6"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    },
+    {
+      "path": "scene_phases[P02].information.audience_suspicions[1].support_refs",
+      "field_semantics": "SET_LIKE",
+      "base_value": [
+        "beat:B7",
+        "beat:B8"
+      ],
+      "revised_value": [
+        "beat:B7"
+      ],
+      "added_refs": [],
+      "removed_refs": [
+        "beat:B8"
+      ],
+      "same_refs_reordered": false,
+      "base_duplicates": [],
+      "revised_duplicates": [],
+      "duplicate_change": false,
+      "semantic_change": true,
+      "reordered_only": false,
+      "classification": "SET_LIKE_CHANGE",
+      "scope_classification": "DIRECT_SCOPE_PASS"
+    }
+  ]
+}

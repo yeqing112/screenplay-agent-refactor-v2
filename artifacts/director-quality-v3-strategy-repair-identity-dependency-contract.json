@@ -1,0 +1,13 @@
+{
+  "schema_version": "strategy_repair_identity_dependency_v1",
+  "authoritative_identity_required": true,
+  "allowed_reference_fields": [
+    "power.center_ref",
+    "hint_refs",
+    "reveal_refs",
+    "audience_suspicions[*].support_refs",
+    "director_inferences[*].support_refs"
+  ],
+  "unknown_subject": "DEPENDENCY_REVIEW_REQUIRED",
+  "dynamic_scope_expansion": false
+}

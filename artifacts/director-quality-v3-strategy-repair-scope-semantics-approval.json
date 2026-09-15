@@ -1,0 +1,32 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "status": "APPROVED",
+    "approval": {
+      "canonical_valid": true,
+      "future_support": 0,
+      "future_hint": 0,
+      "future_reveal": 0,
+      "hard_blockers": []
+    }
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "status": "APPROVED",
+    "approval": {
+      "canonical_valid": true,
+      "future_support": 0,
+      "future_hint": 0,
+      "future_reveal": 0,
+      "hard_blockers": []
+    }
+  },
+  "book990402:e2:回声照相馆": {
+    "status": "APPROVED",
+    "approval": {
+      "canonical_valid": true,
+      "future_support": 0,
+      "future_hint": 0,
+      "future_reveal": 0,
+      "hard_blockers": []
+    }
+  }
+}

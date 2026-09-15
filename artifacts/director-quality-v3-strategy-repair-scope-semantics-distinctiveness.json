@@ -1,0 +1,61 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-distinctiveness-v1",
+  "expected_scene_count": 3,
+  "expected_pair_count": 3,
+  "canonical_scene_count": 3,
+  "pair_count": 3,
+  "comparisons": [
+    {
+      "scene_a": "book990402:e3:暗房惊魂",
+      "scene_b": "book990402:e3:暗房惊魂（2）",
+      "creative_core_fingerprint_a": "b683d561e6bbdb720211497f3448347d9565e32edf3cf50dfb121f7cd30135ea",
+      "creative_core_fingerprint_b": "e44ecb51f48193677c0ea56a1145851ce1581a02c651f957c41b49c1e7c47794",
+      "exact_core_field_overlap": [],
+      "normalized_text_similarity": 0.1283,
+      "phase_structure_similarity": {
+        "count_a": 3,
+        "count_b": 3
+      },
+      "scene_specific_evidence_overlap": [],
+      "provider_fingerprint_ignored": true,
+      "status": "PASS",
+      "issue_code": ""
+    },
+    {
+      "scene_a": "book990402:e3:暗房惊魂",
+      "scene_b": "book990402:e2:回声照相馆",
+      "creative_core_fingerprint_a": "b683d561e6bbdb720211497f3448347d9565e32edf3cf50dfb121f7cd30135ea",
+      "creative_core_fingerprint_b": "7734ee069b4a636c25b05d52bb1636aac0f71c4d5273a6a2c1694741de63c0d7",
+      "exact_core_field_overlap": [],
+      "normalized_text_similarity": 0.0266,
+      "phase_structure_similarity": {
+        "count_a": 3,
+        "count_b": 3
+      },
+      "scene_specific_evidence_overlap": [],
+      "provider_fingerprint_ignored": true,
+      "status": "PASS",
+      "issue_code": ""
+    },
+    {
+      "scene_a": "book990402:e3:暗房惊魂（2）",
+      "scene_b": "book990402:e2:回声照相馆",
+      "creative_core_fingerprint_a": "e44ecb51f48193677c0ea56a1145851ce1581a02c651f957c41b49c1e7c47794",
+      "creative_core_fingerprint_b": "7734ee069b4a636c25b05d52bb1636aac0f71c4d5273a6a2c1694741de63c0d7",
+      "exact_core_field_overlap": [],
+      "normalized_text_similarity": 0.0309,
+      "phase_structure_similarity": {
+        "count_a": 3,
+        "count_b": 3
+      },
+      "scene_specific_evidence_overlap": [],
+      "provider_fingerprint_ignored": true,
+      "status": "PASS",
+      "issue_code": ""
+    }
+  ],
+  "hard_failure": false,
+  "all_pairs_checked": true,
+  "status": "DISTINCTIVENESS_EVALUATED",
+  "policy": "program-owned creative_core_fingerprint only"
+}
