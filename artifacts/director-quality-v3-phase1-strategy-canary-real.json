@@ -1,0 +1,3066 @@
+{
+  "schema_version": "director-quality-v3-phase1-strategy-canary-real-v1",
+  "pilot_mode": "real_mimo_scene_strategy_only",
+  "generated_at": "2026-09-15T00:06:10.878023+00:00",
+  "status": "SCENE_DIRECTOR_STRATEGY_CANARY_FAILED",
+  "model": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5"
+  },
+  "scene_count": 3,
+  "protocol_gate": {
+    "final_schema_valid": 0,
+    "required": 3,
+    "first_pass_schema_valid": 0,
+    "first_pass_required_minimum": 2,
+    "unknown_id_count": 1,
+    "fact_invention_count": 0,
+    "strategy_layer_leakage_count": 0
+  },
+  "outcomes": {
+    "book990402:e3:暗房惊魂": "STRATEGY_INVALID",
+    "book990402:e3:暗房惊魂（2）": "STRATEGY_INVALID",
+    "book990402:e2:回声照相馆": "STRATEGY_INVALID"
+  },
+  "distinctiveness": {
+    "schema_version": "director-quality-v3-phase1-distinctiveness-v1",
+    "comparisons": [
+      {
+        "scene_a": "book990402:e3:暗房惊魂",
+        "scene_b": "book990402:e3:暗房惊魂（2）",
+        "exact_core_fields": [],
+        "jaccard_token_similarity": 0.0208,
+        "status": "HARD_FAILURE",
+        "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+      },
+      {
+        "scene_a": "book990402:e3:暗房惊魂",
+        "scene_b": "book990402:e2:回声照相馆",
+        "exact_core_fields": [],
+        "jaccard_token_similarity": 0.0278,
+        "status": "HARD_FAILURE",
+        "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+      },
+      {
+        "scene_a": "book990402:e3:暗房惊魂（2）",
+        "scene_b": "book990402:e2:回声照相馆",
+        "exact_core_fields": [],
+        "jaccard_token_similarity": 0.0213,
+        "status": "HARD_FAILURE",
+        "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+      }
+    ],
+    "hard_failure": true
+  },
+  "scenes": [
+    {
+      "scene": {
+        "book_id": 990402,
+        "episode": 3,
+        "name": "暗房惊魂",
+        "scene_id": "book990402:e3:暗房惊魂"
+      },
+      "source_fingerprints": {
+        "scene_input": "55a68641b9d6131c2abca15ebff6812d6af3dd95cfdcbb7ec003fcf548a22ebf",
+        "strategy_contract": "40d0a2816329089e7078580b0c59650ad6ee3e9e284fda77e28a74da14725e09"
+      },
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_type": "CREATIVE_GENERATION",
+          "prompt_request_fingerprint": "f41d188148c6f14943aa7ef3d611dc8d6f99f48b4b3934cacbed12d769bce4db",
+          "system_prompt_fingerprint": "d232bf80af91992b1200407dbdfacc704f171e4f47c50d32b80e48e18d6f1c78",
+          "schema_fingerprint": "41858d8d0b103ccbe14bf22fbcdf910b2804ebb1eb93904d9e60ec898da899bf",
+          "scene_input_fingerprint": "55a68641b9d6131c2abca15ebff6812d6af3dd95cfdcbb7ec003fcf548a22ebf",
+          "raw_provider_output": "```json\n{\n    \"schema_version\": \"director_scene_strategy_v1\",\n    \"scene_id\": \"book990402:e3:暗房惊魂\",\n    \"strategy_version\": \"1.0\",\n    \"dramatic_objective\": \"通过暗房内的对峙，揭示林晚对关键物证（档案袋与胶片）的隐藏关注与潜在秘密，迫使她在顾沉的步步紧逼下从伪装走向情绪崩溃，为后续剧情埋下悬念。\",\n    \"scene_question\": \"林晚是否与失踪的底片有关？她隐藏的秘密究竟是什么？\",\n    \"audience_experience\": [\n        {\n            \"beat_id\": \"1\",\n            \"experience\": \"观众首次进入暗房，立即被工作台上打开的档案袋和可疑的锯齿状胶片边缘吸引，产生悬疑感和对事件的初步好奇。\",\n            \"phase\": \"引入\"\n        },\n        {\n            \"beat_id\": \"2\",\n            \"experience\": \"观众看到林晚慵懒的工作状态，建立其表面形象，但暗房的封闭环境和物证的存在暗示着平静下的暗流。\",\n            \"phase\": \"铺垫\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"experience\": \"观众注意到林晚对档案袋的细微异常反应（目光扫过、指尖划过），开始怀疑其懒散表象下的真实意图。\",\n            \"phase\": \"怀疑萌芽\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"experience\": \"顾沉的进入和其对物证的注视，将观众的注意力从林晚的个人行为引向两人之间的潜在冲突，紧张感开始累积。\",\n            \"phase\": \"对峙建立\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"experience\": \"观众通过门锁问题的对话，得知暗房可能被闯入，同时观察到林晚擦手动作的微顿，加深对其反应异常的察觉。\",\n            \"phase\": \"试探\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"experience\": \"观众捕捉到林晚无意识触碰T恤下摆硬质凸起的关键动作，强烈暗示其身上藏有物品，与失踪底片产生直接联想。\",\n            \"phase\": \"怀疑加深\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"experience\": \"观众听到林晚对胶片来源的初步解释（旧废片），但结合之前的异常行为，对其说辞的真实性产生判断。\",\n            \"phase\": \"解释与质疑\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"experience\": \"观众看到林晚用惯常的抱怨语气和身体绷紧的矛盾状态，强化其用表面情绪掩盖真实反应的观察。\",\n            \"phase\": \"防御强化\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"experience\": \"观众听到顾沉提出林晚可能“失忆”或隐瞒的假设，并看到林晚瞳孔收缩、掐掌心的恐惧反应，冲突触及核心秘密。\",\n            \"phase\": \"冲突升级\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"experience\": \"观众目睹顾沉将怀疑直接指向林晚（扫视其T恤下摆）以及林晚下意识捂住该位置的激烈反应，确信其与底片有关联。\",\n            \"phase\": \"直接指控\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"experience\": \"观众看到顾沉离开后林晚面具彻底碎裂，露出困惑、恐惧和决绝的复杂情绪，手悬在档案袋上颤抖，留下强烈的悬念和对其内心崩溃的共情。\",\n            \"phase\": \"悬念与崩溃\"\n        }\n    ],\n    \"beat_priorities\": [\n        {\n            \"beat_id\": \"1\",\n            \"priority\": \"高\",\n            \"reason\": \"建立场景核心物证（档案袋、胶片）和悬疑基调，是后续所有冲突的视觉锚点。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"priority\": \"高\",\n            \"reason\": \"首次泄露林晚的隐藏层，是观众怀疑其真实意图的关键转折点。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"priority\": \"高\",\n            \"reason\": \"提供林晚身上藏有物品的直接视觉证据，将怀疑具体化。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"priority\": \"高\",\n            \"reason\": \"冲突升级至记忆/秘密核心，引发林晚最强烈的恐惧反应，是情感和戏剧张力的高点。\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"priority\": \"高\",\n            \"reason\": \"完成林晚从伪装到崩溃的情绪弧光，留下开放性悬念，决定场景收尾的力度。\"\n        }\n    ],\n    \"audience_knowledge_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"knowledge_state\": \"观众知道暗房内存在可疑物证（档案袋、撕边胶片），但不知其来源和意义。\",\n            \"transition_trigger\": \"视觉呈现物证。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"knowledge_state\": \"观众开始怀疑林晚对物证有隐藏的关注或秘密。\",\n            \"transition_trigger\": \"林晚对档案袋的细微异常动作。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"knowledge_state\": \"观众强烈怀疑林晚身上藏有与失踪底片相关的物品。\",\n            \"transition_trigger\": \"林晚触碰T恤下摆硬质凸起的动作。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"knowledge_state\": \"观众得知顾沉怀疑林晚可能失忆或主动隐瞒关键信息。\",\n            \"transition_trigger\": \"顾沉的质问和林晚的恐惧反应。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"knowledge_state\": \"观众几乎确信林晚与失踪底片有直接关联，且正在试图隐藏。\",\n            \"transition_trigger\": \"顾沉的明确暗示和林晚的捂住动作。\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"knowledge_state\": \"观众知道林晚的伪装已彻底失败，她正面临巨大的内心冲突和抉择，但具体秘密内容仍未知。\",\n            \"transition_trigger\": \"顾沉离开后林晚的情绪爆发和颤抖的手。\"\n        }\n    ],\n    \"emotional_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"emotion\": \"悬疑、不祥\",\n            \"trigger\": \"工作台上打开的档案袋和可疑胶片边缘的视觉呈现。\",\n            \"transition_reason\": \"场景以物证开场，直接奠定不安的基调。\"\n        },\n        {\n            \"beat_id\": \"2\",\n            \"emotion\": \"慵懒、平静（表面）\",\n            \"trigger\": \"林晚刻意慵懒的工作状态。\",\n            \"transition_reason\": \"建立与悬疑基调的反差，为后续冲突铺垫。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"emotion\": \"怀疑（观众对林晚）\",\n            \"trigger\": \"林晚对档案袋的细微异常动作。\",\n            \"transition_reason\": \"观众从观察林晚行为转向质疑其动机。\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"emotion\": \"紧张感累积\",\n            \"trigger\": \"顾沉进入并注视物证。\",\n            \"transition_reason\": \"外部力量介入，将潜在冲突显性化。\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"emotion\": \"轻微紧张（林晚）\",\n            \"trigger\": \"顾沉询问门锁问题。\",\n            \"transition_reason\": \"试探性对话迫使林晚做出防御反应。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"emotion\": \"怀疑加深（观众）\",\n            \"trigger\": \"林晚触碰T恤下摆硬质凸起。\",\n            \"transition_reason\": \"隐藏动作提供了更具体的怀疑依据。\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"emotion\": \"不耐烦但紧绷（林晚）\",\n            \"trigger\": \"顾沉直接质问胶片来源。\",\n            \"transition_reason\": \"直接质问迫使林晚给出解释，压力增大。\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"emotion\": \"防御姿态增强（林晚）\",\n            \"trigger\": \"林晚用抱怨语气质问顾沉。\",\n            \"transition_reason\": \"林晚试图用表面情绪夺回控制，但身体反应暴露紧张。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"emotion\": \"恐惧和困惑（林晚）\",\n            \"trigger\": \"顾沉提出失忆/隐瞒假设。\",\n            \"transition_reason\": \"冲突触及林晚可能的核心秘密或记忆盲区，引发深层恐惧。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"emotion\": \"恐惧和愤怒高点（林晚）\",\n            \"trigger\": \"顾沉明确指向林晚并扫视其T恤。\",\n            \"transition_reason\": \"怀疑被直接点明，林晚的防御被彻底击穿。\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"emotion\": \"面具碎裂，困惑、恐惧、决绝混合（林晚）\",\n            \"trigger\": \"顾沉离开并给出最后通牒。\",\n            \"transition_reason\": \"外部压力暂时解除，林晚的真实情绪彻底暴露并面临抉择。\"\n        }\n    ],\n    \"power_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"power_holder\": \"物证（档案袋、胶片）\",\n            \"power_dynamic\": \"物证作为沉默的第三方，掌握着场景的核心秘密，对林晚构成潜在威胁。\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"power_holder\": \"顾沉\",\n            \"power_dynamic\": \"顾沉进入并占据观察者/质问者位置，开始掌握对话和调查的主动权。\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"power_holder\": \"顾沉\",\n            \"power_dynamic\": \"顾沉通过门锁问题发起试探，进一步巩固其质问者地位。\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"power_holder\": \"顾沉\",\n            \"power_dynamic\": \"顾沉拿起档案袋并直接质问，将冲突焦点和控制权牢牢掌握在自己手中。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"power_holder\": \"顾沉\",\n            \"power_dynamic\": \"顾沉提出失忆/隐瞒假设，将质问升级为对林晚心智和记忆的挑战，权力达到顶峰。\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"power_holder\": \"顾沉（离开时）/ 林晚（独处时）\",\n            \"power_dynamic\": \"顾沉以最后通牒离开，暂时保持权力优势；林晚独处时，权力转向其内心的抉择和秘密本身。\"\n        }\n    ],\n    \"visual_grammar\": \"本场景采用封闭空间内的心理现实主义视觉风格。以暗房的红色安全灯为基调，营造压抑、暧昧且充满秘密的氛围。视觉重心始终围绕“物证”（档案袋、胶片）与“隐藏”（林晚的身体动作、T恤下摆）之间的张力展开。通过人物在空间中的位置变化（门框、工作台、晾干绳）和视线方向（顾沉对物证的注视、林晚对档案袋的扫视）来外化权力关系和心理距离。关键信息（如胶片边缘、林晚的隐藏动作）通过精准的构图和演员调度自然呈现，避免刻意特写。\",\n    \"camera_principles\": \"1. **观察者视角**：镜头语言应模拟一个冷静、敏锐的观察者，跟随顾沉的调查视线，同时捕捉林晚试图隐藏的细节。2. **空间压迫感**：利用暗房的狭窄空间和红色光线，通过中景和近景的交替，强化人物间的心理压迫和紧张感。3. **细节驱动**：关键信息（如胶片锯齿边缘、林晚触碰T恤的手）应通过构图引导观众自然发现，而非依赖突兀的特写。4. **情绪跟随**：镜头节奏和稳定性应跟随林晚的情绪变化，从相对稳定（伪装期）到轻微晃动（紧张期）再到不稳定（崩溃期）。\",\n    \"composition_principles\": \"1. **物证锚定**：工作台上的档案袋和胶片应在多个镜头中作为前景或背景元素出现，持续提醒观众其存在。2. **身体语言框架**：利用门框、工作台边缘等环境元素框住人物，暗示其处境和心理限制。3. **视线引导**：通过人物视线方向（顾沉看向物证、林晚避开视线）构建画面内的张力线。4. **隐藏与揭示**：构图应有意将林晚T恤下摆的硬质凸起置于画面边缘或短暂遮挡，让观众在“看到”与“怀疑看到”之间徘徊。\",\n    \"performance_arc\": {\n        \"林晚\": {\n            \"objective\": \"在顾沉的质问下，竭力维持慵懒、无所谓的表面伪装，同时隐藏自己与档案袋/胶片的真实关联和内心的秘密与恐惧。\",\n            \"tactic_progression\": [\n                {\n                    \"phase\": \"伪装期 (Beat 2-3)\",\n                    \"tactic\": \"以刻意慵懒的工作状态和对物证的细微异常反应，建立表面平静，同时泄露一丝关注。\"\n                },\n                {\n                    \"phase\": \"防御期 (Beat 5-8)\",\n                    \"tactic\": \"用懒散的语气回应质问，通过抱怨和反问试图夺回对话控制权，但身体出现微小紧张反应（擦手微顿、身体绷紧）。\"\n                },\n                {\n                    \"phase\": \"崩溃期 (Beat 9-11)\",\n                    \"tactic\": \"伪装失效，恐惧和困惑通过瞳孔收缩、掐掌心、捂住T恤下摆等动作暴露，最终面具碎裂，情绪混乱。\"\n                }\n            ],\n            \"visible_behavior_progression\": \"慵懒夹照片 -> 目光扫过档案袋、指尖划过袋口 -> 擦手动作微顿 -> 无意识碰T恤下摆硬质凸起 -> 不耐烦抱怨但身体绷紧 -> 瞳孔收缩、手指蜷缩掐掌心 -> 下意识捂住T恤下摆 -> 面具碎裂，手悬在档案袋上颤抖。\",\n            \"turning_point\": \"Beat 9，当顾沉提出她可能“记得”是自己剪的胶片时，林晚的恐惧反应（瞳孔收缩、掐掌心）标志着伪装开始彻底失效，内心秘密被触及。\"\n        },\n        \"顾沉\": {\n            \"objective\": \"通过观察、试探和直接质问，逐步施加压力，迫使林晚暴露其与失踪底片的真实关联和隐藏的秘密。\",\n            \"tactic_progression\": [\n                {\n                    \"phase\": \"观察期 (Beat 4)\",\n                    \"tactic\": \"进入暗房，停在林晚身后，用目光锁定物证，建立无声的压迫感。\"\n                },\n                {\n                    \"phase\": \"试探期 (Beat 5-7)\",\n                    \"tactic\": \"从门锁问题入手进行间接试探，随后直接拿起档案袋质问胶片来源，逐步升级压力。\"\n                },\n                {\n                    \"phase\": \"施压期 (Beat 9-11)\",\n                    \"tactic\": \"提出失忆/隐瞒假设，明确将怀疑指向林晚，并扫视其隐藏物，最后以最后通牒离开，将压力最大化。\"\n                }\n            ],\n            \"visible_behavior_progression\": \"倚门框 -> 走进停在林晚身后 -> 走到工作台旁拿起档案袋 -> 走到门口手搭门把。\",\n            \"turning_point\": \"Beat 9，顾沉从质问事实（胶片来源）转向质问林晚的记忆和意图（是否“记得”），标志着调查策略从外部证据转向内部心理，施压方式发生质变。\"\n        }\n    },\n    \"edit_arc\": \"剪辑节奏应服务于心理张力的累积与释放。开场（Beat 1-3）节奏相对舒缓，以长镜头或缓慢推移建立环境和人物状态，让观众有时间观察细节。对峙开始（Beat 4-8）节奏逐渐加快，通过正反打镜头的交替和镜头时长的缩短，强化对话的交锋感和林晚的防御反应。冲突升级至崩溃（Beat 9-11）节奏达到最快，镜头切换更频繁，可能插入短暂的特写（如瞳孔、手部动作）以强调关键反应，最后在顾沉离开后（Beat 11）回归一个较长的、稳定的镜头，聚焦于林晚崩溃后的状态，形成情绪上的余韵和悬念。\",\n    \"information_reveal_plan\": [\n        {\n            \"beat_id\": \"1\",\n            \"revealed_info\": \"暗房工作台存在可疑物证：打开的牛皮纸档案袋、泛黄老照片一角、边缘有锯齿状撕裂痕迹的剪下胶片。\",\n            \"reveal_method\": \"场景开场的视觉呈现，镜头自然扫过工作台。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"revealed_info\": \"林晚对档案袋有隐藏的关注或秘密。\",\n            \"reveal_method\": \"通过林晚细微的异常动作（目光扫过、指尖划过袋口）暗示。\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"revealed_info\": \"暗房门锁可能被动过，林晚对此反应异常。\",\n            \"reveal_method\": \"顾沉的对话询问和林晚擦手动作的微顿。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"revealed_info\": \"林晚身上可能藏有硬质物品，与失踪底片相关。\",\n            \"reveal_method\": \"林晚无意识触碰T恤下摆硬质凸起的动作。\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"revealed_info\": \"林晚对胶片来源的初步解释：声称是旧废片，剪了边角准备扔掉。\",\n            \"reveal_method\": \"林晚的直接对话回应。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"revealed_info\": \"顾沉怀疑林晚可能失忆或主动隐瞒关于胶片的关键信息。\",\n            \"reveal_method\": \"顾沉的直接质问和林晚的恐惧反应。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"revealed_info\": \"顾沉明确将失踪的关键底片与林晚联系起来，认为可能被她“保管”。\",\n            \"reveal_method\": \"顾沉的明确暗示和扫视动作，以及林晚的捂住反应。\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"revealed_info\": \"顾沉给出最后通牒（下午有客人取照片），林晚的伪装彻底崩溃，内心秘密暴露但具体内容未明。\",\n            \"reveal_method\": \"顾沉的离开对话和林晚的情绪爆发及颤抖的手。\"\n        }\n    ],\n    \"spatial_expression\": \"暗房是一个封闭、压抑、充满化学气味和红色光线的空间，象征着秘密、隐藏和情绪的发酵。人物在空间中的移动和位置关系直接映射其心理状态和权力关系：顾沉从门口（外部）侵入，逐步逼近工作台（物证所在），最终又退回门口离开，完成一次对林晚心理空间的入侵与撤离。林晚始终围绕工作台和晾干绳活动，其位置变化（背对门口 -> 靠工作台 -> 背对顾沉整理照片）反映了她从专注工作到防御对峙再到试图逃避的心理轨迹。工作台是物证的承载点，也是冲突的焦点；晾干绳上的模糊人影照片则暗示着场景中未言明的过去和记忆的模糊性。\",\n    \"prop_visual_strategy\": \"1. **档案袋与胶片**：作为核心物证，必须在场景中持续可见（工作台上），其状态（打开、露出照片角、散落的撕边胶片）是悬疑的视觉源头。2. **林晚T恤下摆的硬质凸起**：作为隐藏物品的暗示，其呈现必须自然、隐蔽，通过演员动作和构图引导观众注意，而非直接展示。3. **晾干绳与模糊人影照片**：作为环境元素和林晚工作的证明，其模糊性与场景中记忆、真相的模糊性形成视觉隐喻。4. **门锁**：作为对话中提及的道具，无需特写，但其“松动痕迹”的提及应与顾沉的观察视角相呼应。\",\n    \"shot_architecture_guidance\": \"1. **建立镜头**：需一个能同时呈现暗房环境、工作台物证和林晚工作状态的镜头，奠定空间关系和悬疑基调。2. **关系镜头**：需多个能同时捕捉顾沉和林晚（或其中一人与物证）的镜头，以展现对峙中的空间距离、视线方向和权力动态。3. **细节揭示镜头**：需能自然引导观众注意到林晚异常动作（如触碰T恤下摆）的镜头，通过构图和演员调度实现，而非孤立特写。4. **反应镜头**：需捕捉林晚在关键对话节点（如Beat 5, 9, 10, 11）细微面部表情和身体反应的镜头，以展现其内心变化。5. **结束镜头**：需一个能聚焦于顾沉离开后林晚独自一人、情绪崩溃状态的镜头，强调其孤立和悬念。\",\n    \"must_preserve\": [\n        \"档案袋和撕边胶片作为核心物证在工作台上的视觉存在。\",\n        \"林晚对档案袋的细微异常反应（Beat 3）。\",\n        \"林晚触碰T恤下摆硬质凸起的动作（Beat 6）。\",\n        \"顾沉从门口进入、逼近工作台、最后退回门口离开的空间移动逻辑。\",\n        \"林晚从慵懒伪装到恐惧崩溃的情绪转变关键节点（Beat 9, 11）。\",\n        \"暗房红色安全灯营造的压抑、暧昧氛围。\"\n    ],\n    \"must_avoid\": [\n        \"直接展示林晚T恤下摆硬质凸起的具体物品。\",\n        \"通过画外音或非剧情手段解释人物内心想法。\",\n        \"使用过于夸张或舞台化的表演风格，破坏心理现实主义基调。\",\n        \"在对话之外添加额外的解释性镜头或信息。\",\n        \"改变或发明剧本中未提及的道具、位置或事件。\"\n    ],\n    \"creative_risks\": [\n        \"在Beat 3和Beat 6，依赖演员极其细微的动作和精准的构图来传递隐藏信息，若执行不到位可能导致观众错过关键暗示。\",\n        \"整个对峙过程高度依赖对话和表演张力，视觉上相对静态，若节奏把控不当可能显得沉闷。\",\n        \"暗房的红色安全灯环境可能限制面部表情的清晰度，需要在氛围营造和表演可见性之间找到平衡。\"\n    ],\n    \"strategy_summary\": \"本策略旨在通过暗房这一封闭空间内的心理对峙，以物证为视觉锚点，以林晚的隐藏动作和情绪变化为线索，逐步揭示其秘密，并在顾沉的步步紧逼下将其推向情绪崩溃的边缘。视觉上强调空间压迫感、细节暗示和情绪跟随，表演上要求林晚完成从伪装到崩溃的细腻转变，剪辑上服务于张力的累积与释放，最终留下一个充满悬念和内心挣扎的结尾。\",\n    \"authority\": {\n        \"Character\": \"approved_record.evidence.blocking.participants\",\n        \"DirectorTreatment\": \"approved_record.evidence.treatment\",\n        \"FactSnapshot\": \"approved_record.contract.immutable_projection.facts\",\n        \"Location\": \"absent; N/A required\",\n        \"Prop\": \"absent; N/A required\",\n        \"SceneBlocking\": \"approved_record.evidence.blocking\",\n        \"ScriptIR\": \"approved_record.treatment.beat_map + scene metadata\"\n    },\n    \"source_refs\": [\n        \"approved_record.treatment.beat_map\",\n        \"approved_record.evidence.blocking.participants\",\n        \"approved_record.scene metadata\"\n    ],\n    \"strategy_fingerprint\": \"a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6\"\n}\n```",
+          "parsed": {
+            "schema_version": "director_scene_strategy_v1",
+            "scene_id": "book990402:e3:暗房惊魂",
+            "strategy_version": "1.0",
+            "dramatic_objective": "通过暗房内的对峙，揭示林晚对关键物证（档案袋与胶片）的隐藏关注与潜在秘密，迫使她在顾沉的步步紧逼下从伪装走向情绪崩溃，为后续剧情埋下悬念。",
+            "scene_question": "林晚是否与失踪的底片有关？她隐藏的秘密究竟是什么？",
+            "audience_experience": [
+              {
+                "beat_id": "1",
+                "experience": "观众首次进入暗房，立即被工作台上打开的档案袋和可疑的锯齿状胶片边缘吸引，产生悬疑感和对事件的初步好奇。",
+                "phase": "引入"
+              },
+              {
+                "beat_id": "2",
+                "experience": "观众看到林晚慵懒的工作状态，建立其表面形象，但暗房的封闭环境和物证的存在暗示着平静下的暗流。",
+                "phase": "铺垫"
+              },
+              {
+                "beat_id": "3",
+                "experience": "观众注意到林晚对档案袋的细微异常反应（目光扫过、指尖划过），开始怀疑其懒散表象下的真实意图。",
+                "phase": "怀疑萌芽"
+              },
+              {
+                "beat_id": "4",
+                "experience": "顾沉的进入和其对物证的注视，将观众的注意力从林晚的个人行为引向两人之间的潜在冲突，紧张感开始累积。",
+                "phase": "对峙建立"
+              },
+              {
+                "beat_id": "5",
+                "experience": "观众通过门锁问题的对话，得知暗房可能被闯入，同时观察到林晚擦手动作的微顿，加深对其反应异常的察觉。",
+                "phase": "试探"
+              },
+              {
+                "beat_id": "6",
+                "experience": "观众捕捉到林晚无意识触碰T恤下摆硬质凸起的关键动作，强烈暗示其身上藏有物品，与失踪底片产生直接联想。",
+                "phase": "怀疑加深"
+              },
+              {
+                "beat_id": "7",
+                "experience": "观众听到林晚对胶片来源的初步解释（旧废片），但结合之前的异常行为，对其说辞的真实性产生判断。",
+                "phase": "解释与质疑"
+              },
+              {
+                "beat_id": "8",
+                "experience": "观众看到林晚用惯常的抱怨语气和身体绷紧的矛盾状态，强化其用表面情绪掩盖真实反应的观察。",
+                "phase": "防御强化"
+              },
+              {
+                "beat_id": "9",
+                "experience": "观众听到顾沉提出林晚可能“失忆”或隐瞒的假设，并看到林晚瞳孔收缩、掐掌心的恐惧反应，冲突触及核心秘密。",
+                "phase": "冲突升级"
+              },
+              {
+                "beat_id": "10",
+                "experience": "观众目睹顾沉将怀疑直接指向林晚（扫视其T恤下摆）以及林晚下意识捂住该位置的激烈反应，确信其与底片有关联。",
+                "phase": "直接指控"
+              },
+              {
+                "beat_id": "11",
+                "experience": "观众看到顾沉离开后林晚面具彻底碎裂，露出困惑、恐惧和决绝的复杂情绪，手悬在档案袋上颤抖，留下强烈的悬念和对其内心崩溃的共情。",
+                "phase": "悬念与崩溃"
+              }
+            ],
+            "beat_priorities": [
+              {
+                "beat_id": "1",
+                "priority": "高",
+                "reason": "建立场景核心物证（档案袋、胶片）和悬疑基调，是后续所有冲突的视觉锚点。"
+              },
+              {
+                "beat_id": "3",
+                "priority": "高",
+                "reason": "首次泄露林晚的隐藏层，是观众怀疑其真实意图的关键转折点。"
+              },
+              {
+                "beat_id": "6",
+                "priority": "高",
+                "reason": "提供林晚身上藏有物品的直接视觉证据，将怀疑具体化。"
+              },
+              {
+                "beat_id": "9",
+                "priority": "高",
+                "reason": "冲突升级至记忆/秘密核心，引发林晚最强烈的恐惧反应，是情感和戏剧张力的高点。"
+              },
+              {
+                "beat_id": "11",
+                "priority": "高",
+                "reason": "完成林晚从伪装到崩溃的情绪弧光，留下开放性悬念，决定场景收尾的力度。"
+              }
+            ],
+            "audience_knowledge_arc": [
+              {
+                "beat_id": "1",
+                "knowledge_state": "观众知道暗房内存在可疑物证（档案袋、撕边胶片），但不知其来源和意义。",
+                "transition_trigger": "视觉呈现物证。"
+              },
+              {
+                "beat_id": "3",
+                "knowledge_state": "观众开始怀疑林晚对物证有隐藏的关注或秘密。",
+                "transition_trigger": "林晚对档案袋的细微异常动作。"
+              },
+              {
+                "beat_id": "6",
+                "knowledge_state": "观众强烈怀疑林晚身上藏有与失踪底片相关的物品。",
+                "transition_trigger": "林晚触碰T恤下摆硬质凸起的动作。"
+              },
+              {
+                "beat_id": "9",
+                "knowledge_state": "观众得知顾沉怀疑林晚可能失忆或主动隐瞒关键信息。",
+                "transition_trigger": "顾沉的质问和林晚的恐惧反应。"
+              },
+              {
+                "beat_id": "10",
+                "knowledge_state": "观众几乎确信林晚与失踪底片有直接关联，且正在试图隐藏。",
+                "transition_trigger": "顾沉的明确暗示和林晚的捂住动作。"
+              },
+              {
+                "beat_id": "11",
+                "knowledge_state": "观众知道林晚的伪装已彻底失败，她正面临巨大的内心冲突和抉择，但具体秘密内容仍未知。",
+                "transition_trigger": "顾沉离开后林晚的情绪爆发和颤抖的手。"
+              }
+            ],
+            "emotional_arc": [
+              {
+                "beat_id": "1",
+                "emotion": "悬疑、不祥",
+                "trigger": "工作台上打开的档案袋和可疑胶片边缘的视觉呈现。",
+                "transition_reason": "场景以物证开场，直接奠定不安的基调。"
+              },
+              {
+                "beat_id": "2",
+                "emotion": "慵懒、平静（表面）",
+                "trigger": "林晚刻意慵懒的工作状态。",
+                "transition_reason": "建立与悬疑基调的反差，为后续冲突铺垫。"
+              },
+              {
+                "beat_id": "3",
+                "emotion": "怀疑（观众对林晚）",
+                "trigger": "林晚对档案袋的细微异常动作。",
+                "transition_reason": "观众从观察林晚行为转向质疑其动机。"
+              },
+              {
+                "beat_id": "4",
+                "emotion": "紧张感累积",
+                "trigger": "顾沉进入并注视物证。",
+                "transition_reason": "外部力量介入，将潜在冲突显性化。"
+              },
+              {
+                "beat_id": "5",
+                "emotion": "轻微紧张（林晚）",
+                "trigger": "顾沉询问门锁问题。",
+                "transition_reason": "试探性对话迫使林晚做出防御反应。"
+              },
+              {
+                "beat_id": "6",
+                "emotion": "怀疑加深（观众）",
+                "trigger": "林晚触碰T恤下摆硬质凸起。",
+                "transition_reason": "隐藏动作提供了更具体的怀疑依据。"
+              },
+              {
+                "beat_id": "7",
+                "emotion": "不耐烦但紧绷（林晚）",
+                "trigger": "顾沉直接质问胶片来源。",
+                "transition_reason": "直接质问迫使林晚给出解释，压力增大。"
+              },
+              {
+                "beat_id": "8",
+                "emotion": "防御姿态增强（林晚）",
+                "trigger": "林晚用抱怨语气质问顾沉。",
+                "transition_reason": "林晚试图用表面情绪夺回控制，但身体反应暴露紧张。"
+              },
+              {
+                "beat_id": "9",
+                "emotion": "恐惧和困惑（林晚）",
+                "trigger": "顾沉提出失忆/隐瞒假设。",
+                "transition_reason": "冲突触及林晚可能的核心秘密或记忆盲区，引发深层恐惧。"
+              },
+              {
+                "beat_id": "10",
+                "emotion": "恐惧和愤怒高点（林晚）",
+                "trigger": "顾沉明确指向林晚并扫视其T恤。",
+                "transition_reason": "怀疑被直接点明，林晚的防御被彻底击穿。"
+              },
+              {
+                "beat_id": "11",
+                "emotion": "面具碎裂，困惑、恐惧、决绝混合（林晚）",
+                "trigger": "顾沉离开并给出最后通牒。",
+                "transition_reason": "外部压力暂时解除，林晚的真实情绪彻底暴露并面临抉择。"
+              }
+            ],
+            "power_arc": [
+              {
+                "beat_id": "1",
+                "power_holder": "物证（档案袋、胶片）",
+                "power_dynamic": "物证作为沉默的第三方，掌握着场景的核心秘密，对林晚构成潜在威胁。"
+              },
+              {
+                "beat_id": "4",
+                "power_holder": "顾沉",
+                "power_dynamic": "顾沉进入并占据观察者/质问者位置，开始掌握对话和调查的主动权。"
+              },
+              {
+                "beat_id": "5",
+                "power_holder": "顾沉",
+                "power_dynamic": "顾沉通过门锁问题发起试探，进一步巩固其质问者地位。"
+              },
+              {
+                "beat_id": "7",
+                "power_holder": "顾沉",
+                "power_dynamic": "顾沉拿起档案袋并直接质问，将冲突焦点和控制权牢牢掌握在自己手中。"
+              },
+              {
+                "beat_id": "9",
+                "power_holder": "顾沉",
+                "power_dynamic": "顾沉提出失忆/隐瞒假设，将质问升级为对林晚心智和记忆的挑战，权力达到顶峰。"
+              },
+              {
+                "beat_id": "11",
+                "power_holder": "顾沉（离开时）/ 林晚（独处时）",
+                "power_dynamic": "顾沉以最后通牒离开，暂时保持权力优势；林晚独处时，权力转向其内心的抉择和秘密本身。"
+              }
+            ],
+            "visual_grammar": "本场景采用封闭空间内的心理现实主义视觉风格。以暗房的红色安全灯为基调，营造压抑、暧昧且充满秘密的氛围。视觉重心始终围绕“物证”（档案袋、胶片）与“隐藏”（林晚的身体动作、T恤下摆）之间的张力展开。通过人物在空间中的位置变化（门框、工作台、晾干绳）和视线方向（顾沉对物证的注视、林晚对档案袋的扫视）来外化权力关系和心理距离。关键信息（如胶片边缘、林晚的隐藏动作）通过精准的构图和演员调度自然呈现，避免刻意特写。",
+            "camera_principles": "1. **观察者视角**：镜头语言应模拟一个冷静、敏锐的观察者，跟随顾沉的调查视线，同时捕捉林晚试图隐藏的细节。2. **空间压迫感**：利用暗房的狭窄空间和红色光线，通过中景和近景的交替，强化人物间的心理压迫和紧张感。3. **细节驱动**：关键信息（如胶片锯齿边缘、林晚触碰T恤的手）应通过构图引导观众自然发现，而非依赖突兀的特写。4. **情绪跟随**：镜头节奏和稳定性应跟随林晚的情绪变化，从相对稳定（伪装期）到轻微晃动（紧张期）再到不稳定（崩溃期）。",
+            "composition_principles": "1. **物证锚定**：工作台上的档案袋和胶片应在多个镜头中作为前景或背景元素出现，持续提醒观众其存在。2. **身体语言框架**：利用门框、工作台边缘等环境元素框住人物，暗示其处境和心理限制。3. **视线引导**：通过人物视线方向（顾沉看向物证、林晚避开视线）构建画面内的张力线。4. **隐藏与揭示**：构图应有意将林晚T恤下摆的硬质凸起置于画面边缘或短暂遮挡，让观众在“看到”与“怀疑看到”之间徘徊。",
+            "performance_arc": {
+              "林晚": {
+                "objective": "在顾沉的质问下，竭力维持慵懒、无所谓的表面伪装，同时隐藏自己与档案袋/胶片的真实关联和内心的秘密与恐惧。",
+                "tactic_progression": [
+                  {
+                    "phase": "伪装期 (Beat 2-3)",
+                    "tactic": "以刻意慵懒的工作状态和对物证的细微异常反应，建立表面平静，同时泄露一丝关注。"
+                  },
+                  {
+                    "phase": "防御期 (Beat 5-8)",
+                    "tactic": "用懒散的语气回应质问，通过抱怨和反问试图夺回对话控制权，但身体出现微小紧张反应（擦手微顿、身体绷紧）。"
+                  },
+                  {
+                    "phase": "崩溃期 (Beat 9-11)",
+                    "tactic": "伪装失效，恐惧和困惑通过瞳孔收缩、掐掌心、捂住T恤下摆等动作暴露，最终面具碎裂，情绪混乱。"
+                  }
+                ],
+                "visible_behavior_progression": "慵懒夹照片 -> 目光扫过档案袋、指尖划过袋口 -> 擦手动作微顿 -> 无意识碰T恤下摆硬质凸起 -> 不耐烦抱怨但身体绷紧 -> 瞳孔收缩、手指蜷缩掐掌心 -> 下意识捂住T恤下摆 -> 面具碎裂，手悬在档案袋上颤抖。",
+                "turning_point": "Beat 9，当顾沉提出她可能“记得”是自己剪的胶片时，林晚的恐惧反应（瞳孔收缩、掐掌心）标志着伪装开始彻底失效，内心秘密被触及。"
+              },
+              "顾沉": {
+                "objective": "通过观察、试探和直接质问，逐步施加压力，迫使林晚暴露其与失踪底片的真实关联和隐藏的秘密。",
+                "tactic_progression": [
+                  {
+                    "phase": "观察期 (Beat 4)",
+                    "tactic": "进入暗房，停在林晚身后，用目光锁定物证，建立无声的压迫感。"
+                  },
+                  {
+                    "phase": "试探期 (Beat 5-7)",
+                    "tactic": "从门锁问题入手进行间接试探，随后直接拿起档案袋质问胶片来源，逐步升级压力。"
+                  },
+                  {
+                    "phase": "施压期 (Beat 9-11)",
+                    "tactic": "提出失忆/隐瞒假设，明确将怀疑指向林晚，并扫视其隐藏物，最后以最后通牒离开，将压力最大化。"
+                  }
+                ],
+                "visible_behavior_progression": "倚门框 -> 走进停在林晚身后 -> 走到工作台旁拿起档案袋 -> 走到门口手搭门把。",
+                "turning_point": "Beat 9，顾沉从质问事实（胶片来源）转向质问林晚的记忆和意图（是否“记得”），标志着调查策略从外部证据转向内部心理，施压方式发生质变。"
+              }
+            },
+            "edit_arc": "剪辑节奏应服务于心理张力的累积与释放。开场（Beat 1-3）节奏相对舒缓，以长镜头或缓慢推移建立环境和人物状态，让观众有时间观察细节。对峙开始（Beat 4-8）节奏逐渐加快，通过正反打镜头的交替和镜头时长的缩短，强化对话的交锋感和林晚的防御反应。冲突升级至崩溃（Beat 9-11）节奏达到最快，镜头切换更频繁，可能插入短暂的特写（如瞳孔、手部动作）以强调关键反应，最后在顾沉离开后（Beat 11）回归一个较长的、稳定的镜头，聚焦于林晚崩溃后的状态，形成情绪上的余韵和悬念。",
+            "information_reveal_plan": [
+              {
+                "beat_id": "1",
+                "revealed_info": "暗房工作台存在可疑物证：打开的牛皮纸档案袋、泛黄老照片一角、边缘有锯齿状撕裂痕迹的剪下胶片。",
+                "reveal_method": "场景开场的视觉呈现，镜头自然扫过工作台。"
+              },
+              {
+                "beat_id": "3",
+                "revealed_info": "林晚对档案袋有隐藏的关注或秘密。",
+                "reveal_method": "通过林晚细微的异常动作（目光扫过、指尖划过袋口）暗示。"
+              },
+              {
+                "beat_id": "5",
+                "revealed_info": "暗房门锁可能被动过，林晚对此反应异常。",
+                "reveal_method": "顾沉的对话询问和林晚擦手动作的微顿。"
+              },
+              {
+                "beat_id": "6",
+                "revealed_info": "林晚身上可能藏有硬质物品，与失踪底片相关。",
+                "reveal_method": "林晚无意识触碰T恤下摆硬质凸起的动作。"
+              },
+              {
+                "beat_id": "7",
+                "revealed_info": "林晚对胶片来源的初步解释：声称是旧废片，剪了边角准备扔掉。",
+                "reveal_method": "林晚的直接对话回应。"
+              },
+              {
+                "beat_id": "9",
+                "revealed_info": "顾沉怀疑林晚可能失忆或主动隐瞒关于胶片的关键信息。",
+                "reveal_method": "顾沉的直接质问和林晚的恐惧反应。"
+              },
+              {
+                "beat_id": "10",
+                "revealed_info": "顾沉明确将失踪的关键底片与林晚联系起来，认为可能被她“保管”。",
+                "reveal_method": "顾沉的明确暗示和扫视动作，以及林晚的捂住反应。"
+              },
+              {
+                "beat_id": "11",
+                "revealed_info": "顾沉给出最后通牒（下午有客人取照片），林晚的伪装彻底崩溃，内心秘密暴露但具体内容未明。",
+                "reveal_method": "顾沉的离开对话和林晚的情绪爆发及颤抖的手。"
+              }
+            ],
+            "spatial_expression": "暗房是一个封闭、压抑、充满化学气味和红色光线的空间，象征着秘密、隐藏和情绪的发酵。人物在空间中的移动和位置关系直接映射其心理状态和权力关系：顾沉从门口（外部）侵入，逐步逼近工作台（物证所在），最终又退回门口离开，完成一次对林晚心理空间的入侵与撤离。林晚始终围绕工作台和晾干绳活动，其位置变化（背对门口 -> 靠工作台 -> 背对顾沉整理照片）反映了她从专注工作到防御对峙再到试图逃避的心理轨迹。工作台是物证的承载点，也是冲突的焦点；晾干绳上的模糊人影照片则暗示着场景中未言明的过去和记忆的模糊性。",
+            "prop_visual_strategy": "1. **档案袋与胶片**：作为核心物证，必须在场景中持续可见（工作台上），其状态（打开、露出照片角、散落的撕边胶片）是悬疑的视觉源头。2. **林晚T恤下摆的硬质凸起**：作为隐藏物品的暗示，其呈现必须自然、隐蔽，通过演员动作和构图引导观众注意，而非直接展示。3. **晾干绳与模糊人影照片**：作为环境元素和林晚工作的证明，其模糊性与场景中记忆、真相的模糊性形成视觉隐喻。4. **门锁**：作为对话中提及的道具，无需特写，但其“松动痕迹”的提及应与顾沉的观察视角相呼应。",
+            "shot_architecture_guidance": "1. **建立镜头**：需一个能同时呈现暗房环境、工作台物证和林晚工作状态的镜头，奠定空间关系和悬疑基调。2. **关系镜头**：需多个能同时捕捉顾沉和林晚（或其中一人与物证）的镜头，以展现对峙中的空间距离、视线方向和权力动态。3. **细节揭示镜头**：需能自然引导观众注意到林晚异常动作（如触碰T恤下摆）的镜头，通过构图和演员调度实现，而非孤立特写。4. **反应镜头**：需捕捉林晚在关键对话节点（如Beat 5, 9, 10, 11）细微面部表情和身体反应的镜头，以展现其内心变化。5. **结束镜头**：需一个能聚焦于顾沉离开后林晚独自一人、情绪崩溃状态的镜头，强调其孤立和悬念。",
+            "must_preserve": [
+              "档案袋和撕边胶片作为核心物证在工作台上的视觉存在。",
+              "林晚对档案袋的细微异常反应（Beat 3）。",
+              "林晚触碰T恤下摆硬质凸起的动作（Beat 6）。",
+              "顾沉从门口进入、逼近工作台、最后退回门口离开的空间移动逻辑。",
+              "林晚从慵懒伪装到恐惧崩溃的情绪转变关键节点（Beat 9, 11）。",
+              "暗房红色安全灯营造的压抑、暧昧氛围。"
+            ],
+            "must_avoid": [
+              "直接展示林晚T恤下摆硬质凸起的具体物品。",
+              "通过画外音或非剧情手段解释人物内心想法。",
+              "使用过于夸张或舞台化的表演风格，破坏心理现实主义基调。",
+              "在对话之外添加额外的解释性镜头或信息。",
+              "改变或发明剧本中未提及的道具、位置或事件。"
+            ],
+            "creative_risks": [
+              "在Beat 3和Beat 6，依赖演员极其细微的动作和精准的构图来传递隐藏信息，若执行不到位可能导致观众错过关键暗示。",
+              "整个对峙过程高度依赖对话和表演张力，视觉上相对静态，若节奏把控不当可能显得沉闷。",
+              "暗房的红色安全灯环境可能限制面部表情的清晰度，需要在氛围营造和表演可见性之间找到平衡。"
+            ],
+            "strategy_summary": "本策略旨在通过暗房这一封闭空间内的心理对峙，以物证为视觉锚点，以林晚的隐藏动作和情绪变化为线索，逐步揭示其秘密，并在顾沉的步步紧逼下将其推向情绪崩溃的边缘。视觉上强调空间压迫感、细节暗示和情绪跟随，表演上要求林晚完成从伪装到崩溃的细腻转变，剪辑上服务于张力的累积与释放，最终留下一个充满悬念和内心挣扎的结尾。",
+            "authority": {
+              "Character": "approved_record.evidence.blocking.participants",
+              "DirectorTreatment": "approved_record.evidence.treatment",
+              "FactSnapshot": "approved_record.contract.immutable_projection.facts",
+              "Location": "absent; N/A required",
+              "Prop": "absent; N/A required",
+              "SceneBlocking": "approved_record.evidence.blocking",
+              "ScriptIR": "approved_record.treatment.beat_map + scene metadata"
+            },
+            "source_refs": [
+              "approved_record.treatment.beat_map",
+              "approved_record.evidence.blocking.participants",
+              "approved_record.scene metadata"
+            ],
+            "strategy_fingerprint": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+          },
+          "parse_error": "",
+          "validation": {
+            "valid": false,
+            "strategy": null,
+            "errors": [
+              {
+                "code": "INVALID_POWER_CONTROLLER",
+                "path": "power_arc[0].controller",
+                "message": "INVALID_POWER_CONTROLLER"
+              }
+            ]
+          },
+          "format_repair_eligible": false
+        }
+      ],
+      "attempt_count": 1,
+      "first_pass_json_parse_valid": true,
+      "first_pass_schema_valid": false,
+      "final_schema_valid": false,
+      "strategy": null,
+      "validation": {
+        "valid": false,
+        "strategy": null,
+        "errors": [
+          {
+            "code": "INVALID_POWER_CONTROLLER",
+            "path": "power_arc[0].controller",
+            "message": "INVALID_POWER_CONTROLLER"
+          }
+        ]
+      },
+      "quality_diagnostics": {
+        "diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1",
+        "outcome": "STRATEGY_INVALID",
+        "findings": [
+          {
+            "dimension": "dramatic_objective",
+            "status": "PASS",
+            "evidence": "objective length=69",
+            "issue_code": "",
+            "fields": [
+              "dramatic_objective"
+            ]
+          },
+          {
+            "dimension": "scene_question",
+            "status": "PASS",
+            "evidence": "question length=25",
+            "issue_code": "",
+            "fields": [
+              "scene_question"
+            ]
+          },
+          {
+            "dimension": "audience_knowledge_arc",
+            "status": "WEAK",
+            "evidence": "missing concrete arc evidence: audience_knowledge_arc[0].phase_id, audience_knowledge_arc[0].does_not_know_yet, audience_knowledge_arc[0].suspects, audience_knowledge_arc[1].phase_id, audience_knowledge_arc[1].does_not_know_yet, audience_knowledge_arc[1].suspects, audience_knowledge_arc[2].phase_id, audience_knowledge_arc[2].does_not_know_yet",
+            "issue_code": "AUDIENCE_ARC_WEAK",
+            "fields": [
+              "audience_knowledge_arc"
+            ]
+          },
+          {
+            "dimension": "emotional_arc",
+            "status": "WEAK",
+            "evidence": "missing concrete arc evidence: emotional_arc[0].emotion_state, emotional_arc[1].emotion_state, emotional_arc[2].emotion_state, emotional_arc[3].emotion_state, emotional_arc[4].emotion_state, emotional_arc[5].emotion_state, emotional_arc[6].emotion_state, emotional_arc[7].emotion_state",
+            "issue_code": "EMOTION_ARC_WEAK",
+            "fields": [
+              "emotional_arc"
+            ]
+          },
+          {
+            "dimension": "performance_arc",
+            "status": "WEAK",
+            "evidence": "characters=0; each has objective/tactic/visible progression/turning point=True",
+            "issue_code": "PERFORMANCE_ARC_WEAK",
+            "fields": [
+              "performance_arc"
+            ]
+          },
+          {
+            "dimension": "edit_arc",
+            "status": "WEAK",
+            "evidence": "edit arc is missing director logic",
+            "issue_code": "EDIT_STRATEGY_WEAK",
+            "fields": [
+              "edit_arc"
+            ]
+          },
+          {
+            "dimension": "visual_grammar",
+            "status": "WEAK",
+            "evidence": "overall principle and phase rules present=False",
+            "issue_code": "VISUAL_GRAMMAR_WEAK",
+            "fields": [
+              "visual_grammar"
+            ]
+          },
+          {
+            "dimension": "camera_principles",
+            "status": "WEAK",
+            "evidence": "camera principles do not state a motivation condition",
+            "issue_code": "CAMERA_PRINCIPLE_GENERIC",
+            "fields": [
+              "camera_principles"
+            ]
+          },
+          {
+            "dimension": "information_reveal_plan",
+            "status": "WEAK",
+            "evidence": "ordered reveal/withhold entries=8",
+            "issue_code": "INFORMATION_STRATEGY_WEAK",
+            "fields": [
+              "information_reveal_plan"
+            ]
+          },
+          {
+            "dimension": "must_avoid",
+            "status": "PASS",
+            "evidence": "scene-specific anti-patterns recorded",
+            "issue_code": "",
+            "fields": [
+              "must_avoid"
+            ]
+          },
+          {
+            "dimension": "creative_risks",
+            "status": "PASS",
+            "evidence": "creative risk recorded",
+            "issue_code": "",
+            "fields": [
+              "creative_risks"
+            ]
+          }
+        ],
+        "weak_dimension_count": 7,
+        "source_evidence_available": [
+          "baseline_shot_plan_metadata",
+          "character_canonical",
+          "director_treatment",
+          "fact_snapshot",
+          "location_canonical",
+          "prop_canonical",
+          "scene",
+          "scene_blocking",
+          "source_authority"
+        ],
+        "directing_outcome": "STRATEGY_WEAK",
+        "protocol_valid": false,
+        "protocol_errors": [
+          {
+            "code": "INVALID_POWER_CONTROLLER",
+            "path": "power_arc[0].controller",
+            "message": "INVALID_POWER_CONTROLLER"
+          }
+        ]
+      },
+      "strategy_vs_baseline": {
+        "schema_version": "director-quality-v3-phase1-strategy-vs-baseline-v1",
+        "baseline_shot_count": 11,
+        "strategy_implied_gaps": [
+          "INFORMATION_STRATEGY_UNSUPPORTED"
+        ],
+        "baseline_read_only": true
+      },
+      "telemetry": {
+        "http_request_count": 1,
+        "prompt_tokens": 3684,
+        "cached_tokens": 0,
+        "completion_tokens": 5408,
+        "total_tokens": 9092,
+        "latency_ms": 79325.84
+      },
+      "side_effects": {
+        "shotplan": 0,
+        "storyboard": 0,
+        "production": 0,
+        "repair": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "cross_scene_distinctiveness": {
+        "schema_version": "director-quality-v3-phase1-distinctiveness-v1",
+        "comparisons": [
+          {
+            "scene_a": "book990402:e3:暗房惊魂",
+            "scene_b": "book990402:e3:暗房惊魂（2）",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0208,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          },
+          {
+            "scene_a": "book990402:e3:暗房惊魂",
+            "scene_b": "book990402:e2:回声照相馆",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0278,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          },
+          {
+            "scene_a": "book990402:e3:暗房惊魂（2）",
+            "scene_b": "book990402:e2:回声照相馆",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0213,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          }
+        ],
+        "hard_failure": true
+      },
+      "parsed_candidate": {
+        "schema_version": "director_scene_strategy_v1",
+        "scene_id": "book990402:e3:暗房惊魂",
+        "strategy_version": "1.0",
+        "dramatic_objective": "通过暗房内的对峙，揭示林晚对关键物证（档案袋与胶片）的隐藏关注与潜在秘密，迫使她在顾沉的步步紧逼下从伪装走向情绪崩溃，为后续剧情埋下悬念。",
+        "scene_question": "林晚是否与失踪的底片有关？她隐藏的秘密究竟是什么？",
+        "audience_experience": [
+          {
+            "beat_id": "1",
+            "experience": "观众首次进入暗房，立即被工作台上打开的档案袋和可疑的锯齿状胶片边缘吸引，产生悬疑感和对事件的初步好奇。",
+            "phase": "引入"
+          },
+          {
+            "beat_id": "2",
+            "experience": "观众看到林晚慵懒的工作状态，建立其表面形象，但暗房的封闭环境和物证的存在暗示着平静下的暗流。",
+            "phase": "铺垫"
+          },
+          {
+            "beat_id": "3",
+            "experience": "观众注意到林晚对档案袋的细微异常反应（目光扫过、指尖划过），开始怀疑其懒散表象下的真实意图。",
+            "phase": "怀疑萌芽"
+          },
+          {
+            "beat_id": "4",
+            "experience": "顾沉的进入和其对物证的注视，将观众的注意力从林晚的个人行为引向两人之间的潜在冲突，紧张感开始累积。",
+            "phase": "对峙建立"
+          },
+          {
+            "beat_id": "5",
+            "experience": "观众通过门锁问题的对话，得知暗房可能被闯入，同时观察到林晚擦手动作的微顿，加深对其反应异常的察觉。",
+            "phase": "试探"
+          },
+          {
+            "beat_id": "6",
+            "experience": "观众捕捉到林晚无意识触碰T恤下摆硬质凸起的关键动作，强烈暗示其身上藏有物品，与失踪底片产生直接联想。",
+            "phase": "怀疑加深"
+          },
+          {
+            "beat_id": "7",
+            "experience": "观众听到林晚对胶片来源的初步解释（旧废片），但结合之前的异常行为，对其说辞的真实性产生判断。",
+            "phase": "解释与质疑"
+          },
+          {
+            "beat_id": "8",
+            "experience": "观众看到林晚用惯常的抱怨语气和身体绷紧的矛盾状态，强化其用表面情绪掩盖真实反应的观察。",
+            "phase": "防御强化"
+          },
+          {
+            "beat_id": "9",
+            "experience": "观众听到顾沉提出林晚可能“失忆”或隐瞒的假设，并看到林晚瞳孔收缩、掐掌心的恐惧反应，冲突触及核心秘密。",
+            "phase": "冲突升级"
+          },
+          {
+            "beat_id": "10",
+            "experience": "观众目睹顾沉将怀疑直接指向林晚（扫视其T恤下摆）以及林晚下意识捂住该位置的激烈反应，确信其与底片有关联。",
+            "phase": "直接指控"
+          },
+          {
+            "beat_id": "11",
+            "experience": "观众看到顾沉离开后林晚面具彻底碎裂，露出困惑、恐惧和决绝的复杂情绪，手悬在档案袋上颤抖，留下强烈的悬念和对其内心崩溃的共情。",
+            "phase": "悬念与崩溃"
+          }
+        ],
+        "beat_priorities": [
+          {
+            "beat_id": "1",
+            "priority": "高",
+            "reason": "建立场景核心物证（档案袋、胶片）和悬疑基调，是后续所有冲突的视觉锚点。"
+          },
+          {
+            "beat_id": "3",
+            "priority": "高",
+            "reason": "首次泄露林晚的隐藏层，是观众怀疑其真实意图的关键转折点。"
+          },
+          {
+            "beat_id": "6",
+            "priority": "高",
+            "reason": "提供林晚身上藏有物品的直接视觉证据，将怀疑具体化。"
+          },
+          {
+            "beat_id": "9",
+            "priority": "高",
+            "reason": "冲突升级至记忆/秘密核心，引发林晚最强烈的恐惧反应，是情感和戏剧张力的高点。"
+          },
+          {
+            "beat_id": "11",
+            "priority": "高",
+            "reason": "完成林晚从伪装到崩溃的情绪弧光，留下开放性悬念，决定场景收尾的力度。"
+          }
+        ],
+        "audience_knowledge_arc": [
+          {
+            "beat_id": "1",
+            "knowledge_state": "观众知道暗房内存在可疑物证（档案袋、撕边胶片），但不知其来源和意义。",
+            "transition_trigger": "视觉呈现物证。"
+          },
+          {
+            "beat_id": "3",
+            "knowledge_state": "观众开始怀疑林晚对物证有隐藏的关注或秘密。",
+            "transition_trigger": "林晚对档案袋的细微异常动作。"
+          },
+          {
+            "beat_id": "6",
+            "knowledge_state": "观众强烈怀疑林晚身上藏有与失踪底片相关的物品。",
+            "transition_trigger": "林晚触碰T恤下摆硬质凸起的动作。"
+          },
+          {
+            "beat_id": "9",
+            "knowledge_state": "观众得知顾沉怀疑林晚可能失忆或主动隐瞒关键信息。",
+            "transition_trigger": "顾沉的质问和林晚的恐惧反应。"
+          },
+          {
+            "beat_id": "10",
+            "knowledge_state": "观众几乎确信林晚与失踪底片有直接关联，且正在试图隐藏。",
+            "transition_trigger": "顾沉的明确暗示和林晚的捂住动作。"
+          },
+          {
+            "beat_id": "11",
+            "knowledge_state": "观众知道林晚的伪装已彻底失败，她正面临巨大的内心冲突和抉择，但具体秘密内容仍未知。",
+            "transition_trigger": "顾沉离开后林晚的情绪爆发和颤抖的手。"
+          }
+        ],
+        "emotional_arc": [
+          {
+            "beat_id": "1",
+            "emotion": "悬疑、不祥",
+            "trigger": "工作台上打开的档案袋和可疑胶片边缘的视觉呈现。",
+            "transition_reason": "场景以物证开场，直接奠定不安的基调。"
+          },
+          {
+            "beat_id": "2",
+            "emotion": "慵懒、平静（表面）",
+            "trigger": "林晚刻意慵懒的工作状态。",
+            "transition_reason": "建立与悬疑基调的反差，为后续冲突铺垫。"
+          },
+          {
+            "beat_id": "3",
+            "emotion": "怀疑（观众对林晚）",
+            "trigger": "林晚对档案袋的细微异常动作。",
+            "transition_reason": "观众从观察林晚行为转向质疑其动机。"
+          },
+          {
+            "beat_id": "4",
+            "emotion": "紧张感累积",
+            "trigger": "顾沉进入并注视物证。",
+            "transition_reason": "外部力量介入，将潜在冲突显性化。"
+          },
+          {
+            "beat_id": "5",
+            "emotion": "轻微紧张（林晚）",
+            "trigger": "顾沉询问门锁问题。",
+            "transition_reason": "试探性对话迫使林晚做出防御反应。"
+          },
+          {
+            "beat_id": "6",
+            "emotion": "怀疑加深（观众）",
+            "trigger": "林晚触碰T恤下摆硬质凸起。",
+            "transition_reason": "隐藏动作提供了更具体的怀疑依据。"
+          },
+          {
+            "beat_id": "7",
+            "emotion": "不耐烦但紧绷（林晚）",
+            "trigger": "顾沉直接质问胶片来源。",
+            "transition_reason": "直接质问迫使林晚给出解释，压力增大。"
+          },
+          {
+            "beat_id": "8",
+            "emotion": "防御姿态增强（林晚）",
+            "trigger": "林晚用抱怨语气质问顾沉。",
+            "transition_reason": "林晚试图用表面情绪夺回控制，但身体反应暴露紧张。"
+          },
+          {
+            "beat_id": "9",
+            "emotion": "恐惧和困惑（林晚）",
+            "trigger": "顾沉提出失忆/隐瞒假设。",
+            "transition_reason": "冲突触及林晚可能的核心秘密或记忆盲区，引发深层恐惧。"
+          },
+          {
+            "beat_id": "10",
+            "emotion": "恐惧和愤怒高点（林晚）",
+            "trigger": "顾沉明确指向林晚并扫视其T恤。",
+            "transition_reason": "怀疑被直接点明，林晚的防御被彻底击穿。"
+          },
+          {
+            "beat_id": "11",
+            "emotion": "面具碎裂，困惑、恐惧、决绝混合（林晚）",
+            "trigger": "顾沉离开并给出最后通牒。",
+            "transition_reason": "外部压力暂时解除，林晚的真实情绪彻底暴露并面临抉择。"
+          }
+        ],
+        "power_arc": [
+          {
+            "beat_id": "1",
+            "power_holder": "物证（档案袋、胶片）",
+            "power_dynamic": "物证作为沉默的第三方，掌握着场景的核心秘密，对林晚构成潜在威胁。"
+          },
+          {
+            "beat_id": "4",
+            "power_holder": "顾沉",
+            "power_dynamic": "顾沉进入并占据观察者/质问者位置，开始掌握对话和调查的主动权。"
+          },
+          {
+            "beat_id": "5",
+            "power_holder": "顾沉",
+            "power_dynamic": "顾沉通过门锁问题发起试探，进一步巩固其质问者地位。"
+          },
+          {
+            "beat_id": "7",
+            "power_holder": "顾沉",
+            "power_dynamic": "顾沉拿起档案袋并直接质问，将冲突焦点和控制权牢牢掌握在自己手中。"
+          },
+          {
+            "beat_id": "9",
+            "power_holder": "顾沉",
+            "power_dynamic": "顾沉提出失忆/隐瞒假设，将质问升级为对林晚心智和记忆的挑战，权力达到顶峰。"
+          },
+          {
+            "beat_id": "11",
+            "power_holder": "顾沉（离开时）/ 林晚（独处时）",
+            "power_dynamic": "顾沉以最后通牒离开，暂时保持权力优势；林晚独处时，权力转向其内心的抉择和秘密本身。"
+          }
+        ],
+        "visual_grammar": "本场景采用封闭空间内的心理现实主义视觉风格。以暗房的红色安全灯为基调，营造压抑、暧昧且充满秘密的氛围。视觉重心始终围绕“物证”（档案袋、胶片）与“隐藏”（林晚的身体动作、T恤下摆）之间的张力展开。通过人物在空间中的位置变化（门框、工作台、晾干绳）和视线方向（顾沉对物证的注视、林晚对档案袋的扫视）来外化权力关系和心理距离。关键信息（如胶片边缘、林晚的隐藏动作）通过精准的构图和演员调度自然呈现，避免刻意特写。",
+        "camera_principles": "1. **观察者视角**：镜头语言应模拟一个冷静、敏锐的观察者，跟随顾沉的调查视线，同时捕捉林晚试图隐藏的细节。2. **空间压迫感**：利用暗房的狭窄空间和红色光线，通过中景和近景的交替，强化人物间的心理压迫和紧张感。3. **细节驱动**：关键信息（如胶片锯齿边缘、林晚触碰T恤的手）应通过构图引导观众自然发现，而非依赖突兀的特写。4. **情绪跟随**：镜头节奏和稳定性应跟随林晚的情绪变化，从相对稳定（伪装期）到轻微晃动（紧张期）再到不稳定（崩溃期）。",
+        "composition_principles": "1. **物证锚定**：工作台上的档案袋和胶片应在多个镜头中作为前景或背景元素出现，持续提醒观众其存在。2. **身体语言框架**：利用门框、工作台边缘等环境元素框住人物，暗示其处境和心理限制。3. **视线引导**：通过人物视线方向（顾沉看向物证、林晚避开视线）构建画面内的张力线。4. **隐藏与揭示**：构图应有意将林晚T恤下摆的硬质凸起置于画面边缘或短暂遮挡，让观众在“看到”与“怀疑看到”之间徘徊。",
+        "performance_arc": {
+          "林晚": {
+            "objective": "在顾沉的质问下，竭力维持慵懒、无所谓的表面伪装，同时隐藏自己与档案袋/胶片的真实关联和内心的秘密与恐惧。",
+            "tactic_progression": [
+              {
+                "phase": "伪装期 (Beat 2-3)",
+                "tactic": "以刻意慵懒的工作状态和对物证的细微异常反应，建立表面平静，同时泄露一丝关注。"
+              },
+              {
+                "phase": "防御期 (Beat 5-8)",
+                "tactic": "用懒散的语气回应质问，通过抱怨和反问试图夺回对话控制权，但身体出现微小紧张反应（擦手微顿、身体绷紧）。"
+              },
+              {
+                "phase": "崩溃期 (Beat 9-11)",
+                "tactic": "伪装失效，恐惧和困惑通过瞳孔收缩、掐掌心、捂住T恤下摆等动作暴露，最终面具碎裂，情绪混乱。"
+              }
+            ],
+            "visible_behavior_progression": "慵懒夹照片 -> 目光扫过档案袋、指尖划过袋口 -> 擦手动作微顿 -> 无意识碰T恤下摆硬质凸起 -> 不耐烦抱怨但身体绷紧 -> 瞳孔收缩、手指蜷缩掐掌心 -> 下意识捂住T恤下摆 -> 面具碎裂，手悬在档案袋上颤抖。",
+            "turning_point": "Beat 9，当顾沉提出她可能“记得”是自己剪的胶片时，林晚的恐惧反应（瞳孔收缩、掐掌心）标志着伪装开始彻底失效，内心秘密被触及。"
+          },
+          "顾沉": {
+            "objective": "通过观察、试探和直接质问，逐步施加压力，迫使林晚暴露其与失踪底片的真实关联和隐藏的秘密。",
+            "tactic_progression": [
+              {
+                "phase": "观察期 (Beat 4)",
+                "tactic": "进入暗房，停在林晚身后，用目光锁定物证，建立无声的压迫感。"
+              },
+              {
+                "phase": "试探期 (Beat 5-7)",
+                "tactic": "从门锁问题入手进行间接试探，随后直接拿起档案袋质问胶片来源，逐步升级压力。"
+              },
+              {
+                "phase": "施压期 (Beat 9-11)",
+                "tactic": "提出失忆/隐瞒假设，明确将怀疑指向林晚，并扫视其隐藏物，最后以最后通牒离开，将压力最大化。"
+              }
+            ],
+            "visible_behavior_progression": "倚门框 -> 走进停在林晚身后 -> 走到工作台旁拿起档案袋 -> 走到门口手搭门把。",
+            "turning_point": "Beat 9，顾沉从质问事实（胶片来源）转向质问林晚的记忆和意图（是否“记得”），标志着调查策略从外部证据转向内部心理，施压方式发生质变。"
+          }
+        },
+        "edit_arc": "剪辑节奏应服务于心理张力的累积与释放。开场（Beat 1-3）节奏相对舒缓，以长镜头或缓慢推移建立环境和人物状态，让观众有时间观察细节。对峙开始（Beat 4-8）节奏逐渐加快，通过正反打镜头的交替和镜头时长的缩短，强化对话的交锋感和林晚的防御反应。冲突升级至崩溃（Beat 9-11）节奏达到最快，镜头切换更频繁，可能插入短暂的特写（如瞳孔、手部动作）以强调关键反应，最后在顾沉离开后（Beat 11）回归一个较长的、稳定的镜头，聚焦于林晚崩溃后的状态，形成情绪上的余韵和悬念。",
+        "information_reveal_plan": [
+          {
+            "beat_id": "1",
+            "revealed_info": "暗房工作台存在可疑物证：打开的牛皮纸档案袋、泛黄老照片一角、边缘有锯齿状撕裂痕迹的剪下胶片。",
+            "reveal_method": "场景开场的视觉呈现，镜头自然扫过工作台。"
+          },
+          {
+            "beat_id": "3",
+            "revealed_info": "林晚对档案袋有隐藏的关注或秘密。",
+            "reveal_method": "通过林晚细微的异常动作（目光扫过、指尖划过袋口）暗示。"
+          },
+          {
+            "beat_id": "5",
+            "revealed_info": "暗房门锁可能被动过，林晚对此反应异常。",
+            "reveal_method": "顾沉的对话询问和林晚擦手动作的微顿。"
+          },
+          {
+            "beat_id": "6",
+            "revealed_info": "林晚身上可能藏有硬质物品，与失踪底片相关。",
+            "reveal_method": "林晚无意识触碰T恤下摆硬质凸起的动作。"
+          },
+          {
+            "beat_id": "7",
+            "revealed_info": "林晚对胶片来源的初步解释：声称是旧废片，剪了边角准备扔掉。",
+            "reveal_method": "林晚的直接对话回应。"
+          },
+          {
+            "beat_id": "9",
+            "revealed_info": "顾沉怀疑林晚可能失忆或主动隐瞒关于胶片的关键信息。",
+            "reveal_method": "顾沉的直接质问和林晚的恐惧反应。"
+          },
+          {
+            "beat_id": "10",
+            "revealed_info": "顾沉明确将失踪的关键底片与林晚联系起来，认为可能被她“保管”。",
+            "reveal_method": "顾沉的明确暗示和扫视动作，以及林晚的捂住反应。"
+          },
+          {
+            "beat_id": "11",
+            "revealed_info": "顾沉给出最后通牒（下午有客人取照片），林晚的伪装彻底崩溃，内心秘密暴露但具体内容未明。",
+            "reveal_method": "顾沉的离开对话和林晚的情绪爆发及颤抖的手。"
+          }
+        ],
+        "spatial_expression": "暗房是一个封闭、压抑、充满化学气味和红色光线的空间，象征着秘密、隐藏和情绪的发酵。人物在空间中的移动和位置关系直接映射其心理状态和权力关系：顾沉从门口（外部）侵入，逐步逼近工作台（物证所在），最终又退回门口离开，完成一次对林晚心理空间的入侵与撤离。林晚始终围绕工作台和晾干绳活动，其位置变化（背对门口 -> 靠工作台 -> 背对顾沉整理照片）反映了她从专注工作到防御对峙再到试图逃避的心理轨迹。工作台是物证的承载点，也是冲突的焦点；晾干绳上的模糊人影照片则暗示着场景中未言明的过去和记忆的模糊性。",
+        "prop_visual_strategy": "1. **档案袋与胶片**：作为核心物证，必须在场景中持续可见（工作台上），其状态（打开、露出照片角、散落的撕边胶片）是悬疑的视觉源头。2. **林晚T恤下摆的硬质凸起**：作为隐藏物品的暗示，其呈现必须自然、隐蔽，通过演员动作和构图引导观众注意，而非直接展示。3. **晾干绳与模糊人影照片**：作为环境元素和林晚工作的证明，其模糊性与场景中记忆、真相的模糊性形成视觉隐喻。4. **门锁**：作为对话中提及的道具，无需特写，但其“松动痕迹”的提及应与顾沉的观察视角相呼应。",
+        "shot_architecture_guidance": "1. **建立镜头**：需一个能同时呈现暗房环境、工作台物证和林晚工作状态的镜头，奠定空间关系和悬疑基调。2. **关系镜头**：需多个能同时捕捉顾沉和林晚（或其中一人与物证）的镜头，以展现对峙中的空间距离、视线方向和权力动态。3. **细节揭示镜头**：需能自然引导观众注意到林晚异常动作（如触碰T恤下摆）的镜头，通过构图和演员调度实现，而非孤立特写。4. **反应镜头**：需捕捉林晚在关键对话节点（如Beat 5, 9, 10, 11）细微面部表情和身体反应的镜头，以展现其内心变化。5. **结束镜头**：需一个能聚焦于顾沉离开后林晚独自一人、情绪崩溃状态的镜头，强调其孤立和悬念。",
+        "must_preserve": [
+          "档案袋和撕边胶片作为核心物证在工作台上的视觉存在。",
+          "林晚对档案袋的细微异常反应（Beat 3）。",
+          "林晚触碰T恤下摆硬质凸起的动作（Beat 6）。",
+          "顾沉从门口进入、逼近工作台、最后退回门口离开的空间移动逻辑。",
+          "林晚从慵懒伪装到恐惧崩溃的情绪转变关键节点（Beat 9, 11）。",
+          "暗房红色安全灯营造的压抑、暧昧氛围。"
+        ],
+        "must_avoid": [
+          "直接展示林晚T恤下摆硬质凸起的具体物品。",
+          "通过画外音或非剧情手段解释人物内心想法。",
+          "使用过于夸张或舞台化的表演风格，破坏心理现实主义基调。",
+          "在对话之外添加额外的解释性镜头或信息。",
+          "改变或发明剧本中未提及的道具、位置或事件。"
+        ],
+        "creative_risks": [
+          "在Beat 3和Beat 6，依赖演员极其细微的动作和精准的构图来传递隐藏信息，若执行不到位可能导致观众错过关键暗示。",
+          "整个对峙过程高度依赖对话和表演张力，视觉上相对静态，若节奏把控不当可能显得沉闷。",
+          "暗房的红色安全灯环境可能限制面部表情的清晰度，需要在氛围营造和表演可见性之间找到平衡。"
+        ],
+        "strategy_summary": "本策略旨在通过暗房这一封闭空间内的心理对峙，以物证为视觉锚点，以林晚的隐藏动作和情绪变化为线索，逐步揭示其秘密，并在顾沉的步步紧逼下将其推向情绪崩溃的边缘。视觉上强调空间压迫感、细节暗示和情绪跟随，表演上要求林晚完成从伪装到崩溃的细腻转变，剪辑上服务于张力的累积与释放，最终留下一个充满悬念和内心挣扎的结尾。",
+        "authority": {
+          "Character": "approved_record.evidence.blocking.participants",
+          "DirectorTreatment": "approved_record.evidence.treatment",
+          "FactSnapshot": "approved_record.contract.immutable_projection.facts",
+          "Location": "absent; N/A required",
+          "Prop": "absent; N/A required",
+          "SceneBlocking": "approved_record.evidence.blocking",
+          "ScriptIR": "approved_record.treatment.beat_map + scene metadata"
+        },
+        "source_refs": [
+          "approved_record.treatment.beat_map",
+          "approved_record.evidence.blocking.participants",
+          "approved_record.scene metadata"
+        ],
+        "strategy_fingerprint": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+      }
+    },
+    {
+      "scene": {
+        "book_id": 990402,
+        "episode": 3,
+        "name": "暗房惊魂（2）",
+        "scene_id": "book990402:e3:暗房惊魂（2）"
+      },
+      "source_fingerprints": {
+        "scene_input": "8fae5b1a1fb1a8f62b1b6ab1518bc3af4db793f70f3de069274c840b2eb80d2c",
+        "strategy_contract": "c81454ae0b20b4b46d0d3871a79aa9a0f709cec5292e35407421908fde50360d"
+      },
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_type": "CREATIVE_GENERATION",
+          "prompt_request_fingerprint": "f59f75fd4d01944f513fafd73f59e1e01106bda890047dc586f62e9056977bb4",
+          "system_prompt_fingerprint": "d232bf80af91992b1200407dbdfacc704f171e4f47c50d32b80e48e18d6f1c78",
+          "schema_fingerprint": "41858d8d0b103ccbe14bf22fbcdf910b2804ebb1eb93904d9e60ec898da899bf",
+          "scene_input_fingerprint": "8fae5b1a1fb1a8f62b1b6ab1518bc3af4db793f70f3de069274c840b2eb80d2c",
+          "raw_provider_output": "```json\n{\n    \"schema_version\": \"director_scene_strategy_v1\",\n    \"scene_id\": \"book990402:e3:暗房惊魂（2）\",\n    \"strategy_version\": \"1.0\",\n    \"dramatic_objective\": \"通过一场逐步升级的对峙，将林晚从防御推向崩溃，同时让观众在顾沉的证据链与林晚的失忆/隐藏反应之间摇摆，最终以第三方观察的暗示和林晚的彻底崩溃收尾，留下关于真相、记忆与背叛的多重悬念。\",\n    \"scene_question\": \"林晚是否真的偷走了照片并剪下了胶片？她的“不记得”是真实的失忆，还是为了隐藏更深层秘密的防御机制？\",\n    \"audience_experience\": [\n        {\n            \"beat_id\": \"1\",\n            \"experience\": \"观众被置于门外走廊的紧张氛围中，通过逆光剪影感受到林晚的防御姿态和顾沉的压迫感，期待冲突的展开。\",\n            \"trigger\": \"顾沉背靠墙壁的等待姿态与林晚逆光拉开门的对峙画面。\",\n            \"transition_reason\": \"从上一场景的冲突延续，空间转换至门外，紧张感被视觉化。\"\n        },\n        {\n            \"beat_id\": \"2\",\n            \"experience\": \"观众听到林晚不耐烦的否认，但注意到她手指捻纽扣的细微动作，开始怀疑她言语的真实性。\",\n            \"trigger\": \"林晚的台词与手指捻纽扣的特写。\",\n            \"transition_reason\": \"从视觉对峙进入言语交锋，但身体语言泄露了内在紧张。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"experience\": \"观众首次看到顾沉手中的具体物证（胶片边缘），意识到指控并非空穴来风，悬念具体化。\",\n            \"trigger\": \"顾沉从口袋抽出胶片边缘的动作。\",\n            \"transition_reason\": \"从言语否认转向物证展示，冲突升级。\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"experience\": \"观众理解物证与失踪照片的直接关联，怀疑范围缩小，对林晚的怀疑加深。\",\n            \"trigger\": \"顾沉指出档案袋缺失照片及胶片边缘尺寸吻合。\",\n            \"transition_reason\": \"物证被赋予具体意义，指控更具说服力。\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"experience\": \"观众通过视觉对比（胶片撕裂与档案袋撕裂）直观感受到证据链的强度，冲突达到新高点。\",\n            \"trigger\": \"顾沉将胶片边缘举到光线中，特写展示撕裂痕迹。\",\n            \"transition_reason\": \"从口头指控转向视觉证据的直接呈现，说服力倍增。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"experience\": \"观众听到顾沉的直接指控，看到林晚从恐惧转向茫然痛苦，开始思考她是否真的“不记得”。\",\n            \"trigger\": \"顾沉的质问与林晚“不记得”的回答。\",\n            \"transition_reason\": \"冲突从物证关联转向对林晚个人行为的直接指控，触及记忆问题。\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"experience\": \"观众察觉林晚表面困惑与手指蜷缩掐掌心的反差，意识到她可能隐藏着秘密或经历着失忆。\",\n            \"trigger\": \"林晚手指蜷缩掐掌心的特写。\",\n            \"transition_reason\": \"在公开否认的同时，身体语言泄露了隐藏层。\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"experience\": \"观众听到顾沉提供工具关联的决定性线索（同一把剪刀，昨天只有林晚用过），感到林晚的退路被封堵。\",\n            \"trigger\": \"顾沉关于剪刀的陈述。\",\n            \"transition_reason\": \"从物证关联升级到工具关联，指控达到顶峰。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"experience\": \"观众通过闪回确认林晚使用过相关工具，内心天平进一步向“林晚有罪”倾斜，但她的僵住反应又引发同情。\",\n            \"trigger\": \"林晚拉门的手僵住与剪刀闪回。\",\n            \"transition_reason\": \"视觉证据直接关联林晚的行为，冲突无法回避。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"experience\": \"观众在林晚崩溃的痛苦中感到同情，同时被走廊阴影处的反光所困扰，怀疑有第三方观察，悬念达到顶点。\",\n            \"trigger\": \"林晚滑坐在地抱头与顾沉瞥见阴影反光。\",\n            \"transition_reason\": \"场景以角色崩溃和新的悬念（第三方）结束，留下未解之谜。\"\n        }\n    ],\n    \"beat_priorities\": [\n        {\n            \"beat_id\": \"5\",\n            \"priority\": \"最高\",\n            \"reason\": \"视觉证据链的关键节点，通过特写对比将物证说服力最大化，是冲突升级的转折点。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"priority\": \"高\",\n            \"reason\": \"通过闪回直接关联林晚与工具，是坐实她嫌疑的决定性时刻，也是她情绪反应的转折点。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"priority\": \"高\",\n            \"reason\": \"强钩子结尾，同时完成林晚的崩溃和引入第三方悬念，为后续剧情埋下伏笔。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"priority\": \"中高\",\n            \"reason\": \"将指控从物证转向个人记忆问题，触及角色核心，引发观众对林晚真实状态的思考。\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"priority\": \"中\",\n            \"reason\": \"通过身体语言泄露隐藏层，为林晚的复杂性和后续发展埋下种子。\"\n        }\n    ],\n    \"audience_knowledge_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"knowledge_state\": \"观众知道冲突在门外延续，但不清楚具体指控内容。\",\n            \"reveal_type\": \"场景建立\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"knowledge_state\": \"观众看到顾沉持有胶片边缘这一具体物证。\",\n            \"reveal_type\": \"物证引入\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"knowledge_state\": \"观众知道物证与失踪照片直接关联，怀疑范围缩小。\",\n            \"reveal_type\": \"关联建立\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"knowledge_state\": \"观众直观看到胶片撕裂与档案袋撕裂的视觉呼应，证据链强度提升。\",\n            \"reveal_type\": \"视觉确认\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"knowledge_state\": \"观众知道顾沉直接指控林晚偷照片并剪下边缘，且林晚回答“不记得”。\",\n            \"reveal_type\": \"直接指控\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"knowledge_state\": \"观众知道撕裂由同一把剪刀造成，且昨天只有林晚用过该剪刀。\",\n            \"reveal_type\": \"工具关联\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"knowledge_state\": \"观众通过闪回确认林晚昨天使用过老式剪刀。\",\n            \"reveal_type\": \"行为确认\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"knowledge_state\": \"观众知道林晚情绪崩溃，且可能有第三方在走廊阴影处观察。\",\n            \"reveal_type\": \"悬念引入\"\n        }\n    ],\n    \"emotional_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"emotion\": \"紧张、对峙\",\n            \"trigger\": \"顾沉等待的姿态与林晚逆光拉开门的视觉对峙。\",\n            \"transition_reason\": \"从上一场景的冲突延续，空间转换带来新的紧张感。\"\n        },\n        {\n            \"beat_id\": \"2\",\n            \"emotion\": \"防御性不耐烦（林晚）/ 压迫性冷静（顾沉）\",\n            \"trigger\": \"林晚的否认台词与捻纽扣动作；顾沉的沉默观察。\",\n            \"transition_reason\": \"言语交锋开始，但身体语言泄露了内在情绪。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"emotion\": \"困惑、警惕加深（林晚）/ 掌控感增强（顾沉）\",\n            \"trigger\": \"顾沉展示胶片边缘。\",\n            \"transition_reason\": \"物证出现，冲突从言语转向实物。\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"emotion\": \"恐惧加剧（林晚）/ 指控感增强（顾沉）\",\n            \"trigger\": \"顾沉指出物证与失踪照片的关联。\",\n            \"transition_reason\": \"物证被赋予具体意义，指控更具杀伤力。\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"emotion\": \"冲突新高点（双方）\",\n            \"trigger\": \"顾沉将胶片边缘举到光线中进行视觉对比。\",\n            \"transition_reason\": \"视觉证据的直接呈现，将冲突推向高潮。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"emotion\": \"茫然、痛苦（林晚）/ 坚定指控（顾沉）\",\n            \"trigger\": \"顾沉的直接质问与林晚“不记得”的回答。\",\n            \"transition_reason\": \"指控从物证转向个人行为与记忆，触及核心。\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"emotion\": \"决绝开始浮现（林晚）\",\n            \"trigger\": \"林晚手指蜷缩掐掌心，与表面困惑形成反差。\",\n            \"transition_reason\": \"身体语言泄露了隐藏的情绪层。\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"emotion\": \"决绝压过恐惧（林晚）/ 最终封堵（顾沉）\",\n            \"trigger\": \"林晚试图关门；顾沉提供工具关联的决定性线索。\",\n            \"transition_reason\": \"林晚试图结束对话，但顾沉用最后证据封堵退路。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"emotion\": \"无法回避的冲突（双方）\",\n            \"trigger\": \"林晚拉门的手僵住与剪刀闪回。\",\n            \"transition_reason\": \"视觉证据直接关联林晚的行为，冲突达到顶点。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"emotion\": \"痛苦崩溃（林晚）/ 悬疑收尾（观众）\",\n            \"trigger\": \"林晚滑坐在地抱头；顾沉瞥见阴影反光。\",\n            \"transition_reason\": \"场景以角色崩溃和新的悬念结束，留下未解之谜。\"\n        }\n    ],\n    \"power_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"power_holder\": \"顾沉\",\n            \"power_dynamics\": \"顾沉以等待姿态占据门外空间，形成压迫；林晚从暗房内开门，处于被审视位置。\",\n            \"transition_reason\": \"空间位置与姿态确立初始权力关系。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"power_holder\": \"顾沉\",\n            \"power_dynamics\": \"顾沉掌握物证，指控主动权增强；林晚处于被动回应状态。\",\n            \"transition_reason\": \"物证的出现强化了顾沉的指控依据。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"power_holder\": \"顾沉\",\n            \"power_dynamics\": \"顾沉提出直接指控，将林晚置于嫌疑人位置；林晚以“不记得”回应，试图保持防御。\",\n            \"transition_reason\": \"指控从物证转向个人，权力天平进一步倾斜。\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"power_holder\": \"顾沉\",\n            \"power_dynamics\": \"顾沉提供工具关联的决定性线索，彻底封堵林晚的退路；林晚试图关门结束对话，但为时已晚。\",\n            \"transition_reason\": \"最后证据的提出使顾沉的指控达到顶峰。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"power_holder\": \"不确定/第三方\",\n            \"power_dynamics\": \"林晚崩溃，失去所有防御；顾沉离开，但瞥见阴影反光，暗示可能有第三方观察，权力格局可能被颠覆。\",\n            \"transition_reason\": \"场景结束时，明确的权力关系被第三方悬念所模糊。\"\n        }\n    ],\n    \"visual_grammar\": \"本场景的视觉语法核心是“光与影的对比”和“证据的视觉化呈现”。逆光（林晚开门）、晨光（照亮胶片边缘）、阴影（走廊阴影处反光）构成主要光影层次。关键道具（胶片边缘、纽扣、剪刀闪回）必须通过特写镜头获得视觉强调，构建一条从物证到行为的视觉证据链。空间上，门外走廊的狭窄与暗房内部的黑暗形成对比，强化对峙的压迫感。\",\n    \"camera_principles\": \"1. **压迫性构图**：在对峙时刻（如beat 1, 6, 8），使用中近景或近景将两人框在同一画面，强调空间的狭窄和关系的紧张。2. **证据特写**：对于关键物证（胶片边缘beat 3/5，纽扣beat 2，剪刀闪回beat 9），必须使用特写镜头，确保观众能清晰看到细节（锯齿状撕裂、手指动作）。3. **情绪跟随**：在林晚情绪变化的关键点（beat 6回答“不记得”，beat 7手指蜷缩，beat 10崩溃），镜头应贴近她的面部或手部，捕捉细微表情和动作。4. **悬念暗示**：在beat 10顾沉瞥见阴影反光时，镜头应跟随他的视线，短暂聚焦于阴影处，但不揭示具体是什么，保持悬念。\",\n    \"composition_principles\": \"1. **逆光剪影**：beat 1林晚开门时，利用逆光将其处理为剪影，强调其防御姿态和神秘感。2. **视觉对比**：beat 5将胶片边缘与档案袋撕裂痕迹并置构图，通过相似性强化证据关联。3. **身体语言焦点**：beat 2捻纽扣、beat 7手指蜷缩、beat 9手僵住，构图应突出这些手部动作，作为内心状态的视觉外化。4. **空间分割**：利用门框作为视觉分割线，区分门内（暗房，林晚的领域）和门外（走廊，顾沉的领域），强化对峙感。\",\n    \"performance_arc\": [\n        {\n            \"character_id\": \"19\",\n            \"character_name\": \"林晚\",\n            \"objective\": \"否认指控，保护自己（可能是在保护秘密或因失忆而困惑），最终在无法辩驳的证据和记忆冲击下崩溃。\",\n            \"tactic_progression\": \"不耐烦否认（beat 2） -> 困惑警惕（beat 3-4） -> 恐惧加剧（beat 5-6） -> 决绝浮现（beat 7-8） -> 崩溃（beat 10）。\",\n            \"visible_behavior_progression\": \"逆光站立，身体侧开（beat 1） -> 手指捻纽扣（beat 2） -> 手指蜷缩掐掌心（beat 7） -> 拉门的手僵住（beat 9） -> 背对顾沉肩膀颤抖，关门后滑坐在地抱头（beat 10）。\",\n            \"turning_point\": \"beat 6 回答“不记得”时，从防御性否认转向茫然痛苦，标志着她内心防线的第一次重大裂痕。\"\n        },\n        {\n            \"character_id\": \"20\",\n            \"character_name\": \"顾沉\",\n            \"objective\": \"通过逐步展示证据，迫使林晚面对事实（或她隐藏的秘密），查明照片失踪的真相。\",\n            \"tactic_progression\": \"沉默施压（beat 1） -> 展示物证（beat 3） -> 建立关联（beat 4-5） -> 直接指控（beat 6） -> 封堵退路（beat 8） -> 离开但保持警觉（beat 10）。\",\n            \"visible_behavior_progression\": \"背靠墙壁，目光低垂（beat 1） -> 抽出胶片边缘（beat 3） -> 将胶片举到光线中（beat 5） -> 向前微微倾身（beat 6） -> 转身沿走廊离开，脚步微顿侧头扫视阴影处（beat 10）。\",\n            \"turning_point\": \"beat 8 提出工具关联的决定性线索，标志着指控从可能性变为高度确定性，彻底掌握主动权。\"\n        }\n    ],\n    \"edit_arc\": \"剪辑节奏应跟随冲突升级：开场（beat 1-2）节奏稍缓，建立空间和人物状态；物证出现（beat 3-5）节奏加快，通过特写镜头的快速切换强调证据链；指控与回应（beat 6-8）节奏达到最快，对话交锋与反应镜头紧密交织；闪回与崩溃（beat 9-10）节奏再次变化，闪回短暂而冲击，崩溃段落则用较长的镜头展现林晚的痛苦，最后以顾沉瞥见反光的悬念镜头收尾。\",\n    \"information_reveal_plan\": [\n        {\n            \"beat_id\": \"1\",\n            \"reveal\": \"场景转换至门外，冲突延续。\",\n            \"method\": \"空间转换与人物姿态的视觉建立。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"reveal\": \"顾沉持有胶片边缘这一具体物证。\",\n            \"method\": \"顾沉从口袋抽出胶片边缘的动作特写。\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"reveal\": \"物证与失踪照片的直接关联（尺寸吻合）。\",\n            \"method\": \"顾沉的台词说明。\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"reveal\": \"胶片撕裂与档案袋撕裂的视觉呼应。\",\n            \"method\": \"顾沉将胶片边缘举到光线中，镜头特写对比。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"reveal\": \"顾沉直接指控林晚偷照片并剪下边缘；林晚回答“不记得”。\",\n            \"method\": \"对话交锋。\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"reveal\": \"撕裂由同一把剪刀造成，且昨天只有林晚用过。\",\n            \"method\": \"顾沉的台词说明。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"reveal\": \"林晚昨天使用过老式剪刀。\",\n            \"method\": \"短暂闪回镜头。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"reveal\": \"林晚情绪崩溃；走廊阴影处可能有第三方观察。\",\n            \"method\": \"林晚崩溃的视觉呈现；顾沉瞥见反光的动作与视线引导。\"\n        }\n    ],\n    \"spatial_expression\": \"空间是权力与心理的映射。门外走廊狭窄、光线昏暗（除逆光和晨光外），形成压迫性对峙空间。暗房内部黑暗，象征林晚可能隐藏的秘密或记忆的黑暗面。门框是关键的视觉与心理边界，区分内外、攻守。顾沉占据门外走廊，象征他试图将林晚从她的“安全区”（暗房）拉出来面对现实。林晚从暗房内开门，又试图关门，象征她试图控制边界但最终失败。走廊阴影处的反光暗示空间中可能存在未被察觉的第三方，打破了两人对峙的封闭性。\",\n    \"prop_visual_strategy\": \"1. **胶片边缘**：核心物证，必须在beat 3和beat 5获得清晰特写，展示其锯齿状撕裂细节。在beat 5需与档案袋撕裂痕迹进行视觉对比。2. **纽扣**：林晚紧张情绪的视觉外化，在beat 2需特写其手指捻动纽扣的动作。3. **老式剪刀**：通过beat 9的闪回短暂出现，需清晰展示其样式，以便观众将其与“同一把剪刀”的指控联系起来。4. **档案袋**：作为物证的载体，在beat 4和beat 5的对比中需要出现，展示其撕裂痕迹。\",\n    \"shot_architecture_guidance\": \"本场景的镜头架构需服务于“逐步升级的对峙与证据呈现”。需要以下功能镜头：1. **建立镜头**：开场（beat 1）需建立门外走廊与暗房门的空间关系及两人初始位置。2. **关系镜头**：在对峙关键点（beat 1, 6, 8）需将两人框在同一画面，强调紧张关系。3. **证据特写镜头**：为胶片边缘（beat 3, 5）、纽扣（beat 2）、剪刀闪回（beat 9）提供特写。4. **情绪反应镜头**：紧密跟随林晚在beat 6, 7, 9, 10的情绪变化，以及顾沉在beat 10瞥见反光的反应。5. **悬念镜头**：beat 10需包含顾沉视线引导至阴影反光的镜头，以及林晚崩溃的全景或中景。6. **闪回镜头**：beat 9需一个短暂、风格化的闪回镜头，展示林晚使用剪刀。\",\n    \"must_preserve\": [\n        \"顾沉与林晚在门外走廊对峙的空间关系。\",\n        \"林晚从暗房内开门、逆光站立、试图关门、最终崩溃的完整行为链。\",\n        \"顾沉展示胶片边缘、进行视觉对比、提出工具关联的证据呈现顺序。\",\n        \"林晚手指捻纽扣、蜷缩掐掌心、手僵住等关键身体语言细节。\",\n        \"beat 10走廊阴影处反光的悬念暗示。\",\n        \"林晚回答“不记得”的台词。\",\n        \"闪回中林晚使用老式剪刀裁剪包装纸的视觉信息。\"\n    ],\n    \"must_avoid\": [\n        \"改变或发明任何对话、事件、人物、道具或地点。\",\n        \"在镜头架构指导中指定具体的镜头编号、景别序列或拍摄参数。\",\n        \"削弱或跳过任何已批准的beat及其信息揭示点。\",\n        \"将林晚的崩溃处理为简单的哭泣，必须保留其“迷茫痛苦”的复杂状态。\",\n        \"明确揭示阴影反光处的第三方身份或具体物体，必须保持悬念。\",\n        \"将顾沉的指控处理为情绪化吼叫，必须保持其冷静、逐步施压的特质。\"\n    ],\n    \"creative_risks\": [\n        \"在beat 5的视觉对比中，如何最有效地并置胶片边缘与档案袋撕裂痕迹，使其视觉关联既清晰又不显刻意。\",\n        \"在beat 9的闪回中，如何用极短的镜头（可能1-2秒）清晰传达“林晚使用老式剪刀”这一信息，同时保持闪回的风格化和冲击力。\",\n        \"在beat 10，如何平衡林晚崩溃的表演强度与顾沉瞥见反光的悬念暗示，使两者都得到充分表达而不互相干扰。\",\n        \"如何通过光影设计（逆光、晨光、阴影）在视觉上强化“光与影”的主题，并服务于叙事和情绪。\"\n    ],\n    \"strategy_summary\": \"本场景策略旨在通过一场在门外走廊展开的、逐步升级的对峙，利用精心设计的视觉证据链（胶片边缘、撕裂对比、剪刀闪回）将林晚从防御推向崩溃。核心是强化“光与影”的视觉语法，通过特写镜头突出关键道具和身体语言细节，构建从物证到行为的视觉说服力。镜头架构服务于压迫性构图、证据特写、情绪跟随和悬念暗示。最终以林晚的痛苦崩溃和走廊阴影处的第三方反光收尾，留下关于真相、记忆与背叛的多重悬念。\",\n    \"authority\": {\n        \"Character\": \"approved_record.evidence.blocking.participants\",\n        \"DirectorTreatment\": \"approved_record.evidence.treatment\",\n        \"FactSnapshot\": \"approved_record.contract.immutable_projection.facts\",\n        \"Location\": \"absent; N/A required\",\n        \"Prop\": \"absent; N/A required\",\n        \"SceneBlocking\": \"approved_record.evidence.blocking\",\n        \"ScriptIR\": \"approved_record.treatment.beat_map + scene metadata\"\n    },\n    \"source_refs\": [\n        \"approved_record.treatment.beat_map\",\n        \"approved_record.evidence.blocking\",\n        \"approved_record.evidence.treatment\",\n        \"approved_record.contract.immutable_projection.facts\"\n    ],\n    \"strategy_fingerprint\": \"a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6\"\n}\n```",
+          "parsed": {
+            "schema_version": "director_scene_strategy_v1",
+            "scene_id": "book990402:e3:暗房惊魂（2）",
+            "strategy_version": "1.0",
+            "dramatic_objective": "通过一场逐步升级的对峙，将林晚从防御推向崩溃，同时让观众在顾沉的证据链与林晚的失忆/隐藏反应之间摇摆，最终以第三方观察的暗示和林晚的彻底崩溃收尾，留下关于真相、记忆与背叛的多重悬念。",
+            "scene_question": "林晚是否真的偷走了照片并剪下了胶片？她的“不记得”是真实的失忆，还是为了隐藏更深层秘密的防御机制？",
+            "audience_experience": [
+              {
+                "beat_id": "1",
+                "experience": "观众被置于门外走廊的紧张氛围中，通过逆光剪影感受到林晚的防御姿态和顾沉的压迫感，期待冲突的展开。",
+                "trigger": "顾沉背靠墙壁的等待姿态与林晚逆光拉开门的对峙画面。",
+                "transition_reason": "从上一场景的冲突延续，空间转换至门外，紧张感被视觉化。"
+              },
+              {
+                "beat_id": "2",
+                "experience": "观众听到林晚不耐烦的否认，但注意到她手指捻纽扣的细微动作，开始怀疑她言语的真实性。",
+                "trigger": "林晚的台词与手指捻纽扣的特写。",
+                "transition_reason": "从视觉对峙进入言语交锋，但身体语言泄露了内在紧张。"
+              },
+              {
+                "beat_id": "3",
+                "experience": "观众首次看到顾沉手中的具体物证（胶片边缘），意识到指控并非空穴来风，悬念具体化。",
+                "trigger": "顾沉从口袋抽出胶片边缘的动作。",
+                "transition_reason": "从言语否认转向物证展示，冲突升级。"
+              },
+              {
+                "beat_id": "4",
+                "experience": "观众理解物证与失踪照片的直接关联，怀疑范围缩小，对林晚的怀疑加深。",
+                "trigger": "顾沉指出档案袋缺失照片及胶片边缘尺寸吻合。",
+                "transition_reason": "物证被赋予具体意义，指控更具说服力。"
+              },
+              {
+                "beat_id": "5",
+                "experience": "观众通过视觉对比（胶片撕裂与档案袋撕裂）直观感受到证据链的强度，冲突达到新高点。",
+                "trigger": "顾沉将胶片边缘举到光线中，特写展示撕裂痕迹。",
+                "transition_reason": "从口头指控转向视觉证据的直接呈现，说服力倍增。"
+              },
+              {
+                "beat_id": "6",
+                "experience": "观众听到顾沉的直接指控，看到林晚从恐惧转向茫然痛苦，开始思考她是否真的“不记得”。",
+                "trigger": "顾沉的质问与林晚“不记得”的回答。",
+                "transition_reason": "冲突从物证关联转向对林晚个人行为的直接指控，触及记忆问题。"
+              },
+              {
+                "beat_id": "7",
+                "experience": "观众察觉林晚表面困惑与手指蜷缩掐掌心的反差，意识到她可能隐藏着秘密或经历着失忆。",
+                "trigger": "林晚手指蜷缩掐掌心的特写。",
+                "transition_reason": "在公开否认的同时，身体语言泄露了隐藏层。"
+              },
+              {
+                "beat_id": "8",
+                "experience": "观众听到顾沉提供工具关联的决定性线索（同一把剪刀，昨天只有林晚用过），感到林晚的退路被封堵。",
+                "trigger": "顾沉关于剪刀的陈述。",
+                "transition_reason": "从物证关联升级到工具关联，指控达到顶峰。"
+              },
+              {
+                "beat_id": "9",
+                "experience": "观众通过闪回确认林晚使用过相关工具，内心天平进一步向“林晚有罪”倾斜，但她的僵住反应又引发同情。",
+                "trigger": "林晚拉门的手僵住与剪刀闪回。",
+                "transition_reason": "视觉证据直接关联林晚的行为，冲突无法回避。"
+              },
+              {
+                "beat_id": "10",
+                "experience": "观众在林晚崩溃的痛苦中感到同情，同时被走廊阴影处的反光所困扰，怀疑有第三方观察，悬念达到顶点。",
+                "trigger": "林晚滑坐在地抱头与顾沉瞥见阴影反光。",
+                "transition_reason": "场景以角色崩溃和新的悬念（第三方）结束，留下未解之谜。"
+              }
+            ],
+            "beat_priorities": [
+              {
+                "beat_id": "5",
+                "priority": "最高",
+                "reason": "视觉证据链的关键节点，通过特写对比将物证说服力最大化，是冲突升级的转折点。"
+              },
+              {
+                "beat_id": "9",
+                "priority": "高",
+                "reason": "通过闪回直接关联林晚与工具，是坐实她嫌疑的决定性时刻，也是她情绪反应的转折点。"
+              },
+              {
+                "beat_id": "10",
+                "priority": "高",
+                "reason": "强钩子结尾，同时完成林晚的崩溃和引入第三方悬念，为后续剧情埋下伏笔。"
+              },
+              {
+                "beat_id": "6",
+                "priority": "中高",
+                "reason": "将指控从物证转向个人记忆问题，触及角色核心，引发观众对林晚真实状态的思考。"
+              },
+              {
+                "beat_id": "7",
+                "priority": "中",
+                "reason": "通过身体语言泄露隐藏层，为林晚的复杂性和后续发展埋下种子。"
+              }
+            ],
+            "audience_knowledge_arc": [
+              {
+                "beat_id": "1",
+                "knowledge_state": "观众知道冲突在门外延续，但不清楚具体指控内容。",
+                "reveal_type": "场景建立"
+              },
+              {
+                "beat_id": "3",
+                "knowledge_state": "观众看到顾沉持有胶片边缘这一具体物证。",
+                "reveal_type": "物证引入"
+              },
+              {
+                "beat_id": "4",
+                "knowledge_state": "观众知道物证与失踪照片直接关联，怀疑范围缩小。",
+                "reveal_type": "关联建立"
+              },
+              {
+                "beat_id": "5",
+                "knowledge_state": "观众直观看到胶片撕裂与档案袋撕裂的视觉呼应，证据链强度提升。",
+                "reveal_type": "视觉确认"
+              },
+              {
+                "beat_id": "6",
+                "knowledge_state": "观众知道顾沉直接指控林晚偷照片并剪下边缘，且林晚回答“不记得”。",
+                "reveal_type": "直接指控"
+              },
+              {
+                "beat_id": "8",
+                "knowledge_state": "观众知道撕裂由同一把剪刀造成，且昨天只有林晚用过该剪刀。",
+                "reveal_type": "工具关联"
+              },
+              {
+                "beat_id": "9",
+                "knowledge_state": "观众通过闪回确认林晚昨天使用过老式剪刀。",
+                "reveal_type": "行为确认"
+              },
+              {
+                "beat_id": "10",
+                "knowledge_state": "观众知道林晚情绪崩溃，且可能有第三方在走廊阴影处观察。",
+                "reveal_type": "悬念引入"
+              }
+            ],
+            "emotional_arc": [
+              {
+                "beat_id": "1",
+                "emotion": "紧张、对峙",
+                "trigger": "顾沉等待的姿态与林晚逆光拉开门的视觉对峙。",
+                "transition_reason": "从上一场景的冲突延续，空间转换带来新的紧张感。"
+              },
+              {
+                "beat_id": "2",
+                "emotion": "防御性不耐烦（林晚）/ 压迫性冷静（顾沉）",
+                "trigger": "林晚的否认台词与捻纽扣动作；顾沉的沉默观察。",
+                "transition_reason": "言语交锋开始，但身体语言泄露了内在情绪。"
+              },
+              {
+                "beat_id": "3",
+                "emotion": "困惑、警惕加深（林晚）/ 掌控感增强（顾沉）",
+                "trigger": "顾沉展示胶片边缘。",
+                "transition_reason": "物证出现，冲突从言语转向实物。"
+              },
+              {
+                "beat_id": "4",
+                "emotion": "恐惧加剧（林晚）/ 指控感增强（顾沉）",
+                "trigger": "顾沉指出物证与失踪照片的关联。",
+                "transition_reason": "物证被赋予具体意义，指控更具杀伤力。"
+              },
+              {
+                "beat_id": "5",
+                "emotion": "冲突新高点（双方）",
+                "trigger": "顾沉将胶片边缘举到光线中进行视觉对比。",
+                "transition_reason": "视觉证据的直接呈现，将冲突推向高潮。"
+              },
+              {
+                "beat_id": "6",
+                "emotion": "茫然、痛苦（林晚）/ 坚定指控（顾沉）",
+                "trigger": "顾沉的直接质问与林晚“不记得”的回答。",
+                "transition_reason": "指控从物证转向个人行为与记忆，触及核心。"
+              },
+              {
+                "beat_id": "7",
+                "emotion": "决绝开始浮现（林晚）",
+                "trigger": "林晚手指蜷缩掐掌心，与表面困惑形成反差。",
+                "transition_reason": "身体语言泄露了隐藏的情绪层。"
+              },
+              {
+                "beat_id": "8",
+                "emotion": "决绝压过恐惧（林晚）/ 最终封堵（顾沉）",
+                "trigger": "林晚试图关门；顾沉提供工具关联的决定性线索。",
+                "transition_reason": "林晚试图结束对话，但顾沉用最后证据封堵退路。"
+              },
+              {
+                "beat_id": "9",
+                "emotion": "无法回避的冲突（双方）",
+                "trigger": "林晚拉门的手僵住与剪刀闪回。",
+                "transition_reason": "视觉证据直接关联林晚的行为，冲突达到顶点。"
+              },
+              {
+                "beat_id": "10",
+                "emotion": "痛苦崩溃（林晚）/ 悬疑收尾（观众）",
+                "trigger": "林晚滑坐在地抱头；顾沉瞥见阴影反光。",
+                "transition_reason": "场景以角色崩溃和新的悬念结束，留下未解之谜。"
+              }
+            ],
+            "power_arc": [
+              {
+                "beat_id": "1",
+                "power_holder": "顾沉",
+                "power_dynamics": "顾沉以等待姿态占据门外空间，形成压迫；林晚从暗房内开门，处于被审视位置。",
+                "transition_reason": "空间位置与姿态确立初始权力关系。"
+              },
+              {
+                "beat_id": "3",
+                "power_holder": "顾沉",
+                "power_dynamics": "顾沉掌握物证，指控主动权增强；林晚处于被动回应状态。",
+                "transition_reason": "物证的出现强化了顾沉的指控依据。"
+              },
+              {
+                "beat_id": "6",
+                "power_holder": "顾沉",
+                "power_dynamics": "顾沉提出直接指控，将林晚置于嫌疑人位置；林晚以“不记得”回应，试图保持防御。",
+                "transition_reason": "指控从物证转向个人，权力天平进一步倾斜。"
+              },
+              {
+                "beat_id": "8",
+                "power_holder": "顾沉",
+                "power_dynamics": "顾沉提供工具关联的决定性线索，彻底封堵林晚的退路；林晚试图关门结束对话，但为时已晚。",
+                "transition_reason": "最后证据的提出使顾沉的指控达到顶峰。"
+              },
+              {
+                "beat_id": "10",
+                "power_holder": "不确定/第三方",
+                "power_dynamics": "林晚崩溃，失去所有防御；顾沉离开，但瞥见阴影反光，暗示可能有第三方观察，权力格局可能被颠覆。",
+                "transition_reason": "场景结束时，明确的权力关系被第三方悬念所模糊。"
+              }
+            ],
+            "visual_grammar": "本场景的视觉语法核心是“光与影的对比”和“证据的视觉化呈现”。逆光（林晚开门）、晨光（照亮胶片边缘）、阴影（走廊阴影处反光）构成主要光影层次。关键道具（胶片边缘、纽扣、剪刀闪回）必须通过特写镜头获得视觉强调，构建一条从物证到行为的视觉证据链。空间上，门外走廊的狭窄与暗房内部的黑暗形成对比，强化对峙的压迫感。",
+            "camera_principles": "1. **压迫性构图**：在对峙时刻（如beat 1, 6, 8），使用中近景或近景将两人框在同一画面，强调空间的狭窄和关系的紧张。2. **证据特写**：对于关键物证（胶片边缘beat 3/5，纽扣beat 2，剪刀闪回beat 9），必须使用特写镜头，确保观众能清晰看到细节（锯齿状撕裂、手指动作）。3. **情绪跟随**：在林晚情绪变化的关键点（beat 6回答“不记得”，beat 7手指蜷缩，beat 10崩溃），镜头应贴近她的面部或手部，捕捉细微表情和动作。4. **悬念暗示**：在beat 10顾沉瞥见阴影反光时，镜头应跟随他的视线，短暂聚焦于阴影处，但不揭示具体是什么，保持悬念。",
+            "composition_principles": "1. **逆光剪影**：beat 1林晚开门时，利用逆光将其处理为剪影，强调其防御姿态和神秘感。2. **视觉对比**：beat 5将胶片边缘与档案袋撕裂痕迹并置构图，通过相似性强化证据关联。3. **身体语言焦点**：beat 2捻纽扣、beat 7手指蜷缩、beat 9手僵住，构图应突出这些手部动作，作为内心状态的视觉外化。4. **空间分割**：利用门框作为视觉分割线，区分门内（暗房，林晚的领域）和门外（走廊，顾沉的领域），强化对峙感。",
+            "performance_arc": [
+              {
+                "character_id": "19",
+                "character_name": "林晚",
+                "objective": "否认指控，保护自己（可能是在保护秘密或因失忆而困惑），最终在无法辩驳的证据和记忆冲击下崩溃。",
+                "tactic_progression": "不耐烦否认（beat 2） -> 困惑警惕（beat 3-4） -> 恐惧加剧（beat 5-6） -> 决绝浮现（beat 7-8） -> 崩溃（beat 10）。",
+                "visible_behavior_progression": "逆光站立，身体侧开（beat 1） -> 手指捻纽扣（beat 2） -> 手指蜷缩掐掌心（beat 7） -> 拉门的手僵住（beat 9） -> 背对顾沉肩膀颤抖，关门后滑坐在地抱头（beat 10）。",
+                "turning_point": "beat 6 回答“不记得”时，从防御性否认转向茫然痛苦，标志着她内心防线的第一次重大裂痕。"
+              },
+              {
+                "character_id": "20",
+                "character_name": "顾沉",
+                "objective": "通过逐步展示证据，迫使林晚面对事实（或她隐藏的秘密），查明照片失踪的真相。",
+                "tactic_progression": "沉默施压（beat 1） -> 展示物证（beat 3） -> 建立关联（beat 4-5） -> 直接指控（beat 6） -> 封堵退路（beat 8） -> 离开但保持警觉（beat 10）。",
+                "visible_behavior_progression": "背靠墙壁，目光低垂（beat 1） -> 抽出胶片边缘（beat 3） -> 将胶片举到光线中（beat 5） -> 向前微微倾身（beat 6） -> 转身沿走廊离开，脚步微顿侧头扫视阴影处（beat 10）。",
+                "turning_point": "beat 8 提出工具关联的决定性线索，标志着指控从可能性变为高度确定性，彻底掌握主动权。"
+              }
+            ],
+            "edit_arc": "剪辑节奏应跟随冲突升级：开场（beat 1-2）节奏稍缓，建立空间和人物状态；物证出现（beat 3-5）节奏加快，通过特写镜头的快速切换强调证据链；指控与回应（beat 6-8）节奏达到最快，对话交锋与反应镜头紧密交织；闪回与崩溃（beat 9-10）节奏再次变化，闪回短暂而冲击，崩溃段落则用较长的镜头展现林晚的痛苦，最后以顾沉瞥见反光的悬念镜头收尾。",
+            "information_reveal_plan": [
+              {
+                "beat_id": "1",
+                "reveal": "场景转换至门外，冲突延续。",
+                "method": "空间转换与人物姿态的视觉建立。"
+              },
+              {
+                "beat_id": "3",
+                "reveal": "顾沉持有胶片边缘这一具体物证。",
+                "method": "顾沉从口袋抽出胶片边缘的动作特写。"
+              },
+              {
+                "beat_id": "4",
+                "reveal": "物证与失踪照片的直接关联（尺寸吻合）。",
+                "method": "顾沉的台词说明。"
+              },
+              {
+                "beat_id": "5",
+                "reveal": "胶片撕裂与档案袋撕裂的视觉呼应。",
+                "method": "顾沉将胶片边缘举到光线中，镜头特写对比。"
+              },
+              {
+                "beat_id": "6",
+                "reveal": "顾沉直接指控林晚偷照片并剪下边缘；林晚回答“不记得”。",
+                "method": "对话交锋。"
+              },
+              {
+                "beat_id": "8",
+                "reveal": "撕裂由同一把剪刀造成，且昨天只有林晚用过。",
+                "method": "顾沉的台词说明。"
+              },
+              {
+                "beat_id": "9",
+                "reveal": "林晚昨天使用过老式剪刀。",
+                "method": "短暂闪回镜头。"
+              },
+              {
+                "beat_id": "10",
+                "reveal": "林晚情绪崩溃；走廊阴影处可能有第三方观察。",
+                "method": "林晚崩溃的视觉呈现；顾沉瞥见反光的动作与视线引导。"
+              }
+            ],
+            "spatial_expression": "空间是权力与心理的映射。门外走廊狭窄、光线昏暗（除逆光和晨光外），形成压迫性对峙空间。暗房内部黑暗，象征林晚可能隐藏的秘密或记忆的黑暗面。门框是关键的视觉与心理边界，区分内外、攻守。顾沉占据门外走廊，象征他试图将林晚从她的“安全区”（暗房）拉出来面对现实。林晚从暗房内开门，又试图关门，象征她试图控制边界但最终失败。走廊阴影处的反光暗示空间中可能存在未被察觉的第三方，打破了两人对峙的封闭性。",
+            "prop_visual_strategy": "1. **胶片边缘**：核心物证，必须在beat 3和beat 5获得清晰特写，展示其锯齿状撕裂细节。在beat 5需与档案袋撕裂痕迹进行视觉对比。2. **纽扣**：林晚紧张情绪的视觉外化，在beat 2需特写其手指捻动纽扣的动作。3. **老式剪刀**：通过beat 9的闪回短暂出现，需清晰展示其样式，以便观众将其与“同一把剪刀”的指控联系起来。4. **档案袋**：作为物证的载体，在beat 4和beat 5的对比中需要出现，展示其撕裂痕迹。",
+            "shot_architecture_guidance": "本场景的镜头架构需服务于“逐步升级的对峙与证据呈现”。需要以下功能镜头：1. **建立镜头**：开场（beat 1）需建立门外走廊与暗房门的空间关系及两人初始位置。2. **关系镜头**：在对峙关键点（beat 1, 6, 8）需将两人框在同一画面，强调紧张关系。3. **证据特写镜头**：为胶片边缘（beat 3, 5）、纽扣（beat 2）、剪刀闪回（beat 9）提供特写。4. **情绪反应镜头**：紧密跟随林晚在beat 6, 7, 9, 10的情绪变化，以及顾沉在beat 10瞥见反光的反应。5. **悬念镜头**：beat 10需包含顾沉视线引导至阴影反光的镜头，以及林晚崩溃的全景或中景。6. **闪回镜头**：beat 9需一个短暂、风格化的闪回镜头，展示林晚使用剪刀。",
+            "must_preserve": [
+              "顾沉与林晚在门外走廊对峙的空间关系。",
+              "林晚从暗房内开门、逆光站立、试图关门、最终崩溃的完整行为链。",
+              "顾沉展示胶片边缘、进行视觉对比、提出工具关联的证据呈现顺序。",
+              "林晚手指捻纽扣、蜷缩掐掌心、手僵住等关键身体语言细节。",
+              "beat 10走廊阴影处反光的悬念暗示。",
+              "林晚回答“不记得”的台词。",
+              "闪回中林晚使用老式剪刀裁剪包装纸的视觉信息。"
+            ],
+            "must_avoid": [
+              "改变或发明任何对话、事件、人物、道具或地点。",
+              "在镜头架构指导中指定具体的镜头编号、景别序列或拍摄参数。",
+              "削弱或跳过任何已批准的beat及其信息揭示点。",
+              "将林晚的崩溃处理为简单的哭泣，必须保留其“迷茫痛苦”的复杂状态。",
+              "明确揭示阴影反光处的第三方身份或具体物体，必须保持悬念。",
+              "将顾沉的指控处理为情绪化吼叫，必须保持其冷静、逐步施压的特质。"
+            ],
+            "creative_risks": [
+              "在beat 5的视觉对比中，如何最有效地并置胶片边缘与档案袋撕裂痕迹，使其视觉关联既清晰又不显刻意。",
+              "在beat 9的闪回中，如何用极短的镜头（可能1-2秒）清晰传达“林晚使用老式剪刀”这一信息，同时保持闪回的风格化和冲击力。",
+              "在beat 10，如何平衡林晚崩溃的表演强度与顾沉瞥见反光的悬念暗示，使两者都得到充分表达而不互相干扰。",
+              "如何通过光影设计（逆光、晨光、阴影）在视觉上强化“光与影”的主题，并服务于叙事和情绪。"
+            ],
+            "strategy_summary": "本场景策略旨在通过一场在门外走廊展开的、逐步升级的对峙，利用精心设计的视觉证据链（胶片边缘、撕裂对比、剪刀闪回）将林晚从防御推向崩溃。核心是强化“光与影”的视觉语法，通过特写镜头突出关键道具和身体语言细节，构建从物证到行为的视觉说服力。镜头架构服务于压迫性构图、证据特写、情绪跟随和悬念暗示。最终以林晚的痛苦崩溃和走廊阴影处的第三方反光收尾，留下关于真相、记忆与背叛的多重悬念。",
+            "authority": {
+              "Character": "approved_record.evidence.blocking.participants",
+              "DirectorTreatment": "approved_record.evidence.treatment",
+              "FactSnapshot": "approved_record.contract.immutable_projection.facts",
+              "Location": "absent; N/A required",
+              "Prop": "absent; N/A required",
+              "SceneBlocking": "approved_record.evidence.blocking",
+              "ScriptIR": "approved_record.treatment.beat_map + scene metadata"
+            },
+            "source_refs": [
+              "approved_record.treatment.beat_map",
+              "approved_record.evidence.blocking",
+              "approved_record.evidence.treatment",
+              "approved_record.contract.immutable_projection.facts"
+            ],
+            "strategy_fingerprint": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+          },
+          "parse_error": "",
+          "validation": {
+            "valid": false,
+            "strategy": null,
+            "errors": [
+              {
+                "code": "INVALID_POWER_CONTROLLER",
+                "path": "power_arc[0].controller",
+                "message": "INVALID_POWER_CONTROLLER"
+              }
+            ]
+          },
+          "format_repair_eligible": false
+        }
+      ],
+      "attempt_count": 1,
+      "first_pass_json_parse_valid": true,
+      "first_pass_schema_valid": false,
+      "final_schema_valid": false,
+      "strategy": null,
+      "validation": {
+        "valid": false,
+        "strategy": null,
+        "errors": [
+          {
+            "code": "INVALID_POWER_CONTROLLER",
+            "path": "power_arc[0].controller",
+            "message": "INVALID_POWER_CONTROLLER"
+          }
+        ]
+      },
+      "quality_diagnostics": {
+        "diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1",
+        "outcome": "STRATEGY_INVALID",
+        "findings": [
+          {
+            "dimension": "dramatic_objective",
+            "status": "PASS",
+            "evidence": "objective length=91",
+            "issue_code": "",
+            "fields": [
+              "dramatic_objective"
+            ]
+          },
+          {
+            "dimension": "scene_question",
+            "status": "PASS",
+            "evidence": "question length=49",
+            "issue_code": "",
+            "fields": [
+              "scene_question"
+            ]
+          },
+          {
+            "dimension": "audience_knowledge_arc",
+            "status": "WEAK",
+            "evidence": "missing concrete arc evidence: audience_knowledge_arc[0].phase_id, audience_knowledge_arc[0].does_not_know_yet, audience_knowledge_arc[0].suspects, audience_knowledge_arc[1].phase_id, audience_knowledge_arc[1].does_not_know_yet, audience_knowledge_arc[1].suspects, audience_knowledge_arc[2].phase_id, audience_knowledge_arc[2].does_not_know_yet",
+            "issue_code": "AUDIENCE_ARC_WEAK",
+            "fields": [
+              "audience_knowledge_arc"
+            ]
+          },
+          {
+            "dimension": "emotional_arc",
+            "status": "WEAK",
+            "evidence": "missing concrete arc evidence: emotional_arc[0].emotion_state, emotional_arc[1].emotion_state, emotional_arc[2].emotion_state, emotional_arc[3].emotion_state, emotional_arc[4].emotion_state, emotional_arc[5].emotion_state, emotional_arc[6].emotion_state, emotional_arc[7].emotion_state",
+            "issue_code": "EMOTION_ARC_WEAK",
+            "fields": [
+              "emotional_arc"
+            ]
+          },
+          {
+            "dimension": "performance_arc",
+            "status": "WEAK",
+            "evidence": "characters=2; each has objective/tactic/visible progression/turning point=False",
+            "issue_code": "PERFORMANCE_ARC_WEAK",
+            "fields": [
+              "performance_arc"
+            ]
+          },
+          {
+            "dimension": "edit_arc",
+            "status": "WEAK",
+            "evidence": "edit arc is missing director logic",
+            "issue_code": "EDIT_STRATEGY_WEAK",
+            "fields": [
+              "edit_arc"
+            ]
+          },
+          {
+            "dimension": "visual_grammar",
+            "status": "WEAK",
+            "evidence": "overall principle and phase rules present=False",
+            "issue_code": "VISUAL_GRAMMAR_WEAK",
+            "fields": [
+              "visual_grammar"
+            ]
+          },
+          {
+            "dimension": "camera_principles",
+            "status": "WEAK",
+            "evidence": "camera principles do not state a motivation condition",
+            "issue_code": "CAMERA_PRINCIPLE_GENERIC",
+            "fields": [
+              "camera_principles"
+            ]
+          },
+          {
+            "dimension": "information_reveal_plan",
+            "status": "PASS",
+            "evidence": "ordered reveal/withhold entries=8",
+            "issue_code": "",
+            "fields": [
+              "information_reveal_plan"
+            ]
+          },
+          {
+            "dimension": "must_avoid",
+            "status": "PASS",
+            "evidence": "scene-specific anti-patterns recorded",
+            "issue_code": "",
+            "fields": [
+              "must_avoid"
+            ]
+          },
+          {
+            "dimension": "creative_risks",
+            "status": "PASS",
+            "evidence": "creative risk recorded",
+            "issue_code": "",
+            "fields": [
+              "creative_risks"
+            ]
+          }
+        ],
+        "weak_dimension_count": 6,
+        "source_evidence_available": [
+          "baseline_shot_plan_metadata",
+          "character_canonical",
+          "director_treatment",
+          "fact_snapshot",
+          "location_canonical",
+          "prop_canonical",
+          "scene",
+          "scene_blocking",
+          "source_authority"
+        ],
+        "directing_outcome": "STRATEGY_WEAK",
+        "protocol_valid": false,
+        "protocol_errors": [
+          {
+            "code": "INVALID_POWER_CONTROLLER",
+            "path": "power_arc[0].controller",
+            "message": "INVALID_POWER_CONTROLLER"
+          }
+        ]
+      },
+      "strategy_vs_baseline": {
+        "schema_version": "director-quality-v3-phase1-strategy-vs-baseline-v1",
+        "baseline_shot_count": 10,
+        "strategy_implied_gaps": [
+          "INFORMATION_STRATEGY_UNSUPPORTED",
+          "PERFORMANCE_ARC_UNSUPPORTED"
+        ],
+        "baseline_read_only": true
+      },
+      "telemetry": {
+        "http_request_count": 1,
+        "prompt_tokens": 3494,
+        "cached_tokens": 512,
+        "completion_tokens": 5558,
+        "total_tokens": 9052,
+        "latency_ms": 82297.4
+      },
+      "side_effects": {
+        "shotplan": 0,
+        "storyboard": 0,
+        "production": 0,
+        "repair": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "cross_scene_distinctiveness": {
+        "schema_version": "director-quality-v3-phase1-distinctiveness-v1",
+        "comparisons": [
+          {
+            "scene_a": "book990402:e3:暗房惊魂",
+            "scene_b": "book990402:e3:暗房惊魂（2）",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0208,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          },
+          {
+            "scene_a": "book990402:e3:暗房惊魂",
+            "scene_b": "book990402:e2:回声照相馆",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0278,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          },
+          {
+            "scene_a": "book990402:e3:暗房惊魂（2）",
+            "scene_b": "book990402:e2:回声照相馆",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0213,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          }
+        ],
+        "hard_failure": true
+      },
+      "parsed_candidate": {
+        "schema_version": "director_scene_strategy_v1",
+        "scene_id": "book990402:e3:暗房惊魂（2）",
+        "strategy_version": "1.0",
+        "dramatic_objective": "通过一场逐步升级的对峙，将林晚从防御推向崩溃，同时让观众在顾沉的证据链与林晚的失忆/隐藏反应之间摇摆，最终以第三方观察的暗示和林晚的彻底崩溃收尾，留下关于真相、记忆与背叛的多重悬念。",
+        "scene_question": "林晚是否真的偷走了照片并剪下了胶片？她的“不记得”是真实的失忆，还是为了隐藏更深层秘密的防御机制？",
+        "audience_experience": [
+          {
+            "beat_id": "1",
+            "experience": "观众被置于门外走廊的紧张氛围中，通过逆光剪影感受到林晚的防御姿态和顾沉的压迫感，期待冲突的展开。",
+            "trigger": "顾沉背靠墙壁的等待姿态与林晚逆光拉开门的对峙画面。",
+            "transition_reason": "从上一场景的冲突延续，空间转换至门外，紧张感被视觉化。"
+          },
+          {
+            "beat_id": "2",
+            "experience": "观众听到林晚不耐烦的否认，但注意到她手指捻纽扣的细微动作，开始怀疑她言语的真实性。",
+            "trigger": "林晚的台词与手指捻纽扣的特写。",
+            "transition_reason": "从视觉对峙进入言语交锋，但身体语言泄露了内在紧张。"
+          },
+          {
+            "beat_id": "3",
+            "experience": "观众首次看到顾沉手中的具体物证（胶片边缘），意识到指控并非空穴来风，悬念具体化。",
+            "trigger": "顾沉从口袋抽出胶片边缘的动作。",
+            "transition_reason": "从言语否认转向物证展示，冲突升级。"
+          },
+          {
+            "beat_id": "4",
+            "experience": "观众理解物证与失踪照片的直接关联，怀疑范围缩小，对林晚的怀疑加深。",
+            "trigger": "顾沉指出档案袋缺失照片及胶片边缘尺寸吻合。",
+            "transition_reason": "物证被赋予具体意义，指控更具说服力。"
+          },
+          {
+            "beat_id": "5",
+            "experience": "观众通过视觉对比（胶片撕裂与档案袋撕裂）直观感受到证据链的强度，冲突达到新高点。",
+            "trigger": "顾沉将胶片边缘举到光线中，特写展示撕裂痕迹。",
+            "transition_reason": "从口头指控转向视觉证据的直接呈现，说服力倍增。"
+          },
+          {
+            "beat_id": "6",
+            "experience": "观众听到顾沉的直接指控，看到林晚从恐惧转向茫然痛苦，开始思考她是否真的“不记得”。",
+            "trigger": "顾沉的质问与林晚“不记得”的回答。",
+            "transition_reason": "冲突从物证关联转向对林晚个人行为的直接指控，触及记忆问题。"
+          },
+          {
+            "beat_id": "7",
+            "experience": "观众察觉林晚表面困惑与手指蜷缩掐掌心的反差，意识到她可能隐藏着秘密或经历着失忆。",
+            "trigger": "林晚手指蜷缩掐掌心的特写。",
+            "transition_reason": "在公开否认的同时，身体语言泄露了隐藏层。"
+          },
+          {
+            "beat_id": "8",
+            "experience": "观众听到顾沉提供工具关联的决定性线索（同一把剪刀，昨天只有林晚用过），感到林晚的退路被封堵。",
+            "trigger": "顾沉关于剪刀的陈述。",
+            "transition_reason": "从物证关联升级到工具关联，指控达到顶峰。"
+          },
+          {
+            "beat_id": "9",
+            "experience": "观众通过闪回确认林晚使用过相关工具，内心天平进一步向“林晚有罪”倾斜，但她的僵住反应又引发同情。",
+            "trigger": "林晚拉门的手僵住与剪刀闪回。",
+            "transition_reason": "视觉证据直接关联林晚的行为，冲突无法回避。"
+          },
+          {
+            "beat_id": "10",
+            "experience": "观众在林晚崩溃的痛苦中感到同情，同时被走廊阴影处的反光所困扰，怀疑有第三方观察，悬念达到顶点。",
+            "trigger": "林晚滑坐在地抱头与顾沉瞥见阴影反光。",
+            "transition_reason": "场景以角色崩溃和新的悬念（第三方）结束，留下未解之谜。"
+          }
+        ],
+        "beat_priorities": [
+          {
+            "beat_id": "5",
+            "priority": "最高",
+            "reason": "视觉证据链的关键节点，通过特写对比将物证说服力最大化，是冲突升级的转折点。"
+          },
+          {
+            "beat_id": "9",
+            "priority": "高",
+            "reason": "通过闪回直接关联林晚与工具，是坐实她嫌疑的决定性时刻，也是她情绪反应的转折点。"
+          },
+          {
+            "beat_id": "10",
+            "priority": "高",
+            "reason": "强钩子结尾，同时完成林晚的崩溃和引入第三方悬念，为后续剧情埋下伏笔。"
+          },
+          {
+            "beat_id": "6",
+            "priority": "中高",
+            "reason": "将指控从物证转向个人记忆问题，触及角色核心，引发观众对林晚真实状态的思考。"
+          },
+          {
+            "beat_id": "7",
+            "priority": "中",
+            "reason": "通过身体语言泄露隐藏层，为林晚的复杂性和后续发展埋下种子。"
+          }
+        ],
+        "audience_knowledge_arc": [
+          {
+            "beat_id": "1",
+            "knowledge_state": "观众知道冲突在门外延续，但不清楚具体指控内容。",
+            "reveal_type": "场景建立"
+          },
+          {
+            "beat_id": "3",
+            "knowledge_state": "观众看到顾沉持有胶片边缘这一具体物证。",
+            "reveal_type": "物证引入"
+          },
+          {
+            "beat_id": "4",
+            "knowledge_state": "观众知道物证与失踪照片直接关联，怀疑范围缩小。",
+            "reveal_type": "关联建立"
+          },
+          {
+            "beat_id": "5",
+            "knowledge_state": "观众直观看到胶片撕裂与档案袋撕裂的视觉呼应，证据链强度提升。",
+            "reveal_type": "视觉确认"
+          },
+          {
+            "beat_id": "6",
+            "knowledge_state": "观众知道顾沉直接指控林晚偷照片并剪下边缘，且林晚回答“不记得”。",
+            "reveal_type": "直接指控"
+          },
+          {
+            "beat_id": "8",
+            "knowledge_state": "观众知道撕裂由同一把剪刀造成，且昨天只有林晚用过该剪刀。",
+            "reveal_type": "工具关联"
+          },
+          {
+            "beat_id": "9",
+            "knowledge_state": "观众通过闪回确认林晚昨天使用过老式剪刀。",
+            "reveal_type": "行为确认"
+          },
+          {
+            "beat_id": "10",
+            "knowledge_state": "观众知道林晚情绪崩溃，且可能有第三方在走廊阴影处观察。",
+            "reveal_type": "悬念引入"
+          }
+        ],
+        "emotional_arc": [
+          {
+            "beat_id": "1",
+            "emotion": "紧张、对峙",
+            "trigger": "顾沉等待的姿态与林晚逆光拉开门的视觉对峙。",
+            "transition_reason": "从上一场景的冲突延续，空间转换带来新的紧张感。"
+          },
+          {
+            "beat_id": "2",
+            "emotion": "防御性不耐烦（林晚）/ 压迫性冷静（顾沉）",
+            "trigger": "林晚的否认台词与捻纽扣动作；顾沉的沉默观察。",
+            "transition_reason": "言语交锋开始，但身体语言泄露了内在情绪。"
+          },
+          {
+            "beat_id": "3",
+            "emotion": "困惑、警惕加深（林晚）/ 掌控感增强（顾沉）",
+            "trigger": "顾沉展示胶片边缘。",
+            "transition_reason": "物证出现，冲突从言语转向实物。"
+          },
+          {
+            "beat_id": "4",
+            "emotion": "恐惧加剧（林晚）/ 指控感增强（顾沉）",
+            "trigger": "顾沉指出物证与失踪照片的关联。",
+            "transition_reason": "物证被赋予具体意义，指控更具杀伤力。"
+          },
+          {
+            "beat_id": "5",
+            "emotion": "冲突新高点（双方）",
+            "trigger": "顾沉将胶片边缘举到光线中进行视觉对比。",
+            "transition_reason": "视觉证据的直接呈现，将冲突推向高潮。"
+          },
+          {
+            "beat_id": "6",
+            "emotion": "茫然、痛苦（林晚）/ 坚定指控（顾沉）",
+            "trigger": "顾沉的直接质问与林晚“不记得”的回答。",
+            "transition_reason": "指控从物证转向个人行为与记忆，触及核心。"
+          },
+          {
+            "beat_id": "7",
+            "emotion": "决绝开始浮现（林晚）",
+            "trigger": "林晚手指蜷缩掐掌心，与表面困惑形成反差。",
+            "transition_reason": "身体语言泄露了隐藏的情绪层。"
+          },
+          {
+            "beat_id": "8",
+            "emotion": "决绝压过恐惧（林晚）/ 最终封堵（顾沉）",
+            "trigger": "林晚试图关门；顾沉提供工具关联的决定性线索。",
+            "transition_reason": "林晚试图结束对话，但顾沉用最后证据封堵退路。"
+          },
+          {
+            "beat_id": "9",
+            "emotion": "无法回避的冲突（双方）",
+            "trigger": "林晚拉门的手僵住与剪刀闪回。",
+            "transition_reason": "视觉证据直接关联林晚的行为，冲突达到顶点。"
+          },
+          {
+            "beat_id": "10",
+            "emotion": "痛苦崩溃（林晚）/ 悬疑收尾（观众）",
+            "trigger": "林晚滑坐在地抱头；顾沉瞥见阴影反光。",
+            "transition_reason": "场景以角色崩溃和新的悬念结束，留下未解之谜。"
+          }
+        ],
+        "power_arc": [
+          {
+            "beat_id": "1",
+            "power_holder": "顾沉",
+            "power_dynamics": "顾沉以等待姿态占据门外空间，形成压迫；林晚从暗房内开门，处于被审视位置。",
+            "transition_reason": "空间位置与姿态确立初始权力关系。"
+          },
+          {
+            "beat_id": "3",
+            "power_holder": "顾沉",
+            "power_dynamics": "顾沉掌握物证，指控主动权增强；林晚处于被动回应状态。",
+            "transition_reason": "物证的出现强化了顾沉的指控依据。"
+          },
+          {
+            "beat_id": "6",
+            "power_holder": "顾沉",
+            "power_dynamics": "顾沉提出直接指控，将林晚置于嫌疑人位置；林晚以“不记得”回应，试图保持防御。",
+            "transition_reason": "指控从物证转向个人，权力天平进一步倾斜。"
+          },
+          {
+            "beat_id": "8",
+            "power_holder": "顾沉",
+            "power_dynamics": "顾沉提供工具关联的决定性线索，彻底封堵林晚的退路；林晚试图关门结束对话，但为时已晚。",
+            "transition_reason": "最后证据的提出使顾沉的指控达到顶峰。"
+          },
+          {
+            "beat_id": "10",
+            "power_holder": "不确定/第三方",
+            "power_dynamics": "林晚崩溃，失去所有防御；顾沉离开，但瞥见阴影反光，暗示可能有第三方观察，权力格局可能被颠覆。",
+            "transition_reason": "场景结束时，明确的权力关系被第三方悬念所模糊。"
+          }
+        ],
+        "visual_grammar": "本场景的视觉语法核心是“光与影的对比”和“证据的视觉化呈现”。逆光（林晚开门）、晨光（照亮胶片边缘）、阴影（走廊阴影处反光）构成主要光影层次。关键道具（胶片边缘、纽扣、剪刀闪回）必须通过特写镜头获得视觉强调，构建一条从物证到行为的视觉证据链。空间上，门外走廊的狭窄与暗房内部的黑暗形成对比，强化对峙的压迫感。",
+        "camera_principles": "1. **压迫性构图**：在对峙时刻（如beat 1, 6, 8），使用中近景或近景将两人框在同一画面，强调空间的狭窄和关系的紧张。2. **证据特写**：对于关键物证（胶片边缘beat 3/5，纽扣beat 2，剪刀闪回beat 9），必须使用特写镜头，确保观众能清晰看到细节（锯齿状撕裂、手指动作）。3. **情绪跟随**：在林晚情绪变化的关键点（beat 6回答“不记得”，beat 7手指蜷缩，beat 10崩溃），镜头应贴近她的面部或手部，捕捉细微表情和动作。4. **悬念暗示**：在beat 10顾沉瞥见阴影反光时，镜头应跟随他的视线，短暂聚焦于阴影处，但不揭示具体是什么，保持悬念。",
+        "composition_principles": "1. **逆光剪影**：beat 1林晚开门时，利用逆光将其处理为剪影，强调其防御姿态和神秘感。2. **视觉对比**：beat 5将胶片边缘与档案袋撕裂痕迹并置构图，通过相似性强化证据关联。3. **身体语言焦点**：beat 2捻纽扣、beat 7手指蜷缩、beat 9手僵住，构图应突出这些手部动作，作为内心状态的视觉外化。4. **空间分割**：利用门框作为视觉分割线，区分门内（暗房，林晚的领域）和门外（走廊，顾沉的领域），强化对峙感。",
+        "performance_arc": [
+          {
+            "character_id": "19",
+            "character_name": "林晚",
+            "objective": "否认指控，保护自己（可能是在保护秘密或因失忆而困惑），最终在无法辩驳的证据和记忆冲击下崩溃。",
+            "tactic_progression": "不耐烦否认（beat 2） -> 困惑警惕（beat 3-4） -> 恐惧加剧（beat 5-6） -> 决绝浮现（beat 7-8） -> 崩溃（beat 10）。",
+            "visible_behavior_progression": "逆光站立，身体侧开（beat 1） -> 手指捻纽扣（beat 2） -> 手指蜷缩掐掌心（beat 7） -> 拉门的手僵住（beat 9） -> 背对顾沉肩膀颤抖，关门后滑坐在地抱头（beat 10）。",
+            "turning_point": "beat 6 回答“不记得”时，从防御性否认转向茫然痛苦，标志着她内心防线的第一次重大裂痕。"
+          },
+          {
+            "character_id": "20",
+            "character_name": "顾沉",
+            "objective": "通过逐步展示证据，迫使林晚面对事实（或她隐藏的秘密），查明照片失踪的真相。",
+            "tactic_progression": "沉默施压（beat 1） -> 展示物证（beat 3） -> 建立关联（beat 4-5） -> 直接指控（beat 6） -> 封堵退路（beat 8） -> 离开但保持警觉（beat 10）。",
+            "visible_behavior_progression": "背靠墙壁，目光低垂（beat 1） -> 抽出胶片边缘（beat 3） -> 将胶片举到光线中（beat 5） -> 向前微微倾身（beat 6） -> 转身沿走廊离开，脚步微顿侧头扫视阴影处（beat 10）。",
+            "turning_point": "beat 8 提出工具关联的决定性线索，标志着指控从可能性变为高度确定性，彻底掌握主动权。"
+          }
+        ],
+        "edit_arc": "剪辑节奏应跟随冲突升级：开场（beat 1-2）节奏稍缓，建立空间和人物状态；物证出现（beat 3-5）节奏加快，通过特写镜头的快速切换强调证据链；指控与回应（beat 6-8）节奏达到最快，对话交锋与反应镜头紧密交织；闪回与崩溃（beat 9-10）节奏再次变化，闪回短暂而冲击，崩溃段落则用较长的镜头展现林晚的痛苦，最后以顾沉瞥见反光的悬念镜头收尾。",
+        "information_reveal_plan": [
+          {
+            "beat_id": "1",
+            "reveal": "场景转换至门外，冲突延续。",
+            "method": "空间转换与人物姿态的视觉建立。"
+          },
+          {
+            "beat_id": "3",
+            "reveal": "顾沉持有胶片边缘这一具体物证。",
+            "method": "顾沉从口袋抽出胶片边缘的动作特写。"
+          },
+          {
+            "beat_id": "4",
+            "reveal": "物证与失踪照片的直接关联（尺寸吻合）。",
+            "method": "顾沉的台词说明。"
+          },
+          {
+            "beat_id": "5",
+            "reveal": "胶片撕裂与档案袋撕裂的视觉呼应。",
+            "method": "顾沉将胶片边缘举到光线中，镜头特写对比。"
+          },
+          {
+            "beat_id": "6",
+            "reveal": "顾沉直接指控林晚偷照片并剪下边缘；林晚回答“不记得”。",
+            "method": "对话交锋。"
+          },
+          {
+            "beat_id": "8",
+            "reveal": "撕裂由同一把剪刀造成，且昨天只有林晚用过。",
+            "method": "顾沉的台词说明。"
+          },
+          {
+            "beat_id": "9",
+            "reveal": "林晚昨天使用过老式剪刀。",
+            "method": "短暂闪回镜头。"
+          },
+          {
+            "beat_id": "10",
+            "reveal": "林晚情绪崩溃；走廊阴影处可能有第三方观察。",
+            "method": "林晚崩溃的视觉呈现；顾沉瞥见反光的动作与视线引导。"
+          }
+        ],
+        "spatial_expression": "空间是权力与心理的映射。门外走廊狭窄、光线昏暗（除逆光和晨光外），形成压迫性对峙空间。暗房内部黑暗，象征林晚可能隐藏的秘密或记忆的黑暗面。门框是关键的视觉与心理边界，区分内外、攻守。顾沉占据门外走廊，象征他试图将林晚从她的“安全区”（暗房）拉出来面对现实。林晚从暗房内开门，又试图关门，象征她试图控制边界但最终失败。走廊阴影处的反光暗示空间中可能存在未被察觉的第三方，打破了两人对峙的封闭性。",
+        "prop_visual_strategy": "1. **胶片边缘**：核心物证，必须在beat 3和beat 5获得清晰特写，展示其锯齿状撕裂细节。在beat 5需与档案袋撕裂痕迹进行视觉对比。2. **纽扣**：林晚紧张情绪的视觉外化，在beat 2需特写其手指捻动纽扣的动作。3. **老式剪刀**：通过beat 9的闪回短暂出现，需清晰展示其样式，以便观众将其与“同一把剪刀”的指控联系起来。4. **档案袋**：作为物证的载体，在beat 4和beat 5的对比中需要出现，展示其撕裂痕迹。",
+        "shot_architecture_guidance": "本场景的镜头架构需服务于“逐步升级的对峙与证据呈现”。需要以下功能镜头：1. **建立镜头**：开场（beat 1）需建立门外走廊与暗房门的空间关系及两人初始位置。2. **关系镜头**：在对峙关键点（beat 1, 6, 8）需将两人框在同一画面，强调紧张关系。3. **证据特写镜头**：为胶片边缘（beat 3, 5）、纽扣（beat 2）、剪刀闪回（beat 9）提供特写。4. **情绪反应镜头**：紧密跟随林晚在beat 6, 7, 9, 10的情绪变化，以及顾沉在beat 10瞥见反光的反应。5. **悬念镜头**：beat 10需包含顾沉视线引导至阴影反光的镜头，以及林晚崩溃的全景或中景。6. **闪回镜头**：beat 9需一个短暂、风格化的闪回镜头，展示林晚使用剪刀。",
+        "must_preserve": [
+          "顾沉与林晚在门外走廊对峙的空间关系。",
+          "林晚从暗房内开门、逆光站立、试图关门、最终崩溃的完整行为链。",
+          "顾沉展示胶片边缘、进行视觉对比、提出工具关联的证据呈现顺序。",
+          "林晚手指捻纽扣、蜷缩掐掌心、手僵住等关键身体语言细节。",
+          "beat 10走廊阴影处反光的悬念暗示。",
+          "林晚回答“不记得”的台词。",
+          "闪回中林晚使用老式剪刀裁剪包装纸的视觉信息。"
+        ],
+        "must_avoid": [
+          "改变或发明任何对话、事件、人物、道具或地点。",
+          "在镜头架构指导中指定具体的镜头编号、景别序列或拍摄参数。",
+          "削弱或跳过任何已批准的beat及其信息揭示点。",
+          "将林晚的崩溃处理为简单的哭泣，必须保留其“迷茫痛苦”的复杂状态。",
+          "明确揭示阴影反光处的第三方身份或具体物体，必须保持悬念。",
+          "将顾沉的指控处理为情绪化吼叫，必须保持其冷静、逐步施压的特质。"
+        ],
+        "creative_risks": [
+          "在beat 5的视觉对比中，如何最有效地并置胶片边缘与档案袋撕裂痕迹，使其视觉关联既清晰又不显刻意。",
+          "在beat 9的闪回中，如何用极短的镜头（可能1-2秒）清晰传达“林晚使用老式剪刀”这一信息，同时保持闪回的风格化和冲击力。",
+          "在beat 10，如何平衡林晚崩溃的表演强度与顾沉瞥见反光的悬念暗示，使两者都得到充分表达而不互相干扰。",
+          "如何通过光影设计（逆光、晨光、阴影）在视觉上强化“光与影”的主题，并服务于叙事和情绪。"
+        ],
+        "strategy_summary": "本场景策略旨在通过一场在门外走廊展开的、逐步升级的对峙，利用精心设计的视觉证据链（胶片边缘、撕裂对比、剪刀闪回）将林晚从防御推向崩溃。核心是强化“光与影”的视觉语法，通过特写镜头突出关键道具和身体语言细节，构建从物证到行为的视觉说服力。镜头架构服务于压迫性构图、证据特写、情绪跟随和悬念暗示。最终以林晚的痛苦崩溃和走廊阴影处的第三方反光收尾，留下关于真相、记忆与背叛的多重悬念。",
+        "authority": {
+          "Character": "approved_record.evidence.blocking.participants",
+          "DirectorTreatment": "approved_record.evidence.treatment",
+          "FactSnapshot": "approved_record.contract.immutable_projection.facts",
+          "Location": "absent; N/A required",
+          "Prop": "absent; N/A required",
+          "SceneBlocking": "approved_record.evidence.blocking",
+          "ScriptIR": "approved_record.treatment.beat_map + scene metadata"
+        },
+        "source_refs": [
+          "approved_record.treatment.beat_map",
+          "approved_record.evidence.blocking",
+          "approved_record.evidence.treatment",
+          "approved_record.contract.immutable_projection.facts"
+        ],
+        "strategy_fingerprint": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+      }
+    },
+    {
+      "scene": {
+        "book_id": 990402,
+        "episode": 2,
+        "name": "回声照相馆",
+        "scene_id": "book990402:e2:回声照相馆"
+      },
+      "source_fingerprints": {
+        "scene_input": "fc175455ed84885f4955c2cc4cd1ad00f7607302914bfb18316ecfa67f68b6b4",
+        "strategy_contract": "897a9eafe157b19bdb3d057593d517aef06a0f4ed8ac12d20a6d509e7c470428"
+      },
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "attempt_type": "CREATIVE_GENERATION",
+          "prompt_request_fingerprint": "1c8229bfde78c4e92f77f56ec889441a6df09cd7c0571e4289921ba1af3a5b6b",
+          "system_prompt_fingerprint": "d232bf80af91992b1200407dbdfacc704f171e4f47c50d32b80e48e18d6f1c78",
+          "schema_fingerprint": "41858d8d0b103ccbe14bf22fbcdf910b2804ebb1eb93904d9e60ec898da899bf",
+          "scene_input_fingerprint": "fc175455ed84885f4955c2cc4cd1ad00f7607302914bfb18316ecfa67f68b6b4",
+          "raw_provider_output": "```json\n{\n    \"schema_version\": \"director_scene_strategy_v1\",\n    \"scene_id\": \"book990402:e2:回声照相馆\",\n    \"strategy_version\": \"1.0\",\n    \"dramatic_objective\": \"通过一系列视觉谜团和相互试探，揭示林晚与顾沉各自隐藏的秘密，并建立‘灰外套’这一关键线索与两人过去的直接联系，营造悬疑氛围。\",\n    \"scene_question\": \"林晚和顾沉各自隐藏了什么秘密？昨夜暗房发生了什么？‘灰外套’照片背后隐藏着怎样的过去？\",\n    \"audience_experience\": [\n        {\n            \"beat_id\": \"B1\",\n            \"experience\": \"观众跟随林晚的视角，首次发现暗房门口的异常拖痕，产生好奇与轻微不安，意识到昨夜有人活动。\",\n            \"knowledge_state\": \"观众与林晚同步获知暗房区域有异常活动。\"\n        },\n        {\n            \"beat_id\": \"B2\",\n            \"experience\": \"观众与林晚一同检查储物柜，看到被翻动且空空如也的相册夹，怀疑加深，开始猜测丢失了什么。\",\n            \"knowledge_state\": \"观众确认相册夹被动过，内容物丢失。\"\n        },\n        {\n            \"beat_id\": \"B3\",\n            \"experience\": \"观众注意到林晚无意识摸口袋的动作，首次意识到她也藏有秘密，产生新的疑问。\",\n            \"knowledge_state\": \"观众获知林晚口袋藏有物品。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"experience\": \"顾沉的出现带来表面的日常感，但提及‘昨晚听到动静’，让观众在平静对话下保持警觉。\",\n            \"knowledge_state\": \"观众知道顾沉出现并提及昨夜动静。\"\n        },\n        {\n            \"beat_id\": \"B5\",\n            \"experience\": \"观众观察到顾沉回避问题并看向暗房，开始怀疑他与昨夜事件有关。\",\n            \"knowledge_state\": \"观众获知顾沉对暗房区域表现出异常关注。\"\n        },\n        {\n            \"beat_id\": \"B6\",\n            \"experience\": \"观众注意到顾沉口袋的异常，意识到他也藏有秘密，双方隐藏的格局形成。\",\n            \"knowledge_state\": \"观众获知顾沉口袋藏有物品。\"\n        },\n        {\n            \"beat_id\": \"B7\",\n            \"experience\": \"观众听到顾沉的解释，但因其之前的回避行为而对其真实性持保留态度，悬念持续。\",\n            \"knowledge_state\": \"观众获知顾沉承认昨夜使用暗房，理由为洗照片。\"\n        },\n        {\n            \"beat_id\": \"B8\",\n            \"experience\": \"观众与林晚一同瞥见灰外套照片，视觉线索将顾沉与神秘事件联系起来，警惕性提升。\",\n            \"knowledge_state\": \"观众看到灰外套照片，并将其与顾沉的外套款式关联。\"\n        },\n        {\n            \"beat_id\": \"B9\",\n            \"experience\": \"观众听到顾沉的试探，意识到他在测试林晚是否知晓照片内容，双方心理战升级。\",\n            \"knowledge_state\": \"观众获知顾沉明确提及‘灰外套’线索。\"\n        },\n        {\n            \"beat_id\": \"B10\",\n            \"experience\": \"观众感受到顾沉反试探带来的压力，等待林晚的回应，紧张感达到一个小高潮。\",\n            \"knowledge_state\": \"观众确认顾沉关注相册夹。\"\n        },\n        {\n            \"beat_id\": \"B11\",\n            \"experience\": \"观众看到林晚掏出的旧照片，所有线索瞬间串联，‘灰外套’与林晚的过去直接挂钩，产生恍然大悟与更深的疑问。\",\n            \"knowledge_state\": \"观众获知林晚藏有自己穿灰外套的旧照，时间地点明确，与顾沉的线索形成闭环。\"\n        }\n    ],\n    \"beat_priorities\": [\n        {\n            \"beat_id\": \"B1\",\n            \"priority\": \"high\",\n            \"reason\": \"建立核心视觉谜团（拖痕），启动整个场景的悬疑基调。\"\n        },\n        {\n            \"beat_id\": \"B2\",\n            \"priority\": \"high\",\n            \"reason\": \"强化谜团，确认异常（空相册夹），为后续人物动机提供基础。\"\n        },\n        {\n            \"beat_id\": \"B3\",\n            \"priority\": \"medium\",\n            \"reason\": \"首次暗示林晚的秘密，为最终揭示埋下伏笔。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"priority\": \"medium\",\n            \"reason\": \"引入第二角色，建立表面互动，为后续试探提供舞台。\"\n        },\n        {\n            \"beat_id\": \"B5\",\n            \"priority\": \"high\",\n            \"reason\": \"建立顾沉的可疑性，推动林晚的怀疑。\"\n        },\n        {\n            \"beat_id\": \"B6\",\n            \"priority\": \"medium\",\n            \"reason\": \"暗示顾沉的秘密，与B3形成对称，强化双方隐藏的格局。\"\n        },\n        {\n            \"beat_id\": \"B7\",\n            \"priority\": \"high\",\n            \"reason\": \"关键对话交锋，顾沉给出解释，但悬念未解。\"\n        },\n        {\n            \"beat_id\": \"B8\",\n            \"priority\": \"high\",\n            \"reason\": \"引入关键视觉线索（灰外套照片），将顾沉与事件视觉化关联。\"\n        },\n        {\n            \"beat_id\": \"B9\",\n            \"priority\": \"high\",\n            \"reason\": \"顾沉主动试探，心理战升级。\"\n        },\n        {\n            \"beat_id\": \"B10\",\n            \"priority\": \"high\",\n            \"reason\": \"顾沉反试探，压力测试，将紧张感推向顶点。\"\n        },\n        {\n            \"beat_id\": \"B11\",\n            \"priority\": \"high\",\n            \"reason\": \"最终揭示，串联所有线索，完成本场景的戏剧闭环并开启更大悬念。\"\n        }\n    ],\n    \"audience_knowledge_arc\": [\n        {\n            \"beat_id\": \"B1\",\n            \"knowledge\": \"观众与林晚同步获知暗房区域昨夜有异常活动（拖痕）。\"\n        },\n        {\n            \"beat_id\": \"B2\",\n            \"knowledge\": \"观众确认相册夹被动过，内容物丢失。\"\n        },\n        {\n            \"beat_id\": \"B3\",\n            \"knowledge\": \"观众首次获知林晚口袋藏有物品（秘密）。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"knowledge\": \"观众知道顾沉出现并提及昨夜听到动静。\"\n        },\n        {\n            \"beat_id\": \"B5\",\n            \"knowledge\": \"观众观察到顾沉对暗房区域的异常关注和回避。\"\n        },\n        {\n            \"beat_id\": \"B6\",\n            \"knowledge\": \"观众首次获知顾沉口袋藏有物品（秘密）。\"\n        },\n        {\n            \"beat_id\": \"B7\",\n            \"knowledge\": \"观众获知顾沉承认昨夜使用暗房，理由为洗照片。\"\n        },\n        {\n            \"beat_id\": \"B8\",\n            \"knowledge\": \"观众看到灰外套照片，并将其与顾沉的外套款式关联。\"\n        },\n        {\n            \"beat_id\": \"B9\",\n            \"knowledge\": \"观众获知顾沉明确提及‘灰外套’线索进行试探。\"\n        },\n        {\n            \"beat_id\": \"B10\",\n            \"knowledge\": \"观众确认顾沉关注相册夹，并对其进行反试探。\"\n        },\n        {\n            \"beat_id\": \"B11\",\n            \"knowledge\": \"观众获知林晚藏有自己穿灰外套的旧照（1998年），与顾沉的线索形成直接联系。\"\n        }\n    ],\n    \"emotional_arc\": [\n        {\n            \"beat_id\": \"B1\",\n            \"emotion\": \"慵懒 -> 警觉\",\n            \"trigger\": \"发现暗房门口新鲜湿润的拖痕。\",\n            \"transition_reason\": \"日常状态被异常视觉证据打破，注意力瞬间集中。\"\n        },\n        {\n            \"beat_id\": \"B2\",\n            \"emotion\": \"警觉 -> 怀疑加深\",\n            \"trigger\": \"检查储物柜，发现相册夹位置异常且内部为空。\",\n            \"transition_reason\": \"异常从环境（拖痕）具体化到物品（相册夹），证实了人为活动和丢失。\"\n        },\n        {\n            \"beat_id\": \"B3\",\n            \"emotion\": \"怀疑加深 -> 表面镇定（内在紧张）\",\n            \"trigger\": \"放回相册夹时无意识摸口袋。\",\n            \"transition_reason\": \"调查行为触发了自身秘密的防御性反应，但需维持表面镇定。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"emotion\": \"表面镇定 -> 恢复慵懒面具（内在戒备）\",\n            \"trigger\": \"顾沉带着早餐进入，开始日常对话。\",\n            \"transition_reason\": \"外部互动迫使林晚切换回社交面具，但内心因之前的发现而戒备。\"\n        },\n        {\n            \"beat_id\": \"B5\",\n            \"emotion\": \"恢复慵懒面具 -> 怀疑指向顾沉\",\n            \"trigger\": \"顾沉眼神掠过暗房并回避深入询问。\",\n            \"transition_reason\": \"顾沉的回避行为将林晚的怀疑从‘未知者’具体指向了他。\"\n        },\n        {\n            \"beat_id\": \"B6\",\n            \"emotion\": \"怀疑指向顾沉 -> 观察与评估\",\n            \"trigger\": \"注意到顾沉左手插袋、口袋绷紧。\",\n            \"transition_reason\": \"发现顾沉也有隐藏行为，情绪从单纯怀疑转为对双方秘密格局的评估。\"\n        },\n        {\n            \"beat_id\": \"B7\",\n            \"emotion\": \"观察与评估 -> 怀疑未减（表面接受）\",\n            \"trigger\": \"顾沉给出‘洗旧照片’的解释。\",\n            \"transition_reason\": \"解释合理但无法完全打消疑虑，情绪维持在怀疑但暂不戳破的状态。\"\n        },\n        {\n            \"beat_id\": \"B8\",\n            \"emotion\": \"怀疑未减 -> 警惕性提升\",\n            \"trigger\": \"瞥见晾干绳上的灰外套照片。\",\n            \"transition_reason\": \"获得关键视觉证据，将顾沉与事件直接关联，威胁感增强。\"\n        },\n        {\n            \"beat_id\": \"B9\",\n            \"emotion\": \"警惕性提升 -> 困惑否认（内在警惕）\",\n            \"trigger\": \"顾沉询问是否看到‘穿灰外套的人’。\",\n            \"transition_reason\": \"面对直接试探，需以困惑否认来掩饰已知信息，同时警惕对方意图。\"\n        },\n        {\n            \"beat_id\": \"B10\",\n            \"emotion\": \"困惑否认 -> 无辜回应（内在紧张）\",\n            \"trigger\": \"顾沉反问是否动过相册夹。\",\n            \"transition_reason\": \"压力测试到来，需以无辜回应来保护自己的秘密和调查成果。\"\n        },\n        {\n            \"beat_id\": \"B11\",\n            \"emotion\": \"无辜回应 -> 表情冰冷（内在震动）\",\n            \"trigger\": \"顾沉离开后，掏出并展开自己的旧照片。\",\n            \"transition_reason\": \"独自面对证据，所有线索串联，意识到顾沉可能记得过去，情绪转为冰冷的震动。\"\n        }\n    ],\n    \"power_arc\": [\n        {\n            \"beat_id\": \"B1\",\n            \"power_holder\": \"林晚\",\n            \"dynamic\": \"林晚作为发现者，掌握初始信息优势。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"power_holder\": \"顾沉\",\n            \"dynamic\": \"顾沉进入，通过提及‘动静’和日常姿态，暂时掌握对话主导权。\"\n        },\n        {\n            \"beat_id\": \"B7\",\n            \"power_holder\": \"顾沉\",\n            \"dynamic\": \"顾沉通过给出解释，试图平息疑问，暂时控制局面。\"\n        },\n        {\n            \"beat_id\": \"B8\",\n            \"power_holder\": \"林晚\",\n            \"dynamic\": \"林晚获得关键视觉证据（灰外套照片），信息优势反转。\"\n        },\n        {\n            \"beat_id\": \"B9-B10\",\n            \"power_holder\": \"顾沉\",\n            \"dynamic\": \"顾沉通过连续试探（B9）和反试探（B10），试图夺回信息控制权，测试林晚。\"\n        },\n        {\n            \"beat_id\": \"B11\",\n            \"power_holder\": \"林晚\",\n            \"dynamic\": \"顾沉离开后，林晚独自面对最终揭示，掌握关于自身过去的完整信息，但同时也意识到自己可能已被顾沉记忆，权力关系进入新的、更复杂的平衡。\"\n        }\n    ],\n    \"visual_grammar\": \"本场景采用‘发现-调查-隐藏-试探-揭示’的视觉语法。以林晚的主观视角和关键道具（拖痕、相册夹、口袋、灰外套照片）的特写为视觉锚点，驱动叙事。人物互动以中景和过肩镜头为主，强调空间关系和心理距离。关键信息揭示（B8, B11）采用‘瞥见’和‘独自展开’的视觉模式，控制信息释放节奏。\",\n    \"camera_principles\": \"1. **跟随发现者**：在B1-B3，镜头应紧密跟随林晚的视线和动作，模拟她的发现过程，使用手持或轻微晃动增强临场感。2. **空间关系与心理距离**：在B4-B10的双人对话中，通过镜头距离和角度（如过肩、双人中景）的变化，反映两人心理的试探与距离。顾沉看向暗房时，镜头可短暂跟随其视线。3. **信息控制**：在B8，灰外套照片应先以林晚的视角‘瞥见’（可能虚焦或局部），再给观众一个清晰的、但仍是林晚主观视角的镜头。在B11，镜头应聚焦于林晚的手和照片，最后才揭示照片内容，与林晚的发现同步。4. **秘密的视觉化**：B3和B6中，对口袋的特写是关键，需清晰展示‘无意识触摸’和‘口袋绷紧’的细节。\",\n    \"composition_principles\": \"1. **引导视线**：利用照相馆内的线条（地板、柜子边缘、晾干绳）引导观众视线至关键线索（拖痕、相册夹、灰外套照片）。2. **框中框**：利用门框、柜子等元素形成框中框，暗示人物被秘密或空间所困。3. **对称与对比**：在构图上可考虑林晚与顾沉的对称站位，暗示他们各自隐藏秘密的对称性。在B11，林晚独自展开照片的构图应与之前双人互动形成对比，强调孤独与真相。\",\n    \"performance_arc\": [\n        {\n            \"character\": \"林晚\",\n            \"objective\": \"查明昨夜异常，同时隐藏自己的秘密。\",\n            \"tactic_progression\": \"慵懒观察 -> 警觉调查 -> 镇定掩饰 -> 被动应对试探 -> 主动观察 -> 冰冷自省。\",\n            \"visible_behavior_progression\": \"B1-B2：专注检查，动作轻缓。B3：无意识摸口袋。B4：切换至慵懒社交状态。B5-B6：眼神观察顾沉。B7：直接提问。B8：快速瞥视后恢复常态。B9-B10：困惑、无辜的表情管理。B11：独自一人时，表情转为冰冷、凝重。\",\n            \"turning_point\": \"B8瞥见灰外套照片，从被动调查转为获得关键证据，内心警惕性质变。\"\n        },\n        {\n            \"character\": \"顾沉\",\n            \"objective\": \"掩饰自己昨夜的活动，试探林晚是否知晓或动了相册夹。\",\n            \"tactic_progression\": \"日常切入 -> 试探性提及 -> 回避深入 -> 给出解释 -> 主动反试探 -> 压力测试。\",\n            \"visible_behavior_progression\": \"B4：带早餐进入，表现困倦、日常。B5：眼神飘向暗房，回避问题。B6：左手插袋，口袋绷紧。B7：平静解释。B8：进入暗房（短暂离开）。B9：出来后直接询问灰外套。B10：离开前随口反问相册夹。\",\n            \"turning_point\": \"B9主动询问‘灰外套的人’，从被动回应转为主动试探，试图夺回信息控制权。\"\n        }\n    ],\n    \"edit_arc\": \"剪辑节奏应与发现和试探的节奏同步。B1-B3：使用较慢的剪辑，给予观众和林晚观察、思考的时间。B4-B7：对话部分采用正反打，但节奏平稳，维持表面日常感。B8：灰外套照片的出现应是一个快速的‘插入’镜头，打破平稳节奏。B9-B10：对话剪辑可略微加快，反映心理战的紧张。B11：最后揭示应放慢节奏，给予照片特写和林晚反应足够的屏幕时间，让信息沉淀。\",\n    \"information_reveal_plan\": [\n        {\n            \"beat_id\": \"B1\",\n            \"reveal_type\": \"环境线索\",\n            \"content\": \"暗房门口有新鲜湿润的拖痕。\",\n            \"reveal_method\": \"林晚的视线引导，镜头跟随发现。\"\n        },\n        {\n            \"beat_id\": \"B2\",\n            \"reveal_type\": \"物品状态\",\n            \"content\": \"黑色皮质相册夹位置异常、打开、有划痕且内部为空。\",\n            \"reveal_method\": \"林晚打开储物柜，镜头展示相册夹状态。\"\n        },\n        {\n            \"beat_id\": \"B3\",\n            \"reveal_type\": \"人物秘密（暗示）\",\n            \"content\": \"林晚毛衣口袋藏有方形物体。\",\n            \"reveal_method\": \"林晚无意识的触摸动作特写。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"reveal_type\": \"人物信息\",\n            \"content\": \"顾沉出现，提及昨晚听到动静。\",\n            \"reveal_method\": \"人物对话。\"\n        },\n        {\n            \"beat_id\": \"B5\",\n            \"reveal_type\": \"人物行为\",\n            \"content\": \"顾沉眼神掠过暗房并回避深入询问。\",\n            \"reveal_method\": \"顾沉的视线方向和对话中的回避反应。\"\n        },\n        {\n            \"beat_id\": \"B6\",\n            \"reveal_type\": \"人物秘密（暗示）\",\n            \"content\": \"顾沉左手口袋绷紧，似握有物品。\",\n            \"reveal_method\": \"顾沉动作和口袋状态的视觉展示。\"\n        },\n        {\n            \"beat_id\": \"B7\",\n            \"reveal_type\": \"人物陈述\",\n            \"content\": \"顾沉承认昨夜使用暗房，理由为洗旧照片和客户急件。\",\n            \"reveal_method\": \"人物对话。\"\n        },\n        {\n            \"beat_id\": \"B8\",\n            \"reveal_type\": \"关键视觉线索\",\n            \"content\": \"晾干绳上一张灰外套人影背对镜头的照片，外套款式与顾沉相似。\",\n            \"reveal_method\": \"林晚的主观视角‘瞥见’，镜头展示照片。\"\n        },\n        {\n            \"beat_id\": \"B9\",\n            \"reveal_type\": \"人物试探\",\n            \"content\": \"顾沉询问林晚是否看到‘穿灰外套的人’。\",\n            \"reveal_method\": \"人物对话。\"\n        },\n        {\n            \"beat_id\": \"B10\",\n            \"reveal_type\": \"人物反试探\",\n            \"content\": \"顾沉询问林晚是否动过储物柜里的相册夹。\",\n            \"reveal_method\": \"人物对话。\"\n        },\n        {\n            \"beat_id\": \"B11\",\n            \"reveal_type\": \"核心秘密揭示\",\n            \"content\": \"林晚藏有自己1998年穿灰色外套站在回声照相馆门口的旧照片。\",\n            \"reveal_method\": \"林晚独自展开照片，镜头聚焦照片内容及背面文字。\"\n        }\n    ],\n    \"spatial_expression\": \"照相馆空间是秘密的容器。暗房门口（B1）是昨夜事件的入口，储物柜（B2）是丢失物品的源头，林晚的口袋（B3）和顾沉的口袋（B6）是移动的秘密仓库，晾干绳（B8）是线索的展示区。人物在空间中的移动（顾沉进入、进入暗房、离开）应体现其试探与掩饰的意图。空间关系（两人距离、与暗房/储物柜的距离）应随心理博弈而微妙变化。\",\n    \"prop_visual_strategy\": \"1. **拖痕（B1）**：需清晰、湿润、有方向性，延伸至储物柜前，是启动谜团的关键。2. **黑色皮质相册夹（B2）**：需展示其异常状态（横倒、搭扣打开、划痕），内部空空如也。3. **林晚的毛衣口袋（B3, B11）**：需能容纳对折的旧照片，材质和形状需支持‘无意识触摸’和‘掏出’动作。4. **顾沉的外套口袋（B6）**：需能展示‘绷紧’状态，暗示内部有硬物。5. **灰外套照片（B8）**：需清晰展示人影背影、灰色外套款式，与顾沉所穿形成视觉关联。6. **林晚的旧照片（B11）**：需清晰展示年轻林晚、灰色外套、照相馆门口背景，背面文字（1998.10.3。回声照相馆。林晚。）需清晰可读。\",\n    \"shot_architecture_guidance\": \"1. **建立与发现镜头**：用于B1，建立照相馆环境并引导至拖痕。2. **调查与揭示镜头**：用于B2, B8, B11，展示物品状态和关键线索。3. **关系与对话镜头**：用于B4-B7, B9-B10，以中景和过肩镜头捕捉双人互动和心理距离。4. **秘密特写镜头**：用于B3, B6，对口袋进行特写，视觉化隐藏行为。5. **主观视角镜头**：用于B8，模拟林晚‘瞥见’灰外套照片的视角。6. **独自反应镜头**：用于B11，聚焦林晚在揭示后的独自反应。\",\n    \"must_preserve\": \"1. 所有beat的事件顺序和核心信息。2. 林晚和顾沉各自隐藏秘密（口袋物品）的视觉暗示。3. 灰外套照片作为关键线索的视觉呈现。4. B11中林晚旧照片的完整信息（人物、服装、地点、时间）。5. 两人对话中试探与反试探的心理张力。\",\n    \"must_avoid\": \"1. 提前揭示B11中旧照片的内容。2. 将灰外套照片（B8）与林晚旧照片（B11）在视觉上过早关联。3. 削弱顾沉在B5, B9, B10中的可疑行为。4. 让林晚在B9-B10的回应显得过于确信或慌乱，应保持‘困惑’和‘无辜’的表演基调。5. 使用非本场景来源的道具或空间细节。\",\n    \"creative_risks\": \"1. 在B8，灰外套照片的‘瞥见’可以处理得更模糊、更快速，增强偶然性和林晚的瞬间反应，但需确保观众能捕捉到关键信息（灰色外套）。2. 在B11，可以考虑让林晚在展开照片前有一个更长的停顿和犹豫，增强揭示前的张力，但需与整体节奏平衡。\",\n    \"strategy_summary\": \"本策略旨在通过一系列精心设计的视觉谜团和人物试探，构建一个充满悬疑和心理博弈的场景。核心在于控制信息释放的节奏，从环境异常（拖痕）到物品异常（空相册夹），再到人物秘密（口袋物品），最终通过关键视觉线索（灰外套照片）和最终揭示（林晚旧照片），将两人隐藏的秘密与过去联系起来。镜头语言需紧密服务于‘发现’和‘试探’的视角，表演需体现表面日常下的暗流涌动。\",\n    \"authority\": {\n        \"DirectorTreatment\": \"approved_record.evidence.treatment\",\n        \"SceneBlocking\": \"approved_record.evidence.blocking\",\n        \"Character\": \"approved_record.evidence.blocking.participants\",\n        \"FactSnapshot\": \"approved_record.contract.immutable_projection.facts\",\n        \"Location\": \"absent; N/A required\",\n        \"Prop\": \"absent; N/A required\",\n        \"ScriptIR\": \"approved_record.treatment.beat_map + scene metadata\"\n    },\n    \"source_refs\": [\n        \"approved_record.treatment.beat_map\",\n        \"approved_record.scene metadata\",\n        \"approved_record.evidence.blocking\",\n        \"approved_record.evidence.blocking.participants\",\n        \"approved_record.contract.immutable_projection.facts\"\n    ],\n    \"strategy_fingerprint\": \"a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6\"\n}\n```",
+          "parsed": {
+            "schema_version": "director_scene_strategy_v1",
+            "scene_id": "book990402:e2:回声照相馆",
+            "strategy_version": "1.0",
+            "dramatic_objective": "通过一系列视觉谜团和相互试探，揭示林晚与顾沉各自隐藏的秘密，并建立‘灰外套’这一关键线索与两人过去的直接联系，营造悬疑氛围。",
+            "scene_question": "林晚和顾沉各自隐藏了什么秘密？昨夜暗房发生了什么？‘灰外套’照片背后隐藏着怎样的过去？",
+            "audience_experience": [
+              {
+                "beat_id": "B1",
+                "experience": "观众跟随林晚的视角，首次发现暗房门口的异常拖痕，产生好奇与轻微不安，意识到昨夜有人活动。",
+                "knowledge_state": "观众与林晚同步获知暗房区域有异常活动。"
+              },
+              {
+                "beat_id": "B2",
+                "experience": "观众与林晚一同检查储物柜，看到被翻动且空空如也的相册夹，怀疑加深，开始猜测丢失了什么。",
+                "knowledge_state": "观众确认相册夹被动过，内容物丢失。"
+              },
+              {
+                "beat_id": "B3",
+                "experience": "观众注意到林晚无意识摸口袋的动作，首次意识到她也藏有秘密，产生新的疑问。",
+                "knowledge_state": "观众获知林晚口袋藏有物品。"
+              },
+              {
+                "beat_id": "B4",
+                "experience": "顾沉的出现带来表面的日常感，但提及‘昨晚听到动静’，让观众在平静对话下保持警觉。",
+                "knowledge_state": "观众知道顾沉出现并提及昨夜动静。"
+              },
+              {
+                "beat_id": "B5",
+                "experience": "观众观察到顾沉回避问题并看向暗房，开始怀疑他与昨夜事件有关。",
+                "knowledge_state": "观众获知顾沉对暗房区域表现出异常关注。"
+              },
+              {
+                "beat_id": "B6",
+                "experience": "观众注意到顾沉口袋的异常，意识到他也藏有秘密，双方隐藏的格局形成。",
+                "knowledge_state": "观众获知顾沉口袋藏有物品。"
+              },
+              {
+                "beat_id": "B7",
+                "experience": "观众听到顾沉的解释，但因其之前的回避行为而对其真实性持保留态度，悬念持续。",
+                "knowledge_state": "观众获知顾沉承认昨夜使用暗房，理由为洗照片。"
+              },
+              {
+                "beat_id": "B8",
+                "experience": "观众与林晚一同瞥见灰外套照片，视觉线索将顾沉与神秘事件联系起来，警惕性提升。",
+                "knowledge_state": "观众看到灰外套照片，并将其与顾沉的外套款式关联。"
+              },
+              {
+                "beat_id": "B9",
+                "experience": "观众听到顾沉的试探，意识到他在测试林晚是否知晓照片内容，双方心理战升级。",
+                "knowledge_state": "观众获知顾沉明确提及‘灰外套’线索。"
+              },
+              {
+                "beat_id": "B10",
+                "experience": "观众感受到顾沉反试探带来的压力，等待林晚的回应，紧张感达到一个小高潮。",
+                "knowledge_state": "观众确认顾沉关注相册夹。"
+              },
+              {
+                "beat_id": "B11",
+                "experience": "观众看到林晚掏出的旧照片，所有线索瞬间串联，‘灰外套’与林晚的过去直接挂钩，产生恍然大悟与更深的疑问。",
+                "knowledge_state": "观众获知林晚藏有自己穿灰外套的旧照，时间地点明确，与顾沉的线索形成闭环。"
+              }
+            ],
+            "beat_priorities": [
+              {
+                "beat_id": "B1",
+                "priority": "high",
+                "reason": "建立核心视觉谜团（拖痕），启动整个场景的悬疑基调。"
+              },
+              {
+                "beat_id": "B2",
+                "priority": "high",
+                "reason": "强化谜团，确认异常（空相册夹），为后续人物动机提供基础。"
+              },
+              {
+                "beat_id": "B3",
+                "priority": "medium",
+                "reason": "首次暗示林晚的秘密，为最终揭示埋下伏笔。"
+              },
+              {
+                "beat_id": "B4",
+                "priority": "medium",
+                "reason": "引入第二角色，建立表面互动，为后续试探提供舞台。"
+              },
+              {
+                "beat_id": "B5",
+                "priority": "high",
+                "reason": "建立顾沉的可疑性，推动林晚的怀疑。"
+              },
+              {
+                "beat_id": "B6",
+                "priority": "medium",
+                "reason": "暗示顾沉的秘密，与B3形成对称，强化双方隐藏的格局。"
+              },
+              {
+                "beat_id": "B7",
+                "priority": "high",
+                "reason": "关键对话交锋，顾沉给出解释，但悬念未解。"
+              },
+              {
+                "beat_id": "B8",
+                "priority": "high",
+                "reason": "引入关键视觉线索（灰外套照片），将顾沉与事件视觉化关联。"
+              },
+              {
+                "beat_id": "B9",
+                "priority": "high",
+                "reason": "顾沉主动试探，心理战升级。"
+              },
+              {
+                "beat_id": "B10",
+                "priority": "high",
+                "reason": "顾沉反试探，压力测试，将紧张感推向顶点。"
+              },
+              {
+                "beat_id": "B11",
+                "priority": "high",
+                "reason": "最终揭示，串联所有线索，完成本场景的戏剧闭环并开启更大悬念。"
+              }
+            ],
+            "audience_knowledge_arc": [
+              {
+                "beat_id": "B1",
+                "knowledge": "观众与林晚同步获知暗房区域昨夜有异常活动（拖痕）。"
+              },
+              {
+                "beat_id": "B2",
+                "knowledge": "观众确认相册夹被动过，内容物丢失。"
+              },
+              {
+                "beat_id": "B3",
+                "knowledge": "观众首次获知林晚口袋藏有物品（秘密）。"
+              },
+              {
+                "beat_id": "B4",
+                "knowledge": "观众知道顾沉出现并提及昨夜听到动静。"
+              },
+              {
+                "beat_id": "B5",
+                "knowledge": "观众观察到顾沉对暗房区域的异常关注和回避。"
+              },
+              {
+                "beat_id": "B6",
+                "knowledge": "观众首次获知顾沉口袋藏有物品（秘密）。"
+              },
+              {
+                "beat_id": "B7",
+                "knowledge": "观众获知顾沉承认昨夜使用暗房，理由为洗照片。"
+              },
+              {
+                "beat_id": "B8",
+                "knowledge": "观众看到灰外套照片，并将其与顾沉的外套款式关联。"
+              },
+              {
+                "beat_id": "B9",
+                "knowledge": "观众获知顾沉明确提及‘灰外套’线索进行试探。"
+              },
+              {
+                "beat_id": "B10",
+                "knowledge": "观众确认顾沉关注相册夹，并对其进行反试探。"
+              },
+              {
+                "beat_id": "B11",
+                "knowledge": "观众获知林晚藏有自己穿灰外套的旧照（1998年），与顾沉的线索形成直接联系。"
+              }
+            ],
+            "emotional_arc": [
+              {
+                "beat_id": "B1",
+                "emotion": "慵懒 -> 警觉",
+                "trigger": "发现暗房门口新鲜湿润的拖痕。",
+                "transition_reason": "日常状态被异常视觉证据打破，注意力瞬间集中。"
+              },
+              {
+                "beat_id": "B2",
+                "emotion": "警觉 -> 怀疑加深",
+                "trigger": "检查储物柜，发现相册夹位置异常且内部为空。",
+                "transition_reason": "异常从环境（拖痕）具体化到物品（相册夹），证实了人为活动和丢失。"
+              },
+              {
+                "beat_id": "B3",
+                "emotion": "怀疑加深 -> 表面镇定（内在紧张）",
+                "trigger": "放回相册夹时无意识摸口袋。",
+                "transition_reason": "调查行为触发了自身秘密的防御性反应，但需维持表面镇定。"
+              },
+              {
+                "beat_id": "B4",
+                "emotion": "表面镇定 -> 恢复慵懒面具（内在戒备）",
+                "trigger": "顾沉带着早餐进入，开始日常对话。",
+                "transition_reason": "外部互动迫使林晚切换回社交面具，但内心因之前的发现而戒备。"
+              },
+              {
+                "beat_id": "B5",
+                "emotion": "恢复慵懒面具 -> 怀疑指向顾沉",
+                "trigger": "顾沉眼神掠过暗房并回避深入询问。",
+                "transition_reason": "顾沉的回避行为将林晚的怀疑从‘未知者’具体指向了他。"
+              },
+              {
+                "beat_id": "B6",
+                "emotion": "怀疑指向顾沉 -> 观察与评估",
+                "trigger": "注意到顾沉左手插袋、口袋绷紧。",
+                "transition_reason": "发现顾沉也有隐藏行为，情绪从单纯怀疑转为对双方秘密格局的评估。"
+              },
+              {
+                "beat_id": "B7",
+                "emotion": "观察与评估 -> 怀疑未减（表面接受）",
+                "trigger": "顾沉给出‘洗旧照片’的解释。",
+                "transition_reason": "解释合理但无法完全打消疑虑，情绪维持在怀疑但暂不戳破的状态。"
+              },
+              {
+                "beat_id": "B8",
+                "emotion": "怀疑未减 -> 警惕性提升",
+                "trigger": "瞥见晾干绳上的灰外套照片。",
+                "transition_reason": "获得关键视觉证据，将顾沉与事件直接关联，威胁感增强。"
+              },
+              {
+                "beat_id": "B9",
+                "emotion": "警惕性提升 -> 困惑否认（内在警惕）",
+                "trigger": "顾沉询问是否看到‘穿灰外套的人’。",
+                "transition_reason": "面对直接试探，需以困惑否认来掩饰已知信息，同时警惕对方意图。"
+              },
+              {
+                "beat_id": "B10",
+                "emotion": "困惑否认 -> 无辜回应（内在紧张）",
+                "trigger": "顾沉反问是否动过相册夹。",
+                "transition_reason": "压力测试到来，需以无辜回应来保护自己的秘密和调查成果。"
+              },
+              {
+                "beat_id": "B11",
+                "emotion": "无辜回应 -> 表情冰冷（内在震动）",
+                "trigger": "顾沉离开后，掏出并展开自己的旧照片。",
+                "transition_reason": "独自面对证据，所有线索串联，意识到顾沉可能记得过去，情绪转为冰冷的震动。"
+              }
+            ],
+            "power_arc": [
+              {
+                "beat_id": "B1",
+                "power_holder": "林晚",
+                "dynamic": "林晚作为发现者，掌握初始信息优势。"
+              },
+              {
+                "beat_id": "B4",
+                "power_holder": "顾沉",
+                "dynamic": "顾沉进入，通过提及‘动静’和日常姿态，暂时掌握对话主导权。"
+              },
+              {
+                "beat_id": "B7",
+                "power_holder": "顾沉",
+                "dynamic": "顾沉通过给出解释，试图平息疑问，暂时控制局面。"
+              },
+              {
+                "beat_id": "B8",
+                "power_holder": "林晚",
+                "dynamic": "林晚获得关键视觉证据（灰外套照片），信息优势反转。"
+              },
+              {
+                "beat_id": "B9-B10",
+                "power_holder": "顾沉",
+                "dynamic": "顾沉通过连续试探（B9）和反试探（B10），试图夺回信息控制权，测试林晚。"
+              },
+              {
+                "beat_id": "B11",
+                "power_holder": "林晚",
+                "dynamic": "顾沉离开后，林晚独自面对最终揭示，掌握关于自身过去的完整信息，但同时也意识到自己可能已被顾沉记忆，权力关系进入新的、更复杂的平衡。"
+              }
+            ],
+            "visual_grammar": "本场景采用‘发现-调查-隐藏-试探-揭示’的视觉语法。以林晚的主观视角和关键道具（拖痕、相册夹、口袋、灰外套照片）的特写为视觉锚点，驱动叙事。人物互动以中景和过肩镜头为主，强调空间关系和心理距离。关键信息揭示（B8, B11）采用‘瞥见’和‘独自展开’的视觉模式，控制信息释放节奏。",
+            "camera_principles": "1. **跟随发现者**：在B1-B3，镜头应紧密跟随林晚的视线和动作，模拟她的发现过程，使用手持或轻微晃动增强临场感。2. **空间关系与心理距离**：在B4-B10的双人对话中，通过镜头距离和角度（如过肩、双人中景）的变化，反映两人心理的试探与距离。顾沉看向暗房时，镜头可短暂跟随其视线。3. **信息控制**：在B8，灰外套照片应先以林晚的视角‘瞥见’（可能虚焦或局部），再给观众一个清晰的、但仍是林晚主观视角的镜头。在B11，镜头应聚焦于林晚的手和照片，最后才揭示照片内容，与林晚的发现同步。4. **秘密的视觉化**：B3和B6中，对口袋的特写是关键，需清晰展示‘无意识触摸’和‘口袋绷紧’的细节。",
+            "composition_principles": "1. **引导视线**：利用照相馆内的线条（地板、柜子边缘、晾干绳）引导观众视线至关键线索（拖痕、相册夹、灰外套照片）。2. **框中框**：利用门框、柜子等元素形成框中框，暗示人物被秘密或空间所困。3. **对称与对比**：在构图上可考虑林晚与顾沉的对称站位，暗示他们各自隐藏秘密的对称性。在B11，林晚独自展开照片的构图应与之前双人互动形成对比，强调孤独与真相。",
+            "performance_arc": [
+              {
+                "character": "林晚",
+                "objective": "查明昨夜异常，同时隐藏自己的秘密。",
+                "tactic_progression": "慵懒观察 -> 警觉调查 -> 镇定掩饰 -> 被动应对试探 -> 主动观察 -> 冰冷自省。",
+                "visible_behavior_progression": "B1-B2：专注检查，动作轻缓。B3：无意识摸口袋。B4：切换至慵懒社交状态。B5-B6：眼神观察顾沉。B7：直接提问。B8：快速瞥视后恢复常态。B9-B10：困惑、无辜的表情管理。B11：独自一人时，表情转为冰冷、凝重。",
+                "turning_point": "B8瞥见灰外套照片，从被动调查转为获得关键证据，内心警惕性质变。"
+              },
+              {
+                "character": "顾沉",
+                "objective": "掩饰自己昨夜的活动，试探林晚是否知晓或动了相册夹。",
+                "tactic_progression": "日常切入 -> 试探性提及 -> 回避深入 -> 给出解释 -> 主动反试探 -> 压力测试。",
+                "visible_behavior_progression": "B4：带早餐进入，表现困倦、日常。B5：眼神飘向暗房，回避问题。B6：左手插袋，口袋绷紧。B7：平静解释。B8：进入暗房（短暂离开）。B9：出来后直接询问灰外套。B10：离开前随口反问相册夹。",
+                "turning_point": "B9主动询问‘灰外套的人’，从被动回应转为主动试探，试图夺回信息控制权。"
+              }
+            ],
+            "edit_arc": "剪辑节奏应与发现和试探的节奏同步。B1-B3：使用较慢的剪辑，给予观众和林晚观察、思考的时间。B4-B7：对话部分采用正反打，但节奏平稳，维持表面日常感。B8：灰外套照片的出现应是一个快速的‘插入’镜头，打破平稳节奏。B9-B10：对话剪辑可略微加快，反映心理战的紧张。B11：最后揭示应放慢节奏，给予照片特写和林晚反应足够的屏幕时间，让信息沉淀。",
+            "information_reveal_plan": [
+              {
+                "beat_id": "B1",
+                "reveal_type": "环境线索",
+                "content": "暗房门口有新鲜湿润的拖痕。",
+                "reveal_method": "林晚的视线引导，镜头跟随发现。"
+              },
+              {
+                "beat_id": "B2",
+                "reveal_type": "物品状态",
+                "content": "黑色皮质相册夹位置异常、打开、有划痕且内部为空。",
+                "reveal_method": "林晚打开储物柜，镜头展示相册夹状态。"
+              },
+              {
+                "beat_id": "B3",
+                "reveal_type": "人物秘密（暗示）",
+                "content": "林晚毛衣口袋藏有方形物体。",
+                "reveal_method": "林晚无意识的触摸动作特写。"
+              },
+              {
+                "beat_id": "B4",
+                "reveal_type": "人物信息",
+                "content": "顾沉出现，提及昨晚听到动静。",
+                "reveal_method": "人物对话。"
+              },
+              {
+                "beat_id": "B5",
+                "reveal_type": "人物行为",
+                "content": "顾沉眼神掠过暗房并回避深入询问。",
+                "reveal_method": "顾沉的视线方向和对话中的回避反应。"
+              },
+              {
+                "beat_id": "B6",
+                "reveal_type": "人物秘密（暗示）",
+                "content": "顾沉左手口袋绷紧，似握有物品。",
+                "reveal_method": "顾沉动作和口袋状态的视觉展示。"
+              },
+              {
+                "beat_id": "B7",
+                "reveal_type": "人物陈述",
+                "content": "顾沉承认昨夜使用暗房，理由为洗旧照片和客户急件。",
+                "reveal_method": "人物对话。"
+              },
+              {
+                "beat_id": "B8",
+                "reveal_type": "关键视觉线索",
+                "content": "晾干绳上一张灰外套人影背对镜头的照片，外套款式与顾沉相似。",
+                "reveal_method": "林晚的主观视角‘瞥见’，镜头展示照片。"
+              },
+              {
+                "beat_id": "B9",
+                "reveal_type": "人物试探",
+                "content": "顾沉询问林晚是否看到‘穿灰外套的人’。",
+                "reveal_method": "人物对话。"
+              },
+              {
+                "beat_id": "B10",
+                "reveal_type": "人物反试探",
+                "content": "顾沉询问林晚是否动过储物柜里的相册夹。",
+                "reveal_method": "人物对话。"
+              },
+              {
+                "beat_id": "B11",
+                "reveal_type": "核心秘密揭示",
+                "content": "林晚藏有自己1998年穿灰色外套站在回声照相馆门口的旧照片。",
+                "reveal_method": "林晚独自展开照片，镜头聚焦照片内容及背面文字。"
+              }
+            ],
+            "spatial_expression": "照相馆空间是秘密的容器。暗房门口（B1）是昨夜事件的入口，储物柜（B2）是丢失物品的源头，林晚的口袋（B3）和顾沉的口袋（B6）是移动的秘密仓库，晾干绳（B8）是线索的展示区。人物在空间中的移动（顾沉进入、进入暗房、离开）应体现其试探与掩饰的意图。空间关系（两人距离、与暗房/储物柜的距离）应随心理博弈而微妙变化。",
+            "prop_visual_strategy": "1. **拖痕（B1）**：需清晰、湿润、有方向性，延伸至储物柜前，是启动谜团的关键。2. **黑色皮质相册夹（B2）**：需展示其异常状态（横倒、搭扣打开、划痕），内部空空如也。3. **林晚的毛衣口袋（B3, B11）**：需能容纳对折的旧照片，材质和形状需支持‘无意识触摸’和‘掏出’动作。4. **顾沉的外套口袋（B6）**：需能展示‘绷紧’状态，暗示内部有硬物。5. **灰外套照片（B8）**：需清晰展示人影背影、灰色外套款式，与顾沉所穿形成视觉关联。6. **林晚的旧照片（B11）**：需清晰展示年轻林晚、灰色外套、照相馆门口背景，背面文字（1998.10.3。回声照相馆。林晚。）需清晰可读。",
+            "shot_architecture_guidance": "1. **建立与发现镜头**：用于B1，建立照相馆环境并引导至拖痕。2. **调查与揭示镜头**：用于B2, B8, B11，展示物品状态和关键线索。3. **关系与对话镜头**：用于B4-B7, B9-B10，以中景和过肩镜头捕捉双人互动和心理距离。4. **秘密特写镜头**：用于B3, B6，对口袋进行特写，视觉化隐藏行为。5. **主观视角镜头**：用于B8，模拟林晚‘瞥见’灰外套照片的视角。6. **独自反应镜头**：用于B11，聚焦林晚在揭示后的独自反应。",
+            "must_preserve": "1. 所有beat的事件顺序和核心信息。2. 林晚和顾沉各自隐藏秘密（口袋物品）的视觉暗示。3. 灰外套照片作为关键线索的视觉呈现。4. B11中林晚旧照片的完整信息（人物、服装、地点、时间）。5. 两人对话中试探与反试探的心理张力。",
+            "must_avoid": "1. 提前揭示B11中旧照片的内容。2. 将灰外套照片（B8）与林晚旧照片（B11）在视觉上过早关联。3. 削弱顾沉在B5, B9, B10中的可疑行为。4. 让林晚在B9-B10的回应显得过于确信或慌乱，应保持‘困惑’和‘无辜’的表演基调。5. 使用非本场景来源的道具或空间细节。",
+            "creative_risks": "1. 在B8，灰外套照片的‘瞥见’可以处理得更模糊、更快速，增强偶然性和林晚的瞬间反应，但需确保观众能捕捉到关键信息（灰色外套）。2. 在B11，可以考虑让林晚在展开照片前有一个更长的停顿和犹豫，增强揭示前的张力，但需与整体节奏平衡。",
+            "strategy_summary": "本策略旨在通过一系列精心设计的视觉谜团和人物试探，构建一个充满悬疑和心理博弈的场景。核心在于控制信息释放的节奏，从环境异常（拖痕）到物品异常（空相册夹），再到人物秘密（口袋物品），最终通过关键视觉线索（灰外套照片）和最终揭示（林晚旧照片），将两人隐藏的秘密与过去联系起来。镜头语言需紧密服务于‘发现’和‘试探’的视角，表演需体现表面日常下的暗流涌动。",
+            "authority": {
+              "DirectorTreatment": "approved_record.evidence.treatment",
+              "SceneBlocking": "approved_record.evidence.blocking",
+              "Character": "approved_record.evidence.blocking.participants",
+              "FactSnapshot": "approved_record.contract.immutable_projection.facts",
+              "Location": "absent; N/A required",
+              "Prop": "absent; N/A required",
+              "ScriptIR": "approved_record.treatment.beat_map + scene metadata"
+            },
+            "source_refs": [
+              "approved_record.treatment.beat_map",
+              "approved_record.scene metadata",
+              "approved_record.evidence.blocking",
+              "approved_record.evidence.blocking.participants",
+              "approved_record.contract.immutable_projection.facts"
+            ],
+            "strategy_fingerprint": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+          },
+          "parse_error": "",
+          "validation": {
+            "valid": false,
+            "strategy": null,
+            "errors": [
+              {
+                "code": "UNKNOWN_BEAT_REFERENCE",
+                "path": "power_arc[4]",
+                "message": "UNKNOWN_BEAT_REFERENCE"
+              }
+            ]
+          },
+          "format_repair_eligible": false
+        }
+      ],
+      "attempt_count": 1,
+      "first_pass_json_parse_valid": true,
+      "first_pass_schema_valid": false,
+      "final_schema_valid": false,
+      "strategy": null,
+      "validation": {
+        "valid": false,
+        "strategy": null,
+        "errors": [
+          {
+            "code": "UNKNOWN_BEAT_REFERENCE",
+            "path": "power_arc[4]",
+            "message": "UNKNOWN_BEAT_REFERENCE"
+          }
+        ]
+      },
+      "quality_diagnostics": {
+        "diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1",
+        "outcome": "STRATEGY_INVALID",
+        "findings": [
+          {
+            "dimension": "dramatic_objective",
+            "status": "PASS",
+            "evidence": "objective length=62",
+            "issue_code": "",
+            "fields": [
+              "dramatic_objective"
+            ]
+          },
+          {
+            "dimension": "scene_question",
+            "status": "PASS",
+            "evidence": "question length=43",
+            "issue_code": "",
+            "fields": [
+              "scene_question"
+            ]
+          },
+          {
+            "dimension": "audience_knowledge_arc",
+            "status": "WEAK",
+            "evidence": "missing concrete arc evidence: audience_knowledge_arc[0].phase_id, audience_knowledge_arc[0].does_not_know_yet, audience_knowledge_arc[0].suspects, audience_knowledge_arc[1].phase_id, audience_knowledge_arc[1].does_not_know_yet, audience_knowledge_arc[1].suspects, audience_knowledge_arc[2].phase_id, audience_knowledge_arc[2].does_not_know_yet",
+            "issue_code": "AUDIENCE_ARC_WEAK",
+            "fields": [
+              "audience_knowledge_arc"
+            ]
+          },
+          {
+            "dimension": "emotional_arc",
+            "status": "WEAK",
+            "evidence": "missing concrete arc evidence: emotional_arc[0].emotion_state, emotional_arc[1].emotion_state, emotional_arc[2].emotion_state, emotional_arc[3].emotion_state, emotional_arc[4].emotion_state, emotional_arc[5].emotion_state, emotional_arc[6].emotion_state, emotional_arc[7].emotion_state",
+            "issue_code": "EMOTION_ARC_WEAK",
+            "fields": [
+              "emotional_arc"
+            ]
+          },
+          {
+            "dimension": "performance_arc",
+            "status": "WEAK",
+            "evidence": "characters=2; each has objective/tactic/visible progression/turning point=False",
+            "issue_code": "PERFORMANCE_ARC_WEAK",
+            "fields": [
+              "performance_arc"
+            ]
+          },
+          {
+            "dimension": "edit_arc",
+            "status": "WEAK",
+            "evidence": "edit arc is missing director logic",
+            "issue_code": "EDIT_STRATEGY_WEAK",
+            "fields": [
+              "edit_arc"
+            ]
+          },
+          {
+            "dimension": "visual_grammar",
+            "status": "WEAK",
+            "evidence": "overall principle and phase rules present=False",
+            "issue_code": "VISUAL_GRAMMAR_WEAK",
+            "fields": [
+              "visual_grammar"
+            ]
+          },
+          {
+            "dimension": "camera_principles",
+            "status": "WEAK",
+            "evidence": "camera principles do not state a motivation condition",
+            "issue_code": "CAMERA_PRINCIPLE_GENERIC",
+            "fields": [
+              "camera_principles"
+            ]
+          },
+          {
+            "dimension": "information_reveal_plan",
+            "status": "WEAK",
+            "evidence": "ordered reveal/withhold entries=11",
+            "issue_code": "INFORMATION_STRATEGY_WEAK",
+            "fields": [
+              "information_reveal_plan"
+            ]
+          },
+          {
+            "dimension": "must_avoid",
+            "status": "WEAK",
+            "evidence": "scene-specific anti-patterns recorded",
+            "issue_code": "",
+            "fields": [
+              "must_avoid"
+            ]
+          },
+          {
+            "dimension": "creative_risks",
+            "status": "PASS",
+            "evidence": "creative risk recorded",
+            "issue_code": "",
+            "fields": [
+              "creative_risks"
+            ]
+          }
+        ],
+        "weak_dimension_count": 8,
+        "source_evidence_available": [
+          "baseline_shot_plan_metadata",
+          "character_canonical",
+          "director_treatment",
+          "fact_snapshot",
+          "location_canonical",
+          "prop_canonical",
+          "scene",
+          "scene_blocking",
+          "source_authority"
+        ],
+        "directing_outcome": "STRATEGY_WEAK",
+        "protocol_valid": false,
+        "protocol_errors": [
+          {
+            "code": "UNKNOWN_BEAT_REFERENCE",
+            "path": "power_arc[4]",
+            "message": "UNKNOWN_BEAT_REFERENCE"
+          }
+        ]
+      },
+      "strategy_vs_baseline": {
+        "schema_version": "director-quality-v3-phase1-strategy-vs-baseline-v1",
+        "baseline_shot_count": 11,
+        "strategy_implied_gaps": [
+          "INFORMATION_STRATEGY_UNSUPPORTED",
+          "PERFORMANCE_ARC_UNSUPPORTED"
+        ],
+        "baseline_read_only": true
+      },
+      "telemetry": {
+        "http_request_count": 1,
+        "prompt_tokens": 3657,
+        "cached_tokens": 512,
+        "completion_tokens": 5645,
+        "total_tokens": 9302,
+        "latency_ms": 77949.72
+      },
+      "side_effects": {
+        "shotplan": 0,
+        "storyboard": 0,
+        "production": 0,
+        "repair": 0,
+        "media": 0,
+        "object_storage": 0
+      },
+      "cross_scene_distinctiveness": {
+        "schema_version": "director-quality-v3-phase1-distinctiveness-v1",
+        "comparisons": [
+          {
+            "scene_a": "book990402:e3:暗房惊魂",
+            "scene_b": "book990402:e3:暗房惊魂（2）",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0208,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          },
+          {
+            "scene_a": "book990402:e3:暗房惊魂",
+            "scene_b": "book990402:e2:回声照相馆",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0278,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          },
+          {
+            "scene_a": "book990402:e3:暗房惊魂（2）",
+            "scene_b": "book990402:e2:回声照相馆",
+            "exact_core_fields": [],
+            "jaccard_token_similarity": 0.0213,
+            "status": "HARD_FAILURE",
+            "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+          }
+        ],
+        "hard_failure": true
+      },
+      "parsed_candidate": {
+        "schema_version": "director_scene_strategy_v1",
+        "scene_id": "book990402:e2:回声照相馆",
+        "strategy_version": "1.0",
+        "dramatic_objective": "通过一系列视觉谜团和相互试探，揭示林晚与顾沉各自隐藏的秘密，并建立‘灰外套’这一关键线索与两人过去的直接联系，营造悬疑氛围。",
+        "scene_question": "林晚和顾沉各自隐藏了什么秘密？昨夜暗房发生了什么？‘灰外套’照片背后隐藏着怎样的过去？",
+        "audience_experience": [
+          {
+            "beat_id": "B1",
+            "experience": "观众跟随林晚的视角，首次发现暗房门口的异常拖痕，产生好奇与轻微不安，意识到昨夜有人活动。",
+            "knowledge_state": "观众与林晚同步获知暗房区域有异常活动。"
+          },
+          {
+            "beat_id": "B2",
+            "experience": "观众与林晚一同检查储物柜，看到被翻动且空空如也的相册夹，怀疑加深，开始猜测丢失了什么。",
+            "knowledge_state": "观众确认相册夹被动过，内容物丢失。"
+          },
+          {
+            "beat_id": "B3",
+            "experience": "观众注意到林晚无意识摸口袋的动作，首次意识到她也藏有秘密，产生新的疑问。",
+            "knowledge_state": "观众获知林晚口袋藏有物品。"
+          },
+          {
+            "beat_id": "B4",
+            "experience": "顾沉的出现带来表面的日常感，但提及‘昨晚听到动静’，让观众在平静对话下保持警觉。",
+            "knowledge_state": "观众知道顾沉出现并提及昨夜动静。"
+          },
+          {
+            "beat_id": "B5",
+            "experience": "观众观察到顾沉回避问题并看向暗房，开始怀疑他与昨夜事件有关。",
+            "knowledge_state": "观众获知顾沉对暗房区域表现出异常关注。"
+          },
+          {
+            "beat_id": "B6",
+            "experience": "观众注意到顾沉口袋的异常，意识到他也藏有秘密，双方隐藏的格局形成。",
+            "knowledge_state": "观众获知顾沉口袋藏有物品。"
+          },
+          {
+            "beat_id": "B7",
+            "experience": "观众听到顾沉的解释，但因其之前的回避行为而对其真实性持保留态度，悬念持续。",
+            "knowledge_state": "观众获知顾沉承认昨夜使用暗房，理由为洗照片。"
+          },
+          {
+            "beat_id": "B8",
+            "experience": "观众与林晚一同瞥见灰外套照片，视觉线索将顾沉与神秘事件联系起来，警惕性提升。",
+            "knowledge_state": "观众看到灰外套照片，并将其与顾沉的外套款式关联。"
+          },
+          {
+            "beat_id": "B9",
+            "experience": "观众听到顾沉的试探，意识到他在测试林晚是否知晓照片内容，双方心理战升级。",
+            "knowledge_state": "观众获知顾沉明确提及‘灰外套’线索。"
+          },
+          {
+            "beat_id": "B10",
+            "experience": "观众感受到顾沉反试探带来的压力，等待林晚的回应，紧张感达到一个小高潮。",
+            "knowledge_state": "观众确认顾沉关注相册夹。"
+          },
+          {
+            "beat_id": "B11",
+            "experience": "观众看到林晚掏出的旧照片，所有线索瞬间串联，‘灰外套’与林晚的过去直接挂钩，产生恍然大悟与更深的疑问。",
+            "knowledge_state": "观众获知林晚藏有自己穿灰外套的旧照，时间地点明确，与顾沉的线索形成闭环。"
+          }
+        ],
+        "beat_priorities": [
+          {
+            "beat_id": "B1",
+            "priority": "high",
+            "reason": "建立核心视觉谜团（拖痕），启动整个场景的悬疑基调。"
+          },
+          {
+            "beat_id": "B2",
+            "priority": "high",
+            "reason": "强化谜团，确认异常（空相册夹），为后续人物动机提供基础。"
+          },
+          {
+            "beat_id": "B3",
+            "priority": "medium",
+            "reason": "首次暗示林晚的秘密，为最终揭示埋下伏笔。"
+          },
+          {
+            "beat_id": "B4",
+            "priority": "medium",
+            "reason": "引入第二角色，建立表面互动，为后续试探提供舞台。"
+          },
+          {
+            "beat_id": "B5",
+            "priority": "high",
+            "reason": "建立顾沉的可疑性，推动林晚的怀疑。"
+          },
+          {
+            "beat_id": "B6",
+            "priority": "medium",
+            "reason": "暗示顾沉的秘密，与B3形成对称，强化双方隐藏的格局。"
+          },
+          {
+            "beat_id": "B7",
+            "priority": "high",
+            "reason": "关键对话交锋，顾沉给出解释，但悬念未解。"
+          },
+          {
+            "beat_id": "B8",
+            "priority": "high",
+            "reason": "引入关键视觉线索（灰外套照片），将顾沉与事件视觉化关联。"
+          },
+          {
+            "beat_id": "B9",
+            "priority": "high",
+            "reason": "顾沉主动试探，心理战升级。"
+          },
+          {
+            "beat_id": "B10",
+            "priority": "high",
+            "reason": "顾沉反试探，压力测试，将紧张感推向顶点。"
+          },
+          {
+            "beat_id": "B11",
+            "priority": "high",
+            "reason": "最终揭示，串联所有线索，完成本场景的戏剧闭环并开启更大悬念。"
+          }
+        ],
+        "audience_knowledge_arc": [
+          {
+            "beat_id": "B1",
+            "knowledge": "观众与林晚同步获知暗房区域昨夜有异常活动（拖痕）。"
+          },
+          {
+            "beat_id": "B2",
+            "knowledge": "观众确认相册夹被动过，内容物丢失。"
+          },
+          {
+            "beat_id": "B3",
+            "knowledge": "观众首次获知林晚口袋藏有物品（秘密）。"
+          },
+          {
+            "beat_id": "B4",
+            "knowledge": "观众知道顾沉出现并提及昨夜听到动静。"
+          },
+          {
+            "beat_id": "B5",
+            "knowledge": "观众观察到顾沉对暗房区域的异常关注和回避。"
+          },
+          {
+            "beat_id": "B6",
+            "knowledge": "观众首次获知顾沉口袋藏有物品（秘密）。"
+          },
+          {
+            "beat_id": "B7",
+            "knowledge": "观众获知顾沉承认昨夜使用暗房，理由为洗照片。"
+          },
+          {
+            "beat_id": "B8",
+            "knowledge": "观众看到灰外套照片，并将其与顾沉的外套款式关联。"
+          },
+          {
+            "beat_id": "B9",
+            "knowledge": "观众获知顾沉明确提及‘灰外套’线索进行试探。"
+          },
+          {
+            "beat_id": "B10",
+            "knowledge": "观众确认顾沉关注相册夹，并对其进行反试探。"
+          },
+          {
+            "beat_id": "B11",
+            "knowledge": "观众获知林晚藏有自己穿灰外套的旧照（1998年），与顾沉的线索形成直接联系。"
+          }
+        ],
+        "emotional_arc": [
+          {
+            "beat_id": "B1",
+            "emotion": "慵懒 -> 警觉",
+            "trigger": "发现暗房门口新鲜湿润的拖痕。",
+            "transition_reason": "日常状态被异常视觉证据打破，注意力瞬间集中。"
+          },
+          {
+            "beat_id": "B2",
+            "emotion": "警觉 -> 怀疑加深",
+            "trigger": "检查储物柜，发现相册夹位置异常且内部为空。",
+            "transition_reason": "异常从环境（拖痕）具体化到物品（相册夹），证实了人为活动和丢失。"
+          },
+          {
+            "beat_id": "B3",
+            "emotion": "怀疑加深 -> 表面镇定（内在紧张）",
+            "trigger": "放回相册夹时无意识摸口袋。",
+            "transition_reason": "调查行为触发了自身秘密的防御性反应，但需维持表面镇定。"
+          },
+          {
+            "beat_id": "B4",
+            "emotion": "表面镇定 -> 恢复慵懒面具（内在戒备）",
+            "trigger": "顾沉带着早餐进入，开始日常对话。",
+            "transition_reason": "外部互动迫使林晚切换回社交面具，但内心因之前的发现而戒备。"
+          },
+          {
+            "beat_id": "B5",
+            "emotion": "恢复慵懒面具 -> 怀疑指向顾沉",
+            "trigger": "顾沉眼神掠过暗房并回避深入询问。",
+            "transition_reason": "顾沉的回避行为将林晚的怀疑从‘未知者’具体指向了他。"
+          },
+          {
+            "beat_id": "B6",
+            "emotion": "怀疑指向顾沉 -> 观察与评估",
+            "trigger": "注意到顾沉左手插袋、口袋绷紧。",
+            "transition_reason": "发现顾沉也有隐藏行为，情绪从单纯怀疑转为对双方秘密格局的评估。"
+          },
+          {
+            "beat_id": "B7",
+            "emotion": "观察与评估 -> 怀疑未减（表面接受）",
+            "trigger": "顾沉给出‘洗旧照片’的解释。",
+            "transition_reason": "解释合理但无法完全打消疑虑，情绪维持在怀疑但暂不戳破的状态。"
+          },
+          {
+            "beat_id": "B8",
+            "emotion": "怀疑未减 -> 警惕性提升",
+            "trigger": "瞥见晾干绳上的灰外套照片。",
+            "transition_reason": "获得关键视觉证据，将顾沉与事件直接关联，威胁感增强。"
+          },
+          {
+            "beat_id": "B9",
+            "emotion": "警惕性提升 -> 困惑否认（内在警惕）",
+            "trigger": "顾沉询问是否看到‘穿灰外套的人’。",
+            "transition_reason": "面对直接试探，需以困惑否认来掩饰已知信息，同时警惕对方意图。"
+          },
+          {
+            "beat_id": "B10",
+            "emotion": "困惑否认 -> 无辜回应（内在紧张）",
+            "trigger": "顾沉反问是否动过相册夹。",
+            "transition_reason": "压力测试到来，需以无辜回应来保护自己的秘密和调查成果。"
+          },
+          {
+            "beat_id": "B11",
+            "emotion": "无辜回应 -> 表情冰冷（内在震动）",
+            "trigger": "顾沉离开后，掏出并展开自己的旧照片。",
+            "transition_reason": "独自面对证据，所有线索串联，意识到顾沉可能记得过去，情绪转为冰冷的震动。"
+          }
+        ],
+        "power_arc": [
+          {
+            "beat_id": "B1",
+            "power_holder": "林晚",
+            "dynamic": "林晚作为发现者，掌握初始信息优势。"
+          },
+          {
+            "beat_id": "B4",
+            "power_holder": "顾沉",
+            "dynamic": "顾沉进入，通过提及‘动静’和日常姿态，暂时掌握对话主导权。"
+          },
+          {
+            "beat_id": "B7",
+            "power_holder": "顾沉",
+            "dynamic": "顾沉通过给出解释，试图平息疑问，暂时控制局面。"
+          },
+          {
+            "beat_id": "B8",
+            "power_holder": "林晚",
+            "dynamic": "林晚获得关键视觉证据（灰外套照片），信息优势反转。"
+          },
+          {
+            "beat_id": "B9-B10",
+            "power_holder": "顾沉",
+            "dynamic": "顾沉通过连续试探（B9）和反试探（B10），试图夺回信息控制权，测试林晚。"
+          },
+          {
+            "beat_id": "B11",
+            "power_holder": "林晚",
+            "dynamic": "顾沉离开后，林晚独自面对最终揭示，掌握关于自身过去的完整信息，但同时也意识到自己可能已被顾沉记忆，权力关系进入新的、更复杂的平衡。"
+          }
+        ],
+        "visual_grammar": "本场景采用‘发现-调查-隐藏-试探-揭示’的视觉语法。以林晚的主观视角和关键道具（拖痕、相册夹、口袋、灰外套照片）的特写为视觉锚点，驱动叙事。人物互动以中景和过肩镜头为主，强调空间关系和心理距离。关键信息揭示（B8, B11）采用‘瞥见’和‘独自展开’的视觉模式，控制信息释放节奏。",
+        "camera_principles": "1. **跟随发现者**：在B1-B3，镜头应紧密跟随林晚的视线和动作，模拟她的发现过程，使用手持或轻微晃动增强临场感。2. **空间关系与心理距离**：在B4-B10的双人对话中，通过镜头距离和角度（如过肩、双人中景）的变化，反映两人心理的试探与距离。顾沉看向暗房时，镜头可短暂跟随其视线。3. **信息控制**：在B8，灰外套照片应先以林晚的视角‘瞥见’（可能虚焦或局部），再给观众一个清晰的、但仍是林晚主观视角的镜头。在B11，镜头应聚焦于林晚的手和照片，最后才揭示照片内容，与林晚的发现同步。4. **秘密的视觉化**：B3和B6中，对口袋的特写是关键，需清晰展示‘无意识触摸’和‘口袋绷紧’的细节。",
+        "composition_principles": "1. **引导视线**：利用照相馆内的线条（地板、柜子边缘、晾干绳）引导观众视线至关键线索（拖痕、相册夹、灰外套照片）。2. **框中框**：利用门框、柜子等元素形成框中框，暗示人物被秘密或空间所困。3. **对称与对比**：在构图上可考虑林晚与顾沉的对称站位，暗示他们各自隐藏秘密的对称性。在B11，林晚独自展开照片的构图应与之前双人互动形成对比，强调孤独与真相。",
+        "performance_arc": [
+          {
+            "character": "林晚",
+            "objective": "查明昨夜异常，同时隐藏自己的秘密。",
+            "tactic_progression": "慵懒观察 -> 警觉调查 -> 镇定掩饰 -> 被动应对试探 -> 主动观察 -> 冰冷自省。",
+            "visible_behavior_progression": "B1-B2：专注检查，动作轻缓。B3：无意识摸口袋。B4：切换至慵懒社交状态。B5-B6：眼神观察顾沉。B7：直接提问。B8：快速瞥视后恢复常态。B9-B10：困惑、无辜的表情管理。B11：独自一人时，表情转为冰冷、凝重。",
+            "turning_point": "B8瞥见灰外套照片，从被动调查转为获得关键证据，内心警惕性质变。"
+          },
+          {
+            "character": "顾沉",
+            "objective": "掩饰自己昨夜的活动，试探林晚是否知晓或动了相册夹。",
+            "tactic_progression": "日常切入 -> 试探性提及 -> 回避深入 -> 给出解释 -> 主动反试探 -> 压力测试。",
+            "visible_behavior_progression": "B4：带早餐进入，表现困倦、日常。B5：眼神飘向暗房，回避问题。B6：左手插袋，口袋绷紧。B7：平静解释。B8：进入暗房（短暂离开）。B9：出来后直接询问灰外套。B10：离开前随口反问相册夹。",
+            "turning_point": "B9主动询问‘灰外套的人’，从被动回应转为主动试探，试图夺回信息控制权。"
+          }
+        ],
+        "edit_arc": "剪辑节奏应与发现和试探的节奏同步。B1-B3：使用较慢的剪辑，给予观众和林晚观察、思考的时间。B4-B7：对话部分采用正反打，但节奏平稳，维持表面日常感。B8：灰外套照片的出现应是一个快速的‘插入’镜头，打破平稳节奏。B9-B10：对话剪辑可略微加快，反映心理战的紧张。B11：最后揭示应放慢节奏，给予照片特写和林晚反应足够的屏幕时间，让信息沉淀。",
+        "information_reveal_plan": [
+          {
+            "beat_id": "B1",
+            "reveal_type": "环境线索",
+            "content": "暗房门口有新鲜湿润的拖痕。",
+            "reveal_method": "林晚的视线引导，镜头跟随发现。"
+          },
+          {
+            "beat_id": "B2",
+            "reveal_type": "物品状态",
+            "content": "黑色皮质相册夹位置异常、打开、有划痕且内部为空。",
+            "reveal_method": "林晚打开储物柜，镜头展示相册夹状态。"
+          },
+          {
+            "beat_id": "B3",
+            "reveal_type": "人物秘密（暗示）",
+            "content": "林晚毛衣口袋藏有方形物体。",
+            "reveal_method": "林晚无意识的触摸动作特写。"
+          },
+          {
+            "beat_id": "B4",
+            "reveal_type": "人物信息",
+            "content": "顾沉出现，提及昨晚听到动静。",
+            "reveal_method": "人物对话。"
+          },
+          {
+            "beat_id": "B5",
+            "reveal_type": "人物行为",
+            "content": "顾沉眼神掠过暗房并回避深入询问。",
+            "reveal_method": "顾沉的视线方向和对话中的回避反应。"
+          },
+          {
+            "beat_id": "B6",
+            "reveal_type": "人物秘密（暗示）",
+            "content": "顾沉左手口袋绷紧，似握有物品。",
+            "reveal_method": "顾沉动作和口袋状态的视觉展示。"
+          },
+          {
+            "beat_id": "B7",
+            "reveal_type": "人物陈述",
+            "content": "顾沉承认昨夜使用暗房，理由为洗旧照片和客户急件。",
+            "reveal_method": "人物对话。"
+          },
+          {
+            "beat_id": "B8",
+            "reveal_type": "关键视觉线索",
+            "content": "晾干绳上一张灰外套人影背对镜头的照片，外套款式与顾沉相似。",
+            "reveal_method": "林晚的主观视角‘瞥见’，镜头展示照片。"
+          },
+          {
+            "beat_id": "B9",
+            "reveal_type": "人物试探",
+            "content": "顾沉询问林晚是否看到‘穿灰外套的人’。",
+            "reveal_method": "人物对话。"
+          },
+          {
+            "beat_id": "B10",
+            "reveal_type": "人物反试探",
+            "content": "顾沉询问林晚是否动过储物柜里的相册夹。",
+            "reveal_method": "人物对话。"
+          },
+          {
+            "beat_id": "B11",
+            "reveal_type": "核心秘密揭示",
+            "content": "林晚藏有自己1998年穿灰色外套站在回声照相馆门口的旧照片。",
+            "reveal_method": "林晚独自展开照片，镜头聚焦照片内容及背面文字。"
+          }
+        ],
+        "spatial_expression": "照相馆空间是秘密的容器。暗房门口（B1）是昨夜事件的入口，储物柜（B2）是丢失物品的源头，林晚的口袋（B3）和顾沉的口袋（B6）是移动的秘密仓库，晾干绳（B8）是线索的展示区。人物在空间中的移动（顾沉进入、进入暗房、离开）应体现其试探与掩饰的意图。空间关系（两人距离、与暗房/储物柜的距离）应随心理博弈而微妙变化。",
+        "prop_visual_strategy": "1. **拖痕（B1）**：需清晰、湿润、有方向性，延伸至储物柜前，是启动谜团的关键。2. **黑色皮质相册夹（B2）**：需展示其异常状态（横倒、搭扣打开、划痕），内部空空如也。3. **林晚的毛衣口袋（B3, B11）**：需能容纳对折的旧照片，材质和形状需支持‘无意识触摸’和‘掏出’动作。4. **顾沉的外套口袋（B6）**：需能展示‘绷紧’状态，暗示内部有硬物。5. **灰外套照片（B8）**：需清晰展示人影背影、灰色外套款式，与顾沉所穿形成视觉关联。6. **林晚的旧照片（B11）**：需清晰展示年轻林晚、灰色外套、照相馆门口背景，背面文字（1998.10.3。回声照相馆。林晚。）需清晰可读。",
+        "shot_architecture_guidance": "1. **建立与发现镜头**：用于B1，建立照相馆环境并引导至拖痕。2. **调查与揭示镜头**：用于B2, B8, B11，展示物品状态和关键线索。3. **关系与对话镜头**：用于B4-B7, B9-B10，以中景和过肩镜头捕捉双人互动和心理距离。4. **秘密特写镜头**：用于B3, B6，对口袋进行特写，视觉化隐藏行为。5. **主观视角镜头**：用于B8，模拟林晚‘瞥见’灰外套照片的视角。6. **独自反应镜头**：用于B11，聚焦林晚在揭示后的独自反应。",
+        "must_preserve": "1. 所有beat的事件顺序和核心信息。2. 林晚和顾沉各自隐藏秘密（口袋物品）的视觉暗示。3. 灰外套照片作为关键线索的视觉呈现。4. B11中林晚旧照片的完整信息（人物、服装、地点、时间）。5. 两人对话中试探与反试探的心理张力。",
+        "must_avoid": "1. 提前揭示B11中旧照片的内容。2. 将灰外套照片（B8）与林晚旧照片（B11）在视觉上过早关联。3. 削弱顾沉在B5, B9, B10中的可疑行为。4. 让林晚在B9-B10的回应显得过于确信或慌乱，应保持‘困惑’和‘无辜’的表演基调。5. 使用非本场景来源的道具或空间细节。",
+        "creative_risks": "1. 在B8，灰外套照片的‘瞥见’可以处理得更模糊、更快速，增强偶然性和林晚的瞬间反应，但需确保观众能捕捉到关键信息（灰色外套）。2. 在B11，可以考虑让林晚在展开照片前有一个更长的停顿和犹豫，增强揭示前的张力，但需与整体节奏平衡。",
+        "strategy_summary": "本策略旨在通过一系列精心设计的视觉谜团和人物试探，构建一个充满悬疑和心理博弈的场景。核心在于控制信息释放的节奏，从环境异常（拖痕）到物品异常（空相册夹），再到人物秘密（口袋物品），最终通过关键视觉线索（灰外套照片）和最终揭示（林晚旧照片），将两人隐藏的秘密与过去联系起来。镜头语言需紧密服务于‘发现’和‘试探’的视角，表演需体现表面日常下的暗流涌动。",
+        "authority": {
+          "DirectorTreatment": "approved_record.evidence.treatment",
+          "SceneBlocking": "approved_record.evidence.blocking",
+          "Character": "approved_record.evidence.blocking.participants",
+          "FactSnapshot": "approved_record.contract.immutable_projection.facts",
+          "Location": "absent; N/A required",
+          "Prop": "absent; N/A required",
+          "ScriptIR": "approved_record.treatment.beat_map + scene metadata"
+        },
+        "source_refs": [
+          "approved_record.treatment.beat_map",
+          "approved_record.scene metadata",
+          "approved_record.evidence.blocking",
+          "approved_record.evidence.blocking.participants",
+          "approved_record.contract.immutable_projection.facts"
+        ],
+        "strategy_fingerprint": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+      }
+    }
+  ],
+  "telemetry": {
+    "total_calls": 3,
+    "total_prompt_tokens": 10835,
+    "total_cached_tokens": 1024,
+    "cache_hit_rate": 0.094509,
+    "total_completion_tokens": 16611,
+    "total_tokens": 27446,
+    "retry_count": 0,
+    "avg_latency_ms": 79857.65,
+    "stages": {
+      "director_strategy_generation": {
+        "attempt_count": 3,
+        "vendor_models": [
+          "mimo-v2.5"
+        ],
+        "vendor_hosts": [
+          "api.xiaomimimo.com"
+        ],
+        "prompt_tokens": 10835,
+        "cached_tokens": 1024,
+        "completion_tokens": 16611,
+        "total_tokens": 27446,
+        "cache_hit_rate": 0.094509,
+        "last_request_fingerprint": "1fb18a5ab4f2e110bf9ed88362814d6bf380679f5d5a37ec2fba4a7ff8b48b3b",
+        "last_latency_ms": 77949.72,
+        "last_http_status": 200,
+        "last_parse_ok": true,
+        "total_calls": 3
+      }
+    },
+    "records": [
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "d232bf80af91992b1200407dbdfacc70",
+        "system_prompt_length": 3564,
+        "user_prompt_sha256": "90f16f6bab0da43844565938d02b314c",
+        "user_prompt_length": 7426,
+        "request_messages_sha256": "a34d45d2b1fe8c077f0b193d33616e3a",
+        "request_fingerprint": "0a5824d550c4648db191cbf4ca92c341cf5ded59d12e89fc386b410d96832372",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "1b054dc620fa952c3052a9fb30ecccb9",
+        "response_length": 13221,
+        "http_status": 200,
+        "parse_ok": true,
+        "top_level_keys": [],
+        "returned_schema_version": "",
+        "response_debug_excerpt": "```json\n{\n    \"schema_version\": \"director_scene_strategy_v1\",\n    \"scene_id\": \"book990402:e3:暗房惊魂\",\n    \"strategy_version\": \"1.0\",\n    \"dramatic_objective\": \"通过暗房内的对峙，揭示林晚对关键物证（档案袋与胶片）的隐藏关注与潜在秘密，迫使她在顾沉的步步紧逼下从伪装走向情绪崩溃，为后续剧情埋下悬念。\",\n    \"scene_question\": \"林晚是否与失踪的底片有关？她隐藏的秘密究竟是什么？\",\n    \"audience_experience\": [\n        {\n            \"beat_id\": \"1\",\n            \"experience\": \"观众首次进入暗房，立即被工作台上打开的档案袋和可疑的锯齿状胶片边缘吸引，产生悬疑感和对事件的初步好奇。\",\n            \"phase\": \"引入\"\n        },\n        {\n            \"beat_id\": \"2\",\n            \"experience\": \"观众看到林晚慵懒的工作状态，建立其表面形象，但暗房的封闭环境和物证的存在暗示着平静下的暗流。\",\n            \"phase\": \"铺垫\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"experience\": \"观众注意到林晚对档案袋的细微异常反应（目光扫过、指尖划过），开始怀疑其懒散表象下的真实意图。\",\n            \"phase\": \"怀疑萌芽\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"experience\": \"顾沉的进入和其对物证的注视，将观众的注意力从林晚的个人行为引向两人之间的潜在冲突，紧张感开始累积。\",\n            \"phase\": \"对峙建立\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"experience\": \"观众通过门锁问题的对话，得知暗房可能被闯入，同时观察到林晚擦手动作的微顿，加深对其反应异常的察觉。\",\n            \"phase\": \"试探\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"experience\": \"观众捕捉到林晚无意识触碰T恤下摆硬质凸起的关键动作，强烈暗示其身上藏有物品，与失踪底片产生直接联想。\",\n            \"phase\": \"怀疑加深\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"experience\": \"观众听到林晚对胶片来源的初步解释（旧废片），但结合之前的异常行为，对其说辞的真实性产生判断。\",\n            \"phase\": \"解释与质疑\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"experience\": \"观众看到林晚用惯常的抱怨语气和身体绷紧的矛盾状态，强化其用表面情绪掩盖真实反应的观察。\",\n            \"phase\": \"防御强化\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"experience\": \"观众听到顾沉提出林晚可能“失忆”或隐瞒的假设，并看到林晚瞳孔收缩、掐掌心的恐惧反应，冲突触及核心秘密。\",\n            \"phase\": \"冲突升级\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"experience\": \"观众目睹顾沉将怀疑直接指向林晚（扫视其T恤下摆）以及林晚下意识捂住该位置的激烈反应，确信其与底片有关联。\",\n            \"phase\": \"直接指控\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"experience\": \"观众看到顾沉离开后林晚面具彻底碎裂，露出困惑、恐惧和决绝的复杂情绪，手悬在档案袋上颤抖，留下强烈的悬念和对其内心崩溃的共情。\",\n            \"phase\": \"悬念与崩溃\"\n        }\n    ],\n    \"beat_priorities\": [\n        {\n            \"beat_id\": \"1\",\n            \"priority\": \"高\",\n            \"reason\": \"建立场景核心物证（档案袋、胶片）和悬疑基调，是后续所有冲突的视觉锚点。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"priority\": \"高\",\n            \"reason\": \"首次泄露林晚的隐藏层，是观众怀疑其真实意图的关键转折点。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"priority\": \"高\",\n            \"reason\": \"提供林晚身上藏有物品的直接视觉证据，将怀疑具体化。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"priority\": \"高\",\n            \"reason\": \"冲突升级至记忆/秘密核心，引发林晚最强烈的恐惧反应，是情感和戏剧张力的高点。\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"priority\": \"高\",\n            \"reason\": \"完成林晚从伪装到崩溃的情绪弧光，留下开放性悬念，决定场景收尾的力度。\"\n        }\n    ],\n    \"audience_knowledge_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"knowledge_state\": \"观众知道暗房内存在可疑物证（档案袋、撕边胶片），但不知其来源和意义。\",\n            \"transition_trigger\": \"视觉呈现物证。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"knowledge_state\": \"观众开始怀疑林晚对物证有隐藏的关注或秘密。\",\n            \"transition_trigger\": \"林晚对档案袋的细微异常动作。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"knowledge_state\": \"观众强烈怀疑林晚身上藏有与失踪底片相关的物品。\",\n            \"transition_trigger\": \"林晚触碰T恤下摆硬质凸起的动作。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"knowledge_state\": \"观众得知顾沉怀疑林晚可能失忆或主动隐瞒关键信息。\",\n            \"transition_trigger\": \"顾沉的质问和林晚的恐惧反应。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"knowledge_state\": \"观众几乎确信林晚与失踪底片有直接关联，且正在试图隐藏。\",\n            \"transition_trigger\": \"顾沉的明确暗示和林晚的捂住动作。\"\n        },\n        {\n            \"beat_id\": \"11\",\n            \"knowledge_state\": \"观众知道林晚的伪装已彻底失败，她正面临巨大的内心冲突和抉择，但具体秘密内容仍未知。\",\n            \"transition_trigger\": \"顾沉离开后林晚的情绪爆发和颤抖的手。\"\n        }\n    ],\n    \"emotional_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"emotion\": \"悬疑、不祥\",\n            \"trigger\": \"工作台上打开的档案袋和可疑胶片边缘的视觉呈现。\",\n            \"transition_reason\": \"场景以物证开场，直接奠定不安的基调。\"\n        },\n        {\n            \"beat_id\": \"2\",\n            \"emotion\": \"慵懒、平静（表面）\",\n            \"trigger\": \"林晚刻意慵懒的工作状态。\",\n           ",
+        "usage": {
+          "prompt_tokens": 3684,
+          "cached_tokens": null,
+          "completion_tokens": 5408,
+          "total_tokens": 9092,
+          "cache_hit_rate": null
+        },
+        "latency_ms": 79325.84,
+        "extra": {
+          "stage": "director_strategy_generation",
+          "scene_id": "book990402:e3:暗房惊魂",
+          "attempt_type": "CREATIVE_GENERATION",
+          "semantic_attempt": 1,
+          "prompt_request_fingerprint": "f41d188148c6f14943aa7ef3d611dc8d6f99f48b4b3934cacbed12d769bce4db",
+          "transport_attempt_number": 1,
+          "transport_retry": false,
+          "pilot_stage": "director_strategy_generation",
+          "pilot_episode": 3,
+          "pilot_scene": "book990402:e3:暗房惊魂",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0
+        }
+      },
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "d232bf80af91992b1200407dbdfacc70",
+        "system_prompt_length": 3564,
+        "user_prompt_sha256": "ea0690cb7eed08a691636a3840a7540e",
+        "user_prompt_length": 7047,
+        "request_messages_sha256": "18bd44d7e765f27ceefc6bc2c3e94777",
+        "request_fingerprint": "502f3f2f48bb79d2ec5e717b50bf37cbc7340b39e47b1c4db6f617f7cdc68d34",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "93ba603824e3348d072ffb70494f8f92",
+        "response_length": 13347,
+        "http_status": 200,
+        "parse_ok": true,
+        "top_level_keys": [],
+        "returned_schema_version": "",
+        "response_debug_excerpt": "```json\n{\n    \"schema_version\": \"director_scene_strategy_v1\",\n    \"scene_id\": \"book990402:e3:暗房惊魂（2）\",\n    \"strategy_version\": \"1.0\",\n    \"dramatic_objective\": \"通过一场逐步升级的对峙，将林晚从防御推向崩溃，同时让观众在顾沉的证据链与林晚的失忆/隐藏反应之间摇摆，最终以第三方观察的暗示和林晚的彻底崩溃收尾，留下关于真相、记忆与背叛的多重悬念。\",\n    \"scene_question\": \"林晚是否真的偷走了照片并剪下了胶片？她的“不记得”是真实的失忆，还是为了隐藏更深层秘密的防御机制？\",\n    \"audience_experience\": [\n        {\n            \"beat_id\": \"1\",\n            \"experience\": \"观众被置于门外走廊的紧张氛围中，通过逆光剪影感受到林晚的防御姿态和顾沉的压迫感，期待冲突的展开。\",\n            \"trigger\": \"顾沉背靠墙壁的等待姿态与林晚逆光拉开门的对峙画面。\",\n            \"transition_reason\": \"从上一场景的冲突延续，空间转换至门外，紧张感被视觉化。\"\n        },\n        {\n            \"beat_id\": \"2\",\n            \"experience\": \"观众听到林晚不耐烦的否认，但注意到她手指捻纽扣的细微动作，开始怀疑她言语的真实性。\",\n            \"trigger\": \"林晚的台词与手指捻纽扣的特写。\",\n            \"transition_reason\": \"从视觉对峙进入言语交锋，但身体语言泄露了内在紧张。\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"experience\": \"观众首次看到顾沉手中的具体物证（胶片边缘），意识到指控并非空穴来风，悬念具体化。\",\n            \"trigger\": \"顾沉从口袋抽出胶片边缘的动作。\",\n            \"transition_reason\": \"从言语否认转向物证展示，冲突升级。\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"experience\": \"观众理解物证与失踪照片的直接关联，怀疑范围缩小，对林晚的怀疑加深。\",\n            \"trigger\": \"顾沉指出档案袋缺失照片及胶片边缘尺寸吻合。\",\n            \"transition_reason\": \"物证被赋予具体意义，指控更具说服力。\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"experience\": \"观众通过视觉对比（胶片撕裂与档案袋撕裂）直观感受到证据链的强度，冲突达到新高点。\",\n            \"trigger\": \"顾沉将胶片边缘举到光线中，特写展示撕裂痕迹。\",\n            \"transition_reason\": \"从口头指控转向视觉证据的直接呈现，说服力倍增。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"experience\": \"观众听到顾沉的直接指控，看到林晚从恐惧转向茫然痛苦，开始思考她是否真的“不记得”。\",\n            \"trigger\": \"顾沉的质问与林晚“不记得”的回答。\",\n            \"transition_reason\": \"冲突从物证关联转向对林晚个人行为的直接指控，触及记忆问题。\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"experience\": \"观众察觉林晚表面困惑与手指蜷缩掐掌心的反差，意识到她可能隐藏着秘密或经历着失忆。\",\n            \"trigger\": \"林晚手指蜷缩掐掌心的特写。\",\n            \"transition_reason\": \"在公开否认的同时，身体语言泄露了隐藏层。\"\n        },\n        {\n            \"beat_id\": \"8\",\n            \"experience\": \"观众听到顾沉提供工具关联的决定性线索（同一把剪刀，昨天只有林晚用过），感到林晚的退路被封堵。\",\n            \"trigger\": \"顾沉关于剪刀的陈述。\",\n            \"transition_reason\": \"从物证关联升级到工具关联，指控达到顶峰。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"experience\": \"观众通过闪回确认林晚使用过相关工具，内心天平进一步向“林晚有罪”倾斜，但她的僵住反应又引发同情。\",\n            \"trigger\": \"林晚拉门的手僵住与剪刀闪回。\",\n            \"transition_reason\": \"视觉证据直接关联林晚的行为，冲突无法回避。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"experience\": \"观众在林晚崩溃的痛苦中感到同情，同时被走廊阴影处的反光所困扰，怀疑有第三方观察，悬念达到顶点。\",\n            \"trigger\": \"林晚滑坐在地抱头与顾沉瞥见阴影反光。\",\n            \"transition_reason\": \"场景以角色崩溃和新的悬念（第三方）结束，留下未解之谜。\"\n        }\n    ],\n    \"beat_priorities\": [\n        {\n            \"beat_id\": \"5\",\n            \"priority\": \"最高\",\n            \"reason\": \"视觉证据链的关键节点，通过特写对比将物证说服力最大化，是冲突升级的转折点。\"\n        },\n        {\n            \"beat_id\": \"9\",\n            \"priority\": \"高\",\n            \"reason\": \"通过闪回直接关联林晚与工具，是坐实她嫌疑的决定性时刻，也是她情绪反应的转折点。\"\n        },\n        {\n            \"beat_id\": \"10\",\n            \"priority\": \"高\",\n            \"reason\": \"强钩子结尾，同时完成林晚的崩溃和引入第三方悬念，为后续剧情埋下伏笔。\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"priority\": \"中高\",\n            \"reason\": \"将指控从物证转向个人记忆问题，触及角色核心，引发观众对林晚真实状态的思考。\"\n        },\n        {\n            \"beat_id\": \"7\",\n            \"priority\": \"中\",\n            \"reason\": \"通过身体语言泄露隐藏层，为林晚的复杂性和后续发展埋下种子。\"\n        }\n    ],\n    \"audience_knowledge_arc\": [\n        {\n            \"beat_id\": \"1\",\n            \"knowledge_state\": \"观众知道冲突在门外延续，但不清楚具体指控内容。\",\n            \"reveal_type\": \"场景建立\"\n        },\n        {\n            \"beat_id\": \"3\",\n            \"knowledge_state\": \"观众看到顾沉持有胶片边缘这一具体物证。\",\n            \"reveal_type\": \"物证引入\"\n        },\n        {\n            \"beat_id\": \"4\",\n            \"knowledge_state\": \"观众知道物证与失踪照片直接关联，怀疑范围缩小。\",\n            \"reveal_type\": \"关联建立\"\n        },\n        {\n            \"beat_id\": \"5\",\n            \"knowledge_state\": \"观众直观看到胶片撕裂与档案袋撕裂的视觉呼应，证据链强度提升。\",\n            \"reveal_type\": \"视觉确认\"\n        },\n        {\n            \"beat_id\": \"6\",\n            \"knowledge_state\": \"观众知道顾沉直接指控林晚偷照片并剪下边缘，且林晚回答“不记得”。\",\n            \"reveal_type\": \"直接指控\"\n        },\n        {\n     ",
+        "usage": {
+          "prompt_tokens": 3494,
+          "cached_tokens": 512,
+          "completion_tokens": 5558,
+          "total_tokens": 9052,
+          "cache_hit_rate": 0.146537
+        },
+        "latency_ms": 82297.4,
+        "extra": {
+          "stage": "director_strategy_generation",
+          "scene_id": "book990402:e3:暗房惊魂（2）",
+          "attempt_type": "CREATIVE_GENERATION",
+          "semantic_attempt": 1,
+          "prompt_request_fingerprint": "f59f75fd4d01944f513fafd73f59e1e01106bda890047dc586f62e9056977bb4",
+          "transport_attempt_number": 1,
+          "transport_retry": false,
+          "pilot_stage": "director_strategy_generation",
+          "pilot_episode": 3,
+          "pilot_scene": "book990402:e3:暗房惊魂（2）",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0
+        }
+      },
+      {
+        "vendor_model": "mimo-v2.5",
+        "vendor_host": "api.xiaomimimo.com",
+        "profile_id": "local-llm-2vydoz",
+        "system_prompt_sha256": "d232bf80af91992b1200407dbdfacc70",
+        "system_prompt_length": 3564,
+        "user_prompt_sha256": "a528ab45bf317c47e66d3b26cd2da3ff",
+        "user_prompt_length": 7427,
+        "request_messages_sha256": "97741be9c495dae926b08235760f0e03",
+        "request_fingerprint": "1fb18a5ab4f2e110bf9ed88362814d6bf380679f5d5a37ec2fba4a7ff8b48b3b",
+        "has_repair_request": false,
+        "repair_request_sha256": "",
+        "repair_request_length": 0,
+        "response_sha256": "a8077163f778f9729b25dc5c5ce0cf15",
+        "response_length": 13968,
+        "http_status": 200,
+        "parse_ok": true,
+        "top_level_keys": [],
+        "returned_schema_version": "",
+        "response_debug_excerpt": "```json\n{\n    \"schema_version\": \"director_scene_strategy_v1\",\n    \"scene_id\": \"book990402:e2:回声照相馆\",\n    \"strategy_version\": \"1.0\",\n    \"dramatic_objective\": \"通过一系列视觉谜团和相互试探，揭示林晚与顾沉各自隐藏的秘密，并建立‘灰外套’这一关键线索与两人过去的直接联系，营造悬疑氛围。\",\n    \"scene_question\": \"林晚和顾沉各自隐藏了什么秘密？昨夜暗房发生了什么？‘灰外套’照片背后隐藏着怎样的过去？\",\n    \"audience_experience\": [\n        {\n            \"beat_id\": \"B1\",\n            \"experience\": \"观众跟随林晚的视角，首次发现暗房门口的异常拖痕，产生好奇与轻微不安，意识到昨夜有人活动。\",\n            \"knowledge_state\": \"观众与林晚同步获知暗房区域有异常活动。\"\n        },\n        {\n            \"beat_id\": \"B2\",\n            \"experience\": \"观众与林晚一同检查储物柜，看到被翻动且空空如也的相册夹，怀疑加深，开始猜测丢失了什么。\",\n            \"knowledge_state\": \"观众确认相册夹被动过，内容物丢失。\"\n        },\n        {\n            \"beat_id\": \"B3\",\n            \"experience\": \"观众注意到林晚无意识摸口袋的动作，首次意识到她也藏有秘密，产生新的疑问。\",\n            \"knowledge_state\": \"观众获知林晚口袋藏有物品。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"experience\": \"顾沉的出现带来表面的日常感，但提及‘昨晚听到动静’，让观众在平静对话下保持警觉。\",\n            \"knowledge_state\": \"观众知道顾沉出现并提及昨夜动静。\"\n        },\n        {\n            \"beat_id\": \"B5\",\n            \"experience\": \"观众观察到顾沉回避问题并看向暗房，开始怀疑他与昨夜事件有关。\",\n            \"knowledge_state\": \"观众获知顾沉对暗房区域表现出异常关注。\"\n        },\n        {\n            \"beat_id\": \"B6\",\n            \"experience\": \"观众注意到顾沉口袋的异常，意识到他也藏有秘密，双方隐藏的格局形成。\",\n            \"knowledge_state\": \"观众获知顾沉口袋藏有物品。\"\n        },\n        {\n            \"beat_id\": \"B7\",\n            \"experience\": \"观众听到顾沉的解释，但因其之前的回避行为而对其真实性持保留态度，悬念持续。\",\n            \"knowledge_state\": \"观众获知顾沉承认昨夜使用暗房，理由为洗照片。\"\n        },\n        {\n            \"beat_id\": \"B8\",\n            \"experience\": \"观众与林晚一同瞥见灰外套照片，视觉线索将顾沉与神秘事件联系起来，警惕性提升。\",\n            \"knowledge_state\": \"观众看到灰外套照片，并将其与顾沉的外套款式关联。\"\n        },\n        {\n            \"beat_id\": \"B9\",\n            \"experience\": \"观众听到顾沉的试探，意识到他在测试林晚是否知晓照片内容，双方心理战升级。\",\n            \"knowledge_state\": \"观众获知顾沉明确提及‘灰外套’线索。\"\n        },\n        {\n            \"beat_id\": \"B10\",\n            \"experience\": \"观众感受到顾沉反试探带来的压力，等待林晚的回应，紧张感达到一个小高潮。\",\n            \"knowledge_state\": \"观众确认顾沉关注相册夹。\"\n        },\n        {\n            \"beat_id\": \"B11\",\n            \"experience\": \"观众看到林晚掏出的旧照片，所有线索瞬间串联，‘灰外套’与林晚的过去直接挂钩，产生恍然大悟与更深的疑问。\",\n            \"knowledge_state\": \"观众获知林晚藏有自己穿灰外套的旧照，时间地点明确，与顾沉的线索形成闭环。\"\n        }\n    ],\n    \"beat_priorities\": [\n        {\n            \"beat_id\": \"B1\",\n            \"priority\": \"high\",\n            \"reason\": \"建立核心视觉谜团（拖痕），启动整个场景的悬疑基调。\"\n        },\n        {\n            \"beat_id\": \"B2\",\n            \"priority\": \"high\",\n            \"reason\": \"强化谜团，确认异常（空相册夹），为后续人物动机提供基础。\"\n        },\n        {\n            \"beat_id\": \"B3\",\n            \"priority\": \"medium\",\n            \"reason\": \"首次暗示林晚的秘密，为最终揭示埋下伏笔。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"priority\": \"medium\",\n            \"reason\": \"引入第二角色，建立表面互动，为后续试探提供舞台。\"\n        },\n        {\n            \"beat_id\": \"B5\",\n            \"priority\": \"high\",\n            \"reason\": \"建立顾沉的可疑性，推动林晚的怀疑。\"\n        },\n        {\n            \"beat_id\": \"B6\",\n            \"priority\": \"medium\",\n            \"reason\": \"暗示顾沉的秘密，与B3形成对称，强化双方隐藏的格局。\"\n        },\n        {\n            \"beat_id\": \"B7\",\n            \"priority\": \"high\",\n            \"reason\": \"关键对话交锋，顾沉给出解释，但悬念未解。\"\n        },\n        {\n            \"beat_id\": \"B8\",\n            \"priority\": \"high\",\n            \"reason\": \"引入关键视觉线索（灰外套照片），将顾沉与事件视觉化关联。\"\n        },\n        {\n            \"beat_id\": \"B9\",\n            \"priority\": \"high\",\n            \"reason\": \"顾沉主动试探，心理战升级。\"\n        },\n        {\n            \"beat_id\": \"B10\",\n            \"priority\": \"high\",\n            \"reason\": \"顾沉反试探，压力测试，将紧张感推向顶点。\"\n        },\n        {\n            \"beat_id\": \"B11\",\n            \"priority\": \"high\",\n            \"reason\": \"最终揭示，串联所有线索，完成本场景的戏剧闭环并开启更大悬念。\"\n        }\n    ],\n    \"audience_knowledge_arc\": [\n        {\n            \"beat_id\": \"B1\",\n            \"knowledge\": \"观众与林晚同步获知暗房区域昨夜有异常活动（拖痕）。\"\n        },\n        {\n            \"beat_id\": \"B2\",\n            \"knowledge\": \"观众确认相册夹被动过，内容物丢失。\"\n        },\n        {\n            \"beat_id\": \"B3\",\n            \"knowledge\": \"观众首次获知林晚口袋藏有物品（秘密）。\"\n        },\n        {\n            \"beat_id\": \"B4\",\n            \"knowledge\": \"观众知道顾沉出现并提及昨夜听到动静。\"\n ",
+        "usage": {
+          "prompt_tokens": 3657,
+          "cached_tokens": 512,
+          "completion_tokens": 5645,
+          "total_tokens": 9302,
+          "cache_hit_rate": 0.140005
+        },
+        "latency_ms": 77949.72,
+        "extra": {
+          "stage": "director_strategy_generation",
+          "scene_id": "book990402:e2:回声照相馆",
+          "attempt_type": "CREATIVE_GENERATION",
+          "semantic_attempt": 1,
+          "prompt_request_fingerprint": "1c8229bfde78c4e92f77f56ec889441a6df09cd7c0571e4289921ba1af3a5b6b",
+          "transport_attempt_number": 1,
+          "transport_retry": false,
+          "pilot_stage": "director_strategy_generation",
+          "pilot_episode": 2,
+          "pilot_scene": "book990402:e2:回声照相馆",
+          "pilot_shot": null,
+          "pilot_repair_attempt": 0
+        }
+      }
+    ]
+  },
+  "provider_http_request_count": 3,
+  "provider_http_request_limit": 6,
+  "side_effects": {
+    "shotplan": 0,
+    "storyboard": 0,
+    "scene_repair": 0,
+    "tail_repair": 0,
+    "scene_redesign": 0,
+    "production": 0,
+    "storyboard_media": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0,
+    "ci": 0
+  },
+  "ready_for_shot_architecture_canary": false
+}

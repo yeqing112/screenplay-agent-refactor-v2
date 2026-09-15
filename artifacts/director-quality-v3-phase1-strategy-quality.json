@@ -1,0 +1,416 @@
+{
+  "schema_version": "director-quality-v3-phase1-strategy-quality-v1",
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1",
+      "outcome": "STRATEGY_INVALID",
+      "findings": [
+        {
+          "dimension": "dramatic_objective",
+          "status": "PASS",
+          "evidence": "objective length=69",
+          "issue_code": "",
+          "fields": [
+            "dramatic_objective"
+          ]
+        },
+        {
+          "dimension": "scene_question",
+          "status": "PASS",
+          "evidence": "question length=25",
+          "issue_code": "",
+          "fields": [
+            "scene_question"
+          ]
+        },
+        {
+          "dimension": "audience_knowledge_arc",
+          "status": "WEAK",
+          "evidence": "missing concrete arc evidence: audience_knowledge_arc[0].phase_id, audience_knowledge_arc[0].does_not_know_yet, audience_knowledge_arc[0].suspects, audience_knowledge_arc[1].phase_id, audience_knowledge_arc[1].does_not_know_yet, audience_knowledge_arc[1].suspects, audience_knowledge_arc[2].phase_id, audience_knowledge_arc[2].does_not_know_yet",
+          "issue_code": "AUDIENCE_ARC_WEAK",
+          "fields": [
+            "audience_knowledge_arc"
+          ]
+        },
+        {
+          "dimension": "emotional_arc",
+          "status": "WEAK",
+          "evidence": "missing concrete arc evidence: emotional_arc[0].emotion_state, emotional_arc[1].emotion_state, emotional_arc[2].emotion_state, emotional_arc[3].emotion_state, emotional_arc[4].emotion_state, emotional_arc[5].emotion_state, emotional_arc[6].emotion_state, emotional_arc[7].emotion_state",
+          "issue_code": "EMOTION_ARC_WEAK",
+          "fields": [
+            "emotional_arc"
+          ]
+        },
+        {
+          "dimension": "performance_arc",
+          "status": "WEAK",
+          "evidence": "characters=0; each has objective/tactic/visible progression/turning point=True",
+          "issue_code": "PERFORMANCE_ARC_WEAK",
+          "fields": [
+            "performance_arc"
+          ]
+        },
+        {
+          "dimension": "edit_arc",
+          "status": "WEAK",
+          "evidence": "edit arc is missing director logic",
+          "issue_code": "EDIT_STRATEGY_WEAK",
+          "fields": [
+            "edit_arc"
+          ]
+        },
+        {
+          "dimension": "visual_grammar",
+          "status": "WEAK",
+          "evidence": "overall principle and phase rules present=False",
+          "issue_code": "VISUAL_GRAMMAR_WEAK",
+          "fields": [
+            "visual_grammar"
+          ]
+        },
+        {
+          "dimension": "camera_principles",
+          "status": "WEAK",
+          "evidence": "camera principles do not state a motivation condition",
+          "issue_code": "CAMERA_PRINCIPLE_GENERIC",
+          "fields": [
+            "camera_principles"
+          ]
+        },
+        {
+          "dimension": "information_reveal_plan",
+          "status": "WEAK",
+          "evidence": "ordered reveal/withhold entries=8",
+          "issue_code": "INFORMATION_STRATEGY_WEAK",
+          "fields": [
+            "information_reveal_plan"
+          ]
+        },
+        {
+          "dimension": "must_avoid",
+          "status": "PASS",
+          "evidence": "scene-specific anti-patterns recorded",
+          "issue_code": "",
+          "fields": [
+            "must_avoid"
+          ]
+        },
+        {
+          "dimension": "creative_risks",
+          "status": "PASS",
+          "evidence": "creative risk recorded",
+          "issue_code": "",
+          "fields": [
+            "creative_risks"
+          ]
+        }
+      ],
+      "weak_dimension_count": 7,
+      "source_evidence_available": [
+        "baseline_shot_plan_metadata",
+        "character_canonical",
+        "director_treatment",
+        "fact_snapshot",
+        "location_canonical",
+        "prop_canonical",
+        "scene",
+        "scene_blocking",
+        "source_authority"
+      ],
+      "directing_outcome": "STRATEGY_WEAK",
+      "protocol_valid": false,
+      "protocol_errors": [
+        {
+          "code": "INVALID_POWER_CONTROLLER",
+          "path": "power_arc[0].controller",
+          "message": "INVALID_POWER_CONTROLLER"
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1",
+      "outcome": "STRATEGY_INVALID",
+      "findings": [
+        {
+          "dimension": "dramatic_objective",
+          "status": "PASS",
+          "evidence": "objective length=91",
+          "issue_code": "",
+          "fields": [
+            "dramatic_objective"
+          ]
+        },
+        {
+          "dimension": "scene_question",
+          "status": "PASS",
+          "evidence": "question length=49",
+          "issue_code": "",
+          "fields": [
+            "scene_question"
+          ]
+        },
+        {
+          "dimension": "audience_knowledge_arc",
+          "status": "WEAK",
+          "evidence": "missing concrete arc evidence: audience_knowledge_arc[0].phase_id, audience_knowledge_arc[0].does_not_know_yet, audience_knowledge_arc[0].suspects, audience_knowledge_arc[1].phase_id, audience_knowledge_arc[1].does_not_know_yet, audience_knowledge_arc[1].suspects, audience_knowledge_arc[2].phase_id, audience_knowledge_arc[2].does_not_know_yet",
+          "issue_code": "AUDIENCE_ARC_WEAK",
+          "fields": [
+            "audience_knowledge_arc"
+          ]
+        },
+        {
+          "dimension": "emotional_arc",
+          "status": "WEAK",
+          "evidence": "missing concrete arc evidence: emotional_arc[0].emotion_state, emotional_arc[1].emotion_state, emotional_arc[2].emotion_state, emotional_arc[3].emotion_state, emotional_arc[4].emotion_state, emotional_arc[5].emotion_state, emotional_arc[6].emotion_state, emotional_arc[7].emotion_state",
+          "issue_code": "EMOTION_ARC_WEAK",
+          "fields": [
+            "emotional_arc"
+          ]
+        },
+        {
+          "dimension": "performance_arc",
+          "status": "WEAK",
+          "evidence": "characters=2; each has objective/tactic/visible progression/turning point=False",
+          "issue_code": "PERFORMANCE_ARC_WEAK",
+          "fields": [
+            "performance_arc"
+          ]
+        },
+        {
+          "dimension": "edit_arc",
+          "status": "WEAK",
+          "evidence": "edit arc is missing director logic",
+          "issue_code": "EDIT_STRATEGY_WEAK",
+          "fields": [
+            "edit_arc"
+          ]
+        },
+        {
+          "dimension": "visual_grammar",
+          "status": "WEAK",
+          "evidence": "overall principle and phase rules present=False",
+          "issue_code": "VISUAL_GRAMMAR_WEAK",
+          "fields": [
+            "visual_grammar"
+          ]
+        },
+        {
+          "dimension": "camera_principles",
+          "status": "WEAK",
+          "evidence": "camera principles do not state a motivation condition",
+          "issue_code": "CAMERA_PRINCIPLE_GENERIC",
+          "fields": [
+            "camera_principles"
+          ]
+        },
+        {
+          "dimension": "information_reveal_plan",
+          "status": "PASS",
+          "evidence": "ordered reveal/withhold entries=8",
+          "issue_code": "",
+          "fields": [
+            "information_reveal_plan"
+          ]
+        },
+        {
+          "dimension": "must_avoid",
+          "status": "PASS",
+          "evidence": "scene-specific anti-patterns recorded",
+          "issue_code": "",
+          "fields": [
+            "must_avoid"
+          ]
+        },
+        {
+          "dimension": "creative_risks",
+          "status": "PASS",
+          "evidence": "creative risk recorded",
+          "issue_code": "",
+          "fields": [
+            "creative_risks"
+          ]
+        }
+      ],
+      "weak_dimension_count": 6,
+      "source_evidence_available": [
+        "baseline_shot_plan_metadata",
+        "character_canonical",
+        "director_treatment",
+        "fact_snapshot",
+        "location_canonical",
+        "prop_canonical",
+        "scene",
+        "scene_blocking",
+        "source_authority"
+      ],
+      "directing_outcome": "STRATEGY_WEAK",
+      "protocol_valid": false,
+      "protocol_errors": [
+        {
+          "code": "INVALID_POWER_CONTROLLER",
+          "path": "power_arc[0].controller",
+          "message": "INVALID_POWER_CONTROLLER"
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1",
+      "outcome": "STRATEGY_INVALID",
+      "findings": [
+        {
+          "dimension": "dramatic_objective",
+          "status": "PASS",
+          "evidence": "objective length=62",
+          "issue_code": "",
+          "fields": [
+            "dramatic_objective"
+          ]
+        },
+        {
+          "dimension": "scene_question",
+          "status": "PASS",
+          "evidence": "question length=43",
+          "issue_code": "",
+          "fields": [
+            "scene_question"
+          ]
+        },
+        {
+          "dimension": "audience_knowledge_arc",
+          "status": "WEAK",
+          "evidence": "missing concrete arc evidence: audience_knowledge_arc[0].phase_id, audience_knowledge_arc[0].does_not_know_yet, audience_knowledge_arc[0].suspects, audience_knowledge_arc[1].phase_id, audience_knowledge_arc[1].does_not_know_yet, audience_knowledge_arc[1].suspects, audience_knowledge_arc[2].phase_id, audience_knowledge_arc[2].does_not_know_yet",
+          "issue_code": "AUDIENCE_ARC_WEAK",
+          "fields": [
+            "audience_knowledge_arc"
+          ]
+        },
+        {
+          "dimension": "emotional_arc",
+          "status": "WEAK",
+          "evidence": "missing concrete arc evidence: emotional_arc[0].emotion_state, emotional_arc[1].emotion_state, emotional_arc[2].emotion_state, emotional_arc[3].emotion_state, emotional_arc[4].emotion_state, emotional_arc[5].emotion_state, emotional_arc[6].emotion_state, emotional_arc[7].emotion_state",
+          "issue_code": "EMOTION_ARC_WEAK",
+          "fields": [
+            "emotional_arc"
+          ]
+        },
+        {
+          "dimension": "performance_arc",
+          "status": "WEAK",
+          "evidence": "characters=2; each has objective/tactic/visible progression/turning point=False",
+          "issue_code": "PERFORMANCE_ARC_WEAK",
+          "fields": [
+            "performance_arc"
+          ]
+        },
+        {
+          "dimension": "edit_arc",
+          "status": "WEAK",
+          "evidence": "edit arc is missing director logic",
+          "issue_code": "EDIT_STRATEGY_WEAK",
+          "fields": [
+            "edit_arc"
+          ]
+        },
+        {
+          "dimension": "visual_grammar",
+          "status": "WEAK",
+          "evidence": "overall principle and phase rules present=False",
+          "issue_code": "VISUAL_GRAMMAR_WEAK",
+          "fields": [
+            "visual_grammar"
+          ]
+        },
+        {
+          "dimension": "camera_principles",
+          "status": "WEAK",
+          "evidence": "camera principles do not state a motivation condition",
+          "issue_code": "CAMERA_PRINCIPLE_GENERIC",
+          "fields": [
+            "camera_principles"
+          ]
+        },
+        {
+          "dimension": "information_reveal_plan",
+          "status": "WEAK",
+          "evidence": "ordered reveal/withhold entries=11",
+          "issue_code": "INFORMATION_STRATEGY_WEAK",
+          "fields": [
+            "information_reveal_plan"
+          ]
+        },
+        {
+          "dimension": "must_avoid",
+          "status": "WEAK",
+          "evidence": "scene-specific anti-patterns recorded",
+          "issue_code": "",
+          "fields": [
+            "must_avoid"
+          ]
+        },
+        {
+          "dimension": "creative_risks",
+          "status": "PASS",
+          "evidence": "creative risk recorded",
+          "issue_code": "",
+          "fields": [
+            "creative_risks"
+          ]
+        }
+      ],
+      "weak_dimension_count": 8,
+      "source_evidence_available": [
+        "baseline_shot_plan_metadata",
+        "character_canonical",
+        "director_treatment",
+        "fact_snapshot",
+        "location_canonical",
+        "prop_canonical",
+        "scene",
+        "scene_blocking",
+        "source_authority"
+      ],
+      "directing_outcome": "STRATEGY_WEAK",
+      "protocol_valid": false,
+      "protocol_errors": [
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "power_arc[4]",
+          "message": "UNKNOWN_BEAT_REFERENCE"
+        }
+      ]
+    }
+  ],
+  "cross_scene_distinctiveness": {
+    "schema_version": "director-quality-v3-phase1-distinctiveness-v1",
+    "comparisons": [
+      {
+        "scene_a": "book990402:e3:暗房惊魂",
+        "scene_b": "book990402:e3:暗房惊魂（2）",
+        "exact_core_fields": [],
+        "jaccard_token_similarity": 0.0208,
+        "status": "HARD_FAILURE",
+        "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+      },
+      {
+        "scene_a": "book990402:e3:暗房惊魂",
+        "scene_b": "book990402:e2:回声照相馆",
+        "exact_core_fields": [],
+        "jaccard_token_similarity": 0.0278,
+        "status": "HARD_FAILURE",
+        "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+      },
+      {
+        "scene_a": "book990402:e3:暗房惊魂（2）",
+        "scene_b": "book990402:e2:回声照相馆",
+        "exact_core_fields": [],
+        "jaccard_token_similarity": 0.0213,
+        "status": "HARD_FAILURE",
+        "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE"
+      }
+    ],
+    "hard_failure": true
+  }
+}

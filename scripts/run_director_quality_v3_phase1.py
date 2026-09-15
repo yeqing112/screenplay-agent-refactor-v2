@@ -415,9 +415,15 @@ def run_real_canary(*, records: list[dict[str, Any]], profile: dict[str, Any]) -
             if attempt_number == 1 and not attempts[-1]["format_repair_eligible"]:
                 break
         scene_records = recorder.records[start_records:]
-        diagnostics = diagnose_scene_strategy(strategy=accepted_strategy or {}, source_evidence=inputs) if accepted_strategy else {"diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1", "outcome": "STRATEGY_INVALID", "findings": [{"dimension": "protocol", "status": "FAIL", "evidence": "no valid strategy accepted", "issue_code": "SCHEMA_ADHERENCE_FAILURE"}], "weak_dimension_count": 0}
+        # Keep the provider's complete parsed candidate available for human
+        # review even when protocol validation rejects it.  Diagnostics must
+        # explain the candidate's directing quality separately from the
+        # protocol failure; an invalid envelope is not an excuse to discard
+        # the creative evidence.
+        artifact_strategy = accepted_strategy or next((attempt.get("parsed") for attempt in reversed(attempts) if isinstance(attempt.get("parsed"), dict)), None)
+        diagnostics = diagnose_scene_strategy(strategy=artifact_strategy or {}, source_evidence=inputs) if artifact_strategy else {"diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1", "outcome": "STRATEGY_INVALID", "findings": [{"dimension": "protocol", "status": "FAIL", "evidence": "provider returned no parseable strategy", "issue_code": "SCHEMA_ADHERENCE_FAILURE"}], "weak_dimension_count": 0}
         baseline = _dict(record.get("baseline"))
-        strategy_vs_baseline = compare_strategy_to_baseline(strategy=accepted_strategy or {}, baseline=baseline) if accepted_strategy else {"schema_version": "director-quality-v3-phase1-strategy-vs-baseline-v1", "baseline_shot_count": len(_list(baseline.get("shots"))), "strategy_implied_gaps": [], "baseline_read_only": True}
+        strategy_vs_baseline = compare_strategy_to_baseline(strategy=artifact_strategy or {}, baseline=baseline) if artifact_strategy else {"schema_version": "director-quality-v3-phase1-strategy-vs-baseline-v1", "baseline_shot_count": len(_list(baseline.get("shots"))), "strategy_implied_gaps": [], "baseline_read_only": True}
         scene_results.append({
             "scene": {key: scene.get(key) for key in ("book_id", "episode", "name", "scene_id")},
             "source_fingerprints": {"scene_input": _fingerprint(inputs), "strategy_contract": _fingerprint(contract)},
@@ -427,6 +433,7 @@ def run_real_canary(*, records: list[dict[str, Any]], profile: dict[str, Any]) -
             "first_pass_schema_valid": bool(attempts and _dict(attempts[0].get("validation")).get("valid")),
             "final_schema_valid": bool(accepted_strategy),
             "strategy": accepted_strategy,
+            "parsed_candidate": artifact_strategy,
             "validation": validation,
             "quality_diagnostics": diagnostics,
             "strategy_vs_baseline": strategy_vs_baseline,
@@ -481,9 +488,25 @@ def build_report(*, provenance: dict[str, Any], preflight: dict[str, Any], real:
         for scene_id, outcome in _dict(real.get("outcomes")).items():
             lines.append(f"- `{scene_id}` → `{outcome}`")
         lines.extend(["", "### Distinctiveness", "", f"- Cross-scene hard failure: `{real.get('distinctiveness', {}).get('hard_failure')}`", "", "## Resolved scenes", ""])
+        lines.extend(["", "### Per-scene diagnostics", ""])
+        for item in _list(real.get("scenes")):
+            scene = _dict(item.get("scene"))
+            diagnostics = _dict(item.get("quality_diagnostics"))
+            protocol = _dict(item.get("validation"))
+            lines.extend([
+                f"#### {scene.get('scene_id')}",
+                "",
+                f"- Attempts: `{item.get('attempt_count')}`; first-pass schema: `{item.get('first_pass_schema_valid')}`; final schema: `{item.get('final_schema_valid')}`",
+                f"- Directing diagnostic: `{diagnostics.get('directing_outcome') or diagnostics.get('outcome')}`; protocol outcome: `{diagnostics.get('outcome')}`",
+                f"- Validation errors: `{json.dumps(protocol.get('errors') or [], ensure_ascii=False)}`",
+                f"- Weak/failed diagnostic dimensions: `{', '.join(sorted({_text(_dict(finding).get('issue_code')) for finding in _list(diagnostics.get('findings')) if _dict(finding).get('status') != 'PASS' and _text(_dict(finding).get('issue_code'))})) or 'none'}`",
+                f"- HTTP requests: `{_dict(item.get('telemetry')).get('http_request_count')}`; cached tokens: `{_dict(item.get('telemetry')).get('cached_tokens')}`",
+                f"- Strategy-implied baseline gaps: `{', '.join(_text(value) for value in _list(_dict(item.get('strategy_vs_baseline')).get('strategy_implied_gaps'))) or 'none recorded'}`",
+                "",
+            ])
     for row in _list(resolved.get("scenes")):
         lines.append(f"- `{row.get('scene_id')}` — treatment `{row.get('director_treatment_typed_fingerprint')[:12]}`, blocking `{row.get('scene_blocking_typed_fingerprint')[:12]}`")
-    lines.extend(["", "## Interpretation", "", "即使本 Canary PASS，也只证明 MiMo 能在事实边界内生成可验证的场景导演策略；不代表专业导演质量已经证明，也不授权进入 Shot Architecture Canary 之外的任何生产链路。", ""])
+    lines.extend(["", "## Required decision", "", f"- READY_FOR_SHOT_ARCHITECTURE_CANARY: `{bool(real and real.get('ready_for_shot_architecture_canary'))}`", "- 本轮 PASS 只证明策略层能力；若失败，按 `SCHEMA_ADHERENCE_FAILURE`、`MODEL_DIRECTING_WEAKNESS` 或模板泄漏分类，不自动换模型、不自动重试语义。", "", "## Interpretation", "", "即使本 Canary PASS，也只证明 MiMo 能在事实边界内生成可验证的场景导演策略；不代表专业导演质量已经证明，也不授权进入 Shot Architecture Canary 之外的任何生产链路。", ""])
     return "\n".join(lines)
 
 
@@ -545,7 +568,10 @@ def main() -> int:
     strategy_dir = ARTIFACTS / "director-quality-v3-phase1-strategies"
     strategy_dir.mkdir(parents=True, exist_ok=True)
     for item in real["scenes"]:
-        strategy = item.get("strategy")
+        # ``parsed_candidate`` is retained for protocol-invalid responses so
+        # all three scenes still receive a complete, directly reviewable
+        # Strategy JSON/Markdown artifact.
+        strategy = item.get("strategy") or item.get("parsed_candidate")
         if not isinstance(strategy, dict):
             continue
         sid = _text(item["scene"]["scene_id"])
@@ -554,6 +580,18 @@ def main() -> int:
         (strategy_dir / f"{safe_scene_id(sid)}.md").write_text(_strategy_markdown(strategy, diagnostics=diagnostics, scene_id=sid), encoding="utf-8")
     report = build_report(provenance=gate["provenance"], preflight=gate["preflight"], real=real, resolved=gate["resolved"])
     (ARTIFACTS / "director-quality-v3-phase1-report.md").write_text(report, encoding="utf-8")
+    gap_path = ARTIFACTS / "director-quality-v3-phase1-gap-audit.md"
+    baseline_gap = gap_path.read_text(encoding="utf-8") if gap_path.exists() else "# Director Quality V3 Phase 1 — Gap Audit\n"
+    marker = "\n## Final As-Built Verification\n"
+    baseline_gap = baseline_gap.split(marker, 1)[0].rstrip()
+    gap_path.write_text(
+        baseline_gap + marker + "\n"
+        f"- Real MiMo HTTP requests: `{real.get('provider_http_request_count')}` (limit `{real.get('provider_http_request_limit')}`).\n"
+        f"- First-pass schema valid: `{real.get('protocol_gate', {}).get('first_pass_schema_valid')}/3`; final schema valid: `{real.get('protocol_gate', {}).get('final_schema_valid')}/3`.\n"
+        f"- Fact invention: `{real.get('protocol_gate', {}).get('fact_invention_count')}`; unknown IDs: `{real.get('protocol_gate', {}).get('unknown_id_count')}`; strategy leakage: `{real.get('protocol_gate', {}).get('strategy_layer_leakage_count')}`.\n"
+        f"- Final status: `{real.get('status')}`; no ShotPlan/media/storage/CI side effects.\n",
+        encoding="utf-8",
+    )
     print(json.dumps({"status": real["status"], "authorization": authorization, "artifact": str(ARTIFACTS / "director-quality-v3-phase1-strategy-canary-real.json"), "strategy_files": [str(path) for path in sorted(strategy_dir.glob("*.json"))], "http_requests": real["provider_http_request_count"]}, ensure_ascii=False, indent=2))
     return 0 if real["status"] == "SCENE_DIRECTOR_STRATEGY_CANARY_PASSED" else 1
 
