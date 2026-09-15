@@ -1,0 +1,6 @@
+{
+  "status": "NOT_READY",
+  "ready_for_final_recanary": false,
+  "production_shotplan": "HOLD",
+  "reason": "validator closure does not authorize provider calls; definite composite/review/contract findings remain"
+}

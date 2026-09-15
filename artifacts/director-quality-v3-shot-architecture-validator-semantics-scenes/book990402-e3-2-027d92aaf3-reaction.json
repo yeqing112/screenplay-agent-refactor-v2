@@ -1,0 +1,17 @@
+{
+  "stimulus_evaluations": [
+    {
+      "shot_id": "SA07",
+      "classification": "REACTION_STIMULUS_REVIEW_REQUIRED",
+      "evidence": "手部细微动作泄露内心深层反应，与表面困惑形成反差 林晚回答“不记得”后 观众察觉林晚可能隐藏秘密或真实失忆 需要特写镜头捕捉细微动作，暗示隐藏层 通过手部动作暗示林晚深层反应，强化其复杂性 ['beat:7']"
+    }
+  ],
+  "hard_errors": [],
+  "review_required": [
+    {
+      "code": "REACTION_STIMULUS_REVIEW_REQUIRED",
+      "shot_id": "SA07",
+      "reason": "legacy_reaction_without_explicit_stimulus_ref"
+    }
+  ]
+}

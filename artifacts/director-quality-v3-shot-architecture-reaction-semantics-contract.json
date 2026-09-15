@@ -1,0 +1,26 @@
+{
+  "schema_version": "shot_architecture_reaction_semantics_contract_v1",
+  "stimulus_ref": {
+    "required_for_new_provider_contract": true,
+    "canonical": "shot:SA<n>",
+    "must_precede_reaction": true
+  },
+  "legacy_without_ref": {
+    "cue_confirmed": [
+      "听到",
+      "听见",
+      "质问后",
+      "询问后",
+      "看到后",
+      "得知后",
+      "发现后",
+      "回应"
+    ],
+    "classification": "REACTION_STIMULUS_REVIEW_REQUIRED",
+    "explicit_cue_classification": "REACTION_STIMULUS_CONFIRMED"
+  },
+  "invalid": [
+    "INVALID_REACTION_ORDER"
+  ],
+  "hard_without_stimulus": "REACTION_WITHOUT_STIMULUS"
+}

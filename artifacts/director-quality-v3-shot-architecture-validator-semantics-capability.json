@@ -1,0 +1,221 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "signal": "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
+    "layer_counts": {
+      "STRUCTURAL": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "AUTHORITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "IDENTITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "COVERAGE": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "SPATIAL": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "INFORMATION": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "TOPOLOGY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "ATOMICITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 1,
+        "creative_warning_count": 0
+      },
+      "CONTRACT": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "CREATIVE": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      }
+    },
+    "hard_error_count": 0,
+    "review_required_count": 0,
+    "contract_issue_count": 1,
+    "creative_warning_count": 0,
+    "definite_composite_count": 1,
+    "continuous_framing_count": 2,
+    "reaction_hard_error_count": 0,
+    "reaction_review_required_count": 0
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "signal": "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
+    "layer_counts": {
+      "STRUCTURAL": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "AUTHORITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "IDENTITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "COVERAGE": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "SPATIAL": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "INFORMATION": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "TOPOLOGY": {
+        "hard_error_count": 0,
+        "review_required_count": 1,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "ATOMICITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "CONTRACT": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 5,
+        "creative_warning_count": 0
+      },
+      "CREATIVE": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      }
+    },
+    "hard_error_count": 0,
+    "review_required_count": 1,
+    "contract_issue_count": 5,
+    "creative_warning_count": 0,
+    "definite_composite_count": 0,
+    "continuous_framing_count": 1,
+    "reaction_hard_error_count": 0,
+    "reaction_review_required_count": 1
+  },
+  "book990402:e2:回声照相馆": {
+    "signal": "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
+    "layer_counts": {
+      "STRUCTURAL": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "AUTHORITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "IDENTITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "COVERAGE": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "SPATIAL": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "INFORMATION": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "TOPOLOGY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "ATOMICITY": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 3,
+        "creative_warning_count": 0
+      },
+      "CONTRACT": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      },
+      "CREATIVE": {
+        "hard_error_count": 0,
+        "review_required_count": 0,
+        "contract_issue_count": 0,
+        "creative_warning_count": 0
+      }
+    },
+    "hard_error_count": 0,
+    "review_required_count": 0,
+    "contract_issue_count": 3,
+    "creative_warning_count": 0,
+    "definite_composite_count": 3,
+    "continuous_framing_count": 0,
+    "reaction_hard_error_count": 0,
+    "reaction_review_required_count": 0
+  }
+}

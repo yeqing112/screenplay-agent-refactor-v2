@@ -55,6 +55,19 @@ def _ref(value: Any, prefix: str) -> str:
         raw = raw[1:]
     return prefix + ":" + raw
 
+def _shot_ref(value: Any) -> str:
+    """Canonicalize a shot reference without inventing an ordinal mapping."""
+    raw = _t(value)
+    if not raw:
+        return ""
+    if raw.lower().startswith("shot:"):
+        return "shot:" + raw.split(":", 1)[1].strip().upper()
+    if re.fullmatch(r"SA\d+", raw, re.IGNORECASE):
+        return "shot:" + raw.upper()
+    if re.fullmatch(r"\d+", raw):
+        return "shot:SA" + raw.zfill(2)
+    return "shot:" + raw
+
 def _string_list(value: Any) -> tuple[list[str], str]:
     """Losslessly coerce nullable string/string[] fields to string[]."""
     if value is None:
@@ -120,6 +133,7 @@ def normalize_architecture_ir(raw: dict[str, Any], *, scene_id: str, strategy_fi
             "hold_logic": _t(row.get("hold_logic") or row.get("hold")),
             "continuity_requirements": continuity,
             "must_preserve_refs": preserve_refs,
+            "stimulus_ref": _shot_ref(row.get("stimulus_ref") or row.get("stimulus") or row.get("reaction_to")),
             "what_audience_knows_before": _t(row.get("what_audience_knows_before") or row.get("audience_before")),
             "what_this_shot_adds": _t(row.get("what_this_shot_adds") or row.get("audience_adds")),
             "what_remains_withheld": _t(row.get("what_remains_withheld") or row.get("withheld")),
@@ -130,18 +144,44 @@ def normalize_architecture_ir(raw: dict[str, Any], *, scene_id: str, strategy_fi
     return {"ir": ir, "errors": errors, "unknown_fields": unknown, "projection_status": "PASS" if not unknown else "FAIL", "normalization_audit": normalization_audit}
 
 def atomicity_audit(raw: dict[str, Any], ir: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Detect multiple camera setups or cuts bundled into one shot entry."""
-    findings = []
-    patterns = ("正反打", "先A再切B", "先A再B", "A/B", "双机位", "多机位", "两个机位", "先拍A再切")
+    """Classify bundled coverage versus a continuous framing evolution.
+
+    A framing transition is not itself a cut: PUSH_IN/PULL_OUT/DOLLY/TRACK,
+    PAN/TILT and REFRAME describe one continuous setup.  Reverse angles,
+    A/B coverage and explicit cut sequences remain definite composites.  A
+    static transition is intentionally left review-required rather than
+    silently accepted or split.
+    """
+    findings = []; classifications = []
+    patterns = ("正反打", "先A再切B", "先A再B", "A/B", "双机位", "多机位", "两个机位", "先拍A再切", "切回A", "切回B")
+    definite_tokens = ("正反打", "先A再切B", "先A再B", "A/B", "双机位", "多机位", "两个机位", "先拍A再切", "切回A", "切回B")
+    continuous_movements = {"PUSH_IN", "PULL_OUT", "DOLLY", "TRACK", "TILT", "PAN", "REFRAME", "HANDHELD_SUBTLE"}
     for index, item in enumerate(_l(_d(raw).get("shots")), 1):
         row = _d(item); text = _canon(row); matched = [pattern for pattern in patterns if pattern in text]
         size = _t(row.get("shot_size") or row.get("size"))
-        if re.search(r"(?:特写|近景|中近景|中景|全景).*(?:转|切).*(?:特写|近景|中近景|中景|全景)", size):
+        transition = bool(re.search(r"(?:特写|近景|中近景|中景|全景|远景).*(?:转|切|推|拉|推进|拉远).*(?:特写|近景|中近景|中景|全景|远景)", size))
+        if transition:
             matched.append("framing_transition")
+        canonical_shot = _l(_d(ir).get("shots"))[index - 1] if ir and index <= len(_l(_d(ir).get("shots"))) else {}
         if matched:
-            canonical_shot = _l(_d(ir).get("shots"))[index - 1] if ir and index <= len(_l(_d(ir).get("shots"))) else {}
-            findings.append({"shot_index": index, "shot_id": _d(canonical_shot).get("shot_id") or f"SA{index:02d}", "code": "COMPOSITE_COVERAGE_BUNDLE", "matched_patterns": sorted(set(matched)), "raw_shot_size": size})
-    return {"status": "FAIL" if findings else "PASS", "composite_bundle_count": len(findings), "findings": findings}
+            movement = _t(_d(canonical_shot).get("camera_movement"))
+            definite = any(token in text for token in definite_tokens)
+            if definite:
+                classification, code = "DEFINITE_COMPOSITE_COVERAGE_BUNDLE", "COMPOSITE_COVERAGE_BUNDLE"
+            elif transition and movement in continuous_movements:
+                classification, code = "CONTINUOUS_FRAMING_EVOLUTION", "CONTINUOUS_FRAMING_EVOLUTION"
+            elif transition:
+                classification, code = "ATOMICITY_REVIEW_REQUIRED", "ATOMICITY_REVIEW_REQUIRED"
+            else:
+                continue
+            finding = {"shot_index": index, "shot_id": _d(canonical_shot).get("shot_id") or f"SA{index:02d}", "code": code, "classification": classification, "matched_patterns": sorted(set(matched)), "raw_shot_size": size, "camera_movement": movement or None}
+            findings.append(finding); classifications.append(finding)
+        else:
+            classifications.append({"shot_index": index, "shot_id": _d(canonical_shot).get("shot_id") or f"SA{index:02d}", "classification": "ATOMIC_SHOT_PASS", "matched_patterns": [], "camera_movement": _t(_d(canonical_shot).get("camera_movement")) or None})
+    definite_count = sum(f["classification"] == "DEFINITE_COMPOSITE_COVERAGE_BUNDLE" for f in findings)
+    continuous_count = sum(f["classification"] == "CONTINUOUS_FRAMING_EVOLUTION" for f in findings)
+    review_count = sum(f["classification"] == "ATOMICITY_REVIEW_REQUIRED" for f in findings)
+    return {"status": "FAIL" if definite_count else "REVIEW_REQUIRED" if review_count else "PASS", "composite_bundle_count": definite_count, "definite_composite_count": definite_count, "continuous_framing_count": continuous_count, "review_required_count": review_count, "findings": findings, "classifications": classifications, "atomic_pass_count": sum(x["classification"] == "ATOMIC_SHOT_PASS" for x in classifications)}
 
 def validate_protocol(ir: dict[str, Any], *, scene: dict[str, Any], strategy: dict[str, Any]) -> dict[str, Any]:
     errors: list[dict[str, Any]] = []
@@ -191,13 +231,49 @@ def validate_spatial(ir: dict[str, Any], blocking: dict[str, Any]) -> dict[str, 
     return {"status": "PASS" if not errors else "FAIL", "hard_errors": errors, "known_blocking_anchors": sorted(anchors)}
 
 def validate_topology(ir: dict[str, Any]) -> dict[str, Any]:
-    shots = _l(ir.get("shots")); errors=[]; warnings=[]
+    """Validate ordering while treating reaction stimulus as explicit evidence.
+
+    Legacy drafts often omit ``stimulus_ref``.  They are not promoted to a
+    hard error merely because the previous shot's function is OBSERVE: prose
+    such as “听到顾沉质问后” is deterministic evidence of a stimulus, while
+    an undecidable legacy reaction is review-required.  Explicit forward
+    references are always invalid.
+    """
+    shots = _l(ir.get("shots")); errors=[]; warnings=[]; stimulus_evaluations=[]
     for a,b in zip(shots, shots[1:]):
         if (_l(_d(a).get("function")) == _l(_d(b).get("function")) and _t(_d(a).get("subject")) == _t(_d(b).get("subject")) and _t(_d(a).get("information_focus")) == _t(_d(b).get("information_focus")) and _t(_d(a).get("performance_focus")) == _t(_d(b).get("performance_focus"))): errors.append({"code": "REDUNDANT_SHOT", "shot_ids": [_d(a).get("shot_id"), _d(b).get("shot_id")]})
     for index, shot in enumerate(shots):
         funcs = set(_l(_d(shot).get("function")))
-        if "REACTION" in funcs and (index == 0 or not (set(_l(_d(shots[index - 1]).get("function"))) & {"EVIDENCE", "REVEAL", "PRESSURE", "TURN"})):
-            errors.append({"code": "REACTION_WITHOUT_STIMULUS", "shot_id": _d(shot).get("shot_id")})
+        if "REACTION" in funcs:
+            shot_id = _t(_d(shot).get("shot_id")) or f"SA{index + 1:02d}"
+            ref = _t(_d(shot).get("stimulus_ref"))
+            if ref:
+                target = ref.split(":", 1)[1] if ":" in ref else ref
+                match = re.fullmatch(r"SA(\d+)", target, re.IGNORECASE)
+                target_index = int(match.group(1)) if match else None
+                if target_index is None:
+                    errors.append({"code": "INVALID_REACTION_ORDER", "shot_id": shot_id, "stimulus_ref": ref, "reason": "unknown_shot_reference"})
+                    stimulus_evaluations.append({"shot_id": shot_id, "classification": "INVALID_REACTION_ORDER", "stimulus_ref": ref})
+                elif target_index >= index + 1:
+                    errors.append({"code": "INVALID_REACTION_ORDER", "shot_id": shot_id, "stimulus_ref": ref, "reason": "stimulus_must_precede_reaction"})
+                    stimulus_evaluations.append({"shot_id": shot_id, "classification": "INVALID_REACTION_ORDER", "stimulus_ref": ref})
+                else:
+                    stimulus_evaluations.append({"shot_id": shot_id, "classification": "REACTION_STIMULUS_CONFIRMED", "stimulus_ref": ref})
+            elif index == 0:
+                errors.append({"code": "REACTION_WITHOUT_STIMULUS", "shot_id": shot_id})
+                stimulus_evaluations.append({"shot_id": shot_id, "classification": "REACTION_WITHOUT_STIMULUS"})
+            else:
+                context = " ".join(_t(_d(shot).get(k)) for k in ("performance_focus", "entry_state", "information_focus", "cut_in_motivation", "what_this_shot_adds", "beat_refs"))
+                no_stimulus = bool(re.search(r"无(?:外部)?刺激|没有刺激|无刺激来源|不依赖刺激", context))
+                cue = bool(re.search(r"听到|听见|质问后|询问后|看到后|看见后|得知后|发现后|回应|受到.{0,8}(?:冲击|质问|威胁)|在.{0,8}之后", context))
+                if no_stimulus:
+                    errors.append({"code": "REACTION_WITHOUT_STIMULUS", "shot_id": shot_id})
+                    stimulus_evaluations.append({"shot_id": shot_id, "classification": "REACTION_WITHOUT_STIMULUS", "evidence": context})
+                elif cue:
+                    stimulus_evaluations.append({"shot_id": shot_id, "classification": "REACTION_STIMULUS_CONFIRMED", "evidence": context, "legacy_context": True})
+                else:
+                    warnings.append({"code": "REACTION_STIMULUS_REVIEW_REQUIRED", "shot_id": shot_id, "reason": "legacy_reaction_without_explicit_stimulus_ref"})
+                    stimulus_evaluations.append({"shot_id": shot_id, "classification": "REACTION_STIMULUS_REVIEW_REQUIRED", "evidence": context})
         if "EVIDENCE" in funcs and index and "REACTION" in set(_l(_d(shots[index - 1]).get("function"))):
             warnings.append({"code": "EVIDENCE_AFTER_REACTION", "shot_id": _d(shot).get("shot_id")})
         if index and not _t(_d(shot).get("cut_in_motivation")):
@@ -207,7 +283,7 @@ def validate_topology(ir: dict[str, Any]) -> dict[str, Any]:
         if len(shots) > 1 and all(len(refs) == 1 for refs in beat_sets) and len({refs[0] for refs in beat_sets if refs}) == len(shots):
             warnings.append({"code": "MECHANICAL_BEAT_TO_SHOT_MAPPING"})
     if len(shots) > 30: warnings.append({"code": "SHOT_COUNT_EXTREME"})
-    return {"status": "PASS" if not errors else "FAIL", "hard_errors": errors, "warnings": warnings, "redundancy_count": sum(1 for e in errors if e["code"] == "REDUNDANT_SHOT")}
+    return {"status": "PASS" if not errors else "FAIL", "hard_errors": errors, "warnings": warnings, "redundancy_count": sum(1 for e in errors if e["code"] == "REDUNDANT_SHOT"), "stimulus_evaluations": stimulus_evaluations, "reaction_hard_error_count": sum(e["code"] in {"REACTION_WITHOUT_STIMULUS", "INVALID_REACTION_ORDER"} for e in errors), "reaction_review_required_count": sum(e.get("classification") == "REACTION_STIMULUS_REVIEW_REQUIRED" for e in stimulus_evaluations)}
 
 def validate_information(ir: dict[str, Any], scene: dict[str, Any]) -> dict[str, Any]:
     order = {_ref(_d(b).get("beat_id"), "beat"): i for i,b in enumerate(_l(scene.get("beats"))) if _t(_d(b).get("beat_id"))}; leaks=[]
@@ -258,3 +334,51 @@ def compare_architectures(items: list[dict[str, Any]]) -> dict[str, Any]:
         for j in range(i+1,len(items)):
             a,b=items[i],items[j]; sig_a=signature(a); sig_b=signature(b); same=sig_a==sig_b and _t(a.get("architecture_summary"))==_t(b.get("architecture_summary")); pairs.append({"left":a.get("scene_id"),"right":b.get("scene_id"),"same_topology":same,"left_signature":sig_a,"right_signature":sig_b}); hard = hard or same
     return {"pair_count":len(pairs),"all_pairs_checked":len(pairs)==3,"pairs":pairs,"hard_template_leakage":hard,"hard_failure":hard}
+
+
+CAPABILITY_LAYERS = ("STRUCTURAL", "AUTHORITY", "IDENTITY", "COVERAGE", "SPATIAL", "INFORMATION", "TOPOLOGY", "ATOMICITY", "CONTRACT", "CREATIVE")
+
+def capability_assessment(*, metrics: dict[str, Any], protocol: dict[str, Any], authority: dict[str, Any], identity: dict[str, Any], coverage: dict[str, Any], spatial: dict[str, Any], information: dict[str, Any], topology: dict[str, Any], atomicity: dict[str, Any], contract_failures: list[Any] | None = None, director_qa_result: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Produce a layered, non-minimum capability assessment for one scene."""
+    contract_failures = contract_failures or []
+    director_qa_result = director_qa_result or {}
+    layer_counts = {layer: {"hard_error_count": 0, "review_required_count": 0, "contract_issue_count": 0, "creative_warning_count": 0} for layer in CAPABILITY_LAYERS}
+    # A malformed outer envelope is structural; a normalized draft that only
+    # misses a contract field is not a hard semantic failure and is counted
+    # under CONTRACT below.
+    layer_counts["STRUCTURAL"]["hard_error_count"] = int(not metrics.get("raw_envelope_valid", False))
+    layer_counts["AUTHORITY"]["hard_error_count"] = int(_t(authority.get("status")) in {"UNSAFE", "FAIL"})
+    layer_counts["IDENTITY"]["hard_error_count"] = int(_t(identity.get("status")) in {"UNSAFE", "FAIL"})
+    layer_counts["COVERAGE"]["hard_error_count"] = int(_t(coverage.get("status")) == "FAIL")
+    layer_counts["SPATIAL"]["hard_error_count"] = len(_l(spatial.get("hard_errors")))
+    layer_counts["INFORMATION"]["hard_error_count"] = len(_l(information.get("hard_errors")))
+    layer_counts["TOPOLOGY"]["hard_error_count"] = len(_l(topology.get("hard_errors")))
+    layer_counts["TOPOLOGY"]["review_required_count"] = sum(_t(_d(x).get("code")) == "REACTION_STIMULUS_REVIEW_REQUIRED" for x in _l(topology.get("warnings")))
+    layer_counts["ATOMICITY"]["contract_issue_count"] = int(atomicity.get("definite_composite_count", atomicity.get("composite_bundle_count", 0)) or 0)
+    layer_counts["ATOMICITY"]["review_required_count"] = int(atomicity.get("review_required_count", 0) or 0)
+    layer_counts["CONTRACT"]["contract_issue_count"] = len(contract_failures) + int(not protocol.get("valid", False))
+    layer_counts["CREATIVE"]["creative_warning_count"] = len(_l(director_qa_result.get("warnings")))
+    hard_total = sum(v["hard_error_count"] for v in layer_counts.values())
+    review_total = sum(v["review_required_count"] for v in layer_counts.values())
+    contract_total = sum(v["contract_issue_count"] for v in layer_counts.values())
+    creative_total = sum(v["creative_warning_count"] for v in layer_counts.values())
+    if layer_counts["STRUCTURAL"]["hard_error_count"] or layer_counts["AUTHORITY"]["hard_error_count"] or layer_counts["IDENTITY"]["hard_error_count"]:
+        signal = "RAW_ARCHITECTURE_INVALID"
+    elif hard_total:
+        signal = "RAW_ARCHITECTURE_WEAK"
+    elif contract_total or review_total or int(atomicity.get("definite_composite_count", 0) or 0):
+        signal = "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT"
+    elif creative_total:
+        signal = "RAW_ARCHITECTURE_USABLE"
+    else:
+        signal = "RAW_ARCHITECTURE_STRONG"
+    return {"signal": signal, "layer_counts": layer_counts, "hard_error_count": hard_total, "review_required_count": review_total, "contract_issue_count": contract_total, "creative_warning_count": creative_total, "definite_composite_count": int(atomicity.get("definite_composite_count", atomicity.get("composite_bundle_count", 0)) or 0), "continuous_framing_count": int(atomicity.get("continuous_framing_count", 0) or 0), "reaction_hard_error_count": int(topology.get("reaction_hard_error_count", 0) or 0), "reaction_review_required_count": int(topology.get("reaction_review_required_count", 0) or 0)}
+
+def aggregate_capability(scene_assessments: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate scenes without collapsing to the weakest scene."""
+    distribution = Counter(_t(x.get("signal")) for x in scene_assessments)
+    order = {"RAW_ARCHITECTURE_INVALID": 0, "RAW_ARCHITECTURE_WEAK": 1, "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT": 2, "RAW_ARCHITECTURE_USABLE": 3, "RAW_ARCHITECTURE_STRONG": 4}
+    overall = min((x.get("signal") for x in scene_assessments), key=lambda x: order.get(x, -1), default="RAW_ARCHITECTURE_INVALID")
+    if scene_assessments and all(order.get(x.get("signal"), -1) >= order["RAW_ARCHITECTURE_USABLE"] for x in scene_assessments):
+        overall = "RAW_ARCHITECTURE_USABLE" if any(x.get("signal") != "RAW_ARCHITECTURE_STRONG" for x in scene_assessments) else "RAW_ARCHITECTURE_STRONG"
+    return {"scene_signal_distribution": dict(sorted(distribution.items())), "overall_capability": overall, "hard_blocking_scene_count": sum(x.get("hard_error_count", 0) > 0 for x in scene_assessments), "usable_or_better_count": sum(order.get(x.get("signal"), -1) >= order["RAW_ARCHITECTURE_USABLE"] for x in scene_assessments), "promising_or_better_count": sum(order.get(x.get("signal"), -1) >= order["RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT"] for x in scene_assessments), "definite_composite_total": sum(x.get("definite_composite_count", 0) for x in scene_assessments), "continuous_framing_total": sum(x.get("continuous_framing_count", 0) for x in scene_assessments), "review_required_total": sum(x.get("review_required_count", 0) for x in scene_assessments), "contract_issue_total": sum(x.get("contract_issue_count", 0) for x in scene_assessments)}

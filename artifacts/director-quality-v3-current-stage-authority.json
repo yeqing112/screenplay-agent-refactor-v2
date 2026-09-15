@@ -1,5 +1,5 @@
 {
-  "schema_version": "director_v3_current_stage_authority_v1",
+  "schema_version": "director_v3_current_stage_authority_v2",
   "strategy_layer": {
     "status": "CLOSED",
     "authority_stage": "DIRECTOR_V3_STRATEGY_REPAIR_SCOPE_SEMANTICS_FINALIZED",
@@ -35,6 +35,18 @@
     "status": "NOT_RECORDED"
   },
   "shot_architecture": {
-    "original_canary": "EXPERIMENT_INVALID_PENDING_FORENSIC_ADJUDICATION"
+    "original_canary": {
+      "experiment_validity": "INVALID",
+      "forensic_adjudication": "CLOSED"
+    },
+    "contract_v2": {
+      "status": "CLOSED"
+    },
+    "validator_semantics": {
+      "status": "CLOSED"
+    },
+    "raw_capability": "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
+    "ready_for_final_recanary": false,
+    "production_shotplan": "HOLD"
   }
 }

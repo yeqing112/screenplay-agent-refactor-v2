@@ -1,0 +1,97 @@
+{
+  "status": "PASS",
+  "composite_bundle_count": 0,
+  "definite_composite_count": 0,
+  "continuous_framing_count": 1,
+  "review_required_count": 0,
+  "findings": [
+    {
+      "shot_index": 10,
+      "shot_id": "SA10",
+      "code": "CONTINUOUS_FRAMING_EVOLUTION",
+      "classification": "CONTINUOUS_FRAMING_EVOLUTION",
+      "matched_patterns": [
+        "framing_transition"
+      ],
+      "raw_shot_size": "中景转特写",
+      "camera_movement": "PULL_OUT"
+    }
+  ],
+  "classifications": [
+    {
+      "shot_index": 1,
+      "shot_id": "SA01",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 2,
+      "shot_id": "SA02",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 3,
+      "shot_id": "SA03",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "PUSH_IN"
+    },
+    {
+      "shot_index": 4,
+      "shot_id": "SA04",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 5,
+      "shot_id": "SA05",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": null
+    },
+    {
+      "shot_index": 6,
+      "shot_id": "SA06",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 7,
+      "shot_id": "SA07",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 8,
+      "shot_id": "SA08",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 9,
+      "shot_id": "SA09",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": null
+    },
+    {
+      "shot_index": 10,
+      "shot_id": "SA10",
+      "code": "CONTINUOUS_FRAMING_EVOLUTION",
+      "classification": "CONTINUOUS_FRAMING_EVOLUTION",
+      "matched_patterns": [
+        "framing_transition"
+      ],
+      "raw_shot_size": "中景转特写",
+      "camera_movement": "PULL_OUT"
+    }
+  ],
+  "atomic_pass_count": 9
+}

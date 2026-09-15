@@ -1,0 +1,29 @@
+{
+  "schema_version": "shot_architecture_atomicity_semantics_contract_v2",
+  "classifications": [
+    "ATOMIC_SHOT_PASS",
+    "CONTINUOUS_FRAMING_EVOLUTION",
+    "DEFINITE_COMPOSITE_COVERAGE_BUNDLE",
+    "ATOMICITY_REVIEW_REQUIRED"
+  ],
+  "definite_patterns": [
+    "正反打",
+    "A/B",
+    "双机位",
+    "多机位",
+    "先A再切B",
+    "切回A",
+    "切回B"
+  ],
+  "continuous_movements": [
+    "PUSH_IN",
+    "PULL_OUT",
+    "DOLLY",
+    "TRACK",
+    "TILT",
+    "PAN",
+    "REFRAME",
+    "HANDHELD_SUBTLE"
+  ],
+  "static_transition": "ATOMICITY_REVIEW_REQUIRED"
+}

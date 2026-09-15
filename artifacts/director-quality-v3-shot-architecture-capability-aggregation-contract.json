@@ -1,0 +1,23 @@
+{
+  "schema_version": "shot_architecture_capability_aggregation_contract_v1",
+  "layers": [
+    "STRUCTURAL",
+    "AUTHORITY",
+    "IDENTITY",
+    "COVERAGE",
+    "SPATIAL",
+    "INFORMATION",
+    "TOPOLOGY",
+    "ATOMICITY",
+    "CONTRACT",
+    "CREATIVE"
+  ],
+  "per_scene_signals": [
+    "RAW_ARCHITECTURE_INVALID",
+    "RAW_ARCHITECTURE_WEAK",
+    "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
+    "RAW_ARCHITECTURE_USABLE",
+    "RAW_ARCHITECTURE_STRONG"
+  ],
+  "aggregate": "distribution_plus_blocking_counts; never weakest-scene-minimum"
+}

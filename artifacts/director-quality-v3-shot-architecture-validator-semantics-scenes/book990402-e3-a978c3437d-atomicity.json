@@ -1,0 +1,106 @@
+{
+  "status": "FAIL",
+  "composite_bundle_count": 1,
+  "definite_composite_count": 1,
+  "continuous_framing_count": 2,
+  "review_required_count": 0,
+  "findings": [
+    {
+      "shot_index": 1,
+      "shot_id": "SA01",
+      "code": "CONTINUOUS_FRAMING_EVOLUTION",
+      "classification": "CONTINUOUS_FRAMING_EVOLUTION",
+      "matched_patterns": [
+        "framing_transition"
+      ],
+      "raw_shot_size": "特写转中景",
+      "camera_movement": "TILT"
+    },
+    {
+      "shot_index": 4,
+      "shot_id": "SA04",
+      "code": "COMPOSITE_COVERAGE_BUNDLE",
+      "classification": "DEFINITE_COMPOSITE_COVERAGE_BUNDLE",
+      "matched_patterns": [
+        "正反打"
+      ],
+      "raw_shot_size": "中近景正反打",
+      "camera_movement": "HANDHELD_SUBTLE"
+    },
+    {
+      "shot_index": 7,
+      "shot_id": "SA07",
+      "code": "CONTINUOUS_FRAMING_EVOLUTION",
+      "classification": "CONTINUOUS_FRAMING_EVOLUTION",
+      "matched_patterns": [
+        "framing_transition"
+      ],
+      "raw_shot_size": "中景转特写",
+      "camera_movement": "PUSH_IN"
+    }
+  ],
+  "classifications": [
+    {
+      "shot_index": 1,
+      "shot_id": "SA01",
+      "code": "CONTINUOUS_FRAMING_EVOLUTION",
+      "classification": "CONTINUOUS_FRAMING_EVOLUTION",
+      "matched_patterns": [
+        "framing_transition"
+      ],
+      "raw_shot_size": "特写转中景",
+      "camera_movement": "TILT"
+    },
+    {
+      "shot_index": 2,
+      "shot_id": "SA02",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 3,
+      "shot_id": "SA03",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 4,
+      "shot_id": "SA04",
+      "code": "COMPOSITE_COVERAGE_BUNDLE",
+      "classification": "DEFINITE_COMPOSITE_COVERAGE_BUNDLE",
+      "matched_patterns": [
+        "正反打"
+      ],
+      "raw_shot_size": "中近景正反打",
+      "camera_movement": "HANDHELD_SUBTLE"
+    },
+    {
+      "shot_index": 5,
+      "shot_id": "SA05",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "PUSH_IN"
+    },
+    {
+      "shot_index": 6,
+      "shot_id": "SA06",
+      "classification": "ATOMIC_SHOT_PASS",
+      "matched_patterns": [],
+      "camera_movement": "STATIC"
+    },
+    {
+      "shot_index": 7,
+      "shot_id": "SA07",
+      "code": "CONTINUOUS_FRAMING_EVOLUTION",
+      "classification": "CONTINUOUS_FRAMING_EVOLUTION",
+      "matched_patterns": [
+        "framing_transition"
+      ],
+      "raw_shot_size": "中景转特写",
+      "camera_movement": "PUSH_IN"
+    }
+  ],
+  "atomic_pass_count": 4
+}

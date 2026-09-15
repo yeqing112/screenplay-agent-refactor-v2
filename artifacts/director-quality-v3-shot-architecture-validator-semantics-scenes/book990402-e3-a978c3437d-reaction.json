@@ -1,0 +1,12 @@
+{
+  "stimulus_evaluations": [
+    {
+      "shot_id": "SA05",
+      "classification": "REACTION_STIMULUS_CONFIRMED",
+      "evidence": "听到‘记得’质问时瞳孔收缩，手指蜷缩掐掌心的无法控制的反应。 顾沉质问结束，林晚表情开始变化。 顾沉提出林晚可能失忆或隐瞒的假设，林晚反应暴露其内心恐惧。 从对话切到反应特写，强调心理冲击的瞬间。 林晚对记忆问题的恐惧反应，暗示其可能隐瞒或失忆。 ['beat:9']",
+      "legacy_context": true
+    }
+  ],
+  "hard_errors": [],
+  "review_required": []
+}
