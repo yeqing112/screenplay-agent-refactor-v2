@@ -1,0 +1,90 @@
+{
+  "schema_version": "shot_architecture_draft_contract_v2",
+  "top_level_required": [
+    "architecture_summary",
+    "shots"
+  ],
+  "shot_fields": [
+    "phase_id",
+    "beat_refs",
+    "primary_function",
+    "secondary_function",
+    "subject",
+    "shot_size",
+    "camera_position",
+    "camera_movement",
+    "composition_intent",
+    "performance_focus",
+    "information_focus",
+    "prop_focus",
+    "spatial_anchor",
+    "entry_state",
+    "exit_state",
+    "cut_in_motivation",
+    "cut_out_motivation",
+    "hold_logic",
+    "continuity_requirements",
+    "must_preserve_refs",
+    "stimulus_ref",
+    "what_audience_knows_before",
+    "what_this_shot_adds",
+    "what_remains_withheld"
+  ],
+  "enums": {
+    "primary_function": [
+      "CLOSING",
+      "ESTABLISH",
+      "EVIDENCE",
+      "HOLD",
+      "INSERT",
+      "OBSERVE",
+      "ORIENT",
+      "PRESSURE",
+      "REACTION",
+      "RELEASE",
+      "REVEAL",
+      "TRANSITION",
+      "TURN"
+    ],
+    "secondary_function": [
+      "CLOSING",
+      "ESTABLISH",
+      "EVIDENCE",
+      "HOLD",
+      "INSERT",
+      "OBSERVE",
+      "ORIENT",
+      "PRESSURE",
+      "REACTION",
+      "RELEASE",
+      "REVEAL",
+      "TRANSITION",
+      "TURN",
+      null
+    ],
+    "shot_size": [
+      "CU",
+      "ECU",
+      "EWS",
+      "INSERT",
+      "MCU",
+      "MS",
+      "MWS",
+      "WS"
+    ],
+    "camera_movement": [
+      "DOLLY",
+      "HANDHELD_SUBTLE",
+      "NONE",
+      "PAN",
+      "PULL_OUT",
+      "PUSH_IN",
+      "REFRAME",
+      "STATIC",
+      "TILT",
+      "TRACK"
+    ]
+  },
+  "atomic_shot_rule": "one continuous camera setup per entry",
+  "reaction_rule": "primary_function=REACTION requires stimulus_ref to an earlier stimulus"
+}

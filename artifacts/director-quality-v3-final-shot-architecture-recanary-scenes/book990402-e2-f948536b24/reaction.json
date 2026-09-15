@@ -1,0 +1,27 @@
+{
+  "hard_errors": [],
+  "missing_stimulus": 0,
+  "invalid_order": 0,
+  "evaluations": [
+    {
+      "shot_id": "SA07",
+      "classification": "REACTION_STIMULUS_CONFIRMED",
+      "stimulus_ref": "shot:SA06"
+    },
+    {
+      "shot_id": "SA08",
+      "classification": "REACTION_STIMULUS_CONFIRMED",
+      "stimulus_ref": "shot:SA07"
+    },
+    {
+      "shot_id": "SA10",
+      "classification": "REACTION_STIMULUS_CONFIRMED",
+      "stimulus_ref": "shot:SA09"
+    },
+    {
+      "shot_id": "SA12",
+      "classification": "REACTION_STIMULUS_CONFIRMED",
+      "stimulus_ref": "shot:SA11"
+    }
+  ]
+}

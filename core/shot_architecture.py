@@ -61,12 +61,20 @@ def _shot_ref(value: Any) -> str:
     if not raw:
         return ""
     if raw.lower().startswith("shot:"):
-        return "shot:" + raw.split(":", 1)[1].strip().upper()
+        target = raw.split(":", 1)[1].strip()
+        if re.fullmatch(r"\d+", target):
+            target = "SA" + target.zfill(2)
+        return "shot:" + target.upper()
     if re.fullmatch(r"SA\d+", raw, re.IGNORECASE):
         return "shot:" + raw.upper()
     if re.fullmatch(r"\d+", raw):
         return "shot:SA" + raw.zfill(2)
-    return "shot:" + raw
+    # Other SourceRef namespaces (beat:, character:, prop:, event:) are
+    # already meaningful and free-form legacy prose must remain visible for
+    # contract QA rather than being relabeled as a shot reference.
+    if re.match(r"^(?:beat|character|prop|event):", raw, re.IGNORECASE):
+        return raw.split(":", 1)[0].lower() + ":" + raw.split(":", 1)[1].strip()
+    return raw
 
 def _string_list(value: Any) -> tuple[list[str], str]:
     """Losslessly coerce nullable string/string[] fields to string[]."""
@@ -99,11 +107,16 @@ def normalize_camera_movement(value: Any) -> tuple[str, dict[str, Any]]:
 def normalize_architecture_ir(raw: dict[str, Any], *, scene_id: str, strategy_fingerprint: str) -> dict[str, Any]:
     """Project model-facing output into the small canonical Draft schema."""
     if not isinstance(raw, dict): return {"errors": [{"code": "ARCHITECTURE_NOT_OBJECT"}], "ir": None}
-    unknown = sorted(k for k in raw if k not in {"scene_id", "schema_version", "strategy_fingerprint", "architecture_summary", "shots", "shot_count", "notes", *PROGRAM_OWNED})
+    unknown = sorted(k for k in raw if k not in {"scene_id", "schema_version", "strategy_fingerprint", "architecture_summary", "shots", "shot_count", "notes", "primary_function", "secondary_function", *PROGRAM_OWNED})
     shots = _l(raw.get("shots")); canonical_shots = []; normalization_audit = []
     for i, item in enumerate(shots, 1):
         row = _d(item)
-        functions = _l(row.get("function")) if isinstance(row.get("function"), list) else [_t(row.get("function"))]
+        function_value = row.get("function")
+        if function_value is None and row.get("primary_function") is not None:
+            function_value = [row.get("primary_function")]
+            if row.get("secondary_function") not in (None, ""):
+                function_value.append(row.get("secondary_function"))
+        functions = _l(function_value) if isinstance(function_value, list) else [_t(function_value)]
         functions = [_alias(x, FUNCTION_ALIASES, "") for x in functions if _alias(x, FUNCTION_ALIASES, "")]
         movement, movement_audit = normalize_camera_movement(row.get("camera_movement") or row.get("movement"))
         continuity_raw = row.get("continuity_requirements") if "continuity_requirements" in row else row.get("continuity")
@@ -117,6 +130,8 @@ def normalize_architecture_ir(raw: dict[str, Any], *, scene_id: str, strategy_fi
             "phase_id": _t(row.get("phase_id")),
             "beat_refs": [_ref(x, "beat") for x in _l(row.get("beat_refs") or row.get("beats"))],
             "function": functions or ["OBSERVE"],
+            "primary_function": functions[0] if functions else "OBSERVE",
+            "secondary_function": functions[1] if len(functions) > 1 else None,
             "subject": _t(row.get("subject")),
             "shot_size": _alias(row.get("shot_size") or row.get("size"), SIZE_ALIASES, ""),
             "camera_position": _t(row.get("camera_position") or row.get("camera")),
@@ -165,7 +180,10 @@ def atomicity_audit(raw: dict[str, Any], ir: dict[str, Any] | None = None) -> di
         canonical_shot = _l(_d(ir).get("shots"))[index - 1] if ir and index <= len(_l(_d(ir).get("shots"))) else {}
         if matched:
             movement = _t(_d(canonical_shot).get("camera_movement"))
-            definite = any(token in text for token in definite_tokens)
+            # A provider may explain that it is *avoiding* reverse-angle
+            # coverage in a motivation field.  Only positive inclusion in the
+            # shot setup is a composite finding.
+            definite = any(token in text and not re.search(r"(?:避免|不要|不使用|不采用|非|禁止).{0,8}" + re.escape(token), text) for token in definite_tokens)
             if definite:
                 classification, code = "DEFINITE_COMPOSITE_COVERAGE_BUNDLE", "COMPOSITE_COVERAGE_BUNDLE"
             elif transition and movement in continuous_movements:
@@ -252,8 +270,15 @@ def validate_topology(ir: dict[str, Any]) -> dict[str, Any]:
                 match = re.fullmatch(r"SA(\d+)", target, re.IGNORECASE)
                 target_index = int(match.group(1)) if match else None
                 if target_index is None:
-                    errors.append({"code": "INVALID_REACTION_ORDER", "shot_id": shot_id, "stimulus_ref": ref, "reason": "unknown_shot_reference"})
-                    stimulus_evaluations.append({"shot_id": shot_id, "classification": "INVALID_REACTION_ORDER", "stimulus_ref": ref})
+                    # A malformed/non-canonical reference is a contract
+                    # problem, not evidence that the stimulus was forward in
+                    # time.  Keep ordering metrics honest.
+                    if re.match(r"^(?:beat|character|prop|event):", ref, re.IGNORECASE):
+                        stimulus_evaluations.append({"shot_id": shot_id, "classification": "REACTION_STIMULUS_REVIEW_REQUIRED", "stimulus_ref": ref, "reason": "non-shot_ref_requires_source_resolution"})
+                        warnings.append({"code": "REACTION_STIMULUS_REVIEW_REQUIRED", "shot_id": shot_id, "reason": "source_ref_resolution_required"})
+                    else:
+                        errors.append({"code": "INVALID_REACTION_STIMULUS_REF", "shot_id": shot_id, "stimulus_ref": ref, "reason": "non_canonical_reference"})
+                        stimulus_evaluations.append({"shot_id": shot_id, "classification": "INVALID_REACTION_STIMULUS_REF", "stimulus_ref": ref})
                 elif target_index >= index + 1:
                     errors.append({"code": "INVALID_REACTION_ORDER", "shot_id": shot_id, "stimulus_ref": ref, "reason": "stimulus_must_precede_reaction"})
                     stimulus_evaluations.append({"shot_id": shot_id, "classification": "INVALID_REACTION_ORDER", "stimulus_ref": ref})

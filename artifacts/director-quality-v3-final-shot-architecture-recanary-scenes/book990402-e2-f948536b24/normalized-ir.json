@@ -1,0 +1,474 @@
+{
+  "scene_id": "book990402:e2:回声照相馆",
+  "schema_version": "shot_architecture_draft_v1",
+  "strategy_fingerprint": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5",
+  "architecture_summary": "采用12个镜头构建‘发现-试探-揭示’的三幕结构。P01（发现）使用4个镜头，以特写和近景为主，建立悬念。P02（试探）使用4个镜头，以中景和正反打为主，展现心理博弈。P03（揭示）使用4个镜头，强调关键特写和最后的揭示镜头，将悬念推向高潮。整体节奏由缓到紧再到缓，最后以强有力的揭示镜头收尾。",
+  "shot_count": 12,
+  "shots": [
+    {
+      "shot_id": "SA01",
+      "logical_key": "shot-1",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:1"
+      ],
+      "function": [
+        "EVIDENCE",
+        "INSERT"
+      ],
+      "primary_function": "EVIDENCE",
+      "secondary_function": "INSERT",
+      "subject": "地板上的拖痕",
+      "shot_size": "ECU",
+      "camera_position": "低角度，贴近地面",
+      "camera_movement": "STATIC",
+      "composition_intent": "强调拖痕的新鲜、湿润和延伸感，作为昨夜活动的物理证据。",
+      "performance_focus": "无",
+      "information_focus": "拖痕的物理状态（新鲜、湿润）及其延伸方向。",
+      "prop_focus": "拖痕",
+      "spatial_anchor": "暗房门口地板",
+      "entry_state": "林晚的视线从慵懒状态被地面异常吸引。",
+      "exit_state": "观众清晰看到拖痕，悬念建立。",
+      "cut_in_motivation": "直接切入谜团核心，建立视觉证据。",
+      "cut_out_motivation": "拖痕信息已传达，需跟随其延伸方向。",
+      "hold_logic": "保持足够时间让观众识别拖痕的异常性质。",
+      "continuity_requirements": [
+        "拖痕必须新鲜、湿润，延伸至储物柜前。"
+      ],
+      "must_preserve_refs": [
+        "beat:B1"
+      ],
+      "stimulus_ref": "",
+      "what_audience_knows_before": "无",
+      "what_this_shot_adds": "昨夜暗房区域有异常活动的物理证据。",
+      "what_remains_withheld": "活动的性质、参与者、目的。"
+    },
+    {
+      "shot_id": "SA02",
+      "logical_key": "shot-2",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:1",
+        "beat:2"
+      ],
+      "function": [
+        "OBSERVE"
+      ],
+      "primary_function": "OBSERVE",
+      "secondary_function": null,
+      "subject": "林晚",
+      "shot_size": "MS",
+      "camera_position": "中景，略低于视线",
+      "camera_movement": "TRACK",
+      "composition_intent": "跟随林晚从拖痕处起身，走向储物柜，建立空间关系和行动轨迹。",
+      "performance_focus": "林晚从警觉到谨慎调查的转变，动作细致。",
+      "information_focus": "林晚的调查行为，拖痕与储物柜的空间关联。",
+      "prop_focus": "拖痕、储物柜",
+      "spatial_anchor": "暗房门口至储物柜",
+      "entry_state": "林晚蹲着检查拖痕。",
+      "exit_state": "林晚站在储物柜前，准备打开。",
+      "cut_in_motivation": "从证据特写切换到人物行动，建立调查逻辑。",
+      "cut_out_motivation": "林晚即将打开储物柜，需聚焦内部。",
+      "hold_logic": "跟随林晚的移动，保持调查的连贯性。",
+      "continuity_requirements": [
+        "林晚的移动路径必须与拖痕延伸方向一致。"
+      ],
+      "must_preserve_refs": [
+        "beat:B1",
+        "beat:B2"
+      ],
+      "stimulus_ref": "shot:SA01",
+      "what_audience_knows_before": "拖痕存在。",
+      "what_this_shot_adds": "林晚的调查行动，拖痕指向储物柜。",
+      "what_remains_withheld": "储物柜内的状态。"
+    },
+    {
+      "shot_id": "SA03",
+      "logical_key": "shot-3",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:2"
+      ],
+      "function": [
+        "EVIDENCE",
+        "INSERT"
+      ],
+      "primary_function": "EVIDENCE",
+      "secondary_function": "INSERT",
+      "subject": "相册夹",
+      "shot_size": "CU",
+      "camera_position": "储物柜内部视角",
+      "camera_movement": "STATIC",
+      "composition_intent": "展示相册夹的异常状态（横倒、搭扣打开、划痕、空），作为被侵犯的象征。",
+      "performance_focus": "无",
+      "information_focus": "相册夹的异常状态和内部为空。",
+      "prop_focus": "相册夹",
+      "spatial_anchor": "储物柜内部",
+      "entry_state": "储物柜门被打开，光线照入。",
+      "exit_state": "相册夹的异常状态清晰呈现。",
+      "cut_in_motivation": "直接展示关键证据，强化悬念。",
+      "cut_out_motivation": "证据已展示，需切回人物反应。",
+      "hold_logic": "保持足够时间让观众观察相册夹的所有异常细节。",
+      "continuity_requirements": [
+        "相册夹必须横倒、搭扣打开、有划痕、内部为空。"
+      ],
+      "must_preserve_refs": [
+        "beat:B2"
+      ],
+      "stimulus_ref": "shot:SA02",
+      "what_audience_knows_before": "拖痕指向储物柜。",
+      "what_this_shot_adds": "相册夹被动过，内容物丢失。",
+      "what_remains_withheld": "谁动了相册夹，内容物是什么。"
+    },
+    {
+      "shot_id": "SA04",
+      "logical_key": "shot-4",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:3"
+      ],
+      "function": [
+        "REVEAL"
+      ],
+      "primary_function": "REVEAL",
+      "secondary_function": null,
+      "subject": "林晚的手和口袋",
+      "shot_size": "CU",
+      "camera_position": "近景，聚焦手部动作",
+      "camera_movement": "STATIC",
+      "composition_intent": "强调林晚无意识摸口袋的动作，暗示其自身秘密。",
+      "performance_focus": "林晚放回相册夹后，手无意识地摸向左侧口袋，动作自然但意味深长。",
+      "information_focus": "林晚口袋藏有物品，且与当前调查可能有关。",
+      "prop_focus": "口袋、口袋内方形物体（暗示）",
+      "spatial_anchor": "储物柜前",
+      "entry_state": "林晚的手放回相册夹。",
+      "exit_state": "林晚的手离开口袋，恢复镇定。",
+      "cut_in_motivation": "从证据特写切换到人物反应，建立人物与谜团的关联。",
+      "cut_out_motivation": "人物秘密已暗示，P01阶段结束，需过渡到P02。",
+      "hold_logic": "保持足够时间让观众注意到摸口袋的动作及其含义。",
+      "continuity_requirements": [
+        "摸口袋动作必须自然、无意识，口袋内物体轮廓需隐约可见。"
+      ],
+      "must_preserve_refs": [
+        "beat:B3"
+      ],
+      "stimulus_ref": "shot:SA03",
+      "what_audience_knows_before": "相册夹被动过。",
+      "what_this_shot_adds": "林晚自身也藏有秘密（口袋物品）。",
+      "what_remains_withheld": "口袋内物品的具体内容。"
+    },
+    {
+      "shot_id": "SA05",
+      "logical_key": "shot-5",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:4"
+      ],
+      "function": [
+        "ESTABLISH"
+      ],
+      "primary_function": "ESTABLISH",
+      "secondary_function": null,
+      "subject": "顾沉和林晚",
+      "shot_size": "MWS",
+      "camera_position": "全景，展示照相馆接待区",
+      "camera_movement": "STATIC",
+      "composition_intent": "建立两人在接待区的空间关系，顾沉从后门进入，林晚在柜台后。",
+      "performance_focus": "顾沉带早餐进入，表现困倦；林晚迅速恢复慵懒面具。",
+      "information_focus": "顾沉出现，两人开始日常对话。",
+      "prop_focus": "早餐",
+      "spatial_anchor": "照相馆接待区",
+      "entry_state": "顾沉推门进入。",
+      "exit_state": "两人开始对话。",
+      "cut_in_motivation": "从林晚的私密调查空间过渡到共享的对话空间。",
+      "cut_out_motivation": "对话开始，需聚焦人物互动。",
+      "hold_logic": "建立场景转换和人物关系。",
+      "continuity_requirements": [
+        "顾沉从后门进入，林晚在柜台后。"
+      ],
+      "must_preserve_refs": [
+        "beat:B4"
+      ],
+      "stimulus_ref": "",
+      "what_audience_knows_before": "林晚发现异常并藏有秘密。",
+      "what_this_shot_adds": "顾沉出现，两人开始互动。",
+      "what_remains_withheld": "顾沉与昨夜事件的关联。"
+    },
+    {
+      "shot_id": "SA06",
+      "logical_key": "shot-6",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:5",
+        "beat:6"
+      ],
+      "function": [
+        "OBSERVE",
+        "PRESSURE"
+      ],
+      "primary_function": "OBSERVE",
+      "secondary_function": "PRESSURE",
+      "subject": "顾沉",
+      "shot_size": "MS",
+      "camera_position": "中景，略低于视线",
+      "camera_movement": "STATIC",
+      "composition_intent": "捕捉顾沉对话时的细微动作，特别是眼神掠过暗房和左手插口袋的细节。",
+      "performance_focus": "顾沉眼神扫过暗房门口，左手插在口袋里，口袋布料绷紧，回答问题时略显回避。",
+      "information_focus": "顾沉对暗房区域异常关注，口袋藏有物品。",
+      "prop_focus": "口袋、口袋内物品（暗示）",
+      "spatial_anchor": "接待区，顾沉位置",
+      "entry_state": "顾沉开始日常对话。",
+      "exit_state": "顾沉给出‘洗旧照片’的解释。",
+      "cut_in_motivation": "从全景切换到中景，聚焦顾沉的表演细节。",
+      "cut_out_motivation": "顾沉的解释已给出，需切到林晚的反应。",
+      "hold_logic": "保持足够时间让观众观察顾沉的回避动作和口袋细节。",
+      "continuity_requirements": [
+        "顾沉左手必须始终插在口袋里，口袋布料绷紧。"
+      ],
+      "must_preserve_refs": [
+        "beat:B5",
+        "beat:B6"
+      ],
+      "stimulus_ref": "shot:SA05",
+      "what_audience_knows_before": "顾沉出现，两人开始对话。",
+      "what_this_shot_adds": "顾沉对暗房异常关注，口袋藏有物品，可能在撒谎。",
+      "what_remains_withheld": "顾沉口袋内的具体物品，他昨夜的真实活动。"
+    },
+    {
+      "shot_id": "SA07",
+      "logical_key": "shot-7",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:7"
+      ],
+      "function": [
+        "PRESSURE",
+        "REACTION"
+      ],
+      "primary_function": "PRESSURE",
+      "secondary_function": "REACTION",
+      "subject": "林晚",
+      "shot_size": "MCU",
+      "camera_position": "近景，略高于视线",
+      "camera_movement": "STATIC",
+      "composition_intent": "捕捉林晚直接提问时的坚定眼神和微表情，展示其主动试探。",
+      "performance_focus": "林晚眼神观察顾沉后，抓住机会直接询问暗房灯和使用情况，语气平静但问题尖锐。",
+      "information_focus": "林晚主动试探，打破顾沉营造的日常氛围。",
+      "prop_focus": "无",
+      "spatial_anchor": "接待区，林晚位置",
+      "entry_state": "林晚听完顾沉的解释。",
+      "exit_state": "林晚提出直接问题。",
+      "cut_in_motivation": "从顾沉的回避切换到林晚的反击，建立对话张力。",
+      "cut_out_motivation": "问题已提出，需切到顾沉的反应。",
+      "hold_logic": "保持足够时间让观众感受到林晚提问的力度。",
+      "continuity_requirements": [
+        "林晚的提问必须直接、具体，针对暗房使用。"
+      ],
+      "must_preserve_refs": [
+        "beat:B7"
+      ],
+      "stimulus_ref": "shot:SA06",
+      "what_audience_knows_before": "顾沉可能在撒谎。",
+      "what_this_shot_adds": "林晚主动试探，博弈升级。",
+      "what_remains_withheld": "顾沉对直接问题的反应。"
+    },
+    {
+      "shot_id": "SA08",
+      "logical_key": "shot-8",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:7"
+      ],
+      "function": [
+        "REACTION"
+      ],
+      "primary_function": "REACTION",
+      "secondary_function": null,
+      "subject": "顾沉",
+      "shot_size": "MCU",
+      "camera_position": "近景，略低于视线",
+      "camera_movement": "STATIC",
+      "composition_intent": "捕捉顾沉面对直接提问时的微表情和回避反应。",
+      "performance_focus": "顾沉听到问题后，眼神短暂闪烁，随即以‘洗旧照片’、‘客户急件’为由回应，试图平息疑问。",
+      "information_focus": "顾沉承认昨夜使用暗房，但理由可能虚假。",
+      "prop_focus": "无",
+      "spatial_anchor": "接待区，顾沉位置",
+      "entry_state": "顾沉听到林晚的问题。",
+      "exit_state": "顾沉给出解释，准备离开。",
+      "cut_in_motivation": "从林晚的提问切换到顾沉的反应，完成对话回合。",
+      "cut_out_motivation": "顾沉解释完毕，P02阶段结束，需过渡到P03。",
+      "hold_logic": "保持足够时间让观众观察顾沉的反应和判断其真实性。",
+      "continuity_requirements": [
+        "顾沉的解释必须合理但可能虚假，表情需有细微破绽。"
+      ],
+      "must_preserve_refs": [
+        "beat:B7"
+      ],
+      "stimulus_ref": "shot:SA07",
+      "what_audience_knows_before": "林晚直接提问。",
+      "what_this_shot_adds": "顾沉承认使用暗房，但理由可疑。",
+      "what_remains_withheld": "顾沉洗的‘旧照片’内容，他昨夜的真实目的。"
+    },
+    {
+      "shot_id": "SA09",
+      "logical_key": "shot-9",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:8"
+      ],
+      "function": [
+        "REVEAL",
+        "INSERT"
+      ],
+      "primary_function": "REVEAL",
+      "secondary_function": "INSERT",
+      "subject": "灰外套照片",
+      "shot_size": "CU",
+      "camera_position": "林晚主观视角",
+      "camera_movement": "PUSH_IN",
+      "composition_intent": "通过林晚的主观视角，聚焦晾干绳上的灰外套照片，强调其视觉冲击力。",
+      "performance_focus": "无",
+      "information_focus": "灰外套人影背对镜头，外套款式与顾沉所穿相似。",
+      "prop_focus": "灰外套照片",
+      "spatial_anchor": "暗房内晾干绳",
+      "entry_state": "顾沉进入暗房，林晚瞥见晾干绳。",
+      "exit_state": "灰外套照片清晰呈现。",
+      "cut_in_motivation": "从对话空间切换到关键视觉证据，建立顾沉与神秘事件的关联。",
+      "cut_out_motivation": "证据已展示，需切到林晚的反应。",
+      "hold_logic": "保持足够时间让观众识别照片内容及其与顾沉的关联。",
+      "continuity_requirements": [
+        "照片必须清晰显示灰外套人影，外套款式与顾沉所穿相似。"
+      ],
+      "must_preserve_refs": [
+        "beat:B8"
+      ],
+      "stimulus_ref": "shot:SA08",
+      "what_audience_knows_before": "顾沉承认使用暗房洗照片。",
+      "what_this_shot_adds": "灰外套照片的存在，将顾沉与神秘人影联系起来。",
+      "what_remains_withheld": "照片中人物的身份，顾沉洗此照片的目的。"
+    },
+    {
+      "shot_id": "SA10",
+      "logical_key": "shot-10",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:9",
+        "beat:10"
+      ],
+      "function": [
+        "PRESSURE",
+        "REACTION"
+      ],
+      "primary_function": "PRESSURE",
+      "secondary_function": "REACTION",
+      "subject": "顾沉和林晚",
+      "shot_size": "MS",
+      "camera_position": "中景，双人镜头",
+      "camera_movement": "STATIC",
+      "composition_intent": "展示顾沉从暗房出来后与林晚的直接对话，利用过肩镜头捕捉双方表情。",
+      "performance_focus": "顾沉询问林晚是否看到‘穿灰外套的人’，离开前随口问及相册夹；林晚以困惑否认，保持镇定。",
+      "information_focus": "顾沉主动试探林晚是否知晓灰外套照片，并反试探相册夹。",
+      "prop_focus": "无",
+      "spatial_anchor": "暗房门口至接待区",
+      "entry_state": "顾沉从暗房出来。",
+      "exit_state": "顾沉离开，林晚独自留下。",
+      "cut_in_motivation": "从灰外套照片特写切换到人物对话，将视觉证据转化为言语试探。",
+      "cut_out_motivation": "顾沉离开，P03的试探阶段结束，需聚焦林晚的独自揭示。",
+      "hold_logic": "保持对话的张力，让观众观察双方的微表情和试探意图。",
+      "continuity_requirements": [
+        "顾沉的询问必须直接针对灰外套和相册夹；林晚的否认必须自然。"
+      ],
+      "must_preserve_refs": [
+        "beat:B9",
+        "beat:B10"
+      ],
+      "stimulus_ref": "shot:SA09",
+      "what_audience_knows_before": "灰外套照片存在。",
+      "what_this_shot_adds": "顾沉主动试探，林晚隐藏反应，两人秘密交织。",
+      "what_remains_withheld": "顾沉试探的真实目的，林晚对旧照片的反应。"
+    },
+    {
+      "shot_id": "SA11",
+      "logical_key": "shot-11",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:11"
+      ],
+      "function": [
+        "REVEAL",
+        "INSERT"
+      ],
+      "primary_function": "REVEAL",
+      "secondary_function": "INSERT",
+      "subject": "林晚的旧照片",
+      "shot_size": "CU",
+      "camera_position": "近景，聚焦手部和照片",
+      "camera_movement": "STATIC",
+      "composition_intent": "居中构图，强调旧照片的展开过程及其内容，作为最终揭示。",
+      "performance_focus": "林晚从口袋掏出对折的旧照片，缓慢展开，表情冰冷。",
+      "information_focus": "旧照片显示年轻林晚穿灰外套站在照相馆门口，背面文字提供精确时空信息。",
+      "prop_focus": "旧照片",
+      "spatial_anchor": "接待区，林晚位置",
+      "entry_state": "顾沉离开，林晚独自一人。",
+      "exit_state": "旧照片完全展开，内容清晰呈现。",
+      "cut_in_motivation": "从双人对话切换到林晚的私密时刻，完成从外部冲突到内心冲击的转换。",
+      "cut_out_motivation": "最终揭示已完成，场景结束。",
+      "hold_logic": "保持足够时间让观众阅读照片内容和背面文字，理解其与灰外套照片的关联。",
+      "continuity_requirements": [
+        "旧照片必须显示林晚穿灰外套，背面文字必须清晰可读。"
+      ],
+      "must_preserve_refs": [
+        "beat:B11"
+      ],
+      "stimulus_ref": "shot:SA10",
+      "what_audience_knows_before": "顾沉试探灰外套和相册夹。",
+      "what_this_shot_adds": "林晚的过去与灰外套、照相馆直接关联，悬念达到顶点。",
+      "what_remains_withheld": "林晚对顾沉试探的真实反应，两人共享过去的完整真相。"
+    },
+    {
+      "shot_id": "SA12",
+      "logical_key": "shot-12",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:11"
+      ],
+      "function": [
+        "CLOSING",
+        "REACTION"
+      ],
+      "primary_function": "CLOSING",
+      "secondary_function": "REACTION",
+      "subject": "林晚",
+      "shot_size": "MCU",
+      "camera_position": "近景，略低于视线",
+      "camera_movement": "STATIC",
+      "composition_intent": "捕捉林晚展开旧照片后的冰冷表情，作为场景的收尾和情感落点。",
+      "performance_focus": "林晚看着旧照片，表情从震惊转为冰冷，意识到顾沉可能记得1998年的事。",
+      "information_focus": "林晚的内心冲击和决心，暗示关系性质的改变。",
+      "prop_focus": "旧照片（在画面下方或边缘）",
+      "spatial_anchor": "接待区，林晚位置",
+      "entry_state": "旧照片完全展开。",
+      "exit_state": "林晚表情冰冷，场景结束。",
+      "cut_in_motivation": "从旧照片特写切换到人物反应，完成揭示的情感闭环。",
+      "cut_out_motivation": "场景结束，留下悬念。",
+      "hold_logic": "保持足够时间让观众感受林晚的情绪转变和场景的余韵。",
+      "continuity_requirements": [
+        "林晚的表情必须冰冷、坚定，暗示后续行动。"
+      ],
+      "must_preserve_refs": [
+        "beat:B11"
+      ],
+      "stimulus_ref": "shot:SA11",
+      "what_audience_knows_before": "旧照片内容。",
+      "what_this_shot_adds": "林晚的内心冲击和关系性质的改变，为后续剧情建立钩子。",
+      "what_remains_withheld": "林晚的下一步行动，顾沉的真实目的。"
+    }
+  ],
+  "notes": [],
+  "compiler_version": "shot_architecture_compiler_v1",
+  "architecture_fingerprint": "fcd7584dbbe8f24924103cc3fc0d69c84a5863a8bfb99b4d9d107a8a25a26701",
+  "source_trace": {
+    "strategy_fingerprint": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5",
+    "provider_shot_ids_ignored": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "status": "DIRECTOR_V3_FINAL_SHOT_ARCHITECTURE_RECANARY_FAILED",
+  "human_preference_review": "NOT_RECORDED",
+  "ready_for_production_shotplan": false,
+  "briefs": [
+    "artifacts/director-quality-v3-final-shot-architecture-recanary-scenes/book990402-e2-f948536b24/architecture-brief.md",
+    "artifacts/director-quality-v3-final-shot-architecture-recanary-scenes/book990402-e3-2-027d92aaf3/architecture-brief.md",
+    "artifacts/director-quality-v3-final-shot-architecture-recanary-scenes/book990402-e3-a978c3437d/architecture-brief.md"
+  ]
+}

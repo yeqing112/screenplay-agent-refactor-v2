@@ -1,0 +1,49 @@
+{
+  "status": "FAIL",
+  "hard_errors": [
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA04",
+      "stimulus_ref": "顾沉展示胶片边缘（shot 3）",
+      "reason": "non_canonical_reference"
+    },
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA07",
+      "stimulus_ref": "顾沉的直接质问（shot 6）",
+      "reason": "non_canonical_reference"
+    },
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA10",
+      "stimulus_ref": "闪回暗示（shot 9）",
+      "reason": "non_canonical_reference"
+    }
+  ],
+  "warnings": [
+    {
+      "code": "EVIDENCE_AFTER_REACTION",
+      "shot_id": "SA05"
+    }
+  ],
+  "redundancy_count": 0,
+  "stimulus_evaluations": [
+    {
+      "shot_id": "SA04",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "顾沉展示胶片边缘（shot 3）"
+    },
+    {
+      "shot_id": "SA07",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "顾沉的直接质问（shot 6）"
+    },
+    {
+      "shot_id": "SA10",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "闪回暗示（shot 9）"
+    }
+  ],
+  "reaction_hard_error_count": 0,
+  "reaction_review_required_count": 0
+}

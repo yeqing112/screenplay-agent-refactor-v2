@@ -1,0 +1,21 @@
+{
+  "schema_version": "director-quality-v3-final-shot-architecture-recanary-manifest-v1",
+  "head": "4e26dc1",
+  "system_prompt_fingerprint": "78be90eca6707504e213ccf1c8df9a104e72048b76efafe4881255e2ad368f20",
+  "contract_fingerprint": "44ec7d9cb8b66312872210a7993d8026da227c663a1bc9fb5c0f709430b73179",
+  "requests": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "request_fingerprint": "874a7e852fd6bc0444e0f937067d0d58f5c9803afa2505f40dd3f7c984058e19"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "request_fingerprint": "ca1f6fc01f93ce84c2f357b7597b55194ea6e0972d3546c9022ffbe5db830f91"
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "request_fingerprint": "4c909b7bc30ade6773683644f3ef7112060c8b37f60943cb55ff316a20ca6423"
+    }
+  ],
+  "frozen_before_provider_calls": true
+}

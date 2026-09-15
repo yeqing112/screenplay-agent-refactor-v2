@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "hard_errors": [],
+  "known_blocking_anchors": [
+    "后门",
+    "毛衣口袋"
+  ]
+}

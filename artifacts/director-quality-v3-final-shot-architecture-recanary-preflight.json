@@ -1,0 +1,25 @@
+{
+  "schema_version": "director-quality-v3-final-shot-architecture-recanary-preflight-v1",
+  "status": "PASS",
+  "checks": {
+    "head_is_expected": true,
+    "frozen_scene_count": true,
+    "authority_pointer_present": true,
+    "strategy_fingerprints_exact": true,
+    "identity_contract_pass": true,
+    "profile_mimo": true,
+    "contract_v2": true,
+    "atomic_shot_rule": true,
+    "previous_final_output_absent": true,
+    "request_fingerprints_frozen": true
+  },
+  "expected_head": "4e26dc1",
+  "system_prompt_fingerprint": "78be90eca6707504e213ccf1c8df9a104e72048b76efafe4881255e2ad368f20",
+  "contract_fingerprint": "44ec7d9cb8b66312872210a7993d8026da227c663a1bc9fb5c0f709430b73179",
+  "authorized_calls": 3,
+  "real_calls": 0,
+  "semantic_retry": 0,
+  "format_retry": 0,
+  "repair_retry": 0,
+  "transport_retry": 0
+}

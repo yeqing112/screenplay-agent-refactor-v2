@@ -47,6 +47,11 @@
     },
     "raw_capability": "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
     "ready_for_final_recanary": false,
-    "production_shotplan": "HOLD"
+    "production_shotplan": "HOLD",
+    "final_recanary": {
+      "status": "FAILED",
+      "prompt_contract_path_exhausted": true,
+      "next_step": "SHOT_ARCHITECTURE_GENERATION_ARCHITECTURE_REDESIGN"
+    }
   }
 }

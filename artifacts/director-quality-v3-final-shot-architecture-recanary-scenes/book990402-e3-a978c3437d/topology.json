@@ -1,0 +1,77 @@
+{
+  "status": "FAIL",
+  "hard_errors": [
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA06",
+      "stimulus_ref": "顾沉询问门锁问题",
+      "reason": "non_canonical_reference"
+    },
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA07",
+      "stimulus_ref": "顾沉询问门锁问题",
+      "reason": "non_canonical_reference"
+    },
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA08",
+      "stimulus_ref": "林晚无意识碰触T恤下摆",
+      "reason": "non_canonical_reference"
+    },
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA10",
+      "stimulus_ref": "顾沉质问胶片来源",
+      "reason": "non_canonical_reference"
+    },
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA12",
+      "stimulus_ref": "顾沉质问林晚是否记得",
+      "reason": "non_canonical_reference"
+    },
+    {
+      "code": "INVALID_REACTION_STIMULUS_REF",
+      "shot_id": "SA14",
+      "stimulus_ref": "顾沉明确将林晚与失踪底片联系起来",
+      "reason": "non_canonical_reference"
+    }
+  ],
+  "warnings": [],
+  "redundancy_count": 0,
+  "stimulus_evaluations": [
+    {
+      "shot_id": "SA06",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "顾沉询问门锁问题"
+    },
+    {
+      "shot_id": "SA07",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "顾沉询问门锁问题"
+    },
+    {
+      "shot_id": "SA08",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "林晚无意识碰触T恤下摆"
+    },
+    {
+      "shot_id": "SA10",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "顾沉质问胶片来源"
+    },
+    {
+      "shot_id": "SA12",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "顾沉质问林晚是否记得"
+    },
+    {
+      "shot_id": "SA14",
+      "classification": "INVALID_REACTION_STIMULUS_REF",
+      "stimulus_ref": "顾沉明确将林晚与失踪底片联系起来"
+    }
+  ],
+  "reaction_hard_error_count": 0,
+  "reaction_review_required_count": 0
+}

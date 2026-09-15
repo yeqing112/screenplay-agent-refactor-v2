@@ -1,0 +1,88 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "hard_errors": [],
+    "missing_stimulus": 0,
+    "invalid_order": 0,
+    "evaluations": [
+      {
+        "shot_id": "SA06",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "顾沉询问门锁问题"
+      },
+      {
+        "shot_id": "SA07",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "顾沉询问门锁问题"
+      },
+      {
+        "shot_id": "SA08",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "林晚无意识碰触T恤下摆"
+      },
+      {
+        "shot_id": "SA10",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "顾沉质问胶片来源"
+      },
+      {
+        "shot_id": "SA12",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "顾沉质问林晚是否记得"
+      },
+      {
+        "shot_id": "SA14",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "顾沉明确将林晚与失踪底片联系起来"
+      }
+    ]
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "hard_errors": [],
+    "missing_stimulus": 0,
+    "invalid_order": 0,
+    "evaluations": [
+      {
+        "shot_id": "SA04",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "顾沉展示胶片边缘（shot 3）"
+      },
+      {
+        "shot_id": "SA07",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "顾沉的直接质问（shot 6）"
+      },
+      {
+        "shot_id": "SA10",
+        "classification": "INVALID_REACTION_STIMULUS_REF",
+        "stimulus_ref": "闪回暗示（shot 9）"
+      }
+    ]
+  },
+  "book990402:e2:回声照相馆": {
+    "hard_errors": [],
+    "missing_stimulus": 0,
+    "invalid_order": 0,
+    "evaluations": [
+      {
+        "shot_id": "SA07",
+        "classification": "REACTION_STIMULUS_CONFIRMED",
+        "stimulus_ref": "shot:SA06"
+      },
+      {
+        "shot_id": "SA08",
+        "classification": "REACTION_STIMULUS_CONFIRMED",
+        "stimulus_ref": "shot:SA07"
+      },
+      {
+        "shot_id": "SA10",
+        "classification": "REACTION_STIMULUS_CONFIRMED",
+        "stimulus_ref": "shot:SA09"
+      },
+      {
+        "shot_id": "SA12",
+        "classification": "REACTION_STIMULUS_CONFIRMED",
+        "stimulus_ref": "shot:SA11"
+      }
+    ]
+  }
+}

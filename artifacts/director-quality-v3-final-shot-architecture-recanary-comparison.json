@@ -1,0 +1,44 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "old_shot_count": 7,
+    "new_shot_count": 16,
+    "old_definite_composite": 3,
+    "new_definite_composite": 0,
+    "old_reaction_issue": 1,
+    "new_reaction_issue": 0,
+    "old_director_signal": "SHOT_ARCHITECTURE_STRONG",
+    "new_director_signal": "SHOT_ARCHITECTURE_INVALID",
+    "old_mechanical_dialogue": 0,
+    "new_mechanical_dialogue": 0,
+    "old_template_findings": 3,
+    "new_template_findings": 0
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "old_shot_count": 10,
+    "new_shot_count": 12,
+    "old_definite_composite": 1,
+    "new_definite_composite": 0,
+    "old_reaction_issue": 1,
+    "new_reaction_issue": 0,
+    "old_director_signal": "SHOT_ARCHITECTURE_STRONG",
+    "new_director_signal": "SHOT_ARCHITECTURE_INVALID",
+    "old_mechanical_dialogue": 0,
+    "new_mechanical_dialogue": 0,
+    "old_template_findings": 1,
+    "new_template_findings": 0
+  },
+  "book990402:e2:回声照相馆": {
+    "old_shot_count": 12,
+    "new_shot_count": 12,
+    "old_definite_composite": 3,
+    "new_definite_composite": 0,
+    "old_reaction_issue": 0,
+    "new_reaction_issue": 0,
+    "old_director_signal": "SHOT_ARCHITECTURE_STRONG",
+    "new_director_signal": "SHOT_ARCHITECTURE_INVALID",
+    "old_mechanical_dialogue": 0,
+    "new_mechanical_dialogue": 0,
+    "old_template_findings": 3,
+    "new_template_findings": 0
+  }
+}
