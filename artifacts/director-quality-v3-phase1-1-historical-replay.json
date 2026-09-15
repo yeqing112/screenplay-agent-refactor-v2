@@ -4,7 +4,7 @@
   "scenes": [
     {
       "scene_id": "book990402:e3:暗房惊魂",
-      "protocol_status": "PROTOCOL_VALID",
+      "protocol_status": "PROTOCOL_INVALID",
       "directing_content_status": "DIRECTING_USABLE",
       "error_codes": [],
       "error_count": 0,
@@ -18,7 +18,7 @@
     },
     {
       "scene_id": "book990402:e3:暗房惊魂（2）",
-      "protocol_status": "PROTOCOL_VALID",
+      "protocol_status": "PROTOCOL_INVALID",
       "directing_content_status": "DIRECTING_USABLE",
       "error_codes": [],
       "error_count": 0,
@@ -48,7 +48,7 @@
     }
   ],
   "quantified_counts": {
-    "protocol_error": 1,
+    "protocol_error": 3,
     "true_semantic_error": 1,
     "shape_mismatch": 3,
     "computed_field_error": 3,

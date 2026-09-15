@@ -14,7 +14,7 @@ See `director-quality-v3-phase1-1-gap-audit.md`; Phase 1's 0/3 schema result mix
 - Provider calls: 0
 - Phase 1.2 Re-Canary authorized: `true`
 - Shot Architecture Canary authorized: `false`
-- Historical replay protocol errors: 1
+- Historical replay protocol errors: 3
 - True semantic error rows: 1
 - Provider fingerprint errors ignored during distinctiveness: 3
 

@@ -89,10 +89,8 @@ def replay_historical() -> dict[str, Any]:
                         raw_unknown_beats.append({"field": field, "beat_id": ref})
         if raw_unknown_beats:
             errors = list(errors) + [{"code": "UNKNOWN_BEAT_REFERENCE", "path": item["field"], "beat_id": item["beat_id"]} for item in raw_unknown_beats]
-        protocol = "PROTOCOL_VALID" if checked["valid"] and not raw_unknown_beats else "PROTOCOL_INVALID"
         content = diagnose_directing_content(strategy=ir, source_evidence=inputs)["directing_content_status"]
         codes = {str(error.get("code")) for error in errors}
-        counts["protocol_error"] += int(bool(errors))
         counts["true_semantic_error"] += int(bool(codes & {"UNKNOWN_BEAT_REFERENCE", "FACT_INVENTION", "UNKNOWN_SOURCE_FACT_REFERENCE"}))
         counts["shape_mismatch"] += int(bool(codes & {"NESTED_FIELD_SHAPE_INVALID", "PERFORMANCE_ROW_INVALID", "PERFORMANCE_FIELD_MISSING"}))
         counts["unmappable_legacy_fields"] += int(bool(codes & {"IR_REQUIRED_FIELD_MISSING", "NESTED_FIELD_MISSING"}))
@@ -105,6 +103,8 @@ def replay_historical() -> dict[str, Any]:
             or isinstance(raw_obj.get("edit_arc"), str)
             or isinstance(raw_obj.get("visual_grammar"), str)
         )
+        protocol = "PROTOCOL_VALID" if checked["valid"] and not raw_unknown_beats and not raw_shape_drift else "PROTOCOL_INVALID"
+        counts["protocol_error"] += int(bool(errors) or raw_shape_drift)
         counts["shape_mismatch"] += int(raw_shape_drift)
         counts["qa_shape_mismatch"] += int(raw_shape_drift)
         row = {"scene_id": sid, "protocol_status": protocol, "directing_content_status": content, "error_codes": sorted(codes), "error_count": len(errors), "provider_fingerprint_ignored": bool(raw_obj.get("strategy_fingerprint")), "creative_evidence": {"objective": bool(_text(raw_obj.get("dramatic_objective"))), "question": bool(_text(raw_obj.get("scene_question"))), "performance_present": bool(raw_obj.get("performance_arc")), "information_present": bool(raw_obj.get("information_reveal_plan"))}}
