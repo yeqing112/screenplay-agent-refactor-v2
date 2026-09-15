@@ -1,0 +1,17 @@
+{
+  "status": "FAIL",
+  "covered_beats": [
+    "beat:1",
+    "beat:10",
+    "beat:11",
+    "beat:2",
+    "beat:3",
+    "beat:4",
+    "beat:5",
+    "beat:6",
+    "beat:7",
+    "beat:8",
+    "beat:9"
+  ],
+  "node_count": 9
+}

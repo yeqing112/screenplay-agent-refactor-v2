@@ -77,3 +77,12 @@ def test_atomic_expansion_coverage_mutation_and_deterministic_materialization():
     assert validate_atomic_expansion(bound, unknown)["status"] == "FAIL"
     duplicate = {"expansions": [expansion["expansions"][0], expansion["expansions"][0]]}
     assert validate_atomic_expansion(bound, duplicate)["status"] == "FAIL"
+
+
+def test_skeleton_provider_aliases_and_program_owned_refs_are_guarded():
+    scene, _, spine, *_ = _compiled()
+    raw = _skeleton_raw(); raw["nodes"][0] = dict(raw["nodes"][0], segment_ref="SEG01"); raw["nodes"][0].pop("segment_key", None); raw["nodes"][0]["stimulus_event_keys"] = []
+    normalized = normalize_skeleton(raw, scene_id=scene["scene_id"], spine_fingerprint=spine["spine_fingerprint"])
+    assert normalized["status"] == "PASS"
+    forbidden = _skeleton_raw(); forbidden["nodes"][0]["stimulus_ref"] = "shot:SA01"
+    assert normalize_skeleton(forbidden, scene_id=scene["scene_id"], spine_fingerprint=spine["spine_fingerprint"])["status"] == "FAIL"

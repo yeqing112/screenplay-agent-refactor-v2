@@ -1,0 +1,293 @@
+{
+  "nodes": [
+    {
+      "segment_key": "P01",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:1"
+      ],
+      "primary_role": "establishing",
+      "secondary_role": "prop_focus",
+      "subjects": [
+        "prop:archive_bag",
+        "prop:cut_film"
+      ],
+      "dramatic_reason": "引入关键物证，建立暗房内可疑事件的视觉证据，营造悬疑氛围。",
+      "performance_reason": "无角色表演，纯环境与物证展示。",
+      "information_reason": "向观众首次揭示档案袋和剪下胶片的存在，建立场景的核心视觉元素。",
+      "spatial_reason": "确立暗房工作台作为主要空间，展示物证在空间中的位置。",
+      "editorial_reason": "作为场景的视觉起点，为后续人物与物证的互动建立空间和视觉基础。",
+      "stimulus_beat_refs": [],
+      "stimulus_event_key": "",
+      "stimulus_event_keys": [],
+      "reaction_subjects": [],
+      "prop_refs": [
+        "prop:archive_bag",
+        "prop:cut_film"
+      ],
+      "must_preserve_refs": [],
+      "node_id": "ST01"
+    },
+    {
+      "segment_key": "P01",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:2",
+        "beat:3"
+      ],
+      "primary_role": "character_action",
+      "secondary_role": "hidden_leak",
+      "subjects": [
+        "character:19"
+      ],
+      "dramatic_reason": "展示林晚的表面伪装（懒散工作），并通过其对档案袋的细微异常关注（指尖划过袋口）埋下怀疑种子。",
+      "performance_reason": "林晚需通过刻意慵懒的动作（夹照片）与下意识的紧张动作（指尖划过袋口）形成对比，暴露其内心状态。",
+      "information_reason": "观众从观察环境转向观察林晚行为，察觉其对档案袋的隐藏关注。",
+      "spatial_reason": "林晚在工作台前活动，其动作将人物与档案袋在空间上联系起来。",
+      "editorial_reason": "通过动作特写（指尖划过袋口）强调异常行为，建立林晚与档案袋的潜在联系。",
+      "stimulus_beat_refs": [],
+      "stimulus_event_key": "",
+      "stimulus_event_keys": [],
+      "reaction_subjects": [],
+      "prop_refs": [
+        "prop:archive_bag"
+      ],
+      "must_preserve_refs": [
+        "林晚指尖划过档案袋口的细微动作"
+      ],
+      "node_id": "ST02"
+    },
+    {
+      "segment_key": "P02",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:4"
+      ],
+      "primary_role": "entrance",
+      "secondary_role": "power_shift",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "顾沉介入，将冲突焦点锁定在物证上，标志着对峙的开始和权力中心从林晚向顾沉的转移。",
+      "performance_reason": "顾沉的进入和停顿（停在林晚身后）建立其观察者和施压者的姿态；林晚需维持伪装但意识到压力。",
+      "information_reason": "顾沉开始调查，其目光落在物证上，引导观众视线并暗示其意图。",
+      "spatial_reason": "顾沉进入暗房狭长空间，停在林晚身后，形成空间上的压迫感。",
+      "editorial_reason": "通过顾沉的进入和视线匹配，建立两人之间的初始空间关系和心理张力。",
+      "stimulus_beat_refs": [],
+      "stimulus_event_key": "BEAT_4_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_4_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [
+        "prop:archive_bag",
+        "prop:cut_film"
+      ],
+      "must_preserve_refs": [],
+      "node_id": "ST03"
+    },
+    {
+      "segment_key": "P02",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:5"
+      ],
+      "primary_role": "dialogue_conflict",
+      "secondary_role": "reaction",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "顾沉通过门锁问题进行初步试探，引发林晚的防御反应，紧张感开始累积。",
+      "performance_reason": "顾沉的提问需保持试探性；林晚的回应（懒散语气）与细微身体反应（擦手微顿）形成对比。",
+      "information_reason": "透露门锁可能被动过的信息，以及林晚对此的异常反应。",
+      "spatial_reason": "两人在暗房内形成对峙站位，空间限制加剧心理压迫。",
+      "editorial_reason": "正反打剪辑强调对话的对抗性，在林晚的反应（擦手微顿）上稍作停留。",
+      "stimulus_beat_refs": [
+        "beat:5"
+      ],
+      "stimulus_event_key": "BEAT_5_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_5_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [],
+      "must_preserve_refs": [],
+      "node_id": "ST04"
+    },
+    {
+      "segment_key": "P02",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:6"
+      ],
+      "primary_role": "hidden_leak",
+      "secondary_role": "prop_focus",
+      "subjects": [
+        "character:19"
+      ],
+      "dramatic_reason": "林晚在对话中无意识碰触T恤下摆，暗示其身上可能藏有与失踪底片相关的物品，加深怀疑。",
+      "performance_reason": "林晚的碰触动作必须是下意识的、快速的，随后立即试图掩饰（抚平），暴露其无法完全控制的紧张。",
+      "information_reason": "观众首次注意到林晚T恤下摆的硬质凸起轮廓，将其与失踪底片可能联系起来。",
+      "spatial_reason": "动作发生在林晚身体上，将隐藏的道具与人物直接关联。",
+      "editorial_reason": "插入特写镜头强调碰触动作，引导观众注意这一关键细节。",
+      "stimulus_beat_refs": [
+        "beat:6"
+      ],
+      "stimulus_event_key": "BEAT_6_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_6_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [
+        "prop:bulge_under_shirt"
+      ],
+      "must_preserve_refs": [
+        "林晚无意识碰触T恤下摆的动作"
+      ],
+      "node_id": "ST05"
+    },
+    {
+      "segment_key": "P02",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:7",
+        "beat:8"
+      ],
+      "primary_role": "dialogue_conflict",
+      "secondary_role": "character_action",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "顾沉直接质问胶片来源，迫使林晚给出解释并升级防御姿态，冲突焦点进一步集中。",
+      "performance_reason": "顾沉拿起档案袋的动作强化其对物证的掌控；林晚的解释（旧废片）和反问（是否审问）需体现其用表面情绪掩盖真实反应。",
+      "information_reason": "林晚提供关于胶片的初步说辞，但其防御姿态（身体绷紧）暗示说辞可能不实。",
+      "spatial_reason": "顾沉拿起档案袋，改变了物证的空间归属，增加了对林晚的压迫感。",
+      "editorial_reason": "剪辑节奏逐渐加快，反映对话压力的累积。",
+      "stimulus_beat_refs": [
+        "beat:7"
+      ],
+      "stimulus_event_key": "BEAT_7_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_7_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [
+        "prop:archive_bag"
+      ],
+      "must_preserve_refs": [],
+      "node_id": "ST06"
+    },
+    {
+      "segment_key": "P02",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:9"
+      ],
+      "primary_role": "dialogue_conflict",
+      "secondary_role": "reaction",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "顾沉触及林晚的记忆或秘密核心（是否记得是自己剪的），将冲突升级，迫使林晚的恐惧和困惑暴露。",
+      "performance_reason": "顾沉的质问需更具穿透力；林晚的反应（瞳孔收缩、掐掌心）是无法控制的生理反应，彻底暴露其内心状态。",
+      "information_reason": "顾沉提出林晚可能失忆或隐瞒的假设，将怀疑从行为层面推向心理层面。",
+      "spatial_reason": "对峙持续，暗房空间的压抑感达到高峰。",
+      "editorial_reason": "在林晚的强烈反应（掐掌心）上停留，强调其心理防线的动摇。",
+      "stimulus_beat_refs": [
+        "beat:9"
+      ],
+      "stimulus_event_key": "BEAT_9_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_9_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [],
+      "must_preserve_refs": [],
+      "node_id": "ST07"
+    },
+    {
+      "segment_key": "P03",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:10"
+      ],
+      "primary_role": "dialogue_conflict",
+      "secondary_role": "prop_focus",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "顾沉直接将林晚与失踪底片联系起来（扫视T恤下摆），将怀疑推向顶点，迫使林晚做出最激烈的防御反应。",
+      "performance_reason": "顾沉的视线（扫视T恤下摆）是无声的指控；林晚的反应（下意识捂住）是本能的保护动作，面具开始碎裂。",
+      "information_reason": "顾沉明确其怀疑对象，将隐藏的道具（T恤下摆凸起）与核心谜团（失踪底片）直接关联。",
+      "spatial_reason": "顾沉的视线和林晚的捂住动作，在空间上将两人的注意力聚焦于林晚身体的隐藏部位。",
+      "editorial_reason": "通过视线匹配和反应镜头，构建无声但强烈的心理对抗。",
+      "stimulus_beat_refs": [
+        "beat:10"
+      ],
+      "stimulus_event_key": "BEAT_10_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_10_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [
+        "prop:bulge_under_shirt"
+      ],
+      "must_preserve_refs": [
+        "顾沉扫视林晚T恤下摆的视线"
+      ],
+      "node_id": "ST08"
+    },
+    {
+      "segment_key": "P03",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:11"
+      ],
+      "primary_role": "scene_end",
+      "secondary_role": "character_reaction",
+      "subjects": [
+        "character:19"
+      ],
+      "dramatic_reason": "顾沉离开，留下林晚独自面对情绪崩溃和最终抉择，将场景的悬念和情感张力推向高潮。",
+      "performance_reason": "林晚需展现面具彻底碎裂后的复杂情绪（困惑、恐惧、决绝），并通过手悬在档案袋上颤抖的动作，表现其内心在揭露与隐藏之间的剧烈挣扎。",
+      "information_reason": "顾沉给出最后通牒，林晚情绪彻底暴露，但其最终选择和档案袋的完整内容仍被保留。",
+      "spatial_reason": "顾沉离开后，林晚被档案袋和悬挂的相纸包围，象征其被秘密和选择所困。",
+      "editorial_reason": "通过长镜头和缓慢推近，聚焦林晚的情绪变化和最终动作，强调悬念的延续。",
+      "stimulus_beat_refs": [
+        "beat:11"
+      ],
+      "stimulus_event_key": "BEAT_11_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_11_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [
+        "prop:archive_bag"
+      ],
+      "must_preserve_refs": [
+        "林晚手悬在档案袋上颤抖的最终画面"
+      ],
+      "node_id": "ST09"
+    }
+  ],
+  "edges": []
+}

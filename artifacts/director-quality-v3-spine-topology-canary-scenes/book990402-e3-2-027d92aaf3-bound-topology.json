@@ -1,0 +1,162 @@
+{
+  "schema_version": "bound_shot_topology_v1",
+  "scene_id": "book990402:e3:暗房惊魂（2）",
+  "spine_fingerprint": "4bc176b21b4052107e004c96b1106628a8e0e2f1c720a30b0f78ae8d0a2a8fe1",
+  "topology_fingerprint": "b6a5681aaac7c936af2f7c74b00db3ba251950240254cef1031664dc36a11602",
+  "nodes": [
+    {
+      "segment_key": "segment_01",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:1",
+        "beat:2"
+      ],
+      "primary_role": "establishing",
+      "secondary_role": "character_introduction",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "Establish the spatial and emotional standoff between Gu Chen and Lin Wan, setting the initial power dynamic and tension.",
+      "performance_reason": "Show Gu Chen's silent pressure and Lin Wan's defensive denial with subtle nervous tells (button-twisting).",
+      "information_reason": "Reveal the initial confrontation and Lin Wan's defensive posture without revealing evidence details.",
+      "spatial_reason": "Establish the doorway as the boundary between light (Gu Chen) and shadow (Lin Wan), using the doorframe to visually separate them.",
+      "editorial_reason": "Set a slow, tense rhythm with static shots to build anticipation before the evidence reveal.",
+      "stimulus_beat_refs": [],
+      "stimulus_event_key": "",
+      "stimulus_event_keys": [],
+      "reaction_subjects": [],
+      "prop_refs": [
+        "prop:prop纽扣"
+      ],
+      "must_preserve_refs": [
+        "逆光剪影效果",
+        "林晚手指捻纽扣和掐掌心的细微动作"
+      ],
+      "node_id": "ST01"
+    },
+    {
+      "segment_key": "segment_02",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:3",
+        "beat:4",
+        "beat:5",
+        "beat:6"
+      ],
+      "primary_role": "evidence_reveal",
+      "secondary_role": "confrontation",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "Escalate the conflict by presenting physical evidence, forcing Lin Wan to confront the facts and her memory gap.",
+      "performance_reason": "Show Gu Chen's methodical pressure and Lin Wan's progression from confusion to fear to茫然 (blankness).",
+      "information_reason": "Reveal the core evidence (film edge, torn archive bag) and their visual connection, directly linking Lin Wan to the missing photo.",
+      "spatial_reason": "Use close-ups on the evidence and medium shots on Lin Wan's reactions to create a visual dialogue between object and emotion.",
+      "editorial_reason": "Increase the cutting tempo between evidence and reaction to build pressure and highlight the causal link.",
+      "stimulus_beat_refs": [
+        "beat:3",
+        "beat:4",
+        "beat:5"
+      ],
+      "stimulus_event_key": "BEAT_3_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_3_BEAT_01",
+        "BEAT_4_BEAT_01",
+        "BEAT_5_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [
+        "prop:prop胶片边缘",
+        "prop:prop档案袋"
+      ],
+      "must_preserve_refs": [
+        "胶片边缘与档案袋撕裂的视觉呼应",
+        "林晚手指掐掌心的细微动作"
+      ],
+      "node_id": "ST02"
+    },
+    {
+      "segment_key": "segment_03",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:7",
+        "beat:8",
+        "beat:9"
+      ],
+      "primary_role": "climax",
+      "secondary_role": "decision_point",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "Deliver the final, irrefutable evidence (the scissors) that collapses Lin Wan's defense and triggers her breakdown.",
+      "performance_reason": "Show Lin Wan's shift from attempted escape (closing the door) to complete paralysis and崩溃 (collapse) as the truth hits.",
+      "information_reason": "Reveal the tool connection (scissors) that proves Lin Wan's direct involvement, leaving no room for denial.",
+      "spatial_reason": "Transition from the shared space of the doorway to Lin Wan's isolated collapse inside the darkroom, emphasizing her isolation.",
+      "editorial_reason": "Use a quick flashback insert for the scissors, then hold on a long, static shot of Lin Wan's collapse to let the emotional weight sink in.",
+      "stimulus_beat_refs": [
+        "beat:8",
+        "beat:9"
+      ],
+      "stimulus_event_key": "BEAT_8_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_8_BEAT_01",
+        "BEAT_9_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:19"
+      ],
+      "prop_refs": [
+        "prop:prop剪刀"
+      ],
+      "must_preserve_refs": [
+        "林晚手指掐掌心的细微动作"
+      ],
+      "node_id": "ST03"
+    },
+    {
+      "segment_key": "segment_04",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:10"
+      ],
+      "primary_role": "resolution",
+      "secondary_role": "hook",
+      "subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "dramatic_reason": "Conclude the scene with Lin Wan's emotional collapse and introduce a new mystery (the reflection) to propel the story forward.",
+      "performance_reason": "Show Gu Chen's detached departure and final observant glance, contrasted with Lin Wan's complete emotional breakdown.",
+      "information_reason": "Withhold the identity of the observer in the reflection, creating a new question for the audience.",
+      "spatial_reason": "Separate the characters completely: Gu Chen exits into the corridor, Lin Wan is trapped in the darkroom. The reflection appears in the corridor's shadow.",
+      "editorial_reason": "End on a slow, lingering shot of Lin Wan's collapse, then cut to Gu Chen's POV of the reflection, leaving a suspenseful final image.",
+      "stimulus_beat_refs": [
+        "beat:10"
+      ],
+      "stimulus_event_key": "BEAT_10_BEAT_01",
+      "stimulus_event_keys": [
+        "BEAT_10_BEAT_01"
+      ],
+      "reaction_subjects": [
+        "character:20",
+        "character:19"
+      ],
+      "prop_refs": [
+        "prop:prop反光"
+      ],
+      "must_preserve_refs": [
+        "走廊阴影处的反光暗示"
+      ],
+      "node_id": "ST04"
+    }
+  ],
+  "edges": [],
+  "errors": [],
+  "binding_status": "PASS",
+  "bound_topology_fingerprint": "a00231f49430f2454455e7813745b2d88db25cdff4d8eb21536ff1b4685a55f9"
+}

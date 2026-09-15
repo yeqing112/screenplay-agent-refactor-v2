@@ -1,0 +1,21 @@
+{
+  "status": "UNSAFE",
+  "violations": [
+    {
+      "code": "SPINE_MUST_PRESERVE_UNCOVERED",
+      "constraint": "林晚指尖划过档案袋口的细微动作"
+    },
+    {
+      "code": "SPINE_MUST_PRESERVE_UNCOVERED",
+      "constraint": "林晚无意识碰触T恤下摆的动作"
+    },
+    {
+      "code": "SPINE_MUST_PRESERVE_UNCOVERED",
+      "constraint": "顾沉扫视林晚T恤下摆的视线"
+    },
+    {
+      "code": "SPINE_MUST_PRESERVE_UNCOVERED",
+      "constraint": "林晚手悬在档案袋上颤抖的最终画面"
+    }
+  ]
+}

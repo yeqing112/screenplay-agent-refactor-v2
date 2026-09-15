@@ -1,0 +1,11 @@
+{
+  "status": "DIRECTOR_V3_SPINE_TOPOLOGY_CANARY_FAILED",
+  "human_review_pending": true,
+  "ready_for_atomic_expansion_canary": false,
+  "ready_for_production_shotplan": false,
+  "briefs": [
+    "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-spine-topology-canary-scenes\\book990402-e2-f948536b24-spine-topology-brief.md",
+    "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-spine-topology-canary-scenes\\book990402-e3-2-027d92aaf3-spine-topology-brief.md",
+    "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-spine-topology-canary-scenes\\book990402-e3-a978c3437d-spine-topology-brief.md"
+  ]
+}

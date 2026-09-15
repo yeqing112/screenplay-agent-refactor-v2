@@ -1,0 +1,33 @@
+{
+  "schema_version": "director-quality-v3-spine-topology-canary-manifest-v1",
+  "base_commit": "36e7efb",
+  "system_prompt_fingerprints": {
+    "spine": "257b339ec9d44121432bc1310b11f27a6f128604d981253ebd043c4b3d6e10f1",
+    "skeleton": "a3109c23a039a4f24b64cf009a96a306bbbf40bfa2b6f2ba684df63cf8e3d0ad"
+  },
+  "contract_fingerprints": {
+    "spine": "c4c7df8563e1cb4d1202866eb3384cd81ed7e178815bb8d53d379d8374811809",
+    "skeleton": "a05adac03732ecdada83354e269634b48dafbd73f22452092114bdd9381381d4"
+  },
+  "frozen_before_provider_calls": true,
+  "authorized_calls": 6,
+  "planned_spine_calls": 3,
+  "planned_skeleton_calls": 3,
+  "requests": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "spine_request_fingerprint": "e62e8162538673684722515fdf7b3e3e9f1f335e9f3c324d27ae02ad44fce976",
+      "skeleton_template_fingerprint": "c7b3bdefcaf3c2cff0ed44122d4be6ddba38c3d37a456e2dcc2c3c273d345855"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "spine_request_fingerprint": "c6610ddad3aa5d3cd0175103c03ea26ec35e8a8596f5b935029eb29256646408",
+      "skeleton_template_fingerprint": "5746a74cb109b57238411aa19df7169e294fac0a25afd31bbbd00a93a90d96c0"
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "spine_request_fingerprint": "ae5963cba7014338ee278914b774363a01af974fcadf706c52409d9a561a1e9c",
+      "skeleton_template_fingerprint": "a2871b476f0ffe1d112fd52291a6cdb3c11e3f0bc144f2733884bb0ba15c9c8b"
+    }
+  ]
+}

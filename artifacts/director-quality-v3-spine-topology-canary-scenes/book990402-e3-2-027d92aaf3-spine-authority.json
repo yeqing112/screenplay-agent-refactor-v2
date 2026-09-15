@@ -1,0 +1,31 @@
+{
+  "status": "UNSAFE",
+  "violations": [
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+      "segment_index": 2,
+      "field": "audience注意力"
+    },
+    {
+      "code": "SPINE_FIELD_MISSING",
+      "segment_key": "SEG02",
+      "field": "audience_attention"
+    },
+    {
+      "code": "SPINE_MUST_PRESERVE_UNCOVERED",
+      "constraint": "逆光剪影效果"
+    },
+    {
+      "code": "SPINE_MUST_PRESERVE_UNCOVERED",
+      "constraint": "胶片边缘与档案袋撕裂的视觉呼应"
+    },
+    {
+      "code": "SPINE_MUST_PRESERVE_UNCOVERED",
+      "constraint": "林晚手指捻纽扣和掐掌心的细微动作"
+    },
+    {
+      "code": "SPINE_MUST_PRESERVE_UNCOVERED",
+      "constraint": "走廊阴影处的反光暗示"
+    }
+  ]
+}

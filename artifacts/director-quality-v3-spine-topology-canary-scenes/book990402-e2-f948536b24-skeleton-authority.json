@@ -1,0 +1,224 @@
+{
+  "status": "UNSAFE",
+  "violations": [
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N01"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N01"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N01"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N01"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N01",
+      "reference": "character:17"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N02"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N02"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N02"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N02"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N02",
+      "reference": "character:17"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N03"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N03"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N03"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N03"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N03",
+      "reference": "character:17"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N04"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N04"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N04"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N04"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N04",
+      "reference": "character:17"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N04",
+      "reference": "character:18"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N05"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N05"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N05"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N05"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N05",
+      "reference": "character:18"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N06"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N06"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N06"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N06"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N06",
+      "reference": "character:17"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N06",
+      "reference": "character:18"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N07"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N07"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N07"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N07"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N07",
+      "reference": "character:17"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N07",
+      "reference": "character:17"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N08"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N08"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N08"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N08"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N08",
+      "reference": "character:17"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N08",
+      "reference": "character:18"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N08",
+      "reference": "character:17"
+    },
+    {
+      "code": "UNKNOWN_SPINE_SEGMENT",
+      "node_key": "N09"
+    },
+    {
+      "code": "SKELETON_PHASE_MEMBERSHIP_INVALID",
+      "node_key": "N09"
+    },
+    {
+      "code": "TOPOLOGY_ROLE_INVALID",
+      "node_key": "N09"
+    },
+    {
+      "code": "TOPOLOGY_SECONDARY_ROLE_INVALID",
+      "node_key": "N09"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N09",
+      "reference": "character:17"
+    },
+    {
+      "code": "SKELETON_IDENTITY_BINDING_INVALID",
+      "node_key": "N09",
+      "reference": "character:17"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "scene_count": 3,
+  "spine_signatures": [
+    "3989e20f93f83ea6a5f3bee3413751056988fa70b7d357ed995e2aa9bbcd7356",
+    "96c61eb8340562cd4402320dc9ee86123ea32193493667545a68cab08d58bd7b",
+    "77ed323c55fb2e53fdfb57b7f6bf8bc6b78fb7b1d6baf905c3c188694894e1a5"
+  ],
+  "role_sequences": [
+    [
+      "establishing",
+      "character_action",
+      "entrance",
+      "dialogue_conflict",
+      "hidden_leak",
+      "dialogue_conflict",
+      "dialogue_conflict",
+      "dialogue_conflict",
+      "scene_end"
+    ],
+    [
+      "establishing",
+      "evidence_reveal",
+      "climax",
+      "resolution"
+    ],
+    [
+      "DISCOVERY",
+      "INVESTIGATION",
+      "CHARACTER_HINT",
+      "CHARACTER_ENTRANCE",
+      "CHARACTER_SECRET",
+      "DIRECT_PROBE",
+      "VISUAL_EVIDENCE",
+      "COUNTER_PROBE",
+      "SECRET_REVEAL"
+    ]
+  ],
+  "hard_template_leakage": false
+}

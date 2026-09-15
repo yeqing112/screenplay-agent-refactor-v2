@@ -1,0 +1,21 @@
+{
+  "schema_version": "director-quality-v3-spine-topology-canary-preflight-v1",
+  "status": "PASS",
+  "checks": {
+    "head_is_expected": true,
+    "foundation_closed": true,
+    "spine_ready": true,
+    "skeleton_ready": true,
+    "graph_binder_ready": true,
+    "frozen_scene_count": true,
+    "strategy_fingerprints_exact": true,
+    "mimo_profile": true,
+    "identity_contract_pass": true,
+    "atomic_expansion_hold": true,
+    "production_hold": true,
+    "provider_calls_before": true
+  },
+  "authorized_calls": 6,
+  "attempted_calls": 0,
+  "retry_budget": 0
+}

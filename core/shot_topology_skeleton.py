@@ -1,11 +1,11 @@
 """Provider-facing topology skeleton with a narrow authority boundary."""
 from __future__ import annotations
-import hashlib, json
+import hashlib, json, re
 from typing import Any
 
 SKELETON_SCHEMA = "shot_topology_skeleton_ir_v1"
 ROLE_ENUM = {"ORIENT", "ESTABLISH", "OBSERVE", "PRESSURE", "REACTION", "EVIDENCE", "INSERT", "REVEAL", "TURN", "HOLD", "TRANSITION", "RELEASE", "CLOSING"}
-NODE_FIELDS = {"node_key", "segment_key", "phase_id", "beat_refs", "primary_role", "secondary_role", "subjects", "dramatic_reason", "performance_reason", "information_reason", "spatial_reason", "editorial_reason", "stimulus_beat_refs", "stimulus_event_key", "reaction_subjects", "prop_refs", "must_preserve_refs"}
+NODE_FIELDS = {"node_key", "segment_key", "segment_ref", "phase_id", "beat_refs", "primary_role", "secondary_role", "subjects", "dramatic_reason", "performance_reason", "information_reason", "spatial_reason", "editorial_reason", "stimulus_beat_refs", "stimulus_event_key", "stimulus_event_keys", "reaction_subjects", "prop_refs", "must_preserve_refs"}
 FORBIDDEN_FIELDS = {"shot_size", "camera_movement", "camera_position", "composition_intent", "lighting", "lens", "stimulus_node_id", "stimulus_shot_id", "shot_id"}
 
 def _d(v): return v if isinstance(v, dict) else {}
@@ -29,7 +29,13 @@ def normalize_skeleton(raw: dict[str, Any], *, scene_id: str, spine_fingerprint:
         errors += [{"code": "FORBIDDEN_LAYER_FIELD", "node_index": index, "field": k} for k in sorted(set(row) & FORBIDDEN_FIELDS)]
         roles = row.get("primary_role") or row.get("role") or "OBSERVE"; primary = _t(roles[0] if isinstance(roles, list) else roles)
         second = row.get("secondary_role")
-        nodes.append({"node_key": f"N{index:02d}", "segment_key": _t(row.get("segment_key")), "phase_id": _t(row.get("phase_id")), "beat_refs": [_ref(x) for x in _l(row.get("beat_refs") or row.get("beats")) if _t(x)], "primary_role": primary, "secondary_role": _t(second) if second is not None else None, "subjects": [_ref(x, "character") for x in _l(row.get("subjects")) if _t(x)], "dramatic_reason": _t(row.get("dramatic_reason")), "performance_reason": _t(row.get("performance_reason")), "information_reason": _t(row.get("information_reason")), "spatial_reason": _t(row.get("spatial_reason")), "editorial_reason": _t(row.get("editorial_reason")), "stimulus_beat_refs": [_ref(x) for x in _l(row.get("stimulus_beat_refs")) if _t(x)], "stimulus_event_key": _t(row.get("stimulus_event_key")), "reaction_subjects": [_ref(x, "character") for x in _l(row.get("reaction_subjects")) if _t(x)], "prop_refs": [_ref(x, "prop") for x in _l(row.get("prop_refs")) if _t(x)], "must_preserve_refs": [_t(x) for x in _l(row.get("must_preserve_refs")) if _t(x)]})
+        event_keys = [_t(row.get("stimulus_event_key"))] if _t(row.get("stimulus_event_key")) else []
+        event_keys += [_t(x) for x in _l(row.get("stimulus_event_keys")) if _t(x)]
+        event_keys = list(dict.fromkeys(event_keys))
+        raw_text = json.dumps(row, ensure_ascii=False, default=str)
+        if re.search(r"(?:shot\s*:\s*SA\d+|node[_ ]?id\s*[:=]\s*ST\d+|\bST\d{2,}\b)", raw_text, re.IGNORECASE):
+            errors.append({"code": "FORBIDDEN_PROGRAM_OWNED_GRAPH_REF", "node_index": index})
+        nodes.append({"node_key": f"N{index:02d}", "segment_key": _t(row.get("segment_key") or row.get("segment_ref")), "phase_id": _t(row.get("phase_id")), "beat_refs": [_ref(x) for x in _l(row.get("beat_refs") or row.get("beats")) if _t(x)], "primary_role": primary, "secondary_role": _t(second) if second is not None else None, "subjects": [_ref(x, "character") for x in _l(row.get("subjects")) if _t(x)], "dramatic_reason": _t(row.get("dramatic_reason")), "performance_reason": _t(row.get("performance_reason")), "information_reason": _t(row.get("information_reason")), "spatial_reason": _t(row.get("spatial_reason")), "editorial_reason": _t(row.get("editorial_reason")), "stimulus_beat_refs": [_ref(x) for x in _l(row.get("stimulus_beat_refs")) if _t(x)], "stimulus_event_key": event_keys[0] if event_keys else "", "stimulus_event_keys": event_keys, "reaction_subjects": [_ref(x, "character") for x in _l(row.get("reaction_subjects")) if _t(x)], "prop_refs": [_ref(x, "prop") for x in _l(row.get("prop_refs")) if _t(x)], "must_preserve_refs": [_t(x) for x in _l(row.get("must_preserve_refs")) if _t(x)]})
     ir = {"schema_version": SKELETON_SCHEMA, "scene_id": scene_id, "spine_fingerprint": spine_fingerprint, "nodes": nodes}
     return {"status": "FAIL" if errors else "PASS", "errors": errors, "ir": ir, "topology_fingerprint": fingerprint(ir)}
 
@@ -51,7 +57,7 @@ def validate_skeleton(skeleton: dict[str, Any], *, spine: dict[str, Any], scene:
             text = _t(ref)
             if text.startswith("character:") and text.split(":", 1)[1] not in character_ids:
                 errors.append({"code": "SKELETON_IDENTITY_BINDING_INVALID", "node_key": key, "reference": text})
-        if role == "REACTION" and not (_l(_d(node).get("stimulus_beat_refs")) or _t(_d(node).get("stimulus_event_key"))): errors.append({"code": "REACTION_SEMANTIC_STIMULUS_MISSING", "node_key": key})
+        if role == "REACTION" and not (_l(_d(node).get("stimulus_beat_refs")) or _t(_d(node).get("stimulus_event_key")) or _l(_d(node).get("stimulus_event_keys"))): errors.append({"code": "REACTION_SEMANTIC_STIMULUS_MISSING", "node_key": key})
         prior_beats += refs
     if len(nodes) > 0 and not seen: errors.append({"code": "SKELETON_EMPTY"})
     covered = set(x for n in nodes for x in _l(_d(n).get("beat_refs"))); errors += [{"code": "SKELETON_ORPHAN_BEAT", "reference": x} for x in sorted(beats - covered)]

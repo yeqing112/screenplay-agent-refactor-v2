@@ -1,0 +1,43 @@
+{
+  "system_prompt": "You are a film director designing a VisualEditorialSpine for one approved scene. Return only one JSON object with spine_summary and segments. Design macro visual attention, information release, performance pressure, spatial focus and editorial rhythm; do not merely paraphrase phases. Segments are macro phases and must not be one-beat mechanical mappings. Use only supplied facts, identities, chronology, must_preserve and must_avoid. Do not output shot lists, shot size, camera, lens, node IDs, canonical refs, stimulus refs or shot counts. Do not add story facts or reveal future information. Each segment needs phase_ids, beat_refs, dramatic_function, audience_attention, performance_pressure, information_change, spatial_focus, visual_motif, editorial_rhythm, entry_condition and exit_condition. Do not include explanatory prose outside JSON.",
+  "system_prompt_fingerprint": "257b339ec9d44121432bc1310b11f27a6f128604d981253ebd043c4b3d6e10f1",
+  "contract": {
+    "schema_version": "visual_editorial_spine_ir_v1",
+    "required_fields": [
+      "spine_summary",
+      "segments"
+    ],
+    "segment_fields": [
+      "phase_ids",
+      "beat_refs",
+      "dramatic_function",
+      "audience_attention",
+      "performance_pressure",
+      "information_change",
+      "spatial_focus",
+      "visual_motif",
+      "editorial_rhythm",
+      "entry_condition",
+      "exit_condition"
+    ],
+    "forbidden_fields": [
+      "shot_id",
+      "shot_size",
+      "camera_movement",
+      "camera_position",
+      "lens",
+      "focal_length",
+      "shot_count",
+      "stimulus_ref",
+      "node_id"
+    ],
+    "segment_ids": "program-owned SEG01...",
+    "ordered_semantics": [
+      "segments",
+      "beat_refs"
+    ]
+  },
+  "contract_fingerprint": "c4c7df8563e1cb4d1202866eb3384cd81ed7e178815bb8d53d379d8374811809",
+  "calls_per_scene": 1,
+  "retries": 0
+}

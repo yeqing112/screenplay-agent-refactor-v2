@@ -1,0 +1,15 @@
+{
+  "signal": "SPINE_INVALID",
+  "metrics": {
+    "visual_progression": true,
+    "attention_design": true,
+    "information_progression": true,
+    "performance_pressure": true,
+    "editorial_rhythm": true,
+    "spatial_focus": true,
+    "strategy_fidelity": false,
+    "non_mechanical_structure": true,
+    "shift_dimensions": 4,
+    "mechanical_beat_to_segment": false
+  }
+}

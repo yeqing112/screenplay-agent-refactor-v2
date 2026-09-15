@@ -59,7 +59,15 @@
       "shot_topology_skeleton": "READY",
       "graph_binder": "READY",
       "atomic_expansion": "READY",
-      "provider_canary_authorized": false
+      "provider_canary_authorized": false,
+      "spine_topology_canary": {
+        "status": "FAILED",
+        "attempted_spine_calls": 3,
+        "attempted_skeleton_calls": 3,
+        "replay_provider_calls": 0,
+        "atomic_expansion_canary_authorized": false,
+        "production_shotplan": "HOLD"
+      }
     }
   }
 }

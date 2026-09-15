@@ -1,0 +1,67 @@
+{
+  "schema_version": "semantic_event_projection_v1",
+  "scene_id": "book990402:e3:暗房惊魂（2）",
+  "events": [
+    {
+      "event_key": "BEAT_1_BEAT_01",
+      "beat_ref": "beat:1",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_2_BEAT_01",
+      "beat_ref": "beat:2",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_3_BEAT_01",
+      "beat_ref": "beat:3",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_4_BEAT_01",
+      "beat_ref": "beat:4",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_5_BEAT_01",
+      "beat_ref": "beat:5",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_6_BEAT_01",
+      "beat_ref": "beat:6",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_7_BEAT_01",
+      "beat_ref": "beat:7",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_8_BEAT_01",
+      "beat_ref": "beat:8",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_9_BEAT_01",
+      "beat_ref": "beat:9",
+      "source": "beat",
+      "source_type": "BEAT"
+    },
+    {
+      "event_key": "BEAT_10_BEAT_01",
+      "beat_ref": "beat:10",
+      "source": "beat",
+      "source_type": "BEAT"
+    }
+  ],
+  "fingerprint": "71f30d73ea3ee03d518bf18434057f185cb40f71a51bfa4d7a36fa071f4c7883"
+}

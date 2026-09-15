@@ -19,13 +19,13 @@ def bind_topology(skeleton: dict[str, Any], *, semantic_events: dict[str, Any] |
     events = { _t(e.get("event_key")): e for e in _l(_d(semantic_events).get("events")) }
     for index, node in enumerate(bound_nodes):
         if _t(node.get("primary_role")) != "REACTION": continue
-        beat_refs = _refs(node, "stimulus_beat_refs"); event_key = _t(node.get("stimulus_event_key")); candidates = []
+        beat_refs = _refs(node, "stimulus_beat_refs"); event_keys = [_t(node.get("stimulus_event_key"))] if _t(node.get("stimulus_event_key")) else []; event_keys += [_t(x) for x in _l(node.get("stimulus_event_keys")) if _t(x)]; event_keys = list(dict.fromkeys(event_keys)); candidates = []
         for prior_index, prior in enumerate(bound_nodes[:index]):
             if beat_refs & _refs(prior, "beat_refs"): candidates.append(prior["node_id"])
-            if event_key and event_key in events and _t(events[event_key].get("beat_ref")) in _refs(prior, "beat_refs"): candidates.append(prior["node_id"])
+            if any(event_key in events and _t(events[event_key].get("beat_ref")) in _refs(prior, "beat_refs") for event_key in event_keys): candidates.append(prior["node_id"])
         candidates = list(dict.fromkeys(candidates))
         if len(candidates) == 1:
-            edge = {"edge_type": "REACTION_TO", "from_node_id": node["node_id"], "to_node_id": candidates[0], "bound_node_id": candidates[0], "binding_status": "BOUND", "source_type": "BEAT" if beat_refs else "EVENT", "source_ref": sorted(beat_refs)[0] if beat_refs else event_key}; node["stimulus_binding"] = edge; edges.append(edge)
+            edge = {"edge_type": "REACTION_TO", "from_node_id": node["node_id"], "to_node_id": candidates[0], "bound_node_id": candidates[0], "binding_status": "BOUND", "source_type": "BEAT" if beat_refs else "EVENT", "source_ref": sorted(beat_refs)[0] if beat_refs else event_keys[0]}; node["stimulus_binding"] = edge; edges.append(edge)
         elif len(candidates) > 1:
             errors.append({"code": "GRAPH_BINDING_AMBIGUOUS", "node_id": node["node_id"], "candidate_node_ids": candidates}); node["stimulus_binding"] = {"binding_status": "AMBIGUOUS", "candidate_node_ids": candidates}
         else:

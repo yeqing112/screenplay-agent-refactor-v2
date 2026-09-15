@@ -1,0 +1,14 @@
+{
+  "signal": "TOPOLOGY_INVALID",
+  "metrics": {
+    "node_necessity": true,
+    "beat_aggregation": true,
+    "reaction_causality": false,
+    "information_topology": true,
+    "performance_topology": true,
+    "editorial_topology": true,
+    "rhythm_variation": true,
+    "template_resistance": true,
+    "mechanical_beat_to_node": false
+  }
+}
