@@ -40,6 +40,69 @@ class SceneStrategyError(ValueError):
         self.path = path
 
 
+IDENTITY_FIELDS = ("character_id", "canonical_name", "canonical_identity_id", "scope")
+
+
+def canonicalize_allowed_characters(value: Any, *, book_id: Any = None) -> list[dict[str, str]]:
+    """Return the authoritative, stable identity projection used by both sides.
+
+    The input is never mutated.  Required identity fields are validated
+    fail-closed; book-level identities are deterministic and cannot be
+    supplied with a mismatching book/character key.
+    """
+    rows = value if isinstance(value, list) else []
+    bid = _text(book_id)
+    canonical: list[dict[str, str]] = []
+    seen_ids: dict[str, dict[str, str]] = {}
+    seen_identity: dict[str, str] = {}
+    for index, raw in enumerate(rows):
+        if not isinstance(raw, dict):
+            raise SceneStrategyError("allowed_characters entries must be objects", code="IDENTITY_CONTRACT_INVALID", path=f"allowed_characters[{index}]")
+        cid = _text(raw.get("character_id") or raw.get("id"))
+        name = _text(raw.get("canonical_name") or raw.get("name"))
+        scope = _text(raw.get("scope")) or "book-level"
+        supplied_identity = _text(raw.get("canonical_identity_id"))
+        if not cid:
+            raise SceneStrategyError("character_id is required", code="IDENTITY_CONTRACT_INVALID", path=f"allowed_characters[{index}].character_id")
+        if not name:
+            raise SceneStrategyError("canonical_name is required", code="IDENTITY_CONTRACT_INVALID", path=f"allowed_characters[{index}].canonical_name")
+        if scope == "book-level":
+            if not bid:
+                raise SceneStrategyError("book_id is required for book-level identity", code="IDENTITY_CONTRACT_MISSING_BOOK_ID", path=f"allowed_characters[{index}]")
+            identity = f"book:{bid}:character:{cid}"
+            if supplied_identity and supplied_identity != identity:
+                raise SceneStrategyError("book-level canonical_identity_id does not match its authority", code="IDENTITY_CONTRACT_CONFLICT", path=f"allowed_characters[{index}].canonical_identity_id")
+        else:
+            identity = supplied_identity
+            if not identity:
+                raise SceneStrategyError("canonical_identity_id is required", code="IDENTITY_CONTRACT_INVALID", path=f"allowed_characters[{index}].canonical_identity_id")
+        item = {"character_id": cid, "canonical_name": name, "canonical_identity_id": identity, "scope": scope}
+        previous = seen_ids.get(cid)
+        if previous is not None and previous != item:
+            raise SceneStrategyError("duplicate character_id has conflicting identity", code="IDENTITY_CONTRACT_CONFLICT", path=f"allowed_characters[{index}]")
+        owner = seen_identity.get(identity)
+        if owner is not None and owner != cid:
+            raise SceneStrategyError("canonical_identity_id is shared by different character IDs", code="IDENTITY_CONTRACT_CONFLICT", path=f"allowed_characters[{index}].canonical_identity_id")
+        seen_ids[cid] = item
+        seen_identity[identity] = cid
+    canonical = [seen_ids[cid] for cid in sorted(seen_ids)]
+    return copy.deepcopy(canonical)
+
+
+def build_contract_fingerprint_projection(contract: dict[str, Any]) -> dict[str, Any]:
+    """Build the single provider/runtime contract fingerprint projection."""
+    source = _dict(contract.get("source_ref_contract"))
+    allowed = canonicalize_allowed_characters(contract.get("allowed_characters"), book_id=contract.get("book_id"))
+    return {
+        "scene_id": _text(contract.get("scene_id")),
+        "allowed_beat_ids": [_text(x) for x in (_list(contract.get("allowed_beat_ids")) or _list(contract.get("beat_ids")))],
+        "allowed_character_ids": sorted({_text(x) for x in (_list(contract.get("allowed_character_ids")) or _list(contract.get("character_ids"))) if _text(x)}),
+        "allowed_characters": allowed,
+        "source_ref_contract": copy.deepcopy(source),
+        "allowed_source_refs": copy.deepcopy(_list(contract.get("allowed_source_refs")) or _list(source.get("allowed_source_refs"))),
+    }
+
+
 def _text(value: Any) -> str:
     return str(value or "").strip()
 
@@ -133,15 +196,22 @@ def build_runtime_strategy_contract(*, scene: dict[str, Any], treatment: dict[st
     prop_ids = sorted(_runtime_ids(scene_obj.get("props") or scene_obj.get("prop_ids"), ("prop_id", "id", "asset_id")) | _runtime_ids(blocking_obj.get("props") or blocking_obj.get("prop_ids"), ("prop_id", "id", "asset_id")) | _runtime_ids(treatment_obj.get("props") or treatment_obj.get("prop_ids"), ("prop_id", "id", "asset_id")))
     location_ids = sorted(_runtime_ids(scene_obj.get("locations") or scene_obj.get("location_ids"), ("location_id", "id", "asset_id")) | _runtime_ids(blocking_obj.get("locations") or blocking_obj.get("location_ids"), ("location_id", "id", "asset_id")))
     source_ref_contract = build_source_ref_contract(beat_ids=list(base.get("beat_ids") or []), fact_ids=list(base.get("fact_ids") or []), character_ids=list(base.get("character_ids") or []), prop_ids=prop_ids, location_ids=location_ids)
-    allowed_characters = []
+    raw_allowed_characters = []
     for participant in _list(blocking_obj.get("participants")):
         if not isinstance(participant, dict): continue
         cid, name = _text(participant.get("character_id") or participant.get("id")), _text(participant.get("name"))
-        if cid: allowed_characters.append({"character_id":cid,"canonical_name":name,"canonical_identity_id":f"book:{_text(scene_obj.get('book_id'))}:character:{cid}","scope":"book-level"})
-    runtime = {**base, "prop_ids": prop_ids, "location_ids": location_ids, "allowed_characters": allowed_characters, "allowed_ids": copy.deepcopy(source_ref_contract["allowed_ids"]), "allowed_source_refs": list(source_ref_contract["allowed_source_refs"]), "beat_alias_table": copy.deepcopy(source_ref_contract["beat_alias_table"]), "source_ref_contract": copy.deepcopy(source_ref_contract), "runtime_contract_version": "director_strategy_runtime_contract_v1"}
-    runtime_projection = {key: runtime.get(key) for key in ("scene_id", "beat_ids", "character_ids", "fact_ids", "prop_ids", "location_ids", "allowed_ids", "allowed_source_refs", "beat_alias_table", "source_ref_contract")}
+        if cid: raw_allowed_characters.append({"character_id":cid,"canonical_name":name,"scope":participant.get("scope") or "book-level","canonical_identity_id":participant.get("canonical_identity_id")})
+    if base.get("character_ids") and not raw_allowed_characters:
+        raise SceneStrategyError("character identity authority is missing", code="IDENTITY_CONTRACT_INVALID", path="blocking.participants")
+    declared_ids = {_text(x.get("character_id")) for x in raw_allowed_characters}
+    if declared_ids and not set(base.get("character_ids") or []).issubset(declared_ids):
+        raise SceneStrategyError("character identity authority does not cover all declared characters", code="IDENTITY_CONTRACT_CONFLICT", path="blocking.participants")
+    allowed_characters = canonicalize_allowed_characters(raw_allowed_characters, book_id=scene_obj.get("book_id"))
+    runtime = {**base, "book_id": _text(scene_obj.get("book_id")), "prop_ids": prop_ids, "location_ids": location_ids, "allowed_characters": allowed_characters, "allowed_ids": copy.deepcopy(source_ref_contract["allowed_ids"]), "allowed_source_refs": list(source_ref_contract["allowed_source_refs"]), "beat_alias_table": copy.deepcopy(source_ref_contract["beat_alias_table"]), "source_ref_contract": copy.deepcopy(source_ref_contract), "runtime_contract_version": "director_strategy_runtime_contract_v1"}
+    runtime_projection = build_contract_fingerprint_projection(runtime)
     runtime["provider_visible_contract_fingerprint"] = strategy_fingerprint(runtime_projection)
     runtime["runtime_validation_contract_fingerprint"] = strategy_fingerprint(runtime_projection)
+    runtime["identity_binding_fingerprint"] = strategy_fingerprint(allowed_characters)
     runtime["source_ref_contract_fingerprint"] = strategy_fingerprint(source_ref_contract)
     runtime["beat_alias_table_fingerprint"] = strategy_fingerprint(source_ref_contract["beat_alias_table"])
     runtime["allowed_source_refs_fingerprint"] = strategy_fingerprint(source_ref_contract["allowed_source_refs"])
@@ -305,4 +375,4 @@ def validate_scene_directing_strategy(raw: Any, contract: dict[str, Any] | None 
         return {"valid": False, "strategy": None, "errors": [{"code": exc.code, "path": exc.path, "message": str(exc)}]}
 
 
-__all__ = ["SCENE_STRATEGY_SCHEMA_VERSION", "SOURCE_FACT", "TREATMENT_INTENT", "BLOCKING_FACT", "DIRECTOR_CREATIVE_DECISION", "SceneStrategyError", "build_strategy_contract", "build_runtime_strategy_contract", "build_scene_directing_strategy", "parse_scene_directing_strategy", "validate_scene_directing_strategy", "strategy_fingerprint"]
+__all__ = ["SCENE_STRATEGY_SCHEMA_VERSION", "SOURCE_FACT", "TREATMENT_INTENT", "BLOCKING_FACT", "DIRECTOR_CREATIVE_DECISION", "SceneStrategyError", "canonicalize_allowed_characters", "build_contract_fingerprint_projection", "build_strategy_contract", "build_runtime_strategy_contract", "build_scene_directing_strategy", "parse_scene_directing_strategy", "validate_scene_directing_strategy", "strategy_fingerprint"]

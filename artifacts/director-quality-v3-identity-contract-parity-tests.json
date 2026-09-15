@@ -1,0 +1,47 @@
+{
+  "negative_fixtures": [
+    {
+      "fixture": "SWAPPED_NAMES",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "pass": true,
+      "observed": "ff12e21b443d2891815e90ca9ea68d4222f5c63378bb388259edde7c402b8d1f"
+    },
+    {
+      "fixture": "SWAPPED_IDENTITY_IDS",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "pass": true,
+      "observed": "IDENTITY_CONTRACT_CONFLICT"
+    },
+    {
+      "fixture": "MISSING_NAME",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "pass": true,
+      "observed": "IDENTITY_CONTRACT_INVALID"
+    },
+    {
+      "fixture": "MISSING_BOOK_ID",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "pass": true,
+      "observed": "IDENTITY_CONTRACT_MISSING_BOOK_ID"
+    },
+    {
+      "fixture": "DUPLICATE_CHARACTER_ID",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "pass": true,
+      "observed": "IDENTITY_CONTRACT_CONFLICT"
+    },
+    {
+      "fixture": "ORDER_ONLY_DIFFERENCE",
+      "expected": "PASS",
+      "actual": "PASS",
+      "pass": true,
+      "observed": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02"
+    }
+  ],
+  "all_expected": true
+}

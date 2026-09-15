@@ -1,0 +1,81 @@
+{
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "canonical_identity_projection": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "identity_binding_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+      "provider_visible_contract_fingerprint": "f8837cf1360f8a6fad68470128b80589b6355344a933c604b6b697608b5d849b",
+      "runtime_validation_contract_fingerprint": "f8837cf1360f8a6fad68470128b80589b6355344a933c604b6b697608b5d849b",
+      "identity_projection_equal": true,
+      "contract_fingerprint_equal": true,
+      "provider_projection_fingerprint": "f8837cf1360f8a6fad68470128b80589b6355344a933c604b6b697608b5d849b",
+      "runtime_projection_fingerprint": "f8837cf1360f8a6fad68470128b80589b6355344a933c604b6b697608b5d849b",
+      "provider_calls": 0
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "canonical_identity_projection": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "identity_binding_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+      "provider_visible_contract_fingerprint": "77cb9b228f7ce9e4a30258429afac73f4cd448fa801529ab34d4c710ff4c16bd",
+      "runtime_validation_contract_fingerprint": "77cb9b228f7ce9e4a30258429afac73f4cd448fa801529ab34d4c710ff4c16bd",
+      "identity_projection_equal": true,
+      "contract_fingerprint_equal": true,
+      "provider_projection_fingerprint": "77cb9b228f7ce9e4a30258429afac73f4cd448fa801529ab34d4c710ff4c16bd",
+      "runtime_projection_fingerprint": "77cb9b228f7ce9e4a30258429afac73f4cd448fa801529ab34d4c710ff4c16bd",
+      "provider_calls": 0
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "canonical_identity_projection": [
+        {
+          "character_id": "17",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:17",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "18",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:18",
+          "scope": "book-level"
+        }
+      ],
+      "identity_binding_fingerprint": "5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1",
+      "provider_visible_contract_fingerprint": "9c570a07a4a12eeaa0ded1d27eb8731256b44ee9390e256686b55a716510488f",
+      "runtime_validation_contract_fingerprint": "9c570a07a4a12eeaa0ded1d27eb8731256b44ee9390e256686b55a716510488f",
+      "identity_projection_equal": true,
+      "contract_fingerprint_equal": true,
+      "provider_projection_fingerprint": "9c570a07a4a12eeaa0ded1d27eb8731256b44ee9390e256686b55a716510488f",
+      "runtime_projection_fingerprint": "9c570a07a4a12eeaa0ded1d27eb8731256b44ee9390e256686b55a716510488f",
+      "provider_calls": 0
+    }
+  ],
+  "all_identity_projection_equal": true,
+  "all_contract_fingerprint_equal": true
+}

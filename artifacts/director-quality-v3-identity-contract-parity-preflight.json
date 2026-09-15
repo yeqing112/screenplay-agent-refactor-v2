@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "checks": {
+    "head": true,
+    "frozen_scene_count": true,
+    "provider_calls_zero": true,
+    "identity_projection_parity": true,
+    "contract_fingerprint_parity": true,
+    "negative_fixtures": true
+  }
+}
