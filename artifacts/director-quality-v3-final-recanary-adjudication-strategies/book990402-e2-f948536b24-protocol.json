@@ -1,0 +1,99 @@
+{
+  "original_protocol_status": "PROTOCOL_INVALID",
+  "adjudicated_protocol_status": "PROTOCOL_INVALID",
+  "original_error_codes": [
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_BEAT_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "PHASE_BEATS_EMPTY",
+    "INVALID_POWER_CONTROLLER",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "PHASE_BEATS_EMPTY",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "PHASE_BEATS_EMPTY",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "UNKNOWN_SOURCE_REFERENCE",
+    "BEAT_COVERAGE_GAP"
+  ],
+  "adjudicated_error_codes": [
+    "INVALID_POWER_CONTROLLER",
+    "FUTURE_SUPPORT_EVIDENCE",
+    "FUTURE_SUPPORT_EVIDENCE",
+    "FUTURE_SUPPORT_EVIDENCE",
+    "FUTURE_SUPPORT_EVIDENCE"
+  ],
+  "errors_removed_by_contract_wiring": {
+    "BEAT_COVERAGE_GAP": 1,
+    "PHASE_BEATS_EMPTY": 3,
+    "UNKNOWN_BEAT_REFERENCE": 11,
+    "UNKNOWN_SOURCE_REFERENCE": 38
+  },
+  "errors_remaining": [
+    {
+      "code": "INVALID_POWER_CONTROLLER",
+      "path": "scene_phases[0].power.center_ref"
+    },
+    {
+      "code": "FUTURE_SUPPORT_EVIDENCE",
+      "path": "scene_phases[0].information.audience_suspicions[0].support_refs",
+      "reference": "beat:B4"
+    },
+    {
+      "code": "FUTURE_SUPPORT_EVIDENCE",
+      "path": "scene_phases[0].information.audience_suspicions[0].support_refs",
+      "reference": "beat:B5"
+    },
+    {
+      "code": "FUTURE_SUPPORT_EVIDENCE",
+      "path": "scene_phases[0].information.audience_suspicions[0].support_refs",
+      "reference": "beat:B6"
+    },
+    {
+      "code": "FUTURE_SUPPORT_EVIDENCE",
+      "path": "scene_phases[1].information.audience_suspicions[1].support_refs",
+      "reference": "beat:B8"
+    }
+  ]
+}

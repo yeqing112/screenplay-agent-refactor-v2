@@ -105,6 +105,44 @@ def build_strategy_contract(*, scene: dict[str, Any], treatment: dict[str, Any] 
     }
 
 
+def _runtime_ids(value: Any, keys: tuple[str, ...]) -> set[str]:
+    """Collect declared asset/reference ids without inventing identifiers."""
+    rows = value if isinstance(value, list) else []
+    out: set[str] = set()
+    for row in rows:
+        candidate = row
+        if isinstance(row, dict):
+            candidate = next((row.get(key) for key in keys if row.get(key) is not None), None)
+        text = _text(candidate)
+        if text:
+            out.add(text)
+    return out
+
+
+def build_runtime_strategy_contract(*, scene: dict[str, Any], treatment: dict[str, Any] | None = None, blocking: dict[str, Any] | None = None, fact_snapshot: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Build the single contract shared by provider and runtime validation.
+
+    ``build_strategy_contract`` remains the authoritative evidence projection;
+    this wrapper adds the semantic SourceRef projection required by the V2 IR
+    normalizer/validator.  No ids are inferred from prose.
+    """
+    from core.director_scene_strategy_semantic_spec_v2 import build_source_ref_contract
+
+    base = build_strategy_contract(scene=scene, treatment=treatment, blocking=blocking, fact_snapshot=fact_snapshot)
+    scene_obj, treatment_obj, blocking_obj = map(_dict, (scene, treatment, blocking))
+    prop_ids = sorted(_runtime_ids(scene_obj.get("props") or scene_obj.get("prop_ids"), ("prop_id", "id", "asset_id")) | _runtime_ids(blocking_obj.get("props") or blocking_obj.get("prop_ids"), ("prop_id", "id", "asset_id")) | _runtime_ids(treatment_obj.get("props") or treatment_obj.get("prop_ids"), ("prop_id", "id", "asset_id")))
+    location_ids = sorted(_runtime_ids(scene_obj.get("locations") or scene_obj.get("location_ids"), ("location_id", "id", "asset_id")) | _runtime_ids(blocking_obj.get("locations") or blocking_obj.get("location_ids"), ("location_id", "id", "asset_id")))
+    source_ref_contract = build_source_ref_contract(beat_ids=list(base.get("beat_ids") or []), fact_ids=list(base.get("fact_ids") or []), character_ids=list(base.get("character_ids") or []), prop_ids=prop_ids, location_ids=location_ids)
+    runtime = {**base, "prop_ids": prop_ids, "location_ids": location_ids, "allowed_ids": copy.deepcopy(source_ref_contract["allowed_ids"]), "allowed_source_refs": list(source_ref_contract["allowed_source_refs"]), "beat_alias_table": copy.deepcopy(source_ref_contract["beat_alias_table"]), "source_ref_contract": copy.deepcopy(source_ref_contract), "runtime_contract_version": "director_strategy_runtime_contract_v1"}
+    runtime_projection = {key: runtime.get(key) for key in ("scene_id", "beat_ids", "character_ids", "fact_ids", "prop_ids", "location_ids", "allowed_ids", "allowed_source_refs", "beat_alias_table", "source_ref_contract")}
+    runtime["provider_visible_contract_fingerprint"] = strategy_fingerprint(runtime_projection)
+    runtime["runtime_validation_contract_fingerprint"] = strategy_fingerprint(runtime_projection)
+    runtime["source_ref_contract_fingerprint"] = strategy_fingerprint(source_ref_contract)
+    runtime["beat_alias_table_fingerprint"] = strategy_fingerprint(source_ref_contract["beat_alias_table"])
+    runtime["allowed_source_refs_fingerprint"] = strategy_fingerprint(source_ref_contract["allowed_source_refs"])
+    return runtime
+
+
 def _beat_rows(contract: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
     return [(str(key), value if isinstance(value, dict) else {}) for key, value in _dict(contract).get("beats", {}).items()]
 
@@ -262,4 +300,4 @@ def validate_scene_directing_strategy(raw: Any, contract: dict[str, Any] | None 
         return {"valid": False, "strategy": None, "errors": [{"code": exc.code, "path": exc.path, "message": str(exc)}]}
 
 
-__all__ = ["SCENE_STRATEGY_SCHEMA_VERSION", "SOURCE_FACT", "TREATMENT_INTENT", "BLOCKING_FACT", "DIRECTOR_CREATIVE_DECISION", "SceneStrategyError", "build_strategy_contract", "build_scene_directing_strategy", "parse_scene_directing_strategy", "validate_scene_directing_strategy", "strategy_fingerprint"]
+__all__ = ["SCENE_STRATEGY_SCHEMA_VERSION", "SOURCE_FACT", "TREATMENT_INTENT", "BLOCKING_FACT", "DIRECTOR_CREATIVE_DECISION", "SceneStrategyError", "build_strategy_contract", "build_runtime_strategy_contract", "build_scene_directing_strategy", "parse_scene_directing_strategy", "validate_scene_directing_strategy", "strategy_fingerprint"]

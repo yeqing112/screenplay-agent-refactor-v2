@@ -33,18 +33,28 @@ def _inputs(record: dict[str, Any]) -> dict[str, Any]:
     return _authoritative(record)
 
 def _contract(inputs: dict[str, Any]) -> dict[str, Any]:
-    from core.director_scene_strategy import build_strategy_contract
-    return build_strategy_contract(scene=inputs["scene"], treatment=inputs["director_treatment"], blocking=inputs["scene_blocking"], fact_snapshot=inputs["fact_snapshot"])
+    from core.director_scene_strategy import build_runtime_strategy_contract
+    return build_runtime_strategy_contract(scene=inputs["scene"], treatment=inputs["director_treatment"], blocking=inputs["scene_blocking"], fact_snapshot=inputs["fact_snapshot"])
+
+
+def _contract_equivalence(runtime: dict[str, Any], provider: dict[str, Any]) -> dict[str, Any]:
+    """Compare every provider-visible SourceRef field with runtime validation."""
+    source = _d(provider.get("source_ref_contract")); runtime_source = _d(runtime.get("source_ref_contract"))
+    provider_alias = source.get("beat_alias_table"); runtime_alias = runtime.get("beat_alias_table")
+    provider_refs = provider.get("allowed_source_refs", []); runtime_refs = runtime.get("allowed_source_refs", [])
+    provider_chars = provider.get("allowed_character_ids", []); runtime_chars = runtime.get("character_ids", [])
+    provider_beats = provider.get("allowed_beat_ids", []); runtime_beats = runtime.get("beat_ids", [])
+    return {"scene_id": runtime.get("scene_id"), "provider_beat_ids": provider_beats, "runtime_beat_ids": runtime_beats, "beat_ids_equal": provider_beats == runtime_beats, "provider_character_ids": provider_chars, "runtime_character_ids": runtime_chars, "character_ids_equal": provider_chars == sorted(runtime_chars), "provider_allowed_source_refs": provider_refs, "runtime_allowed_source_refs": runtime_refs, "allowed_source_refs_equal": provider_refs == runtime_refs, "provider_beat_alias_table_fingerprint": _fp(provider_alias), "runtime_beat_alias_table_fingerprint": _fp(runtime_alias), "beat_alias_equal": provider_alias == runtime_alias, "provider_source_ref_contract_fingerprint": _fp(source), "runtime_source_ref_contract_fingerprint": _fp(runtime_source), "source_ref_contract_equal": source == runtime_source}
 
 def provider_free_preflight(records: list[dict[str, Any]], profile: dict[str, Any]) -> dict[str, Any]:
     from core.director_scene_strategy_semantic_spec_v2 import semantic_spec
     from core.director_strategy_prompt import build_scene_strategy_ir_v2_prompt
-    prompts=[]
+    prompts=[]; equivalence=[]
     for r in records:
-        i=_inputs(r); c=_contract(i); prompts.append(build_scene_strategy_ir_v2_prompt(evidence={"scene_id":c["scene_id"],"strategy_contract":c,"source_authority":i["source_authority"],"baseline_shot_count":i["baseline_shot_plan_metadata"]["shot_count"]}, model_profile=profile))
+        i=_inputs(r); c=_contract(i); prompt=build_scene_strategy_ir_v2_prompt(evidence={"scene_id":c["scene_id"],"strategy_contract":c,"source_authority":i["source_authority"],"baseline_shot_count":i["baseline_shot_metadata"]["shot_count"] if "baseline_shot_metadata" in i else i["baseline_shot_plan_metadata"]["shot_count"]}, model_profile=profile); prompts.append(prompt); equivalence.append(_contract_equivalence(c, prompt["provider_contract"]))
     text="\n".join(p["system_prompt"]+p["user_prompt"] for p in prompts)
-    checks={"scene_order":len(records)==3,"semantic_spec_v2":semantic_spec()["model_ir_schema_version"]=="director_scene_strategy_ir_v2","prompt_v2":all(p["protocol_version"].startswith("director-quality-v3-final") for p in prompts),"no_computed_fields":not any(k in text for k in ('"strategy_fingerprint":','"creative_core_fingerprint":','"source_trace":','"authority_projection":')),"no_shotplan_payload":not any(k in text for k in ('"shots":','"plan_shot_id":','"shot_ids":','"patches":')),"normalization_policy":True,"provider_calls_zero":True,"downstream_effects_zero":True}
-    return {"schema_version":"director-quality-v3-final-recanary-provider-free-preflight-v1","status":"PASS" if all(checks.values()) else "FAIL","all_checks_pass":all(checks.values()),"checks":checks,"real_llm_calls":0,"real_mimo_calls":0,"shot_architecture":0,"shotplan":0,"scene_redesign":0,"scene_repair":0,"tail_repair":0,"storyboard":0,"image":0,"video":0,"media":0,"object_storage":0,"shadow":0,"ci":"not_run","provider_profile":{k:profile.get(k) for k in ("id","provider","model_name","capability")}}
+    checks={"scene_order":len(records)==3,"semantic_spec_v2":semantic_spec()["model_ir_schema_version"]=="director_scene_strategy_ir_v2","prompt_v2":all(p["protocol_version"].startswith("director-quality-v3-final") for p in prompts),"no_computed_fields":not any(k in text for k in ('"strategy_fingerprint":','"creative_core_fingerprint":','"source_trace":','"authority_projection":')),"no_shotplan_payload":not any(k in text for k in ('"shots":','"plan_shot_id":','"shot_ids":','"patches":')),"contract_equivalence":all(all(row.get(key) for key in ("beat_ids_equal","character_ids_equal","allowed_source_refs_equal","beat_alias_equal","source_ref_contract_equal")) for row in equivalence),"normalization_policy":True,"provider_calls_zero":True,"downstream_effects_zero":True}
+    return {"schema_version":"director-quality-v3-final-recanary-provider-free-preflight-v1","status":"PASS" if all(checks.values()) else "FAIL","all_checks_pass":all(checks.values()),"checks":checks,"contract_equivalence":equivalence,"real_llm_calls":0,"real_mimo_calls":0,"shot_architecture":0,"shotplan":0,"scene_redesign":0,"scene_repair":0,"tail_repair":0,"storyboard":0,"image":0,"video":0,"media":0,"object_storage":0,"shadow":0,"ci":"not_run","provider_profile":{k:profile.get(k) for k in ("id","provider","model_name","capability")}}
 
 def _protocol_counts(errors: list[dict[str, Any]]) -> dict[str,int]:
     keys=("UNKNOWN_SOURCE_REFERENCE","UNKNOWN_CHARACTER_REFERENCE","INVALID_POWER_CONTROLLER","FACT_AUTHORITY_VIOLATION","INFERENCE_PROMOTED_TO_FACT","FUTURE_REVEAL","FUTURE_HINT_EVIDENCE","STRATEGY_LAYER_LEAKAGE","UNSUPPORTED_INFERENCE")
@@ -113,6 +123,8 @@ def main() -> int:
     profile=get_profile(a.profile_id); records=_records(); pre=provider_free_preflight(records,profile or {})
     _write(ARTIFACTS/"director-quality-v3-final-recanary-provider-free-preflight.json",pre)
     if not a.execute_real and not a.replay_real: print(json.dumps({"status":"PROVIDER_FREE_PREFLIGHT_PASS" if pre["all_checks_pass"] else "SCENE_DIRECTOR_FINAL_RECANARY_BLOCKED"},ensure_ascii=False)); return 0 if pre["all_checks_pass"] else 2
+    if a.execute_real and not pre["all_checks_pass"]:
+        print(json.dumps({"status":"CANARY_BLOCKED_CONTRACT_DRIFT","provider_calls":0,"contract_equivalence":pre.get("contract_equivalence",[])},ensure_ascii=False)); return 2
     if a.replay_real:
         real=_load(ARTIFACTS/"director-quality-v3-final-recanary-real.json")
     else:

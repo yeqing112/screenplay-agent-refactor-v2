@@ -1,19 +1,5 @@
 {
-  "schema_version": "director-quality-v3-final-recanary-provider-free-preflight-v1",
-  "status": "PASS",
-  "all_checks_pass": true,
-  "checks": {
-    "scene_order": true,
-    "semantic_spec_v2": true,
-    "prompt_v2": true,
-    "no_computed_fields": true,
-    "no_shotplan_payload": true,
-    "contract_equivalence": true,
-    "normalization_policy": true,
-    "provider_calls_zero": true,
-    "downstream_effects_zero": true
-  },
-  "contract_equivalence": [
+  "scenes": [
     {
       "scene_id": "book990402:e3:暗房惊魂",
       "provider_beat_ids": [
@@ -88,7 +74,10 @@
       "beat_alias_equal": true,
       "provider_source_ref_contract_fingerprint": "3968017bf0dfab6f689d07d6dbb067b2694f40cca314abcc2882b0e738c660ea",
       "runtime_source_ref_contract_fingerprint": "3968017bf0dfab6f689d07d6dbb067b2694f40cca314abcc2882b0e738c660ea",
-      "source_ref_contract_equal": true
+      "source_ref_contract_equal": true,
+      "provider_visible_contract_fingerprint": "00efd75e0eae861f1d7ce39971199307838f2083124b0c54ff2eb261c0f9853f",
+      "runtime_validation_contract_fingerprint": "00efd75e0eae861f1d7ce39971199307838f2083124b0c54ff2eb261c0f9853f",
+      "contract_fingerprint_equal": true
     },
     {
       "scene_id": "book990402:e3:暗房惊魂（2）",
@@ -160,7 +149,10 @@
       "beat_alias_equal": true,
       "provider_source_ref_contract_fingerprint": "016fc272892bff2ec3bba22ae92a36a917a8daf1d8d57f979131b10e10e01b81",
       "runtime_source_ref_contract_fingerprint": "016fc272892bff2ec3bba22ae92a36a917a8daf1d8d57f979131b10e10e01b81",
-      "source_ref_contract_equal": true
+      "source_ref_contract_equal": true,
+      "provider_visible_contract_fingerprint": "72a2b6bceda7d94df99a48f18c21c040b89429e1afdbd8d439cebb4ca0d7b58b",
+      "runtime_validation_contract_fingerprint": "72a2b6bceda7d94df99a48f18c21c040b89429e1afdbd8d439cebb4ca0d7b58b",
+      "contract_fingerprint_equal": true
     },
     {
       "scene_id": "book990402:e2:回声照相馆",
@@ -236,27 +228,11 @@
       "beat_alias_equal": true,
       "provider_source_ref_contract_fingerprint": "1717aa34b11f64c687bbb2562f5b513fe81f4c2551bd98f7ff0677e0360d8968",
       "runtime_source_ref_contract_fingerprint": "1717aa34b11f64c687bbb2562f5b513fe81f4c2551bd98f7ff0677e0360d8968",
-      "source_ref_contract_equal": true
+      "source_ref_contract_equal": true,
+      "provider_visible_contract_fingerprint": "5bdee1b1c3d0c04fcfa41c61232594c3f776b3b8e04a3f82dbfc86ff45b0e021",
+      "runtime_validation_contract_fingerprint": "5bdee1b1c3d0c04fcfa41c61232594c3f776b3b8e04a3f82dbfc86ff45b0e021",
+      "contract_fingerprint_equal": true
     }
   ],
-  "real_llm_calls": 0,
-  "real_mimo_calls": 0,
-  "shot_architecture": 0,
-  "shotplan": 0,
-  "scene_redesign": 0,
-  "scene_repair": 0,
-  "tail_repair": 0,
-  "storyboard": 0,
-  "image": 0,
-  "video": 0,
-  "media": 0,
-  "object_storage": 0,
-  "shadow": 0,
-  "ci": "not_run",
-  "provider_profile": {
-    "id": "local-llm-2vydoz",
-    "provider": "openai-compatible",
-    "model_name": "mimo-v2.5",
-    "capability": "llm"
-  }
+  "all_equal": true
 }

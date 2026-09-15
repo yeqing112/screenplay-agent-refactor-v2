@@ -1,0 +1,33 @@
+{
+  "schema_version": "director-quality-v3-final-recanary-raw-evidence-manifest-v1",
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "original_commit": "9db8f9f",
+      "raw_output_fingerprint": "7681112035d5be9b9501beab04446a720ca1f412e1367760c3677fef57b0e536",
+      "original_request_fingerprint": "3d309d087fa19d9700bd52d96e3133e74c772e1cc654d51b3fea252440bed954",
+      "original_system_prompt_fingerprint": "e092f96b2ac29bea2c4e63abcb85ff5dd8d7d0f918c05c7ca60b36bc3f5f1929",
+      "original_semantic_spec_fingerprint": "2f70c205ea6c383c22e121705412a923f134d079425d05a110a7724d83ce3053",
+      "no_provider_replay": true
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "original_commit": "9db8f9f",
+      "raw_output_fingerprint": "035e24436fc2d0105901ae17dacf81bb73627d02154b14d940cf2de963e5e0ec",
+      "original_request_fingerprint": "789ae2ac9c171f38eb8cadfd52358e15a7d44cd62e8f706daec41f32523117a4",
+      "original_system_prompt_fingerprint": "e092f96b2ac29bea2c4e63abcb85ff5dd8d7d0f918c05c7ca60b36bc3f5f1929",
+      "original_semantic_spec_fingerprint": "a514a55c2d0869652e05c47045ea62b0ac6d95651ea4031f75ad5e5bd58c0772",
+      "no_provider_replay": true
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "original_commit": "9db8f9f",
+      "raw_output_fingerprint": "7cfb6fdc7251f5d2ac7d888ee7a32f6acbc2f5b106dadadb44da06ae6f40d635",
+      "original_request_fingerprint": "a6521213ed83e4ea8cbed79c11b027cb21eea3ec7baa9ee75cf36904360413ff",
+      "original_system_prompt_fingerprint": "e092f96b2ac29bea2c4e63abcb85ff5dd8d7d0f918c05c7ca60b36bc3f5f1929",
+      "original_semantic_spec_fingerprint": "37b686c42b3cf5f882bb30e987594ada8c2f7908026bbc06de4b14a9146a2b78",
+      "no_provider_replay": true
+    }
+  ],
+  "provider_calls": 0
+}
