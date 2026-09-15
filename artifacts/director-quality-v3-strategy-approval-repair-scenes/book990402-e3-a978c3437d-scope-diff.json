@@ -1,0 +1,16 @@
+{
+  "changed_paths": [
+    "scene_phases[P02].information.audience_suspicions[0].support_refs[1]"
+  ],
+  "allowed_changed_paths": [
+    "scene_phases[P02].information.audience_suspicions[0].support_refs[1]"
+  ],
+  "forbidden_changed_paths": [],
+  "scope_status": "PASS",
+  "allowed_paths": [
+    "scene_phases[P02].information.audience_suspicions[*].claim",
+    "scene_phases[P02].information.audience_suspicions[*].support_refs",
+    "scene_phases[P02].information.director_inferences[*].claim",
+    "scene_phases[P02].information.director_inferences[*].support_refs"
+  ]
+}

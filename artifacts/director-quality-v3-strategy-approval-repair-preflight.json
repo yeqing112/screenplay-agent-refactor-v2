@@ -1,0 +1,29 @@
+{
+  "schema_version": "director-quality-v3-strategy-approval-repair-preflight-v1",
+  "status": "PASS",
+  "all_checks_pass": true,
+  "checks": {
+    "head_is_540b048": true,
+    "scene_count": true,
+    "base_canonical": true,
+    "approved_evidence": true,
+    "scope_defined": true,
+    "provider_calls_zero": true,
+    "real_media_calls_zero": true,
+    "no_shot_architecture": true,
+    "no_historical_mutation": true,
+    "profile_is_mimo": true
+  },
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "shotplan": 0,
+  "storyboard": 0,
+  "media": 0,
+  "object_storage": 0,
+  "ci": "not_run",
+  "profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5"
+  }
+}

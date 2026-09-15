@@ -1,0 +1,58 @@
+{
+  "changed_paths": [
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P01].information.director_inferences[0].support_refs[1]",
+    "scene_phases[P01].information.hint_refs[0]",
+    "scene_phases[P01].information.reveal_refs[1]",
+    "scene_phases[P01].information.reveal_refs[2]",
+    "scene_phases[P01].performance[0].character_id",
+    "scene_phases[P01].performance[1].character_id",
+    "scene_phases[P01].power.center_ref",
+    "scene_phases[P02].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P02].information.director_inferences[0].support_refs[4]",
+    "scene_phases[P02].information.hint_refs",
+    "scene_phases[P02].information.hint_refs[0]",
+    "scene_phases[P02].performance[0].character_id",
+    "scene_phases[P02].performance[1].character_id",
+    "scene_phases[P03].information.audience_suspicions[1].support_refs[1]",
+    "scene_phases[P03].information.director_inferences[0].support_refs[1]",
+    "scene_phases[P03].information.director_inferences[1].support_refs[1]",
+    "scene_phases[P03].performance[0].character_id",
+    "scene_phases[P03].performance[1].character_id"
+  ],
+  "allowed_changed_paths": [
+    "scene_phases[P02].information.hint_refs",
+    "scene_phases[P02].information.hint_refs[0]"
+  ],
+  "forbidden_changed_paths": [
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P01].information.director_inferences[0].support_refs[1]",
+    "scene_phases[P01].information.hint_refs[0]",
+    "scene_phases[P01].information.reveal_refs[1]",
+    "scene_phases[P01].information.reveal_refs[2]",
+    "scene_phases[P01].performance[0].character_id",
+    "scene_phases[P01].performance[1].character_id",
+    "scene_phases[P01].power.center_ref",
+    "scene_phases[P02].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P02].information.director_inferences[0].support_refs[4]",
+    "scene_phases[P02].performance[0].character_id",
+    "scene_phases[P02].performance[1].character_id",
+    "scene_phases[P03].information.audience_suspicions[1].support_refs[1]",
+    "scene_phases[P03].information.director_inferences[0].support_refs[1]",
+    "scene_phases[P03].information.director_inferences[1].support_refs[1]",
+    "scene_phases[P03].performance[0].character_id",
+    "scene_phases[P03].performance[1].character_id"
+  ],
+  "scope_status": "FAIL",
+  "allowed_paths": [
+    "scene_phases[*].performance[*].character_id",
+    "scene_phases[*].performance[*].objective",
+    "scene_phases[*].performance[*].tactic",
+    "scene_phases[*].performance[*].visible_behavior",
+    "scene_phases[*].performance[*].turning_point",
+    "scene_phases[*].power.center_ref",
+    "scene_phases[*].power.description",
+    "scene_phases[*].power.shift",
+    "scene_phases[P02].information.hint_refs"
+  ]
+}

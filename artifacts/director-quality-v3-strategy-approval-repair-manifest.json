@@ -1,0 +1,49 @@
+{
+  "schema_version": "director-quality-v3-strategy-approval-repair-manifest-v1",
+  "base_commit": "540b048",
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "base_fingerprint": "f456c2f3f69f4c537537df3fa6f9d77787365edf3f8c9c406740917d46706993",
+      "provider_calls_allowed": 1,
+      "editable_paths": [
+        "scene_phases[P02].information.audience_suspicions[*].claim",
+        "scene_phases[P02].information.audience_suspicions[*].support_refs",
+        "scene_phases[P02].information.director_inferences[*].claim",
+        "scene_phases[P02].information.director_inferences[*].support_refs"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "base_fingerprint": "e7cf30b5b5fd42dae780594dde0ca63e60b194ded5d091a8ebb731e5ad858af9",
+      "provider_calls_allowed": 1,
+      "editable_paths": [
+        "scene_phases[*].performance[*].character_id",
+        "scene_phases[*].performance[*].objective",
+        "scene_phases[*].performance[*].tactic",
+        "scene_phases[*].performance[*].visible_behavior",
+        "scene_phases[*].performance[*].turning_point",
+        "scene_phases[*].power.center_ref",
+        "scene_phases[*].power.description",
+        "scene_phases[*].power.shift",
+        "scene_phases[P02].information.hint_refs"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "base_fingerprint": "1a517bca15ee51deb8295d44ea8f08a93d3bb0e6a9d5e8f5a735ecfa05d5f6dc",
+      "provider_calls_allowed": 1,
+      "editable_paths": [
+        "scene_phases[P01].information.audience_suspicions[*].claim",
+        "scene_phases[P01].information.audience_suspicions[*].support_refs",
+        "scene_phases[P01].information.director_inferences[*].claim",
+        "scene_phases[P01].information.director_inferences[*].support_refs",
+        "scene_phases[P02].information.audience_suspicions[*].claim",
+        "scene_phases[P02].information.audience_suspicions[*].support_refs",
+        "scene_phases[P02].information.director_inferences[*].claim",
+        "scene_phases[P02].information.director_inferences[*].support_refs"
+      ]
+    }
+  ],
+  "side_effect_boundary": "strategy_artifacts_only"
+}

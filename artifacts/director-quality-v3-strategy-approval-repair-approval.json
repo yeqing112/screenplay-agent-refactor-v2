@@ -1,0 +1,35 @@
+{
+  "schema_version": "director-quality-v3-strategy-approval-repair-summary-v1",
+  "status": "DIRECTOR_V3_STRATEGY_APPROVAL_REPAIR_FAILED",
+  "counts": {
+    "canonical": 0,
+    "authority": 0,
+    "registry_identity": 3,
+    "scope": 1,
+    "semantic_fail": 0,
+    "approved": 0,
+    "future_support": 0,
+    "future_hint": 0,
+    "future_reveal": 0
+  },
+  "ready_for_human_director_review": false,
+  "ready_for_shot_architecture_canary": false,
+  "provider_calls": 3,
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "semantic_identity": "PASS",
+      "director_approval": "BLOCKED"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "semantic_identity": "PASS",
+      "director_approval": "BLOCKED"
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "semantic_identity": "PASS",
+      "director_approval": "BLOCKED"
+    }
+  ]
+}

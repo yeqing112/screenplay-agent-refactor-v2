@@ -1,0 +1,31 @@
+{
+  "changed_paths": [
+    "scene_phases[P01].audience_state.suspects[0]",
+    "scene_phases[P01].information.audience_suspicions[0].claim",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[0]",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[2]",
+    "scene_phases[P02].information.audience_suspicions[1].support_refs[1]"
+  ],
+  "allowed_changed_paths": [
+    "scene_phases[P01].information.audience_suspicions[0].claim",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[0]",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[1]",
+    "scene_phases[P01].information.audience_suspicions[0].support_refs[2]",
+    "scene_phases[P02].information.audience_suspicions[1].support_refs[1]"
+  ],
+  "forbidden_changed_paths": [
+    "scene_phases[P01].audience_state.suspects[0]"
+  ],
+  "scope_status": "FAIL",
+  "allowed_paths": [
+    "scene_phases[P01].information.audience_suspicions[*].claim",
+    "scene_phases[P01].information.audience_suspicions[*].support_refs",
+    "scene_phases[P01].information.director_inferences[*].claim",
+    "scene_phases[P01].information.director_inferences[*].support_refs",
+    "scene_phases[P02].information.audience_suspicions[*].claim",
+    "scene_phases[P02].information.audience_suspicions[*].support_refs",
+    "scene_phases[P02].information.director_inferences[*].claim",
+    "scene_phases[P02].information.director_inferences[*].support_refs"
+  ]
+}

@@ -1,0 +1,315 @@
+```json
+{
+    "schema_version": "director_scene_strategy_ir_v2",
+    "scene_id": "book990402:e3:暗房惊魂",
+    "dramatic_objective": "在暗房的压抑空间中，通过顾沉对林晚的逐步试探与对峙，揭示林晚对关键物证档案袋的隐藏关注，并暗示她可能与失踪底片存在秘密关联，最终迫使她的情绪面具碎裂。",
+    "scene_question": "林晚是否与失踪的底片有关？她隐藏的秘密是什么？",
+    "strategy_summary": "采用三阶段递进策略：1. 建立环境与人物伪装（Beat 1-3），通过物证引入和林晚的细微异常行为埋下怀疑种子；2. 升级对峙与试探（Beat 4-9），顾沉通过门锁、胶片来源、记忆等话题层层施压，迫使林晚的防御姿态不断升级；3. 揭示与崩溃（Beat 10-11），顾沉直接指向林晚，最终离开后留下她独自面对情绪崩溃。整个过程强调信息的不对称释放和情绪的逐步累积。",
+    "visual_thesis": "暗房的幽闭空间与红色安全灯光营造出窥探与不安的氛围。视觉重心在林晚与档案袋、T恤下摆等关键物证之间的微妙互动上，通过特写和视线引导强化隐藏与暴露的张力。",
+    "scene_phases": [
+        {
+            "phase_id": "P01",
+            "beat_ids": ["1", "2", "3"],
+            "dramatic_function": "建立环境、引入物证并展示林晚的表面伪装，同时埋下她对档案袋异常关注的怀疑种子。",
+            "audience_state": {
+                "knows": ["暗房内有一个打开的档案袋和可疑的剪下胶片", "林晚在暗房工作"],
+                "question_shift": "从观察环境转向对林晚行为的细微观察",
+                "suspects": ["林晚对档案袋可能有隐藏的关注"],
+                "withholds": ["档案袋的具体内容和来源", "林晚的真实意图"]
+            },
+            "emotion": {
+                "intensity_hint": "低",
+                "state": "悬疑、不祥",
+                "transition_reason": "从静态环境展示过渡到人物行为的细微异常",
+                "trigger": "林晚划过档案袋口的指尖动作"
+            },
+            "power": {
+                "center_ref": "19",
+                "center_type": "CHARACTER",
+                "description": "林晚在暗房中占据主导，但她的注意力被档案袋分散",
+                "shift": "无"
+            },
+            "performance": [
+                {
+                    "character_id": "19",
+                    "objective": "维持懒散的工作表象，同时下意识地关注档案袋",
+                    "tactic": "用刻意的漫不经心掩盖内心的紧张",
+                    "turning_point": false,
+                    "visible_behavior": "将照片夹到晾干绳上，目光快速扫过档案袋，指尖极轻地划过袋口"
+                }
+            ],
+            "edit": {
+                "cut_logic": "从档案袋特写切到林晚工作的全景，再切回她手指与档案袋的特写",
+                "hold_logic": "在林晚手指划过袋口时短暂停留，强调动作的异常",
+                "tempo": "缓慢",
+                "transition_motivation": "建立空间感和人物状态，为后续冲突铺垫"
+            },
+            "visual": {
+                "camera_rule": "以林晚为视觉中心，档案袋作为重要视觉元素",
+                "composition_rule": "利用暗房的狭长空间和悬挂的相纸形成框架，将林晚置于其中",
+                "movement_condition": "固定机位为主，配合缓慢的推近",
+                "visual_grammar": "通过视线匹配和动作特写建立林晚与档案袋的潜在联系"
+            },
+            "information": {
+                "reveal_refs": ["beat:1", "beat:2", "beat:3"],
+                "hint_refs": ["beat:1", "beat:3"],
+                "withhold_refs": ["beat:4", "beat:5", "beat:6", "beat:7", "beat:8", "beat:9", "beat:10", "beat:11"],
+                "audience_suspicions": [
+                    {
+                        "claim": "林晚对档案袋的关注超出了正常范围",
+                        "support_refs": ["beat:3"]
+                    }
+                ],
+                "director_inferences": [
+                    {
+                        "claim": "林晚的指尖动作是下意识的，暴露了她对档案袋的在意",
+                        "support_refs": ["beat:3"],
+                        "purpose": "为后续顾沉的试探提供视觉依据"
+                    }
+                ]
+            }
+        },
+        {
+            "phase_id": "P02",
+            "beat_ids": ["4", "5", "6", "7", "8", "9"],
+            "dramatic_function": "顾沉介入并通过对门锁、胶片来源、记忆等问题的层层试探，将冲突焦点锁定在林晚身上，迫使她的防御姿态不断升级。",
+            "audience_state": {
+                "knows": ["顾沉开始调查暗房事件", "门锁有松动痕迹", "林晚声称胶片是旧废片", "顾沉怀疑林晚可能失忆或隐瞒"],
+                "question_shift": "从林晚是否关注档案袋转向她是否与事件直接相关",
+                "suspects": ["林晚可能隐藏了失踪的底片", "林晚可能对自己的行为有所隐瞒或失忆"],
+                "withholds": ["顾沉的真实意图和掌握的全部信息", "林晚T恤下摆凸起物的具体内容"]
+            },
+            "emotion": {
+                "intensity_hint": "中",
+                "state": "紧张、对峙",
+                "transition_reason": "从悬疑氛围升级为直接的言语和心理对抗",
+                "trigger": "顾沉的连续质问和暗示"
+            },
+            "power": {
+                "center_ref": "20",
+                "center_type": "CHARACTER",
+                "description": "顾沉通过提问和观察逐渐掌控对话节奏，将压力施加给林晚",
+                "shift": "从林晚的伪装主导转向顾沉的试探主导"
+            },
+            "performance": [
+                {
+                    "character_id": "20",
+                    "objective": "通过试探性提问观察林晚的反应，寻找破绽",
+                    "tactic": "从外围问题（门锁）逐步切入核心（胶片、记忆）",
+                    "turning_point": false,
+                    "visible_behavior": "停在林晚身后，拿起档案袋，目光扫视林晚T恤下摆"
+                },
+                {
+                    "character_id": "19",
+                    "objective": "维持懒散表象，回避顾沉的试探，保护自己的秘密",
+                    "tactic": "用抱怨和反问掩饰紧张，但身体反应暴露真实情绪",
+                    "turning_point": true,
+                    "visible_behavior": "擦手动作微顿，无意识碰触T恤下摆，身体微微绷紧，瞳孔收缩，手指蜷缩掐掌心"
+                }
+            ],
+            "edit": {
+                "cut_logic": "在顾沉和林晚之间进行正反打，强调对话的对抗性；在关键反应（如林晚碰触T恤）时插入特写",
+                "hold_logic": "在林晚的防御性反应（如擦手微顿、掐掌心）上稍作停留",
+                "tempo": "逐渐加快",
+                "transition_motivation": "通过剪辑节奏反映对话压力的累积"
+            },
+            "visual": {
+                "camera_rule": "顾沉多采用俯拍或平视，林晚在压力下多采用仰拍或特写",
+                "composition_rule": "利用暗房的狭窄空间和悬挂物制造压迫感，两人常处于画面的对角线位置",
+                "movement_condition": "手持轻微晃动，增强不安感",
+                "visual_grammar": "通过视线匹配和反应镜头构建心理对抗"
+            },
+            "information": {
+                "reveal_refs": ["beat:4", "beat:5", "beat:6", "beat:7", "beat:8", "beat:9"],
+                "hint_refs": ["beat:5", "beat:6", "beat:9"],
+                "withhold_refs": ["beat:10", "beat:11"],
+                "audience_suspicions": [
+                    {
+                        "claim": "林晚T恤下摆的凸起物可能就是失踪的底片",
+                        "support_refs": ["beat:6"]
+                    },
+                    {
+                        "claim": "顾沉可能已经掌握了更多关于林晚的信息",
+                        "support_refs": ["beat:9"]
+                    }
+                ],
+                "director_inferences": [
+                    {
+                        "claim": "顾沉的提问策略是精心设计的，旨在逐步瓦解林晚的心理防线",
+                        "support_refs": ["beat:5", "beat:7", "beat:9"],
+                        "purpose": "展现顾沉的调查技巧和林晚的防御过程"
+                    },
+                    {
+                        "claim": "林晚的身体反应（碰触T恤、掐掌心）是无法完全控制的，暴露了她的秘密",
+                        "support_refs": ["beat:6", "beat:9"],
+                        "purpose": "为观众提供判断林晚状态的视觉线索"
+                    }
+                ]
+            }
+        },
+        {
+            "phase_id": "P03",
+            "beat_ids": ["10", "11"],
+            "dramatic_function": "顾沉直接指向林晚，将冲突推向顶点，随后离开，留下林晚独自面对情绪崩溃和最终抉择。",
+            "audience_state": {
+                "knows": ["顾沉明确将林晚与失踪底片联系起来", "顾沉给出最后通牒"],
+                "question_shift": "从林晚是否有关联转向她将如何应对",
+                "suspects": ["林晚即将做出决定或暴露真相"],
+                "withholds": ["林晚最终的选择", "档案袋的完整内容"]
+            },
+            "emotion": {
+                "intensity_hint": "高",
+                "state": "恐惧、愤怒、崩溃",
+                "transition_reason": "从紧张对峙升级为情绪爆发和面具碎裂",
+                "trigger": "顾沉的直接指控和最后通牒"
+            },
+            "power": {
+                "center_ref": "19",
+                "center_type": "CHARACTER",
+                "description": "顾沉离开后，林晚独自面对内心冲突，权力中心回归到她身上，但处于崩溃状态",
+                "shift": "从顾沉的施压主导转向林晚的内心崩溃"
+            },
+            "performance": [
+                {
+                    "character_id": "20",
+                    "objective": "给出最后通牒，观察林晚的最终反应",
+                    "tactic": "直接点明怀疑，然后抽身离开，将压力完全留给林晚",
+                    "turning_point": false,
+                    "visible_behavior": "扫视林晚T恤下摆，提及下午有客人取照片后离开"
+                },
+                {
+                    "character_id": "19",
+                    "objective": "在伪装彻底碎裂后，面对自己的秘密和恐惧",
+                    "tactic": "从愤怒防御转向真实的困惑、恐惧和决绝",
+                    "turning_point": true,
+                    "visible_behavior": "下意识捂住T恤下摆，面具碎裂，露出复杂表情，手悬在档案袋上颤抖"
+                }
+            ],
+            "edit": {
+                "cut_logic": "顾沉离开时给林晚一个长镜头，捕捉她情绪变化的完整过程",
+                "hold_logic": "在林晚手悬在档案袋上颤抖的画面中长时间停留，强调她的内心挣扎",
+                "tempo": "缓慢",
+                "transition_motivation": "通过节奏放缓突出情绪的沉重和悬念的延续"
+            },
+            "visual": {
+                "camera_rule": "顾沉离开后，镜头完全聚焦于林晚",
+                "composition_rule": "林晚被档案袋和悬挂的相纸包围，象征她被秘密和选择所困",
+                "movement_condition": "固定机位，缓慢推近至林晚面部和手部特写",
+                "visual_grammar": "通过孤立的人物构图和特写强调内心的崩溃"
+            },
+            "information": {
+                "reveal_refs": ["beat:10", "beat:11"],
+                "hint_refs": ["beat:10"],
+                "withhold_refs": [],
+                "audience_suspicions": [
+                    {
+                        "claim": "林晚最终会选择揭露秘密或继续隐藏",
+                        "support_refs": ["beat:11"]
+                    }
+                ],
+                "director_inferences": [
+                    {
+                        "claim": "林晚手悬在档案袋上的颤抖动作，象征着她内心在揭露与隐藏之间的剧烈挣扎",
+                        "support_refs": ["beat:11"],
+                        "purpose": "将场景的悬念和情感张力推向高潮"
+                    }
+                ]
+            }
+        }
+    ],
+    "spatial_expression": ["暗房是一个狭长、幽闭的空间，红色安全灯光营造出压抑和窥探的氛围。工作台、显影池、悬挂的相纸和晾干绳构成了主要的视觉元素。顾沉和林晚的对峙主要发生在工作台附近，空间的限制加剧了心理上的压迫感。"],
+    "prop_visual_strategy": ["牛皮纸档案袋和剪下胶片是核心视觉道具，始终处于画面的显著位置或通过人物动作被强调。林晚T恤下摆的硬质凸起轮廓是隐藏的关键道具，通过她的无意识触碰和顾沉的视线引导被逐步揭示。"],
+    "must_preserve": ["林晚指尖划过档案袋口的细微动作", "林晚无意识碰触T恤下摆的动作", "顾沉扫视林晚T恤下摆的视线", "林晚手悬在档案袋上颤抖的最终画面"],
+    "must_avoid": ["过早揭示T恤下摆凸起物的具体内容", "让顾沉表现出确定的指控，应保持试探性", "林晚在场景结束前完全崩溃或说出真相"],
+    "creative_risks": ["在P02阶段，可以尝试一个从档案袋视角拍摄林晚的主观镜头，暗示物证的‘注视’", "在P03阶段，顾沉离开时，可以让他的影子长时间投射在林晚身上，象征压力的延续"],
+    "shot_architecture_guidance": ["建议采用‘建立-对峙-崩溃’的三段式镜头结构。第一阶段以环境镜头和人物中景为主，建立空间和状态。第二阶段以正反打和反应特写为主，强化对话冲突。第三阶段以林晚的孤立长镜头和特写为主，聚焦情绪崩溃。"],
+    "semantic_spec_version": "director_scene_strategy_semantic_spec_v2",
+    "compiler_version": "director_scene_strategy_ir_compiler_v2",
+    "strategy_version": "v3",
+    "authority_projection": {
+        "SOURCE_FACT": ["scene identity", "beats", "dialogue", "chronology", "character/asset identity"],
+        "TREATMENT_INTENT": ["dramatic objective", "tone", "intent"],
+        "BLOCKING_FACT": ["spatial truth", "entry/exit", "screen direction"],
+        "DIRECTOR_CREATIVE_DECISION": ["phase staging", "audience/emotion/power", "performance", "edit", "visual"]
+    },
+    "source_trace": {
+        "contract_scene_id": "book990402:e3:暗房惊魂",
+        "beat_ids": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+        "character_ids": ["19", "20"],
+        "fact_ids": [],
+        "phases": [
+            {
+                "phase_id": "P01",
+                "beat_refs": ["beat:1", "beat:2", "beat:3"],
+                "reveal_refs": ["beat:1", "beat:2", "beat:3"],
+                "hint_refs": ["beat:1", "beat:3"],
+                "withhold_refs": ["beat:4", "beat:5", "beat:6", "beat:7", "beat:8", "beat:9", "beat:10", "beat:11"],
+                "audience_suspicions": [
+                    {
+                        "claim": "林晚对档案袋的关注超出了正常范围",
+                        "support_refs": ["beat:3"]
+                    }
+                ],
+                "director_inferences": [
+                    {
+                        "claim": "林晚的指尖动作是下意识的，暴露了她对档案袋的在意",
+                        "support_refs": ["beat:3"],
+                        "purpose": "为后续顾沉的试探提供视觉依据"
+                    }
+                ]
+            },
+            {
+                "phase_id": "P02",
+                "beat_refs": ["beat:4", "beat:5", "beat:6", "beat:7", "beat:8", "beat:9"],
+                "reveal_refs": ["beat:4", "beat:5", "beat:6", "beat:7", "beat:8", "beat:9"],
+                "hint_refs": ["beat:5", "beat:6", "beat:9"],
+                "withhold_refs": ["beat:10", "beat:11"],
+                "audience_suspicions": [
+                    {
+                        "claim": "林晚T恤下摆的凸起物可能就是失踪的底片",
+                        "support_refs": ["beat:6"]
+                    },
+                    {
+                        "claim": "顾沉可能已经掌握了更多关于林晚的信息",
+                        "support_refs": ["beat:9"]
+                    }
+                ],
+                "director_inferences": [
+                    {
+                        "claim": "顾沉的提问策略是精心设计的，旨在逐步瓦解林晚的心理防线",
+                        "support_refs": ["beat:5", "beat:7", "beat:9"],
+                        "purpose": "展现顾沉的调查技巧和林晚的防御过程"
+                    },
+                    {
+                        "claim": "林晚的身体反应（碰触T恤、掐掌心）是无法完全控制的，暴露了她的秘密",
+                        "support_refs": ["beat:6", "beat:9"],
+                        "purpose": "为观众提供判断林晚状态的视觉线索"
+                    }
+                ]
+            },
+            {
+                "phase_id": "P03",
+                "beat_refs": ["beat:10", "beat:11"],
+                "reveal_refs": ["beat:10", "beat:11"],
+                "hint_refs": ["beat:10"],
+                "withhold_refs": [],
+                "audience_suspicions": [
+                    {
+                        "claim": "林晚最终会选择揭露秘密或继续隐藏",
+                        "support_refs": ["beat:11"]
+                    }
+                ],
+                "director_inferences": [
+                    {
+                        "claim": "林晚手悬在档案袋上的颤抖动作，象征着她内心在揭露与隐藏之间的剧烈挣扎",
+                        "support_refs": ["beat:11"],
+                        "purpose": "将场景的悬念和情感张力推向高潮"
+                    }
+                ]
+            }
+        ]
+    },
+    "creative_core_fingerprint": "f083cbb125b6e79c87e80485224c59a03e72038b1c0e7392e75e902c54c2c6ca",
+    "strategy_fingerprint": "97bffc20d205117a198183497e79bbcf1dc12d9f3d336e0687b3456a9d5ea42b"
+}
+```

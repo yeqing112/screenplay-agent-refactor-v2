@@ -1,0 +1,522 @@
+{
+  "schema_version": "director_scene_strategy_v3",
+  "scene_id": "book990402:e3:暗房惊魂（2）",
+  "dramatic_objective": "通过顾沉与林晚在暗房门外的对峙，逐步揭示物证关联，迫使林晚面对记忆空白，最终以第三方观察的暗示和林晚的情绪崩溃收尾，强化悬疑感。",
+  "scene_question": "林晚是否真的拿走了照片并剪下边缘？她的失忆是真实还是伪装？",
+  "strategy_summary": "采用三阶段递进结构：1) 建立对峙与初步否认；2) 通过物证展示与质问将冲突推向顶点；3) 以工具关联坐实嫌疑并以崩溃收尾。视觉上强调逆光、特写与闪回，强化物证说服力与角色内心挣扎。",
+  "visual_thesis": "利用暗房的逆光与阴影制造视觉压迫感，通过胶片边缘、档案袋撕裂痕迹的特写建立物证关联，以林晚手指的细微动作（捻纽扣、掐掌心）泄露内心状态，最终以走廊反光暗示第三方存在，形成开放式悬疑。",
+  "scene_phases": [
+    {
+      "phase_id": "P01",
+      "beat_ids": [
+        "1",
+        "2"
+      ],
+      "dramatic_function": "建立对峙场景，展示两人初始状态与林晚的防御性否认。",
+      "audience_state": {
+        "knows": [
+          "顾沉在暗房外等待，林晚从暗房内出来"
+        ],
+        "question_shift": "林晚为何如此不耐烦？她是否在隐瞒什么？",
+        "suspects": [
+          "林晚可能与胶片事件有关"
+        ],
+        "withholds": [
+          "顾沉持有的具体证据"
+        ]
+      },
+      "emotion": {
+        "state": "紧张、防御",
+        "intensity_hint": "中等",
+        "trigger": "顾沉的等待与林晚的出现",
+        "transition_reason": "从静态对峙转向言语交锋"
+      },
+      "power": {
+        "center_type": "RELATIONSHIP",
+        "center_ref": "character:19",
+        "description": "顾沉以沉默施加压力，林晚试图用言语掌控局面",
+        "shift": "从顾沉的静态施压转向林晚的主动否认"
+      },
+      "performance": [
+        {
+          "character_id": "19",
+          "objective": "通过沉默和姿态施加压力，观察林晚的反应",
+          "tactic": "保持静止，用目光和存在感制造压迫",
+          "turning_point": false,
+          "visible_behavior": "背靠墙壁，手插口袋，目光低垂，对林晚的出现不立即反应"
+        },
+        {
+          "character_id": "20",
+          "objective": "快速结束对话，撇清关系",
+          "tactic": "用不耐烦语气否认，身体侧开展示“无辜”，但细微动作泄露紧张",
+          "turning_point": false,
+          "visible_behavior": "拉开门逆光站立，语气不耐烦，身体侧开，手指捻纽扣"
+        }
+      ],
+      "edit": {
+        "cut_logic": "从顾沉的静态镜头切至林晚开门的逆光镜头，建立空间关系",
+        "hold_logic": "保持对峙的静止感，让观众感受紧张氛围",
+        "tempo": "缓慢",
+        "transition_motivation": "从环境建立过渡到人物互动"
+      },
+      "visual": {
+        "camera_rule": "顾沉用中景强调其孤立与等待；林晚用逆光剪影强调其从暗处出现",
+        "composition_rule": "利用门框分割画面，暗示两人之间的隔阂",
+        "movement_condition": "固定镜头为主，强调静态张力",
+        "visual_grammar": "逆光、阴影、门框构图"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:1",
+          "character:19",
+          "character:20"
+        ],
+        "hint_refs": [
+          "character:20"
+        ],
+        "withhold_refs": [
+          "beat:3",
+          "beat:4",
+          "beat:5"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "林晚的不耐烦和捻纽扣动作暗示她内心紧张，可能在隐瞒什么",
+            "support_refs": [
+              "beat:2",
+              "character:20"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉的沉默姿态是一种心理战术，旨在迫使林晚先开口或暴露破绽",
+            "support_refs": [
+              "beat:1",
+              "character:19"
+            ],
+            "purpose": "建立顾沉的观察者与施压者角色"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P02",
+      "beat_ids": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "dramatic_function": "展示关键物证，将指控与失踪照片关联，通过视觉对比强化证据，最终触及林晚的记忆问题。",
+      "audience_state": {
+        "knows": [
+          "顾沉持有胶片边缘，档案袋缺少照片，两者尺寸吻合"
+        ],
+        "question_shift": "林晚是否真的拿走了照片？她的“不记得”是真是假？",
+        "suspects": [
+          "林晚是嫌疑人，但可能失忆"
+        ],
+        "withholds": [
+          "工具关联的决定性线索"
+        ]
+      },
+      "emotion": {
+        "state": "恐惧、困惑、痛苦",
+        "intensity_hint": "高",
+        "trigger": "物证的逐步展示与直接质问",
+        "transition_reason": "从防御性否认转向面对具体证据的恐惧与茫然"
+      },
+      "power": {
+        "center_type": "INFORMATION",
+        "center_ref": "beat:3",
+        "description": "顾沉通过物证展示掌握信息优势，逐步剥夺林晚的辩解空间",
+        "shift": "从林晚的言语否认转向顾沉的物证压制"
+      },
+      "performance": [
+        {
+          "character_id": "19",
+          "objective": "用物证逐步施压，迫使林晚面对事实",
+          "tactic": "依次展示胶片边缘、指出照片缺失、进行视觉对比、直接质问",
+          "turning_point": true,
+          "visible_behavior": "从口袋抽出胶片边缘，举到光线中，直视林晚质问"
+        },
+        {
+          "character_id": "20",
+          "objective": "维持否认，但内心恐惧加剧",
+          "tactic": "从困惑到恐惧，最终以“不记得”回应",
+          "turning_point": true,
+          "visible_behavior": "表情从困惑转为恐惧，手指蜷缩掐掌心，血色褪尽，回答“不记得”"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在顾沉展示物证时切入特写，在林晚反应时切回中景，强调物证与反应的关联",
+        "hold_logic": "在关键物证特写和林晚恐惧表情上保持镜头，让观众消化信息",
+        "tempo": "逐渐加快",
+        "transition_motivation": "从物证展示过渡到直接质问，冲突升级"
+      },
+      "visual": {
+        "camera_rule": "物证用特写强调细节（锯齿状撕裂）；林晚反应用中近景捕捉表情变化",
+        "composition_rule": "利用光线突出胶片边缘的锯齿状撕裂，与档案袋撕裂形成视觉呼应",
+        "movement_condition": "物证展示时镜头轻微推进，强调其重要性",
+        "visual_grammar": "特写、光线对比、视觉呼应"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:3",
+          "beat:4",
+          "beat:5",
+          "beat:6"
+        ],
+        "hint_refs": [
+          "beat:7"
+        ],
+        "withhold_refs": [
+          "beat:8",
+          "beat:9"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "林晚的“不记得”可能是真实失忆，也可能是逃避责任的借口",
+            "support_refs": [
+              "beat:6",
+              "character:20"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉的质问策略是层层递进，从物证到直接指控，旨在击溃林晚的心理防线",
+            "support_refs": [
+              "beat:3",
+              "beat:4",
+              "beat:5",
+              "beat:6",
+              "character:19"
+            ],
+            "purpose": "构建顾沉作为调查者的逻辑性与压迫感"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P03",
+      "beat_ids": [
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "dramatic_function": "暗示林晚可能隐藏秘密或失忆，用工具关联坐实嫌疑，迫使她面对，最终以第三方观察和情绪崩溃收尾。",
+      "audience_state": {
+        "knows": [
+          "林晚使用过同一把剪刀，胶片与档案袋撕裂由同一工具造成"
+        ],
+        "question_shift": "林晚是否在伪装失忆？第三方观察者是谁？",
+        "suspects": [
+          "林晚很可能就是拿走照片的人，但可能有隐情"
+        ],
+        "withholds": [
+          "第三方观察者的身份与目的"
+        ]
+      },
+      "emotion": {
+        "state": "决绝、崩溃",
+        "intensity_hint": "极高",
+        "trigger": "工具关联的决定性线索与无法回避的指控",
+        "transition_reason": "从恐惧与茫然转向决绝的拒绝，最终彻底崩溃"
+      },
+      "power": {
+        "center_type": "OBJECT",
+        "center_ref": "beat:8",
+        "description": "工具（剪刀）的关联成为决定性证据，彻底剥夺林晚的辩解空间",
+        "shift": "从信息压制转向物证定论，林晚从抵抗转向崩溃"
+      },
+      "performance": [
+        {
+          "character_id": "19",
+          "objective": "用最后证据封堵退路，迫使林晚面对",
+          "tactic": "在林晚试图关门时指出工具关联",
+          "turning_point": false,
+          "visible_behavior": "在林晚拉门时冷静指出剪刀的关联"
+        },
+        {
+          "character_id": "20",
+          "objective": "拒绝继续对话，但被证据击中，最终崩溃",
+          "tactic": "从决绝关门到手僵住，最后滑坐在地崩溃",
+          "turning_point": true,
+          "visible_behavior": "转身要关门，手僵住，关门后滑坐在地抱头，满脸迷茫痛苦"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在顾沉指出工具关联时切入闪回暗示，在林晚崩溃时切回暗房内景",
+        "hold_logic": "在林晚崩溃的镜头上保持较长时间，让观众感受其痛苦",
+        "tempo": "从紧张对峙突然转为缓慢崩溃",
+        "transition_motivation": "从外部对峙转向内部崩溃，场景收尾"
+      },
+      "visual": {
+        "camera_rule": "闪回用快速剪辑暗示记忆；崩溃用固定镜头强调无助",
+        "composition_rule": "走廊反光用模糊处理暗示第三方；暗房内用封闭构图强调林晚的孤立",
+        "movement_condition": "崩溃时镜头缓慢后退，拉开距离",
+        "visual_grammar": "闪回暗示、反光悬念、封闭构图"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:7",
+          "beat:8",
+          "beat:9",
+          "beat:10"
+        ],
+        "hint_refs": [
+          "beat:10"
+        ],
+        "withhold_refs": [],
+        "audience_suspicions": [
+          {
+            "claim": "走廊阴影处的反光暗示可能有第三方在观察这场对峙",
+            "support_refs": [
+              "beat:10"
+            ]
+          },
+          {
+            "claim": "林晚的崩溃可能源于真实的记忆创伤，而非简单的罪行暴露",
+            "support_refs": [
+              "beat:10",
+              "character:20"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉离开时瞥见反光，暗示事件可能被第三方监控，为后续剧情埋下伏笔",
+            "support_refs": [
+              "beat:10",
+              "character:19"
+            ],
+            "purpose": "扩展悬疑范围，暗示更大阴谋"
+          },
+          {
+            "claim": "林晚的崩溃是长期压抑与瞬间冲击的结果，其“不记得”可能涉及更深层的心理创伤",
+            "support_refs": [
+              "beat:10",
+              "character:20"
+            ],
+            "purpose": "深化角色复杂性，为后续发展留空间"
+          }
+        ]
+      }
+    }
+  ],
+  "spatial_expression": [
+    "场景以暗房门外走廊为核心，利用门框分割内外空间。顾沉始终在门外（光线较亮区域），林晚从门内（黑暗区域）出现，逆光站立。对峙发生在门槛附近，象征两人之间的界限。最终林晚退回暗房内崩溃，顾沉离开走廊，第三方反光出现在走廊阴影处。"
+  ],
+  "prop_visual_strategy": [
+    "胶片边缘（锯齿状撕裂）与档案袋（袋口撕裂）作为核心物证，通过特写与光线对比强调其视觉关联。剪刀作为工具关联的暗示，通过闪回快速呈现。纽扣作为林晚紧张情绪的细微载体。"
+  ],
+  "shot_architecture_guidance": [
+    "采用三幕结构：1) 建立对峙（中景、逆光）；2) 物证展示与质问（特写、中近景交替）；3) 崩溃与悬念（固定镜头、闪回、反光）。整体节奏从缓慢紧张到快速交锋，最后以缓慢崩溃收尾。"
+  ],
+  "must_preserve": [
+    "逆光剪影效果",
+    "胶片边缘与档案袋撕裂的视觉呼应",
+    "林晚手指捻纽扣和掐掌心的细微动作",
+    "走廊阴影处的反光暗示"
+  ],
+  "must_avoid": [
+    "过度解释林晚的记忆问题",
+    "明确第三方观察者的身份",
+    "简化林晚崩溃的原因"
+  ],
+  "creative_risks": [
+    "在崩溃镜头中使用长时间固定镜头，考验观众耐心但增强真实感",
+    "闪回暗示仅用快速剪辑而非完整场景，保持悬念"
+  ],
+  "semantic_spec_version": "director_scene_strategy_semantic_spec_v2",
+  "compiler_version": "director_scene_strategy_ir_compiler_v2",
+  "strategy_version": "v3",
+  "authority_projection": {
+    "SOURCE_FACT": [
+      "scene identity",
+      "beats",
+      "dialogue",
+      "chronology",
+      "character/asset identity"
+    ],
+    "TREATMENT_INTENT": [
+      "dramatic objective",
+      "tone",
+      "intent"
+    ],
+    "BLOCKING_FACT": [
+      "spatial truth",
+      "entry/exit",
+      "screen direction"
+    ],
+    "DIRECTOR_CREATIVE_DECISION": [
+      "phase staging",
+      "audience/emotion/power",
+      "performance",
+      "edit",
+      "visual"
+    ]
+  },
+  "source_trace": {
+    "contract_scene_id": "book990402:e3:暗房惊魂（2）",
+    "beat_ids": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10"
+    ],
+    "character_ids": [
+      "19",
+      "20"
+    ],
+    "fact_ids": [],
+    "phases": [
+      {
+        "phase_id": "P01",
+        "beat_refs": [
+          "beat:1",
+          "beat:2"
+        ],
+        "reveal_refs": [
+          "beat:1",
+          "character:19",
+          "character:20"
+        ],
+        "hint_refs": [
+          "character:20"
+        ],
+        "withhold_refs": [
+          "beat:3",
+          "beat:4",
+          "beat:5"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "林晚的不耐烦和捻纽扣动作暗示她内心紧张，可能在隐瞒什么",
+            "support_refs": [
+              "beat:2",
+              "character:20"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉的沉默姿态是一种心理战术，旨在迫使林晚先开口或暴露破绽",
+            "support_refs": [
+              "beat:1",
+              "character:19"
+            ],
+            "purpose": "建立顾沉的观察者与施压者角色"
+          }
+        ]
+      },
+      {
+        "phase_id": "P02",
+        "beat_refs": [
+          "beat:3",
+          "beat:4",
+          "beat:5",
+          "beat:6"
+        ],
+        "reveal_refs": [
+          "beat:3",
+          "beat:4",
+          "beat:5",
+          "beat:6"
+        ],
+        "hint_refs": [
+          "beat:7"
+        ],
+        "withhold_refs": [
+          "beat:8",
+          "beat:9"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "林晚的“不记得”可能是真实失忆，也可能是逃避责任的借口",
+            "support_refs": [
+              "beat:6",
+              "character:20"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉的质问策略是层层递进，从物证到直接指控，旨在击溃林晚的心理防线",
+            "support_refs": [
+              "beat:3",
+              "beat:4",
+              "beat:5",
+              "beat:6",
+              "character:19"
+            ],
+            "purpose": "构建顾沉作为调查者的逻辑性与压迫感"
+          }
+        ]
+      },
+      {
+        "phase_id": "P03",
+        "beat_refs": [
+          "beat:7",
+          "beat:8",
+          "beat:9",
+          "beat:10"
+        ],
+        "reveal_refs": [
+          "beat:7",
+          "beat:8",
+          "beat:9",
+          "beat:10"
+        ],
+        "hint_refs": [
+          "beat:10"
+        ],
+        "withhold_refs": [],
+        "audience_suspicions": [
+          {
+            "claim": "走廊阴影处的反光暗示可能有第三方在观察这场对峙",
+            "support_refs": [
+              "beat:10"
+            ]
+          },
+          {
+            "claim": "林晚的崩溃可能源于真实的记忆创伤，而非简单的罪行暴露",
+            "support_refs": [
+              "beat:10",
+              "character:20"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉离开时瞥见反光，暗示事件可能被第三方监控，为后续剧情埋下伏笔",
+            "support_refs": [
+              "beat:10",
+              "character:19"
+            ],
+            "purpose": "扩展悬疑范围，暗示更大阴谋"
+          },
+          {
+            "claim": "林晚的崩溃是长期压抑与瞬间冲击的结果，其“不记得”可能涉及更深层的心理创伤",
+            "support_refs": [
+              "beat:10",
+              "character:20"
+            ],
+            "purpose": "深化角色复杂性，为后续发展留空间"
+          }
+        ]
+      }
+    ]
+  },
+  "creative_core_fingerprint": "bea3042ebe530dae1029ee2479719ed3384b92915586150f26b8c8b1e69f7138",
+  "strategy_fingerprint": "02057ca8e063869de11fdab47b93688bd7e7420504b94ae01253695a3f1c0116"
+}

@@ -1,0 +1,22 @@
+{
+  "canonical_valid": false,
+  "approval_blockers": [],
+  "future_support": 0,
+  "future_hint": 0,
+  "future_reveal": 0,
+  "director_approval": "BLOCKED",
+  "errors": [
+    {
+      "code": "UNKNOWN_IR_FIELD",
+      "fields": [
+        "authority_projection",
+        "compiler_version",
+        "creative_core_fingerprint",
+        "semantic_spec_version",
+        "source_trace",
+        "strategy_fingerprint",
+        "strategy_version"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "director-quality-v3-strategy-approval-repair-contract-v1",
+  "model": "mimo-v2.5",
+  "max_calls_per_scene": 1,
+  "retry": false,
+  "format_repair": false,
+  "semantic_repair": false
+}
