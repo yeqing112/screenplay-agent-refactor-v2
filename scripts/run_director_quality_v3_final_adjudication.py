@@ -37,6 +37,7 @@ def _records() -> list[dict[str, Any]]:
     return rows
 
 def _equivalence(runtime: dict[str, Any], provider: dict[str, Any]) -> dict[str, Any]:
+    from core.director_scene_strategy import build_contract_fingerprint_projection
     source, rsource = _d(provider.get("source_ref_contract")), _d(runtime.get("source_ref_contract"))
     pa, ra = source.get("beat_alias_table"), runtime.get("beat_alias_table")
     pids, rids = provider.get("allowed_source_refs", []), runtime.get("allowed_source_refs", [])
@@ -44,8 +45,8 @@ def _equivalence(runtime: dict[str, Any], provider: dict[str, Any]) -> dict[str,
     pchars, rchars = provider.get("allowed_character_ids", []), sorted(runtime.get("character_ids", []))
     provider_chars_context = provider.get("allowed_characters", [])
     runtime_chars_context = runtime.get("allowed_characters", [])
-    provider_projection = {"scene_id": provider.get("scene_id"), "allowed_beat_ids": pbeats, "allowed_character_ids": pchars, "allowed_characters": provider_chars_context, "source_ref_contract": source, "allowed_source_refs": pids}
-    runtime_projection = {"scene_id": runtime.get("scene_id"), "allowed_beat_ids": rbeats, "allowed_character_ids": rchars, "allowed_characters": runtime_chars_context, "source_ref_contract": rsource, "allowed_source_refs": rids}
+    provider_projection = build_contract_fingerprint_projection({"scene_id": provider.get("scene_id"), "allowed_beat_ids": pbeats, "allowed_character_ids": pchars, "allowed_characters": provider_chars_context, "book_id": runtime.get("book_id"), "source_ref_contract": source, "allowed_source_refs": pids})
+    runtime_projection = build_contract_fingerprint_projection({"scene_id": runtime.get("scene_id"), "allowed_beat_ids": rbeats, "allowed_character_ids": rchars, "allowed_characters": runtime_chars_context, "book_id": runtime.get("book_id"), "source_ref_contract": rsource, "allowed_source_refs": rids})
     return {"scene_id": runtime.get("scene_id"), "provider_beat_ids": pbeats, "runtime_beat_ids": rbeats, "beat_ids_equal": pbeats == rbeats, "provider_character_ids": pchars, "runtime_character_ids": rchars, "character_ids_equal": pchars == rchars, "provider_allowed_characters": provider_chars_context, "runtime_allowed_characters": runtime_chars_context, "allowed_characters_equal": provider_chars_context == runtime_chars_context, "provider_allowed_source_refs": pids, "runtime_allowed_source_refs": rids, "allowed_source_refs_equal": pids == rids, "provider_beat_alias_table_fingerprint": _fp(pa), "runtime_beat_alias_table_fingerprint": _fp(ra), "beat_alias_equal": pa == ra, "provider_source_ref_contract_fingerprint": _fp(source), "runtime_source_ref_contract_fingerprint": _fp(rsource), "source_ref_contract_equal": source == rsource, "provider_visible_contract_fingerprint": _fp(provider_projection), "runtime_validation_contract_fingerprint": _fp(runtime_projection), "contract_fingerprint_equal": _fp(provider_projection) == _fp(runtime_projection)}
 
 def _error_codes(errors: list[dict[str, Any]]) -> list[str]: return [_t(_d(e).get("code")) for e in errors if _t(_d(e).get("code"))]
