@@ -1,0 +1,4276 @@
+{
+  "schema_version": "director_v3_final_spine_topology_recanary_final_report_v1",
+  "status": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_BLOCKED",
+  "experiment_validity": "INVALID",
+  "failure_layer": "HARNESS_DATA_GAP_PRESERVE_TRACE_UNRESOLVED",
+  "no_further_recanary": true,
+  "execution_head_sha": "f396c1a",
+  "provider": {
+    "model": "mimo-v2.5",
+    "spine_calls": 3,
+    "skeleton_calls": 0,
+    "total_calls": 3,
+    "retries": 0
+  },
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "spine_request": {
+        "task": "director_v3_final_spine_topology_recanary",
+        "layer": "SPINE",
+        "scene_id": "book990402:e3:暗房惊魂",
+        "approved_revised_strategy": {
+          "creative_risks": [
+            "在P02阶段，可以尝试一个从档案袋视角拍摄林晚的主观镜头，暗示物证的‘注视’",
+            "在P03阶段，顾沉离开时，可以让他的影子长时间投射在林晚身上，象征压力的延续"
+          ],
+          "dramatic_objective": "在暗房的压抑空间中，通过顾沉对林晚的逐步试探与对峙，揭示林晚对关键物证档案袋的隐藏关注，并暗示她可能与失踪底片存在秘密关联，最终迫使她的情绪面具碎裂。",
+          "must_avoid": [
+            "过早揭示T恤下摆凸起物的具体内容",
+            "让顾沉表现出确定的指控，应保持试探性",
+            "林晚在场景结束前完全崩溃或说出真相"
+          ],
+          "must_preserve": [
+            "林晚指尖划过档案袋口的细微动作",
+            "林晚无意识碰触T恤下摆的动作",
+            "顾沉扫视林晚T恤下摆的视线",
+            "林晚手悬在档案袋上颤抖的最终画面"
+          ],
+          "prop_visual_strategy": [
+            "牛皮纸档案袋和剪下胶片是核心视觉道具，始终处于画面的显著位置或通过人物动作被强调。林晚T恤下摆的硬质凸起轮廓是隐藏的关键道具，通过她的无意识触碰和顾沉的视线引导被逐步揭示。"
+          ],
+          "scene_id": "book990402:e3:暗房惊魂",
+          "scene_phases": [
+            {
+              "phase_id": "P01",
+              "beat_ids": [
+                "1",
+                "2",
+                "3"
+              ],
+              "dramatic_function": "建立环境、引入物证并展示林晚的表面伪装，同时埋下她对档案袋异常关注的怀疑种子。",
+              "audience_state": {
+                "knows": [
+                  "暗房内有一个打开的档案袋和可疑的剪下胶片",
+                  "林晚在暗房工作"
+                ],
+                "question_shift": "从观察环境转向对林晚行为的细微观察",
+                "suspects": [
+                  "林晚对档案袋可能有隐藏的关注"
+                ],
+                "withholds": [
+                  "档案袋的具体内容和来源",
+                  "林晚的真实意图"
+                ]
+              },
+              "emotion": {
+                "intensity_hint": "低",
+                "state": "悬疑、不祥",
+                "transition_reason": "从静态环境展示过渡到人物行为的细微异常",
+                "trigger": "林晚划过档案袋口的指尖动作"
+              },
+              "power": {
+                "center_ref": "19",
+                "center_type": "CHARACTER",
+                "description": "林晚在暗房中占据主导，但她的注意力被档案袋分散",
+                "shift": "无"
+              },
+              "performance": [
+                {
+                  "character_id": "19",
+                  "objective": "维持懒散的工作表象，同时下意识地关注档案袋",
+                  "tactic": "用刻意的漫不经心掩盖内心的紧张",
+                  "turning_point": false,
+                  "visible_behavior": "将照片夹到晾干绳上，目光快速扫过档案袋，指尖极轻地划过袋口"
+                }
+              ],
+              "edit": {
+                "cut_logic": "从档案袋特写切到林晚工作的全景，再切回她手指与档案袋的特写",
+                "hold_logic": "在林晚手指划过袋口时短暂停留，强调动作的异常",
+                "tempo": "缓慢",
+                "transition_motivation": "建立空间感和人物状态，为后续冲突铺垫"
+              },
+              "visual": {
+                "camera_rule": "以林晚为视觉中心，档案袋作为重要视觉元素",
+                "composition_rule": "利用暗房的狭长空间和悬挂的相纸形成框架，将林晚置于其中",
+                "movement_condition": "固定机位为主，配合缓慢的推近",
+                "visual_grammar": "通过视线匹配和动作特写建立林晚与档案袋的潜在联系"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:1",
+                  "beat:2",
+                  "beat:3"
+                ],
+                "hint_refs": [
+                  "beat:1",
+                  "beat:3"
+                ],
+                "withhold_refs": [
+                  "beat:4",
+                  "beat:5",
+                  "beat:6",
+                  "beat:7",
+                  "beat:8",
+                  "beat:9",
+                  "beat:10",
+                  "beat:11"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚对档案袋的关注超出了正常范围",
+                    "support_refs": [
+                      "beat:3"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "林晚的指尖动作是下意识的，暴露了她对档案袋的在意",
+                    "support_refs": [
+                      "beat:3"
+                    ],
+                    "purpose": "为后续顾沉的试探提供视觉依据"
+                  }
+                ]
+              }
+            },
+            {
+              "phase_id": "P02",
+              "beat_ids": [
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
+              ],
+              "dramatic_function": "顾沉介入并通过对门锁、胶片来源、记忆等问题的层层试探，将冲突焦点锁定在林晚身上，迫使她的防御姿态不断升级。",
+              "audience_state": {
+                "knows": [
+                  "顾沉开始调查暗房事件",
+                  "门锁有松动痕迹",
+                  "林晚声称胶片是旧废片",
+                  "顾沉怀疑林晚可能失忆或隐瞒"
+                ],
+                "question_shift": "从林晚是否关注档案袋转向她是否与事件直接相关",
+                "suspects": [
+                  "林晚可能隐藏了失踪的底片",
+                  "林晚可能对自己的行为有所隐瞒或失忆"
+                ],
+                "withholds": [
+                  "顾沉的真实意图和掌握的全部信息",
+                  "林晚T恤下摆凸起物的具体内容"
+                ]
+              },
+              "emotion": {
+                "intensity_hint": "中",
+                "state": "紧张、对峙",
+                "transition_reason": "从悬疑氛围升级为直接的言语和心理对抗",
+                "trigger": "顾沉的连续质问和暗示"
+              },
+              "power": {
+                "center_ref": "20",
+                "center_type": "CHARACTER",
+                "description": "顾沉通过提问和观察逐渐掌控对话节奏，将压力施加给林晚",
+                "shift": "从林晚的伪装主导转向顾沉的试探主导"
+              },
+              "performance": [
+                {
+                  "character_id": "20",
+                  "objective": "通过试探性提问观察林晚的反应，寻找破绽",
+                  "tactic": "从外围问题（门锁）逐步切入核心（胶片、记忆）",
+                  "turning_point": false,
+                  "visible_behavior": "停在林晚身后，拿起档案袋，目光扫视林晚T恤下摆"
+                },
+                {
+                  "character_id": "19",
+                  "objective": "维持懒散表象，回避顾沉的试探，保护自己的秘密",
+                  "tactic": "用抱怨和反问掩饰紧张，但身体反应暴露真实情绪",
+                  "turning_point": true,
+                  "visible_behavior": "擦手动作微顿，无意识碰触T恤下摆，身体微微绷紧，瞳孔收缩，手指蜷缩掐掌心"
+                }
+              ],
+              "edit": {
+                "cut_logic": "在顾沉和林晚之间进行正反打，强调对话的对抗性；在关键反应（如林晚碰触T恤）时插入特写",
+                "hold_logic": "在林晚的防御性反应（如擦手微顿、掐掌心）上稍作停留",
+                "tempo": "逐渐加快",
+                "transition_motivation": "通过剪辑节奏反映对话压力的累积"
+              },
+              "visual": {
+                "camera_rule": "顾沉多采用俯拍或平视，林晚在压力下多采用仰拍或特写",
+                "composition_rule": "利用暗房的狭窄空间和悬挂物制造压迫感，两人常处于画面的对角线位置",
+                "movement_condition": "手持轻微晃动，增强不安感",
+                "visual_grammar": "通过视线匹配和反应镜头构建心理对抗"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:4",
+                  "beat:5",
+                  "beat:6",
+                  "beat:7",
+                  "beat:8",
+                  "beat:9"
+                ],
+                "hint_refs": [
+                  "beat:5",
+                  "beat:6",
+                  "beat:9"
+                ],
+                "withhold_refs": [
+                  "beat:10",
+                  "beat:11"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚T恤下摆的凸起物可能就是失踪的底片",
+                    "support_refs": [
+                      "beat:6"
+                    ]
+                  },
+                  {
+                    "claim": "顾沉可能已经掌握了更多关于林晚的信息",
+                    "support_refs": [
+                      "beat:9"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉的提问策略是精心设计的，旨在逐步瓦解林晚的心理防线",
+                    "support_refs": [
+                      "beat:5",
+                      "beat:7",
+                      "beat:9"
+                    ],
+                    "purpose": "展现顾沉的调查技巧和林晚的防御过程"
+                  },
+                  {
+                    "claim": "林晚的身体反应（碰触T恤、掐掌心）是无法完全控制的，暴露了她的秘密",
+                    "support_refs": [
+                      "beat:6",
+                      "beat:9"
+                    ],
+                    "purpose": "为观众提供判断林晚状态的视觉线索"
+                  }
+                ]
+              }
+            },
+            {
+              "phase_id": "P03",
+              "beat_ids": [
+                "10",
+                "11"
+              ],
+              "dramatic_function": "顾沉直接指向林晚，将冲突推向顶点，随后离开，留下林晚独自面对情绪崩溃和最终抉择。",
+              "audience_state": {
+                "knows": [
+                  "顾沉明确将林晚与失踪底片联系起来",
+                  "顾沉给出最后通牒"
+                ],
+                "question_shift": "从林晚是否有关联转向她将如何应对",
+                "suspects": [
+                  "林晚即将做出决定或暴露真相"
+                ],
+                "withholds": [
+                  "林晚最终的选择",
+                  "档案袋的完整内容"
+                ]
+              },
+              "emotion": {
+                "intensity_hint": "高",
+                "state": "恐惧、愤怒、崩溃",
+                "transition_reason": "从紧张对峙升级为情绪爆发和面具碎裂",
+                "trigger": "顾沉的直接指控和最后通牒"
+              },
+              "power": {
+                "center_ref": "19",
+                "center_type": "CHARACTER",
+                "description": "顾沉离开后，林晚独自面对内心冲突，权力中心回归到她身上，但处于崩溃状态",
+                "shift": "从顾沉的施压主导转向林晚的内心崩溃"
+              },
+              "performance": [
+                {
+                  "character_id": "20",
+                  "objective": "给出最后通牒，观察林晚的最终反应",
+                  "tactic": "直接点明怀疑，然后抽身离开，将压力完全留给林晚",
+                  "turning_point": false,
+                  "visible_behavior": "扫视林晚T恤下摆，提及下午有客人取照片后离开"
+                },
+                {
+                  "character_id": "19",
+                  "objective": "在伪装彻底碎裂后，面对自己的秘密和恐惧",
+                  "tactic": "从愤怒防御转向真实的困惑、恐惧和决绝",
+                  "turning_point": true,
+                  "visible_behavior": "下意识捂住T恤下摆，面具碎裂，露出复杂表情，手悬在档案袋上颤抖"
+                }
+              ],
+              "edit": {
+                "cut_logic": "顾沉离开时给林晚一个长镜头，捕捉她情绪变化的完整过程",
+                "hold_logic": "在林晚手悬在档案袋上颤抖的画面中长时间停留，强调她的内心挣扎",
+                "tempo": "缓慢",
+                "transition_motivation": "通过节奏放缓突出情绪的沉重和悬念的延续"
+              },
+              "visual": {
+                "camera_rule": "顾沉离开后，镜头完全聚焦于林晚",
+                "composition_rule": "林晚被档案袋和悬挂的相纸包围，象征她被秘密和选择所困",
+                "movement_condition": "固定机位，缓慢推近至林晚面部和手部特写",
+                "visual_grammar": "通过孤立的人物构图和特写强调内心的崩溃"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:10",
+                  "beat:11"
+                ],
+                "hint_refs": [
+                  "beat:10"
+                ],
+                "withhold_refs": [],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚最终会选择揭露秘密或继续隐藏",
+                    "support_refs": [
+                      "beat:11"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "林晚手悬在档案袋上的颤抖动作，象征着她内心在揭露与隐藏之间的剧烈挣扎",
+                    "support_refs": [
+                      "beat:11"
+                    ],
+                    "purpose": "将场景的悬念和情感张力推向高潮"
+                  }
+                ]
+              }
+            }
+          ],
+          "scene_question": "林晚是否与失踪的底片有关？她隐藏的秘密是什么？",
+          "schema_version": "director_scene_strategy_v3",
+          "shot_architecture_guidance": [
+            "建议采用‘建立-对峙-崩溃’的三段式镜头结构。第一阶段以环境镜头和人物中景为主，建立空间和状态。第二阶段以正反打和反应特写为主，强化对话冲突。第三阶段以林晚的孤立长镜头和特写为主，聚焦情绪崩溃。"
+          ],
+          "spatial_expression": [
+            "暗房是一个狭长、幽闭的空间，红色安全灯光营造出压抑和窥探的氛围。工作台、显影池、悬挂的相纸和晾干绳构成了主要的视觉元素。顾沉和林晚的对峙主要发生在工作台附近，空间的限制加剧了心理上的压迫感。"
+          ],
+          "strategy_summary": "采用三阶段递进策略：1. 建立环境与人物伪装（Beat 1-3），通过物证引入和林晚的细微异常行为埋下怀疑种子；2. 升级对峙与试探（Beat 4-9），顾沉通过门锁、胶片来源、记忆等话题层层施压，迫使林晚的防御姿态不断升级；3. 揭示与崩溃（Beat 10-11），顾沉直接指向林晚，最终离开后留下她独自面对情绪崩溃。整个过程强调信息的不对称释放和情绪的逐步累积。",
+          "visual_thesis": "暗房的幽闭空间与红色安全灯光营造出窥探与不安的氛围。视觉重心在林晚与档案袋、T恤下摆等关键物证之间的微妙互动上，通过特写和视线引导强化隐藏与暴露的张力。",
+          "semantic_spec_version": "director_scene_strategy_semantic_spec_v2",
+          "compiler_version": "director_scene_strategy_ir_compiler_v2",
+          "strategy_version": "v3",
+          "authority_projection": {
+            "SOURCE_FACT": [
+              "scene identity",
+              "beats",
+              "dialogue",
+              "chronology",
+              "character/asset identity"
+            ],
+            "TREATMENT_INTENT": [
+              "dramatic objective",
+              "tone",
+              "intent"
+            ],
+            "BLOCKING_FACT": [
+              "spatial truth",
+              "entry/exit",
+              "screen direction"
+            ],
+            "DIRECTOR_CREATIVE_DECISION": [
+              "phase staging",
+              "audience/emotion/power",
+              "performance",
+              "edit",
+              "visual"
+            ]
+          },
+          "source_trace": {
+            "contract_scene_id": "book990402:e3:暗房惊魂",
+            "beat_ids": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11"
+            ],
+            "character_ids": [
+              "19",
+              "20"
+            ],
+            "fact_ids": [],
+            "phases": [
+              {
+                "phase_id": "P01",
+                "beat_refs": [
+                  "beat:1",
+                  "beat:2",
+                  "beat:3"
+                ],
+                "reveal_refs": [
+                  "beat:1",
+                  "beat:2",
+                  "beat:3"
+                ],
+                "hint_refs": [
+                  "beat:1",
+                  "beat:3"
+                ],
+                "withhold_refs": [
+                  "beat:4",
+                  "beat:5",
+                  "beat:6",
+                  "beat:7",
+                  "beat:8",
+                  "beat:9",
+                  "beat:10",
+                  "beat:11"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚对档案袋的关注超出了正常范围",
+                    "support_refs": [
+                      "beat:3"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "林晚的指尖动作是下意识的，暴露了她对档案袋的在意",
+                    "support_refs": [
+                      "beat:3"
+                    ],
+                    "purpose": "为后续顾沉的试探提供视觉依据"
+                  }
+                ]
+              },
+              {
+                "phase_id": "P02",
+                "beat_refs": [
+                  "beat:4",
+                  "beat:5",
+                  "beat:6",
+                  "beat:7",
+                  "beat:8",
+                  "beat:9"
+                ],
+                "reveal_refs": [
+                  "beat:4",
+                  "beat:5",
+                  "beat:6",
+                  "beat:7",
+                  "beat:8",
+                  "beat:9"
+                ],
+                "hint_refs": [
+                  "beat:5",
+                  "beat:6",
+                  "beat:9"
+                ],
+                "withhold_refs": [
+                  "beat:10",
+                  "beat:11"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚T恤下摆的凸起物可能就是失踪的底片",
+                    "support_refs": [
+                      "beat:6"
+                    ]
+                  },
+                  {
+                    "claim": "顾沉可能已经掌握了更多关于林晚的信息",
+                    "support_refs": [
+                      "beat:9"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉的提问策略是精心设计的，旨在逐步瓦解林晚的心理防线",
+                    "support_refs": [
+                      "beat:5",
+                      "beat:7",
+                      "beat:9"
+                    ],
+                    "purpose": "展现顾沉的调查技巧和林晚的防御过程"
+                  },
+                  {
+                    "claim": "林晚的身体反应（碰触T恤、掐掌心）是无法完全控制的，暴露了她的秘密",
+                    "support_refs": [
+                      "beat:6",
+                      "beat:9"
+                    ],
+                    "purpose": "为观众提供判断林晚状态的视觉线索"
+                  }
+                ]
+              },
+              {
+                "phase_id": "P03",
+                "beat_refs": [
+                  "beat:10",
+                  "beat:11"
+                ],
+                "reveal_refs": [
+                  "beat:10",
+                  "beat:11"
+                ],
+                "hint_refs": [
+                  "beat:10"
+                ],
+                "withhold_refs": [],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚最终会选择揭露秘密或继续隐藏",
+                    "support_refs": [
+                      "beat:11"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "林晚手悬在档案袋上的颤抖动作，象征着她内心在揭露与隐藏之间的剧烈挣扎",
+                    "support_refs": [
+                      "beat:11"
+                    ],
+                    "purpose": "将场景的悬念和情感张力推向高潮"
+                  }
+                ]
+              }
+            ]
+          },
+          "creative_core_fingerprint": "b683d561e6bbdb720211497f3448347d9565e32edf3cf50dfb121f7cd30135ea",
+          "strategy_fingerprint": "27cfecbe84664d959c0926638ef23bbccf4cc94dc228f16839d1cb9b8b453556"
+        },
+        "scene_blocking": {
+          "scene_id": "book990402:e3:暗房惊魂",
+          "scene_name": "暗房惊魂",
+          "status": "approved",
+          "unknowns": [],
+          "participants": [
+            {
+              "character_id": "19",
+              "name": "林晚",
+              "position": "背对门口，站在工作台前；后转身靠在工作台边缘，双手抱臂；最后背对顾沉，整理晾干绳上的照片。",
+              "facing": null,
+              "anchor": null,
+              "source": "script_declared"
+            },
+            {
+              "character_id": "20",
+              "name": "顾沉",
+              "position": "倚在门框上；走进暗房停在林晚身后约两步远；走到工作台旁；走到暗房门口手搭门把。",
+              "facing": null,
+              "anchor": null,
+              "source": "script_declared"
+            }
+          ],
+          "source_spatial_facts": []
+        },
+        "authoritative_scene_beats": {
+          "scene_id": "book990402:e3:暗房惊魂",
+          "book_id": 990402,
+          "episode": 3,
+          "name": "暗房惊魂",
+          "beats": [
+            {
+              "beat_id": "1",
+              "dramatic_function": "引入关键物证，暗示暗房内曾发生可疑事件。",
+              "emotion_change": "营造悬疑、不祥的氛围。",
+              "event": "工作台上放着一个打开的牛皮纸档案袋，露出泛黄老照片一角，旁边散落着边缘有细微锯齿状撕裂痕迹的剪下胶片。",
+              "information_change": "观众首次看到档案袋和可疑胶片边缘。",
+              "type": "视觉证明引入"
+            },
+            {
+              "beat_id": "2",
+              "dramatic_function": "展示林晚的表面伪装，为后续冲突铺垫。",
+              "emotion_change": "强化林晚的懒散表象。",
+              "event": "林晚以刻意慵懒、漫不经心的态度工作，将显影好的模糊人影照片夹到晾干绳上。",
+              "information_change": "无。",
+              "type": "公开面具节拍"
+            },
+            {
+              "beat_id": "3",
+              "dramatic_function": "暗示林晚对档案袋有隐藏的关注或秘密。",
+              "emotion_change": "引发对林晚真实意图的怀疑。",
+              "event": "林晚在夹照片时，目光快速扫过档案袋，指尖极轻地划过袋口，随即收回。",
+              "information_change": "观众察觉林晚行为中的细微异常。",
+              "type": "隐藏层泄露种子"
+            },
+            {
+              "beat_id": "4",
+              "dramatic_function": "建立对峙，将冲突焦点锁定在物证上。",
+              "emotion_change": "紧张感开始累积。",
+              "event": "顾沉进入暗房，停在林晚身后，目光落在档案袋和胶片边缘上。",
+              "information_change": "顾沉开始介入调查。",
+              "type": "场景冲突视觉锚点"
+            },
+            {
+              "beat_id": "5",
+              "dramatic_function": "通过门锁问题试探林晚，引发初步防御反应。",
+              "emotion_change": "林晚从懒散转向轻微紧张。",
+              "event": "顾沉询问林晚昨晚是否锁好暗房门，并提及门锁有松动痕迹；林晚以懒散语气回应，但擦手动作微顿。",
+              "information_change": "透露门锁可能被动过，林晚反应异常。",
+              "type": "对话冲突"
+            },
+            {
+              "beat_id": "6",
+              "dramatic_function": "暗示林晚身上可能藏有物品，与失踪底片相关。",
+              "emotion_change": "加深对林晚的怀疑。",
+              "event": "林晚说“没丢什么贵重东西”时，右手无意识碰了碰T恤下摆的硬质凸起轮廓，随即抚平。",
+              "information_change": "观众注意到林晚的隐藏动作。",
+              "type": "隐藏层泄露种子"
+            },
+            {
+              "beat_id": "7",
+              "dramatic_function": "直接质问胶片来源，迫使林晚给出解释。",
+              "emotion_change": "林晚表现出不耐烦，但内心紧绷。",
+              "event": "顾沉拿起档案袋，询问底片是否由林晚整理；林晚声称是旧废片并剪了边角准备扔掉。",
+              "information_change": "林晚提供关于胶片的初步说辞。",
+              "type": "对话冲突"
+            },
+            {
+              "beat_id": "8",
+              "dramatic_function": "展示林晚用表面情绪掩盖真实反应。",
+              "emotion_change": "林晚的防御姿态增强。",
+              "event": "林晚以惯常的懒散抱怨语气质问顾沉是否在审问她，但身体微微绷紧。",
+              "information_change": "无。",
+              "type": "公开面具节拍"
+            },
+            {
+              "beat_id": "9",
+              "dramatic_function": "将冲突升级，触及林晚的记忆或秘密核心。",
+              "emotion_change": "林晚从不耐烦转向恐惧和困惑。",
+              "event": "顾沉暗示底片可能不是废片，并质问林晚是否“记得”是自己剪的；林晚瞳孔收缩，手指蜷缩掐掌心。",
+              "information_change": "顾沉提出林晚可能失忆或隐瞒的假设。",
+              "type": "对话冲突"
+            },
+            {
+              "beat_id": "10",
+              "dramatic_function": "将怀疑直接指向林晚，迫使她做出更激烈的反应。",
+              "emotion_change": "林晚的恐惧和愤怒达到高点。",
+              "event": "顾沉进一步暗示失踪的关键底片可能未丢，而是被某人“保管”，并扫视林晚T恤下摆；林晚下意识捂住该位置。",
+              "information_change": "顾沉明确将林晚与失踪底片联系起来。",
+              "type": "对话冲突"
+            },
+            {
+              "beat_id": "11",
+              "dramatic_function": "结束对峙，留下悬念和林晚的内心崩溃。",
+              "emotion_change": "林晚从伪装彻底转向真实情绪的混乱。",
+              "event": "顾沉离开暗房，提及下午有客人取照片，要求找出有用东西；林晚面具碎裂，露出困惑、恐惧和决绝，手悬在档案袋上颤抖。",
+              "information_change": "顾沉给出最后通牒，林晚情绪彻底暴露。",
+              "type": "场景结束"
+            }
+          ],
+          "participants": [
+            "19",
+            "20"
+          ],
+          "source": "approved_record.treatment.beat_map + approved_record.scene metadata"
+        },
+        "fact_snapshot": {
+          "scene_id": "book990402:e3:暗房惊魂",
+          "records": [],
+          "source_spatial_facts": [],
+          "scene_canonical": {},
+          "source": "approved_record.contract.immutable_projection.facts"
+        },
+        "character_identity_projection": [
+          {
+            "character_id": "19",
+            "canonical_name": "林晚",
+            "canonical_identity_id": "book:990402:character:19",
+            "scope": "book-level"
+          },
+          {
+            "character_id": "20",
+            "canonical_name": "顾沉",
+            "canonical_identity_id": "book:990402:character:20",
+            "scope": "book-level"
+          }
+        ],
+        "identity_binding_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+        "prop_canonical": {
+          "records": [],
+          "availability": "not_present_in_frozen_approved_record",
+          "source": "approved_record only"
+        },
+        "location_canonical": {
+          "records": [],
+          "availability": "not_present_in_frozen_approved_record",
+          "source": "approved_record only"
+        },
+        "must_preserve": [
+          "林晚指尖划过档案袋口的细微动作",
+          "林晚无意识碰触T恤下摆的动作",
+          "顾沉扫视林晚T恤下摆的视线",
+          "林晚手悬在档案袋上颤抖的最终画面"
+        ],
+        "must_preserve_trace": {
+          "schema_version": "must_preserve_trace_v1",
+          "scene_id": "book990402:e3:暗房惊魂",
+          "constraints": [
+            {
+              "constraint_id": "MP01",
+              "description": "林晚指尖划过档案袋口的细微动作",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP02",
+              "description": "林晚无意识碰触T恤下摆的动作",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP03",
+              "description": "顾沉扫视林晚T恤下摆的视线",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP04",
+              "description": "林晚手悬在档案袋上颤抖的最终画面",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            }
+          ],
+          "unresolved_count": 4,
+          "resolution_policy": "structured beat/event refs only; no prose similarity"
+        },
+        "must_avoid": [
+          "过早揭示T恤下摆凸起物的具体内容",
+          "让顾沉表现出确定的指控，应保持试探性",
+          "林晚在场景结束前完全崩溃或说出真相"
+        ],
+        "spine_contract": {
+          "required": [
+            "spine_summary",
+            "segments"
+          ],
+          "forbidden": [
+            "shot_size",
+            "camera_position",
+            "camera_movement",
+            "lens"
+          ]
+        }
+      },
+      "spine_request_fingerprint": "0a87ccb53dbdfa7999661a4c95df6c95e99296655184a6b31fc262f3f45591ce",
+      "provider_errors": [],
+      "spine": {
+        "raw_parse": "PASS",
+        "raw_response": "```json\n{\n  \"spine_summary\": \"暗房惊魂：三阶段递进式心理对峙。第一阶段（P01）建立幽闭空间与物证，通过林晚对档案袋的细微异常动作埋下怀疑种子。第二阶段（P02）顾沉介入，通过门锁、胶片来源、记忆等话题层层试探，迫使林晚的防御姿态不断升级，其身体反应（碰触T恤、掐掌心）暴露秘密。第三阶段（P03）顾沉直接指向林晚后离开，留下她独自面对情绪崩溃，手悬在档案袋上颤抖，悬念达到高潮。\",\n  \"segments\": [\n    {\n      \"segment_id\": \"S01\",\n      \"phase_id\": \"P01\",\n      \"beat_range\": [\"1\", \"2\", \"3\"],\n      \"segment_summary\": \"建立环境与伪装。暗房内，打开的档案袋与剪下胶片作为核心物证被引入。林晚以慵懒姿态工作，但指尖划过档案袋口的细微动作，暗示其隐藏的关注。\",\n      \"key_actions\": [\n        \"工作台上放置打开的牛皮纸档案袋与剪下胶片\",\n        \"林晚将照片夹到晾干绳上\",\n        \"林晚目光扫过档案袋，指尖极轻划过袋口\"\n      ],\n      \"emotional_arc\": \"悬疑、不祥 → 对林晚行为的细微怀疑\",\n      \"information_flow\": \"揭示：暗房内有可疑物证。隐藏：档案袋具体内容、林晚真实意图。引导观众怀疑：林晚对档案袋的关注超出正常范围。\"\n    },\n    {\n      \"segment_id\": \"S02\",\n      \"phase_id\": \"P02\",\n      \"beat_range\": [\"4\", \"5\", \"6\", \"7\", \"8\", \"9\"],\n      \"segment_summary\": \"试探与对峙。顾沉介入，从门锁问题切入，逐步质问胶片来源与林晚的记忆。林晚用懒散抱怨掩饰紧张，但无意识碰触T恤下摆、掐掌心等身体反应暴露其秘密与恐惧。\",\n      \"key_actions\": [\n        \"顾沉停在林晚身后，目光落在物证上\",\n        \"顾沉询问门锁情况，林晚擦手动作微顿\",\n        \"林晚无意识碰触T恤下摆硬质凸起\",\n        \"顾沉拿起档案袋质问胶片来源\",\n        \"林晚以抱怨掩饰，身体绷紧\",\n        \"顾沉暗示林晚可能失忆，林晚瞳孔收缩、掐掌心\"\n      ],\n      \"emotional_arc\": \"紧张累积 → 恐惧与困惑升级\",\n      \"information_flow\": \"揭示：门锁松动、林晚对胶片的说辞。隐藏：顾沉全部掌握的信息、T恤下摆凸起物内容。引导观众怀疑：林晚可能藏有失踪底片，顾沉掌握更多信息。\"\n    },\n    {\n      \"segment_id\": \"S03\",\n      \"phase_id\": \"P03\",\n      \"beat_range\": [\"10\", \"11\"],\n      \"segment_summary\": \"揭示与崩溃。顾沉直接将林晚与失踪底片联系，扫视其T恤下摆后离开。林晚面具碎裂，独自面对恐惧与决绝，手悬在档案袋上颤抖，内心挣扎达到顶点。\",\n      \"key_actions\": [\n        \"顾沉扫视林晚T恤下摆，暗示底片被“保管”\",\n        \"林晚下意识捂住T恤下摆\",\n        \"顾沉离开，给出最后通牒\",\n        \"林晚面具碎裂，手悬在档案袋上颤抖\"\n      ],\n      \"emotional_arc\": \"恐惧与愤怒高点 → 情绪崩溃与内心挣扎\",\n      \"information_flow\": \"揭示：顾沉明确怀疑林晚。隐藏：林晚最终选择。引导观众期待：林晚将如何应对，秘密是否会被揭露。\"\n    }\n  ]\n}\n```",
+        "ir": {
+          "schema_version": "visual_editorial_spine_ir_v1",
+          "scene_id": "book990402:e3:暗房惊魂",
+          "strategy_fingerprint": "8a98151b7e7e2801b8daa5d576003da529717f61796dce491c2aa791037f3c04",
+          "spine_summary": "暗房惊魂：三阶段递进式心理对峙。第一阶段（P01）建立幽闭空间与物证，通过林晚对档案袋的细微异常动作埋下怀疑种子。第二阶段（P02）顾沉介入，通过门锁、胶片来源、记忆等话题层层试探，迫使林晚的防御姿态不断升级，其身体反应（碰触T恤、掐掌心）暴露秘密。第三阶段（P03）顾沉直接指向林晚后离开，留下她独自面对情绪崩溃，手悬在档案袋上颤抖，悬念达到高潮。",
+          "segments": [
+            {
+              "segment_key": "SEG01",
+              "phase_ids": [],
+              "beat_refs": [],
+              "dramatic_function": "",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            },
+            {
+              "segment_key": "SEG02",
+              "phase_ids": [],
+              "beat_refs": [],
+              "dramatic_function": "",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            },
+            {
+              "segment_key": "SEG03",
+              "phase_ids": [],
+              "beat_refs": [],
+              "dramatic_function": "",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            }
+          ]
+        },
+        "canonical": null,
+        "protocol": {
+          "status": "FAIL",
+          "errors": [
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "beat_range"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "emotional_arc"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "information_flow"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "key_actions"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "beat_range"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "emotional_arc"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "information_flow"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "key_actions"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "beat_range"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "emotional_arc"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "information_flow"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "key_actions"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "segment_summary"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG01"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG02"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG03"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:1"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:10"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:11"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:2"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:3"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:4"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:5"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:6"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:7"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:8"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:9"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P01"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P02"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP01"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP02"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP04"
+            }
+          ]
+        },
+        "authority": {
+          "status": "UNSAFE",
+          "violations": [
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "beat_range"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "emotional_arc"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "information_flow"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "key_actions"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "beat_range"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "emotional_arc"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "information_flow"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "key_actions"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "beat_range"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "emotional_arc"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "information_flow"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "key_actions"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "segment_summary"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG01"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG02"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG03"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:1"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:10"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:11"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:2"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:3"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:4"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:5"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:6"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:7"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:8"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:9"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P01"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P02"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP01"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP02"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP04"
+            }
+          ]
+        },
+        "coverage": {
+          "status": "FAIL",
+          "covered_beats": [],
+          "covered_phases": []
+        },
+        "director_qa": {
+          "signal": "SPINE_INVALID",
+          "metrics": {
+            "visual_progression": true,
+            "attention_design": false,
+            "information_progression": false,
+            "performance_pressure": false,
+            "editorial_rhythm": false,
+            "spatial_focus": false,
+            "strategy_fidelity": false,
+            "non_mechanical_structure": true,
+            "shift_dimensions": 0,
+            "mechanical_beat_to_segment": false
+          }
+        },
+        "valid": false
+      },
+      "skeleton_request": null,
+      "skeleton": {
+        "skipped": true,
+        "reason": "SPINE_HARD_GATE_FAILED"
+      },
+      "binding": {
+        "binding_status": "SKIPPED",
+        "edges": [],
+        "errors": []
+      }
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "spine_request": {
+        "task": "director_v3_final_spine_topology_recanary",
+        "layer": "SPINE",
+        "scene_id": "book990402:e3:暗房惊魂（2）",
+        "approved_revised_strategy": {
+          "creative_risks": [
+            "在崩溃镜头中使用长时间固定镜头，考验观众耐心但增强真实感",
+            "闪回暗示仅用快速剪辑而非完整场景，保持悬念"
+          ],
+          "dramatic_objective": "通过顾沉与林晚在暗房门外的对峙，逐步揭示物证关联，迫使林晚面对记忆空白，最终以第三方观察的暗示和林晚的情绪崩溃收尾，强化悬疑感。",
+          "must_avoid": [
+            "过度解释林晚的记忆问题",
+            "明确第三方观察者的身份",
+            "简化林晚崩溃的原因"
+          ],
+          "must_preserve": [
+            "逆光剪影效果",
+            "胶片边缘与档案袋撕裂的视觉呼应",
+            "林晚手指捻纽扣和掐掌心的细微动作",
+            "走廊阴影处的反光暗示"
+          ],
+          "prop_visual_strategy": [
+            "胶片边缘（锯齿状撕裂）与档案袋（袋口撕裂）作为核心物证，通过特写与光线对比强调其视觉关联。剪刀作为工具关联的暗示，通过闪回快速呈现。纽扣作为林晚紧张情绪的细微载体。"
+          ],
+          "scene_id": "book990402:e3:暗房惊魂（2）",
+          "scene_phases": [
+            {
+              "phase_id": "P01",
+              "beat_ids": [
+                "1",
+                "2"
+              ],
+              "dramatic_function": "建立对峙场景，展示两人初始状态与林晚的防御性否认。",
+              "audience_state": {
+                "knows": [
+                  "顾沉在暗房外等待，林晚从暗房内出来"
+                ],
+                "question_shift": "林晚为何如此不耐烦？她是否在隐瞒什么？",
+                "suspects": [
+                  "林晚可能与胶片事件有关"
+                ],
+                "withholds": [
+                  "顾沉持有的具体证据"
+                ]
+              },
+              "emotion": {
+                "state": "紧张、防御",
+                "intensity_hint": "中等",
+                "trigger": "顾沉的等待与林晚的出现",
+                "transition_reason": "从静态对峙转向言语交锋"
+              },
+              "power": {
+                "center_type": "RELATIONSHIP",
+                "center_ref": "character:20",
+                "description": "顾沉以沉默施加压力，林晚试图用言语掌控局面",
+                "shift": "从顾沉的静态施压转向林晚的主动否认"
+              },
+              "performance": [
+                {
+                  "character_id": "20",
+                  "objective": "通过沉默和姿态施加压力，观察林晚的反应",
+                  "tactic": "保持静止，用目光和存在感制造压迫",
+                  "turning_point": false,
+                  "visible_behavior": "背靠墙壁，手插口袋，目光低垂，对林晚的出现不立即反应"
+                },
+                {
+                  "character_id": "19",
+                  "objective": "快速结束对话，撇清关系",
+                  "tactic": "用不耐烦语气否认，身体侧开展示“无辜”，但细微动作泄露紧张",
+                  "turning_point": false,
+                  "visible_behavior": "拉开门逆光站立，语气不耐烦，身体侧开，手指捻纽扣"
+                }
+              ],
+              "edit": {
+                "cut_logic": "从顾沉的静态镜头切至林晚开门的逆光镜头，建立空间关系",
+                "hold_logic": "保持对峙的静止感，让观众感受紧张氛围",
+                "tempo": "缓慢",
+                "transition_motivation": "从环境建立过渡到人物互动"
+              },
+              "visual": {
+                "camera_rule": "顾沉用中景强调其孤立与等待；林晚用逆光剪影强调其从暗处出现",
+                "composition_rule": "利用门框分割画面，暗示两人之间的隔阂",
+                "movement_condition": "固定镜头为主，强调静态张力",
+                "visual_grammar": "逆光、阴影、门框构图"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:1",
+                  "character:20",
+                  "character:19"
+                ],
+                "hint_refs": [
+                  "character:19"
+                ],
+                "withhold_refs": [
+                  "beat:3",
+                  "beat:4",
+                  "beat:5"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚的不耐烦和捻纽扣动作暗示她内心紧张，可能在隐瞒什么",
+                    "support_refs": [
+                      "beat:2",
+                      "character:19"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉的沉默姿态是一种心理战术，旨在迫使林晚先开口或暴露破绽",
+                    "support_refs": [
+                      "beat:1",
+                      "character:20"
+                    ],
+                    "purpose": "建立顾沉的观察者与施压者角色"
+                  }
+                ]
+              }
+            },
+            {
+              "phase_id": "P02",
+              "beat_ids": [
+                "3",
+                "4",
+                "5",
+                "6"
+              ],
+              "dramatic_function": "展示关键物证，将指控与失踪照片关联，通过视觉对比强化证据，最终触及林晚的记忆问题。",
+              "audience_state": {
+                "knows": [
+                  "顾沉持有胶片边缘，档案袋缺少照片，两者尺寸吻合"
+                ],
+                "question_shift": "林晚是否真的拿走了照片？她的“不记得”是真是假？",
+                "suspects": [
+                  "林晚是嫌疑人，但可能失忆"
+                ],
+                "withholds": [
+                  "工具关联的决定性线索"
+                ]
+              },
+              "emotion": {
+                "state": "恐惧、困惑、痛苦",
+                "intensity_hint": "高",
+                "trigger": "物证的逐步展示与直接质问",
+                "transition_reason": "从防御性否认转向面对具体证据的恐惧与茫然"
+              },
+              "power": {
+                "center_type": "INFORMATION",
+                "center_ref": "beat:3",
+                "description": "顾沉通过物证展示掌握信息优势，逐步剥夺林晚的辩解空间",
+                "shift": "从林晚的言语否认转向顾沉的物证压制"
+              },
+              "performance": [
+                {
+                  "character_id": "20",
+                  "objective": "用物证逐步施压，迫使林晚面对事实",
+                  "tactic": "依次展示胶片边缘、指出照片缺失、进行视觉对比、直接质问",
+                  "turning_point": true,
+                  "visible_behavior": "从口袋抽出胶片边缘，举到光线中，直视林晚质问"
+                },
+                {
+                  "character_id": "19",
+                  "objective": "维持否认，但内心恐惧加剧",
+                  "tactic": "从困惑到恐惧，最终以“不记得”回应",
+                  "turning_point": true,
+                  "visible_behavior": "表情从困惑转为恐惧，手指蜷缩掐掌心，血色褪尽，回答“不记得”"
+                }
+              ],
+              "edit": {
+                "cut_logic": "在顾沉展示物证时切入特写，在林晚反应时切回中景，强调物证与反应的关联",
+                "hold_logic": "在关键物证特写和林晚恐惧表情上保持镜头，让观众消化信息",
+                "tempo": "逐渐加快",
+                "transition_motivation": "从物证展示过渡到直接质问，冲突升级"
+              },
+              "visual": {
+                "camera_rule": "物证用特写强调细节（锯齿状撕裂）；林晚反应用中近景捕捉表情变化",
+                "composition_rule": "利用光线突出胶片边缘的锯齿状撕裂，与档案袋撕裂形成视觉呼应",
+                "movement_condition": "物证展示时镜头轻微推进，强调其重要性",
+                "visual_grammar": "特写、光线对比、视觉呼应"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:3",
+                  "beat:4",
+                  "beat:5",
+                  "beat:6"
+                ],
+                "hint_refs": [],
+                "withhold_refs": [
+                  "beat:8",
+                  "beat:9"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚的“不记得”可能是真实失忆，也可能是逃避责任的借口",
+                    "support_refs": [
+                      "beat:6",
+                      "character:19"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉的质问策略是层层递进，从物证到直接指控，旨在击溃林晚的心理防线",
+                    "support_refs": [
+                      "beat:3",
+                      "beat:4",
+                      "beat:5",
+                      "beat:6",
+                      "character:20"
+                    ],
+                    "purpose": "构建顾沉作为调查者的逻辑性与压迫感"
+                  }
+                ]
+              }
+            },
+            {
+              "phase_id": "P03",
+              "beat_ids": [
+                "7",
+                "8",
+                "9",
+                "10"
+              ],
+              "dramatic_function": "暗示林晚可能隐藏秘密或失忆，用工具关联坐实嫌疑，迫使她面对，最终以第三方观察和情绪崩溃收尾。",
+              "audience_state": {
+                "knows": [
+                  "林晚使用过同一把剪刀，胶片与档案袋撕裂由同一工具造成"
+                ],
+                "question_shift": "林晚是否在伪装失忆？第三方观察者是谁？",
+                "suspects": [
+                  "林晚很可能就是拿走照片的人，但可能有隐情"
+                ],
+                "withholds": [
+                  "第三方观察者的身份与目的"
+                ]
+              },
+              "emotion": {
+                "state": "决绝、崩溃",
+                "intensity_hint": "极高",
+                "trigger": "工具关联的决定性线索与无法回避的指控",
+                "transition_reason": "从恐惧与茫然转向决绝的拒绝，最终彻底崩溃"
+              },
+              "power": {
+                "center_type": "OBJECT",
+                "center_ref": "beat:8",
+                "description": "工具（剪刀）的关联成为决定性证据，彻底剥夺林晚的辩解空间",
+                "shift": "从信息压制转向物证定论，林晚从抵抗转向崩溃"
+              },
+              "performance": [
+                {
+                  "character_id": "20",
+                  "objective": "用最后证据封堵退路，迫使林晚面对",
+                  "tactic": "在林晚试图关门时指出工具关联",
+                  "turning_point": false,
+                  "visible_behavior": "在林晚拉门时冷静指出剪刀的关联"
+                },
+                {
+                  "character_id": "19",
+                  "objective": "拒绝继续对话，但被证据击中，最终崩溃",
+                  "tactic": "从决绝关门到手僵住，最后滑坐在地崩溃",
+                  "turning_point": true,
+                  "visible_behavior": "转身要关门，手僵住，关门后滑坐在地抱头，满脸迷茫痛苦"
+                }
+              ],
+              "edit": {
+                "cut_logic": "在顾沉指出工具关联时切入闪回暗示，在林晚崩溃时切回暗房内景",
+                "hold_logic": "在林晚崩溃的镜头上保持较长时间，让观众感受其痛苦",
+                "tempo": "从紧张对峙突然转为缓慢崩溃",
+                "transition_motivation": "从外部对峙转向内部崩溃，场景收尾"
+              },
+              "visual": {
+                "camera_rule": "闪回用快速剪辑暗示记忆；崩溃用固定镜头强调无助",
+                "composition_rule": "走廊反光用模糊处理暗示第三方；暗房内用封闭构图强调林晚的孤立",
+                "movement_condition": "崩溃时镜头缓慢后退，拉开距离",
+                "visual_grammar": "闪回暗示、反光悬念、封闭构图"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:7",
+                  "beat:8",
+                  "beat:9",
+                  "beat:10"
+                ],
+                "hint_refs": [
+                  "beat:10"
+                ],
+                "withhold_refs": [],
+                "audience_suspicions": [
+                  {
+                    "claim": "走廊阴影处的反光暗示可能有第三方在观察这场对峙",
+                    "support_refs": [
+                      "beat:10"
+                    ]
+                  },
+                  {
+                    "claim": "林晚的崩溃可能源于真实的记忆创伤，而非简单的罪行暴露",
+                    "support_refs": [
+                      "beat:10",
+                      "character:19"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉离开时瞥见反光，暗示事件可能被第三方监控，为后续剧情埋下伏笔",
+                    "support_refs": [
+                      "beat:10",
+                      "character:20"
+                    ],
+                    "purpose": "扩展悬疑范围，暗示更大阴谋"
+                  },
+                  {
+                    "claim": "林晚的崩溃是长期压抑与瞬间冲击的结果，其“不记得”可能涉及更深层的心理创伤",
+                    "support_refs": [
+                      "beat:10",
+                      "character:19"
+                    ],
+                    "purpose": "深化角色复杂性，为后续发展留空间"
+                  }
+                ]
+              }
+            }
+          ],
+          "scene_question": "林晚是否真的拿走了照片并剪下边缘？她的失忆是真实还是伪装？",
+          "schema_version": "director_scene_strategy_v3",
+          "shot_architecture_guidance": [
+            "采用三幕结构：1) 建立对峙（中景、逆光）；2) 物证展示与质问（特写、中近景交替）；3) 崩溃与悬念（固定镜头、闪回、反光）。整体节奏从缓慢紧张到快速交锋，最后以缓慢崩溃收尾。"
+          ],
+          "spatial_expression": [
+            "场景以暗房门外走廊为核心，利用门框分割内外空间。顾沉始终在门外（光线较亮区域），林晚从门内（黑暗区域）出现，逆光站立。对峙发生在门槛附近，象征两人之间的界限。最终林晚退回暗房内崩溃，顾沉离开走廊，第三方反光出现在走廊阴影处。"
+          ],
+          "strategy_summary": "采用三阶段递进结构：1) 建立对峙与初步否认；2) 通过物证展示与质问将冲突推向顶点；3) 以工具关联坐实嫌疑并以崩溃收尾。视觉上强调逆光、特写与闪回，强化物证说服力与角色内心挣扎。",
+          "visual_thesis": "利用暗房的逆光与阴影制造视觉压迫感，通过胶片边缘、档案袋撕裂痕迹的特写建立物证关联，以林晚手指的细微动作（捻纽扣、掐掌心）泄露内心状态，最终以走廊反光暗示第三方存在，形成开放式悬疑。",
+          "semantic_spec_version": "director_scene_strategy_semantic_spec_v2",
+          "compiler_version": "director_scene_strategy_ir_compiler_v2",
+          "strategy_version": "v3",
+          "authority_projection": {
+            "SOURCE_FACT": [
+              "scene identity",
+              "beats",
+              "dialogue",
+              "chronology",
+              "character/asset identity"
+            ],
+            "TREATMENT_INTENT": [
+              "dramatic objective",
+              "tone",
+              "intent"
+            ],
+            "BLOCKING_FACT": [
+              "spatial truth",
+              "entry/exit",
+              "screen direction"
+            ],
+            "DIRECTOR_CREATIVE_DECISION": [
+              "phase staging",
+              "audience/emotion/power",
+              "performance",
+              "edit",
+              "visual"
+            ]
+          },
+          "source_trace": {
+            "contract_scene_id": "book990402:e3:暗房惊魂（2）",
+            "beat_ids": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "character_ids": [
+              "19",
+              "20"
+            ],
+            "fact_ids": [],
+            "phases": [
+              {
+                "phase_id": "P01",
+                "beat_refs": [
+                  "beat:1",
+                  "beat:2"
+                ],
+                "reveal_refs": [
+                  "beat:1",
+                  "character:20",
+                  "character:19"
+                ],
+                "hint_refs": [
+                  "character:19"
+                ],
+                "withhold_refs": [
+                  "beat:3",
+                  "beat:4",
+                  "beat:5"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚的不耐烦和捻纽扣动作暗示她内心紧张，可能在隐瞒什么",
+                    "support_refs": [
+                      "beat:2",
+                      "character:19"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉的沉默姿态是一种心理战术，旨在迫使林晚先开口或暴露破绽",
+                    "support_refs": [
+                      "beat:1",
+                      "character:20"
+                    ],
+                    "purpose": "建立顾沉的观察者与施压者角色"
+                  }
+                ]
+              },
+              {
+                "phase_id": "P02",
+                "beat_refs": [
+                  "beat:3",
+                  "beat:4",
+                  "beat:5",
+                  "beat:6"
+                ],
+                "reveal_refs": [
+                  "beat:3",
+                  "beat:4",
+                  "beat:5",
+                  "beat:6"
+                ],
+                "hint_refs": [],
+                "withhold_refs": [
+                  "beat:8",
+                  "beat:9"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "林晚的“不记得”可能是真实失忆，也可能是逃避责任的借口",
+                    "support_refs": [
+                      "beat:6",
+                      "character:19"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉的质问策略是层层递进，从物证到直接指控，旨在击溃林晚的心理防线",
+                    "support_refs": [
+                      "beat:3",
+                      "beat:4",
+                      "beat:5",
+                      "beat:6",
+                      "character:20"
+                    ],
+                    "purpose": "构建顾沉作为调查者的逻辑性与压迫感"
+                  }
+                ]
+              },
+              {
+                "phase_id": "P03",
+                "beat_refs": [
+                  "beat:7",
+                  "beat:8",
+                  "beat:9",
+                  "beat:10"
+                ],
+                "reveal_refs": [
+                  "beat:7",
+                  "beat:8",
+                  "beat:9",
+                  "beat:10"
+                ],
+                "hint_refs": [
+                  "beat:10"
+                ],
+                "withhold_refs": [],
+                "audience_suspicions": [
+                  {
+                    "claim": "走廊阴影处的反光暗示可能有第三方在观察这场对峙",
+                    "support_refs": [
+                      "beat:10"
+                    ]
+                  },
+                  {
+                    "claim": "林晚的崩溃可能源于真实的记忆创伤，而非简单的罪行暴露",
+                    "support_refs": [
+                      "beat:10",
+                      "character:19"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉离开时瞥见反光，暗示事件可能被第三方监控，为后续剧情埋下伏笔",
+                    "support_refs": [
+                      "beat:10",
+                      "character:20"
+                    ],
+                    "purpose": "扩展悬疑范围，暗示更大阴谋"
+                  },
+                  {
+                    "claim": "林晚的崩溃是长期压抑与瞬间冲击的结果，其“不记得”可能涉及更深层的心理创伤",
+                    "support_refs": [
+                      "beat:10",
+                      "character:19"
+                    ],
+                    "purpose": "深化角色复杂性，为后续发展留空间"
+                  }
+                ]
+              }
+            ]
+          },
+          "creative_core_fingerprint": "e44ecb51f48193677c0ea56a1145851ce1581a02c651f957c41b49c1e7c47794",
+          "strategy_fingerprint": "b64a0eb17db1709a148a8e9728101c45a8330ecf034966e9ba7ca1be3f8a0d60"
+        },
+        "scene_blocking": {
+          "scene_id": "book990402:e3:暗房惊魂（2）",
+          "scene_name": "暗房惊魂（2）",
+          "status": "approved",
+          "unknowns": [],
+          "participants": [
+            {
+              "character_id": "19",
+              "name": "林晚",
+              "position": "从暗房内拉开门，逆光站立；身体微微侧开；后退半步背抵门框；转身要关门；背对顾沉肩膀颤抖；关门后背靠门滑坐在地抱头。",
+              "facing": null,
+              "anchor": null,
+              "source": "script_declared"
+            },
+            {
+              "character_id": "20",
+              "name": "顾沉",
+              "position": "背靠暗房门外墙壁；目光低垂；抬眼扫视林晚和暗房内部；向前微微倾身；转身沿走廊离开；脚步微顿侧头扫视阴影处。",
+              "facing": null,
+              "anchor": null,
+              "source": "script_declared"
+            }
+          ],
+          "source_spatial_facts": []
+        },
+        "authoritative_scene_beats": {
+          "scene_id": "book990402:e3:暗房惊魂（2）",
+          "book_id": 990402,
+          "episode": 3,
+          "name": "暗房惊魂（2）",
+          "beats": [
+            {
+              "beat_id": "1",
+              "dramatic_function": "建立门外对峙场景，展示两人状态。",
+              "emotion_change": "延续紧张氛围。",
+              "event": "顾沉背靠暗房门外墙壁，手插口袋，目光低垂；林晚从暗房内拉开门，逆光站立。",
+              "information_change": "场景转换至门外，冲突延续。",
+              "type": "视觉证明引入"
+            },
+            {
+              "beat_id": "2",
+              "dramatic_function": "林晚试图撇清关系，但细微动作暴露紧张。",
+              "emotion_change": "林晚的防御中带有颤抖。",
+              "event": "林晚以不耐烦语气重申自己只是打工的，不清楚胶片原件，身体侧开展示暗房内部，但手指捻纽扣。",
+              "information_change": "林晚再次否认参与。",
+              "type": "对话冲突"
+            },
+            {
+              "beat_id": "3",
+              "dramatic_function": "展示关键物证，强化顾沉的指控依据。",
+              "emotion_change": "林晚的困惑和警惕加深。",
+              "event": "顾沉从口袋抽出另一只手，捏着一小截剪下的胶片边缘，锯齿状撕裂在晨光下可见。",
+              "information_change": "观众看到顾沉持有的具体证据。",
+              "type": "视觉证明1"
+            },
+            {
+              "beat_id": "4",
+              "dramatic_function": "将物证与失踪照片直接关联，缩小怀疑范围。",
+              "emotion_change": "林晚的恐惧加剧。",
+              "event": "顾沉指出档案袋中缺少关键老照片，且胶片边缘尺寸与该照片底片边框吻合。",
+              "information_change": "明确失踪照片的具体内容及物证关联。",
+              "type": "对话冲突"
+            },
+            {
+              "beat_id": "5",
+              "dramatic_function": "通过视觉对比强化物证的说服力。",
+              "emotion_change": "冲突达到新高点。",
+              "event": "顾沉将胶片边缘举到光线中，镜头特写其锯齿状撕裂与档案袋袋口撕裂痕迹的视觉呼应。",
+              "information_change": "观众直观看到物证间的潜在关联。",
+              "type": "视觉证明2"
+            },
+            {
+              "beat_id": "6",
+              "dramatic_function": "将指控推向顶点，触及林晚的记忆问题。",
+              "emotion_change": "林晚从恐惧转向茫然和痛苦。",
+              "event": "顾沉直接质问林晚是否自己拿走了照片并剪下边缘；林晚手指蜷缩掐掌心，血色褪尽，回答“不记得”。",
+              "information_change": "顾沉提出林晚是嫌疑人的直接假设。",
+              "type": "对话冲突"
+            },
+            {
+              "beat_id": "7",
+              "dramatic_function": "暗示林晚可能隐藏秘密或失忆。",
+              "emotion_change": "林晚的决绝开始浮现。",
+              "event": "林晚在顾沉质问时手指蜷缩掐掌心，与表面困惑形成反差。",
+              "information_change": "观众察觉林晚的深层反应。",
+              "type": "隐藏层泄露种子"
+            },
+            {
+              "beat_id": "8",
+              "dramatic_function": "用最后证据封堵林晚的退路，迫使她面对。",
+              "emotion_change": "林晚的决绝压过恐惧。",
+              "event": "林晚拒绝继续对话，转身要关门；顾沉指出胶片撕裂与档案袋撕裂由同一把剪刀造成，且昨天只有林晚用过。",
+              "information_change": "顾沉提供工具关联的决定性线索。",
+              "type": "对话冲突"
+            },
+            {
+              "beat_id": "9",
+              "dramatic_function": "通过视觉关联坐实林晚与物证的联系。",
+              "emotion_change": "冲突达到无法回避的程度。",
+              "event": "林晚拉门的手僵住，镜头暗示昨天下午林晚用老式剪刀裁剪包装纸的闪回。",
+              "information_change": "观众确认林晚使用过相关工具。",
+              "type": "视觉证明3"
+            },
+            {
+              "beat_id": "10",
+              "dramatic_function": "结束场景，留下多重悬念（反光、林晚崩溃）。",
+              "emotion_change": "以悬疑和角色痛苦收尾。",
+              "event": "林晚关门，顾沉离开时瞥见走廊阴影处反光；暗房内林晚滑坐在地抱头，满脸迷茫痛苦。",
+              "information_change": "暗示可能有第三方观察，林晚情绪彻底崩溃。",
+              "type": "强钩子结尾"
+            }
+          ],
+          "participants": [
+            "19",
+            "20"
+          ],
+          "source": "approved_record.treatment.beat_map + approved_record.scene metadata"
+        },
+        "fact_snapshot": {
+          "scene_id": "book990402:e3:暗房惊魂（2）",
+          "records": [],
+          "source_spatial_facts": [],
+          "scene_canonical": {},
+          "source": "approved_record.contract.immutable_projection.facts"
+        },
+        "character_identity_projection": [
+          {
+            "character_id": "19",
+            "canonical_name": "林晚",
+            "canonical_identity_id": "book:990402:character:19",
+            "scope": "book-level"
+          },
+          {
+            "character_id": "20",
+            "canonical_name": "顾沉",
+            "canonical_identity_id": "book:990402:character:20",
+            "scope": "book-level"
+          }
+        ],
+        "identity_binding_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+        "prop_canonical": {
+          "records": [],
+          "availability": "not_present_in_frozen_approved_record",
+          "source": "approved_record only"
+        },
+        "location_canonical": {
+          "records": [],
+          "availability": "not_present_in_frozen_approved_record",
+          "source": "approved_record only"
+        },
+        "must_preserve": [
+          "逆光剪影效果",
+          "胶片边缘与档案袋撕裂的视觉呼应",
+          "林晚手指捻纽扣和掐掌心的细微动作",
+          "走廊阴影处的反光暗示"
+        ],
+        "must_preserve_trace": {
+          "schema_version": "must_preserve_trace_v1",
+          "scene_id": "book990402:e3:暗房惊魂（2）",
+          "constraints": [
+            {
+              "constraint_id": "MP01",
+              "description": "逆光剪影效果",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP02",
+              "description": "胶片边缘与档案袋撕裂的视觉呼应",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP03",
+              "description": "林晚手指捻纽扣和掐掌心的细微动作",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP04",
+              "description": "走廊阴影处的反光暗示",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            }
+          ],
+          "unresolved_count": 4,
+          "resolution_policy": "structured beat/event refs only; no prose similarity"
+        },
+        "must_avoid": [
+          "过度解释林晚的记忆问题",
+          "明确第三方观察者的身份",
+          "简化林晚崩溃的原因"
+        ],
+        "spine_contract": {
+          "required": [
+            "spine_summary",
+            "segments"
+          ],
+          "forbidden": [
+            "shot_size",
+            "camera_position",
+            "camera_movement",
+            "lens"
+          ]
+        }
+      },
+      "spine_request_fingerprint": "71f84574d98596b4f2aa9b72a542082f8dac76309124c537991a0f7568cc3110",
+      "provider_errors": [],
+      "spine": {
+        "raw_parse": "PASS",
+        "raw_response": "```json\n{\n  \"spine_summary\": \"三阶段递进结构：1) 建立对峙与初步否认；2) 通过物证展示与质问将冲突推向顶点；3) 以工具关联坐实嫌疑并以崩溃收尾。视觉上强调逆光、特写与闪回，强化物证说服力与角色内心挣扎。\",\n  \"segments\": [\n    {\n      \"segment_id\": \"S01\",\n      \"phase_refs\": [\"P01\"],\n      \"beat_refs\": [\"beat:1\", \"beat:2\"],\n      \"dramatic_function\": \"建立对峙场景，展示两人初始状态与林晚的防御性否认。\",\n      \"visual_thesis\": \"利用暗房的逆光与阴影制造视觉压迫感，通过门框分割画面暗示两人隔阂。\",\n      \"spatial_expression\": \"顾沉在门外（光线较亮区域）背靠墙壁，林晚从门内（黑暗区域）拉开门逆光站立，对峙发生在门槛附近。\",\n      \"must_preserve_refs\": [\"MP01\"],\n      \"semantic_spec\": {\n        \"shot_scale\": [\"中景\", \"逆光剪影\"],\n        \"shot_purpose\": [\"建立空间关系\", \"展示人物状态\"],\n        \"shot_content\": [\"顾沉背靠墙壁\", \"林晚逆光站立\"],\n        \"shot_transition\": [\"从顾沉静态镜头切至林晚开门逆光镜头\"],\n        \"shot_hold\": [\"保持对峙静止感\"],\n        \"shot_tempo\": \"缓慢\",\n        \"shot_motivation\": \"从环境建立过渡到人物互动\"\n      }\n    },\n    {\n      \"segment_id\": \"S02\",\n      \"phase_refs\": [\"P02\"],\n      \"beat_refs\": [\"beat:3\", \"beat:4\", \"beat:5\", \"beat:6\"],\n      \"dramatic_function\": \"展示关键物证，将指控与失踪照片关联，通过视觉对比强化证据，最终触及林晚的记忆问题。\",\n      \"visual_thesis\": \"通过胶片边缘、档案袋撕裂痕迹的特写建立物证关联，以林晚手指的细微动作泄露内心状态。\",\n      \"spatial_expression\": \"对峙持续在门槛附近，顾沉展示物证，林晚反应。\",\n      \"must_preserve_refs\": [\"MP02\", \"MP03\"],\n      \"semantic_spec\": {\n        \"shot_scale\": [\"特写\", \"中近景\"],\n        \"shot_purpose\": [\"强调物证细节\", \"捕捉表情变化\"],\n        \"shot_content\": [\"胶片边缘锯齿状撕裂\", \"档案袋撕裂\", \"林晚恐惧表情\"],\n        \"shot_transition\": [\"在顾沉展示物证时切入特写\", \"在林晚反应时切回中景\"],\n        \"shot_hold\": [\"在关键物证特写和林晚恐惧表情上保持镜头\"],\n        \"shot_tempo\": \"逐渐加快\",\n        \"shot_motivation\": \"从物证展示过渡到直接质问，冲突升级\"\n      }\n    },\n    {\n      \"segment_id\": \"S03\",\n      \"phase_refs\": [\"P03\"],\n      \"beat_refs\": [\"beat:7\", \"beat:8\", \"beat:9\", \"beat:10\"],\n      \"dramatic_function\": \"暗示林晚可能隐藏秘密或失忆，用工具关联坐实嫌疑，迫使她面对，最终以第三方观察和情绪崩溃收尾。\",\n      \"visual_thesis\": \"以走廊反光暗示第三方存在，形成开放式悬疑；以林晚崩溃的固定镜头强调无助。\",\n      \"spatial_expression\": \"林晚退回暗房内崩溃，顾沉离开走廊，第三方反光出现在走廊阴影处。\",\n      \"must_preserve_refs\": [\"MP04\"],\n      \"semantic_spec\": {\n        \"shot_scale\": [\"闪回快速剪辑\", \"固定镜头\", \"中景\"],\n        \"shot_purpose\": [\"暗示记忆\", \"强调崩溃无助\", \"展示离开与反光\"],\n        \"shot_content\": [\"林晚使用剪刀闪回\", \"林晚滑坐在地崩溃\", \"顾沉离开瞥见反光\"],\n        \"shot_transition\": [\"在顾沉指出工具关联时切入闪回暗示\", \"在林晚崩溃时切回暗房内景\"],\n        \"shot_hold\": [\"在林晚崩溃的镜头上保持较长时间\"],\n        \"shot_tempo\": \"从紧张对峙突然转为缓慢崩溃\",\n        \"shot_motivation\": \"从外部对峙转向内部崩溃，场景收尾\"\n      }\n    }\n  ]\n}\n```",
+        "ir": {
+          "schema_version": "visual_editorial_spine_ir_v1",
+          "scene_id": "book990402:e3:暗房惊魂（2）",
+          "strategy_fingerprint": "95a18cc7b7f9096934bb668f6d3ba81bc7a1ce489d33074734fe9abccef465e2",
+          "spine_summary": "三阶段递进结构：1) 建立对峙与初步否认；2) 通过物证展示与质问将冲突推向顶点；3) 以工具关联坐实嫌疑并以崩溃收尾。视觉上强调逆光、特写与闪回，强化物证说服力与角色内心挣扎。",
+          "segments": [
+            {
+              "segment_key": "SEG01",
+              "phase_ids": [],
+              "beat_refs": [
+                "beat:1",
+                "beat:2"
+              ],
+              "dramatic_function": "建立对峙场景，展示两人初始状态与林晚的防御性否认。",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            },
+            {
+              "segment_key": "SEG02",
+              "phase_ids": [],
+              "beat_refs": [
+                "beat:3",
+                "beat:4",
+                "beat:5",
+                "beat:6"
+              ],
+              "dramatic_function": "展示关键物证，将指控与失踪照片关联，通过视觉对比强化证据，最终触及林晚的记忆问题。",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            },
+            {
+              "segment_key": "SEG03",
+              "phase_ids": [],
+              "beat_refs": [
+                "beat:7",
+                "beat:8",
+                "beat:9",
+                "beat:10"
+              ],
+              "dramatic_function": "暗示林晚可能隐藏秘密或失忆，用工具关联坐实嫌疑，迫使她面对，最终以第三方观察和情绪崩溃收尾。",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            }
+          ]
+        },
+        "canonical": null,
+        "protocol": {
+          "status": "FAIL",
+          "errors": [
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "must_preserve_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "phase_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "semantic_spec"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "spatial_expression"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "visual_thesis"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "must_preserve_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "phase_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "semantic_spec"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "spatial_expression"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "visual_thesis"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "must_preserve_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "phase_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "semantic_spec"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "spatial_expression"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "visual_thesis"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P01"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P02"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP01"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP02"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP04"
+            }
+          ]
+        },
+        "authority": {
+          "status": "UNSAFE",
+          "violations": [
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "must_preserve_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "phase_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "semantic_spec"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "spatial_expression"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "visual_thesis"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "must_preserve_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "phase_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "semantic_spec"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "spatial_expression"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "visual_thesis"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "must_preserve_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "phase_refs"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "segment_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "semantic_spec"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "spatial_expression"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "visual_thesis"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P01"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P02"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP01"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP02"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP04"
+            }
+          ]
+        },
+        "coverage": {
+          "status": "FAIL",
+          "covered_beats": [
+            "beat:1",
+            "beat:10",
+            "beat:2",
+            "beat:3",
+            "beat:4",
+            "beat:5",
+            "beat:6",
+            "beat:7",
+            "beat:8",
+            "beat:9"
+          ],
+          "covered_phases": []
+        },
+        "director_qa": {
+          "signal": "SPINE_INVALID",
+          "metrics": {
+            "visual_progression": true,
+            "attention_design": false,
+            "information_progression": false,
+            "performance_pressure": false,
+            "editorial_rhythm": false,
+            "spatial_focus": false,
+            "strategy_fidelity": false,
+            "non_mechanical_structure": true,
+            "shift_dimensions": 0,
+            "mechanical_beat_to_segment": false
+          }
+        },
+        "valid": false
+      },
+      "skeleton_request": null,
+      "skeleton": {
+        "skipped": true,
+        "reason": "SPINE_HARD_GATE_FAILED"
+      },
+      "binding": {
+        "binding_status": "SKIPPED",
+        "edges": [],
+        "errors": []
+      }
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "spine_request": {
+        "task": "director_v3_final_spine_topology_recanary",
+        "layer": "SPINE",
+        "scene_id": "book990402:e2:回声照相馆",
+        "approved_revised_strategy": {
+          "creative_risks": [
+            "在P02对话中，可尝试一个长镜头跟随顾沉从进门到进入暗房的全过程，强调其行动轨迹和口袋的异常。",
+            "在P03，林晚瞥见灰外套照片时，可采用一个极短暂的闪回或声音设计（如快门声），暗示其与过去的联系，但需极度克制。"
+          ],
+          "dramatic_objective": "通过两个相互试探的角色，揭示照相馆昨夜的秘密活动，并建立林晚与‘灰外套’的深层联系，为后续冲突埋下伏笔。",
+          "must_avoid": [
+            "过早揭示林晚旧照片的内容",
+            "让顾沉直接承认昨夜行为",
+            "将灰外套照片与旧照片的关联解释得过于直白"
+          ],
+          "must_preserve": [
+            "林晚发现拖痕和空相册夹的顺序",
+            "顾沉口袋始终插着手的细节",
+            "灰外套照片的视觉呈现",
+            "林晚最后展开旧照片并露出冰冷表情的时刻"
+          ],
+          "prop_visual_strategy": [
+            "1. **拖痕**：特写，强调其新鲜和湿润，作为昨夜活动的物理证据。2. **相册夹**：展示其异常状态（横倒、打开、划痕、空），作为被侵犯的象征。3. **口袋**：通过人物动作（摸、插、绷紧）暗示内部物品的存在和重要性，制造悬念。4. **灰外套照片**：在暗房光线下呈现，作为连接顾沉与神秘事件的视觉桥梁。5. **林晚的旧照片**：最终揭示，采用对折、展开的动作，强调其私密性和历史感，背面文字提供精确时空信息。"
+          ],
+          "scene_id": "book990402:e2:回声照相馆",
+          "scene_phases": [
+            {
+              "phase_id": "P01",
+              "beat_ids": [
+                "B1",
+                "B2",
+                "B3"
+              ],
+              "dramatic_function": "建立核心谜团：昨夜有人活动，且关键物品（相册夹）被动过。同时暗示林晚自身也藏有秘密。",
+              "audience_state": {
+                "knows": [
+                  "林晚发现暗房门口有新鲜拖痕",
+                  "相册夹被动过且内容物丢失"
+                ],
+                "question_shift": "从‘发生了什么？’转向‘是谁做的？林晚会怎么做？’",
+                "suspects": [
+                  "昨夜有人进入暗房并动了相册夹"
+                ],
+                "withholds": [
+                  "林晚口袋里的物品是什么",
+                  "顾沉与此事的关联"
+                ]
+              },
+              "emotion": {
+                "state": "警觉、怀疑、压抑的紧张",
+                "intensity_hint": "中等",
+                "trigger": "发现异常痕迹和被翻动的相册夹",
+                "transition_reason": "从慵懒的日常状态被强行拉入调查模式"
+              },
+              "power": {
+                "center_ref": "17",
+                "center_type": "CHARACTER",
+                "description": "林晚作为发现者，暂时掌握信息主动权，独自面对谜团。",
+                "shift": "无"
+              },
+              "performance": [
+                {
+                  "character_id": "17",
+                  "objective": "查明昨夜异常活动的真相，确认相册夹内物品的下落。",
+                  "tactic": "谨慎、细致地检查现场，同时隐藏自己的秘密（口袋里的物品）。",
+                  "turning_point": false,
+                  "visible_behavior": "蹲下检查拖痕，打开储物柜，拿起相册夹检查，放回时无意识摸了摸左侧口袋。"
+                }
+              ],
+              "edit": {
+                "cut_logic": "跟随林晚的视线和动作，从拖痕特写切到储物柜内部，再到相册夹细节，最后定格在她摸口袋的手上。",
+                "hold_logic": "在关键发现（拖痕、空相册夹、摸口袋动作）上保持镜头，让观众消化信息。",
+                "tempo": "缓慢、悬疑",
+                "transition_motivation": "从外部空间（暗房门口）进入内部空间（储物柜），再聚焦于人物自身（口袋），完成从环境到人物的悬念转移。"
+              },
+              "visual": {
+                "camera_rule": "以林晚的主观视角和近景、特写为主，强调发现过程的沉浸感和细节。",
+                "composition_rule": "利用门框、柜门形成画框，将林晚置于被窥视或自我封闭的构图中。",
+                "movement_condition": "镜头运动跟随林晚的探索动作，平稳但带有目的性。",
+                "visual_grammar": "建立‘痕迹-物品-人物’的视觉逻辑链。"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:B1",
+                  "beat:B2"
+                ],
+                "hint_refs": [
+                  "beat:B1",
+                  "beat:B2",
+                  "beat:B3"
+                ],
+                "withhold_refs": [
+                  "beat:B11",
+                  "character:18"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "昨夜有人进入暗房并翻动了相册夹。",
+                    "support_refs": [
+                      "beat:B1",
+                      "beat:B2"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "林晚摸口袋的动作是下意识的，表明口袋里的物品对她很重要，且与当前调查的事件可能有关联。",
+                    "support_refs": [
+                      "beat:B3"
+                    ],
+                    "purpose": "为后续揭示旧照片埋下伏笔，建立人物行为的连贯性。"
+                  }
+                ]
+              }
+            },
+            {
+              "phase_id": "P02",
+              "beat_ids": [
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+              ],
+              "dramatic_function": "引入顾沉，展开表面日常、实则相互试探的对话。双方都在隐藏秘密，同时试图从对方身上获取信息。",
+              "audience_state": {
+                "knows": [
+                  "顾沉昨夜可能听到动静",
+                  "顾沉对暗房区域异常关注",
+                  "顾沉口袋里可能藏有物品",
+                  "顾沉承认昨夜使用暗房洗照片"
+                ],
+                "question_shift": "从‘是谁做的？’转向‘顾沉到底知道多少？他和林晚的秘密有何关联？’",
+                "suspects": [
+                  "顾沉在撒谎或隐瞒关键信息",
+                  "顾沉口袋里的物品与相册夹或灰外套有关"
+                ],
+                "withholds": [
+                  "顾沉口袋里的具体物品",
+                  "顾沉洗的‘旧照片’内容",
+                  "林晚口袋里的物品"
+                ]
+              },
+              "emotion": {
+                "state": "表面轻松下的暗流涌动，互相戒备与试探",
+                "intensity_hint": "中等偏高",
+                "trigger": "顾沉的出现及其对暗房话题的回避",
+                "transition_reason": "从林晚的独自调查转入双人心理博弈，紧张感从外部线索转向人际互动。"
+              },
+              "power": {
+                "center_ref": "RELATIONSHIP",
+                "center_type": "RELATIONSHIP",
+                "description": "权力在林晚和顾沉之间动态摇摆。顾沉以‘日常’姿态试图掌控对话节奏，林晚则通过直接提问进行反击。",
+                "shift": "从顾沉试图主导（B4-B6），到林晚主动试探（B7），权力短暂转移。"
+              },
+              "performance": [
+                {
+                  "character_id": "17",
+                  "objective": "试探顾沉，确认他是否与昨夜事件有关，并观察他的反应。",
+                  "tactic": "先以慵懒面具应对，再抓住机会直接询问暗房相关问题。",
+                  "turning_point": false,
+                  "visible_behavior": "接过早餐，进行日常对话，眼神观察顾沉，最后直接询问暗房灯和使用情况。"
+                },
+                {
+                  "character_id": "18",
+                  "objective": "掩饰自己昨夜的活动，试探林晚是否发现了什么，并评估她的威胁。",
+                  "tactic": "以困倦和日常话题开场，回避深入询问，用合理借口解释暗房使用，同时通过口袋动作隐藏物品。",
+                  "turning_point": false,
+                  "visible_behavior": "带早餐进入，眼神扫过暗房门口，左手插在口袋里，回答问题时略显回避，给出‘洗旧照片’的解释。"
+                }
+              ],
+              "edit": {
+                "cut_logic": "在两人对话时采用正反打镜头，强调眼神交流和微表情。在关键动作（顾沉眼神掠过暗房、手插口袋、林晚直接提问）时插入特写。",
+                "hold_logic": "在顾沉回避问题和林晚追问时保持镜头，营造对话的张力。",
+                "tempo": "中等，对话节奏看似平缓但暗藏机锋。",
+                "transition_motivation": "从林晚的个人空间（P01）过渡到共享的对话空间，通过人物互动推动悬念发展。"
+              },
+              "visual": {
+                "camera_rule": "以中景和近景为主，捕捉两人互动的细微之处。利用过肩镜头建立对话关系。",
+                "composition_rule": "将两人置于画面两侧，中间留有空间，暗示心理距离和潜在对抗。",
+                "movement_condition": "镜头相对固定，聚焦于表演。",
+                "visual_grammar": "建立‘提问-回避-再提问’的对话视觉节奏。"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:B4",
+                  "beat:B7"
+                ],
+                "hint_refs": [
+                  "beat:B4",
+                  "beat:B5",
+                  "beat:B6",
+                  "beat:B7"
+                ],
+                "withhold_refs": [
+                  "beat:B8",
+                  "beat:B11"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "顾沉口袋里的物品很可能就是从相册夹里拿走的东西。",
+                    "support_refs": [
+                      "beat:B6",
+                      "beat:B2"
+                    ]
+                  },
+                  {
+                    "claim": "顾沉洗的‘旧照片’可能与灰外套或林晚的过去有关。",
+                    "support_refs": [
+                      "beat:B7"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉左手始终插在口袋里，是刻意隐藏物品并控制紧张情绪的表现。",
+                    "support_refs": [
+                      "beat:B6"
+                    ],
+                    "purpose": "强化顾沉的秘密状态，为后续揭示做铺垫。"
+                  },
+                  {
+                    "claim": "林晚的直接提问打破了顾沉试图营造的日常氛围，迫使博弈升级。",
+                    "support_refs": [
+                      "beat:B7"
+                    ],
+                    "purpose": "展示林晚的主动性和调查决心，推动情节转折。"
+                  }
+                ]
+              }
+            },
+            {
+              "phase_id": "P03",
+              "beat_ids": [
+                "B8",
+                "B9",
+                "B10",
+                "B11"
+              ],
+              "dramatic_function": "提供关键视觉证据（灰外套照片），将顾沉与神秘人影联系起来。顾沉进行反试探，林晚隐藏反应。最终揭示林晚的秘密（旧照片），将两人过去与现在彻底交织，悬念达到顶点。",
+              "audience_state": {
+                "knows": [
+                  "晾干绳上有一张灰外套人影的照片，外套与顾沉所穿相似",
+                  "顾沉主动询问林晚是否看到‘穿灰外套的人’",
+                  "顾沉曾询问林晚是否动过相册夹",
+                  "林晚藏有一张自己1998年穿灰外套站在照相馆门口的旧照片"
+                ],
+                "question_shift": "从‘顾沉做了什么？’转向‘林晚的过去与顾沉、与照相馆有何关联？’",
+                "suspects": [
+                  "顾沉可能知道林晚的过去，或正在调查与灰外套相关的事件",
+                  "林晚的旧照片是解开谜团的关键"
+                ],
+                "withholds": [
+                  "顾沉调查灰外套事件的真正目的",
+                  "林晚对旧照片和顾沉试探的真实反应"
+                ]
+              },
+              "emotion": {
+                "state": "震惊、冰冷、高度警惕，秘密被部分揭开的冲击",
+                "intensity_hint": "高",
+                "trigger": "看到灰外套照片，以及顾沉的直接试探和最终的旧照片揭示",
+                "transition_reason": "从相互试探的心理战，升级为秘密被视觉证据和直接言语部分揭开的正面冲击。"
+              },
+              "power": {
+                "center_ref": "INFORMATION",
+                "center_type": "INFORMATION",
+                "description": "权力中心从人物互动转移到关键信息（灰外套照片、林晚的旧照片）上。掌握或揭示这些信息的人暂时获得优势。",
+                "shift": "顾沉通过展示灰外套照片（B8）和主动试探（B9, B10）试图掌控信息流。林晚通过隐藏反应和最终揭示自己的旧照片（B11），夺回部分叙事主动权。"
+              },
+              "performance": [
+                {
+                  "character_id": "17",
+                  "objective": "隐藏自己看到灰外套照片后的震惊，并最终确认顾沉是否记得她的过去。",
+                  "tactic": "瞥见照片后保持镇定，以困惑否认看到‘灰外套的人’，在顾沉离开后独自揭示旧照片。",
+                  "turning_point": true,
+                  "visible_behavior": "瞥见晾干绳上的照片，表情瞬间凝固后恢复平静。面对顾沉询问时摇头否认。顾沉离开后，从口袋掏出旧照片展开，表情冰冷。"
+                },
+                {
+                  "character_id": "18",
+                  "objective": "确认林晚是否知晓灰外套照片或相关事件，并试探她是否动了相册夹。",
+                  "tactic": "主动展示（或让林晚瞥见）灰外套照片，然后直接询问。离开前进行最后试探。",
+                  "turning_point": false,
+                  "visible_behavior": "从暗房出来，询问林晚是否看到‘穿灰外套的人’。离开前随口问及相册夹。"
+                }
+              ],
+              "edit": {
+                "cut_logic": "从林晚瞥见照片的主观镜头，切到顾沉从暗房出来的全景。对话采用紧凑的正反打。最后切到顾沉离开后，林晚独自展开旧照片的特写，并可能闪回或叠化旧照片内容。",
+                "hold_logic": "在灰外套照片、顾沉的试探问题、林晚展开旧照片的关键时刻保持镜头，让信息充分沉淀。",
+                "tempo": "先紧（试探）后缓（独自揭示），节奏对比强烈。",
+                "transition_motivation": "从共享空间的直接对抗（B8-B10），过渡到林晚独自面对秘密的私密时刻（B11），完成从外部冲突到内心冲击的转换。"
+              },
+              "visual": {
+                "camera_rule": "强调关键视觉线索的特写（灰外套照片、旧照片）。在对话中捕捉人物细微的表情变化。",
+                "composition_rule": "利用暗房门口、晾干绳等元素构建框架，将灰外套照片置于视觉焦点。最后旧照片的展开采用居中构图，强调其重要性。",
+                "movement_condition": "在揭示关键信息时，镜头可缓慢推进，增强冲击力。",
+                "visual_grammar": "建立‘照片（线索）-人物反应-新照片（揭示）’的视觉叙事闭环。"
+              },
+              "information": {
+                "reveal_refs": [
+                  "beat:B8",
+                  "beat:B11"
+                ],
+                "hint_refs": [
+                  "beat:B8",
+                  "beat:B9",
+                  "beat:B10"
+                ],
+                "withhold_refs": [],
+                "audience_suspicions": [
+                  {
+                    "claim": "顾沉可能正在调查与‘灰外套’相关的事件，而林晚的过去是其中一部分。",
+                    "support_refs": [
+                      "beat:B8",
+                      "beat:B9",
+                      "beat:B11"
+                    ]
+                  },
+                  {
+                    "claim": "林晚的旧照片和顾沉的灰外套照片之间存在直接联系，可能指向同一事件或人物。",
+                    "support_refs": [
+                      "beat:B8",
+                      "beat:B11"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉让林晚瞥见灰外套照片（或未刻意隐藏），是一种高级的试探，旨在观察她的即时反应。",
+                    "support_refs": [
+                      "beat:B8",
+                      "beat:B9"
+                    ],
+                    "purpose": "展示顾沉的心机和试探的主动性。"
+                  },
+                  {
+                    "claim": "林晚最后展开旧照片并露出冰冷表情，表明她意识到顾沉可能记得1998年的事，这彻底改变了两人关系的性质。",
+                    "support_refs": [
+                      "beat:B11"
+                    ],
+                    "purpose": "将悬念从‘昨夜发生了什么’提升到‘两人共享的过去是什么’，为后续剧情建立强大钩子。"
+                  }
+                ]
+              }
+            }
+          ],
+          "scene_question": "昨夜在照相馆发生了什么？林晚和顾沉各自隐藏了什么秘密？",
+          "schema_version": "director_scene_strategy_v3",
+          "shot_architecture_guidance": [
+            "建议采用11-13个镜头。P01（发现）约3-4个镜头，以特写和近景为主。P02（试探）约4-5个镜头，以中景和正反打为主。P03（揭示）约4-5个镜头，强调关键特写和最后的揭示镜头。整体节奏由缓到紧再到缓，最后以强有力的揭示镜头收尾。"
+          ],
+          "spatial_expression": [
+            "照相馆分为外部接待区（日常、明亮）和内部暗房/储物区（秘密、幽暗）。拖痕和相册夹位于两个区域的交界处，象征秘密的渗透。晾干绳位于暗房内，是秘密的展示区。人物的口袋则是移动的、私密的隐藏空间。"
+          ],
+          "strategy_summary": "采用‘发现-试探-揭示’的三幕结构。第一幕（P01）聚焦林晚的独立调查，建立悬念。第二幕（P02）引入顾沉，通过日常对话下的暗流涌动进行双向试探。第三幕（P03）通过关键视觉线索和最终揭示，将两人秘密交织，将悬念推向高潮并留下钩子。",
+          "visual_thesis": "以‘回声照相馆’为封闭舞台，利用暗房、储物柜、晾干绳等空间元素构建视觉谜题。通过特写镜头强调关键道具（拖痕、相册夹、口袋、灰外套照片）的细节，利用光影对比（暗房的幽暗与外部的日常光线）暗示表象与真相的割裂。",
+          "semantic_spec_version": "director_scene_strategy_semantic_spec_v2",
+          "compiler_version": "director_scene_strategy_ir_compiler_v2",
+          "strategy_version": "v3",
+          "authority_projection": {
+            "SOURCE_FACT": [
+              "scene identity",
+              "beats",
+              "dialogue",
+              "chronology",
+              "character/asset identity"
+            ],
+            "TREATMENT_INTENT": [
+              "dramatic objective",
+              "tone",
+              "intent"
+            ],
+            "BLOCKING_FACT": [
+              "spatial truth",
+              "entry/exit",
+              "screen direction"
+            ],
+            "DIRECTOR_CREATIVE_DECISION": [
+              "phase staging",
+              "audience/emotion/power",
+              "performance",
+              "edit",
+              "visual"
+            ]
+          },
+          "source_trace": {
+            "contract_scene_id": "book990402:e2:回声照相馆",
+            "beat_ids": [
+              "B1",
+              "B2",
+              "B3",
+              "B4",
+              "B5",
+              "B6",
+              "B7",
+              "B8",
+              "B9",
+              "B10",
+              "B11"
+            ],
+            "character_ids": [
+              "17",
+              "18"
+            ],
+            "fact_ids": [],
+            "phases": [
+              {
+                "phase_id": "P01",
+                "beat_refs": [
+                  "beat:B1",
+                  "beat:B2",
+                  "beat:B3"
+                ],
+                "reveal_refs": [
+                  "beat:B1",
+                  "beat:B2"
+                ],
+                "hint_refs": [
+                  "beat:B1",
+                  "beat:B2",
+                  "beat:B3"
+                ],
+                "withhold_refs": [
+                  "beat:B11",
+                  "character:18"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "昨夜有人进入暗房并翻动了相册夹。",
+                    "support_refs": [
+                      "beat:B1",
+                      "beat:B2"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "林晚摸口袋的动作是下意识的，表明口袋里的物品对她很重要，且与当前调查的事件可能有关联。",
+                    "support_refs": [
+                      "beat:B3"
+                    ],
+                    "purpose": "为后续揭示旧照片埋下伏笔，建立人物行为的连贯性。"
+                  }
+                ]
+              },
+              {
+                "phase_id": "P02",
+                "beat_refs": [
+                  "beat:B4",
+                  "beat:B5",
+                  "beat:B6",
+                  "beat:B7"
+                ],
+                "reveal_refs": [
+                  "beat:B4",
+                  "beat:B7"
+                ],
+                "hint_refs": [
+                  "beat:B4",
+                  "beat:B5",
+                  "beat:B6",
+                  "beat:B7"
+                ],
+                "withhold_refs": [
+                  "beat:B8",
+                  "beat:B11"
+                ],
+                "audience_suspicions": [
+                  {
+                    "claim": "顾沉口袋里的物品很可能就是从相册夹里拿走的东西。",
+                    "support_refs": [
+                      "beat:B6",
+                      "beat:B2"
+                    ]
+                  },
+                  {
+                    "claim": "顾沉洗的‘旧照片’可能与灰外套或林晚的过去有关。",
+                    "support_refs": [
+                      "beat:B7"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉左手始终插在口袋里，是刻意隐藏物品并控制紧张情绪的表现。",
+                    "support_refs": [
+                      "beat:B6"
+                    ],
+                    "purpose": "强化顾沉的秘密状态，为后续揭示做铺垫。"
+                  },
+                  {
+                    "claim": "林晚的直接提问打破了顾沉试图营造的日常氛围，迫使博弈升级。",
+                    "support_refs": [
+                      "beat:B7"
+                    ],
+                    "purpose": "展示林晚的主动性和调查决心，推动情节转折。"
+                  }
+                ]
+              },
+              {
+                "phase_id": "P03",
+                "beat_refs": [
+                  "beat:B8",
+                  "beat:B9",
+                  "beat:B10",
+                  "beat:B11"
+                ],
+                "reveal_refs": [
+                  "beat:B8",
+                  "beat:B11"
+                ],
+                "hint_refs": [
+                  "beat:B8",
+                  "beat:B9",
+                  "beat:B10"
+                ],
+                "withhold_refs": [],
+                "audience_suspicions": [
+                  {
+                    "claim": "顾沉可能正在调查与‘灰外套’相关的事件，而林晚的过去是其中一部分。",
+                    "support_refs": [
+                      "beat:B8",
+                      "beat:B9",
+                      "beat:B11"
+                    ]
+                  },
+                  {
+                    "claim": "林晚的旧照片和顾沉的灰外套照片之间存在直接联系，可能指向同一事件或人物。",
+                    "support_refs": [
+                      "beat:B8",
+                      "beat:B11"
+                    ]
+                  }
+                ],
+                "director_inferences": [
+                  {
+                    "claim": "顾沉让林晚瞥见灰外套照片（或未刻意隐藏），是一种高级的试探，旨在观察她的即时反应。",
+                    "support_refs": [
+                      "beat:B8",
+                      "beat:B9"
+                    ],
+                    "purpose": "展示顾沉的心机和试探的主动性。"
+                  },
+                  {
+                    "claim": "林晚最后展开旧照片并露出冰冷表情，表明她意识到顾沉可能记得1998年的事，这彻底改变了两人关系的性质。",
+                    "support_refs": [
+                      "beat:B11"
+                    ],
+                    "purpose": "将悬念从‘昨夜发生了什么’提升到‘两人共享的过去是什么’，为后续剧情建立强大钩子。"
+                  }
+                ]
+              }
+            ]
+          },
+          "creative_core_fingerprint": "7734ee069b4a636c25b05d52bb1636aac0f71c4d5273a6a2c1694741de63c0d7",
+          "strategy_fingerprint": "3a1a08e3968f979d0ca9a04c33e78e45b93bd6c97adc2ff40836b0f6b76f2448"
+        },
+        "scene_blocking": {
+          "scene_id": "book990402:e2:回声照相馆",
+          "scene_name": "回声照相馆",
+          "status": "approved",
+          "unknowns": [],
+          "participants": [
+            {
+              "character_id": "17",
+              "name": "林晚",
+              "position": "毛衣口袋",
+              "facing": null,
+              "anchor": "毛衣口袋",
+              "source": "script_declared"
+            },
+            {
+              "character_id": "18",
+              "name": "顾沉",
+              "position": "后门",
+              "facing": null,
+              "anchor": "后门",
+              "source": "script_declared"
+            }
+          ],
+          "source_spatial_facts": []
+        },
+        "authoritative_scene_beats": {
+          "scene_id": "book990402:e2:回声照相馆",
+          "book_id": 990402,
+          "episode": 2,
+          "name": "回声照相馆",
+          "beats": [
+            {
+              "beat_id": "B1",
+              "dramatic_function": "引入第一个视觉谜团，暗示昨夜有人活动。",
+              "emotion_change": "林晚从慵懒转为警觉。",
+              "event": "林晚发现暗房门口地板上有新鲜湿润的拖痕，延伸至储物柜前。",
+              "information_change": "林晚获知昨夜暗房区域有异常活动。",
+              "type": "发现"
+            },
+            {
+              "beat_id": "B2",
+              "dramatic_function": "强化异常，暗示有人翻动过相册夹并可能取走了内容物。",
+              "emotion_change": "林晚的怀疑加深。",
+              "event": "林晚检查储物柜，发现黑色皮质相册夹位置异常（横倒、搭扣打开、有新鲜划痕），且内部为空。",
+              "information_change": "林晚确认相册夹被动过，内容物丢失。",
+              "type": "调查"
+            },
+            {
+              "beat_id": "B3",
+              "dramatic_function": "首次暗示林晚自身也藏有秘密（旧照片）。",
+              "emotion_change": "林晚在调查中保持表面镇定。",
+              "event": "林晚放回相册夹时，无意识地摸了一下自己毛衣左侧口袋（内藏方形物体）。",
+              "information_change": "观众获知林晚口袋藏有物品。",
+              "type": "隐藏"
+            },
+            {
+              "beat_id": "B4",
+              "dramatic_function": "引入另一角色，开始表面正常的互动，为后续试探铺垫。",
+              "emotion_change": "林晚迅速恢复慵懒面具；顾沉表现困倦。",
+              "event": "顾沉带着早餐进入照相馆，与林晚进行日常对话。",
+              "information_change": "顾沉出现，提及“昨晚听到动静”。",
+              "type": "相遇"
+            },
+            {
+              "beat_id": "B5",
+              "dramatic_function": "暗示顾沉可能知晓或参与昨夜事件，并试图掩饰。",
+              "emotion_change": "顾沉的回避引发林晚进一步怀疑。",
+              "event": "顾沉在对话中眼神掠过暗房门口，并回避关于“动静”的深入询问。",
+              "information_change": "顾沉对暗房区域表现出异常关注。",
+              "type": "试探"
+            },
+            {
+              "beat_id": "B6",
+              "dramatic_function": "暗示顾沉也藏有秘密物品。",
+              "emotion_change": "顾沉保持表面自然，但动作暴露紧张。",
+              "event": "顾沉回答问题时，左手一直插在外套口袋里，口袋布料绷紧，似握有物品。",
+              "information_change": "观众获知顾沉口袋藏有物品。",
+              "type": "隐藏"
+            },
+            {
+              "beat_id": "B7",
+              "dramatic_function": "林晚直接试探，顾沉给出合理但可能虚假的解释。",
+              "emotion_change": "林晚的怀疑未减；顾沉试图平息疑问。",
+              "event": "林晚询问暗房灯未关及顾沉使用暗房情况，顾沉以“洗旧照片”、“客户急件”为由回应。",
+              "information_change": "顾沉承认昨夜使用暗房，理由为洗照片。",
+              "type": "调查"
+            },
+            {
+              "beat_id": "B8",
+              "dramatic_function": "引入关键视觉线索（灰外套照片），将顾沉与神秘人影联系起来。",
+              "emotion_change": "林晚的怀疑得到视觉印证，警惕性提升。",
+              "event": "顾沉进入暗房，林晚瞥见晾干绳上一张刚定影的照片，照片中是一个穿灰色外套的人影背对镜头站在小巷，外套款式与顾沉所穿相似。",
+              "information_change": "林晚（及观众）看到灰外套照片，与顾沉产生关联。",
+              "type": "发现"
+            },
+            {
+              "beat_id": "B9",
+              "dramatic_function": "顾沉主动试探林晚是否知晓照片内容或相关事件。",
+              "emotion_change": "林晚以困惑否认；顾沉的试探未获信息。",
+              "event": "顾沉从暗房出来后，询问林晚是否看到“穿灰外套的人”。",
+              "information_change": "顾沉明确提及“灰外套”线索。",
+              "type": "试探"
+            },
+            {
+              "beat_id": "B10",
+              "dramatic_function": "顾沉对林晚进行反试探，测试她是否发现或动了相册夹。",
+              "emotion_change": "顾沉表面随意，实则紧张等待回答；林晚以无辜回应。",
+              "event": "顾沉离开前，随口询问林晚是否动过储物柜里的相册夹。",
+              "information_change": "顾沉确认相册夹是其关注点。",
+              "type": "压力测试"
+            },
+            {
+              "beat_id": "B11",
+              "dramatic_function": "揭示林晚隐藏的秘密（旧照片），并建立“灰外套”与林晚过去的直接联系。",
+              "emotion_change": "林晚表情冰冷，意识到顾沉记得此事。",
+              "event": "顾沉离开后，林晚从毛衣口袋掏出一张对折的旧照片，展开后显示一个年轻女人（林晚）穿着灰色外套站在照相馆门口，背面写着“1998.10.3。回声照相馆。林晚。”",
+              "information_change": "观众获知林晚藏有自己穿灰外套的旧照，时间地点明确。",
+              "type": "揭示"
+            }
+          ],
+          "participants": [
+            "17",
+            "18"
+          ],
+          "source": "approved_record.treatment.beat_map + approved_record.scene metadata"
+        },
+        "fact_snapshot": {
+          "scene_id": "book990402:e2:回声照相馆",
+          "records": [],
+          "source_spatial_facts": [],
+          "scene_canonical": {},
+          "source": "approved_record.contract.immutable_projection.facts"
+        },
+        "character_identity_projection": [
+          {
+            "character_id": "17",
+            "canonical_name": "林晚",
+            "canonical_identity_id": "book:990402:character:17",
+            "scope": "book-level"
+          },
+          {
+            "character_id": "18",
+            "canonical_name": "顾沉",
+            "canonical_identity_id": "book:990402:character:18",
+            "scope": "book-level"
+          }
+        ],
+        "identity_binding_fingerprint": "5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1",
+        "prop_canonical": {
+          "records": [],
+          "availability": "not_present_in_frozen_approved_record",
+          "source": "approved_record only"
+        },
+        "location_canonical": {
+          "records": [],
+          "availability": "not_present_in_frozen_approved_record",
+          "source": "approved_record only"
+        },
+        "must_preserve": [
+          "林晚发现拖痕和空相册夹的顺序",
+          "顾沉口袋始终插着手的细节",
+          "灰外套照片的视觉呈现",
+          "林晚最后展开旧照片并露出冰冷表情的时刻"
+        ],
+        "must_preserve_trace": {
+          "schema_version": "must_preserve_trace_v1",
+          "scene_id": "book990402:e2:回声照相馆",
+          "constraints": [
+            {
+              "constraint_id": "MP01",
+              "description": "林晚发现拖痕和空相册夹的顺序",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP02",
+              "description": "顾沉口袋始终插着手的细节",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP03",
+              "description": "灰外套照片的视觉呈现",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            },
+            {
+              "constraint_id": "MP04",
+              "description": "林晚最后展开旧照片并露出冰冷表情的时刻",
+              "supporting_beat_refs": [],
+              "supporting_event_keys": [],
+              "source": "authority_only_no_explicit_binding",
+              "status": "PRESERVE_TRACE_UNRESOLVED"
+            }
+          ],
+          "unresolved_count": 4,
+          "resolution_policy": "structured beat/event refs only; no prose similarity"
+        },
+        "must_avoid": [
+          "过早揭示林晚旧照片的内容",
+          "让顾沉直接承认昨夜行为",
+          "将灰外套照片与旧照片的关联解释得过于直白"
+        ],
+        "spine_contract": {
+          "required": [
+            "spine_summary",
+            "segments"
+          ],
+          "forbidden": [
+            "shot_size",
+            "camera_position",
+            "camera_movement",
+            "lens"
+          ]
+        }
+      },
+      "spine_request_fingerprint": "522ee682534c9e656bd163e352d01892528dcb98c9b8257b54d13fc0e97e2dd8",
+      "provider_errors": [],
+      "spine": {
+        "raw_parse": "PASS",
+        "raw_response": "```json\n{\n  \"spine_summary\": \"采用‘发现-试探-揭示’的三幕结构。第一幕（P01）聚焦林晚的独立调查，建立悬念。第二幕（P02）引入顾沉，通过日常对话下的暗流涌动进行双向试探。第三幕（P03）通过关键视觉线索和最终揭示，将两人秘密交织，将悬念推向高潮并留下钩子。\",\n  \"segments\": [\n    {\n      \"phase_id\": \"P01\",\n      \"segment_summary\": \"林晚独自发现暗房异常，建立核心谜团。\",\n      \"shots\": [\n        {\n          \"shot_id\": \"S01\",\n          \"shot_description\": \"特写：暗房门口地板上新鲜湿润的拖痕，延伸至储物柜前。\",\n          \"shot_size\": \"特写\",\n          \"camera_position\": \"低角度，贴近地面\",\n          \"camera_movement\": \"缓慢跟随拖痕移动\",\n          \"lens\": \"微距或特写镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"建立第一个视觉谜团，强调昨夜活动的物理证据。\",\n          \"shot_content\": \"拖痕细节，强调其新鲜和湿润。\",\n          \"shot_duration\": \"3-4秒\",\n          \"shot_transition\": \"切至S02\",\n          \"shot_notes\": \"必须清晰展示拖痕的‘新鲜’和‘湿润’感，作为昨夜活动的直接证据。\"\n        },\n        {\n          \"shot_id\": \"S02\",\n          \"shot_description\": \"近景：林晚蹲下，手指轻触拖痕边缘，表情警觉。\",\n          \"shot_size\": \"近景\",\n          \"camera_position\": \"与林晚视线平齐\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"标准镜头\",\n          \"shot_type\": \"主观镜头（林晚视角）\",\n          \"shot_purpose\": \"建立林晚的发现者视角，引导观众进入调查状态。\",\n          \"shot_content\": \"林晚检查拖痕的动作和警觉表情。\",\n          \"shot_duration\": \"2-3秒\",\n          \"shot_transition\": \"切至S03\",\n          \"shot_notes\": \"强调林晚从慵懒到警觉的转变。\"\n        },\n        {\n          \"shot_id\": \"S03\",\n          \"shot_description\": \"中景：林晚打开储物柜，拿起黑色皮质相册夹，检查其异常状态（横倒、搭扣打开、有新鲜划痕），打开后内部为空。\",\n          \"shot_size\": \"中景\",\n          \"camera_position\": \"侧面\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"标准镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"强化异常，暗示有人翻动过相册夹并可能取走了内容物。\",\n          \"shot_content\": \"相册夹的异常状态和空内部。\",\n          \"shot_duration\": \"4-5秒\",\n          \"shot_transition\": \"切至S04\",\n          \"shot_notes\": \"必须清晰展示相册夹的‘横倒、搭扣打开、划痕、空’状态，作为被侵犯的象征。\"\n        },\n        {\n          \"shot_id\": \"S04\",\n          \"shot_description\": \"特写：林晚放回相册夹时，无意识地摸了一下自己毛衣左侧口袋（内藏方形物体）。\",\n          \"shot_size\": \"特写\",\n          \"camera_position\": \"聚焦于手部和口袋\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"特写镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"首次暗示林晚自身也藏有秘密（旧照片）。\",\n          \"shot_content\": \"林晚摸口袋的动作。\",\n          \"shot_duration\": \"2-3秒\",\n          \"shot_transition\": \"切至P02开始\",\n          \"shot_notes\": \"动作必须是下意识的，表明口袋里的物品对她很重要。\"\n        }\n      ]\n    },\n    {\n      \"phase_id\": \"P02\",\n      \"segment_summary\": \"顾沉进入，双方展开表面日常、实则相互试探的对话。\",\n      \"shots\": [\n        {\n          \"shot_id\": \"S05\",\n          \"shot_description\": \"中景：顾沉带着早餐从后门进入照相馆，眼神扫过暗房门口，左手插在外套口袋里。\",\n          \"shot_size\": \"中景\",\n          \"camera_position\": \"门口视角\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"标准镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"引入顾沉，建立其秘密状态（口袋插手）和对暗房的关注。\",\n          \"shot_content\": \"顾沉进入，眼神扫过暗房，手插口袋。\",\n          \"shot_duration\": \"3-4秒\",\n          \"shot_transition\": \"切至S06\",\n          \"shot_notes\": \"必须清晰展示顾沉‘左手插在口袋里’的细节。\"\n        },\n        {\n          \"shot_id\": \"S06\",\n          \"shot_description\": \"过肩镜头（林晚视角）：顾沉进行日常对话，回答问题时略显回避，口袋布料绷紧。\",\n          \"shot_size\": \"中景\",\n          \"camera_position\": \"林晚身后\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"标准镜头\",\n          \"shot_type\": \"主观镜头（林晚视角）\",\n          \"shot_purpose\": \"展示顾沉的回避和紧张，建立对话的张力。\",\n          \"shot_content\": \"顾沉的日常对话和回避表情。\",\n          \"shot_duration\": \"4-5秒\",\n          \"shot_transition\": \"切至S07\",\n          \"shot_notes\": \"强调顾沉口袋布料绷紧，暗示内部物品。\"\n        },\n        {\n          \"shot_id\": \"S07\",\n          \"shot_description\": \"特写：顾沉的左手插在口袋里，口袋布料绷紧，手指似在内部移动。\",\n          \"shot_size\": \"特写\",\n          \"camera_position\": \"聚焦于口袋\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"特写镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"强化顾沉的秘密状态，为后续揭示做铺垫。\",\n          \"shot_content\": \"顾沉口袋的细节。\",\n          \"shot_duration\": \"2-3秒\",\n          \"shot_transition\": \"切至S08\",\n          \"shot_notes\": \"必须清晰展示口袋的‘绷紧’和‘手指移动’感。\"\n        },\n        {\n          \"shot_id\": \"S08\",\n          \"shot_description\": \"正反打：林晚直接询问暗房灯未关及顾沉使用暗房情况，顾沉以‘洗旧照片’、‘客户急件’为由回应。\",\n          \"shot_size\": \"近景\",\n          \"camera_position\": \"对话双方\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"标准镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"展示林晚的主动试探和顾沉的合理但可能虚假的解释。\",\n          \"shot_content\": \"林晚的直接提问和顾沉的解释。\",\n          \"shot_duration\": \"5-6秒\",\n          \"shot_transition\": \"切至P03开始\",\n          \"shot_notes\": \"对话节奏看似平缓但暗藏机锋。\"\n        }\n      ]\n    },\n    {\n      \"phase_id\": \"P03\",\n      \"segment_summary\": \"关键视觉证据（灰外套照片）出现，顾沉试探，林晚隐藏反应并最终揭示旧照片。\",\n      \"shots\": [\n        {\n          \"shot_id\": \"S09\",\n          \"shot_description\": \"特写：晾干绳上一张刚定影的照片，照片中是一个穿灰色外套的人影背对镜头站在小巷，外套款式与顾沉所穿相似。\",\n          \"shot_size\": \"特写\",\n          \"camera_position\": \"聚焦于照片\",\n          \"camera_movement\": \"缓慢推进\",\n          \"lens\": \"特写镜头\",\n          \"shot_type\": \"主观镜头（林晚瞥见）\",\n          \"shot_purpose\": \"引入关键视觉线索，将顾沉与神秘人影联系起来。\",\n          \"shot_content\": \"灰外套照片的细节。\",\n          \"shot_duration\": \"3-4秒\",\n          \"shot_transition\": \"切至S10\",\n          \"shot_notes\": \"必须清晰呈现灰外套照片的视觉内容，作为连接顾沉与神秘事件的视觉桥梁。\"\n        },\n        {\n          \"shot_id\": \"S10\",\n          \"shot_description\": \"近景：林晚瞥见照片后，表情瞬间凝固后恢复平静。\",\n          \"shot_size\": \"近景\",\n          \"camera_position\": \"正面\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"标准镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"展示林晚看到关键线索后的震惊和隐藏反应。\",\n          \"shot_content\": \"林晚的表情变化。\",\n          \"shot_duration\": \"2-3秒\",\n          \"shot_transition\": \"切至S11\",\n          \"shot_notes\": \"表情变化必须微妙但清晰，从凝固到恢复平静。\"\n        },\n        {\n          \"shot_id\": \"S11\",\n          \"shot_description\": \"正反打：顾沉从暗房出来，询问林晚是否看到‘穿灰外套的人’，林晚以困惑否认。\",\n          \"shot_size\": \"近景\",\n          \"camera_position\": \"对话双方\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"标准镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"展示顾沉的主动试探和林晚的隐藏反应。\",\n          \"shot_content\": \"顾沉的询问和林晚的否认。\",\n          \"shot_duration\": \"4-5秒\",\n          \"shot_transition\": \"切至S12\",\n          \"shot_notes\": \"对话紧凑，强调心理博弈。\"\n        },\n        {\n          \"shot_id\": \"S12\",\n          \"shot_description\": \"中景：顾沉离开前，随口询问林晚是否动过储物柜里的相册夹，林晚以无辜回应。\",\n          \"shot_size\": \"中景\",\n          \"camera_position\": \"侧面\",\n          \"camera_movement\": \"固定\",\n          \"lens\": \"标准镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"顾沉对林晚进行反试探，测试她是否发现或动了相册夹。\",\n          \"shot_content\": \"顾沉的最后试探和林晚的回应。\",\n          \"shot_duration\": \"3-4秒\",\n          \"shot_transition\": \"切至S13\",\n          \"shot_notes\": \"顾沉表面随意，实则紧张等待回答。\"\n        },\n        {\n          \"shot_id\": \"S13\",\n          \"shot_description\": \"特写：顾沉离开后，林晚从毛衣口袋掏出一张对折的旧照片，展开后显示一个年轻女人（林晚）穿着灰色外套站在照相馆门口，背面写着‘1998.10.3。回声照相馆。林晚。’\",\n          \"shot_size\": \"特写\",\n          \"camera_position\": \"聚焦于照片和林晚的手\",\n          \"camera_movement\": \"缓慢推进\",\n          \"lens\": \"特写镜头\",\n          \"shot_type\": \"客观镜头\",\n          \"shot_purpose\": \"揭示林晚隐藏的秘密（旧照片），并建立‘灰外套’与林晚过去的直接联系。\",\n          \"shot_content\": \"旧照片的展开和内容，林晚的冰冷表情。\",\n          \"shot_duration\": \"5-6秒\",\n          \"shot_transition\": \"淡出或切至黑场\",\n          \"shot_notes\": \"必须清晰展示旧照片的展开动作和内容，以及林晚的冰冷表情。这是场景的高潮和钩子。\"\n        }\n      ]\n    }\n  ]\n}\n```",
+        "ir": {
+          "schema_version": "visual_editorial_spine_ir_v1",
+          "scene_id": "book990402:e2:回声照相馆",
+          "strategy_fingerprint": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5",
+          "spine_summary": "采用‘发现-试探-揭示’的三幕结构。第一幕（P01）聚焦林晚的独立调查，建立悬念。第二幕（P02）引入顾沉，通过日常对话下的暗流涌动进行双向试探。第三幕（P03）通过关键视觉线索和最终揭示，将两人秘密交织，将悬念推向高潮并留下钩子。",
+          "segments": [
+            {
+              "segment_key": "SEG01",
+              "phase_ids": [],
+              "beat_refs": [],
+              "dramatic_function": "",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            },
+            {
+              "segment_key": "SEG02",
+              "phase_ids": [],
+              "beat_refs": [],
+              "dramatic_function": "",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            },
+            {
+              "segment_key": "SEG03",
+              "phase_ids": [],
+              "beat_refs": [],
+              "dramatic_function": "",
+              "audience_attention": "",
+              "performance_pressure": "",
+              "information_change": "",
+              "spatial_focus": "",
+              "visual_motif": "",
+              "editorial_rhythm": "",
+              "entry_condition": "",
+              "exit_condition": ""
+            }
+          ]
+        },
+        "canonical": null,
+        "protocol": {
+          "status": "FAIL",
+          "errors": [
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "shots"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "shots"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "shots"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG01"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG02"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG03"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:1"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:10"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:11"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:2"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:3"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:4"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:5"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:6"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:7"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:8"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:9"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P01"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P02"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP01"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP02"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP04"
+            }
+          ]
+        },
+        "authority": {
+          "status": "UNSAFE",
+          "violations": [
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 1,
+              "field": "shots"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 2,
+              "field": "shots"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "phase_id"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "segment_summary"
+            },
+            {
+              "code": "UNKNOWN_SPINE_SEGMENT_FIELD",
+              "segment_index": 3,
+              "field": "shots"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG01"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG01",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG02"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG02",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_SEGMENT_BEATS_EMPTY",
+              "segment_key": "SEG03"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "dramatic_function"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "audience_attention"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "performance_pressure"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "information_change"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "spatial_focus"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "visual_motif"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "editorial_rhythm"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "entry_condition"
+            },
+            {
+              "code": "SPINE_FIELD_MISSING",
+              "segment_key": "SEG03",
+              "field": "exit_condition"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:1"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:10"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:11"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:2"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:3"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:4"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:5"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:6"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:7"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:8"
+            },
+            {
+              "code": "SPINE_ORPHAN_REQUIRED_BEAT",
+              "reference": "beat:9"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P01"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P02"
+            },
+            {
+              "code": "SPINE_ORPHAN_PHASE",
+              "phase_id": "P03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP01"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP02"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP03"
+            },
+            {
+              "code": "PRESERVE_TRACE_UNRESOLVED",
+              "constraint_id": "MP04"
+            }
+          ]
+        },
+        "coverage": {
+          "status": "FAIL",
+          "covered_beats": [],
+          "covered_phases": []
+        },
+        "director_qa": {
+          "signal": "SPINE_INVALID",
+          "metrics": {
+            "visual_progression": true,
+            "attention_design": false,
+            "information_progression": false,
+            "performance_pressure": false,
+            "editorial_rhythm": false,
+            "spatial_focus": false,
+            "strategy_fidelity": false,
+            "non_mechanical_structure": true,
+            "shift_dimensions": 0,
+            "mechanical_beat_to_segment": false
+          }
+        },
+        "valid": false
+      },
+      "skeleton_request": null,
+      "skeleton": {
+        "skipped": true,
+        "reason": "SPINE_HARD_GATE_FAILED"
+      },
+      "binding": {
+        "binding_status": "SKIPPED",
+        "edges": [],
+        "errors": []
+      }
+    }
+  ],
+  "side_effects": {
+    "atomic_expansion": 0,
+    "production_shotplan": 0,
+    "storyboard": 0,
+    "media": 0,
+    "storage": 0,
+    "ci": 0
+  },
+  "human_preference": "NOT_RECORDED",
+  "ready_for_atomic_expansion_canary": false,
+  "atomic_expansion_canary_authorized": false,
+  "production_shotplan": "HOLD"
+}

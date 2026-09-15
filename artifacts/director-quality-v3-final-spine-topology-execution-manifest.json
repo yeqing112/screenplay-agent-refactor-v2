@@ -1,0 +1,37 @@
+{
+  "schema_version": "director_v3_final_spine_topology_execution_manifest_v1",
+  "execution_code_base_sha": "9f199d6",
+  "authorization_commit_sha": "f396c1a",
+  "execution_head_sha": "f396c1a",
+  "base_artifact_expected_commit": "9f199d6",
+  "spine_prompt_fp": "412f5c2fce65b4b955d08ff9dee5ab9cfb36c7cc5850c87a98edde964465d9ef",
+  "skeleton_prompt_fp": "06e99ca7cb83be0fcc39ab64ddc0096b20458920c81ba186bf04c0eda7e4ab5e",
+  "spine_contract_fp": "0656c4340600081e4bdd0d8d57a9706964cd41416e3f420b78a012c869393f60",
+  "skeleton_builder_fp": "5964cc78b096660dfbed601415ee1e7faf497da0d52962588fdca61c62868726",
+  "strategy_fps": {
+    "book990402:e3:暗房惊魂": "8a98151b7e7e2801b8daa5d576003da529717f61796dce491c2aa791037f3c04",
+    "book990402:e3:暗房惊魂（2）": "95a18cc7b7f9096934bb668f6d3ba81bc7a1ce489d33074734fe9abccef465e2",
+    "book990402:e2:回声照相馆": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5"
+  },
+  "identity_fps": {
+    "book990402:e3:暗房惊魂": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+    "book990402:e3:暗房惊魂（2）": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+    "book990402:e2:回声照相馆": "5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1"
+  },
+  "preserve_trace_fps": {
+    "book990402:e3:暗房惊魂": "b4b4aa77b15aea5176dd5d6a1725408df0e9a29bf1ac2285f8cf8944fc6bc8a1",
+    "book990402:e3:暗房惊魂（2）": "c24c9d34e44c13a9c2aded99af016dd384c7086f244a6e5f75ca57a10c7b0e34",
+    "book990402:e2:回声照相馆": "29de6c1b5b6ab461b10f8ff328fac3e736f8b769f986c695064723193639c7ca"
+  },
+  "semantic_event_fps": {
+    "book990402:e3:暗房惊魂": "30c4649706a928a860075e315ea7280639251e0467b722f02d906ae7b7125825",
+    "book990402:e3:暗房惊魂（2）": "e6fbd520ddbeadc9230d3f45338b0faf0433b0dde104eeaaaec064cf2886a2e4",
+    "book990402:e2:回声照相馆": "0091a0e62dc9311f407a065400df5ec8becbe9dcb2546fd6bb0c3a9668cf41ca"
+  },
+  "request_fps": {
+    "book990402:e3:暗房惊魂": "0a87ccb53dbdfa7999661a4c95df6c95e99296655184a6b31fc262f3f45591ce",
+    "book990402:e3:暗房惊魂（2）": "71f84574d98596b4f2aa9b72a542082f8dac76309124c537991a0f7568cc3110",
+    "book990402:e2:回声照相馆": "522ee682534c9e656bd163e352d01892528dcb98c9b8257b54d13fc0e97e2dd8"
+  },
+  "frozen_at": "2026-09-15T19:14:18.119537+00:00"
+}

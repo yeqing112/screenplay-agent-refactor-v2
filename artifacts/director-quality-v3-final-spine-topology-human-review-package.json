@@ -1,0 +1,12 @@
+{
+  "status": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_BLOCKED",
+  "experiment_validity": "INVALID",
+  "failure_layer": "HARNESS_DATA_GAP_PRESERVE_TRACE_UNRESOLVED",
+  "human_review_pending": true,
+  "briefs": [
+    "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-final-spine-topology-recanary-scenes\\027d92aaf31c-brief.md",
+    "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-final-spine-topology-recanary-scenes\\a978c3437de8-brief.md",
+    "D:\\Work\\Project\\screenplay-agent-refactor-v2\\artifacts\\director-quality-v3-final-spine-topology-recanary-scenes\\f948536b243d-brief.md"
+  ],
+  "final_report": "artifacts/director-quality-v3-final-spine-topology-recanary-final-report.md"
+}
