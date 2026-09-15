@@ -61,6 +61,7 @@
         "historical_status": "FAILED",
         "experiment_validity": "INVALID",
         "forensic_adjudication": "CLOSED",
+        "preflight_wiring_closure": "CLOSED",
         "raw_spine_capability": "PROMISING",
         "raw_topology_capability": "PROMISING",
         "ready_for_final_recanary": true,
