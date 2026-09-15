@@ -1,0 +1,28 @@
+{
+  "schema_version": "director-quality-v3-shot-architecture-manifest-v1",
+  "base_commit": "aa33aab",
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "strategy_fingerprint": "f456c2f3f69f4c537537df3fa6f9d77787365edf3f8c9c406740917d46706993",
+      "blocking_fingerprint": "71c8ea0e00ce1346c9b3d7dd563e7c37b3bc49aa7810d0904eef32df22fdbc09",
+      "fact_snapshot_fingerprint": "40794a58e730161537a3ce68a72608e51db4bc939970234d39a1b60749ab7cdd",
+      "identity_binding_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "strategy_fingerprint": "e7cf30b5b5fd42dae780594dde0ca63e60b194ded5d091a8ebb731e5ad858af9",
+      "blocking_fingerprint": "c3ed2afe6417aa59066a98433eec11f532e0a455412499b21dae37d761723894",
+      "fact_snapshot_fingerprint": "e596bd4f5ab5bc9a13de10c32b9d8447f17c6d0ff023c4cc5f528c4da85054a2",
+      "identity_binding_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02"
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "strategy_fingerprint": "1a517bca15ee51deb8295d44ea8f08a93d3bb0e6a9d5e8f5a735ecfa05d5f6dc",
+      "blocking_fingerprint": "3b3753ad0cd23c57462cf0a34dd185190245bb720fb0726b611877e80be70e02",
+      "fact_snapshot_fingerprint": "425a2972daeb7b8d9f6211dbe837023247732ec1863e9710df57fb21bcda7f95",
+      "identity_binding_fingerprint": "5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1"
+    }
+  ],
+  "real_calls": 0
+}

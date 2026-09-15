@@ -1,0 +1,13 @@
+{
+  "signal": "SHOT_ARCHITECTURE_INVALID",
+  "warnings": [
+    {
+      "code": "ARCHITECTURE_SUMMARY_WEAK"
+    },
+    {
+      "code": "MECHANICAL_DIALOGUE_COVERAGE"
+    }
+  ],
+  "mechanical_dialogue_coverage": 1,
+  "visual_overload": 0
+}

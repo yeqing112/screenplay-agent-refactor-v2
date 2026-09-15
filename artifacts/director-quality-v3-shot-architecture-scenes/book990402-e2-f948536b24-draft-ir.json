@@ -1,0 +1,48 @@
+{
+  "scene_id": "book990402:e2:回声照相馆",
+  "schema_version": "shot_architecture_draft_v1",
+  "strategy_fingerprint": "1a517bca15ee51deb8295d44ea8f08a93d3bb0e6a9d5e8f5a735ecfa05d5f6dc",
+  "architecture_summary": "",
+  "shot_count": 1,
+  "shots": [
+    {
+      "shot_id": "SA01",
+      "logical_key": "shot-1",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:B11"
+      ],
+      "function": [
+        "ESTABLISH"
+      ],
+      "subject": "林晚和她的旧照片",
+      "shot_size": "CU",
+      "camera_position": "正面，略低于视线",
+      "camera_movement": "",
+      "composition_intent": "林晚从口袋掏出对折的旧照片，缓缓展开。照片居中构图，显示一个年轻女人（林晚）穿着灰色外套站在照相馆门口。背面文字‘1998.10.3。回声照相馆。林晚。’清晰可见。",
+      "performance_focus": "林晚展开照片的动作缓慢而郑重，表情从震惊转为冰冷，眼神中充满复杂情绪。",
+      "information_focus": "林晚藏有自己1998年穿灰外套站在照相馆门口的旧照片，时间地点明确。",
+      "prop_focus": "林晚的旧照片",
+      "spatial_anchor": "柜台区域",
+      "entry_state": "林晚独自一人，手伸向口袋。",
+      "exit_state": "照片完全展开，林晚表情冰冷。",
+      "cut_in_motivation": "顾沉离开后，林晚独自面对秘密，自然引出揭示动作。",
+      "cut_out_motivation": "旧照片内容已完全展示，悬念达到顶点。",
+      "hold_logic": "在照片展开和背面文字上保持，让观众充分吸收信息。",
+      "continuity_requirements": [],
+      "must_preserve_refs": [
+        "B11"
+      ],
+      "what_audience_knows_before": "灰外套照片，顾沉的试探。",
+      "what_this_shot_adds": "林晚的过去与‘灰外套’、照相馆直接关联，时间明确。",
+      "what_remains_withheld": "林晚对顾沉试探的真实反应，以及这张旧照片与昨夜事件、顾沉的深层关联。"
+    }
+  ],
+  "notes": [],
+  "compiler_version": "shot_architecture_compiler_v1",
+  "architecture_fingerprint": "8a37e8bb3f508b3c63fa2a3738e7e27c6a216ff88934a0d5c4113f48ee822b77",
+  "source_trace": {
+    "strategy_fingerprint": "1a517bca15ee51deb8295d44ea8f08a93d3bb0e6a9d5e8f5a735ecfa05d5f6dc",
+    "provider_shot_ids_ignored": true
+  }
+}

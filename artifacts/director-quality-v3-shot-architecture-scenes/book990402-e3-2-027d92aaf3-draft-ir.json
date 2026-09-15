@@ -1,0 +1,51 @@
+{
+  "scene_id": "book990402:e3:暗房惊魂（2）",
+  "schema_version": "shot_architecture_draft_v1",
+  "strategy_fingerprint": "e7cf30b5b5fd42dae780594dde0ca63e60b194ded5d091a8ebb731e5ad858af9",
+  "architecture_summary": "",
+  "shot_count": 1,
+  "shots": [
+    {
+      "shot_id": "SA01",
+      "logical_key": "shot-1",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:1",
+        "beat:2"
+      ],
+      "function": [
+        "ESTABLISH"
+      ],
+      "subject": "顾沉与林晚在暗房门外的对峙",
+      "shot_size": "MS",
+      "camera_position": "走廊侧方，略低于视平线",
+      "camera_movement": "STATIC",
+      "composition_intent": "利用门框将画面分割为明暗两个区域，顾沉在明亮走廊一侧，林晚在暗房逆光剪影中，强调两人之间的隔阂与对立",
+      "performance_focus": "顾沉的静态施压（背靠墙壁，手插口袋，目光低垂）与林晚的防御性姿态（逆光站立，身体侧开，手指捻纽扣）",
+      "information_focus": "建立空间关系与初始对峙状态，暗示林晚从暗处出现的可疑性",
+      "prop_focus": "门框作为物理与心理界限的象征",
+      "spatial_anchor": "暗房门槛",
+      "entry_state": "顾沉已等待，林晚拉开门出现",
+      "exit_state": "两人形成对峙，林晚开始言语否认",
+      "cut_in_motivation": "场景转换至门外，延续紧张氛围",
+      "cut_out_motivation": "林晚开始言语交锋，需要更近的镜头捕捉表演细节",
+      "hold_logic": "保持静态构图，让观众感受对峙的张力与空间分割的象征意义",
+      "continuity_requirements": [],
+      "must_preserve_refs": [
+        "beat:1",
+        "character:19",
+        "character:20"
+      ],
+      "what_audience_knows_before": "顾沉在暗房外等待，林晚从暗房内出来",
+      "what_this_shot_adds": "建立视觉对峙格局，通过逆光与门框构图暗示两人心理距离",
+      "what_remains_withheld": "顾沉持有的具体证据，林晚紧张的原因"
+    }
+  ],
+  "notes": [],
+  "compiler_version": "shot_architecture_compiler_v1",
+  "architecture_fingerprint": "faee5a0b4e1dbd4bd0c520eb8c2d586812303f53beaf61428a46016b4926414c",
+  "source_trace": {
+    "strategy_fingerprint": "e7cf30b5b5fd42dae780594dde0ca63e60b194ded5d091a8ebb731e5ad858af9",
+    "provider_shot_ids_ignored": true
+  }
+}

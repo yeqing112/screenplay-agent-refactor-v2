@@ -1,0 +1,35 @@
+{
+  "schema_version": "director-quality-v3-shot-architecture-preflight-v1",
+  "status": "PASS",
+  "all_checks_pass": true,
+  "checks": {
+    "head_is_expected": true,
+    "frozen_scene_count": true,
+    "strategy_artifacts_available": true,
+    "approved_strategies": true,
+    "authority_inputs": true,
+    "identity_bindings": true,
+    "identity_contract_parity": true,
+    "no_prior_canary_outputs": true,
+    "profile_mimo": true,
+    "real_calls_zero": true,
+    "downstream_side_effects_zero": true
+  },
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "provider_http_requests": 0,
+  "shot_architecture": 0,
+  "shotplan": 0,
+  "storyboard": 0,
+  "image": 0,
+  "video": 0,
+  "media": 0,
+  "storage": 0,
+  "shadow": 0,
+  "ci": "not_run",
+  "profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5"
+  }
+}

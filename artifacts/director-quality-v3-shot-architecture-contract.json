@@ -1,0 +1,33 @@
+{
+  "schema_version": "shot_architecture_draft_contract_v1",
+  "required_shot_fields": [
+    "phase_id",
+    "beat_refs",
+    "function",
+    "subject",
+    "shot_size",
+    "camera_position",
+    "camera_movement",
+    "composition_intent",
+    "performance_focus",
+    "information_focus",
+    "prop_focus",
+    "spatial_anchor",
+    "entry_state",
+    "exit_state",
+    "cut_in_motivation",
+    "cut_out_motivation",
+    "hold_logic",
+    "continuity_requirements",
+    "must_preserve_refs"
+  ],
+  "program_owned_fields": [
+    "architecture_fingerprint",
+    "authority_projection",
+    "compiler_version",
+    "qa_metrics",
+    "source_trace"
+  ],
+  "shot_id_policy": "program_deterministic_SA01_to_SAxx",
+  "side_effect_boundary": "draft_artifacts_only"
+}

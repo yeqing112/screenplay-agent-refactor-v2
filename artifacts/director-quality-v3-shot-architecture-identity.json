@@ -1,0 +1,26 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "status": "PASS",
+    "unknown_character_references": [],
+    "bindings": {
+      "19": "林晚",
+      "20": "顾沉"
+    }
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "status": "PASS",
+    "unknown_character_references": [],
+    "bindings": {
+      "19": "林晚",
+      "20": "顾沉"
+    }
+  },
+  "book990402:e2:回声照相馆": {
+    "status": "PASS",
+    "unknown_character_references": [],
+    "bindings": {
+      "17": "林晚",
+      "18": "顾沉"
+    }
+  }
+}

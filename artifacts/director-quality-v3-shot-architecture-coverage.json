@@ -1,0 +1,76 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "beat_coverage": false,
+    "phase_coverage": false,
+    "covered_beats": [],
+    "missing_beats": [
+      "beat:1",
+      "beat:10",
+      "beat:11",
+      "beat:2",
+      "beat:3",
+      "beat:4",
+      "beat:5",
+      "beat:6",
+      "beat:7",
+      "beat:8",
+      "beat:9"
+    ],
+    "covered_phases": [],
+    "missing_phases": [
+      "P01",
+      "P02",
+      "P03"
+    ],
+    "status": "FAIL"
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "beat_coverage": false,
+    "phase_coverage": false,
+    "covered_beats": [],
+    "missing_beats": [
+      "beat:1",
+      "beat:10",
+      "beat:2",
+      "beat:3",
+      "beat:4",
+      "beat:5",
+      "beat:6",
+      "beat:7",
+      "beat:8",
+      "beat:9"
+    ],
+    "covered_phases": [],
+    "missing_phases": [
+      "P01",
+      "P02",
+      "P03"
+    ],
+    "status": "FAIL"
+  },
+  "book990402:e2:回声照相馆": {
+    "beat_coverage": false,
+    "phase_coverage": false,
+    "covered_beats": [],
+    "missing_beats": [
+      "beat:B1",
+      "beat:B10",
+      "beat:B11",
+      "beat:B2",
+      "beat:B3",
+      "beat:B4",
+      "beat:B5",
+      "beat:B6",
+      "beat:B7",
+      "beat:B8",
+      "beat:B9"
+    ],
+    "covered_phases": [],
+    "missing_phases": [
+      "P01",
+      "P02",
+      "P03"
+    ],
+    "status": "FAIL"
+  }
+}

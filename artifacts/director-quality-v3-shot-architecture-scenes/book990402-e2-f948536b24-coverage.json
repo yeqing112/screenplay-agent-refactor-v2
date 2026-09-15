@@ -1,0 +1,27 @@
+{
+  "beat_coverage": false,
+  "phase_coverage": false,
+  "covered_beats": [
+    "beat:B11"
+  ],
+  "missing_beats": [
+    "beat:B1",
+    "beat:B10",
+    "beat:B2",
+    "beat:B3",
+    "beat:B4",
+    "beat:B5",
+    "beat:B6",
+    "beat:B7",
+    "beat:B8",
+    "beat:B9"
+  ],
+  "covered_phases": [
+    "P03"
+  ],
+  "missing_phases": [
+    "P01",
+    "P02"
+  ],
+  "status": "FAIL"
+}

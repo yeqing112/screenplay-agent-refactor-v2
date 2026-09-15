@@ -1,0 +1,50 @@
+{
+  "scene_id": "book990402:e3:暗房惊魂",
+  "schema_version": "shot_architecture_draft_v1",
+  "strategy_fingerprint": "f456c2f3f69f4c537537df3fa6f9d77787365edf3f8c9c406740917d46706993",
+  "architecture_summary": "",
+  "shot_count": 1,
+  "shots": [
+    {
+      "shot_id": "SA01",
+      "logical_key": "shot-1",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:1",
+        "beat:2",
+        "beat:3"
+      ],
+      "function": [
+        "ESTABLISH"
+      ],
+      "subject": "暗房环境与林晚",
+      "shot_size": "MS",
+      "camera_position": "工作台上方，略高于档案袋",
+      "camera_movement": "",
+      "composition_intent": "以打开的牛皮纸档案袋和剪下胶片为前景，通过下摇将林晚置于悬挂相纸形成的框架中，建立空间与人物的关联。",
+      "performance_focus": "林晚将照片夹到晾干绳上的慵懒动作，以及目光快速扫过档案袋、指尖极轻划过袋口的细微异常。",
+      "information_focus": "档案袋的存在、剪下胶片的锯齿状边缘、林晚的伪装与下意识关注。",
+      "prop_focus": "牛皮纸档案袋、剪下胶片、晾干绳上的照片。",
+      "spatial_anchor": "工作台与晾干绳区域。",
+      "entry_state": "暗房静态，档案袋与胶片作为视觉焦点。",
+      "exit_state": "林晚完成夹照片动作，指尖划过袋口后收回，镜头停留在她略显僵硬的背影上。",
+      "cut_in_motivation": "从物证特写切入，直接建立场景的悬疑核心。",
+      "cut_out_motivation": "在林晚指尖动作后停留，强调其异常，为顾沉的介入铺垫。",
+      "hold_logic": "在林晚手指划过袋口时短暂停留，让观众捕捉到这个下意识动作。",
+      "continuity_requirements": [],
+      "must_preserve_refs": [
+        "beat:3"
+      ],
+      "what_audience_knows_before": "暗房内有可疑物证，林晚在工作。",
+      "what_this_shot_adds": "林晚对档案袋的细微异常关注，暗示其可能隐藏秘密。",
+      "what_remains_withheld": "档案袋具体内容、林晚真实意图、T恤下摆凸起物。"
+    }
+  ],
+  "notes": [],
+  "compiler_version": "shot_architecture_compiler_v1",
+  "architecture_fingerprint": "999f9f8c03babaa67de293d6602c8276a1a12ba6b935d8e75dbe1b6562e0242c",
+  "source_trace": {
+    "strategy_fingerprint": "f456c2f3f69f4c537537df3fa6f9d77787365edf3f8c9c406740917d46706993",
+    "provider_shot_ids_ignored": true
+  }
+}

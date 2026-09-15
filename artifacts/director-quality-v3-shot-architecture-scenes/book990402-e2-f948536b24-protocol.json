@@ -1,0 +1,24 @@
+{
+  "status": "FAIL",
+  "errors": [
+    {
+      "code": "ARCHITECTURE_OUTPUT_SHAPE_INVALID",
+      "reason": "top_level_single_shot_object"
+    },
+    {
+      "code": "SHOT_FIELD_MISSING",
+      "shot_id": "SA01",
+      "field": "camera_movement"
+    },
+    {
+      "code": "SHOT_FIELD_MISSING",
+      "shot_id": "SA01",
+      "field": "continuity_requirements"
+    },
+    {
+      "code": "CAMERA_MOVEMENT_INVALID",
+      "shot_id": "SA01"
+    }
+  ],
+  "valid": false
+}

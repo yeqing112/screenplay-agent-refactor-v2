@@ -1,0 +1,107 @@
+{
+  "pair_count": 3,
+  "all_pairs_checked": true,
+  "pairs": [
+    {
+      "left": "book990402:e3:暗房惊魂",
+      "right": "book990402:e3:暗房惊魂（2）",
+      "same_topology": false,
+      "left_signature": [
+        1,
+        [
+          [
+            "ESTABLISH"
+          ]
+        ],
+        [
+          "MS"
+        ],
+        [
+          ""
+        ]
+      ],
+      "right_signature": [
+        1,
+        [
+          [
+            "ESTABLISH"
+          ]
+        ],
+        [
+          "MS"
+        ],
+        [
+          "STATIC"
+        ]
+      ]
+    },
+    {
+      "left": "book990402:e3:暗房惊魂",
+      "right": "book990402:e2:回声照相馆",
+      "same_topology": false,
+      "left_signature": [
+        1,
+        [
+          [
+            "ESTABLISH"
+          ]
+        ],
+        [
+          "MS"
+        ],
+        [
+          ""
+        ]
+      ],
+      "right_signature": [
+        1,
+        [
+          [
+            "ESTABLISH"
+          ]
+        ],
+        [
+          "CU"
+        ],
+        [
+          ""
+        ]
+      ]
+    },
+    {
+      "left": "book990402:e3:暗房惊魂（2）",
+      "right": "book990402:e2:回声照相馆",
+      "same_topology": false,
+      "left_signature": [
+        1,
+        [
+          [
+            "ESTABLISH"
+          ]
+        ],
+        [
+          "MS"
+        ],
+        [
+          "STATIC"
+        ]
+      ],
+      "right_signature": [
+        1,
+        [
+          [
+            "ESTABLISH"
+          ]
+        ],
+        [
+          "CU"
+        ],
+        [
+          ""
+        ]
+      ]
+    }
+  ],
+  "hard_template_leakage": false,
+  "hard_failure": false
+}

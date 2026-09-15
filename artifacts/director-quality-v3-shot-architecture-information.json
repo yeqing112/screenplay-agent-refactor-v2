@@ -1,0 +1,17 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "status": "PASS",
+    "future_information_leak_count": 0,
+    "hard_errors": []
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "status": "PASS",
+    "future_information_leak_count": 0,
+    "hard_errors": []
+  },
+  "book990402:e2:回声照相馆": {
+    "status": "PASS",
+    "future_information_leak_count": 0,
+    "hard_errors": []
+  }
+}
