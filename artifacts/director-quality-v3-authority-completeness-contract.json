@@ -1,0 +1,18 @@
+{
+  "schema_version": "director_authority_completeness_gate_v1",
+  "required_checks": [
+    "strategy_fingerprint",
+    "character_refs",
+    "prop_refs",
+    "location_refs",
+    "phase_refs",
+    "beat_refs",
+    "information_refs",
+    "structured_preserve_constraints",
+    "must_avoid",
+    "source_provenance"
+  ],
+  "unresolved_code": "PRESERVE_AUTHORITY_UNRESOLVED",
+  "strategy_approval_on_failure": "STRATEGY_AUTHORITY_INCOMPLETE",
+  "provider_callable_on_failure": false
+}

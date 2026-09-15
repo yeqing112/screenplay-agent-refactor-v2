@@ -1,0 +1,236 @@
+{
+  "spec": {
+    "schema_version": "shot_topology_skeleton_spec_v2",
+    "root_required": [
+      "nodes"
+    ],
+    "root_provider_fields": [
+      "nodes"
+    ],
+    "node_required": [
+      "segment_ref",
+      "phase_id",
+      "beat_refs",
+      "primary_role",
+      "secondary_role",
+      "subjects",
+      "dramatic_reason",
+      "performance_reason",
+      "information_reason",
+      "spatial_reason",
+      "editorial_reason",
+      "stimulus_beat_refs",
+      "stimulus_event_keys",
+      "reaction_subjects",
+      "prop_refs",
+      "must_preserve_refs"
+    ],
+    "node_provider_fields": [
+      "segment_ref",
+      "phase_id",
+      "beat_refs",
+      "primary_role",
+      "secondary_role",
+      "subjects",
+      "dramatic_reason",
+      "performance_reason",
+      "information_reason",
+      "spatial_reason",
+      "editorial_reason",
+      "stimulus_beat_refs",
+      "stimulus_event_keys",
+      "reaction_subjects",
+      "prop_refs",
+      "must_preserve_refs"
+    ],
+    "program_owned_fields": [
+      "schema_version",
+      "scene_id",
+      "node_key",
+      "node_id",
+      "spine_fingerprint",
+      "canonical_graph_ref"
+    ],
+    "forbidden_fields": [
+      "shot_id",
+      "node_id",
+      "shot_size",
+      "camera_position",
+      "camera_movement",
+      "composition",
+      "lighting",
+      "lens",
+      "duration",
+      "canonical_graph_ref"
+    ],
+    "role_enum": [
+      "ORIENT",
+      "ESTABLISH",
+      "OBSERVE",
+      "PRESSURE",
+      "REACTION",
+      "EVIDENCE",
+      "INSERT",
+      "REVEAL",
+      "TURN",
+      "HOLD",
+      "TRANSITION",
+      "RELEASE",
+      "CLOSING"
+    ],
+    "secondary_role_enum": [
+      "ORIENT",
+      "ESTABLISH",
+      "OBSERVE",
+      "PRESSURE",
+      "REACTION",
+      "EVIDENCE",
+      "INSERT",
+      "REVEAL",
+      "TURN",
+      "HOLD",
+      "TRANSITION",
+      "RELEASE",
+      "CLOSING",
+      null
+    ],
+    "segment_ref_rule": "exactly one value from allowed_segment_refs; never phase IDs",
+    "ownership": {
+      "provider": [
+        "nodes",
+        "segment_ref",
+        "phase_id",
+        "beat_refs",
+        "primary_role",
+        "secondary_role",
+        "subjects",
+        "dramatic_reason",
+        "performance_reason",
+        "information_reason",
+        "spatial_reason",
+        "editorial_reason",
+        "stimulus_beat_refs",
+        "stimulus_event_keys",
+        "reaction_subjects",
+        "prop_refs",
+        "must_preserve_refs"
+      ],
+      "program": [
+        "schema_version",
+        "scene_id",
+        "node_key",
+        "node_id",
+        "spine_fingerprint",
+        "canonical_graph_ref"
+      ]
+    }
+  },
+  "contract": {
+    "spec_schema_version": "shot_topology_skeleton_spec_v2",
+    "required_fields": [
+      "nodes"
+    ],
+    "program_owned_fields": [
+      "schema_version",
+      "scene_id",
+      "node_key",
+      "node_id",
+      "spine_fingerprint",
+      "canonical_graph_ref"
+    ],
+    "forbidden_fields": [
+      "shot_id",
+      "node_id",
+      "shot_size",
+      "camera_position",
+      "camera_movement",
+      "composition",
+      "lighting",
+      "lens",
+      "duration",
+      "canonical_graph_ref"
+    ],
+    "ownership": {
+      "provider": [
+        "nodes",
+        "segment_ref",
+        "phase_id",
+        "beat_refs",
+        "primary_role",
+        "secondary_role",
+        "subjects",
+        "dramatic_reason",
+        "performance_reason",
+        "information_reason",
+        "spatial_reason",
+        "editorial_reason",
+        "stimulus_beat_refs",
+        "stimulus_event_keys",
+        "reaction_subjects",
+        "prop_refs",
+        "must_preserve_refs"
+      ],
+      "program": [
+        "schema_version",
+        "scene_id",
+        "node_key",
+        "node_id",
+        "spine_fingerprint",
+        "canonical_graph_ref"
+      ]
+    },
+    "node_required_fields": [
+      "segment_ref",
+      "phase_id",
+      "beat_refs",
+      "primary_role",
+      "secondary_role",
+      "subjects",
+      "dramatic_reason",
+      "performance_reason",
+      "information_reason",
+      "spatial_reason",
+      "editorial_reason",
+      "stimulus_beat_refs",
+      "stimulus_event_keys",
+      "reaction_subjects",
+      "prop_refs",
+      "must_preserve_refs"
+    ],
+    "role_enum": [
+      "ORIENT",
+      "ESTABLISH",
+      "OBSERVE",
+      "PRESSURE",
+      "REACTION",
+      "EVIDENCE",
+      "INSERT",
+      "REVEAL",
+      "TURN",
+      "HOLD",
+      "TRANSITION",
+      "RELEASE",
+      "CLOSING"
+    ],
+    "secondary_role_enum": [
+      "ORIENT",
+      "ESTABLISH",
+      "OBSERVE",
+      "PRESSURE",
+      "REACTION",
+      "EVIDENCE",
+      "INSERT",
+      "REVEAL",
+      "TURN",
+      "HOLD",
+      "TRANSITION",
+      "RELEASE",
+      "CLOSING",
+      null
+    ],
+    "allowed_segment_refs": [],
+    "segment_ref_rule": "exactly one value from allowed_segment_refs; never phase IDs",
+    "schema_fingerprint": "0778c1270dec5b42c6907b27ece73f0628c0b187978bc0113e9e5e60d9bd1c38"
+  },
+  "schema_fingerprint": "0778c1270dec5b42c6907b27ece73f0628c0b187978bc0113e9e5e60d9bd1c38"
+}

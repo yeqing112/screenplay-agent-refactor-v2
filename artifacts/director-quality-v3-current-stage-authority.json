@@ -48,7 +48,6 @@
     "raw_capability": "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
     "ready_for_final_recanary": false,
     "production_shotplan": "HOLD",
-    "final_recanary": {"status": "FAILED", "prompt_contract_path_exhausted": true, "next_step": "NO_FURTHER_SPINE_TOPOLOGY_RECANARY"},
     "generation_architecture_redesign": {
       "status": "FOUNDATION_CLOSED",
       "visual_editorial_spine": "READY",
@@ -77,5 +76,17 @@
         "replay_provider_calls": 0
       }
     }
+  },
+  "authority_contract_ssot": {
+    "status": "CLOSED",
+    "structured_preserve": "PASS",
+    "authority_completeness": "PASS",
+    "spine_schema_ssot": "PASS",
+    "skeleton_schema_ssot": "PASS",
+    "provider_validator_parity": "PASS",
+    "provider_readiness_gate": "PASS",
+    "retired_provider_cohort": "ENFORCED",
+    "ready_for_fresh_integration_pilot": true,
+    "fresh_integration_pilot_authorized": false
   }
 }

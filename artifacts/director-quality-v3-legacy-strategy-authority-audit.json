@@ -1,0 +1,37 @@
+{
+  "schema_version": "scene_directing_strategy_authority_v2_migration_audit_v1",
+  "status": "LEGACY_INCOMPLETE",
+  "auto_migration": false,
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "strategy_fingerprint": "8a98151b7e7e2801b8daa5d576003da529717f61796dce491c2aa791037f3c04",
+      "legacy_preserve_count": 4,
+      "structured_preserve_present": false,
+      "status": "LEGACY_INCOMPLETE",
+      "unresolved_codes": [
+        "PRESERVE_AUTHORITY_UNRESOLVED"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "strategy_fingerprint": "95a18cc7b7f9096934bb668f6d3ba81bc7a1ce489d33074734fe9abccef465e2",
+      "legacy_preserve_count": 4,
+      "structured_preserve_present": false,
+      "status": "LEGACY_INCOMPLETE",
+      "unresolved_codes": [
+        "PRESERVE_AUTHORITY_UNRESOLVED"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "strategy_fingerprint": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5",
+      "legacy_preserve_count": 4,
+      "structured_preserve_present": false,
+      "status": "LEGACY_INCOMPLETE",
+      "unresolved_codes": [
+        "PRESERVE_AUTHORITY_UNRESOLVED"
+      ]
+    }
+  ]
+}

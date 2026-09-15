@@ -1,0 +1,164 @@
+{
+  "schema_version": "provider_validator_schema_parity_v1",
+  "status": "PASS",
+  "spine": {
+    "schema_fingerprint": "fedd3cc7b36a119fe5e86dea591594820ad91f71bc26b267bb6d2173f4f2cb81",
+    "provider_required_fields": [
+      "spine_summary",
+      "segments"
+    ],
+    "validator_required_fields": [
+      "spine_summary",
+      "segments"
+    ],
+    "provider_segment_required_fields": [
+      "phase_ids",
+      "beat_refs",
+      "dramatic_function",
+      "audience_attention",
+      "performance_pressure",
+      "information_change",
+      "spatial_focus",
+      "visual_motif",
+      "editorial_rhythm",
+      "entry_condition",
+      "exit_condition"
+    ],
+    "validator_segment_required_fields": [
+      "phase_ids",
+      "beat_refs",
+      "dramatic_function",
+      "audience_attention",
+      "performance_pressure",
+      "information_change",
+      "spatial_focus",
+      "visual_motif",
+      "editorial_rhythm",
+      "entry_condition",
+      "exit_condition"
+    ],
+    "forbidden_provider_fields": [
+      "shot_id",
+      "node_id",
+      "shot_size",
+      "camera_position",
+      "camera_movement",
+      "lens",
+      "focal_length",
+      "canonical_graph_ref"
+    ],
+    "forbidden_validator_fields": [
+      "shot_id",
+      "node_id",
+      "shot_size",
+      "camera_position",
+      "camera_movement",
+      "lens",
+      "focal_length",
+      "canonical_graph_ref"
+    ],
+    "parity": true
+  },
+  "skeleton": {
+    "schema_fingerprint": "0778c1270dec5b42c6907b27ece73f0628c0b187978bc0113e9e5e60d9bd1c38",
+    "provider_required_fields": [
+      "nodes"
+    ],
+    "validator_required_fields": [
+      "nodes"
+    ],
+    "provider_node_required_fields": [
+      "segment_ref",
+      "phase_id",
+      "beat_refs",
+      "primary_role",
+      "secondary_role",
+      "subjects",
+      "dramatic_reason",
+      "performance_reason",
+      "information_reason",
+      "spatial_reason",
+      "editorial_reason",
+      "stimulus_beat_refs",
+      "stimulus_event_keys",
+      "reaction_subjects",
+      "prop_refs",
+      "must_preserve_refs"
+    ],
+    "validator_node_required_fields": [
+      "segment_ref",
+      "phase_id",
+      "beat_refs",
+      "primary_role",
+      "secondary_role",
+      "subjects",
+      "dramatic_reason",
+      "performance_reason",
+      "information_reason",
+      "spatial_reason",
+      "editorial_reason",
+      "stimulus_beat_refs",
+      "stimulus_event_keys",
+      "reaction_subjects",
+      "prop_refs",
+      "must_preserve_refs"
+    ],
+    "provider_role_enum": [
+      "ORIENT",
+      "ESTABLISH",
+      "OBSERVE",
+      "PRESSURE",
+      "REACTION",
+      "EVIDENCE",
+      "INSERT",
+      "REVEAL",
+      "TURN",
+      "HOLD",
+      "TRANSITION",
+      "RELEASE",
+      "CLOSING"
+    ],
+    "validator_role_enum": [
+      "ORIENT",
+      "ESTABLISH",
+      "OBSERVE",
+      "PRESSURE",
+      "REACTION",
+      "EVIDENCE",
+      "INSERT",
+      "REVEAL",
+      "TURN",
+      "HOLD",
+      "TRANSITION",
+      "RELEASE",
+      "CLOSING"
+    ],
+    "forbidden_provider_fields": [
+      "shot_id",
+      "node_id",
+      "shot_size",
+      "camera_position",
+      "camera_movement",
+      "composition",
+      "lighting",
+      "lens",
+      "duration",
+      "canonical_graph_ref"
+    ],
+    "forbidden_validator_fields": [
+      "shot_id",
+      "node_id",
+      "shot_size",
+      "camera_position",
+      "camera_movement",
+      "composition",
+      "lighting",
+      "lens",
+      "duration",
+      "canonical_graph_ref"
+    ],
+    "parity": true
+  },
+  "duplicate_role_enum_authority": false,
+  "duplicate_required_field_authority": false
+}

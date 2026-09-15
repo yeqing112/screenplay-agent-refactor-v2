@@ -1,0 +1,152 @@
+{
+  "spec": {
+    "schema_version": "visual_editorial_spine_spec_v2",
+    "root_required": [
+      "spine_summary",
+      "segments"
+    ],
+    "root_provider_fields": [
+      "spine_summary",
+      "segments"
+    ],
+    "segment_required": [
+      "phase_ids",
+      "beat_refs",
+      "dramatic_function",
+      "audience_attention",
+      "performance_pressure",
+      "information_change",
+      "spatial_focus",
+      "visual_motif",
+      "editorial_rhythm",
+      "entry_condition",
+      "exit_condition"
+    ],
+    "segment_provider_fields": [
+      "dramatic_function",
+      "audience_attention",
+      "performance_pressure",
+      "information_change",
+      "spatial_focus",
+      "visual_motif",
+      "editorial_rhythm",
+      "entry_condition",
+      "exit_condition"
+    ],
+    "program_owned_fields": [
+      "schema_version",
+      "scene_id",
+      "segment_key",
+      "strategy_fingerprint",
+      "spine_fingerprint",
+      "source_trace"
+    ],
+    "forbidden_fields": [
+      "shot_id",
+      "node_id",
+      "shot_size",
+      "camera_position",
+      "camera_movement",
+      "lens",
+      "focal_length",
+      "canonical_graph_ref"
+    ],
+    "ownership": {
+      "provider": [
+        "spine_summary",
+        "segments",
+        "dramatic_function",
+        "audience_attention",
+        "performance_pressure",
+        "information_change",
+        "spatial_focus",
+        "visual_motif",
+        "editorial_rhythm",
+        "entry_condition",
+        "exit_condition"
+      ],
+      "program": [
+        "schema_version",
+        "scene_id",
+        "segment_key",
+        "strategy_fingerprint",
+        "spine_fingerprint",
+        "source_trace"
+      ]
+    }
+  },
+  "contract": {
+    "spec_schema_version": "visual_editorial_spine_spec_v2",
+    "required_fields": [
+      "spine_summary",
+      "segments"
+    ],
+    "program_owned_fields": [
+      "schema_version",
+      "scene_id",
+      "segment_key",
+      "strategy_fingerprint",
+      "spine_fingerprint",
+      "source_trace"
+    ],
+    "forbidden_fields": [
+      "shot_id",
+      "node_id",
+      "shot_size",
+      "camera_position",
+      "camera_movement",
+      "lens",
+      "focal_length",
+      "canonical_graph_ref"
+    ],
+    "ownership": {
+      "provider": [
+        "spine_summary",
+        "segments",
+        "dramatic_function",
+        "audience_attention",
+        "performance_pressure",
+        "information_change",
+        "spatial_focus",
+        "visual_motif",
+        "editorial_rhythm",
+        "entry_condition",
+        "exit_condition"
+      ],
+      "program": [
+        "schema_version",
+        "scene_id",
+        "segment_key",
+        "strategy_fingerprint",
+        "spine_fingerprint",
+        "source_trace"
+      ]
+    },
+    "segment_required_fields": [
+      "phase_ids",
+      "beat_refs",
+      "dramatic_function",
+      "audience_attention",
+      "performance_pressure",
+      "information_change",
+      "spatial_focus",
+      "visual_motif",
+      "editorial_rhythm",
+      "entry_condition",
+      "exit_condition"
+    ],
+    "segment_provider_fields": [
+      "dramatic_function",
+      "audience_attention",
+      "performance_pressure",
+      "information_change",
+      "spatial_focus",
+      "visual_motif",
+      "editorial_rhythm",
+      "entry_condition",
+      "exit_condition"
+    ],
+    "schema_fingerprint": "fedd3cc7b36a119fe5e86dea591594820ad91f71bc26b267bb6d2173f4f2cb81"
+  },
+  "schema_fingerprint": "fedd3cc7b36a119fe5e86dea591594820ad91f71bc26b267bb6d2173f4f2cb81"
+}

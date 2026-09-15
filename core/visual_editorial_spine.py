@@ -6,11 +6,13 @@ intentionally has no shot-size, lens, camera or shot-id fields.
 from __future__ import annotations
 import hashlib, json, re
 from typing import Any
+from core.director_contract_ssot import SPINE_FORBIDDEN_FIELDS, SPINE_PROGRAM_OWNED_FIELDS, SPINE_REQUIRED_SEGMENT_FIELDS, spine_spec
 
 SPINE_SCHEMA = "visual_editorial_spine_ir_v1"
-SPINE_FIELDS = {"schema_version", "scene_id", "strategy_fingerprint", "spine_summary", "segments"}
-SEGMENT_FIELDS = {"segment_key", "phase_ids", "beat_refs", "dramatic_function", "audience_attention", "performance_pressure", "information_change", "spatial_focus", "visual_motif", "editorial_rhythm", "entry_condition", "exit_condition"}
-FORBIDDEN_FIELDS = {"shot_size", "shot_id", "camera_lens", "lens", "camera_movement", "camera_position", "shot_count", "lighting"}
+_SPINE_SPEC = spine_spec()
+SPINE_FIELDS = set(SPINE_PROGRAM_OWNED_FIELDS) | {"spine_summary", "segments"}
+SEGMENT_FIELDS = {"segment_key", *SPINE_REQUIRED_SEGMENT_FIELDS}
+FORBIDDEN_FIELDS = set(SPINE_FORBIDDEN_FIELDS) | {"camera_lens", "shot_count", "lighting"}
 
 def _d(v: Any) -> dict[str, Any]: return v if isinstance(v, dict) else {}
 def _l(v: Any) -> list[Any]: return v if isinstance(v, list) else []

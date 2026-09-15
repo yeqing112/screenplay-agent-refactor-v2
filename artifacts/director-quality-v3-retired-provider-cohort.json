@@ -1,0 +1,14 @@
+{
+  "status": "ENFORCED",
+  "scene_ids": [
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "book990402:e2:回声照相馆"
+  ],
+  "real_provider_experiment_allowed": false,
+  "allowed_uses": [
+    "historical regression",
+    "negative fixture",
+    "compatibility audit"
+  ]
+}

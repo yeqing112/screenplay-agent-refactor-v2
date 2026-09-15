@@ -8,11 +8,9 @@ from __future__ import annotations
 
 import re
 from typing import Any
+from core.director_contract_ssot import ROLE_ENUM as SSOT_ROLE_ENUM
 
-ROLE_ENUM = {
-    "ORIENT", "ESTABLISH", "OBSERVE", "PRESSURE", "REACTION", "EVIDENCE",
-    "INSERT", "REVEAL", "TURN", "HOLD", "TRANSITION", "RELEASE", "CLOSING",
-}
+ROLE_ENUM = set(SSOT_ROLE_ENUM)
 
 ROLE_ALIASES = {
     "ESTABLISHING": "ESTABLISH", "ESTABLISHMENT": "ESTABLISH",
@@ -43,6 +41,14 @@ def build_must_preserve_trace(strategy: dict[str, Any], scene: dict[str, Any]) -
     existing source-trace support refs are used only when they explicitly name
     a constraint/claim.  No keyword or embedding matching is performed.
     """
+    structured = _l(strategy.get("structured_preserve_constraints"))
+    if structured:
+        constraints = []
+        for index, item in enumerate(structured, 1):
+            row = _d(item)
+            refs = [_t(x) for x in _l(row.get("beat_refs")) if _t(x)]
+            constraints.append({"constraint_id": _t(row.get("constraint_id")) or f"MP{index:02d}", "description": _t(row.get("description")), "supporting_beat_refs": refs, "supporting_event_keys": [_t(x) for x in _l(row.get("event_refs")) if _t(x)], "source": "structured_authority", "status": "RESOLVED" if refs or _l(row.get("event_refs")) or _l(row.get("source_refs")) else "PRESERVE_TRACE_UNRESOLVED"})
+        return {"schema_version": "must_preserve_trace_v1", "scene_id": _t(scene.get("scene_id")), "constraints": constraints, "unresolved_count": sum(x["status"] == "PRESERVE_TRACE_UNRESOLVED" for x in constraints), "resolution_policy": "structured beat/event/source refs only; no prose similarity"}
     explicit = _l(strategy.get("must_preserve_trace"))
     preserve = [_t(x) for x in _l(strategy.get("must_preserve")) if _t(x)]
     source = _d(strategy.get("source_trace"))

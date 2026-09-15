@@ -2,9 +2,10 @@
 from __future__ import annotations
 import hashlib, json, re
 from typing import Any
+from core.director_contract_ssot import ROLE_ENUM as SSOT_ROLE_ENUM, SKELETON_FORBIDDEN_FIELDS, SKELETON_PROGRAM_OWNED_FIELDS, SKELETON_REQUIRED_NODE_FIELDS, skeleton_spec
 
 SKELETON_SCHEMA = "shot_topology_skeleton_ir_v1"
-ROLE_ENUM = {"ORIENT", "ESTABLISH", "OBSERVE", "PRESSURE", "REACTION", "EVIDENCE", "INSERT", "REVEAL", "TURN", "HOLD", "TRANSITION", "RELEASE", "CLOSING"}
+ROLE_ENUM = set(SSOT_ROLE_ENUM)
 NODE_FIELDS = {"node_key", "segment_key", "segment_ref", "phase_id", "beat_refs", "primary_role", "secondary_role", "subjects", "dramatic_reason", "performance_reason", "information_reason", "spatial_reason", "editorial_reason", "stimulus_beat_refs", "stimulus_event_key", "stimulus_event_keys", "reaction_subjects", "prop_refs", "must_preserve_refs"}
 FORBIDDEN_FIELDS = {"shot_size", "camera_movement", "camera_position", "composition_intent", "lighting", "lens", "stimulus_node_id", "stimulus_shot_id", "shot_id"}
 

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "provider_calls": 0,
+  "legacy_negative_case": {
+    "provider_callable": false,
+    "reason": "unresolved_preserve"
+  },
+  "fresh_fixture": {
+    "schema_version": "provider_readiness_gate_v1",
+    "status": "PASS",
+    "provider_callable": true,
+    "checks": {
+      "authority_complete": true,
+      "preserve_complete": true,
+      "identity_complete": true,
+      "schema_parity": true,
+      "strategy_exact": true,
+      "no_unresolved_anchors": true
+    },
+    "errors": []
+  }
+}
