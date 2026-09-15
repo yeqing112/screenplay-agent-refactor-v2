@@ -66,6 +66,11 @@ def main() -> int:
     )
 
     pointer = json.loads(AUTHORITY.read_text(encoding="utf-8"))
+    # Re-assert this stage's mutable authority fields after tests that may
+    # regenerate the ignored pointer artifact with an older shape.
+    redesign = pointer.setdefault("shot_architecture", {}).setdefault("generation_architecture_redesign", {})
+    stage = redesign.setdefault("spine_topology_canary", {})
+    stage.update({"forensic_adjudication": "CLOSED", "preflight_wiring_closure": "CLOSED", "ready_for_final_recanary": True, "final_recanary_authorized": False, "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED", "atomic_expansion_canary_authorized": False, "production_shotplan": "HOLD"})
     head = _head()
     base = json.loads(BASE.read_text(encoding="utf-8")) if BASE.exists() else {}
     expected_base = args.expected_base or head
@@ -194,8 +199,6 @@ No real Re-Canary, Atomic Expansion, ShotPlan, Storyboard or media action was ex
 
     # The pointer is the sole mutable authority for this stage.  Preserve all
     # historical fields while making this closure's authorization explicit.
-    redesign = pointer.setdefault("shot_architecture", {}).setdefault("generation_architecture_redesign", {})
-    stage = redesign.setdefault("spine_topology_canary", {})
     stage.update({"preflight_wiring_closure": "CLOSED" if status.endswith("CLOSED") else "BLOCKED", "ready_for_final_recanary": status.endswith("CLOSED"), "final_recanary_authorized": False, "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED", "atomic_expansion_canary_authorized": False, "production_shotplan": "HOLD"})
     _write(AUTHORITY, pointer)
     print(json.dumps({"status": status, "checks": wiring_checks, "provider_calls": 0, "expected_base_commit": expected_base}, ensure_ascii=False, indent=2))
