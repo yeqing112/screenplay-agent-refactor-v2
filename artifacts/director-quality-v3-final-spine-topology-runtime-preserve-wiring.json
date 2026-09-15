@@ -1,6 +1,183 @@
 {
   "status": "PASS",
-  "validator": "trace-based beat/event coverage",
-  "prose_exact_match": false,
-  "missing_trace": "PRESERVE_AUTHORITY_MISSING"
+  "scenes": {
+    "book990402:e3:暗房惊魂": {
+      "trace": {
+        "schema_version": "must_preserve_trace_v1",
+        "scene_id": "book990402:e3:暗房惊魂",
+        "constraints": [
+          {
+            "constraint_id": "MP01",
+            "description": "林晚指尖划过档案袋口的细微动作",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP02",
+            "description": "林晚无意识碰触T恤下摆的动作",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP03",
+            "description": "顾沉扫视林晚T恤下摆的视线",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP04",
+            "description": "林晚手悬在档案袋上颤抖的最终画面",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          }
+        ],
+        "unresolved_count": 4,
+        "resolution_policy": "structured beat/event refs only; no prose similarity"
+      },
+      "shape": {
+        "status": "PASS",
+        "errors": [],
+        "constraint_count": 4,
+        "unresolved_count": 4
+      },
+      "runtime_validator_argument": "must_preserve_trace",
+      "coverage_basis": "canonical Spine segment beat_refs ∩ constraint.supporting_beat_refs",
+      "prose_matching": false
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "trace": {
+        "schema_version": "must_preserve_trace_v1",
+        "scene_id": "book990402:e3:暗房惊魂（2）",
+        "constraints": [
+          {
+            "constraint_id": "MP01",
+            "description": "逆光剪影效果",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP02",
+            "description": "胶片边缘与档案袋撕裂的视觉呼应",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP03",
+            "description": "林晚手指捻纽扣和掐掌心的细微动作",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP04",
+            "description": "走廊阴影处的反光暗示",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          }
+        ],
+        "unresolved_count": 4,
+        "resolution_policy": "structured beat/event refs only; no prose similarity"
+      },
+      "shape": {
+        "status": "PASS",
+        "errors": [],
+        "constraint_count": 4,
+        "unresolved_count": 4
+      },
+      "runtime_validator_argument": "must_preserve_trace",
+      "coverage_basis": "canonical Spine segment beat_refs ∩ constraint.supporting_beat_refs",
+      "prose_matching": false
+    },
+    "book990402:e2:回声照相馆": {
+      "trace": {
+        "schema_version": "must_preserve_trace_v1",
+        "scene_id": "book990402:e2:回声照相馆",
+        "constraints": [
+          {
+            "constraint_id": "MP01",
+            "description": "林晚发现拖痕和空相册夹的顺序",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP02",
+            "description": "顾沉口袋始终插着手的细节",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP03",
+            "description": "灰外套照片的视觉呈现",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          },
+          {
+            "constraint_id": "MP04",
+            "description": "林晚最后展开旧照片并露出冰冷表情的时刻",
+            "supporting_beat_refs": [],
+            "supporting_event_keys": [],
+            "source_authority": [],
+            "resolution_status": "PRESERVE_TRACE_UNRESOLVED",
+            "source": "authority_only_no_explicit_binding",
+            "status": "PRESERVE_TRACE_UNRESOLVED"
+          }
+        ],
+        "unresolved_count": 4,
+        "resolution_policy": "structured beat/event refs only; no prose similarity"
+      },
+      "shape": {
+        "status": "PASS",
+        "errors": [],
+        "constraint_count": 4,
+        "unresolved_count": 4
+      },
+      "runtime_validator_argument": "must_preserve_trace",
+      "coverage_basis": "canonical Spine segment beat_refs ∩ constraint.supporting_beat_refs",
+      "prose_matching": false
+    }
+  },
+  "provider_calls": 0
 }

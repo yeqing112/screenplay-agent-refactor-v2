@@ -1,6 +1,6 @@
 {
   "schema_version": "director_v3_final_spine_topology_recanary_base_v1",
-  "expected_base_commit": "9f199d6",
+  "expected_base_commit": "8e3c613",
   "authorization_required": true,
   "frozen_scenes": [
     "book990402:e3:暗房惊魂",

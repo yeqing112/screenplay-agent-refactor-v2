@@ -1,6 +1,57 @@
 {
   "status": "PASS",
-  "source": "actual canonical Spine segments",
-  "phase_count_not_used": true,
-  "segment_count_difference_fixture": true
+  "scenes": {
+    "book990402:e3:暗房惊魂": {
+      "phase_count": 3,
+      "canonical_spine_segment_refs": [
+        "SEG01",
+        "SEG02",
+        "SEG03",
+        "SEG04"
+      ],
+      "request_segment_refs": [
+        "SEG01",
+        "SEG02",
+        "SEG03",
+        "SEG04"
+      ],
+      "source": "actual canonical Spine segments",
+      "phase_count_inference_used": false
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "phase_count": 3,
+      "canonical_spine_segment_refs": [
+        "SEG01",
+        "SEG02",
+        "SEG03",
+        "SEG04"
+      ],
+      "request_segment_refs": [
+        "SEG01",
+        "SEG02",
+        "SEG03",
+        "SEG04"
+      ],
+      "source": "actual canonical Spine segments",
+      "phase_count_inference_used": false
+    },
+    "book990402:e2:回声照相馆": {
+      "phase_count": 3,
+      "canonical_spine_segment_refs": [
+        "SEG01",
+        "SEG02",
+        "SEG03",
+        "SEG04"
+      ],
+      "request_segment_refs": [
+        "SEG01",
+        "SEG02",
+        "SEG03",
+        "SEG04"
+      ],
+      "source": "actual canonical Spine segments",
+      "phase_count_inference_used": false
+    }
+  },
+  "provider_calls": 0
 }
