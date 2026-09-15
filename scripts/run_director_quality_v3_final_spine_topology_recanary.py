@@ -137,9 +137,10 @@ def _runtime_preflight(pointer: dict[str, Any], base: dict[str, Any], head: str,
 
 def _code_changes_present() -> list[str]:
     result = subprocess.run(["git", "status", "--porcelain", "--untracked-files=all"], cwd=ROOT, capture_output=True, text=True, check=True); ext = {".py", ".ts", ".tsx", ".js", ".jsx"}; paths = []
+    project_code_roots = {"core", "api", "models", "scripts", "tests", "web"}
     for line in result.stdout.splitlines():
         path = line[3:].strip().strip('"')
-        if Path(path).suffix.lower() in ext: paths.append(path)
+        if Path(path).suffix.lower() in ext and Path(path).parts and Path(path).parts[0] in project_code_roots: paths.append(path)
     return sorted(paths)
 
 
