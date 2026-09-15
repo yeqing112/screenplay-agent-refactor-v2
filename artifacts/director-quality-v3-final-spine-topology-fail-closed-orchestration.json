@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "spine_invalid_blocks_skeleton": true,
+  "harness_error_stops_experiment": true,
+  "provider_calls": 0
+}

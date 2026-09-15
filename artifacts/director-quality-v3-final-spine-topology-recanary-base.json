@@ -1,0 +1,14 @@
+{
+  "schema_version": "director_v3_final_spine_topology_recanary_base_v1",
+  "expected_base_commit": "9f199d6",
+  "authorization_required": true,
+  "frozen_scenes": [
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "book990402:e2:回声照相馆"
+  ],
+  "contracts": {
+    "spine_system_prompt_fingerprint": "412f5c2fce65b4b955d08ff9dee5ab9cfb36c7cc5850c87a98edde964465d9ef",
+    "skeleton_system_prompt_fingerprint": "06e99ca7cb83be0fcc39ab64ddc0096b20458920c81ba186bf04c0eda7e4ab5e"
+  }
+}

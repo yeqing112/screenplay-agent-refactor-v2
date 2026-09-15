@@ -1,0 +1,26 @@
+{
+  "schema_version": "director-quality-v3-final-spine-topology-preflight-wiring-v1",
+  "status": "PASS",
+  "head": "9f199d6",
+  "expected_base_commit": "9f199d6",
+  "checks": {
+    "head_ancestry_gate": true,
+    "forensic_closed": true,
+    "readiness_true": true,
+    "authorization_false": true,
+    "identity_projection_fingerprints_stable": true,
+    "preserve_trace_fingerprints_stable": true,
+    "role_enum_visible": true,
+    "segment_count_diff_fixture": true,
+    "builder_fingerprint_stable": true,
+    "production_hold": true
+  },
+  "provider_calls": 0,
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "creative_generation_count": 0,
+  "authorization": false,
+  "status_code": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_NOT_AUTHORIZED",
+  "skeleton_builder_fingerprint": "49880e2c7044a212a89e4a3b7f791b87c135957bdaae290b075dee55dfd0ab67",
+  "frozen_scene_count": 3
+}

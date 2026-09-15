@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "validator": "trace-based beat/event coverage",
+  "prose_exact_match": false,
+  "missing_trace": "PRESERVE_AUTHORITY_MISSING"
+}

@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "authoritative_projection_only": true,
+  "legacy_scene_fallback": false,
+  "scenes": {
+    "book990402:e3:暗房惊魂": {
+      "fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+      "record_count": 2
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+      "record_count": 2
+    },
+    "book990402:e2:回声照相馆": {
+      "fingerprint": "5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1",
+      "record_count": 2
+    }
+  }
+}

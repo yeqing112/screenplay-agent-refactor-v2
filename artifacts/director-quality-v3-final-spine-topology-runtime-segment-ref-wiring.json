@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "source": "actual canonical Spine segments",
+  "phase_count_not_used": true,
+  "segment_count_difference_fixture": true
+}

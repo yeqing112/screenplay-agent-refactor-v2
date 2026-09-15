@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "role_enum_visible": true,
+  "allowed_segment_refs_visible": true,
+  "allowed_subject_refs_visible": true,
+  "allowed_semantic_event_keys_visible": true
+}
