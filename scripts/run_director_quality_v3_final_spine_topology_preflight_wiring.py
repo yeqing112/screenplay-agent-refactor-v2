@@ -93,7 +93,10 @@ def main() -> int:
     stage.update({"forensic_adjudication": "CLOSED", "preflight_wiring_closure": "CLOSED", "ready_for_final_recanary": True, "final_recanary_authorized": False, "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED", "atomic_expansion_canary_authorized": False, "production_shotplan": "HOLD"})
     head = _head()
     base = json.loads(BASE.read_text(encoding="utf-8")) if BASE.exists() else {}
-    expected_base = args.expected_base or head
+    # Reuse the immutable closure base by default.  Falling back to the
+    # current HEAD would silently move the gate on every dry-run and make the
+    # base artifact self-referential.
+    expected_base = args.expected_base or _t(base.get("expected_base_commit")) or head
     base = {
         "schema_version": "director_v3_final_spine_topology_recanary_base_v1",
         "expected_base_commit": expected_base,
