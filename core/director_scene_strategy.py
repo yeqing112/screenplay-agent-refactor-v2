@@ -133,7 +133,12 @@ def build_runtime_strategy_contract(*, scene: dict[str, Any], treatment: dict[st
     prop_ids = sorted(_runtime_ids(scene_obj.get("props") or scene_obj.get("prop_ids"), ("prop_id", "id", "asset_id")) | _runtime_ids(blocking_obj.get("props") or blocking_obj.get("prop_ids"), ("prop_id", "id", "asset_id")) | _runtime_ids(treatment_obj.get("props") or treatment_obj.get("prop_ids"), ("prop_id", "id", "asset_id")))
     location_ids = sorted(_runtime_ids(scene_obj.get("locations") or scene_obj.get("location_ids"), ("location_id", "id", "asset_id")) | _runtime_ids(blocking_obj.get("locations") or blocking_obj.get("location_ids"), ("location_id", "id", "asset_id")))
     source_ref_contract = build_source_ref_contract(beat_ids=list(base.get("beat_ids") or []), fact_ids=list(base.get("fact_ids") or []), character_ids=list(base.get("character_ids") or []), prop_ids=prop_ids, location_ids=location_ids)
-    runtime = {**base, "prop_ids": prop_ids, "location_ids": location_ids, "allowed_ids": copy.deepcopy(source_ref_contract["allowed_ids"]), "allowed_source_refs": list(source_ref_contract["allowed_source_refs"]), "beat_alias_table": copy.deepcopy(source_ref_contract["beat_alias_table"]), "source_ref_contract": copy.deepcopy(source_ref_contract), "runtime_contract_version": "director_strategy_runtime_contract_v1"}
+    allowed_characters = []
+    for participant in _list(blocking_obj.get("participants")):
+        if not isinstance(participant, dict): continue
+        cid, name = _text(participant.get("character_id") or participant.get("id")), _text(participant.get("name"))
+        if cid: allowed_characters.append({"character_id":cid,"canonical_name":name,"canonical_identity_id":f"book:{_text(scene_obj.get('book_id'))}:character:{cid}","scope":"book-level"})
+    runtime = {**base, "prop_ids": prop_ids, "location_ids": location_ids, "allowed_characters": allowed_characters, "allowed_ids": copy.deepcopy(source_ref_contract["allowed_ids"]), "allowed_source_refs": list(source_ref_contract["allowed_source_refs"]), "beat_alias_table": copy.deepcopy(source_ref_contract["beat_alias_table"]), "source_ref_contract": copy.deepcopy(source_ref_contract), "runtime_contract_version": "director_strategy_runtime_contract_v1"}
     runtime_projection = {key: runtime.get(key) for key in ("scene_id", "beat_ids", "character_ids", "fact_ids", "prop_ids", "location_ids", "allowed_ids", "allowed_source_refs", "beat_alias_table", "source_ref_contract")}
     runtime["provider_visible_contract_fingerprint"] = strategy_fingerprint(runtime_projection)
     runtime["runtime_validation_contract_fingerprint"] = strategy_fingerprint(runtime_projection)
