@@ -214,16 +214,19 @@ def build_scene_strategy_prompt(
     }
 
 
-def build_scene_strategy_ir_v2_prompt(*, evidence: dict[str, Any], model_profile: dict[str, Any] | None = None, attempt_type: str = "CREATIVE_GENERATION") -> dict[str, Any]:
+def build_scene_strategy_ir_v2_prompt(*, evidence: dict[str, Any], model_profile: dict[str, Any] | None = None, attempt_type: str = "CREATIVE_GENERATION", raw_output: str | None = None) -> dict[str, Any]:
     """Provider preview for the final, reference-first IR V2 contract."""
     from core.director_scene_strategy_semantic_spec_v2 import IR_SCHEMA_VERSION, build_provider_skeleton, semantic_spec
     safe = dict(evidence) if isinstance(evidence, dict) else {}
     contract = safe.get("strategy_contract") if isinstance(safe.get("strategy_contract"), dict) else safe.get("contract") or {}
     skeleton = build_provider_skeleton(scene_id=str(contract.get("scene_id") or safe.get("scene_id") or ""), beat_ids=[str(x) for x in contract.get("beat_ids", [])], character_ids=[str(x) for x in contract.get("character_ids", [])], fact_ids=[str(x) for x in contract.get("fact_ids", [])], prop_ids=[str(x) for x in contract.get("prop_ids", [])], location_ids=[str(x) for x in contract.get("location_ids", [])])
     system = ("[DIRECTOR_STRATEGY_IR_V2]\nYou are the scene director. Return exactly one JSON object with schema_version=director_scene_strategy_ir_v2. Express scene phases and directing choices, never a shot list. Use only supplied beat, character and source references. Source facts are authoritative and cannot be added or rewritten.\n\n" "Information is reference-first: information.reveal_refs, hint_refs and withhold_refs contain only allowed source refs. audience_suspicions and director_inferences are interpretive claims and must include support_refs; they are never source facts. Flexible list fields may be string, string[] or null; the deterministic program will normalize them without changing meaning. Do not output fingerprints, scores, source_fact claims, ShotPlan fields or patches. Preserve beat order and assign every beat exactly once. If evidence is absent, use N/A only where the contract allows it.")
-    dynamic = {"protocol_version": "director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1", "attempt_type": attempt_type, "semantic_spec": semantic_spec(), "provider_contract": skeleton, "scene_inputs": safe}
+    dynamic = {"protocol_version": "director-quality-v3-final-recanary-strategy-ir-v2-prompt-v1", "attempt_type": attempt_type, "semantic_spec": semantic_spec(), "provider_contract": skeleton, "scene_inputs": safe}
+    if raw_output is not None:
+        dynamic["failed_output_for_format_repair"] = str(raw_output)[:100000]
+        dynamic["format_repair_rule"] = "Repair protocol shape/references only; preserve valid creative semantics and do not re-direct the scene."
     user = "[DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\n" + canonical_json(dynamic) + "\n[/DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\nReturn one complete director_scene_strategy_ir_v2 JSON object now."
-    return {"protocol_version": "director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1", "attempt_type": attempt_type, "system_prompt": system, "user_prompt": user, "provider_contract": skeleton, "system_prompt_fingerprint": _sha256(system), "schema_fingerprint": _sha256(canonical_json(skeleton)), "scene_input_fingerprint": _sha256(canonical_json(safe)), "request_fingerprint": llm_request_fingerprint(system=system, user=user, profile=model_profile, extra={"protocol_version": "director-quality-v3-phase1-3-strategy-ir-v2-prompt-v1", "attempt_type": attempt_type}), "model_snapshot": model_request_snapshot(model_profile)}
+    return {"protocol_version": "director-quality-v3-final-recanary-strategy-ir-v2-prompt-v1", "attempt_type": attempt_type, "system_prompt": system, "user_prompt": user, "provider_contract": skeleton, "system_prompt_fingerprint": _sha256(system), "schema_fingerprint": _sha256(canonical_json(skeleton)), "scene_input_fingerprint": _sha256(canonical_json(safe)), "request_fingerprint": llm_request_fingerprint(system=system, user=user, profile=model_profile, extra={"protocol_version": "director-quality-v3-final-recanary-strategy-ir-v2-prompt-v1", "attempt_type": attempt_type}), "model_snapshot": model_request_snapshot(model_profile)}
 
 
 __all__ = [

@@ -1,0 +1,30 @@
+{
+  "schema_version": "director-quality-v3-final-recanary-provider-contract-v1",
+  "provider_profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "capability": "llm",
+    "base_url": "https://api.xiaomimimo.com/v1"
+  },
+  "expected_scene_count": 3,
+  "actual_scene_count": 3,
+  "expected_provider_http_requests": 3,
+  "actual_provider_http_requests": 3,
+  "transport_retry_count": 0,
+  "parser_retry_count": 0,
+  "side_effects": {
+    "shotplan": 0,
+    "shot_architecture": 0,
+    "scene_repair": 0,
+    "tail_repair": 0,
+    "storyboard": 0,
+    "media": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0,
+    "shadow": 0,
+    "ci": 0
+  },
+  "credentials_persisted": false
+}

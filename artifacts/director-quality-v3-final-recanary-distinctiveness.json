@@ -1,0 +1,12 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-distinctiveness-v1",
+  "expected_scene_count": 3,
+  "expected_pair_count": 3,
+  "canonical_scene_count": 0,
+  "pair_count": 0,
+  "comparisons": [],
+  "hard_failure": false,
+  "all_pairs_checked": false,
+  "status": "DISTINCTIVENESS_NOT_EVALUATED",
+  "policy": "program-owned creative_core_fingerprint only"
+}

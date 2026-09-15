@@ -1,0 +1,28 @@
+{
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "source_fact_refs": 0,
+      "audience_suspicions": 4,
+      "director_inferences": 4,
+      "unsupported_inference_count": 0,
+      "fact_promotion_attempt_count": 0
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "source_fact_refs": 0,
+      "audience_suspicions": 4,
+      "director_inferences": 4,
+      "unsupported_inference_count": 0,
+      "fact_promotion_attempt_count": 0
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "source_fact_refs": 0,
+      "audience_suspicions": 5,
+      "director_inferences": 5,
+      "unsupported_inference_count": 0,
+      "fact_promotion_attempt_count": 0
+    }
+  ]
+}

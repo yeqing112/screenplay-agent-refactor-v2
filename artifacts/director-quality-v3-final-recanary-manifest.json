@@ -1,0 +1,17 @@
+{
+  "schema_version": "director-quality-v3-final-recanary-manifest-v1",
+  "head": "6101a7b",
+  "expected_head": "6101a7b",
+  "scenes": [
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "book990402:e2:回声照相馆"
+  ],
+  "technical_ready": true,
+  "human_authorized": true,
+  "provider_calls": 3,
+  "result_status": "SCENE_DIRECTOR_FINAL_RECANARY_FAILED",
+  "ready_for_final_scene_director_recanary": false,
+  "ready_for_shot_architecture_canary": false,
+  "awaiting_human_director_review": true
+}

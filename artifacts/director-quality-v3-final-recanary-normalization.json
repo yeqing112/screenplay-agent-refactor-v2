@@ -1,0 +1,509 @@
+{
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "normalizations_applied": [
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[0].beat_ids[0]",
+          "beat_id": "1"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[0].beat_ids[1]",
+          "beat_id": "2"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[0].beat_ids[2]",
+          "beat_id": "3"
+        },
+        {
+          "path": "scene_phases[0].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:1"
+        },
+        {
+          "path": "scene_phases[0].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:2"
+        },
+        {
+          "path": "scene_phases[0].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:3"
+        },
+        {
+          "path": "scene_phases[0].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:1"
+        },
+        {
+          "path": "scene_phases[0].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:3"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:4"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:5"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:6"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:7"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:8"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:9"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:10"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:11"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[0]",
+          "beat_id": "4"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[1]",
+          "beat_id": "5"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[2]",
+          "beat_id": "6"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[3]",
+          "beat_id": "7"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[4]",
+          "beat_id": "8"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[5]",
+          "beat_id": "9"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:4"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:5"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:6"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:7"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:8"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:9"
+        },
+        {
+          "path": "scene_phases[1].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:5"
+        },
+        {
+          "path": "scene_phases[1].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:6"
+        },
+        {
+          "path": "scene_phases[1].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:9"
+        },
+        {
+          "path": "scene_phases[1].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:10"
+        },
+        {
+          "path": "scene_phases[1].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:11"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[0]",
+          "beat_id": "10"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[1]",
+          "beat_id": "11"
+        },
+        {
+          "path": "scene_phases[2].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:10"
+        },
+        {
+          "path": "scene_phases[2].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:11"
+        },
+        {
+          "path": "scene_phases[2].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:10"
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "normalizations_applied": [
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[0].beat_ids[0]",
+          "beat_id": "1"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[0].beat_ids[1]",
+          "beat_id": "2"
+        },
+        {
+          "path": "scene_phases[0].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:1"
+        },
+        {
+          "path": "scene_phases[0].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "character:19"
+        },
+        {
+          "path": "scene_phases[0].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "character:20"
+        },
+        {
+          "path": "scene_phases[0].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "character:20"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:3"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:4"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:5"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[0]",
+          "beat_id": "3"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[1]",
+          "beat_id": "4"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[2]",
+          "beat_id": "5"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[3]",
+          "beat_id": "6"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:3"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:4"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:5"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:6"
+        },
+        {
+          "path": "scene_phases[1].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:7"
+        },
+        {
+          "path": "scene_phases[1].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:8"
+        },
+        {
+          "path": "scene_phases[1].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:9"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[0]",
+          "beat_id": "7"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[1]",
+          "beat_id": "8"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[2]",
+          "beat_id": "9"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[3]",
+          "beat_id": "10"
+        },
+        {
+          "path": "scene_phases[2].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:7"
+        },
+        {
+          "path": "scene_phases[2].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:8"
+        },
+        {
+          "path": "scene_phases[2].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:9"
+        },
+        {
+          "path": "scene_phases[2].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:10"
+        },
+        {
+          "path": "scene_phases[2].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:10"
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "normalizations_applied": [
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[0].beat_ids[0]",
+          "beat_id": "B1"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[0].beat_ids[1]",
+          "beat_id": "B2"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[0].beat_ids[2]",
+          "beat_id": "B3"
+        },
+        {
+          "path": "scene_phases[0].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B1"
+        },
+        {
+          "path": "scene_phases[0].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B2"
+        },
+        {
+          "path": "scene_phases[0].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B1"
+        },
+        {
+          "path": "scene_phases[0].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B2"
+        },
+        {
+          "path": "scene_phases[0].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B3"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B11"
+        },
+        {
+          "path": "scene_phases[0].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "character:18"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[0]",
+          "beat_id": "B4"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[1]",
+          "beat_id": "B5"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[2]",
+          "beat_id": "B6"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[1].beat_ids[3]",
+          "beat_id": "B7"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B4"
+        },
+        {
+          "path": "scene_phases[1].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B7"
+        },
+        {
+          "path": "scene_phases[1].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B4"
+        },
+        {
+          "path": "scene_phases[1].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B5"
+        },
+        {
+          "path": "scene_phases[1].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B6"
+        },
+        {
+          "path": "scene_phases[1].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B7"
+        },
+        {
+          "path": "scene_phases[1].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B8"
+        },
+        {
+          "path": "scene_phases[1].information.withhold_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B11"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[0]",
+          "beat_id": "B8"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[1]",
+          "beat_id": "B9"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[2]",
+          "beat_id": "B10"
+        },
+        {
+          "code": "UNKNOWN_BEAT_REFERENCE",
+          "path": "scene_phases[2].beat_ids[3]",
+          "beat_id": "B11"
+        },
+        {
+          "path": "scene_phases[2].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B8"
+        },
+        {
+          "path": "scene_phases[2].information.reveal_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B11"
+        },
+        {
+          "path": "scene_phases[2].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B8"
+        },
+        {
+          "path": "scene_phases[2].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B9"
+        },
+        {
+          "path": "scene_phases[2].information.hint_refs",
+          "code": "UNKNOWN_SOURCE_REFERENCE",
+          "reference": "beat:B10"
+        }
+      ]
+    }
+  ]
+}

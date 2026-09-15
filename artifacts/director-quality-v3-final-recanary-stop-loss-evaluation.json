@@ -1,0 +1,7 @@
+{
+  "simple_shape_failure_count": 98,
+  "lossless_normalization_applied_count": 98,
+  "format_repair_triggered_count": 0,
+  "format_repair_avoidable_count": 0,
+  "custom_ir_stop_loss_triggered": false
+}

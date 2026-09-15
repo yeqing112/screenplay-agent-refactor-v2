@@ -1,0 +1,35 @@
+{
+  "schema_version": "director-quality-v3-final-recanary-provider-free-preflight-v1",
+  "status": "PASS",
+  "all_checks_pass": true,
+  "checks": {
+    "scene_order": true,
+    "semantic_spec_v2": true,
+    "prompt_v2": true,
+    "no_computed_fields": true,
+    "no_shotplan_payload": true,
+    "normalization_policy": true,
+    "provider_calls_zero": true,
+    "downstream_effects_zero": true
+  },
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "shot_architecture": 0,
+  "shotplan": 0,
+  "scene_redesign": 0,
+  "scene_repair": 0,
+  "tail_repair": 0,
+  "storyboard": 0,
+  "image": 0,
+  "video": 0,
+  "media": 0,
+  "object_storage": 0,
+  "shadow": 0,
+  "ci": "not_run",
+  "provider_profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "capability": "llm"
+  }
+}
