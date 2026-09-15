@@ -6,8 +6,10 @@ from core.director_contract_ssot import ROLE_ENUM as SSOT_ROLE_ENUM, SKELETON_FO
 
 SKELETON_SCHEMA = "shot_topology_skeleton_ir_v1"
 ROLE_ENUM = set(SSOT_ROLE_ENUM)
-NODE_FIELDS = {"node_key", "segment_key", "segment_ref", "phase_id", "beat_refs", "primary_role", "secondary_role", "subjects", "dramatic_reason", "performance_reason", "information_reason", "spatial_reason", "editorial_reason", "stimulus_beat_refs", "stimulus_event_key", "stimulus_event_keys", "reaction_subjects", "prop_refs", "must_preserve_refs"}
-FORBIDDEN_FIELDS = {"shot_size", "camera_movement", "camera_position", "composition_intent", "lighting", "lens", "stimulus_node_id", "stimulus_shot_id", "shot_id"}
+# Required and forbidden fields come from the contract SSOT. These aliases are
+# accepted only as input compatibility and are canonicalised below.
+NODE_FIELDS = set(SKELETON_REQUIRED_NODE_FIELDS) | {"node_key", "segment_key", "stimulus_event_key"}
+FORBIDDEN_FIELDS = set(SKELETON_FORBIDDEN_FIELDS) | {"stimulus_node_id", "stimulus_shot_id", "shot_id", "composition_intent"}
 
 def _d(v): return v if isinstance(v, dict) else {}
 def _l(v): return v if isinstance(v, list) else []
@@ -36,23 +38,25 @@ def normalize_skeleton(raw: dict[str, Any], *, scene_id: str, spine_fingerprint:
         raw_text = json.dumps(row, ensure_ascii=False, default=str)
         if re.search(r"(?:shot\s*:\s*SA\d+|node[_ ]?id\s*[:=]\s*ST\d+|\bST\d{2,}\b)", raw_text, re.IGNORECASE):
             errors.append({"code": "FORBIDDEN_PROGRAM_OWNED_GRAPH_REF", "node_index": index})
-        nodes.append({"node_key": f"N{index:02d}", "segment_key": _t(row.get("segment_key") or row.get("segment_ref")), "phase_id": _t(row.get("phase_id")), "beat_refs": [_ref(x) for x in _l(row.get("beat_refs") or row.get("beats")) if _t(x)], "primary_role": primary, "secondary_role": _t(second) if second is not None else None, "subjects": [_ref(x, "character") for x in _l(row.get("subjects")) if _t(x)], "dramatic_reason": _t(row.get("dramatic_reason")), "performance_reason": _t(row.get("performance_reason")), "information_reason": _t(row.get("information_reason")), "spatial_reason": _t(row.get("spatial_reason")), "editorial_reason": _t(row.get("editorial_reason")), "stimulus_beat_refs": [_ref(x) for x in _l(row.get("stimulus_beat_refs")) if _t(x)], "stimulus_event_key": event_keys[0] if event_keys else "", "stimulus_event_keys": event_keys, "reaction_subjects": [_ref(x, "character") for x in _l(row.get("reaction_subjects")) if _t(x)], "prop_refs": [_ref(x, "prop") for x in _l(row.get("prop_refs")) if _t(x)], "must_preserve_refs": [_t(x) for x in _l(row.get("must_preserve_refs")) if _t(x)]})
+        segment_ref = _t(row.get("segment_ref") or row.get("segment_key"))
+        nodes.append({"node_key": f"N{index:02d}", "segment_key": segment_ref, "segment_ref": segment_ref, "phase_id": _t(row.get("phase_id")), "beat_refs": [_ref(x) for x in _l(row.get("beat_refs") or row.get("beats")) if _t(x)], "primary_role": primary, "secondary_role": _t(second) if second is not None else None, "subjects": [_ref(x, "character") for x in _l(row.get("subjects")) if _t(x)], "dramatic_reason": _t(row.get("dramatic_reason")), "performance_reason": _t(row.get("performance_reason")), "information_reason": _t(row.get("information_reason")), "spatial_reason": _t(row.get("spatial_reason")), "editorial_reason": _t(row.get("editorial_reason")), "stimulus_beat_refs": [_ref(x) for x in _l(row.get("stimulus_beat_refs")) if _t(x)], "stimulus_event_key": event_keys[0] if event_keys else "", "stimulus_event_keys": event_keys, "reaction_subjects": [_ref(x, "character") for x in _l(row.get("reaction_subjects")) if _t(x)], "prop_refs": [_ref(x, "prop") for x in _l(row.get("prop_refs")) if _t(x)], "must_preserve_refs": [_t(x) for x in _l(row.get("must_preserve_refs")) if _t(x)]})
     ir = {"schema_version": SKELETON_SCHEMA, "scene_id": scene_id, "spine_fingerprint": spine_fingerprint, "nodes": nodes}
     return {"status": "FAIL" if errors else "PASS", "errors": errors, "ir": ir, "topology_fingerprint": fingerprint(ir)}
 
 _IDENTITY_UNSET = object()
 
-def validate_skeleton(skeleton: dict[str, Any], *, spine: dict[str, Any], scene: dict[str, Any], strategy: dict[str, Any], identity_projection: dict[str, Any] | None | object = _IDENTITY_UNSET, allowed_segment_refs: set[str] | None = None) -> dict[str, Any]:
-    errors = []; warnings = []; nodes = _l(skeleton.get("nodes")); spine_segments = set(allowed_segment_refs or {_t(s.get("segment_key")) for s in _l(spine.get("segments"))}); segment_phases = {_t(s.get("segment_key")): {_t(p) for p in _l(s.get("phase_ids"))} for s in _l(spine.get("segments"))}; beats = {_ref(_d(b).get("beat_id")) for b in _l(scene.get("beats")) if _t(_d(b).get("beat_id"))}; phases = {_t(p.get("phase_id")) for p in _l(strategy.get("scene_phases")) if isinstance(p, dict)}; projection = identity_projection if identity_projection is not _IDENTITY_UNSET else _d(scene.get("characters")); character_ids = {_t(_d(c).get("character_id")) for c in _l(_d(projection).get("records"))}; seen = set(); prior_beats = []
-    if identity_projection is None or (identity_projection is not _IDENTITY_UNSET and not _l(_d(identity_projection).get("records"))):
+def validate_skeleton(skeleton: dict[str, Any], *, spine: dict[str, Any], scene: dict[str, Any], strategy: dict[str, Any], identity_projection: dict[str, Any] | None | object = _IDENTITY_UNSET, allowed_segment_refs: set[str] | None = None, require_authority: bool = False) -> dict[str, Any]:
+    errors = []; warnings = []; nodes = _l(skeleton.get("nodes")); spine_segments = set(allowed_segment_refs) if allowed_segment_refs is not None else {_t(s.get("segment_key")) for s in _l(spine.get("segments"))}; segment_phases = {_t(s.get("segment_key")): {_t(p) for p in _l(s.get("phase_ids"))} for s in _l(spine.get("segments"))}; beats = {_ref(_d(b).get("beat_id")) for b in _l(scene.get("beats")) if _t(_d(b).get("beat_id"))}; phases = {_t(p.get("phase_id")) for p in _l(strategy.get("scene_phases")) if isinstance(p, dict)}; projection = identity_projection if identity_projection is not _IDENTITY_UNSET else _d(scene.get("characters")); character_ids = {_t(_d(c).get("character_id")) for c in _l(_d(projection).get("records"))}; seen = set(); prior_beats = []
+    if identity_projection is None or (require_authority and identity_projection is _IDENTITY_UNSET) or (identity_projection is not _IDENTITY_UNSET and not _l(_d(identity_projection).get("records"))):
         errors.append({"code": "IDENTITY_AUTHORITY_MISSING"})
     for index, node in enumerate(nodes, 1):
         key = _t(_d(node).get("node_key"));
         if key in seen: errors.append({"code": "DUPLICATE_NODE_KEY", "node_key": key})
         seen.add(key)
-        if _t(_d(node).get("segment_key")) not in spine_segments: errors.append({"code": "UNKNOWN_SPINE_SEGMENT", "node_key": key})
+        segment_ref = _t(_d(node).get("segment_ref") or _d(node).get("segment_key"))
+        if segment_ref not in spine_segments: errors.append({"code": "UNKNOWN_SPINE_SEGMENT", "node_key": key})
         if _t(_d(node).get("phase_id")) not in phases: errors.append({"code": "UNKNOWN_PHASE", "node_key": key})
-        elif _t(_d(node).get("phase_id")) not in segment_phases.get(_t(_d(node).get("segment_key")), set()): errors.append({"code": "SKELETON_PHASE_MEMBERSHIP_INVALID", "node_key": key})
+        elif _t(_d(node).get("phase_id")) not in segment_phases.get(segment_ref, set()): errors.append({"code": "SKELETON_PHASE_MEMBERSHIP_INVALID", "node_key": key})
         refs = _l(_d(node).get("beat_refs")); unknown = sorted(set(refs) - beats); errors += [{"code": "UNKNOWN_BEAT_REFERENCE", "node_key": key, "reference": x} for x in unknown]
         role = _t(_d(node).get("primary_role")); second = _d(node).get("secondary_role")
         if role not in ROLE_ENUM: errors.append({"code": "TOPOLOGY_ROLE_INVALID", "node_key": key})

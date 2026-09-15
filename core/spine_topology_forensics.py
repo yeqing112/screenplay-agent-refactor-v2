@@ -47,7 +47,19 @@ def build_must_preserve_trace(strategy: dict[str, Any], scene: dict[str, Any]) -
         for index, item in enumerate(structured, 1):
             row = _d(item)
             refs = [_t(x) for x in _l(row.get("beat_refs")) if _t(x)]
-            constraints.append({"constraint_id": _t(row.get("constraint_id")) or f"MP{index:02d}", "description": _t(row.get("description")), "supporting_beat_refs": refs, "supporting_event_keys": [_t(x) for x in _l(row.get("event_refs")) if _t(x)], "source": "structured_authority", "status": "RESOLVED" if refs or _l(row.get("event_refs")) or _l(row.get("source_refs")) else "PRESERVE_TRACE_UNRESOLVED"})
+            event_refs = [_t(x) for x in (_l(row.get("supporting_event_keys")) or _l(row.get("event_refs"))) if _t(x)]
+            source_refs = [_t(x) for x in _l(row.get("source_refs")) if _t(x)]
+            resolved = bool(refs or event_refs or source_refs)
+            constraints.append({
+                "constraint_id": _t(row.get("constraint_id")) or f"MP{index:02d}",
+                "description": _t(row.get("description") or row.get("constraint")),
+                "supporting_beat_refs": refs,
+                "supporting_event_keys": event_refs,
+                "source_authority": source_refs,
+                "resolution_status": "RESOLVED" if resolved else "PRESERVE_TRACE_UNRESOLVED",
+                "source": "structured_authority",
+                "status": "RESOLVED" if resolved else "PRESERVE_TRACE_UNRESOLVED",
+            })
         return {"schema_version": "must_preserve_trace_v1", "scene_id": _t(scene.get("scene_id")), "constraints": constraints, "unresolved_count": sum(x["status"] == "PRESERVE_TRACE_UNRESOLVED" for x in constraints), "resolution_policy": "structured beat/event/source refs only; no prose similarity"}
     explicit = _l(strategy.get("must_preserve_trace"))
     preserve = [_t(x) for x in _l(strategy.get("must_preserve")) if _t(x)]
@@ -63,13 +75,16 @@ def build_must_preserve_trace(strategy: dict[str, Any], scene: dict[str, Any]) -
         row = next((_d(x) for x in explicit if _t(_d(x).get("constraint")) == constraint), None)
         if row:
             refs = [_t(x) for x in _l(row.get("supporting_beat_refs")) if _t(x)]
-            trace.append({"constraint_id": _t(row.get("constraint_id")) or f"MP{index:02d}", "description": constraint, "supporting_beat_refs": refs, "supporting_event_keys": [_t(x) for x in _l(row.get("supporting_event_keys")) if _t(x)], "source": "explicit", "status": "RESOLVED" if refs or row.get("supporting_event_keys") else "PRESERVE_TRACE_UNRESOLVED"})
+            events = [_t(x) for x in _l(row.get("supporting_event_keys")) if _t(x)]
+            status = "RESOLVED" if refs or events else "PRESERVE_TRACE_UNRESOLVED"
+            trace.append({"constraint_id": _t(row.get("constraint_id")) or f"MP{index:02d}", "description": constraint, "supporting_beat_refs": refs, "supporting_event_keys": events, "source_authority": [_t(x) for x in _l(row.get("source_authority")) if _t(x)], "resolution_status": status, "source": "explicit", "status": status})
             continue
         match = next((c for c in claims if c["claim"] and c["claim"] == constraint), None)
         if match:
-            trace.append({"constraint_id": f"MP{index:02d}", "description": constraint, "supporting_beat_refs": match["support_refs"], "supporting_event_keys": [], "source": "source_trace_claim", "status": "RESOLVED" if match["support_refs"] else "PRESERVE_TRACE_UNRESOLVED"})
+            status = "RESOLVED" if match["support_refs"] else "PRESERVE_TRACE_UNRESOLVED"
+            trace.append({"constraint_id": f"MP{index:02d}", "description": constraint, "supporting_beat_refs": match["support_refs"], "supporting_event_keys": [], "source_authority": match["support_refs"], "resolution_status": status, "source": "source_trace_claim", "status": status})
         else:
-            trace.append({"constraint_id": f"MP{index:02d}", "description": constraint, "supporting_beat_refs": [], "supporting_event_keys": [], "source": "authority_only_no_explicit_binding", "status": "PRESERVE_TRACE_UNRESOLVED"})
+            trace.append({"constraint_id": f"MP{index:02d}", "description": constraint, "supporting_beat_refs": [], "supporting_event_keys": [], "source_authority": [], "resolution_status": "PRESERVE_TRACE_UNRESOLVED", "source": "authority_only_no_explicit_binding", "status": "PRESERVE_TRACE_UNRESOLVED"})
     return {"schema_version": "must_preserve_trace_v1", "scene_id": _t(scene.get("scene_id")), "constraints": trace, "unresolved_count": sum(x["status"] == "PRESERVE_TRACE_UNRESOLVED" for x in trace), "resolution_policy": "structured beat/event refs only; no prose similarity"}
 
 
@@ -84,6 +99,31 @@ def evaluate_preserve_coverage(spine: dict[str, Any], trace: dict[str, Any]) -> 
             status = "COVERED" if refs & segment_refs else "UNCOVERED"
         covered.append({"constraint_id": item.get("constraint_id"), "status": status, "supporting_beat_refs": sorted(refs), "matched_segment_count": sum(bool(refs & {_t(x) for x in _l(_d(seg).get("beat_refs"))}) for seg in segments)})
     return {"schema_version": "must_preserve_coverage_v1", "status": "PASS" if all(x["status"] in {"COVERED", "PRESERVE_TRACE_UNRESOLVED"} for x in covered) else "FAIL", "constraints": covered, "unresolved_count": sum(x["status"] == "PRESERVE_TRACE_UNRESOLVED" for x in covered)}
+
+
+def validate_must_preserve_trace(trace: Any, *, scene_id: str | None = None) -> dict[str, Any]:
+    """Validate the runtime preserve authority shape without reading prose.
+
+    This is intentionally a structural gate.  A trace may be unresolved (a
+    source-data gap), but it must be represented explicitly so callers can
+    fail closed instead of silently falling back to natural-language matching.
+    """
+    errors: list[dict[str, Any]] = []
+    row = _d(trace)
+    if _t(row.get("schema_version")) != "must_preserve_trace_v1":
+        errors.append({"code": "PRESERVE_AUTHORITY_SCHEMA_INVALID"})
+    if scene_id is not None and _t(row.get("scene_id")) != _t(scene_id):
+        errors.append({"code": "PRESERVE_AUTHORITY_SCENE_MISMATCH"})
+    constraints = _l(row.get("constraints"))
+    for index, item in enumerate(constraints, 1):
+        value = _d(item)
+        for field in ("constraint_id", "description", "supporting_beat_refs", "supporting_event_keys", "resolution_status"):
+            if field not in value:
+                errors.append({"code": "PRESERVE_TRACE_FIELD_MISSING", "constraint_index": index, "field": field})
+        status = _t(value.get("resolution_status"))
+        if status not in {"RESOLVED", "PRESERVE_TRACE_UNRESOLVED"}:
+            errors.append({"code": "PRESERVE_TRACE_STATUS_INVALID", "constraint_index": index})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors, "constraint_count": len(constraints), "unresolved_count": sum(_t(_d(x).get("resolution_status")) == "PRESERVE_TRACE_UNRESOLVED" for x in constraints)}
 
 
 def classify_role(value: Any) -> dict[str, Any]:

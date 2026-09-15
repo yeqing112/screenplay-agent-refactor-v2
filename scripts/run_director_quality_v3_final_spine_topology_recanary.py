@@ -75,10 +75,19 @@ def build_spine_request(row: dict[str, Any], strategy: dict[str, Any], identity:
     return {"task": "director_v3_final_spine_topology_recanary", "layer": "SPINE", "scene_id": row["scene_id"], "approved_revised_strategy": copy.deepcopy(strategy), "scene_blocking": i["scene_blocking"], "authoritative_scene_beats": i["scene"], "fact_snapshot": i["fact_snapshot"], "character_identity_projection": identity, "identity_binding_fingerprint": _fp(identity), "prop_canonical": i.get("prop_canonical", {}), "location_canonical": i.get("location_canonical", {}), "must_preserve": strategy.get("must_preserve", []), "must_preserve_trace": preserve_trace, "must_avoid": strategy.get("must_avoid", []), "spine_contract": {"required": ["spine_summary", "segments"], "forbidden": ["shot_size", "camera_position", "camera_movement", "lens"]}}
 
 
+def allowed_segment_refs_from_spine(spine_ir: dict[str, Any]) -> list[str]:
+    """Derive segment refs only from an actual canonical Spine."""
+    segments = _l(_d(spine_ir).get("segments"))
+    refs = [_t(_d(segment).get("segment_key")) for segment in segments]
+    if not refs or any(not ref for ref in refs) or len(set(refs)) != len(refs):
+        raise ValueError("canonical spine has no valid unique segment refs")
+    return refs
+
+
 def build_skeleton_request(row: dict[str, Any], strategy: dict[str, Any], identity: list[dict[str, Any]], spine_ir: dict[str, Any], preserve_trace: dict[str, Any], semantic_events: dict[str, Any]) -> dict[str, Any]:
     from core.shot_topology_skeleton import ROLE_ENUM
     i = row["inputs"]
-    allowed = [_t(s.get("segment_key")) for s in _l(spine_ir.get("segments")) if _t(s.get("segment_key"))]
+    allowed = allowed_segment_refs_from_spine(spine_ir)
     return {"task": "director_v3_final_spine_topology_recanary", "layer": "SKELETON", "scene_id": row["scene_id"], "approved_revised_strategy": copy.deepcopy(strategy), "scene_blocking": i["scene_blocking"], "authoritative_scene_beats": i["scene"], "character_identity_projection": identity, "identity_binding_fingerprint": _fp(identity), "allowed_semantic_events": semantic_events, "must_preserve": strategy.get("must_preserve", []), "must_preserve_trace": preserve_trace, "visual_editorial_spine": spine_ir, "spine_fingerprint": _fp(spine_ir), "allowed_segment_refs": allowed, "skeleton_contract": {"required": ["nodes"], "primary_role_allowed_values": sorted(ROLE_ENUM), "secondary_role_allowed_values": sorted(ROLE_ENUM) + [None], "segment_ref_rule": "exactly one value from allowed_segment_refs; never phase IDs"}}
 
 
@@ -116,7 +125,7 @@ def _evaluate_skeleton(row: dict[str, Any], strategy: dict[str, Any], identity: 
     if not parsed: return {"raw_parse": "FAIL", "raw_response": raw, "ir": None, "canonical": None, "protocol": {"status": "FAIL", "errors": [{"code": "SKELETON_PARSE_ERROR"}]}, "authority": {"status": "UNSAFE"}, "coverage": {"status": "FAIL"}, "topology_qa": {"signal": "TOPOLOGY_INVALID", "metrics": {}}, "reaction": {"count": 0, "semantic_stimulus": False}, "valid": False}
     normalized = normalize_skeleton(parsed, scene_id=row["scene_id"], spine_fingerprint=_fp(spine)); ir = normalized.get("ir") or {}
     allowed_refs = {_t(s.get("segment_key")) for s in _l(spine.get("segments")) if _t(s.get("segment_key"))}
-    validation = validate_skeleton(ir, spine=spine, scene=row["inputs"]["scene"], strategy=strategy, identity_projection={"records": identity}, allowed_segment_refs=allowed_refs)
+    validation = validate_skeleton(ir, spine=spine, scene=row["inputs"]["scene"], strategy=strategy, identity_projection={"records": identity}, allowed_segment_refs=allowed_refs, require_authority=True)
     errors = list(normalized.get("errors") or []) + list(validation.get("hard_errors") or [])
     allowed_events = {_t(e.get("event_key")) for e in _l(events.get("events"))}; errors += [{"code": "UNKNOWN_SEMANTIC_EVENT_KEY", "event_key": key} for node in _l(ir.get("nodes")) for key in _l(node.get("stimulus_event_keys")) if _t(key) not in allowed_events]
     reactions = [node for node in _l(ir.get("nodes")) if _t(node.get("primary_role")) == "REACTION"]; signal = "TOPOLOGY_INVALID" if errors else "TOPOLOGY_STRONG" if len(_l(ir.get("nodes"))) >= 2 and reactions else "TOPOLOGY_USABLE" if _l(ir.get("nodes")) else "TOPOLOGY_WEAK"
@@ -126,12 +135,13 @@ def _evaluate_skeleton(row: dict[str, Any], strategy: dict[str, Any], identity: 
 
 def _runtime_preflight(pointer: dict[str, Any], base: dict[str, Any], head: str, *, authorized: bool) -> dict[str, Any]:
     from core.shot_topology_skeleton import ROLE_ENUM
-    from core.spine_topology_forensics import build_must_preserve_trace
+    from core.spine_topology_forensics import build_must_preserve_trace, compare_identity_projection, skeleton_callable_after_spine, validate_must_preserve_trace
     rows = _rows(); identities: dict[str, list[dict[str, Any]]] = {}; traces: dict[str, dict[str, Any]] = {}; builder_fps: list[str] = []; segment_fixture = True
+    identity_parity = True; trace_shape = True
     for row in rows:
-        strategy = _strategy(row, pointer); ident = _identity(row); trace = build_must_preserve_trace(strategy, row["inputs"]["scene"]); identities[row["scene_id"]] = ident; traces[row["scene_id"]] = trace; fixture = _fixture_spine(strategy); sk = build_skeleton_request(row, strategy, ident, fixture, trace, {"events": []}); segment_fixture &= sk["allowed_segment_refs"] == ["SEG01", "SEG02", "SEG03", "SEG04"]; builder_fps.append(_fp(sk["skeleton_contract"]))
+        strategy = _strategy(row, pointer); ident = _identity(row); trace = build_must_preserve_trace(strategy, row["inputs"]["scene"]); identities[row["scene_id"]] = ident; traces[row["scene_id"]] = trace; fixture = _fixture_spine(strategy); sk = build_skeleton_request(row, strategy, ident, fixture, trace, {"events": []}); segment_fixture &= sk["allowed_segment_refs"] == ["SEG01", "SEG02", "SEG03", "SEG04"]; builder_fps.append(_fp(sk["skeleton_contract"])); trace_shape &= validate_must_preserve_trace(trace, scene_id=row["scene_id"])["status"] == "PASS"; identity_parity &= compare_identity_projection({"records": ident}, {"records": ident})["status"] == "PASS"
     canary = _canary(pointer); auth = bool(canary.get("final_recanary_authorized", False)); ancestry = subprocess.run(["git", "merge-base", "--is-ancestor", _t(base.get("expected_base_commit")), head], cwd=ROOT, capture_output=True).returncode == 0 if base.get("expected_base_commit") else False
-    checks = {"head_ancestry_gate": ancestry, "forensic_closed": canary.get("forensic_adjudication") == "CLOSED", "wiring_closed": canary.get("preflight_wiring_closure") == "CLOSED", "readiness_true": canary.get("ready_for_final_recanary") is True, "authorization": auth is authorized, "identity_projection_fingerprints_stable": all(bool(value) and all(_t(item.get("character_id")) for item in value) for value in identities.values()), "preserve_trace_fingerprints_stable": len({_fp(value) for value in traces.values()}) == 3, "role_enum_visible": bool(ROLE_ENUM), "segment_count_diff_fixture": segment_fixture, "builder_fingerprint_stable": len(set(builder_fps)) == 1, "production_hold": _d(pointer.get("shot_architecture")).get("production_shotplan") == "HOLD", "prompt_fingerprints_exact": _fp(SPINE_SYSTEM) == _d(base.get("contracts")).get("spine_system_prompt_fingerprint") and _fp(SKELETON_SYSTEM) == _d(base.get("contracts")).get("skeleton_system_prompt_fingerprint")}
+    checks = {"head_ancestry_gate": ancestry, "forensic_closed": canary.get("forensic_adjudication") == "CLOSED", "wiring_closed": canary.get("preflight_wiring_closure") == "CLOSED", "readiness_true": canary.get("ready_for_final_recanary") is True, "authorization": auth is authorized, "identity_projection_fingerprints_stable": all(bool(value) and all(_t(item.get("character_id")) for item in value) for value in identities.values()), "identity_provider_runtime_parity": identity_parity, "preserve_trace_shape": trace_shape, "preserve_trace_fingerprints_stable": len({_fp(value) for value in traces.values()}) == 3, "role_enum_visible": bool(ROLE_ENUM), "segment_count_diff_fixture": segment_fixture, "builder_fingerprint_stable": len(set(builder_fps)) == 1, "fail_closed_skeleton_gate": skeleton_callable_after_spine(False)["skeleton_provider_callable"] is False, "production_hold": _d(pointer.get("shot_architecture")).get("production_shotplan") == "HOLD", "prompt_fingerprints_exact": _fp(SPINE_SYSTEM) == _d(base.get("contracts")).get("spine_system_prompt_fingerprint") and _fp(SKELETON_SYSTEM) == _d(base.get("contracts")).get("skeleton_system_prompt_fingerprint")}
     return {"checks": checks, "rows": rows, "identities": identities, "traces": traces, "status": "PASS" if all(checks.values()) else "BLOCKED", "authorization": auth, "provider_calls": 0, "head": head, "expected_base_commit": base.get("expected_base_commit")}
 
 

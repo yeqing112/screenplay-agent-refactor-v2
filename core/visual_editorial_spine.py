@@ -98,7 +98,7 @@ def validate_spine(spine: dict[str, Any], *, scene: dict[str, Any], strategy: di
     elif must_preserve_trace is not _TRACE_UNSET:
         for item in _l(_d(must_preserve_trace).get("constraints")):
             refs = {_t(x) for x in _l(_d(item).get("supporting_beat_refs")) if _t(x)}
-            if _t(item.get("status")) == "PRESERVE_TRACE_UNRESOLVED":
+            if _t(item.get("status") or item.get("resolution_status")) == "PRESERVE_TRACE_UNRESOLVED":
                 errors.append({"code": "PRESERVE_TRACE_UNRESOLVED", "constraint_id": _t(item.get("constraint_id"))})
             elif refs and not refs & set(covered):
                 errors.append({"code": "SPINE_MUST_PRESERVE_UNCOVERED", "constraint_id": _t(item.get("constraint_id")), "supporting_beat_refs": sorted(refs)})
