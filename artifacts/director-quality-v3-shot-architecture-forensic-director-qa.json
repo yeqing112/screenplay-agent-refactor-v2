@@ -1,0 +1,56 @@
+{
+  "book990402:e3:暗房惊魂": {
+    "original_context": {
+      "signal": "SHOT_ARCHITECTURE_STRONG",
+      "warnings": [],
+      "mechanical_dialogue_coverage": 0,
+      "visual_overload": 0,
+      "scene_specific": {
+        "pressure_body_defense_core": true,
+        "mechanical_visual_stack": false
+      }
+    },
+    "current_authority_compatibility": {
+      "signal": "SHOT_ARCHITECTURE_STRONG",
+      "warnings": [],
+      "mechanical_dialogue_coverage": 0,
+      "visual_overload": 0
+    }
+  },
+  "book990402:e3:暗房惊魂（2）": {
+    "original_context": {
+      "signal": "SHOT_ARCHITECTURE_STRONG",
+      "warnings": [],
+      "mechanical_dialogue_coverage": 0,
+      "visual_overload": 0,
+      "scene_specific": {
+        "primary_secondary_expression_declared": true,
+        "reflection_keeps_uncertainty": true
+      }
+    },
+    "current_authority_compatibility": {
+      "signal": "SHOT_ARCHITECTURE_STRONG",
+      "warnings": [],
+      "mechanical_dialogue_coverage": 0,
+      "visual_overload": 0
+    }
+  },
+  "book990402:e2:回声照相馆": {
+    "original_context": {
+      "signal": "SHOT_ARCHITECTURE_STRONG",
+      "warnings": [],
+      "mechanical_dialogue_coverage": 0,
+      "visual_overload": 0,
+      "scene_specific": {
+        "trace_prop_character_photo_loop": true,
+        "standard_ots_dependency": true
+      }
+    },
+    "current_authority_compatibility": {
+      "signal": "SHOT_ARCHITECTURE_STRONG",
+      "warnings": [],
+      "mechanical_dialogue_coverage": 0,
+      "visual_overload": 0
+    }
+  }
+}

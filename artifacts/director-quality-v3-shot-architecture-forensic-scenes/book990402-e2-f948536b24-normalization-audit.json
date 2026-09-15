@@ -1,0 +1,342 @@
+[
+  {
+    "shot_index": 1,
+    "camera_movement": {
+      "raw": "缓慢向前推近",
+      "canonical": "PUSH_IN",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "拖痕的形态、湿度需与后续镜头一致。",
+      "canonical": [
+        "拖痕的形态、湿度需与后续镜头一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B1"
+      ],
+      "canonical": [
+        "B1"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 2,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "相册夹的状态需与拖痕镜头暗示的‘拖拽’行为逻辑一致。",
+      "canonical": [
+        "相册夹的状态需与拖痕镜头暗示的‘拖拽’行为逻辑一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B2"
+      ],
+      "canonical": [
+        "B2"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 3,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "口袋内物体的形状需与后续揭示的旧照片（对折方形）一致。",
+      "canonical": [
+        "口袋内物体的形状需与后续揭示的旧照片（对折方形）一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B3"
+      ],
+      "canonical": [
+        "B3"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "近景",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 4,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "林晚的服装、位置需与前几个镜头连续。",
+      "canonical": [
+        "林晚的服装、位置需与前几个镜头连续。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B1",
+        "B2",
+        "B3"
+      ],
+      "canonical": [
+        "B1",
+        "B2",
+        "B3"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 5,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "顾沉的服装（包括口袋状态）需与后续镜头一致。",
+      "canonical": [
+        "顾沉的服装（包括口袋状态）需与后续镜头一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B4",
+        "B5"
+      ],
+      "canonical": [
+        "B4",
+        "B5"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景",
+    "framing_transition_present": true
+  },
+  {
+    "shot_index": 6,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "口袋内物品的形状需与后续可能揭示的物品（如从相册夹取出的东西）逻辑关联。",
+      "canonical": [
+        "口袋内物品的形状需与后续可能揭示的物品（如从相册夹取出的东西）逻辑关联。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B6"
+      ],
+      "canonical": [
+        "B6"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 7,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "对话内容需与剧本一致。",
+      "canonical": [
+        "对话内容需与剧本一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B7"
+      ],
+      "canonical": [
+        "B7"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "近景（正反打）",
+    "framing_transition_present": true
+  },
+  {
+    "shot_index": 8,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "两人的位置、姿态需与前一镜头连续。",
+      "canonical": [
+        "两人的位置、姿态需与前一镜头连续。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B4",
+        "B5",
+        "B6",
+        "B7"
+      ],
+      "canonical": [
+        "B4",
+        "B5",
+        "B6",
+        "B7"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 9,
+    "camera_movement": {
+      "raw": "快速推近",
+      "canonical": "PUSH_IN",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "照片内容需与后续顾沉的试探问题逻辑关联。",
+      "canonical": [
+        "照片内容需与后续顾沉的试探问题逻辑关联。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B8"
+      ],
+      "canonical": [
+        "B8"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 10,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "顾沉的提问顺序和林晚的反应需与剧本一致。",
+      "canonical": [
+        "顾沉的提问顺序和林晚的反应需与剧本一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B9",
+        "B10"
+      ],
+      "canonical": [
+        "B9",
+        "B10"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "近景（正反打）",
+    "framing_transition_present": true
+  },
+  {
+    "shot_index": 11,
+    "camera_movement": {
+      "raw": "缓慢推近",
+      "canonical": "PUSH_IN",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "旧照片的外观（对折、内容、背面文字）需与剧本描述完全一致。",
+      "canonical": [
+        "旧照片的外观（对折、内容、背面文字）需与剧本描述完全一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B11"
+      ],
+      "canonical": [
+        "B11"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 12,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "两张照片的视觉元素需清晰可辨。",
+      "canonical": [
+        "两张照片的视觉元素需清晰可辨。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "B8",
+        "B11"
+      ],
+      "canonical": [
+        "B8",
+        "B11"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  }
+]

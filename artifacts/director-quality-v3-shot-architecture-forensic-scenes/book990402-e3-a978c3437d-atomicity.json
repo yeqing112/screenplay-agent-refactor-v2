@@ -1,0 +1,33 @@
+{
+  "status": "FAIL",
+  "composite_bundle_count": 3,
+  "findings": [
+    {
+      "shot_index": 1,
+      "shot_id": "SA01",
+      "code": "COMPOSITE_COVERAGE_BUNDLE",
+      "matched_patterns": [
+        "framing_transition"
+      ],
+      "raw_shot_size": "特写转中景"
+    },
+    {
+      "shot_index": 4,
+      "shot_id": "SA04",
+      "code": "COMPOSITE_COVERAGE_BUNDLE",
+      "matched_patterns": [
+        "正反打"
+      ],
+      "raw_shot_size": "中近景正反打"
+    },
+    {
+      "shot_index": 7,
+      "shot_id": "SA07",
+      "code": "COMPOSITE_COVERAGE_BUNDLE",
+      "matched_patterns": [
+        "framing_transition"
+      ],
+      "raw_shot_size": "中景转特写"
+    }
+  ]
+}

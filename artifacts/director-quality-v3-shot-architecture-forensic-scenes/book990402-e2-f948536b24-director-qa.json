@@ -1,0 +1,18 @@
+{
+  "original_context": {
+    "signal": "SHOT_ARCHITECTURE_STRONG",
+    "warnings": [],
+    "mechanical_dialogue_coverage": 0,
+    "visual_overload": 0,
+    "scene_specific": {
+      "trace_prop_character_photo_loop": true,
+      "standard_ots_dependency": true
+    }
+  },
+  "current_authority_compatibility": {
+    "signal": "SHOT_ARCHITECTURE_STRONG",
+    "warnings": [],
+    "mechanical_dialogue_coverage": 0,
+    "visual_overload": 0
+  }
+}

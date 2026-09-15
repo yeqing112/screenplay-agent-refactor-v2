@@ -1,0 +1,260 @@
+{
+  "scene_id": "book990402:e3:暗房惊魂",
+  "schema_version": "shot_architecture_draft_v1",
+  "strategy_fingerprint": "f456c2f3f69f4c537537df3fa6f9d77787365edf3f8c9c406740917d46706993",
+  "architecture_summary": "采用‘建立-对峙-崩溃’三段式镜头结构，通过视觉重心转移和节奏变化构建心理压迫。第一阶段以环境特写和人物中景建立空间与伪装状态；第二阶段以正反打、反应特写和主观视角镜头强化对话冲突与隐藏秘密的张力；第三阶段以孤立长镜头和手部特写聚焦林晚的情绪崩溃与内心挣扎。整个系统强调信息的不对称释放，通过档案袋、T恤下摆等关键道具的视觉引导，构建窥探与暴露的张力。",
+  "shot_count": 7,
+  "shots": [
+    {
+      "shot_id": "SA01",
+      "logical_key": "shot-1",
+      "phase_id": "P01",
+      "beat_refs": [
+        "beat:1",
+        "beat:2",
+        "beat:3"
+      ],
+      "function": [
+        "ESTABLISH"
+      ],
+      "subject": "暗房环境与林晚",
+      "shot_size": "MS",
+      "camera_position": "工作台上方，略高于档案袋",
+      "camera_movement": "TILT",
+      "composition_intent": "以打开的牛皮纸档案袋和剪下胶片为前景，通过下摇将林晚置于悬挂相纸形成的框架中，建立空间与人物的关联。",
+      "performance_focus": "林晚将照片夹到晾干绳上的慵懒动作，以及目光快速扫过档案袋、指尖极轻划过袋口的细微异常。",
+      "information_focus": "档案袋的存在、剪下胶片的锯齿状边缘、林晚的伪装与下意识关注。",
+      "prop_focus": "牛皮纸档案袋、剪下胶片、晾干绳上的照片。",
+      "spatial_anchor": "工作台与晾干绳区域。",
+      "entry_state": "暗房静态，档案袋与胶片作为视觉焦点。",
+      "exit_state": "林晚完成夹照片动作，指尖划过袋口后收回，镜头停留在她略显僵硬的背影上。",
+      "cut_in_motivation": "从物证特写切入，直接建立场景的悬疑核心。",
+      "cut_out_motivation": "在林晚指尖动作后停留，强调其异常，为顾沉的介入铺垫。",
+      "hold_logic": "在林晚手指划过袋口时短暂停留，让观众捕捉到这个下意识动作。",
+      "continuity_requirements": [
+        "档案袋位置、胶片状态、林晚站位与动作需与后续镜头连贯。"
+      ],
+      "must_preserve_refs": [
+        "beat:3"
+      ],
+      "what_audience_knows_before": "暗房内有可疑物证，林晚在工作。",
+      "what_this_shot_adds": "林晚对档案袋的细微异常关注，暗示其可能隐藏秘密。",
+      "what_remains_withheld": "档案袋具体内容、林晚真实意图、T恤下摆凸起物。"
+    },
+    {
+      "shot_id": "SA02",
+      "logical_key": "shot-2",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:4",
+        "beat:5"
+      ],
+      "function": [
+        "ESTABLISH"
+      ],
+      "subject": "顾沉与林晚",
+      "shot_size": "MS",
+      "camera_position": "暗房门口，顾沉身后",
+      "camera_movement": "STATIC",
+      "composition_intent": "顾沉倚在门框上形成前景框架，林晚在工作台前处于画面纵深处，建立空间距离与权力关系。",
+      "performance_focus": "顾沉倚门观察的姿态，林晚背对门口工作的伪装状态，以及听到询问后擦手动作的微顿。",
+      "information_focus": "顾沉的介入、门锁有松动痕迹的暗示、林晚的初步紧张反应。",
+      "prop_focus": "门锁（通过对话提及）。",
+      "spatial_anchor": "门口与工作台之间的空间。",
+      "entry_state": "顾沉出现在门口，林晚背对他工作。",
+      "exit_state": "顾沉提问结束，林晚擦手动作微顿，气氛开始紧张。",
+      "cut_in_motivation": "从林晚的异常动作切到顾沉的介入，形成因果关联。",
+      "cut_out_motivation": "在林晚防御反应后切走，保持试探的悬念。",
+      "hold_logic": "在林晚擦手微顿的瞬间稍作停留，强调其反应异常。",
+      "continuity_requirements": [
+        "顾沉站位、林晚朝向需与上一镜头连贯。"
+      ],
+      "must_preserve_refs": [
+        "beat:4",
+        "beat:5"
+      ],
+      "what_audience_knows_before": "林晚对档案袋有异常关注。",
+      "what_this_shot_adds": "顾沉开始调查，林晚表现出初步防御。",
+      "what_remains_withheld": "顾沉的真实意图、林晚T恤下摆凸起物。"
+    },
+    {
+      "shot_id": "SA03",
+      "logical_key": "shot-3",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:6"
+      ],
+      "function": [
+        "OBSERVE"
+      ],
+      "subject": "林晚的手与T恤下摆",
+      "shot_size": "CU",
+      "camera_position": "林晚侧后方，略低于腰部",
+      "camera_movement": "STATIC",
+      "composition_intent": "聚焦林晚右手无意识碰触T恤下摆硬质凸起轮廓的动作，随后手抚平衣物，形成‘暴露-隐藏’的视觉节奏。",
+      "performance_focus": "右手碰触凸起物的无意识动作，以及随后刻意抚平的掩饰动作。",
+      "information_focus": "T恤下摆存在硬质凸起物，林晚对此敏感并试图隐藏。",
+      "prop_focus": "林晚T恤下摆的硬质凸起轮廓。",
+      "spatial_anchor": "林晚腰部区域。",
+      "entry_state": "林晚正在说话，右手自然下垂。",
+      "exit_state": "林晚手抚平T恤下摆，凸起轮廓被衣物遮盖。",
+      "cut_in_motivation": "从对话中切到特写，强调林晚身体反应泄露的秘密。",
+      "cut_out_motivation": "在凸起物被遮盖后切走，保持其具体内容的悬念。",
+      "hold_logic": "在手碰触凸起物的瞬间短暂停留，让观众注意到这个细节。",
+      "continuity_requirements": [
+        "林晚T恤款式、凸起物位置需前后一致。"
+      ],
+      "must_preserve_refs": [
+        "beat:6"
+      ],
+      "what_audience_knows_before": "林晚对档案袋有异常关注，顾沉开始试探。",
+      "what_this_shot_adds": "林晚身上可能藏有与失踪底片相关的物品。",
+      "what_remains_withheld": "凸起物的具体内容、林晚是否知情。"
+    },
+    {
+      "shot_id": "SA04",
+      "logical_key": "shot-4",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:7",
+        "beat:8"
+      ],
+      "function": [
+        "OBSERVE"
+      ],
+      "subject": "顾沉与林晚",
+      "shot_size": "MCU",
+      "camera_position": "工作台两侧，略低于视线",
+      "camera_movement": "HANDHELD_SUBTLE",
+      "composition_intent": "利用暗房狭窄空间和悬挂物制造压迫感，两人处于画面的对角线位置，形成视觉对抗。",
+      "performance_focus": "顾沉拿起档案袋质问的审视姿态，林晚以懒散抱怨掩饰但身体绷紧的防御状态。",
+      "information_focus": "林晚关于胶片是旧废片的说辞，顾沉的怀疑。",
+      "prop_focus": "顾沉手中的档案袋。",
+      "spatial_anchor": "工作台区域。",
+      "entry_state": "顾沉拿起档案袋，林晚转身靠在工作台边缘。",
+      "exit_state": "林晚抱怨结束，身体微微绷紧，气氛紧张。",
+      "cut_in_motivation": "从林晚隐藏动作切到顾沉的直接质问，形成压力升级。",
+      "cut_out_motivation": "在林晚防御姿态增强后切走，为更深层试探铺垫。",
+      "hold_logic": "在林晚抱怨时保持镜头，捕捉其身体绷紧的细节。",
+      "continuity_requirements": [
+        "顾沉手持档案袋、林晚站位需连贯。"
+      ],
+      "must_preserve_refs": [
+        "beat:7",
+        "beat:8"
+      ],
+      "what_audience_knows_before": "林晚身上可能藏有物品，顾沉在试探。",
+      "what_this_shot_adds": "林晚对胶片来源的解释，其防御姿态升级。",
+      "what_remains_withheld": "顾沉掌握的全部信息、林晚的真实记忆。"
+    },
+    {
+      "shot_id": "SA05",
+      "logical_key": "shot-5",
+      "phase_id": "P02",
+      "beat_refs": [
+        "beat:9"
+      ],
+      "function": [
+        "REACTION"
+      ],
+      "subject": "林晚的面部与手部",
+      "shot_size": "CU",
+      "camera_position": "林晚正面略偏侧",
+      "camera_movement": "PUSH_IN",
+      "composition_intent": "聚焦林晚瞳孔收缩、手指蜷缩掐掌心的细微反应，背景虚化突出其内心震动。",
+      "performance_focus": "听到‘记得’质问时瞳孔收缩，手指蜷缩掐掌心的无法控制的反应。",
+      "information_focus": "顾沉提出林晚可能失忆或隐瞒的假设，林晚反应暴露其内心恐惧。",
+      "prop_focus": "无（聚焦人物反应）。",
+      "spatial_anchor": "林晚面部与手部。",
+      "entry_state": "顾沉质问结束，林晚表情开始变化。",
+      "exit_state": "林晚手指掐入掌心，眼神流露恐惧与困惑。",
+      "cut_in_motivation": "从对话切到反应特写，强调心理冲击的瞬间。",
+      "cut_out_motivation": "在林晚反应达到高点后切走，保持情绪张力。",
+      "hold_logic": "在瞳孔收缩和掐掌心动作上停留，让观众充分感受其内心波动。",
+      "continuity_requirements": [
+        "林晚面部表情变化需自然连贯。"
+      ],
+      "must_preserve_refs": [
+        "beat:9"
+      ],
+      "what_audience_knows_before": "林晚可能藏有物品，其解释存在疑点。",
+      "what_this_shot_adds": "林晚对记忆问题的恐惧反应，暗示其可能隐瞒或失忆。",
+      "what_remains_withheld": "林晚记忆的真实状态、顾沉的最终判断。"
+    },
+    {
+      "shot_id": "SA06",
+      "logical_key": "shot-6",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:10"
+      ],
+      "function": [
+        "OBSERVE"
+      ],
+      "subject": "顾沉与林晚",
+      "shot_size": "MS",
+      "camera_position": "工作台侧面，略高于两人",
+      "camera_movement": "STATIC",
+      "composition_intent": "顾沉扫视林晚T恤下摆的视线形成视觉引导线，林晚下意识捂住该位置的动作形成直接回应，两人处于画面的紧张对峙中。",
+      "performance_focus": "顾沉扫视T恤下摆的审视目光，林晚下意识捂住该位置的防御动作。",
+      "information_focus": "顾沉明确将林晚与失踪底片联系起来，林晚的激烈反应。",
+      "prop_focus": "林晚T恤下摆区域。",
+      "spatial_anchor": "工作台区域，两人对峙位置。",
+      "entry_state": "顾沉提出最后暗示，林晚开始紧张。",
+      "exit_state": "林晚捂住T恤下摆，顾沉准备离开。",
+      "cut_in_motivation": "从林晚恐惧反应切到顾沉的直接指控，形成压力顶点。",
+      "cut_out_motivation": "在林晚捂住动作后切走，为顾沉离开铺垫。",
+      "hold_logic": "在顾沉扫视和林晚捂住动作上保持镜头，强调指控与反应的直接关联。",
+      "continuity_requirements": [
+        "顾沉视线方向、林晚捂住位置需与之前特写一致。"
+      ],
+      "must_preserve_refs": [
+        "beat:10"
+      ],
+      "what_audience_knows_before": "林晚可能失忆或隐瞒，身上藏有物品。",
+      "what_this_shot_adds": "顾沉直接指控，林晚反应激烈，冲突达到顶点。",
+      "what_remains_withheld": "林晚最终的选择、档案袋完整内容。"
+    },
+    {
+      "shot_id": "SA07",
+      "logical_key": "shot-7",
+      "phase_id": "P03",
+      "beat_refs": [
+        "beat:11"
+      ],
+      "function": [
+        "OBSERVE"
+      ],
+      "subject": "林晚",
+      "shot_size": "MS",
+      "camera_position": "暗房门口，顾沉离开方向",
+      "camera_movement": "PUSH_IN",
+      "composition_intent": "顾沉离开后，林晚被档案袋和悬挂相纸包围，象征被秘密和选择所困。镜头推近至她面具碎裂的面部和悬在档案袋上颤抖的手，强调内心崩溃。",
+      "performance_focus": "面具碎裂后露出的困惑、恐惧和决绝的复杂表情，手悬在档案袋上颤抖的内心挣扎。",
+      "information_focus": "林晚情绪彻底暴露，面临揭露或隐藏秘密的最终抉择。",
+      "prop_focus": "档案袋（作为抉择对象）。",
+      "spatial_anchor": "工作台与档案袋区域。",
+      "entry_state": "顾沉离开暗房，林晚独自面对。",
+      "exit_state": "林晚手悬在档案袋上颤抖，镜头长时间停留，悬念延续。",
+      "cut_in_motivation": "从顾沉离开切到林晚孤立状态，形成情绪转换。",
+      "cut_out_motivation": "在林晚手部颤抖特写中结束场景，留下悬念。",
+      "hold_logic": "在林晚手悬在档案袋上颤抖的画面中长时间停留，强调内心挣扎的沉重。",
+      "continuity_requirements": [
+        "林晚站位、档案袋位置需与之前镜头连贯。"
+      ],
+      "must_preserve_refs": [
+        "beat:11"
+      ],
+      "what_audience_knows_before": "顾沉直接指控并给出最后通牒。",
+      "what_this_shot_adds": "林晚情绪崩溃，面临最终抉择，场景悬念达到高潮。",
+      "what_remains_withheld": "林晚最终的选择、档案袋完整内容、失踪底片真相。"
+    }
+  ],
+  "notes": [],
+  "compiler_version": "shot_architecture_compiler_v1",
+  "architecture_fingerprint": "31dba85f8f488d7b23902a628075f92d160df85cebfe4b64ed543c2086edf626",
+  "source_trace": {
+    "strategy_fingerprint": "f456c2f3f69f4c537537df3fa6f9d77787365edf3f8c9c406740917d46706993",
+    "provider_shot_ids_ignored": true
+  }
+}

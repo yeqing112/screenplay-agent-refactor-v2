@@ -17,6 +17,16 @@ def _t(v: Any) -> str: return str(v or "").strip()
 def _canon(v: Any) -> str: return json.dumps(v, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
 def fingerprint(v: Any) -> str: return hashlib.sha256(_canon(v).encode("utf-8")).hexdigest()
 
+def parse_architecture_envelope(raw: str) -> dict[str, Any]:
+    """Parse the outer architecture envelope, never a nested shot object."""
+    from core.structured_output import parse_json_object
+    required = {"architecture_summary", "shots"}
+    parsed = parse_json_object(raw, label="shot_architecture_draft_v1", required_keys=required)
+    missing = sorted(required - set(parsed))
+    if missing or not isinstance(parsed.get("shots"), list):
+        raise ValueError(f"shot_architecture_draft_v1 envelope invalid; required top-level keys={sorted(required)}; missing={missing}")
+    return parsed
+
 def _alias(v: Any, mapping: dict[str, str], default: str = "") -> str:
     raw = _t(v)
     if raw.upper() in mapping.values():
@@ -34,23 +44,60 @@ def _alias(v: Any, mapping: dict[str, str], default: str = "") -> str:
 
 FUNCTION_ALIASES = {"建立": "ESTABLISH", "建立空间": "ESTABLISH", "定位": "ORIENT", "观察": "OBSERVE", "施压": "PRESSURE", "压力": "PRESSURE", "反应": "REACTION", "证据": "EVIDENCE", "插入": "INSERT", "揭示": "REVEAL", "转折": "TURN", "停顿": "HOLD", "过渡": "TRANSITION", "释放": "RELEASE", "收束": "CLOSING", "结尾": "CLOSING"}
 SIZE_ALIASES = {"远景": "EWS", "全景": "WS", "中远景": "MWS", "中景": "MS", "中近景": "MCU", "近景": "CU", "特写": "CU", "大特写": "ECU", "插入特写": "INSERT"}
-MOVE_ALIASES = {"固定": "STATIC", "静止": "STATIC", "无": "NONE", "无运动": "NONE", "轻微推进": "PUSH_IN", "推进": "PUSH_IN", "拉远": "PULL_OUT", "横摇": "PAN", "跟拍": "TRACK", "轻微手持": "HANDHELD_SUBTLE", "重新构图": "REFRAME"}
+MOVE_ALIASES = {"轻微手持晃动": "HANDHELD_SUBTLE", "轻微手持": "HANDHELD_SUBTLE", "重新构图": "REFRAME", "缓慢下摇": "TILT", "下摇": "TILT", "缓慢上摇": "TILT", "上摇": "TILT", "摇摄": "PAN", "横摇": "PAN", "轻微推进": "PUSH_IN", "推近": "PUSH_IN", "推进": "PUSH_IN", "拉远": "PULL_OUT", "后退": "PULL_OUT", "跟拍": "TRACK", "固定": "STATIC", "静止": "STATIC", "无运动": "NONE", "无": "NONE"}
 
 def _ref(value: Any, prefix: str) -> str:
     raw = _t(value)
     if not raw: return ""
-    if raw.startswith(prefix + ":"): return raw
+    if raw.startswith(prefix + ":"):
+        raw = raw.split(":", 1)[1]
+    if prefix == "beat" and re.fullmatch(r"B\d+", raw, re.IGNORECASE):
+        raw = raw[1:]
     return prefix + ":" + raw
+
+def _string_list(value: Any) -> tuple[list[str], str]:
+    """Losslessly coerce nullable string/string[] fields to string[]."""
+    if value is None:
+        return [], "null_to_empty_list"
+    if isinstance(value, list):
+        return [_t(item) for item in value if _t(item)], "list_preserved"
+    text = _t(value)
+    return ([text] if text else []), "string_to_singleton_list" if text else "empty_to_empty_list"
+
+def normalize_camera_movement(value: Any) -> tuple[str, dict[str, Any]]:
+    """Normalize movement aliases without silently guessing unknown phrases."""
+    raw = _t(value)
+    if not raw:
+        return "", {"raw": raw, "canonical": "", "reason": "missing", "review_required": True}
+    upper = raw.upper()
+    if upper in MOVEMENTS:
+        return upper, {"raw": raw, "canonical": upper, "reason": "already_enum", "review_required": False}
+    matches = [(alias, target) for alias, target in sorted(MOVE_ALIASES.items(), key=lambda item: len(item[0]), reverse=True) if alias in raw]
+    if not matches:
+        return "", {"raw": raw, "canonical": "", "reason": "MOVEMENT_NORMALIZATION_REVIEW_REQUIRED", "review_required": True}
+    targets = []
+    for _, target in matches:
+        if target not in targets:
+            targets.append(target)
+    canonical = matches[0][1]
+    reason = "alias" if len(targets) == 1 else "most_specific_motion_wins:" + ",".join(targets)
+    return canonical, {"raw": raw, "canonical": canonical, "reason": reason, "review_required": False}
 
 def normalize_architecture_ir(raw: dict[str, Any], *, scene_id: str, strategy_fingerprint: str) -> dict[str, Any]:
     """Project model-facing output into the small canonical Draft schema."""
     if not isinstance(raw, dict): return {"errors": [{"code": "ARCHITECTURE_NOT_OBJECT"}], "ir": None}
     unknown = sorted(k for k in raw if k not in {"scene_id", "schema_version", "strategy_fingerprint", "architecture_summary", "shots", "shot_count", "notes", *PROGRAM_OWNED})
-    shots = _l(raw.get("shots")); canonical_shots = []
+    shots = _l(raw.get("shots")); canonical_shots = []; normalization_audit = []
     for i, item in enumerate(shots, 1):
         row = _d(item)
         functions = _l(row.get("function")) if isinstance(row.get("function"), list) else [_t(row.get("function"))]
         functions = [_alias(x, FUNCTION_ALIASES, "") for x in functions if _alias(x, FUNCTION_ALIASES, "")]
+        movement, movement_audit = normalize_camera_movement(row.get("camera_movement") or row.get("movement"))
+        continuity_raw = row.get("continuity_requirements") if "continuity_requirements" in row else row.get("continuity")
+        preserve_raw = row.get("must_preserve_refs") if "must_preserve_refs" in row else row.get("must_preserve")
+        continuity, continuity_reason = _string_list(continuity_raw)
+        preserve_refs, preserve_reason = _string_list(preserve_raw)
+        normalization_audit.append({"shot_index": i, "camera_movement": movement_audit, "continuity_requirements": {"raw": continuity_raw, "canonical": continuity, "reason": continuity_reason}, "must_preserve_refs": {"raw": preserve_raw, "canonical": preserve_refs, "reason": preserve_reason}, "raw_shot_size": row.get("shot_size") or row.get("size"), "framing_transition_present": bool(re.search(r"正反打|转|先.?再.?切|双机位|多机位|A/B", _t(row.get("shot_size") or row.get("size")) + _t(row.get("composition_intent") or row.get("composition"))))})
         canonical_shots.append({
             "shot_id": f"SA{i:02d}",
             "logical_key": _t(row.get("logical_key") or row.get("ordinal") or f"shot-{i}"),
@@ -60,7 +107,7 @@ def normalize_architecture_ir(raw: dict[str, Any], *, scene_id: str, strategy_fi
             "subject": _t(row.get("subject")),
             "shot_size": _alias(row.get("shot_size") or row.get("size"), SIZE_ALIASES, ""),
             "camera_position": _t(row.get("camera_position") or row.get("camera")),
-            "camera_movement": _alias(row.get("camera_movement") or row.get("movement"), MOVE_ALIASES, ""),
+            "camera_movement": movement,
             "composition_intent": _t(row.get("composition_intent") or row.get("composition")),
             "performance_focus": _t(row.get("performance_focus") or row.get("performance")),
             "information_focus": _t(row.get("information_focus") or row.get("information")),
@@ -71,8 +118,8 @@ def normalize_architecture_ir(raw: dict[str, Any], *, scene_id: str, strategy_fi
             "cut_in_motivation": _t(row.get("cut_in_motivation") or row.get("cut_in")),
             "cut_out_motivation": _t(row.get("cut_out_motivation") or row.get("cut_out")),
             "hold_logic": _t(row.get("hold_logic") or row.get("hold")),
-            "continuity_requirements": _l(row.get("continuity_requirements") or row.get("continuity")),
-            "must_preserve_refs": _l(row.get("must_preserve_refs") or row.get("must_preserve")),
+            "continuity_requirements": continuity,
+            "must_preserve_refs": preserve_refs,
             "what_audience_knows_before": _t(row.get("what_audience_knows_before") or row.get("audience_before")),
             "what_this_shot_adds": _t(row.get("what_this_shot_adds") or row.get("audience_adds")),
             "what_remains_withheld": _t(row.get("what_remains_withheld") or row.get("withheld")),
@@ -80,7 +127,21 @@ def normalize_architecture_ir(raw: dict[str, Any], *, scene_id: str, strategy_fi
     ir = {"scene_id": scene_id, "schema_version": "shot_architecture_draft_v1", "strategy_fingerprint": strategy_fingerprint, "architecture_summary": _t(raw.get("architecture_summary") or raw.get("summary")), "shot_count": len(canonical_shots), "shots": canonical_shots, "notes": _l(raw.get("notes")), "compiler_version": "shot_architecture_compiler_v1", "architecture_fingerprint": "", "source_trace": {"strategy_fingerprint": strategy_fingerprint, "provider_shot_ids_ignored": True}}
     ir["architecture_fingerprint"] = fingerprint({k: v for k, v in ir.items() if k not in PROGRAM_OWNED})
     errors = [{"code": "UNKNOWN_CREATIVE_FIELD", "field": x} for x in unknown]
-    return {"ir": ir, "errors": errors, "unknown_fields": unknown, "projection_status": "PASS" if not unknown else "FAIL"}
+    return {"ir": ir, "errors": errors, "unknown_fields": unknown, "projection_status": "PASS" if not unknown else "FAIL", "normalization_audit": normalization_audit}
+
+def atomicity_audit(raw: dict[str, Any], ir: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Detect multiple camera setups or cuts bundled into one shot entry."""
+    findings = []
+    patterns = ("正反打", "先A再切B", "先A再B", "A/B", "双机位", "多机位", "两个机位", "先拍A再切")
+    for index, item in enumerate(_l(_d(raw).get("shots")), 1):
+        row = _d(item); text = _canon(row); matched = [pattern for pattern in patterns if pattern in text]
+        size = _t(row.get("shot_size") or row.get("size"))
+        if re.search(r"(?:特写|近景|中近景|中景|全景).*(?:转|切).*(?:特写|近景|中近景|中景|全景)", size):
+            matched.append("framing_transition")
+        if matched:
+            canonical_shot = _l(_d(ir).get("shots"))[index - 1] if ir and index <= len(_l(_d(ir).get("shots"))) else {}
+            findings.append({"shot_index": index, "shot_id": _d(canonical_shot).get("shot_id") or f"SA{index:02d}", "code": "COMPOSITE_COVERAGE_BUNDLE", "matched_patterns": sorted(set(matched)), "raw_shot_size": size})
+    return {"status": "FAIL" if findings else "PASS", "composite_bundle_count": len(findings), "findings": findings}
 
 def validate_protocol(ir: dict[str, Any], *, scene: dict[str, Any], strategy: dict[str, Any]) -> dict[str, Any]:
     errors: list[dict[str, Any]] = []
@@ -97,7 +158,15 @@ def validate_protocol(ir: dict[str, Any], *, scene: dict[str, Any], strategy: di
     for i, shot in enumerate(shots):
         if not isinstance(shot, dict): errors.append({"code": "SHOT_NOT_OBJECT", "index": i}); continue
         for field in REQUIRED_SHOT_FIELDS:
-            if field not in shot or (not _l(shot[field]) and not _t(shot[field])): errors.append({"code": "SHOT_FIELD_MISSING", "shot_id": shot.get("shot_id"), "field": field})
+            if field not in shot:
+                errors.append({"code": "SHOT_FIELD_MISSING", "shot_id": shot.get("shot_id"), "field": field})
+            elif isinstance(shot[field], list):
+                # Nullable list fields are canonicalized to [] and may be
+                # intentionally empty; the field's presence is the contract.
+                if field not in {"continuity_requirements", "must_preserve_refs"} and not shot[field]:
+                    errors.append({"code": "SHOT_FIELD_MISSING", "shot_id": shot.get("shot_id"), "field": field})
+            elif not _t(shot[field]):
+                errors.append({"code": "SHOT_FIELD_MISSING", "shot_id": shot.get("shot_id"), "field": field})
         refs = set(_t(x) for x in _l(shot.get("beat_refs")))
         for ref in refs - allowed_beats: errors.append({"code": "UNKNOWN_BEAT_REFERENCE", "shot_id": shot.get("shot_id"), "reference": ref})
         phase = _t(shot.get("phase_id"))
@@ -178,7 +247,14 @@ def transition_graph(ir: dict[str, Any]) -> list[dict[str, Any]]:
 
 def compare_architectures(items: list[dict[str, Any]]) -> dict[str, Any]:
     pairs=[]; hard=False
+    def signature(value: dict[str, Any]) -> tuple[Any, ...]:
+        shots = _l(value.get("shots"))
+        functions = [tuple(_l(_d(s).get("function"))) for s in shots]
+        phases = [(_t(_d(s).get("phase_id")), tuple(sorted(_l(_d(s).get("beat_refs"))))) for s in shots]
+        placements = tuple((name, tuple(i for i, s in enumerate(shots) if name in set(_l(_d(s).get("function"))))) for name in ("REACTION", "INSERT", "EVIDENCE", "REVEAL"))
+        transitions = tuple((_t(_d(s).get("cut_in_motivation")), _t(_d(s).get("cut_out_motivation"))) for s in shots)
+        return (len(shots), functions, phases, tuple(_t(_d(s).get("shot_size")) for s in shots), tuple(_t(_d(s).get("camera_movement")) for s in shots), placements, transitions)
     for i in range(len(items)):
         for j in range(i+1,len(items)):
-            a,b=items[i],items[j]; sa=[tuple(_l(_d(s).get("function"))) for s in _l(a.get("shots"))]; sb=[tuple(_l(_d(s).get("function"))) for s in _l(b.get("shots"))]; sig_a=(len(sa),sa,[_t(_d(s).get("shot_size")) for s in _l(a.get("shots"))],[_t(_d(s).get("camera_movement")) for s in _l(a.get("shots"))]); sig_b=(len(sb),sb,[_t(_d(s).get("shot_size")) for s in _l(b.get("shots"))],[_t(_d(s).get("camera_movement")) for s in _l(b.get("shots"))]); same=sig_a==sig_b and _t(a.get("architecture_summary"))==_t(b.get("architecture_summary")); pairs.append({"left":a.get("scene_id"),"right":b.get("scene_id"),"same_topology":same,"left_signature":sig_a,"right_signature":sig_b}); hard = hard or same
+            a,b=items[i],items[j]; sig_a=signature(a); sig_b=signature(b); same=sig_a==sig_b and _t(a.get("architecture_summary"))==_t(b.get("architecture_summary")); pairs.append({"left":a.get("scene_id"),"right":b.get("scene_id"),"same_topology":same,"left_signature":sig_a,"right_signature":sig_b}); hard = hard or same
     return {"pair_count":len(pairs),"all_pairs_checked":len(pairs)==3,"pairs":pairs,"hard_template_leakage":hard,"hard_failure":hard}

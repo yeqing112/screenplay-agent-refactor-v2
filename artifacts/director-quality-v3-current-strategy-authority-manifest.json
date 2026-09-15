@@ -1,0 +1,31 @@
+{
+  "schema_version": "director-quality-v3-current-strategy-authority-manifest-v1",
+  "authority_stage": "DIRECTOR_V3_STRATEGY_REPAIR_SCOPE_SEMANTICS_FINALIZED",
+  "scenes": {
+    "book990402:e3:暗房惊魂": {
+      "snapshot_path": "artifacts/director-quality-v3-current-strategy-authority/book990402-e3-a978c3437d-canonical-v3.json",
+      "fingerprint": "8a98151b7e7e2801b8daa5d576003da529717f61796dce491c2aa791037f3c04",
+      "expected_fingerprint": "8a98151b7e7e2801b8daa5d576003da529717f61796dce491c2aa791037f3c04",
+      "source": "artifacts/director-quality-v3-strategy-repair-scope-semantics-replay.json"
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "snapshot_path": "artifacts/director-quality-v3-current-strategy-authority/book990402-e3-2-027d92aaf3-canonical-v3.json",
+      "fingerprint": "95a18cc7b7f9096934bb668f6d3ba81bc7a1ce489d33074734fe9abccef465e2",
+      "expected_fingerprint": "95a18cc7b7f9096934bb668f6d3ba81bc7a1ce489d33074734fe9abccef465e2",
+      "source": "artifacts/director-quality-v3-strategy-repair-scope-semantics-replay.json"
+    },
+    "book990402:e2:回声照相馆": {
+      "snapshot_path": "artifacts/director-quality-v3-current-strategy-authority/book990402-e2-f948536b24-canonical-v3.json",
+      "fingerprint": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5",
+      "expected_fingerprint": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5",
+      "source": "artifacts/director-quality-v3-strategy-repair-scope-semantics-replay.json"
+    }
+  },
+  "exact_fingerprints": {
+    "book990402:e3:暗房惊魂": "8a98151b7e7e2801b8daa5d576003da529717f61796dce491c2aa791037f3c04",
+    "book990402:e3:暗房惊魂（2）": "95a18cc7b7f9096934bb668f6d3ba81bc7a1ce489d33074734fe9abccef465e2",
+    "book990402:e2:回声照相馆": "e38dd057db5a7bf53f93e6cc416a7576d0d010b523e9a8971e5dcfdc924ce0b5"
+  },
+  "source_commit": "1beea8b",
+  "historical_failed_strategy_repair_is_not_authority": true
+}

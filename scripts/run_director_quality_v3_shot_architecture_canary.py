@@ -15,8 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 ARTIFACTS = ROOT / "artifacts"
 OUT = ARTIFACTS / "director-quality-v3-shot-architecture-scenes"
-EXPECTED_HEADS = {"a75e2b1", "aa33aab"}
-EXPECTED_HEAD = "aa33aab"
+# A future re-canary must be run from one explicitly selected closure
+# baseline; accepting a set of historical heads made authority drift silent.
+EXPECTED_HEAD = "1beea8b"
 SCENES = ("book990402:e3:暗房惊魂", "book990402:e3:暗房惊魂（2）", "book990402:e2:回声照相馆")
 SYSTEM_PROMPT = """You are designing shot architecture for an already approved directing strategy.
 You may design, add, remove, split, merge and reorder shots.
@@ -49,9 +50,20 @@ def _rows():
     return rows
 
 def _strategy(row: dict[str, Any]) -> dict[str, Any]:
-    # Only the approved canonical strategy from the previous commit is used;
-    # old ShotPlan/storyboard payloads are deliberately excluded.
-    return copy.deepcopy(row["base"])
+    # Provider-facing calls must consume the single current-stage authority
+    # pointer.  Falling back to a historical repair base would invalidate the
+    # experiment, so a missing/mismatched pointer is a hard preflight failure.
+    pointer_path = ARTIFACTS / "director-quality-v3-current-stage-authority.json"
+    if not pointer_path.exists():
+        raise RuntimeError("current-stage strategy authority pointer is missing")
+    pointer = json.loads(pointer_path.read_text(encoding="utf-8")); scene = _d(pointer.get("strategy_layer", {}).get("scenes", {}).get(row["scene_id"]))
+    path = ROOT / _t(scene.get("snapshot_path")); expected = _t(scene.get("fingerprint"))
+    if not path.exists():
+        raise RuntimeError(f"current strategy snapshot is missing for {row['scene_id']}")
+    strategy = json.loads(path.read_text(encoding="utf-8"));
+    if expected and _fp(strategy) != expected:
+        raise RuntimeError(f"current strategy authority fingerprint mismatch for {row['scene_id']}")
+    return copy.deepcopy(strategy)
 
 def _request(row: dict[str, Any]) -> dict[str, Any]:
     from core.director_scene_strategy import build_runtime_strategy_contract, canonicalize_allowed_characters
@@ -63,11 +75,21 @@ def _request(row: dict[str, Any]) -> dict[str, Any]:
     return {"scene_id": row["scene_id"], "task": "shot_architecture_draft_only", "approved_strategy": stripped, "authoritative_scene_beats": scene, "scene_blocking": inputs["scene_blocking"], "allowed_characters": identity, "identity_binding_fingerprint": runtime["identity_binding_fingerprint"], "provider_visible_contract_fingerprint": runtime["provider_visible_contract_fingerprint"], "runtime_validation_contract_fingerprint": runtime["runtime_validation_contract_fingerprint"], "location_identity": inputs["location_canonical"], "prop_identity": inputs["prop_canonical"], "must_preserve": strategy.get("must_preserve", []), "must_avoid": strategy.get("must_avoid", []), "human_director_review_notes": {"scene_specific": {"book990402:e3:暗房惊魂": "顾沉压力逐渐逼近，林晚身体反应越来越难隐藏；避免俯拍仰拍手持特写机械堆叠。", "book990402:e3:暗房惊魂（2）": "P03 的闪回、走廊反光、崩溃需区分 primary expression 与 secondary support；反光只表达可能有第三方。", "book990402:e2:回声照相馆": "保住痕迹→道具线索→人物试探→灰外套照片→旧照片揭示视觉闭环，避免标准 OTS 正反打。"}.get(row["scene_id"], "")}, "output_contract": "shot_architecture_draft_v1; program assigns SA IDs"}
 
 def _validate(row: dict[str, Any], raw: str) -> dict[str, Any]:
-    from core.structured_output import parse_json_object
+    from core.shot_architecture import parse_architecture_envelope
     from core.shot_architecture import (normalize_architecture_ir, validate_protocol, validate_coverage, validate_spatial, validate_topology, validate_information, validate_content_constraints, director_qa, transition_graph)
-    inputs, strategy = row["inputs"], _strategy(row); parse_error = ""; parsed = None
-    try: parsed = parse_json_object(raw, label="shot_architecture_draft_v1")
-    except Exception as exc: parse_error = str(exc)[:1000]
+    # Validation of historical raw evidence intentionally uses the original
+    # request context.  Current authority is only for future provider calls.
+    inputs, strategy = row["inputs"], copy.deepcopy(row["base"]); parse_error = ""; parsed = None
+    try: parsed = parse_architecture_envelope(raw)
+    except Exception as exc:
+        # Keep a diagnostic parse of malformed historical payloads, but never
+        # treat a nested shot object as a valid architecture envelope.
+        parse_error = str(exc)[:1000]
+        try:
+            from core.structured_output import parse_json_object
+            parsed = parse_json_object(raw, label="shot_architecture_draft_v1")
+        except Exception:
+            parsed = None
     shape_error = []
     model_payload = parsed or {}
     # MiMo's first canary response occasionally collapses the requested
@@ -110,7 +132,11 @@ def preflight(rows: list[dict[str, Any]], profile: dict[str, Any], *, allow_exis
     head = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip()
     parity = ARTIFACTS / "director-quality-v3-identity-contract-parity-preflight.json"
     parity_doc = json.loads(parity.read_text(encoding="utf-8")) if parity.exists() else {}
-    checks = {"head_is_expected": head in EXPECTED_HEADS, "frozen_scene_count": len(rows) == 3, "strategy_artifacts_available": all(bool(r.get("base")) for r in rows), "approved_strategies": all(_d(r["inputs"].get("director_treatment")).get("status") == "approved" and _d(r["inputs"].get("scene_blocking")).get("status") == "approved" for r in rows), "authority_inputs": all(isinstance(r["inputs"].get("fact_snapshot"), dict) for r in rows), "identity_bindings": all(bool(_d(r["inputs"].get("character_canonical")).get("records")) for r in rows), "identity_contract_parity": parity_doc.get("status") == "PASS" and all(parity_doc.get("checks", {}).get(k) for k in ("identity_projection_parity", "contract_fingerprint_parity")), "no_prior_canary_outputs": allow_existing or not OUT.exists(), "profile_mimo": _t(profile.get("model_name")) == "mimo-v2.5", "real_calls_zero": True, "downstream_side_effects_zero": True}
+    authority_pointer = ARTIFACTS / "director-quality-v3-current-stage-authority.json"
+    pointer_doc = json.loads(authority_pointer.read_text(encoding="utf-8")) if authority_pointer.exists() else {}
+    pointer_scenes = _d(pointer_doc.get("strategy_layer")).get("scenes")
+    exact_authority = isinstance(pointer_scenes, dict) and all(_t(_d(pointer_scenes.get(r["scene_id"])).get("fingerprint")) == _t(_d(pointer_scenes.get(r["scene_id"])).get("expected_fingerprint")) for r in rows)
+    checks = {"head_is_expected": head == EXPECTED_HEAD, "frozen_scene_count": len(rows) == 3, "strategy_artifacts_available": all(bool(r.get("base")) for r in rows), "approved_strategies": all(_d(r["inputs"].get("director_treatment")).get("status") == "approved" and _d(r["inputs"].get("scene_blocking")).get("status") == "approved" for r in rows), "authority_inputs": all(isinstance(r["inputs"].get("fact_snapshot"), dict) for r in rows), "identity_bindings": all(bool(_d(r["inputs"].get("character_canonical")).get("records")) for r in rows), "identity_contract_parity": parity_doc.get("status") == "PASS" and all(parity_doc.get("checks", {}).get(k) for k in ("identity_projection_parity", "contract_fingerprint_parity")), "current_stage_authority_pointer": exact_authority, "no_prior_canary_outputs": allow_existing or not OUT.exists(), "profile_mimo": _t(profile.get("model_name")) == "mimo-v2.5", "real_calls_zero": True, "downstream_side_effects_zero": True}
     return {"schema_version": "director-quality-v3-shot-architecture-preflight-v1", "status": "PASS" if all(checks.values()) else "FAIL", "all_checks_pass": all(checks.values()), "checks": checks, "real_llm_calls": 0, "real_mimo_calls": 0, "provider_http_requests": 0, "shot_architecture": 0, "shotplan": 0, "storyboard": 0, "image": 0, "video": 0, "media": 0, "storage": 0, "shadow": 0, "ci": "not_run", "profile": {k: profile.get(k) for k in ("id", "provider", "model_name")}}
 
 def _write_replay_reports(scenes: list[dict[str, Any]], counts: dict[str, Any], distinct: dict[str, Any]) -> None:

@@ -1,0 +1,551 @@
+{
+  "creative_risks": [
+    "在P02对话中，可尝试一个长镜头跟随顾沉从进门到进入暗房的全过程，强调其行动轨迹和口袋的异常。",
+    "在P03，林晚瞥见灰外套照片时，可采用一个极短暂的闪回或声音设计（如快门声），暗示其与过去的联系，但需极度克制。"
+  ],
+  "dramatic_objective": "通过两个相互试探的角色，揭示照相馆昨夜的秘密活动，并建立林晚与‘灰外套’的深层联系，为后续冲突埋下伏笔。",
+  "must_avoid": [
+    "过早揭示林晚旧照片的内容",
+    "让顾沉直接承认昨夜行为",
+    "将灰外套照片与旧照片的关联解释得过于直白"
+  ],
+  "must_preserve": [
+    "林晚发现拖痕和空相册夹的顺序",
+    "顾沉口袋始终插着手的细节",
+    "灰外套照片的视觉呈现",
+    "林晚最后展开旧照片并露出冰冷表情的时刻"
+  ],
+  "prop_visual_strategy": [
+    "1. **拖痕**：特写，强调其新鲜和湿润，作为昨夜活动的物理证据。2. **相册夹**：展示其异常状态（横倒、打开、划痕、空），作为被侵犯的象征。3. **口袋**：通过人物动作（摸、插、绷紧）暗示内部物品的存在和重要性，制造悬念。4. **灰外套照片**：在暗房光线下呈现，作为连接顾沉与神秘事件的视觉桥梁。5. **林晚的旧照片**：最终揭示，采用对折、展开的动作，强调其私密性和历史感，背面文字提供精确时空信息。"
+  ],
+  "scene_id": "book990402:e2:回声照相馆",
+  "scene_phases": [
+    {
+      "phase_id": "P01",
+      "beat_ids": [
+        "B1",
+        "B2",
+        "B3"
+      ],
+      "dramatic_function": "建立核心谜团：昨夜有人活动，且关键物品（相册夹）被动过。同时暗示林晚自身也藏有秘密。",
+      "audience_state": {
+        "knows": [
+          "林晚发现暗房门口有新鲜拖痕",
+          "相册夹被动过且内容物丢失"
+        ],
+        "question_shift": "从‘发生了什么？’转向‘是谁做的？林晚会怎么做？’",
+        "suspects": [
+          "昨夜有人进入暗房并动了相册夹"
+        ],
+        "withholds": [
+          "林晚口袋里的物品是什么",
+          "顾沉与此事的关联"
+        ]
+      },
+      "emotion": {
+        "state": "警觉、怀疑、压抑的紧张",
+        "intensity_hint": "中等",
+        "trigger": "发现异常痕迹和被翻动的相册夹",
+        "transition_reason": "从慵懒的日常状态被强行拉入调查模式"
+      },
+      "power": {
+        "center_ref": "17",
+        "center_type": "CHARACTER",
+        "description": "林晚作为发现者，暂时掌握信息主动权，独自面对谜团。",
+        "shift": "无"
+      },
+      "performance": [
+        {
+          "character_id": "17",
+          "objective": "查明昨夜异常活动的真相，确认相册夹内物品的下落。",
+          "tactic": "谨慎、细致地检查现场，同时隐藏自己的秘密（口袋里的物品）。",
+          "turning_point": false,
+          "visible_behavior": "蹲下检查拖痕，打开储物柜，拿起相册夹检查，放回时无意识摸了摸左侧口袋。"
+        }
+      ],
+      "edit": {
+        "cut_logic": "跟随林晚的视线和动作，从拖痕特写切到储物柜内部，再到相册夹细节，最后定格在她摸口袋的手上。",
+        "hold_logic": "在关键发现（拖痕、空相册夹、摸口袋动作）上保持镜头，让观众消化信息。",
+        "tempo": "缓慢、悬疑",
+        "transition_motivation": "从外部空间（暗房门口）进入内部空间（储物柜），再聚焦于人物自身（口袋），完成从环境到人物的悬念转移。"
+      },
+      "visual": {
+        "camera_rule": "以林晚的主观视角和近景、特写为主，强调发现过程的沉浸感和细节。",
+        "composition_rule": "利用门框、柜门形成画框，将林晚置于被窥视或自我封闭的构图中。",
+        "movement_condition": "镜头运动跟随林晚的探索动作，平稳但带有目的性。",
+        "visual_grammar": "建立‘痕迹-物品-人物’的视觉逻辑链。"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:B1",
+          "beat:B2"
+        ],
+        "hint_refs": [
+          "beat:B1",
+          "beat:B2",
+          "beat:B3"
+        ],
+        "withhold_refs": [
+          "beat:B11",
+          "character:18"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "昨夜有人进入暗房并翻动了相册夹。",
+            "support_refs": [
+              "beat:B1",
+              "beat:B2"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "林晚摸口袋的动作是下意识的，表明口袋里的物品对她很重要，且与当前调查的事件可能有关联。",
+            "support_refs": [
+              "beat:B3"
+            ],
+            "purpose": "为后续揭示旧照片埋下伏笔，建立人物行为的连贯性。"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P02",
+      "beat_ids": [
+        "B4",
+        "B5",
+        "B6",
+        "B7"
+      ],
+      "dramatic_function": "引入顾沉，展开表面日常、实则相互试探的对话。双方都在隐藏秘密，同时试图从对方身上获取信息。",
+      "audience_state": {
+        "knows": [
+          "顾沉昨夜可能听到动静",
+          "顾沉对暗房区域异常关注",
+          "顾沉口袋里可能藏有物品",
+          "顾沉承认昨夜使用暗房洗照片"
+        ],
+        "question_shift": "从‘是谁做的？’转向‘顾沉到底知道多少？他和林晚的秘密有何关联？’",
+        "suspects": [
+          "顾沉在撒谎或隐瞒关键信息",
+          "顾沉口袋里的物品与相册夹或灰外套有关"
+        ],
+        "withholds": [
+          "顾沉口袋里的具体物品",
+          "顾沉洗的‘旧照片’内容",
+          "林晚口袋里的物品"
+        ]
+      },
+      "emotion": {
+        "state": "表面轻松下的暗流涌动，互相戒备与试探",
+        "intensity_hint": "中等偏高",
+        "trigger": "顾沉的出现及其对暗房话题的回避",
+        "transition_reason": "从林晚的独自调查转入双人心理博弈，紧张感从外部线索转向人际互动。"
+      },
+      "power": {
+        "center_ref": "RELATIONSHIP",
+        "center_type": "RELATIONSHIP",
+        "description": "权力在林晚和顾沉之间动态摇摆。顾沉以‘日常’姿态试图掌控对话节奏，林晚则通过直接提问进行反击。",
+        "shift": "从顾沉试图主导（B4-B6），到林晚主动试探（B7），权力短暂转移。"
+      },
+      "performance": [
+        {
+          "character_id": "17",
+          "objective": "试探顾沉，确认他是否与昨夜事件有关，并观察他的反应。",
+          "tactic": "先以慵懒面具应对，再抓住机会直接询问暗房相关问题。",
+          "turning_point": false,
+          "visible_behavior": "接过早餐，进行日常对话，眼神观察顾沉，最后直接询问暗房灯和使用情况。"
+        },
+        {
+          "character_id": "18",
+          "objective": "掩饰自己昨夜的活动，试探林晚是否发现了什么，并评估她的威胁。",
+          "tactic": "以困倦和日常话题开场，回避深入询问，用合理借口解释暗房使用，同时通过口袋动作隐藏物品。",
+          "turning_point": false,
+          "visible_behavior": "带早餐进入，眼神扫过暗房门口，左手插在口袋里，回答问题时略显回避，给出‘洗旧照片’的解释。"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在两人对话时采用正反打镜头，强调眼神交流和微表情。在关键动作（顾沉眼神掠过暗房、手插口袋、林晚直接提问）时插入特写。",
+        "hold_logic": "在顾沉回避问题和林晚追问时保持镜头，营造对话的张力。",
+        "tempo": "中等，对话节奏看似平缓但暗藏机锋。",
+        "transition_motivation": "从林晚的个人空间（P01）过渡到共享的对话空间，通过人物互动推动悬念发展。"
+      },
+      "visual": {
+        "camera_rule": "以中景和近景为主，捕捉两人互动的细微之处。利用过肩镜头建立对话关系。",
+        "composition_rule": "将两人置于画面两侧，中间留有空间，暗示心理距离和潜在对抗。",
+        "movement_condition": "镜头相对固定，聚焦于表演。",
+        "visual_grammar": "建立‘提问-回避-再提问’的对话视觉节奏。"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:B4",
+          "beat:B7"
+        ],
+        "hint_refs": [
+          "beat:B4",
+          "beat:B5",
+          "beat:B6",
+          "beat:B7"
+        ],
+        "withhold_refs": [
+          "beat:B8",
+          "beat:B11"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "顾沉口袋里的物品很可能就是从相册夹里拿走的东西。",
+            "support_refs": [
+              "beat:B6",
+              "beat:B2"
+            ]
+          },
+          {
+            "claim": "顾沉洗的‘旧照片’可能与灰外套或林晚的过去有关。",
+            "support_refs": [
+              "beat:B7"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉左手始终插在口袋里，是刻意隐藏物品并控制紧张情绪的表现。",
+            "support_refs": [
+              "beat:B6"
+            ],
+            "purpose": "强化顾沉的秘密状态，为后续揭示做铺垫。"
+          },
+          {
+            "claim": "林晚的直接提问打破了顾沉试图营造的日常氛围，迫使博弈升级。",
+            "support_refs": [
+              "beat:B7"
+            ],
+            "purpose": "展示林晚的主动性和调查决心，推动情节转折。"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P03",
+      "beat_ids": [
+        "B8",
+        "B9",
+        "B10",
+        "B11"
+      ],
+      "dramatic_function": "提供关键视觉证据（灰外套照片），将顾沉与神秘人影联系起来。顾沉进行反试探，林晚隐藏反应。最终揭示林晚的秘密（旧照片），将两人过去与现在彻底交织，悬念达到顶点。",
+      "audience_state": {
+        "knows": [
+          "晾干绳上有一张灰外套人影的照片，外套与顾沉所穿相似",
+          "顾沉主动询问林晚是否看到‘穿灰外套的人’",
+          "顾沉曾询问林晚是否动过相册夹",
+          "林晚藏有一张自己1998年穿灰外套站在照相馆门口的旧照片"
+        ],
+        "question_shift": "从‘顾沉做了什么？’转向‘林晚的过去与顾沉、与照相馆有何关联？’",
+        "suspects": [
+          "顾沉可能知道林晚的过去，或正在调查与灰外套相关的事件",
+          "林晚的旧照片是解开谜团的关键"
+        ],
+        "withholds": [
+          "顾沉调查灰外套事件的真正目的",
+          "林晚对旧照片和顾沉试探的真实反应"
+        ]
+      },
+      "emotion": {
+        "state": "震惊、冰冷、高度警惕，秘密被部分揭开的冲击",
+        "intensity_hint": "高",
+        "trigger": "看到灰外套照片，以及顾沉的直接试探和最终的旧照片揭示",
+        "transition_reason": "从相互试探的心理战，升级为秘密被视觉证据和直接言语部分揭开的正面冲击。"
+      },
+      "power": {
+        "center_ref": "INFORMATION",
+        "center_type": "INFORMATION",
+        "description": "权力中心从人物互动转移到关键信息（灰外套照片、林晚的旧照片）上。掌握或揭示这些信息的人暂时获得优势。",
+        "shift": "顾沉通过展示灰外套照片（B8）和主动试探（B9, B10）试图掌控信息流。林晚通过隐藏反应和最终揭示自己的旧照片（B11），夺回部分叙事主动权。"
+      },
+      "performance": [
+        {
+          "character_id": "17",
+          "objective": "隐藏自己看到灰外套照片后的震惊，并最终确认顾沉是否记得她的过去。",
+          "tactic": "瞥见照片后保持镇定，以困惑否认看到‘灰外套的人’，在顾沉离开后独自揭示旧照片。",
+          "turning_point": true,
+          "visible_behavior": "瞥见晾干绳上的照片，表情瞬间凝固后恢复平静。面对顾沉询问时摇头否认。顾沉离开后，从口袋掏出旧照片展开，表情冰冷。"
+        },
+        {
+          "character_id": "18",
+          "objective": "确认林晚是否知晓灰外套照片或相关事件，并试探她是否动了相册夹。",
+          "tactic": "主动展示（或让林晚瞥见）灰外套照片，然后直接询问。离开前进行最后试探。",
+          "turning_point": false,
+          "visible_behavior": "从暗房出来，询问林晚是否看到‘穿灰外套的人’。离开前随口问及相册夹。"
+        }
+      ],
+      "edit": {
+        "cut_logic": "从林晚瞥见照片的主观镜头，切到顾沉从暗房出来的全景。对话采用紧凑的正反打。最后切到顾沉离开后，林晚独自展开旧照片的特写，并可能闪回或叠化旧照片内容。",
+        "hold_logic": "在灰外套照片、顾沉的试探问题、林晚展开旧照片的关键时刻保持镜头，让信息充分沉淀。",
+        "tempo": "先紧（试探）后缓（独自揭示），节奏对比强烈。",
+        "transition_motivation": "从共享空间的直接对抗（B8-B10），过渡到林晚独自面对秘密的私密时刻（B11），完成从外部冲突到内心冲击的转换。"
+      },
+      "visual": {
+        "camera_rule": "强调关键视觉线索的特写（灰外套照片、旧照片）。在对话中捕捉人物细微的表情变化。",
+        "composition_rule": "利用暗房门口、晾干绳等元素构建框架，将灰外套照片置于视觉焦点。最后旧照片的展开采用居中构图，强调其重要性。",
+        "movement_condition": "在揭示关键信息时，镜头可缓慢推进，增强冲击力。",
+        "visual_grammar": "建立‘照片（线索）-人物反应-新照片（揭示）’的视觉叙事闭环。"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:B8",
+          "beat:B11"
+        ],
+        "hint_refs": [
+          "beat:B8",
+          "beat:B9",
+          "beat:B10"
+        ],
+        "withhold_refs": [],
+        "audience_suspicions": [
+          {
+            "claim": "顾沉可能正在调查与‘灰外套’相关的事件，而林晚的过去是其中一部分。",
+            "support_refs": [
+              "beat:B8",
+              "beat:B9",
+              "beat:B11"
+            ]
+          },
+          {
+            "claim": "林晚的旧照片和顾沉的灰外套照片之间存在直接联系，可能指向同一事件或人物。",
+            "support_refs": [
+              "beat:B8",
+              "beat:B11"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉让林晚瞥见灰外套照片（或未刻意隐藏），是一种高级的试探，旨在观察她的即时反应。",
+            "support_refs": [
+              "beat:B8",
+              "beat:B9"
+            ],
+            "purpose": "展示顾沉的心机和试探的主动性。"
+          },
+          {
+            "claim": "林晚最后展开旧照片并露出冰冷表情，表明她意识到顾沉可能记得1998年的事，这彻底改变了两人关系的性质。",
+            "support_refs": [
+              "beat:B11"
+            ],
+            "purpose": "将悬念从‘昨夜发生了什么’提升到‘两人共享的过去是什么’，为后续剧情建立强大钩子。"
+          }
+        ]
+      }
+    }
+  ],
+  "scene_question": "昨夜在照相馆发生了什么？林晚和顾沉各自隐藏了什么秘密？",
+  "schema_version": "director_scene_strategy_v3",
+  "shot_architecture_guidance": [
+    "建议采用11-13个镜头。P01（发现）约3-4个镜头，以特写和近景为主。P02（试探）约4-5个镜头，以中景和正反打为主。P03（揭示）约4-5个镜头，强调关键特写和最后的揭示镜头。整体节奏由缓到紧再到缓，最后以强有力的揭示镜头收尾。"
+  ],
+  "spatial_expression": [
+    "照相馆分为外部接待区（日常、明亮）和内部暗房/储物区（秘密、幽暗）。拖痕和相册夹位于两个区域的交界处，象征秘密的渗透。晾干绳位于暗房内，是秘密的展示区。人物的口袋则是移动的、私密的隐藏空间。"
+  ],
+  "strategy_summary": "采用‘发现-试探-揭示’的三幕结构。第一幕（P01）聚焦林晚的独立调查，建立悬念。第二幕（P02）引入顾沉，通过日常对话下的暗流涌动进行双向试探。第三幕（P03）通过关键视觉线索和最终揭示，将两人秘密交织，将悬念推向高潮并留下钩子。",
+  "visual_thesis": "以‘回声照相馆’为封闭舞台，利用暗房、储物柜、晾干绳等空间元素构建视觉谜题。通过特写镜头强调关键道具（拖痕、相册夹、口袋、灰外套照片）的细节，利用光影对比（暗房的幽暗与外部的日常光线）暗示表象与真相的割裂。",
+  "semantic_spec_version": "director_scene_strategy_semantic_spec_v2",
+  "compiler_version": "director_scene_strategy_ir_compiler_v2",
+  "strategy_version": "v3",
+  "authority_projection": {
+    "SOURCE_FACT": [
+      "scene identity",
+      "beats",
+      "dialogue",
+      "chronology",
+      "character/asset identity"
+    ],
+    "TREATMENT_INTENT": [
+      "dramatic objective",
+      "tone",
+      "intent"
+    ],
+    "BLOCKING_FACT": [
+      "spatial truth",
+      "entry/exit",
+      "screen direction"
+    ],
+    "DIRECTOR_CREATIVE_DECISION": [
+      "phase staging",
+      "audience/emotion/power",
+      "performance",
+      "edit",
+      "visual"
+    ]
+  },
+  "source_trace": {
+    "contract_scene_id": "book990402:e2:回声照相馆",
+    "beat_ids": [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "B6",
+      "B7",
+      "B8",
+      "B9",
+      "B10",
+      "B11"
+    ],
+    "character_ids": [
+      "17",
+      "18"
+    ],
+    "fact_ids": [],
+    "phases": [
+      {
+        "phase_id": "P01",
+        "beat_refs": [
+          "beat:B1",
+          "beat:B2",
+          "beat:B3"
+        ],
+        "reveal_refs": [
+          "beat:B1",
+          "beat:B2"
+        ],
+        "hint_refs": [
+          "beat:B1",
+          "beat:B2",
+          "beat:B3"
+        ],
+        "withhold_refs": [
+          "beat:B11",
+          "character:18"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "昨夜有人进入暗房并翻动了相册夹。",
+            "support_refs": [
+              "beat:B1",
+              "beat:B2"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "林晚摸口袋的动作是下意识的，表明口袋里的物品对她很重要，且与当前调查的事件可能有关联。",
+            "support_refs": [
+              "beat:B3"
+            ],
+            "purpose": "为后续揭示旧照片埋下伏笔，建立人物行为的连贯性。"
+          }
+        ]
+      },
+      {
+        "phase_id": "P02",
+        "beat_refs": [
+          "beat:B4",
+          "beat:B5",
+          "beat:B6",
+          "beat:B7"
+        ],
+        "reveal_refs": [
+          "beat:B4",
+          "beat:B7"
+        ],
+        "hint_refs": [
+          "beat:B4",
+          "beat:B5",
+          "beat:B6",
+          "beat:B7"
+        ],
+        "withhold_refs": [
+          "beat:B8",
+          "beat:B11"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "顾沉口袋里的物品很可能就是从相册夹里拿走的东西。",
+            "support_refs": [
+              "beat:B6",
+              "beat:B2"
+            ]
+          },
+          {
+            "claim": "顾沉洗的‘旧照片’可能与灰外套或林晚的过去有关。",
+            "support_refs": [
+              "beat:B7"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉左手始终插在口袋里，是刻意隐藏物品并控制紧张情绪的表现。",
+            "support_refs": [
+              "beat:B6"
+            ],
+            "purpose": "强化顾沉的秘密状态，为后续揭示做铺垫。"
+          },
+          {
+            "claim": "林晚的直接提问打破了顾沉试图营造的日常氛围，迫使博弈升级。",
+            "support_refs": [
+              "beat:B7"
+            ],
+            "purpose": "展示林晚的主动性和调查决心，推动情节转折。"
+          }
+        ]
+      },
+      {
+        "phase_id": "P03",
+        "beat_refs": [
+          "beat:B8",
+          "beat:B9",
+          "beat:B10",
+          "beat:B11"
+        ],
+        "reveal_refs": [
+          "beat:B8",
+          "beat:B11"
+        ],
+        "hint_refs": [
+          "beat:B8",
+          "beat:B9",
+          "beat:B10"
+        ],
+        "withhold_refs": [],
+        "audience_suspicions": [
+          {
+            "claim": "顾沉可能正在调查与‘灰外套’相关的事件，而林晚的过去是其中一部分。",
+            "support_refs": [
+              "beat:B8",
+              "beat:B9",
+              "beat:B11"
+            ]
+          },
+          {
+            "claim": "林晚的旧照片和顾沉的灰外套照片之间存在直接联系，可能指向同一事件或人物。",
+            "support_refs": [
+              "beat:B8",
+              "beat:B11"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉让林晚瞥见灰外套照片（或未刻意隐藏），是一种高级的试探，旨在观察她的即时反应。",
+            "support_refs": [
+              "beat:B8",
+              "beat:B9"
+            ],
+            "purpose": "展示顾沉的心机和试探的主动性。"
+          },
+          {
+            "claim": "林晚最后展开旧照片并露出冰冷表情，表明她意识到顾沉可能记得1998年的事，这彻底改变了两人关系的性质。",
+            "support_refs": [
+              "beat:B11"
+            ],
+            "purpose": "将悬念从‘昨夜发生了什么’提升到‘两人共享的过去是什么’，为后续剧情建立强大钩子。"
+          }
+        ]
+      }
+    ]
+  },
+  "creative_core_fingerprint": "7734ee069b4a636c25b05d52bb1636aac0f71c4d5273a6a2c1694741de63c0d7",
+  "strategy_fingerprint": "3a1a08e3968f979d0ca9a04c33e78e45b93bd6c97adc2ff40836b0f6b76f2448"
+}

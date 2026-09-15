@@ -1,0 +1,11 @@
+{
+  "status": "FAIL",
+  "hard_errors": [
+    {
+      "code": "REACTION_WITHOUT_STIMULUS",
+      "shot_id": "SA05"
+    }
+  ],
+  "warnings": [],
+  "redundancy_count": 0
+}

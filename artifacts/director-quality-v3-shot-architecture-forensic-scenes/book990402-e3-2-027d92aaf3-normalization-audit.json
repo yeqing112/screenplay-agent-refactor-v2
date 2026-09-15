@@ -1,0 +1,294 @@
+[
+  {
+    "shot_index": 1,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "顾沉位置固定，林晚逆光剪影效果必须保持",
+      "canonical": [
+        "顾沉位置固定，林晚逆光剪影效果必须保持"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:1",
+        "character:19",
+        "character:20"
+      ],
+      "canonical": [
+        "beat:1",
+        "character:19",
+        "character:20"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 2,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "林晚逆光轮廓必须保持，手部动作清晰可见",
+      "canonical": [
+        "林晚逆光轮廓必须保持，手部动作清晰可见"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:2",
+        "character:20"
+      ],
+      "canonical": [
+        "beat:2",
+        "character:20"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中近景",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 3,
+    "camera_movement": {
+      "raw": "轻微推进",
+      "canonical": "PUSH_IN",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "胶片边缘的锯齿状撕裂必须清晰可见",
+      "canonical": [
+        "胶片边缘的锯齿状撕裂必须清晰可见"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:3"
+      ],
+      "canonical": [
+        "beat:3"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 4,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "两人位置关系保持，林晚恐惧表情逐渐显现",
+      "canonical": [
+        "两人位置关系保持，林晚恐惧表情逐渐显现"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:4",
+        "character:19",
+        "character:20"
+      ],
+      "canonical": [
+        "beat:4",
+        "character:19",
+        "character:20"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景",
+    "framing_transition_present": true
+  },
+  {
+    "shot_index": 5,
+    "camera_movement": {
+      "raw": "轻微摇动",
+      "canonical": "",
+      "reason": "MOVEMENT_NORMALIZATION_REVIEW_REQUIRED",
+      "review_required": true
+    },
+    "continuity_requirements": {
+      "raw": "两种撕裂痕迹的视觉相似性必须清晰",
+      "canonical": [
+        "两种撕裂痕迹的视觉相似性必须清晰"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:5"
+      ],
+      "canonical": [
+        "beat:5"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 6,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "林晚面部表情变化必须连贯，手部动作清晰",
+      "canonical": [
+        "林晚面部表情变化必须连贯，手部动作清晰"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:6",
+        "character:20"
+      ],
+      "canonical": [
+        "beat:6",
+        "character:20"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中近景",
+    "framing_transition_present": true
+  },
+  {
+    "shot_index": 7,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "手部动作必须与之前捻纽扣动作形成视觉呼应",
+      "canonical": [
+        "手部动作必须与之前捻纽扣动作形成视觉呼应"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:7",
+        "character:20"
+      ],
+      "canonical": [
+        "beat:7",
+        "character:20"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 8,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "两人位置关系保持，林晚关门动作的转折必须清晰",
+      "canonical": [
+        "两人位置关系保持，林晚关门动作的转折必须清晰"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:8",
+        "character:19",
+        "character:20"
+      ],
+      "canonical": [
+        "beat:8",
+        "character:19",
+        "character:20"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景",
+    "framing_transition_present": true
+  },
+  {
+    "shot_index": 9,
+    "camera_movement": {
+      "raw": "快速切换",
+      "canonical": "",
+      "reason": "MOVEMENT_NORMALIZATION_REVIEW_REQUIRED",
+      "review_required": true
+    },
+    "continuity_requirements": {
+      "raw": "闪回中的剪刀必须与当前物证关联清晰",
+      "canonical": [
+        "闪回中的剪刀必须与当前物证关联清晰"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:9"
+      ],
+      "canonical": [
+        "beat:9"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "快速剪辑特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 10,
+    "camera_movement": {
+      "raw": "固定转缓慢后退",
+      "canonical": "PULL_OUT",
+      "reason": "most_specific_motion_wins:PULL_OUT,STATIC",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "林晚崩溃动作连贯，反光位置与顾沉视线方向一致",
+      "canonical": [
+        "林晚崩溃动作连贯，反光位置与顾沉视线方向一致"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:10",
+        "character:19",
+        "character:20"
+      ],
+      "canonical": [
+        "beat:10",
+        "character:19",
+        "character:20"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景转特写",
+    "framing_transition_present": true
+  }
+]

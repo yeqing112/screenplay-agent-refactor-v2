@@ -1,0 +1,195 @@
+[
+  {
+    "shot_index": 1,
+    "camera_movement": {
+      "raw": "缓慢下摇至林晚中景",
+      "canonical": "TILT",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "档案袋位置、胶片状态、林晚站位与动作需与后续镜头连贯。",
+      "canonical": [
+        "档案袋位置、胶片状态、林晚站位与动作需与后续镜头连贯。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:3"
+      ],
+      "canonical": [
+        "beat:3"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写转中景",
+    "framing_transition_present": true
+  },
+  {
+    "shot_index": 2,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "顾沉站位、林晚朝向需与上一镜头连贯。",
+      "canonical": [
+        "顾沉站位、林晚朝向需与上一镜头连贯。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:4",
+        "beat:5"
+      ],
+      "canonical": [
+        "beat:4",
+        "beat:5"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 3,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "林晚T恤款式、凸起物位置需前后一致。",
+      "canonical": [
+        "林晚T恤款式、凸起物位置需前后一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:6"
+      ],
+      "canonical": [
+        "beat:6"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 4,
+    "camera_movement": {
+      "raw": "固定，轻微手持晃动",
+      "canonical": "HANDHELD_SUBTLE",
+      "reason": "most_specific_motion_wins:HANDHELD_SUBTLE,STATIC",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "顾沉手持档案袋、林晚站位需连贯。",
+      "canonical": [
+        "顾沉手持档案袋、林晚站位需连贯。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:7",
+        "beat:8"
+      ],
+      "canonical": [
+        "beat:7",
+        "beat:8"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中近景正反打",
+    "framing_transition_present": true
+  },
+  {
+    "shot_index": 5,
+    "camera_movement": {
+      "raw": "缓慢推近",
+      "canonical": "PUSH_IN",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "林晚面部表情变化需自然连贯。",
+      "canonical": [
+        "林晚面部表情变化需自然连贯。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:9"
+      ],
+      "canonical": [
+        "beat:9"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "特写",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 6,
+    "camera_movement": {
+      "raw": "固定",
+      "canonical": "STATIC",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "顾沉视线方向、林晚捂住位置需与之前特写一致。",
+      "canonical": [
+        "顾沉视线方向、林晚捂住位置需与之前特写一致。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:10"
+      ],
+      "canonical": [
+        "beat:10"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景",
+    "framing_transition_present": false
+  },
+  {
+    "shot_index": 7,
+    "camera_movement": {
+      "raw": "缓慢推近至林晚面部和手部特写",
+      "canonical": "PUSH_IN",
+      "reason": "alias",
+      "review_required": false
+    },
+    "continuity_requirements": {
+      "raw": "林晚站位、档案袋位置需与之前镜头连贯。",
+      "canonical": [
+        "林晚站位、档案袋位置需与之前镜头连贯。"
+      ],
+      "reason": "string_to_singleton_list"
+    },
+    "must_preserve_refs": {
+      "raw": [
+        "beat:11"
+      ],
+      "canonical": [
+        "beat:11"
+      ],
+      "reason": "list_preserved"
+    },
+    "raw_shot_size": "中景转特写",
+    "framing_transition_present": true
+  }
+]
