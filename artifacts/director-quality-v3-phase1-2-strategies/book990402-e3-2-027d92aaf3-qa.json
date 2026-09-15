@@ -1,0 +1,102 @@
+{
+  "protocol": {
+    "status": "FAIL",
+    "errors": [
+      {
+        "code": "NESTED_FIELD_SHAPE_INVALID",
+        "path": "spatial_expression",
+        "message": "NESTED_FIELD_SHAPE_INVALID",
+        "expected": "array"
+      },
+      {
+        "code": "NESTED_FIELD_SHAPE_INVALID",
+        "path": "prop_visual_strategy",
+        "message": "NESTED_FIELD_SHAPE_INVALID",
+        "expected": "array"
+      },
+      {
+        "code": "NESTED_FIELD_SHAPE_INVALID",
+        "path": "shot_architecture_guidance",
+        "message": "NESTED_FIELD_SHAPE_INVALID",
+        "expected": "object"
+      },
+      {
+        "code": "FACT_INVENTION",
+        "path": "scene_phases[0].information.reveal",
+        "message": "FACT_INVENTION",
+        "values": [
+          "林晚否认参与并试图展示暗房内部",
+          "顾沉持有锯齿状撕裂的胶片边缘"
+        ]
+      },
+      {
+        "code": "NESTED_FIELD_SHAPE_INVALID",
+        "path": "scene_phases[1].information.withhold",
+        "message": "NESTED_FIELD_SHAPE_INVALID",
+        "expected": "array"
+      },
+      {
+        "code": "FACT_INVENTION",
+        "path": "scene_phases[1].information.reveal",
+        "message": "FACT_INVENTION",
+        "values": [
+          "林晚回答‘不记得’",
+          "胶片边缘尺寸与失踪照片底片边框吻合",
+          "锯齿状撕裂与档案袋撕裂痕迹视觉呼应",
+          "顾沉直接假设林晚是嫌疑人"
+        ]
+      },
+      {
+        "code": "NESTED_FIELD_SHAPE_INVALID",
+        "path": "scene_phases[2].information.withhold",
+        "message": "NESTED_FIELD_SHAPE_INVALID",
+        "expected": "array"
+      },
+      {
+        "code": "FACT_INVENTION",
+        "path": "scene_phases[2].information.reveal",
+        "message": "FACT_INVENTION",
+        "values": [
+          "昨天只有林晚用过该剪刀",
+          "林晚在暗房内情绪崩溃",
+          "胶片撕裂与档案袋撕裂由同一把剪刀造成",
+          "顾沉离开时瞥见走廊阴影处反光"
+        ]
+      }
+    ]
+  },
+  "directing": {
+    "schema_version": "director-quality-v3-phase1-1-directing-content-v2",
+    "directing_content_status": "DIRECTING_STRONG",
+    "findings": [],
+    "dimensions": {
+      "audience_knowledge_progression": true,
+      "emotion_progression": true,
+      "power_progression": true,
+      "performance_progression": true,
+      "visual_progression": true,
+      "edit_logic": true,
+      "information_control": true
+    },
+    "phase_count": 3,
+    "evidence_available": [
+      "baseline_shot_plan_metadata",
+      "character_canonical",
+      "director_treatment",
+      "fact_snapshot",
+      "location_canonical",
+      "prop_canonical",
+      "scene",
+      "scene_blocking",
+      "source_authority"
+    ]
+  },
+  "telemetry": {
+    "http_request_count": 2,
+    "prompt_tokens": 9365,
+    "cached_tokens": 0,
+    "completion_tokens": 6256,
+    "total_tokens": 15621,
+    "latency_ms": 123244.16
+  }
+}

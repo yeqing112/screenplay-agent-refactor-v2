@@ -218,6 +218,77 @@ def diagnose_directing_content(*, strategy: dict[str, Any], source_evidence: dic
     return {"directing_content_status": result["directing_content_status"], "findings": result["findings"], "evidence": result["source_evidence_available"]}
 
 
+def diagnose_scene_strategy_v2(*, strategy: dict[str, Any], source_evidence: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Phase-centric directing QA for Canonical Strategy V2.
+
+    This is evidence-based and deliberately emits no numeric artistic score.
+    A protocol error must be reported by the caller separately.
+    """
+    phases = [row for row in _list(strategy.get("scene_phases")) if isinstance(row, dict)]
+    findings: list[dict[str, Any]] = []
+    if not _text(strategy.get("dramatic_objective")):
+        findings.append(_finding("dramatic_objective", "WEAK", "missing scene objective", issue_code="MODEL_DIRECTING_WEAKNESS", fields=["dramatic_objective"]))
+    if not _text(strategy.get("scene_question")):
+        findings.append(_finding("scene_question", "WEAK", "missing scene question", issue_code="AUDIENCE_ARC_WEAK", fields=["scene_question"]))
+    thesis = _text(strategy.get("visual_thesis"))
+    if len(thesis) < 16 or any(phrase in thesis for phrase in ("营造悬疑氛围", "增强戏剧性", "突出氛围")):
+        findings.append(_finding("visual_thesis", "WEAK", "visual thesis is generic or too short", issue_code="VISUAL_THESIS_WEAK", fields=["visual_thesis"]))
+    if len(phases) < 2:
+        findings.append(_finding("scene_phases", "WEAK", "fewer than two directing phases", issue_code="MODEL_DIRECTING_WEAKNESS", fields=["scene_phases"]))
+    if phases and all(len(_list(row.get("beat_ids"))) <= 1 for row in phases) and len(phases) >= 8:
+        findings.append(_finding("scene_phases", "WEAK", f"{len(phases)} one-beat phases without higher-level abstraction", issue_code="BEAT_MICROMANAGEMENT", fields=["scene_phases"]))
+    def distinct(values: list[str]) -> bool:
+        values = [value for value in values if value]
+        return len(values) >= 2 and len(set(values)) > 1
+    audience = [_flatten_text(_dict(row.get("audience_state"))) for row in phases]
+    emotion = [_flatten_text(_dict(row.get("emotion")).get("state")) for row in phases]
+    power = [_flatten_text(_dict(row.get("power"))) for row in phases]
+    performance = [_flatten_text(_dict(row).get("performance")) for row in phases]
+    visual = [_flatten_text(_dict(row.get("visual"))) for row in phases]
+    edit = [_flatten_text(_dict(row.get("edit"))) for row in phases]
+    info = [_flatten_text(_dict(row.get("information"))) for row in phases]
+    dimensions = {
+        "audience_knowledge_progression": distinct(audience), "emotion_progression": distinct(emotion),
+        "power_progression": distinct(power), "performance_progression": distinct(performance),
+        "visual_progression": distinct(visual), "edit_logic": all(bool(value) for value in edit),
+        "information_control": all(bool(value) for value in info),
+    }
+    for dimension, ok in dimensions.items():
+        if not ok:
+            code = {"audience_knowledge_progression": "AUDIENCE_ARC_WEAK", "emotion_progression": "EMOTION_ARC_WEAK", "power_progression": "POWER_ARC_WEAK", "performance_progression": "PERFORMANCE_ARC_WEAK", "visual_progression": "VISUAL_GRAMMAR_WEAK", "edit_logic": "EDIT_LOGIC_WEAK", "information_control": "INFORMATION_CONTROL_WEAK"}[dimension]
+            findings.append(_finding(dimension, "WEAK", f"phase-bound evidence does not show progression for {dimension}", issue_code=code, fields=[f"scene_phases[*].{dimension}"]))
+    all_text = _flatten_text(strategy).lower()
+    cliches = []
+    if "手持" in all_text and any(word in all_text for word in ("紧张", "冲突")): cliches.append("tension=handheld")
+    if "快速剪辑" in all_text or "快剪" in all_text: cliches.append("conflict=fast-cut")
+    if "push-in" in all_text and "情绪" in all_text: cliches.append("emotion=push-in")
+    if cliches:
+        findings.append(_finding("director_cliche", "WARNING", "cliché mapping detected: " + ", ".join(cliches), issue_code="DIRECTING_CLICHE", fields=["scene_phases"]))
+    generic = detect_generic_strategy(strategy)
+    findings.extend(generic)
+    weak_count = sum(1 for row in findings if row["status"] == "WEAK")
+    status = "DIRECTING_INCONCLUSIVE" if not phases else "DIRECTING_WEAK" if weak_count >= 4 else "DIRECTING_USABLE" if weak_count else "DIRECTING_STRONG"
+    return {"schema_version": "director-quality-v3-phase1-1-directing-content-v2", "directing_content_status": status, "findings": findings, "dimensions": dimensions, "phase_count": len(phases), "evidence_available": sorted(_dict(source_evidence))}
+
+
+def compare_canonical_strategies(strategies: list[dict[str, Any]]) -> dict[str, Any]:
+    """Distinctiveness evaluator for V2; provider fingerprints are ignored."""
+    rows: list[dict[str, Any]] = []
+    core_fields = ("dramatic_objective", "scene_question", "visual_thesis", "scene_phases", "must_avoid", "creative_risks")
+    for index, left in enumerate(strategies):
+        for right in strategies[index + 1:]:
+            exact = [field for field in core_fields if left.get(field) == right.get(field)]
+            left_text = _flatten_text({field: left.get(field) for field in core_fields}).lower().split()
+            right_text = _flatten_text({field: right.get(field) for field in core_fields}).lower().split()
+            lt, rt = set(left_text), set(right_text)
+            similarity = round(len(lt & rt) / max(1, len(lt | rt)), 4)
+            phase_shape = {"count_a": len(_list(left.get("scene_phases"))), "count_b": len(_list(right.get("scene_phases")))}
+            core_a = _text(left.get("creative_core_fingerprint")); core_b = _text(right.get("creative_core_fingerprint"))
+            true_reuse = bool(core_a and core_a == core_b and len(exact) >= 4)
+            rows.append({"scene_a": _text(left.get("scene_id")), "scene_b": _text(right.get("scene_id")), "creative_core_fingerprint_a": core_a, "creative_core_fingerprint_b": core_b, "exact_core_field_overlap": exact, "normalized_text_similarity": similarity, "phase_structure_similarity": phase_shape, "scene_specific_evidence_overlap": [], "provider_fingerprint_ignored": True, "status": "HARD_FAILURE" if true_reuse else "WARNING" if similarity >= 0.75 else "PASS", "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE" if true_reuse else ""})
+    return {"schema_version": "director-quality-v3-phase1-2-distinctiveness-v1", "pair_count": len(rows), "comparisons": rows, "hard_failure": any(row["status"] == "HARD_FAILURE" for row in rows), "all_pairs_checked": len(rows) == (len(strategies) * (len(strategies) - 1)) // 2, "policy": "program-owned creative_core_fingerprint only"}
+
+
 def compare_strategy_to_baseline(*, strategy: dict[str, Any], baseline: dict[str, Any]) -> dict[str, Any]:
     """Read-only insight about strategy implications versus an old plan."""
     shots = [row for row in _list(_dict(baseline).get("shots")) if isinstance(row, dict)]
@@ -233,4 +304,4 @@ def compare_strategy_to_baseline(*, strategy: dict[str, Any], baseline: dict[str
     return {"schema_version": "director-quality-v3-phase1-strategy-vs-baseline-v1", "baseline_shot_count": len(shots), "strategy_implied_gaps": gaps, "baseline_read_only": True}
 
 
-__all__ = ["diagnose_scene_strategy", "diagnose_protocol", "diagnose_directing_content", "compare_strategies", "compare_strategy_to_baseline", "detect_generic_strategy"]
+__all__ = ["diagnose_scene_strategy", "diagnose_scene_strategy_v2", "diagnose_protocol", "diagnose_directing_content", "compare_strategies", "compare_canonical_strategies", "compare_strategy_to_baseline", "detect_generic_strategy"]

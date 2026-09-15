@@ -1,0 +1,7 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-phase1-comparison-v1",
+  "phase1_status": "SCENE_DIRECTOR_STRATEGY_CANARY_FAILED",
+  "phase1_final_valid": 0,
+  "phase1_2_final_valid": 0,
+  "phase1_2_first_pass_valid": 0
+}

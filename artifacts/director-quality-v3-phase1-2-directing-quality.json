@@ -1,0 +1,97 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-directing-quality-v1",
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "schema_version": "director-quality-v3-phase1-1-directing-content-v2",
+      "directing_content_status": "DIRECTING_STRONG",
+      "findings": [],
+      "dimensions": {
+        "audience_knowledge_progression": true,
+        "emotion_progression": true,
+        "power_progression": true,
+        "performance_progression": true,
+        "visual_progression": true,
+        "edit_logic": true,
+        "information_control": true
+      },
+      "phase_count": 3,
+      "evidence_available": [
+        "baseline_shot_plan_metadata",
+        "character_canonical",
+        "director_treatment",
+        "fact_snapshot",
+        "location_canonical",
+        "prop_canonical",
+        "scene",
+        "scene_blocking",
+        "source_authority"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "schema_version": "director-quality-v3-phase1-1-directing-content-v2",
+      "directing_content_status": "DIRECTING_STRONG",
+      "findings": [],
+      "dimensions": {
+        "audience_knowledge_progression": true,
+        "emotion_progression": true,
+        "power_progression": true,
+        "performance_progression": true,
+        "visual_progression": true,
+        "edit_logic": true,
+        "information_control": true
+      },
+      "phase_count": 3,
+      "evidence_available": [
+        "baseline_shot_plan_metadata",
+        "character_canonical",
+        "director_treatment",
+        "fact_snapshot",
+        "location_canonical",
+        "prop_canonical",
+        "scene",
+        "scene_blocking",
+        "source_authority"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "schema_version": "director-quality-v3-phase1-1-directing-content-v2",
+      "directing_content_status": "DIRECTING_STRONG",
+      "findings": [
+        {
+          "dimension": "director_cliche",
+          "status": "WARNING",
+          "evidence": "cliché mapping detected: tension=handheld",
+          "issue_code": "DIRECTING_CLICHE",
+          "fields": [
+            "scene_phases"
+          ]
+        }
+      ],
+      "dimensions": {
+        "audience_knowledge_progression": true,
+        "emotion_progression": true,
+        "power_progression": true,
+        "performance_progression": true,
+        "visual_progression": true,
+        "edit_logic": true,
+        "information_control": true
+      },
+      "phase_count": 4,
+      "evidence_available": [
+        "baseline_shot_plan_metadata",
+        "character_canonical",
+        "director_treatment",
+        "fact_snapshot",
+        "location_canonical",
+        "prop_canonical",
+        "scene",
+        "scene_blocking",
+        "source_authority"
+      ]
+    }
+  ],
+  "strong_or_usable": 3
+}

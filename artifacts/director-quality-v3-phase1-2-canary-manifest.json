@@ -1,0 +1,51 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-canary-manifest-v1",
+  "phase": "1.2",
+  "source": "Phase 1.1 frozen approved_record cohort",
+  "scene_count": 3,
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "source_fingerprint": "55a68641b9d6131c2abca15ebff6812d6af3dd95cfdcbb7ec003fcf548a22ebf",
+      "contract_fingerprint": "40d0a2816329089e7078580b0c59650ad6ee3e9e284fda77e28a74da14725e09",
+      "treatment_fingerprint": "e4d447f738d008f860d51d55dac3b91585300397b61d7d45a2f509ee28bf5a85",
+      "blocking_fingerprint": "71c8ea0e00ce1346c9b3d7dd563e7c37b3bc49aa7810d0904eef32df22fdbc09",
+      "baseline_shot_count": 11,
+      "provider_profile": {
+        "id": "local-llm-2vydoz",
+        "provider": "openai-compatible",
+        "model_name": "mimo-v2.5"
+      }
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "source_fingerprint": "8fae5b1a1fb1a8f62b1b6ab1518bc3af4db793f70f3de069274c840b2eb80d2c",
+      "contract_fingerprint": "c81454ae0b20b4b46d0d3871a79aa9a0f709cec5292e35407421908fde50360d",
+      "treatment_fingerprint": "ae13047e678e4c5bab74917e919318a039ff24795f74a73af572bcde5b28477e",
+      "blocking_fingerprint": "c3ed2afe6417aa59066a98433eec11f532e0a455412499b21dae37d761723894",
+      "baseline_shot_count": 10,
+      "provider_profile": {
+        "id": "local-llm-2vydoz",
+        "provider": "openai-compatible",
+        "model_name": "mimo-v2.5"
+      }
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "source_fingerprint": "fc175455ed84885f4955c2cc4cd1ad00f7607302914bfb18316ecfa67f68b6b4",
+      "contract_fingerprint": "897a9eafe157b19bdb3d057593d517aef06a0f4ed8ac12d20a6d509e7c470428",
+      "treatment_fingerprint": "a4b0192baed2fe3df6e29f4739c0daf60346cebdd04375ba06a28688efd9be20",
+      "blocking_fingerprint": "3b3753ad0cd23c57462cf0a34dd185190245bb720fb0726b611877e80be70e02",
+      "baseline_shot_count": 11,
+      "provider_profile": {
+        "id": "local-llm-2vydoz",
+        "provider": "openai-compatible",
+        "model_name": "mimo-v2.5"
+      }
+    }
+  ],
+  "shotplan_generation": 0,
+  "media_generation": 0,
+  "provider_calls": 0,
+  "ready_for_shot_architecture_canary": false
+}

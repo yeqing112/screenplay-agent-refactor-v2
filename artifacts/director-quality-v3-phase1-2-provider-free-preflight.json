@@ -1,0 +1,44 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-provider-free-preflight-v1",
+  "status": "PASS",
+  "all_checks_pass": true,
+  "checks": {
+    "frozen_scene_order": true,
+    "approved_record_only": true,
+    "approved_treatment_blocking": true,
+    "fixed_ir_schema": true,
+    "semantic_spec_available": true,
+    "new_ir_prompt": true,
+    "no_provider_fingerprint_request": true,
+    "no_shotplan_request": true,
+    "no_old_answers": true,
+    "attempt_budget_two": true,
+    "format_repair_only": true,
+    "json_parser_retry_zero": true,
+    "provider_calls_zero": true,
+    "side_effects_zero": true
+  },
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "shotplan": 0,
+  "shot_architecture": 0,
+  "repair": 0,
+  "storyboard": 0,
+  "media": 0,
+  "image": 0,
+  "video": 0,
+  "object_storage": 0,
+  "shadow": 0,
+  "ci": "not_run",
+  "provider_profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "capability": "llm"
+  },
+  "contract_fingerprints": [
+    "40d0a2816329089e7078580b0c59650ad6ee3e9e284fda77e28a74da14725e09",
+    "c81454ae0b20b4b46d0d3871a79aa9a0f709cec5292e35407421908fde50360d",
+    "897a9eafe157b19bdb3d057593d517aef06a0f4ed8ac12d20a6d509e7c470428"
+  ]
+}

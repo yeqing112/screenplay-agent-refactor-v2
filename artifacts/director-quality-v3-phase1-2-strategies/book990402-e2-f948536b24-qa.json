@@ -1,0 +1,111 @@
+{
+  "protocol": {
+    "status": "FAIL",
+    "errors": [
+      {
+        "code": "NESTED_FIELD_SHAPE_INVALID",
+        "path": "prop_visual_strategy",
+        "message": "NESTED_FIELD_SHAPE_INVALID",
+        "expected": "array"
+      },
+      {
+        "code": "NESTED_FIELD_SHAPE_INVALID",
+        "path": "shot_architecture_guidance",
+        "message": "NESTED_FIELD_SHAPE_INVALID",
+        "expected": "object"
+      },
+      {
+        "code": "FACT_INVENTION",
+        "path": "scene_phases[0].information.reveal",
+        "message": "FACT_INVENTION",
+        "values": [
+          "林晚发现拖痕。",
+          "林晚口袋藏有物品。",
+          "相册夹被动过且为空。"
+        ]
+      },
+      {
+        "code": "FACT_INVENTION",
+        "path": "scene_phases[1].information.reveal",
+        "message": "FACT_INVENTION",
+        "values": [
+          "顾沉出现并提及‘动静’。",
+          "顾沉口袋藏有物品。",
+          "顾沉对暗房异常关注。",
+          "顾沉承认昨夜洗照片。"
+        ]
+      },
+      {
+        "code": "FACT_INVENTION",
+        "path": "scene_phases[2].information.reveal",
+        "message": "FACT_INVENTION",
+        "values": [
+          "灰外套照片存在，外套与顾沉相似。",
+          "顾沉明确关注这两个线索。",
+          "顾沉询问‘灰外套的人’。",
+          "顾沉询问相册夹是否被动过。"
+        ]
+      },
+      {
+        "code": "NESTED_FIELD_SHAPE_INVALID",
+        "path": "scene_phases[3].information.withhold",
+        "message": "NESTED_FIELD_SHAPE_INVALID",
+        "expected": "array"
+      },
+      {
+        "code": "FACT_INVENTION",
+        "path": "scene_phases[3].information.reveal",
+        "message": "FACT_INVENTION",
+        "values": [
+          "林晚意识到顾沉可能记得此事。",
+          "林晚藏有1998年穿灰外套的旧照。",
+          "照片地点是回声照相馆。"
+        ]
+      }
+    ]
+  },
+  "directing": {
+    "schema_version": "director-quality-v3-phase1-1-directing-content-v2",
+    "directing_content_status": "DIRECTING_STRONG",
+    "findings": [
+      {
+        "dimension": "director_cliche",
+        "status": "WARNING",
+        "evidence": "cliché mapping detected: tension=handheld",
+        "issue_code": "DIRECTING_CLICHE",
+        "fields": [
+          "scene_phases"
+        ]
+      }
+    ],
+    "dimensions": {
+      "audience_knowledge_progression": true,
+      "emotion_progression": true,
+      "power_progression": true,
+      "performance_progression": true,
+      "visual_progression": true,
+      "edit_logic": true,
+      "information_control": true
+    },
+    "phase_count": 4,
+    "evidence_available": [
+      "baseline_shot_plan_metadata",
+      "character_canonical",
+      "director_treatment",
+      "fact_snapshot",
+      "location_canonical",
+      "prop_canonical",
+      "scene",
+      "scene_blocking",
+      "source_authority"
+    ]
+  },
+  "telemetry": {
+    "http_request_count": 2,
+    "prompt_tokens": 11568,
+    "cached_tokens": 0,
+    "completion_tokens": 9072,
+    "total_tokens": 20640,
+    "latency_ms": 166036.7
+  }
+}

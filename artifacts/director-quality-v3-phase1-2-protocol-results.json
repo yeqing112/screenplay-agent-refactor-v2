@@ -1,0 +1,202 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-protocol-results-v1",
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "status": "FAIL",
+      "errors": [
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "spatial_expression",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "prop_visual_strategy",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "shot_architecture_guidance",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "object"
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[0].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "档案袋与胶片的存在"
+          ]
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "scene_phases[1].information.withhold",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[1].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "林晚声称胶片是旧废片",
+            "门锁有松动痕迹"
+          ]
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "scene_phases[2].information.withhold",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[2].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "失踪底片可能被林晚‘保管’",
+            "顾沉怀疑林晚失忆或隐瞒",
+            "顾沉给出最后通牒（下午有客人）"
+          ]
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "status": "FAIL",
+      "errors": [
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "spatial_expression",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "prop_visual_strategy",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "shot_architecture_guidance",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "object"
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[0].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "林晚否认参与并试图展示暗房内部",
+            "顾沉持有锯齿状撕裂的胶片边缘"
+          ]
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "scene_phases[1].information.withhold",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[1].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "林晚回答‘不记得’",
+            "胶片边缘尺寸与失踪照片底片边框吻合",
+            "锯齿状撕裂与档案袋撕裂痕迹视觉呼应",
+            "顾沉直接假设林晚是嫌疑人"
+          ]
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "scene_phases[2].information.withhold",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[2].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "昨天只有林晚用过该剪刀",
+            "林晚在暗房内情绪崩溃",
+            "胶片撕裂与档案袋撕裂由同一把剪刀造成",
+            "顾沉离开时瞥见走廊阴影处反光"
+          ]
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "status": "FAIL",
+      "errors": [
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "prop_visual_strategy",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "shot_architecture_guidance",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "object"
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[0].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "林晚发现拖痕。",
+            "林晚口袋藏有物品。",
+            "相册夹被动过且为空。"
+          ]
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[1].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "顾沉出现并提及‘动静’。",
+            "顾沉口袋藏有物品。",
+            "顾沉对暗房异常关注。",
+            "顾沉承认昨夜洗照片。"
+          ]
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[2].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "灰外套照片存在，外套与顾沉相似。",
+            "顾沉明确关注这两个线索。",
+            "顾沉询问‘灰外套的人’。",
+            "顾沉询问相册夹是否被动过。"
+          ]
+        },
+        {
+          "code": "NESTED_FIELD_SHAPE_INVALID",
+          "path": "scene_phases[3].information.withhold",
+          "message": "NESTED_FIELD_SHAPE_INVALID",
+          "expected": "array"
+        },
+        {
+          "code": "FACT_INVENTION",
+          "path": "scene_phases[3].information.reveal",
+          "message": "FACT_INVENTION",
+          "values": [
+            "林晚意识到顾沉可能记得此事。",
+            "林晚藏有1998年穿灰外套的旧照。",
+            "照片地点是回声照相馆。"
+          ]
+        }
+      ]
+    }
+  ],
+  "valid_count": 0
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-distinctiveness-v1",
+  "pair_count": 0,
+  "comparisons": [],
+  "hard_failure": false,
+  "all_pairs_checked": true,
+  "policy": "program-owned creative_core_fingerprint only"
+}

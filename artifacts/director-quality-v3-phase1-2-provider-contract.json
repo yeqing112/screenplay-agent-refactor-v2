@@ -1,0 +1,748 @@
+{
+  "schema_version": "director-quality-v3-phase1-2-provider-contract-v1",
+  "provider": "openai-compatible",
+  "model_name": "mimo-v2.5",
+  "capability": "llm",
+  "structured_output": "director_scene_strategy_ir_v1",
+  "semantic_attempt_budget_per_scene": 2,
+  "attempt_types": [
+    "CREATIVE_GENERATION",
+    "FORMAT_REPAIR"
+  ],
+  "json_parser_retry_count": 0,
+  "raw_output_persisted": true,
+  "credential_persisted": false,
+  "side_effect_boundary": "strategy_artifacts_only",
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "contract_fingerprint": "40d0a2816329089e7078580b0c59650ad6ee3e9e284fda77e28a74da14725e09",
+      "prompt_request_fingerprint": "d61037d8396ac13861e56828e9451531341866f84c85f147020ae5db3ffe4ebf",
+      "system_prompt_fingerprint": "82f835585ae0d47fb1267e26ead93f9d6b259d4a079531025c036e670c073c43",
+      "schema_fingerprint": "d8ed4423ba0e333832189b80d9c81ee106188c55e8c7ada8842e6937bcb64d03",
+      "provider_contract": {
+        "schema_version": "director_scene_strategy_ir_v1",
+        "scene_id": "book990402:e3:暗房惊魂",
+        "allowed_beat_ids": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11"
+        ],
+        "beat_alias_table": {
+          "canonical_beat_ids": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11"
+          ],
+          "aliases": {
+            "01": "1",
+            "02": "2",
+            "03": "3",
+            "04": "4",
+            "05": "5",
+            "06": "6",
+            "07": "7",
+            "08": "8",
+            "09": "9",
+            "1": "1",
+            "10": "10",
+            "11": "11",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "B01": "1",
+            "B02": "2",
+            "B03": "3",
+            "B04": "4",
+            "B05": "5",
+            "B06": "6",
+            "B07": "7",
+            "B08": "8",
+            "B09": "9",
+            "B1": "1",
+            "B10": "10",
+            "B11": "11",
+            "B2": "2",
+            "B3": "3",
+            "B4": "4",
+            "B5": "5",
+            "B6": "6",
+            "B7": "7",
+            "B8": "8",
+            "B9": "9",
+            "b01": "1",
+            "b02": "2",
+            "b03": "3",
+            "b04": "4",
+            "b05": "5",
+            "b06": "6",
+            "b07": "7",
+            "b08": "8",
+            "b09": "9",
+            "b1": "1",
+            "b10": "10",
+            "b11": "11",
+            "b2": "2",
+            "b3": "3",
+            "b4": "4",
+            "b5": "5",
+            "b6": "6",
+            "b7": "7",
+            "b8": "8",
+            "b9": "9"
+          },
+          "ambiguous_aliases": [],
+          "normalization_policy": "accept only one-to-one aliases; reject ambiguous aliases"
+        },
+        "allowed_character_ids": [
+          "19",
+          "20"
+        ],
+        "allowed_fact_ids": [],
+        "phase_constraints": {
+          "min": 2,
+          "max": 6,
+          "recommended": "3-5",
+          "beat_assignment": "exactly_once"
+        },
+        "field_shapes": {
+          "audience_state": [
+            "knows",
+            "suspects",
+            "withholds",
+            "question_shift"
+          ],
+          "emotion": [
+            "state",
+            "trigger",
+            "transition_reason",
+            "intensity_hint"
+          ],
+          "power": [
+            "center_type",
+            "center_ref",
+            "description",
+            "shift"
+          ],
+          "performance": [
+            "character_id",
+            "objective",
+            "tactic",
+            "visible_behavior",
+            "turning_point"
+          ],
+          "edit": [
+            "tempo",
+            "hold_logic",
+            "cut_logic",
+            "transition_motivation"
+          ],
+          "visual": [
+            "visual_grammar",
+            "camera_rule",
+            "composition_rule",
+            "movement_condition"
+          ],
+          "information": [
+            "reveal",
+            "hint",
+            "withhold",
+            "source_refs"
+          ]
+        },
+        "power_center_types": [
+          "CHARACTER",
+          "SHARED",
+          "RELATIONSHIP",
+          "INFORMATION",
+          "OBJECT",
+          "ENVIRONMENT",
+          "NONE"
+        ],
+        "na_rules": {
+          "prop_visual_strategy": "N/A when no authoritative prop exists",
+          "power": "center_type NONE and center_ref null when unsupported",
+          "object_power": "center_ref may be null when no canonical prop ID exists; description must cite source evidence"
+        },
+        "minimal_skeleton": {
+          "scene_id": "",
+          "schema_version": "",
+          "dramatic_objective": "",
+          "scene_question": "",
+          "strategy_summary": "",
+          "visual_thesis": "",
+          "scene_phases": [
+            {
+              "phase_id": "P01",
+              "beat_ids": [
+                "1"
+              ],
+              "dramatic_function": "",
+              "audience_state": {
+                "knows": [],
+                "suspects": [],
+                "withholds": [],
+                "question_shift": []
+              },
+              "emotion": {
+                "state": "",
+                "trigger": "",
+                "transition_reason": "",
+                "intensity_hint": null
+              },
+              "power": {
+                "center_type": "NONE",
+                "center_ref": null,
+                "description": "",
+                "shift": ""
+              },
+              "performance": [
+                {
+                  "character_id": "19",
+                  "objective": "",
+                  "tactic": "",
+                  "visible_behavior": "",
+                  "turning_point": false
+                }
+              ],
+              "edit": {
+                "tempo": "",
+                "hold_logic": "",
+                "cut_logic": "",
+                "transition_motivation": ""
+              },
+              "visual": {
+                "visual_grammar": "",
+                "camera_rule": "",
+                "composition_rule": "",
+                "movement_condition": ""
+              },
+              "information": {
+                "reveal": [],
+                "hint": [],
+                "withhold": [],
+                "source_refs": []
+              }
+            }
+          ],
+          "spatial_expression": [],
+          "prop_visual_strategy": [],
+          "shot_architecture_guidance": "",
+          "must_preserve": [],
+          "must_avoid": [],
+          "creative_risks": []
+        }
+      },
+      "computed_fields_excluded": [
+        "strategy_fingerprint",
+        "creative_core_fingerprint"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "contract_fingerprint": "c81454ae0b20b4b46d0d3871a79aa9a0f709cec5292e35407421908fde50360d",
+      "prompt_request_fingerprint": "679a5079d589fad883a33672d565eddf5458e11962b6ca2dbed917a17aa169c1",
+      "system_prompt_fingerprint": "82f835585ae0d47fb1267e26ead93f9d6b259d4a079531025c036e670c073c43",
+      "schema_fingerprint": "5325d1f503acd82818dfe2f918b2905056ae189e8e3f59e905dda6641186e274",
+      "provider_contract": {
+        "schema_version": "director_scene_strategy_ir_v1",
+        "scene_id": "book990402:e3:暗房惊魂（2）",
+        "allowed_beat_ids": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ],
+        "beat_alias_table": {
+          "canonical_beat_ids": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "aliases": {
+            "01": "1",
+            "02": "2",
+            "03": "3",
+            "04": "4",
+            "05": "5",
+            "06": "6",
+            "07": "7",
+            "08": "8",
+            "09": "9",
+            "1": "1",
+            "10": "10",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "B01": "1",
+            "B02": "2",
+            "B03": "3",
+            "B04": "4",
+            "B05": "5",
+            "B06": "6",
+            "B07": "7",
+            "B08": "8",
+            "B09": "9",
+            "B1": "1",
+            "B10": "10",
+            "B2": "2",
+            "B3": "3",
+            "B4": "4",
+            "B5": "5",
+            "B6": "6",
+            "B7": "7",
+            "B8": "8",
+            "B9": "9",
+            "b01": "1",
+            "b02": "2",
+            "b03": "3",
+            "b04": "4",
+            "b05": "5",
+            "b06": "6",
+            "b07": "7",
+            "b08": "8",
+            "b09": "9",
+            "b1": "1",
+            "b10": "10",
+            "b2": "2",
+            "b3": "3",
+            "b4": "4",
+            "b5": "5",
+            "b6": "6",
+            "b7": "7",
+            "b8": "8",
+            "b9": "9"
+          },
+          "ambiguous_aliases": [],
+          "normalization_policy": "accept only one-to-one aliases; reject ambiguous aliases"
+        },
+        "allowed_character_ids": [
+          "19",
+          "20"
+        ],
+        "allowed_fact_ids": [],
+        "phase_constraints": {
+          "min": 2,
+          "max": 6,
+          "recommended": "3-5",
+          "beat_assignment": "exactly_once"
+        },
+        "field_shapes": {
+          "audience_state": [
+            "knows",
+            "suspects",
+            "withholds",
+            "question_shift"
+          ],
+          "emotion": [
+            "state",
+            "trigger",
+            "transition_reason",
+            "intensity_hint"
+          ],
+          "power": [
+            "center_type",
+            "center_ref",
+            "description",
+            "shift"
+          ],
+          "performance": [
+            "character_id",
+            "objective",
+            "tactic",
+            "visible_behavior",
+            "turning_point"
+          ],
+          "edit": [
+            "tempo",
+            "hold_logic",
+            "cut_logic",
+            "transition_motivation"
+          ],
+          "visual": [
+            "visual_grammar",
+            "camera_rule",
+            "composition_rule",
+            "movement_condition"
+          ],
+          "information": [
+            "reveal",
+            "hint",
+            "withhold",
+            "source_refs"
+          ]
+        },
+        "power_center_types": [
+          "CHARACTER",
+          "SHARED",
+          "RELATIONSHIP",
+          "INFORMATION",
+          "OBJECT",
+          "ENVIRONMENT",
+          "NONE"
+        ],
+        "na_rules": {
+          "prop_visual_strategy": "N/A when no authoritative prop exists",
+          "power": "center_type NONE and center_ref null when unsupported",
+          "object_power": "center_ref may be null when no canonical prop ID exists; description must cite source evidence"
+        },
+        "minimal_skeleton": {
+          "scene_id": "",
+          "schema_version": "",
+          "dramatic_objective": "",
+          "scene_question": "",
+          "strategy_summary": "",
+          "visual_thesis": "",
+          "scene_phases": [
+            {
+              "phase_id": "P01",
+              "beat_ids": [
+                "1"
+              ],
+              "dramatic_function": "",
+              "audience_state": {
+                "knows": [],
+                "suspects": [],
+                "withholds": [],
+                "question_shift": []
+              },
+              "emotion": {
+                "state": "",
+                "trigger": "",
+                "transition_reason": "",
+                "intensity_hint": null
+              },
+              "power": {
+                "center_type": "NONE",
+                "center_ref": null,
+                "description": "",
+                "shift": ""
+              },
+              "performance": [
+                {
+                  "character_id": "19",
+                  "objective": "",
+                  "tactic": "",
+                  "visible_behavior": "",
+                  "turning_point": false
+                }
+              ],
+              "edit": {
+                "tempo": "",
+                "hold_logic": "",
+                "cut_logic": "",
+                "transition_motivation": ""
+              },
+              "visual": {
+                "visual_grammar": "",
+                "camera_rule": "",
+                "composition_rule": "",
+                "movement_condition": ""
+              },
+              "information": {
+                "reveal": [],
+                "hint": [],
+                "withhold": [],
+                "source_refs": []
+              }
+            }
+          ],
+          "spatial_expression": [],
+          "prop_visual_strategy": [],
+          "shot_architecture_guidance": "",
+          "must_preserve": [],
+          "must_avoid": [],
+          "creative_risks": []
+        }
+      },
+      "computed_fields_excluded": [
+        "strategy_fingerprint",
+        "creative_core_fingerprint"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "contract_fingerprint": "897a9eafe157b19bdb3d057593d517aef06a0f4ed8ac12d20a6d509e7c470428",
+      "prompt_request_fingerprint": "bfec8472d09b0c3bb09237bee7e961aa48d292343091a21e1dbb9840315fda35",
+      "system_prompt_fingerprint": "82f835585ae0d47fb1267e26ead93f9d6b259d4a079531025c036e670c073c43",
+      "schema_fingerprint": "90dcfcaae4b59a264257c9354b715cecd9e0df03b32c464b58149e282ba9a24d",
+      "provider_contract": {
+        "schema_version": "director_scene_strategy_ir_v1",
+        "scene_id": "book990402:e2:回声照相馆",
+        "allowed_beat_ids": [
+          "B1",
+          "B2",
+          "B3",
+          "B4",
+          "B5",
+          "B6",
+          "B7",
+          "B8",
+          "B9",
+          "B10",
+          "B11"
+        ],
+        "beat_alias_table": {
+          "canonical_beat_ids": [
+            "B1",
+            "B2",
+            "B3",
+            "B4",
+            "B5",
+            "B6",
+            "B7",
+            "B8",
+            "B9",
+            "B10",
+            "B11"
+          ],
+          "aliases": {
+            "01": "B1",
+            "02": "B2",
+            "03": "B3",
+            "04": "B4",
+            "05": "B5",
+            "06": "B6",
+            "07": "B7",
+            "08": "B8",
+            "09": "B9",
+            "1": "B1",
+            "10": "B10",
+            "11": "B11",
+            "2": "B2",
+            "3": "B3",
+            "4": "B4",
+            "5": "B5",
+            "6": "B6",
+            "7": "B7",
+            "8": "B8",
+            "9": "B9",
+            "B01": "B1",
+            "B02": "B2",
+            "B03": "B3",
+            "B04": "B4",
+            "B05": "B5",
+            "B06": "B6",
+            "B07": "B7",
+            "B08": "B8",
+            "B09": "B9",
+            "B1": "B1",
+            "B10": "B10",
+            "B11": "B11",
+            "B2": "B2",
+            "B3": "B3",
+            "B4": "B4",
+            "B5": "B5",
+            "B6": "B6",
+            "B7": "B7",
+            "B8": "B8",
+            "B9": "B9",
+            "b01": "B1",
+            "b02": "B2",
+            "b03": "B3",
+            "b04": "B4",
+            "b05": "B5",
+            "b06": "B6",
+            "b07": "B7",
+            "b08": "B8",
+            "b09": "B9",
+            "b1": "B1",
+            "b10": "B10",
+            "b11": "B11",
+            "b2": "B2",
+            "b3": "B3",
+            "b4": "B4",
+            "b5": "B5",
+            "b6": "B6",
+            "b7": "B7",
+            "b8": "B8",
+            "b9": "B9"
+          },
+          "ambiguous_aliases": [],
+          "normalization_policy": "accept only one-to-one aliases; reject ambiguous aliases"
+        },
+        "allowed_character_ids": [
+          "17",
+          "18"
+        ],
+        "allowed_fact_ids": [],
+        "phase_constraints": {
+          "min": 2,
+          "max": 6,
+          "recommended": "3-5",
+          "beat_assignment": "exactly_once"
+        },
+        "field_shapes": {
+          "audience_state": [
+            "knows",
+            "suspects",
+            "withholds",
+            "question_shift"
+          ],
+          "emotion": [
+            "state",
+            "trigger",
+            "transition_reason",
+            "intensity_hint"
+          ],
+          "power": [
+            "center_type",
+            "center_ref",
+            "description",
+            "shift"
+          ],
+          "performance": [
+            "character_id",
+            "objective",
+            "tactic",
+            "visible_behavior",
+            "turning_point"
+          ],
+          "edit": [
+            "tempo",
+            "hold_logic",
+            "cut_logic",
+            "transition_motivation"
+          ],
+          "visual": [
+            "visual_grammar",
+            "camera_rule",
+            "composition_rule",
+            "movement_condition"
+          ],
+          "information": [
+            "reveal",
+            "hint",
+            "withhold",
+            "source_refs"
+          ]
+        },
+        "power_center_types": [
+          "CHARACTER",
+          "SHARED",
+          "RELATIONSHIP",
+          "INFORMATION",
+          "OBJECT",
+          "ENVIRONMENT",
+          "NONE"
+        ],
+        "na_rules": {
+          "prop_visual_strategy": "N/A when no authoritative prop exists",
+          "power": "center_type NONE and center_ref null when unsupported",
+          "object_power": "center_ref may be null when no canonical prop ID exists; description must cite source evidence"
+        },
+        "minimal_skeleton": {
+          "scene_id": "",
+          "schema_version": "",
+          "dramatic_objective": "",
+          "scene_question": "",
+          "strategy_summary": "",
+          "visual_thesis": "",
+          "scene_phases": [
+            {
+              "phase_id": "P01",
+              "beat_ids": [
+                "B1"
+              ],
+              "dramatic_function": "",
+              "audience_state": {
+                "knows": [],
+                "suspects": [],
+                "withholds": [],
+                "question_shift": []
+              },
+              "emotion": {
+                "state": "",
+                "trigger": "",
+                "transition_reason": "",
+                "intensity_hint": null
+              },
+              "power": {
+                "center_type": "NONE",
+                "center_ref": null,
+                "description": "",
+                "shift": ""
+              },
+              "performance": [
+                {
+                  "character_id": "17",
+                  "objective": "",
+                  "tactic": "",
+                  "visible_behavior": "",
+                  "turning_point": false
+                }
+              ],
+              "edit": {
+                "tempo": "",
+                "hold_logic": "",
+                "cut_logic": "",
+                "transition_motivation": ""
+              },
+              "visual": {
+                "visual_grammar": "",
+                "camera_rule": "",
+                "composition_rule": "",
+                "movement_condition": ""
+              },
+              "information": {
+                "reveal": [],
+                "hint": [],
+                "withhold": [],
+                "source_refs": []
+              }
+            }
+          ],
+          "spatial_expression": [],
+          "prop_visual_strategy": [],
+          "shot_architecture_guidance": "",
+          "must_preserve": [],
+          "must_avoid": [],
+          "creative_risks": []
+        }
+      },
+      "computed_fields_excluded": [
+        "strategy_fingerprint",
+        "creative_core_fingerprint"
+      ]
+    }
+  ]
+}
