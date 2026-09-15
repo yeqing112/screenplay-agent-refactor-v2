@@ -45,7 +45,9 @@ def normalize_spine(raw: dict[str, Any], *, scene_id: str, strategy_fingerprint:
     ir = {"schema_version": SPINE_SCHEMA, "scene_id": scene_id, "strategy_fingerprint": strategy_fingerprint, "spine_summary": _t(raw.get("spine_summary") or raw.get("summary")), "segments": segments}
     return {"status": "FAIL" if errors else "PASS", "errors": errors, "ir": ir, "spine_fingerprint": fingerprint(ir)}
 
-def validate_spine(spine: dict[str, Any], *, scene: dict[str, Any], strategy: dict[str, Any]) -> dict[str, Any]:
+_TRACE_UNSET = object()
+
+def validate_spine(spine: dict[str, Any], *, scene: dict[str, Any], strategy: dict[str, Any], must_preserve_trace: dict[str, Any] | None | object = _TRACE_UNSET) -> dict[str, Any]:
     errors: list[dict[str, Any]] = []; warnings: list[dict[str, Any]] = []
     if _t(spine.get("schema_version")) != SPINE_SCHEMA: errors.append({"code": "SPINE_SCHEMA_INVALID"})
     if _t(spine.get("scene_id")) != _t(scene.get("scene_id")): errors.append({"code": "SPINE_SCENE_MISMATCH"})
@@ -86,9 +88,19 @@ def validate_spine(spine: dict[str, Any], *, scene: dict[str, Any], strategy: di
                 errors.append({"code": "SPINE_FUTURE_INFORMATION_LEAK", "segment_key": _d(segment).get("segment_key"), "reference": leaked_ref})
     missing = sorted(set(beats) - set(covered)); errors += [{"code": "SPINE_ORPHAN_REQUIRED_BEAT", "reference": x} for x in missing]
     required_phases = set(phases); covered_phases = {p for s in _l(spine.get("segments")) for p in _l(_d(s).get("phase_ids"))}; errors += [{"code": "SPINE_ORPHAN_PHASE", "phase_id": x} for x in sorted(required_phases - covered_phases)]
-    preserve = [_t(x) for x in _l(strategy.get("must_preserve")) if _t(x)]; joined = _canon(spine)
-    errors += [{"code": "SPINE_MUST_PRESERVE_UNCOVERED", "constraint": x} for x in preserve if x not in joined]
-    avoid = [_t(x) for x in _l(strategy.get("must_avoid")) if _t(x)]
+    # Preserve coverage is authority-trace based.  The omitted argument is
+    # retained only for legacy callers; Final Re-Canary passes the trace
+    # explicitly and fails closed when it is missing.
+    if must_preserve_trace is None:
+        errors.append({"code": "PRESERVE_AUTHORITY_MISSING"})
+    elif must_preserve_trace is not _TRACE_UNSET:
+        for item in _l(_d(must_preserve_trace).get("constraints")):
+            refs = {_t(x) for x in _l(_d(item).get("supporting_beat_refs")) if _t(x)}
+            if _t(item.get("status")) == "PRESERVE_TRACE_UNRESOLVED":
+                errors.append({"code": "PRESERVE_TRACE_UNRESOLVED", "constraint_id": _t(item.get("constraint_id"))})
+            elif refs and not refs & set(covered):
+                errors.append({"code": "SPINE_MUST_PRESERVE_UNCOVERED", "constraint_id": _t(item.get("constraint_id")), "supporting_beat_refs": sorted(refs)})
+    avoid = [_t(x) for x in _l(strategy.get("must_avoid")) if _t(x)]; joined = _canon(spine)
     errors += [{"code": "SPINE_MUST_AVOID_VIOLATION", "constraint": x} for x in avoid if x and x in joined]
     return {"status": "PASS" if not errors else "FAIL", "hard_errors": errors, "warnings": warnings, "covered_beats": sorted(set(covered)), "missing_beats": missing, "covered_phases": sorted(covered_phases), "missing_phases": sorted(required_phases - covered_phases)}
 

@@ -39,8 +39,12 @@ def normalize_skeleton(raw: dict[str, Any], *, scene_id: str, spine_fingerprint:
     ir = {"schema_version": SKELETON_SCHEMA, "scene_id": scene_id, "spine_fingerprint": spine_fingerprint, "nodes": nodes}
     return {"status": "FAIL" if errors else "PASS", "errors": errors, "ir": ir, "topology_fingerprint": fingerprint(ir)}
 
-def validate_skeleton(skeleton: dict[str, Any], *, spine: dict[str, Any], scene: dict[str, Any], strategy: dict[str, Any], identity_projection: dict[str, Any] | None = None, allowed_segment_refs: set[str] | None = None) -> dict[str, Any]:
-    errors = []; warnings = []; nodes = _l(skeleton.get("nodes")); spine_segments = set(allowed_segment_refs or {_t(s.get("segment_key")) for s in _l(spine.get("segments"))}); segment_phases = {_t(s.get("segment_key")): {_t(p) for p in _l(s.get("phase_ids"))} for s in _l(spine.get("segments"))}; beats = {_ref(_d(b).get("beat_id")) for b in _l(scene.get("beats")) if _t(_d(b).get("beat_id"))}; phases = {_t(p.get("phase_id")) for p in _l(strategy.get("scene_phases")) if isinstance(p, dict)}; projection = identity_projection if identity_projection is not None else _d(scene.get("characters")); character_ids = {_t(_d(c).get("character_id")) for c in _l(_d(projection).get("records"))}; seen = set(); prior_beats = []
+_IDENTITY_UNSET = object()
+
+def validate_skeleton(skeleton: dict[str, Any], *, spine: dict[str, Any], scene: dict[str, Any], strategy: dict[str, Any], identity_projection: dict[str, Any] | None | object = _IDENTITY_UNSET, allowed_segment_refs: set[str] | None = None) -> dict[str, Any]:
+    errors = []; warnings = []; nodes = _l(skeleton.get("nodes")); spine_segments = set(allowed_segment_refs or {_t(s.get("segment_key")) for s in _l(spine.get("segments"))}); segment_phases = {_t(s.get("segment_key")): {_t(p) for p in _l(s.get("phase_ids"))} for s in _l(spine.get("segments"))}; beats = {_ref(_d(b).get("beat_id")) for b in _l(scene.get("beats")) if _t(_d(b).get("beat_id"))}; phases = {_t(p.get("phase_id")) for p in _l(strategy.get("scene_phases")) if isinstance(p, dict)}; projection = identity_projection if identity_projection is not _IDENTITY_UNSET else _d(scene.get("characters")); character_ids = {_t(_d(c).get("character_id")) for c in _l(_d(projection).get("records"))}; seen = set(); prior_beats = []
+    if identity_projection is None or (identity_projection is not _IDENTITY_UNSET and not _l(_d(identity_projection).get("records"))):
+        errors.append({"code": "IDENTITY_AUTHORITY_MISSING"})
     for index, node in enumerate(nodes, 1):
         key = _t(_d(node).get("node_key"));
         if key in seen: errors.append({"code": "DUPLICATE_NODE_KEY", "node_key": key})
