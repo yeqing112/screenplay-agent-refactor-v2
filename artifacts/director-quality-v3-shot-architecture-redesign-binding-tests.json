@@ -1,0 +1,7 @@
+{
+  "unique": true,
+  "ambiguous": true,
+  "missing": true,
+  "future": true,
+  "self_edge": true
+}

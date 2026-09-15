@@ -1,0 +1,3 @@
+# Foundation Gap Audit
+
+The old one-pass route asked one model call to design scene intent, shot count, topology, camera details, reaction causality and canonical references. The Final Re-Canary failure (9 invalid natural-language stimulus references) is primarily a graph-contract reliability failure, not evidence that the model cannot direct. IDs, canonical refs, graph binding, chronology, allowlists, fingerprints and topology immutability belong to deterministic code; semantic visual/editorial intent, roles, beat aggregation and reaction stimulus semantics remain LLM-owned. The Binder never creates directing semantics. This Foundation is sidecar-only; Production ShotPlan, Storyboard, media, storage, CI and providers remain HOLD.

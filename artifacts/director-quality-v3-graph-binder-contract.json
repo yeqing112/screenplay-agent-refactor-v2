@@ -1,0 +1,23 @@
+{
+  "schema_version": "bound_shot_topology_v1",
+  "authority": "program-owned IDs, canonical graph edges and reference integrity",
+  "edge_types": [
+    "REACTION_TO",
+    "EVIDENCE_RESPONSE",
+    "REVEAL_DEPENDENCY",
+    "INFORMATION_PRECONDITION"
+  ],
+  "edge_endpoint_fields": [
+    "from_node_id",
+    "to_node_id",
+    "bound_node_id"
+  ],
+  "fail_closed_codes": [
+    "GRAPH_BINDING_AMBIGUOUS",
+    "GRAPH_BINDING_TARGET_MISSING",
+    "GRAPH_BINDING_ORDER_INVALID",
+    "GRAPH_SELF_EDGE_INVALID"
+  ],
+  "validator": "core.shot_topology_graph_binder.bind_topology",
+  "fingerprint": "bound_topology_fingerprint"
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": "authority_ownership_matrix_v1",
+  "owners": {
+    "SceneDirectingStrategy": [
+      "dramatic intent",
+      "phase intent",
+      "performance arc",
+      "information arc"
+    ],
+    "VisualEditorialSpine": [
+      "visual progression",
+      "attention progression",
+      "editorial macro rhythm"
+    ],
+    "ShotTopologySkeleton": [
+      "shot node topology",
+      "node order",
+      "node role",
+      "beat aggregation",
+      "reaction semantic intent"
+    ],
+    "DeterministicGraphBinder": [
+      "canonical graph binding",
+      "node IDs",
+      "reference integrity"
+    ],
+    "AtomicShotExpansion": [
+      "framing",
+      "camera placement",
+      "movement",
+      "composition",
+      "performance visibility"
+    ],
+    "ProgramMaterializer": [
+      "canonical shot IDs",
+      "canonical refs",
+      "fingerprints",
+      "source trace",
+      "deterministic merge"
+    ]
+  },
+  "overlap_policy": "no authority overlap; violations fail closed"
+}

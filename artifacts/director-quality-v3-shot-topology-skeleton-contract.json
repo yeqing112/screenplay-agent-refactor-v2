@@ -1,0 +1,41 @@
+{
+  "schema_version": "shot_topology_skeleton_ir_v1",
+  "authority": "ordered shot-node topology and semantic roles",
+  "required_fields": [
+    "scene_id",
+    "spine_fingerprint",
+    "nodes"
+  ],
+  "node_fields": [
+    "node_key",
+    "segment_key",
+    "phase_id",
+    "beat_refs",
+    "primary_role",
+    "secondary_role",
+    "subjects",
+    "dramatic_reason",
+    "performance_reason",
+    "information_reason",
+    "spatial_reason",
+    "editorial_reason",
+    "stimulus_beat_refs",
+    "stimulus_event_key",
+    "reaction_subjects",
+    "prop_refs",
+    "must_preserve_refs"
+  ],
+  "forbidden_fields": [
+    "shot_size",
+    "camera_movement",
+    "camera_position",
+    "composition_intent",
+    "lighting",
+    "lens",
+    "stimulus_node_id",
+    "stimulus_shot_id",
+    "shot_id"
+  ],
+  "validator": "core.shot_topology_skeleton.validate_skeleton",
+  "fingerprint": "topology_fingerprint"
+}

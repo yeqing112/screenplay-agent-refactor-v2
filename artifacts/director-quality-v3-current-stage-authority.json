@@ -52,6 +52,14 @@
       "status": "FAILED",
       "prompt_contract_path_exhausted": true,
       "next_step": "SHOT_ARCHITECTURE_GENERATION_ARCHITECTURE_REDESIGN"
+    },
+    "generation_architecture_redesign": {
+      "status": "FOUNDATION_CLOSED",
+      "visual_editorial_spine": "READY",
+      "shot_topology_skeleton": "READY",
+      "graph_binder": "READY",
+      "atomic_expansion": "READY",
+      "provider_canary_authorized": false
     }
   }
 }

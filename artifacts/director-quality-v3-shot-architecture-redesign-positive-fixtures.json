@@ -1,0 +1,47 @@
+{
+  "spine": {
+    "status": "PASS",
+    "hard_errors": [],
+    "warnings": [],
+    "covered_beats": [
+      "beat:1",
+      "beat:2",
+      "beat:3"
+    ],
+    "missing_beats": [],
+    "covered_phases": [
+      "P01",
+      "P02"
+    ],
+    "missing_phases": []
+  },
+  "skeleton": {
+    "status": "PASS",
+    "hard_errors": [],
+    "warnings": [],
+    "node_count": 2,
+    "covered_beats": [
+      "beat:1",
+      "beat:2",
+      "beat:3"
+    ],
+    "missing_beats": []
+  },
+  "binder": "PASS",
+  "expansion": {
+    "status": "PASS",
+    "hard_errors": [],
+    "expected_node_ids": [
+      "ST01",
+      "ST02"
+    ],
+    "actual_node_ids": [
+      "ST01",
+      "ST02"
+    ]
+  },
+  "candidate_deterministic": true,
+  "candidate_ids": true,
+  "reaction_ref_program_owned": true,
+  "reordered_expansion_stable": true
+}

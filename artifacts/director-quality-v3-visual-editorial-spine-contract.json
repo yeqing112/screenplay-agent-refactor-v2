@@ -1,0 +1,36 @@
+{
+  "schema_version": "visual_editorial_spine_ir_v1",
+  "authority": "macro visual progression, attention, editorial rhythm",
+  "required_fields": [
+    "scene_id",
+    "strategy_fingerprint",
+    "spine_summary",
+    "segments"
+  ],
+  "segment_fields": [
+    "segment_key",
+    "phase_ids",
+    "beat_refs",
+    "dramatic_function",
+    "audience_attention",
+    "performance_pressure",
+    "information_change",
+    "spatial_focus",
+    "visual_motif",
+    "editorial_rhythm",
+    "entry_condition",
+    "exit_condition"
+  ],
+  "forbidden_fields": [
+    "shot_size",
+    "shot_id",
+    "camera_lens",
+    "lens",
+    "camera_movement",
+    "camera_position",
+    "shot_count",
+    "lighting"
+  ],
+  "validator": "core.visual_editorial_spine.validate_spine",
+  "fingerprint": "spine_fingerprint"
+}

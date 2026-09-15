@@ -1,0 +1,21 @@
+{
+  "schema_version": "director-quality-v3-shot-architecture-redesign-foundation-preflight-v1",
+  "status": "PASS",
+  "checks": {
+    "head_expected": true,
+    "authority_pointer": true,
+    "spine_contract": true,
+    "skeleton_contract": true,
+    "graph_binder": true,
+    "atomic_expansion": true,
+    "authority_ownership": true,
+    "positive_fixtures": true,
+    "negative_fixtures": true,
+    "provider_calls": true
+  },
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "provider_http_requests": 0,
+  "transport_retries": 0,
+  "semantic_retries": 0
+}

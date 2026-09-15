@@ -1,0 +1,36 @@
+{
+  "schema_version": "atomic_shot_expansion_ir_v1",
+  "authority": "framing, camera execution and shot-level staging detail",
+  "required_fields": [
+    "node_id",
+    "shot_size",
+    "camera_position",
+    "camera_movement",
+    "composition_intent",
+    "performance_focus",
+    "information_focus",
+    "prop_focus",
+    "spatial_anchor",
+    "entry_state",
+    "exit_state",
+    "cut_in_motivation",
+    "cut_out_motivation",
+    "hold_logic",
+    "continuity_requirements"
+  ],
+  "forbidden_mutations": [
+    "phase_id",
+    "beat_refs",
+    "primary_role",
+    "secondary_role",
+    "stimulus_binding",
+    "segment_key",
+    "add_node",
+    "delete_node",
+    "merge_node",
+    "split_node",
+    "reorder_node"
+  ],
+  "validator": "core.atomic_shot_expansion.validate_atomic_expansion",
+  "fingerprint": "atomic_expansion_fingerprint"
+}

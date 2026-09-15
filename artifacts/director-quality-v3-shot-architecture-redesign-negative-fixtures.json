@@ -1,0 +1,16 @@
+{
+  "spine_forbidden_field": true,
+  "spine_future_information_leak": true,
+  "spine_must_avoid": true,
+  "skeleton_camera_forbidden": true,
+  "skeleton_phase_membership": true,
+  "skeleton_identity_binding": true,
+  "reaction_stimulus_required": true,
+  "ambiguous_binding": true,
+  "missing_binding": true,
+  "future_binding": true,
+  "self_edge": true,
+  "expansion_topology_mutation": true,
+  "expansion_unknown_node": true,
+  "expansion_duplicate_node": true
+}
