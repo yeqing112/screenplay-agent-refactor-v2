@@ -1,0 +1,19 @@
+{
+  "schema_version": "director-quality-v3-phase1-1-provider-free-preflight-v1",
+  "status": "PASS",
+  "all_checks_pass": true,
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "shot_architecture": 0,
+  "shotplan_generation": 0,
+  "scene_redesign": 0,
+  "scene_repair": 0,
+  "tail_repair": 0,
+  "storyboard": 0,
+  "media": 0,
+  "image": 0,
+  "video": 0,
+  "object_storage": 0,
+  "shadow": 0,
+  "ci": "not_run"
+}

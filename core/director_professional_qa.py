@@ -33,9 +33,25 @@ def _strategy_maps(strategy: dict[str, Any]) -> tuple[dict[str, str], dict[str, 
     emotion = {}
     reveals = {}
     performance: dict[str, list[str]] = {}
-    for row in _list(strategy.get("audience_experience")):
+    # V2 is phase-centric; V1 remains supported for historical replay.
+    phase_rows = _list(strategy.get("scene_phases")) or _list(strategy.get("audience_experience"))
+    for row in phase_rows:
         if isinstance(row, dict):
             for beat in _list(row.get("beat_ids")): phases[_text(beat)] = _text(row.get("phase_id"))
+            if not _list(row.get("beat_ids")) and _text(row.get("beat_id")):
+                phases[_text(row.get("beat_id"))] = _text(row.get("phase_id") or row.get("phase"))
+            if isinstance(row.get("emotion"), dict):
+                e = _dict(row.get("emotion"))
+                for beat in _list(row.get("beat_ids")):
+                    emotion[_text(beat)] = float(e.get("intensity_hint") or 0)
+            if isinstance(row.get("information"), dict):
+                info = _dict(row.get("information"))
+                for beat in _list(row.get("beat_ids")):
+                    reveals[_text(beat)] = [_text(v) for v in _list(info.get("reveal")) if _text(v)]
+            if isinstance(row.get("performance"), list):
+                for perf in row["performance"]:
+                    if isinstance(perf, dict):
+                        performance.setdefault(_text(perf.get("character_id")), []).extend(_list(row.get("beat_ids")))
     for row in _list(strategy.get("emotional_arc")):
         if isinstance(row, dict):
             for beat in _list(row.get("beat_ids")) or [_text(row.get("beat_id"))]:
@@ -164,7 +180,9 @@ def run_professional_qa(*, strategy: dict[str, Any], shot_plan: dict[str, Any], 
     redesign = any(item["repairability"] == "SCENE_REDESIGN" for item in findings)
     human = any(item["repairability"] == "HUMAN_REVIEW" for item in findings)
     status = "PROFESSIONAL_QA_HUMAN_REVIEW" if human else "PROFESSIONAL_QA_REDESIGN_REQUIRED" if redesign else "PROFESSIONAL_QA_REPAIRABLE" if findings else "PROFESSIONAL_QA_PASS"
-    return {"schema_version": QA_SCHEMA_VERSION, "status": status, "layer": "STRATEGY_CONSISTENCY_QA", "findings": findings, "issue_counts": dict(counts), "coverage": {"strategy_phase_coverage": round(sum(1 for row in traces if row["beat_id"] in phases) / len(traces), 4) if traces else 0.0, "audience_knowledge_coverage": round(sum(1 for row in shots if row.get("information_strategy")) / len(shots), 4) if shots else 0.0, "emotional_arc_coverage": round(sum(1 for row in shots if _dict(row.get("emotion"))) / len(shots), 4) if shots else 0.0, "performance_arc_coverage": round(len(actual_pairs & expected_pairs) / len(expected_pairs), 4) if expected_pairs else 1.0}, "scorer_gaming": detect_scorer_gaming(strategy=strategy_obj, shot_plan=plan)}
+    protocol_status = "PROTOCOL_INVALID" if findings and any(item["issue_code"] in {"TRACE_FIELD_MISSING", "STRATEGY_PHASE_UNCOVERED"} for item in findings) else "PROTOCOL_VALID"
+    directing_content_status = "DIRECTING_INCONCLUSIVE" if not strategy_obj else "DIRECTING_USABLE" if findings else "DIRECTING_STRONG"
+    return {"schema_version": QA_SCHEMA_VERSION, "status": status, "layer": "STRATEGY_CONSISTENCY_QA", "findings": findings, "issue_counts": dict(counts), "protocol_status": protocol_status, "directing_content_status": directing_content_status, "coverage": {"strategy_phase_coverage": round(sum(1 for row in traces if row["beat_id"] in phases) / len(traces), 4) if traces else 0.0, "audience_knowledge_coverage": round(sum(1 for row in shots if row.get("information_strategy")) / len(shots), 4) if shots else 0.0, "emotional_arc_coverage": round(sum(1 for row in shots if _dict(row.get("emotion"))) / len(shots), 4) if shots else 0.0, "performance_arc_coverage": round(len(actual_pairs & expected_pairs) / len(expected_pairs), 4) if expected_pairs else 1.0}, "scorer_gaming": detect_scorer_gaming(strategy=strategy_obj, shot_plan=plan)}
 
 
 def json_evidence(value: Any) -> str:

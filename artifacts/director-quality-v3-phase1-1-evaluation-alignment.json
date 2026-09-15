@@ -1,0 +1,8 @@
+{
+  "schema_version": "director-quality-v3-phase1-1-evaluation-alignment-v1",
+  "protocol_status": "separate",
+  "directing_content_status": "separate",
+  "invalid_protocol_does_not_force_directing_weak": true,
+  "canonical_input": "director_scene_strategy_v2",
+  "legacy_replay": "normalized_legacy_diagnostic"
+}

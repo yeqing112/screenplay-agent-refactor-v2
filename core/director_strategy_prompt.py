@@ -12,6 +12,7 @@ from typing import Any
 
 from core.prompt_cache import canonical_json, llm_request_fingerprint, model_request_snapshot
 from core.director_scene_strategy import SCENE_STRATEGY_SCHEMA_VERSION, STRATEGY_FIELDS
+from core.director_scene_strategy_semantic_spec import IR_SCHEMA_VERSION, build_provider_skeleton, semantic_spec
 
 
 PHASE1_PROMPT_PROTOCOL_VERSION = "director-quality-v3-phase1-strategy-prompt-v1"
@@ -86,6 +87,70 @@ OUTPUT_RULES = {
     "authority_types": ["SOURCE_FACT", "TREATMENT_INTENT", "BLOCKING_FACT", "DIRECTOR_CREATIVE_DECISION"],
 }
 
+PHASE1_1_PROMPT_PROTOCOL_VERSION = "director-quality-v3-phase1-1-strategy-ir-prompt-v1"
+
+
+def build_scene_strategy_ir_prompt(
+    *,
+    evidence: dict[str, Any],
+    model_profile: dict[str, Any] | None = None,
+    attempt_type: str = "CREATIVE_GENERATION",
+    raw_output: str | None = None,
+) -> dict[str, Any]:
+    """Build the Phase 1.1 provider contract from the semantic SSOT.
+
+    This function deliberately excludes computed fingerprints and all ShotPlan
+    topology.  ``evidence`` is expected to carry the authoritative contract
+    projection; the skeleton is generated from its allowed IDs.
+    """
+    safe = dict(evidence) if isinstance(evidence, dict) else {}
+    contract = safe.get("strategy_contract") if isinstance(safe.get("strategy_contract"), dict) else safe.get("contract")
+    contract = contract if isinstance(contract, dict) else {}
+    skeleton = build_provider_skeleton(
+        scene_id=str(safe.get("scene_id") or contract.get("scene_id") or ""),
+        beat_ids=[str(x) for x in (contract.get("beat_ids") or safe.get("allowed_beat_ids") or [])],
+        character_ids=[str(x) for x in (contract.get("character_ids") or safe.get("allowed_character_ids") or [])],
+        fact_ids=[str(x) for x in (contract.get("fact_ids") or safe.get("allowed_fact_ids") or [])],
+    )
+    dynamic = {
+        "protocol_version": PHASE1_1_PROMPT_PROTOCOL_VERSION,
+        "attempt_type": str(attempt_type or "CREATIVE_GENERATION"),
+        "semantic_spec": semantic_spec(),
+        "provider_contract": skeleton,
+        "scene_inputs": safe,
+        "computed_by_program": ["strategy_fingerprint", "creative_core_fingerprint", "dq_score", "cv_score"],
+    }
+    if raw_output is not None:
+        dynamic["failed_output_for_format_repair"] = str(raw_output)[:100000]
+        dynamic["format_repair_rule"] = "Repair protocol shape, IDs and types only; preserve valid creative semantics."
+    system = (
+        f"[DIRECTOR_STRATEGY_IR_PROTOCOL: {PHASE1_1_PROMPT_PROTOCOL_VERSION}]\n"
+        "You are a scene director. Return one phase-centric semantic IR JSON object only.\n"
+        "Express directing decisions, not a shot list. Use only allowed beat/character/fact IDs.\n"
+        "Group source beats into 2–6 coherent phases (prefer 3–5). Assign every beat exactly once.\n"
+        "Do not output fingerprints, scores, shot IDs, ShotPlan fields, patches or invented facts.\n"
+        "Power may center on CHARACTER, SHARED, RELATIONSHIP, INFORMATION, OBJECT, ENVIRONMENT or NONE; "
+        "non-character centers must remain grounded in supplied evidence.\n"
+        "Missing unsupported information is represented as N/A or an empty list according to the supplied skeleton."
+    )
+    user = "[DIRECTOR_STRATEGY_IR_DYNAMIC_EVIDENCE]\n" + canonical_json(dynamic) + "\n[/DIRECTOR_STRATEGY_IR_DYNAMIC_EVIDENCE]\n"
+    user += "Return one complete director_scene_strategy_ir_v1 JSON object now."
+    return {
+        "protocol_version": PHASE1_1_PROMPT_PROTOCOL_VERSION,
+        "attempt_type": str(attempt_type or "CREATIVE_GENERATION"),
+        "system_prompt": system,
+        "user_prompt": user,
+        "semantic_spec_version": semantic_spec()["schema_version"],
+        "ir_schema_version": IR_SCHEMA_VERSION,
+        "provider_contract": skeleton,
+        "computed_fields_excluded": ["strategy_fingerprint", "creative_core_fingerprint"],
+        "system_prompt_fingerprint": _sha256(system),
+        "schema_fingerprint": _sha256(canonical_json(skeleton)),
+        "scene_input_fingerprint": _sha256(canonical_json(safe)),
+        "request_fingerprint": llm_request_fingerprint(system=system, user=user, profile=model_profile, extra={"protocol_version": PHASE1_1_PROMPT_PROTOCOL_VERSION, "attempt_type": attempt_type}),
+        "model_snapshot": model_request_snapshot(model_profile),
+    }
+
 
 def _sha256(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -154,4 +219,6 @@ __all__ = [
     "STABLE_SYSTEM_PROMPT",
     "OUTPUT_RULES",
     "build_scene_strategy_prompt",
+    "PHASE1_1_PROMPT_PROTOCOL_VERSION",
+    "build_scene_strategy_ir_prompt",
 ]

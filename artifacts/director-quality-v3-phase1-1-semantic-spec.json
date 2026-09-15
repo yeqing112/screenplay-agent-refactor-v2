@@ -1,0 +1,145 @@
+{
+  "schema_version": "director_scene_strategy_semantic_spec_v1",
+  "model_ir_schema_version": "director_scene_strategy_ir_v1",
+  "canonical_schema_version": "director_scene_strategy_v2",
+  "compiler_version": "director_scene_strategy_ir_compiler_v1",
+  "top_level_fields": [
+    "scene_id",
+    "schema_version",
+    "dramatic_objective",
+    "scene_question",
+    "strategy_summary",
+    "visual_thesis",
+    "scene_phases",
+    "spatial_expression",
+    "prop_visual_strategy",
+    "shot_architecture_guidance",
+    "must_preserve",
+    "must_avoid",
+    "creative_risks"
+  ],
+  "phase_fields": [
+    "phase_id",
+    "beat_ids",
+    "dramatic_function",
+    "audience_state",
+    "emotion",
+    "power",
+    "performance",
+    "edit",
+    "visual",
+    "information"
+  ],
+  "nested_fields": {
+    "audience_state": [
+      "knows",
+      "suspects",
+      "withholds",
+      "question_shift"
+    ],
+    "emotion": [
+      "state",
+      "trigger",
+      "transition_reason",
+      "intensity_hint"
+    ],
+    "power": [
+      "center_type",
+      "center_ref",
+      "description",
+      "shift"
+    ],
+    "performance": [
+      "character_id",
+      "objective",
+      "tactic",
+      "visible_behavior",
+      "turning_point"
+    ],
+    "edit": [
+      "tempo",
+      "hold_logic",
+      "cut_logic",
+      "transition_motivation"
+    ],
+    "visual": [
+      "visual_grammar",
+      "camera_rule",
+      "composition_rule",
+      "movement_condition"
+    ],
+    "information": [
+      "reveal",
+      "hint",
+      "withhold",
+      "source_refs"
+    ]
+  },
+  "phase_constraints": {
+    "minimum": 2,
+    "maximum": 6,
+    "recommended_minimum": 3,
+    "recommended_maximum": 5,
+    "beat_assignment": "exactly_once"
+  },
+  "power_center_types": [
+    "CHARACTER",
+    "SHARED",
+    "RELATIONSHIP",
+    "INFORMATION",
+    "OBJECT",
+    "ENVIRONMENT",
+    "NONE"
+  ],
+  "forbidden_model_fields": [
+    "canonical_patch_path",
+    "creative_core_fingerprint",
+    "cv_score",
+    "dq_score",
+    "duration_ladder",
+    "patches",
+    "plan_shot_id",
+    "quality_score",
+    "repair",
+    "shot_ids",
+    "shot_plan",
+    "shotplan",
+    "shots",
+    "strategy_fingerprint"
+  ],
+  "na_rules": {
+    "prop_visual_strategy": "N/A when no authoritative prop exists",
+    "power": "center_type NONE and center_ref null when unsupported",
+    "object_power": "center_ref may be null when no canonical prop ID exists; description must cite source evidence"
+  },
+  "authority_rules": {
+    "source_facts": [
+      "scene identity",
+      "beats",
+      "dialogue",
+      "chronology",
+      "character identity",
+      "asset identity"
+    ],
+    "treatment_intent": [
+      "dramatic objective",
+      "tone",
+      "intent"
+    ],
+    "blocking_facts": [
+      "spatial truth",
+      "entry/exit",
+      "screen direction",
+      "continuity"
+    ],
+    "creative_decision": [
+      "phases",
+      "audience state",
+      "emotion",
+      "power",
+      "performance",
+      "edit",
+      "visual"
+    ]
+  }
+}

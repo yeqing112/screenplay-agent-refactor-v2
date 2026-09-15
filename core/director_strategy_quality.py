@@ -10,6 +10,8 @@ import json
 import re
 from typing import Any, Iterable
 
+from core.director_scene_strategy_ir_compiler import creative_core_fingerprint
+
 
 GENERIC_PHRASES = (
     "增强情绪", "营造紧张感", "适当使用特写", "使用不同景别", "根据剧情调整镜头",
@@ -145,12 +147,19 @@ def diagnose_scene_strategy(*, strategy: dict[str, Any], source_evidence: dict[s
     weak_count = sum(1 for item in findings if item["status"] == "WEAK")
     has_severe = any(item["status"] in severe or item.get("issue_code") in {"STRATEGY_LAYER_LEAKAGE", "DIRECTOR_FACT_INVENTION", "REVEAL_CHRONOLOGY_INVALID"} for item in findings)
     outcome = "STRATEGY_INVALID" if has_severe else "STRATEGY_WEAK" if weak_count >= 4 else "STRATEGY_USABLE" if weak_count else "STRATEGY_STRONG"
+    # Keep the legacy outcome for callers, but expose independent protocol and
+    # directing statuses so a malformed provider shape cannot erase creative
+    # evidence.
+    protocol_status = "PROTOCOL_INVALID" if has_severe else "PROTOCOL_VALID"
+    directing_content_status = "DIRECTING_WEAK" if weak_count >= 4 else "DIRECTING_USABLE" if weak_count else "DIRECTING_STRONG"
     return {
         "diagnostic_schema_version": "director-quality-v3-phase1-strategy-quality-v1",
         "outcome": outcome,
         "findings": findings,
         "weak_dimension_count": weak_count,
         "source_evidence_available": sorted(source_evidence),
+        "protocol_status": protocol_status,
+        "directing_content_status": directing_content_status,
     }
 
 
@@ -164,8 +173,49 @@ def compare_strategies(strategies: list[dict[str, Any]]) -> dict[str, Any]:
             left_tokens = set(_flatten_text({field: left.get(field) for field in fields}).lower().split())
             right_tokens = set(_flatten_text({field: right.get(field) for field in fields}).lower().split())
             similarity = round(len(left_tokens & right_tokens) / max(1, len(left_tokens | right_tokens)), 4)
-            rows.append({"scene_a": _text(left.get("scene_id")), "scene_b": _text(right.get("scene_id")), "exact_core_fields": exact, "jaccard_token_similarity": similarity, "status": "HARD_FAILURE" if len(exact) >= 5 or left.get("strategy_fingerprint") == right.get("strategy_fingerprint") else "WARNING" if similarity >= 0.75 else "PASS", "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE" if len(exact) >= 5 or left.get("strategy_fingerprint") == right.get("strategy_fingerprint") else ""})
-    return {"schema_version": "director-quality-v3-phase1-distinctiveness-v1", "comparisons": rows, "hard_failure": any(row["status"] == "HARD_FAILURE" for row in rows)}
+            left_core = creative_core_fingerprint(left)
+            right_core = creative_core_fingerprint(right)
+            # Provider-supplied fingerprints are deliberately ignored.  A hard
+            # failure requires identical creative core plus concrete evidence,
+            # not a reused or malformed computed field.
+            true_reuse = left_core == right_core and len(exact) >= 5
+            rows.append({"scene_a": _text(left.get("scene_id")), "scene_b": _text(right.get("scene_id")), "exact_core_fields": exact, "jaccard_token_similarity": similarity, "creative_core_fingerprint_a": left_core, "creative_core_fingerprint_b": right_core, "provider_fingerprint_ignored": True, "status": "HARD_FAILURE" if true_reuse else "WARNING" if similarity >= 0.75 else "PASS", "issue_code": "CROSS_SCENE_TEMPLATE_LEAKAGE" if true_reuse else ""})
+    return {"schema_version": "director-quality-v3-phase1-1-distinctiveness-v1", "comparisons": rows, "hard_failure": any(row["status"] == "HARD_FAILURE" for row in rows), "policy": "program-owned creative_core_fingerprint; provider fingerprints ignored"}
+
+
+def diagnose_protocol(*, strategy: dict[str, Any], contract: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Protocol-only diagnostics independent of directing quality."""
+    errors: list[dict[str, Any]] = []
+    if not isinstance(strategy, dict):
+        errors.append({"code": "STRATEGY_NOT_OBJECT"})
+    else:
+        forbidden = sorted(FORBIDDEN_SHOT_KEYS & set(strategy))
+        if forbidden:
+            errors.append({"code": "STRATEGY_LAYER_LEAKAGE", "fields": forbidden})
+        if strategy.get("strategy_fingerprint") and strategy.get("provider_fingerprint"):
+            errors.append({"code": "COMPUTED_FIELD_PROVIDER_ERROR"})
+    return {"protocol_status": "PROTOCOL_INVALID" if errors else "PROTOCOL_VALID", "errors": errors}
+
+
+def diagnose_directing_content(*, strategy: dict[str, Any], source_evidence: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Content-only view; protocol errors do not force WEAK."""
+    if isinstance(strategy, dict) and _list(strategy.get("scene_phases")):
+        phases = [row for row in _list(strategy.get("scene_phases")) if isinstance(row, dict)]
+        issues = []
+        if len(phases) < 2:
+            issues.append("PHASE_PROGRESS_NOT_ESTABLISHED")
+        if not _text(strategy.get("dramatic_objective")):
+            issues.append("OBJECTIVE_MISSING")
+        if not _text(strategy.get("scene_question")):
+            issues.append("SCENE_QUESTION_MISSING")
+        if any(not _text(_dict(row.get("emotion")).get("state")) for row in phases):
+            issues.append("EMOTION_PROGRESSION_INCONCLUSIVE")
+        if any(not _text(_dict(row.get("visual")).get("visual_grammar")) for row in phases):
+            issues.append("VISUAL_PROGRESSION_INCONCLUSIVE")
+        status = "DIRECTING_INCONCLUSIVE" if not phases else "DIRECTING_WEAK" if len(issues) >= 3 else "DIRECTING_USABLE"
+        return {"directing_content_status": status, "findings": [{"issue_code": code} for code in issues], "evidence": ["scene_phases"]}
+    result = diagnose_scene_strategy(strategy=strategy, source_evidence=source_evidence)
+    return {"directing_content_status": result["directing_content_status"], "findings": result["findings"], "evidence": result["source_evidence_available"]}
 
 
 def compare_strategy_to_baseline(*, strategy: dict[str, Any], baseline: dict[str, Any]) -> dict[str, Any]:
@@ -183,4 +233,4 @@ def compare_strategy_to_baseline(*, strategy: dict[str, Any], baseline: dict[str
     return {"schema_version": "director-quality-v3-phase1-strategy-vs-baseline-v1", "baseline_shot_count": len(shots), "strategy_implied_gaps": gaps, "baseline_read_only": True}
 
 
-__all__ = ["diagnose_scene_strategy", "compare_strategies", "compare_strategy_to_baseline", "detect_generic_strategy"]
+__all__ = ["diagnose_scene_strategy", "diagnose_protocol", "diagnose_directing_content", "compare_strategies", "compare_strategy_to_baseline", "detect_generic_strategy"]

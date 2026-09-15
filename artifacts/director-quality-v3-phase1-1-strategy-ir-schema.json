@@ -1,0 +1,47 @@
+{
+  "schema_version": "director-quality-v3-phase1-1-strategy-ir-schema-v1",
+  "model_schema_version": "director_scene_strategy_ir_v1",
+  "top_level_fields": [
+    "scene_id",
+    "schema_version",
+    "dramatic_objective",
+    "scene_question",
+    "strategy_summary",
+    "visual_thesis",
+    "scene_phases",
+    "spatial_expression",
+    "prop_visual_strategy",
+    "shot_architecture_guidance",
+    "must_preserve",
+    "must_avoid",
+    "creative_risks"
+  ],
+  "phase_fields": [
+    "phase_id",
+    "beat_ids",
+    "dramatic_function",
+    "audience_state",
+    "emotion",
+    "power",
+    "performance",
+    "edit",
+    "visual",
+    "information"
+  ],
+  "forbidden_model_fields": [
+    "canonical_patch_path",
+    "creative_core_fingerprint",
+    "cv_score",
+    "dq_score",
+    "duration_ladder",
+    "patches",
+    "plan_shot_id",
+    "quality_score",
+    "repair",
+    "shot_ids",
+    "shot_plan",
+    "shotplan",
+    "shots",
+    "strategy_fingerprint"
+  ]
+}

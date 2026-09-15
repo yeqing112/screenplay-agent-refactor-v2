@@ -1,0 +1,14 @@
+{
+  "schema_version": "director-quality-v3-phase1-1-recanary-manifest-v1",
+  "provider_free": true,
+  "same_frozen_scenes": [
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）",
+    "book990402:e2:回声照相馆"
+  ],
+  "scene_count": 3,
+  "phase_1_2_authorized": false,
+  "ready_for_shot_architecture_canary": false,
+  "source": "Phase 1 resolved provenance",
+  "provider_calls": 0
+}

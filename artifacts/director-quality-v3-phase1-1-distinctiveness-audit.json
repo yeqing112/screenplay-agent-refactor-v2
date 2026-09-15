@@ -1,0 +1,22 @@
+{
+  "schema_version": "director-quality-v3-phase1-1-distinctiveness-v1",
+  "comparisons": [
+    {
+      "scene_a": "book990402:e3:暗房惊魂",
+      "scene_b": "book990402:e3:暗房惊魂（2）",
+      "exact_core_fields": [
+        "visual_grammar",
+        "camera_principles",
+        "edit_arc"
+      ],
+      "jaccard_token_similarity": 0.0,
+      "creative_core_fingerprint_a": "d01d842c669348082d88c1dc8700da1ff0eae3820cbd3da6066a4fbddb7c6ace",
+      "creative_core_fingerprint_b": "e464f9a0e211a2f5e17adfd61975f1d9160141320c0b9711badcd798a70d645f",
+      "provider_fingerprint_ignored": true,
+      "status": "PASS",
+      "issue_code": ""
+    }
+  ],
+  "hard_failure": false,
+  "policy": "program-owned creative_core_fingerprint; provider fingerprints ignored"
+}

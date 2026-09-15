@@ -28,7 +28,7 @@ def contract_fingerprint(value: Any) -> str: return hashlib.sha256(_canonical(va
 def build_strategy_to_shot_contract(*, strategy: dict[str, Any], draft_shot_plan: dict[str, Any], immutable_facts: dict[str, Any] | None = None) -> dict[str, Any]:
     shots = [row for row in _list(_dict(draft_shot_plan).get("shots")) if isinstance(row, dict)]
     phase_by_beat = {}
-    for phase in _list(strategy.get("audience_experience")):
+    for phase in (_list(strategy.get("scene_phases")) or _list(strategy.get("audience_experience"))):
         if isinstance(phase, dict):
             for beat_id in _list(phase.get("beat_ids")):
                 phase_by_beat[_text(beat_id)] = _text(phase.get("phase_id"))
@@ -36,7 +36,7 @@ def build_strategy_to_shot_contract(*, strategy: dict[str, Any], draft_shot_plan
     for index, shot in enumerate(shots, 1):
         beat_id = _text(shot.get("beat_id"))
         traces.append({"plan_shot_id": _text(shot.get("plan_shot_id") or f"S{index:02d}"), "beat_id": beat_id, "strategy_phase_id": _text(shot.get("strategy_phase_id") or phase_by_beat.get(beat_id)), "dramatic_function": _text(shot.get("dramatic_function")), "audience_information_state": _text(shot.get("audience_information_state")), "emotion_phase": _text(shot.get("emotion_phase")), "power_state": _text(shot.get("power_state")), "edit_function": _text(shot.get("edit_function")), "camera_motivation": _text(shot.get("camera_motivation")), "performance_function": _text(shot.get("performance_function"))})
-    payload = {"schema_version": STRATEGY_TO_SHOT_SCHEMA_VERSION, "strategy_fingerprint": _text(strategy.get("strategy_fingerprint")), "draft_shot_plan_fingerprint": contract_fingerprint(draft_shot_plan), "state": "DRAFT", "topology_mutable": True, "required_trace_fields": list(REQUIRED_TRACE_FIELDS), "shot_traces": traces, "immutable_facts_fingerprint": contract_fingerprint(immutable_facts or {})}
+    payload = {"schema_version": STRATEGY_TO_SHOT_SCHEMA_VERSION, "strategy_schema_version": _text(strategy.get("schema_version")), "strategy_fingerprint": _text(strategy.get("strategy_fingerprint")), "creative_core_fingerprint": _text(strategy.get("creative_core_fingerprint")), "draft_shot_plan_fingerprint": contract_fingerprint(draft_shot_plan), "state": "DRAFT", "topology_mutable": True, "required_trace_fields": list(REQUIRED_TRACE_FIELDS), "shot_traces": traces, "immutable_facts_fingerprint": contract_fingerprint(immutable_facts or {})}
     payload["contract_fingerprint"] = contract_fingerprint(payload)
     return payload
 
