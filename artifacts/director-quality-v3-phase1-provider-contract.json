@@ -1,0 +1,17 @@
+{
+  "schema_version": "director-quality-v3-phase1-provider-contract-v1",
+  "provider": "openai-compatible",
+  "model_name": "mimo-v2.5",
+  "capability": "llm",
+  "structured_output_mode": "json_only_plus_deterministic_validator",
+  "json_parser_retry_count": 0,
+  "semantic_attempt_budget_per_scene": 2,
+  "attempt_types": [
+    "CREATIVE_GENERATION",
+    "FORMAT_REPAIR"
+  ],
+  "max_provider_http_requests": 6,
+  "raw_output_persisted": true,
+  "credential_persisted": false,
+  "side_effect_boundary": "strategy_artifacts_only"
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "director-quality-v3-phase1-provider-free-preflight-v1",
+  "checks": {
+    "resolved_provenance_manifest": true,
+    "typed_fingerprint_contract": true,
+    "fixed_system_prefix": true,
+    "schema_authority": true,
+    "no_baseline_shotplan_prompt_leakage": true,
+    "no_scorer_gaming_prompt": true,
+    "no_shotplan_output_contract": true,
+    "raw_output_audit_contract": true,
+    "attempt_budget": true,
+    "parser_retry_zero": true,
+    "format_repair_only": true,
+    "cross_scene_comparison_ready": true
+  },
+  "all_checks_pass": true,
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "production": 0,
+  "shotplan": 0,
+  "storyboard": 0,
+  "media": 0,
+  "image": 0,
+  "video": 0,
+  "object_storage": 0,
+  "ci": "not_run",
+  "provider_profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "capability": "llm"
+  },
+  "status": "PASS"
+}

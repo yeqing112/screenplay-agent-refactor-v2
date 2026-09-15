@@ -1,0 +1,71 @@
+{
+  "schema_version": "director-quality-v3-phase1-provenance-preflight-v1",
+  "scene_count": 3,
+  "required_scene_count": 3,
+  "source_mode": "independent_authoritative_projections_from_frozen_approved_record",
+  "diagnosis": "historical_manifest_projection_collision_only",
+  "historical_manifest_collisions": 3,
+  "wiring_error": false,
+  "typed_fingerprints_distinct": true,
+  "provider_profile": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "capability": "llm",
+    "enabled": true
+  },
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "source_fingerprint": "d4299b20cbb97fefe60b93db10ad0e2be7da9e981ca73bb5260578b9ef8a281b",
+      "fact_snapshot_fingerprint": "40794a58e730161537a3ce68a72608e51db4bc939970234d39a1b60749ab7cdd",
+      "script_ir_scene_fingerprint": "fa76374567a6c205778f25b6fe8277886494edaec0e587326bedd3ad60bd94a7",
+      "director_treatment_typed_fingerprint": "5b9aaec46df78e53655d4f5ec9a245222be8aa9d729d5a0e0dfa7c4386be5f73",
+      "scene_blocking_typed_fingerprint": "3ea2f16f8d189e8871e26f97b0d343337a16d59d560c4b4027b91c78aa69f2dc",
+      "character_source_fingerprint": "cfde55cf358555c81bcae6d6c89bb6c056362a11f8a6cb5d57f2f20021b8d3e1",
+      "location_source_fingerprint": "a2da46d19a926b6f302ad02286a4164cd53ae1c92cfee4ddac65431bf4a903a5",
+      "prop_source_fingerprint": "a2da46d19a926b6f302ad02286a4164cd53ae1c92cfee4ddac65431bf4a903a5",
+      "baseline_shot_plan_fingerprint": "85c3791e40d71fbbf6798ccabfd6eb4b05b610a16ef83c8b30e59fd326d27fdc",
+      "historical_manifest_treatment_fingerprint": "7f4620125545942654964649070370fba9a846dddd89a9c52edb2b2c9c388276",
+      "historical_manifest_blocking_fingerprint": "7f4620125545942654964649070370fba9a846dddd89a9c52edb2b2c9c388276",
+      "historical_fingerprint_collision": true,
+      "actual_payloads_equal": false,
+      "wiring_error": false
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "source_fingerprint": "cd18549ce70b52bc88f6ae2d06bc7480f4667c319937713dafcb11c51858d2a9",
+      "fact_snapshot_fingerprint": "e596bd4f5ab5bc9a13de10c32b9d8447f17c6d0ff023c4cc5f528c4da85054a2",
+      "script_ir_scene_fingerprint": "b0e104003273576b5ea787fbe19270ee93c63e5ef15ccf56f1a30b8a0b467464",
+      "director_treatment_typed_fingerprint": "76722ecacb23139f5cb4a2a9848b1bf2056c2b9c5be5707d4981a992fd179017",
+      "scene_blocking_typed_fingerprint": "dc5f3bb9ab9122a9e983da15284446a642853570cd19e23d22feec6b28f05ba6",
+      "character_source_fingerprint": "6a3255cca9429d98b645f7433d8e8d106b96073d5c84c135d9181bb36e8fe349",
+      "location_source_fingerprint": "a2da46d19a926b6f302ad02286a4164cd53ae1c92cfee4ddac65431bf4a903a5",
+      "prop_source_fingerprint": "a2da46d19a926b6f302ad02286a4164cd53ae1c92cfee4ddac65431bf4a903a5",
+      "baseline_shot_plan_fingerprint": "a25c4fa077cbf50de562a1d0daba850c387ebcf49edd6edc201d045cc8e8aec9",
+      "historical_manifest_treatment_fingerprint": "af076fed5b6d2b87d7bf13e179e698a703cd64c0f4bb41e526bcff18d3526c4f",
+      "historical_manifest_blocking_fingerprint": "af076fed5b6d2b87d7bf13e179e698a703cd64c0f4bb41e526bcff18d3526c4f",
+      "historical_fingerprint_collision": true,
+      "actual_payloads_equal": false,
+      "wiring_error": false
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "source_fingerprint": "a2afb49d8a839a63d5cf3707d66bf3c5fef1577607ff337b3d987c2db9bd0b14",
+      "fact_snapshot_fingerprint": "425a2972daeb7b8d9f6211dbe837023247732ec1863e9710df57fb21bcda7f95",
+      "script_ir_scene_fingerprint": "ce772155acfa6709945e9a53e90ddc583e5204c0b40944f6a02a4fef7b6f1250",
+      "director_treatment_typed_fingerprint": "86462ac6c9115a373085d010969079412c917e8db0af82d3e9c6cb4401ee84db",
+      "scene_blocking_typed_fingerprint": "964e63d510f4bc454fa752f7736c4c66947c00d2ce943baba90cb62efab4e628",
+      "character_source_fingerprint": "179fc5614609e1de597231ef370741ed8e3cbf6c0293b7f2e2b9c0767692b0d1",
+      "location_source_fingerprint": "a2da46d19a926b6f302ad02286a4164cd53ae1c92cfee4ddac65431bf4a903a5",
+      "prop_source_fingerprint": "a2da46d19a926b6f302ad02286a4164cd53ae1c92cfee4ddac65431bf4a903a5",
+      "baseline_shot_plan_fingerprint": "768d61894bc782ce43b2199530290bd56ead6fb77028b60be3bccf714ed3f679",
+      "historical_manifest_treatment_fingerprint": "6f90cc2f6d557b305f01b295bbafbeb501879554bfbf62171ff1f4a8acf4999e",
+      "historical_manifest_blocking_fingerprint": "6f90cc2f6d557b305f01b295bbafbeb501879554bfbf62171ff1f4a8acf4999e",
+      "historical_fingerprint_collision": true,
+      "actual_payloads_equal": false,
+      "wiring_error": false
+    }
+  ],
+  "status": "PASS"
+}
