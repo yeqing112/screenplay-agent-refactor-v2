@@ -20,6 +20,18 @@ def _ref_parts(ref: str) -> tuple[str, str]:
     return kind, ident
 
 
+CANONICAL_BLOCKER_CODES = frozenset({
+    "IR_NOT_OBJECT", "IR_SCHEMA_VERSION_INVALID", "IR_REQUIRED_FIELD_MISSING", "UNKNOWN_IR_FIELD",
+    "UNKNOWN_INFORMATION_FIELD", "NESTED_FIELD_SHAPE_INVALID", "PHASE_NOT_OBJECT", "PHASE_FIELD_MISSING",
+    "PHASE_COUNT_OUT_OF_RANGE", "PHASE_ID_INVALID", "PHASE_BEATS_EMPTY", "BEAT_ASSIGNED_MULTIPLE_TIMES",
+    "BEAT_COVERAGE_GAP", "UNKNOWN_BEAT_REFERENCE", "UNKNOWN_SOURCE_REFERENCE", "UNKNOWN_CHARACTER_REFERENCE",
+    "SCENE_ID_MISMATCH", "INVALID_POWER_CENTER", "INVALID_POWER_CONTROLLER", "INVALID_POWER_REFERENCE",
+    "PERFORMANCE_ROW_INVALID", "PERFORMANCE_FIELD_MISSING", "NESTED_FIELD_MISSING", "EPISTEMIC_CLAIM_INVALID",
+    "STRATEGY_LAYER_LEAKAGE", "FACT_AUTHORITY_VIOLATION", "INFERENCE_PROMOTED_TO_FACT", "MODEL_CREATED_SOURCE_FACT",
+    "CHARACTER_IDENTITY_BINDING_DRIFT", "AMBIGUOUS_IDENTITY_BINDING",
+})
+
+
 def _beat_index(contract: dict[str, Any], beat_id: str) -> int:
     try: return list(contract.get("beat_ids") or []).index(beat_id)
     except ValueError: return -1
@@ -29,7 +41,7 @@ def validate_strategy_ir_v2(raw: Any, *, contract: dict[str, Any]) -> dict[str, 
     normalized_result = normalize_strategy_ir_v2(raw, contract=contract)
     errors = list(normalized_result.get("errors") or [])
     ir = normalized_result.get("ir")
-    if not isinstance(ir, dict): return {"valid": False, "ir": None, "errors": errors or [_error("IR_NOT_OBJECT", "$")]}
+    if not isinstance(ir, dict): return {"valid": False, "ir": None, "canonical_status":"CANONICAL_INVALID", "approval_blockers":[], "errors": errors or [_error("IR_NOT_OBJECT", "$")]}
     if _text(ir.get("schema_version")) != "director_scene_strategy_ir_v2": errors.append(_error("IR_SCHEMA_VERSION_INVALID", "schema_version"))
     if _text(ir.get("scene_id")) != _text(contract.get("scene_id")): errors.append(_error("SCENE_ID_MISMATCH", "scene_id"))
     for field in TOP_LEVEL_FIELDS:
@@ -93,8 +105,10 @@ def validate_strategy_ir_v2(raw: Any, *, contract: dict[str, Any]) -> dict[str, 
     known_beats = [_text(x) for x in _list(contract.get("beat_ids")) if _text(x)]
     if len(seen) != len(set(seen)): errors.append(_error("BEAT_ASSIGNED_MULTIPLE_TIMES", "scene_phases"))
     if set(seen) != set(known_beats): errors.append(_error("BEAT_COVERAGE_GAP", "scene_phases", missing=sorted(set(known_beats) - set(seen))))
-    if not errors: return {"valid": True, "ir": ir, "errors": []}
-    return {"valid": False, "ir": None, "errors": errors}
+    canonical_errors = [error for error in errors if _text(error.get("code")) in CANONICAL_BLOCKER_CODES]
+    approval_blockers = [error for error in errors if error not in canonical_errors]
+    if not canonical_errors: return {"valid": True, "ir": ir, "canonical_status":"CANONICAL_VALID", "approval_blockers":approval_blockers, "errors": errors}
+    return {"valid": False, "ir": None, "canonical_status":"CANONICAL_INVALID", "approval_blockers":approval_blockers, "errors": errors}
 
 
-__all__ = ["validate_strategy_ir_v2"]
+__all__ = ["validate_strategy_ir_v2", "CANONICAL_BLOCKER_CODES"]

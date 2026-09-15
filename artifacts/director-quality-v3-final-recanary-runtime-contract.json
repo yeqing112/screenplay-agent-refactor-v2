@@ -130,6 +130,20 @@
       },
       "prop_ids": [],
       "location_ids": [],
+      "allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
       "allowed_ids": {
         "beat": [
           "1",
@@ -521,6 +535,20 @@
       },
       "prop_ids": [],
       "location_ids": [],
+      "allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
       "allowed_ids": {
         "beat": [
           "1",
@@ -908,6 +936,20 @@
       },
       "prop_ids": [],
       "location_ids": [],
+      "allowed_characters": [
+        {
+          "character_id": "17",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:17",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "18",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:18",
+          "scope": "book-level"
+        }
+      ],
       "allowed_ids": {
         "beat": [
           "B1",

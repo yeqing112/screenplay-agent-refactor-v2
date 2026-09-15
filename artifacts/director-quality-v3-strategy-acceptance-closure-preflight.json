@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "provider_http_requests": 0,
+  "transport_retries": 0,
+  "parser_retries": 0,
+  "shot_architecture": 0,
+  "shotplan": 0,
+  "scene_redesign": 0,
+  "scene_repair": 0,
+  "tail_repair": 0,
+  "storyboard": 0,
+  "media": 0,
+  "image": 0,
+  "video": 0,
+  "storage": 0,
+  "shadow": 0,
+  "ci": "not_run"
+}

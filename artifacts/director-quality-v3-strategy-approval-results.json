@@ -1,0 +1,54 @@
+{
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "status": "DIRECTOR_STRATEGY_APPROVAL_BLOCKED",
+      "blockers": [
+        {
+          "code": "FUTURE_SUPPORT_EVIDENCE",
+          "path": "scene_phases[1].information.audience_suspicions[0].support_refs",
+          "reference": "beat:10"
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "status": "DIRECTOR_STRATEGY_APPROVAL_BLOCKED",
+      "blockers": [
+        {
+          "code": "FUTURE_HINT_EVIDENCE",
+          "path": "scene_phases[1].information.hint_refs[0]",
+          "reference": "beat:7"
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "status": "DIRECTOR_STRATEGY_APPROVAL_BLOCKED",
+      "blockers": [
+        {
+          "code": "FUTURE_SUPPORT_EVIDENCE",
+          "path": "scene_phases[0].information.audience_suspicions[0].support_refs",
+          "reference": "beat:B4"
+        },
+        {
+          "code": "FUTURE_SUPPORT_EVIDENCE",
+          "path": "scene_phases[0].information.audience_suspicions[0].support_refs",
+          "reference": "beat:B5"
+        },
+        {
+          "code": "FUTURE_SUPPORT_EVIDENCE",
+          "path": "scene_phases[0].information.audience_suspicions[0].support_refs",
+          "reference": "beat:B6"
+        },
+        {
+          "code": "FUTURE_SUPPORT_EVIDENCE",
+          "path": "scene_phases[1].information.audience_suspicions[1].support_refs",
+          "reference": "beat:B8"
+        }
+      ]
+    }
+  ],
+  "approved_count": 0,
+  "blocked_count": 3
+}

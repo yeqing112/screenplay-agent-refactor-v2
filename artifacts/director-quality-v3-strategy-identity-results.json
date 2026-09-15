@@ -1,0 +1,20 @@
+{
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "status": "IDENTITY_VALID",
+      "errors": []
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "status": "IDENTITY_VALID",
+      "errors": []
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "status": "IDENTITY_VALID",
+      "errors": []
+    }
+  ],
+  "valid_count": 3
+}

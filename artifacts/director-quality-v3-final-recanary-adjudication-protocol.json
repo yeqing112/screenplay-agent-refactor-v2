@@ -3,7 +3,7 @@
     {
       "scene_id": "book990402:e3:暗房惊魂",
       "original_protocol_status": "PROTOCOL_INVALID",
-      "adjudicated_protocol_status": "PROTOCOL_INVALID",
+      "adjudicated_protocol_status": "PROTOCOL_VALID",
       "original_error_codes": [
         "UNKNOWN_BEAT_REFERENCE",
         "UNKNOWN_BEAT_REFERENCE",
@@ -64,41 +64,27 @@
         "BEAT_COVERAGE_GAP"
       ],
       "adjudicated_error_codes": [
-        "INVALID_POWER_CONTROLLER",
-        "INVALID_POWER_CONTROLLER",
-        "FUTURE_SUPPORT_EVIDENCE",
-        "INVALID_POWER_CONTROLLER"
+        "FUTURE_SUPPORT_EVIDENCE"
       ],
       "errors_removed_by_contract_wiring": {
         "BEAT_COVERAGE_GAP": 1,
+        "INVALID_POWER_CONTROLLER": 3,
         "PHASE_BEATS_EMPTY": 3,
         "UNKNOWN_BEAT_REFERENCE": 11,
         "UNKNOWN_SOURCE_REFERENCE": 39
       },
       "errors_remaining": [
         {
-          "code": "INVALID_POWER_CONTROLLER",
-          "path": "scene_phases[0].power.center_ref"
-        },
-        {
-          "code": "INVALID_POWER_CONTROLLER",
-          "path": "scene_phases[1].power.center_ref"
-        },
-        {
           "code": "FUTURE_SUPPORT_EVIDENCE",
           "path": "scene_phases[1].information.audience_suspicions[0].support_refs",
           "reference": "beat:10"
-        },
-        {
-          "code": "INVALID_POWER_CONTROLLER",
-          "path": "scene_phases[2].power.center_ref"
         }
       ]
     },
     {
       "scene_id": "book990402:e3:暗房惊魂（2）",
       "original_protocol_status": "PROTOCOL_INVALID",
-      "adjudicated_protocol_status": "PROTOCOL_INVALID",
+      "adjudicated_protocol_status": "PROTOCOL_VALID",
       "original_error_codes": [
         "UNKNOWN_BEAT_REFERENCE",
         "UNKNOWN_BEAT_REFERENCE",
@@ -172,7 +158,7 @@
     {
       "scene_id": "book990402:e2:回声照相馆",
       "original_protocol_status": "PROTOCOL_INVALID",
-      "adjudicated_protocol_status": "PROTOCOL_INVALID",
+      "adjudicated_protocol_status": "PROTOCOL_VALID",
       "original_error_codes": [
         "UNKNOWN_BEAT_REFERENCE",
         "UNKNOWN_BEAT_REFERENCE",
@@ -230,7 +216,6 @@
         "BEAT_COVERAGE_GAP"
       ],
       "adjudicated_error_codes": [
-        "INVALID_POWER_CONTROLLER",
         "FUTURE_SUPPORT_EVIDENCE",
         "FUTURE_SUPPORT_EVIDENCE",
         "FUTURE_SUPPORT_EVIDENCE",
@@ -238,15 +223,12 @@
       ],
       "errors_removed_by_contract_wiring": {
         "BEAT_COVERAGE_GAP": 1,
+        "INVALID_POWER_CONTROLLER": 1,
         "PHASE_BEATS_EMPTY": 3,
         "UNKNOWN_BEAT_REFERENCE": 11,
         "UNKNOWN_SOURCE_REFERENCE": 38
       },
       "errors_remaining": [
-        {
-          "code": "INVALID_POWER_CONTROLLER",
-          "path": "scene_phases[0].power.center_ref"
-        },
         {
           "code": "FUTURE_SUPPORT_EVIDENCE",
           "path": "scene_phases[0].information.audience_suspicions[0].support_refs",
@@ -270,5 +252,5 @@
       ]
     }
   ],
-  "valid_count": 0
+  "valid_count": 3
 }

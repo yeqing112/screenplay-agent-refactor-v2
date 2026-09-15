@@ -38,6 +38,35 @@
         "20"
       ],
       "character_ids_equal": true,
+      "provider_allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "runtime_allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "allowed_characters_equal": true,
       "provider_allowed_source_refs": [
         "beat:1",
         "beat:2",
@@ -75,8 +104,8 @@
       "provider_source_ref_contract_fingerprint": "3968017bf0dfab6f689d07d6dbb067b2694f40cca314abcc2882b0e738c660ea",
       "runtime_source_ref_contract_fingerprint": "3968017bf0dfab6f689d07d6dbb067b2694f40cca314abcc2882b0e738c660ea",
       "source_ref_contract_equal": true,
-      "provider_visible_contract_fingerprint": "00efd75e0eae861f1d7ce39971199307838f2083124b0c54ff2eb261c0f9853f",
-      "runtime_validation_contract_fingerprint": "00efd75e0eae861f1d7ce39971199307838f2083124b0c54ff2eb261c0f9853f",
+      "provider_visible_contract_fingerprint": "f8837cf1360f8a6fad68470128b80589b6355344a933c604b6b697608b5d849b",
+      "runtime_validation_contract_fingerprint": "f8837cf1360f8a6fad68470128b80589b6355344a933c604b6b697608b5d849b",
       "contract_fingerprint_equal": true
     },
     {
@@ -115,6 +144,35 @@
         "20"
       ],
       "character_ids_equal": true,
+      "provider_allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "runtime_allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "allowed_characters_equal": true,
       "provider_allowed_source_refs": [
         "beat:1",
         "beat:2",
@@ -150,8 +208,8 @@
       "provider_source_ref_contract_fingerprint": "016fc272892bff2ec3bba22ae92a36a917a8daf1d8d57f979131b10e10e01b81",
       "runtime_source_ref_contract_fingerprint": "016fc272892bff2ec3bba22ae92a36a917a8daf1d8d57f979131b10e10e01b81",
       "source_ref_contract_equal": true,
-      "provider_visible_contract_fingerprint": "72a2b6bceda7d94df99a48f18c21c040b89429e1afdbd8d439cebb4ca0d7b58b",
-      "runtime_validation_contract_fingerprint": "72a2b6bceda7d94df99a48f18c21c040b89429e1afdbd8d439cebb4ca0d7b58b",
+      "provider_visible_contract_fingerprint": "77cb9b228f7ce9e4a30258429afac73f4cd448fa801529ab34d4c710ff4c16bd",
+      "runtime_validation_contract_fingerprint": "77cb9b228f7ce9e4a30258429afac73f4cd448fa801529ab34d4c710ff4c16bd",
       "contract_fingerprint_equal": true
     },
     {
@@ -192,6 +250,35 @@
         "18"
       ],
       "character_ids_equal": true,
+      "provider_allowed_characters": [
+        {
+          "character_id": "17",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:17",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "18",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:18",
+          "scope": "book-level"
+        }
+      ],
+      "runtime_allowed_characters": [
+        {
+          "character_id": "17",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:17",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "18",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:18",
+          "scope": "book-level"
+        }
+      ],
+      "allowed_characters_equal": true,
       "provider_allowed_source_refs": [
         "beat:B1",
         "beat:B2",
@@ -229,8 +316,8 @@
       "provider_source_ref_contract_fingerprint": "1717aa34b11f64c687bbb2562f5b513fe81f4c2551bd98f7ff0677e0360d8968",
       "runtime_source_ref_contract_fingerprint": "1717aa34b11f64c687bbb2562f5b513fe81f4c2551bd98f7ff0677e0360d8968",
       "source_ref_contract_equal": true,
-      "provider_visible_contract_fingerprint": "5bdee1b1c3d0c04fcfa41c61232594c3f776b3b8e04a3f82dbfc86ff45b0e021",
-      "runtime_validation_contract_fingerprint": "5bdee1b1c3d0c04fcfa41c61232594c3f776b3b8e04a3f82dbfc86ff45b0e021",
+      "provider_visible_contract_fingerprint": "9c570a07a4a12eeaa0ded1d27eb8731256b44ee9390e256686b55a716510488f",
+      "runtime_validation_contract_fingerprint": "9c570a07a4a12eeaa0ded1d27eb8731256b44ee9390e256686b55a716510488f",
       "contract_fingerprint_equal": true
     }
   ],

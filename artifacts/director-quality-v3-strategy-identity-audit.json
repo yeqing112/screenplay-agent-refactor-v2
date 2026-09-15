@@ -1,0 +1,68 @@
+{
+  "schema_version": "director-quality-v3-strategy-identity-audit-v1",
+  "scope": "book-level",
+  "cross_scene_drift": [],
+  "status": "IDENTITY_VALID",
+  "bindings": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "character_id": "19",
+      "canonical_name": "林晚",
+      "canonical_identity_id": "book:990402:character:19",
+      "source": "script_declared",
+      "scope": "book-level",
+      "fingerprint": "f0c4e06c41e08e89e3f44ddc091ff74d039e3ae7087ba56a8f114e140b13fa6a",
+      "status": "IDENTITY_VALID"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "character_id": "20",
+      "canonical_name": "顾沉",
+      "canonical_identity_id": "book:990402:character:20",
+      "source": "script_declared",
+      "scope": "book-level",
+      "fingerprint": "6bbd0a853d2a17c370ca10a3a0d85119af94f0b469855affe97a097e39a8c0d5",
+      "status": "IDENTITY_VALID"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "character_id": "19",
+      "canonical_name": "林晚",
+      "canonical_identity_id": "book:990402:character:19",
+      "source": "script_declared",
+      "scope": "book-level",
+      "fingerprint": "f0c4e06c41e08e89e3f44ddc091ff74d039e3ae7087ba56a8f114e140b13fa6a",
+      "status": "IDENTITY_VALID"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "character_id": "20",
+      "canonical_name": "顾沉",
+      "canonical_identity_id": "book:990402:character:20",
+      "source": "script_declared",
+      "scope": "book-level",
+      "fingerprint": "6bbd0a853d2a17c370ca10a3a0d85119af94f0b469855affe97a097e39a8c0d5",
+      "status": "IDENTITY_VALID"
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "character_id": "17",
+      "canonical_name": "林晚",
+      "canonical_identity_id": "book:990402:character:17",
+      "source": "script_declared",
+      "scope": "book-level",
+      "fingerprint": "c49508447c3984fe52b24ec62cdeec438c1ec6febd749eacd0530d24ddcfc2fd",
+      "status": "IDENTITY_VALID"
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "character_id": "18",
+      "canonical_name": "顾沉",
+      "canonical_identity_id": "book:990402:character:18",
+      "source": "script_declared",
+      "scope": "book-level",
+      "fingerprint": "b0ed8cb3888c3c861c8617f2c9a4c0974a53b73070e41cfb9cbb2b4937833899",
+      "status": "IDENTITY_VALID"
+    }
+  ]
+}

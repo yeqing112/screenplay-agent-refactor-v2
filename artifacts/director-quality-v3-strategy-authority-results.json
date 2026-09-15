@@ -1,0 +1,20 @@
+{
+  "scenes": [
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "status": "AUTHORITY_SAFE",
+      "errors": []
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "status": "AUTHORITY_SAFE",
+      "errors": []
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "status": "AUTHORITY_SAFE",
+      "errors": []
+    }
+  ],
+  "safe_count": 3
+}

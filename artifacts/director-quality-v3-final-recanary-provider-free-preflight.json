@@ -52,6 +52,35 @@
         "20"
       ],
       "character_ids_equal": true,
+      "provider_allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "runtime_allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "allowed_characters_equal": true,
       "provider_allowed_source_refs": [
         "beat:1",
         "beat:2",
@@ -126,6 +155,35 @@
         "20"
       ],
       "character_ids_equal": true,
+      "provider_allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "runtime_allowed_characters": [
+        {
+          "character_id": "19",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:19",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "20",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:20",
+          "scope": "book-level"
+        }
+      ],
+      "allowed_characters_equal": true,
       "provider_allowed_source_refs": [
         "beat:1",
         "beat:2",
@@ -200,6 +258,35 @@
         "18"
       ],
       "character_ids_equal": true,
+      "provider_allowed_characters": [
+        {
+          "character_id": "17",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:17",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "18",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:18",
+          "scope": "book-level"
+        }
+      ],
+      "runtime_allowed_characters": [
+        {
+          "character_id": "17",
+          "canonical_name": "林晚",
+          "canonical_identity_id": "book:990402:character:17",
+          "scope": "book-level"
+        },
+        {
+          "character_id": "18",
+          "canonical_name": "顾沉",
+          "canonical_identity_id": "book:990402:character:18",
+          "scope": "book-level"
+        }
+      ],
+      "allowed_characters_equal": true,
       "provider_allowed_source_refs": [
         "beat:B1",
         "beat:B2",

@@ -54,6 +54,30 @@ def normalize_source_ref(value: Any, *, contract: dict[str, Any]) -> tuple[str |
     return None, {"code": "UNKNOWN_SOURCE_REFERENCE", "reference": raw}
 
 
+def normalize_power_ref(power: Any, *, contract: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Normalize typed power refs without changing their semantic meaning."""
+    item = copy.deepcopy(power) if isinstance(power, dict) else {}
+    errors: list[dict[str, Any]] = []
+    center = _text(item.get("center_type")).upper()
+    raw = item.get("center_ref")
+    if center == "CHARACTER":
+        ident = _text(raw)
+        if ident.lower().startswith("character:"): ident = ident.split(":", 1)[1]
+        allowed = {_text(x) for x in _list(_dict(contract.get("allowed_ids")).get("character")) if _text(x)}
+        if ident in allowed:
+            item["center_ref"] = ident
+        else:
+            errors.append({"code": "INVALID_POWER_CONTROLLER", "reference": _text(raw)})
+    elif center in {"INFORMATION", "OBJECT"} and _text(raw) and _text(raw).upper() != center:
+        normalized, error = normalize_source_ref(raw, contract=contract)
+        if error: errors.append({"code": "INVALID_POWER_REFERENCE", "reference": _text(raw), **error})
+        else: item["center_ref"] = normalized
+    elif center in {"NONE", "SHARED", "ENVIRONMENT"}:
+        if raw not in (None, ""): item["center_ref"] = None
+    # RELATIONSHIP is a semantic relation label; it is not a character ref.
+    return item, errors
+
+
 def normalize_strategy_ir_v2(raw: Any, *, contract: dict[str, Any]) -> dict[str, Any]:
     """Normalize only lossless shapes; no creative or factual content is added."""
     if not isinstance(raw, dict):
@@ -87,6 +111,8 @@ def normalize_strategy_ir_v2(raw: Any, *, contract: dict[str, Any]) -> dict[str,
             else:
                 canonical_beats.append(canonical)
         item["beat_ids"] = canonical_beats
+        item["power"], power_errors = normalize_power_ref(phase.get("power"), contract=contract)
+        errors.extend({"path": f"scene_phases[{pi}].power.center_ref", **error} for error in power_errors)
         info = _dict(phase.get("information")); normalized_info = {key: [] for key in INFORMATION_FIELDS}
         unknown_info = sorted(set(info) - set(INFORMATION_FIELDS))
         if unknown_info:
@@ -114,4 +140,4 @@ def normalize_strategy_ir_v2(raw: Any, *, contract: dict[str, Any]) -> dict[str,
     return {"ir": normalized, "errors": errors}
 
 
-__all__ = ["normalize_strategy_ir_v2", "normalize_source_ref"]
+__all__ = ["normalize_strategy_ir_v2", "normalize_source_ref", "normalize_power_ref"]

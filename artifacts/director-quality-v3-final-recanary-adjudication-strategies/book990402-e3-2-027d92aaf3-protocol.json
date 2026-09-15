@@ -1,6 +1,6 @@
 {
   "original_protocol_status": "PROTOCOL_INVALID",
-  "adjudicated_protocol_status": "PROTOCOL_INVALID",
+  "adjudicated_protocol_status": "PROTOCOL_VALID",
   "original_error_codes": [
     "UNKNOWN_BEAT_REFERENCE",
     "UNKNOWN_BEAT_REFERENCE",

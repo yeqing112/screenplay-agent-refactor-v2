@@ -1,0 +1,10 @@
+{
+  "ready": false,
+  "required_statuses": [
+    "CANONICAL_VALID",
+    "AUTHORITY_SAFE",
+    "IDENTITY_VALID",
+    "DIRECTOR_STRATEGY_APPROVED"
+  ],
+  "reason": "human director approval required"
+}

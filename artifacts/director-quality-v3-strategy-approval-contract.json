@@ -1,0 +1,15 @@
+{
+  "schema_version": "director-quality-v3-strategy-approval-contract-v1",
+  "status_values": [
+    "DIRECTOR_STRATEGY_APPROVED",
+    "DIRECTOR_STRATEGY_APPROVAL_BLOCKED",
+    "DIRECTOR_STRATEGY_REVIEW_REQUIRED"
+  ],
+  "blockers": [
+    "FUTURE_SUPPORT_EVIDENCE",
+    "FUTURE_HINT_EVIDENCE",
+    "FUTURE_REVEAL",
+    "UNSUPPORTED_INFERENCE",
+    "creative weakness"
+  ]
+}

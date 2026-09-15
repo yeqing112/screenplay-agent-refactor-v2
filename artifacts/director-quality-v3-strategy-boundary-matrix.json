@@ -1,0 +1,141 @@
+{
+  "schema_version": "director-quality-v3-strategy-boundary-matrix-v1",
+  "rows": [
+    {
+      "error_code": "UNKNOWN_BEAT_REFERENCE",
+      "layer": "canonicalization",
+      "blocks_canonical": true,
+      "blocks_authority": true,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "UNKNOWN_SOURCE_REFERENCE",
+      "layer": "canonicalization",
+      "blocks_canonical": true,
+      "blocks_authority": true,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "UNKNOWN_CHARACTER_REFERENCE",
+      "layer": "canonicalization",
+      "blocks_canonical": true,
+      "blocks_authority": true,
+      "blocks_identity": true,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "INVALID_POWER_CONTROLLER",
+      "layer": "approval",
+      "blocks_canonical": false,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "FACT_AUTHORITY_VIOLATION",
+      "layer": "approval",
+      "blocks_canonical": true,
+      "blocks_authority": true,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "INFERENCE_PROMOTED_TO_FACT",
+      "layer": "approval",
+      "blocks_canonical": true,
+      "blocks_authority": true,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "MODEL_CREATED_SOURCE_FACT",
+      "layer": "approval",
+      "blocks_canonical": true,
+      "blocks_authority": true,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "FUTURE_SUPPORT_EVIDENCE",
+      "layer": "approval",
+      "blocks_canonical": false,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "FUTURE_HINT_EVIDENCE",
+      "layer": "approval",
+      "blocks_canonical": false,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "FUTURE_REVEAL",
+      "layer": "approval",
+      "blocks_canonical": false,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "UNSUPPORTED_INFERENCE",
+      "layer": "approval",
+      "blocks_canonical": false,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "BEAT_COVERAGE_GAP",
+      "layer": "canonicalization",
+      "blocks_canonical": true,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "CHARACTER_IDENTITY_BINDING_DRIFT",
+      "layer": "approval",
+      "blocks_canonical": true,
+      "blocks_authority": true,
+      "blocks_identity": true,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "AMBIGUOUS_IDENTITY_BINDING",
+      "layer": "approval",
+      "blocks_canonical": true,
+      "blocks_authority": true,
+      "blocks_identity": true,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "GENERIC_DIRECTOR_STRATEGY",
+      "layer": "approval",
+      "blocks_canonical": false,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "BEAT_MICROMANAGEMENT",
+      "layer": "approval",
+      "blocks_canonical": false,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    },
+    {
+      "error_code": "STRATEGY_LAYER_LEAKAGE",
+      "layer": "canonicalization",
+      "blocks_canonical": true,
+      "blocks_authority": false,
+      "blocks_identity": false,
+      "blocks_approval": true
+    }
+  ]
+}

@@ -7,7 +7,9 @@ from core.director_scene_strategy_ir_normalizer import normalize_source_ref
 from core.director_scene_strategy_semantic_spec_v2 import build_source_ref_contract
 from core.director_strategy_prompt import build_scene_strategy_ir_v2_prompt
 from core.director_strategy_quality import compare_canonical_strategies
-from scripts.run_director_quality_v3_final_adjudication import RAW_ARTIFACT, _contract, _equivalence, _records, run
+from core.director_scene_strategy_ir_normalizer import normalize_strategy_ir_v2
+from scripts.run_director_quality_v3_phase1_3 import _positive_fixture
+from scripts.run_director_quality_v3_final_adjudication import RAW_ARTIFACT, _contract, _equivalence, _records, directing_signal, run
 from scripts.run_director_quality_v3_phase1_2 import _authoritative
 
 
@@ -20,7 +22,7 @@ def test_provider_runtime_contract_equivalence():
     inputs, runtime = _runtime_first()
     prompt = build_scene_strategy_ir_v2_prompt(evidence={"scene_id": runtime["scene_id"], "strategy_contract": runtime}, model_profile={"model_name": "mimo-v2.5"})
     result = _equivalence(runtime, prompt["provider_contract"])
-    assert all(result[key] for key in ("beat_ids_equal", "character_ids_equal", "allowed_source_refs_equal", "beat_alias_equal", "source_ref_contract_equal"))
+    assert all(result[key] for key in ("beat_ids_equal", "character_ids_equal", "allowed_characters_equal", "allowed_source_refs_equal", "beat_alias_equal", "source_ref_contract_equal", "contract_fingerprint_equal"))
 
 
 def test_provider_beat_ref_valid_at_runtime():
@@ -44,6 +46,20 @@ def test_alias_contract_equivalence():
     assert normalize_source_ref("beat:1", contract=contract) == ("beat:B1", None)
 
 
+def test_power_character_typed_ref_normalizes_to_canonical_id():
+    raw, contract = _positive_fixture()
+    raw["scene_phases"][0]["power"]["center_ref"] = "character:C1"
+    normalized = normalize_strategy_ir_v2(raw, contract=contract)
+    assert normalized["ir"]["scene_phases"][0]["power"]["center_ref"] == "C1"
+    assert not any(error.get("code") == "INVALID_POWER_CONTROLLER" for error in normalized["errors"])
+
+
+def test_future_chronology_is_approval_blocker_not_canonical_blocker():
+    result = run()
+    assert result["canonical_strategy_v3_count"] == 3
+    assert all(scene["epistemic"]["future_support_evidence"] + scene["epistemic"]["future_hint"] > 0 for scene in result["scenes"])
+
+
 def test_adjudication_uses_raw_output_without_provider_call(monkeypatch):
     import core.llm
     monkeypatch.setattr(core.llm, "call_llm", lambda *a, **k: (_ for _ in ()).throw(AssertionError("provider call")))
@@ -60,8 +76,9 @@ def test_original_artifacts_unchanged():
 
 def test_candidate_signal_not_mislabeled_as_canonical():
     result = run()
-    assert result["canonical_strategy_v3_count"] < 3
-    assert all(scene["directing_signal"].startswith("CANDIDATE_AUTOMATED_DIRECTING_SIGNAL_") for scene in result["scenes"])
+    assert all(scene["directing_signal"].startswith("AUTOMATED_DIRECTING_SIGNAL_") for scene in result["scenes"])
+    signal, input_type = directing_signal({"scene_phases": []}, {"directing_content_status": "DIRECTING_WEAK"})
+    assert signal.startswith("CANDIDATE_AUTOMATED_DIRECTING_SIGNAL_") and input_type == "NORMALIZED_NONCANONICAL_CANDIDATE"
 
 
 def test_distinctiveness_requires_three_canonical_scenes():

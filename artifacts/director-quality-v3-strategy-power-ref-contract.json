@@ -1,0 +1,38 @@
+{
+  "schema_version": "director-quality-v3-strategy-power-ref-contract-v1",
+  "rules": {
+    "CHARACTER": {
+      "representation": "canonical character id (bare string)",
+      "accepts": [
+        "id",
+        "character:id"
+      ],
+      "normalization": "typed ref -> canonical id",
+      "unknown": "reject"
+    },
+    "RELATIONSHIP": {
+      "representation": "semantic relation label or null",
+      "validation": "not a character ref"
+    },
+    "INFORMATION": {
+      "representation": "allowed typed source ref or semantic label",
+      "validation": "source ref when typed"
+    },
+    "OBJECT": {
+      "representation": "allowed typed source ref or semantic label",
+      "validation": "source ref when typed"
+    },
+    "ENVIRONMENT": {
+      "representation": "null",
+      "validation": "non-null cleared deterministically"
+    },
+    "SHARED": {
+      "representation": "null",
+      "validation": "non-null cleared deterministically"
+    },
+    "NONE": {
+      "representation": "null",
+      "validation": "non-null cleared deterministically"
+    }
+  }
+}
