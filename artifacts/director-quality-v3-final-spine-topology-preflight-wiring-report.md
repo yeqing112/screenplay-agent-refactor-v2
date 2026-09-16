@@ -22,10 +22,10 @@
 | Authorization hard gate | PASS |
 | Provider calls | `0` |
 
-Regression evidence: backend `1287 passed, 0 failed (pytest -q)`; deterministic Golden `5/5`.
+Regression evidence: backend `1288 passed, 0 failed (pytest -q)`; deterministic Golden `5/5`.
 
 `READY_FOR_FINAL_SPINE_TOPOLOGY_RECANARY=true`
 `FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED=false`
-`FINAL_RECANARY_EXPECTED_BASE_COMMIT=e23a934`
+`FINAL_RECANARY_EXPECTED_BASE_COMMIT=49f1b9e`
 
 No real Re-Canary, Atomic Expansion, ShotPlan, Storyboard or media action was executed.
