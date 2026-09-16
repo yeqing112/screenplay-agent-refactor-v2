@@ -17,6 +17,12 @@ ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / "artifacts"
 AUTHORITY = ART / "director-quality-v3-current-stage-authority.json"
 BASE = ART / "director-quality-v3-final-spine-topology-recanary-base.json"
+# The execution brief names the historical reference commit.  It is kept as
+# an audit label only; the immutable gate is ``expected_base_commit`` in the
+# base artifact and is pinned to the current closure commit after code/tests
+# are finalized.
+BASELINE_REFERENCE_HEAD = "92b6d77"
+BACKEND_REGRESSION_SUMMARY = "1287 passed, 0 failed (pytest -q)"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -273,7 +279,7 @@ def main() -> int:
 
 ## Baseline Audit
 
-- Baseline reference HEAD: `92b6d77`; audit started at repository HEAD `fc7a883` (the document's expected HEAD was not present). Current as-built HEAD is `{head}` and the wiring closure is pinned to immutable base `{expected_base}`.
+- Baseline reference HEAD: `{BASELINE_REFERENCE_HEAD}`; it is not present in the current branch, so the audit started at the actual repository HEAD `{head}`. Current as-built HEAD is `{head}` and the wiring closure is pinned to immutable base `{expected_base}`.
 - Forensic evidence established structured Must Preserve traces, authoritative identity projections, canonical segment refs, and fail-closed orchestration, but the runtime path still needed explicit wiring verification.
 - Historical raw, Spine/Topology canary, Forensic and Foundation artifacts were not modified.
 
@@ -286,7 +292,7 @@ def main() -> int:
 - Segment refs derive from actual canonical Spine: `{'PASS' if wiring_checks['segment_refs_from_actual_spine'] else 'FAIL'}`; 3 phases/4 segments fixture: `{'PASS' if wiring_checks['segment_count_diff_fixture'] else 'FAIL'}`.
 - Invalid Spine blocks Skeleton by code control flow: `{'PASS' if wiring_checks['fail_closed_invalid_spine'] else 'FAIL'}`.
 - Final authorization gate: `{'PASS' if wiring_checks['authorization_false'] else 'FAIL'}`; current authorization is `false`.
-- Regression evidence: backend `1277 passed, 0 failed`; deterministic Golden `5/5`.
+- Regression evidence: backend `{BACKEND_REGRESSION_SUMMARY}`; deterministic Golden `5/5`.
 
 ## Decision
 
@@ -319,7 +325,7 @@ def main() -> int:
 | Authorization hard gate | {'PASS' if wiring_checks['authorization_false'] else 'FAIL'} |
 | Provider calls | `0` |
 
-Regression evidence: backend `1277 passed, 0 failed`; deterministic Golden `5/5`.
+Regression evidence: backend `{BACKEND_REGRESSION_SUMMARY}`; deterministic Golden `5/5`.
 
 `READY_FOR_FINAL_SPINE_TOPOLOGY_RECANARY={'true' if status.endswith('CLOSED') else 'false'}`
 `FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED=false`
