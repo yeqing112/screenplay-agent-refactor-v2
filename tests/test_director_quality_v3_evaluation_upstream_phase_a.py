@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import json
 from pathlib import Path
 
 from core.evaluation_upstream_phase_a import (
@@ -98,6 +99,13 @@ def test_source_fact_requires_verified_evidence():
     result = canonicalize_fact_payload({"facts": [{"subject_type": "character", "subject_id": "程雨", "predicate": "saw", "value": "伞", "authority": "source_text", "status": "confirmed", "evidence": [{"excerpt": "不存在"}]}]}, raw_text=source["raw_text"], source_fingerprint=source["raw_hash"], provenance=source["provenance"])
     assert result["report"]["status"] == "FAIL"
     assert result["report"]["evidence_invalid"] == 1
+
+
+def test_provider_json_text_is_parsed_once_without_repair():
+    source = _source()
+    payload = json.dumps(_facts(source["raw_text"]), ensure_ascii=False)
+    result = canonicalize_fact_payload(payload, raw_text=source["raw_text"], source_fingerprint=source["raw_hash"], provenance=source["provenance"])
+    assert result["report"]["total_facts"] == 2
 
 
 def test_character_claim_not_promoted_to_objective_fact():

@@ -60,6 +60,18 @@ def _sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+def _payload_object(value: Any, *, label: str, required_keys: set[str] | None = None) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Parse one provider response without performing retries or repair calls."""
+    if isinstance(value, dict):
+        return value, []
+    try:
+        from core.structured_output import parse_json_object
+        parsed = parse_json_object(str(value or ""), label=label, required_keys=required_keys)
+        return parsed, []
+    except Exception as exc:
+        return {}, [{"code": "PROVIDER_OUTPUT_PARSE_ERROR", "label": label, "message": str(exc)[:400]}]
+
+
 def evaluation_book_id(package_id: str = SOURCE_PACKAGE_ID) -> int:
     """Return a stable logical integer ID, never a production Book row."""
     digest = hashlib.sha256(_t(package_id).encode("utf-8")).hexdigest()
@@ -218,12 +230,13 @@ def _fact_rows(payload: Any) -> list[dict[str, Any]]:
 
 def canonicalize_fact_payload(payload: Any, *, raw_text: str, source_fingerprint: str, provenance: dict[str, Any]) -> dict[str, Any]:
     """Verify evidence and epistemic status before calling build_fact_snapshot."""
-    errors: list[dict[str, Any]] = []
+    payload_object, parse_errors = _payload_object(payload, label="evaluation_fact_payload", required_keys={"facts", "records"})
+    errors: list[dict[str, Any]] = list(parse_errors)
     normalized: list[dict[str, Any]] = []
     evidence_verified = 0
     evidence_invalid = 0
     promotion_violations = 0
-    for index, raw in enumerate(_fact_rows(payload), 1):
+    for index, raw in enumerate(_fact_rows(payload_object), 1):
         row = {
             "subject_type": _t(raw.get("subject_type")),
             "subject_id": _t(raw.get("subject_id") or raw.get("subject_label")),
@@ -305,8 +318,9 @@ def _prop_ref(value: Any) -> str:
 
 def canonicalize_script_payload(payload: Any, *, raw_text: str, fact_snapshot: dict[str, Any], provenance: dict[str, Any]) -> dict[str, Any]:
     """Ground and deterministically build a qualified ScriptIR candidate."""
-    source = _script_rows(payload)
-    errors: list[dict[str, Any]] = []
+    payload_object, parse_errors = _payload_object(payload, label="evaluation_script_ir_payload", required_keys={"scenes", "script_ir"})
+    source = _script_rows(payload_object)
+    errors: list[dict[str, Any]] = list(parse_errors)
     directing_fields = _contains_directing_key(source)
     if directing_fields:
         errors.extend({"code": "SCRIPT_IR_DIRECTOR_LEAKAGE", "field": field} for field in directing_fields)
