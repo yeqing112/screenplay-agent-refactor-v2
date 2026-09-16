@@ -273,7 +273,7 @@ def main() -> int:
 
 ## Baseline Audit
 
-- Baseline reference HEAD: `92b6d77`; current as-built HEAD: `{head}`. Ancestry is checked against the immutable closure base artifact (`{expected_base}`).
+- Baseline reference HEAD: `92b6d77`; audit started at repository HEAD `fc7a883` (the document's expected HEAD was not present). Current as-built HEAD is `{head}` and the wiring closure is pinned to immutable base `{expected_base}`.
 - Forensic evidence established structured Must Preserve traces, authoritative identity projections, canonical segment refs, and fail-closed orchestration, but the runtime path still needed explicit wiring verification.
 - Historical raw, Spine/Topology canary, Forensic and Foundation artifacts were not modified.
 
