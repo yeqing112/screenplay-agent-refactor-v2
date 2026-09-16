@@ -25,6 +25,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 
+def _d(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
 def _write(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if isinstance(value, str):
@@ -71,6 +75,55 @@ def _provider_snapshot() -> dict[str, Any]:
 
 def _status_code(*, blocked: bool) -> str:
     return "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_BLOCKED" if blocked else "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_PREFLIGHT_PASS"
+
+
+def _execute_authorized_phase_a(*, source: dict[str, Any], provider: dict[str, Any], eval_root: Path) -> dict[str, Any]:
+    """Dispatch exactly the two bounded Phase A calls after all gates pass.
+
+    The callback is intentionally local so request/response evidence is saved
+    before the next stage can run.  ``retries=0`` means one HTTP attempt in
+    ``core.llm.call_llm``; a failed FactSnapshot returns immediately and never
+    reaches ScriptIR.
+    """
+    from api.model_registry import get_default_profile
+    from core.evaluation_upstream_phase_a import (
+        build_fact_request,
+        build_script_ir_request,
+        run_with_provider_calls,
+    )
+    from core.llm import call_llm
+
+    profile = get_default_profile("llm") or {}
+    requests: list[dict[str, Any]] = []
+    responses: list[str] = []
+    system = "Return only the JSON object required by the supplied evaluation contract. Do not add directing choices, inferred test answers, retries, or commentary."
+
+    def dispatch(request: dict[str, Any]) -> str:
+        requests.append(request)
+        response = str(call_llm(
+            json.dumps(request, ensure_ascii=False),
+            system=system,
+            model_profile=profile,
+            retries=0,
+            estimated_tokens=7000,
+            max_tokens=12000,
+            audit_extra={"phase": "director_v3_evaluation_upstream_phase_a", "stage": request.get("task")},
+        ) or "")
+        responses.append(response)
+        return response
+
+    result = run_with_provider_calls(source=source, provider_config=provider, call_provider=dispatch)
+    eval_root.mkdir(parents=True, exist_ok=True)
+    for index, request in enumerate(requests):
+        stage = "fact" if index == 0 else "script-ir"
+        _write(eval_root / f"{stage}-request.json", request)
+    for index, response in enumerate(responses):
+        stage = "fact" if index == 0 else "script-ir"
+        (eval_root / f"{stage}-response-raw.txt").write_text(response, encoding="utf-8")
+    result["request_count"] = len(requests)
+    result["response_count"] = len(responses)
+    result["provider_exposure"] = "EXPOSED" if responses else "NOT_EXPOSED_CONFIRMED"
+    return result
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -124,16 +177,27 @@ def main(argv: list[str] | None = None) -> int:
         blocked_reasons.append("PROJECT_PROVIDER_EXPOSURE_NOT_FRESH")
     if not checks["predicted_calls_within_budget"]:
         blocked_reasons.append("UPSTREAM_CALL_BUDGET_EXCEEDS_AUTHORIZED_LIMIT")
-    if args.execute_real or blocked_reasons:
-        # Phase A currently cannot dispatch: the starting HEAD/worktree gates
-        # are evaluated before any provider import.  Keep this branch explicit
-        # so future dispatch code cannot accidentally turn a blocked run into
-        # a hidden fallback or retry.
+    execution: dict[str, Any] | None = None
+    if args.execute_real and not blocked_reasons:
+        try:
+            execution = _execute_authorized_phase_a(source=source, provider=provider, eval_root=EVAL_ROOT)
+            status = execution.get("status", "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED")
+            actual_calls = int(execution.get("provider_calls", 0) or 0)
+        except Exception as exc:  # one dispatch failure is terminal; no retry
+            status = "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED"
+            actual_calls = 0
+            execution = {"status": status, "provider_calls": 0, "error": str(exc)[:800]}
+    elif blocked_reasons:
         status = "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_BLOCKED"
         actual_calls = 0
     else:
         status = "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_PREFLIGHT_PASS"
         actual_calls = 0
+
+    fact_result = _d((execution or {}).get("fact"))
+    fact_report = _d(fact_result.get("report"))
+    script_result = _d((execution or {}).get("script"))
+    script_report = _d(script_result.get("report"))
 
     EVAL_ROOT.mkdir(parents=True, exist_ok=True)
     _write(EVAL_ROOT / "source-manifest-copy.json", source.get("manifest", {}))
@@ -181,13 +245,14 @@ def main(argv: list[str] | None = None) -> int:
         "real_llm_calls": actual_calls,
         "real_mimo_calls": actual_calls,
     })
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-provider-ledger.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_provider_ledger_v1", "status": status, "fact_extraction_calls": 0, "script_ir_calls": 0, "total_calls": actual_calls, "retries": 0, "entries": []})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-fact-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_fact_validation_v1", "status": "NOT_RUN_BLOCKED", "total_facts": 0, "confirmed": 0, "proposed": 0, "conflict": 0, "unknown": 0, "evidence_verified": 0, "evidence_invalid": 0, "claim_objective_promotion_violations": 0, "hard_errors": [], "reason": "provider-free gate blocked before Fact extraction"})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-script-ir-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_script_ir_validation_v1", "status": "NOT_RUN_BLOCKED", "scene_count": 0, "beat_count": 0, "dialogue_count": 0, "invented_hard_events": 0, "invented_dialogues": 0, "dangling_refs": 0, "director_leakage": 0, "qualification": "NOT_RUN", "reason": "FactSnapshot must pass before ScriptIR call"})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-grounding-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_grounding_audit_v1", "status": "NOT_RUN_BLOCKED", "source_hash_exact": source.get("status") == "PASS", "evidence_verification": "NOT_RUN", "invented_events": 0, "invented_dialogues": 0})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-epistemic-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_epistemic_audit_v1", "status": "NOT_RUN_BLOCKED", "model_observation_auto_confirmed": 0, "claim_objective_promotion_violations": 0, "reported_past_flashback_auto_created": 0, "internal_thought_auto_dialogue": 0})
+    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-provider-ledger.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_provider_ledger_v1", "status": status, "fact_extraction_calls": min(actual_calls, 1), "script_ir_calls": max(0, actual_calls - 1), "total_calls": actual_calls, "retries": 0, "entries": []})
+    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-fact-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_fact_validation_v1", "status": fact_report.get("status", "NOT_RUN_BLOCKED"), "total_facts": fact_report.get("total_facts", 0), "confirmed": fact_report.get("confirmed", 0), "proposed": fact_report.get("proposed", 0), "conflict": fact_report.get("conflict", 0), "unknown": fact_report.get("unknown", 0), "evidence_verified": fact_report.get("evidence_verified", 0), "evidence_invalid": fact_report.get("evidence_invalid", 0), "claim_objective_promotion_violations": fact_report.get("claim_objective_promotion_violations", 0), "hard_errors": fact_report.get("errors", []), "reason": "provider-free gate blocked before Fact extraction" if not fact_report else ""})
+    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-script-ir-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_script_ir_validation_v1", "status": script_report.get("status", "NOT_RUN_BLOCKED"), "scene_count": script_report.get("scene_count", 0), "beat_count": script_report.get("beat_count", 0), "dialogue_count": script_report.get("dialogue_count", 0), "invented_hard_events": script_report.get("invented_hard_events", 0), "invented_dialogues": script_report.get("invented_dialogues", 0), "dangling_refs": script_report.get("dangling_refs", []), "director_leakage": script_report.get("director_leakage", 0), "qualification": script_report.get("status", "NOT_RUN"), "reason": "FactSnapshot must pass before ScriptIR call" if not script_report else ""})
+    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-grounding-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_grounding_audit_v1", "status": "PASS" if script_report and not script_report.get("invented_hard_events") and not script_report.get("invented_dialogues") else "NOT_RUN_BLOCKED", "source_hash_exact": source.get("status") == "PASS", "evidence_verification": "PASS" if fact_report and not fact_report.get("evidence_invalid") else "NOT_RUN", "invented_events": script_report.get("invented_hard_events", 0), "invented_dialogues": script_report.get("invented_dialogues", 0)})
+    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-epistemic-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_epistemic_audit_v1", "status": "PASS" if fact_report and not fact_report.get("claim_objective_promotion_violations") and not script_report.get("reported_past_flashback_count") else "NOT_RUN_BLOCKED", "model_observation_auto_confirmed": fact_report.get("claim_objective_promotion_violations", 0), "claim_objective_promotion_violations": fact_report.get("claim_objective_promotion_violations", 0), "reported_past_flashback_auto_created": script_report.get("reported_past_flashback_count", 0), "internal_thought_auto_dialogue": script_report.get("internal_thought_dialogue_count", 0)})
     _write(ART / "director-quality-v3-evaluation-upstream-phase-a-human-review.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_human_review_v1", "status": "NOT_RECORDED", "review_required": True, "package_path": str(EVAL_ROOT.relative_to(ROOT)).replace("\\", "/")})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-readiness.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_readiness_v1", "status": status, "lineage_state": "SOURCE_ACCEPTED", "ready_for_treatment_processing": False, "treatment_processing_authorized": False, "human_fresh_pool_changed": False, "fresh_pilot_2_ready": False, "fresh_pilot_2_authorized": False, "production_db_mutations": 0, "provider_calls": actual_calls, "blocked_reasons": blocked_reasons})
+    lineage_state = "SCRIPT_IR_QUALIFIED" if script_report.get("status") == "QUALIFIED" else "FACT_SNAPSHOT_CONFIRMED" if fact_report.get("status") == "PASS" else "SOURCE_ACCEPTED"
+    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-readiness.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_readiness_v1", "status": status, "lineage_state": lineage_state, "ready_for_treatment_processing": lineage_state == "SCRIPT_IR_QUALIFIED", "treatment_processing_authorized": False, "human_fresh_pool_changed": False, "fresh_pilot_2_ready": False, "fresh_pilot_2_authorized": False, "production_db_mutations": 0, "provider_calls": actual_calls, "blocked_reasons": blocked_reasons})
 
     report = f"""# Director Quality V3 — Authorized Evaluation Source Upstream Phase A
 
@@ -206,7 +271,7 @@ def main(argv: list[str] | None = None) -> int:
 - Provider/model resolution: `{provider.get('provider') or 'unresolved'}` / `{provider.get('model') or 'unresolved'}`; secrets omitted.
 - Predicted provider calls: `{call_graph['predicted_provider_calls']}` (absolute max `2`); actual calls: `{actual_calls}`; retries: `0`.
 - Evaluation isolation: production DB `0`, Book/Scene/FactSnapshot/ScriptIR production mutations `0`, Human Fresh Pool `0`.
-- FactSnapshot: `NOT_RUN_BLOCKED`; ScriptIR: `NOT_RUN_BLOCKED`. The fail-closed boundary prevents ScriptIR dispatch unless FactSnapshot passes.
+- FactSnapshot: `{fact_report.get('status', 'NOT_RUN_BLOCKED')}`; ScriptIR: `{script_report.get('status', 'NOT_RUN_BLOCKED')}`. The fail-closed boundary prevents ScriptIR dispatch unless FactSnapshot passes.
 - Treatment, Blocking, Strategy, Spine, Topology, ShotPlan, Storyboard and media actions: `0`.
 
 ## Blocking Reasons
