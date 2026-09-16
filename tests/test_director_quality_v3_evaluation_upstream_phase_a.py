@@ -89,6 +89,8 @@ def test_eval_phase_a_call_budget_max_two_and_no_retry_policy():
     assert graph["predicted_provider_calls"] == 2
     assert graph["absolute_max_provider_calls"] == 2
     assert all(value == 0 for value in graph["retry_policy"].values())
+    assert "core.fact_snapshot.build_fact_snapshot" in graph["stages"][0]["reusable"]
+    assert "agents.reader.ReaderAgent" in graph["excluded_production_paths"]
 
 
 def test_source_fact_requires_verified_evidence():
@@ -197,4 +199,3 @@ def test_run_with_provider_calls_has_no_retry_and_max_two_calls():
     result = run_with_provider_calls(source=source, provider_config={"provider": "openai-compatible", "model": "mimo-v2.5"}, call_provider=provider)
     assert result["provider_calls"] == 2
     assert calls == ["extract_source_grounded_facts", "structure_fact_grounded_script_ir"]
-

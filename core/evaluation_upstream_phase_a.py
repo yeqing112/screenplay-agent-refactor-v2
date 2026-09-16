@@ -135,8 +135,8 @@ def build_call_graph(*, provider_config: dict[str, Any] | None = None) -> dict[s
         "schema_version": "director_v3_evaluation_upstream_phase_a_callgraph_v1",
         "source": "immutable short-story raw text",
         "stages": [
-            {"name": "fact_extraction", "input": "raw_source", "output": "provider_fact_payload", "max_calls": 1, "retries": 0},
-            {"name": "script_ir_structuring", "input": "verified_fact_snapshot + raw_source", "output": "provider_script_ir_payload", "max_calls": 1, "retries": 0},
+            {"name": "fact_extraction", "input": "raw_source", "output": "provider_fact_payload", "max_calls": 1, "retries": 0, "formal_implementation": "EvaluationUpstreamPhaseAAdapter.build_fact_request → canonicalize_fact_payload → core.fact_snapshot.build_fact_snapshot → validate_fact_records", "reusable": ["core.fact_snapshot.build_fact_snapshot", "core.fact_snapshot.validate_fact_records"]},
+            {"name": "script_ir_structuring", "input": "verified_fact_snapshot + raw_source", "output": "provider_script_ir_payload", "max_calls": 1, "retries": 0, "formal_implementation": "EvaluationUpstreamPhaseAAdapter.build_script_ir_request → canonicalize_script_payload → core.script_ir.build_script_ir → validate_script_ir", "reusable": ["core.script_ir.build_script_ir", "core.script_ir.validate_script_ir"]},
         ],
         "predicted_provider_calls": 2,
         "absolute_max_provider_calls": 2,
@@ -145,6 +145,7 @@ def build_call_graph(*, provider_config: dict[str, Any] | None = None) -> dict[s
         "model": _t(config.get("model")),
         "endpoint_class": _t(config.get("endpoint_class")),
         "production_db_mutations": 0,
+        "excluded_production_paths": ["core.ingest", "agents.reader.ReaderAgent", "api.fact_snapshot_api", "api.script_ir_api"],
         "evaluation_namespace": f"work/evaluation/director_v3/{SOURCE_PACKAGE_ID}/upstream_phase_a",
     }
 
