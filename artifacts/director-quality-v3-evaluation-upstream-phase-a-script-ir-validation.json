@@ -9,5 +9,5 @@
   "dangling_refs": [],
   "director_leakage": 0,
   "qualification": "NOT_RUN",
-  "reason": "FactSnapshot must pass before ScriptIR call"
+  "reason": ""
 }

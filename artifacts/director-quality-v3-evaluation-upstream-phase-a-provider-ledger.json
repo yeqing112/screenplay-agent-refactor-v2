@@ -1,9 +1,27 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_provider_ledger_v1",
-  "status": "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
-  "fact_extraction_calls": 0,
+  "status": "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED",
+  "fact_extraction_calls": 1,
   "script_ir_calls": 0,
-  "total_calls": 0,
+  "total_calls": 1,
   "retries": 0,
-  "entries": []
+  "entries": [
+    {
+      "stage": "FACT_EXTRACTION",
+      "attempt_number": 1,
+      "dispatched": true,
+      "request_hash": "96edeb220a7e1555b270f07893c934e5c7eaf8e70b8d49918718b202c5231e09",
+      "source_package_id": "SRC79f12d1b7f5eb828",
+      "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+      "execution_base": "d4e65554a6ab366aa43f877f707849f28110d2f7",
+      "provider": "openai-compatible",
+      "model": "mimo-v2.5",
+      "status": "RESPONSE_RECEIVED",
+      "response_received": true,
+      "started_at": "2026-09-16T16:25:23.782803+00:00",
+      "response_sha256": "22175cd368cb24004f81f9041487a00d3d4c6b01a2dcb751cb225fce91132fe1",
+      "response_length": 8356,
+      "finished_at": "2026-09-16T16:26:38.807749+00:00"
+    }
+  ]
 }

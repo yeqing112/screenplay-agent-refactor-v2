@@ -1,27 +1,17 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_preflight_v1",
-  "status": "BLOCKED",
-  "status_code": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
-  "starting_head": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
+  "status": "PASS",
+  "status_code": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_PREFLIGHT_PASS",
+  "starting_head": "d4e65554a6ab366aa43f877f707849f28110d2f7",
   "historical_expected_starting_head": "63c93d6e1f78a4777fff9c3e329f5eeb723846eb",
   "expected_starting_head": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
   "execution_base_status": "REBASELINED",
   "remote_head": {
     "status": "PASS",
-    "sha": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779"
+    "sha": "d4e65554a6ab366aa43f877f707849f28110d2f7"
   },
-  "working_tree_dirty_count": 9,
-  "working_tree_dirty_sample": [
-    "artifacts/director-quality-v3-evaluation-upstream-phase-a-callgraph.json",
-    "artifacts/director-quality-v3-evaluation-upstream-phase-a-preflight.json",
-    "artifacts/director-quality-v3-evaluation-upstream-phase-a-readiness.json",
-    "artifacts/director-quality-v3-evaluation-upstream-phase-a-report.md",
-    "artifacts/director-quality-v3-evaluation-upstream-phase-a-script-ir-validation.json",
-    "artifacts/director-quality-v3-evaluation-upstream-phase-a-rebaseline-preflight.json",
-    "artifacts/director-quality-v3-evaluation-upstream-phase-a-rebaseline-readiness.json",
-    "artifacts/director-quality-v3-phase-a-execution-base-reconciliation-report.md",
-    "artifacts/director-quality-v3-phase-a-execution-base-reconciliation.json"
-  ],
+  "working_tree_dirty_count": 0,
+  "working_tree_dirty_sample": [],
   "source_package": {
     "package_path": "work\\intake\\director_v3\\evaluation_packages\\SRC79f12d1b7f5eb828.json",
     "raw_path": "work\\intake\\director_v3\\evaluation_packages\\SRC79f12d1b7f5eb828.raw",
@@ -32,27 +22,26 @@
   "provider": {
     "status": "PASS",
     "provider": "openai-compatible",
-    "model": "qwen3-max",
-    "endpoint_class": "10.126.126.2",
-    "profile_id": "builtin-llm-env",
-    "api_key_configured": false
+    "model": "mimo-v2.5",
+    "endpoint_class": "api.xiaomimimo.com",
+    "profile_id": "local-llm-2vydoz",
+    "api_key_configured": true
   },
   "checks": {
     "expected_starting_head": true,
     "remote_head_matches_local": true,
-    "working_tree_clean": false,
+    "working_tree_clean": true,
     "source_package_verified": true,
     "provenance_verified": true,
     "provider_resolved": true,
     "provider_exposure_not_exposed": true,
     "predicted_calls_within_budget": true,
-    "no_production_mutation_plan": true
+    "no_production_mutation_plan": true,
+    "runtime_authorization": true
   },
-  "blocked_reasons": [
-    "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN"
-  ],
+  "blocked_reasons": [],
   "predicted_provider_calls": 2,
-  "provider_calls": 0,
-  "real_llm_calls": 0,
-  "real_mimo_calls": 0
+  "provider_calls": 1,
+  "real_llm_calls": 1,
+  "real_mimo_calls": 1
 }
