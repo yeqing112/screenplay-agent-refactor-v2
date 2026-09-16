@@ -2,7 +2,7 @@
 
 ## Baseline Audit
 
-- Baseline reference HEAD: `92b6d77`; it is not present in the current branch, so the audit started at the actual repository HEAD `e23a934`. Current as-built HEAD is `e23a934` and the wiring closure is pinned to immutable base `e23a934`.
+- Baseline reference HEAD: `92b6d77`; it is not present in the current branch, so the audit started at the actual repository HEAD `cd95d27`. Current as-built HEAD is `cd95d27` and the wiring closure is pinned to immutable base `e23a934`.
 - Forensic evidence established structured Must Preserve traces, authoritative identity projections, canonical segment refs, and fail-closed orchestration, but the runtime path still needed explicit wiring verification.
 - Historical raw, Spine/Topology canary, Forensic and Foundation artifacts were not modified.
 
