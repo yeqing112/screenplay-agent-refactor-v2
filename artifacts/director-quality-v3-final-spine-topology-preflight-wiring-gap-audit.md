@@ -15,7 +15,7 @@
 - Segment refs derive from actual canonical Spine: `PASS`; 3 phases/4 segments fixture: `PASS`.
 - Invalid Spine blocks Skeleton by code control flow: `PASS`.
 - Final authorization gate: `PASS`; current authorization is `false`.
-- Regression evidence: backend `1176 passed`; deterministic Golden `5/5`.
+- Regression evidence: backend `1185 passed`; deterministic Golden `5/5`.
 
 ## Decision
 
