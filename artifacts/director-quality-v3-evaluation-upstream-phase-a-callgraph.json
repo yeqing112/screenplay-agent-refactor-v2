@@ -1,5 +1,7 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_callgraph_v1",
+  "fact_extraction_v1": "HISTORICAL_ONLY",
+  "fact_extraction_v2": "CURRENT_EVALUATION_PATH",
   "source": "immutable short-story raw text",
   "stages": [
     {

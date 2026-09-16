@@ -1,7 +1,7 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_readiness_v1",
-  "status": "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED",
-  "lineage_state": "SOURCE_ACCEPTED",
+  "status": "DIRECTOR_V3_FACT_ATTEMPT_2_CLOSED",
+  "lineage_state": "FACT_SNAPSHOT_CONFIRMED",
   "ready_for_treatment_processing": false,
   "treatment_processing_authorized": false,
   "human_fresh_pool_changed": false,
@@ -9,5 +9,9 @@
   "fresh_pilot_2_authorized": false,
   "production_db_mutations": 0,
   "provider_calls": 1,
-  "blocked_reasons": []
+  "blocked_reasons": [],
+  "attempt": 2,
+  "fact_snapshot_status": "PASS",
+  "script_ir_status": "NOT_AUTHORIZED_SCOPE",
+  "ready_for_script_ir_processing": false
 }

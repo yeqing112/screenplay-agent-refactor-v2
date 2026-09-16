@@ -1,29 +1,23 @@
 # Director Quality V3 — Authorized Evaluation Source Upstream Phase A
 
-**Status:** `DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED`
+**Status:** `DIRECTOR_V3_FACT_ATTEMPT_2_CLOSED`
 
 ## Baseline Audit
 
-- Historical expected HEAD: `63c93d6e1f78a4777fff9c3e329f5eeb723846eb`; resolved execution base: `2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779` (`REBASELINED`); observed `d4e65554a6ab366aa43f877f707849f28110d2f7`.
-- Remote `origin/codex/unify-formal-workspace`: `d4e65554a6ab366aa43f877f707849f28110d2f7`.
-- Immutable source package: `SRC79f12d1b7f5eb828` / `SRC79f12d1b7f5eb828:V01:d001bab5cc82`.
-- Raw hash verification: `PASS`; provenance: `PASS`.
-- Working tree dirty entries: `0`; no files were reset, stashed, deleted or overwritten.
+- Attempt #1 remains immutable historical evidence: `36` facts, `0` verified, `36` invalid, ScriptIR `0`, exposure `EXPOSED`.
+- Attempt #2 external runtime authorization froze execution base `854be82cd502cc919e58ffb2246683ddcebdc15c`; observed local and remote HEAD match it.
+- Immutable source package: `SRC79f12d1b7f5eb828` / `SRC79f12d1b7f5eb828:V01:d001bab5cc82`; raw hash and provenance: `PASS`.
 
 ## Final As-Built Verification
 
-- Provider/model resolution: `openai-compatible` / `mimo-v2.5`; secrets omitted.
-- Predicted provider calls: `2` (absolute max `2`); actual calls: `1`; retries: `0`.
-- Evaluation isolation: production DB `0`, Book/Scene/FactSnapshot/ScriptIR production mutations `0`, Human Fresh Pool `0`.
-- FactSnapshot: `FAIL`; ScriptIR: `NOT_RUN_BLOCKED`. The fail-closed boundary prevents ScriptIR dispatch unless FactSnapshot passes.
-- Treatment, Blocking, Strategy, Spine, Topology, ShotPlan, Storyboard and media actions: `0`.
-
-## Blocking Reasons
-
-- none
+- Provider/model: `openai-compatible` / `mimo-v2.5`; secrets omitted; no model switch.
+- Predicted full Phase A calls: `2`; Attempt #2 authorized and executed calls: `1`; retries: `0`.
+- FactSnapshot: `PASS` (`7` facts, `7` evidence verified, `0` invalid).
+- ScriptIR: `NOT_AUTHORIZED_SCOPE`; Treatment, Blocking, Strategy, Spine, Topology, ShotPlan, Storyboard and media actions: `0`.
+- Production DB and all production mutations: `0`; provider exposure: `EXPOSED`.
 
 ## Decision
 
-`DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED`
+`DIRECTOR_V3_FACT_ATTEMPT_2_CLOSED`
 
-Lineage remains `SOURCE_ACCEPTED`; no Treatment processing is authorized. Human review is `NOT_RECORDED`.
+Lineage is `FACT_SNAPSHOT_CONFIRMED`. No ScriptIR or downstream processing is authorized by this Fact-only attempt; human review remains required before a separately authorized next stage.

@@ -1,159 +1,26 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_fact_validation_v1",
-  "status": "FAIL",
-  "total_facts": 36,
-  "confirmed": 0,
+  "status": "PASS",
+  "attempt": 2,
+  "total_facts": 7,
+  "confirmed": 7,
   "proposed": 0,
   "conflict": 0,
-  "unknown": 36,
-  "evidence_verified": 0,
-  "evidence_invalid": 36,
+  "unknown": 0,
+  "evidence_verified": 7,
+  "evidence_invalid": 0,
   "claim_objective_promotion_violations": 0,
-  "hard_errors": [
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 1
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 2
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 3
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 4
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 5
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 6
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 7
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 8
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 9
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 10
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 11
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 12
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 13
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 14
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 15
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 16
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 17
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 18
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 19
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 20
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 21
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 22
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 23
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 24
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 25
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 26
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 27
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 28
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 29
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 30
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 31
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 32
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 33
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 34
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 35
-    },
-    {
-      "code": "SOURCE_FACT_EVIDENCE_INVALID",
-      "index": 36
-    }
-  ],
-  "reason": ""
+  "hard_errors": [],
+  "result_path": "artifacts/director-quality-v3-fact-evidence-attempt2-result.json",
+  "historical_attempt_1": {
+    "status": "FAIL",
+    "total_facts": 36,
+    "confirmed": 0,
+    "unknown": 36,
+    "evidence_verified": 0,
+    "evidence_invalid": 36,
+    "script_ir_calls": 0,
+    "failure_code": "SOURCE_FACT_EVIDENCE_INVALID",
+    "immutable": true
+  }
 }

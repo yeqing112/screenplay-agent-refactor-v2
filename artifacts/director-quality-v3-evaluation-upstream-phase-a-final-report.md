@@ -1,25 +1,21 @@
-# Director Quality V3 — Authorized Evaluation Source Upstream Phase A
+# Director Quality V3 — Fact Evidence Authority V2 — Attempt #2 Final Report
 
 ## Baseline Audit
 
-- Authorized scope: `DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A`.
-- Source: `SRC79f12d1b7f5eb828` / `SRC79f12d1b7f5eb828:V01:d001bab5cc82` (`《门外那把伞》`).
-- Authorized execution base: `d4e65554a6ab366aa43f877f707849f28110d2f7`.
-- Runtime authorization was external, scope-bound, and validated before dispatch; no tracked authorization file was used.
-- Historical Spine → Topology re-canary remains retired and is not executable.
+- Attempt #1 is preserved unchanged as historical evidence: execution base `d4e65554a6ab366aa43f877f707849f28110d2f7`, `36` facts, `0` verified, `36` invalid, ScriptIR `0`, exposure `EXPOSED`.
+- Attempt #2 authorized execution base: `854be82cd502cc919e58ffb2246683ddcebdc15c`; source `SRC79f12d1b7f5eb828` / `SRC79f12d1b7f5eb828:V01:d001bab5cc82`.
+- Attempt #2 used the V2 evidence-ref contract and the currently resolved MiMo profile `openai-compatible / mimo-v2.5`; no model switch.
 
 ## Final As-Built Verification
 
-- Provider/model: `openai-compatible` / `mimo-v2.5` (MiMo); no model switch.
-- Fact Extraction dispatch attempts: `1` of `1` allowed; ScriptIR dispatch attempts: `0` of `1` allowed.
-- Total real provider attempts: `1`; transport retries, repair calls, fallback calls, critic calls and judge calls: `0`.
-- Provider exposure: `EXPOSED` because a real dispatch attempt was made, regardless of validation outcome.
-- Fact response was received and retained locally; canonical validation failed with `36` invalid source-evidence records. No FactSnapshot was promoted.
-- Fail-closed boundary held: ScriptIR was not dispatched after Fact validation failure.
-- Production DB, Book/Scene/FactSnapshot/ScriptIR mutations, Human Fresh Pool, Treatment, Blocking, Strategy, Spine, Skeleton, Topology, ShotPlan, Storyboard and media actions: `0`.
+- Real provider calls: `1` of `1` allowed; retries and all repair/fallback/critic/judge calls: `0`.
+- FactSnapshot: `PASS`; `7` facts, `7` confirmed, `7` evidence references verified, `0` invalid.
+- ScriptIR: `0` calls (`NOT_AUTHORIZED_SCOPE`); Treatment, Blocking, Strategy, Spine, Topology, ShotPlan, Storyboard and media actions: `0`.
+- Production DB and production mutations: `0`.
+- Provider exposure: `EXPOSED`; request/response and dispatch ledger are retained under the isolated evaluation namespace.
 
 ## Decision
 
-`DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED`
+`DIRECTOR_V3_FACT_ATTEMPT_2_CLOSED`
 
-Lineage remains `SOURCE_ACCEPTED`; no Treatment processing is authorized. Human review remains `NOT_RECORDED`. No further provider call is authorized by this run; a new explicit authorization is required for any future attempt.
+The V2 FactSnapshot is deterministically qualified. This does not authorize ScriptIR or any downstream processing; human review remains required before a separately authorized next stage. No further provider call is authorized by this attempt.

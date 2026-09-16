@@ -251,6 +251,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--fact-attempt-2", action="store_true", help="execute exactly one authorized Fact Evidence Authority V2 call; never runs ScriptIR")
     supplied = argv if argv is not None else sys.argv[1:]
     args = parser.parse_args(argv)
+    if args.authorization_preflight and (args.fact_attempt_2 or args.execute_real):
+        raise SystemExit("--authorization-preflight cannot be combined with a provider execution flag")
     if any(flag in supplied for flag in ("--force", "--unsafe", "--ignore-authorization", "--no-gate")):
         raise SystemExit("authorization bypass flags are not supported")
 
@@ -449,7 +451,7 @@ def main(argv: list[str] | None = None) -> int:
 - Provider/model resolution: `{provider.get('provider') or 'unresolved'}` / `{provider.get('model') or 'unresolved'}`; secrets omitted.
 - Predicted provider calls: `{call_graph['predicted_provider_calls']}` (absolute max `2`); actual calls: `{actual_calls}`; retries: `0`.
 - Evaluation isolation: production DB `0`, Book/Scene/FactSnapshot/ScriptIR production mutations `0`, Human Fresh Pool `0`.
-- FactSnapshot: `{fact_report.get('status', 'NOT_RUN_BLOCKED')}`; ScriptIR: `{script_report.get('status', 'NOT_RUN_BLOCKED')}`. The fail-closed boundary prevents ScriptIR dispatch unless FactSnapshot passes.
+- FactSnapshot: `{fact_report.get('status', 'NOT_RUN_BLOCKED')}`; ScriptIR: `{script_report.get('status', 'NOT_RUN_BLOCKED') if script_report else ('NOT_AUTHORIZED_SCOPE' if args.fact_attempt_2 else 'NOT_RUN_BLOCKED')}`. ScriptIR dispatch is outside the Fact Attempt #2 authorization scope.
 - Treatment, Blocking, Strategy, Spine, Topology, ShotPlan, Storyboard and media actions: `0`.
 
 ## Blocking Reasons
@@ -460,7 +462,7 @@ def main(argv: list[str] | None = None) -> int:
 
 `{status}`
 
-Lineage remains `SOURCE_ACCEPTED`; no Treatment processing is authorized. Human review is `NOT_RECORDED`.
+Lineage is `{lineage_state}`; no Treatment processing is authorized. Human review is `NOT_RECORDED`.
 """
     if write_evidence:
         _write(ART / "director-quality-v3-evaluation-upstream-phase-a-report.md", report)

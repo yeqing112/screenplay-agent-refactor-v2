@@ -1,6 +1,6 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_script_ir_validation_v1",
-  "status": "NOT_RUN_BLOCKED",
+  "status": "NOT_AUTHORIZED_SCOPE",
   "scene_count": 0,
   "beat_count": 0,
   "dialogue_count": 0,
@@ -9,5 +9,5 @@
   "dangling_refs": [],
   "director_leakage": 0,
   "qualification": "NOT_RUN",
-  "reason": ""
+  "reason": "Fact Attempt #2 authorization is Fact-only; ScriptIR requires a separate explicit authorization."
 }

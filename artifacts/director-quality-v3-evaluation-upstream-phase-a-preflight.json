@@ -2,13 +2,13 @@
   "schema_version": "director_v3_evaluation_upstream_phase_a_preflight_v1",
   "status": "PASS",
   "status_code": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_PREFLIGHT_PASS",
-  "starting_head": "d4e65554a6ab366aa43f877f707849f28110d2f7",
+  "starting_head": "854be82cd502cc919e58ffb2246683ddcebdc15c",
   "historical_expected_starting_head": "63c93d6e1f78a4777fff9c3e329f5eeb723846eb",
-  "expected_starting_head": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
-  "execution_base_status": "REBASELINED",
+  "expected_starting_head": "854be82cd502cc919e58ffb2246683ddcebdc15c",
+  "execution_base_status": "EXTERNAL_RUNTIME_AUTHORIZED",
   "remote_head": {
     "status": "PASS",
-    "sha": "d4e65554a6ab366aa43f877f707849f28110d2f7"
+    "sha": "854be82cd502cc919e58ffb2246683ddcebdc15c"
   },
   "working_tree_dirty_count": 0,
   "working_tree_dirty_sample": [],
@@ -43,5 +43,7 @@
   "predicted_provider_calls": 2,
   "provider_calls": 1,
   "real_llm_calls": 1,
-  "real_mimo_calls": 1
+  "real_mimo_calls": 1,
+  "authorized_execution_base": "854be82cd502cc919e58ffb2246683ddcebdc15c",
+  "runtime_authorization_execution_base_match": true
 }

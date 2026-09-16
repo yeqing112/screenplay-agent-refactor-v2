@@ -28,6 +28,11 @@ def test_phase_a_runner_rejects_authorization_bypass_flags():
         runner.main(["--force"])
 
 
+def test_phase_a_runner_rejects_preflight_execution_flag_collision():
+    with pytest.raises(SystemExit, match="cannot be combined"):
+        runner.main(["--fact-attempt-2", "--authorization-preflight"])
+
+
 def test_phase_a_runner_writes_isolated_zero_call_evidence():
     runner.main([])
     preflight = json.loads(Path("artifacts/director-quality-v3-evaluation-upstream-phase-a-preflight.json").read_text(encoding="utf-8"))

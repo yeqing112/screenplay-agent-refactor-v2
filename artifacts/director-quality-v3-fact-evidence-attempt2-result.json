@@ -1,0 +1,337 @@
+{
+  "schema_version": "director_v3_fact_evidence_attempt2_result_v1",
+  "scope": "DIRECTOR_V3_AUTHORIZED_EVALUATION_FACT_ATTEMPT_2",
+  "attempt_number": 2,
+  "authorization_id": "director-v3-fact-attempt-2-854be82",
+  "authorized_execution_base": "854be82cd502cc919e58ffb2246683ddcebdc15c",
+  "source_package_id": "SRC79f12d1b7f5eb828",
+  "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+  "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368",
+  "source_evidence_index_fingerprint": "4697f3069bb34c9650d97b7e2c788d5b9db36034a39fedf77a0756e7a7bf5295",
+  "v2_schema_fingerprint": "0f8bfafe584711649b7ee9df5830bb71ebd7227a50248866a8e5b99a33ca9f51",
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "provider_calls": 1,
+  "retries": 0,
+  "provider_exposure": "EXPOSED",
+  "request_hash": "452c8c57d053cd10c590afcef5e323d2d7deb663d5784feef6c5241fd8ca3e4d",
+  "response_sha256": "8108f4158257105e5c6e454348af3d4d9c8f5c61d26424ed32b8ba2f7639e8f8",
+  "response_length": 2053,
+  "script_ir_calls": 0,
+  "downstream_calls": 0,
+  "production_db_mutations": 0,
+  "fact_snapshot": {
+    "schema_version": "fact_snapshot_v1",
+    "book_id": 900000001,
+    "episode": 1,
+    "records": [
+      {
+        "fact_id": "FACT_0001",
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "escaped through fire pipe shaft",
+        "value": "to apartment 1203",
+        "scope": "global",
+        "authority": "source_text",
+        "status": "confirmed",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "anchor_ref": "E0267",
+            "excerpt": "“六年前，我不是被人从1204带走的。”\r\n",
+            "char_start": 3960,
+            "char_end": 3982,
+            "byte_start": 9674,
+            "byte_end": 9728,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0269",
+            "excerpt": "“我是自己从管井爬到这里的。”\r\n",
+            "char_start": 3993,
+            "char_end": 4010,
+            "byte_start": 9749,
+            "byte_end": 9796,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          }
+        ],
+        "conflict_group": null
+      },
+      {
+        "fact_id": "FACT_0002",
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "hid storage card in umbrella handle",
+        "value": "evidence from six years ago",
+        "scope": "global",
+        "authority": "source_text",
+        "status": "confirmed",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "anchor_ref": "E0330",
+            "excerpt": "她拧开伞柄末端那块黑色塑料盖。\r\n",
+            "char_start": 5054,
+            "char_end": 5071,
+            "byte_start": 12396,
+            "byte_end": 12443,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0331",
+            "excerpt": "里面掉出一张很小的存储卡。\r\n",
+            "char_start": 5073,
+            "char_end": 5088,
+            "byte_start": 12445,
+            "byte_end": 12486,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0333",
+            "excerpt": "“六年前，我只来得及带走这个。”\r\n",
+            "char_start": 5100,
+            "char_end": 5118,
+            "byte_start": 12510,
+            "byte_end": 12560,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          }
+        ],
+        "conflict_group": null
+      },
+      {
+        "fact_id": "FACT_0003",
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "is previous tenant of 1204",
+        "value": "disappeared six years ago",
+        "scope": "global",
+        "authority": "source_text",
+        "status": "confirmed",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "anchor_ref": "E0070",
+            "excerpt": "“宋知夏。”\r\n",
+            "char_start": 1173,
+            "char_end": 1181,
+            "byte_start": 2943,
+            "byte_end": 2963,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0072",
+            "excerpt": "“失踪了。”\r\n",
+            "char_start": 1195,
+            "char_end": 1203,
+            "byte_start": 2993,
+            "byte_end": 3013,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          }
+        ],
+        "conflict_group": null
+      },
+      {
+        "fact_id": "FACT_0004",
+        "subject_type": "character",
+        "subject_id": "程雨",
+        "predicate": "found wet umbrella at door",
+        "value": "black long-handled umbrella",
+        "scope": "global",
+        "authority": "source_text",
+        "status": "confirmed",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "anchor_ref": "E0024",
+            "excerpt": "但门口多了一把黑色长柄雨伞。\r\n",
+            "char_start": 420,
+            "char_end": 436,
+            "byte_start": 1076,
+            "byte_end": 1120,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0025",
+            "excerpt": "伞是湿的。\r\n",
+            "char_start": 438,
+            "char_end": 445,
+            "byte_start": 1122,
+            "byte_end": 1139,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0026",
+            "excerpt": "水正顺着伞尖，一滴一滴落在地砖上。\r\n",
+            "char_start": 447,
+            "char_end": 466,
+            "byte_start": 1141,
+            "byte_end": 1194,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          }
+        ],
+        "conflict_group": null
+      },
+      {
+        "fact_id": "FACT_0005",
+        "subject_type": "character",
+        "subject_id": "程雨",
+        "predicate": "is moving out of apartment",
+        "value": "1204",
+        "scope": "global",
+        "authority": "source_text",
+        "status": "confirmed",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "anchor_ref": "E0002",
+            "excerpt": "凌晨一点二十七分，程雨把最后一个纸箱拖到门口。\r\n",
+            "char_start": 11,
+            "char_end": 36,
+            "byte_start": 25,
+            "byte_end": 96,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0003",
+            "excerpt": "这套房子她住了六年。\r\n",
+            "char_start": 38,
+            "char_end": 50,
+            "byte_start": 98,
+            "byte_end": 130,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0005",
+            "excerpt": "明早九点，中介会来收钥匙。\r\n",
+            "char_start": 135,
+            "char_end": 150,
+            "byte_start": 373,
+            "byte_end": 414,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          }
+        ],
+        "conflict_group": null
+      },
+      {
+        "fact_id": "FACT_0006",
+        "subject_type": "character",
+        "subject_id": "老赵",
+        "predicate": "installed hidden camera equipment",
+        "value": "in wall cavity behind bedroom",
+        "scope": "global",
+        "authority": "source_text",
+        "status": "confirmed",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "anchor_ref": "E0296",
+            "excerpt": "他们在1204卧室墙后的夹层里找到了一套已经断电多年的旧设备。\r\n",
+            "char_start": 4473,
+            "char_end": 4506,
+            "byte_start": 10949,
+            "byte_end": 11036,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0297",
+            "excerpt": "镜头、线路、硬盘。\r\n",
+            "char_start": 4508,
+            "char_end": 4519,
+            "byte_start": 11038,
+            "byte_end": 11067,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          }
+        ],
+        "conflict_group": null
+      },
+      {
+        "fact_id": "FACT_0007",
+        "subject_type": "character",
+        "subject_id": "老赵",
+        "predicate": "recognized umbrella",
+        "value": "belonged to previous tenant",
+        "scope": "global",
+        "authority": "source_text",
+        "status": "confirmed",
+        "confidence": 1.0,
+        "evidence": [
+          {
+            "anchor_ref": "E0050",
+            "excerpt": "“以前有个人用过。”他说。\r\n",
+            "char_start": 862,
+            "char_end": 877,
+            "byte_start": 2186,
+            "byte_end": 2227,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          },
+          {
+            "anchor_ref": "E0053",
+            "excerpt": "“1204以前的租客。”\r\n",
+            "char_start": 898,
+            "char_end": 912,
+            "byte_start": 2270,
+            "byte_end": 2300,
+            "verified": true,
+            "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+          }
+        ],
+        "conflict_group": null
+      }
+    ],
+    "source_fingerprint": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368",
+    "payload_hash": "e7e71c13bcc56970eb34f987cb034fc7b5a9d0a71d96d9a7dd72dc9509b39b45",
+    "validation": {
+      "status": "qualified",
+      "errors": [],
+      "warnings": []
+    },
+    "provenance": {
+      "source_package_id": "SRC79f12d1b7f5eb828",
+      "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+      "source_class": "EVALUATION_ONLY",
+      "source_authorship": "AI_GENERATED",
+      "human_authored": false,
+      "blind_human_origin_eligible": false,
+      "functional_pipeline_evaluation_eligible": true,
+      "user_authorized_for_evaluation": true,
+      "raw_source_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368",
+      "normalized_source_hash": "48abfc0416698f580499dc728514003664cc3497eb092aa4803fd08cf8873d9f"
+    }
+  },
+  "report": {
+    "status": "PASS",
+    "errors": [],
+    "total_facts": 7,
+    "evidence_verified": 7,
+    "evidence_invalid": 0,
+    "schema_fingerprint": "0f8bfafe584711649b7ee9df5830bb71ebd7227a50248866a8e5b99a33ca9f51",
+    "provider_runtime_schema_parity": "PASS",
+    "confirmed": 7,
+    "proposed": 0,
+    "conflict": 0,
+    "unknown": 0
+  },
+  "request_contract": {
+    "task": "extract_source_grounded_facts_v2",
+    "source_blocks": 347,
+    "contains_full_source_text": false,
+    "evidence_refs_only": true
+  },
+  "created_at": "2026-09-16T18:16:33.944726+00:00"
+}
