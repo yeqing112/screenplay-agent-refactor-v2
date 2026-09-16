@@ -1,0 +1,31 @@
+{
+  "schema_version": "director_v3_ai_evaluation_source_preflight_v1",
+  "status": "PASS",
+  "generated_at": "2026-09-16T08:35:03.351927+00:00",
+  "source_path": "D:\\Work\\小说库\\门外那把伞.txt",
+  "source_title": "门外那把伞",
+  "narrative_form": "SHORT_STORY",
+  "source_authorship": "AI_GENERATED",
+  "source_class": "EVALUATION_ONLY",
+  "user_authorized": true,
+  "test_meta": [],
+  "raw_source_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368",
+  "normalized_source_hash": "48abfc0416698f580499dc728514003664cc3497eb092aa4803fd08cf8873d9f",
+  "checks": {
+    "exact_source_path": true,
+    "regular_utf8_non_empty": true,
+    "test_meta_clean": true,
+    "provenance_complete": true,
+    "user_authorized": true,
+    "duplicate_guard": true,
+    "retired_guard": true,
+    "exposure_guard": true,
+    "immutable_package": true,
+    "real_source_lane_untouched": true,
+    "provider_calls_zero": true,
+    "production_db_mutations_zero": true
+  },
+  "errors": [],
+  "provider_calls": 0,
+  "production_db_mutations": 0
+}

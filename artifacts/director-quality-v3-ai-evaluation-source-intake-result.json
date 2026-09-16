@@ -1,0 +1,28 @@
+{
+  "status": "DIRECTOR_V3_AUTHORIZED_AI_EVALUATION_SOURCE_INTAKE_CLOSED",
+  "source_title": "门外那把伞",
+  "source_class": "EVALUATION_ONLY",
+  "source_authorship": "AI_GENERATED",
+  "user_authorized": true,
+  "source_ingested": true,
+  "lineage_state": "SOURCE_ACCEPTED",
+  "source_package_id": "SRC79f12d1b7f5eb828",
+  "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+  "provider_calls": 0,
+  "production_db_mutations": 0,
+  "book_created": 0,
+  "scene_created": 0,
+  "fact_snapshot_created": 0,
+  "script_ir_created": 0,
+  "treatment_created": 0,
+  "blocking_created": 0,
+  "gate": {
+    "status": "AUTHORIZED_EVALUATION_SOURCE_ACCEPTED",
+    "accepted": true,
+    "errors": [],
+    "source_package_id": "SRC79f12d1b7f5eb828",
+    "project_provider_exposure": "PROJECT_PROVIDER_NOT_EXPOSED",
+    "provider_calls": 0,
+    "production_db_mutations": 0
+  }
+}

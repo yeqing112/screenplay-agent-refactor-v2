@@ -195,5 +195,20 @@
       "storyboard": "HOLD",
       "media": "HOLD"
     }
+  },
+  "authorized_ai_evaluation_source": {
+    "status": "INGESTED",
+    "source_title": "门外那把伞",
+    "source_class": "EVALUATION_ONLY",
+    "source_authorship": "AI_GENERATED",
+    "user_authorized": true,
+    "human_origin_blind_eligible": false,
+    "functional_pipeline_evaluation_eligible": true,
+    "lineage_state": "SOURCE_ACCEPTED",
+    "source_package_id": "SRC79f12d1b7f5eb828",
+    "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+    "provider_calls": 0,
+    "ready_for_upstream_processing": true,
+    "upstream_processing_authorized": false
   }
 }

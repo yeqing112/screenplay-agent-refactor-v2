@@ -1,0 +1,9 @@
+{
+  "schema_version": "director_v3_ai_evaluation_source_duplicate_check_v1",
+  "status": "PASS",
+  "raw_source_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368",
+  "normalized_source_hash": "48abfc0416698f580499dc728514003664cc3497eb092aa4803fd08cf8873d9f",
+  "semantic_similarity_used": false,
+  "embedding_used": false,
+  "provider_calls": 0
+}

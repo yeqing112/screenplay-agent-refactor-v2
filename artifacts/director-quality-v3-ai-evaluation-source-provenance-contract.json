@@ -1,0 +1,18 @@
+{
+  "schema_version": "evaluation_source_provenance_v1",
+  "status": "PASS",
+  "fixed_values": {
+    "source_class": "EVALUATION_ONLY",
+    "source_authorship": "AI_GENERATED",
+    "generation_origin": "OPENAI_CHATGPT_USER_REQUESTED",
+    "user_supplied_to_system": true,
+    "user_authorized_for_evaluation": true,
+    "human_authored": false,
+    "ai_generated": true,
+    "blind_human_origin_eligible": false,
+    "functional_pipeline_evaluation_eligible": true,
+    "final_human_source_benchmark_eligible": false
+  },
+  "real_source_lane_replacement": false,
+  "provider_calls": 0
+}

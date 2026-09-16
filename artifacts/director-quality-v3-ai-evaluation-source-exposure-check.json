@@ -1,0 +1,7 @@
+{
+  "schema_version": "director_v3_ai_evaluation_source_exposure_check_v1",
+  "status": "PASS",
+  "project_provider_exposure": "PROJECT_PROVIDER_NOT_EXPOSED",
+  "universally_unseen_claim": false,
+  "provider_calls": 0
+}
