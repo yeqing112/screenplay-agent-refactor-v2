@@ -2,10 +2,11 @@
   "schema_version": "director-quality-v3-final-spine-topology-preflight-wiring-v3",
   "status": "PASS",
   "status_code": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_NOT_AUTHORIZED",
-  "head": "d71e141",
-  "expected_base_commit": "3d7bf54",
+  "head": "8c655a1",
+  "expected_base_commit": "8c655a1",
   "checks": {
     "head_ancestry_gate": true,
+    "head_base_code_drift_gate": true,
     "forensic_closed": true,
     "wiring_closed": true,
     "readiness_true": true,
