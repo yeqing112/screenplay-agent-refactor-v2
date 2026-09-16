@@ -110,14 +110,14 @@ def _parse(raw: str, label: str, required: set[str]) -> dict[str, Any] | None:
 
 
 def _evaluate_spine(row: dict[str, Any], strategy: dict[str, Any], trace: dict[str, Any], raw: str) -> dict[str, Any]:
-    from core.visual_editorial_spine import normalize_spine, validate_spine
+    from core.visual_editorial_spine import normalize_spine, validate_spine_runtime
     from core.spine_topology_forensics import detect_spine_layer_leakage, validate_must_preserve_trace
     parsed = _parse(raw, "visual_editorial_spine_ir_v1", {"segments", "spine_summary"})
     if not parsed: return {"raw_parse": "FAIL", "raw_response": raw, "ir": None, "canonical": None, "protocol": {"status": "FAIL", "errors": [{"code": "SPINE_PARSE_ERROR"}]}, "authority": {"status": "UNSAFE"}, "coverage": {"status": "FAIL"}, "director_qa": {"signal": "SPINE_INVALID", "metrics": {}}, "valid": False}
     trace_validation = validate_must_preserve_trace(trace, scene_id=row["scene_id"])
     layer_leakage = detect_spine_layer_leakage(json.dumps(parsed, ensure_ascii=False, default=str))
     normalized = normalize_spine(parsed, scene_id=row["scene_id"], strategy_fingerprint=EXPECTED_FP[row["scene_id"]]); ir = normalized.get("ir") or {}
-    validation = validate_spine(ir, scene=row["inputs"]["scene"], strategy={**strategy, "strategy_fingerprint": EXPECTED_FP[row["scene_id"]]}, must_preserve_trace=trace)
+    validation = validate_spine_runtime(ir, scene=row["inputs"]["scene"], strategy={**strategy, "strategy_fingerprint": EXPECTED_FP[row["scene_id"]]}, must_preserve_trace=trace)
     errors = list(normalized.get("errors") or []) + list(validation.get("hard_errors") or [])
     if trace_validation.get("status") != "PASS":
         errors.append({"code": "PRESERVE_AUTHORITY_INVALID", "details": trace_validation.get("errors", [])})
@@ -129,12 +129,12 @@ def _evaluate_spine(row: dict[str, Any], strategy: dict[str, Any], trace: dict[s
 
 
 def _evaluate_skeleton(row: dict[str, Any], strategy: dict[str, Any], identity: list[dict[str, Any]], spine: dict[str, Any], events: dict[str, Any], raw: str) -> dict[str, Any]:
-    from core.shot_topology_skeleton import normalize_skeleton, validate_skeleton
+    from core.shot_topology_skeleton import normalize_skeleton, validate_skeleton_runtime
     parsed = _parse(raw, "shot_topology_skeleton_ir_v1", {"nodes"})
     if not parsed: return {"raw_parse": "FAIL", "raw_response": raw, "ir": None, "canonical": None, "protocol": {"status": "FAIL", "errors": [{"code": "SKELETON_PARSE_ERROR"}]}, "authority": {"status": "UNSAFE"}, "coverage": {"status": "FAIL"}, "topology_qa": {"signal": "TOPOLOGY_INVALID", "metrics": {}}, "reaction": {"count": 0, "semantic_stimulus": False}, "valid": False}
     normalized = normalize_skeleton(parsed, scene_id=row["scene_id"], spine_fingerprint=_fp(spine)); ir = normalized.get("ir") or {}
     allowed_refs = {_t(s.get("segment_key")) for s in _l(spine.get("segments")) if _t(s.get("segment_key"))}
-    validation = validate_skeleton(ir, spine=spine, scene=row["inputs"]["scene"], strategy=strategy, identity_projection={"records": identity}, allowed_segment_refs=allowed_refs, require_authority=True)
+    validation = validate_skeleton_runtime(ir, spine=spine, scene=row["inputs"]["scene"], strategy=strategy, identity_projection={"records": identity}, allowed_segment_refs=allowed_refs)
     errors = list(normalized.get("errors") or []) + list(validation.get("hard_errors") or [])
     allowed_events = {_t(e.get("event_key")) for e in _l(events.get("events"))}; errors += [{"code": "UNKNOWN_SEMANTIC_EVENT_KEY", "event_key": key} for node in _l(ir.get("nodes")) for key in _l(node.get("stimulus_event_keys")) if _t(key) not in allowed_events]
     reactions = [node for node in _l(ir.get("nodes")) if _t(node.get("primary_role")) == "REACTION"]; signal = "TOPOLOGY_INVALID" if errors else "TOPOLOGY_STRONG" if len(_l(ir.get("nodes"))) >= 2 and reactions else "TOPOLOGY_USABLE" if _l(ir.get("nodes")) else "TOPOLOGY_WEAK"

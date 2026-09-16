@@ -105,3 +105,44 @@ def test_skeleton_request_never_uses_phase_ids_as_segment_refs():
     )
     assert request["allowed_segment_refs"] == ["SEG01", "SEG02", "SEG03", "SEG04"]
     assert all(not value.startswith("P") for value in request["allowed_segment_refs"])
+
+
+def test_runtime_spine_validator_requires_explicit_preserve_trace():
+    from core.visual_editorial_spine import validate_spine_runtime
+
+    result = validate_spine_runtime(
+        {
+            "schema_version": "visual_editorial_spine_ir_v1",
+            "scene_id": "s1",
+            "strategy_fingerprint": "fp",
+            "segments": [],
+        },
+        scene={"scene_id": "s1", "beats": []},
+        strategy={"strategy_fingerprint": "fp", "scene_phases": []},
+        must_preserve_trace=None,
+    )
+    assert result["status"] == "FAIL"
+    assert result["hard_errors"][0]["code"] == "PRESERVE_AUTHORITY_MISSING"
+
+
+def test_runtime_skeleton_validator_rejects_identity_or_segment_authority_drift():
+    from core.shot_topology_skeleton import validate_skeleton_runtime
+
+    spine = {"segments": [{"segment_key": "SEG01", "phase_ids": ["P01"]}]}
+    skeleton = {"nodes": []}
+    kwargs = {
+        "spine": spine,
+        "scene": {"scene_id": "s1", "characters": {"records": [{"character_id": "19"}]}},
+        "strategy": {"scene_phases": [{"phase_id": "P01"}]},
+    }
+    missing_identity = validate_skeleton_runtime(
+        skeleton, **kwargs, identity_projection=None, allowed_segment_refs={"SEG01"}
+    )
+    assert any(e["code"] == "IDENTITY_AUTHORITY_MISSING" for e in missing_identity["hard_errors"])
+    drifted_refs = validate_skeleton_runtime(
+        skeleton,
+        **kwargs,
+        identity_projection={"records": [{"character_id": "19"}]},
+        allowed_segment_refs={"SEG02"},
+    )
+    assert any(e["code"] == "SEGMENT_REF_AUTHORITY_MISMATCH" for e in drifted_refs["hard_errors"])

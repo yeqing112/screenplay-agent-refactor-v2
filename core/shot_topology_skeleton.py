@@ -72,5 +72,56 @@ def validate_skeleton(skeleton: dict[str, Any], *, spine: dict[str, Any], scene:
     covered = set(x for n in nodes for x in _l(_d(n).get("beat_refs"))); errors += [{"code": "SKELETON_ORPHAN_BEAT", "reference": x} for x in sorted(beats - covered)]
     return {"status": "PASS" if not errors else "FAIL", "hard_errors": errors, "warnings": warnings, "node_count": len(nodes), "covered_beats": sorted(covered), "missing_beats": sorted(beats - covered)}
 
+
+def validate_skeleton_runtime(
+    skeleton: dict[str, Any],
+    *,
+    spine: dict[str, Any],
+    scene: dict[str, Any],
+    strategy: dict[str, Any],
+    identity_projection: dict[str, Any] | None,
+    allowed_segment_refs: set[str] | None = None,
+) -> dict[str, Any]:
+    """Validate topology using the exact provider authority projection.
+
+    The compatibility validator above can still replay legacy fixtures.  The
+    Final Re-Canary runtime cannot: identity is mandatory and segment refs are
+    derived from the canonical Spine supplied to this function.  There is no
+    legacy scene-character fallback at this boundary.
+    """
+    if identity_projection is None:
+        return {
+            "status": "FAIL",
+            "hard_errors": [{"code": "IDENTITY_AUTHORITY_MISSING"}],
+            "warnings": [],
+            "node_count": len(_l(skeleton.get("nodes"))),
+            "covered_beats": [],
+            "missing_beats": [],
+        }
+    spine_refs = {
+        _t(segment.get("segment_key"))
+        for segment in _l(spine.get("segments"))
+        if _t(_d(segment).get("segment_key"))
+    }
+    refs = spine_refs if allowed_segment_refs is None else set(allowed_segment_refs)
+    if not refs or refs != spine_refs:
+        return {
+            "status": "FAIL",
+            "hard_errors": [{"code": "SEGMENT_REF_AUTHORITY_MISMATCH"}],
+            "warnings": [],
+            "node_count": len(_l(skeleton.get("nodes"))),
+            "covered_beats": [],
+            "missing_beats": [],
+        }
+    return validate_skeleton(
+        skeleton,
+        spine=spine,
+        scene=scene,
+        strategy=strategy,
+        identity_projection=identity_projection,
+        allowed_segment_refs=refs,
+        require_authority=True,
+    )
+
 def compile_skeleton(raw, *, scene_id, spine, scene, strategy):
     normalized = normalize_skeleton(raw, scene_id=scene_id, spine_fingerprint=fingerprint(spine)); validation = validate_skeleton(normalized.get("ir") or {}, spine=spine, scene=scene, strategy=strategy) if normalized.get("ir") else {"status": "FAIL", "hard_errors": normalized.get("errors", [])}; return {**normalized, "validation": validation, "status": "PASS" if normalized.get("status") == "PASS" and validation.get("status") == "PASS" else "FAIL"}

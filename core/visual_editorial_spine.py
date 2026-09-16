@@ -117,6 +117,53 @@ def validate_spine(spine: dict[str, Any], *, scene: dict[str, Any], strategy: di
     errors += [{"code": "SPINE_MUST_AVOID_VIOLATION", "constraint": x} for x in avoid if x and x in joined]
     return {"status": "PASS" if not errors else "FAIL", "hard_errors": errors, "warnings": warnings, "covered_beats": sorted(set(covered)), "missing_beats": missing, "covered_phases": sorted(covered_phases), "missing_phases": sorted(required_phases - covered_phases)}
 
+
+def validate_spine_runtime(
+    spine: dict[str, Any],
+    *,
+    scene: dict[str, Any],
+    strategy: dict[str, Any],
+    must_preserve_trace: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Validate a Spine on the production runtime authority boundary.
+
+    ``validate_spine`` remains backwards-compatible for historical replay and
+    foundation fixtures.  Final Re-Canary code must use this explicit entry
+    point: an omitted/invalid ``must_preserve_trace_v1`` is a harness data gap,
+    never a reason to fall back to prose or silently continue.
+    """
+    from core.spine_topology_forensics import validate_must_preserve_trace
+
+    if must_preserve_trace is None:
+        return {
+            "status": "FAIL",
+            "hard_errors": [{"code": "PRESERVE_AUTHORITY_MISSING"}],
+            "warnings": [],
+            "covered_beats": [],
+            "missing_beats": [],
+            "covered_phases": [],
+            "missing_phases": [],
+        }
+    trace_check = validate_must_preserve_trace(
+        must_preserve_trace, scene_id=_t(scene.get("scene_id"))
+    )
+    result = validate_spine(
+        spine,
+        scene=scene,
+        strategy=strategy,
+        must_preserve_trace=must_preserve_trace,
+    )
+    if trace_check.get("status") != "PASS":
+        result = {
+            **result,
+            "status": "FAIL",
+            "hard_errors": [
+                *result.get("hard_errors", []),
+                {"code": "PRESERVE_AUTHORITY_INVALID", "details": trace_check.get("errors", [])},
+            ],
+        }
+    return result
+
 def compile_spine(raw: dict[str, Any], *, scene_id: str, strategy: dict[str, Any]) -> dict[str, Any]:
     result = normalize_spine(raw, scene_id=scene_id, strategy_fingerprint=_t(strategy.get("strategy_fingerprint")))
     if not result.get("ir"): return result
