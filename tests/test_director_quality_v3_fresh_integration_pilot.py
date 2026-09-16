@@ -27,15 +27,15 @@ def _row(scene_id: str, score: int, *, reasons=None):
     }
 
 
-def test_real_database_has_three_non_retired_fresh_candidates():
+def test_real_database_has_no_non_retired_fresh_candidates_after_six_scene_retirement():
     rows = _approved_scene_rows()
     ids = {row["scene_id"] for row in rows}
     assert len(rows) == 6
     assert RETIRED_SCENES.issubset(ids)
     registry = build_provider_exposure_registry(candidate_ids=ids)
     selection = select_fresh_cohort(rows, registry)
-    assert selection["candidate_count"] == 3
-    assert selection["selected_count"] == 3
+    assert selection["candidate_count"] == 0
+    assert selection["selected_count"] == 0
     assert set(selection["excluded"]["retired"]) == RETIRED_SCENES
     assert all(item["status"] == "NOT_EXPOSED" for item in registry["scenes"].values() if item["status"] != "EXPOSED")
 

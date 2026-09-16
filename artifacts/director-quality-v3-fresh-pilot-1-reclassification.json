@@ -1,0 +1,20 @@
+{
+  "schema_version": "director_quality_v3_fresh_pilot_1_reclassification_v1",
+  "historical_status": "FAILED",
+  "experiment_validity": "INVALID",
+  "primary_root_cause": "STRATEGY_PROVIDER_AUTHORITY_CONTRACT_MISMATCH",
+  "secondary_findings": [
+    "MODEL_OUTPUT_USED_LEGACY_STRING_PRESERVE"
+  ],
+  "model_strategy_capability": "NOT_FAIRLY_ADJUDICATED",
+  "provider_calls": 3,
+  "retries": 0,
+  "raw_evidence_mutated": false,
+  "historical_evidence_immutable": true,
+  "historical_machine_classification": "MODEL_FAILURE",
+  "evidence": {
+    "raw_strategy": "artifacts/director-quality-v3-fresh-integration-pilot-scenes",
+    "execution_manifest": "artifacts/director-quality-v3-fresh-integration-pilot-execution-manifest.json",
+    "provider_call_ledger": "artifacts/director-quality-v3-fresh-integration-pilot-provider-call-ledger.json"
+  }
+}

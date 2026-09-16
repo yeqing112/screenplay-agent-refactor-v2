@@ -70,7 +70,42 @@ def normalize_structured_preserve_constraints(value: Any, *, scene: dict[str, An
     return {"schema_version": "structured_preserve_constraint_v1", "constraints": normalized, "errors": errors, "status": "PASS" if not errors else "FAIL", "fingerprint": schema_fingerprint(normalized)}
 
 
-def strategy_authority(strategy: dict[str, Any], *, scene: dict[str, Any], identity_projection: Any, semantic_events: dict[str, Any] | None = None) -> dict[str, Any]:
+def strategy_authority(
+    strategy: dict[str, Any], *, scene: dict[str, Any], identity_projection: Any,
+    semantic_events: dict[str, Any] | None = None, fresh_path: bool = False,
+    provider_contract: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    if fresh_path:
+        # Fresh V3 has one machine authority shape.  A legacy string list is
+        # deliberately rejected instead of being silently upgraded.
+        if not isinstance(strategy, dict) or not isinstance(strategy.get("preserve_intents"), list):
+            return {
+                "status": "STRATEGY_SCHEMA_INVALID",
+                "strategy_schema_status": "FAIL",
+                "structured_preserve_constraints": {"status": "FAIL", "errors": [{"code": "STRATEGY_SCHEMA_INVALID"}, {"code": "PRESERVE_INTENT_REQUIRED"}]},
+                "identity": {"status": "FAIL", "record_count": 0, "errors": [{"code": "STRATEGY_SCHEMA_INVALID"}]},
+                "source_provenance": False,
+                "legacy_fallback": False,
+            }
+        from core.strategy_preserve_authority import preserve_authority_from_strategy
+        from core.director_strategy_provider_spec import build_strategy_provider_contract, validate_strategy_v3_shape
+        contract = provider_contract if isinstance(provider_contract, dict) else build_strategy_provider_contract({"strategy_contract": {"scene_id": scene.get("scene_id"), "allowed_source_refs": sorted(valid_scene_refs(scene, semantic_events)["source"]), "allowed_event_refs": sorted(valid_scene_refs(scene, semantic_events)["event"]), "allowed_character_refs": sorted(valid_scene_refs(scene, semantic_events)["character"]), "allowed_prop_refs": sorted(valid_scene_refs(scene, semantic_events)["prop"]), "allowed_location_refs": sorted(valid_scene_refs(scene, semantic_events)["location"])}})
+        shape = validate_strategy_v3_shape(strategy, contract=contract)
+        preserve = preserve_authority_from_strategy(strategy, contract=contract, scene_id=scene.get("scene_id"))
+        identity = _l(_d(identity_projection).get("records")) if isinstance(identity_projection, dict) else _l(identity_projection)
+        identity_errors = [{"code": "IDENTITY_AUTHORITY_MISSING"}] if not identity else []
+        errors = list(shape.get("errors") or []) + list(preserve.get("errors") or []) + identity_errors
+        return {
+            "status": "PASS" if not errors else "STRATEGY_AUTHORITY_INCOMPLETE",
+            "strategy_schema_status": shape.get("status"),
+            "strategy_schema_fingerprint": contract.get("schema_fingerprint"),
+            "provider_contract": contract,
+            "structured_preserve_constraints": preserve,
+            "identity": {"status": "PASS" if not identity_errors else "FAIL", "record_count": len(identity), "errors": identity_errors},
+            "source_provenance": all(bool(_d(row).get("provenance")) for row in _l(preserve.get("constraints"))) if preserve.get("constraints") else True,
+            "legacy_fallback": False,
+            "errors": errors,
+        }
     structured = strategy.get("structured_preserve_constraints")
     if structured is None:
         legacy = _l(strategy.get("must_preserve")); structured = [{"kind": "VISUAL_EVENT", "description": _t(item)} for item in legacy]
@@ -90,8 +125,8 @@ def strategy_approval_allowed(authority: dict[str, Any]) -> bool:
     return authority.get("status") == "PASS"
 
 
-def authority_completeness_gate(*, strategy: dict[str, Any], scene: dict[str, Any], identity_projection: Any, semantic_events: dict[str, Any] | None = None) -> dict[str, Any]:
-    authority = strategy_authority(strategy, scene=scene, identity_projection=identity_projection, semantic_events=semantic_events)
+def authority_completeness_gate(*, strategy: dict[str, Any], scene: dict[str, Any], identity_projection: Any, semantic_events: dict[str, Any] | None = None, fresh_path: bool = False, provider_contract: dict[str, Any] | None = None) -> dict[str, Any]:
+    authority = strategy_authority(strategy, scene=scene, identity_projection=identity_projection, semantic_events=semantic_events, fresh_path=fresh_path, provider_contract=provider_contract)
     failed = authority.get("status") != "PASS" or not authority.get("source_provenance", False)
     return {"schema_version": "director_authority_completeness_gate_v1", "status": "AUTHORITY_COMPLETENESS_FAILED" if failed else "PASS", "provider_callable": not failed, "strategy_approval_allowed": not failed, "authority": authority, "errors": [{"code": "AUTHORITY_COMPLETENESS_FAILED"}] if failed else []}
 

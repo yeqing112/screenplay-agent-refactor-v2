@@ -1,0 +1,12 @@
+{
+  "schema_version": "strategy_provider_validator_schema_parity_v1",
+  "status": "PASS",
+  "provider_spec_fingerprint": "a2f627fddc95d989c209f2b9651b077fa60a77db19047a8820393cd7ebbfebd1",
+  "validator_spec_fingerprint": "a2f627fddc95d989c209f2b9651b077fa60a77db19047a8820393cd7ebbfebd1",
+  "required_field_parity": true,
+  "preserve_intent_field_parity": true,
+  "enum_parity": true,
+  "ref_rule_parity": true,
+  "forbidden_field_parity": true,
+  "fingerprint_parity": true
+}

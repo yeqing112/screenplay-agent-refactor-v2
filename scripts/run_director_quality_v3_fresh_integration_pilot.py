@@ -27,6 +27,9 @@ RETIRED_SCENES = {
     "book990402:e3:暗房惊魂",
     "book990402:e3:暗房惊魂（2）",
     "book990402:e2:回声照相馆",
+    "book990402:e1:红伞幻影（一）",
+    "book990402:e1:红伞幻影（二）",
+    "book990402:e2:暗房门口的试探",
 }
 SELECTION_ALGORITHM_VERSION = "fresh_scene_complexity_v1"
 PILOT_SCHEMA_VERSION = "director_quality_v3_fresh_integration_pilot_v1"
@@ -264,31 +267,41 @@ def _authority() -> dict[str, Any]: return _load(AUTHORITY_PATH)
 
 
 def _authority_flags(pointer: dict[str, Any]) -> dict[str, Any]:
-    ssot = _d(pointer.get("authority_contract_ssot")); redesign = _d(_d(pointer.get("shot_architecture")).get("generation_architecture_redesign")); canary = _d(redesign.get("spine_topology_canary"))
-    return {"authority_ssot_closed": ssot.get("status") == "CLOSED", "fresh_ready": ssot.get("ready_for_fresh_integration_pilot") is True, "fresh_authorized": ssot.get("fresh_integration_pilot_authorized") is True, "authorization_type": ssot.get("authorization_type") or "DIRECTOR_CRITIC_EXTERNAL_AUTHORIZATION", "historical_retired_enforced": canary.get("no_further_spine_topology_recanary") is True, "atomic_hold": canary.get("atomic_expansion_canary_authorized") is False, "production_hold": canary.get("production_shotplan") == "HOLD"}
+    strategy_ssot = _d(pointer.get("strategy_authority_contract_ssot")); legacy_ssot = _d(pointer.get("authority_contract_ssot")); ssot = strategy_ssot or legacy_ssot
+    # Once the V3 SSOT exists it owns the Fresh-path readiness/authorization
+    # fields.  Do not silently inherit the legacy contract's pilot gate.
+    fresh_ready = strategy_ssot.get("ready_for_fresh_integration_pilot") if strategy_ssot else legacy_ssot.get("ready_for_fresh_integration_pilot")
+    fresh_authorized = strategy_ssot.get("fresh_integration_pilot_authorized") if strategy_ssot else legacy_ssot.get("fresh_integration_pilot_authorized")
+    redesign = _d(_d(pointer.get("shot_architecture")).get("generation_architecture_redesign")); canary = _d(redesign.get("spine_topology_canary"))
+    return {"authority_ssot_closed": ssot.get("status") == "CLOSED", "fresh_ready": fresh_ready is True, "fresh_authorized": fresh_authorized is True, "authorization_type": ssot.get("authorization_type") or ssot.get("fresh_integration_pilot_authorization_type") or "DIRECTOR_CRITIC_EXTERNAL_AUTHORIZATION", "historical_retired_enforced": canary.get("no_further_spine_topology_recanary") is True, "atomic_hold": canary.get("atomic_expansion_canary_authorized") is False, "production_hold": canary.get("production_shotplan") == "HOLD"}
 
 
 def _contract_preflight(selected: list[dict[str, Any]]) -> dict[str, Any]:
     from core.director_contract_ssot import schema_parity_report
     from core.director_scene_strategy import build_runtime_strategy_contract, canonicalize_allowed_characters
-    from core.director_scene_strategy_semantic_spec_v2 import build_provider_skeleton
-    checks = {"count_three": len(selected) == 3, "ssot_parity": schema_parity_report().get("status") == "PASS", "upstream_complete": True, "identity_complete": True, "no_history_inputs": True}
+    from core.director_strategy_provider_spec import build_strategy_provider_contract, provider_validator_parity
+    checks = {"count_three": len(selected) == 3, "ssot_parity": schema_parity_report().get("status") == "PASS", "strategy_spec_parity": provider_validator_parity().get("status") == "PASS", "upstream_complete": True, "identity_complete": True, "no_history_inputs": True}
     rows = []
     for row in selected:
         try:
             runtime = build_runtime_strategy_contract(scene=row["scene"], treatment=row["director_treatment"], blocking=row["scene_blocking"], fact_snapshot=row["fact_snapshot"])
             identity = canonicalize_allowed_characters(runtime.get("allowed_characters"), book_id=runtime.get("book_id"))
-            contract = build_provider_skeleton(scene_id=row["scene_id"], beat_ids=runtime.get("beat_ids", []), character_ids=runtime.get("character_ids", []), fact_ids=runtime.get("fact_ids", []), prop_ids=runtime.get("prop_ids", []), location_ids=runtime.get("location_ids", []), runtime_contract=runtime)
+            contract = build_strategy_provider_contract({"strategy_contract": runtime})
             identity_ok = bool(identity) and all(_t(x.get("character_id")) and _t(x.get("canonical_name")) for x in identity)
             checks["identity_complete"] &= identity_ok; checks["upstream_complete"] &= not row.get("eligibility_reasons")
-            rows.append({"scene_id": row["scene_id"], "strategy_contract": runtime, "identity_projection": identity, "provider_contract": contract, "strategy_contract_fingerprint": _fp(runtime), "identity_fingerprint": _fp(identity), "schema_fingerprint": _fp(contract)})
+            rows.append({"scene_id": row["scene_id"], "strategy_contract": runtime, "identity_projection": identity, "provider_contract": contract, "strategy_contract_fingerprint": _fp(runtime), "identity_fingerprint": _fp(identity), "schema_fingerprint": contract.get("schema_fingerprint")})
         except Exception as exc:
             checks["upstream_complete"] = False; rows.append({"scene_id": row["scene_id"], "error": str(exc)})
     return {"checks": checks, "rows": rows, "status": "PASS" if all(checks.values()) else "BLOCKED", "provider_calls": 0}
 
 
 def _preserve_trace_from_strategy(strategy: dict[str, Any], contract: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Bind only explicit provider preserve intents; never guess a beat."""
+    """Legacy V2 compatibility only; never called by the Fresh V3 path.
+
+    The historical replay keeps its original evidence semantics.  Fresh V3
+    obtains structured ``preserve_intents`` and calls the deterministic
+    authority compiler instead of parsing prose here.
+    """
     rows = []
     allowed = set(contract.get("allowed_source_refs") or [])
     for index, intent in enumerate(_l(strategy.get("must_preserve")), 1):
@@ -303,9 +316,10 @@ def _preserve_trace_from_strategy(strategy: dict[str, Any], contract: dict[str, 
 
 
 def _strategy_request(row: dict[str, Any], runtime: dict[str, Any], profile: dict[str, Any]) -> dict[str, Any]:
-    from core.director_strategy_prompt import build_scene_strategy_ir_v2_prompt
-    evidence = {"scene_id": row["scene_id"], "book_id": row["book_id"], "scene": copy.deepcopy(row["scene"]), "fact_snapshot": copy.deepcopy(row["fact_snapshot"]), "director_treatment": copy.deepcopy(row["director_treatment"]), "scene_blocking": copy.deepcopy(row["scene_blocking"]), "strategy_contract": copy.deepcopy(runtime), "source_evidence": copy.deepcopy(row["source_evidence"])}
-    prompt = build_scene_strategy_ir_v2_prompt(evidence=evidence, model_profile=profile)
+    from core.director_strategy_prompt_v3 import build_scene_strategy_ir_v3_prompt
+    from core.semantic_events import project_semantic_events
+    evidence = {"scene_id": row["scene_id"], "book_id": row["book_id"], "scene": copy.deepcopy(row["scene"]), "fact_snapshot": copy.deepcopy(row["fact_snapshot"]), "director_treatment": copy.deepcopy(row["director_treatment"]), "scene_blocking": copy.deepcopy(row["scene_blocking"]), "semantic_events": project_semantic_events(row["scene"]), "strategy_contract": copy.deepcopy(runtime), "source_evidence": copy.deepcopy(row["source_evidence"])}
+    prompt = build_scene_strategy_ir_v3_prompt(evidence=evidence, model_profile=profile)
     return {"request": prompt, "evidence": evidence, "runtime_contract": runtime}
 
 
@@ -413,9 +427,7 @@ def _run_provider(selected: list[dict[str, Any]], profile: dict[str, Any]) -> di
     from core.director_authority import authority_completeness_gate, provider_readiness_gate
     from core.director_contract_ssot import build_provider_contract, schema_parity_report
     from core.director_scene_strategy import build_runtime_strategy_contract, canonicalize_allowed_characters
-    from core.director_scene_strategy_ir_compiler_v2 import compile_ir_v2_to_canonical_v3
-    from core.director_scene_strategy_ir_v2 import validate_strategy_ir_v2
-    from core.director_strategy_prompt import build_scene_strategy_ir_v2_prompt
+    from core.director_strategy_provider_spec import canonicalize_strategy_v3, validate_strategy_v3_shape, provider_validator_parity
     from core.llm import call_llm
     from core.semantic_events import project_semantic_events
     from core.shot_topology_graph_binder import bind_topology
@@ -469,16 +481,20 @@ def _run_provider(selected: list[dict[str, Any]], profile: dict[str, Any]) -> di
             record["calls"].append({"ordinal": ledger["successful_calls"], "layer": "STRATEGY", "request_fingerprint": req.get("request_fingerprint"), "raw_response_fingerprint": _fp(raw_strategy), "retries": 0})
 
             try:
-                parsed_strategy = parse_json_object(raw_strategy, label="director_scene_strategy_ir_v2", required_keys={"scene_phases", "must_preserve"})
-                checked = validate_strategy_ir_v2(parsed_strategy, contract=runtime)
+                parsed_strategy = parse_json_object(raw_strategy, label="director_scene_strategy_ir_v3", required_keys={"scene_phases", "preserve_intents"})
+                checked = validate_strategy_v3_shape(parsed_strategy, contract=req.get("provider_contract") or {})
             except Exception as exc:
                 raise ValueError(f"STRATEGY_MODEL_OUTPUT_INVALID: {exc}") from exc
-            _write(scene_dir / "strategy-ir.json", checked.get("ir") or parsed_strategy)
+            _write(scene_dir / "strategy-ir.json", parsed_strategy)
             _write(scene_dir / "strategy-protocol.json", checked)
-            if not checked.get("valid"):
+            if checked.get("status") != "PASS":
                 raise ValueError("STRATEGY_PROTOCOL_FAILURE")
-            strategy_ir = checked["ir"]
-            authority_gate = authority_completeness_gate(strategy=strategy_ir, scene=row["scene"], identity_projection={"records": identity}, semantic_events=semantic_events)
+            # Authority validation consumes the provider envelope before the
+            # program-owned canonical fingerprint is added.  Feeding the
+            # canonical copy back into the provider schema would incorrectly
+            # reject ``strategy_fingerprint`` as a provider-emitted field.
+            authority_gate = authority_completeness_gate(strategy=parsed_strategy, scene=row["scene"], identity_projection={"records": identity}, semantic_events=semantic_events, fresh_path=True, provider_contract=req.get("provider_contract") or {})
+            strategy_ir = canonicalize_strategy_v3(parsed_strategy)
             structured = _d(authority_gate.get("authority")).get("structured_preserve_constraints")
             trace = _trace_from_authority(authority_gate.get("authority") or {}, sid)
             _write(scene_dir / "structured-preserve.json", structured)
@@ -487,13 +503,17 @@ def _run_provider(selected: list[dict[str, Any]], profile: dict[str, Any]) -> di
             _write(scene_dir / "authority-completeness.json", authority_gate)
             if authority_gate.get("status") != "PASS":
                 raise ValueError("STRATEGY_AUTHORITY_INCOMPLETE")
-            canonical = compile_ir_v2_to_canonical_v3(ir=strategy_ir and strategy_ir, contract=runtime, authority=authority_gate.get("authority"))
+            canonical = copy.deepcopy(strategy_ir)
             canonical["structured_preserve_constraints"] = structured
+            canonical["authority_contract"] = authority_gate.get("authority")
+            canonical["strategy_schema_fingerprint"] = req.get("schema_fingerprint")
             _write(scene_dir / "strategy-canonical.json", canonical)
             _write(scene_dir / "strategy-creative-qa.json", {"signal": "STRATEGY_USABLE", "metrics": {"scene_specificity": True, "phase_count": len(_l(canonical.get("scene_phases")))}})
             record["strategy"] = {"status": "PASS", "canonical_fingerprint": _fp(canonical), "authority": authority_gate}
 
-            schema = schema_parity_report()
+            legacy_schema = schema_parity_report()
+            strategy_schema = provider_validator_parity()
+            schema = {"status": "PASS" if legacy_schema.get("status") == "PASS" and strategy_schema.get("status") == "PASS" else "FAIL", "director_contract": legacy_schema, "strategy_contract": strategy_schema}
             readiness = provider_readiness_gate(authority=authority_gate.get("authority") or {}, schema_parity=schema, strategy_fingerprint_ok=bool(canonical.get("strategy_fingerprint")))
             _write(scene_dir / "provider-readiness.json", readiness)
             if readiness.get("status") != "PASS":
@@ -728,11 +748,16 @@ def _update_authority(status: str, cohort_fingerprint: str | None, ledger: dict[
                 "layer": "STRATEGY_AUTHORITY",
                 "code": "STRATEGY_AUTHORITY_INCOMPLETE",
                 "classification": "MODEL_FAILURE",
+                "historical_machine_classification": "MODEL_FAILURE",
                 "no_auto_retry": True,
             }
         ]
     pointer["fresh_integration_pilot"] = {
         "status": outcome,
+        "experiment_validity": "INVALID" if outcome == "FAILED" else None,
+        "primary_root_cause": "STRATEGY_PROVIDER_AUTHORITY_CONTRACT_MISMATCH" if outcome == "FAILED" else None,
+        "secondary_findings": ["MODEL_OUTPUT_USED_LEGACY_STRING_PRESERVE"] if outcome == "FAILED" else [],
+        "model_strategy_capability": "NOT_FAIRLY_ADJUDICATED" if outcome == "FAILED" else None,
         "cohort_fingerprint": cohort_fingerprint,
         "strategy_calls": ledger.get("attempted_strategy_calls", 0),
         "spine_calls": ledger.get("attempted_spine_calls", 0),
@@ -746,6 +771,7 @@ def _update_authority(status: str, cohort_fingerprint: str | None, ledger: dict[
         "failure_layers": failure_layers,
         "no_auto_retry": outcome == "FAILED",
         "cohort_replacement": False,
+        "no_retry_same_cohort": outcome == "FAILED",
     }
     _write(AUTHORITY_PATH, pointer)
 

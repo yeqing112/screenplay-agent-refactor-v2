@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "schema_version": "structured_preserve_constraint_v1",
+  "positive_fixture": {
+    "schema_version": "structured_preserve_constraint_v1",
+    "intent_schema_version": "strategy_preserve_intent_v1",
+    "scene_id": "strategy-authority-fixture",
+    "constraints": [
+      {
+        "constraint_id": "MP01",
+        "kind": "PROP_INTERACTION",
+        "description": "the witness touches the archive bag",
+        "subject_refs": [
+          "character:19"
+        ],
+        "object_refs": [
+          "prop:archive_bag"
+        ],
+        "beat_refs": [
+          "beat:1"
+        ],
+        "event_refs": [],
+        "source_refs": [],
+        "visibility_requirement": "EXPLICIT",
+        "preservation_scope": "SCENE",
+        "provenance": {
+          "authority": "STRATEGY_PROVIDER_INTENT",
+          "source_intent_index": 1
+        }
+      }
+    ],
+    "errors": [],
+    "status": "PASS",
+    "fingerprint": "d364e04cbd31f3dee7e91dd5a4dd94b40064256a559348914cc664e15ed29882"
+  },
+  "negative_invalid_anchor": {
+    "schema_version": "structured_preserve_constraint_v1",
+    "intent_schema_version": "strategy_preserve_intent_v1",
+    "scene_id": "strategy-authority-fixture",
+    "constraints": [
+      {
+        "constraint_id": "MP01",
+        "kind": "PROP_INTERACTION",
+        "description": "the witness touches the archive bag",
+        "subject_refs": [
+          "character:19"
+        ],
+        "object_refs": [
+          "prop:archive_bag"
+        ],
+        "beat_refs": [],
+        "event_refs": [],
+        "source_refs": [],
+        "visibility_requirement": "EXPLICIT",
+        "preservation_scope": "SCENE",
+        "provenance": {
+          "authority": "STRATEGY_PROVIDER_INTENT",
+          "source_intent_index": 1
+        }
+      }
+    ],
+    "errors": [
+      {
+        "code": "PRESERVE_ANCHOR_INVALID",
+        "constraint_id": "MP01",
+        "reference": "beat:UNKNOWN"
+      }
+    ],
+    "status": "FAIL",
+    "fingerprint": "b78067e560a2ea845a8017e62c546461bfdf70c1a79438a24a2f7fa6aa1a86e6"
+  },
+  "deterministic_id_policy": "program-owned MP01, MP02...",
+  "prose_guessing": false
+}

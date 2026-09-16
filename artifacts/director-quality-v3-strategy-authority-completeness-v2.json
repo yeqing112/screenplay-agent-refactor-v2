@@ -1,0 +1,307 @@
+{
+  "status": "PASS",
+  "positive_fixture": {
+    "shape": {
+      "status": "PASS",
+      "errors": [],
+      "schema_fingerprint": "0117fdd611e491e73a0164de5e3ea0ec49854d0ff2ba572860455322085d6def"
+    },
+    "authority": {
+      "schema_version": "director_authority_completeness_gate_v1",
+      "status": "PASS",
+      "provider_callable": true,
+      "strategy_approval_allowed": true,
+      "authority": {
+        "status": "PASS",
+        "strategy_schema_status": "PASS",
+        "strategy_schema_fingerprint": "0117fdd611e491e73a0164de5e3ea0ec49854d0ff2ba572860455322085d6def",
+        "provider_contract": {
+          "schema_version": "director_strategy_provider_spec_v3",
+          "strategy_schema_version": "director_scene_strategy_ir_v3",
+          "required_fields": [
+            "dramatic_objective",
+            "scene_question",
+            "strategy_summary",
+            "visual_thesis",
+            "scene_phases",
+            "spatial_expression",
+            "prop_visual_strategy",
+            "creative_risks",
+            "must_avoid",
+            "preserve_intents"
+          ],
+          "preserve_intent_schema_version": "strategy_preserve_intent_v1",
+          "preserve_intent_required_fields": [
+            "kind",
+            "description",
+            "anchor_refs",
+            "subject_refs",
+            "object_refs",
+            "visibility_requirement"
+          ],
+          "preserve_kind_enum": [
+            "CHARACTER_ACTION",
+            "CHARACTER_REACTION",
+            "PROP_STATE",
+            "PROP_INTERACTION",
+            "SPATIAL_RELATION",
+            "INFORMATION_REVEAL",
+            "INFORMATION_WITHHOLD",
+            "VISUAL_EVENT",
+            "ENTRY_EXIT",
+            "CONTINUITY_REQUIREMENT"
+          ],
+          "visibility_requirement_enum": [
+            "EXPLICIT",
+            "IMPLICIT",
+            "CONTINUITY_ONLY"
+          ],
+          "ref_rules": {
+            "anchor_refs": "non-empty exact selection from allowed typed refs; no prose resolution",
+            "subject_refs": "exact character refs from allowed_character_refs",
+            "object_refs": "exact prop/location refs from allowed_prop_refs or allowed_location_refs",
+            "provider_does_not_emit_constraint_ids": true
+          },
+          "legacy_projection": {
+            "field": "must_preserve",
+            "human_readable_projection_only": true
+          },
+          "forbidden_machine_fields": [
+            "must_preserve",
+            "strategy_fingerprint",
+            "shots",
+            "shot_ids",
+            "plan_shot_id",
+            "patches",
+            "repair"
+          ],
+          "allowed_source_refs": [
+            "beat:1",
+            "beat:2",
+            "beat:3"
+          ],
+          "allowed_character_refs": [
+            "character:19"
+          ],
+          "allowed_prop_refs": [
+            "prop:archive_bag"
+          ],
+          "allowed_location_refs": [
+            "location:darkroom"
+          ],
+          "allowed_event_refs": [
+            "event:archive_touch"
+          ],
+          "schema_fingerprint": "0117fdd611e491e73a0164de5e3ea0ec49854d0ff2ba572860455322085d6def"
+        },
+        "structured_preserve_constraints": {
+          "schema_version": "structured_preserve_constraint_v1",
+          "intent_schema_version": "strategy_preserve_intent_v1",
+          "scene_id": "strategy-authority-fixture",
+          "constraints": [
+            {
+              "constraint_id": "MP01",
+              "kind": "PROP_INTERACTION",
+              "description": "the witness touches the archive bag",
+              "subject_refs": [
+                "character:19"
+              ],
+              "object_refs": [
+                "prop:archive_bag"
+              ],
+              "beat_refs": [
+                "beat:1"
+              ],
+              "event_refs": [],
+              "source_refs": [],
+              "visibility_requirement": "EXPLICIT",
+              "preservation_scope": "SCENE",
+              "provenance": {
+                "authority": "STRATEGY_PROVIDER_INTENT",
+                "source_intent_index": 1
+              }
+            }
+          ],
+          "errors": [],
+          "status": "PASS",
+          "fingerprint": "d364e04cbd31f3dee7e91dd5a4dd94b40064256a559348914cc664e15ed29882"
+        },
+        "identity": {
+          "status": "PASS",
+          "record_count": 1,
+          "errors": []
+        },
+        "source_provenance": true,
+        "legacy_fallback": false,
+        "errors": []
+      },
+      "errors": []
+    },
+    "provider_readiness": {
+      "schema_version": "provider_readiness_gate_v1",
+      "status": "PASS",
+      "provider_callable": true,
+      "checks": {
+        "authority_complete": true,
+        "preserve_complete": true,
+        "identity_complete": true,
+        "schema_parity": true,
+        "strategy_exact": true,
+        "no_unresolved_anchors": true
+      },
+      "errors": []
+    },
+    "canonical_program_output": {
+      "strategy_fingerprint": "2b5762d610490b50ef86828a1c4dc3142fc9f862b254c0108741c0dd47c3543f"
+    }
+  },
+  "negative_invalid_anchor": {
+    "schema_version": "director_authority_completeness_gate_v1",
+    "status": "AUTHORITY_COMPLETENESS_FAILED",
+    "provider_callable": false,
+    "strategy_approval_allowed": false,
+    "authority": {
+      "status": "STRATEGY_AUTHORITY_INCOMPLETE",
+      "strategy_schema_status": "PASS",
+      "strategy_schema_fingerprint": "0117fdd611e491e73a0164de5e3ea0ec49854d0ff2ba572860455322085d6def",
+      "provider_contract": {
+        "schema_version": "director_strategy_provider_spec_v3",
+        "strategy_schema_version": "director_scene_strategy_ir_v3",
+        "required_fields": [
+          "dramatic_objective",
+          "scene_question",
+          "strategy_summary",
+          "visual_thesis",
+          "scene_phases",
+          "spatial_expression",
+          "prop_visual_strategy",
+          "creative_risks",
+          "must_avoid",
+          "preserve_intents"
+        ],
+        "preserve_intent_schema_version": "strategy_preserve_intent_v1",
+        "preserve_intent_required_fields": [
+          "kind",
+          "description",
+          "anchor_refs",
+          "subject_refs",
+          "object_refs",
+          "visibility_requirement"
+        ],
+        "preserve_kind_enum": [
+          "CHARACTER_ACTION",
+          "CHARACTER_REACTION",
+          "PROP_STATE",
+          "PROP_INTERACTION",
+          "SPATIAL_RELATION",
+          "INFORMATION_REVEAL",
+          "INFORMATION_WITHHOLD",
+          "VISUAL_EVENT",
+          "ENTRY_EXIT",
+          "CONTINUITY_REQUIREMENT"
+        ],
+        "visibility_requirement_enum": [
+          "EXPLICIT",
+          "IMPLICIT",
+          "CONTINUITY_ONLY"
+        ],
+        "ref_rules": {
+          "anchor_refs": "non-empty exact selection from allowed typed refs; no prose resolution",
+          "subject_refs": "exact character refs from allowed_character_refs",
+          "object_refs": "exact prop/location refs from allowed_prop_refs or allowed_location_refs",
+          "provider_does_not_emit_constraint_ids": true
+        },
+        "legacy_projection": {
+          "field": "must_preserve",
+          "human_readable_projection_only": true
+        },
+        "forbidden_machine_fields": [
+          "must_preserve",
+          "strategy_fingerprint",
+          "shots",
+          "shot_ids",
+          "plan_shot_id",
+          "patches",
+          "repair"
+        ],
+        "allowed_source_refs": [
+          "beat:1",
+          "beat:2",
+          "beat:3"
+        ],
+        "allowed_character_refs": [
+          "character:19"
+        ],
+        "allowed_prop_refs": [
+          "prop:archive_bag"
+        ],
+        "allowed_location_refs": [
+          "location:darkroom"
+        ],
+        "allowed_event_refs": [
+          "event:archive_touch"
+        ],
+        "schema_fingerprint": "0117fdd611e491e73a0164de5e3ea0ec49854d0ff2ba572860455322085d6def"
+      },
+      "structured_preserve_constraints": {
+        "schema_version": "structured_preserve_constraint_v1",
+        "intent_schema_version": "strategy_preserve_intent_v1",
+        "scene_id": "strategy-authority-fixture",
+        "constraints": [
+          {
+            "constraint_id": "MP01",
+            "kind": "PROP_INTERACTION",
+            "description": "the witness touches the archive bag",
+            "subject_refs": [
+              "character:19"
+            ],
+            "object_refs": [
+              "prop:archive_bag"
+            ],
+            "beat_refs": [],
+            "event_refs": [],
+            "source_refs": [],
+            "visibility_requirement": "EXPLICIT",
+            "preservation_scope": "SCENE",
+            "provenance": {
+              "authority": "STRATEGY_PROVIDER_INTENT",
+              "source_intent_index": 1
+            }
+          }
+        ],
+        "errors": [
+          {
+            "code": "PRESERVE_ANCHOR_INVALID",
+            "constraint_id": "MP01",
+            "reference": "beat:UNKNOWN"
+          }
+        ],
+        "status": "FAIL",
+        "fingerprint": "b78067e560a2ea845a8017e62c546461bfdf70c1a79438a24a2f7fa6aa1a86e6"
+      },
+      "identity": {
+        "status": "PASS",
+        "record_count": 1,
+        "errors": []
+      },
+      "source_provenance": true,
+      "legacy_fallback": false,
+      "errors": [
+        {
+          "code": "PRESERVE_ANCHOR_INVALID",
+          "constraint_id": "MP01",
+          "reference": "beat:UNKNOWN"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "code": "AUTHORITY_COMPLETENESS_FAILED"
+      }
+    ]
+  },
+  "legacy_string_only": {
+    "status": "FAIL_CLOSED",
+    "provider_callable": false
+  }
+}

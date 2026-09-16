@@ -1,0 +1,21 @@
+{
+  "schema_version": "director_quality_v3_fresh_pilot_2_candidate_inventory_v1",
+  "candidate_count": 0,
+  "eligible_unseen_scene_count": 0,
+  "candidates": [],
+  "excluded": {
+    "exposed": [],
+    "retired": [
+      "book990402:e1:红伞幻影（一）",
+      "book990402:e1:红伞幻影（二）",
+      "book990402:e2:回声照相馆",
+      "book990402:e2:暗房门口的试探",
+      "book990402:e3:暗房惊魂",
+      "book990402:e3:暗房惊魂（2）"
+    ],
+    "unknown": [],
+    "incomplete": []
+  },
+  "retired_scene_count": 6,
+  "provider_calls": 0
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "director_quality_v3_fresh_pilot_2_readiness_v1",
+  "eligible_unseen_scene_count": 0,
+  "ready": false,
+  "authorized": false,
+  "cohort_frozen": false,
+  "provider_calls": 0,
+  "reason": "INSUFFICIENT_FRESH_ELIGIBLE_SCENES"
+}

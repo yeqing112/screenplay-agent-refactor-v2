@@ -1,11 +1,16 @@
 {
+  "schema_version": "director_quality_v3_retired_provider_cohort_v1",
   "status": "ENFORCED",
   "scene_ids": [
+    "book990402:e1:红伞幻影（一）",
+    "book990402:e1:红伞幻影（二）",
+    "book990402:e2:回声照相馆",
+    "book990402:e2:暗房门口的试探",
     "book990402:e3:暗房惊魂",
-    "book990402:e3:暗房惊魂（2）",
-    "book990402:e2:回声照相馆"
+    "book990402:e3:暗房惊魂（2）"
   ],
-  "real_provider_experiment_allowed": false,
+  "count": 6,
+  "future_provider_experiment_allowed": false,
   "allowed_uses": [
     "historical regression",
     "negative fixture",

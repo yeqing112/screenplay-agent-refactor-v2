@@ -242,3 +242,9 @@ __all__ = [
     "build_scene_strategy_ir_prompt",
     "build_scene_strategy_ir_v2_prompt",
 ]
+
+# Fresh V3 callers import this wrapper from the established prompt module;
+# implementation and contract ownership remain in the dedicated V3 builder.
+from core.director_strategy_prompt_v3 import build_scene_strategy_ir_v3_prompt
+
+__all__.append("build_scene_strategy_ir_v3_prompt")
