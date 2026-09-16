@@ -145,6 +145,8 @@ def build_call_graph(*, provider_config: dict[str, Any] | None = None) -> dict[s
     config = _d(provider_config)
     return {
         "schema_version": "director_v3_evaluation_upstream_phase_a_callgraph_v1",
+        "fact_extraction_v1": "HISTORICAL_ONLY",
+        "fact_extraction_v2": "CURRENT_EVALUATION_PATH",
         "source": "immutable short-story raw text",
         "stages": [
             {"name": "fact_extraction", "input": "raw_source", "output": "provider_fact_payload", "max_calls": 1, "retries": 0, "formal_implementation": "EvaluationUpstreamPhaseAAdapter.build_fact_request → canonicalize_fact_payload → core.fact_snapshot.build_fact_snapshot → validate_fact_records", "reusable": ["core.fact_snapshot.build_fact_snapshot", "core.fact_snapshot.validate_fact_records"]},
@@ -180,6 +182,24 @@ def build_fact_request(*, raw_text: str, provider_config: dict[str, Any] | None 
         "provider": _t(config.get("provider")),
         "model": _t(config.get("model")),
     }
+
+
+def build_fact_request_v2(*, raw_text: str, source_package_id: str = SOURCE_PACKAGE_ID, source_version_id: str = SOURCE_VERSION_ID, source_raw_hash: str = "", provider_config: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Current V2 path: expose deterministic source blocks and ref-only evidence."""
+    from core.fact_evidence_authority_v2 import build_fact_request_v2 as _build_v2
+    from core.source_evidence_index import build_source_evidence_index
+    raw_bytes = str(raw_text).encode("utf-8")
+    index = build_source_evidence_index(raw_bytes, source_package_id=source_package_id, source_version_id=source_version_id, source_raw_hash=source_raw_hash or None)
+    config = _d(provider_config)
+    return _build_v2(raw_text=raw_text, source_package_id=source_package_id, source_version_id=source_version_id, source_raw_hash=index["source_raw_hash"], source_index=index, provider=_t(config.get("provider")), model=_t(config.get("model")))
+
+
+def canonicalize_fact_payload_v2(payload: Any, *, raw_bytes: bytes, source_package_id: str = SOURCE_PACKAGE_ID, source_version_id: str = SOURCE_VERSION_ID, book_id: int | None = None, episode: int = 1, provenance: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Resolve a V2 provider payload against program-owned raw-byte anchors."""
+    from core.fact_evidence_authority_v2 import canonicalize_fact_payload_v2 as _canonicalize_v2
+    from core.source_evidence_index import build_source_evidence_index
+    index = build_source_evidence_index(raw_bytes, source_package_id=source_package_id, source_version_id=source_version_id)
+    return _canonicalize_v2(payload, source_index=index, book_id=int(book_id or evaluation_book_id(source_package_id)), episode=episode, source_fingerprint=index["source_raw_hash"], provenance=provenance or {})
 
 
 def build_script_ir_request(*, raw_text: str, fact_snapshot: dict[str, Any], provider_config: dict[str, Any] | None = None) -> dict[str, Any]:

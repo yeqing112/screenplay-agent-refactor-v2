@@ -1,0 +1,10 @@
+{
+  "schema_version": "director_v3_fact_evidence_authority_v2_parity_v1",
+  "provider_runtime_schema_parity": "PASS",
+  "provider_schema_fingerprint": "0f8bfafe584711649b7ee9df5830bb71ebd7227a50248866a8e5b99a33ca9f51",
+  "runtime_schema_fingerprint": "0f8bfafe584711649b7ee9df5830bb71ebd7227a50248866a8e5b99a33ca9f51",
+  "epistemic_mapping": "PASS",
+  "evidence_ref_resolver": "PASS",
+  "legacy_free_text_evidence_fallback": false,
+  "provider_calls": 0
+}

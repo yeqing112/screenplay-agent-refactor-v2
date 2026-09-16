@@ -1,0 +1,733 @@
+{
+  "schema_version": "director_v3_fact_evidence_v1_forensic_v1",
+  "provider_calls": 0,
+  "attempt1_immutable": true,
+  "raw_response_found": true,
+  "raw_response_hash": "22175cd368cb24004f81f9041487a00d3d4c6b01a2dcb751cb225fce91132fe1",
+  "raw_response_hash_verified": true,
+  "total": 36,
+  "aggregate": {
+    "exact_match": 19,
+    "near_match": 4,
+    "paraphrase": 0,
+    "wrong_shape": 36,
+    "missing_evidence": 0,
+    "span_mismatch": 0,
+    "truly_unsupported": 13,
+    "contract_shape_failure": 36
+  },
+  "primary_root_cause": "PROVIDER_VALIDATOR_CONTRACT_MISMATCH",
+  "secondary_findings": [
+    "MODEL_INSTRUCTION_FOLLOWING_FAILURE"
+  ],
+  "model_fact_capability": "NOT_FAIRLY_ADJUDICATED",
+  "diagnostic_only": true,
+  "not_authority": true,
+  "not_fact_snapshot": true,
+  "not_attempt1_repair": true,
+  "facts": [
+    {
+      "historical_fact_index": 1,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "程雨",
+        "predicate": "住在",
+        "value": "1204室",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0003"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 2,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "程雨",
+        "predicate": "计划在",
+        "value": "明早九点搬走",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0005"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 3,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "黑色长柄雨伞",
+        "predicate": "出现在",
+        "value": "1204室门口",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0024"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 4,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "黑色长柄雨伞",
+        "predicate": "状态是",
+        "value": "湿的",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0025"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 5,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "老赵",
+        "predicate": "职业是",
+        "value": "保安",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0032"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 6,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "老赵",
+        "predicate": "认出",
+        "value": "黑色长柄雨伞",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0037"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 7,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "是",
+        "value": "1204室前租客",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0053"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 8,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "状态是",
+        "value": "失踪",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0072"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 9,
+      "semantic_fact": {
+        "subject_type": "event",
+        "subject_id": "宋知夏失踪事件",
+        "predicate": "发生在",
+        "value": "六年前",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0065"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 10,
+      "semantic_fact": {
+        "subject_type": "event",
+        "subject_id": "宋知夏失踪事件",
+        "predicate": "涉及",
+        "value": "停电12分钟",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0082"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 11,
+      "semantic_fact": {
+        "subject_type": "event",
+        "subject_id": "宋知夏失踪事件",
+        "predicate": "涉及",
+        "value": "门从里面反锁",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0104"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 12,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "牛皮纸文件袋",
+        "predicate": "包含",
+        "value": "一张六年前拍摄的1204室客厅照片",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0120",
+        "E0119"
+      ],
+      "diagnostic_similarity": 0.6452,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 13,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "照片",
+        "predicate": "显示",
+        "value": "一个背影与程雨相似的女人",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0124",
+        "E0122"
+      ],
+      "diagnostic_similarity": 0.6,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 14,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "照片",
+        "predicate": "背面文字是",
+        "value": "“她开始听见敲门声了。”",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0127",
+        "E0128"
+      ],
+      "diagnostic_similarity": 0.7083,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 15,
+      "semantic_fact": {
+        "subject_type": "event",
+        "subject_id": "停电事件",
+        "predicate": "发生在",
+        "value": "02:17",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0139",
+        "E0140"
+      ],
+      "diagnostic_similarity": 0.6364,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 16,
+      "semantic_fact": {
+        "subject_type": "event",
+        "subject_id": "敲门声",
+        "predicate": "来源是",
+        "value": "门旁边的墙内",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0161",
+        "E0160"
+      ],
+      "diagnostic_similarity": 0.7429,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 17,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "警告",
+        "value": "程雨别开门",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0168"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 18,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "老赵",
+        "predicate": "声称",
+        "value": "从楼梯上来",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0189"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 19,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "老赵",
+        "predicate": "鞋是",
+        "value": "干的",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0191",
+        "E0192"
+      ],
+      "diagnostic_similarity": 0.7692,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 20,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "程雨",
+        "predicate": "逃入",
+        "value": "1203室",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0210"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 21,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "旧报纸",
+        "predicate": "包含",
+        "value": "宋知夏的寻人启事",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0216"
+      ],
+      "diagnostic_similarity": 0.8333,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 22,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "旧报纸",
+        "predicate": "有红笔批注",
+        "value": "“不是失踪，是躲起来了。”",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0221",
+        "E0222"
+      ],
+      "diagnostic_similarity": 0.6939,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 23,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "1203室照片墙",
+        "predicate": "包含",
+        "value": "1204室不同时间的照片，包括程雨",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0224",
+        "E0226"
+      ],
+      "diagnostic_similarity": 0.4314,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 24,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "照片",
+        "predicate": "最近一张是",
+        "value": "三天前程雨在便利店门口",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0231",
+        "E0230"
+      ],
+      "diagnostic_similarity": 0.7458,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 25,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "出现在",
+        "value": "1203室卧室",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0239",
+        "E0238"
+      ],
+      "diagnostic_similarity": 0.6429,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 26,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "承认",
+        "value": "放了门口的伞",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0251",
+        "E0101",
+        "E0247"
+      ],
+      "diagnostic_similarity": 0.8,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 27,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "目的是",
+        "value": "让老赵知道她回来了",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0254"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 28,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "声称",
+        "value": "六年前是自己通过消防管井逃到1203室",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0267",
+        "E0269",
+        "E0055"
+      ],
+      "diagnostic_similarity": 0.6452,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 29,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "指控",
+        "value": "老赵一直在监视1204室",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0272"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 30,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "声称",
+        "value": "老赵在她报警前知道了她的发现",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0280"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 31,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "返回原因是",
+        "value": "程雨要搬走，1204室将重新装修",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0290",
+        "E0288",
+        "E0053"
+      ],
+      "diagnostic_similarity": 0.76,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 32,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "1204室卧室墙",
+        "predicate": "比客厅墙厚",
+        "value": "十几厘米",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0294"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    },
+    {
+      "historical_fact_index": 33,
+      "semantic_fact": {
+        "subject_type": "event",
+        "subject_id": "警方搜查",
+        "predicate": "在1204室卧室墙后夹层发现",
+        "value": "旧监控设备和部分租客私人物品",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0296",
+        "E0298"
+      ],
+      "diagnostic_similarity": 0.6739,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 34,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "老赵",
+        "predicate": "被",
+        "value": "警察逮捕",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0301",
+        "E0300"
+      ],
+      "diagnostic_similarity": 0.625,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 35,
+      "semantic_fact": {
+        "subject_type": "object",
+        "subject_id": "黑色长柄雨伞",
+        "predicate": "伞柄内藏有",
+        "value": "一张存储卡",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0330",
+        "E0331"
+      ],
+      "diagnostic_similarity": 0.6667,
+      "exact_support_found": false,
+      "likely_contract_transport_failure": false
+    },
+    {
+      "historical_fact_index": 36,
+      "semantic_fact": {
+        "subject_type": "character",
+        "subject_id": "宋知夏",
+        "predicate": "六年前只带走了",
+        "value": "存储卡",
+        "authority": "source_text",
+        "status": "confirmed"
+      },
+      "historical_evidence_shape": "str",
+      "failure_class": "EVIDENCE_STRING_NOT_OBJECT",
+      "closest_anchor_refs": [
+        "E0333"
+      ],
+      "diagnostic_similarity": 1.0,
+      "exact_support_found": true,
+      "likely_contract_transport_failure": true
+    }
+  ]
+}

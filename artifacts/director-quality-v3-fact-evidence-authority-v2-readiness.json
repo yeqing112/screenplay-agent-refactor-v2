@@ -1,0 +1,13 @@
+{
+  "schema_version": "director_v3_fact_evidence_authority_v2_readiness_v1",
+  "status": "CLOSED",
+  "provider_calls": 0,
+  "source_evidence_index": "PASS",
+  "provider_runtime_schema_parity": "PASS",
+  "epistemic_mapping": "PASS",
+  "evidence_ref_resolver": "PASS",
+  "historical_attempt_1_preserved": true,
+  "ready_for_fact_attempt_2": true,
+  "fact_attempt_2_authorized": false,
+  "attempt1_forensic_status": "CLOSED"
+}

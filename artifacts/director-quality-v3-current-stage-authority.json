@@ -211,8 +211,20 @@
     "lineage_state": "SOURCE_ACCEPTED",
     "source_package_id": "SRC79f12d1b7f5eb828",
     "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
-    "provider_calls": 0,
-    "ready_for_upstream_processing": true,
-    "upstream_processing_authorized": false
+    "provider_calls": 1,
+    "total_provider_attempts": 1,
+    "project_provider_exposure": "EXPOSED",
+    "phase_a_attempt_1_status": "FAILED",
+    "fact_snapshot_status": "FAILED_EVIDENCE_INVALID",
+    "script_ir_status": "NOT_RUN_FAIL_CLOSED",
+    "ready_for_treatment_processing": false,
+    "ready_for_upstream_processing": false,
+    "upstream_processing_authorized": false,
+    "treatment_processing_authorized": false,
+    "attempt_1_execution_base": "d4e65554a6ab366aa43f877f707849f28110d2f7",
+    "attempt_1_fact_count": 36,
+    "attempt_1_evidence_verified": 0,
+    "attempt_1_evidence_invalid": 36,
+    "attempt_1_script_ir_calls": 0
   }
 }

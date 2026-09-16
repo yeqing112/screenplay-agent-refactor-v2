@@ -1,0 +1,63 @@
+{
+  "schema_version": "fact_evidence_authority_v2",
+  "schema_fingerprint": "0f8bfafe584711649b7ee9df5830bb71ebd7227a50248866a8e5b99a33ca9f51",
+  "schema": {
+    "type": "object",
+    "required": [
+      "facts"
+    ],
+    "properties": {
+      "facts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "subject_type",
+            "subject_label",
+            "predicate",
+            "value",
+            "epistemic_class",
+            "evidence_refs",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "subject_type": {
+              "type": "string"
+            },
+            "subject_label": {
+              "type": "string"
+            },
+            "predicate": {
+              "type": "string"
+            },
+            "value": {},
+            "epistemic_class": {
+              "enum": [
+                "SOURCE_ASSERTED_FACT",
+                "SOURCE_OBSERVED_ACTION",
+                "SOURCE_SPEECH_ACT",
+                "CHARACTER_CLAIM_CONTENT",
+                "MODEL_INFERENCE",
+                "UNKNOWN"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^E[0-9]{4}$"
+              }
+            },
+            "confidence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}

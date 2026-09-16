@@ -1,0 +1,41 @@
+{
+  "schema_version": "fact_evidence_authority_v2",
+  "provider_owns": [
+    "what_fact_it_sees",
+    "evidence_refs"
+  ],
+  "program_owns": [
+    "anchor_ids",
+    "exact_text",
+    "char_offsets",
+    "byte_offsets",
+    "fact_ids",
+    "authority",
+    "status"
+  ],
+  "epistemic_classes": [
+    "SOURCE_ASSERTED_FACT",
+    "SOURCE_OBSERVED_ACTION",
+    "SOURCE_SPEECH_ACT",
+    "CHARACTER_CLAIM_CONTENT",
+    "MODEL_INFERENCE",
+    "UNKNOWN"
+  ],
+  "forbidden_provider_fields": [
+    "fact_id",
+    "final_status",
+    "authority",
+    "start",
+    "end",
+    "char_start",
+    "char_end",
+    "byte_start",
+    "byte_end",
+    "excerpt",
+    "evidence"
+  ],
+  "legacy_free_text_evidence_fallback": false,
+  "resolver": "resolve_evidence_refs_v1",
+  "source_index_schema": "source_evidence_index_v1",
+  "schema_fingerprint": "0f8bfafe584711649b7ee9df5830bb71ebd7227a50248866a8e5b99a33ca9f51"
+}

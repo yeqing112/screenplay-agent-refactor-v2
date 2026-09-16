@@ -1,0 +1,13 @@
+{
+  "schema_version": "director_v3_fact_evidence_authority_v2_dry_run_v1",
+  "provider_calls": 0,
+  "synthetic_payload": true,
+  "not_production_result": true,
+  "source_index_validation": {
+    "status": "PASS",
+    "errors": [],
+    "anchor_count": 347
+  },
+  "resolver": "PASS",
+  "canonicalization": "PASS"
+}

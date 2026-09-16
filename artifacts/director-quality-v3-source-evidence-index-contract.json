@@ -1,0 +1,12 @@
+{
+  "schema_version": "source_evidence_index_v1",
+  "offsets": {
+    "char_start": "inclusive",
+    "char_end": "exclusive",
+    "byte_start": "inclusive",
+    "byte_end": "exclusive"
+  },
+  "granularity": "maximal non-blank SOURCE_BLOCK",
+  "unicode": "exact UTF-8; CRLF/LF preserved",
+  "deterministic": true
+}
