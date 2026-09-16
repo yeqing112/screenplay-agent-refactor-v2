@@ -175,7 +175,7 @@
   "final_spine_topology_preflight_wiring": {
     "status": "CLOSED",
     "stage": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_CLOSED",
-    "expected_base_commit": "a32e5d6",
+    "expected_base_commit": "4fd52b2",
     "ready_for_final_recanary": true,
     "final_recanary_authorized": false,
     "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED",

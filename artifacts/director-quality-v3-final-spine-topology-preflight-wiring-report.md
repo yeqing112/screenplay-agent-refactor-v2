@@ -5,7 +5,7 @@
 ## Baseline Audit
 
 - Frozen cohort: `3` scenes; historical artifacts unchanged.
-- Baseline authority and forensic closure were read before the wiring checks. The document expected `92b6d77`, but the actual starting HEAD was `fc7a883`; a new immutable closure base was therefore established at `a32e5d6`.
+- Baseline authority and forensic closure were read before the wiring checks.
 
 ## Final As-Built Verification
 
@@ -26,6 +26,6 @@ Regression evidence: backend `1277 passed, 0 failed`; deterministic Golden `5/5`
 
 `READY_FOR_FINAL_SPINE_TOPOLOGY_RECANARY=true`
 `FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED=false`
-`FINAL_RECANARY_EXPECTED_BASE_COMMIT=a32e5d6`
+`FINAL_RECANARY_EXPECTED_BASE_COMMIT=4fd52b2`
 
 No real Re-Canary, Atomic Expansion, ShotPlan, Storyboard or media action was executed.

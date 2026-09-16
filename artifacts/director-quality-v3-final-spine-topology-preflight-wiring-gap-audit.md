@@ -2,7 +2,7 @@
 
 ## Baseline Audit
 
-- Baseline reference HEAD: `92b6d77`; audit started at repository HEAD `fc7a883` (the document's expected HEAD was not present). The wiring closure was rebuilt and pinned to immutable base `a32e5d6`.
+- Baseline reference HEAD: `92b6d77`; audit started at repository HEAD `fc7a883` (the document's expected HEAD was not present). Current as-built HEAD is `4fd52b2` and the wiring closure is pinned to immutable base `4fd52b2`.
 - Forensic evidence established structured Must Preserve traces, authoritative identity projections, canonical segment refs, and fail-closed orchestration, but the runtime path still needed explicit wiring verification.
 - Historical raw, Spine/Topology canary, Forensic and Foundation artifacts were not modified.
 
@@ -22,4 +22,4 @@
 `DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_CLOSED`
 `READY_FOR_FINAL_SPINE_TOPOLOGY_RECANARY=true`
 `FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED=false`
-`FINAL_RECANARY_EXPECTED_BASE_COMMIT=a32e5d6`
+`FINAL_RECANARY_EXPECTED_BASE_COMMIT=4fd52b2`
