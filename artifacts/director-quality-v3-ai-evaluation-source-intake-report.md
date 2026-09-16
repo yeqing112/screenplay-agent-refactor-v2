@@ -19,6 +19,7 @@
 - Human Real Source Intake semantics changed: `NO`; Human Fresh Pool eligible scenes added: `0`
 - Fresh Pilot #2: `ready=false`, `authorized=false`, `cohort_frozen=false`
 - Evaluation upstream ready: `True`; evaluation upstream authorized: `false`
+- Intake / isolation tests: `60 passed`; full backend regression: `1287 passed`; deterministic Golden: `5/5`
 
 ## Decision
 
