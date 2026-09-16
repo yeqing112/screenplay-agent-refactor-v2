@@ -1,0 +1,14 @@
+{
+  "schema_version": "fact_coverage_authority_compiler_v1",
+  "provider_calls": 0,
+  "program_owned": [
+    "requirement_id",
+    "fact_id",
+    "disposition_compatibility",
+    "matrix_validity",
+    "deterministic_ceilings"
+  ],
+  "provider_component_prose_authority": false,
+  "no_fact_count_threshold": true,
+  "no_anchor_percentage_shortcut": true
+}

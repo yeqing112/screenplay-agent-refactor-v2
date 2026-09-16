@@ -1,0 +1,23 @@
+{
+  "schema_version": "fact_coverage_matrix_v1",
+  "provider_calls": 0,
+  "required_fields": [
+    "requirement_id",
+    "requirement_type",
+    "source_unit_refs",
+    "supporting_fact_ids",
+    "semantic_fact_dispositions",
+    "coverage_status",
+    "review_required"
+  ],
+  "coverage_statuses": [
+    "COVERED",
+    "PARTIALLY_COVERED",
+    "MISSING",
+    "CLAIM_ONLY",
+    "UNSAFE_INFERENCE",
+    "AMBIGUOUS"
+  ],
+  "fact_count_is_not_qualification": true,
+  "anchor_percentage_is_not_qualification": true
+}

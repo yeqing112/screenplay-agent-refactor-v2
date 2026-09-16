@@ -256,21 +256,24 @@
     },
     "attempt_1_status": "FAILED",
     "ready_for_script_ir_processing": false,
-    "cumulative_provider_attempts": 2,
+    "cumulative_provider_attempts": 3,
     "attempt_2_evidence_authority": "PASS",
     "attempt_2_fact_count": 7,
     "attempt_2_evidence_verified": 7,
     "attempt_2_evidence_invalid": 0,
     "historical_attempt_2_lineage": "FACT_SNAPSHOT_CONFIRMED",
-    "effective_lineage_state": "FACT_SNAPSHOT_EVIDENCE_VALIDATED",
-    "semantic_grounding_status": "NOT_YET_ADJUDICATED",
+    "effective_lineage_state": "FACT_SEMANTICS_ADJUDICATED",
+    "semantic_grounding_status": "SEMANTIC_GROUNDING_CLOSED_WITH_REVIEW",
     "script_ir_processing_authorized": false,
     "provider_attempts_by_stage": {
       "fact_attempt_1": 1,
       "fact_attempt_2": 1,
-      "semantic_verifier": 0
+      "semantic_verifier": 1
     },
-    "provider_calls_scope": "historical/current stage explicit; cumulative_provider_attempts is all historical attempts"
+    "provider_calls_scope": "current_stage_provider_attempts is current stage; cumulative_provider_attempts is all historical attempts",
+    "current_stage_provider_attempts": 1,
+    "fact_coverage_status": "NOT_YET_QUALIFIED",
+    "ready_for_fact_coverage_qualification": true
   },
   "fact_semantic_grounding": {
     "status": "CLOSED",
@@ -327,5 +330,22 @@
     "next_stage_authorized": false,
     "script_ir_calls": 0,
     "downstream_calls": 0
+  },
+  "fact_coverage_foundation": {
+    "status": "CLOSED",
+    "provider_calls": 0,
+    "narrative_unit_index": "PASS",
+    "coverage_requirement_contract": "PASS",
+    "coverage_matrix_contract": "PASS",
+    "coverage_authority_compiler": "PASS",
+    "provider_component_prose_authority": false,
+    "canonical_fact_components": "PASS",
+    "development_preview": "DEVELOPMENT_ONLY",
+    "fact_coverage_status": "NOT_YET_QUALIFIED",
+    "coverage_verifier_ready": true,
+    "coverage_verifier_authorized": false,
+    "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE",
+    "development_gap_count": 7,
+    "runtime_authority": false
   }
 }

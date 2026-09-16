@@ -1,0 +1,184 @@
+{
+  "schema_version": "canonical_fact_assertion_components_v1",
+  "provider_calls": 0,
+  "facts": [
+    {
+      "fact_id": "FACT_0001",
+      "components": [
+        {
+          "component_id": "FACT_0001::SUBJECT",
+          "component_type": "SUBJECT",
+          "value": "宋知夏",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0001::PREDICATE",
+          "component_type": "PREDICATE",
+          "value": "escaped through fire pipe shaft",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0001::VALUE",
+          "component_type": "VALUE",
+          "value": "to apartment 1203",
+          "semantic_atomicity": "NOT_ASSESSED"
+        }
+      ],
+      "component_semantic_atomicity": "NOT_CLAIMED",
+      "runtime_authority": false
+    },
+    {
+      "fact_id": "FACT_0002",
+      "components": [
+        {
+          "component_id": "FACT_0002::SUBJECT",
+          "component_type": "SUBJECT",
+          "value": "宋知夏",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0002::PREDICATE",
+          "component_type": "PREDICATE",
+          "value": "hid storage card in umbrella handle",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0002::VALUE",
+          "component_type": "VALUE",
+          "value": "evidence from six years ago",
+          "semantic_atomicity": "NOT_ASSESSED"
+        }
+      ],
+      "component_semantic_atomicity": "NOT_CLAIMED",
+      "runtime_authority": false
+    },
+    {
+      "fact_id": "FACT_0003",
+      "components": [
+        {
+          "component_id": "FACT_0003::SUBJECT",
+          "component_type": "SUBJECT",
+          "value": "宋知夏",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0003::PREDICATE",
+          "component_type": "PREDICATE",
+          "value": "is previous tenant of 1204",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0003::VALUE",
+          "component_type": "VALUE",
+          "value": "disappeared six years ago",
+          "semantic_atomicity": "NOT_ASSESSED"
+        }
+      ],
+      "component_semantic_atomicity": "NOT_CLAIMED",
+      "runtime_authority": false
+    },
+    {
+      "fact_id": "FACT_0004",
+      "components": [
+        {
+          "component_id": "FACT_0004::SUBJECT",
+          "component_type": "SUBJECT",
+          "value": "程雨",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0004::PREDICATE",
+          "component_type": "PREDICATE",
+          "value": "found wet umbrella at door",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0004::VALUE",
+          "component_type": "VALUE",
+          "value": "black long-handled umbrella",
+          "semantic_atomicity": "NOT_ASSESSED"
+        }
+      ],
+      "component_semantic_atomicity": "NOT_CLAIMED",
+      "runtime_authority": false
+    },
+    {
+      "fact_id": "FACT_0005",
+      "components": [
+        {
+          "component_id": "FACT_0005::SUBJECT",
+          "component_type": "SUBJECT",
+          "value": "程雨",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0005::PREDICATE",
+          "component_type": "PREDICATE",
+          "value": "is moving out of apartment",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0005::VALUE",
+          "component_type": "VALUE",
+          "value": "1204",
+          "semantic_atomicity": "NOT_ASSESSED"
+        }
+      ],
+      "component_semantic_atomicity": "NOT_CLAIMED",
+      "runtime_authority": false
+    },
+    {
+      "fact_id": "FACT_0006",
+      "components": [
+        {
+          "component_id": "FACT_0006::SUBJECT",
+          "component_type": "SUBJECT",
+          "value": "老赵",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0006::PREDICATE",
+          "component_type": "PREDICATE",
+          "value": "installed hidden camera equipment",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0006::VALUE",
+          "component_type": "VALUE",
+          "value": "in wall cavity behind bedroom",
+          "semantic_atomicity": "NOT_ASSESSED"
+        }
+      ],
+      "component_semantic_atomicity": "NOT_CLAIMED",
+      "runtime_authority": false
+    },
+    {
+      "fact_id": "FACT_0007",
+      "components": [
+        {
+          "component_id": "FACT_0007::SUBJECT",
+          "component_type": "SUBJECT",
+          "value": "老赵",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0007::PREDICATE",
+          "component_type": "PREDICATE",
+          "value": "recognized umbrella",
+          "semantic_atomicity": "NOT_ASSESSED"
+        },
+        {
+          "component_id": "FACT_0007::VALUE",
+          "component_type": "VALUE",
+          "value": "belonged to previous tenant",
+          "semantic_atomicity": "NOT_ASSESSED"
+        }
+      ],
+      "component_semantic_atomicity": "NOT_CLAIMED",
+      "runtime_authority": false
+    }
+  ],
+  "fingerprint": "28009e1e1aed1c79381cf90101ce2726b9fe7644b3634e1de098513d9be4d060",
+  "source_package_id": "SRC79f12d1b7f5eb828",
+  "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82"
+}

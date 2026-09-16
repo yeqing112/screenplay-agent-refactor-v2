@@ -1,0 +1,16 @@
+{
+  "schema_version": "fact_coverage_foundation_readiness_v1",
+  "status": "CLOSED",
+  "provider_calls": 0,
+  "narrative_unit_index": "PASS",
+  "coverage_requirement_contract": "PASS",
+  "coverage_matrix_contract": "PASS",
+  "coverage_authority_compiler": "PASS",
+  "provider_component_prose_authority": false,
+  "canonical_fact_components": "PASS",
+  "development_preview": "DEVELOPMENT_ONLY",
+  "fact_coverage_status": "NOT_YET_QUALIFIED",
+  "coverage_verifier_ready": true,
+  "coverage_verifier_authorized": false,
+  "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE"
+}

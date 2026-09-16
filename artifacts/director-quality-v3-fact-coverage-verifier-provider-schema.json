@@ -1,0 +1,90 @@
+{
+  "schema_version": "fact_coverage_verifier_provider_schema_v1",
+  "schema_fingerprint": "c337dff319af9ef179098d21f09c2c126c29569d6962c4a132c52b05ab0d50ce",
+  "provider_schema": {
+    "type": "object",
+    "required": [
+      "requirements",
+      "coverage_claims"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "requirements": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "requirement_type",
+            "description",
+            "source_unit_refs"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requirement_type": {
+              "enum": [
+                "CHARACTER_IDENTITY",
+                "CHARACTER_RELATION",
+                "LOCATION_IDENTITY",
+                "LOCATION_CHANGE",
+                "EVENT_OCCURRENCE",
+                "EVENT_ORDER",
+                "TEMPORAL_ANCHOR",
+                "CAUSAL_RELATION",
+                "OBJECT_STATE",
+                "OBJECT_OWNERSHIP",
+                "REVEAL",
+                "CONFLICT_STATE",
+                "CLAIM_OR_BELIEF",
+                "OUTCOME"
+              ]
+            },
+            "description": {
+              "type": "string"
+            },
+            "source_unit_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "coverage_claims": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "requirement_ref",
+            "fact_refs",
+            "coverage_verdict"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requirement_ref": {
+              "type": "string",
+              "pattern": "^REQ_[0-9]{4}$"
+            },
+            "fact_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^FACT_[0-9]{4}$"
+              }
+            },
+            "coverage_verdict": {
+              "enum": [
+                "COVERED",
+                "PARTIALLY_COVERED",
+                "MISSING",
+                "CLAIM_ONLY",
+                "UNSAFE_INFERENCE",
+                "AMBIGUOUS"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

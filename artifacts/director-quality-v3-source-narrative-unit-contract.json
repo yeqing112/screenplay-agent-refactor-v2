@@ -1,0 +1,17 @@
+{
+  "schema_version": "source_narrative_unit_index_v1",
+  "provider_calls": 0,
+  "fields": [
+    "unit_id",
+    "anchor_refs",
+    "char_start",
+    "char_end",
+    "exact_text_hash",
+    "source_order"
+  ],
+  "deterministic_grouping": "ordered_anchor_char_window",
+  "window_size": 1200,
+  "semantic_interpretation": false,
+  "source_package_id": "SRC79f12d1b7f5eb828",
+  "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82"
+}

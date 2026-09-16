@@ -1,0 +1,33 @@
+{
+  "schema_version": "fact_coverage_requirement_v1",
+  "provider_calls": 0,
+  "requirement_types": [
+    "CHARACTER_IDENTITY",
+    "CHARACTER_RELATION",
+    "LOCATION_IDENTITY",
+    "LOCATION_CHANGE",
+    "EVENT_OCCURRENCE",
+    "EVENT_ORDER",
+    "TEMPORAL_ANCHOR",
+    "CAUSAL_RELATION",
+    "OBJECT_STATE",
+    "OBJECT_OWNERSHIP",
+    "REVEAL",
+    "CONFLICT_STATE",
+    "CLAIM_OR_BELIEF",
+    "OUTCOME"
+  ],
+  "program_owned": [
+    "requirement_id",
+    "schema",
+    "source_unit_refs",
+    "category",
+    "ordering",
+    "validation"
+  ],
+  "semantic_proposal_owned": [
+    "meaning_of_structuring_necessity"
+  ],
+  "canonical_id_pattern": "REQ_[0-9]{4}",
+  "no_count_threshold": true
+}

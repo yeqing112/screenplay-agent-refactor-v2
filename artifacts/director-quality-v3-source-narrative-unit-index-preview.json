@@ -1,0 +1,36 @@
+{
+  "schema_version": "source_narrative_unit_index_v1",
+  "provider_calls": 0,
+  "window_size": 1200,
+  "unit_count": 1,
+  "units": [
+    {
+      "unit_id": "NU_0001",
+      "anchor_refs": [
+        "E0001",
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005",
+        "E0006",
+        "E0007",
+        "E0008",
+        "E0009",
+        "E0010",
+        "E0011",
+        "E0012"
+      ],
+      "char_start": 0,
+      "char_end": 292,
+      "exact_text_hash": "a72b78d72147efd0ca43f19c5b5c1592c3b561f8ac907e3cab02405dd6063678",
+      "source_order": 1
+    }
+  ],
+  "fingerprint": "15e0d4461b50aaddb2e607f998b919e9dcc0ed2d2d589c5675dfc645c9ca4653",
+  "semantic_interpretation": false,
+  "source_package_id": "SRC79f12d1b7f5eb828",
+  "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+  "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368",
+  "anchor_count": 12,
+  "full_anchor_count": 347
+}

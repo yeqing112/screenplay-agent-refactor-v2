@@ -1,0 +1,23 @@
+{
+  "schema_version": "fact_coverage_verifier_v1",
+  "status": "DESIGNED_NOT_EXECUTED",
+  "provider_calls": 0,
+  "inputs": [
+    "source_narrative_units",
+    "existing_semantically_adjudicated_facts",
+    "canonical_fact_ids",
+    "fact_dispositions",
+    "requirement_taxonomy"
+  ],
+  "outputs": [
+    "requirements",
+    "coverage_claims"
+  ],
+  "forbidden": [
+    "new_fact",
+    "fact_repair",
+    "new_evidence",
+    "source_modification",
+    "script_ir"
+  ]
+}
