@@ -14,6 +14,7 @@ from typing import Any
 
 SCHEMA_VERSION = "director_v3_phase_a_runtime_authorization_v1"
 SCOPE = "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A"
+FACT_ATTEMPT_2_SCOPE = "DIRECTOR_V3_AUTHORIZED_EVALUATION_FACT_ATTEMPT_2"
 SOURCE_PACKAGE_ID = "SRC79f12d1b7f5eb828"
 SOURCE_VERSION_ID = "SRC79f12d1b7f5eb828:V01:d001bab5cc82"
 ALLOWED_STAGES = ("FACT_EXTRACTION", "SCRIPT_IR")
@@ -38,7 +39,8 @@ def load_runtime_authorization(path: str | Path) -> dict[str, Any]:
         raise ValueError("authorization_must_be_object")
     if payload.get("schema_version") != SCHEMA_VERSION:
         raise ValueError("authorization_schema_mismatch")
-    if payload.get("scope") != SCOPE:
+    scope = payload.get("scope")
+    if scope not in {SCOPE, FACT_ATTEMPT_2_SCOPE}:
         raise ValueError("authorization_scope_mismatch")
     if payload.get("source_package_id") != SOURCE_PACKAGE_ID:
         raise ValueError("authorization_source_package_mismatch")
@@ -48,15 +50,17 @@ def load_runtime_authorization(path: str | Path) -> dict[str, Any]:
     if len(execution_base) != 40 or any(ch not in "0123456789abcdefABCDEF" for ch in execution_base):
         raise ValueError("authorization_execution_base_invalid")
     stages = payload.get("allowed_stages")
-    if stages != list(ALLOWED_STAGES):
+    expected_stages = ["FACT_EXTRACTION_V2"] if scope == FACT_ATTEMPT_2_SCOPE else list(ALLOWED_STAGES)
+    if stages != expected_stages:
         raise ValueError("authorization_allowed_stages_mismatch")
     try:
         max_calls = int(payload.get("max_provider_calls"))
         retries = int(payload.get("retries"))
     except (TypeError, ValueError) as exc:
         raise ValueError("authorization_call_budget_invalid") from exc
-    if max_calls != 2:
-        raise ValueError("authorization_call_budget_must_be_two")
+    expected_calls = 1 if scope == FACT_ATTEMPT_2_SCOPE else 2
+    if max_calls != expected_calls:
+        raise ValueError(f"authorization_call_budget_must_be_{'one' if expected_calls == 1 else 'two'}")
     if retries != 0:
         raise ValueError("authorization_retries_must_be_zero")
     if payload.get("issued_from_external_authorization") is not True:
@@ -67,12 +71,12 @@ def load_runtime_authorization(path: str | Path) -> dict[str, Any]:
     return {
         "schema_version": SCHEMA_VERSION,
         "authorization_id": authorization_id,
-        "scope": SCOPE,
+        "scope": scope,
         "source_package_id": SOURCE_PACKAGE_ID,
         "source_version_id": SOURCE_VERSION_ID,
         "authorized_execution_base": execution_base.lower(),
-        "allowed_stages": list(ALLOWED_STAGES),
-        "max_provider_calls": 2,
+        "allowed_stages": expected_stages,
+        "max_provider_calls": expected_calls,
         "retries": 0,
         "issued_from_external_authorization": True,
         "authorization_hash": authorization_fingerprint(payload),
@@ -113,6 +117,7 @@ def authorization_gate(
 __all__ = [
     "SCHEMA_VERSION",
     "SCOPE",
+    "FACT_ATTEMPT_2_SCOPE",
     "SOURCE_PACKAGE_ID",
     "SOURCE_VERSION_ID",
     "ALLOWED_STAGES",

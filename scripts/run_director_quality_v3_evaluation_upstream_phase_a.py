@@ -208,12 +208,47 @@ def _execute_authorized_phase_a(*, source: dict[str, Any], provider: dict[str, A
     return result
 
 
+def _execute_fact_attempt_2(*, source: dict[str, Any], provider: dict[str, Any], eval_root: Path, authorization: dict[str, Any]) -> dict[str, Any]:
+    """Run exactly one V2 Fact Extraction dispatch; never invokes ScriptIR."""
+    from api.model_registry import get_default_profile
+    from core.fact_evidence_authority_v2 import build_fact_request_v2, canonicalize_fact_payload_v2, schema_fingerprint
+    from core.source_evidence_index import build_source_evidence_index
+    from core.llm import call_llm
+
+    profile = get_default_profile("llm") or {}
+    raw_bytes = source["raw_text"].encode("utf-8")
+    index = build_source_evidence_index(raw_bytes, source_package_id=authorization["source_package_id"], source_version_id=authorization["source_version_id"], source_raw_hash=source["raw_hash"])
+    request = build_fact_request_v2(raw_text=source["raw_text"], source_package_id=authorization["source_package_id"], source_version_id=authorization["source_version_id"], source_raw_hash=source["raw_hash"], source_index=index, provider=provider.get("provider", ""), model=provider.get("model", ""))
+    eval_root.mkdir(parents=True, exist_ok=True)
+    entry = {"stage": "FACT_EXTRACTION_V2", "attempt_number": 2, "dispatched": True, "request_hash": _request_hash(request), "source_package_id": authorization["source_package_id"], "source_version_id": authorization["source_version_id"], "execution_base": authorization["authorized_execution_base"], "provider": provider.get("provider"), "model": provider.get("model"), "status": "DISPATCHING", "response_received": False, "started_at": datetime.now(timezone.utc).isoformat()}
+    ledger = [entry]
+    _write(eval_root / "dispatch-ledger-attempt-2.json", {"schema_version": "director_v3_phase_a_dispatch_ledger_v1", "entries": ledger})
+    (eval_root / "fact-extraction-v2-request.json").write_text(json.dumps(request, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    try:
+        response = str(call_llm(json.dumps(request, ensure_ascii=False), system="Return only the JSON object required by the Fact Evidence Authority V2 contract. Use evidence_refs only; never emit evidence text, offsets, authority, status, or fact_id.", model_profile=profile, retries=0, estimated_tokens=7000, max_tokens=12000, audit_extra={"phase": "director_v3_fact_evidence_authority_v2", "attempt": 2, "authorization_id": authorization["authorization_id"]}) or "")
+    except Exception as exc:
+        entry.update({"status": "TRANSPORT_FAILED", "error": str(exc)[:800], "finished_at": datetime.now(timezone.utc).isoformat()})
+        _write(eval_root / "dispatch-ledger-attempt-2.json", {"schema_version": "director_v3_phase_a_dispatch_ledger_v1", "entries": ledger})
+        return {"status": "DIRECTOR_V3_FACT_ATTEMPT_2_FAILED", "attempted_provider_calls": 1, "provider_calls": 1, "provider_exposure": "EXPOSED", "dispatch_ledger": ledger, "error": str(exc)[:800], "source_evidence_index": index}
+    entry.update({"status": "RESPONSE_RECEIVED" if response else "RESPONSE_EMPTY", "response_received": bool(response), "response_sha256": hashlib.sha256(response.encode("utf-8")).hexdigest(), "response_length": len(response), "finished_at": datetime.now(timezone.utc).isoformat()})
+    (eval_root / "fact-extraction-v2-response-raw.txt").write_text(response, encoding="utf-8")
+    _write(eval_root / "dispatch-ledger-attempt-2.json", {"schema_version": "director_v3_phase_a_dispatch_ledger_v1", "entries": ledger})
+    try:
+        parsed = json.loads(response.strip().removeprefix("```json").removesuffix("```").strip())
+    except Exception:
+        parsed = response
+    result = canonicalize_fact_payload_v2(parsed, source_index=index, book_id=900000001, episode=1, source_fingerprint=source["raw_hash"], provenance=source["provenance"])
+    result.update({"status": "DIRECTOR_V3_FACT_ATTEMPT_2_CLOSED" if result.get("report", {}).get("status") == "PASS" else "DIRECTOR_V3_FACT_ATTEMPT_2_FAILED", "attempted_provider_calls": 1, "provider_calls": 1, "provider_exposure": "EXPOSED", "dispatch_ledger": ledger, "schema_fingerprint": schema_fingerprint(), "source_evidence_index": index})
+    return result
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--execute-real", action="store_true", help="guarded provider dispatch; never bypasses gates")
     parser.add_argument("--read-only", action="store_true", help="compute gates without writing tracked evidence")
     parser.add_argument("--authorization-file", default="", help="external runtime authorization JSON; required for --execute-real")
     parser.add_argument("--authorization-preflight", action="store_true", help="validate external authorization and all gates without dispatching")
+    parser.add_argument("--fact-attempt-2", action="store_true", help="execute exactly one authorized Fact Evidence Authority V2 call; never runs ScriptIR")
     supplied = argv if argv is not None else sys.argv[1:]
     args = parser.parse_args(argv)
     if any(flag in supplied for flag in ("--force", "--unsafe", "--ignore-authorization", "--no-gate")):
@@ -238,7 +273,7 @@ def main(argv: list[str] | None = None) -> int:
     provider = _provider_snapshot()
     authorization = None
     authorization_error = ""
-    requires_runtime_authorization = bool(args.execute_real or args.authorization_preflight)
+    requires_runtime_authorization = bool(args.execute_real or args.authorization_preflight or args.fact_attempt_2)
     if requires_runtime_authorization:
         try:
             from core.director_v3_runtime_authorization import load_runtime_authorization
@@ -272,7 +307,7 @@ def main(argv: list[str] | None = None) -> int:
         if authorization_error:
             blocked_reasons.append("RUNTIME_AUTHORIZATION_INVALID")
         else:
-            from core.director_v3_runtime_authorization import authorization_gate
+            from core.director_v3_runtime_authorization import authorization_gate, FACT_ATTEMPT_2_SCOPE
             auth_ok, auth_reasons = authorization_gate(
                 authorization,
                 head=head,
@@ -280,7 +315,7 @@ def main(argv: list[str] | None = None) -> int:
                 dirty=dirty,
                 source_package_id=SOURCE_PACKAGE_ID,
                 source_version_id=SOURCE_VERSION_ID,
-                predicted_calls=call_graph["predicted_provider_calls"],
+                predicted_calls=1 if args.fact_attempt_2 else call_graph["predicted_provider_calls"],
             )
             checks["runtime_authorization"] = auth_ok
             blocked_reasons.extend(auth_reasons)
@@ -290,6 +325,8 @@ def main(argv: list[str] | None = None) -> int:
             checks["expected_starting_head"] = bool(authorization and authorization.get("authorized_execution_base") == head == remote.get("sha"))
             if not checks["expected_starting_head"] and "RUNTIME_AUTHORIZATION_EXECUTION_BASE_MISMATCH" not in blocked_reasons:
                 blocked_reasons.append("RUNTIME_AUTHORIZATION_EXECUTION_BASE_MISMATCH")
+            if args.fact_attempt_2 and authorization and authorization.get("scope") != FACT_ATTEMPT_2_SCOPE:
+                blocked_reasons.append("RUNTIME_AUTHORIZATION_SCOPE_NOT_FACT_ATTEMPT_2")
     if not checks["expected_starting_head"]:
         blocked_reasons.append("EVALUATION_PHASE_A_EXECUTION_BASE_UNRESOLVED" if execution_base["status"] != "REBASELINED" else "EVALUATION_PHASE_A_HEAD_MISMATCH")
     if not checks["remote_head_matches_local"]:
@@ -305,7 +342,11 @@ def main(argv: list[str] | None = None) -> int:
     if not checks["predicted_calls_within_budget"]:
         blocked_reasons.append("UPSTREAM_CALL_BUDGET_EXCEEDS_AUTHORIZED_LIMIT")
     execution: dict[str, Any] | None = None
-    if args.execute_real and not blocked_reasons:
+    if args.fact_attempt_2 and not blocked_reasons:
+        execution = _execute_fact_attempt_2(source=source, provider=provider, eval_root=EVAL_ROOT, authorization=authorization or {})
+        status = execution.get("status", "DIRECTOR_V3_FACT_ATTEMPT_2_FAILED")
+        actual_calls = int(execution.get("attempted_provider_calls", 0) or 0)
+    elif args.execute_real and not blocked_reasons:
         try:
             execution = _execute_authorized_phase_a(source=source, provider=provider, eval_root=EVAL_ROOT, authorization=authorization or {})
             status = execution.get("status", "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED")
@@ -325,6 +366,8 @@ def main(argv: list[str] | None = None) -> int:
         actual_calls = 0
 
     fact_result = _d((execution or {}).get("fact"))
+    if args.fact_attempt_2 and execution:
+        fact_result = execution
     fact_report = _d(fact_result.get("report"))
     script_result = _d((execution or {}).get("script"))
     script_report = _d(script_result.get("report"))
