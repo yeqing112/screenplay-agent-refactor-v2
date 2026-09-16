@@ -201,12 +201,13 @@ def main() -> int:
     _write("director-quality-v3-fresh-pilot-2-candidate-inventory.json", inventory)
     _write("director-quality-v3-fresh-pilot-2-readiness.json", readiness_doc)
 
-    pointer = _load(AUTHORITY)
+    from core.director_v3_authority import reconcile_historical_recanary_authority
+    pointer = reconcile_historical_recanary_authority(_load(AUTHORITY))
     pilot = pointer.setdefault("fresh_integration_pilot", {})
     pilot.update({"status": "FAILED", "experiment_validity": "INVALID", "primary_root_cause": reclassification["primary_root_cause"], "secondary_findings": reclassification["secondary_findings"], "model_strategy_capability": reclassification["model_strategy_capability"], "strategy_calls": 3, "spine_calls": 0, "skeleton_calls": 0, "no_retry_same_cohort": True, "historical_machine_classification": "MODEL_FAILURE"})
     pointer["strategy_authority_contract_ssot"] = {"status": "CLOSED", "provider_spec": "PASS", "preserve_intent_contract": "PASS", "preserve_authority_compiler": "PASS", "provider_validator_parity": "PASS", "schema_fingerprint_parity": "PASS", "authority_completeness": "PASS", "legacy_fallback": False, "fresh_path": "V3_ONLY", "provider_calls": 0}
     canary = pointer.setdefault("shot_architecture", {}).setdefault("generation_architecture_redesign", {}).setdefault("spine_topology_canary", {})
-    canary.update({"historical_preflight_ready": True, "historical_recanary_retired": True, "executable_again": False, "retired_after_execution": True, "no_further_spine_topology_recanary": True})
+    canary.update({"historical_preflight_ready": True, "historical_recanary_retired": True, "executable_again": False, "retired_after_execution": True, "no_further_spine_topology_recanary": True, "current_recanary_authorized": False})
     _write("director-quality-v3-current-stage-authority.json", pointer)
 
     report = f"""# Director Quality V3 — Strategy Authority Contract SSOT Closure

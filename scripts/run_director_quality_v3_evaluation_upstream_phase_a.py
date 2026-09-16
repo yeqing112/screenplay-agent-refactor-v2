@@ -19,8 +19,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / "artifacts"
 EVAL_ROOT = ROOT / "work/evaluation/director_v3/SRC79f12d1b7f5eb828/upstream_phase_a"
-EXPECTED_HEAD = "63c93d6e1f78a4777fff9c3e329f5eeb723846eb"
+HISTORICAL_EXPECTED_HEAD = "63c93d6e1f78a4777fff9c3e329f5eeb723846eb"
+# Kept as a compatibility alias for historical tests and reports.  New
+# executions resolve their exact immutable base from the reconciliation
+# artifact instead of silently treating an arbitrary current HEAD as valid.
+EXPECTED_HEAD = HISTORICAL_EXPECTED_HEAD
 EXPECTED_REMOTE_REF = "origin/codex/unify-formal-workspace"
+EXECUTION_BASE_ARTIFACT = ART / "director-quality-v3-phase-a-execution-base-reconciliation.json"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -75,6 +80,23 @@ def _provider_snapshot() -> dict[str, Any]:
 
 def _status_code(*, blocked: bool) -> str:
     return "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_BLOCKED" if blocked else "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_PREFLIGHT_PASS"
+
+
+def _execution_base() -> dict[str, Any]:
+    """Resolve the explicitly frozen Phase A execution base.
+
+    Before reconciliation exists, the historical HEAD is retained only as a
+    label and cannot authorize execution.  A real run requires a committed,
+    pushed, exact base recorded by the reconciliation artifact.
+    """
+    try:
+        value = json.loads(EXECUTION_BASE_ARTIFACT.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"status": "HISTORICAL_ONLY", "commit": HISTORICAL_EXPECTED_HEAD}
+    commit = str(value.get("new_execution_base") or value.get("execution_base_commit") or "").strip()
+    if value.get("execution_base_pushed") is True and len(commit) == 40:
+        return {"status": "REBASELINED", "commit": commit}
+    return {"status": "UNPUSHED", "commit": commit or HISTORICAL_EXPECTED_HEAD}
 
 
 def _execute_authorized_phase_a(*, source: dict[str, Any], provider: dict[str, Any], eval_root: Path) -> dict[str, Any]:
@@ -145,6 +167,8 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     head = _git_head()
+    execution_base = _execution_base()
+    expected_head = execution_base["commit"]
     remote = _remote_head()
     dirty = _dirty_paths()
     source = load_and_verify_source()
@@ -152,7 +176,7 @@ def main(argv: list[str] | None = None) -> int:
     call_graph = build_call_graph(provider_config=provider)
     preflight = phase_a_preflight(source=source, provider_config=provider)
     checks = {
-        "expected_starting_head": head == EXPECTED_HEAD,
+        "expected_starting_head": execution_base["status"] == "REBASELINED" and head == expected_head,
         "remote_head_matches_local": remote.get("status") == "PASS" and remote.get("sha") == head,
         "working_tree_clean": not dirty,
         "source_package_verified": source.get("status") == "PASS",
@@ -164,7 +188,7 @@ def main(argv: list[str] | None = None) -> int:
     }
     blocked_reasons = []
     if not checks["expected_starting_head"]:
-        blocked_reasons.append("EVALUATION_PHASE_A_HEAD_MISMATCH")
+        blocked_reasons.append("EVALUATION_PHASE_A_EXECUTION_BASE_UNRESOLVED" if execution_base["status"] != "REBASELINED" else "EVALUATION_PHASE_A_HEAD_MISMATCH")
     if not checks["remote_head_matches_local"]:
         blocked_reasons.append("EVALUATION_PHASE_A_REMOTE_HEAD_UNAVAILABLE_OR_MISMATCH")
     if not checks["working_tree_clean"]:
@@ -232,7 +256,9 @@ def main(argv: list[str] | None = None) -> int:
         "status": "BLOCKED" if blocked_reasons else "PASS",
         "status_code": _status_code(blocked=bool(blocked_reasons)),
         "starting_head": head,
-        "expected_starting_head": EXPECTED_HEAD,
+        "historical_expected_starting_head": HISTORICAL_EXPECTED_HEAD,
+        "expected_starting_head": expected_head,
+        "execution_base_status": execution_base["status"],
         "remote_head": remote,
         "working_tree_dirty_count": len(dirty),
         "working_tree_dirty_sample": dirty[:20],
@@ -260,7 +286,7 @@ def main(argv: list[str] | None = None) -> int:
 
 ## Baseline Audit
 
-- Expected starting HEAD: `{EXPECTED_HEAD}`; observed `{head}`.
+- Historical expected HEAD: `{HISTORICAL_EXPECTED_HEAD}`; resolved execution base: `{expected_head}` (`{execution_base['status']}`); observed `{head}`.
 - Remote `{EXPECTED_REMOTE_REF}`: `{remote.get('sha') or remote.get('status')}`.
 - Immutable source package: `{SOURCE_PACKAGE_ID}` / `{SOURCE_VERSION_ID}`.
 - Raw hash verification: `{'PASS' if source.get('status') == 'PASS' else 'FAIL'}`; provenance: `{'PASS' if checks['provenance_verified'] else 'FAIL'}`.

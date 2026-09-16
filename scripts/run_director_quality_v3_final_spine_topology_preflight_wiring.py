@@ -47,6 +47,7 @@ def main() -> int:
         raise SystemExit("provider execution and authorization bypass are not supported by the provider-free wiring runner")
 
     from core.director_contract_ssot import schema_parity_report
+    from core.director_v3_authority import reconcile_historical_recanary_authority, validate_current_stage_authority
     from core.shot_topology_skeleton import ROLE_ENUM
     from core.spine_topology_forensics import (
         compare_identity_projection,
@@ -72,6 +73,10 @@ def main() -> int:
     )
 
     pointer = json.loads(AUTHORITY.read_text(encoding="utf-8"))
+    # Normalize retired historical authority before any gate is evaluated.
+    # Wiring closure is informational and must never become an executable
+    # provider authorization signal.
+    pointer = reconcile_historical_recanary_authority(pointer)
     # Re-assert this stage's mutable authority fields after tests that may
     # regenerate the ignored pointer artifact with an older shape.
     redesign = pointer.setdefault("shot_architecture", {}).setdefault("generation_architecture_redesign", {})
@@ -84,7 +89,9 @@ def main() -> int:
     redesign.setdefault("shot_topology_skeleton", "READY")
     redesign.setdefault("graph_binder", "READY")
     redesign.setdefault("atomic_expansion", "READY")
-    redesign.setdefault("provider_canary_authorized", True)
+    redesign["provider_canary_authorized"] = False
+    redesign.setdefault("historical_provider_canary_authorized", True)
+    redesign["current_provider_canary_authorized"] = False
     stage = redesign.setdefault("spine_topology_canary", {})
     stage.setdefault("status", "BLOCKED")
     stage.setdefault("historical_status", "FAILED")
@@ -96,7 +103,8 @@ def main() -> int:
     stage.setdefault("attempted_spine_calls", 3)
     stage.setdefault("attempted_skeleton_calls", 0)
     stage.setdefault("replay_provider_calls", 0)
-    stage.update({"forensic_adjudication": "CLOSED", "preflight_wiring_closure": "CLOSED", "ready_for_final_recanary": True, "final_recanary_authorized": False, "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED", "atomic_expansion_canary_authorized": False, "production_shotplan": "HOLD"})
+    stage.pop("ready_for_final_recanary", None)
+    stage.update({"forensic_adjudication": "CLOSED", "preflight_wiring_closure": "CLOSED", "historical_preflight_ready": True, "current_recanary_authorized": False, "final_recanary_authorized": False, "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED", "atomic_expansion_canary_authorized": False, "production_shotplan": "HOLD"})
     # Freeze the authority contract before calculating the base snapshot
     # fingerprint; otherwise the pointer would be extended after the base
     # was written and every dry-run would report a false parity gap.
@@ -163,7 +171,9 @@ def main() -> int:
         "status": "CLOSED",
         "stage": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_CLOSED",
         "expected_base_commit": None,
-        "ready_for_final_recanary": True,
+        "historical_preflight_ready": True,
+        "ready_for_execution": False,
+        "current_recanary_authorized": False,
         "final_recanary_authorized": False,
         "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED",
         "provider_calls": 0,
@@ -237,6 +247,7 @@ def main() -> int:
             "phase_count_inference_used": False,
         }
 
+    authority_semantics = validate_current_stage_authority(pointer)
     wiring_checks = {
         "must_preserve_runtime": all(item["shape"]["status"] == "PASS" for item in preserve_rows.values()),
         "must_preserve_no_prose_matching": all(not item["prose_matching"] for item in preserve_rows.values()),
@@ -249,6 +260,7 @@ def main() -> int:
         "contract_ssot_parity": schema_parity_report()["status"] == "PASS",
         "authorization_false": canary.get("final_recanary_authorized") is False,
         "provider_calls": preflight["provider_calls"] == 0,
+        "authority_semantics": authority_semantics["status"] == "PASS",
     }
     status = "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_CLOSED" if all(wiring_checks.values()) and preflight["status"] == "PASS" else "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_BLOCKED"
 
@@ -336,7 +348,7 @@ No real Re-Canary, Atomic Expansion, ShotPlan, Storyboard or media action was ex
 
     # The pointer is the sole mutable authority for this stage.  Preserve all
     # historical fields while making this closure's authorization explicit.
-    stage.update({"preflight_wiring_closure": "CLOSED" if status.endswith("CLOSED") else "BLOCKED", "runtime_preserve_wiring": "PASS" if wiring_checks.get("must_preserve_runtime", False) else "FAIL", "runtime_identity_wiring": "PASS" if wiring_checks.get("identity_runtime_authority", False) else "FAIL", "identity_provider_runtime_parity": "PASS" if wiring_checks.get("identity_provider_runtime_parity", False) else "FAIL", "runtime_segment_ref_wiring": "PASS" if wiring_checks.get("segment_refs_from_actual_spine", False) else "FAIL", "fail_closed_orchestration": "PASS" if wiring_checks.get("fail_closed_invalid_spine", False) else "FAIL", "role_contract_visibility": "PASS" if wiring_checks.get("role_enum_visibility", False) else "FAIL", "segment_ref_contract_visibility": "PASS" if wiring_checks.get("segment_refs_from_actual_spine", False) else "FAIL", "final_recanary_head_gate": "PASS" if preflight["checks"].get("head_ancestry_gate", False) and preflight["checks"].get("head_base_code_drift_gate", False) else "FAIL", "final_recanary_authorization_gate": "PASS" if wiring_checks.get("authorization_false", False) else "FAIL", "ready_for_final_recanary": status.endswith("CLOSED"), "final_recanary_authorized": False, "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED", "atomic_expansion_canary_authorized": False, "production_shotplan": "HOLD"})
+    stage.update({"preflight_wiring_closure": "CLOSED" if status.endswith("CLOSED") else "BLOCKED", "runtime_preserve_wiring": "PASS" if wiring_checks.get("must_preserve_runtime", False) else "FAIL", "runtime_identity_wiring": "PASS" if wiring_checks.get("identity_runtime_authority", False) else "FAIL", "identity_provider_runtime_parity": "PASS" if wiring_checks.get("identity_provider_runtime_parity", False) else "FAIL", "runtime_segment_ref_wiring": "PASS" if wiring_checks.get("segment_refs_from_actual_spine", False) else "FAIL", "fail_closed_orchestration": "PASS" if wiring_checks.get("fail_closed_invalid_spine", False) else "FAIL", "role_contract_visibility": "PASS" if wiring_checks.get("role_enum_visibility", False) else "FAIL", "segment_ref_contract_visibility": "PASS" if wiring_checks.get("segment_refs_from_actual_spine", False) else "FAIL", "final_recanary_head_gate": "PASS" if preflight["checks"].get("head_ancestry_gate", False) and preflight["checks"].get("head_base_code_drift_gate", False) else "FAIL", "final_recanary_authorization_gate": "PASS" if wiring_checks.get("authorization_false", False) else "FAIL", "historical_preflight_ready": status.endswith("CLOSED"), "current_recanary_authorized": False, "final_recanary_authorized": False, "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED", "atomic_expansion_canary_authorized": False, "production_shotplan": "HOLD"})
     # Do not reconstruct the stage object from a fixed key list: the current
     # authority pointer is an append-only SSOT and may contain historical or
     # future fields owned by another stage.  Updating in place preserves every

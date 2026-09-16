@@ -66,7 +66,6 @@
         "replay_provider_calls": 0,
         "forensic_adjudication": "CLOSED",
         "preflight_wiring_closure": "CLOSED",
-        "ready_for_final_recanary": true,
         "final_recanary_authorized": false,
         "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED",
         "atomic_expansion_canary_authorized": false,
@@ -79,14 +78,17 @@
         "role_contract_visibility": "PASS",
         "segment_ref_contract_visibility": "PASS",
         "final_recanary_head_gate": "PASS",
-        "final_recanary_authorization_gate": "PASS"
+        "final_recanary_authorization_gate": "PASS",
+        "current_recanary_authorized": false
       },
       "status": "FOUNDATION_CLOSED",
       "visual_editorial_spine": "READY",
       "shot_topology_skeleton": "READY",
       "graph_binder": "READY",
       "atomic_expansion": "READY",
-      "provider_canary_authorized": true
+      "historical_provider_canary_authorized": true,
+      "current_provider_canary_authorized": false,
+      "provider_canary_authorized": false
     }
   },
   "fresh_integration_pilot": {
@@ -176,7 +178,6 @@
     "status": "CLOSED",
     "stage": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_CLOSED",
     "expected_base_commit": "3262fdc",
-    "ready_for_final_recanary": true,
     "final_recanary_authorized": false,
     "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED",
     "provider_calls": 0,
@@ -194,7 +195,10 @@
       "production_shotplan": "HOLD",
       "storyboard": "HOLD",
       "media": "HOLD"
-    }
+    },
+    "historical_preflight_ready": true,
+    "ready_for_execution": false,
+    "current_recanary_authorized": false
   },
   "authorized_ai_evaluation_source": {
     "status": "INGESTED",

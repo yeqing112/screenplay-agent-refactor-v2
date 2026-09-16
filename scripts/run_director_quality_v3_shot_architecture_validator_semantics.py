@@ -72,7 +72,11 @@ def main() -> int:
     aggregate = aggregate_capability(assessments)
     # Current Stage Authority is the sole mutable pointer in this stage.  The
     # historical strategy and forensic artifacts remain untouched.
+    from core.director_v3_authority import reconcile_historical_recanary_authority
+    pointer = reconcile_historical_recanary_authority(pointer)
+    existing_shot_architecture = pointer.get("shot_architecture") if isinstance(pointer.get("shot_architecture"), dict) else {}
     pointer["shot_architecture"] = {
+        **existing_shot_architecture,
         "original_canary": {"experiment_validity": "INVALID", "forensic_adjudication": "CLOSED"},
         "contract_v2": {"status": "CLOSED"}, "validator_semantics": {"status": "CLOSED"},
         "raw_capability": aggregate["overall_capability"],

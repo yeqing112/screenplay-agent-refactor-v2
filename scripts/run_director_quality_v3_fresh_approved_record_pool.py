@@ -80,6 +80,8 @@ def _preserve_closed_authority(pointer: dict[str, Any]) -> dict[str, Any]:
     values are preserved, while missing fields are reconstructed to the
     provider-free closure contract.
     """
+    from core.director_v3_authority import reconcile_historical_recanary_authority
+    pointer = reconcile_historical_recanary_authority(pointer)
     pointer.setdefault("strategy_authority_contract_ssot", {
         "status": "CLOSED",
         "provider_spec": "PASS",
@@ -126,7 +128,9 @@ def _preserve_closed_authority(pointer: dict[str, Any]) -> dict[str, Any]:
     redesign.setdefault("shot_topology_skeleton", "READY")
     redesign.setdefault("graph_binder", "READY")
     redesign.setdefault("atomic_expansion", "READY")
-    redesign.setdefault("provider_canary_authorized", True)
+    redesign["provider_canary_authorized"] = False
+    redesign.setdefault("historical_provider_canary_authorized", True)
+    redesign["current_provider_canary_authorized"] = False
     stage = redesign.setdefault("spine_topology_canary", {})
     stage.setdefault("status", "BLOCKED")
     stage.setdefault("historical_status", "FAILED")
@@ -137,10 +141,12 @@ def _preserve_closed_authority(pointer: dict[str, Any]) -> dict[str, Any]:
     stage.setdefault("attempted_spine_calls", 3)
     stage.setdefault("attempted_skeleton_calls", 0)
     stage.setdefault("replay_provider_calls", 0)
+    stage.pop("ready_for_final_recanary", None)
     stage.update({
         "forensic_adjudication": "CLOSED",
         "preflight_wiring_closure": "CLOSED",
-        "ready_for_final_recanary": True,
+        "historical_preflight_ready": True,
+        "current_recanary_authorized": False,
         "final_recanary_authorized": False,
         "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED",
         "atomic_expansion_canary_authorized": False,
