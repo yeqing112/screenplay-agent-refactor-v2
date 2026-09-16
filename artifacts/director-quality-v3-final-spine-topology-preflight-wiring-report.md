@@ -25,6 +25,6 @@ Regression evidence: backend `1185 passed`; deterministic Golden `5/5`.
 
 `READY_FOR_FINAL_SPINE_TOPOLOGY_RECANARY=true`
 `FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED=false`
-`FINAL_RECANARY_EXPECTED_BASE_COMMIT=08307a8`
+`FINAL_RECANARY_EXPECTED_BASE_COMMIT=3d7bf54`
 
 No real Re-Canary, Atomic Expansion, ShotPlan, Storyboard or media action was executed.
