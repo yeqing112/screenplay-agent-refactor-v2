@@ -106,6 +106,53 @@ def main() -> int:
         "ready_for_fresh_integration_pilot": True,
         "fresh_integration_pilot_authorized": False,
     })
+    # Preserve gates owned by adjacent upstream stages if a broad regression
+    # test rewrote the shared authority fixture with a reduced shape.
+    pointer.setdefault("fresh_approved_record_pool", {
+        "status": "BLOCKED",
+        "eligible_scene_count": 0,
+        "target_minimum": 3,
+        "recommended_pool_size": 5,
+        "real_source_only": True,
+        "synthetic_allowed": False,
+        "provider_calls": 0,
+        "ready_for_fresh_integration_pilot_2": False,
+        "fresh_integration_pilot_2_authorized": False,
+        "cohort_frozen": False,
+        "reason": "INSUFFICIENT_REAL_FRESH_APPROVED_RECORDS",
+        "architecture_status": "HEALTHY",
+        "data_readiness_status": "BLOCKED",
+    })
+    pointer.setdefault("fresh_upstream_completion_audit", {
+        "status": "DIRECTOR_V3_FRESH_UPSTREAM_COMPLETION_AUDIT_CLOSED",
+        "population_count": 73,
+        "tier_a_count": 0,
+        "tier_b_count": 0,
+        "tier_c_count": 0,
+        "tier_d_count": 73,
+        "exposure_unknown_remaining": 11,
+        "orphaned_downstream_count": 1,
+        "ready_for_deterministic_upstream_recovery": False,
+        "deterministic_upstream_recovery_authorized": False,
+        "ready_for_assisted_upstream_completion": False,
+        "provider_upstream_completion_required": True,
+        "new_real_source_material_required": True,
+        "provider_calls": 0,
+        "audit_fingerprint": "0c92312b48dce5c7ca07ad7f191a8fa6f286dcd359f6b9f5cd61f04cc07246c2",
+    })
+    pointer.setdefault("new_real_source_material_intake", {
+        "status": "READY",
+        "intake_contract": "PASS",
+        "clean_lineage_contract": "PASS",
+        "source_versioning": "PASS",
+        "duplicate_guard": "PASS",
+        "approval_evidence_contract": "PASS",
+        "provider_calls": 0,
+        "real_source_material_present": False,
+        "source_ingested": False,
+        "upstream_processing_authorized": False,
+        "waiting_for": "REAL_SOURCE_MATERIAL",
+    })
     head = _head()
     base = json.loads(BASE.read_text(encoding="utf-8")) if BASE.exists() else {}
     # Reuse the immutable closure base by default.  Falling back to the
