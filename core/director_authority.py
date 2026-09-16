@@ -26,8 +26,19 @@ def _refs(scene: dict[str, Any], key: str, prefix: str) -> set[str]:
 
 
 def valid_scene_refs(scene: dict[str, Any], semantic_events: dict[str, Any] | None = None) -> dict[str, set[str]]:
-    beats = {_t(_d(item).get("beat_id")) for item in _l(scene.get("beats")) if _t(_d(item).get("beat_id"))}
-    beats = {value if ":" in value else f"beat:{value[1:] if value.upper().startswith('B') else value}" for value in beats}
+    raw_beats = {_t(_d(item).get("beat_id")) for item in _l(scene.get("beats")) if _t(_d(item).get("beat_id"))}
+    # Preserve the canonical beat identifier exactly as supplied by the
+    # upstream contract.  Numeric aliases (e.g. ``beat:12`` for ``B12``)
+    # remain accepted for compatibility, but the canonical ``beat:B12``
+    # reference must never be rewritten or dropped.
+    beats: set[str] = set()
+    for value in raw_beats:
+        if ":" in value:
+            beats.add(value)
+        else:
+            beats.add(f"beat:{value}")
+            if value.upper().startswith("B") and value[1:]:
+                beats.add(f"beat:{value[1:]}")
     characters = _refs(scene, "characters", "character") | {_t(_d(item).get("character_id")) for item in _l(scene.get("participants")) if _t(_d(item).get("character_id"))}
     characters = {value if ":" in value else f"character:{value}" for value in characters}
     props = _refs(scene, "props", "prop")

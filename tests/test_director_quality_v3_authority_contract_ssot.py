@@ -1,4 +1,4 @@
-from core.director_authority import authority_completeness_gate, normalize_structured_preserve_constraints, provider_readiness_gate, strategy_authority
+from core.director_authority import authority_completeness_gate, normalize_structured_preserve_constraints, provider_readiness_gate, strategy_authority, valid_scene_refs
 from core.director_contract_ssot import build_provider_contract, schema_fingerprint, schema_parity_report, skeleton_spec, spine_spec
 
 
@@ -68,3 +68,14 @@ def test_authority_completeness_gate_has_explicit_failure_status():
     result = authority_completeness_gate(strategy={"must_preserve": ["legacy prose"]}, scene=_scene(), identity_projection={"records": [{"character_id": "19"}]}, semantic_events=_events())
     assert result["status"] == "AUTHORITY_COMPLETENESS_FAILED"
     assert result["provider_callable"] is False
+
+
+def test_canonical_prefixed_beat_ids_are_preserved_in_authority_refs():
+    refs = valid_scene_refs({"beats": [{"beat_id": "B12"}]})["beat"]
+    assert "beat:B12" in refs
+    assert "beat:12" in refs  # compatibility alias, never a replacement
+    result = normalize_structured_preserve_constraints(
+        [{"kind": "VISUAL_EVENT", "description": "event", "beat_refs": ["beat:B12"], "provenance": {"source": "test"}}],
+        scene={"scene_id": "s", "beats": [{"beat_id": "B12"}]},
+    )
+    assert result["status"] == "PASS"
