@@ -7,16 +7,18 @@ from __future__ import annotations
 
 import hashlib
 import json
+import argparse
+import os
 import sqlite3
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(r"D:\Work\Project\screenplay-agent-refactor-v2-semantic-verifier-canary")
-MAIN_DB = Path(r"D:\Work\Project\screenplay-agent-refactor-v2\work\db\screenplay.db")
-AUTH = Path(r"D:\Work\Project\director-v3-semantic-verifier-authorization.json")
-EXTERNAL_LEDGER = Path(r"D:\Work\Project\semantic-verifier-canary-ledger.json")
+ROOT = Path(__file__).resolve().parents[1]
+MAIN_DB = Path(os.environ.get("DIRECTOR_MAIN_DB", str(ROOT / "work/db/screenplay.db")))
+AUTH = Path(os.environ.get("DIRECTOR_V3_SEMANTIC_AUTHORIZATION", str(ROOT.parent / "director-v3-semantic-verifier-authorization.json")))
+EXTERNAL_LEDGER = Path(os.environ.get("DIRECTOR_V3_SEMANTIC_LEDGER", str(ROOT / "work/semantic-verifier-canary-ledger.json")))
 ART = ROOT / "artifacts"
 BASE = "45b2c7c8c432cd14545675f27b7717dc86e32541"
 SCOPE = "DIRECTOR_V3_AUTHORIZED_FACT_SEMANTIC_VERIFIER_CANARY"
@@ -46,6 +48,12 @@ def profile_from_readonly_main_db() -> dict:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Run the one-call semantic verifier canary.")
+    parser.add_argument("--execute-real", action="store_true", help="required explicit authorization to dispatch the provider")
+    args = parser.parse_args()
+    if not args.execute_real:
+        print(json.dumps({"status": "NOT_AUTHORIZED", "provider_calls": 0, "reason": "pass --execute-real with the external authorization file"}, ensure_ascii=False))
+        return 2
     sys.path.insert(0, str(ROOT))
     from core.fact_semantic_verifier import (
         build_verifier_request,
