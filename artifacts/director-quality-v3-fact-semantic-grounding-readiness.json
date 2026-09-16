@@ -1,0 +1,19 @@
+{
+  "schema_version": "fact_semantic_grounding_readiness_v1",
+  "status": "CLOSED",
+  "provider_calls": 0,
+  "semantic_foundation_ready": true,
+  "evidence_authority_v2": "PASS",
+  "anchor_surface_typing": "PASS",
+  "confirmation_ceiling": "PASS",
+  "epistemic_guard": "PASS",
+  "composite_guard": "PASS",
+  "attempt2_semantic_overlay": "PASS",
+  "semantic_grounding_status": "NOT_YET_ADJUDICATED",
+  "semantic_verifier_ready": true,
+  "semantic_verifier_authorized": false,
+  "script_ir_ready": false,
+  "script_ir_authorized": false,
+  "treatment_authorized": false,
+  "runtime_authority": false
+}

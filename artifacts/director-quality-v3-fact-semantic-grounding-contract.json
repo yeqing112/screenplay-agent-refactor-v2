@@ -1,0 +1,36 @@
+{
+  "schema_version": "fact_semantic_grounding_v1",
+  "evidence_authority_independent": true,
+  "surface_enum": [
+    "NARRATIVE_PROSE",
+    "QUOTED_TEXT",
+    "UNKNOWN_SURFACE"
+  ],
+  "support_roles": [
+    "WORLD_ASSERTION",
+    "ACTION_OCCURRENCE",
+    "SPEECH_ACT",
+    "CLAIM_CONTENT",
+    "TEXT_CONTENT",
+    "CORROBORATION",
+    "CONTEXT_ONLY"
+  ],
+  "support_classes": [
+    "DIRECTLY_ENTAILED",
+    "PARTIALLY_ENTAILED",
+    "CLAIM_ONLY",
+    "INFERENCE_ONLY",
+    "CONTRADICTED",
+    "AMBIGUOUS"
+  ],
+  "grounding_states": [
+    "EVIDENCE_VALIDATED",
+    "MACHINE_GUARDS_PASS",
+    "SEMANTIC_REVIEW_REQUIRED",
+    "SEMANTICALLY_CONFIRMED",
+    "SEMANTICALLY_REJECTED"
+  ],
+  "provider_calls": 0,
+  "runtime_authority": false,
+  "machine_capability": "hard_guards_only; arbitrary_natural_language_entailment_requires_review"
+}

@@ -3,9 +3,20 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from typing import Any
 
 SCHEMA_VERSION = "source_evidence_index_v1"
+
+
+def classify_anchor_surface(text: Any) -> str:
+    """Classify presentation form only; unknown inputs fail safe."""
+    if not isinstance(text, str) or not text.strip():
+        return "UNKNOWN_SURFACE"
+    value = text.strip()
+    if any(mark in value for mark in ("“", "”", "‘", "’")) or re.match(r"^—{1,2}\s*", value):
+        return "QUOTED_TEXT"
+    return "NARRATIVE_PROSE"
 
 
 def _canonical(value: Any) -> bytes:
@@ -89,6 +100,7 @@ def _append_anchor(anchors: list[dict[str, Any]], text: str, raw_bytes: bytes, s
         "byte_end": byte_end,
         "exact_text": exact,
         "exact_text_sha256": _sha(exact.encode("utf-8")),
+        "anchor_surface_class": classify_anchor_surface(exact),
     })
 
 
@@ -107,4 +119,4 @@ def validate_source_evidence_index(index: dict[str, Any], raw_bytes: bytes) -> d
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "anchor_count": len(index.get("anchors") or [])}
 
 
-__all__ = ["SCHEMA_VERSION", "build_source_evidence_index", "validate_source_evidence_index"]
+__all__ = ["SCHEMA_VERSION", "classify_anchor_surface", "build_source_evidence_index", "validate_source_evidence_index"]

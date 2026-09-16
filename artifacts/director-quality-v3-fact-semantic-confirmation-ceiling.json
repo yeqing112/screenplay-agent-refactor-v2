@@ -1,0 +1,111 @@
+{
+  "schema_version": "semantic_confirmation_ceiling_v1",
+  "provider_calls": 0,
+  "rules": [
+    {
+      "surface": "NARRATIVE_PROSE",
+      "role": "WORLD_ASSERTION",
+      "allowed": true,
+      "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+      "reason": "narrative_prose_still_requires_semantic_entailment"
+    },
+    {
+      "surface": "NARRATIVE_PROSE",
+      "role": "ACTION_OCCURRENCE",
+      "allowed": true,
+      "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+      "reason": "narrative_prose_still_requires_semantic_entailment"
+    },
+    {
+      "surface": "NARRATIVE_PROSE",
+      "role": "SPEECH_ACT",
+      "allowed": true,
+      "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+      "reason": "narrative_prose_still_requires_semantic_entailment"
+    },
+    {
+      "surface": "NARRATIVE_PROSE",
+      "role": "CLAIM_CONTENT",
+      "allowed": true,
+      "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+      "reason": "narrative_prose_still_requires_semantic_entailment"
+    },
+    {
+      "surface": "NARRATIVE_PROSE",
+      "role": "TEXT_CONTENT",
+      "allowed": true,
+      "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+      "reason": "narrative_prose_still_requires_semantic_entailment"
+    },
+    {
+      "surface": "QUOTED_TEXT",
+      "role": "WORLD_ASSERTION",
+      "allowed": false,
+      "ceiling": "CLAIM_ONLY",
+      "reason": "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+    },
+    {
+      "surface": "QUOTED_TEXT",
+      "role": "ACTION_OCCURRENCE",
+      "allowed": false,
+      "ceiling": "CLAIM_ONLY",
+      "reason": "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+    },
+    {
+      "surface": "QUOTED_TEXT",
+      "role": "SPEECH_ACT",
+      "allowed": true,
+      "ceiling": "SPEECH_ACT",
+      "reason": "quoted_text_supports_claim_or_speech_surface"
+    },
+    {
+      "surface": "QUOTED_TEXT",
+      "role": "CLAIM_CONTENT",
+      "allowed": true,
+      "ceiling": "CLAIM_CONTENT",
+      "reason": "quoted_text_supports_claim_or_speech_surface"
+    },
+    {
+      "surface": "QUOTED_TEXT",
+      "role": "TEXT_CONTENT",
+      "allowed": true,
+      "ceiling": "TEXT_CONTENT",
+      "reason": "quoted_text_supports_claim_or_speech_surface"
+    },
+    {
+      "surface": "UNKNOWN_SURFACE",
+      "role": "WORLD_ASSERTION",
+      "allowed": false,
+      "ceiling": "REVIEW_REQUIRED",
+      "reason": "unknown_surface_cannot_auto_confirm"
+    },
+    {
+      "surface": "UNKNOWN_SURFACE",
+      "role": "ACTION_OCCURRENCE",
+      "allowed": false,
+      "ceiling": "REVIEW_REQUIRED",
+      "reason": "unknown_surface_cannot_auto_confirm"
+    },
+    {
+      "surface": "UNKNOWN_SURFACE",
+      "role": "SPEECH_ACT",
+      "allowed": false,
+      "ceiling": "REVIEW_REQUIRED",
+      "reason": "unknown_surface_cannot_auto_confirm"
+    },
+    {
+      "surface": "UNKNOWN_SURFACE",
+      "role": "CLAIM_CONTENT",
+      "allowed": false,
+      "ceiling": "REVIEW_REQUIRED",
+      "reason": "unknown_surface_cannot_auto_confirm"
+    },
+    {
+      "surface": "UNKNOWN_SURFACE",
+      "role": "TEXT_CONTENT",
+      "allowed": false,
+      "ceiling": "REVIEW_REQUIRED",
+      "reason": "unknown_surface_cannot_auto_confirm"
+    }
+  ]
+}

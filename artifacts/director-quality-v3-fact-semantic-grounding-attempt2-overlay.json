@@ -1,0 +1,75 @@
+{
+  "schema_version": "fact_semantic_grounding_attempt2_overlay_v1",
+  "attempt2_result_preserved": true,
+  "evidence_authority_v2": "PASS",
+  "semantic_grounding_status": "NOT_YET_ADJUDICATED",
+  "runtime_authority": false,
+  "provider_calls": 0,
+  "script_ir_eligible": false,
+  "facts": [
+    {
+      "fact_id": "FACT_0001",
+      "evidence_authority_v2": "PASS",
+      "semantic_grounding_status": "SEMANTIC_REVIEW_REQUIRED",
+      "semantic_support_class": "CLAIM_ONLY",
+      "runtime_authority": false,
+      "script_ir_eligible": false
+    },
+    {
+      "fact_id": "FACT_0002",
+      "evidence_authority_v2": "PASS",
+      "semantic_grounding_status": "SEMANTIC_REVIEW_REQUIRED",
+      "semantic_support_class": "INFERENCE_ONLY",
+      "runtime_authority": false,
+      "script_ir_eligible": false
+    },
+    {
+      "fact_id": "FACT_0003",
+      "evidence_authority_v2": "PASS",
+      "semantic_grounding_status": "SEMANTIC_REVIEW_REQUIRED",
+      "semantic_support_class": "CLAIM_ONLY",
+      "runtime_authority": false,
+      "script_ir_eligible": false
+    },
+    {
+      "fact_id": "FACT_0004",
+      "evidence_authority_v2": "PASS",
+      "semantic_grounding_status": "SEMANTIC_REVIEW_REQUIRED",
+      "semantic_support_class": "DIRECTLY_ENTAILED",
+      "runtime_authority": false,
+      "script_ir_eligible": false
+    },
+    {
+      "fact_id": "FACT_0005",
+      "evidence_authority_v2": "PASS",
+      "semantic_grounding_status": "SEMANTIC_REVIEW_REQUIRED",
+      "semantic_support_class": "DIRECTLY_ENTAILED",
+      "runtime_authority": false,
+      "script_ir_eligible": false
+    },
+    {
+      "fact_id": "FACT_0006",
+      "evidence_authority_v2": "PASS",
+      "semantic_grounding_status": "SEMANTIC_REVIEW_REQUIRED",
+      "semantic_support_class": "INFERENCE_ONLY",
+      "runtime_authority": false,
+      "script_ir_eligible": false
+    },
+    {
+      "fact_id": "FACT_0007",
+      "evidence_authority_v2": "PASS",
+      "semantic_grounding_status": "SEMANTIC_REVIEW_REQUIRED",
+      "semantic_support_class": "CLAIM_ONLY",
+      "runtime_authority": false,
+      "script_ir_eligible": false
+    }
+  ],
+  "counts": {
+    "DIRECTLY_ENTAILED": 2,
+    "PARTIALLY_ENTAILED": 0,
+    "CLAIM_ONLY": 3,
+    "INFERENCE_ONLY": 2,
+    "CONTRADICTED": 0,
+    "AMBIGUOUS": 0
+  }
+}

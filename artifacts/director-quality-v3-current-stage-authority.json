@@ -253,6 +253,31 @@
       "human_review": "REQUIRED_BEFORE_SCRIPT_IR"
     },
     "attempt_1_status": "FAILED",
-    "ready_for_script_ir_processing": false
+    "ready_for_script_ir_processing": false,
+    "cumulative_provider_attempts": 2,
+    "attempt_2_evidence_authority": "PASS",
+    "attempt_2_fact_count": 7,
+    "attempt_2_evidence_verified": 7,
+    "attempt_2_evidence_invalid": 0,
+    "historical_attempt_2_lineage": "FACT_SNAPSHOT_CONFIRMED",
+    "effective_lineage_state": "FACT_SNAPSHOT_EVIDENCE_VALIDATED",
+    "semantic_grounding_status": "NOT_YET_ADJUDICATED",
+    "script_ir_processing_authorized": false
+  },
+  "fact_semantic_grounding": {
+    "status": "CLOSED",
+    "provider_calls": 0,
+    "evidence_authority_v2": "PASS",
+    "anchor_surface_typing": "PASS",
+    "confirmation_ceiling": "PASS",
+    "epistemic_guard": "PASS",
+    "composite_guard": "PASS",
+    "attempt_2_semantic_overlay": "PASS",
+    "semantic_grounding_status": "NOT_YET_ADJUDICATED",
+    "semantic_verifier_ready": true,
+    "semantic_verifier_authorized": false,
+    "script_ir_gate": "BLOCKED_PENDING_SEMANTIC_GROUNDING",
+    "development_forensic": "DEVELOPMENT_FORENSIC",
+    "runtime_authority": false
   }
 }

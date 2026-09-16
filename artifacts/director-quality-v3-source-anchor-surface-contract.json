@@ -1,0 +1,19 @@
+{
+  "schema_version": "source_anchor_surface_v1",
+  "enum": [
+    "NARRATIVE_PROSE",
+    "QUOTED_TEXT",
+    "UNKNOWN_SURFACE"
+  ],
+  "typing": "deterministic",
+  "unknown_policy": "review_required",
+  "truth_claim": false,
+  "provider_calls": 0,
+  "anchor_count": 347,
+  "surface_counts": {
+    "NARRATIVE_PROSE": 251,
+    "QUOTED_TEXT": 96,
+    "UNKNOWN_SURFACE": 0
+  },
+  "surface_index_fingerprint": "fb3cd5498382c689ba8f9a5c7b597b6f2af6a7e45037edc9ef114313972050df"
+}

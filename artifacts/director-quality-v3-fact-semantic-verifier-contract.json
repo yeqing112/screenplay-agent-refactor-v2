@@ -1,0 +1,27 @@
+{
+  "schema_version": "fact_semantic_verifier_v1",
+  "status": "DESIGNED_NOT_EXECUTED",
+  "provider_calls": 0,
+  "runtime_authority": false,
+  "inputs": [
+    "canonical_fact_assertion",
+    "provider_epistemic_class",
+    "resolved_evidence",
+    "anchor_surface_class",
+    "confirmation_ceiling"
+  ],
+  "outputs": [
+    "ENTAILED",
+    "PARTIAL",
+    "CLAIM_ONLY",
+    "INFERENCE",
+    "CONTRADICTED",
+    "AMBIGUOUS"
+  ],
+  "constraints": [
+    "cannot create facts",
+    "cannot modify source",
+    "cannot create evidence refs",
+    "requires separate authorization"
+  ]
+}

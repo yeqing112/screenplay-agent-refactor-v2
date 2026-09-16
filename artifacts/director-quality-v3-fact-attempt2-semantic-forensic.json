@@ -1,0 +1,558 @@
+{
+  "schema_version": "fact_attempt2_semantic_forensic_v1",
+  "forensic_class": "DEVELOPMENT_FORENSIC",
+  "runtime_authority": false,
+  "provider_calls": 0,
+  "source_package_id": "SRC79f12d1b7f5eb828",
+  "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+  "attempt2_evidence_authority": "PASS",
+  "semantic_grounding_status": "NOT_YET_ADJUDICATED",
+  "facts": [
+    {
+      "fact_id": "FACT_0001",
+      "subject": "宋知夏",
+      "predicate": "escaped through fire pipe shaft",
+      "value": "to apartment 1203",
+      "evidence_refs": [
+        "E0267",
+        "E0269"
+      ],
+      "resolved_evidence": [
+        {
+          "anchor_ref": "E0267",
+          "excerpt": "“六年前，我不是被人从1204带走的。”\r\n",
+          "anchor_surface_class": "QUOTED_TEXT",
+          "char_start": 3960,
+          "char_end": 3982,
+          "byte_start": 9674,
+          "byte_end": 9728
+        },
+        {
+          "anchor_ref": "E0269",
+          "excerpt": "“我是自己从管井爬到这里的。”\r\n",
+          "anchor_surface_class": "QUOTED_TEXT",
+          "char_start": 3993,
+          "char_end": 4010,
+          "byte_start": 9749,
+          "byte_end": 9796
+        }
+      ],
+      "source_presentation_modes": [
+        "QUOTED_TEXT"
+      ],
+      "assessment": "CLAIM_ONLY",
+      "runtime_authority": false,
+      "forensic_class": "DEVELOPMENT_FORENSIC",
+      "reason": "Quoted source supports that a claim was presented, not objective world truth.",
+      "supported_components": [],
+      "unsupported_components": [],
+      "stronger_anchor_candidates": [],
+      "machine_guard": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "ACTION_OCCURRENCE",
+        "surfaces": [
+          "QUOTED_TEXT",
+          "QUOTED_TEXT"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": false,
+            "ceiling": "CLAIM_ONLY",
+            "reason": "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+          },
+          {
+            "allowed": false,
+            "ceiling": "CLAIM_ONLY",
+            "reason": "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+          }
+        ],
+        "hard_blockers": [
+          "QUOTED_TEXT_WORLD_FACT_CONFIRMATION_BLOCKED"
+        ],
+        "reasons": [
+          "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+        ],
+        "composite_fact": false
+      }
+    },
+    {
+      "fact_id": "FACT_0002",
+      "subject": "宋知夏",
+      "predicate": "hid storage card in umbrella handle",
+      "value": "evidence from six years ago",
+      "evidence_refs": [
+        "E0330",
+        "E0331",
+        "E0333"
+      ],
+      "resolved_evidence": [
+        {
+          "anchor_ref": "E0330",
+          "excerpt": "她拧开伞柄末端那块黑色塑料盖。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 5054,
+          "char_end": 5071,
+          "byte_start": 12396,
+          "byte_end": 12443
+        },
+        {
+          "anchor_ref": "E0331",
+          "excerpt": "里面掉出一张很小的存储卡。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 5073,
+          "char_end": 5088,
+          "byte_start": 12445,
+          "byte_end": 12486
+        },
+        {
+          "anchor_ref": "E0333",
+          "excerpt": "“六年前，我只来得及带走这个。”\r\n",
+          "anchor_surface_class": "QUOTED_TEXT",
+          "char_start": 5100,
+          "char_end": 5118,
+          "byte_start": 12510,
+          "byte_end": 12560
+        }
+      ],
+      "source_presentation_modes": [
+        "NARRATIVE_PROSE",
+        "QUOTED_TEXT"
+      ],
+      "assessment": "INFERENCE_ONLY",
+      "runtime_authority": false,
+      "forensic_class": "DEVELOPMENT_FORENSIC",
+      "reason": "Observed discovery or object presence does not entail actor causation or intentional placement.",
+      "supported_components": [],
+      "unsupported_components": [],
+      "stronger_anchor_candidates": [],
+      "machine_guard": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "ACTION_OCCURRENCE",
+        "surfaces": [
+          "NARRATIVE_PROSE",
+          "NARRATIVE_PROSE",
+          "QUOTED_TEXT"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          },
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          },
+          {
+            "allowed": false,
+            "ceiling": "CLAIM_ONLY",
+            "reason": "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+          }
+        ],
+        "hard_blockers": [
+          "COMPOSITE_ATOMICITY_REVIEW_REQUIRED"
+        ],
+        "reasons": [
+          "narrative_prose_still_requires_semantic_entailment",
+          "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+        ],
+        "composite_fact": true
+      }
+    },
+    {
+      "fact_id": "FACT_0003",
+      "subject": "宋知夏",
+      "predicate": "is previous tenant of 1204",
+      "value": "disappeared six years ago",
+      "evidence_refs": [
+        "E0070",
+        "E0072"
+      ],
+      "resolved_evidence": [
+        {
+          "anchor_ref": "E0070",
+          "excerpt": "“宋知夏。”\r\n",
+          "anchor_surface_class": "QUOTED_TEXT",
+          "char_start": 1173,
+          "char_end": 1181,
+          "byte_start": 2943,
+          "byte_end": 2963
+        },
+        {
+          "anchor_ref": "E0072",
+          "excerpt": "“失踪了。”\r\n",
+          "anchor_surface_class": "QUOTED_TEXT",
+          "char_start": 1195,
+          "char_end": 1203,
+          "byte_start": 2993,
+          "byte_end": 3013
+        }
+      ],
+      "source_presentation_modes": [
+        "QUOTED_TEXT"
+      ],
+      "assessment": "CLAIM_ONLY",
+      "runtime_authority": false,
+      "forensic_class": "DEVELOPMENT_FORENSIC",
+      "reason": "Quoted source supports that a claim was presented, not objective world truth.",
+      "supported_components": [],
+      "unsupported_components": [],
+      "stronger_anchor_candidates": [],
+      "machine_guard": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "WORLD_ASSERTION",
+        "surfaces": [
+          "QUOTED_TEXT",
+          "QUOTED_TEXT"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": false,
+            "ceiling": "CLAIM_ONLY",
+            "reason": "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+          },
+          {
+            "allowed": false,
+            "ceiling": "CLAIM_ONLY",
+            "reason": "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+          }
+        ],
+        "hard_blockers": [
+          "COMPOSITE_ATOMICITY_REVIEW_REQUIRED",
+          "QUOTED_TEXT_WORLD_FACT_CONFIRMATION_BLOCKED"
+        ],
+        "reasons": [
+          "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+        ],
+        "composite_fact": true
+      }
+    },
+    {
+      "fact_id": "FACT_0004",
+      "subject": "程雨",
+      "predicate": "found wet umbrella at door",
+      "value": "black long-handled umbrella",
+      "evidence_refs": [
+        "E0024",
+        "E0025",
+        "E0026"
+      ],
+      "resolved_evidence": [
+        {
+          "anchor_ref": "E0024",
+          "excerpt": "但门口多了一把黑色长柄雨伞。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 420,
+          "char_end": 436,
+          "byte_start": 1076,
+          "byte_end": 1120
+        },
+        {
+          "anchor_ref": "E0025",
+          "excerpt": "伞是湿的。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 438,
+          "char_end": 445,
+          "byte_start": 1122,
+          "byte_end": 1139
+        },
+        {
+          "anchor_ref": "E0026",
+          "excerpt": "水正顺着伞尖，一滴一滴落在地砖上。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 447,
+          "char_end": 466,
+          "byte_start": 1141,
+          "byte_end": 1194
+        }
+      ],
+      "source_presentation_modes": [
+        "NARRATIVE_PROSE"
+      ],
+      "assessment": "DIRECTLY_ENTAILED",
+      "runtime_authority": false,
+      "forensic_class": "DEVELOPMENT_FORENSIC",
+      "reason": "Narrative surface states the event, but this development assessment is not runtime authority.",
+      "supported_components": [
+        "primary assertion candidate"
+      ],
+      "unsupported_components": [
+        "semantic entailment remains conservative candidate until verifier review"
+      ],
+      "stronger_anchor_candidates": [],
+      "machine_guard": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "ACTION_OCCURRENCE",
+        "surfaces": [
+          "NARRATIVE_PROSE",
+          "NARRATIVE_PROSE",
+          "NARRATIVE_PROSE"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          },
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          },
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          }
+        ],
+        "hard_blockers": [],
+        "reasons": [
+          "deterministic_guards_do_not_prove_arbitrary_natural_language_entailment",
+          "narrative_prose_still_requires_semantic_entailment"
+        ],
+        "composite_fact": false
+      }
+    },
+    {
+      "fact_id": "FACT_0005",
+      "subject": "程雨",
+      "predicate": "is moving out of apartment",
+      "value": "1204",
+      "evidence_refs": [
+        "E0002",
+        "E0003",
+        "E0005"
+      ],
+      "resolved_evidence": [
+        {
+          "anchor_ref": "E0002",
+          "excerpt": "凌晨一点二十七分，程雨把最后一个纸箱拖到门口。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 11,
+          "char_end": 36,
+          "byte_start": 25,
+          "byte_end": 96
+        },
+        {
+          "anchor_ref": "E0003",
+          "excerpt": "这套房子她住了六年。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 38,
+          "char_end": 50,
+          "byte_start": 98,
+          "byte_end": 130
+        },
+        {
+          "anchor_ref": "E0005",
+          "excerpt": "明早九点，中介会来收钥匙。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 135,
+          "char_end": 150,
+          "byte_start": 373,
+          "byte_end": 414
+        }
+      ],
+      "source_presentation_modes": [
+        "NARRATIVE_PROSE"
+      ],
+      "assessment": "DIRECTLY_ENTAILED",
+      "runtime_authority": false,
+      "forensic_class": "DEVELOPMENT_FORENSIC",
+      "reason": "Narrative surface states the event, but this development assessment is not runtime authority.",
+      "supported_components": [
+        "primary assertion candidate"
+      ],
+      "unsupported_components": [
+        "semantic entailment remains conservative candidate until verifier review"
+      ],
+      "stronger_anchor_candidates": [],
+      "machine_guard": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "ACTION_OCCURRENCE",
+        "surfaces": [
+          "NARRATIVE_PROSE",
+          "NARRATIVE_PROSE",
+          "NARRATIVE_PROSE"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          },
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          },
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          }
+        ],
+        "hard_blockers": [],
+        "reasons": [
+          "deterministic_guards_do_not_prove_arbitrary_natural_language_entailment",
+          "narrative_prose_still_requires_semantic_entailment"
+        ],
+        "composite_fact": false
+      }
+    },
+    {
+      "fact_id": "FACT_0006",
+      "subject": "老赵",
+      "predicate": "installed hidden camera equipment",
+      "value": "in wall cavity behind bedroom",
+      "evidence_refs": [
+        "E0296",
+        "E0297"
+      ],
+      "resolved_evidence": [
+        {
+          "anchor_ref": "E0296",
+          "excerpt": "他们在1204卧室墙后的夹层里找到了一套已经断电多年的旧设备。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 4473,
+          "char_end": 4506,
+          "byte_start": 10949,
+          "byte_end": 11036
+        },
+        {
+          "anchor_ref": "E0297",
+          "excerpt": "镜头、线路、硬盘。\r\n",
+          "anchor_surface_class": "NARRATIVE_PROSE",
+          "char_start": 4508,
+          "char_end": 4519,
+          "byte_start": 11038,
+          "byte_end": 11067
+        }
+      ],
+      "source_presentation_modes": [
+        "NARRATIVE_PROSE"
+      ],
+      "assessment": "INFERENCE_ONLY",
+      "runtime_authority": false,
+      "forensic_class": "DEVELOPMENT_FORENSIC",
+      "reason": "Observed discovery or object presence does not entail actor causation or intentional placement.",
+      "supported_components": [],
+      "unsupported_components": [],
+      "stronger_anchor_candidates": [],
+      "machine_guard": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "ACTION_OCCURRENCE",
+        "surfaces": [
+          "NARRATIVE_PROSE",
+          "NARRATIVE_PROSE"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          },
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          }
+        ],
+        "hard_blockers": [],
+        "reasons": [
+          "deterministic_guards_do_not_prove_arbitrary_natural_language_entailment",
+          "narrative_prose_still_requires_semantic_entailment"
+        ],
+        "composite_fact": false
+      }
+    },
+    {
+      "fact_id": "FACT_0007",
+      "subject": "老赵",
+      "predicate": "recognized umbrella",
+      "value": "belonged to previous tenant",
+      "evidence_refs": [
+        "E0050",
+        "E0053"
+      ],
+      "resolved_evidence": [
+        {
+          "anchor_ref": "E0050",
+          "excerpt": "“以前有个人用过。”他说。\r\n",
+          "anchor_surface_class": "QUOTED_TEXT",
+          "char_start": 862,
+          "char_end": 877,
+          "byte_start": 2186,
+          "byte_end": 2227
+        },
+        {
+          "anchor_ref": "E0053",
+          "excerpt": "“1204以前的租客。”\r\n",
+          "anchor_surface_class": "QUOTED_TEXT",
+          "char_start": 898,
+          "char_end": 912,
+          "byte_start": 2270,
+          "byte_end": 2300
+        }
+      ],
+      "source_presentation_modes": [
+        "QUOTED_TEXT"
+      ],
+      "assessment": "CLAIM_ONLY",
+      "runtime_authority": false,
+      "forensic_class": "DEVELOPMENT_FORENSIC",
+      "reason": "Quoted source supports that a claim was presented, not objective world truth.",
+      "supported_components": [],
+      "unsupported_components": [],
+      "stronger_anchor_candidates": [],
+      "machine_guard": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "CLAIM_CONTENT",
+        "surfaces": [
+          "QUOTED_TEXT",
+          "QUOTED_TEXT"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": true,
+            "ceiling": "CLAIM_CONTENT",
+            "reason": "quoted_text_supports_claim_or_speech_surface"
+          },
+          {
+            "allowed": true,
+            "ceiling": "CLAIM_CONTENT",
+            "reason": "quoted_text_supports_claim_or_speech_surface"
+          }
+        ],
+        "hard_blockers": [],
+        "reasons": [
+          "deterministic_guards_do_not_prove_arbitrary_natural_language_entailment",
+          "quoted_text_supports_claim_or_speech_surface"
+        ],
+        "composite_fact": false
+      }
+    }
+  ],
+  "counts": {
+    "DIRECTLY_ENTAILED": 2,
+    "PARTIALLY_ENTAILED": 0,
+    "CLAIM_ONLY": 3,
+    "INFERENCE_ONLY": 2,
+    "CONTRADICTED": 0,
+    "AMBIGUOUS": 0
+  }
+}

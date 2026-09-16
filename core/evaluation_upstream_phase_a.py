@@ -460,7 +460,7 @@ def phase_a_preflight(*, source: dict[str, Any], provider_config: dict[str, Any]
     }
 
 
-def run_with_provider_calls(*, source: dict[str, Any], provider_config: dict[str, Any], call_provider: Callable[[dict[str, Any]], Any]) -> dict[str, Any]:
+def run_with_provider_calls(*, source: dict[str, Any], provider_config: dict[str, Any], call_provider: Callable[[dict[str, Any]], Any], semantic_grounding_status: str | None = None) -> dict[str, Any]:
     """Execute at most one fact and one ScriptIR call when the caller has passed all gates.
 
     The callback is injected by a runner, which makes this function easy to
@@ -475,6 +475,21 @@ def run_with_provider_calls(*, source: dict[str, Any], provider_config: dict[str
     fact = canonicalize_fact_payload(fact_response, raw_text=source["raw_text"], source_fingerprint=raw_hash, provenance=provenance)
     if fact["report"]["status"] != "PASS":
         return {"status": "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED", "provider_calls": 1, "fact": fact, "preflight": preflight}
+    if semantic_grounding_status is not None:
+        from core.fact_semantic_grounding import script_ir_semantic_gate
+
+        semantic_gate = script_ir_semantic_gate(
+            fact_snapshot=fact["snapshot"],
+            semantic_grounding_status=semantic_grounding_status,
+        )
+        if not semantic_gate["allowed"]:
+            return {
+                "status": "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
+                "provider_calls": 1,
+                "fact": fact,
+                "semantic_gate": semantic_gate,
+                "preflight": preflight,
+            }
     script_response = call_provider(build_script_ir_request(raw_text=source["raw_text"], fact_snapshot=fact["snapshot"], provider_config=provider_config))
     script = canonicalize_script_payload(script_response, raw_text=source["raw_text"], fact_snapshot=fact["snapshot"], provenance=provenance)
     status = "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_CLOSED" if script["report"]["status"] == "QUALIFIED" else "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED"

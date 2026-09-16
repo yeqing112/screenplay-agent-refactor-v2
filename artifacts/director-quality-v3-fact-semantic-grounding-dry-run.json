@@ -1,0 +1,112 @@
+{
+  "schema_version": "fact_semantic_grounding_dry_run_v1",
+  "status": "PASS",
+  "provider_calls": 0,
+  "runtime_authority": false,
+  "cases": [
+    {
+      "name": "quoted_world_fact",
+      "result": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "ACTION_OCCURRENCE",
+        "surfaces": [
+          "QUOTED_TEXT"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": false,
+            "ceiling": "CLAIM_ONLY",
+            "reason": "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+          }
+        ],
+        "hard_blockers": [
+          "QUOTED_TEXT_WORLD_FACT_CONFIRMATION_BLOCKED"
+        ],
+        "reasons": [
+          "quoted_text_cannot_confirm_world_state_or_actor_causation_alone"
+        ],
+        "composite_fact": false
+      }
+    },
+    {
+      "name": "quoted_claim_content",
+      "result": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "CLAIM_CONTENT",
+        "surfaces": [
+          "QUOTED_TEXT"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": true,
+            "ceiling": "CLAIM_CONTENT",
+            "reason": "quoted_text_supports_claim_or_speech_surface"
+          }
+        ],
+        "hard_blockers": [],
+        "reasons": [
+          "deterministic_guards_do_not_prove_arbitrary_natural_language_entailment",
+          "quoted_text_supports_claim_or_speech_surface"
+        ],
+        "composite_fact": false
+      }
+    },
+    {
+      "name": "unknown_surface",
+      "result": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "WORLD_ASSERTION",
+        "surfaces": [
+          "UNKNOWN_SURFACE"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": false,
+            "ceiling": "REVIEW_REQUIRED",
+            "reason": "unknown_surface_cannot_auto_confirm"
+          }
+        ],
+        "hard_blockers": [
+          "UNKNOWN_SURFACE_CONFIRMATION_BLOCKED"
+        ],
+        "reasons": [
+          "unknown_surface_cannot_auto_confirm"
+        ],
+        "composite_fact": false
+      }
+    },
+    {
+      "name": "inferred_causation",
+      "result": {
+        "state": "SEMANTIC_REVIEW_REQUIRED",
+        "outcome": "HUMAN_OR_SEMANTIC_VERIFIER_REQUIRED",
+        "runtime_authority": false,
+        "support_role": "ACTION_OCCURRENCE",
+        "surfaces": [
+          "NARRATIVE_PROSE"
+        ],
+        "confirmation_ceilings": [
+          {
+            "allowed": true,
+            "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+            "reason": "narrative_prose_still_requires_semantic_entailment"
+          }
+        ],
+        "hard_blockers": [
+          "PROVIDER_EPISTEMIC_OVERREACH"
+        ],
+        "reasons": [
+          "narrative_prose_still_requires_semantic_entailment"
+        ],
+        "composite_fact": false
+      }
+    }
+  ],
+  "capability_disclosure": "hard guards only; arbitrary natural-language entailment remains review dependent"
+}
