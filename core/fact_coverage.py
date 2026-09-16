@@ -81,6 +81,154 @@ def build_narrative_unit_index(*, anchors: list[dict[str, Any]], window_size: in
     return {"schema_version": "source_narrative_unit_index_v1", "provider_calls": 0, "window_size": int(window_size), "unit_count": len(units), "units": units, "fingerprint": fingerprint(units), "semantic_interpretation": False}
 
 
+def validate_narrative_unit_completeness(
+    *,
+    narrative_unit_index: dict[str, Any],
+    source_evidence_index: dict[str, Any],
+    raw_bytes: bytes | None = None,
+    expected_anchor_count: int | None = None,
+) -> dict[str, Any]:
+    """Fail-closed completeness gate for a full-source narrative index.
+
+    This validates membership and ordering only.  Narrative units remain coarse
+    deterministic windows; this function never infers scenes or semantics.
+    """
+    errors: list[dict[str, Any]] = []
+    source_anchors = source_evidence_index.get("anchors") if isinstance(source_evidence_index, dict) else None
+    units = narrative_unit_index.get("units") if isinstance(narrative_unit_index, dict) else None
+    if not isinstance(source_anchors, list):
+        return {"status": "FAIL", "errors": [{"code": "SOURCE_EVIDENCE_ANCHORS_INVALID"}]}
+    if not isinstance(units, list):
+        return {"status": "FAIL", "errors": [{"code": "NARRATIVE_UNITS_INVALID"}]}
+
+    expected_count = int(expected_anchor_count or source_evidence_index.get("anchor_count") or len(source_anchors))
+    source_refs = [str(row.get("anchor_ref") or "") for row in source_anchors if isinstance(row, dict)]
+    expected_refs = [f"E{i:04d}" for i in range(1, expected_count + 1)]
+    source_ref_set = set(source_refs)
+    source_duplicates = sorted({ref for ref in source_refs if source_refs.count(ref) > 1})
+    if source_duplicates:
+        errors.append({"code": "SOURCE_ANCHOR_DUPLICATE", "refs": source_duplicates})
+    if len(source_anchors) != expected_count:
+        errors.append({"code": "INPUT_ANCHOR_COUNT_MISMATCH", "expected": expected_count, "actual": len(source_anchors)})
+    if source_refs != expected_refs:
+        errors.append({"code": "SOURCE_ANCHOR_SEQUENCE_INVALID", "expected_first": expected_refs[0] if expected_refs else None, "expected_last": expected_refs[-1] if expected_refs else None})
+
+    indexed_refs: list[str] = []
+    unit_ids: list[str] = []
+    unit_source_orders: list[int] = []
+    unit_char_ranges: list[tuple[int, int]] = []
+    for unit in units:
+        if not isinstance(unit, dict):
+            errors.append({"code": "NARRATIVE_UNIT_INVALID"})
+            continue
+        unit_id = str(unit.get("unit_id") or "")
+        unit_ids.append(unit_id)
+        refs = unit.get("anchor_refs")
+        if not isinstance(refs, list) or not all(isinstance(ref, str) for ref in refs):
+            errors.append({"code": "UNIT_ANCHOR_REFS_INVALID", "unit_id": unit_id})
+            refs = []
+        indexed_refs.extend(refs)
+        try:
+            unit_source_orders.append(int(unit["source_order"]))
+            start, end = int(unit["char_start"]), int(unit["char_end"])
+            unit_char_ranges.append((start, end))
+            if start > end:
+                errors.append({"code": "UNIT_CHAR_RANGE_INVALID", "unit_id": unit_id})
+        except (KeyError, TypeError, ValueError):
+            errors.append({"code": "UNIT_METADATA_INVALID", "unit_id": unit_id})
+
+    duplicates = sorted({ref for ref in indexed_refs if indexed_refs.count(ref) > 1})
+    missing = sorted(source_ref_set - set(indexed_refs))
+    unknown = sorted(set(indexed_refs) - source_ref_set)
+    if duplicates:
+        errors.append({"code": "INDEXED_ANCHOR_DUPLICATE", "refs": duplicates})
+    if missing:
+        errors.append({"code": "INDEXED_ANCHOR_MISSING", "refs": missing})
+    if unknown:
+        errors.append({"code": "INDEXED_ANCHOR_UNKNOWN", "refs": unknown})
+    if len(indexed_refs) != expected_count:
+        errors.append({"code": "INDEXED_ANCHOR_COUNT_MISMATCH", "expected": expected_count, "actual": len(indexed_refs)})
+
+    expected_unit_ids = [f"NU_{i:04d}" for i in range(1, len(units) + 1)]
+    if unit_ids != expected_unit_ids:
+        errors.append({"code": "UNIT_ID_SEQUENCE_INVALID"})
+    if unit_source_orders != list(range(1, len(units) + 1)):
+        errors.append({"code": "UNIT_SOURCE_ORDER_INVALID"})
+    if indexed_refs and indexed_refs != [str(row.get("anchor_ref")) for row in sorted(source_anchors, key=lambda row: (int(row.get("char_start", 0)), int(row.get("char_end", 0)), str(row.get("anchor_ref") or "")))]:
+        errors.append({"code": "ANCHOR_SOURCE_ORDER_NOT_PRESERVED"})
+
+    source_by_ref = {str(row.get("anchor_ref")): row for row in source_anchors if isinstance(row, dict)}
+    indexed_rows = [source_by_ref.get(ref) for ref in indexed_refs]
+    indexed_rows = [row for row in indexed_rows if row is not None]
+    if indexed_rows:
+        starts = [int(row.get("char_start")) for row in indexed_rows]
+        ends = [int(row.get("char_end")) for row in indexed_rows]
+        if starts != sorted(starts) or any(left > right for left, right in zip(starts, starts[1:])):
+            errors.append({"code": "ANCHOR_CHAR_ORDER_INVALID"})
+        if any(start < previous_end for start, previous_end in zip(starts[1:], ends)):
+            errors.append({"code": "ANCHOR_CHAR_OVERLAP"})
+        first_ref, last_ref = indexed_refs[0], indexed_refs[-1]
+        if first_ref != expected_refs[0] or last_ref != expected_refs[-1]:
+            errors.append({"code": "BOUNDARY_ANCHOR_NOT_COVERED", "first": first_ref, "last": last_ref})
+        last_anchor_char_end = max(ends)
+    else:
+        first_ref = last_ref = None
+        last_anchor_char_end = None
+
+    raw_char_length = None
+    raw_byte_length = None
+    if raw_bytes is not None:
+        try:
+            raw_char_length = len(raw_bytes.decode("utf-8"))
+            raw_byte_length = len(raw_bytes)
+        except UnicodeDecodeError:
+            errors.append({"code": "RAW_SOURCE_UTF8_INVALID"})
+    trailing_chars = None if raw_char_length is None or last_anchor_char_end is None else max(0, raw_char_length - last_anchor_char_end)
+    metadata_checks = {
+        "schema_version": narrative_unit_index.get("schema_version") == "source_narrative_unit_index_v1",
+        "provider_calls": narrative_unit_index.get("provider_calls") == 0,
+        "semantic_interpretation": narrative_unit_index.get("semantic_interpretation") is False,
+        "source_package_id": narrative_unit_index.get("source_package_id") == source_evidence_index.get("source_package_id"),
+        "source_version_id": narrative_unit_index.get("source_version_id") == source_evidence_index.get("source_version_id"),
+        "source_raw_hash": narrative_unit_index.get("source_raw_hash") == source_evidence_index.get("source_raw_hash"),
+    }
+    for name, passed in metadata_checks.items():
+        if not passed:
+            errors.append({"code": "SOURCE_METADATA_MISMATCH", "field": name})
+    if narrative_unit_index.get("anchor_count") != expected_count:
+        errors.append({"code": "INDEX_METADATA_ANCHOR_COUNT_MISMATCH", "expected": expected_count, "actual": narrative_unit_index.get("anchor_count")})
+    if narrative_unit_index.get("full_anchor_count") != expected_count:
+        errors.append({"code": "INDEX_METADATA_FULL_ANCHOR_COUNT_MISMATCH", "expected": expected_count, "actual": narrative_unit_index.get("full_anchor_count")})
+
+    return {
+        "schema_version": "source_narrative_unit_completeness_v1",
+        "status": "PASS" if not errors else "FAIL",
+        "provider_calls": 0,
+        "input_anchor_count": len(source_anchors),
+        "expected_anchor_count": expected_count,
+        "indexed_anchor_count": len(indexed_refs),
+        "unique_indexed_anchor_count": len(set(indexed_refs)),
+        "missing_anchor_refs": missing,
+        "duplicate_anchor_refs": duplicates,
+        "unknown_anchor_refs": unknown,
+        "first_anchor_ref": first_ref,
+        "last_anchor_ref": last_ref,
+        "first_anchor_indexed": bool(indexed_refs and indexed_refs[0] == "E0001"),
+        "last_anchor_indexed": bool(indexed_refs and indexed_refs[-1] == f"E{expected_count:04d}"),
+        "unit_count": len(units),
+        "unit_ids_contiguous": unit_ids == expected_unit_ids,
+        "source_order_contiguous": unit_source_orders == list(range(1, len(units) + 1)),
+        "source_order_preserved": not any(error.get("code") == "ANCHOR_SOURCE_ORDER_NOT_PRESERVED" for error in errors),
+        "char_order_stable": not any(error.get("code") in {"ANCHOR_CHAR_ORDER_INVALID", "ANCHOR_CHAR_OVERLAP"} for error in errors),
+        "raw_char_length": raw_char_length,
+        "raw_byte_length": raw_byte_length,
+        "last_anchor_char_end": last_anchor_char_end,
+        "trailing_unanchored_chars": trailing_chars,
+        "metadata_checks": metadata_checks,
+        "errors": errors,
+    }
+
+
 def requirement_contract() -> dict[str, Any]:
     return {"schema_version": "fact_coverage_requirement_v1", "provider_calls": 0, "requirement_types": list(REQUIREMENT_TYPES), "program_owned": ["requirement_id", "schema", "source_unit_refs", "category", "ordering", "validation"], "semantic_proposal_owned": ["meaning_of_structuring_necessity"], "canonical_id_pattern": "REQ_[0-9]{4}", "no_count_threshold": True}
 
@@ -187,4 +335,4 @@ def validate_coverage_payload(payload: Any) -> dict[str, Any]:
     return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
-__all__ = ["REQUIREMENT_TYPES", "COVERAGE_STATUSES", "canonical_fact_components", "build_narrative_unit_index", "requirement_contract", "coverage_matrix_contract", "coverage_provider_schema", "coverage_schema_fingerprint", "compile_fact_coverage", "validate_coverage_payload", "fingerprint"]
+__all__ = ["REQUIREMENT_TYPES", "COVERAGE_STATUSES", "canonical_fact_components", "build_narrative_unit_index", "validate_narrative_unit_completeness", "requirement_contract", "coverage_matrix_contract", "coverage_provider_schema", "coverage_schema_fingerprint", "compile_fact_coverage", "validate_coverage_payload", "fingerprint"]

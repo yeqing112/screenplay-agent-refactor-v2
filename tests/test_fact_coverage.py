@@ -2,6 +2,7 @@ from core.fact_coverage import (
     build_narrative_unit_index,
     canonical_fact_components,
     compile_fact_coverage,
+    validate_narrative_unit_completeness,
     validate_coverage_payload,
 )
 
@@ -72,3 +73,19 @@ def test_fact_count_and_anchor_percentage_are_diagnostic_only():
     assert result["rows"][0]["coverage_status"] == "MISSING"
     assert result["fact_count_diagnostic"] == 7
     assert result["anchor_percentage_shortcut"] is False
+
+
+def test_narrative_unit_completeness_requires_every_anchor_once_and_boundaries():
+    anchors = [{"anchor_ref": f"E{i:04d}", "char_start": i * 10, "char_end": i * 10 + 5, "exact_text": str(i)} for i in range(1, 5)]
+    source = {"anchors": anchors, "anchor_count": 4, "source_package_id": "P", "source_version_id": "V", "source_raw_hash": "H"}
+    units = build_narrative_unit_index(anchors=anchors, window_size=1200)
+    full = {**units, "source_package_id": "P", "source_version_id": "V", "source_raw_hash": "H", "anchor_count": 4, "full_anchor_count": 4}
+    result = validate_narrative_unit_completeness(narrative_unit_index=full, source_evidence_index=source, raw_bytes="".join(row["exact_text"] for row in anchors).encode())
+    assert result["status"] == "PASS"
+    assert result["indexed_anchor_count"] == result["unique_indexed_anchor_count"] == 4
+    assert result["first_anchor_indexed"] and result["last_anchor_indexed"]
+
+    broken = {**full, "units": [{**full["units"][0], "anchor_refs": ["E0001", "E0001", "E0002", "E0003"]}]}
+    failed = validate_narrative_unit_completeness(narrative_unit_index=broken, source_evidence_index=source)
+    assert failed["status"] == "FAIL"
+    assert {error["code"] for error in failed["errors"]} >= {"INDEXED_ANCHOR_DUPLICATE", "INDEXED_ANCHOR_MISSING"}

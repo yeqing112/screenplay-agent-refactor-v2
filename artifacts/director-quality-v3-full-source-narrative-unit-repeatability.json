@@ -1,0 +1,9 @@
+{
+  "schema_version": "source_narrative_unit_repeatability_v1",
+  "status": "PASS",
+  "provider_calls": 0,
+  "first_fingerprint": "c3a7f74417cc99239f97af97f16438a4bf3ad2117d8e85d86a48dc8bcc4be600",
+  "second_fingerprint": "c3a7f74417cc99239f97af97f16438a4bf3ad2117d8e85d86a48dc8bcc4be600",
+  "same_anchor_count": true,
+  "algorithm": "build_narrative_unit_index(all canonical anchors, window_size=1200)"
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "director_v3_current_stage_authority_parity_v1",
+  "status": "PASS",
+  "provider_calls": 0,
+  "top_level_current_state": {
+    "semantic_grounding_status": "SEMANTIC_GROUNDING_CLOSED_WITH_REVIEW",
+    "effective_lineage_state": "FACT_SEMANTICS_ADJUDICATED",
+    "fact_coverage_status": "NOT_YET_QUALIFIED",
+    "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE"
+  },
+  "fact_semantic_grounding_node": {
+    "semantic_grounding_status": "SEMANTIC_GROUNDING_CLOSED_WITH_REVIEW",
+    "runtime_authority": true,
+    "semantic_verifier_authorized": false,
+    "semantic_verifier_historical_authorization_consumed": true,
+    "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE"
+  },
+  "parity_fields": [
+    "semantic_grounding_status",
+    "fact_coverage_status",
+    "script_ir_gate"
+  ],
+  "historical_fields_preserved": true
+}

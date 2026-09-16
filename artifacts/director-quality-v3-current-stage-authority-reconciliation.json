@@ -1,0 +1,13 @@
+{
+  "schema_version": "director_v3_current_stage_authority_reconciliation_v1",
+  "status": "CLOSED",
+  "provider_calls": 0,
+  "current_stage_provider_attempts": 0,
+  "cumulative_provider_attempts": 3,
+  "parity": "PASS",
+  "historical_lineage_preserved": true,
+  "semantic_verifier_authorized": false,
+  "semantic_verifier_historical_authorization_consumed": true,
+  "runtime_authority": true,
+  "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE"
+}

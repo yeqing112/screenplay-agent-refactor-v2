@@ -14,8 +14,8 @@ def test_semantic_foundation_artifacts_are_provider_free_and_fail_closed():
     assert readiness["semantic_foundation_ready"] is True
     assert readiness["semantic_verifier_authorized"] is False
     assert readiness["script_ir_authorized"] is False
-    assert authority["fact_semantic_grounding"]["script_ir_gate"] == "BLOCKED_PENDING_SEMANTIC_GROUNDING"
-    assert authority["fact_semantic_grounding"]["runtime_authority"] is False
+    assert authority["fact_semantic_grounding"]["script_ir_gate"] == "BLOCKED_PENDING_FACT_COVERAGE"
+    assert authority["fact_semantic_grounding"]["runtime_authority"] is True
 
 
 def test_attempt2_evidence_authority_and_semantic_overlay_are_distinct():
@@ -37,5 +37,5 @@ def test_historical_attempt1_and_attempt2_lineage_remain_preserved():
     assert evaluation["attempt_1_fact_count"] == 36
     assert evaluation["attempt_1_evidence_invalid"] == 36
     assert evaluation["historical_attempt_2_lineage"] == "FACT_SNAPSHOT_CONFIRMED"
-    assert evaluation["effective_lineage_state"] == "FACT_SNAPSHOT_EVIDENCE_VALIDATED"
-    assert evaluation["semantic_grounding_status"] == "NOT_YET_ADJUDICATED"
+    assert evaluation["effective_lineage_state"] == "FACT_SEMANTICS_ADJUDICATED"
+    assert evaluation["semantic_grounding_status"] == "SEMANTIC_GROUNDING_CLOSED_WITH_REVIEW"

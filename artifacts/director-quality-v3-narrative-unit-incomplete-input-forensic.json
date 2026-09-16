@@ -1,0 +1,17 @@
+{
+  "schema_version": "narrative_unit_incomplete_input_forensic_v1",
+  "status": "CLOSED",
+  "provider_calls": 0,
+  "artifact": "artifacts/director-quality-v3-source-narrative-unit-index-preview.json",
+  "observed_anchor_count": 12,
+  "declared_full_anchor_count": 347,
+  "observed_first_anchor_ref": "E0001",
+  "observed_last_anchor_ref": "E0012",
+  "root_cause": "PREVIEW_INPUT_TRUNCATED",
+  "root_cause_detail": "The historical preview artifact materialized only the first twelve anchors; the deterministic build_narrative_unit_index algorithm was not the source of truncation.",
+  "full_source_required": true,
+  "source_evidence_index_fingerprint": "4697f3069bb34c9650d97b7e2c788d5b9db36034a39fedf77a0756e7a7bf5295",
+  "source_package_id": "SRC79f12d1b7f5eb828",
+  "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+  "historical_artifact_immutable": true
+}

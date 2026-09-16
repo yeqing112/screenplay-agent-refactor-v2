@@ -1,0 +1,17 @@
+{
+  "source_package_id": "SRC79f12d1b7f5eb828",
+  "source_version_id": "SRC79f12d1b7f5eb828:V01:d001bab5cc82",
+  "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368",
+  "evidence_index_fingerprint": "4697f3069bb34c9650d97b7e2c788d5b9db36034a39fedf77a0756e7a7bf5295",
+  "expected_evidence_index_fingerprint": "4697f3069bb34c9650d97b7e2c788d5b9db36034a39fedf77a0756e7a7bf5295",
+  "raw_byte_length": 13200,
+  "raw_sha256_matches": true,
+  "evidence_index_fingerprint_matches": true,
+  "anchor_count": 347,
+  "source_index_validation": {
+    "status": "PASS",
+    "errors": [],
+    "anchor_count": 347
+  },
+  "provider_calls": 0
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "fact_coverage_verifier_readiness_v2",
+  "status": "READY_NOT_AUTHORIZED",
+  "provider_calls": 0,
+  "narrative_unit_completeness": "PASS",
+  "full_source_anchor_count": 347,
+  "development_preview": "NOT_ADJUDICATED",
+  "coverage_verifier_ready": true,
+  "coverage_verifier_authorized": false,
+  "fact_coverage_qualified": false,
+  "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE"
+}

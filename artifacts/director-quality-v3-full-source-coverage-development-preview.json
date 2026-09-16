@@ -1,0 +1,357 @@
+{
+  "schema_version": "fact_coverage_full_source_development_preview_v1",
+  "provider_calls": 0,
+  "source_unit_index_fingerprint": "c3a7f74417cc99239f97af97f16438a4bf3ad2117d8e85d86a48dc8bcc4be600",
+  "rows": [
+    {
+      "requirement_id": "REQ_0001",
+      "requirement_type": "CHARACTER_IDENTITY",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0001",
+        "FACT_0002",
+        "FACT_0003",
+        "FACT_0004",
+        "FACT_0005",
+        "FACT_0006",
+        "FACT_0007"
+      ],
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED",
+        "PARTIAL_SUPPORT_REVIEW",
+        "CLAIM_SUPPORTED",
+        "WORLD_FACT_CONFIRMED",
+        "WORLD_FACT_CONFIRMED",
+        "PARTIAL_SUPPORT_REVIEW",
+        "CLAIM_SUPPORTED"
+      ],
+      "coverage_status": "COVERED",
+      "review_required": false,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0002",
+      "requirement_type": "CHARACTER_RELATION",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0003",
+        "FACT_0007"
+      ],
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED",
+        "CLAIM_SUPPORTED"
+      ],
+      "coverage_status": "CLAIM_ONLY",
+      "review_required": true,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0003",
+      "requirement_type": "LOCATION_IDENTITY",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0001",
+        "FACT_0003",
+        "FACT_0005"
+      ],
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED",
+        "CLAIM_SUPPORTED",
+        "WORLD_FACT_CONFIRMED"
+      ],
+      "coverage_status": "COVERED",
+      "review_required": false,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0004",
+      "requirement_type": "LOCATION_CHANGE",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0001"
+      ],
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED"
+      ],
+      "coverage_status": "CLAIM_ONLY",
+      "review_required": true,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0005",
+      "requirement_type": "EVENT_OCCURRENCE",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0001",
+        "FACT_0002",
+        "FACT_0004",
+        "FACT_0005",
+        "FACT_0006"
+      ],
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED",
+        "PARTIAL_SUPPORT_REVIEW",
+        "WORLD_FACT_CONFIRMED",
+        "WORLD_FACT_CONFIRMED",
+        "PARTIAL_SUPPORT_REVIEW"
+      ],
+      "coverage_status": "COVERED",
+      "review_required": false,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0006",
+      "requirement_type": "EVENT_ORDER",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0001",
+        "FACT_0002",
+        "FACT_0004",
+        "FACT_0005",
+        "FACT_0006"
+      ],
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED",
+        "PARTIAL_SUPPORT_REVIEW",
+        "WORLD_FACT_CONFIRMED",
+        "WORLD_FACT_CONFIRMED",
+        "PARTIAL_SUPPORT_REVIEW"
+      ],
+      "coverage_status": "COVERED",
+      "review_required": false,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0007",
+      "requirement_type": "TEMPORAL_ANCHOR",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0002",
+        "FACT_0003"
+      ],
+      "semantic_fact_dispositions": [
+        "PARTIAL_SUPPORT_REVIEW",
+        "CLAIM_SUPPORTED"
+      ],
+      "coverage_status": "PARTIALLY_COVERED",
+      "review_required": true,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0008",
+      "requirement_type": "CAUSAL_RELATION",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0002",
+        "FACT_0006"
+      ],
+      "semantic_fact_dispositions": [
+        "PARTIAL_SUPPORT_REVIEW",
+        "PARTIAL_SUPPORT_REVIEW"
+      ],
+      "coverage_status": "PARTIALLY_COVERED",
+      "review_required": true,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0009",
+      "requirement_type": "OBJECT_STATE",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0002",
+        "FACT_0004",
+        "FACT_0006",
+        "FACT_0007"
+      ],
+      "semantic_fact_dispositions": [
+        "PARTIAL_SUPPORT_REVIEW",
+        "WORLD_FACT_CONFIRMED",
+        "PARTIAL_SUPPORT_REVIEW",
+        "CLAIM_SUPPORTED"
+      ],
+      "coverage_status": "COVERED",
+      "review_required": false,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0010",
+      "requirement_type": "OBJECT_OWNERSHIP",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0002",
+        "FACT_0003",
+        "FACT_0004",
+        "FACT_0007"
+      ],
+      "semantic_fact_dispositions": [
+        "PARTIAL_SUPPORT_REVIEW",
+        "CLAIM_SUPPORTED",
+        "WORLD_FACT_CONFIRMED",
+        "CLAIM_SUPPORTED"
+      ],
+      "coverage_status": "COVERED",
+      "review_required": false,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0011",
+      "requirement_type": "REVEAL",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0002",
+        "FACT_0003",
+        "FACT_0006",
+        "FACT_0007"
+      ],
+      "semantic_fact_dispositions": [
+        "PARTIAL_SUPPORT_REVIEW",
+        "CLAIM_SUPPORTED",
+        "PARTIAL_SUPPORT_REVIEW",
+        "CLAIM_SUPPORTED"
+      ],
+      "coverage_status": "PARTIALLY_COVERED",
+      "review_required": true,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0012",
+      "requirement_type": "CONFLICT_STATE",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [],
+      "semantic_fact_dispositions": [],
+      "coverage_status": "MISSING",
+      "review_required": true,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0013",
+      "requirement_type": "CLAIM_OR_BELIEF",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0003",
+        "FACT_0007"
+      ],
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED",
+        "CLAIM_SUPPORTED"
+      ],
+      "coverage_status": "COVERED",
+      "review_required": false,
+      "runtime_authority": false
+    },
+    {
+      "requirement_id": "REQ_0014",
+      "requirement_type": "OUTCOME",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0002",
+        "NU_0003",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [],
+      "semantic_fact_dispositions": [],
+      "coverage_status": "MISSING",
+      "review_required": true,
+      "runtime_authority": false
+    }
+  ],
+  "counts": {
+    "COVERED": 7,
+    "PARTIALLY_COVERED": 3,
+    "MISSING": 2,
+    "CLAIM_ONLY": 2,
+    "UNSAFE_INFERENCE": 0,
+    "AMBIGUOUS": 0
+  },
+  "qualification_status": "NOT_ADJUDICATED",
+  "runtime_authority": false,
+  "fact_count_diagnostic": 7,
+  "anchor_percentage_shortcut": false,
+  "development_only": true,
+  "full_source": true,
+  "narrative_unit_index_fingerprint": "c3a7f74417cc99239f97af97f16438a4bf3ad2117d8e85d86a48dc8bcc4be600",
+  "obvious_missing_categories": [
+    "CONFLICT_STATE",
+    "OUTCOME"
+  ],
+  "development_gap_count": 7
+}

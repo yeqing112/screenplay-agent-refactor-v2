@@ -270,26 +270,29 @@
       "fact_attempt_2": 1,
       "semantic_verifier": 1
     },
-    "provider_calls_scope": "current_stage_provider_attempts is current stage; cumulative_provider_attempts is all historical attempts",
-    "current_stage_provider_attempts": 1,
+    "provider_calls_scope": "current_stage_provider_attempts is this full-source foundation stage; cumulative_provider_attempts is all historical attempts",
+    "current_stage_provider_attempts": 0,
     "fact_coverage_status": "NOT_YET_QUALIFIED",
-    "ready_for_fact_coverage_qualification": true
+    "ready_for_fact_coverage_qualification": true,
+    "evidence_authority_status": "PASS"
   },
   "fact_semantic_grounding": {
     "status": "CLOSED",
-    "provider_calls": 0,
+    "provider_calls": 1,
     "evidence_authority_v2": "PASS",
     "anchor_surface_typing": "PASS",
     "confirmation_ceiling": "PASS",
     "epistemic_guard": "PASS",
     "composite_guard": "PASS",
     "attempt_2_semantic_overlay": "PASS",
-    "semantic_grounding_status": "NOT_YET_ADJUDICATED",
+    "semantic_grounding_status": "SEMANTIC_GROUNDING_CLOSED_WITH_REVIEW",
     "semantic_verifier_ready": true,
     "semantic_verifier_authorized": false,
-    "script_ir_gate": "BLOCKED_PENDING_SEMANTIC_GROUNDING",
+    "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE",
     "development_forensic": "DEVELOPMENT_FORENSIC",
-    "runtime_authority": false
+    "runtime_authority": true,
+    "semantic_verifier_status": "COMPLETED",
+    "semantic_verifier_historical_authorization_consumed": true
   },
   "semantic_verifier_canary": {
     "status": "COMPLETED",
@@ -335,6 +338,7 @@
     "status": "CLOSED",
     "provider_calls": 0,
     "narrative_unit_index": "PASS",
+    "narrative_unit_completeness": "PASS",
     "coverage_requirement_contract": "PASS",
     "coverage_matrix_contract": "PASS",
     "coverage_authority_compiler": "PASS",
