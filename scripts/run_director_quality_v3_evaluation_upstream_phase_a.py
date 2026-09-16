@@ -213,6 +213,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--execute-real", action="store_true", help="guarded provider dispatch; never bypasses gates")
     parser.add_argument("--read-only", action="store_true", help="compute gates without writing tracked evidence")
     parser.add_argument("--authorization-file", default="", help="external runtime authorization JSON; required for --execute-real")
+    parser.add_argument("--authorization-preflight", action="store_true", help="validate external authorization and all gates without dispatching")
     supplied = argv if argv is not None else sys.argv[1:]
     args = parser.parse_args(argv)
     if any(flag in supplied for flag in ("--force", "--unsafe", "--ignore-authorization", "--no-gate")):
@@ -237,7 +238,8 @@ def main(argv: list[str] | None = None) -> int:
     provider = _provider_snapshot()
     authorization = None
     authorization_error = ""
-    if args.execute_real:
+    requires_runtime_authorization = bool(args.execute_real or args.authorization_preflight)
+    if requires_runtime_authorization:
         try:
             from core.director_v3_runtime_authorization import load_runtime_authorization
             if not args.authorization_file:
@@ -266,7 +268,7 @@ def main(argv: list[str] | None = None) -> int:
         "no_production_mutation_plan": all(value == 0 for value in preflight["mutation_plan"].values()),
     }
     blocked_reasons = []
-    if args.execute_real:
+    if requires_runtime_authorization:
         if authorization_error:
             blocked_reasons.append("RUNTIME_AUTHORIZATION_INVALID")
         else:
@@ -314,6 +316,9 @@ def main(argv: list[str] | None = None) -> int:
             execution = {"status": status, "provider_calls": 0, "attempted_provider_calls": 0, "provider_exposure": "NOT_EXPOSED_CONFIRMED", "error": str(exc)[:800]}
     elif blocked_reasons:
         status = "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_BLOCKED"
+        actual_calls = 0
+    elif args.authorization_preflight and not blocked_reasons:
+        status = "DIRECTOR_V3_EVALUATION_PHASE_A_AUTHORIZATION_PREFLIGHT_PASS"
         actual_calls = 0
     else:
         status = "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_PREFLIGHT_PASS"
