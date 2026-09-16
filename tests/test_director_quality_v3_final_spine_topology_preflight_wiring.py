@@ -90,6 +90,16 @@ def test_authorization_false_blocks_even_when_preflight_is_otherwise_pass(monkey
     assert result["status"] == "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_BLOCKED"
 
 
+def test_authorized_real_path_requires_entire_worktree_clean(monkeypatch: pytest.MonkeyPatch):
+    """Artifacts/config drift must block the provider before import/call."""
+    monkeypatch.setattr(runner, "_working_tree_dirty_paths", lambda: ["artifacts/pending.json"])
+    monkeypatch.setattr(runner, "_code_changes_present", lambda: [])
+    result = runner._run_real({"status": "PASS", "authorization": True}, "mimo-v2.5")
+    assert result["provider_calls"] == 0
+    assert result["reason"] == "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN"
+    assert result["dirty_paths"] == ["artifacts/pending.json"]
+
+
 def test_cli_rejects_authorization_bypass_flags():
     script = Path(runner.__file__).resolve()
     result = subprocess.run(

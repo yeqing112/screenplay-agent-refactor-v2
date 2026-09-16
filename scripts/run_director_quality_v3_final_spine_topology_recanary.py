@@ -163,6 +163,34 @@ def _code_changes_present() -> list[str]:
     return sorted(paths)
 
 
+def _working_tree_dirty_paths() -> list[str]:
+    """Return every tracked/untracked path in the working tree.
+
+    The final re-canary is an evidence-producing experiment whose execution
+    manifest must be reproducible.  A clean *code* tree is not sufficient:
+    changed artifacts, fixtures or configuration can alter authority inputs
+    without appearing as source drift.  Keep this check separate from the
+    historical ``_code_changes_present`` helper so replay tooling retains its
+    original semantics while the authorized runtime enforces the document's
+    full working-tree gate.
+    """
+    result = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=all"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    paths: list[str] = []
+    for line in result.stdout.splitlines():
+        if not line:
+            continue
+        # Porcelain v1 uses two status columns followed by a space.  For a
+        # rename, retain the whole entry so the gate remains conservative.
+        paths.append(line[3:].strip().strip('"') if len(line) >= 4 else line)
+    return sorted(paths)
+
+
 def _base_commit_gate(expected_base: str, head: str) -> dict[str, Any]:
     """Validate the immutable wiring base and reject post-base code drift."""
     base = _t(expected_base); current = _t(head)
@@ -192,6 +220,9 @@ def _brief(scene_id: str, spine: dict[str, Any], skeleton: dict[str, Any], bindi
 
 def _run_real(preflight: dict[str, Any], profile_id: str) -> dict[str, Any]:
     if preflight["status"] != "PASS" or not preflight["authorization"]: return {"status": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_BLOCKED", "provider_calls": 0, "reason": "preflight_or_authorization_gate"}
+    dirty_paths = _working_tree_dirty_paths()
+    if dirty_paths:
+        return {"status": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_BLOCKED", "provider_calls": 0, "reason": "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN", "dirty_paths": dirty_paths}
     code_changes = _code_changes_present()
     if code_changes: return {"status": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_BLOCKED", "provider_calls": 0, "reason": "unexpected_code_diff", "code_changes": code_changes}
     from api.model_registry import get_profile

@@ -22,7 +22,7 @@ BASE = ART / "director-quality-v3-final-spine-topology-recanary-base.json"
 # base artifact and is pinned to the current closure commit after code/tests
 # are finalized.
 BASELINE_REFERENCE_HEAD = "92b6d77"
-BACKEND_REGRESSION_SUMMARY = "1287 passed, 0 failed (pytest -q)"
+BACKEND_REGRESSION_SUMMARY = "1288 passed, 0 failed (pytest -q)"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
