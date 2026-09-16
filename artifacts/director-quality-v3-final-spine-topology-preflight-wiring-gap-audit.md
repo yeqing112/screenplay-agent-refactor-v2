@@ -2,7 +2,7 @@
 
 ## Baseline Audit
 
-- Baseline reference HEAD: `92b6d77`; audit started at repository HEAD `fc7a883` (the document's expected HEAD was not present). Current as-built HEAD is `caf110d` and the wiring closure is pinned to immutable base `4fd52b2`.
+- Baseline reference HEAD: `92b6d77`; it is not present in the current branch, so the audit started at the actual repository HEAD `e23a934`. Current as-built HEAD is `e23a934` and the wiring closure is pinned to immutable base `e23a934`.
 - Forensic evidence established structured Must Preserve traces, authoritative identity projections, canonical segment refs, and fail-closed orchestration, but the runtime path still needed explicit wiring verification.
 - Historical raw, Spine/Topology canary, Forensic and Foundation artifacts were not modified.
 
@@ -15,11 +15,11 @@
 - Segment refs derive from actual canonical Spine: `PASS`; 3 phases/4 segments fixture: `PASS`.
 - Invalid Spine blocks Skeleton by code control flow: `PASS`.
 - Final authorization gate: `PASS`; current authorization is `false`.
-- Regression evidence: backend `1277 passed, 0 failed`; deterministic Golden `5/5`.
+- Regression evidence: backend `1287 passed, 0 failed (pytest -q)`; deterministic Golden `5/5`.
 
 ## Decision
 
 `DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_CLOSED`
 `READY_FOR_FINAL_SPINE_TOPOLOGY_RECANARY=true`
 `FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED=false`
-`FINAL_RECANARY_EXPECTED_BASE_COMMIT=4fd52b2`
+`FINAL_RECANARY_EXPECTED_BASE_COMMIT=e23a934`
