@@ -2,16 +2,20 @@
   "schema_version": "director_v3_evaluation_upstream_phase_a_preflight_v1",
   "status": "BLOCKED",
   "status_code": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
-  "starting_head": "7c005902d1570f98ddc18363a535a346b1fa8399",
+  "starting_head": "7a9454f0aaa0a109a5e4576fbfc72e37070e9eae",
   "expected_starting_head": "63c93d6e1f78a4777fff9c3e329f5eeb723846eb",
   "remote_head": {
     "status": "PASS",
-    "sha": "7c005902d1570f98ddc18363a535a346b1fa8399"
+    "sha": "7a9454f0aaa0a109a5e4576fbfc72e37070e9eae"
   },
-  "working_tree_dirty_count": 328,
+  "working_tree_dirty_count": 321,
   "working_tree_dirty_sample": [
     "artifacts/chain-test-with-issues-report.json",
     "artifacts/director-quality-v3-current-stage-authority.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-callgraph.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-preflight.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-readiness.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-report.md",
     "artifacts/director-quality-v3-shot-architecture-validator-semantics-replay.json",
     "artifacts/director-quality-v3-strategy-authority-contract-gap-audit.md",
     "artifacts/director-quality-v3-strategy-authority-contract-ssot-report.md",
@@ -25,11 +29,7 @@
     "artifacts/_audit_pytest.txt",
     "artifacts/_director_v21_authorized_runner_preflight.txt",
     "artifacts/_director_v21_authorized_runner_preflight_latest.txt",
-    "artifacts/_director_v21_benchmark_current.txt",
-    "artifacts/_director_v21_benchmark_latest.txt",
-    "artifacts/_director_v21_pilot_preflight_current.txt",
-    "artifacts/_director_v21_pilot_preflight_latest.txt",
-    "artifacts/book14-outputs-current.json"
+    "artifacts/_director_v21_benchmark_current.txt"
   ],
   "source_package": {
     "package_path": "work\\intake\\director_v3\\evaluation_packages\\SRC79f12d1b7f5eb828.json",
