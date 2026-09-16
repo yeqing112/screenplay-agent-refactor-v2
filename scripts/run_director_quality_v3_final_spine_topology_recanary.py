@@ -111,16 +111,21 @@ def _parse(raw: str, label: str, required: set[str]) -> dict[str, Any] | None:
 
 def _evaluate_spine(row: dict[str, Any], strategy: dict[str, Any], trace: dict[str, Any], raw: str) -> dict[str, Any]:
     from core.visual_editorial_spine import normalize_spine, validate_spine
+    from core.spine_topology_forensics import detect_spine_layer_leakage, validate_must_preserve_trace
     parsed = _parse(raw, "visual_editorial_spine_ir_v1", {"segments", "spine_summary"})
     if not parsed: return {"raw_parse": "FAIL", "raw_response": raw, "ir": None, "canonical": None, "protocol": {"status": "FAIL", "errors": [{"code": "SPINE_PARSE_ERROR"}]}, "authority": {"status": "UNSAFE"}, "coverage": {"status": "FAIL"}, "director_qa": {"signal": "SPINE_INVALID", "metrics": {}}, "valid": False}
+    trace_validation = validate_must_preserve_trace(trace, scene_id=row["scene_id"])
+    layer_leakage = detect_spine_layer_leakage(json.dumps(parsed, ensure_ascii=False, default=str))
     normalized = normalize_spine(parsed, scene_id=row["scene_id"], strategy_fingerprint=EXPECTED_FP[row["scene_id"]]); ir = normalized.get("ir") or {}
     validation = validate_spine(ir, scene=row["inputs"]["scene"], strategy={**strategy, "strategy_fingerprint": EXPECTED_FP[row["scene_id"]]}, must_preserve_trace=trace)
     errors = list(normalized.get("errors") or []) + list(validation.get("hard_errors") or [])
+    if trace_validation.get("status") != "PASS":
+        errors.append({"code": "PRESERVE_AUTHORITY_INVALID", "details": trace_validation.get("errors", [])})
     fields = [[_t(seg.get(k)) for k in ("audience_attention", "information_change", "performance_pressure", "editorial_rhythm")] for seg in _l(ir.get("segments"))]
     shifts = sum(len({values[j] for values in fields if values[j]}) > 1 for j in range(4)); mechanical = len(_l(ir.get("segments"))) == len(_l(row["inputs"]["scene"].get("beats"))) and all(len(_l(seg.get("beat_refs"))) == 1 for seg in _l(ir.get("segments")))
     signal = "SPINE_INVALID" if errors else "SPINE_STRONG" if shifts >= 3 and not mechanical else "SPINE_USABLE" if shifts >= 1 else "SPINE_WEAK"
     qa = {"signal": signal, "metrics": {"visual_progression": bool(fields), "attention_design": shifts >= 1, "information_progression": shifts >= 1, "performance_pressure": shifts >= 1, "editorial_rhythm": shifts >= 1, "spatial_focus": all(_t(s.get("spatial_focus")) for s in _l(ir.get("segments"))), "strategy_fidelity": not errors, "non_mechanical_structure": not mechanical, "shift_dimensions": shifts, "mechanical_beat_to_segment": mechanical}}
-    return {"raw_parse": "PASS", "raw_response": raw, "ir": ir, "canonical": ir if not errors else None, "protocol": {"status": "PASS" if not errors else "FAIL", "errors": errors}, "authority": {"status": "SAFE" if not errors else "UNSAFE", "violations": errors}, "coverage": {"status": validation["status"], "covered_beats": validation.get("covered_beats", []), "covered_phases": validation.get("covered_phases", [])}, "director_qa": qa, "valid": not errors}
+    return {"raw_parse": "PASS", "raw_response": raw, "ir": ir, "canonical": ir if not errors else None, "protocol": {"status": "PASS" if not errors else "FAIL", "errors": errors}, "authority": {"status": "SAFE" if not errors else "UNSAFE", "violations": errors}, "coverage": {"status": validation["status"], "covered_beats": validation.get("covered_beats", []), "covered_phases": validation.get("covered_phases", [])}, "trace_validation": trace_validation, "layer_leakage": layer_leakage, "director_qa": qa, "valid": not errors}
 
 
 def _evaluate_skeleton(row: dict[str, Any], strategy: dict[str, Any], identity: list[dict[str, Any]], spine: dict[str, Any], events: dict[str, Any], raw: str) -> dict[str, Any]:
@@ -144,9 +149,9 @@ def _runtime_preflight(pointer: dict[str, Any], base: dict[str, Any], head: str,
     identity_parity = True; trace_shape = True
     for row in rows:
         strategy = _strategy(row, pointer); ident = _identity(row); trace = build_must_preserve_trace(strategy, row["inputs"]["scene"]); identities[row["scene_id"]] = ident; traces[row["scene_id"]] = trace; fixture = _fixture_spine(strategy); sk = build_skeleton_request(row, strategy, ident, fixture, trace, {"events": []}); segment_fixture &= sk["allowed_segment_refs"] == ["SEG01", "SEG02", "SEG03", "SEG04"]; builder_fps.append(_fp(sk["skeleton_contract"])); trace_shape &= validate_must_preserve_trace(trace, scene_id=row["scene_id"])["status"] == "PASS"; identity_parity &= compare_identity_projection({"records": ident}, {"records": ident})["status"] == "PASS"
-    canary = _canary(pointer); auth = bool(canary.get("final_recanary_authorized", False)); ancestry = subprocess.run(["git", "merge-base", "--is-ancestor", _t(base.get("expected_base_commit")), head], cwd=ROOT, capture_output=True).returncode == 0 if base.get("expected_base_commit") else False
-    checks = {"head_ancestry_gate": ancestry, "forensic_closed": canary.get("forensic_adjudication") == "CLOSED", "wiring_closed": canary.get("preflight_wiring_closure") == "CLOSED", "readiness_true": canary.get("ready_for_final_recanary") is True, "authorization": auth is authorized, "identity_projection_fingerprints_stable": all(bool(value) and all(_t(item.get("character_id")) for item in value) for value in identities.values()), "identity_provider_runtime_parity": identity_parity, "preserve_trace_shape": trace_shape, "preserve_trace_fingerprints_stable": len({_fp(value) for value in traces.values()}) == 3, "role_enum_visible": bool(ROLE_ENUM), "segment_count_diff_fixture": segment_fixture, "builder_fingerprint_stable": len(set(builder_fps)) == 1, "fail_closed_skeleton_gate": skeleton_callable_after_spine(False)["skeleton_provider_callable"] is False, "production_hold": _d(pointer.get("shot_architecture")).get("production_shotplan") == "HOLD", "prompt_fingerprints_exact": _fp(SPINE_SYSTEM) == _d(base.get("contracts")).get("spine_system_prompt_fingerprint") and _fp(SKELETON_SYSTEM) == _d(base.get("contracts")).get("skeleton_system_prompt_fingerprint")}
-    return {"checks": checks, "rows": rows, "identities": identities, "traces": traces, "status": "PASS" if all(checks.values()) else "BLOCKED", "authorization": auth, "provider_calls": 0, "head": head, "expected_base_commit": base.get("expected_base_commit")}
+    canary = _canary(pointer); auth = bool(canary.get("final_recanary_authorized", False)); base_gate = _base_commit_gate(_t(base.get("expected_base_commit")), head)
+    checks = {"head_ancestry_gate": base_gate["status"] == "PASS", "head_base_code_drift_gate": not base_gate["code_changes"], "forensic_closed": canary.get("forensic_adjudication") == "CLOSED", "wiring_closed": canary.get("preflight_wiring_closure") == "CLOSED", "readiness_true": canary.get("ready_for_final_recanary") is True, "authorization": auth is authorized, "identity_projection_fingerprints_stable": all(bool(value) and all(_t(item.get("character_id")) for item in value) for value in identities.values()), "identity_provider_runtime_parity": identity_parity, "preserve_trace_shape": trace_shape, "preserve_trace_fingerprints_stable": len({_fp(value) for value in traces.values()}) == 3, "role_enum_visible": bool(ROLE_ENUM), "segment_count_diff_fixture": segment_fixture, "builder_fingerprint_stable": len(set(builder_fps)) == 1, "fail_closed_skeleton_gate": skeleton_callable_after_spine(False)["skeleton_provider_callable"] is False, "production_hold": _d(pointer.get("shot_architecture")).get("production_shotplan") == "HOLD", "prompt_fingerprints_exact": _fp(SPINE_SYSTEM) == _d(base.get("contracts")).get("spine_system_prompt_fingerprint") and _fp(SKELETON_SYSTEM) == _d(base.get("contracts")).get("skeleton_system_prompt_fingerprint")}
+    return {"checks": checks, "base_commit_gate": base_gate, "rows": rows, "identities": identities, "traces": traces, "status": "PASS" if all(checks.values()) else "BLOCKED", "authorization": auth, "provider_calls": 0, "head": head, "expected_base_commit": base.get("expected_base_commit")}
 
 
 def _code_changes_present() -> list[str]:
@@ -156,6 +161,23 @@ def _code_changes_present() -> list[str]:
         path = line[3:].strip().strip('"')
         if Path(path).suffix.lower() in ext and Path(path).parts and Path(path).parts[0] in project_code_roots: paths.append(path)
     return sorted(paths)
+
+
+def _base_commit_gate(expected_base: str, head: str) -> dict[str, Any]:
+    """Validate the immutable wiring base and reject post-base code drift."""
+    base = _t(expected_base); current = _t(head)
+    if not base or not current:
+        return {"status": "FAIL", "reason": "BASE_COMMIT_MISSING", "code_changes": []}
+    verified = subprocess.run(["git", "cat-file", "-e", f"{base}^{{commit}}"], cwd=ROOT, capture_output=True)
+    if verified.returncode != 0:
+        return {"status": "FAIL", "reason": "BASE_COMMIT_UNKNOWN", "code_changes": []}
+    ancestry = subprocess.run(["git", "merge-base", "--is-ancestor", base, current], cwd=ROOT, capture_output=True).returncode == 0
+    if not ancestry:
+        return {"status": "FAIL", "reason": "HEAD_NOT_DESCENDANT_OF_BASE", "code_changes": []}
+    diff = subprocess.run(["git", "diff", "--name-only", f"{base}..{current}"], cwd=ROOT, capture_output=True, text=True, check=True)
+    code_roots = {"core", "api", "models", "scripts", "tests", "web"}; code_ext = {".py", ".ts", ".tsx", ".js", ".jsx"}
+    code_changes = sorted(path for path in diff.stdout.splitlines() if Path(path).parts and Path(path).parts[0] in code_roots and Path(path).suffix.lower() in code_ext)
+    return {"status": "PASS" if not code_changes else "FAIL", "reason": None if not code_changes else "POST_BASE_CODE_DRIFT", "code_changes": code_changes}
 
 
 def _brief(scene_id: str, spine: dict[str, Any], skeleton: dict[str, Any], binding: dict[str, Any]) -> str:

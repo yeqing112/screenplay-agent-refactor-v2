@@ -56,6 +56,14 @@ def validate_spine(spine: dict[str, Any], *, scene: dict[str, Any], strategy: di
     if _t(strategy.get("strategy_fingerprint")) and _t(spine.get("strategy_fingerprint")) != _t(strategy.get("strategy_fingerprint")):
         errors.append({"code": "SPINE_STRATEGY_MISMATCH"})
     beats = [_ref(_d(b).get("beat_id")) for b in _l(scene.get("beats")) if _t(_d(b).get("beat_id"))]
+    # Event keys are optional, program-owned evidence.  They may supplement
+    # beat coverage when an authoritative trace has no direct beat ref; they
+    # are never inferred from prose.  Accept both the projected shape and a
+    # flat list so callers can pass a previously materialized scene snapshot.
+    event_source = scene.get("semantic_events")
+    event_rows = _l(_d(event_source).get("events")) if isinstance(event_source, dict) else []
+    event_rows += _l(scene.get("events"))
+    event_keys = {_t(_d(item).get("event_key")) for item in event_rows if _t(_d(item).get("event_key"))}
     beat_order = {ref: i for i, ref in enumerate(beats)}; phases = {_t(p.get("phase_id")): {_ref(x) for x in _l(p.get("beat_ids"))} for p in _l(strategy.get("scene_phases")) if isinstance(p, dict)}
     covered = []; previous = -1; previous_phase = -1
     phase_order = {_t(p.get("phase_id")): i for i, p in enumerate(_l(strategy.get("scene_phases"))) if isinstance(p, dict)}
@@ -98,10 +106,13 @@ def validate_spine(spine: dict[str, Any], *, scene: dict[str, Any], strategy: di
     elif must_preserve_trace is not _TRACE_UNSET:
         for item in _l(_d(must_preserve_trace).get("constraints")):
             refs = {_t(x) for x in _l(_d(item).get("supporting_beat_refs")) if _t(x)}
+            event_refs = {_t(x) for x in _l(_d(item).get("supporting_event_keys")) if _t(x)}
             if _t(item.get("status") or item.get("resolution_status")) == "PRESERVE_TRACE_UNRESOLVED":
                 errors.append({"code": "PRESERVE_TRACE_UNRESOLVED", "constraint_id": _t(item.get("constraint_id"))})
-            elif refs and not refs & set(covered):
+            elif refs and not refs & set(covered) and not (event_refs & event_keys):
                 errors.append({"code": "SPINE_MUST_PRESERVE_UNCOVERED", "constraint_id": _t(item.get("constraint_id")), "supporting_beat_refs": sorted(refs)})
+            elif not refs and event_refs and not (event_refs & event_keys):
+                errors.append({"code": "SPINE_MUST_PRESERVE_UNCOVERED", "constraint_id": _t(item.get("constraint_id")), "supporting_event_keys": sorted(event_refs)})
     avoid = [_t(x) for x in _l(strategy.get("must_avoid")) if _t(x)]; joined = _canon(spine)
     errors += [{"code": "SPINE_MUST_AVOID_VIOLATION", "constraint": x} for x in avoid if x and x in joined]
     return {"status": "PASS" if not errors else "FAIL", "hard_errors": errors, "warnings": warnings, "covered_beats": sorted(set(covered)), "missing_beats": missing, "covered_phases": sorted(covered_phases), "missing_phases": sorted(required_phases - covered_phases)}

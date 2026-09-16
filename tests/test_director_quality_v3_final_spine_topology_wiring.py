@@ -7,11 +7,12 @@ from core.spine_topology_forensics import compare_identity_projection, validate_
 from scripts.run_director_quality_v3_final_spine_topology_recanary import (
     allowed_segment_refs_from_spine,
     build_skeleton_request,
+    _base_commit_gate,
 )
 
 
 def test_preserve_trace_requires_structured_authority_fields_and_fails_closed_when_missing():
-    trace = {"schema_version": "must_preserve_trace_v1", "scene_id": "s1", "constraints": [{"constraint_id": "MP01", "description": "x", "supporting_beat_refs": ["beat:1"], "supporting_event_keys": [], "resolution_status": "RESOLVED"}]}
+    trace = {"schema_version": "must_preserve_trace_v1", "scene_id": "s1", "constraints": [{"constraint_id": "MP01", "description": "x", "supporting_beat_refs": ["beat:1"], "supporting_event_keys": [], "source_authority": ["beat:1"], "resolution_status": "RESOLVED"}]}
     assert validate_must_preserve_trace(trace, scene_id="s1")["status"] == "PASS"
     assert validate_must_preserve_trace({}, scene_id="s1")["status"] == "FAIL"
 
@@ -67,6 +68,22 @@ def test_preserve_coverage_reports_uncovered_and_unresolved_distinctly():
     codes = {error["code"] for error in result["hard_errors"]}
     assert "SPINE_MUST_PRESERVE_UNCOVERED" in codes
     assert "PRESERVE_TRACE_UNRESOLVED" in codes
+
+
+def test_preserve_event_trace_can_supplement_beat_coverage_without_prose_matching():
+    from core.visual_editorial_spine import validate_spine
+
+    scene = {"scene_id": "s1", "beats": [{"beat_id": "1"}], "semantic_events": {"events": [{"event_key": "EVIDENCE_01"}]}}
+    strategy = {"strategy_fingerprint": "fp", "scene_phases": [{"phase_id": "P01", "beat_ids": ["1"]}], "must_avoid": []}
+    spine = {"schema_version": "visual_editorial_spine_ir_v1", "scene_id": "s1", "strategy_fingerprint": "fp", "segments": [{"segment_key": "SEG01", "phase_ids": ["P01"], "beat_refs": ["beat:1"], "dramatic_function": "d", "audience_attention": "a", "performance_pressure": "p", "information_change": "i", "spatial_focus": "s", "visual_motif": "m", "editorial_rhythm": "r", "entry_condition": "e", "exit_condition": "x"}]}
+    trace = {"schema_version": "must_preserve_trace_v1", "scene_id": "s1", "constraints": [{"constraint_id": "MP01", "description": "human prose differs", "supporting_beat_refs": [], "supporting_event_keys": ["EVIDENCE_01"], "resolution_status": "RESOLVED"}]}
+    assert validate_spine(spine, scene=scene, strategy=strategy, must_preserve_trace=trace)["status"] == "PASS"
+
+
+def test_base_commit_gate_rejects_post_base_runtime_code_drift():
+    result = _base_commit_gate("92b6d77", "HEAD")
+    assert result["status"] == "FAIL"
+    assert result["reason"] == "POST_BASE_CODE_DRIFT"
 
 
 def test_skeleton_request_never_uses_phase_ids_as_segment_refs():

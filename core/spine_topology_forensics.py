@@ -117,7 +117,7 @@ def validate_must_preserve_trace(trace: Any, *, scene_id: str | None = None) -> 
     constraints = _l(row.get("constraints"))
     for index, item in enumerate(constraints, 1):
         value = _d(item)
-        for field in ("constraint_id", "description", "supporting_beat_refs", "supporting_event_keys", "resolution_status"):
+        for field in ("constraint_id", "description", "supporting_beat_refs", "supporting_event_keys", "source_authority", "resolution_status"):
             if field not in value:
                 errors.append({"code": "PRESERVE_TRACE_FIELD_MISSING", "constraint_index": index, "field": field})
         status = _t(value.get("resolution_status"))
