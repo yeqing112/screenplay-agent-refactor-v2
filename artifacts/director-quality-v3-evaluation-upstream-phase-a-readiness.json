@@ -10,7 +10,6 @@
   "production_db_mutations": 0,
   "provider_calls": 0,
   "blocked_reasons": [
-    "EVALUATION_PHASE_A_HEAD_MISMATCH",
     "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN"
   ]
 }

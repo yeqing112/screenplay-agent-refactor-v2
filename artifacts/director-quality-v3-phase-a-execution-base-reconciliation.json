@@ -1,0 +1,51 @@
+{
+  "schema_version": "director_v3_phase_a_execution_base_reconciliation_v1",
+  "historical_expected_head": "63c93d6e1f78a4777fff9c3e329f5eeb723846eb",
+  "actual_local_head": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
+  "actual_remote_head": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
+  "ahead_commits": [
+    {
+      "sha": "3262fdc",
+      "stat": "3262fdc fix: record final wiring regression baseline\n .../run_director_quality_v3_final_spine_topology_preflight_wiring.py    | 2 +-\n 1 file changed, 1 insertion(+), 1 deletion(-)",
+      "name_status": "M\tscripts/run_director_quality_v3_final_spine_topology_preflight_wiring.py",
+      "scope_status": "PASS"
+    },
+    {
+      "sha": "b1f38c2",
+      "stat": "b1f38c2 docs: close final spine topology preflight wiring\n artifacts/director-quality-v3-current-stage-authority.json          | 2 +-\n .../director-quality-v3-final-spine-topology-preflight-dry-run.json | 4 ++--\n ...or-quality-v3-final-spine-topology-preflight-wiring-gap-audit.md | 6 +++---\n ...ector-quality-v3-final-spine-topology-preflight-wiring-report.md | 4 ++--\n .../director-quality-v3-final-spine-topology-recanary-base.json     | 4 ++--\n 5 files changed, 10 insertions(+), 10 deletions(-)",
+      "name_status": "M\tartifacts/director-quality-v3-current-stage-authority.json\nM\tartifacts/director-quality-v3-final-spine-topology-preflight-dry-run.json\nM\tartifacts/director-quality-v3-final-spine-topology-preflight-wiring-gap-audit.md\nM\tartifacts/director-quality-v3-final-spine-topology-preflight-wiring-report.md\nM\tartifacts/director-quality-v3-final-spine-topology-recanary-base.json",
+      "scope_status": "PASS"
+    },
+    {
+      "sha": "b8fd0bb",
+      "stat": "b8fd0bb docs: refresh final wiring dry run evidence\n .../director-quality-v3-final-spine-topology-preflight-dry-run.json     | 2 +-\n ...rector-quality-v3-final-spine-topology-preflight-wiring-gap-audit.md | 2 +-\n 2 files changed, 2 insertions(+), 2 deletions(-)",
+      "name_status": "M\tartifacts/director-quality-v3-final-spine-topology-preflight-dry-run.json\nM\tartifacts/director-quality-v3-final-spine-topology-preflight-wiring-gap-audit.md",
+      "scope_status": "PASS"
+    }
+  ],
+  "dirty_count": 9,
+  "authority_semantics_before": {
+    "status": "PASS",
+    "errors": []
+  },
+  "authority_semantics_after": {
+    "status": "PASS",
+    "errors": []
+  },
+  "authority_semantic_contradiction_fixed": false,
+  "code_base_commit": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
+  "new_execution_base": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
+  "execution_base_pushed": true,
+  "remote_head_matches": true,
+  "execution_worktree": null,
+  "execution_worktree_clean": false,
+  "source_hash_verified": true,
+  "provenance_verified": true,
+  "provider_resolved": true,
+  "predicted_provider_calls": 2,
+  "actual_provider_calls": 0,
+  "ready_for_real_phase_a": true,
+  "real_phase_a_authorized": false,
+  "status": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_REBASELINE_READY",
+  "reason": ""
+}

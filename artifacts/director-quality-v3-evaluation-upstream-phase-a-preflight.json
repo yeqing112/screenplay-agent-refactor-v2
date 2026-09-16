@@ -2,34 +2,25 @@
   "schema_version": "director_v3_evaluation_upstream_phase_a_preflight_v1",
   "status": "BLOCKED",
   "status_code": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
-  "starting_head": "4772192cfc36ecffb0779659dc85219fdd875620",
-  "expected_starting_head": "63c93d6e1f78a4777fff9c3e329f5eeb723846eb",
+  "starting_head": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
+  "historical_expected_starting_head": "63c93d6e1f78a4777fff9c3e329f5eeb723846eb",
+  "expected_starting_head": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
+  "execution_base_status": "REBASELINED",
   "remote_head": {
     "status": "PASS",
-    "sha": "4772192cfc36ecffb0779659dc85219fdd875620"
+    "sha": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779"
   },
-  "working_tree_dirty_count": 321,
+  "working_tree_dirty_count": 9,
   "working_tree_dirty_sample": [
-    "artifacts/chain-test-with-issues-report.json",
-    "artifacts/director-quality-v3-current-stage-authority.json",
     "artifacts/director-quality-v3-evaluation-upstream-phase-a-callgraph.json",
     "artifacts/director-quality-v3-evaluation-upstream-phase-a-preflight.json",
     "artifacts/director-quality-v3-evaluation-upstream-phase-a-readiness.json",
     "artifacts/director-quality-v3-evaluation-upstream-phase-a-report.md",
-    "artifacts/director-quality-v3-shot-architecture-validator-semantics-replay.json",
-    "artifacts/director-quality-v3-strategy-authority-contract-gap-audit.md",
-    "artifacts/director-quality-v3-strategy-authority-contract-ssot-report.md",
-    "artifacts/full-pipeline-test-report.json",
-    "apply-split-16.json",
-    "artifacts/990400-h3-media-preflight-latest.json",
-    "artifacts/990400-h3-media-preflight-unstable.json",
-    "artifacts/990400-shot1-h3-preflight.json",
-    "artifacts/990400-storage-migration-plan-preflight.json",
-    "artifacts/990400-visual-assets-preflight.json",
-    "artifacts/_audit_pytest.txt",
-    "artifacts/_director_v21_authorized_runner_preflight.txt",
-    "artifacts/_director_v21_authorized_runner_preflight_latest.txt",
-    "artifacts/_director_v21_benchmark_current.txt"
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-script-ir-validation.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-rebaseline-preflight.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-rebaseline-readiness.json",
+    "artifacts/director-quality-v3-phase-a-execution-base-reconciliation-report.md",
+    "artifacts/director-quality-v3-phase-a-execution-base-reconciliation.json"
   ],
   "source_package": {
     "package_path": "work\\intake\\director_v3\\evaluation_packages\\SRC79f12d1b7f5eb828.json",
@@ -41,13 +32,13 @@
   "provider": {
     "status": "PASS",
     "provider": "openai-compatible",
-    "model": "mimo-v2.5",
-    "endpoint_class": "api.xiaomimimo.com",
-    "profile_id": "local-llm-2vydoz",
-    "api_key_configured": true
+    "model": "qwen3-max",
+    "endpoint_class": "10.126.126.2",
+    "profile_id": "builtin-llm-env",
+    "api_key_configured": false
   },
   "checks": {
-    "expected_starting_head": false,
+    "expected_starting_head": true,
     "remote_head_matches_local": true,
     "working_tree_clean": false,
     "source_package_verified": true,
@@ -58,7 +49,6 @@
     "no_production_mutation_plan": true
   },
   "blocked_reasons": [
-    "EVALUATION_PHASE_A_HEAD_MISMATCH",
     "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN"
   ],
   "predicted_provider_calls": 2,

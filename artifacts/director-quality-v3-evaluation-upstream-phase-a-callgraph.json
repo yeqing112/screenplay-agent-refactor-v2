@@ -38,8 +38,8 @@
     "judge": 0
   },
   "provider": "openai-compatible",
-  "model": "mimo-v2.5",
-  "endpoint_class": "api.xiaomimimo.com",
+  "model": "qwen3-max",
+  "endpoint_class": "10.126.126.2",
   "production_db_mutations": 0,
   "excluded_production_paths": [
     "core.ingest",

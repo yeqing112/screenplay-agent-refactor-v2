@@ -6,7 +6,7 @@
   "dialogue_count": 0,
   "invented_hard_events": 0,
   "invented_dialogues": 0,
-  "dangling_refs": 0,
+  "dangling_refs": [],
   "director_leakage": 0,
   "qualification": "NOT_RUN",
   "reason": "FactSnapshot must pass before ScriptIR call"
