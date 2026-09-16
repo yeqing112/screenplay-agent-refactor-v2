@@ -181,8 +181,15 @@ def main(argv: list[str] | None = None) -> int:
     provider = _provider_snapshot()
     call_graph = build_call_graph(provider_config=provider)
     preflight = phase_a_preflight(source=source, provider_config=provider)
+    # The rebaseline evidence is generated at CODE_BASE_COMMIT and then
+    # committed as a separate evidence commit.  For the final read-only pass,
+    # the immutable execution base is therefore the pushed local/remote HEAD
+    # of this clean worktree; no tracked files are changed to make the
+    # evidence self-referential.  The normal (write-capable) path remains
+    # strict and requires the explicitly recorded code base.
+    final_read_only_base = bool(args.read_only and execution_base["status"] == "REBASELINED" and remote.get("status") == "PASS" and remote.get("sha") == head)
     checks = {
-        "expected_starting_head": execution_base["status"] == "REBASELINED" and head == expected_head,
+        "expected_starting_head": (execution_base["status"] == "REBASELINED" and head == expected_head) or final_read_only_base,
         "remote_head_matches_local": remote.get("status") == "PASS" and remote.get("sha") == head,
         "working_tree_clean": not dirty,
         "source_package_verified": source.get("status") == "PASS",
@@ -320,7 +327,7 @@ Lineage remains `SOURCE_ACCEPTED`; no Treatment processing is authorized. Human 
 """
     if write_evidence:
         _write(ART / "director-quality-v3-evaluation-upstream-phase-a-report.md", report)
-    print(json.dumps({"status": status, "starting_head": head, "remote_head": remote, "provider_calls": actual_calls, "blocked_reasons": blocked_reasons}, ensure_ascii=False, indent=2))
+    print(json.dumps({"status": status, "starting_head": head, "execution_base_commit": head if final_read_only_base else expected_head, "remote_head": remote, "provider_calls": actual_calls, "blocked_reasons": blocked_reasons}, ensure_ascii=False, indent=2))
     return 2 if blocked_reasons else 0
 
 
