@@ -169,7 +169,7 @@ def main() -> int:
 
 ## Baseline Audit
 
-- Baseline reference HEAD: `92b6d77`; current working ancestry is checked against the immutable closure base artifact.
+- Baseline reference HEAD: `92b6d77`; current as-built HEAD: `{head}`. Ancestry is checked against the immutable closure base artifact (`{expected_base}`).
 - Forensic evidence established structured Must Preserve traces, authoritative identity projections, canonical segment refs, and fail-closed orchestration, but the runtime path still needed explicit wiring verification.
 - Historical raw, Spine/Topology canary, Forensic and Foundation artifacts were not modified.
 
@@ -182,7 +182,7 @@ def main() -> int:
 - Segment refs derive from actual canonical Spine: `{'PASS' if wiring_checks['segment_refs_from_actual_spine'] else 'FAIL'}`; 3 phases/4 segments fixture: `{'PASS' if wiring_checks['segment_count_diff_fixture'] else 'FAIL'}`.
 - Invalid Spine blocks Skeleton by code control flow: `{'PASS' if wiring_checks['fail_closed_invalid_spine'] else 'FAIL'}`.
 - Final authorization gate: `{'PASS' if wiring_checks['authorization_false'] else 'FAIL'}`; current authorization is `false`.
-- Regression evidence: backend `1185 passed`; deterministic Golden `5/5`.
+- Regression evidence: backend `1187 passed, 0 failed`; deterministic Golden `5/5`.
 
 ## Decision
 
@@ -214,7 +214,7 @@ def main() -> int:
 | Authorization hard gate | {'PASS' if wiring_checks['authorization_false'] else 'FAIL'} |
 | Provider calls | `0` |
 
-Regression evidence: backend `1185 passed`; deterministic Golden `5/5`.
+Regression evidence: backend `1187 passed, 0 failed`; deterministic Golden `5/5`.
 
 `READY_FOR_FINAL_SPINE_TOPOLOGY_RECANARY={'true' if status.endswith('CLOSED') else 'false'}`
 `FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED=false`
