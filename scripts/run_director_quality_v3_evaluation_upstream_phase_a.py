@@ -9,6 +9,7 @@ the preflight path.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -87,6 +88,10 @@ def _status_code(*, blocked: bool) -> str:
     return "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_BLOCKED" if blocked else "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_PREFLIGHT_PASS"
 
 
+def _request_hash(request: dict[str, Any]) -> str:
+    return hashlib.sha256(json.dumps(request, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
 def _execution_base() -> dict[str, Any]:
     """Resolve the explicitly frozen Phase A execution base.
 
@@ -104,7 +109,7 @@ def _execution_base() -> dict[str, Any]:
     return {"status": "UNPUSHED", "commit": commit or HISTORICAL_EXPECTED_HEAD}
 
 
-def _execute_authorized_phase_a(*, source: dict[str, Any], provider: dict[str, Any], eval_root: Path) -> dict[str, Any]:
+def _execute_authorized_phase_a(*, source: dict[str, Any], provider: dict[str, Any], eval_root: Path, authorization: dict[str, Any]) -> dict[str, Any]:
     """Dispatch exactly the two bounded Phase A calls after all gates pass.
 
     The callback is intentionally local so request/response evidence is saved
@@ -123,23 +128,74 @@ def _execute_authorized_phase_a(*, source: dict[str, Any], provider: dict[str, A
     profile = get_default_profile("llm") or {}
     requests: list[dict[str, Any]] = []
     responses: list[str] = []
+    ledger: list[dict[str, Any]] = []
+    attempted_calls = 0
     system = "Return only the JSON object required by the supplied evaluation contract. Do not add directing choices, inferred test answers, retries, or commentary."
 
     def dispatch(request: dict[str, Any]) -> str:
+        nonlocal attempted_calls
         requests.append(request)
-        response = str(call_llm(
-            json.dumps(request, ensure_ascii=False),
-            system=system,
-            model_profile=profile,
-            retries=0,
-            estimated_tokens=7000,
-            max_tokens=12000,
-            audit_extra={"phase": "director_v3_evaluation_upstream_phase_a", "stage": request.get("task")},
-        ) or "")
+        attempted_calls += 1
+        stage = str(request.get("task") or "unknown")
+        stage_name = "FACT_EXTRACTION" if len(ledger) == 0 else "SCRIPT_IR"
+        entry = {
+            "stage": stage_name,
+            "attempt_number": attempted_calls,
+            "dispatched": True,
+            "request_hash": _request_hash(request),
+            "source_package_id": authorization["source_package_id"],
+            "source_version_id": authorization["source_version_id"],
+            "execution_base": authorization["authorized_execution_base"],
+            "provider": provider.get("provider"),
+            "model": provider.get("model"),
+            "status": "DISPATCHING",
+            "response_received": False,
+            "started_at": datetime.now(timezone.utc).isoformat(),
+        }
+        ledger.append(entry)
+        eval_root.mkdir(parents=True, exist_ok=True)
+        _write(eval_root / "dispatch-ledger.json", {"schema_version": "director_v3_phase_a_dispatch_ledger_v1", "entries": ledger})
+        (eval_root / f"{stage_name.lower()}-request.json").write_text(json.dumps(request, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        try:
+            response = str(call_llm(
+                json.dumps(request, ensure_ascii=False),
+                system=system,
+                model_profile=profile,
+                retries=0,
+                estimated_tokens=7000,
+                max_tokens=12000,
+                audit_extra={"phase": "director_v3_evaluation_upstream_phase_a", "stage": stage, "authorization_id": authorization["authorization_id"]},
+            ) or "")
+        except Exception as exc:
+            entry.update({"status": "TRANSPORT_FAILED", "error": str(exc)[:800], "finished_at": datetime.now(timezone.utc).isoformat()})
+            _write(eval_root / "dispatch-ledger.json", {"schema_version": "director_v3_phase_a_dispatch_ledger_v1", "entries": ledger})
+            raise
+        entry.update({
+            "status": "RESPONSE_RECEIVED" if response else "RESPONSE_EMPTY",
+            "response_received": bool(response),
+            "response_sha256": hashlib.sha256(response.encode("utf-8")).hexdigest(),
+            "response_length": len(response),
+            "finished_at": datetime.now(timezone.utc).isoformat(),
+        })
+        (eval_root / f"{stage_name.lower()}-response-raw.txt").write_text(response, encoding="utf-8")
+        _write(eval_root / "dispatch-ledger.json", {"schema_version": "director_v3_phase_a_dispatch_ledger_v1", "entries": ledger})
         responses.append(response)
         return response
 
-    result = run_with_provider_calls(source=source, provider_config=provider, call_provider=dispatch)
+    try:
+        result = run_with_provider_calls(source=source, provider_config=provider, call_provider=dispatch)
+    except Exception as exc:
+        result = {
+            "status": "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED",
+            "provider_calls": attempted_calls,
+            "attempted_provider_calls": attempted_calls,
+            "provider_exposure": "EXPOSED" if attempted_calls else "NOT_EXPOSED_CONFIRMED",
+            "error": str(exc)[:800],
+        }
+    result["provider_calls"] = attempted_calls
+    result["attempted_provider_calls"] = attempted_calls
+    result["provider_exposure"] = "EXPOSED" if attempted_calls else "NOT_EXPOSED_CONFIRMED"
+    result["dispatch_ledger"] = ledger
     eval_root.mkdir(parents=True, exist_ok=True)
     for index, request in enumerate(requests):
         stage = "fact" if index == 0 else "script-ir"
@@ -149,7 +205,6 @@ def _execute_authorized_phase_a(*, source: dict[str, Any], provider: dict[str, A
         (eval_root / f"{stage}-response-raw.txt").write_text(response, encoding="utf-8")
     result["request_count"] = len(requests)
     result["response_count"] = len(responses)
-    result["provider_exposure"] = "EXPOSED" if responses else "NOT_EXPOSED_CONFIRMED"
     return result
 
 
@@ -157,6 +212,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--execute-real", action="store_true", help="guarded provider dispatch; never bypasses gates")
     parser.add_argument("--read-only", action="store_true", help="compute gates without writing tracked evidence")
+    parser.add_argument("--authorization-file", default="", help="external runtime authorization JSON; required for --execute-real")
     supplied = argv if argv is not None else sys.argv[1:]
     args = parser.parse_args(argv)
     if any(flag in supplied for flag in ("--force", "--unsafe", "--ignore-authorization", "--no-gate")):
@@ -179,6 +235,16 @@ def main(argv: list[str] | None = None) -> int:
     dirty = _dirty_paths()
     source = load_and_verify_source()
     provider = _provider_snapshot()
+    authorization = None
+    authorization_error = ""
+    if args.execute_real:
+        try:
+            from core.director_v3_runtime_authorization import load_runtime_authorization
+            if not args.authorization_file:
+                raise ValueError("authorization_file_required")
+            authorization = load_runtime_authorization(args.authorization_file)
+        except ValueError as exc:
+            authorization_error = str(exc)
     call_graph = build_call_graph(provider_config=provider)
     preflight = phase_a_preflight(source=source, provider_config=provider)
     # The rebaseline evidence is generated at CODE_BASE_COMMIT and then
@@ -200,6 +266,28 @@ def main(argv: list[str] | None = None) -> int:
         "no_production_mutation_plan": all(value == 0 for value in preflight["mutation_plan"].values()),
     }
     blocked_reasons = []
+    if args.execute_real:
+        if authorization_error:
+            blocked_reasons.append("RUNTIME_AUTHORIZATION_INVALID")
+        else:
+            from core.director_v3_runtime_authorization import authorization_gate
+            auth_ok, auth_reasons = authorization_gate(
+                authorization,
+                head=head,
+                remote_head=str(remote.get("sha") or ""),
+                dirty=dirty,
+                source_package_id=SOURCE_PACKAGE_ID,
+                source_version_id=SOURCE_VERSION_ID,
+                predicted_calls=call_graph["predicted_provider_calls"],
+            )
+            checks["runtime_authorization"] = auth_ok
+            blocked_reasons.extend(auth_reasons)
+        # A tracked reconciliation artifact is historical evidence only.  The
+        # external authorization is the live authority for a real dispatch.
+        if not authorization_error:
+            checks["expected_starting_head"] = bool(authorization and authorization.get("authorized_execution_base") == head == remote.get("sha"))
+            if not checks["expected_starting_head"] and "RUNTIME_AUTHORIZATION_EXECUTION_BASE_MISMATCH" not in blocked_reasons:
+                blocked_reasons.append("RUNTIME_AUTHORIZATION_EXECUTION_BASE_MISMATCH")
     if not checks["expected_starting_head"]:
         blocked_reasons.append("EVALUATION_PHASE_A_EXECUTION_BASE_UNRESOLVED" if execution_base["status"] != "REBASELINED" else "EVALUATION_PHASE_A_HEAD_MISMATCH")
     if not checks["remote_head_matches_local"]:
@@ -217,13 +305,13 @@ def main(argv: list[str] | None = None) -> int:
     execution: dict[str, Any] | None = None
     if args.execute_real and not blocked_reasons:
         try:
-            execution = _execute_authorized_phase_a(source=source, provider=provider, eval_root=EVAL_ROOT)
+            execution = _execute_authorized_phase_a(source=source, provider=provider, eval_root=EVAL_ROOT, authorization=authorization or {})
             status = execution.get("status", "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED")
-            actual_calls = int(execution.get("provider_calls", 0) or 0)
+            actual_calls = int(execution.get("attempted_provider_calls", execution.get("provider_calls", 0)) or 0)
         except Exception as exc:  # one dispatch failure is terminal; no retry
             status = "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_FAILED"
             actual_calls = 0
-            execution = {"status": status, "provider_calls": 0, "error": str(exc)[:800]}
+            execution = {"status": status, "provider_calls": 0, "attempted_provider_calls": 0, "provider_exposure": "NOT_EXPOSED_CONFIRMED", "error": str(exc)[:800]}
     elif blocked_reasons:
         status = "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_BLOCKED"
         actual_calls = 0
@@ -247,6 +335,7 @@ def main(argv: list[str] | None = None) -> int:
         "starting_head": head,
         "remote_head": remote,
         "provider": provider,
+        "authorization": {key: value for key, value in (authorization or {}).items() if key not in {"authorization_path"}},
         "predicted_provider_calls": call_graph["predicted_provider_calls"],
         "actual_provider_calls": actual_calls,
         "retries": 0,
@@ -286,7 +375,7 @@ def main(argv: list[str] | None = None) -> int:
         "real_llm_calls": actual_calls,
         "real_mimo_calls": actual_calls,
     })
-    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-provider-ledger.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_provider_ledger_v1", "status": status, "fact_extraction_calls": min(actual_calls, 1), "script_ir_calls": max(0, actual_calls - 1), "total_calls": actual_calls, "retries": 0, "entries": []})
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-provider-ledger.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_provider_ledger_v1", "status": status, "fact_extraction_calls": min(actual_calls, 1), "script_ir_calls": max(0, actual_calls - 1), "total_calls": actual_calls, "retries": 0, "entries": _d((execution or {}).get("dispatch_ledger")) if isinstance((execution or {}).get("dispatch_ledger"), dict) else list((execution or {}).get("dispatch_ledger") or [])})
     _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-fact-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_fact_validation_v1", "status": fact_report.get("status", "NOT_RUN_BLOCKED"), "total_facts": fact_report.get("total_facts", 0), "confirmed": fact_report.get("confirmed", 0), "proposed": fact_report.get("proposed", 0), "conflict": fact_report.get("conflict", 0), "unknown": fact_report.get("unknown", 0), "evidence_verified": fact_report.get("evidence_verified", 0), "evidence_invalid": fact_report.get("evidence_invalid", 0), "claim_objective_promotion_violations": fact_report.get("claim_objective_promotion_violations", 0), "hard_errors": fact_report.get("errors", []), "reason": "provider-free gate blocked before Fact extraction" if not fact_report else ""})
     _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-script-ir-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_script_ir_validation_v1", "status": script_report.get("status", "NOT_RUN_BLOCKED"), "scene_count": script_report.get("scene_count", 0), "beat_count": script_report.get("beat_count", 0), "dialogue_count": script_report.get("dialogue_count", 0), "invented_hard_events": script_report.get("invented_hard_events", 0), "invented_dialogues": script_report.get("invented_dialogues", 0), "dangling_refs": script_report.get("dangling_refs", []), "director_leakage": script_report.get("director_leakage", 0), "qualification": script_report.get("status", "NOT_RUN"), "reason": "FactSnapshot must pass before ScriptIR call" if not fact_report else ""})
     _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-grounding-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_grounding_audit_v1", "status": "PASS" if script_report and not script_report.get("invented_hard_events") and not script_report.get("invented_dialogues") else "NOT_RUN_BLOCKED", "source_hash_exact": source.get("status") == "PASS", "evidence_verification": "PASS" if fact_report and not fact_report.get("evidence_invalid") else "NOT_RUN", "invented_events": script_report.get("invented_hard_events", 0), "invented_dialogues": script_report.get("invented_dialogues", 0)})
