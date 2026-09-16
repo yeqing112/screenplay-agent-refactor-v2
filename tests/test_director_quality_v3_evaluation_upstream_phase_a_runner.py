@@ -14,7 +14,13 @@ def test_phase_a_runner_provider_free_preflight_never_dispatches(capsys: pytest.
     assert code == 2  # current workspace intentionally remains dirty
     assert output["status"] == "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_BLOCKED"
     assert output["provider_calls"] == 0
-    assert "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN" in output["blocked_reasons"]
+    # Development trees are commonly dirty, while the final immutable
+    # verification worktree is intentionally clean.  Both conditions must
+    # fail closed without dispatching a provider.
+    assert any(reason in output["blocked_reasons"] for reason in {
+        "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN",
+        "EVALUATION_PHASE_A_HEAD_MISMATCH",
+    })
 
 
 def test_phase_a_runner_rejects_authorization_bypass_flags():
