@@ -1,8 +1,8 @@
 {
   "schema_version": "director_v3_final_spine_topology_recanary_base_v1",
-  "expected_base_commit": "bc7c64e",
+  "expected_base_commit": "a32e5d6",
   "authorization_required": true,
-  "authority_pointer_fingerprint": "b7e529f6549eb9930107fc5723ac5a9df341a88f28560115bfb4508b4977346d",
+  "authority_pointer_fingerprint": "622a1688de3e0925dce89533553210c2f202a6859b42e51487ee9c180a6455e5",
   "frozen_scenes": [
     "book990402:e3:暗房惊魂",
     "book990402:e3:暗房惊魂（2）",
