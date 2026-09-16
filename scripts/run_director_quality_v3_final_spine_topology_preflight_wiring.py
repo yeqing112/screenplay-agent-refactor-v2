@@ -153,12 +153,37 @@ def main() -> int:
         "upstream_processing_authorized": False,
         "waiting_for": "REAL_SOURCE_MATERIAL",
     })
+    pointer.setdefault("final_spine_topology_preflight_wiring", {
+        "status": "CLOSED",
+        "stage": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_CLOSED",
+        "expected_base_commit": None,
+        "ready_for_final_recanary": True,
+        "final_recanary_authorized": False,
+        "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED",
+        "provider_calls": 0,
+        "runtime_preserve_wiring": "PASS",
+        "runtime_identity_wiring": "PASS",
+        "identity_provider_runtime_parity": "PASS",
+        "runtime_segment_ref_wiring": "PASS",
+        "fail_closed_orchestration": "PASS",
+        "role_contract_visibility": "PASS",
+        "segment_ref_contract_visibility": "PASS",
+        "head_base_gate": "PASS",
+        "historical_artifacts_modified": False,
+        "downstream_actions": {
+            "atomic_expansion": "HOLD",
+            "production_shotplan": "HOLD",
+            "storyboard": "HOLD",
+            "media": "HOLD",
+        },
+    })
     head = _head()
     base = json.loads(BASE.read_text(encoding="utf-8")) if BASE.exists() else {}
     # Reuse the immutable closure base by default.  Falling back to the
     # current HEAD would silently move the gate on every dry-run and make the
     # base artifact self-referential.
     expected_base = args.expected_base or _t(base.get("expected_base_commit")) or head
+    pointer["final_spine_topology_preflight_wiring"]["expected_base_commit"] = expected_base
     base = {
         "schema_version": "director_v3_final_spine_topology_recanary_base_v1",
         "expected_base_commit": expected_base,
@@ -220,6 +245,22 @@ def main() -> int:
         "provider_calls": preflight["provider_calls"] == 0,
     }
     status = "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_CLOSED" if all(wiring_checks.values()) and preflight["status"] == "PASS" else "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_PREFLIGHT_WIRING_BLOCKED"
+
+    pointer["final_spine_topology_preflight_wiring"].update({
+        "status": "CLOSED" if status.endswith("CLOSED") else "BLOCKED",
+        "stage": status,
+        "ready_for_final_recanary": status.endswith("CLOSED"),
+        "final_recanary_authorized": False,
+        "provider_calls": 0,
+        "runtime_preserve_wiring": "PASS" if wiring_checks["must_preserve_runtime"] else "FAIL",
+        "runtime_identity_wiring": "PASS" if wiring_checks["identity_runtime_authority"] else "FAIL",
+        "identity_provider_runtime_parity": "PASS" if wiring_checks["identity_provider_runtime_parity"] else "FAIL",
+        "runtime_segment_ref_wiring": "PASS" if wiring_checks["segment_refs_from_actual_spine"] else "FAIL",
+        "fail_closed_orchestration": "PASS" if wiring_checks["fail_closed_invalid_spine"] else "FAIL",
+        "role_contract_visibility": "PASS" if wiring_checks["role_enum_visibility"] else "FAIL",
+        "segment_ref_contract_visibility": "PASS" if wiring_checks["segment_refs_from_actual_spine"] else "FAIL",
+        "head_base_gate": "PASS" if preflight["checks"].get("head_ancestry_gate") and preflight["checks"].get("head_base_code_drift_gate") else "FAIL",
+    })
 
     _write(ART / "director-quality-v3-final-spine-topology-runtime-preserve-wiring.json", {"status": "PASS" if wiring_checks["must_preserve_runtime"] else "FAIL", "scenes": preserve_rows, "provider_calls": 0})
     _write(ART / "director-quality-v3-final-spine-topology-runtime-identity-wiring.json", {"status": "PASS" if wiring_checks["identity_runtime_authority"] and wiring_checks["identity_provider_runtime_parity"] else "FAIL", "scenes": identity_rows, "provider_calls": 0})
