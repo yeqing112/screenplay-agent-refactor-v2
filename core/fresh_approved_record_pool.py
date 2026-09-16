@@ -223,7 +223,7 @@ def scan_source_material(db_path: Path) -> list[dict[str, Any]]:
 class FreshApprovedRecordEligibilityGate:
     """Hard gate; every failed requirement is explicit and machine-readable."""
 
-    def evaluate(self, candidate: dict[str, Any], *, exposure_status: str = "NOT_EXPOSED", retired: bool = False, denied_fingerprints: set[str] | None = None) -> dict[str, Any]:
+    def evaluate(self, candidate: dict[str, Any], *, exposure_status: str = "NOT_EXPOSED", retired: bool = False, denied_fingerprints: set[str] | None = None, require_clean_lineage: bool = False) -> dict[str, Any]:
         denied = denied_fingerprints or set()
         reasons = list(candidate.get("eligibility_reasons") or [])
         if not candidate.get("source_real"): reasons.append("SOURCE_NOT_REAL")
@@ -240,6 +240,7 @@ class FreshApprovedRecordEligibilityGate:
         if any(_t(fps.get(key)) in denied for key in ("source_fingerprint", "normalized_source_text_hash", "beat_sequence_fingerprint")): reasons.append("SOURCE_CONTENT_ALREADY_EXPOSED" if exposure_status != "EXPOSURE_UNKNOWN" else "SOURCE_CONTENT_DENIED")
         if not upstream.get("identity_authority_valid"): reasons.append("IDENTITY_AUTHORITY_INVALID")
         if not upstream.get("beat_authority_valid"): reasons.append("BEAT_AUTHORITY_INVALID")
+        if require_clean_lineage and candidate.get("clean_lineage") is not True: reasons.append("CLEAN_LINEAGE_REQUIRED")
         if not _t(candidate.get("scene_id")) or int(candidate.get("book_id") or 0) <= 0 or int(candidate.get("episode") or 0) <= 0: reasons.append("SCENE_IDENTITY_INVALID")
         unique = list(dict.fromkeys(reasons))
         return {"status": "FRESH_APPROVED_RECORD_ELIGIBLE" if not unique else "NOT_ELIGIBLE", "eligible": not unique, "reasons": unique}
