@@ -42,6 +42,11 @@ def _write(path: Path, value: Any) -> None:
         path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def _write_if(enabled: bool, path: Path, value: Any) -> None:
+    if enabled:
+        _write(path, value)
+
+
 def _git_head() -> str:
     return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
 
@@ -151,6 +156,7 @@ def _execute_authorized_phase_a(*, source: dict[str, Any], provider: dict[str, A
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--execute-real", action="store_true", help="guarded provider dispatch; never bypasses gates")
+    parser.add_argument("--read-only", action="store_true", help="compute gates without writing tracked evidence")
     supplied = argv if argv is not None else sys.argv[1:]
     args = parser.parse_args(argv)
     if any(flag in supplied for flag in ("--force", "--unsafe", "--ignore-authorization", "--no-gate")):
@@ -223,9 +229,11 @@ def main(argv: list[str] | None = None) -> int:
     script_result = _d((execution or {}).get("script"))
     script_report = _d(script_result.get("report"))
 
-    EVAL_ROOT.mkdir(parents=True, exist_ok=True)
-    _write(EVAL_ROOT / "source-manifest-copy.json", source.get("manifest", {}))
-    _write(EVAL_ROOT / "phase-a-run-manifest.json", {
+    write_evidence = not args.read_only
+    if write_evidence:
+        EVAL_ROOT.mkdir(parents=True, exist_ok=True)
+    _write_if(write_evidence, EVAL_ROOT / "source-manifest-copy.json", source.get("manifest", {}))
+    _write_if(write_evidence, EVAL_ROOT / "phase-a-run-manifest.json", {
         "schema_version": "director_v3_evaluation_upstream_phase_a_run_manifest_v1",
         "source_package_id": SOURCE_PACKAGE_ID,
         "source_version_id": SOURCE_VERSION_ID,
@@ -240,8 +248,8 @@ def main(argv: list[str] | None = None) -> int:
         "production_db_mutations": 0,
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-callgraph.json", call_graph)
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-contract.json", {
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-callgraph.json", call_graph)
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-contract.json", {
         "schema_version": "director_v3_evaluation_upstream_phase_a_contract_v1",
         "source_package_id": SOURCE_PACKAGE_ID,
         "source_version_id": SOURCE_VERSION_ID,
@@ -251,7 +259,7 @@ def main(argv: list[str] | None = None) -> int:
         "output_schemas": ["fact_snapshot_v1", "script_ir_v1"],
         "epistemic_rules": ["character claim is not objective truth", "model_observation remains proposed", "confirmed source facts require exact evidence"],
     })
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-preflight.json", {
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-preflight.json", {
         "schema_version": "director_v3_evaluation_upstream_phase_a_preflight_v1",
         "status": "BLOCKED" if blocked_reasons else "PASS",
         "status_code": _status_code(blocked=bool(blocked_reasons)),
@@ -271,14 +279,14 @@ def main(argv: list[str] | None = None) -> int:
         "real_llm_calls": actual_calls,
         "real_mimo_calls": actual_calls,
     })
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-provider-ledger.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_provider_ledger_v1", "status": status, "fact_extraction_calls": min(actual_calls, 1), "script_ir_calls": max(0, actual_calls - 1), "total_calls": actual_calls, "retries": 0, "entries": []})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-fact-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_fact_validation_v1", "status": fact_report.get("status", "NOT_RUN_BLOCKED"), "total_facts": fact_report.get("total_facts", 0), "confirmed": fact_report.get("confirmed", 0), "proposed": fact_report.get("proposed", 0), "conflict": fact_report.get("conflict", 0), "unknown": fact_report.get("unknown", 0), "evidence_verified": fact_report.get("evidence_verified", 0), "evidence_invalid": fact_report.get("evidence_invalid", 0), "claim_objective_promotion_violations": fact_report.get("claim_objective_promotion_violations", 0), "hard_errors": fact_report.get("errors", []), "reason": "provider-free gate blocked before Fact extraction" if not fact_report else ""})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-script-ir-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_script_ir_validation_v1", "status": script_report.get("status", "NOT_RUN_BLOCKED"), "scene_count": script_report.get("scene_count", 0), "beat_count": script_report.get("beat_count", 0), "dialogue_count": script_report.get("dialogue_count", 0), "invented_hard_events": script_report.get("invented_hard_events", 0), "invented_dialogues": script_report.get("invented_dialogues", 0), "dangling_refs": script_report.get("dangling_refs", []), "director_leakage": script_report.get("director_leakage", 0), "qualification": script_report.get("status", "NOT_RUN"), "reason": "FactSnapshot must pass before ScriptIR call" if not script_report else ""})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-grounding-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_grounding_audit_v1", "status": "PASS" if script_report and not script_report.get("invented_hard_events") and not script_report.get("invented_dialogues") else "NOT_RUN_BLOCKED", "source_hash_exact": source.get("status") == "PASS", "evidence_verification": "PASS" if fact_report and not fact_report.get("evidence_invalid") else "NOT_RUN", "invented_events": script_report.get("invented_hard_events", 0), "invented_dialogues": script_report.get("invented_dialogues", 0)})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-epistemic-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_epistemic_audit_v1", "status": "PASS" if fact_report and not fact_report.get("claim_objective_promotion_violations") and not script_report.get("reported_past_flashback_count") else "NOT_RUN_BLOCKED", "model_observation_auto_confirmed": fact_report.get("claim_objective_promotion_violations", 0), "claim_objective_promotion_violations": fact_report.get("claim_objective_promotion_violations", 0), "reported_past_flashback_auto_created": script_report.get("reported_past_flashback_count", 0), "internal_thought_auto_dialogue": script_report.get("internal_thought_dialogue_count", 0)})
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-human-review.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_human_review_v1", "status": "NOT_RECORDED", "review_required": True, "package_path": str(EVAL_ROOT.relative_to(ROOT)).replace("\\", "/")})
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-provider-ledger.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_provider_ledger_v1", "status": status, "fact_extraction_calls": min(actual_calls, 1), "script_ir_calls": max(0, actual_calls - 1), "total_calls": actual_calls, "retries": 0, "entries": []})
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-fact-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_fact_validation_v1", "status": fact_report.get("status", "NOT_RUN_BLOCKED"), "total_facts": fact_report.get("total_facts", 0), "confirmed": fact_report.get("confirmed", 0), "proposed": fact_report.get("proposed", 0), "conflict": fact_report.get("conflict", 0), "unknown": fact_report.get("unknown", 0), "evidence_verified": fact_report.get("evidence_verified", 0), "evidence_invalid": fact_report.get("evidence_invalid", 0), "claim_objective_promotion_violations": fact_report.get("claim_objective_promotion_violations", 0), "hard_errors": fact_report.get("errors", []), "reason": "provider-free gate blocked before Fact extraction" if not fact_report else ""})
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-script-ir-validation.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_script_ir_validation_v1", "status": script_report.get("status", "NOT_RUN_BLOCKED"), "scene_count": script_report.get("scene_count", 0), "beat_count": script_report.get("beat_count", 0), "dialogue_count": script_report.get("dialogue_count", 0), "invented_hard_events": script_report.get("invented_hard_events", 0), "invented_dialogues": script_report.get("invented_dialogues", 0), "dangling_refs": script_report.get("dangling_refs", []), "director_leakage": script_report.get("director_leakage", 0), "qualification": script_report.get("status", "NOT_RUN"), "reason": "FactSnapshot must pass before ScriptIR call" if not fact_report else ""})
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-grounding-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_grounding_audit_v1", "status": "PASS" if script_report and not script_report.get("invented_hard_events") and not script_report.get("invented_dialogues") else "NOT_RUN_BLOCKED", "source_hash_exact": source.get("status") == "PASS", "evidence_verification": "PASS" if fact_report and not fact_report.get("evidence_invalid") else "NOT_RUN", "invented_events": script_report.get("invented_hard_events", 0), "invented_dialogues": script_report.get("invented_dialogues", 0)})
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-epistemic-audit.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_epistemic_audit_v1", "status": "PASS" if fact_report and not fact_report.get("claim_objective_promotion_violations") and not script_report.get("reported_past_flashback_count") else "NOT_RUN_BLOCKED", "model_observation_auto_confirmed": fact_report.get("claim_objective_promotion_violations", 0), "claim_objective_promotion_violations": fact_report.get("claim_objective_promotion_violations", 0), "reported_past_flashback_auto_created": script_report.get("reported_past_flashback_count", 0), "internal_thought_auto_dialogue": script_report.get("internal_thought_dialogue_count", 0)})
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-human-review.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_human_review_v1", "status": "NOT_RECORDED", "review_required": True, "package_path": str(EVAL_ROOT.relative_to(ROOT)).replace("\\", "/")})
     lineage_state = "SCRIPT_IR_QUALIFIED" if script_report.get("status") == "QUALIFIED" else "FACT_SNAPSHOT_CONFIRMED" if fact_report.get("status") == "PASS" else "SOURCE_ACCEPTED"
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-readiness.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_readiness_v1", "status": status, "lineage_state": lineage_state, "ready_for_treatment_processing": lineage_state == "SCRIPT_IR_QUALIFIED", "treatment_processing_authorized": False, "human_fresh_pool_changed": False, "fresh_pilot_2_ready": False, "fresh_pilot_2_authorized": False, "production_db_mutations": 0, "provider_calls": actual_calls, "blocked_reasons": blocked_reasons})
+    _write_if(write_evidence, ART / "director-quality-v3-evaluation-upstream-phase-a-readiness.json", {"schema_version": "director_v3_evaluation_upstream_phase_a_readiness_v1", "status": status, "lineage_state": lineage_state, "ready_for_treatment_processing": lineage_state == "SCRIPT_IR_QUALIFIED", "treatment_processing_authorized": False, "human_fresh_pool_changed": False, "fresh_pilot_2_ready": False, "fresh_pilot_2_authorized": False, "production_db_mutations": 0, "provider_calls": actual_calls, "blocked_reasons": blocked_reasons})
 
     report = f"""# Director Quality V3 — Authorized Evaluation Source Upstream Phase A
 
@@ -310,7 +318,8 @@ def main(argv: list[str] | None = None) -> int:
 
 Lineage remains `SOURCE_ACCEPTED`; no Treatment processing is authorized. Human review is `NOT_RECORDED`.
 """
-    _write(ART / "director-quality-v3-evaluation-upstream-phase-a-report.md", report)
+    if write_evidence:
+        _write(ART / "director-quality-v3-evaluation-upstream-phase-a-report.md", report)
     print(json.dumps({"status": status, "starting_head": head, "remote_head": remote, "provider_calls": actual_calls, "blocked_reasons": blocked_reasons}, ensure_ascii=False, indent=2))
     return 2 if blocked_reasons else 0
 

@@ -64,6 +64,14 @@ CHROMA_PERSIST_DIR = os.getenv(
 # SQLite
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DB_DIR}/screenplay.db?timeout=30")
 
+# Optional non-secret model-registry snapshot used by isolated audits and
+# first-boot deployments before the runtime KV schema exists.  Secrets must
+# never be placed in this JSON; API keys remain in the normal local/runtime
+# secret store.  The registry loader only consults these values when its KV
+# read is unavailable.
+MODEL_REGISTRY_PROFILES_JSON = os.getenv("MODEL_REGISTRY_PROFILES_JSON", "[]")
+MODEL_REGISTRY_DEFAULTS_JSON = os.getenv("MODEL_REGISTRY_DEFAULTS_JSON", "{}")
+
 
 # ── API / Web ──
 def _load_bool(key: str, default: bool) -> bool:

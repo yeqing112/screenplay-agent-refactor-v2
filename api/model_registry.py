@@ -153,7 +153,16 @@ def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str
 
 
 def _load_saved_profiles() -> list[dict[str, Any]]:
-    raw = get_kv(MODEL_REGISTRY_PROFILES_KEY, "[]")
+    # The registry is normally persisted in the runtime KV database.  Isolated
+    # provider-free audits and fresh deployments may intentionally have no
+    # migrated database yet; allow an operator-supplied, non-secret profile
+    # snapshot to resolve the model contract without creating tables or
+    # touching production state.  The environment fallback is only used when
+    # the KV read is unavailable (for example, a missing ``kv`` table).
+    try:
+        raw = get_kv(MODEL_REGISTRY_PROFILES_KEY, "[]")
+    except Exception:
+        raw = config.MODEL_REGISTRY_PROFILES_JSON
     try:
         items = json.loads(raw)
     except json.JSONDecodeError:
@@ -186,7 +195,10 @@ def _load_saved_profiles() -> list[dict[str, Any]]:
 
 
 def _load_saved_defaults() -> dict[str, str]:
-    raw = get_kv(MODEL_REGISTRY_DEFAULTS_KEY, "{}")
+    try:
+        raw = get_kv(MODEL_REGISTRY_DEFAULTS_KEY, "{}")
+    except Exception:
+        raw = config.MODEL_REGISTRY_DEFAULTS_JSON
     try:
         value = json.loads(raw)
     except json.JSONDecodeError:
