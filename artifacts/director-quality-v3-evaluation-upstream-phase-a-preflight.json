@@ -2,11 +2,11 @@
   "schema_version": "director_v3_evaluation_upstream_phase_a_preflight_v1",
   "status": "BLOCKED",
   "status_code": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
-  "starting_head": "7a9454f0aaa0a109a5e4576fbfc72e37070e9eae",
+  "starting_head": "4772192cfc36ecffb0779659dc85219fdd875620",
   "expected_starting_head": "63c93d6e1f78a4777fff9c3e329f5eeb723846eb",
   "remote_head": {
     "status": "PASS",
-    "sha": "7a9454f0aaa0a109a5e4576fbfc72e37070e9eae"
+    "sha": "4772192cfc36ecffb0779659dc85219fdd875620"
   },
   "working_tree_dirty_count": 321,
   "working_tree_dirty_sample": [
