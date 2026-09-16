@@ -101,6 +101,7 @@ def main() -> int:
         "schema_version": "director_v3_final_spine_topology_recanary_base_v1",
         "expected_base_commit": expected_base,
         "authorization_required": True,
+        "authority_pointer_fingerprint": _fp(pointer),
         "frozen_scenes": list(SCENES),
         "contracts": {
             "spine_system_prompt_fingerprint": _fp(SPINE_SYSTEM),
