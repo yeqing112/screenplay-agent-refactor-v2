@@ -2,7 +2,7 @@
 
 ## Baseline Audit
 
-- Baseline reference HEAD: `92b6d77`; current as-built HEAD: `87b45fe`. Ancestry is checked against the immutable closure base artifact (`510cf82`).
+- Baseline reference HEAD: `92b6d77`; current as-built HEAD: `7621687`. Ancestry is checked against the immutable closure base artifact (`510cf82`).
 - Forensic evidence established structured Must Preserve traces, authoritative identity projections, canonical segment refs, and fail-closed orchestration, but the runtime path still needed explicit wiring verification.
 - Historical raw, Spine/Topology canary, Forensic and Foundation artifacts were not modified.
 
@@ -15,7 +15,7 @@
 - Segment refs derive from actual canonical Spine: `PASS`; 3 phases/4 segments fixture: `PASS`.
 - Invalid Spine blocks Skeleton by code control flow: `PASS`.
 - Final authorization gate: `PASS`; current authorization is `false`.
-- Regression evidence: backend `1193 passed, 0 failed`; deterministic Golden `5/5`.
+- Regression evidence: backend `1206 passed, 0 failed`; deterministic Golden `5/5`.
 
 ## Decision
 
