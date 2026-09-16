@@ -1,0 +1,16 @@
+{
+  "schema_version": "director_v3_evaluation_upstream_phase_a_readiness_v1",
+  "status": "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
+  "lineage_state": "SOURCE_ACCEPTED",
+  "ready_for_treatment_processing": false,
+  "treatment_processing_authorized": false,
+  "human_fresh_pool_changed": false,
+  "fresh_pilot_2_ready": false,
+  "fresh_pilot_2_authorized": false,
+  "production_db_mutations": 0,
+  "provider_calls": 0,
+  "blocked_reasons": [
+    "EVALUATION_PHASE_A_HEAD_MISMATCH",
+    "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN"
+  ]
+}

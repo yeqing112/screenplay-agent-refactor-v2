@@ -1,0 +1,14 @@
+{
+  "schema_version": "director_v3_evaluation_upstream_phase_a_fact_validation_v1",
+  "status": "NOT_RUN_BLOCKED",
+  "total_facts": 0,
+  "confirmed": 0,
+  "proposed": 0,
+  "conflict": 0,
+  "unknown": 0,
+  "evidence_verified": 0,
+  "evidence_invalid": 0,
+  "claim_objective_promotion_violations": 0,
+  "hard_errors": [],
+  "reason": "provider-free gate blocked before Fact extraction"
+}

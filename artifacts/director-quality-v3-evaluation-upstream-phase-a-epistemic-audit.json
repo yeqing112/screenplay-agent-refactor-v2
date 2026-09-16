@@ -1,0 +1,8 @@
+{
+  "schema_version": "director_v3_evaluation_upstream_phase_a_epistemic_audit_v1",
+  "status": "NOT_RUN_BLOCKED",
+  "model_observation_auto_confirmed": 0,
+  "claim_objective_promotion_violations": 0,
+  "reported_past_flashback_auto_created": 0,
+  "internal_thought_auto_dialogue": 0
+}

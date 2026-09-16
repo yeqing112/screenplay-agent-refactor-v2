@@ -1,0 +1,9 @@
+{
+  "schema_version": "director_v3_evaluation_upstream_phase_a_provider_ledger_v1",
+  "status": "DIRECTOR_V3_AUTHORIZED_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
+  "fact_extraction_calls": 0,
+  "script_ir_calls": 0,
+  "total_calls": 0,
+  "retries": 0,
+  "entries": []
+}
