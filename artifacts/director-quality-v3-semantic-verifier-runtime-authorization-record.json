@@ -1,0 +1,9 @@
+{
+  "schema_version": "director_v3_semantic_verifier_runtime_authorization_v1",
+  "status": "NOT_ISSUED_PROVIDER_FREE_WIRING",
+  "scope": "DIRECTOR_V3_AUTHORIZED_FACT_SEMANTIC_VERIFIER_CANARY",
+  "max_provider_calls": 1,
+  "retries": 0,
+  "provider_calls": 0,
+  "authorization_required_before_dispatch": true
+}

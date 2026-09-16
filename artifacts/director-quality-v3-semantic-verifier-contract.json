@@ -1,0 +1,54 @@
+{
+  "schema_version": "fact_semantic_verifier_v1",
+  "role": "semantic_verifier_not_fact_writer_or_retriever",
+  "provider_owns": [
+    "semantic_verdict",
+    "supported_components",
+    "unsupported_components",
+    "rationale"
+  ],
+  "program_owns": [
+    "fact_id",
+    "canonical_fact",
+    "evidence_refs",
+    "resolved_evidence",
+    "final_authority",
+    "final_status",
+    "downstream_eligibility"
+  ],
+  "verdicts": [
+    "ENTAILED",
+    "PARTIAL",
+    "CLAIM_ONLY",
+    "INFERENCE",
+    "CONTRADICTED",
+    "AMBIGUOUS"
+  ],
+  "forbidden_provider_fields": [
+    "new_fact",
+    "corrected_fact",
+    "replacement_fact",
+    "new_evidence_refs",
+    "recommended_evidence_refs",
+    "source_search",
+    "final_authority",
+    "final_status",
+    "script_ir"
+  ],
+  "interfaces": {
+    "request_projection": "build_verifier_request",
+    "parser": "parse_verifier_payload",
+    "validator": "validate_verifier_payload",
+    "authority_compiler": "compile_semantic_authority"
+  },
+  "input_restrictions": [
+    "existing_facts_only",
+    "existing_resolved_evidence_only",
+    "no_source_text",
+    "no_anchor_corpus",
+    "no_development_forensic_answers"
+  ],
+  "exact_cardinality": "one_result_per_supplied_fact_id",
+  "provider_calls": 1,
+  "retries": 0
+}

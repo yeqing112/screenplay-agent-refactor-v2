@@ -1,0 +1,58 @@
+{
+  "schema_version": "fact_semantic_verifier_provider_schema_v1",
+  "schema_fingerprint": "e4e4a9e5b225cfd40528ad5bad34c08041276330714765cf2b15af7bb9124297",
+  "provider_schema": {
+    "type": "object",
+    "required": [
+      "results"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "results": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "fact_id",
+            "verdict",
+            "supported_components",
+            "unsupported_components",
+            "rationale"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "fact_id": {
+              "type": "string",
+              "pattern": "^FACT_[0-9]{4}$"
+            },
+            "verdict": {
+              "enum": [
+                "ENTAILED",
+                "PARTIAL",
+                "CLAIM_ONLY",
+                "INFERENCE",
+                "CONTRADICTED",
+                "AMBIGUOUS"
+              ]
+            },
+            "supported_components": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "unsupported_components": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "rationale": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

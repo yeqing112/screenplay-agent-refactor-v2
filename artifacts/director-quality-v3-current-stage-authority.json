@@ -250,7 +250,9 @@
       "request_hash": "452c8c57d053cd10c590afcef5e323d2d7deb663d5784feef6c5241fd8ca3e4d",
       "source_evidence_index_fingerprint": "4697f3069bb34c9650d97b7e2c788d5b9db36034a39fedf77a0756e7a7bf5295",
       "v2_schema_fingerprint": "0f8bfafe584711649b7ee9df5830bb71ebd7227a50248866a8e5b99a33ca9f51",
-      "human_review": "REQUIRED_BEFORE_SCRIPT_IR"
+      "human_review": "REQUIRED_BEFORE_SCRIPT_IR",
+      "provider_attempts": 1,
+      "provider_calls_scope": "attempt_2_only"
     },
     "attempt_1_status": "FAILED",
     "ready_for_script_ir_processing": false,
@@ -262,7 +264,13 @@
     "historical_attempt_2_lineage": "FACT_SNAPSHOT_CONFIRMED",
     "effective_lineage_state": "FACT_SNAPSHOT_EVIDENCE_VALIDATED",
     "semantic_grounding_status": "NOT_YET_ADJUDICATED",
-    "script_ir_processing_authorized": false
+    "script_ir_processing_authorized": false,
+    "provider_attempts_by_stage": {
+      "fact_attempt_1": 1,
+      "fact_attempt_2": 1,
+      "semantic_verifier": 0
+    },
+    "provider_calls_scope": "historical/current stage explicit; cumulative_provider_attempts is all historical attempts"
   },
   "fact_semantic_grounding": {
     "status": "CLOSED",
@@ -279,5 +287,20 @@
     "script_ir_gate": "BLOCKED_PENDING_SEMANTIC_GROUNDING",
     "development_forensic": "DEVELOPMENT_FORENSIC",
     "runtime_authority": false
+  },
+  "semantic_verifier_canary": {
+    "status": "WIRED_NOT_AUTHORIZED",
+    "provider_calls": 0,
+    "max_provider_calls": 1,
+    "retries": 0,
+    "authorization_scope": "DIRECTOR_V3_AUTHORIZED_FACT_SEMANTIC_VERIFIER_CANARY",
+    "execution_base": "71cd9e2c7e9cd220a8b543213464b624d825a3f8",
+    "evidence_closure_head": "3d44b2a47d8a7086ca98beb0f3c71ed9188b2c43",
+    "input_fact_count": 7,
+    "provider_schema_parity": "PASS",
+    "preflight": "PASS",
+    "runtime_authorized": false,
+    "script_ir_calls": 0,
+    "downstream_calls": 0
   }
 }

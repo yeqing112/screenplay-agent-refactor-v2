@@ -1,0 +1,44 @@
+{
+  "schema_version": "director_v3_semantic_verifier_baseline_exceptions_v1",
+  "baseline_head": "71cd9e2c7e9cd220a8b543213464b624d825a3f8",
+  "full_backend_baseline": {
+    "passed": 1342,
+    "failed": 4
+  },
+  "exceptions": [
+    {
+      "test_nodeid": "tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons",
+      "failure_summary": "branch provenance is empty instead of codex/unify-formal-workspace",
+      "failure_category": "BRANCH_METADATA_ENVIRONMENT",
+      "present_on_baseline_head": true,
+      "affected_files_in_current_task": false,
+      "regression_attributable_to_task": false
+    },
+    {
+      "test_nodeid": "tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean",
+      "failure_summary": "retired recanary reason returned before dirty-worktree reason",
+      "failure_category": "RETIRED_RECANARY_HISTORY",
+      "present_on_baseline_head": true,
+      "affected_files_in_current_task": false,
+      "regression_attributable_to_task": false
+    },
+    {
+      "test_nodeid": "tests/test_director_quality_v3_fresh_integration_pilot.py::test_real_database_has_no_non_retired_fresh_candidates_after_six_scene_retirement",
+      "failure_summary": "local test database has zero approved rows instead of six",
+      "failure_category": "EMPTY_LOCAL_FRESH_POOL_DB",
+      "present_on_baseline_head": true,
+      "affected_files_in_current_task": false,
+      "regression_attributable_to_task": false
+    },
+    {
+      "test_nodeid": "tests/test_director_quality_v3_fresh_integration_pilot.py::test_provider_runner_uses_one_strategy_call_per_scene_and_zero_retries",
+      "failure_summary": "fixture selection yields zero rows",
+      "failure_category": "PROVIDER_RUNNER_FIXTURE_SELECTION",
+      "present_on_baseline_head": true,
+      "affected_files_in_current_task": false,
+      "regression_attributable_to_task": false
+    }
+  ],
+  "new_unresolved_regressions": 0,
+  "provider_calls": 0
+}
