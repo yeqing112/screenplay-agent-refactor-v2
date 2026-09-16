@@ -2,7 +2,7 @@
 
 ## Baseline Audit
 
-- Baseline reference HEAD: `92b6d77`; current as-built HEAD: `a31bdd1`. Ancestry is checked against the immutable closure base artifact (`3d7bf54`).
+- Baseline reference HEAD: `92b6d77`; current as-built HEAD: `d71e141`. Ancestry is checked against the immutable closure base artifact (`3d7bf54`).
 - Forensic evidence established structured Must Preserve traces, authoritative identity projections, canonical segment refs, and fail-closed orchestration, but the runtime path still needed explicit wiring verification.
 - Historical raw, Spine/Topology canary, Forensic and Foundation artifacts were not modified.
 
