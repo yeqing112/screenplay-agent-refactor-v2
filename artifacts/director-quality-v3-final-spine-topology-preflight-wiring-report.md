@@ -5,7 +5,7 @@
 ## Baseline Audit
 
 - Frozen cohort: `3` scenes; historical artifacts unchanged.
-- Baseline authority and forensic closure were read before the wiring checks.
+- Baseline authority and forensic closure were read before the wiring checks. The document expected `92b6d77`, but the actual starting HEAD was `fc7a883`; a new immutable closure base was therefore established at `a32e5d6`.
 
 ## Final As-Built Verification
 
