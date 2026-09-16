@@ -1,8 +1,8 @@
 {
   "schema_version": "director-quality-v3-final-spine-topology-preflight-wiring-v3",
   "status": "PASS",
-  "head": "dbcfa83",
-  "expected_base_commit": "1c5753d",
+  "head": "510cf82",
+  "expected_base_commit": "510cf82",
   "checks": {
     "head_ancestry_gate": true,
     "head_base_code_drift_gate": true,

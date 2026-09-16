@@ -1,6 +1,6 @@
 {
   "schema_version": "director_v3_final_spine_topology_recanary_base_v1",
-  "expected_base_commit": "1c5753d",
+  "expected_base_commit": "510cf82",
   "authorization_required": true,
   "authority_pointer_fingerprint": "47779b8a89deb72cae294134e58e732548d119c4968e8564742ec238495aaef4",
   "frozen_scenes": [
