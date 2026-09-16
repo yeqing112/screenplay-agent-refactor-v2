@@ -5,7 +5,7 @@
 ## Baseline / Scope
 
 - Provider-free inventory only; no Strategy, Spine, Skeleton, media, storage or CI call was made.
-- Expected starting HEAD: `a55c21a`; current HEAD: `3a8e165`; working tree clean: `false`. Pre-existing unrelated workspace changes were not staged or modified.
+- Expected starting HEAD: `a55c21a`; current HEAD: `f3bb930`; working tree clean: `false`. Pre-existing unrelated workspace changes were not staged or modified.
 - Persisted source scene candidates: `73`; real source: `73`; fully approved upstream records: `6`.
 - Retired: `6`; provider-exposed (observed): `3`; exposure unknown: `11`; upstream incomplete: `56`.
 - Fully approved fresh unseen: `0`.

@@ -1,0 +1,87 @@
+{
+  "schema_version": "director_v3_exposure_unknown_resolution_v1",
+  "initial_unknown_count": 11,
+  "final_unknown_count": 11,
+  "records": [
+    {
+      "scene_id": "book990402:e1:chapter-01-scene-01",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影 — 临潮镇老车站候车厅 — 凌晨一点后",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影 — 临潮镇老车站候车厅 — 凌晨一点，雨夜",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e2:chapter-02-scene-01",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆 — 清晨",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探 — 回声照相馆暗房门口 — 清晨 06:48",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e3:chapter-03-scene-01",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e3:chapter-03-scene-02",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂 — 回声照相馆暗房 — 清晨",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂 — 回声照相馆暗房门外 — 清晨",
+      "previous_status": "EXPOSURE_UNKNOWN",
+      "final_status": "EXPOSURE_UNKNOWN",
+      "evidence_paths": [],
+      "reason": "absence of a positive ledger entry is not proof of non-exposure; episode-level historical coverage is insufficient"
+    }
+  ],
+  "new_exposed_confirmed": 0,
+  "new_not_exposed_confirmed": 56,
+  "provider_calls": 0
+}

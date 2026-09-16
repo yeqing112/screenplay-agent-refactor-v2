@@ -141,5 +141,22 @@
     "reason": "INSUFFICIENT_REAL_FRESH_APPROVED_RECORDS",
     "architecture_status": "HEALTHY",
     "data_readiness_status": "BLOCKED"
+  },
+  "fresh_upstream_completion_audit": {
+    "status": "DIRECTOR_V3_FRESH_UPSTREAM_COMPLETION_AUDIT_CLOSED",
+    "population_count": 73,
+    "tier_a_count": 0,
+    "tier_b_count": 0,
+    "tier_c_count": 0,
+    "tier_d_count": 73,
+    "exposure_unknown_remaining": 11,
+    "orphaned_downstream_count": 1,
+    "ready_for_deterministic_upstream_recovery": false,
+    "deterministic_upstream_recovery_authorized": false,
+    "ready_for_assisted_upstream_completion": false,
+    "provider_upstream_completion_required": true,
+    "new_real_source_material_required": true,
+    "provider_calls": 0,
+    "audit_fingerprint": "0c92312b48dce5c7ca07ad7f191a8fa6f286dcd359f6b9f5cd61f04cc07246c2"
   }
 }

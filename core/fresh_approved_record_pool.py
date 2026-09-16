@@ -80,6 +80,14 @@ def _json(value: Any, default: Any) -> Any:
         return default
 
 
+def _row_value(row: sqlite3.Row | None, key: str, default: Any = "") -> Any:
+    """Read optional columns from both production and minimal audit schemas."""
+    if row is None:
+        return default
+    try:
+        return row[key] if key in row.keys() else default
+    except (IndexError, KeyError):
+        return default
 def _scene_names_from_script(content: str) -> list[dict[str, Any]]:
     """Extract only explicit scene structures; never invent a creative scene."""
     parsed = _json(content, None)
@@ -128,8 +136,8 @@ def _upstream(c: sqlite3.Connection, book_id: int, episode: int, scene_name: str
         participants = _json(blocking["participants"], [])
         identity_valid = bool(participants) and all(_t(_d(x).get("character_id") or _d(x).get("id")) and _t(_d(x).get("name")) for x in _l(participants))
     return {
-        "fact_snapshot": {"status": _t(fact["status"]) if fact else "missing", "id": int(fact["id"]) if fact else None, "payload_hash": _t(fact["payload_hash"]) if fact else ""},
-        "script_ir": {"status": _t(ir["status"]) if ir else "missing", "validation_status": _t(ir["validation_status"]) if ir else "missing", "id": int(ir["id"]) if ir else None, "payload_hash": _t(ir["payload_hash"]) if ir else "", "qualified": qualified},
+        "fact_snapshot": {"status": _t(_row_value(fact, "status")) if fact else "missing", "id": int(_row_value(fact, "id")) if fact else None, "source_fingerprint": _t(_row_value(fact, "source_fingerprint")), "payload_hash": _t(_row_value(fact, "payload_hash"))},
+        "script_ir": {"status": _t(_row_value(ir, "status")) if ir else "missing", "validation_status": _t(_row_value(ir, "validation_status")) if ir else "missing", "id": int(_row_value(ir, "id")) if ir else None, "source_fingerprint": _t(_row_value(ir, "source_fingerprint")), "payload_hash": _t(_row_value(ir, "payload_hash")), "qualified": qualified},
         "director_treatment": {"status": _t(treatment["status"]) if treatment else "missing", "id": int(treatment["id"]) if treatment else None, "source_script_hash": _t(treatment["source_script_hash"]) if treatment else ""},
         "scene_blocking": {"status": _t(blocking["status"]) if blocking else "missing", "id": int(blocking["id"]) if blocking else None, "source_script_hash": _t(blocking["source_script_hash"]) if blocking else "", "identity_valid": identity_valid, "participants": participants if blocking else [], "identity_fingerprint": fingerprint(participants) if blocking else ""},
         "fact_confirmed": fact_confirmed,

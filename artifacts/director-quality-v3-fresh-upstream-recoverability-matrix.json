@@ -1,0 +1,26 @@
+{
+  "schema_version": "director_v3_fresh_upstream_recoverability_matrix_v1",
+  "policy_version": "fresh_upstream_recoverability_v1",
+  "audit_fingerprint": "0c92312b48dce5c7ca07ad7f191a8fa6f286dcd359f6b9f5cd61f04cc07246c2",
+  "tier_counts": {
+    "TIER_A": 0,
+    "TIER_B": 0,
+    "TIER_C": 0,
+    "TIER_D": 73
+  },
+  "deterministic_recoverable_count": 6,
+  "provider_required_count": 67,
+  "human_approval_required_count": 66,
+  "orphaned_downstream_count": 1,
+  "provenance_mismatch_count": 18,
+  "exposure_unknown_initial": 11,
+  "exposure_unknown_remaining": 11,
+  "exposed_confirmed": 0,
+  "not_exposed_confirmed": 56,
+  "ready_for_deterministic_upstream_recovery": false,
+  "deterministic_upstream_recovery_authorized": false,
+  "ready_for_assisted_upstream_completion": false,
+  "provider_upstream_completion_required": true,
+  "new_real_source_material_required": true,
+  "provider_calls": 0
+}

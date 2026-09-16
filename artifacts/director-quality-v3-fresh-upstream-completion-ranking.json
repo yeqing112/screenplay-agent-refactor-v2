@@ -1,0 +1,1115 @@
+{
+  "schema_version": "director_v3_fresh_upstream_completion_ranking_v1",
+  "policy_version": "fresh_upstream_recoverability_v1",
+  "audit_fingerprint": "0c92312b48dce5c7ca07ad7f191a8fa6f286dcd359f6b9f5cd61f04cc07246c2",
+  "top_10": [
+    {
+      "scene_id": "book990400:e1:雨夜旧公寓门厅",
+      "book_id": 990400,
+      "episode": 1,
+      "scene_name": "雨夜旧公寓门厅",
+      "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "approved",
+      "blocking_status": "approved",
+      "lineage": {
+        "status": "MISMATCH",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990400:e1:雨夜旧公寓门厅",
+            "target_id": null,
+            "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": "2",
+            "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+            "target_expected_source_fingerprint": "1bf3c3ce570572f2619b38bae066a3cd2ee0dd68c3ce1f82660590361caef6e2",
+            "lineage_status": "MISMATCH"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": "2",
+            "target_id": "2",
+            "source_fingerprint": "1bf3c3ce570572f2619b38bae066a3cd2ee0dd68c3ce1f82660590361caef6e2",
+            "target_expected_source_fingerprint": "1bf3c3ce570572f2619b38bae066a3cd2ee0dd68c3ce1f82660590361caef6e2",
+            "lineage_status": "EXACT"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "DETERMINISTIC_REBUILDABLE",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Source lineage",
+          "classification": "PROVENANCE_REPAIR_REQUIRED",
+          "reason": "lineage status is MISMATCH"
+        },
+        {
+          "requirement": "Downstream approval lineage",
+          "classification": "ORPHANED_DOWNSTREAM_RECORD",
+          "reason": "approved downstream record lacks a provable upstream link"
+        }
+      ],
+      "recovery_classifications": [
+        "DETERMINISTIC_REBUILDABLE",
+        "ORPHANED_DOWNSTREAM_RECORD",
+        "PROVENANCE_REPAIR_REQUIRED",
+        "PROVIDER_GENERATION_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": false,
+      "provenance_risk": "MISMATCH",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "authorized provider generation, then human review/approval",
+        "deterministic compile/validate missing upstream record",
+        "repair and re-verify source lineage",
+        "quarantine orphaned approval and obtain authoritative upstream evidence"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "lineage status is MISMATCH",
+        "approved downstream record lacks a provable upstream link"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990401:e5:蓄水池边 — 老旧居民区蓄水池 — 黄昏",
+      "book_id": 990401,
+      "episode": 5,
+      "scene_name": "蓄水池边 — 老旧居民区蓄水池 — 黄昏",
+      "source_fingerprint": "66a15bf651a06fd6ef340a798385a73582e4a8d3704f340e7c37715eed235228",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990401:e5:蓄水池边 — 老旧居民区蓄水池 — 黄昏",
+            "target_id": null,
+            "source_fingerprint": "66a15bf651a06fd6ef340a798385a73582e4a8d3704f340e7c37715eed235228",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "66a15bf651a06fd6ef340a798385a73582e4a8d3704f340e7c37715eed235228",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "66a15bf651a06fd6ef340a798385a73582e4a8d3704f340e7c37715eed235228",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "66a15bf651a06fd6ef340a798385a73582e4a8d3704f340e7c37715eed235228",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990401:e6:chapter-06-scene-02",
+      "book_id": 990401,
+      "episode": 6,
+      "scene_name": "chapter-06-scene-02",
+      "source_fingerprint": "58bfa7ba4e513a1f639f920344ef14cf20a8b6d0e5ff1221fe54f3ef363e3ce5",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990401:e6:chapter-06-scene-02",
+            "target_id": null,
+            "source_fingerprint": "58bfa7ba4e513a1f639f920344ef14cf20a8b6d0e5ff1221fe54f3ef363e3ce5",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "58bfa7ba4e513a1f639f920344ef14cf20a8b6d0e5ff1221fe54f3ef363e3ce5",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "58bfa7ba4e513a1f639f920344ef14cf20a8b6d0e5ff1221fe54f3ef363e3ce5",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "58bfa7ba4e513a1f639f920344ef14cf20a8b6d0e5ff1221fe54f3ef363e3ce5",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-01",
+      "book_id": 990402,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-01",
+      "source_fingerprint": "517c58362ad7041e56674dfc8233bc6c3d3dd1d3dcdf1731837f1882ee65250c",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990402:e9:chapter-09-scene-01",
+            "target_id": null,
+            "source_fingerprint": "517c58362ad7041e56674dfc8233bc6c3d3dd1d3dcdf1731837f1882ee65250c",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "517c58362ad7041e56674dfc8233bc6c3d3dd1d3dcdf1731837f1882ee65250c",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "517c58362ad7041e56674dfc8233bc6c3d3dd1d3dcdf1731837f1882ee65250c",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "517c58362ad7041e56674dfc8233bc6c3d3dd1d3dcdf1731837f1882ee65250c",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990401:e4:chapter-04-scene-01",
+      "book_id": 990401,
+      "episode": 4,
+      "scene_name": "chapter-04-scene-01",
+      "source_fingerprint": "554b4cda683325fcf670689faf8abf69978d5e4b21da6359b89e74d5ec159cd2",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990401:e4:chapter-04-scene-01",
+            "target_id": null,
+            "source_fingerprint": "554b4cda683325fcf670689faf8abf69978d5e4b21da6359b89e74d5ec159cd2",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "554b4cda683325fcf670689faf8abf69978d5e4b21da6359b89e74d5ec159cd2",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "554b4cda683325fcf670689faf8abf69978d5e4b21da6359b89e74d5ec159cd2",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "554b4cda683325fcf670689faf8abf69978d5e4b21da6359b89e74d5ec159cd2",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990401:e1:chapter-01-scene-01",
+      "book_id": 990401,
+      "episode": 1,
+      "scene_name": "chapter-01-scene-01",
+      "source_fingerprint": "aa69f6cde6e8153e4fd8612cb6d82d775bfd864080e9b753d10db3815abd024e",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990401:e1:chapter-01-scene-01",
+            "target_id": null,
+            "source_fingerprint": "aa69f6cde6e8153e4fd8612cb6d82d775bfd864080e9b753d10db3815abd024e",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "aa69f6cde6e8153e4fd8612cb6d82d775bfd864080e9b753d10db3815abd024e",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "aa69f6cde6e8153e4fd8612cb6d82d775bfd864080e9b753d10db3815abd024e",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "aa69f6cde6e8153e4fd8612cb6d82d775bfd864080e9b753d10db3815abd024e",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-02",
+      "book_id": 990402,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-02",
+      "source_fingerprint": "535c9834645f2db0d8891e9f49d12e419250817902d574800dece84dd6579ac8",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990402:e9:chapter-09-scene-02",
+            "target_id": null,
+            "source_fingerprint": "535c9834645f2db0d8891e9f49d12e419250817902d574800dece84dd6579ac8",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "535c9834645f2db0d8891e9f49d12e419250817902d574800dece84dd6579ac8",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "535c9834645f2db0d8891e9f49d12e419250817902d574800dece84dd6579ac8",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "535c9834645f2db0d8891e9f49d12e419250817902d574800dece84dd6579ac8",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990402:e6:chapter-06-scene-02",
+      "book_id": 990402,
+      "episode": 6,
+      "scene_name": "chapter-06-scene-02",
+      "source_fingerprint": "462ffe30be8e65ce323f610b5aa6d30980394706f073adeccc8bb6afed9c05cf",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990402:e6:chapter-06-scene-02",
+            "target_id": null,
+            "source_fingerprint": "462ffe30be8e65ce323f610b5aa6d30980394706f073adeccc8bb6afed9c05cf",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "462ffe30be8e65ce323f610b5aa6d30980394706f073adeccc8bb6afed9c05cf",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "462ffe30be8e65ce323f610b5aa6d30980394706f073adeccc8bb6afed9c05cf",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "462ffe30be8e65ce323f610b5aa6d30980394706f073adeccc8bb6afed9c05cf",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990401:e4:废弃仓库 — 废弃仓库 — 夜晚",
+      "book_id": 990401,
+      "episode": 4,
+      "scene_name": "废弃仓库 — 废弃仓库 — 夜晚",
+      "source_fingerprint": "59f13e52eace2125dec532189755148acf380759e91d17da210d03f0fa3dbe63",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990401:e4:废弃仓库 — 废弃仓库 — 夜晚",
+            "target_id": null,
+            "source_fingerprint": "59f13e52eace2125dec532189755148acf380759e91d17da210d03f0fa3dbe63",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "59f13e52eace2125dec532189755148acf380759e91d17da210d03f0fa3dbe63",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "59f13e52eace2125dec532189755148acf380759e91d17da210d03f0fa3dbe63",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "59f13e52eace2125dec532189755148acf380759e91d17da210d03f0fa3dbe63",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    },
+    {
+      "scene_id": "book990401:e3:顾沉的暗房 — 顾沉的暗房 — 夜晚",
+      "book_id": 990401,
+      "episode": 3,
+      "scene_name": "顾沉的暗房 — 顾沉的暗房 — 夜晚",
+      "source_fingerprint": "1b1020439a5beea348b8d2a6c294111ba03d3a4ecde0955f190a65cf206f865a",
+      "source_real": true,
+      "exposure_status": "NOT_EXPOSED_CONFIRMED",
+      "retired": false,
+      "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "fact_snapshot_status": "missing",
+      "script_ir_status": "missing",
+      "treatment_status": "missing",
+      "blocking_status": "missing",
+      "lineage": {
+        "status": "MISSING",
+        "edges": [
+          {
+            "edge": "source→fact_snapshot",
+            "source_id": "book990401:e3:顾沉的暗房 — 顾沉的暗房 — 夜晚",
+            "target_id": null,
+            "source_fingerprint": "1b1020439a5beea348b8d2a6c294111ba03d3a4ecde0955f190a65cf206f865a",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "fact_snapshot→script_ir",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "1b1020439a5beea348b8d2a6c294111ba03d3a4ecde0955f190a65cf206f865a",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "script_ir→director_treatment",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "1b1020439a5beea348b8d2a6c294111ba03d3a4ecde0955f190a65cf206f865a",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          },
+          {
+            "edge": "director_treatment→scene_blocking",
+            "source_id": null,
+            "target_id": null,
+            "source_fingerprint": "1b1020439a5beea348b8d2a6c294111ba03d3a4ecde0955f190a65cf206f865a",
+            "target_expected_source_fingerprint": "",
+            "lineage_status": "MISSING"
+          }
+        ]
+      },
+      "missing_requirements": [
+        {
+          "requirement": "FactSnapshot",
+          "classification": "SOURCE_REIMPORT_REQUIRED",
+          "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+        },
+        {
+          "requirement": "Qualified ScriptIR",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "reason": "qualified ScriptIR is absent"
+        },
+        {
+          "requirement": "Approved DirectorTreatment",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved treatment evidence is absent"
+        },
+        {
+          "requirement": "Approved SceneBlocking",
+          "classification": "PROVIDER_GENERATION_REQUIRED",
+          "requires_human_approval": true,
+          "reason": "approved blocking evidence is absent"
+        }
+      ],
+      "recovery_classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "requires_new_provider_generation": true,
+      "requires_human_approval": true,
+      "provenance_risk": "MISSING",
+      "completion_tier": "TIER_D",
+      "deterministic_recovery_steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "blockers": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+        "qualified ScriptIR is absent",
+        "approved treatment evidence is absent",
+        "approved blocking evidence is absent"
+      ],
+      "exposure_evidence": [
+        {
+          "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+        },
+        {
+          "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+        }
+      ],
+      "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+    }
+  ],
+  "candidate_count": 67,
+  "provider_calls": 0
+}

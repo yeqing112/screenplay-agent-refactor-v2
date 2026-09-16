@@ -104,6 +104,21 @@ def _preserve_closed_authority(pointer: dict[str, Any]) -> dict[str, Any]:
         "ready_for_fresh_integration_pilot": True,
         "fresh_integration_pilot_authorized": False,
     })
+    pointer.setdefault("fresh_approved_record_pool", {
+        "status": "BLOCKED",
+        "eligible_scene_count": 0,
+        "target_minimum": 3,
+        "recommended_pool_size": 5,
+        "real_source_only": True,
+        "synthetic_allowed": False,
+        "provider_calls": 0,
+        "ready_for_fresh_integration_pilot_2": False,
+        "fresh_integration_pilot_2_authorized": False,
+        "cohort_frozen": False,
+        "reason": "INSUFFICIENT_REAL_FRESH_APPROVED_RECORDS",
+        "architecture_status": "HEALTHY",
+        "data_readiness_status": "BLOCKED",
+    })
     shot_architecture = pointer.setdefault("shot_architecture", {})
     redesign = shot_architecture.setdefault("generation_architecture_redesign", {})
     redesign.setdefault("status", "FOUNDATION_CLOSED")

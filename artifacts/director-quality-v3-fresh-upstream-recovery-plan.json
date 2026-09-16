@@ -1,0 +1,161 @@
+{
+  "schema_version": "director_v3_fresh_upstream_recovery_plan_v1",
+  "policy_version": "fresh_upstream_recoverability_v1",
+  "audit_fingerprint": "0c92312b48dce5c7ca07ad7f191a8fa6f286dcd359f6b9f5cd61f04cc07246c2",
+  "top_10": [
+    {
+      "scene_id": "book990400:e1:雨夜旧公寓门厅",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "authorized provider generation, then human review/approval",
+        "deterministic compile/validate missing upstream record",
+        "repair and re-verify source lineage",
+        "quarantine orphaned approval and obtain authoritative upstream evidence"
+      ],
+      "classifications": [
+        "DETERMINISTIC_REBUILDABLE",
+        "ORPHANED_DOWNSTREAM_RECORD",
+        "PROVENANCE_REPAIR_REQUIRED",
+        "PROVIDER_GENERATION_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990401:e5:蓄水池边 — 老旧居民区蓄水池 — 黄昏",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990401:e6:chapter-06-scene-02",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-01",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990401:e4:chapter-04-scene-01",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990401:e1:chapter-01-scene-01",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-02",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990402:e6:chapter-06-scene-02",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990401:e4:废弃仓库 — 废弃仓库 — 夜晚",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    },
+    {
+      "scene_id": "book990401:e3:顾沉的暗房 — 顾沉的暗房 — 夜晚",
+      "completion_tier": "TIER_D",
+      "steps": [
+        "re-import and establish source provenance",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval",
+        "authorized provider generation, then human review/approval"
+      ],
+      "classifications": [
+        "PROVIDER_GENERATION_REQUIRED",
+        "SOURCE_REIMPORT_REQUIRED"
+      ],
+      "authorized": false
+    }
+  ],
+  "execution_authorized": false,
+  "provider_calls": 0
+}

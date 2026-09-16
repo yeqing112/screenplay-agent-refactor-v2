@@ -1,0 +1,113 @@
+{
+  "schema_version": "director_v3_rainy_apartment_entry_forensic_v1",
+  "scene_id": "book990400:e1:雨夜旧公寓门厅",
+  "found": true,
+  "forensic": {
+    "scene_id": "book990400:e1:雨夜旧公寓门厅",
+    "book_id": 990400,
+    "episode": 1,
+    "scene_name": "雨夜旧公寓门厅",
+    "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+    "source_real": true,
+    "exposure_status": "NOT_EXPOSED_CONFIRMED",
+    "retired": false,
+    "source_status": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+    "fact_snapshot_status": "missing",
+    "script_ir_status": "missing",
+    "treatment_status": "approved",
+    "blocking_status": "approved",
+    "lineage": {
+      "status": "MISMATCH",
+      "edges": [
+        {
+          "edge": "source→fact_snapshot",
+          "source_id": "book990400:e1:雨夜旧公寓门厅",
+          "target_id": null,
+          "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+          "target_expected_source_fingerprint": "",
+          "lineage_status": "MISSING"
+        },
+        {
+          "edge": "fact_snapshot→script_ir",
+          "source_id": null,
+          "target_id": null,
+          "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+          "target_expected_source_fingerprint": "",
+          "lineage_status": "MISSING"
+        },
+        {
+          "edge": "script_ir→director_treatment",
+          "source_id": null,
+          "target_id": "2",
+          "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+          "target_expected_source_fingerprint": "1bf3c3ce570572f2619b38bae066a3cd2ee0dd68c3ce1f82660590361caef6e2",
+          "lineage_status": "MISMATCH"
+        },
+        {
+          "edge": "director_treatment→scene_blocking",
+          "source_id": "2",
+          "target_id": "2",
+          "source_fingerprint": "1bf3c3ce570572f2619b38bae066a3cd2ee0dd68c3ce1f82660590361caef6e2",
+          "target_expected_source_fingerprint": "1bf3c3ce570572f2619b38bae066a3cd2ee0dd68c3ce1f82660590361caef6e2",
+          "lineage_status": "EXACT"
+        }
+      ]
+    },
+    "missing_requirements": [
+      {
+        "requirement": "FactSnapshot",
+        "classification": "PROVIDER_GENERATION_REQUIRED",
+        "reason": "confirmed FactSnapshot is absent; no existing canonical fact record is linked"
+      },
+      {
+        "requirement": "Qualified ScriptIR",
+        "classification": "DETERMINISTIC_REBUILDABLE",
+        "reason": "qualified ScriptIR is absent"
+      },
+      {
+        "requirement": "Source lineage",
+        "classification": "PROVENANCE_REPAIR_REQUIRED",
+        "reason": "lineage status is MISMATCH"
+      },
+      {
+        "requirement": "Downstream approval lineage",
+        "classification": "ORPHANED_DOWNSTREAM_RECORD",
+        "reason": "approved downstream record lacks a provable upstream link"
+      }
+    ],
+    "recovery_classifications": [
+      "DETERMINISTIC_REBUILDABLE",
+      "ORPHANED_DOWNSTREAM_RECORD",
+      "PROVENANCE_REPAIR_REQUIRED",
+      "PROVIDER_GENERATION_REQUIRED"
+    ],
+    "requires_new_provider_generation": true,
+    "requires_human_approval": false,
+    "provenance_risk": "MISMATCH",
+    "completion_tier": "TIER_D",
+    "deterministic_recovery_steps": [
+      "authorized provider generation, then human review/approval",
+      "deterministic compile/validate missing upstream record",
+      "repair and re-verify source lineage",
+      "quarantine orphaned approval and obtain authoritative upstream evidence"
+    ],
+    "blockers": [
+      "FACT_SNAPSHOT_NOT_CONFIRMED",
+      "SCRIPT_IR_NOT_QUALIFIED",
+      "confirmed FactSnapshot is absent; no existing canonical fact record is linked",
+      "qualified ScriptIR is absent",
+      "lineage status is MISMATCH",
+      "approved downstream record lacks a provable upstream link"
+    ],
+    "exposure_evidence": [
+      {
+        "evidence_path": "artifacts/director-quality-v3-provider-exposure-registry.json"
+      },
+      {
+        "evidence_path": "artifacts/director-quality-v3-retired-provider-cohort.json"
+      }
+    ],
+    "exposure_reason": "provider accounting scope enumerates only the frozen historical cohort; this scene is outside that scope"
+  },
+  "provider_calls": 0
+}
