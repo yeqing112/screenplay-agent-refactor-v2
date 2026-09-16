@@ -1,0 +1,19 @@
+{
+  "schema_version": "director_v3_fresh_approved_record_pool_readiness_v1",
+  "status": "DIRECTOR_V3_FRESH_APPROVED_RECORD_POOL_EXPANSION_BLOCKED",
+  "eligible_scene_count": 0,
+  "required_minimum": 3,
+  "recommended_pool_size": 5,
+  "ready_for_fresh_integration_pilot_2": false,
+  "fresh_integration_pilot_2_authorized": false,
+  "cohort_frozen": false,
+  "reason": "INSUFFICIENT_REAL_FRESH_APPROVED_RECORDS",
+  "architecture_status": "HEALTHY",
+  "data_readiness_status": "BLOCKED",
+  "provider_calls": 0,
+  "approval_fabricated": false,
+  "synthetic_scenes_created": 0,
+  "expected_starting_head": "a55c21a",
+  "current_head": "3a8e165",
+  "working_tree_clean": false
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": "director_v3_provider_exposed_source_fingerprints_v1",
+  "retired_scene_fingerprints": {
+    "book990402:e1:红伞幻影（一）": {
+      "source_fingerprint": "f00b5eb795db5add86a4f39817b5106856ca81832069a31fb1b99ba96fbb0f30",
+      "normalized_source_text_hash": "e284df3823bbb0f5c836839fe7d2df34b2fd1a7c76a48680af39f7a81b38480f",
+      "beat_sequence_fingerprint": "e171639f6c30b4a18d8c949c530215efe812cb1a2a0064a7ba25dee374543774"
+    },
+    "book990402:e1:红伞幻影（二）": {
+      "source_fingerprint": "fd23a015a4253706b9be742ba55705d4e9fc90b8e12fe730ad36a0f4e2c3aa50",
+      "normalized_source_text_hash": "398b64003661e370da5655a02d1875c8095b2fef626e4df4a5ada072fab05904",
+      "beat_sequence_fingerprint": "24aa08c8da23abc5636737ef57c8c031a72626078c788b5dae2bc9217c95e634"
+    },
+    "book990402:e2:回声照相馆": {
+      "source_fingerprint": "d33101bb915b763ecf75f6d2c7b1c18791aaa6dae05fc316ab9581dd35c8b4e7",
+      "normalized_source_text_hash": "3ca07af9980a5e969bf278eb14d78884cccaa3319ebc1b0bfd43653546984906",
+      "beat_sequence_fingerprint": "03291532d23e41c7920a04d7be2283bbc9c808a9f79c35fc26d6d18890bdd6a6"
+    },
+    "book990402:e2:暗房门口的试探": {
+      "source_fingerprint": "8325e0fa3b48930a7813f12c27b0cd801d0b19a2bc37941f42bac5d57ea10dad",
+      "normalized_source_text_hash": "3472c55753a427025abb589ac67ddf4132e867c15b62516686ef19ad059ecaf4",
+      "beat_sequence_fingerprint": "88e1ace8379e69d7e0f932a4f6c557dfff2a2a535f1c4861a4d0ea0d9c4e0e8b"
+    },
+    "book990402:e3:暗房惊魂": {
+      "source_fingerprint": "a0cf70aa323947aa771444513b55a5cd5fd0c32e50ecb04d5b27547b29e1a4fd",
+      "normalized_source_text_hash": "93e0e0b2e3fef0a980991d593c2de06e0a5ce80dba078daf48c4bdeaae03c209",
+      "beat_sequence_fingerprint": "df01498c75e11bbb0852b8866f1360e9fb5f0a791a0a74f7c13a78f35e09680c"
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "source_fingerprint": "5c57e2373c88b790a4cfda7cbf3aa822979b71633aa247b3c1a9bdd88f2dfb10",
+      "normalized_source_text_hash": "2cedb92e8d19b9322f331527e69d344d5e38ae72f784f25775dbcfba40a7fc8d",
+      "beat_sequence_fingerprint": "963087e63591384b2ba193bac3493700d3befde4817c8bda144e3127d61a167d"
+    }
+  },
+  "exposed_scene_fingerprints": {
+    "book990402:e2:回声照相馆": {
+      "source_fingerprint": "d33101bb915b763ecf75f6d2c7b1c18791aaa6dae05fc316ab9581dd35c8b4e7",
+      "normalized_source_text_hash": "3ca07af9980a5e969bf278eb14d78884cccaa3319ebc1b0bfd43653546984906",
+      "beat_sequence_fingerprint": "03291532d23e41c7920a04d7be2283bbc9c808a9f79c35fc26d6d18890bdd6a6"
+    },
+    "book990402:e3:暗房惊魂": {
+      "source_fingerprint": "a0cf70aa323947aa771444513b55a5cd5fd0c32e50ecb04d5b27547b29e1a4fd",
+      "normalized_source_text_hash": "93e0e0b2e3fef0a980991d593c2de06e0a5ce80dba078daf48c4bdeaae03c209",
+      "beat_sequence_fingerprint": "df01498c75e11bbb0852b8866f1360e9fb5f0a791a0a74f7c13a78f35e09680c"
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "source_fingerprint": "5c57e2373c88b790a4cfda7cbf3aa822979b71633aa247b3c1a9bdd88f2dfb10",
+      "normalized_source_text_hash": "2cedb92e8d19b9322f331527e69d344d5e38ae72f784f25775dbcfba40a7fc8d",
+      "beat_sequence_fingerprint": "963087e63591384b2ba193bac3493700d3befde4817c8bda144e3127d61a167d"
+    }
+  },
+  "denied_fingerprints": [
+    "03291532d23e41c7920a04d7be2283bbc9c808a9f79c35fc26d6d18890bdd6a6",
+    "24aa08c8da23abc5636737ef57c8c031a72626078c788b5dae2bc9217c95e634",
+    "2cedb92e8d19b9322f331527e69d344d5e38ae72f784f25775dbcfba40a7fc8d",
+    "3472c55753a427025abb589ac67ddf4132e867c15b62516686ef19ad059ecaf4",
+    "398b64003661e370da5655a02d1875c8095b2fef626e4df4a5ada072fab05904",
+    "3ca07af9980a5e969bf278eb14d78884cccaa3319ebc1b0bfd43653546984906",
+    "5c57e2373c88b790a4cfda7cbf3aa822979b71633aa247b3c1a9bdd88f2dfb10",
+    "8325e0fa3b48930a7813f12c27b0cd801d0b19a2bc37941f42bac5d57ea10dad",
+    "88e1ace8379e69d7e0f932a4f6c557dfff2a2a535f1c4861a4d0ea0d9c4e0e8b",
+    "93e0e0b2e3fef0a980991d593c2de06e0a5ce80dba078daf48c4bdeaae03c209",
+    "963087e63591384b2ba193bac3493700d3befde4817c8bda144e3127d61a167d",
+    "a0cf70aa323947aa771444513b55a5cd5fd0c32e50ecb04d5b27547b29e1a4fd",
+    "d33101bb915b763ecf75f6d2c7b1c18791aaa6dae05fc316ab9581dd35c8b4e7",
+    "df01498c75e11bbb0852b8866f1360e9fb5f0a791a0a74f7c13a78f35e09680c",
+    "e171639f6c30b4a18d8c949c530215efe812cb1a2a0064a7ba25dee374543774",
+    "e284df3823bbb0f5c836839fe7d2df34b2fd1a7c76a48680af39f7a81b38480f",
+    "f00b5eb795db5add86a4f39817b5106856ca81832069a31fb1b99ba96fbb0f30",
+    "fd23a015a4253706b9be742ba55705d4e9fc90b8e12fe730ad36a0f4e2c3aa50"
+  ],
+  "provider_calls": 0
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "director_v3_fresh_approved_record_pool_v1",
+  "eligible_scene_count": 0,
+  "scenes": [],
+  "retired_scene_count": 6,
+  "exposure_unknown_count": 11,
+  "real_source_only": true,
+  "synthetic_allowed": false,
+  "provider_calls": 0,
+  "synthetic_scenes_created": 0,
+  "approval_fabricated": false,
+  "cohort_frozen": false
+}

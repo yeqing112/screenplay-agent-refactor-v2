@@ -1,0 +1,4733 @@
+{
+  "schema_version": "director_v3_fresh_source_material_inventory_v1",
+  "database": "work/db/screenplay.db",
+  "total_source_scenes": 73,
+  "real_source": 73,
+  "real_unseen": 56,
+  "fully_approved": 6,
+  "upstream_incomplete": 56,
+  "exposed": 3,
+  "classification_counts": {
+    "SOURCE_REAL_READY": 0,
+    "SOURCE_REAL_UPSTREAM_INCOMPLETE": 56,
+    "PROVIDER_EXPOSED": 0,
+    "RETIRED": 6,
+    "EXPOSURE_UNKNOWN": 11,
+    "SYNTHETIC_OR_FIXTURE": 0
+  },
+  "exposed_scene_ids": [
+    "book990402:e2:回声照相馆",
+    "book990402:e3:暗房惊魂",
+    "book990402:e3:暗房惊魂（2）"
+  ],
+  "retired": 6,
+  "unknown": 11,
+  "synthetic_fixture": 0,
+  "evidence_paths": [
+    "database.chapters",
+    "database.script_ir_versions",
+    "database.scripts"
+  ],
+  "provider_calls": 0,
+  "synthetic_scenes_created": 0,
+  "approval_fabricated": false,
+  "expected_starting_head": "a55c21a",
+  "current_head": "3a8e165",
+  "working_tree_clean": false,
+  "scenes": [
+    {
+      "scene_id": "book990400:e1:雨夜旧公寓门厅",
+      "book_id": 990400,
+      "episode": 1,
+      "scene_name": "雨夜旧公寓门厅",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 5,
+          "status": "done",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "3b54a9071a9931d7ae1d076256ce7ad35ab324f8a8227a7eeb029b65b3340cbd",
+        "normalized_source_text_hash": "6935785c9d3a4a5014ce27e0f5cfefa9f2fd5344ac685251b0153fb88c81d3e2",
+        "beat_sequence_fingerprint": "469695564b4051e953c2ff3f0a8c5bdb73dbd025782b64835c8fba108af22c52"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "approved",
+          "id": 2,
+          "source_script_hash": "1bf3c3ce570572f2619b38bae066a3cd2ee0dd68c3ce1f82660590361caef6e2"
+        },
+        "scene_blocking": {
+          "status": "approved",
+          "id": 2,
+          "source_script_hash": "1bf3c3ce570572f2619b38bae066a3cd2ee0dd68c3ce1f82660590361caef6e2",
+          "identity_valid": true,
+          "participants": [
+            {
+              "character_id": "3",
+              "name": "林晚",
+              "position": "screen_right",
+              "facing": "screen_left",
+              "anchor": "铁门右侧",
+              "source": "script_declared"
+            }
+          ],
+          "identity_fingerprint": "4a0dc6cc1f5505ca012a3c8407c835a9dce63662026c588024cc0f15e5ca6057"
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": true,
+        "beat_authority_valid": true
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED"
+      ]
+    },
+    {
+      "scene_id": "book990401:e1:chapter-01-scene-01",
+      "book_id": 990401,
+      "episode": 1,
+      "scene_name": "chapter-01-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 4,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "aa69f6cde6e8153e4fd8612cb6d82d775bfd864080e9b753d10db3815abd024e",
+        "normalized_source_text_hash": "f179fc492e0b2204934a8e7d1efe448e7182e6c0f48cf1c494439f8c364bad75",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e1:林晚家中 — 林晚的公寓客厅 — 上午约10:30",
+      "book_id": 990401,
+      "episode": 1,
+      "scene_name": "林晚家中 — 林晚的公寓客厅 — 上午约10:30",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 6,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "61b752578ffc21464c2b80ea0919741fe632c6bf448a9370058da9606bd45352",
+        "normalized_source_text_hash": "1d04a3ea0fb7f22befadd5ef2e77a8790833fe4c7c83a10b5ce3259794175e38",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e1:红伞倒影 — 车站售票窗前 — 日",
+      "book_id": 990401,
+      "episode": 1,
+      "scene_name": "红伞倒影 — 车站售票窗前 — 日",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 6,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "15f1c54e62bdc0af748e27c7534ca8bd81b323d788c329f3f43471b994930961",
+        "normalized_source_text_hash": "0d18db1099528050447c4383526f40b90c155bbd9ce07b3e7cb4ac4da9faa4a1",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e2:chapter-02-scene-01",
+      "book_id": 990401,
+      "episode": 2,
+      "scene_name": "chapter-02-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 5,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "0f904f0a2e395abf6bd33e947fab55f2155b7ae88df9419e1e7a7902e946f353",
+        "normalized_source_text_hash": "64966600248519947fe1bd8bd39324659c73e2cb683e3d03fb2c72b4ecd54692",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e2:chapter-02-scene-02",
+      "book_id": 990401,
+      "episode": 2,
+      "scene_name": "chapter-02-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 5,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "7ec5f5b9e14ae689efb96c857d3486cfc20aff2c8b05a719f021bfddde985527",
+        "normalized_source_text_hash": "a779b432ef8febe674a64549532b04151eea78cbe8dd070cba666650488d529d",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e2:门缝之眼 — 林晚家门口 — 夜晚",
+      "book_id": 990401,
+      "episode": 2,
+      "scene_name": "门缝之眼 — 林晚家门口 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 7,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "893f4dc79159e609d4f4d35a16ee8ef4b71c1a5c6c83cb03c79e0415ef7bdb53",
+        "normalized_source_text_hash": "872bc09c3a5fb7579baf8b4f8cc61755d60cb2d57e3afeee211bb5b323189413",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e2:顾沉的暗房 — 顾沉家门口/林晚家门口 — 夜晚",
+      "book_id": 990401,
+      "episode": 2,
+      "scene_name": "顾沉的暗房 — 顾沉家门口/林晚家门口 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 7,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "909f2ee0c29eeb2fa81b94d5a4c6cfb85f5acea95e4f2eccc671b4be9ce22eb4",
+        "normalized_source_text_hash": "52b23edda35da076887423a47fdd67c13061ef33d909b6c15bdb140b6bdc7419",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e3:chapter-03-scene-01",
+      "book_id": 990401,
+      "episode": 3,
+      "scene_name": "chapter-03-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 6,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "3d69b11663614a43b838169f7b9abf12c6523ff230124a02978fd898a11a3136",
+        "normalized_source_text_hash": "d8225791ce44baff4acfe0aae65a767ac038f054d1f59d3cff8c2449bd7e0c0c",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e3:chapter-03-scene-02",
+      "book_id": 990401,
+      "episode": 3,
+      "scene_name": "chapter-03-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 6,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "2e89b4e71560db71587a88f1a1eb680fe9beb499f93759070a5d2792de5bad90",
+        "normalized_source_text_hash": "a834a4291e2467835d9006f091b0506289c043fc74aefd34a09587d561ad3ae3",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e3:门外街道 — 暗房外巷口 — 夜晚",
+      "book_id": 990401,
+      "episode": 3,
+      "scene_name": "门外街道 — 暗房外巷口 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 8,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "47260887b4b7697a2fa86dbef8b887d4dbb9882809c0a43117f1becdc17b1d8a",
+        "normalized_source_text_hash": "c7890cfa2a0963f2991fc2738838226772d88f52dace0859368c9690e5a79e28",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e3:顾沉的暗房 — 顾沉的暗房 — 夜晚",
+      "book_id": 990401,
+      "episode": 3,
+      "scene_name": "顾沉的暗房 — 顾沉的暗房 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 8,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "1b1020439a5beea348b8d2a6c294111ba03d3a4ecde0955f190a65cf206f865a",
+        "normalized_source_text_hash": "b7a3b3f7ba06daa6e6f1df72bd99746f5991925131d020bc624e5c44a0a6b37a",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e4:chapter-04-scene-01",
+      "book_id": 990401,
+      "episode": 4,
+      "scene_name": "chapter-04-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 7,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "554b4cda683325fcf670689faf8abf69978d5e4b21da6359b89e74d5ec159cd2",
+        "normalized_source_text_hash": "a7a7cc74579abc2969eedcd4f7f606651b73dd820e43dab23d872f6ca11b9a67",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e4:废弃仓库 — 废弃仓库 — 夜晚",
+      "book_id": 990401,
+      "episode": 4,
+      "scene_name": "废弃仓库 — 废弃仓库 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 9,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "59f13e52eace2125dec532189755148acf380759e91d17da210d03f0fa3dbe63",
+        "normalized_source_text_hash": "eaf330262362113be5a8fffc125e2026f46d568a71612ce1996d8b6fe395f767",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e5:chapter-05-scene-01",
+      "book_id": 990401,
+      "episode": 5,
+      "scene_name": "chapter-05-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 8,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "e79420d95215447ded482e45b3855ec502ab259532ce03cb544b5cc02c991dc8",
+        "normalized_source_text_hash": "0f7819c1957f6f2e130bd72c03cdf91cee8ec597c72094a9233ad7a72d3db631",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e5:chapter-05-scene-02",
+      "book_id": 990401,
+      "episode": 5,
+      "scene_name": "chapter-05-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 8,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "bb4dadd0d3f6be6a8dea82ade1b42c556334d170581cb414758d960b9c910a76",
+        "normalized_source_text_hash": "eed295c5fe1c73cb7802d41a3ed3b5404e8da0c57c570a20c3a568df34e83967",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e5:chapter-05-scene-03",
+      "book_id": 990401,
+      "episode": 5,
+      "scene_name": "chapter-05-scene-03",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 8,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "594df027e7bc65887facc04d92839432d4eeefe692e346c4efb1f196c475f506",
+        "normalized_source_text_hash": "de2b67509c6d963fc759f65de02daa786dbe28639fb814798054ffc02f1e9e03",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e5:蓄水池边 — 老旧居民区蓄水池 — 黄昏",
+      "book_id": 990401,
+      "episode": 5,
+      "scene_name": "蓄水池边 — 老旧居民区蓄水池 — 黄昏",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 10,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "66a15bf651a06fd6ef340a798385a73582e4a8d3704f340e7c37715eed235228",
+        "normalized_source_text_hash": "edc248c14a9218ba142ea1ecae123f0ccabd9deb4bf0dcc2d527dd0d657b338f",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e5:陆叔住处 — 陆叔家客厅 — 黄昏",
+      "book_id": 990401,
+      "episode": 5,
+      "scene_name": "陆叔住处 — 陆叔家客厅 — 黄昏",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 10,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "525098da785cde971207ae0964592fafe7fd04f068457141f3f1a30d7bac33ae",
+        "normalized_source_text_hash": "f5f6164744a1e51e768bad26657a26579aed6d33d1f068171b2ecfbf406739fb",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e6:chapter-06-scene-01",
+      "book_id": 990401,
+      "episode": 6,
+      "scene_name": "chapter-06-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 9,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "1b573e76be5b80c53cf9533aee7aa34e1a3412954464120f23dc59fbf61bae0f",
+        "normalized_source_text_hash": "b43abbacd8a28a3308ffa11ffa54eb88278af37acc037eb05d26921003e4293d",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e6:chapter-06-scene-02",
+      "book_id": 990401,
+      "episode": 6,
+      "scene_name": "chapter-06-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 9,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "58bfa7ba4e513a1f639f920344ef14cf20a8b6d0e5ff1221fe54f3ef363e3ce5",
+        "normalized_source_text_hash": "bfd44aa31a176eac85db514ec896121f3e8abb6e59518fbd86730eba7d691ff4",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e6:临潮镇街道 — 临潮镇街道 — 深夜",
+      "book_id": 990401,
+      "episode": 6,
+      "scene_name": "临潮镇街道 — 临潮镇街道 — 深夜",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 11,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "2b03511e581a8c3865bb2f8c6f5cea1c9a71cc61ee73d1f74ec8c73d90fc901c",
+        "normalized_source_text_hash": "b06f6d3697488cbaf0ef239ca7444aac3ac6cbecb17def309c11a213075aca77",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e6:回声照相馆暗房 — 回声照相馆暗房 — 夜",
+      "book_id": 990401,
+      "episode": 6,
+      "scene_name": "回声照相馆暗房 — 回声照相馆暗房 — 夜",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 11,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "94064308230209bc7cfce61a06a33108f3cc60a1118f45a745d9950a1cdf3719",
+        "normalized_source_text_hash": "a1b0ba891e7b22eea830c4842e40c46537fea0eb1365ad21be41cd5c7107b075",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e7:chapter-07-scene-01",
+      "book_id": 990401,
+      "episode": 7,
+      "scene_name": "chapter-07-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 10,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "077e4533b390ac5b9ae17ff5273a745c9c4961b30e9e6bdffdc98ac89120175b",
+        "normalized_source_text_hash": "1f0fb1bb46bba48617d86a1f96e0de3903f6b73eca6d555e711c9c9bdb479282",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e7:chapter-07-scene-02",
+      "book_id": 990401,
+      "episode": 7,
+      "scene_name": "chapter-07-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 10,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "6f41b51e73cd685a3a1503261a414cea60fba6a5ae369ac63f922e3c2a1308e5",
+        "normalized_source_text_hash": "3bb004bc2c5120e42772747193dacd77d0c2fcb2bf6458dd16cd393b2fc6cb60",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e7:chapter-07-scene-03",
+      "book_id": 990401,
+      "episode": 7,
+      "scene_name": "chapter-07-scene-03",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 10,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "a78c67155bc54438433874dd70d0a989a48c7243f2542e6b8c126f3b19dbdecf",
+        "normalized_source_text_hash": "42259aa012b51503318ec526686b667aaa102b989d67cd745a55e483f345818e",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e7:地下蓄水池 — 地下蓄水池 — 夜",
+      "book_id": 990401,
+      "episode": 7,
+      "scene_name": "地下蓄水池 — 地下蓄水池 — 夜",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 12,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "daec4550f2d5004b8644fe616699af6aeaa8c9e1f2f4bf2fbfc14c6b2e9db47b",
+        "normalized_source_text_hash": "202226e13ea5c8f08659bc583ff5dbd1a2f2b03e66561d29fea6a2b10a8e1641",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e7:暗道入口 — 地下蓄水池西北角 — 深夜",
+      "book_id": 990401,
+      "episode": 7,
+      "scene_name": "暗道入口 — 地下蓄水池西北角 — 深夜",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 12,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "1cea3fadb840e73ac91ced86d5d21c2b80fa62cb681d296e186938fca591218e",
+        "normalized_source_text_hash": "c3e44d45204e6edc2a28c37f76b14a5d094f4b88f0b04ba9b276f3696ab4ad8a",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e8:chapter-08-scene-01",
+      "book_id": 990401,
+      "episode": 8,
+      "scene_name": "chapter-08-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 11,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "692b58efce26f23323b028c8a2a5c0da43a2f461e1a121541af84f1a4848b9a5",
+        "normalized_source_text_hash": "2bcf12518e3a5c7fbf709fda60f709767d40120cc42b5b70f3ded46f15720371",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e8:信号箱旁 — 废弃旧码头 — 深夜",
+      "book_id": 990401,
+      "episode": 8,
+      "scene_name": "信号箱旁 — 废弃旧码头 — 深夜",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 13,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "95575084f406cb4168c04bee1c2ac817978fc91bd41bf840c63fd7b7098bbe5d",
+        "normalized_source_text_hash": "976c27c54c4b5d810fa90e144d5ae9ebcb1ce2f2d79166bd571e1660dad40b2d",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e8:废弃旧码头 — 废弃旧码头 — 深夜",
+      "book_id": 990401,
+      "episode": 8,
+      "scene_name": "废弃旧码头 — 废弃旧码头 — 深夜",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 13,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "15c90bed6455943268429a5b5875c6ed387e2bccd005e1d5ea11fbb1d60e02a0",
+        "normalized_source_text_hash": "7a8aeeaf4d99fec80c5c65650f9b1a201b77ea7010e5cecb770683fbb3810ee0",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e9:chapter-09-scene-01",
+      "book_id": 990401,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 12,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "0135c1d97d4a445a44b7aa400c715f8b1be7f1abae9f5b6adcbd039ece8533ff",
+        "normalized_source_text_hash": "7e45a980f9f6d67ace954a44902f9433a7fdcf8972e939e47d7cc3b565bcdad0",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e9:chapter-09-scene-02",
+      "book_id": 990401,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 12,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "b300e43a5242b7b41a293e848d90fe8aab495989279f312ae53054dfae140862",
+        "normalized_source_text_hash": "72af8bd6affa7f15c5c7d47b33ae1287871d8d43eb428f7f7f3e1df9d24a129a",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e9:回声照相馆 — 旧码头废弃仓库区 — 00:15",
+      "book_id": 990401,
+      "episode": 9,
+      "scene_name": "回声照相馆 — 旧码头废弃仓库区 — 00:15",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 14,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "c2052a0c021b9f25839a8044fad002ed12ba2ebfbeb20d3cb13065eb0d90d078",
+        "normalized_source_text_hash": "8ec07e6295fcf60ff1b68e05360e3081827b1738d4a068009b37c26da64cf41e",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e9:旧码头 — 旧码头 — 夜晚",
+      "book_id": 990401,
+      "episode": 9,
+      "scene_name": "旧码头 — 旧码头 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 14,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "a8dbaa940277f059362e82f786cfca73d361afcf35d1c7b84265fdd2433ead6b",
+        "normalized_source_text_hash": "e4b5078b031b6cd0a10c4004a7c3649162f67d5eff51dbf0169fa3d44dfeb871",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e9:灯塔信号箱 — 灯塔顶层信号控制室 — 夜晚",
+      "book_id": 990401,
+      "episode": 9,
+      "scene_name": "灯塔信号箱 — 灯塔顶层信号控制室 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 14,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "02c9dc7cacbd9caf4f055c3cf18139f79101336872a51d3bfaf6137a663d4c7a",
+        "normalized_source_text_hash": "69662dd68bd7c22d48cb69a5288f1b6e7e3a0ce18c8e526645ab1e1a9bf7fb5a",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e10:chapter-10-scene-01",
+      "book_id": 990401,
+      "episode": 10,
+      "scene_name": "chapter-10-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 13,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "13edc1a43a98931d58c8e04098c4f800b83aa2466f8f5465bcbf23ba1f5e01a2",
+        "normalized_source_text_hash": "589bdd284dc07824df5af1d6bb8ea4cae87adfcd865bce7e4550ecdd86b089e0",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e10:回声照相馆内 — 回声照相馆内 — 夜晚",
+      "book_id": 990401,
+      "episode": 10,
+      "scene_name": "回声照相馆内 — 回声照相馆内 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 15,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "f70920d687fc655cc577080217ed9062e734064f064138c7416fe17c32d6246c",
+        "normalized_source_text_hash": "c28b82be490c99816c2700991ff396aeaec0dfc9a17e93bb755a8449619f9a33",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990401:e10:照相馆外街道 — 照相馆后巷 — 夜晚",
+      "book_id": 990401,
+      "episode": 10,
+      "scene_name": "照相馆外街道 — 照相馆后巷 — 夜晚",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 15,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "6a4b82c5fe88a9295e703617e240f2bee2fa9ba4a1521b2562966fc8024c0f2f",
+        "normalized_source_text_hash": "20c1276f6f0fcb44f9fe0cbca80ef85941dcb28ffc75f71988db9ece3584e884",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e1:chapter-01-scene-01",
+      "book_id": 990402,
+      "episode": 1,
+      "scene_name": "chapter-01-scene-01",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 14,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "923635a7b58fc139f68cf142b01fa4b502205b2c813a8da165558c86a8827643",
+        "normalized_source_text_hash": "480097e0921cb2189ac71627446ce17742f13e05c92281827c91441fef5425f0",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 1,
+          "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 2,
+          "payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影",
+      "book_id": 990402,
+      "episode": 1,
+      "scene_name": "红伞幻影",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script_ir",
+          "id": 1,
+          "status": "superseded",
+          "provenance": "database.script_ir_versions"
+        },
+        {
+          "kind": "script_ir",
+          "id": 1,
+          "status": "superseded",
+          "provenance": "database.script_ir_versions"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "7b4f7c2221f54c778bebfa129464e00f2e552a315e1fed051020c1b26b679a35",
+        "normalized_source_text_hash": "a965cea349e1339ebf8c1c528d1b478676a69a5c134a1a505d28d786a4cdd832",
+        "beat_sequence_fingerprint": "cccd58e16faff92ee3970a145e4cd31d5a40e79a9171cd8ca2007e5ebb4aae33"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 1,
+          "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 2,
+          "payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": true
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影 — 临潮镇老车站候车厅 — 凌晨一点后",
+      "book_id": 990402,
+      "episode": 1,
+      "scene_name": "红伞幻影 — 临潮镇老车站候车厅 — 凌晨一点后",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 16,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "bc01f70a1ef194ca7113947059871dfb8b0283307c319f3ab49aad0cb8d8994c",
+        "normalized_source_text_hash": "4d402449ccf9f4eaa26b3a5b2af3e051dcd43eee6bbde7deaf5712e1e25117c7",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 1,
+          "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 2,
+          "payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影 — 临潮镇老车站候车厅 — 凌晨一点，雨夜",
+      "book_id": 990402,
+      "episode": 1,
+      "scene_name": "红伞幻影 — 临潮镇老车站候车厅 — 凌晨一点，雨夜",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 16,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "0af574f9832e1304040eb1e65cc37af309774623e4a378cda43a67d6972845df",
+        "normalized_source_text_hash": "46e090bef90da6f0b182815de596c9ba3482f1525c856bbadc8b4ca9d390291e",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 1,
+          "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 2,
+          "payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影（一）",
+      "book_id": 990402,
+      "episode": 1,
+      "scene_name": "红伞幻影（一）",
+      "classification": "RETIRED",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script_ir",
+          "id": 2,
+          "status": "qualified",
+          "provenance": "database.script_ir_versions"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "f00b5eb795db5add86a4f39817b5106856ca81832069a31fb1b99ba96fbb0f30",
+        "normalized_source_text_hash": "e284df3823bbb0f5c836839fe7d2df34b2fd1a7c76a48680af39f7a81b38480f",
+        "beat_sequence_fingerprint": "e171639f6c30b4a18d8c949c530215efe812cb1a2a0064a7ba25dee374543774"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 1,
+          "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 2,
+          "payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "approved",
+          "id": 4,
+          "source_script_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b"
+        },
+        "scene_blocking": {
+          "status": "approved",
+          "id": 4,
+          "source_script_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b",
+          "identity_valid": true,
+          "participants": [
+            {
+              "character_id": "11",
+              "name": "岚",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "12",
+              "name": "撑红伞的女人",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "13",
+              "name": "林晚",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "14",
+              "name": "母亲",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "15",
+              "name": "陆叔",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "16",
+              "name": "顾沉",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            }
+          ],
+          "identity_fingerprint": "1578167e0dbbb2867640156cb5a68ff19dcce634fef4bc5ab4d32d601aa6bc11"
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": true,
+        "beat_authority_valid": true
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": true,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "SCENE_RETIRED",
+        "SOURCE_CONTENT_ALREADY_EXPOSED"
+      ]
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "book_id": 990402,
+      "episode": 1,
+      "scene_name": "红伞幻影（二）",
+      "classification": "RETIRED",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script_ir",
+          "id": 2,
+          "status": "qualified",
+          "provenance": "database.script_ir_versions"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "fd23a015a4253706b9be742ba55705d4e9fc90b8e12fe730ad36a0f4e2c3aa50",
+        "normalized_source_text_hash": "398b64003661e370da5655a02d1875c8095b2fef626e4df4a5ada072fab05904",
+        "beat_sequence_fingerprint": "24aa08c8da23abc5636737ef57c8c031a72626078c788b5dae2bc9217c95e634"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 1,
+          "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 2,
+          "payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "approved",
+          "id": 6,
+          "source_script_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b"
+        },
+        "scene_blocking": {
+          "status": "approved",
+          "id": 6,
+          "source_script_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b",
+          "identity_valid": true,
+          "participants": [
+            {
+              "character_id": "11",
+              "name": "岚",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "12",
+              "name": "撑红伞的女人",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "13",
+              "name": "林晚",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "14",
+              "name": "母亲",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "15",
+              "name": "陆叔",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            },
+            {
+              "character_id": "16",
+              "name": "顾沉",
+              "position": null,
+              "facing": null,
+              "anchor": null,
+              "source": "missing"
+            }
+          ],
+          "identity_fingerprint": "1578167e0dbbb2867640156cb5a68ff19dcce634fef4bc5ab4d32d601aa6bc11"
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": true,
+        "beat_authority_valid": true
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": true,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "SCENE_RETIRED",
+        "SOURCE_CONTENT_ALREADY_EXPOSED"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:chapter-02-scene-01",
+      "book_id": 990402,
+      "episode": 2,
+      "scene_name": "chapter-02-scene-01",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 15,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "668f9b943bb2986ea6bff08f308cda60778ff1d4ef5e044dd91473488d441e5c",
+        "normalized_source_text_hash": "e8a4f9ed285a406f2af50f415caa0502b50c9b789ee505e562096beb19f402db",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 2,
+          "payload_hash": "a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 6,
+          "payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "book_id": 990402,
+      "episode": 2,
+      "scene_name": "回声照相馆",
+      "classification": "RETIRED",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script_ir",
+          "id": 3,
+          "status": "superseded",
+          "provenance": "database.script_ir_versions"
+        },
+        {
+          "kind": "script_ir",
+          "id": 6,
+          "status": "qualified",
+          "provenance": "database.script_ir_versions"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "d33101bb915b763ecf75f6d2c7b1c18791aaa6dae05fc316ab9581dd35c8b4e7",
+        "normalized_source_text_hash": "3ca07af9980a5e969bf278eb14d78884cccaa3319ebc1b0bfd43653546984906",
+        "beat_sequence_fingerprint": "03291532d23e41c7920a04d7be2283bbc9c808a9f79c35fc26d6d18890bdd6a6"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 2,
+          "payload_hash": "a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 6,
+          "payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "approved",
+          "id": 20,
+          "source_script_hash": "60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4"
+        },
+        "scene_blocking": {
+          "status": "approved",
+          "id": 18,
+          "source_script_hash": "60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4",
+          "identity_valid": true,
+          "participants": [
+            {
+              "character_id": "17",
+              "name": "林晚",
+              "position": "毛衣口袋",
+              "facing": null,
+              "anchor": "毛衣口袋",
+              "source": "script_declared"
+            },
+            {
+              "character_id": "18",
+              "name": "顾沉",
+              "position": "后门",
+              "facing": null,
+              "anchor": "后门",
+              "source": "script_declared"
+            }
+          ],
+          "identity_fingerprint": "4c588b870cb6f1a0fa2ff7e46f7b3ac2f648d69f2f20dab70b969874e27781aa"
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": true,
+        "beat_authority_valid": true
+      },
+      "exposure_status": "EXPOSED",
+      "retired": true,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "PROVIDER_EXPOSED",
+        "SCENE_RETIRED",
+        "SOURCE_CONTENT_ALREADY_EXPOSED"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆 — 清晨",
+      "book_id": 990402,
+      "episode": 2,
+      "scene_name": "回声照相馆 — 清晨",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 17,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "87ec820f125b76ad7645ebf684c3227f7af595d15259870774194f69efb98204",
+        "normalized_source_text_hash": "f66b7b4b01316c0c040a85aeed8997b7d430a840d1d82f1a07795f55141e754d",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 2,
+          "payload_hash": "a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 6,
+          "payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "book_id": 990402,
+      "episode": 2,
+      "scene_name": "暗房门口的试探",
+      "classification": "RETIRED",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script_ir",
+          "id": 3,
+          "status": "superseded",
+          "provenance": "database.script_ir_versions"
+        },
+        {
+          "kind": "script_ir",
+          "id": 6,
+          "status": "qualified",
+          "provenance": "database.script_ir_versions"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "8325e0fa3b48930a7813f12c27b0cd801d0b19a2bc37941f42bac5d57ea10dad",
+        "normalized_source_text_hash": "3472c55753a427025abb589ac67ddf4132e867c15b62516686ef19ad059ecaf4",
+        "beat_sequence_fingerprint": "88e1ace8379e69d7e0f932a4f6c557dfff2a2a535f1c4861a4d0ea0d9c4e0e8b"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 2,
+          "payload_hash": "a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 6,
+          "payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "approved",
+          "id": 19,
+          "source_script_hash": "60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4"
+        },
+        "scene_blocking": {
+          "status": "approved",
+          "id": 16,
+          "source_script_hash": "60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4",
+          "identity_valid": true,
+          "participants": [
+            {
+              "character_id": "17",
+              "name": "林晚",
+              "position": "抬起头",
+              "facing": "看向暗房门",
+              "anchor": "暗房门",
+              "source": "script_declared"
+            },
+            {
+              "character_id": "18",
+              "name": "顾沉",
+              "position": "走向后门，径直离开",
+              "facing": null,
+              "anchor": "后门",
+              "source": "script_declared"
+            }
+          ],
+          "identity_fingerprint": "6be1084c70cc492fe4906b0d0bf0d0ed6bc3d4d68a02dc1428ddb98a45a1868a"
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": true,
+        "beat_authority_valid": true
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": true,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "SCENE_RETIRED",
+        "SOURCE_CONTENT_ALREADY_EXPOSED"
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探 — 回声照相馆暗房门口 — 清晨 06:48",
+      "book_id": 990402,
+      "episode": 2,
+      "scene_name": "暗房门口的试探 — 回声照相馆暗房门口 — 清晨 06:48",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 17,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "63d3ec354de72c312fe41fcd1368976b1828d7fbbcb70d6096c25839a2fd9774",
+        "normalized_source_text_hash": "f4dcb1e72b64d0b66051b391cb43f3997550dab92617254f2a3b83b7f4d00410",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 2,
+          "payload_hash": "a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 6,
+          "payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:chapter-03-scene-01",
+      "book_id": 990402,
+      "episode": 3,
+      "scene_name": "chapter-03-scene-01",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 16,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "9ef9910a139eff0513897159b327ac6e83db9827038094e1b45f0422022d94f2",
+        "normalized_source_text_hash": "752b413585c8db32cd0761f46e15f8c7d89b5bf185a5c990fb0b61e30db51bdc",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 3,
+          "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 5,
+          "payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:chapter-03-scene-02",
+      "book_id": 990402,
+      "episode": 3,
+      "scene_name": "chapter-03-scene-02",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 16,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "3da6f3b9eb579f9a4d2cc5222a543b504d863bc285a6f6600803d5a545c130d8",
+        "normalized_source_text_hash": "fd23321e09019a5e25ac4badd787a9b683159e284fb12aab56bb643f39933f6f",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 3,
+          "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 5,
+          "payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "book_id": 990402,
+      "episode": 3,
+      "scene_name": "暗房惊魂",
+      "classification": "RETIRED",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script_ir",
+          "id": 4,
+          "status": "superseded",
+          "provenance": "database.script_ir_versions"
+        },
+        {
+          "kind": "script_ir",
+          "id": 4,
+          "status": "superseded",
+          "provenance": "database.script_ir_versions"
+        },
+        {
+          "kind": "script_ir",
+          "id": 5,
+          "status": "qualified",
+          "provenance": "database.script_ir_versions"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "a0cf70aa323947aa771444513b55a5cd5fd0c32e50ecb04d5b27547b29e1a4fd",
+        "normalized_source_text_hash": "93e0e0b2e3fef0a980991d593c2de06e0a5ce80dba078daf48c4bdeaae03c209",
+        "beat_sequence_fingerprint": "df01498c75e11bbb0852b8866f1360e9fb5f0a791a0a74f7c13a78f35e09680c"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 3,
+          "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 5,
+          "payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "approved",
+          "id": 15,
+          "source_script_hash": "0339ead00243e9771d02145d087a5a065cd88fff065eec78714ba50342d26687"
+        },
+        "scene_blocking": {
+          "status": "approved",
+          "id": 12,
+          "source_script_hash": "0339ead00243e9771d02145d087a5a065cd88fff065eec78714ba50342d26687",
+          "identity_valid": true,
+          "participants": [
+            {
+              "character_id": "19",
+              "name": "林晚",
+              "position": "背对门口，站在工作台前；后转身靠在工作台边缘，双手抱臂；最后背对顾沉，整理晾干绳上的照片。",
+              "facing": null,
+              "anchor": null,
+              "source": "script_declared"
+            },
+            {
+              "character_id": "20",
+              "name": "顾沉",
+              "position": "倚在门框上；走进暗房停在林晚身后约两步远；走到工作台旁；走到暗房门口手搭门把。",
+              "facing": null,
+              "anchor": null,
+              "source": "script_declared"
+            }
+          ],
+          "identity_fingerprint": "b488c170e63cd40890f2762f15ff4bd614134b8a4de1eaea1b7db3fde292a48e"
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": true,
+        "beat_authority_valid": true
+      },
+      "exposure_status": "EXPOSED",
+      "retired": true,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "PROVIDER_EXPOSED",
+        "SCENE_RETIRED",
+        "SOURCE_CONTENT_ALREADY_EXPOSED"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂 — 回声照相馆暗房 — 清晨",
+      "book_id": 990402,
+      "episode": 3,
+      "scene_name": "暗房惊魂 — 回声照相馆暗房 — 清晨",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 18,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "2836c65838eb4674ec3aeeb155b7e873f8b69c83c472c2dcd209e0e1f08f7619",
+        "normalized_source_text_hash": "6e46f2e92f9bc6151c9d6f64089313fd1be4700d67eee39a9bb450483be7bfaf",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 3,
+          "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 5,
+          "payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂 — 回声照相馆暗房门外 — 清晨",
+      "book_id": 990402,
+      "episode": 3,
+      "scene_name": "暗房惊魂 — 回声照相馆暗房门外 — 清晨",
+      "classification": "EXPOSURE_UNKNOWN",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 18,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "59fc188d2d84116dccfa927bf97cdc7d6ece2e4d85c0a2393c1475d077de4f2a",
+        "normalized_source_text_hash": "16872be40a92b759875059972d4e83b3ca2372e32fd51b543ffd98155858906e",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 3,
+          "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 5,
+          "payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "EXPOSURE_UNKNOWN",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID",
+        "EXPOSURE_UNKNOWN"
+      ]
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "book_id": 990402,
+      "episode": 3,
+      "scene_name": "暗房惊魂（2）",
+      "classification": "RETIRED",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script_ir",
+          "id": 5,
+          "status": "qualified",
+          "provenance": "database.script_ir_versions"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "5c57e2373c88b790a4cfda7cbf3aa822979b71633aa247b3c1a9bdd88f2dfb10",
+        "normalized_source_text_hash": "2cedb92e8d19b9322f331527e69d344d5e38ae72f784f25775dbcfba40a7fc8d",
+        "beat_sequence_fingerprint": "963087e63591384b2ba193bac3493700d3befde4817c8bda144e3127d61a167d"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "confirmed",
+          "id": 3,
+          "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+        },
+        "script_ir": {
+          "status": "qualified",
+          "validation_status": "qualified",
+          "id": 5,
+          "payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+          "qualified": true
+        },
+        "director_treatment": {
+          "status": "approved",
+          "id": 17,
+          "source_script_hash": "0339ead00243e9771d02145d087a5a065cd88fff065eec78714ba50342d26687"
+        },
+        "scene_blocking": {
+          "status": "approved",
+          "id": 13,
+          "source_script_hash": "0339ead00243e9771d02145d087a5a065cd88fff065eec78714ba50342d26687",
+          "identity_valid": true,
+          "participants": [
+            {
+              "character_id": "19",
+              "name": "林晚",
+              "position": "从暗房内拉开门，逆光站立；身体微微侧开；后退半步背抵门框；转身要关门；背对顾沉肩膀颤抖；关门后背靠门滑坐在地抱头。",
+              "facing": null,
+              "anchor": null,
+              "source": "script_declared"
+            },
+            {
+              "character_id": "20",
+              "name": "顾沉",
+              "position": "背靠暗房门外墙壁；目光低垂；抬眼扫视林晚和暗房内部；向前微微倾身；转身沿走廊离开；脚步微顿侧头扫视阴影处。",
+              "facing": null,
+              "anchor": null,
+              "source": "script_declared"
+            }
+          ],
+          "identity_fingerprint": "b4fefc7db9b30772f1acc479a789c11f3b3826c23b3bf5ac4159cf4abcae2670"
+        },
+        "fact_confirmed": true,
+        "identity_authority_valid": true,
+        "beat_authority_valid": true
+      },
+      "exposure_status": "EXPOSED",
+      "retired": true,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "PROVIDER_EXPOSED",
+        "SCENE_RETIRED",
+        "SOURCE_CONTENT_ALREADY_EXPOSED"
+      ]
+    },
+    {
+      "scene_id": "book990402:e4:chapter-04-scene-01",
+      "book_id": 990402,
+      "episode": 4,
+      "scene_name": "chapter-04-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 17,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "4dc2b7b4e74a54acd86b08401c0ab8a0c39c0680d850aa56db66a51a598051f8",
+        "normalized_source_text_hash": "098d6960696c1aa458cc05b64ab142bd6dfe6310c9eadc59062bb4fbeea4a5c6",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e5:chapter-05-scene-01",
+      "book_id": 990402,
+      "episode": 5,
+      "scene_name": "chapter-05-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 18,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "03d033d580ac590d2f15260fdf3eff3656324b5499692af40b101d4bbc20c421",
+        "normalized_source_text_hash": "097e880f01f615b3c46f4eac60d32fd1c1d2d162b6dc844c71ad840d8508f232",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e5:chapter-05-scene-02",
+      "book_id": 990402,
+      "episode": 5,
+      "scene_name": "chapter-05-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 18,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "2761d95bfd99f257183f0ca5c37f3b25d85a4b464d2aca2ffb351520f15c34c3",
+        "normalized_source_text_hash": "938534c20aa7394d4a632b403c8b7c79099b0b9630bae9b18f94c733dd1659b4",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e5:chapter-05-scene-03",
+      "book_id": 990402,
+      "episode": 5,
+      "scene_name": "chapter-05-scene-03",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 18,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "ddc5246b08803bd919b7e78626f61025966bd972319aec85c11ab21a5cc9bc60",
+        "normalized_source_text_hash": "89bdb5a5ee09e6f7d17b168e2c185ba71fe8d2a59059d9a2d5d66a00d31e499b",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e6:chapter-06-scene-01",
+      "book_id": 990402,
+      "episode": 6,
+      "scene_name": "chapter-06-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 19,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "22e79eb77aa7a090c3ecad78cee0df837e254bd90219b8464d78ca676e4a1bdc",
+        "normalized_source_text_hash": "e53a24e3170f93daa330c9e274e97b5fe99a9098ac024fd1d08ae2b9b863b511",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e6:chapter-06-scene-02",
+      "book_id": 990402,
+      "episode": 6,
+      "scene_name": "chapter-06-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 19,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "462ffe30be8e65ce323f610b5aa6d30980394706f073adeccc8bb6afed9c05cf",
+        "normalized_source_text_hash": "b2f2e163c1e22e8f4739094496a5129297f262d602c7bf1c962be9d05ac011d7",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e7:chapter-07-scene-01",
+      "book_id": 990402,
+      "episode": 7,
+      "scene_name": "chapter-07-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 20,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "fa1582f1f93035b8bd5352dd01cb58d3ecf5a2b3b2bed56a783c3f179b991433",
+        "normalized_source_text_hash": "4bd7d1ca89ace96be8425900edfc8505d10c1554f2b5efbc635d92e8f21059a0",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e7:chapter-07-scene-02",
+      "book_id": 990402,
+      "episode": 7,
+      "scene_name": "chapter-07-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 20,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "5c59a42db8475fde785bf90b6bbc5a1601bc69a42fecce947ecf97d75a3acb95",
+        "normalized_source_text_hash": "be7ab447844cda332e64198489390b5411d59b48de48e9aa619dc5d5e14326c6",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e8:chapter-08-scene-01",
+      "book_id": 990402,
+      "episode": 8,
+      "scene_name": "chapter-08-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 21,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "fb30be0942b4fc0975f01088ddbe076ec1c52606804788704048b1f4fb00875f",
+        "normalized_source_text_hash": "69db2711bc107c5e6f0d84f170a4fe8bbaec7ddf1492cd928abe20c2a507c966",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-01",
+      "book_id": 990402,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 22,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "517c58362ad7041e56674dfc8233bc6c3d3dd1d3dcdf1731837f1882ee65250c",
+        "normalized_source_text_hash": "6c863fe0906b7de73ef961ca546db90571e27a3527df1f561b4ed405c242c6e5",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-02",
+      "book_id": 990402,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-02",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 22,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "535c9834645f2db0d8891e9f49d12e419250817902d574800dece84dd6579ac8",
+        "normalized_source_text_hash": "eb572b5c1cfc653cb336a80678c7d20659df7d23d7ba1278fe0419d7cd7104f4",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-03",
+      "book_id": 990402,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-03",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 22,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "4bacf9f2b521bf46315ee55e0674185f5fec56fc17e967f16cac7517646ac9e1",
+        "normalized_source_text_hash": "f6fe9e9938df50b377e16e5975f2fe2217acdc4ecb856b4b7d58bf86ba402941",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-04",
+      "book_id": 990402,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-04",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 22,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "cf461053506be86edbc92ff09549ae86affb1e939eb1d5fdc3c028ccb8b5a924",
+        "normalized_source_text_hash": "813921921e5077caf4818e480a6cf18948e69534dad4e6f259fc51da394dc4ba",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e9:chapter-09-scene-05",
+      "book_id": 990402,
+      "episode": 9,
+      "scene_name": "chapter-09-scene-05",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 22,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "b347632e9c732b7386564c15df7a6f6abe7f0af6a33c25758ea0aea67bb907f7",
+        "normalized_source_text_hash": "888196b1644ec2603db9bc1ba3935657cafc63278585ddd0d57fad23b97ff380",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book990402:e10:chapter-10-scene-01",
+      "book_id": 990402,
+      "episode": 10,
+      "scene_name": "chapter-10-scene-01",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "chapter",
+          "id": 23,
+          "status": "analyzed",
+          "provenance": "database.chapters"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "0de209d9eae8ee62635ce4734d626897d09f1df9786c531c9fb0fcbeedebea92",
+        "normalized_source_text_hash": "9702db99255a49d914369a8c2d192d7a985e776a8fc1f254c1030a1b28d70d44",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book991119:e1:大厅",
+      "book_id": 991119,
+      "episode": 1,
+      "scene_name": "大厅",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 4,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "e8b06700cd36563883f1fcced5a07cc706103fa82aa3c9185d74ed58bd6807bb",
+        "normalized_source_text_hash": "b0f2c494bf8fa0327cf8a2dcf2b5ddc90b69b4ce42c70cedac172fdebebab197",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "scene_id": "book991119:e1:门外",
+      "book_id": 991119,
+      "episode": 1,
+      "scene_name": "门外",
+      "classification": "SOURCE_REAL_UPSTREAM_INCOMPLETE",
+      "source_real": true,
+      "source_records": [
+        {
+          "kind": "script",
+          "id": 4,
+          "status": "draft",
+          "provenance": "database.scripts"
+        }
+      ],
+      "fingerprints": {
+        "source_fingerprint": "47cb8398180816fa6ffc98adbe2c75e4cb9e3873a01bcc41a72263dfcb5013b8",
+        "normalized_source_text_hash": "cb3a01f254414aadfe35f8e8f9b92df4492cb795b7282908f6ff1d4222f8c5cd",
+        "beat_sequence_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "upstream": {
+        "fact_snapshot": {
+          "status": "missing",
+          "id": null,
+          "payload_hash": ""
+        },
+        "script_ir": {
+          "status": "missing",
+          "validation_status": "missing",
+          "id": null,
+          "payload_hash": "",
+          "qualified": false
+        },
+        "director_treatment": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": ""
+        },
+        "scene_blocking": {
+          "status": "missing",
+          "id": null,
+          "source_script_hash": "",
+          "identity_valid": false,
+          "participants": [],
+          "identity_fingerprint": ""
+        },
+        "fact_confirmed": false,
+        "identity_authority_valid": false,
+        "beat_authority_valid": false
+      },
+      "exposure_status": "NOT_EXPOSED",
+      "retired": false,
+      "eligibility_status": "NOT_ELIGIBLE",
+      "eligibility_reasons": [
+        "FACT_SNAPSHOT_NOT_CONFIRMED",
+        "SCRIPT_IR_NOT_QUALIFIED",
+        "TREATMENT_NOT_APPROVED",
+        "BLOCKING_NOT_APPROVED",
+        "IDENTITY_AUTHORITY_INVALID",
+        "BEAT_AUTHORITY_INVALID"
+      ]
+    }
+  ]
+}
