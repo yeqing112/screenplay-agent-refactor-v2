@@ -47,6 +47,75 @@
     },
     "raw_capability": "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT",
     "ready_for_final_recanary": false,
-    "production_shotplan": "HOLD"
+    "production_shotplan": "HOLD",
+    "generation_architecture_redesign": {
+      "status": "FOUNDATION_CLOSED",
+      "visual_editorial_spine": "READY",
+      "shot_topology_skeleton": "READY",
+      "graph_binder": "READY",
+      "atomic_expansion": "READY",
+      "provider_canary_authorized": true,
+      "spine_topology_canary": {
+        "status": "BLOCKED",
+        "historical_status": "FAILED",
+        "experiment_validity": "INVALID",
+        "preflight_wiring_closure": "CLOSED",
+        "ready_for_final_recanary": true,
+        "final_recanary_authorized": false,
+        "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED",
+        "failure_layer": "HARNESS_DATA_GAP_PRESERVE_TRACE_UNRESOLVED",
+        "no_further_spine_topology_recanary": true,
+        "raw_spine_capability": "PROMISING",
+        "raw_topology_capability": "PROMISING",
+        "atomic_expansion_canary_authorized": false,
+        "production_shotplan": "HOLD",
+        "forensic_adjudication": "CLOSED",
+        "attempted_spine_calls": 3,
+        "attempted_skeleton_calls": 0,
+        "replay_provider_calls": 0
+      }
+    }
+  },
+  "fresh_integration_pilot": {
+    "status": "FAILED",
+    "cohort_fingerprint": "dafee06b86a26ef3290177e1f4d9654c1db49c38a89758c289a53bed8f330d8e",
+    "strategy_calls": 3,
+    "spine_calls": 0,
+    "skeleton_calls": 0,
+    "ready_for_director_critic_review": false,
+    "director_critic_review": "NOT_RECORDED",
+    "ready_for_atomic_expansion_canary": false,
+    "atomic_expansion_canary_authorized": false,
+    "provider_calls": 3,
+    "retries": {
+      "transport": 0,
+      "format": 0,
+      "semantic": 0,
+      "creative": 0,
+      "repair": 0
+    },
+    "failure_layers": [
+      {
+        "layer": "STRATEGY_AUTHORITY",
+        "code": "STRATEGY_AUTHORITY_INCOMPLETE",
+        "classification": "MODEL_FAILURE",
+        "no_auto_retry": true
+      }
+    ],
+    "no_auto_retry": true,
+    "cohort_replacement": false
+  },
+  "authority_contract_ssot": {
+    "status": "CLOSED",
+    "structured_preserve": "PASS",
+    "authority_completeness": "PASS",
+    "spine_schema_ssot": "PASS",
+    "skeleton_schema_ssot": "PASS",
+    "provider_validator_parity": "PASS",
+    "provider_readiness_gate": "PASS",
+    "retired_provider_cohort": "ENFORCED",
+    "ready_for_fresh_integration_pilot": true,
+    "fresh_integration_pilot_authorized": true,
+    "fresh_integration_pilot_authorization_type": "DIRECTOR_CRITIC_EXTERNAL_AUTHORIZATION"
   }
 }
