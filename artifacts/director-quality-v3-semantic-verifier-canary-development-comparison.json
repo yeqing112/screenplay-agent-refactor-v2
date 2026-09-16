@@ -1,0 +1,17 @@
+{
+  "schema_version": "director_v3_semantic_verifier_canary_development_comparison_v1",
+  "runtime_authority": false,
+  "provider_calls": 0,
+  "development_forensic_included_in_provider_request": false,
+  "comparison_is_provider_free": true,
+  "rows": [
+    {"fact_id": "FACT_0001", "development_assessment": "CLAIM_ONLY", "provider_verdict": "CLAIM_ONLY", "same_label": true},
+    {"fact_id": "FACT_0002", "development_assessment": "INFERENCE_ONLY", "provider_verdict": "PARTIAL", "same_label": false},
+    {"fact_id": "FACT_0003", "development_assessment": "CLAIM_ONLY", "provider_verdict": "CLAIM_ONLY", "same_label": true},
+    {"fact_id": "FACT_0004", "development_assessment": "DIRECTLY_ENTAILED", "provider_verdict": "ENTAILED", "same_label": true},
+    {"fact_id": "FACT_0005", "development_assessment": "DIRECTLY_ENTAILED", "provider_verdict": "ENTAILED", "same_label": true},
+    {"fact_id": "FACT_0006", "development_assessment": "INFERENCE_ONLY", "provider_verdict": "PARTIAL", "same_label": false},
+    {"fact_id": "FACT_0007", "development_assessment": "CLAIM_ONLY", "provider_verdict": "CLAIM_ONLY", "same_label": true}
+  ],
+  "note": "Development forensic labels are comparison-only and never alter FactSnapshot, evidence, or downstream authority."
+}

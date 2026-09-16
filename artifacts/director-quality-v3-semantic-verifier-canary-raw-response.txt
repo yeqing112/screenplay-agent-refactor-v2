@@ -1,0 +1,53 @@
+{
+  "results": [
+    {
+      "fact_id": "FACT_0001",
+      "verdict": "CLAIM_ONLY",
+      "supported_components": ["宋知夏", "escaped through fire pipe shaft", "to apartment 1203"],
+      "unsupported_components": [],
+      "rationale": "The evidence consists solely of quoted text where the subject claims to have escaped through a pipe shaft to a location. Quoted text alone cannot confirm the world state or actor causation, so the fact is limited to the claim content."
+    },
+    {
+      "fact_id": "FACT_0002",
+      "verdict": "PARTIAL",
+      "supported_components": ["宋知夏", "hid storage card in umbrella handle"],
+      "unsupported_components": ["evidence from six years ago"],
+      "rationale": "The narrative prose evidence shows the subject opening an umbrella handle and a storage card falling out, supporting the action of hiding a card. The quoted text mentions 'six years ago' but cannot confirm the world state or causation alone, leaving the temporal claim unsupported."
+    },
+    {
+      "fact_id": "FACT_0003",
+      "verdict": "CLAIM_ONLY",
+      "supported_components": ["宋知夏", "is previous tenant of 1204", "disappeared six years ago"],
+      "unsupported_components": [],
+      "rationale": "The evidence consists solely of quoted text where the subject's name and disappearance are mentioned. Quoted text alone cannot confirm the world state or actor causation, so the fact is limited to the claim content."
+    },
+    {
+      "fact_id": "FACT_0004",
+      "verdict": "ENTAILED",
+      "supported_components": ["程雨", "found wet umbrella at door", "black long-handled umbrella"],
+      "unsupported_components": [],
+      "rationale": "The narrative prose evidence directly describes a black long-handled umbrella at the door, being wet, with water dripping. This semantically entails the fact that the subject found a wet black long-handled umbrella at the door."
+    },
+    {
+      "fact_id": "FACT_0005",
+      "verdict": "ENTAILED",
+      "supported_components": ["程雨", "is moving out of apartment", "1204"],
+      "unsupported_components": [],
+      "rationale": "The narrative prose evidence describes the subject dragging a box to the door, having lived there for six years, and an agent coming to collect keys. This semantically entails the fact that the subject is moving out of apartment 1204."
+    },
+    {
+      "fact_id": "FACT_0006",
+      "verdict": "PARTIAL",
+      "supported_components": ["老赵", "installed hidden camera equipment", "in wall cavity behind bedroom"],
+      "unsupported_components": [],
+      "rationale": "The narrative prose evidence describes finding old equipment (lens, wires, hard drive) in a wall cavity behind the bedroom, which supports the presence of hidden camera equipment. However, the evidence does not explicitly state that '老赵' installed it, leaving the actor attribution unsupported."
+    },
+    {
+      "fact_id": "FACT_0007",
+      "verdict": "CLAIM_ONLY",
+      "supported_components": ["老赵", "recognized umbrella", "belonged to previous tenant"],
+      "unsupported_components": [],
+      "rationale": "The evidence consists solely of quoted text where the subject claims the umbrella was used by a previous tenant. Quoted text supports the claim or speech surface but cannot confirm the world state or actor causation alone, so the fact is limited to the claim content."
+    }
+  ]
+}

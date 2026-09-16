@@ -1,6 +1,39 @@
 {
   "schema_version": "director_v3_semantic_verifier_provider_ledger_v1",
-  "status": "NOT_DISPATCHED",
-  "provider_calls": 0,
-  "entries": []
+  "status": "RESPONSE_RECEIVED",
+  "authorization_id": "director-v3-semantic-verifier-canary-20260917-01",
+  "scope": "DIRECTOR_V3_AUTHORIZED_FACT_SEMANTIC_VERIFIER_CANARY",
+  "execution_base": "45b2c7c8c432cd14545675f27b7717dc86e32541",
+  "provider_calls": 1,
+  "entries": [
+    {
+      "call_number": 1,
+      "stage": "SEMANTIC_VERIFIER",
+      "request_hash": "46295b074073557b767527c030aca53b06db6408a2eb8cf2a1627fb7b27e9622",
+      "written_before_dispatch": true,
+      "started_at": "2026-09-16T19:26:58.267516+00:00",
+      "finished_at": "2026-09-16T19:27:31.573147+00:00",
+      "response_received": true,
+      "response_sha256": "521c666427d1f794f85c11bf6031f6e41ba81864bc3a49e09e0916d3159fe1a7",
+      "response_length": 3362,
+      "provider_error": null
+    }
+  ],
+  "provider": {
+    "id": "local-llm-2vydoz",
+    "name": "mimo",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "base_url": "https://api.xiaomimimo.com/v1",
+    "default_params": {
+      "thinking": {
+        "type": "disabled"
+      },
+      "temperature": 0.3,
+      "max_tokens": 8192,
+      "supports_vision": true
+    }
+  },
+  "audit_records_count": 1,
+  "provider_exposure": "EXPOSED"
 }

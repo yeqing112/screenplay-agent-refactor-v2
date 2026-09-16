@@ -1,0 +1,29 @@
+{
+  "schema_version": "director_v3_semantic_verifier_canary_validation_v1",
+  "status": "PASS",
+  "parse_error": null,
+  "errors": [],
+  "supplied_fact_ids": [
+    "FACT_0001",
+    "FACT_0002",
+    "FACT_0003",
+    "FACT_0004",
+    "FACT_0005",
+    "FACT_0006",
+    "FACT_0007"
+  ],
+  "result_fact_ids": [
+    "FACT_0001",
+    "FACT_0002",
+    "FACT_0003",
+    "FACT_0004",
+    "FACT_0005",
+    "FACT_0006",
+    "FACT_0007"
+  ],
+  "missing_fact_ids": [],
+  "unknown_fact_ids": [],
+  "duplicate_fact_ids": [],
+  "forbidden_mutation_fields": [],
+  "result_count": 7
+}
