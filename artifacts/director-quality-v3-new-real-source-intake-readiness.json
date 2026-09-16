@@ -1,0 +1,19 @@
+{
+  "schema_version": "director_v3_new_real_source_intake_readiness_v1",
+  "status": "DIRECTOR_V3_NEW_REAL_SOURCE_MATERIAL_INTAKE_READY",
+  "intake_infrastructure_ready": true,
+  "real_source_material_present": false,
+  "source_ingested": false,
+  "upstream_processing_authorized": false,
+  "blocking_reason": "REAL_SOURCE_MATERIAL",
+  "fresh_pool": "BLOCKED",
+  "pilot_2": {
+    "ready": false,
+    "authorized": false,
+    "cohort_frozen": false
+  },
+  "atomic_expansion": "HOLD",
+  "production_shotplan": "HOLD",
+  "human_preference": "NOT_RECORDED",
+  "provider_calls": 0
+}

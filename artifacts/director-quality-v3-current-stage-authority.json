@@ -158,5 +158,18 @@
     "new_real_source_material_required": true,
     "provider_calls": 0,
     "audit_fingerprint": "0c92312b48dce5c7ca07ad7f191a8fa6f286dcd359f6b9f5cd61f04cc07246c2"
+  },
+  "new_real_source_material_intake": {
+    "status": "READY",
+    "intake_contract": "PASS",
+    "clean_lineage_contract": "PASS",
+    "source_versioning": "PASS",
+    "duplicate_guard": "PASS",
+    "approval_evidence_contract": "PASS",
+    "provider_calls": 0,
+    "real_source_material_present": false,
+    "source_ingested": false,
+    "upstream_processing_authorized": false,
+    "waiting_for": "REAL_SOURCE_MATERIAL"
   }
 }

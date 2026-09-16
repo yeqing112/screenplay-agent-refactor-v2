@@ -1,0 +1,38 @@
+{
+  "schema_version": "director_v3_new_source_upstream_stage_boundaries_v1",
+  "status": "PASS",
+  "stages": [
+    {
+      "name": "Source Package",
+      "provider_required": false,
+      "approval_required": false
+    },
+    {
+      "name": "FactSnapshot",
+      "provider_required": "audit actual pipeline",
+      "approval_required": true
+    },
+    {
+      "name": "Qualified ScriptIR",
+      "provider_required": "mixed/deterministic per parser",
+      "approval_required": true
+    },
+    {
+      "name": "DirectorTreatment",
+      "provider_required": true,
+      "approval_required": true
+    },
+    {
+      "name": "SceneBlocking",
+      "provider_required": true,
+      "approval_required": true
+    },
+    {
+      "name": "FreshApprovedRecordEligibility",
+      "provider_required": false,
+      "approval_required": true
+    }
+  ],
+  "automatic_upstream_processing_after_intake": false,
+  "provider_calls": 0
+}

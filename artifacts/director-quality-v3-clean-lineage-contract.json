@@ -1,0 +1,27 @@
+{
+  "schema_version": "clean_lineage_manifest_v1",
+  "status": "PASS",
+  "states": [
+    "SOURCE_ACCEPTED",
+    "FACT_SNAPSHOT_PENDING",
+    "FACT_SNAPSHOT_CONFIRMED",
+    "SCRIPT_IR_PENDING",
+    "SCRIPT_IR_QUALIFIED",
+    "TREATMENT_PENDING",
+    "TREATMENT_READY_FOR_REVIEW",
+    "TREATMENT_APPROVED",
+    "BLOCKING_PENDING",
+    "BLOCKING_READY_FOR_REVIEW",
+    "BLOCKING_APPROVED",
+    "FRESH_APPROVED_RECORD_ELIGIBLE"
+  ],
+  "required_edges": [
+    "source_to_fact_snapshot",
+    "fact_snapshot_to_script_ir",
+    "script_ir_to_treatment",
+    "treatment_to_blocking"
+  ],
+  "binding_rule": "explicit source fingerprint on every edge; no book/title inference",
+  "skip_state_forbidden": true,
+  "provider_calls": 0
+}

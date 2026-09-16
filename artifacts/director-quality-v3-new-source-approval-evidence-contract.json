@@ -1,0 +1,20 @@
+{
+  "schema_version": "approval_evidence_v1",
+  "status": "PASS",
+  "required_fields": [
+    "approval_type",
+    "reviewer_type",
+    "approved_at",
+    "approved_record_fingerprint",
+    "source_lineage_fingerprint"
+  ],
+  "reviewer_types": [
+    "HUMAN",
+    "EXPLICIT_EXTERNAL_AUTHORIZATION",
+    "LEGACY_IMPORTED"
+  ],
+  "legacy_imported_proves_fresh": false,
+  "provider_generation_equals_approval": false,
+  "human_preference_inferred": false,
+  "provider_calls": 0
+}

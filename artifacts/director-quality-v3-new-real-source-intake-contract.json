@@ -1,0 +1,44 @@
+{
+  "schema_version": "real_screenplay_source_package_v1",
+  "status": "PASS",
+  "provider_calls": 0,
+  "required_fields": [
+    "source_package_id",
+    "ingestion_timestamp",
+    "source_origin",
+    "source_type",
+    "user_provided",
+    "raw_source_hash",
+    "normalized_source_hash",
+    "source_filename",
+    "source_title",
+    "language",
+    "encoding",
+    "source_bytes_or_text_reference",
+    "ingestion_version"
+  ],
+  "source_origins": [
+    "EXTERNAL_AUTHORIZED_IMPORT",
+    "USER_PASTED_TEXT",
+    "USER_PROVIDED_LIBRARY_FILE",
+    "USER_UPLOAD"
+  ],
+  "forbidden_origins": [
+    "FIXTURE",
+    "GENERATED_FOR_TEST",
+    "GOLDEN",
+    "INTERNAL_SAMPLE",
+    "SYNTHETIC"
+  ],
+  "supported_formats": [
+    ".txt",
+    ".md",
+    ".markdown",
+    ".docx",
+    ".pdf",
+    "plain pasted text"
+  ],
+  "source_only": true,
+  "creates_production_records": false,
+  "generated_at": "2026-09-16T07:24:40.050019+00:00"
+}

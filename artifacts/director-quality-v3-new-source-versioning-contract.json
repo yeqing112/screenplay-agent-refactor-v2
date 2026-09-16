@@ -1,0 +1,15 @@
+{
+  "schema_version": "director_v3_new_source_versioning_v1",
+  "status": "PASS",
+  "immutable_raw_source": true,
+  "version_fields": [
+    "source_version_id",
+    "source_package_id",
+    "parent_source_version_id",
+    "version_number",
+    "raw_hash",
+    "normalized_hash"
+  ],
+  "overwrite_old_source_forbidden": true,
+  "provider_calls": 0
+}

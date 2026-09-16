@@ -1,0 +1,20 @@
+{
+  "schema_version": "director_v3_new_source_duplicate_guard_v1",
+  "status": "PASS",
+  "comparison_keys": [
+    "raw_source_hash",
+    "normalized_source_hash",
+    "raw_scene_text_hash",
+    "normalized_scene_text_hash",
+    "beat_source_fingerprint",
+    "scene_source_fingerprint"
+  ],
+  "sources_checked": [
+    "existing source packages",
+    "retired provider cohort",
+    "provider exposed source fingerprints"
+  ],
+  "semantic_similarity_used": false,
+  "embedding_used": false,
+  "provider_calls": 0
+}

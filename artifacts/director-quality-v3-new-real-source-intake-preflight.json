@@ -1,0 +1,38 @@
+{
+  "schema_version": "director_v3_new_real_source_intake_preflight_v1",
+  "status": "DIRECTOR_V3_NEW_REAL_SOURCE_MATERIAL_INTAKE_READY",
+  "generated_at": "2026-09-16T07:24:40.050019+00:00",
+  "provider_calls": 0,
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0,
+  "provider_http_requests": 0,
+  "production_authority_mutations": 0,
+  "real_source_material_present": false,
+  "source_ingested": false,
+  "source_ingestion_authorized": false,
+  "waiting_for": "REAL_SOURCE_MATERIAL",
+  "explicit_source_required": true,
+  "source_formats_supported": [
+    ".txt",
+    ".md",
+    ".markdown",
+    ".docx",
+    ".pdf",
+    "plain pasted text"
+  ],
+  "preferred_new_screenplay_format": "UTF-8 plain text (.txt) or Markdown (.md)",
+  "legacy_boundary": {
+    "families": [
+      990400,
+      990401,
+      990402
+    ],
+    "fresh_provider_experiment_allowed": false
+  },
+  "candidate": null,
+  "retired_fingerprint_count": 0,
+  "exposed_fingerprint_count": 18,
+  "existing_intake_package_count": 0,
+  "next_available_book_id_preview": 990403,
+  "next_book_id_allocated": false
+}
