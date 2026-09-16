@@ -54,7 +54,7 @@ def _facts(raw: str) -> dict:
 
 
 def _script() -> dict:
-    return {"script_ir": {"title": "门外", "scenes": [{"name": "门口", "location_name": "公寓门口", "beats": [{"event": "她把纸箱拖到门口。"}], "dialogues": [{"text": "我看见门外有一把伞。"}]}]}}
+    return {"script_ir": {"title": "门外", "characters": [{"name": "程雨"}], "scenes": [{"name": "门口", "location_name": "公寓门口", "beats": [{"event": "她把纸箱拖到门口。"}], "dialogues": [{"text": "我看见门外有一把伞。"}]}]}}
 
 
 def test_eval_phase_a_uses_immutable_source_package():
@@ -151,6 +151,7 @@ def test_script_ir_scene_ids_deterministic_unique():
     second = canonicalize_script_payload(_script(), raw_text=source["raw_text"], fact_snapshot=snapshot, provenance=source["provenance"])["script_ir"]
     assert first["scenes"][0]["scene_id"] == second["scenes"][0]["scene_id"]
     assert len({scene["scene_id"] for scene in first["scenes"]}) == len(first["scenes"])
+    assert first["characters"][0]["character_id"] == "CHAR_0001"
 
 
 def test_reported_past_does_not_auto_create_flashback_scene():

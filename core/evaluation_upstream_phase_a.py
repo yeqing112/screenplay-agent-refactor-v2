@@ -316,6 +316,27 @@ def _prop_ref(value: Any) -> str:
     return _t(value)
 
 
+def _canonical_characters(values: Any) -> list[dict[str, Any]]:
+    """Assign stable program-owned character IDs to provider labels."""
+    rows: list[dict[str, Any]] = []
+    for value in _l(values):
+        if isinstance(value, dict):
+            name = _t(value.get("name") or value.get("character_name") or value.get("label"))
+            if not name:
+                continue
+            row = {"name": name}
+            for key in ("aliases", "role", "description", "attributes", "gender", "age"):
+                if key in value:
+                    row[key] = copy.deepcopy(value[key])
+            rows.append(row)
+        elif _t(value):
+            rows.append({"name": _t(value)})
+    rows.sort(key=lambda row: _t(row.get("name")))
+    for index, row in enumerate(rows, 1):
+        row["character_id"] = f"CHAR_{index:04d}"
+    return rows
+
+
 def canonicalize_script_payload(payload: Any, *, raw_text: str, fact_snapshot: dict[str, Any], provenance: dict[str, Any]) -> dict[str, Any]:
     """Ground and deterministically build a qualified ScriptIR candidate."""
     payload_object, parse_errors = _payload_object(payload, label="evaluation_script_ir_payload", required_keys={"scenes", "script_ir"})
@@ -372,7 +393,7 @@ def canonicalize_script_payload(payload: Any, *, raw_text: str, fact_snapshot: d
             "props": _l(scene.get("props")),
             "asset_mentions": _l(scene.get("asset_mentions")),
         })
-    ir = build_script_ir({"title": _t(source.get("title")), "episode_objective": _t(source.get("episode_objective")), "scenes": canonical_scenes}, book_id=evaluation_book_id(), episode=1, fact_snapshot_id=f"EVAL:{SOURCE_PACKAGE_ID}:FACT_SNAPSHOT")
+    ir = build_script_ir({"title": _t(source.get("title")), "episode_objective": _t(source.get("episode_objective")), "characters": _canonical_characters(source.get("characters")), "scenes": canonical_scenes}, book_id=evaluation_book_id(), episode=1, fact_snapshot_id=f"EVAL:{SOURCE_PACKAGE_ID}:FACT_SNAPSHOT")
     ir["provenance"] = copy.deepcopy(provenance)
     validation = validate_script_ir(ir)
     report = {
