@@ -1,0 +1,91 @@
+{
+  "trace": {
+    "schema_version": "must_preserve_trace_v1",
+    "scene_id": "book990402:e1:红伞幻影（二）",
+    "constraints": [
+      {
+        "constraint_id": "MP01",
+        "description": "撑红伞的女人主动开口，对话升级",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP02",
+        "description": "林晚展示空手，但袖口硬物仍在",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP03",
+        "description": "灯光闪烁熄灭瞬间，两人做出防御/警惕动作",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP04",
+        "description": "撑红伞的女人直接质问林晚袖中之物",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP05",
+        "description": "撑红伞的女人蹲下检查并指出伞上划痕是新的",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP06",
+        "description": "林晚站起，反向试探并揭露对方行为模式",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP07",
+        "description": "撑红伞的女人情绪波动，承认伞“没有主人”",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP08",
+        "description": "林晚亮出母亲遗书中的红伞简笔画及“小心红伞”字条",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP09",
+        "description": "撑红伞的女人看到字条后情绪崩溃（流泪、颤抖）",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP10",
+        "description": "灯光再次熄灭，场景结束",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      }
+    ],
+    "unresolved_count": 10,
+    "resolution_policy": "explicit beat/event/source refs only; no prose guessing"
+  },
+  "status": "PRESERVE_BINDING_FAILURE"
+}

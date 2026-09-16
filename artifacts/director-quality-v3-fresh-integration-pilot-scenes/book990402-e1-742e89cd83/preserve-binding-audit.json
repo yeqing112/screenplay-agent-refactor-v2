@@ -1,0 +1,51 @@
+{
+  "trace": {
+    "schema_version": "must_preserve_trace_v1",
+    "scene_id": "book990402:e1:红伞幻影（一）",
+    "constraints": [
+      {
+        "constraint_id": "MP01",
+        "description": "林晚假寐观察的初始状态",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP02",
+        "description": "红伞作为视觉焦点和叙事枢纽的地位",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP03",
+        "description": "划痕和暗红色粉末作为关键物理证据的发现过程",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP04",
+        "description": "对话中“怕什么”、“该怕的早就不在了”的潜台词",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP05",
+        "description": "林晚口袋中长方形硬物的暗示性存在",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      }
+    ],
+    "unresolved_count": 5,
+    "resolution_policy": "explicit beat/event/source refs only; no prose guessing"
+  },
+  "status": "PRESERVE_BINDING_FAILURE"
+}

@@ -105,3 +105,51 @@ def test_provider_runner_uses_one_strategy_call_per_scene_and_zero_retries(monke
     assert result["ledger"]["attempted_skeleton_calls"] == 0
     assert len(calls) == 3
     assert all(call["retries"] == 0 for call in calls) if calls and "retries" in calls[0] else True
+
+
+def test_finalize_persists_post_call_ledger_and_execution_manifest(monkeypatch, tmp_path):
+    monkeypatch.setattr(pilot, "ART", tmp_path)
+    manifest_path = tmp_path / "director-quality-v3-fresh-integration-pilot-execution-manifest.json"
+    manifest_path.write_text(json.dumps({
+        "schema_version": "director_quality_v3_fresh_integration_pilot_execution_manifest_v1",
+        "status": "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_READY",
+        "provider_calls": 0,
+    }), encoding="utf-8")
+    (tmp_path / "director-quality-v3-fresh-cohort-manifest.json").write_text(json.dumps({"selected": {}}), encoding="utf-8")
+    ledger = {
+        "attempted_strategy_calls": 3,
+        "attempted_spine_calls": 0,
+        "attempted_skeleton_calls": 0,
+        "successful_calls": 3,
+        "all_retry_counts": {"transport": 0, "format": 0, "semantic": 0, "creative": 0, "repair": 0},
+    }
+    execution = {
+        "status": "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_FAILED",
+        "harness_error": None,
+        "ledger": ledger,
+        "scenes": [{"scene_id": "s1", "cohort_role": "low", "status": "MODEL_FAILURE", "provider_errors": [], "calls": []}],
+    }
+    finalized = pilot._finalize_execution(execution, {}, {"provider": "test", "model_name": "mimo-v2.5"})
+    assert finalized["status"] == "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_FAILED"
+    persisted_ledger = json.loads((tmp_path / "director-quality-v3-fresh-integration-pilot-provider-call-ledger.json").read_text(encoding="utf-8"))
+    persisted_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert persisted_ledger["attempted_strategy_calls"] == 3
+    assert persisted_ledger["successful_calls"] == 3
+    assert persisted_manifest["provider_calls"] == 3
+    assert persisted_manifest["status"] == "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_FAILED"
+
+
+def test_failed_authority_records_failure_layer_without_retry_or_cohort_replacement(monkeypatch, tmp_path):
+    authority_path = tmp_path / "authority.json"
+    authority_path.write_text(json.dumps({"schema_version": "director_v3_current_stage_authority_v2"}), encoding="utf-8")
+    monkeypatch.setattr(pilot, "AUTHORITY_PATH", authority_path)
+    pilot._update_authority(
+        "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_FAILED",
+        "cohort-fp",
+        {"attempted_strategy_calls": 3, "attempted_spine_calls": 0, "attempted_skeleton_calls": 0, "successful_calls": 3, "all_retry_counts": {"transport": 0}},
+    )
+    authority = json.loads(authority_path.read_text(encoding="utf-8"))["fresh_integration_pilot"]
+    assert authority["status"] == "FAILED"
+    assert authority["no_auto_retry"] is True
+    assert authority["cohort_replacement"] is False
+    assert authority["failure_layers"][0]["code"] == "STRATEGY_AUTHORITY_INCOMPLETE"

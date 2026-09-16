@@ -1,0 +1,22 @@
+{
+  "schema_version": "director_quality_v3_fresh_integration_pilot_provider_call_ledger_v1",
+  "authorized_strategy_calls": 3,
+  "authorized_spine_calls": 3,
+  "authorized_skeleton_calls": 3,
+  "max_total_calls": 9,
+  "attempted_strategy_calls": 3,
+  "attempted_spine_calls": 0,
+  "attempted_skeleton_calls": 0,
+  "successful_calls": 3,
+  "skipped_spine_calls": 3,
+  "skipped_skeleton_calls": 3,
+  "provider_errors": [],
+  "all_retry_counts": {
+    "transport": 0,
+    "format": 0,
+    "semantic": 0,
+    "creative": 0,
+    "repair": 0
+  },
+  "provider_calls": 3
+}

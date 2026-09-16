@@ -1,0 +1,320 @@
+{
+  "schema_version": "director_scene_strategy_ir_v2",
+  "scene_id": "book990402:e2:暗房门口的试探",
+  "dramatic_objective": "通过顾沉对相册夹的试探和林晚的回避，揭示两人之间的秘密与对抗，并确立林晚的调查方向。",
+  "scene_question": "顾沉究竟在隐藏什么？林晚会如何利用手中的照片？",
+  "strategy_summary": "聚焦于两人在暗房门口的对峙与试探，通过对话和微表情揭示紧张关系，最后以林晚的独白收尾，为后续调查铺垫。",
+  "visual_thesis": "强调暗房门口的空间压迫感，利用柜台、门框等锚点构建对峙构图，关键道具（相册夹、旧照片）需在画面中清晰可见。",
+  "scene_phases": [
+    {
+      "phase_id": "P01",
+      "beat_ids": [
+        "B12",
+        "B13",
+        "B14"
+      ],
+      "dramatic_function": "建立对峙与试探的初始张力，林晚以无辜姿态回避顾沉的直接询问。",
+      "audience_state": {
+        "knows": [
+          "顾沉知道林晚动过相册夹",
+          "林晚否认相册夹内有东西"
+        ],
+        "question_shift": "从“顾沉为何出现”转向“顾沉为何如此在意相册夹”，",
+        "suspects": [
+          "顾沉在试探林晚是否发现了秘密"
+        ],
+        "withholds": [
+          "林晚口袋里的旧照片",
+          "顾沉的真实意图"
+        ]
+      },
+      "emotion": {
+        "state": "紧张、试探、伪装",
+        "intensity_hint": "中等",
+        "trigger": "顾沉的出现和直接询问",
+        "transition_reason": "从表面平静的对话转向暗藏机锋的试探"
+      },
+      "power": {
+        "center_type": "CHARACTER",
+        "center_ref": "18",
+        "description": "顾沉主动发起试探，试图掌控局面",
+        "shift": "顾沉主导对话，林晚处于被动防御"
+      },
+      "performance": [
+        {
+          "character_id": "17",
+          "objective": "隐藏持有照片的事实，以无辜姿态回避试探",
+          "tactic": "保持慵懒无害，用随意语气转移话题",
+          "turning_point": false,
+          "visible_behavior": "转身面对顾沉，手指在口袋中收紧，语气保持随意"
+        },
+        {
+          "character_id": "18",
+          "objective": "确认林晚是否发现了照片，试探其调查程度",
+          "tactic": "从困倦表象转为直接询问，观察林晚反应",
+          "turning_point": false,
+          "visible_behavior": "从暗房门口出现，靠在门框上，眼神看似困倦实则锐利"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在顾沉询问时切至林晚手部特写（手指收紧），强调其内心波动",
+        "hold_logic": "保持对话场景的连贯性，避免频繁切换以维持张力",
+        "tempo": "紧凑",
+        "transition_motivation": "从试探到回避的自然过渡"
+      },
+      "visual": {
+        "camera_rule": "利用门框和柜台构建框架构图，强调空间压迫感",
+        "composition_rule": "顾沉在门框内，林晚在柜台后，形成视觉对峙",
+        "movement_condition": "镜头缓慢推进，聚焦于两人微表情",
+        "visual_grammar": "通过景深控制，使背景暗房红光若隐若现，暗示隐藏的秘密"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:B12",
+          "beat:B13",
+          "beat:B14"
+        ],
+        "hint_refs": [
+          "prop:黑色皮质相册夹（空，有划痕）"
+        ],
+        "withhold_refs": [
+          "prop:对折的旧照片（林晚年轻时穿灰外套）",
+          "prop:地板拖痕"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "顾沉可能知道相册夹里原本有什么，他在试探林晚是否发现了",
+            "support_refs": [
+              "beat:B13",
+              "beat:B15"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "林晚的回避姿态暗示她确实在隐藏什么，但尚未暴露",
+            "support_refs": [
+              "beat:B14",
+              "character:17"
+            ],
+            "purpose": "为后续揭示其持有照片做铺垫"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P02",
+      "beat_ids": [
+        "B15",
+        "B16",
+        "B17"
+      ],
+      "dramatic_function": "试探升级为具体描述和明确警告，揭示顾沉对秘密的保护欲。",
+      "audience_state": {
+        "knows": [
+          "顾沉描述了丢失照片的特征",
+          "顾沉警告林晚不要探究"
+        ],
+        "question_shift": "从“顾沉在试探什么”转向“顾沉在保护什么秘密”，",
+        "suspects": [
+          "顾沉与照片中的“灰外套”人物有关联"
+        ],
+        "withholds": [
+          "照片的具体内容",
+          "顾沉警告背后的真正原因"
+        ]
+      },
+      "emotion": {
+        "state": "威胁、压抑、隐藏",
+        "intensity_hint": "高",
+        "trigger": "顾沉描述照片特征并发出警告",
+        "transition_reason": "从试探转为直接威胁，紧张感达到顶峰"
+      },
+      "power": {
+        "center_type": "CHARACTER",
+        "center_ref": "18",
+        "description": "顾沉通过警告试图彻底控制局面",
+        "shift": "顾沉权力达到顶峰，但林晚的隐藏使其实际掌控力存疑"
+      },
+      "performance": [
+        {
+          "character_id": "17",
+          "objective": "继续隐藏照片，面对威胁保持表面顺从",
+          "tactic": "维持无辜表情，但手未离开口袋（保护照片）",
+          "turning_point": false,
+          "visible_behavior": "瞳孔轻微收缩，呼吸停顿半拍，随后恢复无辜表情"
+        },
+        {
+          "character_id": "18",
+          "objective": "通过具体描述和警告迫使林晚停止调查",
+          "tactic": "从试探转为直接威胁，压低语气增强压迫感",
+          "turning_point": true,
+          "visible_behavior": "直起身，不再靠门框，语气压低，带有威胁感"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在顾沉描述照片时切至林晚瞳孔特写，强调其内心震动",
+        "hold_logic": "警告场景保持长镜头，让威胁感持续发酵",
+        "tempo": "先紧后缓",
+        "transition_motivation": "从具体试探到抽象警告的升级"
+      },
+      "visual": {
+        "camera_rule": "警告场景采用低角度仰拍顾沉，增强其威胁感",
+        "composition_rule": "顾沉占据画面主导位置，林晚处于相对弱势位置",
+        "movement_condition": "镜头轻微晃动，模拟林晚内心的不安",
+        "visual_grammar": "暗房红光在顾沉警告时增强，象征危险信号"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:B15",
+          "beat:B17"
+        ],
+        "hint_refs": [
+          "prop:暗房红色安全灯"
+        ],
+        "withhold_refs": [
+          "prop:对折的旧照片（林晚年轻时穿灰外套）",
+          "prop:地板拖痕"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "顾沉的警告暗示照相馆内有不可告人的秘密，可能与照片有关",
+            "support_refs": [
+              "beat:B17",
+              "prop:暗房红色安全灯"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "顾沉的威胁表明他不仅是店主，可能深度参与了照相馆的秘密",
+            "support_refs": [
+              "beat:B17",
+              "fact:CH2_CHAR_顾沉_IDENTITY"
+            ],
+            "purpose": "强化顾沉作为潜在反派或关键知情者的角色"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P03",
+      "beat_ids": [
+        "B18",
+        "B19"
+      ],
+      "dramatic_function": "林晚从伪装转为真实状态，梳理线索并锁定调查方向，为后续行动铺垫。",
+      "audience_state": {
+        "knows": [
+          "林晚确实持有旧照片",
+          "林晚将顾沉锁定为怀疑对象"
+        ],
+        "question_shift": "从“顾沉在隐藏什么”转向“林晚将如何调查顾沉”，",
+        "suspects": [
+          "林晚的旧照片与照相馆的秘密直接相关"
+        ],
+        "withholds": [
+          "照片的具体内容",
+          "林晚的调查计划"
+        ]
+      },
+      "emotion": {
+        "state": "冰冷、决绝、明确",
+        "intensity_hint": "中高",
+        "trigger": "顾沉离开后，林晚卸下伪装",
+        "transition_reason": "从伪装的慵懒转为真实的冰冷，展现角色深度"
+      },
+      "power": {
+        "center_type": "CHARACTER",
+        "center_ref": "17",
+        "description": "林晚暗中掌握主动权，将怀疑转化为明确方向",
+        "shift": "权力从顾沉的明面威胁转向林晚的暗中谋划"
+      },
+      "performance": [
+        {
+          "character_id": "17",
+          "objective": "确认自己的秘密，明确调查方向",
+          "tactic": "卸下伪装，展现真实状态，梳理线索",
+          "turning_point": true,
+          "visible_behavior": "表情瞬间变冷，拿出旧照片摩挲边缘，盯着暗房门口的拖痕和红光"
+        }
+      ],
+      "edit": {
+        "cut_logic": "顾沉离开后切至林晚面部特写，展现其表情变化",
+        "hold_logic": "林晚独白场景保持静止镜头，让观众沉浸其思考过程",
+        "tempo": "缓慢",
+        "transition_motivation": "从外部对峙转向内部思考，节奏放缓以强调角色转变"
+      },
+      "visual": {
+        "camera_rule": "林晚独白时采用正面特写，强调其眼神变化",
+        "composition_rule": "林晚居中，背景是暗房门口的拖痕和红光，形成视觉关联",
+        "movement_condition": "镜头固定，聚焦于林晚的微表情和手部动作",
+        "visual_grammar": "旧照片在画面中清晰可见但未打开，保持悬念"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:B18",
+          "beat:B19"
+        ],
+        "hint_refs": [
+          "prop:对折的旧照片（林晚年轻时穿灰外套）",
+          "prop:地板拖痕"
+        ],
+        "withhold_refs": [],
+        "audience_suspicions": [
+          {
+            "claim": "林晚的旧照片可能揭示了照相馆的过去或顾沉的秘密",
+            "support_refs": [
+              "beat:B18",
+              "prop:对折的旧照片（林晚年轻时穿灰外套）"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "林晚将线索串联的行为表明她具有调查能力和决心",
+            "support_refs": [
+              "beat:B19",
+              "character:17"
+            ],
+            "purpose": "确立林晚作为主动调查者的角色，为后续剧情发展铺垫"
+          }
+        ]
+      }
+    }
+  ],
+  "spatial_expression": [
+    "暗房门口作为核心对峙空间，柜台和门框作为视觉锚点",
+    "顾沉从暗房门缝出现，强调其与暗房的关联",
+    "林晚始终在柜台后，形成防御性空间位置",
+    "拖痕和红光作为背景元素，暗示隐藏的秘密"
+  ],
+  "prop_visual_strategy": [
+    "黑色皮质相册夹在对话中作为焦点道具，强调其空荡和划痕",
+    "对折的旧照片在B18首次清晰展示但未打开，保持悬念",
+    "暗房红色安全灯作为环境光，增强紧张氛围",
+    "地板拖痕在B18被林晚注视，建立与暗房的视觉关联"
+  ],
+  "shot_architecture_guidance": [
+    "P01阶段以中景和过肩镜头为主，建立空间关系",
+    "P02阶段在警告时采用特写和低角度镜头，增强威胁感",
+    "P03阶段以固定特写为主，强调林晚的内心转变"
+  ],
+  "must_preserve": [
+    "顾沉从暗房门口出现的空间逻辑",
+    "林晚在柜台后的防御性位置",
+    "旧照片始终未打开的悬念",
+    "暗房红光和拖痕的视觉关联"
+  ],
+  "must_avoid": [
+    "过早揭示旧照片的具体内容",
+    "改变顾沉与暗房的空间关联",
+    "弱化警告场景的威胁感",
+    "简化林晚从伪装到真实的转变过程"
+  ],
+  "creative_risks": [
+    "在B15顾沉描述照片时，让林晚的手不自觉地摸向口袋，但立即收回",
+    "在B18林晚拿出照片时，让暗房红光恰好照亮照片边缘，但内容仍不可见",
+    "在B19林晚独白时，让她的视线在照片、拖痕和暗房门之间缓慢移动"
+  ]
+}

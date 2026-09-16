@@ -1,0 +1,43 @@
+{
+  "trace": {
+    "schema_version": "must_preserve_trace_v1",
+    "scene_id": "book990402:e2:暗房门口的试探",
+    "constraints": [
+      {
+        "constraint_id": "MP01",
+        "description": "顾沉从暗房门口出现的空间逻辑",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP02",
+        "description": "林晚在柜台后的防御性位置",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP03",
+        "description": "旧照片始终未打开的悬念",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      },
+      {
+        "constraint_id": "MP04",
+        "description": "暗房红光和拖痕的视觉关联",
+        "supporting_beat_refs": [],
+        "supporting_event_keys": [],
+        "source_authority": [],
+        "resolution_status": "PRESERVE_TRACE_UNRESOLVED"
+      }
+    ],
+    "unresolved_count": 4,
+    "resolution_policy": "explicit beat/event/source refs only; no prose guessing"
+  },
+  "status": "PRESERVE_BINDING_FAILURE"
+}

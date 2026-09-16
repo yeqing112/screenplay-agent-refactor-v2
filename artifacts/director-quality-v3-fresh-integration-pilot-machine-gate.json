@@ -1,0 +1,22 @@
+{
+  "schema_version": "director_quality_v3_fresh_machine_gate_v1",
+  "status": "FAIL",
+  "checks": {
+    "strategy_protocol_3_of_3": false,
+    "spine_protocol_3_of_3": false,
+    "skeleton_protocol_3_of_3": false,
+    "binder_3_of_3": false,
+    "distinctiveness": true,
+    "retries_zero": true,
+    "harness_errors_zero": true,
+    "total_calls_within_budget": true
+  },
+  "provider_calls": 3,
+  "retries": {
+    "transport": 0,
+    "format": 0,
+    "semantic": 0,
+    "creative": 0,
+    "repair": 0
+  }
+}

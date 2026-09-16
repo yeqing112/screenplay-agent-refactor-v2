@@ -1,0 +1,21 @@
+{
+  "scene_id": "book990402:e2:暗房门口的试探",
+  "cohort_role": "high",
+  "provider_errors": [
+    {
+      "code": "STRATEGY_AUTHORITY_INCOMPLETE",
+      "message": "STRATEGY_AUTHORITY_INCOMPLETE"
+    }
+  ],
+  "calls": [
+    {
+      "ordinal": 3,
+      "layer": "STRATEGY",
+      "request_fingerprint": "bcaf0fa4420480633d2bd89acf43ec3cf179bd699d85b23ee4933b2f2f6a0f8f",
+      "raw_response_fingerprint": "d4c7dc7e6f2729e49f041d4611cdd6f6080b99e3faf0e95be50130969b8844e4",
+      "retries": 0
+    }
+  ],
+  "status": "MODEL_FAILURE",
+  "failure": "STRATEGY_AUTHORITY_INCOMPLETE"
+}

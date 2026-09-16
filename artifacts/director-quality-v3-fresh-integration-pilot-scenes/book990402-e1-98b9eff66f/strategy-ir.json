@@ -1,0 +1,345 @@
+{
+  "schema_version": "director_scene_strategy_ir_v2",
+  "scene_id": "book990402:e1:红伞幻影（二）",
+  "dramatic_objective": "围绕“撑红伞的女人主动开口，对话升级。”建立冲突，并通过“灯光再次熄灭，场景结束。”推进本场戏。",
+  "scene_question": "林晚与撑红伞的女人之间关于红伞与母亲遗书的真相是什么？",
+  "strategy_summary": "通过三个阶段逐步升级对峙：从试探性对话建立紧张感，到直接质问与反击揭示关键信息，最后以情感崩溃和悬念收尾。利用灯光变化作为节奏控制点，强化空间的不稳定感。",
+  "visual_thesis": "在昏暗、闪烁的候车厅内，通过红伞的视觉符号、人物间的空间距离变化和关键道具（遗书字条）的特写，构建一个充满悬疑与心理博弈的封闭空间。",
+  "scene_phases": [
+    {
+      "phase_id": "P01",
+      "beat_ids": [
+        "2_B01",
+        "2_B02",
+        "2_B03"
+      ],
+      "dramatic_function": "建立对峙与试探",
+      "audience_state": {
+        "knows": [
+          "林晚与撑红伞的女人在候车厅相遇",
+          "环境为凌晨雨夜，灯光不稳定"
+        ],
+        "question_shift": "从“她们会聊什么？”转向“她们各自隐藏了什么？”",
+        "suspects": [
+          "撑红伞的女人主动搭话可能另有目的",
+          "林晚袖口有隐藏物品"
+        ],
+        "withholds": [
+          "两人的真实身份与关系",
+          "红伞的来历与意义"
+        ]
+      },
+      "emotion": {
+        "state": "克制下的紧张",
+        "intensity_hint": "中等",
+        "trigger": "撑红伞的女人主动开口，对话内容从天气转向个人",
+        "transition_reason": "从表面寒暄迅速滑向带有试探性的个人问题，打破平静"
+      },
+      "power": {
+        "center_type": "CHARACTER",
+        "center_ref": "12",
+        "description": "撑红伞的女人通过主动提问掌握对话初始方向",
+        "shift": "林晚通过展示空手试图夺回部分主动权，但袖口硬物暴露了新的疑点"
+      },
+      "performance": [
+        {
+          "character_id": "12",
+          "objective": "通过看似随意的对话试探林晚的底细与意图",
+          "tactic": "从环境话题切入，逐步转向个人问题，观察对方反应",
+          "turning_point": false,
+          "visible_behavior": "转身，红伞划出弧线；走近林晚，目光落在其口袋左手上"
+        },
+        {
+          "character_id": "13",
+          "objective": "掩饰紧张，应对试探，同时观察对方",
+          "tactic": "以简短、模糊的回答应对，试图结束话题；展示空手以示无害",
+          "turning_point": false,
+          "visible_behavior": "调整坐姿，背包滑落；抽出左手展示空无一物，但袖口硬物仍在"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在对话交锋点切换镜头，强调眼神与微表情",
+        "hold_logic": "在灯光闪烁瞬间保持镜头，捕捉两人本能的防御动作",
+        "tempo": "中速，对话节奏紧凑",
+        "transition_motivation": "灯光熄灭作为自然转场点，引入新的紧张层级"
+      },
+      "visual": {
+        "camera_rule": "以中景和近景交替，建立两人空间关系与面部细节",
+        "composition_rule": "利用候车厅的纵深和座椅形成框架，将两人置于不稳定构图中",
+        "movement_condition": "镜头随撑红伞的女人走近而轻微推进，强化压迫感",
+        "visual_grammar": "红伞作为视觉焦点，其移动轨迹引导观众视线"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:2_B01",
+          "beat:2_B02"
+        ],
+        "hint_refs": [
+          "fact:CH1_CHAR_撑红伞的女人_IDENTITY",
+          "fact:CH1_CHAR_林晚_IDENTITY"
+        ],
+        "withhold_refs": [
+          "beat:2_B08",
+          "beat:2_B09"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "撑红伞的女人可能认识林晚或与她母亲有关",
+            "support_refs": [
+              "beat:2_B01"
+            ]
+          },
+          {
+            "claim": "林晚袖口的硬物可能是武器或重要物品",
+            "support_refs": [
+              "beat:2_B02"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "灯光闪烁不仅是环境设定，也象征着真相的时隐时现",
+            "support_refs": [
+              "beat:2_B03"
+            ],
+            "purpose": "强化场景的悬疑氛围与心理暗示"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P02",
+      "beat_ids": [
+        "2_B04",
+        "2_B05",
+        "2_B06",
+        "2_B07"
+      ],
+      "dramatic_function": "直接质问与反击，揭示关键信息",
+      "audience_state": {
+        "knows": [
+          "林晚袖口藏有硬物",
+          "撑红伞的女人对伞的划痕异常敏感"
+        ],
+        "question_shift": "从“她们各自隐藏了什么？”转向“红伞与林晚母亲有何关联？”",
+        "suspects": [
+          "撑红伞的女人可能就是“红伞”的守护者或相关者",
+          "林晚的调查与母亲遗愿有关"
+        ],
+        "withholds": [
+          "母亲遗书的具体内容",
+          "“小心红伞”的真正含义"
+        ]
+      },
+      "emotion": {
+        "state": "对抗升级",
+        "intensity_hint": "高",
+        "trigger": "撑红伞的女人直接质问袖中之物，林晚开始反击",
+        "transition_reason": "从试探转为正面冲突，双方开始揭露对方行为模式"
+      },
+      "power": {
+        "center_type": "RELATIONSHIP",
+        "center_ref": null,
+        "description": "权力在两人之间快速拉锯，林晚通过观察与推理逐渐占据上风",
+        "shift": "从撑红伞的女人质问，到林晚反向揭露其行为模式，权力中心转移"
+      },
+      "performance": [
+        {
+          "character_id": "12",
+          "objective": "逼迫林晚暴露真实意图，同时保护关于伞的秘密",
+          "tactic": "直接质问，检查伞上划痕作为证据，情绪开始波动",
+          "turning_point": true,
+          "visible_behavior": "直接质问林晚袖中之物；蹲下检查并指出伞上划痕是新的；站起后退，握伞如武器"
+        },
+        {
+          "character_id": "13",
+          "objective": "从被动防御转为主动试探，揭露对方矛盾",
+          "tactic": "站起反问，通过分析伞的细节和对方行为模式进行反击",
+          "turning_point": true,
+          "visible_behavior": "站起，拎起背包；开始长段推理，揭露对方行为模式"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在林晚开始反击推理时，使用连续近景切换，强调逻辑链条",
+        "hold_logic": "在撑红伞的女人情绪波动时，保持镜头捕捉细微表情变化",
+        "tempo": "加快，对话与动作节奏紧张",
+        "transition_motivation": "为下一阶段的情感爆发和关键道具揭示做铺垫"
+      },
+      "visual": {
+        "camera_rule": "近景与特写为主，聚焦于手部动作（握伞、袖口）和面部表情",
+        "composition_rule": "利用对角线构图强化两人对峙的张力",
+        "movement_condition": "镜头跟随人物站起、后退等动作，保持动态平衡",
+        "visual_grammar": "红伞从靠放变为紧握如武器，视觉上完成从“物”到“武器”的转变"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:2_B04",
+          "beat:2_B05",
+          "beat:2_B06",
+          "beat:2_B07"
+        ],
+        "hint_refs": [
+          "fact:CH1_SC1_LOCATION",
+          "fact:CH1_SC1_TIME"
+        ],
+        "withhold_refs": [
+          "beat:2_B08",
+          "beat:2_B09"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "撑红伞的女人可能不是伞的主人，而是守护者或被诅咒者",
+            "support_refs": [
+              "beat:2_B07"
+            ]
+          },
+          {
+            "claim": "林晚的推理能力暗示她可能受过专业训练或早有准备",
+            "support_refs": [
+              "beat:2_B06"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "伞上“新划痕”与“旧金属箍”的对比，暗示伞经历了不同时间线的事件",
+            "support_refs": [
+              "beat:2_B05",
+              "beat:2_B06"
+            ],
+            "purpose": "为后续可能的时间或记忆谜题埋下视觉伏笔"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P03",
+      "beat_ids": [
+        "2_B08",
+        "2_B09",
+        "2_B10"
+      ],
+      "dramatic_function": "揭示核心关联，情感爆发，悬念收尾",
+      "audience_state": {
+        "knows": [
+          "林晚母亲遗书中画了红伞并写有“小心红伞”",
+          "撑红伞的女人看到字条后情绪崩溃"
+        ],
+        "question_shift": "从“红伞与林晚母亲有何关联？”转向“母亲为何知道这把伞？接下来会发生什么？”",
+        "suspects": [
+          "撑红伞的女人与林晚母亲有深刻且痛苦的过往",
+          "“小心红伞”是一个警告，可能涉及更大阴谋"
+        ],
+        "withholds": [
+          "母亲与撑红伞的女人具体关系",
+          "“小心红伞”警告的完整含义",
+          "灯光再次熄灭后两人的命运"
+        ]
+      },
+      "emotion": {
+        "state": "情感崩溃与悬念",
+        "intensity_hint": "极高",
+        "trigger": "林晚亮出母亲遗书中的红伞简笔画及“小心红伞”字条",
+        "transition_reason": "从理性对抗瞬间转为情感冲击，揭示深层联系"
+      },
+      "power": {
+        "center_type": "INFORMATION",
+        "center_ref": null,
+        "description": "权力完全转移到林晚手中的信息（遗书字条）上，它击溃了对方的防御",
+        "shift": "从林晚的推理压制，到信息本身造成的情感碾压"
+      },
+      "performance": [
+        {
+          "character_id": "13",
+          "objective": "出示决定性证据，寻求关于母亲的真相",
+          "tactic": "冷静地展示遗书字条，观察对方反应",
+          "turning_point": true,
+          "visible_behavior": "掏出皮夹，取出泛黄纸张展开"
+        },
+        {
+          "character_id": "12",
+          "objective": "面对无法回避的过去，情绪失控",
+          "tactic": "无，防御被彻底击穿",
+          "turning_point": true,
+          "visible_behavior": "看到纸张后颤抖、流泪"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在字条展示时给特写，随后切至撑红伞的女人面部特写，捕捉崩溃瞬间",
+        "hold_logic": "在泪水流淌和灯光熄灭时保持长镜头，让情绪充分发酵",
+        "tempo": "骤然放缓，然后在灯光熄灭时戛然而止",
+        "transition_motivation": "灯光再次熄灭作为场景终结，将情感冲击定格为悬念"
+      },
+      "visual": {
+        "camera_rule": "特写主导，聚焦于字条内容、人物眼睛和泪水",
+        "composition_rule": "字条置于画面中心，成为视觉与叙事的绝对焦点",
+        "movement_condition": "镜头几乎静止，强调凝固的瞬间",
+        "visual_grammar": "红伞在背景中虚化，但红色依然刺眼，与字条形成色彩呼应"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:2_B08",
+          "beat:2_B09"
+        ],
+        "hint_refs": [
+          "beat:2_B10"
+        ],
+        "withhold_refs": [],
+        "audience_suspicions": [
+          {
+            "claim": "母亲可能曾试图警告或保护某人（包括林晚自己）远离红伞",
+            "support_refs": [
+              "beat:2_B08"
+            ]
+          },
+          {
+            "claim": "灯光熄灭可能是人为操控，用于掩盖或制造混乱",
+            "support_refs": [
+              "beat:2_B10"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "场景以黑暗结束，象征真相再次被掩盖，但情感联系已经建立",
+            "support_refs": [
+              "beat:2_B10"
+            ],
+            "purpose": "为下一场景留下强烈的悬念和情感驱动力"
+          }
+        ]
+      }
+    }
+  ],
+  "spatial_expression": [
+    "临潮镇老车站候车厅，凌晨一点后的雨夜。空间封闭、昏暗，灯光因老旧电路而闪烁不定。两人最初保持一定距离（座椅区），随着对话升级，撑红伞的女人逼近，林晚站起后形成新的对峙距离。红伞是空间中的核心视觉元素，其状态（靠放、紧握、划痕）变化标记着关系与情绪的转变。"
+  ],
+  "prop_visual_strategy": [
+    "红伞：从靠放状态变为紧握如武器，伞骨划痕特写作为关键证据。林晚袖口硬物：通过轮廓和动作暗示其存在，但不揭示具体物品。母亲遗书字条：泛黄纸张，上有红伞简笔画和“小心红伞”字迹，作为情感与信息的核心道具。"
+  ],
+  "shot_architecture_guidance": [
+    "建议采用三幕结构对应三个阶段：第一阶段（P01）以中景和过肩镜头建立空间与关系；第二阶段（P02）以近景和特写强化对抗与推理；第三阶段（P03）以极端特写（字条、眼睛）和静止镜头聚焦情感爆发。灯光闪烁可作为自然转场或节奏点。"
+  ],
+  "must_preserve": [
+    "撑红伞的女人主动开口，对话升级",
+    "林晚展示空手，但袖口硬物仍在",
+    "灯光闪烁熄灭瞬间，两人做出防御/警惕动作",
+    "撑红伞的女人直接质问林晚袖中之物",
+    "撑红伞的女人蹲下检查并指出伞上划痕是新的",
+    "林晚站起，反向试探并揭露对方行为模式",
+    "撑红伞的女人情绪波动，承认伞“没有主人”",
+    "林晚亮出母亲遗书中的红伞简笔画及“小心红伞”字条",
+    "撑红伞的女人看到字条后情绪崩溃（流泪、颤抖）",
+    "灯光再次熄灭，场景结束"
+  ],
+  "must_avoid": [
+    "揭示林晚袖口硬物的具体性质",
+    "解释撑红伞的女人与林晚母亲的具体过往",
+    "明确“小心红伞”警告的完整含义",
+    "在灯光熄灭后展示任何后续动作"
+  ],
+  "creative_risks": [
+    "在P02阶段，让撑红伞的女人在情绪波动时，无意识地哼唱一段模糊的旋律，暗示其与过去的联系",
+    "在P03阶段，字条特写时，让红伞的倒影短暂出现在字条表面，形成视觉叠印"
+  ]
+}

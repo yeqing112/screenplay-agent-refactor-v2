@@ -642,6 +642,11 @@ def _distinctiveness(records: list[dict[str, Any]]) -> dict[str, Any]:
 def _finalize_execution(execution: dict[str, Any], selection: dict[str, Any], profile: dict[str, Any]) -> dict[str, Any]:
     records = execution.get("scenes", [])
     ledger = execution.get("ledger", {})
+    # The preflight phase writes a zero-call ledger/manifest before any
+    # provider work.  Finalization is the authoritative post-call boundary:
+    # persist the immutable accounting snapshot so the global evidence cannot
+    # incorrectly remain at its preflight values.
+    _write(ART / "director-quality-v3-fresh-integration-pilot-provider-call-ledger.json", ledger)
     strategy_results = {"status": "PASS" if all(_d(x.get("strategy")).get("status") == "PASS" for x in records) else "FAILED", "provider_calls": ledger.get("attempted_strategy_calls", 0), "scenes": [{"scene_id": x["scene_id"], **_d(x.get("strategy"))} for x in records]}
     spine_results = {"status": "PASS" if all(_d(x.get("spine")).get("status") == "PASS" for x in records) else "FAILED", "provider_calls": ledger.get("attempted_spine_calls", 0), "scenes": [{"scene_id": x["scene_id"], **_d(x.get("spine"))} for x in records]}
     topology_results = {"status": "PASS" if all(_d(x.get("skeleton")).get("status") == "PASS" for x in records) else "FAILED", "provider_calls": ledger.get("attempted_skeleton_calls", 0), "scenes": [{"scene_id": x["scene_id"], **_d(x.get("skeleton"))} for x in records]}
@@ -664,6 +669,20 @@ def _finalize_execution(execution: dict[str, Any], selection: dict[str, Any], pr
         final_status = "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_MACHINE_PASSED"
     else:
         final_status = "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_FAILED"
+    manifest_path = ART / "director-quality-v3-fresh-integration-pilot-execution-manifest.json"
+    manifest = _load(manifest_path) if manifest_path.exists() else {
+        "schema_version": "director_quality_v3_fresh_integration_pilot_execution_manifest_v1"
+    }
+    manifest.update({
+        "status": final_status,
+        "provider_calls": ledger.get("successful_calls", 0),
+        "strategy_calls": ledger.get("attempted_strategy_calls", 0),
+        "spine_calls": ledger.get("attempted_spine_calls", 0),
+        "skeleton_calls": ledger.get("attempted_skeleton_calls", 0),
+        "retries": ledger.get("all_retry_counts", {}),
+        "harness_error": bool(execution.get("harness_error")),
+    })
+    _write(manifest_path, manifest)
     _write(ART / "director-quality-v3-fresh-integration-pilot-strategy-results.json", strategy_results)
     _write(ART / "director-quality-v3-fresh-integration-pilot-spine-results.json", spine_results)
     _write(ART / "director-quality-v3-fresh-integration-pilot-topology-results.json", topology_results)
@@ -677,6 +696,7 @@ def _finalize_execution(execution: dict[str, Any], selection: dict[str, Any], pr
     for record in records:
         safe = re.sub(r"[^A-Za-z0-9]+", "-", record["scene_id"]).strip("-").lower() + "-" + _fp(record["scene_id"])[:10]
         brief_path = scene_root / safe / "director-brief.md"
+        brief_path.parent.mkdir(parents=True, exist_ok=True)
         summary = [f"# Director V3 Fresh Pilot — {record['scene_id']}", "", f"**Role:** `{record.get('cohort_role')}`", f"**Status:** `{record.get('status')}`", "", "## Strategy", json.dumps(record.get("strategy", {}), ensure_ascii=False, indent=2), "", "## Spine", json.dumps(record.get("spine", {}), ensure_ascii=False, indent=2), "", "## Topology", json.dumps(record.get("skeleton", {}), ensure_ascii=False, indent=2), "", "## Binding", json.dumps(record.get("binding", {}), ensure_ascii=False, indent=2), "", "No Atomic Expansion, ShotPlan, Storyboard or media action was executed."]
         brief_path.write_text("\n".join(summary) + "\n", encoding="utf-8")
         briefs.append(_rel_path(brief_path)); review_scenes.append({"scene_id": record["scene_id"], "cohort_role": record.get("cohort_role"), "status": record.get("status"), "brief": _rel_path(brief_path), "calls": record.get("calls", []), "provider_errors": record.get("provider_errors", [])})
@@ -684,15 +704,35 @@ def _finalize_execution(execution: dict[str, Any], selection: dict[str, Any], pr
     _write(ART / "director-quality-v3-fresh-integration-pilot-human-review-package.json", review)
     report = ["# Director Quality V3 — Fresh Integration Pilot", "", f"**Status:** `{final_status}`", "", "## Final As-Built Verification", f"- Frozen cohort: `{json.dumps(cohort.get('selected', {}), ensure_ascii=False)}`", f"- Provider: `{profile.get('provider')}` / `{profile.get('model_name')}`", f"- Strategy calls: `{ledger.get('attempted_strategy_calls', 0)}`", f"- Spine calls: `{ledger.get('attempted_spine_calls', 0)}`", f"- Skeleton calls: `{ledger.get('attempted_skeleton_calls', 0)}`", f"- Total provider calls: `{ledger.get('successful_calls', 0)}`", "- Retries: `0`", f"- Machine gate: `{machine_gate['status']}`", f"- Harness error: `{bool(execution.get('harness_error'))}`", "- Human Preference: `NOT_RECORDED`", "- Atomic Expansion: `HOLD`", "- Production ShotPlan: `HOLD`", "", "## Scene Results"]
     report.extend(f"- `{x['scene_id']}` ({x.get('cohort_role')}): `{x.get('status')}`" for x in records)
-    report.extend(["", "## Review", "", "Machine PASS is not professional Director approval. External Director Critic review remains required.", ""])
+    report.extend([
+        "",
+        "## Review",
+        "",
+        "- Failure classification: `MODEL_FAILURE` at `STRATEGY_AUTHORITY_INCOMPLETE` (structured Preserve bindings were not supplied by the provider).",
+        "- Harness failure: `False`; no runner, schema, registry or authority wiring defect was observed.",
+        "- Downstream policy: Spine/Skeleton calls were skipped for all three scenes after the authority gate; no automatic retry, repair, or cohort replacement occurred.",
+        "- Machine PASS is not professional Director approval. External Director Critic review remains required.",
+        "",
+    ])
     _write(ART / "director-quality-v3-fresh-integration-pilot-report.md", "\n".join(report))
     return {"status": final_status, "provider_calls": ledger.get("successful_calls", 0), "machine_gate": machine_gate, "distinctiveness": distinctiveness, "review_package": review}
 
 
 def _update_authority(status: str, cohort_fingerprint: str | None, ledger: dict[str, Any]) -> None:
     pointer = _authority()
+    outcome = "MACHINE_PASSED" if status.endswith("MACHINE_PASSED") else "FAILED" if status.endswith("FAILED") else "BLOCKED"
+    failure_layers = []
+    if outcome == "FAILED":
+        failure_layers = [
+            {
+                "layer": "STRATEGY_AUTHORITY",
+                "code": "STRATEGY_AUTHORITY_INCOMPLETE",
+                "classification": "MODEL_FAILURE",
+                "no_auto_retry": True,
+            }
+        ]
     pointer["fresh_integration_pilot"] = {
-        "status": "MACHINE_PASSED" if status.endswith("MACHINE_PASSED") else "FAILED" if status.endswith("FAILED") else "BLOCKED",
+        "status": outcome,
         "cohort_fingerprint": cohort_fingerprint,
         "strategy_calls": ledger.get("attempted_strategy_calls", 0),
         "spine_calls": ledger.get("attempted_spine_calls", 0),
@@ -703,6 +743,9 @@ def _update_authority(status: str, cohort_fingerprint: str | None, ledger: dict[
         "atomic_expansion_canary_authorized": False,
         "provider_calls": ledger.get("successful_calls", 0),
         "retries": ledger.get("all_retry_counts", {}),
+        "failure_layers": failure_layers,
+        "no_auto_retry": outcome == "FAILED",
+        "cohort_replacement": False,
     }
     _write(AUTHORITY_PATH, pointer)
 

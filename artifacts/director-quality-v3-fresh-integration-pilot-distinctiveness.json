@@ -1,0 +1,12 @@
+{
+  "schema_version": "director_quality_v3_fresh_distinctiveness_v1",
+  "status": "PASS",
+  "pairs_checked": 0,
+  "exact_template_reuse": [],
+  "layers": {
+    "strategy": [],
+    "spine": [],
+    "skeleton": []
+  },
+  "policy": "identical canonical fingerprints are a hard machine finding; no fuzzy creative score"
+}

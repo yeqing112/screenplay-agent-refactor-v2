@@ -1,0 +1,94 @@
+{
+  "schema_version": "provider_exposure_registry_v1",
+  "generated_at": "2026-09-16T00:35:16.124761+00:00",
+  "scenes": {
+    "book990402:e1:红伞幻影（一）": {
+      "status": "NOT_EXPOSED",
+      "evidence": []
+    },
+    "book990402:e1:红伞幻影（二）": {
+      "status": "NOT_EXPOSED",
+      "evidence": []
+    },
+    "book990402:e2:回声照相馆": {
+      "status": "EXPOSED",
+      "evidence": [
+        {
+          "provider_stage": "director-quality-v3-final-shot-architecture-recanary-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-final-shot-architecture-recanary-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-shot-architecture-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-shot-architecture-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-spine-topology-canary-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-spine-topology-canary-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-strategy-approval-repair-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-strategy-approval-repair-real.json"
+        }
+      ]
+    },
+    "book990402:e2:暗房门口的试探": {
+      "status": "NOT_EXPOSED",
+      "evidence": []
+    },
+    "book990402:e3:暗房惊魂": {
+      "status": "EXPOSED",
+      "evidence": [
+        {
+          "provider_stage": "director-quality-v3-final-shot-architecture-recanary-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-final-shot-architecture-recanary-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-shot-architecture-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-shot-architecture-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-spine-topology-canary-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-spine-topology-canary-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-strategy-approval-repair-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-strategy-approval-repair-real.json"
+        }
+      ]
+    },
+    "book990402:e3:暗房惊魂（2）": {
+      "status": "EXPOSED",
+      "evidence": [
+        {
+          "provider_stage": "director-quality-v3-final-shot-architecture-recanary-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-final-shot-architecture-recanary-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-shot-architecture-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-shot-architecture-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-spine-topology-canary-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-spine-topology-canary-real.json"
+        },
+        {
+          "provider_stage": "director-quality-v3-strategy-approval-repair-real",
+          "provider_call_count": 1,
+          "evidence_path": "artifacts\\director-quality-v3-strategy-approval-repair-real.json"
+        }
+      ]
+    }
+  },
+  "provider_calls": 0
+}

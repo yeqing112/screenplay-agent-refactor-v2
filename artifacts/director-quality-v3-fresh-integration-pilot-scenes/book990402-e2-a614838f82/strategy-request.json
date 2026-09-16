@@ -1,0 +1,310 @@
+{
+  "protocol_version": "director-quality-v3-final-recanary-strategy-ir-v2-prompt-v1",
+  "attempt_type": "CREATIVE_GENERATION",
+  "system_prompt": "[DIRECTOR_STRATEGY_IR_V2]\nYou are the scene director. Return exactly one JSON object with schema_version=director_scene_strategy_ir_v2. Express scene phases and directing choices, never a shot list. Use only supplied beat, character and source references. Source facts are authoritative and cannot be added or rewritten.\n\nInformation is reference-first: information.reveal_refs, hint_refs and withhold_refs contain only allowed source refs. audience_suspicions and director_inferences are interpretive claims and must include support_refs; they are never source facts. Flexible list fields may be string, string[] or null; the deterministic program will normalize them without changing meaning. Do not output fingerprints, scores, source_fact claims, ShotPlan fields or patches. Preserve beat order and assign every beat exactly once. If evidence is absent, use N/A only where the contract allows it.",
+  "user_prompt": "[DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\n{\"attempt_type\":\"CREATIVE_GENERATION\",\"protocol_version\":\"director-quality-v3-final-recanary-strategy-ir-v2-prompt-v1\",\"provider_contract\":{\"allowed_beat_ids\":[\"B12\",\"B13\",\"B14\",\"B15\",\"B16\",\"B17\",\"B18\",\"B19\"],\"allowed_character_ids\":[\"17\",\"18\"],\"allowed_characters\":[{\"canonical_identity_id\":\"book:990402:character:17\",\"canonical_name\":\"林晚\",\"character_id\":\"17\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:18\",\"canonical_name\":\"顾沉\",\"character_id\":\"18\",\"scope\":\"book-level\"}],\"allowed_source_refs\":[\"beat:B12\",\"beat:B13\",\"beat:B14\",\"beat:B15\",\"beat:B16\",\"beat:B17\",\"beat:B18\",\"beat:B19\",\"fact:CH2_CHAR_林晚_IDENTITY\",\"fact:CH2_CHAR_顾沉_IDENTITY\",\"fact:CH2_SC1_LOCATION\",\"fact:CH2_SC1_TIME\",\"character:17\",\"character:18\",\"prop:地板拖痕\",\"prop:对折的旧照片（林晚年轻时穿灰外套）\",\"prop:暗房红色安全灯\",\"prop:钥匙\",\"prop:黑色皮质相册夹（空，有划痕）\"],\"epistemic_rules\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"flexible_shape_policy\":{\"creative_risks\":[\"string\",\"string[]\",\"null\"],\"must_avoid\":[\"string\",\"string[]\",\"null\"],\"must_preserve\":[\"string\",\"string[]\",\"null\"],\"prop_visual_strategy\":[\"string\",\"string[]\",\"null\"],\"shot_architecture_guidance\":[\"string\",\"string[]\",\"null\"],\"spatial_expression\":[\"string\",\"string[]\",\"null\"]},\"information_schema\":{\"audience_suspicions\":\"claim[]\",\"director_inferences\":\"claim[]\",\"hint_refs\":\"source_ref[]\",\"reveal_refs\":\"source_ref[]\",\"withhold_refs\":\"source_ref[]\"},\"minimal_skeleton\":{\"creative_risks\":[],\"dramatic_objective\":\"\",\"must_avoid\":[],\"must_preserve\":[],\"prop_visual_strategy\":[],\"scene_id\":\"\",\"scene_phases\":[{\"audience_state\":{\"knows\":[],\"question_shift\":\"\",\"suspects\":[],\"withholds\":[]},\"beat_ids\":[],\"dramatic_function\":\"\",\"edit\":{\"cut_logic\":\"\",\"hold_logic\":\"\",\"tempo\":\"\",\"transition_motivation\":\"\"},\"emotion\":{\"intensity_hint\":null,\"state\":\"\",\"transition_reason\":\"\",\"trigger\":\"\"},\"information\":{\"audience_suspicions\":[],\"director_inferences\":[],\"hint_refs\":[],\"reveal_refs\":[],\"withhold_refs\":[]},\"performance\":[{\"character_id\":\"17\",\"objective\":\"\",\"tactic\":\"\",\"turning_point\":false,\"visible_behavior\":\"\"}],\"phase_id\":\"P01\",\"power\":{\"center_ref\":null,\"center_type\":\"NONE\",\"description\":\"\",\"shift\":\"\"},\"visual\":{\"camera_rule\":\"\",\"composition_rule\":\"\",\"movement_condition\":\"\",\"visual_grammar\":\"\"}}],\"scene_question\":\"\",\"schema_version\":\"\",\"shot_architecture_guidance\":[],\"spatial_expression\":[],\"strategy_summary\":\"\",\"visual_thesis\":\"\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"max\":6,\"min\":2,\"recommended\":\"3-5\"},\"scene_id\":\"book990402:e2:暗房门口的试探\",\"schema_version\":\"director_scene_strategy_ir_v2\",\"source_ref_contract\":{\"allowed_ids\":{\"beat\":[\"B12\",\"B13\",\"B14\",\"B15\",\"B16\",\"B17\",\"B18\",\"B19\"],\"character\":[\"17\",\"18\"],\"fact\":[\"CH2_CHAR_林晚_IDENTITY\",\"CH2_CHAR_顾沉_IDENTITY\",\"CH2_SC1_LOCATION\",\"CH2_SC1_TIME\"],\"location\":[],\"prop\":[\"地板拖痕\",\"对折的旧照片（林晚年轻时穿灰外套）\",\"暗房红色安全灯\",\"钥匙\",\"黑色皮质相册夹（空，有划痕）\"]},\"allowed_source_refs\":[\"beat:B12\",\"beat:B13\",\"beat:B14\",\"beat:B15\",\"beat:B16\",\"beat:B17\",\"beat:B18\",\"beat:B19\",\"fact:CH2_CHAR_林晚_IDENTITY\",\"fact:CH2_CHAR_顾沉_IDENTITY\",\"fact:CH2_SC1_LOCATION\",\"fact:CH2_SC1_TIME\",\"character:17\",\"character:18\",\"prop:地板拖痕\",\"prop:对折的旧照片（林晚年轻时穿灰外套）\",\"prop:暗房红色安全灯\",\"prop:钥匙\",\"prop:黑色皮质相册夹（空，有划痕）\"],\"beat_alias_table\":{\"aliases\":{\"12\":\"B12\",\"13\":\"B13\",\"14\":\"B14\",\"15\":\"B15\",\"16\":\"B16\",\"17\":\"B17\",\"18\":\"B18\",\"19\":\"B19\",\"B12\":\"B12\",\"B13\":\"B13\",\"B14\":\"B14\",\"B15\":\"B15\",\"B16\":\"B16\",\"B17\":\"B17\",\"B18\":\"B18\",\"B19\":\"B19\",\"b12\":\"B12\",\"b13\":\"B13\",\"b14\":\"B14\",\"b15\":\"B15\",\"b16\":\"B16\",\"b17\":\"B17\",\"b18\":\"B18\",\"b19\":\"B19\",\"beat:12\":\"B12\",\"beat:13\":\"B13\",\"beat:14\":\"B14\",\"beat:15\":\"B15\",\"beat:16\":\"B16\",\"beat:17\":\"B17\",\"beat:18\":\"B18\",\"beat:19\":\"B19\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"B12\",\"B13\",\"B14\",\"B15\",\"B16\",\"B17\",\"B18\",\"B19\"],\"normalization_policy\":\"one-to-one aliases only\"},\"schema_version\":\"director_source_ref_contract_v2\",\"syntax\":\"<type>:<authoritative_id>\",\"types\":[\"beat\",\"fact\",\"prop\",\"character\",\"location\"]}},\"scene_inputs\":{\"book_id\":990402,\"director_treatment\":{\"audience_emotion\":\"从紧张对峙到悬疑加深，最终留下对顾沉动机的强烈好奇。\",\"audience_question\":\"顾沉究竟在隐藏什么？林晚会如何利用手中的照片？\",\"beat_map\":[{\"beat_id\":\"B12\",\"dramatic_function\":\"延续场景1的紧张氛围，开启新一轮试探。\",\"emotion_change\":\"林晚转身，恢复慵懒无害姿态；顾沉保持困倦表象。\",\"event\":\"顾沉从暗房门口出现，与背对他的林晚进行简短对话。\",\"information_change\":\"顾沉再次出现，询问林晚是否还在。\",\"type\":\"对峙\"},{\"beat_id\":\"B13\",\"dramatic_function\":\"顾沉直接试探林晚对相册夹的调查程度。\",\"emotion_change\":\"林晚手指收紧，但语气保持随意。\",\"event\":\"顾沉询问林晚是否翻了旧相册夹，找到了什么有意思的东西。\",\"information_change\":\"顾沉明确知道林晚动过相册夹。\",\"type\":\"试探\"},{\"beat_id\":\"B14\",\"dramatic_function\":\"林晚回避问题，同时将异常状态抛回给顾沉。\",\"emotion_change\":\"林晚保持无辜；顾沉眼神飘忽。\",\"event\":\"林晚不直接回答，转而指出相册夹搭扣可能坏了，并称里面是空的。\",\"information_change\":\"林晚确认相册夹内为空，并暗示其损坏。\",\"type\":\"回避\"},{\"beat_id\":\"B15\",\"dramatic_function\":\"顾沉首次口头描述“灰外套”照片的特征，进行更具体的试探。\",\"emotion_change\":\"林晚瞳孔轻微收缩，呼吸停顿半拍。\",\"event\":\"顾沉进一步描述相册夹里“以前好像放着张挺特别的照片。灰扑扑的，一个人影，看不清脸。”\",\"information_change\":\"顾沉描述了丢失照片的特征（灰扑扑、人影）。\",\"type\":\"试探\"},{\"beat_id\":\"B16\",\"dramatic_function\":\"林晚继续隐藏自己持有照片的事实。\",\"emotion_change\":\"林晚维持无辜表情，但手未离开口袋。\",\"event\":\"林晚否认有印象，坚持里面是空的。\",\"information_change\":\"林晚否认知晓顾沉描述的照片。\",\"type\":\"否认\"},{\"beat_id\":\"B17\",\"dramatic_function\":\"顾沉发出明确警告，暗示照相馆内有不应被触及的秘密。\",\"emotion_change\":\"顾沉语气压低，带有威胁感；林晚表面顺从。\",\"event\":\"顾沉在离开前，低声警告林晚：“这照相馆……晚上别乱翻东西。有些照片，不该看的，别看。”\",\"information_change\":\"顾沉警告林晚不要探究某些照片。\",\"type\":\"警告\"},{\"beat_id\":\"B18\",\"dramatic_function\":\"强化林晚的秘密与决心，将她的旧照片与当前谜团（拖痕、暗房）联系起来。\",\"emotion_change\":\"林晚从慵懒伪装转为冰冷、锐利。\",\"event\":\"顾沉离开后，林晚表情瞬间变冷，再次拿出对折的旧照片，但未打开，只是摩挲边缘，并盯着暗房门口的拖痕和红光。\",\"information_change\":\"林晚再次确认自己持有旧照片，并关注暗房线索。\",\"type\":\"揭示\"},{\"beat_id\":\"B19\",\"dramatic_function\":\"林晚梳理线索，明确怀疑对象为顾沉。\",\"emotion_change\":\"林晚的怀疑转化为明确的调查方向。\",\"event\":\"林晚低声自语：“灰外套……相册夹……拖痕……顾沉……你到底在藏什么？”\",\"information_change\":\"林晚将线索串联，锁定顾沉为怀疑目标。\",\"type\":\"思考\"}],\"book_id\":990402,\"character_intents\":{\"17\":{\"emotion_in\":\"警惕与伪装\",\"emotion_out\":\"冰冷与决绝\",\"goal\":\"隐藏自己持有照片的事实，并试探顾沉的意图\",\"name\":\"林晚\",\"obstacle\":\"顾沉的直接试探与警告\",\"power_in\":0.4,\"power_out\":0.6,\"subtext\":\"我知道你在撒谎，我也在隐藏，但我会找到真相。\",\"tactic\":\"以无辜姿态回避，暗中观察并收集信息\"},\"18\":{\"emotion_in\":\"困倦与试探\",\"emotion_out\":\"威胁与离开\",\"goal\":\"确认林晚是否发现了照片，并警告她停止调查\",\"name\":\"顾沉\",\"obstacle\":\"林晚的否认与伪装\",\"power_in\":0.6,\"power_out\":0.5,\"subtext\":\"别碰你不该碰的东西，否则后果自负。\",\"tactic\":\"从试探转为直接警告，试图控制局面\"}},\"constraints\":[\"不得覆盖锁定资产事实\",\"不得把未声明内容伪装成剧本事实\"],\"coverage_strategy\":\"聚焦于两人在暗房门口的对峙与试探，通过对话和微表情揭示紧张关系，最后以林晚的独白收尾，为后续调查铺垫。\",\"decision_packet_id\":18,\"dramatic_objective\":\"通过顾沉对相册夹的试探和林晚的回避，揭示两人之间的秘密与对抗，并确立林晚的调查方向。\",\"edit_rhythm\":\"在试探与回避的节拍间保持紧凑节奏，在警告和揭示节拍处稍作停顿以强化张力。\",\"episode\":2,\"execution_status\":\"queued\",\"id\":19,\"information_strategy\":\"严格遵循beat_map的信息释放，仅在B15和B18揭示关键信息，其余节拍维持表面对话。\",\"model_info\":{\"candidate_decision\":\"ready_for_review\",\"candidate_fingerprint\":\"370d8ebd28b3bfafd84b5c206d3e6b3684510cfcf1752c2ee7198d8ec8bcd247\",\"confirmed_at\":\"2026-09-13T04:47:22.505545\",\"llm_called\":true,\"mode\":\"confirmed_llm_candidate\",\"rollback_anchor\":{\"previous_revision\":1,\"previous_treatment_id\":13}},\"performance_direction\":\"林晚需在慵懒与锐利间切换，顾沉需在困倦与威胁间转换，通过细微动作（如手指收紧、眼神飘忽）传递潜台词。\",\"production_status\":\"blocked\",\"prompt_fingerprint\":\"370d8ebd28b3bfafd84b5c206d3e6b3684510cfcf1752c2ee7198d8ec8bcd247\",\"quality_status\":\"draft\",\"relationship_power_shift\":\"从顾沉主导试探（B12-B17）到林晚暗中掌握主动权（B18-B19），权力关系在节拍中自然流转。\",\"revision\":2,\"scene_id\":\"book990402:e2:暗房门口的试探\",\"scene_name\":\"暗房门口的试探\",\"skill_id\":\"\",\"skill_version\":\"\",\"sound_strategy\":\"以环境音（暗房红光嗡鸣、地板拖痕摩擦声）烘托紧张氛围，对话保持低沉，警告部分可加入轻微回声效果。\",\"source_script_hash\":\"60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4\",\"source_script_revision\":\"script-17\",\"status\":\"approved\",\"unknowns\":[],\"visual_strategy\":\"强调暗房门口的空间压迫感，利用柜台、门框等锚点构建对峙构图，关键道具（相册夹、旧照片）需在画面中清晰可见。\",\"workflow_profile\":\"production\"},\"fact_snapshot\":{\"payload_hash\":\"a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516\",\"records\":[{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"characters.identity\",\"text\":\"推测：回声照相馆相关者（母亲与照相馆有关联）\"}],\"fact_id\":\"CH2_CHAR_林晚_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:2\",\"status\":\"unknown\",\"subject_id\":\"林晚\",\"subject_type\":\"character\",\"value\":\"推测：回声照相馆相关者（母亲与照相馆有关联）\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"characters.identity\",\"text\":\"推测：回声照相馆店主/暗房工作者\"}],\"fact_id\":\"CH2_CHAR_顾沉_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:2\",\"status\":\"unknown\",\"subject_id\":\"顾沉\",\"subject_type\":\"character\",\"value\":\"推测：回声照相馆店主/暗房工作者\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"scenes.location\",\"text\":\"回声照相馆\"}],\"fact_id\":\"CH2_SC1_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:2\",\"status\":\"confirmed\",\"subject_id\":\"回声照相馆\",\"subject_type\":\"scene\",\"value\":\"回声照相馆\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"scenes.time\",\"text\":\"天刚亮\"}],\"fact_id\":\"CH2_SC1_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:2\",\"status\":\"confirmed\",\"subject_id\":\"回声照相馆\",\"subject_type\":\"scene\",\"value\":\"天刚亮\"}],\"scene_id\":\"book990402:e2:暗房门口的试探\",\"snapshot_id\":2,\"status\":\"confirmed\"},\"scene\":{\"actions\":[],\"asset_mentions\":[\"暗房\",\"柜台\",\"后门\",\"高窗\"],\"beats\":[{\"beat_id\":\"B12\",\"dramatic_function\":\"延续场景1的紧张氛围，开启新一轮试探。\",\"emotion_change\":\"林晚转身，恢复慵懒无害姿态；顾沉保持困倦表象。\",\"event\":\"顾沉从暗房门口出现，与背对他的林晚进行简短对话。\",\"information_change\":\"顾沉再次出现，询问林晚是否还在。\",\"type\":\"对峙\"},{\"beat_id\":\"B13\",\"dramatic_function\":\"顾沉直接试探林晚对相册夹的调查程度。\",\"emotion_change\":\"林晚手指收紧，但语气保持随意。\",\"event\":\"顾沉询问林晚是否翻了旧相册夹，找到了什么有意思的东西。\",\"information_change\":\"顾沉明确知道林晚动过相册夹。\",\"type\":\"试探\"},{\"beat_id\":\"B14\",\"dramatic_function\":\"林晚回避问题，同时将异常状态抛回给顾沉。\",\"emotion_change\":\"林晚保持无辜；顾沉眼神飘忽。\",\"event\":\"林晚不直接回答，转而指出相册夹搭扣可能坏了，并称里面是空的。\",\"information_change\":\"林晚确认相册夹内为空，并暗示其损坏。\",\"type\":\"回避\"},{\"beat_id\":\"B15\",\"dramatic_function\":\"顾沉首次口头描述“灰外套”照片的特征，进行更具体的试探。\",\"emotion_change\":\"林晚瞳孔轻微收缩，呼吸停顿半拍。\",\"event\":\"顾沉进一步描述相册夹里“以前好像放着张挺特别的照片。灰扑扑的，一个人影，看不清脸。”\",\"information_change\":\"顾沉描述了丢失照片的特征（灰扑扑、人影）。\",\"type\":\"试探\"},{\"beat_id\":\"B16\",\"dramatic_function\":\"林晚继续隐藏自己持有照片的事实。\",\"emotion_change\":\"林晚维持无辜表情，但手未离开口袋。\",\"event\":\"林晚否认有印象，坚持里面是空的。\",\"information_change\":\"林晚否认知晓顾沉描述的照片。\",\"type\":\"否认\"},{\"beat_id\":\"B17\",\"dramatic_function\":\"顾沉发出明确警告，暗示照相馆内有不应被触及的秘密。\",\"emotion_change\":\"顾沉语气压低，带有威胁感；林晚表面顺从。\",\"event\":\"顾沉在离开前，低声警告林晚：“这照相馆……晚上别乱翻东西。有些照片，不该看的，别看。”\",\"information_change\":\"顾沉警告林晚不要探究某些照片。\",\"type\":\"警告\"},{\"beat_id\":\"B18\",\"dramatic_function\":\"强化林晚的秘密与决心，将她的旧照片与当前谜团（拖痕、暗房）联系起来。\",\"emotion_change\":\"林晚从慵懒伪装转为冰冷、锐利。\",\"event\":\"顾沉离开后，林晚表情瞬间变冷，再次拿出对折的旧照片，但未打开，只是摩挲边缘，并盯着暗房门口的拖痕和红光。\",\"information_change\":\"林晚再次确认自己持有旧照片，并关注暗房线索。\",\"type\":\"揭示\"},{\"beat_id\":\"B19\",\"dramatic_function\":\"林晚梳理线索，明确怀疑对象为顾沉。\",\"emotion_change\":\"林晚的怀疑转化为明确的调查方向。\",\"event\":\"林晚低声自语：“灰外套……相册夹……拖痕……顾沉……你到底在藏什么？”\",\"information_change\":\"林晚将线索串联，锁定顾沉为怀疑目标。\",\"type\":\"思考\"}],\"blocking_hints\":[],\"book_id\":990402,\"character_blocking\":[{\"anchor\":\"柜台\",\"character_id\":\"林晚\",\"facing\":\"背对暗房门\",\"position\":\"站在柜台后\"},{\"anchor\":\"暗房门\",\"character_id\":\"顾沉\",\"facing\":\"\",\"position\":\"侧身从暗房门缝挤出\"},{\"anchor\":\"门框\",\"character_id\":\"顾沉\",\"facing\":\"\",\"position\":\"靠在门框上\"},{\"anchor\":\"门框\",\"character_id\":\"顾沉\",\"facing\":\"\",\"position\":\"直起身，不再靠门框\"},{\"anchor\":\"林晚\",\"character_id\":\"顾沉\",\"facing\":\"\",\"position\":\"走过来拿起钥匙，经过林晚身边\"},{\"anchor\":\"后门\",\"character_id\":\"顾沉\",\"facing\":\"\",\"position\":\"走向后门，径直离开\"},{\"anchor\":\"\",\"character_id\":\"林晚\",\"facing\":\"面对顾沉\",\"position\":\"缓缓转身\"},{\"anchor\":\"\",\"character_id\":\"林晚\",\"facing\":\"\",\"position\":\"站在原地\"},{\"anchor\":\"口袋\",\"character_id\":\"林晚\",\"facing\":\"看向自己搭在口袋上的手\",\"position\":\"低下头\"},{\"anchor\":\"口袋\",\"character_id\":\"林晚\",\"facing\":\"\",\"position\":\"用另一只手从口袋里抽出对折的旧照片\"},{\"anchor\":\"柜台\",\"character_id\":\"林晚\",\"facing\":\"\",\"position\":\"走到柜台后\"},{\"anchor\":\"暗房门\",\"character_id\":\"林晚\",\"facing\":\"看向暗房门\",\"position\":\"抬起头\"}],\"dialogues\":[],\"episode\":2,\"location_id\":\"\",\"location_name\":\"回声照相馆暗房门口\",\"name\":\"暗房门口的试探\",\"participants\":[\"17\",\"18\"],\"props\":[\"黑色皮质相册夹（空，有划痕）\",\"对折的旧照片（林晚年轻时穿灰外套）\",\"钥匙\",\"暗房红色安全灯\",\"地板拖痕\"],\"required_visual_proofs\":[],\"scene_id\":\"book990402:e2:暗房门口的试探\",\"script_participants\":[\"林晚\",\"顾沉\"],\"state_in\":{},\"state_out\":{},\"time_of_day\":\"清晨 06:48\",\"weather\":\"晨光斜射\"},\"scene_blocking\":{\"beat_transitions\":[{\"beat_id\":\"B12\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"scene_start\",\"event\":\"顾沉从暗房门口出现，与背对他的林晚进行简短对话。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B13\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"顾沉询问林晚是否翻了旧相册夹，找到了什么有意思的东西。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B14\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"林晚不直接回答，转而指出相册夹搭扣可能坏了，并称里面是空的。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B15\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"顾沉进一步描述相册夹里“以前好像放着张挺特别的照片。灰扑扑的，一个人影，看不清脸。”\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B16\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"林晚否认有印象，坚持里面是空的。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B17\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"顾沉在离开前，低声警告林晚：“这照相馆……晚上别乱翻东西。有些照片，不该看的，别看。”\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B18\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"顾沉离开后，林晚表情瞬间变冷，再次拿出对折的旧照片，但未打开，只是摩挲边缘，并盯着暗房门口的拖痕和红光。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B19\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"林晚低声自语：“灰外套……相册夹……拖痕……顾沉……你到底在藏什么？”\",\"exit_state\":\"same_as_next\"}],\"book_id\":990402,\"camera_axis\":{},\"creative_decisions\":[],\"derived_constraints\":{},\"episode\":2,\"evidence_fingerprint\":\"5beecc26f4e558c23c3f4d81108ba4cf1e33067fcfd63990226e03a38c42e98f\",\"execution_status\":\"queued\",\"id\":16,\"model_info\":{\"confirmed_at\":\"2026-09-13T04:47:22.543464\",\"mode\":\"confirmed_human_candidate\",\"rollback_anchor\":{\"previous_blocking_id\":null,\"previous_revision\":null}},\"participants\":[{\"anchor\":\"暗房门\",\"character_id\":\"17\",\"facing\":\"看向暗房门\",\"name\":\"林晚\",\"position\":\"抬起头\",\"source\":\"script_declared\"},{\"anchor\":\"后门\",\"character_id\":\"18\",\"facing\":null,\"name\":\"顾沉\",\"position\":\"走向后门，径直离开\",\"source\":\"script_declared\"}],\"production_status\":\"blocked\",\"quality_status\":\"draft\",\"revision\":1,\"scene_id\":\"book990402:e2:暗房门口的试探\",\"scene_name\":\"暗房门口的试探\",\"schema_version\":\"scene_blocking_v1\",\"source_script_hash\":\"60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4\",\"source_spatial_facts\":[],\"spatial_model\":{},\"spatial_rules\":[\"locked_asset_identity_is_immutable\",\"do_not_change_screen_direction_without_declared_transition\",\"do_not_invent_character_position_when_script_is_silent\",\"carry_forward_unresolved_positions_to_shot_plan_review\"],\"status\":\"approved\",\"treatment_id\":19,\"treatment_revision\":2,\"unknowns\":[],\"unresolved_facts\":[],\"validation\":{},\"workflow_profile\":\"production\"},\"scene_id\":\"book990402:e2:暗房门口的试探\",\"source_evidence\":{\"database\":\"work\\\\db\\\\screenplay.db\",\"director_treatment_id\":19,\"fact_snapshot_id\":2,\"scene_blocking_id\":16,\"script_ir_id\":6,\"script_ir_payload_hash\":\"4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e\"},\"strategy_contract\":{\"allowed_characters\":[{\"canonical_identity_id\":\"book:990402:character:17\",\"canonical_name\":\"林晚\",\"character_id\":\"17\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:18\",\"canonical_name\":\"顾沉\",\"character_id\":\"18\",\"scope\":\"book-level\"}],\"allowed_ids\":{\"beat\":[\"B12\",\"B13\",\"B14\",\"B15\",\"B16\",\"B17\",\"B18\",\"B19\"],\"character\":[\"17\",\"18\"],\"fact\":[\"CH2_CHAR_林晚_IDENTITY\",\"CH2_CHAR_顾沉_IDENTITY\",\"CH2_SC1_LOCATION\",\"CH2_SC1_TIME\"],\"location\":[],\"prop\":[\"地板拖痕\",\"对折的旧照片（林晚年轻时穿灰外套）\",\"暗房红色安全灯\",\"钥匙\",\"黑色皮质相册夹（空，有划痕）\"]},\"allowed_source_refs\":[\"beat:B12\",\"beat:B13\",\"beat:B14\",\"beat:B15\",\"beat:B16\",\"beat:B17\",\"beat:B18\",\"beat:B19\",\"fact:CH2_CHAR_林晚_IDENTITY\",\"fact:CH2_CHAR_顾沉_IDENTITY\",\"fact:CH2_SC1_LOCATION\",\"fact:CH2_SC1_TIME\",\"character:17\",\"character:18\",\"prop:地板拖痕\",\"prop:对折的旧照片（林晚年轻时穿灰外套）\",\"prop:暗房红色安全灯\",\"prop:钥匙\",\"prop:黑色皮质相册夹（空，有划痕）\"],\"allowed_source_refs_fingerprint\":\"0443b90cdfef338ac9f50629343a041bcb0f90cb077117bad3ff1a60a81fcebc\",\"beat_alias_table\":{\"aliases\":{\"12\":\"B12\",\"13\":\"B13\",\"14\":\"B14\",\"15\":\"B15\",\"16\":\"B16\",\"17\":\"B17\",\"18\":\"B18\",\"19\":\"B19\",\"B12\":\"B12\",\"B13\":\"B13\",\"B14\":\"B14\",\"B15\":\"B15\",\"B16\":\"B16\",\"B17\":\"B17\",\"B18\":\"B18\",\"B19\":\"B19\",\"b12\":\"B12\",\"b13\":\"B13\",\"b14\":\"B14\",\"b15\":\"B15\",\"b16\":\"B16\",\"b17\":\"B17\",\"b18\":\"B18\",\"b19\":\"B19\",\"beat:12\":\"B12\",\"beat:13\":\"B13\",\"beat:14\":\"B14\",\"beat:15\":\"B15\",\"beat:16\":\"B16\",\"beat:17\":\"B17\",\"beat:18\":\"B18\",\"beat:19\":\"B19\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"B12\",\"B13\",\"B14\",\"B15\",\"B16\",\"B17\",\"B18\",\"B19\"],\"normalization_policy\":\"one-to-one aliases only\"},\"beat_alias_table_fingerprint\":\"c7caa671f84a6cb0768a13bce401979aaffe52981c1ef28530dc83d0663d0df7\",\"beat_ids\":[\"B12\",\"B13\",\"B14\",\"B15\",\"B16\",\"B17\",\"B18\",\"B19\"],\"beats\":{\"B12\":{\"beat_id\":\"B12\",\"dramatic_function\":\"延续场景1的紧张氛围，开启新一轮试探。\",\"emotion_change\":\"林晚转身，恢复慵懒无害姿态；顾沉保持困倦表象。\",\"event\":\"顾沉从暗房门口出现，与背对他的林晚进行简短对话。\",\"information_change\":\"顾沉再次出现，询问林晚是否还在。\",\"type\":\"对峙\"},\"B13\":{\"beat_id\":\"B13\",\"dramatic_function\":\"顾沉直接试探林晚对相册夹的调查程度。\",\"emotion_change\":\"林晚手指收紧，但语气保持随意。\",\"event\":\"顾沉询问林晚是否翻了旧相册夹，找到了什么有意思的东西。\",\"information_change\":\"顾沉明确知道林晚动过相册夹。\",\"type\":\"试探\"},\"B14\":{\"beat_id\":\"B14\",\"dramatic_function\":\"林晚回避问题，同时将异常状态抛回给顾沉。\",\"emotion_change\":\"林晚保持无辜；顾沉眼神飘忽。\",\"event\":\"林晚不直接回答，转而指出相册夹搭扣可能坏了，并称里面是空的。\",\"information_change\":\"林晚确认相册夹内为空，并暗示其损坏。\",\"type\":\"回避\"},\"B15\":{\"beat_id\":\"B15\",\"dramatic_function\":\"顾沉首次口头描述“灰外套”照片的特征，进行更具体的试探。\",\"emotion_change\":\"林晚瞳孔轻微收缩，呼吸停顿半拍。\",\"event\":\"顾沉进一步描述相册夹里“以前好像放着张挺特别的照片。灰扑扑的，一个人影，看不清脸。”\",\"information_change\":\"顾沉描述了丢失照片的特征（灰扑扑、人影）。\",\"type\":\"试探\"},\"B16\":{\"beat_id\":\"B16\",\"dramatic_function\":\"林晚继续隐藏自己持有照片的事实。\",\"emotion_change\":\"林晚维持无辜表情，但手未离开口袋。\",\"event\":\"林晚否认有印象，坚持里面是空的。\",\"information_change\":\"林晚否认知晓顾沉描述的照片。\",\"type\":\"否认\"},\"B17\":{\"beat_id\":\"B17\",\"dramatic_function\":\"顾沉发出明确警告，暗示照相馆内有不应被触及的秘密。\",\"emotion_change\":\"顾沉语气压低，带有威胁感；林晚表面顺从。\",\"event\":\"顾沉在离开前，低声警告林晚：“这照相馆……晚上别乱翻东西。有些照片，不该看的，别看。”\",\"information_change\":\"顾沉警告林晚不要探究某些照片。\",\"type\":\"警告\"},\"B18\":{\"beat_id\":\"B18\",\"dramatic_function\":\"强化林晚的秘密与决心，将她的旧照片与当前谜团（拖痕、暗房）联系起来。\",\"emotion_change\":\"林晚从慵懒伪装转为冰冷、锐利。\",\"event\":\"顾沉离开后，林晚表情瞬间变冷，再次拿出对折的旧照片，但未打开，只是摩挲边缘，并盯着暗房门口的拖痕和红光。\",\"information_change\":\"林晚再次确认自己持有旧照片，并关注暗房线索。\",\"type\":\"揭示\"},\"B19\":{\"beat_id\":\"B19\",\"dramatic_function\":\"林晚梳理线索，明确怀疑对象为顾沉。\",\"emotion_change\":\"林晚的怀疑转化为明确的调查方向。\",\"event\":\"林晚低声自语：“灰外套……相册夹……拖痕……顾沉……你到底在藏什么？”\",\"information_change\":\"林晚将线索串联，锁定顾沉为怀疑目标。\",\"type\":\"思考\"}},\"book_id\":\"990402\",\"character_ids\":[\"17\",\"18\"],\"fact_ids\":[\"CH2_CHAR_林晚_IDENTITY\",\"CH2_CHAR_顾沉_IDENTITY\",\"CH2_SC1_LOCATION\",\"CH2_SC1_TIME\"],\"identity_binding_fingerprint\":\"5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1\",\"immutable_source_projection\":{\"event_facts\":[\"顾沉从暗房门口出现，与背对他的林晚进行简短对话。\",\"顾沉询问林晚是否翻了旧相册夹，找到了什么有意思的东西。\",\"林晚不直接回答，转而指出相册夹搭扣可能坏了，并称里面是空的。\",\"顾沉进一步描述相册夹里“以前好像放着张挺特别的照片。灰扑扑的，一个人影，看不清脸。”\",\"林晚否认有印象，坚持里面是空的。\",\"顾沉在离开前，低声警告林晚：“这照相馆……晚上别乱翻东西。有些照片，不该看的，别看。”\",\"顾沉离开后，林晚表情瞬间变冷，再次拿出对折的旧照片，但未打开，只是摩挲边缘，并盯着暗房门口的拖痕和红光。\",\"林晚低声自语：“灰外套……相册夹……拖痕……顾沉……你到底在藏什么？”\"],\"scene_name\":\"暗房门口的试探\",\"source_facts\":[{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"characters.identity\",\"text\":\"推测：回声照相馆相关者（母亲与照相馆有关联）\"}],\"fact_id\":\"CH2_CHAR_林晚_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:2\",\"status\":\"unknown\",\"subject_id\":\"林晚\",\"subject_type\":\"character\",\"value\":\"推测：回声照相馆相关者（母亲与照相馆有关联）\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"characters.identity\",\"text\":\"推测：回声照相馆店主/暗房工作者\"}],\"fact_id\":\"CH2_CHAR_顾沉_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:2\",\"status\":\"unknown\",\"subject_id\":\"顾沉\",\"subject_type\":\"character\",\"value\":\"推测：回声照相馆店主/暗房工作者\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"scenes.location\",\"text\":\"回声照相馆\"}],\"fact_id\":\"CH2_SC1_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:2\",\"status\":\"confirmed\",\"subject_id\":\"回声照相馆\",\"subject_type\":\"scene\",\"value\":\"回声照相馆\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"scenes.time\",\"text\":\"天刚亮\"}],\"fact_id\":\"CH2_SC1_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:2\",\"status\":\"confirmed\",\"subject_id\":\"回声照相馆\",\"subject_type\":\"scene\",\"value\":\"天刚亮\"}]},\"location_ids\":[],\"prop_ids\":[\"地板拖痕\",\"对折的旧照片（林晚年轻时穿灰外套）\",\"暗房红色安全灯\",\"钥匙\",\"黑色皮质相册夹（空，有划痕）\"],\"provider_visible_contract_fingerprint\":\"22c365b4aa4c71d0b1331c7f863b7d4e667f2133d95a57569e7bcdfb5af8dcb3\",\"runtime_contract_version\":\"director_strategy_runtime_contract_v1\",\"runtime_validation_contract_fingerprint\":\"22c365b4aa4c71d0b1331c7f863b7d4e667f2133d95a57569e7bcdfb5af8dcb3\",\"scene_id\":\"book990402:e2:暗房门口的试探\",\"source_ref_contract\":{\"allowed_ids\":{\"beat\":[\"B12\",\"B13\",\"B14\",\"B15\",\"B16\",\"B17\",\"B18\",\"B19\"],\"character\":[\"17\",\"18\"],\"fact\":[\"CH2_CHAR_林晚_IDENTITY\",\"CH2_CHAR_顾沉_IDENTITY\",\"CH2_SC1_LOCATION\",\"CH2_SC1_TIME\"],\"location\":[],\"prop\":[\"地板拖痕\",\"对折的旧照片（林晚年轻时穿灰外套）\",\"暗房红色安全灯\",\"钥匙\",\"黑色皮质相册夹（空，有划痕）\"]},\"allowed_source_refs\":[\"beat:B12\",\"beat:B13\",\"beat:B14\",\"beat:B15\",\"beat:B16\",\"beat:B17\",\"beat:B18\",\"beat:B19\",\"fact:CH2_CHAR_林晚_IDENTITY\",\"fact:CH2_CHAR_顾沉_IDENTITY\",\"fact:CH2_SC1_LOCATION\",\"fact:CH2_SC1_TIME\",\"character:17\",\"character:18\",\"prop:地板拖痕\",\"prop:对折的旧照片（林晚年轻时穿灰外套）\",\"prop:暗房红色安全灯\",\"prop:钥匙\",\"prop:黑色皮质相册夹（空，有划痕）\"],\"beat_alias_table\":{\"aliases\":{\"12\":\"B12\",\"13\":\"B13\",\"14\":\"B14\",\"15\":\"B15\",\"16\":\"B16\",\"17\":\"B17\",\"18\":\"B18\",\"19\":\"B19\",\"B12\":\"B12\",\"B13\":\"B13\",\"B14\":\"B14\",\"B15\":\"B15\",\"B16\":\"B16\",\"B17\":\"B17\",\"B18\":\"B18\",\"B19\":\"B19\",\"b12\":\"B12\",\"b13\":\"B13\",\"b14\":\"B14\",\"b15\":\"B15\",\"b16\":\"B16\",\"b17\":\"B17\",\"b18\":\"B18\",\"b19\":\"B19\",\"beat:12\":\"B12\",\"beat:13\":\"B13\",\"beat:14\":\"B14\",\"beat:15\":\"B15\",\"beat:16\":\"B16\",\"beat:17\":\"B17\",\"beat:18\":\"B18\",\"beat:19\":\"B19\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"B12\",\"B13\",\"B14\",\"B15\",\"B16\",\"B17\",\"B18\",\"B19\"],\"normalization_policy\":\"one-to-one aliases only\"},\"schema_version\":\"director_source_ref_contract_v2\",\"syntax\":\"<type>:<authoritative_id>\",\"types\":[\"beat\",\"fact\",\"prop\",\"character\",\"location\"]},\"source_ref_contract_fingerprint\":\"63351f1a9c2d40d6b8ecbcc3d1c089767ca3e7a0ad610fd4b57afa9c5eba9daf\"}},\"semantic_spec\":{\"canonical_schema_version\":\"director_scene_strategy_v3\",\"compiler_version\":\"director_scene_strategy_ir_compiler_v2\",\"epistemic_boundary\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"epistemic_types\":[\"SOURCE_FACT\",\"DIRECTOR_INFERENCE\",\"AUDIENCE_SUSPICION\",\"TREATMENT_INTENT\",\"BLOCKING_FACT\",\"DIRECTOR_CREATIVE_DECISION\"],\"flexible_list_fields\":[\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"],\"forbidden_model_fields\":[\"creative_core_fingerprint\",\"cv_score\",\"dq_score\",\"duration_ladder\",\"fact_claim\",\"patches\",\"plan_shot_id\",\"quality_score\",\"repair\",\"shot_ids\",\"shot_plan\",\"shotplan\",\"shots\",\"source_fact\",\"source_facts\",\"strategy_fingerprint\"],\"information_fields\":[\"reveal_refs\",\"hint_refs\",\"withhold_refs\",\"audience_suspicions\",\"director_inferences\"],\"information_policy\":{\"audience_suspicions\":\"interpretive claims with support_refs\",\"director_inferences\":\"directing interpretations with support_refs and purpose\",\"hint_refs\":\"already available evidence only\",\"reference_first\":true,\"reveal_refs\":\"source refs visible by this phase\",\"withhold_refs\":\"future evidence allowed\"},\"model_ir_schema_version\":\"director_scene_strategy_ir_v2\",\"na_rules\":{\"prop_visual_strategy\":\"N/A or null normalizes to [] when no prop evidence exists\",\"source_refs\":\"never invent IDs\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"maximum\":6,\"minimum\":2,\"recommended\":\"3-5\"},\"phase_fields\":[\"phase_id\",\"beat_ids\",\"dramatic_function\",\"audience_state\",\"emotion\",\"power\",\"performance\",\"edit\",\"visual\",\"information\"],\"power_center_types\":[\"CHARACTER\",\"SHARED\",\"RELATIONSHIP\",\"INFORMATION\",\"OBJECT\",\"ENVIRONMENT\",\"NONE\"],\"schema_version\":\"director_scene_strategy_semantic_spec_v2\",\"top_level_fields\":[\"schema_version\",\"scene_id\",\"dramatic_objective\",\"scene_question\",\"strategy_summary\",\"visual_thesis\",\"scene_phases\",\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"]}}\n[/DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\nReturn one complete director_scene_strategy_ir_v2 JSON object now.",
+  "provider_contract": {
+    "schema_version": "director_scene_strategy_ir_v2",
+    "scene_id": "book990402:e2:暗房门口的试探",
+    "allowed_beat_ids": [
+      "B12",
+      "B13",
+      "B14",
+      "B15",
+      "B16",
+      "B17",
+      "B18",
+      "B19"
+    ],
+    "allowed_character_ids": [
+      "17",
+      "18"
+    ],
+    "allowed_characters": [
+      {
+        "character_id": "17",
+        "canonical_name": "林晚",
+        "canonical_identity_id": "book:990402:character:17",
+        "scope": "book-level"
+      },
+      {
+        "character_id": "18",
+        "canonical_name": "顾沉",
+        "canonical_identity_id": "book:990402:character:18",
+        "scope": "book-level"
+      }
+    ],
+    "source_ref_contract": {
+      "schema_version": "director_source_ref_contract_v2",
+      "allowed_ids": {
+        "beat": [
+          "B12",
+          "B13",
+          "B14",
+          "B15",
+          "B16",
+          "B17",
+          "B18",
+          "B19"
+        ],
+        "fact": [
+          "CH2_CHAR_林晚_IDENTITY",
+          "CH2_CHAR_顾沉_IDENTITY",
+          "CH2_SC1_LOCATION",
+          "CH2_SC1_TIME"
+        ],
+        "character": [
+          "17",
+          "18"
+        ],
+        "prop": [
+          "地板拖痕",
+          "对折的旧照片（林晚年轻时穿灰外套）",
+          "暗房红色安全灯",
+          "钥匙",
+          "黑色皮质相册夹（空，有划痕）"
+        ],
+        "location": []
+      },
+      "allowed_source_refs": [
+        "beat:B12",
+        "beat:B13",
+        "beat:B14",
+        "beat:B15",
+        "beat:B16",
+        "beat:B17",
+        "beat:B18",
+        "beat:B19",
+        "fact:CH2_CHAR_林晚_IDENTITY",
+        "fact:CH2_CHAR_顾沉_IDENTITY",
+        "fact:CH2_SC1_LOCATION",
+        "fact:CH2_SC1_TIME",
+        "character:17",
+        "character:18",
+        "prop:地板拖痕",
+        "prop:对折的旧照片（林晚年轻时穿灰外套）",
+        "prop:暗房红色安全灯",
+        "prop:钥匙",
+        "prop:黑色皮质相册夹（空，有划痕）"
+      ],
+      "syntax": "<type>:<authoritative_id>",
+      "beat_alias_table": {
+        "canonical_beat_ids": [
+          "B12",
+          "B13",
+          "B14",
+          "B15",
+          "B16",
+          "B17",
+          "B18",
+          "B19"
+        ],
+        "aliases": {
+          "12": "B12",
+          "13": "B13",
+          "14": "B14",
+          "15": "B15",
+          "16": "B16",
+          "17": "B17",
+          "18": "B18",
+          "19": "B19",
+          "B12": "B12",
+          "B13": "B13",
+          "B14": "B14",
+          "B15": "B15",
+          "B16": "B16",
+          "B17": "B17",
+          "B18": "B18",
+          "B19": "B19",
+          "b12": "B12",
+          "b13": "B13",
+          "b14": "B14",
+          "b15": "B15",
+          "b16": "B16",
+          "b17": "B17",
+          "b18": "B18",
+          "b19": "B19",
+          "beat:12": "B12",
+          "beat:13": "B13",
+          "beat:14": "B14",
+          "beat:15": "B15",
+          "beat:16": "B16",
+          "beat:17": "B17",
+          "beat:18": "B18",
+          "beat:19": "B19"
+        },
+        "ambiguous_aliases": [],
+        "normalization_policy": "one-to-one aliases only"
+      },
+      "types": [
+        "beat",
+        "fact",
+        "prop",
+        "character",
+        "location"
+      ]
+    },
+    "allowed_source_refs": [
+      "beat:B12",
+      "beat:B13",
+      "beat:B14",
+      "beat:B15",
+      "beat:B16",
+      "beat:B17",
+      "beat:B18",
+      "beat:B19",
+      "fact:CH2_CHAR_林晚_IDENTITY",
+      "fact:CH2_CHAR_顾沉_IDENTITY",
+      "fact:CH2_SC1_LOCATION",
+      "fact:CH2_SC1_TIME",
+      "character:17",
+      "character:18",
+      "prop:地板拖痕",
+      "prop:对折的旧照片（林晚年轻时穿灰外套）",
+      "prop:暗房红色安全灯",
+      "prop:钥匙",
+      "prop:黑色皮质相册夹（空，有划痕）"
+    ],
+    "phase_constraints": {
+      "min": 2,
+      "max": 6,
+      "recommended": "3-5",
+      "beat_assignment": "exactly_once"
+    },
+    "flexible_shape_policy": {
+      "spatial_expression": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "prop_visual_strategy": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "shot_architecture_guidance": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "must_preserve": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "must_avoid": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "creative_risks": [
+        "string",
+        "string[]",
+        "null"
+      ]
+    },
+    "information_schema": {
+      "reveal_refs": "source_ref[]",
+      "hint_refs": "source_ref[]",
+      "withhold_refs": "source_ref[]",
+      "audience_suspicions": "claim[]",
+      "director_inferences": "claim[]"
+    },
+    "epistemic_rules": {
+      "SOURCE_FACT": "authoritative upstream only",
+      "DIRECTOR_INFERENCE": "director interpretation, never a fact",
+      "AUDIENCE_SUSPICION": "audience hypothesis, never a fact",
+      "TREATMENT_INTENT": "approved intent",
+      "BLOCKING_FACT": "approved spatial truth",
+      "DIRECTOR_CREATIVE_DECISION": "staging decision"
+    },
+    "minimal_skeleton": {
+      "schema_version": "",
+      "scene_id": "",
+      "dramatic_objective": "",
+      "scene_question": "",
+      "strategy_summary": "",
+      "visual_thesis": "",
+      "spatial_expression": [],
+      "prop_visual_strategy": [],
+      "shot_architecture_guidance": [],
+      "must_preserve": [],
+      "must_avoid": [],
+      "creative_risks": [],
+      "scene_phases": [
+        {
+          "phase_id": "P01",
+          "beat_ids": [],
+          "dramatic_function": "",
+          "audience_state": {
+            "knows": [],
+            "suspects": [],
+            "withholds": [],
+            "question_shift": ""
+          },
+          "emotion": {
+            "state": "",
+            "trigger": "",
+            "transition_reason": "",
+            "intensity_hint": null
+          },
+          "power": {
+            "center_type": "NONE",
+            "center_ref": null,
+            "description": "",
+            "shift": ""
+          },
+          "performance": [
+            {
+              "character_id": "17",
+              "objective": "",
+              "tactic": "",
+              "visible_behavior": "",
+              "turning_point": false
+            }
+          ],
+          "edit": {
+            "tempo": "",
+            "hold_logic": "",
+            "cut_logic": "",
+            "transition_motivation": ""
+          },
+          "visual": {
+            "visual_grammar": "",
+            "camera_rule": "",
+            "composition_rule": "",
+            "movement_condition": ""
+          },
+          "information": {
+            "reveal_refs": [],
+            "hint_refs": [],
+            "withhold_refs": [],
+            "audience_suspicions": [],
+            "director_inferences": []
+          }
+        }
+      ]
+    }
+  },
+  "provider_visible_contract_fingerprint": "22c365b4aa4c71d0b1331c7f863b7d4e667f2133d95a57569e7bcdfb5af8dcb3",
+  "identity_binding_fingerprint": "5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1",
+  "source_ref_contract_fingerprint": "63351f1a9c2d40d6b8ecbcc3d1c089767ca3e7a0ad610fd4b57afa9c5eba9daf",
+  "beat_alias_table_fingerprint": "c7caa671f84a6cb0768a13bce401979aaffe52981c1ef28530dc83d0663d0df7",
+  "allowed_source_refs_fingerprint": "0443b90cdfef338ac9f50629343a041bcb0f90cb077117bad3ff1a60a81fcebc",
+  "system_prompt_fingerprint": "e092f96b2ac29bea2c4e63abcb85ff5dd8d7d0f918c05c7ca60b36bc3f5f1929",
+  "schema_fingerprint": "2594e2e421320d9afb372d2d87c271b04e11287316f0aba6f00f9285a324f39a",
+  "scene_input_fingerprint": "b7707f58b22a0a86d9d76de5f264ac4917dcae2ca5d09bba6dc4b62a8c666f1e",
+  "request_fingerprint": "bcaf0fa4420480633d2bd89acf43ec3cf179bd699d85b23ee4933b2f2f6a0f8f",
+  "model_snapshot": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "parameters": {
+      "max_tokens": 8192,
+      "temperature": 0.3,
+      "thinking": {
+        "type": "disabled"
+      }
+    }
+  }
+}

@@ -1,0 +1,337 @@
+{
+  "protocol_version": "director-quality-v3-final-recanary-strategy-ir-v2-prompt-v1",
+  "attempt_type": "CREATIVE_GENERATION",
+  "system_prompt": "[DIRECTOR_STRATEGY_IR_V2]\nYou are the scene director. Return exactly one JSON object with schema_version=director_scene_strategy_ir_v2. Express scene phases and directing choices, never a shot list. Use only supplied beat, character and source references. Source facts are authoritative and cannot be added or rewritten.\n\nInformation is reference-first: information.reveal_refs, hint_refs and withhold_refs contain only allowed source refs. audience_suspicions and director_inferences are interpretive claims and must include support_refs; they are never source facts. Flexible list fields may be string, string[] or null; the deterministic program will normalize them without changing meaning. Do not output fingerprints, scores, source_fact claims, ShotPlan fields or patches. Preserve beat order and assign every beat exactly once. If evidence is absent, use N/A only where the contract allows it.",
+  "user_prompt": "[DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\n{\"attempt_type\":\"CREATIVE_GENERATION\",\"protocol_version\":\"director-quality-v3-final-recanary-strategy-ir-v2-prompt-v1\",\"provider_contract\":{\"allowed_beat_ids\":[\"1_B01\",\"1_B02\",\"1_B03\",\"1_B04\",\"1_B05\",\"1_B06\"],\"allowed_character_ids\":[\"11\",\"12\",\"13\",\"14\",\"15\",\"16\"],\"allowed_characters\":[{\"canonical_identity_id\":\"book:990402:character:11\",\"canonical_name\":\"岚\",\"character_id\":\"11\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:12\",\"canonical_name\":\"撑红伞的女人\",\"character_id\":\"12\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:13\",\"canonical_name\":\"林晚\",\"character_id\":\"13\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:14\",\"canonical_name\":\"母亲\",\"character_id\":\"14\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:15\",\"canonical_name\":\"陆叔\",\"character_id\":\"15\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:16\",\"canonical_name\":\"顾沉\",\"character_id\":\"16\",\"scope\":\"book-level\"}],\"allowed_source_refs\":[\"beat:1_B01\",\"beat:1_B02\",\"beat:1_B03\",\"beat:1_B04\",\"beat:1_B05\",\"beat:1_B06\",\"fact:CH1_CHAR_撑红伞的女人_IDENTITY\",\"fact:CH1_CHAR_林晚_IDENTITY\",\"fact:CH1_SC1_LOCATION\",\"fact:CH1_SC1_TIME\",\"fact:CH2_CHAR_林晚_IDENTITY\",\"fact:CH2_CHAR_顾沉_IDENTITY\",\"fact:CH2_SC1_LOCATION\",\"fact:CH2_SC1_TIME\",\"fact:CH3_CHAR_林晚_IDENTITY\",\"fact:CH3_CHAR_顾沉_IDENTITY\",\"fact:CH3_SC1_LOCATION\",\"fact:CH3_SC1_TIME\",\"fact:CH3_SC2_LOCATION\",\"fact:CH3_SC2_TIME\",\"fact:E01_CONFLICT_GUSHEN_AGE\",\"character:11\",\"character:12\",\"character:13\",\"character:14\",\"character:15\",\"character:16\"],\"epistemic_rules\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"flexible_shape_policy\":{\"creative_risks\":[\"string\",\"string[]\",\"null\"],\"must_avoid\":[\"string\",\"string[]\",\"null\"],\"must_preserve\":[\"string\",\"string[]\",\"null\"],\"prop_visual_strategy\":[\"string\",\"string[]\",\"null\"],\"shot_architecture_guidance\":[\"string\",\"string[]\",\"null\"],\"spatial_expression\":[\"string\",\"string[]\",\"null\"]},\"information_schema\":{\"audience_suspicions\":\"claim[]\",\"director_inferences\":\"claim[]\",\"hint_refs\":\"source_ref[]\",\"reveal_refs\":\"source_ref[]\",\"withhold_refs\":\"source_ref[]\"},\"minimal_skeleton\":{\"creative_risks\":[],\"dramatic_objective\":\"\",\"must_avoid\":[],\"must_preserve\":[],\"prop_visual_strategy\":[],\"scene_id\":\"\",\"scene_phases\":[{\"audience_state\":{\"knows\":[],\"question_shift\":\"\",\"suspects\":[],\"withholds\":[]},\"beat_ids\":[],\"dramatic_function\":\"\",\"edit\":{\"cut_logic\":\"\",\"hold_logic\":\"\",\"tempo\":\"\",\"transition_motivation\":\"\"},\"emotion\":{\"intensity_hint\":null,\"state\":\"\",\"transition_reason\":\"\",\"trigger\":\"\"},\"information\":{\"audience_suspicions\":[],\"director_inferences\":[],\"hint_refs\":[],\"reveal_refs\":[],\"withhold_refs\":[]},\"performance\":[{\"character_id\":\"11\",\"objective\":\"\",\"tactic\":\"\",\"turning_point\":false,\"visible_behavior\":\"\"}],\"phase_id\":\"P01\",\"power\":{\"center_ref\":null,\"center_type\":\"NONE\",\"description\":\"\",\"shift\":\"\"},\"visual\":{\"camera_rule\":\"\",\"composition_rule\":\"\",\"movement_condition\":\"\",\"visual_grammar\":\"\"}}],\"scene_question\":\"\",\"schema_version\":\"\",\"shot_architecture_guidance\":[],\"spatial_expression\":[],\"strategy_summary\":\"\",\"visual_thesis\":\"\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"max\":6,\"min\":2,\"recommended\":\"3-5\"},\"scene_id\":\"book990402:e1:红伞幻影（一）\",\"schema_version\":\"director_scene_strategy_ir_v2\",\"source_ref_contract\":{\"allowed_ids\":{\"beat\":[\"1_B01\",\"1_B02\",\"1_B03\",\"1_B04\",\"1_B05\",\"1_B06\"],\"character\":[\"11\",\"12\",\"13\",\"14\",\"15\",\"16\"],\"fact\":[\"CH1_CHAR_撑红伞的女人_IDENTITY\",\"CH1_CHAR_林晚_IDENTITY\",\"CH1_SC1_LOCATION\",\"CH1_SC1_TIME\",\"CH2_CHAR_林晚_IDENTITY\",\"CH2_CHAR_顾沉_IDENTITY\",\"CH2_SC1_LOCATION\",\"CH2_SC1_TIME\",\"CH3_CHAR_林晚_IDENTITY\",\"CH3_CHAR_顾沉_IDENTITY\",\"CH3_SC1_LOCATION\",\"CH3_SC1_TIME\",\"CH3_SC2_LOCATION\",\"CH3_SC2_TIME\",\"E01_CONFLICT_GUSHEN_AGE\"],\"location\":[],\"prop\":[]},\"allowed_source_refs\":[\"beat:1_B01\",\"beat:1_B02\",\"beat:1_B03\",\"beat:1_B04\",\"beat:1_B05\",\"beat:1_B06\",\"fact:CH1_CHAR_撑红伞的女人_IDENTITY\",\"fact:CH1_CHAR_林晚_IDENTITY\",\"fact:CH1_SC1_LOCATION\",\"fact:CH1_SC1_TIME\",\"fact:CH2_CHAR_林晚_IDENTITY\",\"fact:CH2_CHAR_顾沉_IDENTITY\",\"fact:CH2_SC1_LOCATION\",\"fact:CH2_SC1_TIME\",\"fact:CH3_CHAR_林晚_IDENTITY\",\"fact:CH3_CHAR_顾沉_IDENTITY\",\"fact:CH3_SC1_LOCATION\",\"fact:CH3_SC1_TIME\",\"fact:CH3_SC2_LOCATION\",\"fact:CH3_SC2_TIME\",\"fact:E01_CONFLICT_GUSHEN_AGE\",\"character:11\",\"character:12\",\"character:13\",\"character:14\",\"character:15\",\"character:16\"],\"beat_alias_table\":{\"aliases\":{\"1_B01\":\"1_B01\",\"1_B02\":\"1_B02\",\"1_B03\":\"1_B03\",\"1_B04\":\"1_B04\",\"1_B05\":\"1_B05\",\"1_B06\":\"1_B06\",\"1_b01\":\"1_B01\",\"1_b02\":\"1_B02\",\"1_b03\":\"1_B03\",\"1_b04\":\"1_B04\",\"1_b05\":\"1_B05\",\"1_b06\":\"1_B06\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"1_B01\",\"1_B02\",\"1_B03\",\"1_B04\",\"1_B05\",\"1_B06\"],\"normalization_policy\":\"one-to-one aliases only\"},\"schema_version\":\"director_source_ref_contract_v2\",\"syntax\":\"<type>:<authoritative_id>\",\"types\":[\"beat\",\"fact\",\"prop\",\"character\",\"location\"]}},\"scene_inputs\":{\"book_id\":990402,\"director_treatment\":{\"audience_emotion\":\"从建立预期到产生变化，再留下下一步悬念。\",\"audience_question\":\"人物最终会如何改变当前局面？\",\"beat_map\":[{\"beat_id\":\"B01\",\"dramatic_function\":\"推进可见行动\",\"emotion_change\":\"\",\"event\":\"林晚在候车厅长椅上假寐，观察环境。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"B02\",\"dramatic_function\":\"推进可见行动\",\"emotion_change\":\"\",\"event\":\"撑红伞的女人出现，两人进行初步、试探性的对话。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"B03\",\"dramatic_function\":\"推进可见行动\",\"emotion_change\":\"\",\"event\":\"风导致红伞晃动，林晚借机接触红伞，观察到伞骨金属箍上的新划痕。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"B04\",\"dramatic_function\":\"推进可见行动\",\"emotion_change\":\"\",\"event\":\"林晚指尖沾上暗红色粉末。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"B05\",\"dramatic_function\":\"推进可见行动\",\"emotion_change\":\"\",\"event\":\"两人对话涉及“怕什么”、“该怕的早就不在了”等隐晦内容。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"B06\",\"dramatic_function\":\"推进可见行动\",\"emotion_change\":\"\",\"event\":\"林晚口袋中的长方形硬物被暗示。\",\"information_change\":\"\",\"type\":\"action\"}],\"book_id\":990402,\"character_intents\":{\"11\":{\"emotion_in\":\"克制\",\"emotion_out\":\"变化中\",\"goal\":\"完成本场戏的叙事目标\",\"name\":\"岚\",\"obstacle\":\"场景中的对立力量或信息缺口\",\"power_in\":0.5,\"power_out\":0.5,\"subtext\":\"\",\"tactic\":\"通过行动而非解释推进局面\"},\"12\":{\"emotion_in\":\"克制\",\"emotion_out\":\"变化中\",\"goal\":\"完成本场戏的叙事目标\",\"name\":\"撑红伞的女人\",\"obstacle\":\"场景中的对立力量或信息缺口\",\"power_in\":0.5,\"power_out\":0.5,\"subtext\":\"\",\"tactic\":\"通过行动而非解释推进局面\"},\"13\":{\"emotion_in\":\"克制\",\"emotion_out\":\"变化中\",\"goal\":\"完成本场戏的叙事目标\",\"name\":\"林晚\",\"obstacle\":\"场景中的对立力量或信息缺口\",\"power_in\":0.5,\"power_out\":0.5,\"subtext\":\"\",\"tactic\":\"通过行动而非解释推进局面\"},\"14\":{\"emotion_in\":\"克制\",\"emotion_out\":\"变化中\",\"goal\":\"完成本场戏的叙事目标\",\"name\":\"母亲\",\"obstacle\":\"场景中的对立力量或信息缺口\",\"power_in\":0.5,\"power_out\":0.5,\"subtext\":\"\",\"tactic\":\"通过行动而非解释推进局面\"},\"15\":{\"emotion_in\":\"克制\",\"emotion_out\":\"变化中\",\"goal\":\"完成本场戏的叙事目标\",\"name\":\"陆叔\",\"obstacle\":\"场景中的对立力量或信息缺口\",\"power_in\":0.5,\"power_out\":0.5,\"subtext\":\"\",\"tactic\":\"通过行动而非解释推进局面\"},\"16\":{\"emotion_in\":\"克制\",\"emotion_out\":\"变化中\",\"goal\":\"完成本场戏的叙事目标\",\"name\":\"顾沉\",\"obstacle\":\"场景中的对立力量或信息缺口\",\"power_in\":0.5,\"power_out\":0.5,\"subtext\":\"\",\"tactic\":\"通过行动而非解释推进局面\"}},\"constraints\":[\"不得覆盖锁定资产事实\",\"不得把未声明内容伪装成剧本事实\"],\"coverage_strategy\":\"先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。\",\"decision_packet_id\":8,\"dramatic_objective\":\"围绕“林晚在候车厅长椅上假寐，观察环境。”建立冲突，并通过“林晚口袋中的长方形硬物被暗示。”推进本场戏。\",\"edit_rhythm\":\"按节拍强弱切换，信息揭示前保留反应空间。\",\"episode\":1,\"execution_status\":\"queued\",\"id\":4,\"information_strategy\":\"只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。\",\"model_info\":{\"candidate_decision\":\"ready_for_review\",\"candidate_fingerprint\":\"19fdd70b8e7691d72dfa647512c62e51eb60d7d9635d08a41c9f369463677107\",\"confirmed_at\":\"2026-09-13T04:16:49.300378\",\"llm_called\":true,\"mode\":\"confirmed_llm_candidate\",\"rollback_anchor\":{\"previous_revision\":null,\"previous_treatment_id\":null}},\"performance_direction\":\"以目标、阻碍和策略驱动表演，避免只标注单一情绪。\",\"production_status\":\"blocked\",\"prompt_fingerprint\":\"19fdd70b8e7691d72dfa647512c62e51eb60d7d9635d08a41c9f369463677107\",\"quality_status\":\"draft\",\"relationship_power_shift\":\"由节拍中的行动与决策呈现，不预设未声明的关系事实。\",\"revision\":1,\"scene_id\":\"book990402:e1:红伞幻影（一）\",\"scene_name\":\"红伞幻影（一）\",\"skill_id\":\"\",\"skill_version\":\"\",\"sound_strategy\":\"声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。\",\"source_script_hash\":\"383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b\",\"source_script_revision\":\"script-16\",\"status\":\"approved\",\"unknowns\":[],\"visual_strategy\":\"优先呈现可观察的空间关系、动作节拍和关键道具状态。\",\"workflow_profile\":\"production\"},\"fact_snapshot\":{\"payload_hash\":\"c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba\",\"records\":[{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":1,\"field\":\"characters.identity\",\"text\":\"归乡者（推测）\"}],\"fact_id\":\"CH1_CHAR_林晚_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:1\",\"status\":\"unknown\",\"subject_id\":\"林晚\",\"subject_type\":\"character\",\"value\":\"归乡者（推测）\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":1,\"field\":\"characters.identity\",\"text\":\"未知（可能是幻影或神秘人物）\"}],\"fact_id\":\"CH1_CHAR_撑红伞的女人_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:1\",\"status\":\"unknown\",\"subject_id\":\"撑红伞的女人\",\"subject_type\":\"character\",\"value\":\"未知（可能是幻影或神秘人物）\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":1,\"field\":\"scenes.location\",\"text\":\"临潮镇老车站候车厅\"}],\"fact_id\":\"CH1_SC1_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:1\",\"status\":\"confirmed\",\"subject_id\":\"临潮镇老车站候车厅\",\"subject_type\":\"scene\",\"value\":\"临潮镇老车站候车厅\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":1,\"field\":\"scenes.time\",\"text\":\"凌晨一点，雨夜\"}],\"fact_id\":\"CH1_SC1_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:1\",\"status\":\"confirmed\",\"subject_id\":\"临潮镇老车站候车厅\",\"subject_type\":\"scene\",\"value\":\"凌晨一点，雨夜\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"characters.identity\",\"text\":\"推测：回声照相馆相关者（母亲与照相馆有关联）\"}],\"fact_id\":\"CH2_CHAR_林晚_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:2\",\"status\":\"unknown\",\"subject_id\":\"林晚\",\"subject_type\":\"character\",\"value\":\"推测：回声照相馆相关者（母亲与照相馆有关联）\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"characters.identity\",\"text\":\"推测：回声照相馆店主/暗房工作者\"}],\"fact_id\":\"CH2_CHAR_顾沉_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:2\",\"status\":\"unknown\",\"subject_id\":\"顾沉\",\"subject_type\":\"character\",\"value\":\"推测：回声照相馆店主/暗房工作者\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"scenes.location\",\"text\":\"回声照相馆\"}],\"fact_id\":\"CH2_SC1_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:2\",\"status\":\"confirmed\",\"subject_id\":\"回声照相馆\",\"subject_type\":\"scene\",\"value\":\"回声照相馆\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"scenes.time\",\"text\":\"天刚亮\"}],\"fact_id\":\"CH2_SC1_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:2\",\"status\":\"confirmed\",\"subject_id\":\"回声照相馆\",\"subject_type\":\"scene\",\"value\":\"天刚亮\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"characters.identity\",\"text\":\"推测：神秘事件调查者或知情者\"}],\"fact_id\":\"CH3_CHAR_顾沉_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:3\",\"status\":\"unknown\",\"subject_id\":\"顾沉\",\"subject_type\":\"character\",\"value\":\"推测：神秘事件调查者或知情者\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"characters.identity\",\"text\":\"推测：事件核心人物，记忆模糊者\"}],\"fact_id\":\"CH3_CHAR_林晚_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:3\",\"status\":\"unknown\",\"subject_id\":\"林晚\",\"subject_type\":\"character\",\"value\":\"推测：事件核心人物，记忆模糊者\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"scenes.location\",\"text\":\"暗房\"}],\"fact_id\":\"CH3_SC1_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:3\",\"status\":\"confirmed\",\"subject_id\":\"暗房\",\"subject_type\":\"scene\",\"value\":\"暗房\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"scenes.time\",\"text\":\"夜晚（推测）\"}],\"fact_id\":\"CH3_SC1_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:3\",\"status\":\"unknown\",\"subject_id\":\"暗房\",\"subject_type\":\"scene\",\"value\":\"夜晚（推测）\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"scenes.location\",\"text\":\"暗房门外\"}],\"fact_id\":\"CH3_SC2_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:3\",\"status\":\"confirmed\",\"subject_id\":\"暗房门外\",\"subject_type\":\"scene\",\"value\":\"暗房门外\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"scenes.time\",\"text\":\"夜晚\"}],\"fact_id\":\"CH3_SC2_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:3\",\"status\":\"confirmed\",\"subject_id\":\"暗房门外\",\"subject_type\":\"scene\",\"value\":\"夜晚\"},{\"authority\":\"model_observation\",\"confidence\":0.82,\"conflict_group\":\"gushen-age\",\"evidence\":[{\"chapter\":2,\"field\":\"script_qa\",\"text\":\"合影里顾沉的年龄与现在不符\"}],\"fact_id\":\"E01_CONFLICT_GUSHEN_AGE\",\"predicate\":\"age_consistency\",\"scope\":\"episode:1\",\"status\":\"conflict\",\"subject_id\":\"顾沉\",\"subject_type\":\"character\",\"value\":\"合影中的年龄与当前外貌不一致，原文未解释\"}],\"scene_id\":\"book990402:e1:红伞幻影（一）\",\"snapshot_id\":1,\"status\":\"confirmed\"},\"scene\":{\"actions\":[\"林晚假寐，手指摩挲袖口硬物。\",\"撑红伞的女人站在门口，后走入厅内，将红伞靠在长椅边。\",\"风起，红伞晃动，林晚“不经意”碰触红伞，使其靠在自己长椅扶手上。\",\"林晚检查红伞，指腹蹭过金属箍划痕。\",\"林晚指尖沾上暗红色粉末并摩挲。\",\"林晚左手在口袋中按压长方形物体。\"],\"asset_mentions\":[],\"beats\":[{\"beat_id\":\"1_B01\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"林晚在候车厅长椅上假寐，观察环境。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"1_B02\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"撑红伞的女人出现，两人进行初步、试探性的对话。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"1_B03\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"风导致红伞晃动，林晚借机接触红伞，观察到伞骨金属箍上的新划痕。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"1_B04\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"林晚指尖沾上暗红色粉末。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"1_B05\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"两人对话涉及“怕什么”、“该怕的早就不在了”等隐晦内容。\",\"information_change\":\"\",\"type\":\"action\"},{\"beat_id\":\"1_B06\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"林晚口袋中的长方形硬物被暗示。\",\"information_change\":\"\",\"type\":\"action\"}],\"blocking_hints\":[],\"book_id\":990402,\"dialogues\":[\"林晚：这雨……一时半会儿停不了吧？\",\"撑红伞的女人：你也在等车？\",\"林晚：嗯。去市里的车，最早一班是……五点半吧？记不清了。这鬼地方，时刻表都快烂没了。\",\"撑红伞的女人：五点半。\",\"林晚：这伞……颜色真亮。这镇上，好像很少见用这么鲜艳颜色的。\",\"撑红伞的女人：是吗？我倒觉得，雨天需要一点颜色。\",\"林晚：哎哟，吓我一跳。没摔坏吧？\",\"撑红伞的女人：谢谢。没坏。\",\"林晚：不客气。这破地方，东西都脆得很，经不起折腾。\",\"撑红伞的女人：你……一个人？这么晚，在这里，不怕？\",\"林晚：怕什么？这镇子，安静得很。该怕的……早就不在了。\",\"撑红伞的女人：是吗。\"],\"episode\":1,\"location_id\":\"\",\"location_name\":\"临潮镇老车站候车厅\",\"name\":\"红伞幻影（一）\",\"participants\":[\"11\",\"12\",\"13\",\"14\",\"15\",\"16\"],\"required_visual_proofs\":[\"林晚袖口内侧的硬物轮廓。\",\"红伞金属箍上的细微新划痕。\",\"林晚指尖的暗红色粉末。\",\"林晚口袋中长方形物体的轮廓。\"],\"scene_id\":\"book990402:e1:红伞幻影（一）\",\"script_participants\":[\"林晚\",\"撑红伞的女人\"],\"state_in\":{},\"state_out\":{},\"time_of_day\":\"凌晨一点，雨夜\",\"weather\":\"雨夜，雨声密集，风大\"},\"scene_blocking\":{\"beat_transitions\":[{\"beat_id\":\"B01\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"scene_start\",\"event\":\"撑红伞的女人主动开口，对话升级。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B02\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"林晚展示空手，但袖口硬物仍在。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B03\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"灯光闪烁熄灭瞬间，两人做出防御/警惕动作。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B04\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"撑红伞的女人直接质问林晚袖中之物。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B05\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"撑红伞的女人蹲下检查并指出伞上划痕是新的。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B06\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"林晚站起，反向试探并揭露对方行为模式。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B07\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"撑红伞的女人情绪波动，承认伞“没有主人”。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B08\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"林晚亮出母亲遗书中的红伞简笔画及“小心红伞”字条。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B09\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"撑红伞的女人看到字条后情绪崩溃（流泪、颤抖）。\",\"exit_state\":\"same_as_next\"},{\"beat_id\":\"B10\",\"blocking_change\":\"preserve_existing_spatial_relationship\",\"entry_state\":\"same_as_previous\",\"event\":\"灯光再次熄灭，场景结束。\",\"exit_state\":\"same_as_next\"}],\"book_id\":990402,\"camera_axis\":{},\"creative_decisions\":[],\"derived_constraints\":{},\"episode\":1,\"evidence_fingerprint\":\"ef5cdc735165ea3af69e6c5756457eb4e25b688d844f265dc8a9b7b45a9d4722\",\"execution_status\":\"queued\",\"id\":4,\"model_info\":{\"confirmed_at\":\"2026-09-13T04:18:03.968780\",\"mode\":\"confirmed_human_candidate\",\"rollback_anchor\":{\"previous_blocking_id\":null,\"previous_revision\":null}},\"participants\":[{\"anchor\":null,\"character_id\":\"11\",\"facing\":null,\"name\":\"岚\",\"position\":null,\"source\":\"missing\"},{\"anchor\":null,\"character_id\":\"12\",\"facing\":null,\"name\":\"撑红伞的女人\",\"position\":null,\"source\":\"missing\"},{\"anchor\":null,\"character_id\":\"13\",\"facing\":null,\"name\":\"林晚\",\"position\":null,\"source\":\"missing\"},{\"anchor\":null,\"character_id\":\"14\",\"facing\":null,\"name\":\"母亲\",\"position\":null,\"source\":\"missing\"},{\"anchor\":null,\"character_id\":\"15\",\"facing\":null,\"name\":\"陆叔\",\"position\":null,\"source\":\"missing\"},{\"anchor\":null,\"character_id\":\"16\",\"facing\":null,\"name\":\"顾沉\",\"position\":null,\"source\":\"missing\"}],\"production_status\":\"blocked\",\"quality_status\":\"draft\",\"revision\":1,\"scene_id\":\"book990402:e1:红伞幻影（一）\",\"scene_name\":\"红伞幻影（一）\",\"schema_version\":\"scene_blocking_v1\",\"source_script_hash\":\"383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b\",\"source_spatial_facts\":[],\"spatial_model\":{},\"spatial_rules\":[\"locked_asset_identity_is_immutable\",\"do_not_change_screen_direction_without_declared_transition\",\"do_not_invent_character_position_when_script_is_silent\",\"carry_forward_unresolved_positions_to_shot_plan_review\"],\"status\":\"approved\",\"treatment_id\":6,\"treatment_revision\":1,\"unknowns\":[\"未声明 岚 的画面位置\",\"未声明 撑红伞的女人 的画面位置\",\"未声明 林晚 的画面位置\",\"未声明 母亲 的画面位置\",\"未声明 陆叔 的画面位置\",\"未声明 顾沉 的画面位置\"],\"unresolved_facts\":[],\"validation\":{},\"workflow_profile\":\"production\"},\"scene_id\":\"book990402:e1:红伞幻影（一）\",\"source_evidence\":{\"database\":\"work\\\\db\\\\screenplay.db\",\"director_treatment_id\":4,\"fact_snapshot_id\":1,\"scene_blocking_id\":4,\"script_ir_id\":2,\"script_ir_payload_hash\":\"de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f\"},\"strategy_contract\":{\"allowed_characters\":[{\"canonical_identity_id\":\"book:990402:character:11\",\"canonical_name\":\"岚\",\"character_id\":\"11\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:12\",\"canonical_name\":\"撑红伞的女人\",\"character_id\":\"12\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:13\",\"canonical_name\":\"林晚\",\"character_id\":\"13\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:14\",\"canonical_name\":\"母亲\",\"character_id\":\"14\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:15\",\"canonical_name\":\"陆叔\",\"character_id\":\"15\",\"scope\":\"book-level\"},{\"canonical_identity_id\":\"book:990402:character:16\",\"canonical_name\":\"顾沉\",\"character_id\":\"16\",\"scope\":\"book-level\"}],\"allowed_ids\":{\"beat\":[\"1_B01\",\"1_B02\",\"1_B03\",\"1_B04\",\"1_B05\",\"1_B06\"],\"character\":[\"11\",\"12\",\"13\",\"14\",\"15\",\"16\"],\"fact\":[\"CH1_CHAR_撑红伞的女人_IDENTITY\",\"CH1_CHAR_林晚_IDENTITY\",\"CH1_SC1_LOCATION\",\"CH1_SC1_TIME\",\"CH2_CHAR_林晚_IDENTITY\",\"CH2_CHAR_顾沉_IDENTITY\",\"CH2_SC1_LOCATION\",\"CH2_SC1_TIME\",\"CH3_CHAR_林晚_IDENTITY\",\"CH3_CHAR_顾沉_IDENTITY\",\"CH3_SC1_LOCATION\",\"CH3_SC1_TIME\",\"CH3_SC2_LOCATION\",\"CH3_SC2_TIME\",\"E01_CONFLICT_GUSHEN_AGE\"],\"location\":[],\"prop\":[]},\"allowed_source_refs\":[\"beat:1_B01\",\"beat:1_B02\",\"beat:1_B03\",\"beat:1_B04\",\"beat:1_B05\",\"beat:1_B06\",\"fact:CH1_CHAR_撑红伞的女人_IDENTITY\",\"fact:CH1_CHAR_林晚_IDENTITY\",\"fact:CH1_SC1_LOCATION\",\"fact:CH1_SC1_TIME\",\"fact:CH2_CHAR_林晚_IDENTITY\",\"fact:CH2_CHAR_顾沉_IDENTITY\",\"fact:CH2_SC1_LOCATION\",\"fact:CH2_SC1_TIME\",\"fact:CH3_CHAR_林晚_IDENTITY\",\"fact:CH3_CHAR_顾沉_IDENTITY\",\"fact:CH3_SC1_LOCATION\",\"fact:CH3_SC1_TIME\",\"fact:CH3_SC2_LOCATION\",\"fact:CH3_SC2_TIME\",\"fact:E01_CONFLICT_GUSHEN_AGE\",\"character:11\",\"character:12\",\"character:13\",\"character:14\",\"character:15\",\"character:16\"],\"allowed_source_refs_fingerprint\":\"aebfbb07bcffca176698edee0c40f7e16a932b134cd5339dd187408e14c8bf4d\",\"beat_alias_table\":{\"aliases\":{\"1_B01\":\"1_B01\",\"1_B02\":\"1_B02\",\"1_B03\":\"1_B03\",\"1_B04\":\"1_B04\",\"1_B05\":\"1_B05\",\"1_B06\":\"1_B06\",\"1_b01\":\"1_B01\",\"1_b02\":\"1_B02\",\"1_b03\":\"1_B03\",\"1_b04\":\"1_B04\",\"1_b05\":\"1_B05\",\"1_b06\":\"1_B06\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"1_B01\",\"1_B02\",\"1_B03\",\"1_B04\",\"1_B05\",\"1_B06\"],\"normalization_policy\":\"one-to-one aliases only\"},\"beat_alias_table_fingerprint\":\"85df60bc3863f46ac0e08e2d51afe47f1be736b3d7e88ef91e70277e22a04f95\",\"beat_ids\":[\"1_B01\",\"1_B02\",\"1_B03\",\"1_B04\",\"1_B05\",\"1_B06\"],\"beats\":{\"1_B01\":{\"beat_id\":\"1_B01\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"林晚在候车厅长椅上假寐，观察环境。\",\"information_change\":\"\",\"type\":\"action\"},\"1_B02\":{\"beat_id\":\"1_B02\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"撑红伞的女人出现，两人进行初步、试探性的对话。\",\"information_change\":\"\",\"type\":\"action\"},\"1_B03\":{\"beat_id\":\"1_B03\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"风导致红伞晃动，林晚借机接触红伞，观察到伞骨金属箍上的新划痕。\",\"information_change\":\"\",\"type\":\"action\"},\"1_B04\":{\"beat_id\":\"1_B04\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"林晚指尖沾上暗红色粉末。\",\"information_change\":\"\",\"type\":\"action\"},\"1_B05\":{\"beat_id\":\"1_B05\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"两人对话涉及“怕什么”、“该怕的早就不在了”等隐晦内容。\",\"information_change\":\"\",\"type\":\"action\"},\"1_B06\":{\"beat_id\":\"1_B06\",\"dramatic_function\":\"\",\"emotion_change\":\"\",\"event\":\"林晚口袋中的长方形硬物被暗示。\",\"information_change\":\"\",\"type\":\"action\"}},\"book_id\":\"990402\",\"character_ids\":[\"11\",\"12\",\"13\",\"14\",\"15\",\"16\"],\"fact_ids\":[\"CH1_CHAR_撑红伞的女人_IDENTITY\",\"CH1_CHAR_林晚_IDENTITY\",\"CH1_SC1_LOCATION\",\"CH1_SC1_TIME\",\"CH2_CHAR_林晚_IDENTITY\",\"CH2_CHAR_顾沉_IDENTITY\",\"CH2_SC1_LOCATION\",\"CH2_SC1_TIME\",\"CH3_CHAR_林晚_IDENTITY\",\"CH3_CHAR_顾沉_IDENTITY\",\"CH3_SC1_LOCATION\",\"CH3_SC1_TIME\",\"CH3_SC2_LOCATION\",\"CH3_SC2_TIME\",\"E01_CONFLICT_GUSHEN_AGE\"],\"identity_binding_fingerprint\":\"f0869290c7e48dde85fdc36bed24df4ff7ea03605c14079628b3a08a9a89c324\",\"immutable_source_projection\":{\"event_facts\":[\"林晚在候车厅长椅上假寐，观察环境。\",\"撑红伞的女人出现，两人进行初步、试探性的对话。\",\"风导致红伞晃动，林晚借机接触红伞，观察到伞骨金属箍上的新划痕。\",\"林晚指尖沾上暗红色粉末。\",\"两人对话涉及“怕什么”、“该怕的早就不在了”等隐晦内容。\",\"林晚口袋中的长方形硬物被暗示。\"],\"scene_name\":\"红伞幻影（一）\",\"source_facts\":[{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":1,\"field\":\"characters.identity\",\"text\":\"归乡者（推测）\"}],\"fact_id\":\"CH1_CHAR_林晚_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:1\",\"status\":\"unknown\",\"subject_id\":\"林晚\",\"subject_type\":\"character\",\"value\":\"归乡者（推测）\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":1,\"field\":\"characters.identity\",\"text\":\"未知（可能是幻影或神秘人物）\"}],\"fact_id\":\"CH1_CHAR_撑红伞的女人_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:1\",\"status\":\"unknown\",\"subject_id\":\"撑红伞的女人\",\"subject_type\":\"character\",\"value\":\"未知（可能是幻影或神秘人物）\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":1,\"field\":\"scenes.location\",\"text\":\"临潮镇老车站候车厅\"}],\"fact_id\":\"CH1_SC1_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:1\",\"status\":\"confirmed\",\"subject_id\":\"临潮镇老车站候车厅\",\"subject_type\":\"scene\",\"value\":\"临潮镇老车站候车厅\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":1,\"field\":\"scenes.time\",\"text\":\"凌晨一点，雨夜\"}],\"fact_id\":\"CH1_SC1_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:1\",\"status\":\"confirmed\",\"subject_id\":\"临潮镇老车站候车厅\",\"subject_type\":\"scene\",\"value\":\"凌晨一点，雨夜\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"characters.identity\",\"text\":\"推测：回声照相馆相关者（母亲与照相馆有关联）\"}],\"fact_id\":\"CH2_CHAR_林晚_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:2\",\"status\":\"unknown\",\"subject_id\":\"林晚\",\"subject_type\":\"character\",\"value\":\"推测：回声照相馆相关者（母亲与照相馆有关联）\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"characters.identity\",\"text\":\"推测：回声照相馆店主/暗房工作者\"}],\"fact_id\":\"CH2_CHAR_顾沉_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:2\",\"status\":\"unknown\",\"subject_id\":\"顾沉\",\"subject_type\":\"character\",\"value\":\"推测：回声照相馆店主/暗房工作者\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"scenes.location\",\"text\":\"回声照相馆\"}],\"fact_id\":\"CH2_SC1_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:2\",\"status\":\"confirmed\",\"subject_id\":\"回声照相馆\",\"subject_type\":\"scene\",\"value\":\"回声照相馆\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":2,\"field\":\"scenes.time\",\"text\":\"天刚亮\"}],\"fact_id\":\"CH2_SC1_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:2\",\"status\":\"confirmed\",\"subject_id\":\"回声照相馆\",\"subject_type\":\"scene\",\"value\":\"天刚亮\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"characters.identity\",\"text\":\"推测：神秘事件调查者或知情者\"}],\"fact_id\":\"CH3_CHAR_顾沉_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:3\",\"status\":\"unknown\",\"subject_id\":\"顾沉\",\"subject_type\":\"character\",\"value\":\"推测：神秘事件调查者或知情者\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"characters.identity\",\"text\":\"推测：事件核心人物，记忆模糊者\"}],\"fact_id\":\"CH3_CHAR_林晚_IDENTITY\",\"predicate\":\"identity\",\"scope\":\"chapter:3\",\"status\":\"unknown\",\"subject_id\":\"林晚\",\"subject_type\":\"character\",\"value\":\"推测：事件核心人物，记忆模糊者\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"scenes.location\",\"text\":\"暗房\"}],\"fact_id\":\"CH3_SC1_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:3\",\"status\":\"confirmed\",\"subject_id\":\"暗房\",\"subject_type\":\"scene\",\"value\":\"暗房\"},{\"authority\":\"source_text\",\"confidence\":0.7,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"scenes.time\",\"text\":\"夜晚（推测）\"}],\"fact_id\":\"CH3_SC1_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:3\",\"status\":\"unknown\",\"subject_id\":\"暗房\",\"subject_type\":\"scene\",\"value\":\"夜晚（推测）\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"scenes.location\",\"text\":\"暗房门外\"}],\"fact_id\":\"CH3_SC2_LOCATION\",\"predicate\":\"location\",\"scope\":\"chapter:3\",\"status\":\"confirmed\",\"subject_id\":\"暗房门外\",\"subject_type\":\"scene\",\"value\":\"暗房门外\"},{\"authority\":\"source_text\",\"confidence\":0.95,\"conflict_group\":null,\"evidence\":[{\"chapter\":3,\"field\":\"scenes.time\",\"text\":\"夜晚\"}],\"fact_id\":\"CH3_SC2_TIME\",\"predicate\":\"time\",\"scope\":\"chapter:3\",\"status\":\"confirmed\",\"subject_id\":\"暗房门外\",\"subject_type\":\"scene\",\"value\":\"夜晚\"},{\"authority\":\"model_observation\",\"confidence\":0.82,\"conflict_group\":\"gushen-age\",\"evidence\":[{\"chapter\":2,\"field\":\"script_qa\",\"text\":\"合影里顾沉的年龄与现在不符\"}],\"fact_id\":\"E01_CONFLICT_GUSHEN_AGE\",\"predicate\":\"age_consistency\",\"scope\":\"episode:1\",\"status\":\"conflict\",\"subject_id\":\"顾沉\",\"subject_type\":\"character\",\"value\":\"合影中的年龄与当前外貌不一致，原文未解释\"}]},\"location_ids\":[],\"prop_ids\":[],\"provider_visible_contract_fingerprint\":\"19cdebe2468ab1a1da62866ebf1f37f0f01a23da54873d0922dac8d0405c21b3\",\"runtime_contract_version\":\"director_strategy_runtime_contract_v1\",\"runtime_validation_contract_fingerprint\":\"19cdebe2468ab1a1da62866ebf1f37f0f01a23da54873d0922dac8d0405c21b3\",\"scene_id\":\"book990402:e1:红伞幻影（一）\",\"source_ref_contract\":{\"allowed_ids\":{\"beat\":[\"1_B01\",\"1_B02\",\"1_B03\",\"1_B04\",\"1_B05\",\"1_B06\"],\"character\":[\"11\",\"12\",\"13\",\"14\",\"15\",\"16\"],\"fact\":[\"CH1_CHAR_撑红伞的女人_IDENTITY\",\"CH1_CHAR_林晚_IDENTITY\",\"CH1_SC1_LOCATION\",\"CH1_SC1_TIME\",\"CH2_CHAR_林晚_IDENTITY\",\"CH2_CHAR_顾沉_IDENTITY\",\"CH2_SC1_LOCATION\",\"CH2_SC1_TIME\",\"CH3_CHAR_林晚_IDENTITY\",\"CH3_CHAR_顾沉_IDENTITY\",\"CH3_SC1_LOCATION\",\"CH3_SC1_TIME\",\"CH3_SC2_LOCATION\",\"CH3_SC2_TIME\",\"E01_CONFLICT_GUSHEN_AGE\"],\"location\":[],\"prop\":[]},\"allowed_source_refs\":[\"beat:1_B01\",\"beat:1_B02\",\"beat:1_B03\",\"beat:1_B04\",\"beat:1_B05\",\"beat:1_B06\",\"fact:CH1_CHAR_撑红伞的女人_IDENTITY\",\"fact:CH1_CHAR_林晚_IDENTITY\",\"fact:CH1_SC1_LOCATION\",\"fact:CH1_SC1_TIME\",\"fact:CH2_CHAR_林晚_IDENTITY\",\"fact:CH2_CHAR_顾沉_IDENTITY\",\"fact:CH2_SC1_LOCATION\",\"fact:CH2_SC1_TIME\",\"fact:CH3_CHAR_林晚_IDENTITY\",\"fact:CH3_CHAR_顾沉_IDENTITY\",\"fact:CH3_SC1_LOCATION\",\"fact:CH3_SC1_TIME\",\"fact:CH3_SC2_LOCATION\",\"fact:CH3_SC2_TIME\",\"fact:E01_CONFLICT_GUSHEN_AGE\",\"character:11\",\"character:12\",\"character:13\",\"character:14\",\"character:15\",\"character:16\"],\"beat_alias_table\":{\"aliases\":{\"1_B01\":\"1_B01\",\"1_B02\":\"1_B02\",\"1_B03\":\"1_B03\",\"1_B04\":\"1_B04\",\"1_B05\":\"1_B05\",\"1_B06\":\"1_B06\",\"1_b01\":\"1_B01\",\"1_b02\":\"1_B02\",\"1_b03\":\"1_B03\",\"1_b04\":\"1_B04\",\"1_b05\":\"1_B05\",\"1_b06\":\"1_B06\"},\"ambiguous_aliases\":[],\"canonical_beat_ids\":[\"1_B01\",\"1_B02\",\"1_B03\",\"1_B04\",\"1_B05\",\"1_B06\"],\"normalization_policy\":\"one-to-one aliases only\"},\"schema_version\":\"director_source_ref_contract_v2\",\"syntax\":\"<type>:<authoritative_id>\",\"types\":[\"beat\",\"fact\",\"prop\",\"character\",\"location\"]},\"source_ref_contract_fingerprint\":\"e2c0231a3d224981d266c4b806926866ce9ee0fd1cc16949ab97ecde627e648f\"}},\"semantic_spec\":{\"canonical_schema_version\":\"director_scene_strategy_v3\",\"compiler_version\":\"director_scene_strategy_ir_compiler_v2\",\"epistemic_boundary\":{\"AUDIENCE_SUSPICION\":\"audience hypothesis, never a fact\",\"BLOCKING_FACT\":\"approved spatial truth\",\"DIRECTOR_CREATIVE_DECISION\":\"staging decision\",\"DIRECTOR_INFERENCE\":\"director interpretation, never a fact\",\"SOURCE_FACT\":\"authoritative upstream only\",\"TREATMENT_INTENT\":\"approved intent\"},\"epistemic_types\":[\"SOURCE_FACT\",\"DIRECTOR_INFERENCE\",\"AUDIENCE_SUSPICION\",\"TREATMENT_INTENT\",\"BLOCKING_FACT\",\"DIRECTOR_CREATIVE_DECISION\"],\"flexible_list_fields\":[\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"],\"forbidden_model_fields\":[\"creative_core_fingerprint\",\"cv_score\",\"dq_score\",\"duration_ladder\",\"fact_claim\",\"patches\",\"plan_shot_id\",\"quality_score\",\"repair\",\"shot_ids\",\"shot_plan\",\"shotplan\",\"shots\",\"source_fact\",\"source_facts\",\"strategy_fingerprint\"],\"information_fields\":[\"reveal_refs\",\"hint_refs\",\"withhold_refs\",\"audience_suspicions\",\"director_inferences\"],\"information_policy\":{\"audience_suspicions\":\"interpretive claims with support_refs\",\"director_inferences\":\"directing interpretations with support_refs and purpose\",\"hint_refs\":\"already available evidence only\",\"reference_first\":true,\"reveal_refs\":\"source refs visible by this phase\",\"withhold_refs\":\"future evidence allowed\"},\"model_ir_schema_version\":\"director_scene_strategy_ir_v2\",\"na_rules\":{\"prop_visual_strategy\":\"N/A or null normalizes to [] when no prop evidence exists\",\"source_refs\":\"never invent IDs\"},\"phase_constraints\":{\"beat_assignment\":\"exactly_once\",\"maximum\":6,\"minimum\":2,\"recommended\":\"3-5\"},\"phase_fields\":[\"phase_id\",\"beat_ids\",\"dramatic_function\",\"audience_state\",\"emotion\",\"power\",\"performance\",\"edit\",\"visual\",\"information\"],\"power_center_types\":[\"CHARACTER\",\"SHARED\",\"RELATIONSHIP\",\"INFORMATION\",\"OBJECT\",\"ENVIRONMENT\",\"NONE\"],\"schema_version\":\"director_scene_strategy_semantic_spec_v2\",\"top_level_fields\":[\"schema_version\",\"scene_id\",\"dramatic_objective\",\"scene_question\",\"strategy_summary\",\"visual_thesis\",\"scene_phases\",\"spatial_expression\",\"prop_visual_strategy\",\"shot_architecture_guidance\",\"must_preserve\",\"must_avoid\",\"creative_risks\"]}}\n[/DIRECTOR_STRATEGY_IR_V2_EVIDENCE]\nReturn one complete director_scene_strategy_ir_v2 JSON object now.",
+  "provider_contract": {
+    "schema_version": "director_scene_strategy_ir_v2",
+    "scene_id": "book990402:e1:红伞幻影（一）",
+    "allowed_beat_ids": [
+      "1_B01",
+      "1_B02",
+      "1_B03",
+      "1_B04",
+      "1_B05",
+      "1_B06"
+    ],
+    "allowed_character_ids": [
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16"
+    ],
+    "allowed_characters": [
+      {
+        "character_id": "11",
+        "canonical_name": "岚",
+        "canonical_identity_id": "book:990402:character:11",
+        "scope": "book-level"
+      },
+      {
+        "character_id": "12",
+        "canonical_name": "撑红伞的女人",
+        "canonical_identity_id": "book:990402:character:12",
+        "scope": "book-level"
+      },
+      {
+        "character_id": "13",
+        "canonical_name": "林晚",
+        "canonical_identity_id": "book:990402:character:13",
+        "scope": "book-level"
+      },
+      {
+        "character_id": "14",
+        "canonical_name": "母亲",
+        "canonical_identity_id": "book:990402:character:14",
+        "scope": "book-level"
+      },
+      {
+        "character_id": "15",
+        "canonical_name": "陆叔",
+        "canonical_identity_id": "book:990402:character:15",
+        "scope": "book-level"
+      },
+      {
+        "character_id": "16",
+        "canonical_name": "顾沉",
+        "canonical_identity_id": "book:990402:character:16",
+        "scope": "book-level"
+      }
+    ],
+    "source_ref_contract": {
+      "schema_version": "director_source_ref_contract_v2",
+      "allowed_ids": {
+        "beat": [
+          "1_B01",
+          "1_B02",
+          "1_B03",
+          "1_B04",
+          "1_B05",
+          "1_B06"
+        ],
+        "fact": [
+          "CH1_CHAR_撑红伞的女人_IDENTITY",
+          "CH1_CHAR_林晚_IDENTITY",
+          "CH1_SC1_LOCATION",
+          "CH1_SC1_TIME",
+          "CH2_CHAR_林晚_IDENTITY",
+          "CH2_CHAR_顾沉_IDENTITY",
+          "CH2_SC1_LOCATION",
+          "CH2_SC1_TIME",
+          "CH3_CHAR_林晚_IDENTITY",
+          "CH3_CHAR_顾沉_IDENTITY",
+          "CH3_SC1_LOCATION",
+          "CH3_SC1_TIME",
+          "CH3_SC2_LOCATION",
+          "CH3_SC2_TIME",
+          "E01_CONFLICT_GUSHEN_AGE"
+        ],
+        "character": [
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16"
+        ],
+        "prop": [],
+        "location": []
+      },
+      "allowed_source_refs": [
+        "beat:1_B01",
+        "beat:1_B02",
+        "beat:1_B03",
+        "beat:1_B04",
+        "beat:1_B05",
+        "beat:1_B06",
+        "fact:CH1_CHAR_撑红伞的女人_IDENTITY",
+        "fact:CH1_CHAR_林晚_IDENTITY",
+        "fact:CH1_SC1_LOCATION",
+        "fact:CH1_SC1_TIME",
+        "fact:CH2_CHAR_林晚_IDENTITY",
+        "fact:CH2_CHAR_顾沉_IDENTITY",
+        "fact:CH2_SC1_LOCATION",
+        "fact:CH2_SC1_TIME",
+        "fact:CH3_CHAR_林晚_IDENTITY",
+        "fact:CH3_CHAR_顾沉_IDENTITY",
+        "fact:CH3_SC1_LOCATION",
+        "fact:CH3_SC1_TIME",
+        "fact:CH3_SC2_LOCATION",
+        "fact:CH3_SC2_TIME",
+        "fact:E01_CONFLICT_GUSHEN_AGE",
+        "character:11",
+        "character:12",
+        "character:13",
+        "character:14",
+        "character:15",
+        "character:16"
+      ],
+      "syntax": "<type>:<authoritative_id>",
+      "beat_alias_table": {
+        "canonical_beat_ids": [
+          "1_B01",
+          "1_B02",
+          "1_B03",
+          "1_B04",
+          "1_B05",
+          "1_B06"
+        ],
+        "aliases": {
+          "1_B01": "1_B01",
+          "1_B02": "1_B02",
+          "1_B03": "1_B03",
+          "1_B04": "1_B04",
+          "1_B05": "1_B05",
+          "1_B06": "1_B06",
+          "1_b01": "1_B01",
+          "1_b02": "1_B02",
+          "1_b03": "1_B03",
+          "1_b04": "1_B04",
+          "1_b05": "1_B05",
+          "1_b06": "1_B06"
+        },
+        "ambiguous_aliases": [],
+        "normalization_policy": "one-to-one aliases only"
+      },
+      "types": [
+        "beat",
+        "fact",
+        "prop",
+        "character",
+        "location"
+      ]
+    },
+    "allowed_source_refs": [
+      "beat:1_B01",
+      "beat:1_B02",
+      "beat:1_B03",
+      "beat:1_B04",
+      "beat:1_B05",
+      "beat:1_B06",
+      "fact:CH1_CHAR_撑红伞的女人_IDENTITY",
+      "fact:CH1_CHAR_林晚_IDENTITY",
+      "fact:CH1_SC1_LOCATION",
+      "fact:CH1_SC1_TIME",
+      "fact:CH2_CHAR_林晚_IDENTITY",
+      "fact:CH2_CHAR_顾沉_IDENTITY",
+      "fact:CH2_SC1_LOCATION",
+      "fact:CH2_SC1_TIME",
+      "fact:CH3_CHAR_林晚_IDENTITY",
+      "fact:CH3_CHAR_顾沉_IDENTITY",
+      "fact:CH3_SC1_LOCATION",
+      "fact:CH3_SC1_TIME",
+      "fact:CH3_SC2_LOCATION",
+      "fact:CH3_SC2_TIME",
+      "fact:E01_CONFLICT_GUSHEN_AGE",
+      "character:11",
+      "character:12",
+      "character:13",
+      "character:14",
+      "character:15",
+      "character:16"
+    ],
+    "phase_constraints": {
+      "min": 2,
+      "max": 6,
+      "recommended": "3-5",
+      "beat_assignment": "exactly_once"
+    },
+    "flexible_shape_policy": {
+      "spatial_expression": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "prop_visual_strategy": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "shot_architecture_guidance": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "must_preserve": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "must_avoid": [
+        "string",
+        "string[]",
+        "null"
+      ],
+      "creative_risks": [
+        "string",
+        "string[]",
+        "null"
+      ]
+    },
+    "information_schema": {
+      "reveal_refs": "source_ref[]",
+      "hint_refs": "source_ref[]",
+      "withhold_refs": "source_ref[]",
+      "audience_suspicions": "claim[]",
+      "director_inferences": "claim[]"
+    },
+    "epistemic_rules": {
+      "SOURCE_FACT": "authoritative upstream only",
+      "DIRECTOR_INFERENCE": "director interpretation, never a fact",
+      "AUDIENCE_SUSPICION": "audience hypothesis, never a fact",
+      "TREATMENT_INTENT": "approved intent",
+      "BLOCKING_FACT": "approved spatial truth",
+      "DIRECTOR_CREATIVE_DECISION": "staging decision"
+    },
+    "minimal_skeleton": {
+      "schema_version": "",
+      "scene_id": "",
+      "dramatic_objective": "",
+      "scene_question": "",
+      "strategy_summary": "",
+      "visual_thesis": "",
+      "spatial_expression": [],
+      "prop_visual_strategy": [],
+      "shot_architecture_guidance": [],
+      "must_preserve": [],
+      "must_avoid": [],
+      "creative_risks": [],
+      "scene_phases": [
+        {
+          "phase_id": "P01",
+          "beat_ids": [],
+          "dramatic_function": "",
+          "audience_state": {
+            "knows": [],
+            "suspects": [],
+            "withholds": [],
+            "question_shift": ""
+          },
+          "emotion": {
+            "state": "",
+            "trigger": "",
+            "transition_reason": "",
+            "intensity_hint": null
+          },
+          "power": {
+            "center_type": "NONE",
+            "center_ref": null,
+            "description": "",
+            "shift": ""
+          },
+          "performance": [
+            {
+              "character_id": "11",
+              "objective": "",
+              "tactic": "",
+              "visible_behavior": "",
+              "turning_point": false
+            }
+          ],
+          "edit": {
+            "tempo": "",
+            "hold_logic": "",
+            "cut_logic": "",
+            "transition_motivation": ""
+          },
+          "visual": {
+            "visual_grammar": "",
+            "camera_rule": "",
+            "composition_rule": "",
+            "movement_condition": ""
+          },
+          "information": {
+            "reveal_refs": [],
+            "hint_refs": [],
+            "withhold_refs": [],
+            "audience_suspicions": [],
+            "director_inferences": []
+          }
+        }
+      ]
+    }
+  },
+  "provider_visible_contract_fingerprint": "19cdebe2468ab1a1da62866ebf1f37f0f01a23da54873d0922dac8d0405c21b3",
+  "identity_binding_fingerprint": "f0869290c7e48dde85fdc36bed24df4ff7ea03605c14079628b3a08a9a89c324",
+  "source_ref_contract_fingerprint": "e2c0231a3d224981d266c4b806926866ce9ee0fd1cc16949ab97ecde627e648f",
+  "beat_alias_table_fingerprint": "85df60bc3863f46ac0e08e2d51afe47f1be736b3d7e88ef91e70277e22a04f95",
+  "allowed_source_refs_fingerprint": "aebfbb07bcffca176698edee0c40f7e16a932b134cd5339dd187408e14c8bf4d",
+  "system_prompt_fingerprint": "e092f96b2ac29bea2c4e63abcb85ff5dd8d7d0f918c05c7ca60b36bc3f5f1929",
+  "schema_fingerprint": "fcb884ede9470d27bba3417a779b3eb23c00b46caf3272c7c546ca91be07fde3",
+  "scene_input_fingerprint": "f49075a340867e9f57a6b5ca963d7a1860b327333176806930737b2f8174afe5",
+  "request_fingerprint": "0ab5f6e4d579d6a8611c1356002a948361da9f881852620eb2edf9f73a4dbe7a",
+  "model_snapshot": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "parameters": {
+      "max_tokens": 8192,
+      "temperature": 0.3,
+      "thinking": {
+        "type": "disabled"
+      }
+    }
+  }
+}

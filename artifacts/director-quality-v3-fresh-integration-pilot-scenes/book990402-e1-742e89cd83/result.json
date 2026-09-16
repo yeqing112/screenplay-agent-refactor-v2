@@ -1,0 +1,21 @@
+{
+  "scene_id": "book990402:e1:红伞幻影（一）",
+  "cohort_role": "low",
+  "provider_errors": [
+    {
+      "code": "STRATEGY_AUTHORITY_INCOMPLETE",
+      "message": "STRATEGY_AUTHORITY_INCOMPLETE"
+    }
+  ],
+  "calls": [
+    {
+      "ordinal": 1,
+      "layer": "STRATEGY",
+      "request_fingerprint": "0ab5f6e4d579d6a8611c1356002a948361da9f881852620eb2edf9f73a4dbe7a",
+      "raw_response_fingerprint": "60f1dcdfcfaaf6e65977a2e663347476b69f1bb9bdd920d89ce38b38e561f3ce",
+      "retries": 0
+    }
+  ],
+  "status": "MODEL_FAILURE",
+  "failure": "STRATEGY_AUTHORITY_INCOMPLETE"
+}

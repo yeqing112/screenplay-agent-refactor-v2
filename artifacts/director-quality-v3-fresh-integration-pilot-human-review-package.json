@@ -1,0 +1,81 @@
+{
+  "schema_version": "director_quality_v3_fresh_human_review_package_v1",
+  "status": "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_FAILED",
+  "human_review_pending": true,
+  "director_critic_review": "NOT_RECORDED",
+  "failure_classification": "MODEL_FAILURE",
+  "failure_layer": "STRATEGY_AUTHORITY_INCOMPLETE",
+  "no_auto_retry": true,
+  "cohort_replacement": false,
+  "scenes": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（一）",
+      "cohort_role": "low",
+      "status": "MODEL_FAILURE",
+      "brief": "artifacts\\director-quality-v3-fresh-integration-pilot-scenes\\book990402-e1-742e89cd83\\director-brief.md",
+      "calls": [
+        {
+          "ordinal": 1,
+          "layer": "STRATEGY",
+          "request_fingerprint": "0ab5f6e4d579d6a8611c1356002a948361da9f881852620eb2edf9f73a4dbe7a",
+          "raw_response_fingerprint": "60f1dcdfcfaaf6e65977a2e663347476b69f1bb9bdd920d89ce38b38e561f3ce",
+          "retries": 0
+        }
+      ],
+      "provider_errors": [
+        {
+          "code": "STRATEGY_AUTHORITY_INCOMPLETE",
+          "message": "STRATEGY_AUTHORITY_INCOMPLETE"
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "cohort_role": "medium",
+      "status": "MODEL_FAILURE",
+      "brief": "artifacts\\director-quality-v3-fresh-integration-pilot-scenes\\book990402-e1-98b9eff66f\\director-brief.md",
+      "calls": [
+        {
+          "ordinal": 2,
+          "layer": "STRATEGY",
+          "request_fingerprint": "9997bf58f5b129f4007f9110fc3d0654abec1d2df5668900807202eb3c8296fd",
+          "raw_response_fingerprint": "3cce85a3348b875195cd789858ae7baf294d5d0aceb918da3f0a057c4dfcb628",
+          "retries": 0
+        }
+      ],
+      "provider_errors": [
+        {
+          "code": "STRATEGY_AUTHORITY_INCOMPLETE",
+          "message": "STRATEGY_AUTHORITY_INCOMPLETE"
+        }
+      ]
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "cohort_role": "high",
+      "status": "MODEL_FAILURE",
+      "brief": "artifacts\\director-quality-v3-fresh-integration-pilot-scenes\\book990402-e2-a614838f82\\director-brief.md",
+      "calls": [
+        {
+          "ordinal": 3,
+          "layer": "STRATEGY",
+          "request_fingerprint": "bcaf0fa4420480633d2bd89acf43ec3cf179bd699d85b23ee4933b2f2f6a0f8f",
+          "raw_response_fingerprint": "d4c7dc7e6f2729e49f041d4611cdd6f6080b99e3faf0e95be50130969b8844e4",
+          "retries": 0
+        }
+      ],
+      "provider_errors": [
+        {
+          "code": "STRATEGY_AUTHORITY_INCOMPLETE",
+          "message": "STRATEGY_AUTHORITY_INCOMPLETE"
+        }
+      ]
+    }
+  ],
+  "briefs": [
+    "artifacts\\director-quality-v3-fresh-integration-pilot-scenes\\book990402-e1-742e89cd83\\director-brief.md",
+    "artifacts\\director-quality-v3-fresh-integration-pilot-scenes\\book990402-e1-98b9eff66f\\director-brief.md",
+    "artifacts\\director-quality-v3-fresh-integration-pilot-scenes\\book990402-e2-a614838f82\\director-brief.md"
+  ],
+  "machine_gate": "artifacts/director-quality-v3-fresh-integration-pilot-machine-gate.json"
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": "director_quality_v3_fresh_cohort_manifest_v1",
+  "selection_algorithm_version": "fresh_scene_complexity_v1",
+  "candidate_count": 3,
+  "excluded_exposed_count": 0,
+  "excluded_retired_count": 3,
+  "excluded_incomplete_count": 0,
+  "excluded_exposure_unknown_count": 0,
+  "selected": {
+    "low": "book990402:e1:红伞幻影（一）",
+    "medium": "book990402:e1:红伞幻影（二）",
+    "high": "book990402:e2:暗房门口的试探"
+  },
+  "complexity": {
+    "low": {
+      "beat_count": 6,
+      "character_count": 6,
+      "dialogue_turn_count": 12,
+      "prop_ref_count": 0,
+      "information_change_count": 0,
+      "reaction_candidate_count": 0,
+      "entrance_exit_count": 1,
+      "spatial_event_count": 14,
+      "complexity_score": 43
+    },
+    "medium": {
+      "beat_count": 10,
+      "character_count": 6,
+      "dialogue_turn_count": 23,
+      "prop_ref_count": 0,
+      "information_change_count": 0,
+      "reaction_candidate_count": 0,
+      "entrance_exit_count": 0,
+      "spatial_event_count": 14,
+      "complexity_score": 57
+    },
+    "high": {
+      "beat_count": 8,
+      "character_count": 2,
+      "dialogue_turn_count": 0,
+      "prop_ref_count": 9,
+      "information_change_count": 8,
+      "reaction_candidate_count": 8,
+      "entrance_exit_count": 3,
+      "spatial_event_count": 14,
+      "complexity_score": 60
+    }
+  },
+  "cohort_fingerprint": "dafee06b86a26ef3290177e1f4d9654c1db49c38a89758c289a53bed8f330d8e",
+  "frozen": true,
+  "provider_calls": 0
+}

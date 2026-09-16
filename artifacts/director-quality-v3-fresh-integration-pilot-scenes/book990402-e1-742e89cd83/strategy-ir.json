@@ -1,0 +1,392 @@
+{
+  "schema_version": "director_scene_strategy_ir_v2",
+  "scene_id": "book990402:e1:红伞幻影（一）",
+  "dramatic_objective": "围绕“林晚在候车厅长椅上假寐，观察环境。”建立冲突，并通过“林晚口袋中的长方形硬物被暗示。”推进本场戏。",
+  "scene_question": "林晚与撑红伞的女人之间，谁在试探谁？那把红伞和林晚口袋里的东西，隐藏着什么秘密？",
+  "strategy_summary": "以林晚的假寐观察为起点，通过红伞的意外接触和隐晦对话，逐步揭示两人之间的试探与戒备。最终以林晚口袋中硬物的暗示收尾，留下悬念。",
+  "visual_thesis": "在昏暗、潮湿的候车厅中，一把鲜艳的红伞成为视觉焦点和叙事枢纽。通过光影、雨水和人物细微动作的特写，营造悬疑、压抑的氛围。",
+  "scene_phases": [
+    {
+      "phase_id": "P01",
+      "beat_ids": [
+        "1_B01"
+      ],
+      "dramatic_function": "建立场景与人物初始状态",
+      "audience_state": {
+        "knows": [
+          "林晚在候车厅长椅上假寐"
+        ],
+        "question_shift": "林晚在观察什么？她为何在此？",
+        "suspects": [],
+        "withholds": [
+          "林晚的真实身份和目的"
+        ]
+      },
+      "emotion": {
+        "state": "克制、警觉",
+        "intensity_hint": 3,
+        "trigger": "独自在深夜候车厅的环境",
+        "transition_reason": "为后续人物登场和互动铺垫"
+      },
+      "power": {
+        "center_ref": "13",
+        "center_type": "CHARACTER",
+        "description": "林晚独自占据空间，通过假寐掌控观察的主动权。",
+        "shift": "无"
+      },
+      "performance": [
+        {
+          "character_id": "13",
+          "objective": "在假寐的掩护下，全面观察候车厅环境，评估潜在威胁或目标。",
+          "tactic": "保持静止，仅通过微小的眼球转动和手指摩挲袖口硬物来暗示内在活动。",
+          "turning_point": false,
+          "visible_behavior": "身体放松靠在长椅上，双眼微闭，但眼皮偶尔颤动。左手手指在袖口内侧反复摩挲一个硬物轮廓。"
+        }
+      ],
+      "edit": {
+        "cut_logic": "从环境全景切入，建立空间感，然后切至林晚的中景，最后给手部特写。",
+        "hold_logic": "在林晚假寐的镜头上保持足够时长，让观众感受到她的伪装和环境的寂静。",
+        "tempo": "缓慢",
+        "transition_motivation": "为撑红伞的女人登场制造期待和反差。"
+      },
+      "visual": {
+        "camera_rule": "以林晚为视觉中心，环境为衬托。",
+        "composition_rule": "利用长椅、窗户等线条引导视线至林晚，营造孤立感。",
+        "movement_condition": "镜头运动极少，以静态构图为主，强调环境的凝滞。",
+        "visual_grammar": "建立镜头，确立空间关系和人物初始状态。"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:1_B01",
+          "fact:CH1_SC1_LOCATION",
+          "fact:CH1_SC1_TIME"
+        ],
+        "hint_refs": [
+          "character:13"
+        ],
+        "withhold_refs": [
+          "fact:CH1_CHAR_林晚_IDENTITY"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "林晚并非真的在休息，而是在执行某种监视或等待任务。",
+            "support_refs": [
+              "beat:1_B01"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "林晚袖口的硬物是她此行的关键物品，可能具有防御或记录功能。",
+            "support_refs": [
+              "beat:1_B01"
+            ],
+            "purpose": "为后续情节埋下伏笔，增加人物的神秘感和行动目的性。"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P02",
+      "beat_ids": [
+        "1_B02"
+      ],
+      "dramatic_function": "引入对立人物，开启试探性互动",
+      "audience_state": {
+        "knows": [
+          "林晚在假寐观察",
+          "撑红伞的女人出现"
+        ],
+        "question_shift": "这个女人是谁？她和林晚认识吗？",
+        "suspects": [
+          "两人可能互相认识或怀有共同目的"
+        ],
+        "withholds": [
+          "撑红伞的女人的真实身份和意图"
+        ]
+      },
+      "emotion": {
+        "state": "试探、戒备",
+        "intensity_hint": 4,
+        "trigger": "陌生人的闯入打破了林晚的独处状态",
+        "transition_reason": "从单人观察转为双人互动，紧张感升级"
+      },
+      "power": {
+        "center_ref": "relationship",
+        "center_type": "RELATIONSHIP",
+        "description": "权力在两人之间流动，通过对话和姿态进行无声的较量。",
+        "shift": "从林晚的独占观察权，转向双方的相互试探。"
+      },
+      "performance": [
+        {
+          "character_id": "13",
+          "objective": "在不暴露自身意图的前提下，获取关于对方的信息。",
+          "tactic": "以看似随意的闲聊（天气、车次）作为掩护，观察对方反应。",
+          "turning_point": false,
+          "visible_behavior": "睁开眼，坐直身体，但姿态依然放松。目光看似随意地扫过对方，重点落在红伞上。"
+        },
+        {
+          "character_id": "12",
+          "objective": "进入空间，评估林晚，并可能传递或获取某种信息。",
+          "tactic": "以简短、中性的回应为主，保持距离感，同时观察林晚的细节。",
+          "turning_point": false,
+          "visible_behavior": "将红伞收起，靠在长椅边。动作从容，但眼神保持警惕。"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在两人对话时，采用正反打镜头，但避免过于频繁的切换，以保持对话的张力和空间的连贯性。",
+        "hold_logic": "在关键台词（如“这伞……颜色真亮”）后，给对方反应镜头。",
+        "tempo": "中等",
+        "transition_motivation": "通过对话节奏控制信息释放和悬念积累。"
+      },
+      "visual": {
+        "camera_rule": "双人镜头与单人特写交替，强调对峙感。",
+        "composition_rule": "利用红伞作为画面中的强色彩元素，分割或连接两人空间。",
+        "movement_condition": "镜头可随人物细微动作（如撑伞、坐下）进行微小调整。",
+        "visual_grammar": "建立双人关系，通过构图和视线暗示心理距离。"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:1_B02"
+        ],
+        "hint_refs": [
+          "character:12"
+        ],
+        "withhold_refs": [
+          "fact:CH1_CHAR_撑红伞的女人_IDENTITY"
+        ],
+        "audience_suspicions": [
+          {
+            "claim": "撑红伞的女人可能知道林晚在等什么，或者她就是林晚要等的人。",
+            "support_refs": [
+              "beat:1_B02"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "对话中关于“颜色”和“需要一点颜色”的交流，是两人对彼此身份和处境的隐晦试探。",
+            "support_refs": [
+              "beat:1_B02"
+            ],
+            "purpose": "深化对话的潜台词，暗示两人可能共享某种背景或认知。"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P03",
+      "beat_ids": [
+        "1_B03",
+        "1_B04"
+      ],
+      "dramatic_function": "通过意外事件推动情节，揭示关键物理证据",
+      "audience_state": {
+        "knows": [
+          "风导致红伞晃动",
+          "林晚接触红伞并发现划痕",
+          "林晚指尖沾上暗红色粉末"
+        ],
+        "question_shift": "划痕和粉末是什么？这把伞经历过什么？",
+        "suspects": [
+          "红伞可能与某个暴力或秘密事件有关"
+        ],
+        "withholds": [
+          "划痕和粉末的具体来源与意义"
+        ]
+      },
+      "emotion": {
+        "state": "紧张、专注",
+        "intensity_hint": 5,
+        "trigger": "风这一自然因素引发了意外接触和发现",
+        "transition_reason": "从语言试探转向物理证据的发现，悬念具体化"
+      },
+      "power": {
+        "center_ref": "13",
+        "center_type": "CHARACTER",
+        "description": "林晚通过主动（但伪装成被动）的接触，获得了关键信息，暂时占据上风。",
+        "shift": "林晚从被动观察者转为主动信息获取者。"
+      },
+      "performance": [
+        {
+          "character_id": "13",
+          "objective": "利用风造成的意外，合理化自己接触红伞的行为，并快速检查关键部位。",
+          "tactic": "以“帮忙扶住”为借口，手指快速而隐蔽地划过伞骨金属箍，感受并观察划痕，同时指尖沾取粉末。",
+          "turning_point": true,
+          "visible_behavior": "在红伞晃动时，迅速伸手扶住，动作自然。眼神在接触瞬间聚焦于金属箍，随后若无其事地收回手，指尖在暗处轻轻摩挲。"
+        },
+        {
+          "character_id": "12",
+          "objective": "保护红伞，同时观察林晚的反应，判断其是否发现了什么。",
+          "tactic": "口头道谢，但目光紧随林晚的手部动作，身体微微前倾，保持警惕。",
+          "turning_point": false,
+          "visible_behavior": "迅速将红伞扶正，对林晚道谢，但眼神中闪过一丝不易察觉的紧张。"
+        }
+      ],
+      "edit": {
+        "cut_logic": "风起时快速切换镜头，营造突发感。林晚检查划痕时，使用特写镜头，强调发现的瞬间。",
+        "hold_logic": "在林晚指尖沾上粉末的镜头上短暂停留，让观众看清证据。",
+        "tempo": "先快后慢",
+        "transition_motivation": "通过节奏变化突出关键动作和发现。"
+      },
+      "visual": {
+        "camera_rule": "以林晚的手部动作为视觉核心。",
+        "composition_rule": "利用红伞的鲜艳色彩与金属箍的冷硬质感形成对比。",
+        "movement_condition": "镜头可跟随林晚的手部动作进行轻微移动，增强临场感。",
+        "visual_grammar": "通过特写和细节展示，将抽象的怀疑转化为具体的物理证据。"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:1_B03",
+          "beat:1_B04"
+        ],
+        "hint_refs": [],
+        "withhold_refs": [],
+        "audience_suspicions": [
+          {
+            "claim": "暗红色粉末可能是血迹，红伞可能与一桩犯罪或意外有关。",
+            "support_refs": [
+              "beat:1_B04"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "林晚对划痕和粉末的发现，证实了她对红伞及持有者的怀疑，行动目标更加明确。",
+            "support_refs": [
+              "beat:1_B03",
+              "beat:1_B04"
+            ],
+            "purpose": "推动林晚从观察转向更主动的调查或对峙。"
+          }
+        ]
+      }
+    },
+    {
+      "phase_id": "P04",
+      "beat_ids": [
+        "1_B05",
+        "1_B06"
+      ],
+      "dramatic_function": "将物理发现转化为心理对峙，并暗示林晚的底牌",
+      "audience_state": {
+        "knows": [
+          "对话涉及“怕什么”、“该怕的早就不在了”",
+          "林晚口袋中的长方形硬物被暗示"
+        ],
+        "question_shift": "“该怕的”指的是什么？林晚口袋里到底是什么？",
+        "suspects": [
+          "两人都背负着沉重的过去，林晚可能持有某种证据或武器"
+        ],
+        "withholds": [
+          "“该怕的”的具体所指",
+          "长方形硬物的真实性质"
+        ]
+      },
+      "emotion": {
+        "state": "压抑、对抗",
+        "intensity_hint": 6,
+        "trigger": "对话触及核心恐惧和秘密",
+        "transition_reason": "从物理证据的发现升级为心理层面的直接交锋"
+      },
+      "power": {
+        "center_ref": "relationship",
+        "center_type": "RELATIONSHIP",
+        "description": "权力在对话的潜台词中激烈争夺，双方都在试探对方的底线和秘密。",
+        "shift": "从林晚掌握物理证据，转向双方在心理层面的相互威慑。"
+      },
+      "performance": [
+        {
+          "character_id": "13",
+          "objective": "通过隐晦的对话施加心理压力，同时暗示自己并非毫无准备。",
+          "tactic": "用“该怕的早就不在了”回应对方的试探，并在对话间隙，左手在口袋中按压长方形物体，动作轻微但意图明确。",
+          "turning_point": true,
+          "visible_behavior": "目光变得锐利，直视对方。说话时语气平静但有力。左手在口袋中的动作被镜头捕捉，但不明确展示物体。"
+        },
+        {
+          "character_id": "12",
+          "objective": "在心理对抗中不落下风，同时评估林晚的威胁等级。",
+          "tactic": "以“是吗”这样简短而意味深长的回应，保持神秘感和距离感。",
+          "turning_point": false,
+          "visible_behavior": "面对林晚的直视，眼神毫不退缩，但嘴角线条微微绷紧。"
+        }
+      ],
+      "edit": {
+        "cut_logic": "在关键对话时，使用更近的景别（如近景、特写），强调人物表情和眼神的细微变化。",
+        "hold_logic": "在林晚按压口袋物体的镜头上，给一个短暂的停顿，引发观众联想。",
+        "tempo": "缓慢而充满张力",
+        "transition_motivation": "通过剪辑节奏和景别变化，放大心理对抗的强度。"
+      },
+      "visual": {
+        "camera_rule": "聚焦于人物面部和手部（口袋）的细节。",
+        "composition_rule": "利用光影（如窗外闪电、室内昏暗灯光）制造明暗对比，暗示人物内心的复杂。",
+        "movement_condition": "镜头基本静止，以稳定的构图承载紧张的对话。",
+        "visual_grammar": "通过特写和潜台词，将外部冲突内化为心理博弈。"
+      },
+      "information": {
+        "reveal_refs": [
+          "beat:1_B05",
+          "beat:1_B06"
+        ],
+        "hint_refs": [],
+        "withhold_refs": [],
+        "audience_suspicions": [
+          {
+            "claim": "林晚口袋里的长方形硬物可能是一把刀、一个录音设备或一件关键证据（如照片、信件）。",
+            "support_refs": [
+              "beat:1_B06"
+            ]
+          },
+          {
+            "claim": "“该怕的早就不在了”可能指林晚已经克服了某种恐惧，或者她所害怕的人或事已经消失（死亡或离开）。",
+            "support_refs": [
+              "beat:1_B05"
+            ]
+          }
+        ],
+        "director_inferences": [
+          {
+            "claim": "林晚暗示口袋中的硬物，是一种防御性威慑，表明她对当前局面有备而来，并非任人宰割。",
+            "support_refs": [
+              "beat:1_B06"
+            ],
+            "purpose": "平衡双方的力量对比，为后续可能的冲突或合作奠定基础。"
+          },
+          {
+            "claim": "对话中关于“怕”的讨论，揭示了两人共享的某种创伤或秘密背景，是连接她们的关键纽带。",
+            "support_refs": [
+              "beat:1_B05"
+            ],
+            "purpose": "深化人物关系，暗示故事的核心冲突可能与共同的过去有关。"
+          }
+        ]
+      }
+    }
+  ],
+  "spatial_expression": [
+    "临潮镇老车站候车厅，凌晨一点的雨夜。空间空旷、破旧，灯光昏暗且不稳定。雨水从破损的窗户缝隙渗入，地面有积水反光。长椅是主要的家具，红伞在昏暗环境中异常醒目。"
+  ],
+  "prop_visual_strategy": [
+    "红伞：鲜艳的红色在灰暗环境中形成强烈视觉冲击，是场景的核心道具和叙事符号。其金属箍上的新划痕和指尖的暗红色粉末是关键视觉证据。林晚袖口/口袋中的硬物：通过轮廓和人物动作暗示其存在，不明确展示，保持神秘感。"
+  ],
+  "shot_architecture_guidance": [
+    "建议采用“建立-互动-发现-对峙”的四段式结构。第一阶段（P01）以环境镜头和林晚的静态镜头为主；第二阶段（P02）引入双人镜头和正反打；第三阶段（P03）大量使用手部特写和细节镜头；第四阶段（P04）回归面部特写和心理状态镜头。"
+  ],
+  "must_preserve": [
+    "林晚假寐观察的初始状态",
+    "红伞作为视觉焦点和叙事枢纽的地位",
+    "划痕和暗红色粉末作为关键物理证据的发现过程",
+    "对话中“怕什么”、“该怕的早就不在了”的潜台词",
+    "林晚口袋中长方形硬物的暗示性存在"
+  ],
+  "must_avoid": [
+    "明确展示林晚口袋中硬物的具体形态",
+    "解释划痕和粉末的来源",
+    "揭示撑红伞的女人的真实身份",
+    "让林晚或撑红伞的女人直接说出自己的目的或秘密"
+  ],
+  "creative_risks": [
+    "在P03阶段，风导致红伞晃动的时机可以与远处的雷声或灯光闪烁同步，增强戏剧性。",
+    "在P04阶段，林晚按压口袋硬物的动作可以与她台词的节奏精准配合，形成一种无声的威胁节奏。"
+  ]
+}

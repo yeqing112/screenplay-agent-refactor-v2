@@ -1,0 +1,93 @@
+{
+  "schema_version": "director_quality_v3_fresh_candidate_inventory_v1",
+  "candidates": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（一）",
+      "eligibility_reasons": [],
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 2,
+        "script_ir_payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+        "fact_snapshot_id": 1,
+        "director_treatment_id": 4,
+        "scene_blocking_id": 4
+      },
+      "complexity": {
+        "beat_count": 6,
+        "character_count": 6,
+        "dialogue_turn_count": 12,
+        "prop_ref_count": 0,
+        "information_change_count": 0,
+        "reaction_candidate_count": 0,
+        "entrance_exit_count": 1,
+        "spatial_event_count": 14,
+        "complexity_score": 43
+      }
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "eligibility_reasons": [],
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 2,
+        "script_ir_payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+        "fact_snapshot_id": 1,
+        "director_treatment_id": 6,
+        "scene_blocking_id": 6
+      },
+      "complexity": {
+        "beat_count": 10,
+        "character_count": 6,
+        "dialogue_turn_count": 23,
+        "prop_ref_count": 0,
+        "information_change_count": 0,
+        "reaction_candidate_count": 0,
+        "entrance_exit_count": 0,
+        "spatial_event_count": 14,
+        "complexity_score": 57
+      }
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "eligibility_reasons": [],
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 6,
+        "script_ir_payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+        "fact_snapshot_id": 2,
+        "director_treatment_id": 19,
+        "scene_blocking_id": 16
+      },
+      "complexity": {
+        "beat_count": 8,
+        "character_count": 2,
+        "dialogue_turn_count": 0,
+        "prop_ref_count": 9,
+        "information_change_count": 8,
+        "reaction_candidate_count": 8,
+        "entrance_exit_count": 3,
+        "spatial_event_count": 14,
+        "complexity_score": 60
+      }
+    }
+  ],
+  "provider_calls": 0
+}

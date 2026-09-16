@@ -1,0 +1,22 @@
+{
+  "schema_version": "director_quality_v3_fresh_integration_pilot_execution_manifest_v1",
+  "status": "DIRECTOR_V3_FRESH_INTEGRATION_PILOT_FAILED",
+  "provider_calls": 3,
+  "strategy_calls": 3,
+  "spine_calls": 0,
+  "skeleton_calls": 0,
+  "cohort_fingerprint": "dafee06b86a26ef3290177e1f4d9654c1db49c38a89758c289a53bed8f330d8e",
+  "frozen_scene_ids": {
+    "low": "book990402:e1:红伞幻影（一）",
+    "medium": "book990402:e1:红伞幻影（二）",
+    "high": "book990402:e2:暗房门口的试探"
+  },
+  "retries": {
+    "transport": 0,
+    "format": 0,
+    "semantic": 0,
+    "creative": 0,
+    "repair": 0
+  },
+  "harness_error": false
+}

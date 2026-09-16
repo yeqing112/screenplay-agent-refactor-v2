@@ -1,0 +1,94 @@
+{
+  "schema_version": "director_authority_completeness_gate_v1",
+  "status": "AUTHORITY_COMPLETENESS_FAILED",
+  "provider_callable": false,
+  "strategy_approval_allowed": false,
+  "authority": {
+    "status": "STRATEGY_AUTHORITY_INCOMPLETE",
+    "strategy_fingerprint": "",
+    "structured_preserve_constraints": {
+      "schema_version": "structured_preserve_constraint_v1",
+      "constraints": [
+        {
+          "kind": "VISUAL_EVENT",
+          "description": "顾沉从暗房门口出现的空间逻辑",
+          "constraint_id": "MP01",
+          "subject_refs": [],
+          "object_refs": [],
+          "beat_refs": [],
+          "event_refs": [],
+          "source_refs": [],
+          "visibility_requirement": "EXPLICIT",
+          "preservation_scope": "SCENE"
+        },
+        {
+          "kind": "VISUAL_EVENT",
+          "description": "林晚在柜台后的防御性位置",
+          "constraint_id": "MP02",
+          "subject_refs": [],
+          "object_refs": [],
+          "beat_refs": [],
+          "event_refs": [],
+          "source_refs": [],
+          "visibility_requirement": "EXPLICIT",
+          "preservation_scope": "SCENE"
+        },
+        {
+          "kind": "VISUAL_EVENT",
+          "description": "旧照片始终未打开的悬念",
+          "constraint_id": "MP03",
+          "subject_refs": [],
+          "object_refs": [],
+          "beat_refs": [],
+          "event_refs": [],
+          "source_refs": [],
+          "visibility_requirement": "EXPLICIT",
+          "preservation_scope": "SCENE"
+        },
+        {
+          "kind": "VISUAL_EVENT",
+          "description": "暗房红光和拖痕的视觉关联",
+          "constraint_id": "MP04",
+          "subject_refs": [],
+          "object_refs": [],
+          "beat_refs": [],
+          "event_refs": [],
+          "source_refs": [],
+          "visibility_requirement": "EXPLICIT",
+          "preservation_scope": "SCENE"
+        }
+      ],
+      "errors": [
+        {
+          "code": "PRESERVE_AUTHORITY_UNRESOLVED",
+          "constraint_id": "MP01"
+        },
+        {
+          "code": "PRESERVE_AUTHORITY_UNRESOLVED",
+          "constraint_id": "MP02"
+        },
+        {
+          "code": "PRESERVE_AUTHORITY_UNRESOLVED",
+          "constraint_id": "MP03"
+        },
+        {
+          "code": "PRESERVE_AUTHORITY_UNRESOLVED",
+          "constraint_id": "MP04"
+        }
+      ],
+      "status": "FAIL",
+      "fingerprint": "94e572cbf6e261644b7b73c54d5bedbad6fe6d1f36d4c697220823d33b358938"
+    },
+    "identity": {
+      "status": "PASS",
+      "record_count": 2,
+      "errors": []
+    },
+    "source_provenance": false
+  },
+  "errors": [
+    {
+      "code": "AUTHORITY_COMPLETENESS_FAILED"
+    }
+  ]
+}
