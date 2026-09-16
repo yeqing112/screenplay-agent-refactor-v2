@@ -91,6 +91,21 @@ def main() -> int:
     stage.setdefault("attempted_skeleton_calls", 0)
     stage.setdefault("replay_provider_calls", 0)
     stage.update({"forensic_adjudication": "CLOSED", "preflight_wiring_closure": "CLOSED", "ready_for_final_recanary": True, "final_recanary_authorized": False, "authorization_type": "EXTERNAL_AUTHORIZATION_REQUIRED", "atomic_expansion_canary_authorized": False, "production_shotplan": "HOLD"})
+    # Freeze the authority contract before calculating the base snapshot
+    # fingerprint; otherwise the pointer would be extended after the base
+    # was written and every dry-run would report a false parity gap.
+    pointer.setdefault("authority_contract_ssot", {
+        "status": "CLOSED",
+        "structured_preserve": "PASS",
+        "authority_completeness": "PASS",
+        "spine_schema_ssot": "PASS",
+        "skeleton_schema_ssot": "PASS",
+        "provider_validator_parity": "PASS",
+        "provider_readiness_gate": "PASS",
+        "retired_provider_cohort": "ENFORCED",
+        "ready_for_fresh_integration_pilot": True,
+        "fresh_integration_pilot_authorized": False,
+    })
     head = _head()
     base = json.loads(BASE.read_text(encoding="utf-8")) if BASE.exists() else {}
     # Reuse the immutable closure base by default.  Falling back to the
@@ -235,19 +250,12 @@ No real Re-Canary, Atomic Expansion, ShotPlan, Storyboard or media action was ex
     # Keep the redesign container append-only as well; assigning only the
     # closure-owned stage avoids erasing unrelated authority metadata.
     redesign["spine_topology_canary"] = stage
-    pointer.setdefault("authority_contract_ssot", {
-        "status": "CLOSED",
-        "structured_preserve": "PASS",
-        "authority_completeness": "PASS",
-        "spine_schema_ssot": "PASS",
-        "skeleton_schema_ssot": "PASS",
-        "provider_validator_parity": "PASS",
-        "provider_readiness_gate": "PASS",
-        "retired_provider_cohort": "ENFORCED",
-        "ready_for_fresh_integration_pilot": True,
-        "fresh_integration_pilot_authorized": False,
-    })
     _write(AUTHORITY, pointer)
+    # The stage update above is part of the authority pointer snapshot. Keep
+    # the base artifact's pointer fingerprint synchronized with that final
+    # snapshot while retaining the immutable code commit as its gate.
+    base["authority_pointer_fingerprint"] = _fp(pointer)
+    _write(BASE, base)
     print(json.dumps({"status": status, "checks": wiring_checks, "provider_calls": 0, "expected_base_commit": expected_base}, ensure_ascii=False, indent=2))
     return 0 if status.endswith("CLOSED") else 2
 
