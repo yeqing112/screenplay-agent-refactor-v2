@@ -22,7 +22,7 @@
 | Authorization hard gate | PASS |
 | Provider calls | `0` |
 
-Regression evidence: backend `1191 passed, 0 failed`; deterministic Golden `5/5`.
+Regression evidence: backend `1193 passed, 0 failed`; deterministic Golden `5/5`.
 
 `READY_FOR_FINAL_SPINE_TOPOLOGY_RECANARY=true`
 `FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED=false`

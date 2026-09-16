@@ -81,6 +81,15 @@ def test_unauthorized_real_path_returns_before_provider_import_or_call(monkeypat
     assert called is False
 
 
+def test_authorization_false_blocks_even_when_preflight_is_otherwise_pass(monkeypatch: pytest.MonkeyPatch):
+    # The guard must run before importing the provider client.  A PASS
+    # preflight does not grant permission by itself.
+    monkeypatch.setattr(runner, "_code_changes_present", lambda: [])
+    result = runner._run_real({"status": "PASS", "authorization": False}, "mimo-v2.5")
+    assert result["provider_calls"] == 0
+    assert result["status"] == "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_BLOCKED"
+
+
 def test_cli_rejects_authorization_bypass_flags():
     script = Path(runner.__file__).resolve()
     result = subprocess.run(

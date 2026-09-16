@@ -29,6 +29,14 @@ def test_provider_runtime_identity_projection_fingerprint_parity_is_exact():
     assert compare_identity_projection(projection, {"records": [{"character_id": "19", "name": "其他"}]})["status"] == "FAIL"
 
 
+def test_provider_runtime_identity_projection_detects_non_name_field_drift():
+    provider = {"records": [{"character_id": "19", "name": "林晚", "gender": "女"}]}
+    runtime = {"records": [{"character_id": "19", "name": "林晚", "gender": "男"}]}
+    result = compare_identity_projection(provider, runtime)
+    assert result["status"] == "FAIL"
+    assert result["provider_fingerprint"] != result["runtime_fingerprint"]
+
+
 def test_allowed_segment_refs_are_read_from_actual_spine_not_phase_count():
     spine = {"segments": [{"segment_key": "SEG01"}, {"segment_key": "SEG02"}, {"segment_key": "SEG03"}, {"segment_key": "SEG04"}]}
     assert allowed_segment_refs_from_spine(spine) == ["SEG01", "SEG02", "SEG03", "SEG04"]

@@ -14,6 +14,8 @@
           "19": "",
           "20": ""
         },
+        "provider_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+        "runtime_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
         "mismatches": []
       },
       "legacy_scene_identity_fallback": false
@@ -31,6 +33,8 @@
           "19": "",
           "20": ""
         },
+        "provider_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
+        "runtime_fingerprint": "04821b5a4955636bcdafbbc038e7af94294882804dc72d3d2d2bee1b11d11b02",
         "mismatches": []
       },
       "legacy_scene_identity_fallback": false
@@ -48,6 +52,8 @@
           "17": "",
           "18": ""
         },
+        "provider_fingerprint": "5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1",
+        "runtime_fingerprint": "5874854cc64a93d3e9ee302e30e56e9699053dc2d9ddbdc353f61aa7136808f1",
         "mismatches": []
       },
       "legacy_scene_identity_fallback": false

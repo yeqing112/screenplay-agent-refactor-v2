@@ -156,8 +156,28 @@ def compare_identity_projection(provider: Any, runtime: Any) -> dict[str, Any]:
     def records(value: Any) -> dict[str, str]:
         source = _d(value); rows = _l(source.get("records")) if "records" in source else _l(value)
         return {_t(_d(x).get("character_id")): _t(_d(x).get("name")) for x in rows if _t(_d(x).get("character_id"))}
+    def projection_fingerprint(value: Any) -> str:
+        # Provider and validator must consume the same canonical projection,
+        # not merely the same id/name lookup table.  Sort records by id so
+        # transport ordering cannot create a false mismatch, while retaining
+        # every authoritative field for drift detection.
+        source = _d(value); rows = _l(source.get("records")) if "records" in source else _l(value)
+        canonical = sorted((_d(row) for row in rows), key=lambda row: _t(row.get("character_id")))
+        import hashlib, json
+        payload = json.dumps(canonical, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
     left, right = records(provider), records(runtime)
-    return {"status": "PASS" if left == right else "FAIL", "provider": left, "runtime": right, "mismatches": sorted(set(left) ^ set(right) | {k for k in set(left) & set(right) if left[k] != right[k]})}
+    left_fp, right_fp = projection_fingerprint(provider), projection_fingerprint(runtime)
+    mismatches = sorted(set(left) ^ set(right) | {k for k in set(left) & set(right) if left[k] != right[k]})
+    return {
+        "status": "PASS" if left == right and left_fp == right_fp else "FAIL",
+        "provider": left,
+        "runtime": right,
+        "provider_fingerprint": left_fp,
+        "runtime_fingerprint": right_fp,
+        "mismatches": mismatches,
+    }
 
 
 def detect_spine_layer_leakage(raw_text: str) -> dict[str, Any]:

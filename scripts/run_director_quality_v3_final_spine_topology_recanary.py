@@ -230,7 +230,22 @@ def main(argv: list[str] | None = None) -> int:
     pointer = _authority(); base = json.loads(BASE_PATH.read_text(encoding="utf-8")); head = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip(); preflight = _runtime_preflight(pointer, base, head, authorized=bool(args.execute_real))
     if args.execute_real:
         result = _run_real(preflight, args.profile_id); print(json.dumps(result, ensure_ascii=False, indent=2)); return 0 if result["status"].endswith("PASSED") else 1
-    result = {"status": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_NOT_AUTHORIZED" if preflight["authorization"] is False else "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED_DRY_RUN", "preflight": preflight["status"], "provider_calls": 0, "authorization": preflight["authorization"]}; _write(ART / "director-quality-v3-final-spine-topology-preflight-dry-run.json", {"schema_version": "director-quality-v3-final-spine-topology-preflight-wiring-v2", "status": preflight["status"], "head": head, "expected_base_commit": base.get("expected_base_commit"), "checks": preflight["checks"], "provider_calls": 0, "real_llm_calls": 0, "real_mimo_calls": 0, "authorization": preflight["authorization"], "status_code": result["status"], "frozen_scene_count": len(preflight["rows"])}); print(json.dumps(result, ensure_ascii=False, indent=2)); return 0 if preflight["status"] == "PASS" else 2
+    result = {"status": "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_NOT_AUTHORIZED" if preflight["authorization"] is False else "DIRECTOR_V3_FINAL_SPINE_TOPOLOGY_RECANARY_AUTHORIZED_DRY_RUN", "preflight": preflight["status"], "provider_calls": 0, "authorization": preflight["authorization"]}
+    # Keep the dry-run artifact as the single provider-free evidence surface.
+    # The wiring runner may already have added its richer gate checks; merge
+    # rather than downgrading the schema or erasing those checks when this
+    # final runner is invoked for an authorization probe.
+    dry_run_path = ART / "director-quality-v3-final-spine-topology-preflight-dry-run.json"
+    existing: dict[str, Any] = {}
+    if dry_run_path.exists():
+        try:
+            loaded = json.loads(dry_run_path.read_text(encoding="utf-8"))
+            existing = loaded if isinstance(loaded, dict) else {}
+        except (OSError, json.JSONDecodeError):
+            existing = {}
+    checks = {**_d(existing.get("checks")), **preflight["checks"]}
+    _write(dry_run_path, {"schema_version": "director-quality-v3-final-spine-topology-preflight-wiring-v3", "status": preflight["status"], "head": head, "expected_base_commit": base.get("expected_base_commit"), "checks": checks, "provider_calls": 0, "real_llm_calls": 0, "real_mimo_calls": 0, "authorization": preflight["authorization"], "status_code": result["status"], "frozen_scene_count": len(preflight["rows"])})
+    print(json.dumps(result, ensure_ascii=False, indent=2)); return 0 if preflight["status"] == "PASS" else 2
 
 
 if __name__ == "__main__": raise SystemExit(main())
