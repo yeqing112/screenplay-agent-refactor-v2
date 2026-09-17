@@ -1,0 +1,10 @@
+{
+  "schema_version": "fact_coverage_verifier_recanary_v3_schema_validation_v1",
+  "status": "PASS",
+  "parse_error": null,
+  "errors": [],
+  "requirement_count": 8,
+  "claim_count": 8,
+  "unit_assessment_count": 5,
+  "forbidden_fields": []
+}

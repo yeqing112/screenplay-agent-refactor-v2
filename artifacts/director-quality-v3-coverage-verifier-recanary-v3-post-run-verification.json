@@ -1,0 +1,13 @@
+{
+  "status": "DIRECTOR_V3_FACT_COVERAGE_VERIFIER_RECANARY_CLOSED",
+  "provider_calls": 1,
+  "retries": 0,
+  "historical_canary_immutable": true,
+  "downstream_calls": 0,
+  "validation": "PASS",
+  "raw_response_sha256": "84f3364012501cd04ed9abd9c7b598098a06ec27b5be29eae8577fbe4f66c31a",
+  "raw_response_length": 4050,
+  "next_stage": "TARGETED_MISSING_FACT_EXTRACTION",
+  "ready_for_targeted_missing_fact_extraction": true,
+  "targeted_missing_fact_extraction_authorized": false
+}

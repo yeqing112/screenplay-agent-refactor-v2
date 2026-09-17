@@ -1,0 +1,125 @@
+{
+  "status": "READY",
+  "provider_calls": 0,
+  "requirements": [
+    {
+      "requirement_id": "REQ_0001",
+      "proposal_key": "P001",
+      "requirement_type": "CHARACTER_IDENTITY",
+      "description": "The identity of the previous tenant of apartment 1204 who disappeared six years ago.",
+      "source_unit_refs": [
+        "NU_0001"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0003"
+      ],
+      "provider_coverage_verdict": "COVERED",
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED"
+      ],
+      "final_coverage_status": "CLAIM_ONLY",
+      "review_required": true,
+      "machine_authority_ceiling_applied": true
+    },
+    {
+      "requirement_id": "REQ_0003",
+      "proposal_key": "P003",
+      "requirement_type": "CHARACTER_RELATION",
+      "description": "The relationship between the security guard Lao Zhao and the previous tenant Song Zhixia.",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0004"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0007"
+      ],
+      "provider_coverage_verdict": "COVERED",
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED"
+      ],
+      "final_coverage_status": "CLAIM_ONLY",
+      "review_required": true,
+      "machine_authority_ceiling_applied": true
+    },
+    {
+      "requirement_id": "REQ_0004",
+      "proposal_key": "P004",
+      "requirement_type": "LOCATION_IDENTITY",
+      "description": "The location of hidden surveillance equipment within apartment 1204.",
+      "source_unit_refs": [
+        "NU_0004"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0006"
+      ],
+      "provider_coverage_verdict": "COVERED",
+      "semantic_fact_dispositions": [
+        "PARTIAL_SUPPORT_REVIEW"
+      ],
+      "final_coverage_status": "PARTIALLY_COVERED",
+      "review_required": true,
+      "machine_authority_ceiling_applied": true
+    },
+    {
+      "requirement_id": "REQ_0005",
+      "proposal_key": "P005",
+      "requirement_type": "EVENT_ORDER",
+      "description": "The sequence of events: Song Zhixia's disappearance six years ago and her return to confront Lao Zhao.",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0003",
+        "FACT_0001"
+      ],
+      "provider_coverage_verdict": "COVERED",
+      "semantic_fact_dispositions": [
+        "CLAIM_SUPPORTED",
+        "CLAIM_SUPPORTED"
+      ],
+      "final_coverage_status": "CLAIM_ONLY",
+      "review_required": true,
+      "machine_authority_ceiling_applied": true
+    },
+    {
+      "requirement_id": "REQ_0007",
+      "proposal_key": "P007",
+      "requirement_type": "CAUSAL_RELATION",
+      "description": "The causal link between Lao Zhao's surveillance and Song Zhixia's disappearance.",
+      "source_unit_refs": [
+        "NU_0004"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0006"
+      ],
+      "provider_coverage_verdict": "COVERED",
+      "semantic_fact_dispositions": [
+        "PARTIAL_SUPPORT_REVIEW"
+      ],
+      "final_coverage_status": "PARTIALLY_COVERED",
+      "review_required": true,
+      "machine_authority_ceiling_applied": true
+    },
+    {
+      "requirement_id": "REQ_0008",
+      "proposal_key": "P008",
+      "requirement_type": "OUTCOME",
+      "description": "The outcome: police find evidence in the wall cavity and arrest Lao Zhao.",
+      "source_unit_refs": [
+        "NU_0004"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0006"
+      ],
+      "provider_coverage_verdict": "COVERED",
+      "semantic_fact_dispositions": [
+        "PARTIAL_SUPPORT_REVIEW"
+      ],
+      "final_coverage_status": "PARTIALLY_COVERED",
+      "review_required": true,
+      "machine_authority_ceiling_applied": true
+    }
+  ]
+}

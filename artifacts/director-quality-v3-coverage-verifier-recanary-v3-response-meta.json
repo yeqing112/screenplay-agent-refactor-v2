@@ -1,0 +1,10 @@
+{
+  "schema_version": "fact_coverage_verifier_recanary_v3_response_meta_v1",
+  "provider_calls": 1,
+  "response_received": true,
+  "raw_response_sha256": "84f3364012501cd04ed9abd9c7b598098a06ec27b5be29eae8577fbe4f66c31a",
+  "response_length": 4050,
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "transport_error": null
+}

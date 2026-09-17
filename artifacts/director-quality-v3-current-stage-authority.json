@@ -256,7 +256,7 @@
     },
     "attempt_1_status": "FAILED",
     "ready_for_script_ir_processing": false,
-    "cumulative_provider_attempts": 3,
+    "cumulative_provider_attempts": 5,
     "attempt_2_evidence_authority": "PASS",
     "attempt_2_fact_count": 7,
     "attempt_2_evidence_verified": 7,
@@ -269,14 +269,15 @@
       "fact_attempt_1": 1,
       "fact_attempt_2": 1,
       "semantic_verifier": 1,
-      "coverage_verifier": 1
+      "coverage_verifier_canary_1": 1,
+      "coverage_verifier_recanary_v3": 1
     },
     "provider_calls_scope": "current_stage_provider_attempts is this full-source foundation stage; cumulative_provider_attempts is all historical attempts",
     "current_stage_provider_attempts": 1,
-    "cumulative_provider_attempts": 4,
-    "fact_coverage_status": "FACT_COVERAGE_REVIEW_REQUIRED",
+    "fact_coverage_status": "FACT_COVERAGE_INSUFFICIENT",
     "ready_for_fact_coverage_qualification": true,
-    "evidence_authority_status": "PASS"
+    "evidence_authority_status": "PASS",
+    "script_ir_calls": 0
   },
   "fact_semantic_grounding": {
     "status": "CLOSED",
@@ -341,7 +342,10 @@
     "authorization_id": "director-v3-fact-coverage-verifier-canary-20260917-01",
     "authorization_scope": "DIRECTOR_V3_AUTHORIZED_FACT_COVERAGE_VERIFIER_CANARY",
     "execution_base": "b0cc550cd71083a1be5cf9bf28a2750b1370d696",
-    "provider": {"provider": "openai-compatible", "model_name": "mimo-v2.5"},
+    "provider": {
+      "provider": "openai-compatible",
+      "model_name": "mimo-v2.5"
+    },
     "provider_calls": 1,
     "retries": 0,
     "failure_classification": "COVERAGE_VERIFIER_MODEL_SCHEMA_FAILURE",
@@ -395,5 +399,49 @@
     "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE",
     "development_gap_count": 7,
     "runtime_authority": false
+  },
+  "coverage_verifier_recanary_v3": {
+    "status": "DIRECTOR_V3_FACT_COVERAGE_VERIFIER_RECANARY_CLOSED",
+    "authorization_id": "director-v3-fact-coverage-verifier-recanary-v3-20260917-01",
+    "authorization_scope": "DIRECTOR_V3_AUTHORIZED_FACT_COVERAGE_VERIFIER_RECANARY_V3",
+    "execution_base": "39d1853f2f321c6d63194b78ca3d44950685464e",
+    "provider": {
+      "provider": "openai-compatible",
+      "model_name": "mimo-v2.5"
+    },
+    "provider_calls": 1,
+    "retries": 0,
+    "request_hash": "0f727dd97b6b741c39d97ebe579a73e0ca5f9dd2b140e5f0bb76d36d74884c35",
+    "raw_response_hash": "84f3364012501cd04ed9abd9c7b598098a06ec27b5be29eae8577fbe4f66c31a",
+    "normalized_response_hash": "",
+    "envelope_normalization": false,
+    "schema_validation": "PASS",
+    "input_unit_count": 5,
+    "input_fact_count": 7,
+    "requirement_count": 8,
+    "final_coverage_counts": {
+      "COVERED": 2,
+      "PARTIALLY_COVERED": 3,
+      "MISSING": 0,
+      "CLAIM_ONLY": 3,
+      "UNSAFE_INFERENCE": 0,
+      "AMBIGUOUS": 0
+    },
+    "unit_assessment_counts": {
+      "RELEVANT": 5,
+      "NO_REQUIRED_FACT": 0,
+      "AMBIGUOUS": 0
+    },
+    "final_coverage_status": "FACT_COVERAGE_INSUFFICIENT",
+    "human_review": "NOT_RECORDED",
+    "coverage_recanary_authorized": false,
+    "coverage_recanary_authorization_consumed": true,
+    "script_ir_calls": 0,
+    "script_ir_authorized": false,
+    "ready_for_targeted_missing_fact_extraction": true,
+    "targeted_missing_fact_extraction_authorized": false,
+    "script_ir_gate": "BLOCKED_PENDING_TARGETED_MISSING_FACTS",
+    "next_stage": "TARGETED_MISSING_FACT_EXTRACTION",
+    "runtime_authority": true
   }
 }

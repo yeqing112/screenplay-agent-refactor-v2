@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "provider_calls": 0,
+  "assessments": [
+    {
+      "source_unit_ref": "NU_0001",
+      "relevance": "RELEVANT",
+      "requirement_keys": [
+        "P001",
+        "P002",
+        "P003",
+        "P005",
+        "P006"
+      ]
+    },
+    {
+      "source_unit_ref": "NU_0002",
+      "relevance": "RELEVANT",
+      "requirement_keys": [
+        "P003",
+        "P005"
+      ]
+    },
+    {
+      "source_unit_ref": "NU_0003",
+      "relevance": "RELEVANT",
+      "requirement_keys": [
+        "P005"
+      ]
+    },
+    {
+      "source_unit_ref": "NU_0004",
+      "relevance": "RELEVANT",
+      "requirement_keys": [
+        "P003",
+        "P004",
+        "P005",
+        "P007",
+        "P008"
+      ]
+    },
+    {
+      "source_unit_ref": "NU_0005",
+      "relevance": "RELEVANT",
+      "requirement_keys": [
+        "P005",
+        "P006"
+      ]
+    }
+  ],
+  "counts": {
+    "RELEVANT": 5,
+    "NO_REQUIRED_FACT": 0,
+    "AMBIGUOUS": 0
+  }
+}

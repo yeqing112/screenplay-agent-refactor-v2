@@ -8,13 +8,13 @@ ART = Path("artifacts")
 def test_authority_reconciliation_uses_three_historical_attempts_without_rewriting_lineage():
     authority = json.loads((ART / "director-quality-v3-current-stage-authority.json").read_text(encoding="utf-8"))
     evaluation = authority["authorized_ai_evaluation_source"]
-    assert evaluation["provider_attempts_by_stage"] == {"fact_attempt_1": 1, "fact_attempt_2": 1, "semantic_verifier": 1, "coverage_verifier": 1}
-    assert evaluation["cumulative_provider_attempts"] == 4
+    assert evaluation["provider_attempts_by_stage"] == {"fact_attempt_1": 1, "fact_attempt_2": 1, "semantic_verifier": 1, "coverage_verifier_canary_1": 1, "coverage_verifier_recanary_v3": 1}
+    assert evaluation["cumulative_provider_attempts"] == 5
     assert evaluation["current_stage_provider_attempts"] == 1
     assert evaluation["semantic_grounding_status"] == "SEMANTIC_GROUNDING_CLOSED_WITH_REVIEW"
     assert evaluation["effective_lineage_state"] == "FACT_SEMANTICS_ADJUDICATED"
     assert evaluation["historical_attempt_2_lineage"] == "FACT_SNAPSHOT_CONFIRMED"
-    assert evaluation["fact_coverage_status"] == "FACT_COVERAGE_REVIEW_REQUIRED"
+    assert evaluation["fact_coverage_status"] == "FACT_COVERAGE_INSUFFICIENT"
     assert evaluation["ready_for_fact_coverage_qualification"] is True
     assert evaluation["script_ir_processing_authorized"] is False
 

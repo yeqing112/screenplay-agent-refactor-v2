@@ -1,0 +1,37 @@
+{
+  "schema_version": "director-quality-v3-fact-coverage-verifier-recanary-v3-preflight-v1",
+  "status": "PASS",
+  "provider_calls": 0,
+  "head": "39d1853f2f321c6d63194b78ca3d44950685464e",
+  "remote": "39d1853f2f321c6d63194b78ca3d44950685464e",
+  "execution_base": "39d1853f2f321c6d63194b78ca3d44950685464e",
+  "checks": {
+    "local_remote_parity": true,
+    "worktree_clean": true,
+    "execution_base_matches": true,
+    "scope": true,
+    "authorization_not_consumed": true,
+    "max_provider_calls": true,
+    "retries_zero": true,
+    "source_identity": true,
+    "evidence_identity": true,
+    "full_schema_projection": true,
+    "final_transport_projection": true,
+    "unit_count": true,
+    "fact_count": true,
+    "downstream_disabled": true
+  },
+  "projection": {
+    "status": "PASS",
+    "errors": [],
+    "schema_fingerprint": "7fd93ba76c86a5ff8ef2c595fbc61dcbb26d52444757035a8b49c42f2acc048d",
+    "projection_fingerprint": "93547a39ae8de738af6ccbf9b381990ced7ccc72dd3bab370bc7f70b546dfac6"
+  },
+  "transport": {
+    "status": "PASS",
+    "errors": [],
+    "projection_fingerprint": "93547a39ae8de738af6ccbf9b381990ced7ccc72dd3bab370bc7f70b546dfac6",
+    "visible_unit_count": 5,
+    "visible_fact_count": 7
+  }
+}

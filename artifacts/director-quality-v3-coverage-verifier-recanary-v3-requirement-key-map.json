@@ -1,0 +1,128 @@
+{
+  "schema_version": "fact_coverage_requirement_key_map_v2",
+  "provider_calls": 0,
+  "mapping": {
+    "P001": "REQ_0001",
+    "P002": "REQ_0002",
+    "P003": "REQ_0003",
+    "P004": "REQ_0004",
+    "P005": "REQ_0005",
+    "P006": "REQ_0006",
+    "P007": "REQ_0007",
+    "P008": "REQ_0008"
+  },
+  "requirements": [
+    {
+      "requirement_id": "REQ_0001",
+      "proposal_key": "P001",
+      "requirement_type": "CHARACTER_IDENTITY",
+      "description": "The identity of the previous tenant of apartment 1204 who disappeared six years ago.",
+      "source_unit_refs": [
+        "NU_0001"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0003"
+      ],
+      "provider_coverage_verdict": "COVERED"
+    },
+    {
+      "requirement_id": "REQ_0002",
+      "proposal_key": "P002",
+      "requirement_type": "EVENT_OCCURRENCE",
+      "description": "The event of a wet black umbrella appearing at the door of apartment 1204.",
+      "source_unit_refs": [
+        "NU_0001"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0004"
+      ],
+      "provider_coverage_verdict": "COVERED"
+    },
+    {
+      "requirement_id": "REQ_0003",
+      "proposal_key": "P003",
+      "requirement_type": "CHARACTER_RELATION",
+      "description": "The relationship between the security guard Lao Zhao and the previous tenant Song Zhixia.",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0004"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0007"
+      ],
+      "provider_coverage_verdict": "COVERED"
+    },
+    {
+      "requirement_id": "REQ_0004",
+      "proposal_key": "P004",
+      "requirement_type": "LOCATION_IDENTITY",
+      "description": "The location of hidden surveillance equipment within apartment 1204.",
+      "source_unit_refs": [
+        "NU_0004"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0006"
+      ],
+      "provider_coverage_verdict": "COVERED"
+    },
+    {
+      "requirement_id": "REQ_0005",
+      "proposal_key": "P005",
+      "requirement_type": "EVENT_ORDER",
+      "description": "The sequence of events: Song Zhixia's disappearance six years ago and her return to confront Lao Zhao.",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0004",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0003",
+        "FACT_0001"
+      ],
+      "provider_coverage_verdict": "COVERED"
+    },
+    {
+      "requirement_id": "REQ_0006",
+      "proposal_key": "P006",
+      "requirement_type": "OBJECT_STATE",
+      "description": "The state of the black umbrella: wet despite no rain, containing a storage card.",
+      "source_unit_refs": [
+        "NU_0001",
+        "NU_0005"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0002",
+        "FACT_0004"
+      ],
+      "provider_coverage_verdict": "COVERED"
+    },
+    {
+      "requirement_id": "REQ_0007",
+      "proposal_key": "P007",
+      "requirement_type": "CAUSAL_RELATION",
+      "description": "The causal link between Lao Zhao's surveillance and Song Zhixia's disappearance.",
+      "source_unit_refs": [
+        "NU_0004"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0006"
+      ],
+      "provider_coverage_verdict": "COVERED"
+    },
+    {
+      "requirement_id": "REQ_0008",
+      "proposal_key": "P008",
+      "requirement_type": "OUTCOME",
+      "description": "The outcome: police find evidence in the wall cavity and arrest Lao Zhao.",
+      "source_unit_refs": [
+        "NU_0004"
+      ],
+      "supporting_fact_ids": [
+        "FACT_0006"
+      ],
+      "provider_coverage_verdict": "COVERED"
+    }
+  ],
+  "requirement_count": 8,
+  "fingerprint": "5f1feaa010589ab67f87405ef34e72688e6e065a940d32c29184d9fccf91cd52"
+}

@@ -119,8 +119,9 @@ def main() -> int:
     if raw:
         try:
             payload = parse_provider_json_envelope_v1(raw, allow_single_fence=True)
-            normalized_hash = _fp(payload)
-            envelope = {"status": "PASS", "normalization_applied": raw.strip().startswith("```"), "normalized_response_sha256": normalized_hash, "policy": "TRANSPORT_ENVELOPE_NORMALIZATION"}
+            normalization_applied = raw.strip().startswith("```")
+            normalized_hash = _fp(payload) if normalization_applied else ""
+            envelope = {"status": "PASS", "normalization_applied": normalization_applied, "normalized_response_sha256": normalized_hash, "policy": "TRANSPORT_ENVELOPE_NORMALIZATION"}
             validation = validate_provider_payload(payload, unit_refs=[u["source_unit_ref"] for u in materialized["units"]], fact_ids=[f["fact_id"] for f in facts["facts"]])
         except Exception as exc:
             parse_error = str(exc)[:1000]
@@ -156,15 +157,18 @@ def main() -> int:
     status = "DIRECTOR_V3_FACT_COVERAGE_VERIFIER_RECANARY_CLOSED" if validation["status"] == "PASS" else "DIRECTOR_V3_FACT_COVERAGE_VERIFIER_RECANARY_FAILED"
     authority_path = ART / "director-quality-v3-current-stage-authority.json"
     authority = json.loads(authority_path.read_text(encoding="utf-8"))
-    authority["coverage_verifier_recanary_v3"] = {"status": status, "authorization_id": auth["authorization_id"], "authorization_scope": SCOPE, "execution_base": head, "provider": {"provider": profile.get("provider"), "model_name": profile.get("model_name")}, "provider_calls": 1, "retries": 0, "request_hash": request_hash, "raw_response_hash": raw_hash, "normalized_response_hash": normalized_hash, "envelope_normalization": envelope.get("normalization_applied", False), "schema_validation": validation["status"], "input_unit_count": 5, "input_fact_count": 7, "requirement_count": len(validation.get("requirements", [])), "final_coverage_counts": counts, "unit_assessment_counts": unit_counts, "final_coverage_status": qualification, "human_review": "NOT_RECORDED", "coverage_recanary_authorized": False, "coverage_recanary_authorization_consumed": True, "script_ir_calls": 0, "script_ir_authorized": False, "next_stage": next_stage, "runtime_authority": True}
+    authority["coverage_verifier_recanary_v3"] = {"status": status, "authorization_id": auth["authorization_id"], "authorization_scope": SCOPE, "execution_base": head, "provider": {"provider": profile.get("provider"), "model_name": profile.get("model_name")}, "provider_calls": 1, "retries": 0, "request_hash": request_hash, "raw_response_hash": raw_hash, "normalized_response_hash": normalized_hash, "envelope_normalization": envelope.get("normalization_applied", False), "schema_validation": validation["status"], "input_unit_count": 5, "input_fact_count": 7, "requirement_count": len(validation.get("requirements", [])), "final_coverage_counts": counts, "unit_assessment_counts": unit_counts, "final_coverage_status": qualification, "human_review": "NOT_RECORDED", "coverage_recanary_authorized": False, "coverage_recanary_authorization_consumed": True, "script_ir_calls": 0, "script_ir_authorized": False, "ready_for_targeted_missing_fact_extraction": qualification == "FACT_COVERAGE_INSUFFICIENT", "targeted_missing_fact_extraction_authorized": False, "script_ir_gate": "BLOCKED_PENDING_TARGETED_MISSING_FACTS" if qualification == "FACT_COVERAGE_INSUFFICIENT" else "BLOCKED_PENDING_COVERAGE_REVIEW", "next_stage": next_stage, "runtime_authority": True}
     evaluation = authority.setdefault("authorized_ai_evaluation_source", {})
     evaluation["provider_attempts_by_stage"] = {"fact_attempt_1": 1, "fact_attempt_2": 1, "semantic_verifier": 1, "coverage_verifier_canary_1": 1, "coverage_verifier_recanary_v3": 1}
     evaluation["cumulative_provider_attempts"] = 5
     evaluation["current_stage_provider_attempts"] = 1
     evaluation["fact_coverage_status"] = qualification
+    evaluation["ready_for_targeted_missing_fact_extraction"] = qualification == "FACT_COVERAGE_INSUFFICIENT"
+    evaluation["targeted_missing_fact_extraction_authorized"] = False
     evaluation["ready_for_script_ir_processing"] = False
     evaluation["script_ir_processing_authorized"] = False
     evaluation["script_ir_calls"] = 0
+    evaluation["script_ir_gate"] = "BLOCKED_PENDING_TARGETED_MISSING_FACTS" if qualification == "FACT_COVERAGE_INSUFFICIENT" else "BLOCKED_PENDING_COVERAGE_REVIEW"
     _write(authority_path, authority)
     report = f"""# Director Quality V3 — Authorized Fact Coverage Verifier Recanary V3
 
@@ -186,7 +190,7 @@ def main() -> int:
 ## Authority and Stop
 
 - Coverage recanary authorized: `false` (authorization consumed: `true`).
-- Missing-Fact Extraction ready: `false` unless explicitly represented by a valid insufficient matrix; ScriptIR ready/authorized: `false/false`.
+- Missing-Fact Extraction ready: `{qualification == "FACT_COVERAGE_INSUFFICIENT"}` (authorization: `false`); ScriptIR ready/authorized: `false/false`.
 - Next stage: `{next_stage}`. This one-call recanary is terminal; no second Provider call is permitted.
 """
     (ART / "director-quality-v3-coverage-verifier-recanary-v3-final-report.md").write_text(report, encoding="utf-8")

@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "normalization_applied": false,
+  "normalized_response_sha256": "",
+  "normalized_response_sha256": "55e9e693d9adc68cc91b4766a9ab276eaaac48114327ba5bf5c4650953e52cc6",
+  "policy": "TRANSPORT_ENVELOPE_NORMALIZATION"
+}

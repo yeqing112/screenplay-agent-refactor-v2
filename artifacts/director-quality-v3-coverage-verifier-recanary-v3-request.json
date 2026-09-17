@@ -1,0 +1,784 @@
+{
+  "schema_version": "fact_coverage_verifier_request_v3",
+  "authorization_id": "director-v3-fact-coverage-verifier-recanary-v3-20260917-01",
+  "execution_base": "39d1853f2f321c6d63194b78ca3d44950685464e",
+  "request_hash": "0f727dd97b6b741c39d97ebe579a73e0ca5f9dd2b140e5f0bb76d36d74884c35",
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "request": {
+    "task": "fact_coverage_verifier_v3",
+    "instructions": {
+      "discover_minimal_story_critical_structuring_requirements": true,
+      "use_only_supplied_units_and_facts": true,
+      "do_not_create_or_repair_facts": true,
+      "do_not_generate_canonical_req_ids": true,
+      "use_temporary_proposal_keys_only": true,
+      "assess_every_unit_exactly_once": true,
+      "avoid_development_preview_or_expected_answers": true
+    },
+    "provider": {
+      "provider": "openai-compatible",
+      "model": "mimo-v2.5"
+    },
+    "output_contract": {
+      "projection_version": "provider_contract_projection_v1",
+      "schema_version": "fact_coverage_verifier_v3",
+      "schema_fingerprint": "7fd93ba76c86a5ff8ef2c595fbc61dcbb26d52444757035a8b49c42f2acc048d",
+      "json_schema": {
+        "type": "object",
+        "required": [
+          "requirements",
+          "coverage_claims",
+          "unit_assessments"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "proposal_key",
+                "requirement_type",
+                "description",
+                "source_unit_refs"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "proposal_key": {
+                  "type": "string",
+                  "pattern": "^P[0-9]{3}$"
+                },
+                "requirement_type": {
+                  "enum": [
+                    "CHARACTER_IDENTITY",
+                    "CHARACTER_RELATION",
+                    "LOCATION_IDENTITY",
+                    "LOCATION_CHANGE",
+                    "EVENT_OCCURRENCE",
+                    "EVENT_ORDER",
+                    "TEMPORAL_ANCHOR",
+                    "CAUSAL_RELATION",
+                    "OBJECT_STATE",
+                    "OBJECT_OWNERSHIP",
+                    "REVEAL",
+                    "CONFLICT_STATE",
+                    "CLAIM_OR_BELIEF",
+                    "OUTCOME"
+                  ]
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_unit_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^NU_[0-9]{4}$"
+                  },
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          "coverage_claims": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "requirement_key",
+                "fact_refs",
+                "coverage_verdict"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "requirement_key": {
+                  "type": "string",
+                  "pattern": "^P[0-9]{3}$"
+                },
+                "fact_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^FACT_[0-9]{4}$"
+                  }
+                },
+                "coverage_verdict": {
+                  "enum": [
+                    "COVERED",
+                    "PARTIALLY_COVERED",
+                    "MISSING",
+                    "CLAIM_ONLY",
+                    "UNSAFE_INFERENCE",
+                    "AMBIGUOUS"
+                  ]
+                }
+              }
+            }
+          },
+          "unit_assessments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "source_unit_ref",
+                "relevance",
+                "requirement_keys"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "source_unit_ref": {
+                  "type": "string",
+                  "pattern": "^NU_[0-9]{4}$"
+                },
+                "relevance": {
+                  "enum": [
+                    "RELEVANT",
+                    "NO_REQUIRED_FACT",
+                    "AMBIGUOUS"
+                  ]
+                },
+                "requirement_keys": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^P[0-9]{3}$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required_top_level_fields": [
+        "requirements",
+        "coverage_claims",
+        "unit_assessments"
+      ],
+      "field_semantics": {
+        "requirements": [
+          "proposal_key",
+          "requirement_type",
+          "description",
+          "source_unit_refs"
+        ],
+        "coverage_claims": [
+          "requirement_key",
+          "fact_refs",
+          "coverage_verdict"
+        ],
+        "unit_assessments": [
+          "source_unit_ref",
+          "relevance",
+          "requirement_keys"
+        ]
+      },
+      "enum_semantics": {
+        "requirement_type": [
+          "CHARACTER_IDENTITY",
+          "CHARACTER_RELATION",
+          "LOCATION_IDENTITY",
+          "LOCATION_CHANGE",
+          "EVENT_OCCURRENCE",
+          "EVENT_ORDER",
+          "TEMPORAL_ANCHOR",
+          "CAUSAL_RELATION",
+          "OBJECT_STATE",
+          "OBJECT_OWNERSHIP",
+          "REVEAL",
+          "CONFLICT_STATE",
+          "CLAIM_OR_BELIEF",
+          "OUTCOME"
+        ],
+        "coverage_verdict": [
+          "COVERED",
+          "PARTIALLY_COVERED",
+          "MISSING",
+          "CLAIM_ONLY",
+          "UNSAFE_INFERENCE",
+          "AMBIGUOUS"
+        ],
+        "relevance": [
+          "RELEVANT",
+          "NO_REQUIRED_FACT",
+          "AMBIGUOUS"
+        ]
+      },
+      "forbidden_fields": [
+        "canonical_requirement_id",
+        "corrected_fact",
+        "evidence_refs",
+        "fact_payload",
+        "final_authority",
+        "final_qualification",
+        "new_evidence",
+        "new_evidence_refs",
+        "new_fact",
+        "new_fact_id",
+        "replacement_fact",
+        "requirement_ref",
+        "script_ir",
+        "source_modification",
+        "source_search"
+      ],
+      "canonical_id_ownership": "program_only",
+      "temporary_key_ownership": "provider_proposal_only",
+      "exact_output_instruction": "Return exactly one JSON object and no Markdown or commentary.",
+      "all_input_units_must_be_assessed": true,
+      "input_unit_count": 5,
+      "input_fact_count": 7,
+      "synthetic_shape_example": {
+        "requirements": [
+          {
+            "proposal_key": "P001",
+            "requirement_type": "EVENT_OCCURRENCE",
+            "description": "Example structural event",
+            "source_unit_refs": [
+              "NU_0001"
+            ]
+          }
+        ],
+        "coverage_claims": [
+          {
+            "requirement_key": "P001",
+            "fact_refs": [
+              "FACT_0001"
+            ],
+            "coverage_verdict": "COVERED"
+          }
+        ],
+        "unit_assessments": [
+          {
+            "source_unit_ref": "NU_0001",
+            "relevance": "RELEVANT",
+            "requirement_keys": [
+              "P001"
+            ]
+          }
+        ]
+      },
+      "projection_fingerprint": "93547a39ae8de738af6ccbf9b381990ced7ccc72dd3bab370bc7f70b546dfac6"
+    },
+    "source_narrative_units": [
+      {
+        "source_unit_ref": "NU_0001",
+        "source_order": 1,
+        "char_start": 0,
+        "char_end": 1203,
+        "exact_text": "《门外那把伞》\r\n\r\n凌晨一点二十七分，程雨把最后一个纸箱拖到门口。\r\n\r\n这套房子她住了六年。\r\n\r\n客厅里已经空得只剩一张折叠椅、一盏落地灯，还有墙角那只没有来得及扔掉的旧花盆。墙上原本挂照片的地方留下几块颜色稍浅的长方形印子，像有什么东西刚刚从这里被拿走。\r\n\r\n明早九点，中介会来收钥匙。\r\n\r\n过了今晚，这里就和她没有关系了。\r\n\r\n程雨蹲下来，用胶带封上最后一个箱子。胶带刚扯到一半，门外忽然传来一声很轻的金属碰撞。\r\n\r\n像钥匙碰到了门把手。\r\n\r\n她停住了。\r\n\r\n屋里没有开电视，也没有音乐。\r\n\r\n楼道里静得能听见感应灯电流发出的细微嗡声。\r\n\r\n程雨看着门。\r\n\r\n几秒后，外面又响了一声。\r\n\r\n这一次，是有人轻轻敲了三下。\r\n\r\n不快，也不重。\r\n\r\n笃。\r\n\r\n笃。\r\n\r\n笃。\r\n\r\n程雨站起身。\r\n\r\n“谁？”\r\n\r\n没人回答。\r\n\r\n她走到门边，没有立刻开门，而是从猫眼往外看。\r\n\r\n楼道里没人。\r\n\r\n但门口多了一把黑色长柄雨伞。\r\n\r\n伞是湿的。\r\n\r\n水正顺着伞尖，一滴一滴落在地砖上。\r\n\r\n程雨皱起眉。\r\n\r\n今晚根本没下雨。\r\n\r\n她没有碰那把伞。\r\n\r\n回到客厅以后，她给物业值班室打了电话。\r\n\r\n接电话的是老赵。\r\n\r\n老赵在这栋楼当了十几年保安，程雨搬进来那天就是他帮忙开的货梯。\r\n\r\n“有人在我门口放了把伞。”程雨说。\r\n\r\n“几楼？”\r\n\r\n“十二楼，1204。”\r\n\r\n电话那头安静了两秒。\r\n\r\n“黑色的？”\r\n\r\n程雨握着手机的手停了一下。\r\n\r\n“你怎么知道？”\r\n\r\n老赵没有回答她这个问题。\r\n\r\n“你先别碰。我上来。”\r\n\r\n电话挂得很快。\r\n\r\n五分钟后，电梯门打开。\r\n\r\n老赵从里面走出来。他没有穿平时那件深蓝色制服外套，只套了一件灰色针织衫，脚上还是值班室里常穿的拖鞋。\r\n\r\n他走到那把伞前，脸色一下就变了。\r\n\r\n程雨站在门内。\r\n\r\n“你见过？”\r\n\r\n老赵低头盯着伞柄。\r\n\r\n黑色塑料握把的末端，绑着一小段已经褪色的红绳。\r\n\r\n“以前有个人用过。”他说。\r\n\r\n“谁？”\r\n\r\n老赵抬头看她。\r\n\r\n“1204以前的租客。”\r\n\r\n程雨没听懂。\r\n\r\n“我就是1204的租客。”\r\n\r\n“你之前。”\r\n\r\n程雨沉默了。\r\n\r\n她六年前搬进来时，中介只说上一任租客工作调动，退租很急。\r\n\r\n老赵弯腰，却没有碰伞。\r\n\r\n“你什么时候走？”\r\n\r\n“明早。”\r\n\r\n“今晚能不能先去朋友那里住？”\r\n\r\n“为什么？”\r\n\r\n老赵又看了一眼那把伞。\r\n\r\n“因为六年前，她走的那天晚上，这把伞也放在门口。”\r\n\r\n程雨最后还是让老赵进了屋。\r\n\r\n她烧了一壶水。\r\n\r\n老赵坐在唯一剩下的那张折叠椅上，两只手一直放在膝盖上。\r\n\r\n“她叫什么？”\r\n\r\n“宋知夏。”\r\n\r\n“出了什么事？”\r\n\r\n“失踪了。”\r\n",
+        "exact_text_sha256": "e0b8c640b0cf2a729a94b0b6b864c60d73bfb22021d2ef872c0ea02a07cbd945",
+        "anchor_text_sha256": "6da6f1d4c3b497eef842b2bb29feee466af4c66933be1d2b819e9d99505e186b",
+        "expected_anchor_text_sha256": "3b3a9afbe8d067d8ad7b234a457210661721f84ec4aa1de71ad3633be03e94f9",
+        "legacy_index_hash_matches": true,
+        "anchor_refs": [
+          "E0001",
+          "E0002",
+          "E0003",
+          "E0004",
+          "E0005",
+          "E0006",
+          "E0007",
+          "E0008",
+          "E0009",
+          "E0010",
+          "E0011",
+          "E0012",
+          "E0013",
+          "E0014",
+          "E0015",
+          "E0016",
+          "E0017",
+          "E0018",
+          "E0019",
+          "E0020",
+          "E0021",
+          "E0022",
+          "E0023",
+          "E0024",
+          "E0025",
+          "E0026",
+          "E0027",
+          "E0028",
+          "E0029",
+          "E0030",
+          "E0031",
+          "E0032",
+          "E0033",
+          "E0034",
+          "E0035",
+          "E0036",
+          "E0037",
+          "E0038",
+          "E0039",
+          "E0040",
+          "E0041",
+          "E0042",
+          "E0043",
+          "E0044",
+          "E0045",
+          "E0046",
+          "E0047",
+          "E0048",
+          "E0049",
+          "E0050",
+          "E0051",
+          "E0052",
+          "E0053",
+          "E0054",
+          "E0055",
+          "E0056",
+          "E0057",
+          "E0058",
+          "E0059",
+          "E0060",
+          "E0061",
+          "E0062",
+          "E0063",
+          "E0064",
+          "E0065",
+          "E0066",
+          "E0067",
+          "E0068",
+          "E0069",
+          "E0070",
+          "E0071",
+          "E0072"
+        ],
+        "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+      },
+      {
+        "source_unit_ref": "NU_0002",
+        "source_order": 2,
+        "char_start": 1205,
+        "char_end": 2402,
+        "exact_text": "水壶跳闸。\r\n\r\n啪的一声。\r\n\r\n两个人都下意识看向厨房。\r\n\r\n程雨把水倒进杯子。\r\n\r\n“报警了吗？”\r\n\r\n“报了。”\r\n\r\n“没找到？”\r\n\r\n老赵摇头。\r\n\r\n“监控呢？”\r\n\r\n“那晚整栋楼停过一次电。十二分钟。”\r\n\r\n程雨把杯子推给他。\r\n\r\n“所以你现在觉得，一把伞又出现了，就和她有关系？”\r\n\r\n老赵没喝水。\r\n\r\n“不是因为伞。”\r\n\r\n“那因为什么？”\r\n\r\n老赵盯着她看了一会儿。\r\n\r\n“因为你们长得有一点像。”\r\n\r\n程雨没有说话。\r\n\r\n“不是脸像。”老赵补了一句，“是背影。”\r\n\r\n这句话让她比刚才更不舒服。\r\n\r\n她靠在餐桌边。\r\n\r\n“六年前到底发生过什么？”\r\n\r\n老赵低下头。\r\n\r\n“那晚十一点多，她下来找我，说有人一直敲她家的门。”\r\n\r\n“她看见是谁了吗？”\r\n\r\n“没有。”\r\n\r\n“然后呢？”\r\n\r\n“我陪她上去，门口什么都没有。后来我回值班室。十二点零三分，停电。十二点十五分来电以后，她不见了。”\r\n\r\n“门是开着的？”\r\n\r\n“没有。”\r\n\r\n老赵抬头。\r\n\r\n“门从里面反锁着。”\r\n\r\n凌晨两点十分，老赵离开了。\r\n\r\n走之前，他把那把伞带走了。\r\n\r\n程雨反锁好门，又把安全链挂上。\r\n\r\n她本来想继续收东西，可脑子里一直是那句——\r\n\r\n门从里面反锁着。\r\n\r\n她打开手机搜索“宋知夏 失踪”。\r\n\r\n没有新闻。\r\n\r\n又搜小区名字加“六年前 失踪”。\r\n\r\n还是没有。\r\n\r\n她正准备放下手机，忽然发现门口的纸箱最下面压着一个牛皮纸文件袋。\r\n\r\n那不是她的。\r\n\r\n文件袋很旧，边缘已经发黄。\r\n\r\n程雨把它抽出来。\r\n\r\n上面没有名字。\r\n\r\n里面只有一张照片。\r\n\r\n照片拍的是这间客厅。\r\n\r\n家具布局和现在完全不同，但窗户、墙体、门的位置都一样。\r\n\r\n照片里站着一个女人。\r\n\r\n她背对镜头，穿一件浅色衬衫，正在窗边整理头发。\r\n\r\n那女人的身形，确实和程雨很像。\r\n\r\n照片右下角印着日期。\r\n\r\n六年前。\r\n\r\n照片背面有一行蓝色圆珠笔写的小字：\r\n\r\n“她开始听见敲门声了。”\r\n\r\n程雨的手指慢慢收紧。\r\n\r\n她立刻给老赵打电话。\r\n\r\n没人接。\r\n\r\n再打。\r\n\r\n还是没人接。\r\n\r\n第三次拨号时，整间屋子的灯突然熄灭了。\r\n\r\n空调停了。\r\n\r\n冰箱的低鸣也没了。\r\n\r\n屋里一下安静得可怕。\r\n\r\n程雨站在原地。\r\n\r\n手机屏幕显示：\r\n\r\n02:17。\r\n\r\n紧接着，门外传来三下敲门声。\r\n\r\n笃。\r\n\r\n笃。\r\n\r\n笃。\r\n\r\n程雨没有出声。\r\n\r\n黑暗里，她退后几步。\r\n\r\n手机只剩百分之十七的电。\r\n\r\n她打开手电筒，光扫过门锁、安全链、玄关地面。\r\n\r\n门缝下面没有影子。\r\n\r\n敲门声又响了。\r\n\r\n这次更慢。\r\n\r\n笃。\r\n\r\n隔了几秒。\r\n\r\n笃。\r\n\r\n又隔了几秒。\r\n",
+        "exact_text_sha256": "7fe963c04e969546e1c37b70996a2426aea917f323ae3ebd9ec2fa0c29b19af3",
+        "anchor_text_sha256": "902c384efa81791a0932e283aa2272e37400d4dbf606693bb5e60de9cf3063ee",
+        "expected_anchor_text_sha256": "e2df6fd4051c3b553928cc463840f4fc126c04f83178bcc164d2407fc5a34aa4",
+        "legacy_index_hash_matches": true,
+        "anchor_refs": [
+          "E0073",
+          "E0074",
+          "E0075",
+          "E0076",
+          "E0077",
+          "E0078",
+          "E0079",
+          "E0080",
+          "E0081",
+          "E0082",
+          "E0083",
+          "E0084",
+          "E0085",
+          "E0086",
+          "E0087",
+          "E0088",
+          "E0089",
+          "E0090",
+          "E0091",
+          "E0092",
+          "E0093",
+          "E0094",
+          "E0095",
+          "E0096",
+          "E0097",
+          "E0098",
+          "E0099",
+          "E0100",
+          "E0101",
+          "E0102",
+          "E0103",
+          "E0104",
+          "E0105",
+          "E0106",
+          "E0107",
+          "E0108",
+          "E0109",
+          "E0110",
+          "E0111",
+          "E0112",
+          "E0113",
+          "E0114",
+          "E0115",
+          "E0116",
+          "E0117",
+          "E0118",
+          "E0119",
+          "E0120",
+          "E0121",
+          "E0122",
+          "E0123",
+          "E0124",
+          "E0125",
+          "E0126",
+          "E0127",
+          "E0128",
+          "E0129",
+          "E0130",
+          "E0131",
+          "E0132",
+          "E0133",
+          "E0134",
+          "E0135",
+          "E0136",
+          "E0137",
+          "E0138",
+          "E0139",
+          "E0140",
+          "E0141",
+          "E0142",
+          "E0143",
+          "E0144",
+          "E0145",
+          "E0146",
+          "E0147",
+          "E0148",
+          "E0149",
+          "E0150",
+          "E0151",
+          "E0152",
+          "E0153",
+          "E0154",
+          "E0155"
+        ],
+        "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+      },
+      {
+        "source_unit_ref": "NU_0003",
+        "source_order": 3,
+        "char_start": 2404,
+        "char_end": 3602,
+        "exact_text": "笃。\r\n\r\n程雨突然注意到，声音并不是从门板上传来的。\r\n\r\n她把手机贴近门。\r\n\r\n又一次声音响起时，她猛地转头。\r\n\r\n声音来自墙里。\r\n\r\n准确地说，是门旁边那面墙。\r\n\r\n程雨愣住了。\r\n\r\n那面墙后面应该是楼道消防管井。\r\n\r\n她走过去，把耳朵贴在墙上。\r\n\r\n里面有轻微的摩擦声。\r\n\r\n像有什么东西正在管井里移动。\r\n\r\n随后，她听见一个女人很轻的声音。\r\n\r\n“别开门。”\r\n\r\n程雨全身僵住。\r\n\r\n声音只出现了一次。\r\n\r\n紧接着，电恢复了。\r\n\r\n所有灯同时亮起来。\r\n\r\n她退到客厅中央，大口喘气。\r\n\r\n门外忽然传来钥匙转动的声音。\r\n\r\n程雨冲过去按住门把手。\r\n\r\n“谁！”\r\n\r\n“我！”\r\n\r\n是老赵。\r\n\r\n程雨没有立刻开门。\r\n\r\n“你刚才去哪了？”\r\n\r\n外面的老赵沉默了一下。\r\n\r\n“值班室。”\r\n\r\n“为什么不接电话？”\r\n\r\n“刚才停电，地下机房没信号。”\r\n\r\n程雨盯着门。\r\n\r\n“你怎么上来的？”\r\n\r\n外面没声音了。\r\n\r\n几秒后，老赵回答：\r\n\r\n“走楼梯。”\r\n\r\n程雨低头看门缝。\r\n\r\n老赵脚上那双灰色拖鞋露在外面。\r\n\r\n鞋面干干净净。\r\n\r\n可他刚才把一把湿透的伞带走了。\r\n\r\n程雨没有开门。\r\n\r\n她轻声问：\r\n\r\n“伞呢？”\r\n\r\n门外的人没有回答。\r\n\r\n程雨后退一步。\r\n\r\n门把手忽然被人压了下去。\r\n\r\n一下。\r\n\r\n两下。\r\n\r\n第三下的时候，安全链猛地绷紧。\r\n\r\n程雨转身冲向阳台。\r\n\r\n1204的阳台和隔壁1203之间只有一堵不到胸口高的隔墙。\r\n\r\n她搬进来第一年就发现了，但从来没翻过去过。\r\n\r\n身后传来金属撞击声。\r\n\r\n有人正在外面用力推门。\r\n\r\n程雨踩上空纸箱，翻过隔墙。\r\n\r\n1203的阳台窗户竟然没有锁。\r\n\r\n她拉开窗，钻进去。\r\n\r\n里面没有开灯。\r\n\r\n这套房似乎长期没人住。\r\n\r\n空气里有很重的灰尘味。\r\n\r\n她刚走两步，就踩到什么东西。\r\n\r\n一张旧报纸。\r\n\r\n报纸上印着一则很小的寻人启事。\r\n\r\n宋知夏。\r\n\r\n二十七岁。\r\n\r\n失踪日期正是六年前。\r\n\r\n程雨用手机照着报纸。\r\n\r\n寻人启事旁边有人用红笔写了一句话：\r\n\r\n“不是失踪，是躲起来了。”\r\n\r\n她抬头。\r\n\r\n客厅墙上钉着很多照片。\r\n\r\n全是1204。\r\n\r\n不同时间、不同角度。\r\n\r\n有宋知夏。\r\n\r\n也有程雨。\r\n\r\n程雨的呼吸停住了。\r\n\r\n其中最近的一张，是三天前。\r\n\r\n她站在楼下便利店门口，手里抱着搬家用的纸箱。\r\n\r\n照片下面写着日期。\r\n\r\n旁边还有一张打印出来的纸。\r\n\r\n“观察对象准备退租。”\r\n\r\n程雨忽然听见卧室里传来轻微的咳嗽声。\r\n\r\n她转过手机。\r\n\r\n“谁？”\r\n\r\n卧室门慢慢打开。\r\n\r\n一个女人站在里面。\r\n\r\n四十岁左右，头发剪得很短，脸色苍白。\r\n",
+        "exact_text_sha256": "700ce83a763c271a9e842856ac638688b2e52799bb2a2484053a4bb4766c1a4c",
+        "anchor_text_sha256": "4af0cd265f5bde8e5dddff43332d04b40320e5448b6a80489c35e867301363c9",
+        "expected_anchor_text_sha256": "fb559188acbd4c90cfe82ad8b5d6c40f36a763bcfc2382ff3622d36e14dd6e18",
+        "legacy_index_hash_matches": true,
+        "anchor_refs": [
+          "E0156",
+          "E0157",
+          "E0158",
+          "E0159",
+          "E0160",
+          "E0161",
+          "E0162",
+          "E0163",
+          "E0164",
+          "E0165",
+          "E0166",
+          "E0167",
+          "E0168",
+          "E0169",
+          "E0170",
+          "E0171",
+          "E0172",
+          "E0173",
+          "E0174",
+          "E0175",
+          "E0176",
+          "E0177",
+          "E0178",
+          "E0179",
+          "E0180",
+          "E0181",
+          "E0182",
+          "E0183",
+          "E0184",
+          "E0185",
+          "E0186",
+          "E0187",
+          "E0188",
+          "E0189",
+          "E0190",
+          "E0191",
+          "E0192",
+          "E0193",
+          "E0194",
+          "E0195",
+          "E0196",
+          "E0197",
+          "E0198",
+          "E0199",
+          "E0200",
+          "E0201",
+          "E0202",
+          "E0203",
+          "E0204",
+          "E0205",
+          "E0206",
+          "E0207",
+          "E0208",
+          "E0209",
+          "E0210",
+          "E0211",
+          "E0212",
+          "E0213",
+          "E0214",
+          "E0215",
+          "E0216",
+          "E0217",
+          "E0218",
+          "E0219",
+          "E0220",
+          "E0221",
+          "E0222",
+          "E0223",
+          "E0224",
+          "E0225",
+          "E0226",
+          "E0227",
+          "E0228",
+          "E0229",
+          "E0230",
+          "E0231",
+          "E0232",
+          "E0233",
+          "E0234",
+          "E0235",
+          "E0236",
+          "E0237",
+          "E0238",
+          "E0239",
+          "E0240"
+        ],
+        "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+      },
+      {
+        "source_unit_ref": "NU_0004",
+        "source_order": 4,
+        "char_start": 3604,
+        "char_end": 4808,
+        "exact_text": "程雨认出了她。\r\n\r\n照片里的宋知夏。\r\n\r\n两个人隔着昏暗的客厅看着彼此。\r\n\r\n最后是宋知夏先开口。\r\n\r\n“你不该今晚还留在这里。”\r\n\r\n程雨的声音发紧。\r\n\r\n“这些照片是你拍的？”\r\n\r\n“有些是。”\r\n\r\n“其他呢？”\r\n\r\n宋知夏没有回答。\r\n\r\n“门口的伞也是你放的？”\r\n\r\n“是。”\r\n\r\n“为什么？”\r\n\r\n“想让老赵知道我回来了。”\r\n\r\n程雨愣了一下。\r\n\r\n“你认识老赵？”\r\n\r\n宋知夏笑了一下。\r\n\r\n那个笑没有一点温度。\r\n\r\n“我就是为了他才回来的。”\r\n\r\n楼道里忽然传来脚步声。\r\n\r\n宋知夏脸色变了。\r\n\r\n她走到门边，把1203的安全链挂上。\r\n\r\n“他知道你在这里。”程雨说。\r\n\r\n“现在知道了。”\r\n\r\n“六年前到底发生了什么？”\r\n\r\n宋知夏回过头。\r\n\r\n“六年前，我不是被人从1204带走的。”\r\n\r\n她指向墙。\r\n\r\n“我是自己从管井爬到这里的。”\r\n\r\n程雨看向那面墙。\r\n\r\n“为什么？”\r\n\r\n“因为我发现老赵一直在看1204。”\r\n\r\n程雨没有理解。\r\n\r\n宋知夏走到照片墙前，撕下一张最旧的照片。\r\n\r\n照片里，年轻一些的老赵站在楼道拐角，正看向1204的门。\r\n\r\n“那时候楼道监控归他管。门禁记录归他管。备用钥匙也归他管。”\r\n\r\n门外响起一声很轻的脚步。\r\n\r\n两个人都不再说话。\r\n\r\n宋知夏压低声音。\r\n\r\n“我报警前一天，他知道了。”\r\n\r\n程雨忽然想起老赵刚才那句话。\r\n\r\n——你们背影有一点像。\r\n\r\n她的胃部一阵发紧。\r\n\r\n“所以这六年……”\r\n\r\n“我一直在找能证明他做过什么的东西。”\r\n\r\n“为什么现在回来？”\r\n\r\n宋知夏看着她。\r\n\r\n“因为你要搬走了。”\r\n\r\n“和我有什么关系？”\r\n\r\n“1204空下来以后，他会重新布置。”\r\n\r\n“布置什么？”\r\n\r\n宋知夏没有回答。\r\n\r\n她只是慢慢转头，看向程雨住了六年的那面墙。\r\n\r\n“你从来没想过，为什么你卧室的墙，比客厅那面厚十几厘米吗？”\r\n\r\n凌晨三点零五分，警察到了。\r\n\r\n他们在1204卧室墙后的夹层里找到了一套已经断电多年的旧设备。\r\n\r\n镜头、线路、硬盘。\r\n\r\n也找到了一部分属于之前租客的私人物品。\r\n\r\n老赵没有跑。\r\n\r\n他坐在一楼值班室里。\r\n\r\n警察进去时，他正在给自己泡茶。\r\n\r\n后来程雨才知道，宋知夏六年前报警前，没有足够证据。\r\n\r\n她害怕老赵进入1204，于是利用消防管井逃进了长期空置的1203，再从楼梯离开。\r\n\r\n她没有失踪。\r\n\r\n她只是从此没有再使用原来的身份生活。\r\n\r\n这些年，她一直想拿到当年的设备。\r\n\r\n但老赵早就把入口封死。\r\n\r\n直到程雨准备退租，房屋即将重新装修。\r\n\r\n这是最后一次机会。\r\n\r\n天快亮时，程雨坐在楼下救护车旁。\r\n\r\n宋知夏从楼里出来。\r\n\r\n两个人谁也没有先说话。\r\n",
+        "exact_text_sha256": "1ff0231b3005e96b13b9a69704d4016636a2f2b005a5900b93cd694e05e14956",
+        "anchor_text_sha256": "9cefccfccfd2a7769b5129697cc00ab9ff1f499045bf354a4d79ff0e9f2cfb8a",
+        "expected_anchor_text_sha256": "eed9471ab7c9c2a31f8a23b7d3e1b1ea98e426f57432d183b9e33cd321c19bf0",
+        "legacy_index_hash_matches": true,
+        "anchor_refs": [
+          "E0241",
+          "E0242",
+          "E0243",
+          "E0244",
+          "E0245",
+          "E0246",
+          "E0247",
+          "E0248",
+          "E0249",
+          "E0250",
+          "E0251",
+          "E0252",
+          "E0253",
+          "E0254",
+          "E0255",
+          "E0256",
+          "E0257",
+          "E0258",
+          "E0259",
+          "E0260",
+          "E0261",
+          "E0262",
+          "E0263",
+          "E0264",
+          "E0265",
+          "E0266",
+          "E0267",
+          "E0268",
+          "E0269",
+          "E0270",
+          "E0271",
+          "E0272",
+          "E0273",
+          "E0274",
+          "E0275",
+          "E0276",
+          "E0277",
+          "E0278",
+          "E0279",
+          "E0280",
+          "E0281",
+          "E0282",
+          "E0283",
+          "E0284",
+          "E0285",
+          "E0286",
+          "E0287",
+          "E0288",
+          "E0289",
+          "E0290",
+          "E0291",
+          "E0292",
+          "E0293",
+          "E0294",
+          "E0295",
+          "E0296",
+          "E0297",
+          "E0298",
+          "E0299",
+          "E0300",
+          "E0301",
+          "E0302",
+          "E0303",
+          "E0304",
+          "E0305",
+          "E0306",
+          "E0307",
+          "E0308",
+          "E0309",
+          "E0310",
+          "E0311",
+          "E0312"
+        ],
+        "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+      },
+      {
+        "source_unit_ref": "NU_0005",
+        "source_order": 5,
+        "char_start": 4810,
+        "char_end": 5370,
+        "exact_text": "最后程雨问：\r\n\r\n“那把伞，真的是你六年前用的那把？”\r\n\r\n宋知夏点头。\r\n\r\n“为什么一直留着？”\r\n\r\n她看了看天。\r\n\r\n远处已经开始泛白。\r\n\r\n“因为那天其实下了很大的雨。”\r\n\r\n程雨怔了一下。\r\n\r\n“可老赵说——”\r\n\r\n她说到一半停住了。\r\n\r\n宋知夏看着她。\r\n\r\n“他说今晚没下雨，所以这把伞不该是湿的，对吗？”\r\n\r\n程雨慢慢转头。\r\n\r\n那把黑伞此刻正靠在警车旁。\r\n\r\n伞面还在往下滴水。\r\n\r\n可整条街都是干的。\r\n\r\n宋知夏走过去，把伞拿起来。\r\n\r\n她拧开伞柄末端那块黑色塑料盖。\r\n\r\n里面掉出一张很小的存储卡。\r\n\r\n她弯腰捡起。\r\n\r\n“六年前，我只来得及带走这个。”\r\n\r\n她把存储卡放进证物袋。\r\n\r\n“剩下的，今天终于拿到了。”\r\n\r\n程雨看着她。\r\n\r\n“那你为什么不一开始就告诉我？”\r\n\r\n宋知夏沉默了很久。\r\n\r\n“因为我不知道你会不会相信我。”\r\n\r\n她停了一下。\r\n\r\n“六年前，也有人不相信我。”\r\n\r\n清晨的第一班公交从街口驶过。\r\n\r\n程雨抬头看向十二楼。\r\n\r\n1204的窗户亮着。\r\n\r\n那是她住了六年的房间。\r\n\r\n她突然意识到，自己从来没有真正了解过那堵墙后面有什么。\r\n\r\n更没有想过，有些人所谓的“失踪”，只是因为没有人认真听完他们说的话。",
+        "exact_text_sha256": "cdfd994a72a4b6938010b368d23ab0bfa51f292382013986eee4c8abefc2babe",
+        "anchor_text_sha256": "dc217c1b9e8559cb8bb294775e6725eb55c1f4dc027b03bb7b5b508db97176b2",
+        "expected_anchor_text_sha256": "0122bcb7bf0a41fa4da53391bb14d44e1ab59deb05d788b235d3d8cb30be2699",
+        "legacy_index_hash_matches": true,
+        "anchor_refs": [
+          "E0313",
+          "E0314",
+          "E0315",
+          "E0316",
+          "E0317",
+          "E0318",
+          "E0319",
+          "E0320",
+          "E0321",
+          "E0322",
+          "E0323",
+          "E0324",
+          "E0325",
+          "E0326",
+          "E0327",
+          "E0328",
+          "E0329",
+          "E0330",
+          "E0331",
+          "E0332",
+          "E0333",
+          "E0334",
+          "E0335",
+          "E0336",
+          "E0337",
+          "E0338",
+          "E0339",
+          "E0340",
+          "E0341",
+          "E0342",
+          "E0343",
+          "E0344",
+          "E0345",
+          "E0346",
+          "E0347"
+        ],
+        "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368"
+      }
+    ],
+    "existing_facts": [
+      {
+        "fact_id": "FACT_0001",
+        "canonical_assertion": {
+          "subject_type": "character",
+          "subject_id": "宋知夏",
+          "predicate": "escaped through fire pipe shaft",
+          "value": "to apartment 1203",
+          "scope": "global"
+        },
+        "semantic_disposition": "CLAIM_SUPPORTED",
+        "effective_authority": "model_observation",
+        "effective_status": "proposed",
+        "downstream_eligible": false
+      },
+      {
+        "fact_id": "FACT_0002",
+        "canonical_assertion": {
+          "subject_type": "character",
+          "subject_id": "宋知夏",
+          "predicate": "hid storage card in umbrella handle",
+          "value": "evidence from six years ago",
+          "scope": "global"
+        },
+        "semantic_disposition": "PARTIAL_SUPPORT_REVIEW",
+        "effective_authority": "model_observation",
+        "effective_status": "proposed",
+        "downstream_eligible": false
+      },
+      {
+        "fact_id": "FACT_0003",
+        "canonical_assertion": {
+          "subject_type": "character",
+          "subject_id": "宋知夏",
+          "predicate": "is previous tenant of 1204",
+          "value": "disappeared six years ago",
+          "scope": "global"
+        },
+        "semantic_disposition": "CLAIM_SUPPORTED",
+        "effective_authority": "model_observation",
+        "effective_status": "proposed",
+        "downstream_eligible": false
+      },
+      {
+        "fact_id": "FACT_0004",
+        "canonical_assertion": {
+          "subject_type": "character",
+          "subject_id": "程雨",
+          "predicate": "found wet umbrella at door",
+          "value": "black long-handled umbrella",
+          "scope": "global"
+        },
+        "semantic_disposition": "WORLD_FACT_CONFIRMED",
+        "effective_authority": "source_text",
+        "effective_status": "confirmed",
+        "downstream_eligible": true
+      },
+      {
+        "fact_id": "FACT_0005",
+        "canonical_assertion": {
+          "subject_type": "character",
+          "subject_id": "程雨",
+          "predicate": "is moving out of apartment",
+          "value": "1204",
+          "scope": "global"
+        },
+        "semantic_disposition": "WORLD_FACT_CONFIRMED",
+        "effective_authority": "source_text",
+        "effective_status": "confirmed",
+        "downstream_eligible": true
+      },
+      {
+        "fact_id": "FACT_0006",
+        "canonical_assertion": {
+          "subject_type": "character",
+          "subject_id": "老赵",
+          "predicate": "installed hidden camera equipment",
+          "value": "in wall cavity behind bedroom",
+          "scope": "global"
+        },
+        "semantic_disposition": "PARTIAL_SUPPORT_REVIEW",
+        "effective_authority": "model_observation",
+        "effective_status": "proposed",
+        "downstream_eligible": false
+      },
+      {
+        "fact_id": "FACT_0007",
+        "canonical_assertion": {
+          "subject_type": "character",
+          "subject_id": "老赵",
+          "predicate": "recognized umbrella",
+          "value": "belonged to previous tenant",
+          "scope": "global"
+        },
+        "semantic_disposition": "CLAIM_SUPPORTED",
+        "effective_authority": "model_observation",
+        "effective_status": "proposed",
+        "downstream_eligible": false
+      }
+    ]
+  },
+  "system_prompt": "[FACT_COVERAGE_VERIFIER_V3]\nOUTPUT FORMAT IS A HARD CONTRACT. Return exactly one JSON object. Do not use Markdown fences, commentary, or text outside the JSON object.\nRequired top-level keys: requirements, coverage_claims, unit_assessments.\nEach requirement uses proposal_key (P###), requirement_type, description, and source_unit_refs.\nEach coverage claim uses requirement_key (an existing proposal_key), fact_refs, and coverage_verdict.\nEach unit assessment uses source_unit_ref, relevance, and requirement_keys. Assess every supplied unit exactly once.\nCanonical REQ identifiers are program-owned; never emit them. Use only supplied facts and units.\nThe machine-readable output contract, including closed-object rules and enums, is supplied in output_contract.\nShape-only synthetic example (not an answer):\n{\n  \"requirements\": [\n    {\n      \"proposal_key\": \"P001\",\n      \"requirement_type\": \"EVENT_OCCURRENCE\",\n      \"description\": \"Example structural event\",\n      \"source_unit_refs\": [\n        \"NU_0001\"\n      ]\n    }\n  ],\n  \"coverage_claims\": [\n    {\n      \"requirement_key\": \"P001\",\n      \"fact_refs\": [\n        \"FACT_0001\"\n      ],\n      \"coverage_verdict\": \"COVERED\"\n    }\n  ],\n  \"unit_assessments\": [\n    {\n      \"source_unit_ref\": \"NU_0001\",\n      \"relevance\": \"RELEVANT\",\n      \"requirement_keys\": [\n        \"P001\"\n      ]\n    }\n  ]\n}"
+}
