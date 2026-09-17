@@ -389,7 +389,7 @@ def _targeted_requirement(raw: Any, index: int) -> dict[str, Any]:
     subject_id = str(item.get("subject_id") or item.get("entity") or item.get("subject") or "").strip()
     predicate = str(item.get("predicate") or "").strip()
     scope = str(item.get("scope") or "global").strip()
-    return {
+    base = {
         "fact_key": str(item.get("fact_key") or "|".join((subject_type, subject_id, predicate, scope)) or f"requirement_{index:04d}"),
         "semantic_type": subject_type, "subject_type": subject_type, "entity": subject_id, "subject_id": subject_id,
         "predicate": predicate, "scope": scope, "consumer": str(item.get("consumer") or "script_ir").strip(),
@@ -399,6 +399,18 @@ def _targeted_requirement(raw: Any, index: int) -> dict[str, Any]:
         "dependency": item.get("dependency") if isinstance(item.get("dependency"), list) else [],
         "description": str(item.get("description") or "").strip(), "expected_value": item.get("expected_value", item.get("value")),
     }
+    # Requirement semantics are additive metadata.  Keeping this enrichment
+    # here means historical manifests remain readable while new coverage
+    # callers share one authority/stage vocabulary.
+    try:
+        from core.fact_requirement_semantics import classify_requirement
+        classified = classify_requirement(base)
+        base.update({key: classified[key] for key in ("scope", "original_scope", "authority_class", "blocking_stage", "scope_type", "requirement_semantics", "gate_eligible", "authoring_required")})
+    except Exception:
+        # The targeted coverage primitive remains usable during bootstrap or
+        # isolated replay before the registry module is available.
+        base.update({"authority_class": "SOURCE_FACT", "blocking_stage": "SCRIPT_IR", "gate_eligible": True, "authoring_required": False})
+    return base
 
 
 def _targeted_requirement_matches(req: dict[str, Any], record: dict[str, Any]) -> bool:
@@ -408,7 +420,7 @@ def _targeted_requirement_matches(req: dict[str, Any], record: dict[str, Any]) -
 def build_missing_fact_manifest(requirements: list[dict[str, Any]], records: list[dict[str, Any]], *, source_scope: list[str] | None = None) -> dict[str, Any]:
     normalized = [_targeted_requirement(item, i) for i, item in enumerate(requirements or [], 1)]
     rows = [item for item in records or [] if isinstance(item, dict)]
-    missing, coverage = [], []
+    missing, authoring_pending, coverage = [], [], []
     for req in normalized:
         matches = [row for row in rows if _targeted_requirement_matches(req, row)]
         reason = None
@@ -427,12 +439,24 @@ def build_missing_fact_manifest(requirements: list[dict[str, Any]], records: lis
             reason, evidence_state["state"] = "CONFLICTED", "expected_value_conflict"
         else:
             evidence_state["state"] = "satisfied"
-        coverage.append({"fact_key": req["fact_key"], "required": req["required"], "satisfied": reason is None, "reason": reason, "evidence": evidence_state})
+        row = {"fact_key": req["fact_key"], "required": req["required"], "satisfied": reason is None, "reason": reason, "evidence": evidence_state, "authority_class": req.get("authority_class"), "blocking_stage": req.get("blocking_stage"), "scope": req.get("scope"), "original_scope": req.get("original_scope"), "gate_eligible": bool(req.get("gate_eligible", True))}
+        coverage.append(row)
         if reason and req["required"] and not req["optional"]:
-            missing.append({"fact_key": req["fact_key"], "semantic_type": req["semantic_type"], "scope": req["scope"], "entity": req["entity"], "consumer": req["consumer"], "required": req["required"], "optional": req["optional"], "missing_reason": reason, "existing_evidence": evidence_state, "source_scope": source_scope if source_scope is not None else req["source_scope"], "severity": req["severity"], "dependency": req["dependency"], "description": req["description"], "expected_value": req["expected_value"]})
+            item = {"fact_key": req["fact_key"], "semantic_type": req["semantic_type"], "subject_type": req.get("subject_type"), "subject_id": req.get("subject_id"), "predicate": req.get("predicate"), "scope": req["scope"], "original_scope": req.get("original_scope"), "entity": req["entity"], "consumer": req["consumer"], "required": req["required"], "optional": req["optional"], "missing_reason": reason, "existing_evidence": evidence_state, "source_scope": source_scope if source_scope is not None else req["source_scope"], "severity": req["severity"], "dependency": req["dependency"], "description": req["description"], "expected_value": req["expected_value"], "authority_class": req.get("authority_class"), "blocking_stage": req.get("blocking_stage"), "scope_type": req.get("scope_type"), "requirement_semantics": req.get("requirement_semantics"), "gate_eligible": bool(req.get("gate_eligible", True)), "authoring_required": bool(req.get("authoring_required", False))}
+            if req.get("gate_eligible", True):
+                missing.append(item)
+            else:
+                authoring_pending.append(item)
     status = "FACT_COVERAGE_SUFFICIENT" if not missing else "FACT_COVERAGE_INSUFFICIENT"
     manifest = MissingFactManifest(status=status, items=tuple(missing), fingerprint=fingerprint(missing)).to_dict()
-    return {"schema_version": TARGETED_SCHEMA_VERSION, "status": status, "coverage": coverage, "missing_fact_manifest": manifest, "required_count": sum(1 for row in normalized if row["required"] and not row["optional"]), "satisfied_count": sum(1 for row in coverage if row["satisfied"]), "blocking_count": len(missing)}
+    authoring_requests = []
+    try:
+        from core.fact_requirement_semantics import build_authoring_decision_request
+        for item in authoring_pending:
+            authoring_requests.append(build_authoring_decision_request(item))
+    except Exception:
+        authoring_requests = []
+    return {"schema_version": TARGETED_SCHEMA_VERSION, "status": status, "coverage": coverage, "missing_fact_manifest": manifest, "authoring_decision_pending": authoring_pending, "authoring_decision_requests": authoring_requests, "requirement_semantics": [{"fact_key": row["fact_key"], "authority_class": row.get("authority_class"), "blocking_stage": row.get("blocking_stage"), "scope_type": row.get("scope_type"), "gate_eligible": row.get("gate_eligible")} for row in normalized], "required_count": sum(1 for row in normalized if row["required"] and not row["optional"]), "satisfied_count": sum(1 for row in coverage if row["satisfied"]), "blocking_count": len(missing), "authoring_pending_count": len(authoring_pending)}
 
 
 def script_ir_gate(coverage: dict[str, Any]) -> dict[str, Any]:

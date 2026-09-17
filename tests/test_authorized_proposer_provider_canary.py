@@ -12,6 +12,7 @@ from core.source_evidence_index import build_source_evidence_index
 from core.targeted_semantic_evidence_resolution import (
     resolve_semantic_evidence,
     retrieve_candidate_anchors,
+    validate_provider_proposal_shape,
 )
 
 
@@ -135,3 +136,21 @@ def test_request_is_bounded_and_contains_no_full_source():
     assert "source_material" not in request
     assert len(request["candidate_anchors"]) <= 8
     assert request["output_schema"]["additionalProperties"] is False
+
+
+def test_strict_provider_contract_accepts_substring_quote_span_only():
+    source, index, manifest = _fixture(); item = manifest["items"][0]
+    candidate = retrieve_candidate_anchors(item, index)
+    anchor = candidate["anchors"][0]
+    request = {"fact": item, "candidate_anchors": candidate["anchors"], "strict_provider_contract": True}
+    proposal = _proposal(request)
+    proposal.pop("supporting_anchor_refs")
+    proposal.pop("exact_quotes")
+    proposal["evidence"] = [{"anchor_ref": anchor["anchor_ref"], "quote_span": "演员"}]
+    shape = validate_provider_proposal_shape(proposal, request)
+    assert shape["status"] == "PASS"
+
+    proposal["evidence"][0]["quote_span"] = "不存在的改写"
+    rejected = validate_provider_proposal_shape(proposal, request)
+    assert rejected["status"] == "FAIL"
+    assert any(error["code"] == "PROVIDER_EVIDENCE_INVALID" for error in rejected["errors"])

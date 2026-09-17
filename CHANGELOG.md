@@ -1,5 +1,14 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-18 — Director Quality V3：Fact Requirement Semantics & Authoring Boundary
+
+- 新增 `fact_requirement_registry_v1`，统一定义 predicate 语义、value schema、scope、authority class、blocking stage、retrieval/provider/validation policy 与 authoring fallback。
+- 明确区分 `SOURCE_FACT`、`DERIVED_SOURCE_FACT`、`PRODUCTION_AUTHORING_DECISION`、`PRODUCTION_CONTINUITY_STATE`；视觉身份、场景完整 geometry、当前状态和道具状态不再默认伪装成 ScriptIR source facts。
+- MissingFactManifest/coverage 现在同时输出 authoring decision pending 与 `authoring_decision_request_v1`，只有真正的 ScriptIR source requirements 才进入阻断清单；`source_required=true` 仍保持 fail-closed。
+- 检索使用 registry 的 aliases、语义词和 source surfaces；surface taxonomy 仅作为有词法命中的 tie-breaker，不能凭空制造候选。
+- Provider strict evidence 契约采用 `{anchor_ref, quote_span}` 子串证据；完整 anchor 文本与 char/byte offsets 仍由程序从 immutable source 解析，旧 full-quote 仅保留回放兼容。
+- 本阶段 Provider calls=0、事实/权威/生产写入=0，未重跑 MiMo Canary；详见 `artifacts/director-quality-v3-fact-requirement-semantics-authoring-boundary-report.md`。
+
 ## 2026-09-17 — Director Quality V3：Authorized Proposer Provider Canary（受控 dry-run）
 
 - 新增 `core/authorized_proposer_canary.py` 与 `scripts/run_director_quality_v3_authorized_proposer_provider_canary.py`，复用既有 LLM registry/`call_llm_json`，仅向 Provider 发送每个 missing fact 的最多 8 个候选锚点。
