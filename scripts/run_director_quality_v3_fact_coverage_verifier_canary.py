@@ -84,6 +84,8 @@ def build_inputs():
 def preflight(auth: dict, *, head: str, remote: str, dirty: list[str], profile: dict, materialized: dict, facts: dict, contract: dict) -> dict:
     authority = json.loads((ART / "director-quality-v3-current-stage-authority.json").read_text(encoding="utf-8"))
     parity = json.loads((ART / "director-quality-v3-current-stage-authority-parity.json").read_text(encoding="utf-8"))
+    overlay = json.loads((ART / "director-quality-v3-semantic-verifier-canary-authority-overlay.json").read_text(encoding="utf-8"))
+    overlay_fingerprint = sha256_bytes(json.dumps(overlay, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8"))
     checks = {
         "local_remote_parity": head == remote,
         "worktree_clean": not dirty,
@@ -92,6 +94,7 @@ def preflight(auth: dict, *, head: str, remote: str, dirty: list[str], profile: 
         "max_provider_calls": auth.get("max_provider_calls") == 1,
         "retries_zero": auth.get("retries") == 0,
         "source_identity": auth.get("source_package_id") == SOURCE_PACKAGE and auth.get("source_version_id") == SOURCE_VERSION and auth.get("source_raw_hash") == RAW_HASH,
+        "semantic_overlay_identity": auth.get("semantic_overlay_fingerprint") == overlay_fingerprint,
         "full_units": materialized.get("status") == "PASS" and materialized.get("unit_count") == 5,
         "existing_facts": facts.get("fact_count") == 7,
         "semantic_state": authority.get("authorized_ai_evaluation_source", {}).get("semantic_grounding_status") == "SEMANTIC_GROUNDING_CLOSED_WITH_REVIEW",
