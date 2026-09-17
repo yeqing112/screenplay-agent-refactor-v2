@@ -140,6 +140,13 @@ def _classify(row: dict[str, Any], *, provider_enabled: bool, execution_authoriz
         return "PROVIDER_CALL_FAILED"
     if provider.get("status") == "PROVIDER_UNSUPPORTED":
         return "PROVIDER_UNSUPPORTED"
+    provider_resolution = diagnostics.get("provider_resolution_type")
+    if provider_resolution in {"UNSUPPORTED"}:
+        return "PROVIDER_UNSUPPORTED"
+    if provider_resolution in {"AMBIGUOUS", "CONTEXTUAL_INFERENCE", "CONFLICTED"}:
+        return "PROVIDER_AMBIGUOUS" if provider_resolution != "CONFLICTED" else "PROVIDER_CONFLICTED"
+    if "separate semantic authority review" in str(diagnostics.get("reason") or ""):
+        return "PROVIDER_AMBIGUOUS"
     if support.get("status") == "CONFLICTED" or resolution.get("resolution_type") == "CONFLICTED":
         return "PROVIDER_CONFLICTED"
     if support.get("status") in {"AMBIGUOUS"} or resolution.get("resolution_type") in {"AMBIGUOUS", "CONTEXTUAL_INFERENCE"}:

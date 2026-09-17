@@ -1,10 +1,211 @@
 {
   "dry_run": true,
   "execution": {
-    "audit_records": [],
+    "audit_records": [
+      {
+        "extra": {
+          "fact_key": "character|宋知夏|visual_identity|global",
+          "provider_role": "PROPOSER",
+          "stage": "authorized_proposer_provider_canary",
+          "transport_attempt_number": 1,
+          "transport_retry": false
+        },
+        "has_repair_request": false,
+        "http_status": 200,
+        "latency_ms": 10562.95,
+        "parse_ok": true,
+        "profile_id": "local-llm-2vydoz",
+        "repair_request_length": 0,
+        "repair_request_sha256": "",
+        "request_fingerprint": "8ef9d66ddbebdab9a1328894b1a1d601c8b16368901e9d1bbed17cd914449c31",
+        "request_messages_sha256": "af7af80e81afe36fa7309df5ae453267",
+        "response_debug_excerpt": "{\"ambiguity\": false, \"confidence\": 0.9, \"conflicting_anchor_refs\": [], \"exact_quotes\": [\"“宋知夏。”\", \"她打开手机搜索“宋知夏 失踪”。\", \"宋知夏。\", \"有宋知夏。\", \"照片里的宋知夏。\", \"最后是宋知夏先开口。\", \"宋知夏没有回答。\", \"宋知夏笑了一下。\"], \"fact_key\": \"character|宋知夏|visual_identity|global\", \"predicate\": \"visual_identity\", \"proposed_value\": \"宋知夏\", \"reasoning_summary\": \"Multiple anchors explicitly mention the character '宋知夏' in various contexts (dialogue, search query, description, action). The consistent use of the name across the source material provides strong evidence for the character's existence and identity.\", \"resolution_type\": \"DIRECT_SOURCE_STATEMENT\", \"scope\": \"global\", \"subject_id\": \"宋知夏\", \"subject_type\": \"character\", \"supporting_anchor_refs\": [\"E0070\", \"E0110\", \"E0217\", \"E0227\", \"E0242\", \"E0244\", \"E0250\", \"E0257\"]}",
+        "response_length": 811,
+        "response_sha256": "7019425144757beab8939b986975d007",
+        "returned_schema_version": "",
+        "system_prompt_length": 422,
+        "system_prompt_sha256": "fb0e26034260d37a405a1dfd1f8151ba",
+        "top_level_keys": [
+          "ambiguity",
+          "confidence",
+          "conflicting_anchor_refs",
+          "exact_quotes",
+          "fact_key",
+          "predicate",
+          "proposed_value",
+          "reasoning_summary",
+          "resolution_type",
+          "scope",
+          "subject_id",
+          "subject_type",
+          "supporting_anchor_refs"
+        ],
+        "usage": {
+          "cache_hit_rate": null,
+          "cached_tokens": null,
+          "completion_tokens": 289,
+          "prompt_tokens": 2786,
+          "total_tokens": 3075
+        },
+        "user_prompt_length": 7286,
+        "user_prompt_sha256": "a96721048d3db483b3a34048cc880d34",
+        "vendor_host": "api.xiaomimimo.com",
+        "vendor_model": "mimo-v2.5"
+      },
+      {
+        "extra": {
+          "fact_key": "character|宋知夏|current_state|global",
+          "provider_role": "PROPOSER",
+          "stage": "authorized_proposer_provider_canary",
+          "transport_attempt_number": 1,
+          "transport_retry": false
+        },
+        "has_repair_request": false,
+        "http_status": 200,
+        "latency_ms": 10655.52,
+        "parse_ok": true,
+        "profile_id": "local-llm-2vydoz",
+        "repair_request_length": 0,
+        "repair_request_sha256": "",
+        "request_fingerprint": "abcf41709b4ab60117505163741fcb9e3a5319030ee02df6114575a65ef45171",
+        "request_messages_sha256": "072c9d506e71496d944207af1dd732de",
+        "response_debug_excerpt": "{\"ambiguity\": false, \"confidence\": 0.9, \"conflicting_anchor_refs\": [], \"exact_quotes\": [\"“宋知夏。”\", \"她打开手机搜索“宋知夏 失踪”。\", \"宋知夏。\", \"有宋知夏。\", \"照片里的宋知夏。\", \"最后是宋知夏先开口。\", \"宋知夏没有回答。\", \"宋知夏笑了一下。\"], \"fact_key\": \"character|宋知夏|current_state|global\", \"predicate\": \"current_state\", \"proposed_value\": \"失踪\", \"reasoning_summary\": \"Multiple anchors mention the character '宋知夏'. Anchor E0110 explicitly shows a search for '宋知夏 失踪', indicating her current state is '失踪' (missing). This is the most direct evidence for the fact.\", \"resolution_type\": \"DIRECT_SOURCE_STATEMENT\", \"scope\": \"global\", \"subject_id\": \"宋知夏\", \"subject_type\": \"character\", \"supporting_anchor_refs\": [\"E0110\"]}",
+        "response_length": 687,
+        "response_sha256": "0e5dbbb7cffff6eddd62157e7bb092d8",
+        "returned_schema_version": "",
+        "system_prompt_length": 422,
+        "system_prompt_sha256": "fb0e26034260d37a405a1dfd1f8151ba",
+        "top_level_keys": [
+          "ambiguity",
+          "confidence",
+          "conflicting_anchor_refs",
+          "exact_quotes",
+          "fact_key",
+          "predicate",
+          "proposed_value",
+          "reasoning_summary",
+          "resolution_type",
+          "scope",
+          "subject_id",
+          "subject_type",
+          "supporting_anchor_refs"
+        ],
+        "usage": {
+          "cache_hit_rate": 0.735104,
+          "cached_tokens": 2048,
+          "completion_tokens": 242,
+          "prompt_tokens": 2786,
+          "total_tokens": 3028
+        },
+        "user_prompt_length": 7284,
+        "user_prompt_sha256": "b15294aa2f10858e37c43615fe76fb83",
+        "vendor_host": "api.xiaomimimo.com",
+        "vendor_model": "mimo-v2.5"
+      },
+      {
+        "extra": {
+          "fact_key": "character|程雨|visual_identity|global",
+          "provider_role": "PROPOSER",
+          "stage": "authorized_proposer_provider_canary",
+          "transport_attempt_number": 1,
+          "transport_retry": false
+        },
+        "has_repair_request": false,
+        "http_status": 200,
+        "latency_ms": 10245.35,
+        "parse_ok": true,
+        "profile_id": "local-llm-2vydoz",
+        "repair_request_length": 0,
+        "repair_request_sha256": "",
+        "request_fingerprint": "d05eac947a00b4abcb961b550fd2e0a4966321a690e979be7aa3ac86f66e9aee",
+        "request_messages_sha256": "6eb1df911254fc29d30b6ef3bf0d4d3e",
+        "response_debug_excerpt": "{\"ambiguity\": false, \"confidence\": 0.1, \"conflicting_anchor_refs\": [], \"exact_quotes\": [], \"fact_key\": \"character|程雨|visual_identity|global\", \"predicate\": \"visual_identity\", \"proposed_value\": null, \"reasoning_summary\": \"The candidate anchors all mention the character '程雨' but provide no descriptive information about her physical appearance, clothing, or visual characteristics. The fact requires a visual identity, but the source material only describes her actions and dialogue. Therefore, no evidence supports the fact.\", \"resolution_type\": \"UNSUPPORTED\", \"scope\": \"global\", \"subject_id\": \"程雨\", \"subject_type\": \"character\", \"supporting_anchor_refs\": []}",
+        "response_length": 685,
+        "response_sha256": "fa1e3d89152b6a8a0aaa3bd8c9962a54",
+        "returned_schema_version": "",
+        "system_prompt_length": 422,
+        "system_prompt_sha256": "fb0e26034260d37a405a1dfd1f8151ba",
+        "top_level_keys": [
+          "ambiguity",
+          "confidence",
+          "conflicting_anchor_refs",
+          "exact_quotes",
+          "fact_key",
+          "predicate",
+          "proposed_value",
+          "reasoning_summary",
+          "resolution_type",
+          "scope",
+          "subject_id",
+          "subject_type",
+          "supporting_anchor_refs"
+        ],
+        "usage": {
+          "cache_hit_rate": null,
+          "cached_tokens": null,
+          "completion_tokens": 167,
+          "prompt_tokens": 2801,
+          "total_tokens": 2968
+        },
+        "user_prompt_length": 7327,
+        "user_prompt_sha256": "c50afb4f903bb3c5eefd454cf6f5f5a1",
+        "vendor_host": "api.xiaomimimo.com",
+        "vendor_model": "mimo-v2.5"
+      },
+      {
+        "extra": {
+          "fact_key": "character|程雨|current_state|global",
+          "provider_role": "PROPOSER",
+          "stage": "authorized_proposer_provider_canary",
+          "transport_attempt_number": 1,
+          "transport_retry": false
+        },
+        "has_repair_request": false,
+        "http_status": 200,
+        "latency_ms": 13463.57,
+        "parse_ok": true,
+        "profile_id": "local-llm-2vydoz",
+        "repair_request_length": 0,
+        "repair_request_sha256": "",
+        "request_fingerprint": "fa4700412dceb24615f72ed3924334847a5d766c5d2efcc6e4530bfce45b4db4",
+        "request_messages_sha256": "5b9ef406a853ffa436816b936f803fec",
+        "response_debug_excerpt": "{\"ambiguity\": false, \"confidence\": 0.9, \"conflicting_anchor_refs\": [], \"exact_quotes\": [\"凌晨一点二十七分，程雨把最后一个纸箱拖到门口。\", \"程雨蹲下来，用胶带封上最后一个箱子。胶带刚扯到一半，门外忽然传来一声很轻的金属碰撞。\", \"程雨看着门。\", \"程雨站起身。\", \"程雨皱起眉。\", \"老赵在这栋楼当了十几年保安，程雨搬进来那天就是他帮忙开的货梯。\", \"“有人在我门口放了把伞。”程雨说。\", \"程雨握着手机的手停了一下。\"], \"fact_key\": \"character|程雨|current_state|global\", \"predicate\": \"current_state\", \"proposed_value\": \"正在搬家\", \"reasoning_summary\": \"The candidate anchors consistently depict the character 程雨 engaged in activities related to moving: dragging a cardboard box to the door, taping a box, and referencing the day she moved in. The actions (dragging, taping, looking at the door, standing up, frowning, speaking about an umbrella at her door, pausing while holding a phone) are all part of a sequence describing her current activity of moving out or moving in. The most specific and repeated activity is handling boxes, which is a core part of moving. Therefore, the current state is inferred as '正在搬家' (currently moving).\", \"resolution_type\": \"CONTEXTUAL_INFERENCE\", \"scope\": \"global\", \"subject_id\": \"程雨\", \"subject_type\": \"character\", \"supporting_anchor_refs\": [\"E0002\", \"E0007\", \"E0012\", \"E0019\", \"E0027\", \"E0032\", \"E0033\", \"E0038\"]}",
+        "response_length": 1217,
+        "response_sha256": "7f7d723ce39f171af8da36e3173fdeec",
+        "returned_schema_version": "",
+        "system_prompt_length": 422,
+        "system_prompt_sha256": "fb0e26034260d37a405a1dfd1f8151ba",
+        "top_level_keys": [
+          "ambiguity",
+          "confidence",
+          "conflicting_anchor_refs",
+          "exact_quotes",
+          "fact_key",
+          "predicate",
+          "proposed_value",
+          "reasoning_summary",
+          "resolution_type",
+          "scope",
+          "subject_id",
+          "subject_type",
+          "supporting_anchor_refs"
+        ],
+        "usage": {
+          "cache_hit_rate": 0.731167,
+          "cached_tokens": 2048,
+          "completion_tokens": 421,
+          "prompt_tokens": 2801,
+          "total_tokens": 3222
+        },
+        "user_prompt_length": 7325,
+        "user_prompt_sha256": "bdd909043b9495534b49ca7b2f547c90",
+        "vendor_host": "api.xiaomimimo.com",
+        "vendor_model": "mimo-v2.5"
+      }
+    ],
     "explicit_execute": true,
-    "provider_configured": false,
-    "status": "FAIL_CLOSED_PROVIDER_NOT_CONFIGURED"
+    "provider_configured": true,
+    "status": "COMPLETED"
   },
   "not_authority": true,
   "not_fact_snapshot": true,
@@ -13,7 +214,7 @@
     "fact_snapshot_writes": 0,
     "production_writes": 0
   },
-  "result_fingerprint": "0a976e48abcd432ebdec54bf96fb91f5b8eb0cd9471c1db1abeae43736860505",
+  "result_fingerprint": "60191a52198d9d8a1a59cacf82ce64e6778234a0d7ce7d1cddb99d4070274d31",
   "results": [
     {
       "accepted": false,
@@ -24,14 +225,14 @@
       },
       "exact_quotes": [],
       "fact_key": "character|宋知夏|visual_identity|global",
-      "final_classification": "PROVIDER_NOT_CONFIGURED",
+      "final_classification": "PROVIDER_EVIDENCE_INVALID",
       "missing_reason": "ABSENT",
-      "model": "",
+      "model": "mimo-v2.5",
       "proposed_value": null,
-      "provider": "",
-      "provider_called": false,
+      "provider": "openai-compatible",
+      "provider_called": true,
       "provider_confidence": null,
-      "reject_reason": "PROVIDER_NOT_CONFIGURED",
+      "reject_reason": "PROVIDER_EVIDENCE_INVALID",
       "resolution": {
         "diagnostics": {
           "anchor_outcomes": [
@@ -89,13 +290,47 @@
             "status": "PASS"
           },
           "provider": {
-            "provider_calls": 0,
-            "status": "NOT_USED"
+            "errors": [
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0070"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0110"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0217"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0227"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0242"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0244"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0250"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0257"
+              }
+            ],
+            "provider_calls": 1,
+            "status": "PROVIDER_SCHEMA_INVALID"
           }
         },
         "fact_key": "character|宋知夏|visual_identity|global",
         "proposal": null,
-        "provider_calls": 0,
+        "provider_calls": 1,
         "resolution_type": "UNSUPPORTED",
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
@@ -140,14 +375,14 @@
       },
       "exact_quotes": [],
       "fact_key": "character|宋知夏|current_state|global",
-      "final_classification": "PROVIDER_NOT_CONFIGURED",
+      "final_classification": "PROVIDER_EVIDENCE_INVALID",
       "missing_reason": "ABSENT",
-      "model": "",
+      "model": "mimo-v2.5",
       "proposed_value": null,
-      "provider": "",
-      "provider_called": false,
+      "provider": "openai-compatible",
+      "provider_called": true,
       "provider_confidence": null,
-      "reject_reason": "PROVIDER_NOT_CONFIGURED",
+      "reject_reason": "PROVIDER_EVIDENCE_INVALID",
       "resolution": {
         "diagnostics": {
           "anchor_outcomes": [
@@ -205,13 +440,23 @@
             "status": "PASS"
           },
           "provider": {
-            "provider_calls": 0,
-            "status": "NOT_USED"
+            "errors": [
+              {
+                "code": "PROVIDER_SCHEMA_INVALID",
+                "message": "exact_quotes must align with supporting_anchor_refs"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0110"
+              }
+            ],
+            "provider_calls": 1,
+            "status": "PROVIDER_SCHEMA_INVALID"
           }
         },
         "fact_key": "character|宋知夏|current_state|global",
         "proposal": null,
-        "provider_calls": 0,
+        "provider_calls": 1,
         "resolution_type": "UNSUPPORTED",
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
@@ -256,78 +501,30 @@
       },
       "exact_quotes": [],
       "fact_key": "character|程雨|visual_identity|global",
-      "final_classification": "PROVIDER_NOT_CONFIGURED",
+      "final_classification": "PROVIDER_UNSUPPORTED",
       "missing_reason": "ABSENT",
-      "model": "",
+      "model": "mimo-v2.5",
       "proposed_value": null,
-      "provider": "",
-      "provider_called": false,
+      "provider": "openai-compatible",
+      "provider_called": true,
       "provider_confidence": null,
-      "reject_reason": "PROVIDER_NOT_CONFIGURED",
+      "reject_reason": "PROVIDER_UNSUPPORTED",
       "resolution": {
         "diagnostics": {
-          "anchor_outcomes": [
-            {
-              "reason": "anchor does not explicitly support requested value",
-              "resolution_type": "UNSUPPORTED",
-              "status": "NOT_SUPPORTED",
-              "value": null
-            },
-            {
-              "reason": "anchor does not explicitly support requested value",
-              "resolution_type": "UNSUPPORTED",
-              "status": "NOT_SUPPORTED",
-              "value": null
-            },
-            {
-              "reason": "anchor does not explicitly support requested value",
-              "resolution_type": "UNSUPPORTED",
-              "status": "NOT_SUPPORTED",
-              "value": null
-            },
-            {
-              "reason": "anchor does not explicitly support requested value",
-              "resolution_type": "UNSUPPORTED",
-              "status": "NOT_SUPPORTED",
-              "value": null
-            },
-            {
-              "reason": "anchor does not explicitly support requested value",
-              "resolution_type": "UNSUPPORTED",
-              "status": "NOT_SUPPORTED",
-              "value": null
-            },
-            {
-              "reason": "anchor does not explicitly support requested value",
-              "resolution_type": "UNSUPPORTED",
-              "status": "NOT_SUPPORTED",
-              "value": null
-            },
-            {
-              "reason": "anchor does not explicitly support requested value",
-              "resolution_type": "UNSUPPORTED",
-              "status": "NOT_SUPPORTED",
-              "value": null
-            },
-            {
-              "reason": "anchor does not explicitly support requested value",
-              "resolution_type": "UNSUPPORTED",
-              "status": "NOT_SUPPORTED",
-              "value": null
-            }
-          ],
           "anchor_validation": {
             "errors": [],
             "status": "PASS"
           },
           "provider": {
-            "provider_calls": 0,
-            "status": "NOT_USED"
-          }
+            "provider_calls": 1,
+            "status": "PROVIDER_RESPONSE_RECEIVED"
+          },
+          "reason": "resolution type requires a separate semantic authority review",
+          "provider_resolution_type": "UNSUPPORTED"
         },
         "fact_key": "character|程雨|visual_identity|global",
         "proposal": null,
-        "provider_calls": 0,
+        "provider_calls": 1,
         "resolution_type": "UNSUPPORTED",
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
@@ -372,14 +569,14 @@
       },
       "exact_quotes": [],
       "fact_key": "character|程雨|current_state|global",
-      "final_classification": "PROVIDER_NOT_CONFIGURED",
+      "final_classification": "PROVIDER_EVIDENCE_INVALID",
       "missing_reason": "ABSENT",
-      "model": "",
+      "model": "mimo-v2.5",
       "proposed_value": null,
-      "provider": "",
-      "provider_called": false,
+      "provider": "openai-compatible",
+      "provider_called": true,
       "provider_confidence": null,
-      "reject_reason": "PROVIDER_NOT_CONFIGURED",
+      "reject_reason": "PROVIDER_EVIDENCE_INVALID",
       "resolution": {
         "diagnostics": {
           "anchor_outcomes": [
@@ -437,13 +634,47 @@
             "status": "PASS"
           },
           "provider": {
-            "provider_calls": 0,
-            "status": "NOT_USED"
+            "errors": [
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0002"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0007"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0012"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0019"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0027"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0032"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0033"
+              },
+              {
+                "code": "PROVIDER_EVIDENCE_INVALID",
+                "message": "exact quote is not immutable for E0038"
+              }
+            ],
+            "provider_calls": 1,
+            "status": "PROVIDER_SCHEMA_INVALID"
           }
         },
         "fact_key": "character|程雨|current_state|global",
         "proposal": null,
-        "provider_calls": 0,
+        "provider_calls": 1,
         "resolution_type": "UNSUPPORTED",
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
@@ -490,9 +721,9 @@
       "fact_key": "scene|production_scene|geometry|global",
       "final_classification": "NO_CANDIDATE_ANCHOR",
       "missing_reason": "ABSENT",
-      "model": "",
+      "model": "mimo-v2.5",
       "proposed_value": null,
-      "provider": "",
+      "provider": "openai-compatible",
       "provider_called": false,
       "provider_confidence": null,
       "reject_reason": "NO_CANDIDATE_ANCHOR",
@@ -547,9 +778,9 @@
       "fact_key": "prop|production_props|state|global",
       "final_classification": "NO_CANDIDATE_ANCHOR",
       "missing_reason": "ABSENT",
-      "model": "",
+      "model": "mimo-v2.5",
       "proposed_value": null,
-      "provider": "",
+      "provider": "openai-compatible",
       "provider_called": false,
       "provider_confidence": null,
       "reject_reason": "NO_CANDIDATE_ANCHOR",
@@ -6027,11 +6258,11 @@
       "PROVIDER_AMBIGUOUS": 0,
       "PROVIDER_CALL_FAILED": 0,
       "PROVIDER_CONFLICTED": 0,
-      "PROVIDER_EVIDENCE_INVALID": 0,
-      "PROVIDER_NOT_CONFIGURED": 4,
+      "PROVIDER_EVIDENCE_INVALID": 3,
+      "PROVIDER_NOT_CONFIGURED": 0,
       "PROVIDER_NOT_EXECUTED": 0,
       "PROVIDER_SCHEMA_INVALID": 0,
-      "PROVIDER_UNSUPPORTED": 0,
+      "PROVIDER_UNSUPPORTED": 1,
       "RESOLVED": 0,
       "RETRIEVAL_RECALL_GAP": 0,
       "SEMANTIC_SUPPORT_REJECTED": 0,
@@ -6040,8 +6271,8 @@
     },
     "contextual_inference_authority_reviews": 0,
     "exact_evidence_pass": 0,
-    "proposal_count": 0,
-    "provider_calls": 0,
+    "proposal_count": 4,
+    "provider_calls": 4,
     "provider_calls_maximum": 6,
     "required_facts": 6,
     "semantic_support_pass": 0,
