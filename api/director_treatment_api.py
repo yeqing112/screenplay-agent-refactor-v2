@@ -17,10 +17,18 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.director_treatment import build_shadow_treatment
+from core.director_treatment_authority import (
+    build_treatment_authority_envelope,
+    classify_asset_authority,
+    payload_hash as treatment_payload_hash,
+    resolve_scene_for_treatment,
+    treatment_payload_from_row,
+    validate_treatment_candidate,
+)
 from core.decision_packet import decision_packet_fingerprint, normalize_decision_packet
 from core.script_ir import resolve_script_payload
 import core.llm as llm_client
-from models import DecisionPacketRecord, DirectorTreatment, Script, Session, VisualMakeup, VisualReferenceAsset
+from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
 
 
 router = APIRouter(prefix="/api/books", tags=["director-treatment"])
@@ -29,6 +37,7 @@ router = APIRouter(prefix="/api/books", tags=["director-treatment"])
 class DirectorTreatmentPreviewRequest(BaseModel):
     episode: int | None = Field(default=None, ge=1)
     scene_name: str = Field(default="", validation_alias=AliasChoices("scene_name", "sceneName"))
+    scene_id: str = Field(default="", validation_alias=AliasChoices("scene_id", "sceneId"))
     source_script_revision: str = Field(default="", validation_alias=AliasChoices("source_script_revision", "sourceScriptRevision"))
     skill_id: str = Field(default="", validation_alias=AliasChoices("skill_id", "skillId"))
     skill_version: str = Field(default="", validation_alias=AliasChoices("skill_version", "skillVersion"))
@@ -102,7 +111,7 @@ def _make_decision_packet(book_id: int, episode: int, treatment: dict[str, Any],
     ]
     packet = normalize_decision_packet({
         "domain": "director_treatment",
-        "scope": {"book_id": book_id, "episode": episode, "scene_name": evidence["scene_name"], "treatment_fingerprint": treatment["prompt_fingerprint"]},
+        "scope": {"book_id": book_id, "episode": episode, "scene_id": evidence.get("scene_id", ""), "scene_name": evidence["scene_name"], "treatment_fingerprint": treatment["prompt_fingerprint"]},
         "evidence": evidence_items,
         "unknowns": treatment.get("unknowns") or [],
         "conflicts": [],
@@ -126,12 +135,14 @@ def _validate_llm_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str, Any
     # Models often echo the frozen scene identity. It is evidence, not an
     # editable candidate field: accept it only when it exactly matches the
     # baseline, then omit it from the persisted proposal.
-    permitted = TREATMENT_CANDIDATE_FIELDS | {"scene_name", "decision", "confidence", "human_confirmation_required", "note"}
+    permitted = TREATMENT_CANDIDATE_FIELDS | {"scene_id", "scene_name", "decision", "confidence", "human_confirmation_required", "note"}
     unexpected = sorted(set(raw) - permitted)
     if unexpected:
         raise ValueError(f"LLM candidate contains non-whitelisted fields: {', '.join(unexpected)}")
     if "scene_name" in raw and str(raw.get("scene_name") or "").strip() != str(baseline.get("scene_name") or "").strip():
         raise ValueError("LLM candidate scene_name must match the frozen scene")
+    if "scene_id" in raw and str(raw.get("scene_id") or "").strip() != str(baseline.get("scene_id") or "").strip():
+        raise ValueError("LLM candidate scene_id must match the frozen scene")
     candidate = {field: raw.get(field, baseline.get(field)) for field in TREATMENT_CANDIDATE_FIELDS}
     base_intents = baseline.get("character_intents") if isinstance(baseline.get("character_intents"), dict) else {}
     intents = candidate.get("character_intents")
@@ -154,13 +165,23 @@ def _validate_llm_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str, Any
     base_beats = baseline.get("beat_map") if isinstance(baseline.get("beat_map"), list) else []
     beat_ids = {str(item.get("beat_id")) for item in base_beats if isinstance(item, dict)}
     beats = candidate.get("beat_map")
-    if not isinstance(beats, list) or any(not isinstance(item, dict) or str(item.get("beat_id")) not in beat_ids for item in beats):
-        raise ValueError("LLM candidate beat_map must use only declared beat ids")
+    # A proposer may omit derived beat annotations, but it may not alter the
+    # source beat identity, type or event.  Normalize partial echoes back to
+    # the frozen source representation before persisting the candidate.
+    if not isinstance(beats, list) or len(beats) != len(base_beats):
+        raise ValueError("LLM candidate beat_map must preserve the source beat set")
+    for proposed, source in zip(beats, base_beats):
+        if not isinstance(proposed, dict) or str(proposed.get("beat_id") or "") != str(source.get("beat_id") or ""):
+            raise ValueError("LLM candidate beat_map must preserve source beat ids and order")
+        for key in ("type", "event", "dramatic_function", "information_change", "emotion_change"):
+            if key in proposed and proposed.get(key) != source.get(key):
+                raise ValueError(f"LLM candidate beat_map source field is immutable: {key}")
+    candidate["beat_map"] = base_beats
     candidate["decision"] = str(raw.get("decision") or "ready_for_review")
     candidate["confidence"] = raw.get("confidence", 0.0)
     candidate["human_confirmation_required"] = True
     candidate["note"] = str(raw.get("note") or "LLM candidate only; no domain write performed.")
-    return candidate
+    return validate_treatment_candidate(candidate, baseline)
 
 
 def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[dict[str, Any], dict[str, Any], Script]:
@@ -173,8 +194,16 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
         )
         if not script_row:
             raise HTTPException(status_code=404, detail="No script found for this episode.")
-        script = resolve_script_payload(session, script_row, workflow_profile=req.workflow_profile)
-        scene = _find_scene(script, req.scene_name)
+        profile = str(req.workflow_profile or "creative_draft").strip().lower()
+        if profile == "production":
+            scene, script_ir_version, script, script_ir_envelope = resolve_scene_for_treatment(
+                session, script_row, scene_id=req.scene_id, scene_name=req.scene_name, workflow_profile=profile
+            )
+        else:
+            script = resolve_script_payload(session, script_row, workflow_profile=profile)
+            scene = _find_scene(script, req.scene_name)
+            script_ir_version = None
+            script_ir_envelope = None
         characters = []
         makeup_rows = session.query(VisualMakeup).filter_by(book_id=book_id, episode=req.episode).order_by(VisualMakeup.id).all()
         # A treatment is scene-scoped.  When ScriptIR explicitly declares the
@@ -213,20 +242,35 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
                 "hair_style": row.hair_style,
             })
         locked_refs = [
-            {"id": row.id, "asset_type": row.asset_type, "asset_id": row.asset_id, "asset_name": row.asset_name, "status": row.status}
+            {"id": row.id, "asset_type": row.asset_type, "asset_id": row.asset_id, "asset_name": row.asset_name, "status": row.status, "image_url": row.image_url, "local_path": row.local_path, "reference_token": row.reference_token, "revision": row.updated_at.isoformat() if row.updated_at else ""}
             for row in session.query(VisualReferenceAsset)
             .filter_by(book_id=book_id, episode=req.episode, status="locked")
             .order_by(VisualReferenceAsset.id)
         ]
 
-        script_hash = hashlib.sha256((script_row.content or "").encode("utf-8")).hexdigest()
-        source_revision = req.source_script_revision.strip() or f"script-{script_row.id}"
+        legacy_script_hash = hashlib.sha256((script_row.content or "").encode("utf-8")).hexdigest()
+        if profile == "production":
+            source_revision = str(script_ir_version.revision)
+            source_hash = str(script_ir_version.payload_hash or "")
+            source_authority_fingerprint = str((script_ir_envelope or {}).get("envelope_fingerprint") or "")
+        else:
+            # Client source revision is intentionally retained only for the
+            # creative/legacy path.  Production takes all lineage from the
+            # current ScriptIR authority envelope.
+            source_revision = req.source_script_revision.strip() or f"script-{script_row.id}"
+            source_hash = legacy_script_hash
+            source_authority_fingerprint = ""
+        script_evidence = {"id": script_row.id, "revision": source_revision, "hash": source_hash, "script_ir_version_id": getattr(script_ir_version, "id", None), "script_ir_payload_hash": getattr(script_ir_version, "payload_hash", ""), "script_ir_authority_fingerprint": source_authority_fingerprint}
+        if profile != "production":
+            script_evidence["legacy_content_hash"] = legacy_script_hash
         evidence = {
             "book_id": book_id,
             "episode": req.episode,
             "scene": scene,
+            "scene_id": str(scene.get("scene_id") or "").strip(),
             "scene_name": str(scene.get("name") or "").strip(),
-            "script": {"id": script_row.id, "revision": source_revision, "hash": script_hash},
+            "scene_identity": {"scene_id": str(scene.get("scene_id") or "").strip(), "scene_name": str(scene.get("name") or "").strip()},
+            "script": script_evidence,
             "characters": characters,
             "locked_references": locked_refs,
             "constraints": ["locked_asset_facts_are_immutable", "treatment_does_not_mutate_shots"],
@@ -239,7 +283,24 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
             skill_id=req.skill_id.strip(),
             skill_version=req.skill_version.strip(),
         )
-        treatment["source_script_hash"] = script_hash
+        treatment["scene_id"] = str(scene.get("scene_id") or "").strip()
+        treatment["source_script_hash"] = source_hash
+        treatment["source_script_ir_version_id"] = getattr(script_ir_version, "id", None)
+        treatment["source_script_ir_revision"] = getattr(script_ir_version, "revision", None)
+        treatment["source_script_ir_hash"] = getattr(script_ir_version, "payload_hash", "")
+        treatment["source_script_authority_fingerprint"] = source_authority_fingerprint
+        treatment["source_fact_snapshot_id"] = (script_ir_envelope or {}).get("fact_snapshot_id", "") if profile == "production" else ""
+        treatment["source_fact_snapshot_revision"] = (script_ir_envelope or {}).get("fact_snapshot_revision") if profile == "production" else None
+        treatment["source_fact_snapshot_hash"] = (script_ir_envelope or {}).get("fact_snapshot_payload_hash", "") if profile == "production" else ""
+        treatment["source_constraints"] = {
+            "scene_identity": evidence["scene_identity"],
+            "declared_participants": scene.get("participants") if isinstance(scene.get("participants"), list) else [],
+            "source_beats": treatment.get("beat_map", []),
+            "explicit_story_constraints": scene.get("required_visual_proofs") if isinstance(scene.get("required_visual_proofs"), list) else [],
+        }
+        treatment["director_decisions"] = {field: treatment.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm")}
+        treatment["asset_authority"] = classify_asset_authority({"characters": characters, "locked_references": locked_refs})
+        treatment["qualification_state"] = "REVIEW_REQUIRED" if profile == "production" else "DRAFT"
         treatment["evidence_fingerprint"] = evidence["evidence_fingerprint"]
         return treatment, evidence, script_row
 
@@ -250,6 +311,7 @@ def _treatment_row_payload(row: DirectorTreatment) -> dict[str, Any]:
         "id": row.id,
         "book_id": row.book_id,
         "episode": row.episode,
+        "scene_id": getattr(row, "scene_id", ""),
         "scene_name": row.scene_name,
         "revision": row.revision,
         "status": row.status,
@@ -259,10 +321,20 @@ def _treatment_row_payload(row: DirectorTreatment) -> dict[str, Any]:
         "workflow_profile": row.workflow_profile,
         "source_script_revision": row.source_script_revision,
         "source_script_hash": row.source_script_hash,
+        "source_script_ir_version_id": getattr(row, "source_script_ir_version_id", None),
+        "source_script_ir_revision": getattr(row, "source_script_ir_revision", None),
+        "source_script_ir_hash": getattr(row, "source_script_ir_hash", ""),
+        "source_script_authority_fingerprint": getattr(row, "source_script_authority_fingerprint", ""),
+        "source_fact_snapshot_id": getattr(row, "source_fact_snapshot_id", ""),
+        "source_fact_snapshot_revision": getattr(row, "source_fact_snapshot_revision", None),
+        "source_fact_snapshot_hash": getattr(row, "source_fact_snapshot_hash", ""),
         "dramatic_objective": row.dramatic_objective,
         "audience_question": row.audience_question,
         "character_intents": _json_object(row.character_intents, {}),
         "beat_map": _json_object(row.beat_map, []),
+        "source_constraints": _json_object(getattr(row, "source_constraints", "{}"), {}),
+        "director_decisions": _json_object(getattr(row, "director_decisions", "{}"), {}),
+        "unknown_unresolved": _json_object(getattr(row, "unknown_unresolved", "[]"), []),
         "relationship_power_shift": row.relationship_power_shift,
         "audience_emotion": row.audience_emotion,
         "information_strategy": row.information_strategy,
@@ -278,6 +350,13 @@ def _treatment_row_payload(row: DirectorTreatment) -> dict[str, Any]:
         "decision_packet_id": row.decision_packet_id,
         "model_info": _json_object(row.model_info, {}),
         "prompt_fingerprint": row.prompt_fingerprint,
+        "payload_hash": getattr(row, "payload_hash", ""),
+        "authority_envelope_id": getattr(row, "authority_envelope_id", None),
+        "qualification_state": getattr(row, "qualification_state", "DRAFT"),
+        "stale_status": getattr(row, "stale_status", "UNKNOWN"),
+        "stale_reasons": _json_object(getattr(row, "stale_reasons", "[]"), []),
+        "approved_at": getattr(row, "approved_at", None).isoformat() if getattr(row, "approved_at", None) else None,
+        "activated_at": getattr(row, "activated_at", None).isoformat() if getattr(row, "activated_at", None) else None,
         "created_at": row.created_at.isoformat() if row.created_at else None,
         "updated_at": row.updated_at.isoformat() if row.updated_at else None,
     }
@@ -321,7 +400,7 @@ def preview_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
         with Session() as session:
             existing = (
                 session.query(DirectorTreatment)
-                .filter_by(book_id=book_id, episode=episode, scene_name=treatment["scene_name"], prompt_fingerprint=treatment["prompt_fingerprint"])
+                .filter_by(book_id=book_id, episode=episode, scene_name=treatment["scene_name"], scene_id=treatment.get("scene_id", ""), prompt_fingerprint=treatment["prompt_fingerprint"])
                 .order_by(DirectorTreatment.id.desc())
                 .first()
             )
@@ -331,15 +410,26 @@ def preview_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
                 row = DirectorTreatment(
                     book_id=book_id,
                     episode=episode,
+                    scene_id=treatment.get("scene_id", ""),
                     scene_name=treatment["scene_name"],
                     revision=1,
                     status="draft",
                     source_script_revision=treatment["source_script_revision"],
                     source_script_hash=treatment["source_script_hash"],
+                    source_script_ir_version_id=treatment.get("source_script_ir_version_id"),
+                    source_script_ir_revision=treatment.get("source_script_ir_revision"),
+                    source_script_ir_hash=treatment.get("source_script_ir_hash", ""),
+                    source_script_authority_fingerprint=treatment.get("source_script_authority_fingerprint", ""),
+                    source_fact_snapshot_id=str(treatment.get("source_fact_snapshot_id") or ""),
+                    source_fact_snapshot_revision=treatment.get("source_fact_snapshot_revision"),
+                    source_fact_snapshot_hash=treatment.get("source_fact_snapshot_hash", ""),
                     dramatic_objective=treatment["dramatic_objective"],
                     audience_question=treatment["audience_question"],
                     character_intents=json.dumps(treatment["character_intents"], ensure_ascii=False),
                     beat_map=json.dumps(treatment["beat_map"], ensure_ascii=False),
+                    source_constraints=json.dumps(treatment.get("source_constraints", {}), ensure_ascii=False),
+                    director_decisions=json.dumps(treatment.get("director_decisions", {}), ensure_ascii=False),
+                    unknown_unresolved=json.dumps(treatment.get("unknowns", []), ensure_ascii=False),
                     relationship_power_shift=treatment["relationship_power_shift"],
                     audience_emotion=treatment["audience_emotion"],
                     information_strategy=treatment["information_strategy"],
@@ -354,6 +444,10 @@ def preview_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
                     skill_version=treatment["skill_version"],
                     model_info=json.dumps(treatment["model_info"], ensure_ascii=False),
                     prompt_fingerprint=treatment["prompt_fingerprint"],
+                    payload_hash=treatment_payload_hash({key: treatment.get(key) for key in ("scene_id", "scene_name", *TREATMENT_CANDIDATE_FIELDS)}),
+                    qualification_state=treatment.get("qualification_state", "DRAFT"),
+                    stale_status="FRESH" if req.workflow_profile == "production" else "UNKNOWN",
+                    stale_reasons="[]",
                     created_at=datetime.now(),
                     updated_at=datetime.now(),
                     workflow_profile=req.workflow_profile,
@@ -370,6 +464,14 @@ def preview_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
         "evidence": evidence,
         "packet_fingerprint": packet["packet_fingerprint"],
         "treatment": treatment,
+        "authority_context": {
+            "workflow_profile": req.workflow_profile,
+            "scene_id": evidence.get("scene_id", ""),
+            "source_constraints": treatment.get("source_constraints", {}),
+            "director_decisions": treatment.get("director_decisions", {}),
+            "unknown_unresolved": treatment.get("unknowns", []),
+            "asset_authority": treatment.get("asset_authority", {}),
+        },
         "requires_approval": True,
         "message": "这是只读导演方案草案；批准门禁和 SceneBlocking 尚未执行。",
     }
@@ -523,6 +625,13 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
     if not req.confirmed:
         raise HTTPException(status_code=409, detail="Treatment approval requires confirmed=true.")
 
+    # Production approval is a single atomic boundary: the reviewed candidate
+    # is persisted, its immutable authority envelope is created, and the
+    # scene's current pointer is updated in one transaction.  Creative draft
+    # retains the historical approval behaviour below.
+    if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+        return _confirm_production_director_treatment(book_id, episode, req)
+
     with Session() as session:
         packet = session.query(DecisionPacketRecord).filter_by(id=req.packet_id, book_id=book_id).first()
         if not packet or packet.domain != "director_treatment":
@@ -609,3 +718,78 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
             "mutated": True,
             "production_operations": [],
         }
+
+
+def _confirm_production_director_treatment(book_id: int, episode: int, req: DirectorTreatmentConfirmRequest) -> dict[str, Any]:
+    """Authority-bound production Treatment activation; provider-free."""
+    from core.director_treatment_authority import resolve_scene_for_treatment
+    with Session() as session:
+        packet = session.query(DecisionPacketRecord).filter_by(id=req.packet_id, book_id=book_id, domain="director_treatment").first()
+        if not packet:
+            raise HTTPException(status_code=404, detail="DirectorTreatment decision packet not found.")
+        if req.packet_fingerprint and req.packet_fingerprint != packet.packet_fingerprint:
+            raise HTTPException(status_code=409, detail="Treatment packet fingerprint does not match.")
+        info = _json_object(packet.model_info, {})
+        if not isinstance(info, dict) or not info.get("llm_generated"):
+            raise HTTPException(status_code=409, detail="Only an LLM-generated candidate can be approved.")
+        scope = _json_object(packet.scope, {})
+        scene_id = str(scope.get("scene_id") or "").strip() if isinstance(scope, dict) else ""
+        scene_name = str(scope.get("scene_name") or "").strip() if isinstance(scope, dict) else ""
+        if not scene_id:
+            raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production Treatment approval requires scene_id."})
+        script_row = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
+        if not script_row:
+            raise HTTPException(status_code=404, detail="No script found for this episode.")
+        try:
+            scene, script_ir_version, script_ir_payload, script_ir_envelope = resolve_scene_for_treatment(session, script_row, scene_id=scene_id, scene_name=scene_name, workflow_profile="production")
+        except HTTPException:
+            raise
+
+        # Rebuild the packet from current authoritative evidence.  This check
+        # prevents a candidate from being approved against an old ScriptIR,
+        # FactSnapshot, scene identity or asset snapshot.
+        baseline, evidence, _ = _build_preview(book_id, DirectorTreatmentPreviewRequest(episode=episode, scene_id=scene_id, scene_name=scene_name, workflow_profile="production"))
+        current_packet = _make_decision_packet(book_id, episode, baseline, evidence)
+        if current_packet["packet_fingerprint"] != packet.packet_fingerprint:
+            packet.status = "superseded"; packet.updated_at = datetime.now(); session.commit()
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_EVIDENCE_STALE", "message": "Treatment evidence changed; candidate must be regenerated."})
+        raw_candidate = req.candidate if req.candidate is not None else _json_object(packet.proposal, {})
+        try:
+            candidate = _validate_llm_candidate(raw_candidate, baseline)
+        except ValueError as exc:
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_CANDIDATE_INVALID", "message": str(exc)}) from exc
+
+        previous = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
+        next_revision = previous.revision + 1 if previous else 1
+        previous_id = previous.id if previous else None
+        if previous:
+            previous.status = "superseded"; previous.stale_status = "STALE"; previous.qualification_state = "STALE"; previous.stale_reasons = json.dumps(["SUPERSEDED_BY_NEW_AUTHORITY"], ensure_ascii=False); previous.updated_at = datetime.now()
+        formal = {key: candidate.get(key) for key in ("scene_id", "scene_name", *TREATMENT_CANDIDATE_FIELDS)}
+        model_info = {"mode": "confirmed_llm_candidate", "llm_called": True, "candidate_fingerprint": _candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), "confirmed_at": datetime.now().isoformat(), "rollback_anchor": {"previous_treatment_id": previous_id, "previous_revision": previous.revision if previous else None}, "authority_state": "pending_binding"}
+        row = DirectorTreatment(
+            book_id=book_id, episode=episode, scene_id=scene_id, scene_name=baseline["scene_name"], revision=next_revision, status="approved",
+            source_script_revision=str(script_ir_version.revision), source_script_hash=str(script_ir_version.payload_hash or ""), source_script_ir_version_id=script_ir_version.id, source_script_ir_revision=script_ir_version.revision, source_script_ir_hash=str(script_ir_version.payload_hash or ""), source_script_authority_fingerprint=str(script_ir_envelope.get("envelope_fingerprint") or ""), source_fact_snapshot_id=str(script_ir_envelope.get("fact_snapshot_id") or ""), source_fact_snapshot_revision=script_ir_envelope.get("fact_snapshot_revision"), source_fact_snapshot_hash=str(script_ir_envelope.get("fact_snapshot_payload_hash") or ""),
+            dramatic_objective=formal["dramatic_objective"], audience_question=formal["audience_question"], character_intents=json.dumps(formal["character_intents"], ensure_ascii=False), beat_map=json.dumps(formal["beat_map"], ensure_ascii=False), source_constraints=json.dumps(baseline.get("source_constraints", {}), ensure_ascii=False), director_decisions=json.dumps({field: formal.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm")}, ensure_ascii=False), unknown_unresolved=json.dumps(formal.get("unknowns", []), ensure_ascii=False), relationship_power_shift=formal["relationship_power_shift"], audience_emotion=formal["audience_emotion"], information_strategy=formal["information_strategy"], performance_direction=formal["performance_direction"], visual_strategy=formal["visual_strategy"], coverage_strategy=formal["coverage_strategy"], sound_strategy=formal["sound_strategy"], edit_rhythm=formal["edit_rhythm"], constraints=json.dumps(formal["constraints"], ensure_ascii=False), unknowns=json.dumps(formal["unknowns"], ensure_ascii=False), skill_id=baseline.get("skill_id", ""), skill_version=baseline.get("skill_version", ""), decision_packet_id=packet.id, model_info=json.dumps(model_info, ensure_ascii=False), prompt_fingerprint=_candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), payload_hash=treatment_payload_hash(formal), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=datetime.now(), activated_at=datetime.now(), created_at=datetime.now(), updated_at=datetime.now(), workflow_profile="production",
+        )
+        session.add(row); session.flush()
+        envelope = build_treatment_authority_envelope(treatment=formal, evidence=evidence, script_ir=script_ir_payload, script_ir_version=script_ir_version, script_ir_envelope=script_ir_envelope, treatment_id=row.id, treatment_revision=row.revision, qualification_state="PRODUCTION_QUALIFIED")
+        authority = DirectorTreatmentAuthority(book_id=book_id, episode=episode, scene_id=scene_id, treatment_id=row.id, treatment_revision=row.revision, payload_hash=row.payload_hash, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=row.approved_at, activated_at=row.activated_at, created_at=datetime.now(), updated_at=datetime.now())
+        session.add(authority); session.flush(); row.authority_envelope_id = authority.id
+        pointer = session.query(DirectorTreatmentPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).first()
+        if pointer:
+            pointer.treatment_id = row.id; pointer.treatment_revision = row.revision; pointer.authority_envelope_fingerprint = envelope["envelope_fingerprint"]; pointer.qualification_state = "PRODUCTION_QUALIFIED"; pointer.updated_at = datetime.now()
+        else:
+            session.add(DirectorTreatmentPointer(book_id=book_id, episode=episode, scene_id=scene_id, treatment_id=row.id, treatment_revision=row.revision, authority_envelope_fingerprint=envelope["envelope_fingerprint"], qualification_state="PRODUCTION_QUALIFIED", created_at=datetime.now(), updated_at=datetime.now()))
+        model_info["authority_state"] = "production_qualified"; row.model_info = json.dumps(model_info, ensure_ascii=False)
+        packet.status = "confirmed"; packet.confirmed_at = datetime.now(); packet.proposal = json.dumps(candidate, ensure_ascii=False); packet.updated_at = datetime.now()
+        session.commit(); session.refresh(row)
+        return {"approved": True, "authority_bound": True, "qualification_state": "PRODUCTION_QUALIFIED", "treatment": _treatment_row_payload(row), "authority_envelope": envelope, "packet_id": packet.id, "packet_fingerprint": packet.packet_fingerprint, "rollback_anchor": model_info["rollback_anchor"], "mutated": True, "production_operations": ["director_treatment_authority_bound", "current_treatment_pointer_updated"], "provider_calls": 0}
+
+
+@router.get("/{book_id}/episodes/{episode}/director-treatment/authority/{scene_id}")
+def get_director_treatment_authority(book_id: int, episode: int, scene_id: str) -> dict[str, Any]:
+    """Return the explicit current Treatment authority for a scene."""
+    from core.director_treatment_authority import resolve_current_authoritative_treatment
+    with Session() as session:
+        treatment, envelope = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
+        return {"scene_id": scene_id, "treatment": _treatment_row_payload(treatment), "authority_envelope": envelope, "production_qualified": True}

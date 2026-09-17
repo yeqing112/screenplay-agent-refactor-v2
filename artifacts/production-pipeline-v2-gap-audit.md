@@ -558,3 +558,36 @@ Provider Contract Wiring 已完成本地代码与测试收口，但本次真实 
 ### Closure Decision
 
 `SCRIPT_IR_AUTHORITY_ACTIVATED` 的本地代码、迁移、测试和 production resolver 闭环已完成。后续阶段建议为 `DIRECTOR_TREATMENT_AUTHORITY_CONTRACT`；本阶段不进入 DirectorTreatment、SceneBlocking、Visual Asset Generation 或 ShotPlan。
+
+## Final As-Built Verification：DIRECTOR_TREATMENT_AUTHORITY_CONTRACT（2026-09-18）
+
+本节是本阶段的最终复核；前文 Baseline Audit 与各历史阶段结果保持不变。
+
+### Baseline Audit（保留）
+
+- DirectorTreatment 下游主要依赖 `scene_name + latest approved`，没有明确的 scene-scoped current authority pointer。
+- Production Treatment evidence 可重新使用 `Script.content` hash，且客户端可传入 source revision；Source/Fact/Asset lineage 尚未形成不可变 envelope。
+- Approved、authority-bound、production-qualified 与 stale 语义未分离，payload 被修改后仍可能被误认为可消费。
+
+### Final As-Built Verification
+
+- 新增 `director_treatment_authority_contract_v1` 与 `director_treatment_authority_envelope_v1`；字段由 SceneBlocking/ShotPlan 实际 consumer 反推，并区分 `SOURCE_CONSTRAINT`、`DIRECTOR_DECISION`、`UNKNOWN_UNRESOLVED` 与 downstream backlog。
+- DirectorTreatment 新增 stable `scene_id`、ScriptIR/FactSnapshot/source lineage、semantic projections、payload hash、authority/stale 状态；候选只可编辑导演决策，不可改写 source beat/identity 或静默删除 unknown。
+- 新增 `DirectorTreatmentAuthority` 与 `DirectorTreatmentPointer`；production activation 在单事务中创建 envelope、绑定 Treatment、更新 scene current pointer，production consumer 只解析该 pointer，不再 fallback 到 latest-approved。
+- Production Treatment/SceneBlocking/ShotPlan 入口要求 stable `scene_id`，并复用当前 ScriptIR authority resolver；客户端 source revision 在 production 被忽略，Script.content 仅作为 immutable source bytes 校验而非 Treatment authority。
+- Resolver 重新验证 ScriptIR authority envelope、source raw hash、FactSnapshot、scene identity、contract/policy、Treatment payload/envelope lineage 与 locked asset fingerprint；任何变化均标记 stale 并返回明确 409 code。
+- Creative/legacy profile 保持兼容，但不会成为 production authority；下游 scene geometry、character blocking、prop continuity 等 backlog 未被 Treatment 吞并。
+
+### Verification evidence
+
+- `pytest -q tests/test_director_treatment_authority_contract.py tests/test_scene_blocking_v2_api.py tests/test_production_storyboard_gate.py tests/test_storyboard_compiler_invariant.py tests/test_script_ir.py`：**31 passed**。
+- 关联 SceneBlocking/ShotPlan/Storyboard Materializer/Asset Registry/ScriptIR 回归：**70 passed**；本轮未新增 authority 相关失败。
+- Provider calls：**0**；未调用真实 LLM、MiMo、Embedding、生图、视频或对象存储。
+- 全量后端：**1460 passed, 11 failed, 910 warnings**；11 个失败均为既有历史 artifact/离线 replay/真实数据库样本/环境基线，Treatment authority 专项与关联生产门禁无失败。
+- 前端 Vitest：**291 passed**；前端生产构建通过；Golden：**5/5**；release-gate 单元测试与 runtime config verification 通过。
+- `npm run check:production` 因既有 11 个基线失败返回非零；`npm run gate:production` 保持 fail-closed BLOCKED（开发环境、样本注册、镜头覆盖、真实浏览器依赖）。
+- 全新数据库 migration smoke test 暴露既有早期迁移 `f05ab1af29bc` 对不存在 `episode_outlines` 的 drop 操作；本阶段新增迁移本身未执行到该节点，未修改历史 migration。
+
+### Closure decision
+
+`DIRECTOR_TREATMENT_AUTHORITY_CONTRACT_READY`。本阶段完成后停止，不进入 SceneBlocking Authority Contract、Director Provider Canary、Visual Asset Generation、ShotPlan、Storyboard 或媒体生成阶段。

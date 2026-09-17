@@ -1,0 +1,34 @@
+{
+  "schema_version": "director_treatment_authority_contract_v1",
+  "authority_policy_version": "director_treatment_authority_policy_v1",
+  "source_constraint": {
+    "scene_id": {"required": true, "mutation": "immutable", "consumer": ["SceneBlocking", "ShotPlan"]},
+    "scene_name": {"required": true, "mutation": "immutable_display_identity", "consumer": ["SceneBlocking", "ShotPlan"]},
+    "declared_participants": {"required": true, "mutation": "immutable", "consumer": ["SceneBlocking"]},
+    "source_beats": {"required": true, "mutation": "immutable_ids_type_event_order", "consumer": ["SceneBlocking", "ShotPlan"]},
+    "explicit_story_constraints": {"required": false, "mutation": "immutable", "consumer": ["SceneBlocking"]}
+  },
+  "director_decision": {
+    "dramatic_objective": {"required": true, "mutation": "reviewed_edit"},
+    "audience_question": {"required": true, "mutation": "reviewed_edit"},
+    "character_intents": {"required": true, "mutation": "reviewed_edit_values_only_preserve_ids_and_names", "consumer": ["SceneBlocking", "ShotPlan"]},
+    "relationship_power_shift": {"required": false, "mutation": "reviewed_edit"},
+    "audience_emotion": {"required": false, "mutation": "reviewed_edit"},
+    "information_strategy": {"required": false, "mutation": "reviewed_edit"},
+    "performance_direction": {"required": false, "mutation": "reviewed_edit"},
+    "visual_strategy": {"required": true, "mutation": "reviewed_edit", "consumer": ["SceneBlocking", "ShotPlan"]},
+    "coverage_strategy": {"required": false, "mutation": "reviewed_edit"},
+    "sound_strategy": {"required": false, "mutation": "reviewed_edit"},
+    "edit_rhythm": {"required": false, "mutation": "reviewed_edit"}
+  },
+  "unknown_unresolved": {
+    "unknowns": {"required": false, "mutation": "append_or_resolve_with_evidence", "blocking_consumer": "SceneBlocking"},
+    "asset_context": {"required": false, "mutation": "advisory_only"}
+  },
+  "downstream_authoring_not_consumed_as_source": ["character_blocking", "scene_geometry", "production_prop_continuity", "shot_coverage", "camera_placement"],
+  "asset_priority": ["immutable_source", "approved_source_fact", "production_qualified_script_ir", "approved_locked_production_decision", "draft_advisory_asset", "llm_proposal"],
+  "required_provenance": ["DecisionPacket", "ScriptIR authority envelope", "source evidence lineage", "FactSnapshot binding when present"],
+  "stale_dependencies": ["current ScriptIR pointer", "ScriptIR payload hash", "ScriptIR authority fingerprint", "source raw hash", "FactSnapshot revision/hash", "scene identity", "relevant locked asset revision", "contract fingerprint", "authority policy version", "Treatment payload hash"],
+  "production_gate": "Only current scene_id pointer to APPROVED + AUTHORITY_BOUND + PRODUCTION_QUALIFIED Treatment with fresh envelope is consumable; no latest-approved fallback.",
+  "provider_calls": 0
+}

@@ -12,6 +12,7 @@ class ShotPlan(Base):
     id = Column(Integer, primary_key=True)
     book_id = Column(Integer, nullable=False, index=True)
     episode = Column(Integer, nullable=False, index=True)
+    scene_id = Column(String, nullable=False, default="", index=True)
     scene_name = Column(String, nullable=False, default="")
     revision = Column(Integer, nullable=False, default=1)
     status = Column(String, nullable=False, default="draft")  # draft / approved / superseded

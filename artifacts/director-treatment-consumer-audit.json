@@ -1,0 +1,49 @@
+{
+  "audit": "DIRECTOR_TREATMENT_CONSUMER_AUDIT",
+  "baseline_commit": "8f0ca2e4305abc6bc5bf43f29e83c8be81a90274",
+  "source_of_truth": "static audit of models/director_treatment.py, core/director_treatment.py, api/director_treatment_api.py, api/scene_blocking_api.py, api/shot_plan_api.py, api/storyboard_materializer_api.py, core/production_policy.py, core/decision_packet.py and existing tests",
+  "provider_calls": 0,
+  "current_schema": {
+    "identity": ["book_id", "episode", "scene_name", "revision"],
+    "lifecycle": ["status", "execution_status", "quality_status", "production_status", "workflow_profile"],
+    "source_lineage_legacy": ["source_script_revision", "source_script_hash"],
+    "creative_fields": ["dramatic_objective", "audience_question", "character_intents", "beat_map", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm"],
+    "review_fields": ["constraints", "unknowns", "skill_id", "skill_version", "decision_packet_id", "model_info", "prompt_fingerprint"]
+  },
+  "field_classification": {
+    "source_constraints": ["scene_id", "scene_name", "declared_participants", "source_beats", "explicit_story_constraints"],
+    "director_decisions": ["dramatic_objective", "audience_question", "character_intents.intent_fields", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm"],
+    "downstream_authoring": ["character_blocking", "scene_geometry", "production_prop_continuity", "shot coverage", "camera placement"],
+    "unknown_unresolved": ["unknowns", "unresolved source or visual facts"]
+  },
+  "real_consumers": {
+    "scene_blocking": {
+      "reads": ["scene_name", "character_intents", "beat_map", "status", "prompt_fingerprint"],
+      "uses_for_authority": ["character intent names/ids", "source beat ids", "visual strategy as context"],
+      "must_block_when": ["treatment is not approved/production-qualified", "scene identity or ScriptIR lineage is stale", "unknown spatial facts remain", "payload or authority envelope is invalid"]
+    },
+    "shot_plan_indirect": {
+      "reads": ["scene_name", "scene_id", "character_intents", "beat_map", "visual_strategy", "prompt_fingerprint", "status"],
+      "must_not_source_from_treatment": ["character visual identity", "scene geometry", "production prop continuity"]
+    },
+    "storyboard_materializer_indirect": {
+      "reads": ["treatment_id", "treatment revision", "approved lineage", "ShotPlan"],
+      "authority_note": "Materializer consumes approved ShotPlan; Treatment must be validated upstream and is not a creative shot generator."
+    }
+  },
+  "production_lookup_baseline": {
+    "current_behavior": "latest approved row by scene_name in SceneBlocking/ShotPlan and no explicit current Treatment pointer",
+    "latest_approved_fallback_present": true,
+    "required_behavior": "scene_id -> current authoritative Treatment pointer; no fallback in production"
+  },
+  "blocking_gaps": [
+    "scene_id is absent from DirectorTreatment schema and consumers primarily join on scene_name",
+    "production evidence uses Script.content sha256 instead of ScriptIR authority envelope lineage",
+    "client source_script_revision can influence production evidence",
+    "approved Treatment has no immutable authority envelope or payload tamper check",
+    "no explicit current scene Treatment pointer",
+    "approved and production-qualified semantics are conflated"
+  ],
+  "optional_fields": ["skill_id", "skill_version", "sound_strategy", "edit_rhythm", "constraints", "unknowns", "asset advisory context"],
+  "contract_rule": "Only fields observed by SceneBlocking/ShotPlan consumers are downstream-blocking; unresolved asset identity/geometry/prop requirements remain backlog and are not silently converted into source facts."
+}

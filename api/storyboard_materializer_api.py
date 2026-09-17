@@ -12,6 +12,7 @@ from core.prompt_ir_compiler import compile_phase_a, verbalize_phase_b_determini
 from core.production_policy import evaluate_production_boundary
 from core.qualification_loop import qualify_candidate
 from core.script_ir import resolve_script_payload
+from core.director_treatment_authority import resolve_current_authoritative_treatment
 from models import DirectorTreatment, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot
 
 router = APIRouter(prefix="/api/books", tags=["storyboard-materializer"])
@@ -75,9 +76,13 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
             raise HTTPException(status_code=409, detail=f"Qualified ScriptIR does not contain planned scenes: {', '.join(missing_script_scenes)}")
         created = []
         for plan in plans:
-            treatment = session.query(DirectorTreatment).filter_by(id=plan.treatment_id, book_id=book_id, episode=episode, scene_name=plan.scene_name, status="approved").first() if plan.treatment_id else None
+            plan_scene = next((item for item in (script_ir_payload.get("scenes", []) if isinstance(script_ir_payload, dict) else []) if isinstance(item, dict) and str(item.get("name") or "").strip() == str(plan.scene_name or "").strip()), None)
+            plan_scene_id = str((plan_scene or {}).get("scene_id") or getattr(plan, "scene_id", "") or "").strip()
+            treatment = None
+            if plan_scene_id:
+                treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=plan_scene_id)
             blocking = session.query(SceneBlocking).filter_by(id=plan.blocking_id, book_id=book_id, episode=episode, scene_name=plan.scene_name, status="approved").first() if plan.blocking_id else None
-            if not treatment or not blocking or blocking.treatment_id != treatment.id:
+            if not treatment or not blocking or blocking.treatment_id != treatment.id or str(getattr(blocking, "scene_id", "") or "") != plan_scene_id:
                 raise HTTPException(status_code=409, detail=f"Production materialization requires approved Treatment and SceneBlocking lineage for scene: {plan.scene_name}")
             blocking_unknowns = _json_list(getattr(blocking, "unknowns", "[]"))
             blocking_unresolved = _json_list(getattr(blocking, "unresolved_facts", "[]"))

@@ -12,6 +12,7 @@ from pydantic import AliasChoices, BaseModel, Field
 from core.scene_blocking import build_scene_blocking, build_scene_blocking_v2, validate_scene_blocking, repair_scene_blocking
 from core.repair_ledger import record_repair_attempt
 from core.script_ir import resolve_script_payload
+from core.director_treatment_authority import resolve_current_authoritative_treatment
 from models import DirectorTreatment, FactSnapshot, VisualLocation, SceneBlocking, Script, Session
 
 router = APIRouter(prefix="/api/books", tags=["scene-blocking"])
@@ -19,6 +20,7 @@ router = APIRouter(prefix="/api/books", tags=["scene-blocking"])
 
 class SceneBlockingPreviewRequest(BaseModel):
     scene_name: str = Field(default="", validation_alias=AliasChoices("scene_name", "sceneName"))
+    scene_id: str = Field(default="", validation_alias=AliasChoices("scene_id", "sceneId"))
     treatment_id: int | None = Field(default=None, validation_alias=AliasChoices("treatment_id", "treatmentId"))
     persist: bool = False
     workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
@@ -44,7 +46,7 @@ def _json(value: str | None, fallback: Any) -> Any:
 
 def _row_payload(row: SceneBlocking) -> dict[str, Any]:
     return {
-        "id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_name": row.scene_name,
+        "id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_id": getattr(row, "scene_id", ""), "scene_name": row.scene_name,
         "revision": row.revision, "status": row.status,
         "execution_status": row.execution_status, "quality_status": row.quality_status,
         "production_status": row.production_status, "workflow_profile": row.workflow_profile,
@@ -120,10 +122,27 @@ def _validate_blocking_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str
 @router.post("/{book_id}/episodes/{episode}/scene-blocking/preview")
 def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreviewRequest) -> dict[str, Any]:
     with Session() as session:
-        treatment_query = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, status="approved")
-        if req.scene_name.strip() and not req.treatment_id:
-            treatment_query = treatment_query.filter_by(scene_name=req.scene_name.strip())
-        treatment = session.get(DirectorTreatment, req.treatment_id) if req.treatment_id else treatment_query.order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
+        treatment = None
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+            # Production never searches for the latest approved row. Resolve
+            # the stable ScriptIR scene identity and explicit Treatment pointer.
+            if not req.scene_id.strip():
+                raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production SceneBlocking requires a ScriptIR scene_id."})
+            script_for_identity = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
+            if not script_for_identity:
+                raise HTTPException(status_code=404, detail="No script found for this episode.")
+            resolved_payload = resolve_script_payload(session, script_for_identity, workflow_profile="production")
+            scenes = resolved_payload.get("scenes") if isinstance(resolved_payload, dict) else []
+            selected_scene = next((item for item in scenes if isinstance(item, dict) and req.scene_id.strip() and str(item.get("scene_id") or "").strip() == req.scene_id.strip()), None)
+            if selected_scene is None:
+                raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production SceneBlocking requires a ScriptIR scene_id."})
+            scene_id = str(selected_scene.get("scene_id") or "").strip()
+            treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
+        else:
+            treatment_query = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, status="approved")
+            if req.scene_name.strip() and not req.treatment_id:
+                treatment_query = treatment_query.filter_by(scene_name=req.scene_name.strip())
+            treatment = session.get(DirectorTreatment, req.treatment_id) if req.treatment_id else treatment_query.order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
         if not treatment or treatment.book_id != book_id or treatment.episode != episode or treatment.status != "approved":
             raise HTTPException(status_code=409, detail="SceneBlocking requires an approved DirectorTreatment.")
         script_row = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
@@ -132,14 +151,21 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
         script = resolve_script_payload(session, script_row, workflow_profile=req.workflow_profile)
         scenes = script.get("scenes") if isinstance(script, dict) else []
         wanted = req.scene_name.strip() or treatment.scene_name
-        scene = next((item for item in scenes if isinstance(item, dict) and str(item.get("name") or "").strip() == wanted), None)
+        scene_id = str(req.scene_id or getattr(treatment, "scene_id", "") or "").strip()
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production" and not scene_id:
+            raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production SceneBlocking requires scene_id."})
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+            scene = next((item for item in scenes if isinstance(item, dict) and str(item.get("scene_id") or "").strip() == scene_id), None)
+        else:
+            scene = next((item for item in scenes if isinstance(item, dict) and str(item.get("name") or "").strip() == wanted), None)
         if not scene:
             raise HTTPException(status_code=404, detail=f"Scene not found: {wanted}")
+        wanted = str(scene.get("name") or wanted).strip()
         treatment_payload = {
-            "scene_name": treatment.scene_name, "character_intents": _json(treatment.character_intents, {}),
+            "scene_name": treatment.scene_name, "scene_id": getattr(treatment, "scene_id", scene_id), "character_intents": _json(treatment.character_intents, {}),
             "beat_map": _json(treatment.beat_map, []), "prompt_fingerprint": treatment.prompt_fingerprint,
         }
-        source_hash = hashlib.sha256((script_row.content or "").encode("utf-8")).hexdigest()
+        source_hash = str(getattr(treatment, "source_script_ir_hash", "") or "") if str(req.workflow_profile or "creative_draft").strip().lower() == "production" else hashlib.sha256((script_row.content or "").encode("utf-8")).hexdigest()
         use_v2 = str(req.schema_version or "").lower() in {"scene_blocking_v2", "v2"} or req.workflow_profile == "production"
         scene_canonical = None
         location = session.query(VisualLocation).filter(VisualLocation.book_id == book_id, VisualLocation.name == wanted).order_by(VisualLocation.id.desc()).first()
@@ -148,9 +174,13 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
         fact_row = session.query(FactSnapshot).filter_by(book_id=book_id, episode=episode, status="confirmed").order_by(FactSnapshot.revision.desc(), FactSnapshot.id.desc()).first()
         fact_snapshot = {"records": _json(fact_row.records_json, [])} if fact_row else None
         if use_v2:
-            previous = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=wanted, status="approved", schema_version="scene_blocking_v2").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+            previous_query = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=wanted, status="approved", schema_version="scene_blocking_v2")
+            if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+                previous_query = previous_query.filter_by(scene_id=scene_id)
+            previous = previous_query.order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
             previous_payload = _row_payload(previous) if previous else None
             blocking = build_scene_blocking_v2(scene=scene, treatment=treatment_payload, source_script_hash=source_hash, scene_canonical=scene_canonical, fact_snapshot=fact_snapshot, previous_blocking=previous_payload)
+            blocking["scene_id"] = scene_id
             # Local repair is bounded and only touches creative/derived fields.
             # Source facts and production-critical conflicts stay fail-closed.
             repairs: list[dict[str, Any]] = []
@@ -170,7 +200,7 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
                 persisted_id = existing.id
             else:
                 row = SceneBlocking(
-                    book_id=book_id, episode=episode, scene_name=blocking["scene_name"], revision=1, status="draft",
+                    book_id=book_id, episode=episode, scene_id=scene_id, scene_name=blocking["scene_name"], revision=1, status="draft",
                     treatment_id=treatment.id, treatment_revision=treatment.revision, source_script_hash=source_hash,
                     participants=json.dumps(blocking["participants"], ensure_ascii=False), beat_transitions=json.dumps(blocking["beat_transitions"], ensure_ascii=False),
                     spatial_rules=json.dumps(blocking["spatial_rules"], ensure_ascii=False), unknowns=json.dumps(blocking["unknowns"], ensure_ascii=False),
@@ -186,7 +216,7 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
                     record_repair_attempt(repair=repair, issue=repair.get("issue"), context={"book_id": book_id, "episode": episode, "scene_id": blocking.get("scene_id"), "revalidation_status": blocking.get("validation", {}).get("status"), "revalidation_details": blocking.get("validation", {})}, session=session)
                 if blocking.get("repair_attempts"):
                     session.commit()
-        return {"mode": "deterministic_spatial_authority_v2" if use_v2 else "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "treatment_id": treatment.id, "blocking": blocking, "message": "这是只读空间调度草案；未修改任何镜头。"}
+        return {"mode": "deterministic_spatial_authority_v2" if use_v2 else "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "treatment_id": treatment.id, "scene_id": scene_id, "blocking": blocking, "message": "这是只读空间调度草案；未修改任何镜头。"}
 
 
 @router.get("/{book_id}/episodes/{episode}/scene-blockings")
@@ -225,10 +255,15 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
             raise HTTPException(status_code=404, detail="SceneBlocking draft not found.")
         if draft.status != "draft":
             raise HTTPException(status_code=409, detail="This SceneBlocking draft has already been finalized.")
-        treatment = session.query(DirectorTreatment).filter_by(id=draft.treatment_id, book_id=book_id, episode=episode, status="approved").first()
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+            treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=str(getattr(draft, "scene_id", "") or "").strip())
+            if treatment.id != draft.treatment_id:
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_POINTER_CHANGED", "message": "SceneBlocking draft references a non-current DirectorTreatment."})
+        else:
+            treatment = session.query(DirectorTreatment).filter_by(id=draft.treatment_id, book_id=book_id, episode=episode, status="approved").first()
         if not treatment:
             raise HTTPException(status_code=409, detail="The DirectorTreatment used by this draft is no longer approved.")
-    preview = preview_scene_blocking(book_id, episode, SceneBlockingPreviewRequest(scene_name=draft.scene_name, treatment_id=draft.treatment_id, workflow_profile=req.workflow_profile, schema_version=req.schema_version or getattr(draft, "schema_version", "")))
+    preview = preview_scene_blocking(book_id, episode, SceneBlockingPreviewRequest(scene_id=str(getattr(draft, "scene_id", "") or ""), scene_name=draft.scene_name, treatment_id=draft.treatment_id, workflow_profile=req.workflow_profile, schema_version=req.schema_version or getattr(draft, "schema_version", "")))
     baseline = preview["blocking"]
     if req.evidence_fingerprint and req.evidence_fingerprint != draft.evidence_fingerprint:
         raise HTTPException(status_code=409, detail="SceneBlocking evidence fingerprint does not match.")
@@ -253,12 +288,15 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
         draft = session.query(SceneBlocking).filter_by(id=req.blocking_id, book_id=book_id, episode=episode).first()
         if not draft or draft.status != "draft":
             raise HTTPException(status_code=409, detail="This SceneBlocking draft has already been finalized.")
-        previous = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=candidate["scene_name"], status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+        previous_query = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=candidate["scene_name"], status="approved")
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+            previous_query = previous_query.filter_by(scene_id=str(getattr(draft, "scene_id", "") or ""))
+        previous = previous_query.order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
         if previous:
             previous.status = "superseded"; previous.updated_at = datetime.now()
         anchor = {"previous_blocking_id": previous.id if previous else None, "previous_revision": previous.revision if previous else None}
         row = SceneBlocking(
-            book_id=book_id, episode=episode, scene_name=candidate["scene_name"], revision=(previous.revision + 1 if previous else 1), status="approved",
+            book_id=book_id, episode=episode, scene_id=str(getattr(draft, "scene_id", "") or ""), scene_name=candidate["scene_name"], revision=(previous.revision + 1 if previous else 1), status="approved",
             treatment_id=draft.treatment_id, treatment_revision=draft.treatment_revision, source_script_hash=draft.source_script_hash,
             participants=json.dumps(candidate["participants"], ensure_ascii=False), beat_transitions=json.dumps(candidate["beat_transitions"], ensure_ascii=False),
             spatial_rules=json.dumps(candidate["spatial_rules"], ensure_ascii=False), unknowns=json.dumps(candidate["unknowns"], ensure_ascii=False),

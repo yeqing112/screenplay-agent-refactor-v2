@@ -72,7 +72,7 @@ class ScriptIRTests(unittest.TestCase):
             self.assertEqual(script.workflow_profile, "production")
 
     def test_production_director_runtime_blocks_without_qualified_script_ir(self):
-        response = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/preview", json={"workflowProfile": "production"})
+        response = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/preview", json={"workflowProfile": "production", "sceneId": "E01_SC001"})
         self.assertEqual(response.status_code, 409)
         self.assertIn("qualified ScriptIR", str(response.json()["detail"]))
 

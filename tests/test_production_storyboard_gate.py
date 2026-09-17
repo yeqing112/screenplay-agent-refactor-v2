@@ -7,13 +7,21 @@ from api.server import app
 from core.fact_snapshot import snapshot_hash
 from core.script_ir import build_script_ir, script_ir_hash
 from core.source_evidence_index import build_source_evidence_index
-from models import Book, DirectorTreatment, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot, init_db
+from core.director_treatment_authority import build_treatment_authority_envelope, payload_hash as treatment_payload_hash, treatment_payload_from_row
+from models import Book, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot, init_db
 from unittest.mock import patch
 
 
 def _authorize_existing_script(client, book_id):
     """Upgrade a minimal test fixture through the real authority endpoint."""
     with Session() as session:
+        # Older fixtures in this module delete the Treatment row but predate
+        # the authority tables. Remove only test authority rows up front so a
+        # reused SQLite integer id cannot trip the new unique treatment_id
+        # invariant. This does not touch any production/user fixture.
+        session.query(DirectorTreatmentPointer).delete(synchronize_session=False)
+        session.query(DirectorTreatmentAuthority).delete(synchronize_session=False)
+        session.commit()
         script = session.query(Script).filter_by(book_id=book_id, episode=1).one()
         source = json.loads(script.content)
         content = str(script.content)
@@ -35,6 +43,39 @@ def _authorize_existing_script(client, book_id):
     index = build_source_evidence_index(content.encode("utf-8"), source_package_id=package, source_version_id=version, source_raw_hash=raw_hash)
     response = client.post(f"/api/books/{book_id}/episodes/1/script-ir/activate", json={"versionId": version_id, "confirmed": True, "factSnapshotId": snapshot_id, "sourcePackageId": package, "sourceVersionId": version, "immutableSourceRawHash": raw_hash, "sourceEvidenceIndex": index, "sourceAnchorBindings": bindings, "sourceStructure": source})
     assert response.status_code == 200, response.text
+    # Production Materializer must consume an explicit current Treatment
+    # pointer. Upgrade the minimal fixture without invoking any provider.
+    with Session() as session:
+        script_row = session.query(Script).filter_by(book_id=book_id, episode=1).one()
+        ir_row = session.query(ScriptIRVersion).filter_by(id=script_row.current_script_ir_version_id).one()
+        ir_payload = json.loads(ir_row.payload_json or "{}")
+        ir_envelope = json.loads(ir_row.authority_envelope_json or "{}")
+        for treatment in session.query(DirectorTreatment).filter_by(book_id=book_id, episode=1).all():
+            scene = next((item for item in ir_payload.get("scenes", []) if isinstance(item, dict) and str(item.get("name") or "").strip() == str(treatment.scene_name or "").strip()), None)
+            if not scene:
+                continue
+            scene_id = str(scene.get("scene_id") or "").strip()
+            treatment.scene_id = scene_id
+            treatment.source_script_revision = str(ir_row.revision)
+            treatment.source_script_hash = str(ir_row.payload_hash or "")
+            treatment.source_script_ir_version_id = ir_row.id
+            treatment.source_script_ir_revision = ir_row.revision
+            treatment.source_script_ir_hash = str(ir_row.payload_hash or "")
+            treatment.source_script_authority_fingerprint = str(ir_envelope.get("envelope_fingerprint") or "")
+            treatment.source_fact_snapshot_id = str(ir_envelope.get("fact_snapshot_id") or "")
+            treatment.source_fact_snapshot_revision = ir_envelope.get("fact_snapshot_revision")
+            treatment.source_fact_snapshot_hash = str(ir_envelope.get("fact_snapshot_payload_hash") or "")
+            treatment.qualification_state = "PRODUCTION_QUALIFIED"
+            treatment.stale_status = "FRESH"
+            formal = treatment_payload_from_row(treatment)
+            treatment.payload_hash = treatment_payload_hash(formal)
+            envelope = build_treatment_authority_envelope(treatment=formal, evidence={"book_id": book_id, "episode": 1, "scene": scene, "scene_id": scene_id, "scene_name": scene.get("name"), "characters": [], "locked_references": []}, script_ir=ir_payload, script_ir_version=ir_row, script_ir_envelope=ir_envelope, treatment_id=treatment.id, treatment_revision=treatment.revision)
+            authority = DirectorTreatmentAuthority(book_id=book_id, episode=1, scene_id=scene_id, treatment_id=treatment.id, treatment_revision=treatment.revision, payload_hash=treatment.payload_hash, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]")
+            session.add(authority); session.flush(); treatment.authority_envelope_id = authority.id
+            session.add(DirectorTreatmentPointer(book_id=book_id, episode=1, scene_id=scene_id, treatment_id=treatment.id, treatment_revision=treatment.revision, authority_envelope_fingerprint=envelope["envelope_fingerprint"], qualification_state="PRODUCTION_QUALIFIED"))
+            session.query(SceneBlocking).filter_by(book_id=book_id, episode=1, scene_name=treatment.scene_name).update({"scene_id": scene_id}, synchronize_session=False)
+            session.query(ShotPlan).filter_by(book_id=book_id, episode=1, scene_name=treatment.scene_name).update({"scene_id": scene_id}, synchronize_session=False)
+        session.commit()
 
 
 def test_materialize_endpoint_requires_confirmation_and_is_deterministic():

@@ -21,6 +21,7 @@ from core.director_prompt import build_director_patch_prompt
 import core.llm as llm_client
 from core.prompt_cache import llm_request_fingerprint, summarize_audit_records
 from core.script_ir import resolve_script_payload
+from core.director_treatment_authority import resolve_current_authoritative_treatment
 from core.executability import preflight_shot_plan, build_executability_repair_plan
 from models import DirectorTreatment, FactSnapshot, SceneBlocking, Script, Session, ShotPlan, StoryboardShot, VisualLocation
 
@@ -29,6 +30,7 @@ router = APIRouter(prefix="/api/books", tags=["shot-plan"])
 
 class ShotPlanPreviewRequest(BaseModel):
     scene_name: str = Field(default="", validation_alias=AliasChoices("scene_name", "sceneName"))
+    scene_id: str = Field(default="", validation_alias=AliasChoices("scene_id", "sceneId"))
     persist: bool = False
     workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
 
@@ -142,7 +144,7 @@ def _script_scenes(script: Any) -> list[dict[str, Any]]:
 
 
 def _payload(row: ShotPlan) -> dict[str, Any]:
-    return {"id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_name": row.scene_name, "revision": row.revision, "status": row.status, "schema_version": row.schema_version,
+    return {"id": row.id, "book_id": row.book_id, "episode": row.episode, "scene_id": getattr(row, "scene_id", ""), "scene_name": row.scene_name, "revision": row.revision, "status": row.status, "schema_version": row.schema_version,
             "execution_status": row.execution_status, "quality_status": row.quality_status,
             "production_status": row.production_status, "workflow_profile": row.workflow_profile,
             "treatment_id": row.treatment_id, "blocking_id": row.blocking_id, "shots": _json(row.shots, []), "unknowns": _json(row.unknowns, []), "evidence_fingerprint": row.evidence_fingerprint, "model_info": _json(row.model_info, {}), "created_at": row.created_at.isoformat() if row.created_at else None, "updated_at": row.updated_at.isoformat() if row.updated_at else None}
@@ -186,16 +188,26 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
         scenes = _script_scenes(script)
         scene_names = [str(item.get("name") or "未命名场景").strip() for item in scenes]
         scene_name = req.scene_name.strip() or (scene_names[0] if scene_names else "")
-        treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
-        blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production" and not req.scene_id.strip():
+            raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production ShotPlan requires a stable scene_id."})
+        scene = next((item for item in scenes if isinstance(item, dict) and ((req.scene_id.strip() and str(item.get("scene_id") or "").strip() == req.scene_id.strip()) or (not req.scene_id.strip() and str(item.get("name") or "").strip() == scene_name))), None)
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+            if not scene or not str(scene.get("scene_id") or "").strip():
+                raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production ShotPlan requires a stable scene_id."})
+            scene_id = str(scene.get("scene_id") or "").strip()
+            treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
+            blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+        else:
+            scene_id = str(scene.get("scene_id") or "").strip() if scene else ""
+            treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
+            blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
         if not treatment or not blocking:
             raise HTTPException(status_code=409, detail=f"ShotPlan requires approved DirectorTreatment and SceneBlocking for scene: {scene_name or '未命名场景'}")
         if _json(blocking.unknowns, []):
             raise HTTPException(status_code=409, detail=f"ShotPlan is blocked by unresolved SceneBlocking unknowns: {scene_name}")
-        scene = next((item for item in scenes if isinstance(item, dict) and str(item.get("name") or "").strip() == scene_name), None)
         if not scene:
             raise HTTPException(status_code=404, detail=f"Scene not found: {scene_name}")
-        treatment_payload = {"scene_name": treatment.scene_name, "character_intents": _json(treatment.character_intents, {}), "beat_map": _json(treatment.beat_map, []), "prompt_fingerprint": treatment.prompt_fingerprint}
+        treatment_payload = {"scene_name": treatment.scene_name, "scene_id": getattr(treatment, "scene_id", scene_id), "character_intents": _json(treatment.character_intents, {}), "beat_map": _json(treatment.beat_map, []), "prompt_fingerprint": treatment.prompt_fingerprint}
         blocking_payload = {"scene_name": blocking.scene_name, "participants": _json(blocking.participants, []), "unknowns": _json(blocking.unknowns, []), "evidence_fingerprint": blocking.evidence_fingerprint}
         plan = build_shot_plan(treatment=treatment_payload, blocking=blocking_payload)
         persisted_id = None
@@ -204,9 +216,9 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
             if existing:
                 persisted_id = existing.id
             else:
-                row = ShotPlan(book_id=book_id, episode=episode, scene_name=scene_name, revision=1, status="draft", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(plan["shots"], ensure_ascii=False), unknowns=json.dumps(plan["unknowns"], ensure_ascii=False), evidence_fingerprint=plan["evidence_fingerprint"], model_info=json.dumps(plan["model_info"], ensure_ascii=False), workflow_profile=req.workflow_profile, created_at=datetime.now(), updated_at=datetime.now())
+                row = ShotPlan(book_id=book_id, episode=episode, scene_id=scene_id, scene_name=scene_name, revision=1, status="draft", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(plan["shots"], ensure_ascii=False), unknowns=json.dumps(plan["unknowns"], ensure_ascii=False), evidence_fingerprint=plan["evidence_fingerprint"], model_info=json.dumps(plan["model_info"], ensure_ascii=False), workflow_profile=req.workflow_profile, created_at=datetime.now(), updated_at=datetime.now())
                 session.add(row); session.commit(); session.refresh(row); persisted_id = row.id
-        return {"mode": "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "plan": plan, "treatment_id": treatment.id, "blocking_id": blocking.id, "message": "这是只读 ShotPlan 草案；尚未修改 StoryboardShot。"}
+        return {"mode": "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "scene_id": scene_id, "plan": plan, "treatment_id": treatment.id, "blocking_id": blocking.id, "message": "这是只读 ShotPlan 草案；尚未修改 StoryboardShot。"}
 
 
 def _load_v21_director_context(session: Session, book_id: int, episode: int, scene_name: str, workflow_profile: str = "shadow") -> dict[str, Any]:
@@ -220,8 +232,15 @@ def _load_v21_director_context(session: Session, book_id: int, episode: int, sce
     scene = next((item for item in scenes if isinstance(item, dict) and str(item.get("name") or "").strip() == resolved_scene_name), None)
     if not scene:
         raise HTTPException(status_code=404, detail=f"Scene not found: {resolved_scene_name}")
-    treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=resolved_scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
-    blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=resolved_scene_name, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+    scene_id = str(scene.get("scene_id") or "").strip()
+    if str(workflow_profile or "shadow").strip().lower() == "production":
+        if not scene_id:
+            raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production ShotPlan requires a stable scene_id."})
+        treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
+        blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+    else:
+        treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=resolved_scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
+        blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=resolved_scene_name, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
     if not treatment or not blocking:
         raise HTTPException(status_code=409, detail=f"Contract-First planner requires approved DirectorTreatment and SceneBlocking for scene: {resolved_scene_name or '未命名场景'}")
     if _json(blocking.unknowns, []):

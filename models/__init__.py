@@ -15,7 +15,7 @@ from .qa_workbench import QAIssue, ScriptVersion
 from .violation_log import AgentViolationLog
 from .task import TaskRun
 from .agent import AgentSession, AgentPlan, AgentAuditLog, AgentAttachment, AgentMessage, AgentProjectUpdate
-from .director_treatment import DirectorTreatment
+from .director_treatment import DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer
 from .scene_blocking import SceneBlocking
 from .shot_plan import ShotPlan
 from .repair import RepairAttempt
@@ -36,6 +36,7 @@ __all__ = [
     "TaskRun",
     "AgentSession", "AgentPlan", "AgentAuditLog", "AgentAttachment", "AgentMessage", "AgentProjectUpdate",
     "DirectorTreatment",
+    "DirectorTreatmentAuthority", "DirectorTreatmentPointer",
     "SceneBlocking",
     "ShotPlan",
     "RepairAttempt",
