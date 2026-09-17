@@ -1,0 +1,141 @@
+{
+  "schema_version": "script_ir_source_requirement_contract_v1",
+  "script_ir_schema_version": "script_ir_v1",
+  "consumer_module": "core.script_ir",
+  "requirements": [
+    {
+      "requirement_id": "SIR_SCENES_PRESENT",
+      "predicate": "scene_existence",
+      "semantic_definition": "The episode contains at least one source scene.",
+      "consumer_field": "scenes",
+      "consumer_invariant": "core.script_ir.validate_script_ir:SCENES_REQUIRED",
+      "authority_class": "SOURCE_FACT",
+      "value_schema": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "scope_policy": "episode",
+      "required": true,
+      "optional": false,
+      "blocking": true,
+      "evidence_requirement": {
+        "direct_evidence_required": true,
+        "source_anchor_required": true
+      },
+      "derivation_policy": {
+        "allowed": false,
+        "reason": "scene existence cannot be inferred"
+      },
+      "provenance_requirement": {
+        "allowed": [
+          "source_text",
+          "locked_fact",
+          "approved_fact"
+        ],
+        "minimum": "source_anchor"
+      },
+      "expansion": "episode"
+    },
+    {
+      "requirement_id": "SIR_SCENE_NAME",
+      "predicate": "scene_identity",
+      "semantic_definition": "Every normalized scene has a source-supported non-empty name.",
+      "consumer_field": "scenes[].name",
+      "consumer_invariant": "core.script_ir.validate_script_ir:SCENE_NAME_REQUIRED/SCENE_NAME_DUPLICATE",
+      "authority_class": "SOURCE_FACT",
+      "value_schema": {
+        "type": "string",
+        "minLength": 1
+      },
+      "scope_policy": "scene",
+      "required": true,
+      "optional": false,
+      "blocking": true,
+      "evidence_requirement": {
+        "direct_evidence_required": true,
+        "source_anchor_required": true
+      },
+      "derivation_policy": {
+        "allowed": false,
+        "reason": "placeholder names would lose source identity"
+      },
+      "provenance_requirement": {
+        "allowed": [
+          "source_text",
+          "locked_fact",
+          "approved_fact"
+        ],
+        "minimum": "source_anchor"
+      },
+      "expansion": "scene"
+    },
+    {
+      "requirement_id": "SIR_BEAT_EVENT",
+      "predicate": "event_occurrence",
+      "semantic_definition": "A declared beat may carry a source event description.",
+      "consumer_field": "scenes[].beats[].event",
+      "consumer_invariant": "core.script_ir.validate_script_ir:SCENE_BEATS_EMPTY (warning only)",
+      "authority_class": "SOURCE_FACT",
+      "value_schema": {
+        "type": "string"
+      },
+      "scope_policy": "scene_beat",
+      "required": false,
+      "optional": true,
+      "blocking": false,
+      "evidence_requirement": {
+        "direct_evidence_required": true,
+        "source_anchor_required": false
+      },
+      "derivation_policy": {
+        "allowed": false,
+        "reason": "event text is source content, not a model inference"
+      },
+      "provenance_requirement": {
+        "allowed": [
+          "source_text",
+          "locked_fact",
+          "approved_fact"
+        ],
+        "minimum": "source_anchor_if_present"
+      },
+      "expansion": "beat_when_declared"
+    }
+  ],
+  "structural_metadata_requirements": [
+    {
+      "requirement_id": "SIR_SCENE_ID",
+      "field": "scenes[].scene_id",
+      "consumer": "build_script_ir:scene_id + validate_script_ir:SCENE_ID_INVALID",
+      "required": true,
+      "derivation_policy": "deterministic E{episode:02d}_SC{ordinal:03d}; explicit source id is preserved",
+      "provenance": "structural_metadata"
+    },
+    {
+      "requirement_id": "SIR_EPISODE_NUMBER",
+      "field": "episode",
+      "consumer": "build_script_ir:episode",
+      "required": true,
+      "derivation_policy": "request scope, not a story fact",
+      "provenance": "request_context"
+    }
+  ],
+  "derived_fact_policies": [
+    {
+      "predicate": "scene_identity",
+      "allowed": false,
+      "supporting_source_anchors_required": true,
+      "provenance": "direct_only",
+      "reason": "the builder's fallback name is not authoritative source identity"
+    },
+    {
+      "predicate": "event_occurrence",
+      "allowed": false,
+      "supporting_source_anchors_required": true,
+      "provenance": "direct_only",
+      "reason": "ScriptIR does not authorize inferred events"
+    }
+  ],
+  "provider_calls": 0,
+  "fingerprint": "398bfc5e93d2ecbc10f949c344c9786c1eae54b70cbf703310c4f3e2e696020f"
+}

@@ -1,35 +1,24 @@
-# Director Quality V3 — ScriptIR Source Coverage Recanary
+# ScriptIR Source Requirement Contract Recanary
 
-## Clean-tree verification
+## Baseline Audit
 
-- Branch: `codex/fact-semantic-grounding-foundation`
-- Verification base: `ad1e5d34a403eaed755d25850603ea6c8b5bea03`
-- Clean-tree preflight: `PASS` (isolated clean worktree)
-- Provider calls: `0`
-- Production writes: `0`
+- Previous baseline used historical `MissingFactManifest` reclassification.
+- That baseline reported zero ScriptIR requirements, but did not prove that the ScriptIR consumer has no source inputs.
+- Historical downstream backlog remains preserved: `6` items.
 
-## Source-fact-only gate
+## Final As-Built Verification
 
-The six existing MissingFactManifest entries were reclassified through
-`fact_requirement_registry_v1`. None is a ScriptIR-blocking `SOURCE_FACT`:
+- Consumer audit: `SCRIPT_IR_CONSUMER_AUDIT` (see `director-quality-v3-script-ir-consumer-audit.json`).
+- Source input: `tests\fixtures\golden\dialogue_power_shift\script.json` (structured payload only; no production entity was persisted).
+- Contract: `script_ir_source_requirement_contract_v1` (see `director-quality-v3-script-ir-source-requirement-contract.json`).
+- Formal requirement set: `4` total; blocking `2`; optional `2`; derived `0`.
+- Coverage: covered `2`; derived-covered `0`; missing `0`; ambiguous `0`; conflicted `0`; invalid `0`.
+- Status: `SCRIPT_IR_SOURCE_CONTRACT_COVERAGE_SUFFICIENT`; authority readiness: `SCRIPT_IR_AUTHORITY_ACTIVATION_READY`.
+- `source_fact_only_missing_manifest`: `0`.
+- Structural metadata is separate from FactSnapshot story facts; no visual identity, geometry, camera, lighting, blocking or shot-design requirement was promoted.
 
-- ScriptIR source requirements: **0**
-- Covered / partial / missing / ambiguous / conflicted / invalid: **0 / 0 / 0 / 0 / 0 / 0**
-- `source_fact_only_missing_manifest`: empty
-- Final status: `SCRIPT_IR_SOURCE_COVERAGE_SUFFICIENT`
-- Readiness: `SCRIPT_IR_AUTHORITY_ACTIVATION_READY`
+## Safety Boundary
 
-This is not a threshold reduction. Production-only requirements remain in the
-downstream backlog and are not silently deleted.
-
-## Downstream backlog
-
-- `VISUAL_ASSET_GENERATION`: 宋知夏 visual identity, 程雨 visual identity, production scene geometry
-- `SCENE_BLOCKING`: 宋知夏 current state, 程雨 current state
-- `SHOT_PLAN`: production prop continuity state
-
-## Gate boundary
-
-This recanary does not create or modify ScriptIR, FactSnapshot, DirectorTreatment,
-SceneBlocking, ShotPlan, or any production record. The next authorized phase is
-`SCRIPT_IR_AUTHORITY_ACTIVATION`; no downstream work is started automatically.
+- Provider calls: `0`; production writes: `0`.
+- No ScriptIR, FactSnapshot, DirectorTreatment, SceneBlocking, ShotPlan or media record was created or modified.
+- Next stage only when separately authorized: `SCRIPT_IR_AUTHORITY_ACTIVATION`.
