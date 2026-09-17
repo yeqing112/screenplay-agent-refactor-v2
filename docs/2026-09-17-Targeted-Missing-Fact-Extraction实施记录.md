@@ -8,6 +8,7 @@
 
 - `MissingFactManifest`：每项包含 fact key、semantic type、scope/entity、consumer、required/optional、missing reason、已有 evidence 状态、source scope、severity 与 dependency。
 - Coverage Evaluator：区分 `ABSENT`、`INSUFFICIENT_EVIDENCE`、`AMBIGUOUS`、`CONFLICTED`、`INVALID`，只有 required 且无阻断项才返回 `FACT_COVERAGE_SUFFICIENT`。
+- Authority compiler：当既有 V2 coverage authority matrix 返回不足或需复核时，同步输出稳定的 `MissingFactManifest`，保留 requirement、source scope 与已有 evidence 摘要，避免聚合状态丢失可诊断范围。
 - Targeted Extractor：只读取 manifest 指定事实；仅接受带 immutable anchor 的显式 `FACT:` 结构化声明。自然语言不足时返回 unresolved，不猜测。
 - Evidence Validation：校验 schema、anchor locator、精确 excerpt、source hash、值支持、manifest 范围及现有 authoritative fact 冲突。
 - Merge：existing authoritative fact 优先；候选不可静默覆盖；冲突与 unresolved 显式保留；新增记录产生新的 revision/payload hash；重复执行使用稳定 idempotency key。

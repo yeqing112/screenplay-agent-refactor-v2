@@ -11,8 +11,7 @@ import re
 import copy
 from typing import Any
 
-from core.fact_coverage import COVERAGE_STATUSES, REQUIREMENT_TYPES, fingerprint
-from core.fact_coverage import build_missing_fact_manifest, script_ir_gate
+from core.fact_coverage import COVERAGE_STATUSES, REQUIREMENT_TYPES, MissingFactManifest, build_missing_fact_manifest, fingerprint, script_ir_gate
 from core.targeted_missing_fact_extraction import extract_targeted_missing_facts, merge_fact_snapshot_records
 
 PROPOSAL_KEY_RE = re.compile(r"^P[0-9]{3}$")
@@ -471,7 +470,56 @@ def compile_fact_coverage_authority_v2(*, canonical: dict[str, Any], semantic_ov
     if ambiguous_units: qualification = "FACT_COVERAGE_REVIEW_REQUIRED"
     elif any(row["final_coverage_status"] != "COVERED" for row in rows): qualification = "FACT_COVERAGE_INSUFFICIENT"
     else: qualification = "FACT_COVERAGE_CANDIDATE_QUALIFIED"
-    return {"schema_version": "fact_coverage_authority_matrix_v2", "provider_calls": 0, "rows": rows, "counts": counts, "unit_assessment_counts": {rel: sum(1 for row in unit_assessments if row.get("relevance") == rel) for rel in UNIT_RELEVANCES}, "qualification_status": qualification, "fact_coverage_qualified": qualification == "FACT_COVERAGE_CANDIDATE_QUALIFIED", "runtime_authority": True, "human_review": "NOT_RECORDED", "fingerprint": fingerprint(rows)}
+    # The authority compiler is itself a coverage evaluator.  Keep its
+    # existing matrix contract, but always expose a machine-consumable
+    # MissingFactManifest when a requirement is not covered.  This avoids a
+    # lossy hand-off where callers only receive the aggregate qualification
+    # status and have to reverse-engineer the missing scope from matrix rows.
+    missing_items: list[dict[str, Any]] = []
+    status_to_reason = {
+        "MISSING": "ABSENT",
+        "PARTIALLY_COVERED": "INSUFFICIENT_EVIDENCE",
+        "CLAIM_ONLY": "INSUFFICIENT_EVIDENCE",
+        "UNSAFE_INFERENCE": "INSUFFICIENT_EVIDENCE",
+        "AMBIGUOUS": "AMBIGUOUS",
+    }
+    for row in rows:
+        final_status = str(row.get("final_coverage_status") or "")
+        if final_status == "COVERED":
+            continue
+        supporting = [sem.get(str(fid), {}) for fid in row.get("supporting_fact_ids", []) if str(fid) in sem]
+        # Prefer the fact's semantic identity when it is available; otherwise
+        # use a deterministic requirement-scoped identity.  No source text
+        # or fixture identifier is invented here.
+        fact = supporting[0] if supporting else {}
+        subject_type = str(fact.get("subject_type") or row.get("requirement_type") or "requirement")
+        subject_id = str(fact.get("subject_id") or row.get("requirement_id") or row.get("proposal_key") or "")
+        predicate = str(fact.get("predicate") or row.get("requirement_type") or "requirement")
+        scope = str(fact.get("scope") or "global")
+        key = "|".join((subject_type, subject_id, predicate, scope))
+        missing_items.append({
+            "fact_key": key,
+            "semantic_type": subject_type,
+            "scope": scope,
+            "entity": subject_id,
+            "consumer": str(row.get("requirement_type") or "fact_coverage"),
+            "required": True,
+            "optional": False,
+            "missing_reason": status_to_reason.get(final_status, "INVALID"),
+            "existing_evidence": {
+                "supporting_fact_ids": list(row.get("supporting_fact_ids") or []),
+                "semantic_fact_dispositions": list(row.get("semantic_fact_dispositions") or []),
+                "coverage_status": final_status,
+            },
+            "source_scope": list(row.get("source_unit_refs") or []),
+            "severity": "blocking",
+            "dependency": [],
+            "description": str(row.get("description") or ""),
+            "expected_value": None,
+        })
+    manifest_status = "FACT_COVERAGE_INSUFFICIENT" if missing_items else "FACT_COVERAGE_SUFFICIENT"
+    missing_manifest = MissingFactManifest(status=manifest_status, items=tuple(missing_items), fingerprint=fingerprint(missing_items)).to_dict()
+    return {"schema_version": "fact_coverage_authority_matrix_v2", "provider_calls": 0, "rows": rows, "counts": counts, "unit_assessment_counts": {rel: sum(1 for row in unit_assessments if row.get("relevance") == rel) for rel in UNIT_RELEVANCES}, "qualification_status": qualification, "fact_coverage_qualified": qualification == "FACT_COVERAGE_CANDIDATE_QUALIFIED", "missing_fact_manifest": missing_manifest, "runtime_authority": True, "human_review": "NOT_RECORDED", "fingerprint": fingerprint(rows)}
 
 
 def verify_fact_coverage(*, records: list[dict[str, Any]], requirements: list[dict[str, Any]], source_scope: list[str] | None = None) -> dict[str, Any]:

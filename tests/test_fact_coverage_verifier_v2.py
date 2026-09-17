@@ -78,3 +78,20 @@ def test_authority_compiler_applies_semantic_ceiling():
     matrix = compile_fact_coverage_authority_v2(canonical=canonical, semantic_overlay={"facts": [{"fact_id": "FACT_0001", "semantic_disposition": "CLAIM_SUPPORTED"}]}, unit_assessments=validation["unit_assessments"])
     assert matrix["rows"][0]["final_coverage_status"] == "CLAIM_ONLY"
     assert matrix["qualification_status"] == "FACT_COVERAGE_INSUFFICIENT"
+
+
+def test_authority_compiler_exposes_missing_fact_manifest_for_insufficient_result():
+    validation = validate_provider_payload(_valid_payload(), unit_refs=["NU_0001"], fact_ids=["FACT_0001"])
+    canonical = canonicalize_requirements(validation)
+    matrix = compile_fact_coverage_authority_v2(
+        canonical=canonical,
+        semantic_overlay={"facts": [{"fact_id": "FACT_0001", "semantic_disposition": "INFERENCE_PROPOSED"}]},
+        unit_assessments=validation["unit_assessments"],
+    )
+    manifest = matrix["missing_fact_manifest"]
+    assert manifest["status"] == "FACT_COVERAGE_INSUFFICIENT"
+    assert manifest["count"] == 1
+    item = manifest["items"][0]
+    assert item["missing_reason"] == "INSUFFICIENT_EVIDENCE"
+    assert item["required"] is True and item["optional"] is False
+    assert item["source_scope"] == ["NU_0001"]
