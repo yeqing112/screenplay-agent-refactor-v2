@@ -174,6 +174,13 @@ def normalize_scope(requirement: dict[str, Any], semantics: dict[str, Any]) -> t
 
 def classify_requirement(requirement: dict[str, Any]) -> dict[str, Any]:
     item = dict(requirement or {})
+    # Historical MissingFactManifest rows only carried ``semantic_type`` and
+    # a pipe-delimited fact_key.  Rehydrate the canonical fields before lookup
+    # so old manifests receive the same semantics as new requirements.
+    if not str(item.get("predicate") or "").strip() or not str(item.get("subject_type") or "").strip() or not str(item.get("subject_id") or "").strip():
+        parts = str(item.get("fact_key") or "").split("|")
+        if len(parts) == 4:
+            item.setdefault("subject_type", parts[0]); item.setdefault("semantic_type", parts[0]); item.setdefault("subject_id", parts[1]); item.setdefault("entity", parts[1]); item.setdefault("predicate", parts[2]); item.setdefault("scope", parts[3])
     semantics = get_requirement_semantics(item.get("predicate"), requirement=item)
     scope, original_scope = normalize_scope(item, semantics)
     authority = str(semantics.get("authority_class") or "SOURCE_FACT")
