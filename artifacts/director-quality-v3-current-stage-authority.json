@@ -275,6 +275,9 @@
     "provider_calls_scope": "current_stage_provider_attempts is this full-source foundation stage; cumulative_provider_attempts is all historical attempts",
     "current_stage_provider_attempts": 1,
     "fact_coverage_status": "FACT_COVERAGE_INSUFFICIENT",
+    "ready_for_targeted_missing_fact_extraction": true,
+    "targeted_missing_fact_extraction_authorized": false,
+    "script_ir_gate": "BLOCKED_PENDING_TARGETED_MISSING_FACTS",
     "ready_for_fact_coverage_qualification": true,
     "evidence_authority_status": "PASS",
     "script_ir_calls": 0
