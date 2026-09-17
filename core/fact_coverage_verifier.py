@@ -12,6 +12,8 @@ import copy
 from typing import Any
 
 from core.fact_coverage import COVERAGE_STATUSES, REQUIREMENT_TYPES, fingerprint
+from core.fact_coverage import build_missing_fact_manifest, script_ir_gate
+from core.targeted_missing_fact_extraction import extract_targeted_missing_facts, merge_fact_snapshot_records
 
 PROPOSAL_KEY_RE = re.compile(r"^P[0-9]{3}$")
 UNIT_RELEVANCES = ("RELEVANT", "NO_REQUIRED_FACT", "AMBIGUOUS")
@@ -472,6 +474,23 @@ def compile_fact_coverage_authority_v2(*, canonical: dict[str, Any], semantic_ov
     return {"schema_version": "fact_coverage_authority_matrix_v2", "provider_calls": 0, "rows": rows, "counts": counts, "unit_assessment_counts": {rel: sum(1 for row in unit_assessments if row.get("relevance") == rel) for rel in UNIT_RELEVANCES}, "qualification_status": qualification, "fact_coverage_qualified": qualification == "FACT_COVERAGE_CANDIDATE_QUALIFIED", "runtime_authority": True, "human_review": "NOT_RECORDED", "fingerprint": fingerprint(rows)}
 
 
+def verify_fact_coverage(*, records: list[dict[str, Any]], requirements: list[dict[str, Any]], source_scope: list[str] | None = None) -> dict[str, Any]:
+    """Evaluate the targeted manifest without invoking the provider contract."""
+    coverage = build_missing_fact_manifest(requirements, records, source_scope=source_scope)
+    return {**coverage, "script_ir_gate": script_ir_gate(coverage), "provider_calls": 0}
+
+
+def run_targeted_missing_fact_extraction(source_material: Any, current_snapshot: dict[str, Any], requirements: list[dict[str, Any]], source_scope: list[str] | None = None, source_package_id: str = "targeted-source", source_version_id: str = "v1") -> dict[str, Any]:
+    before = verify_fact_coverage(records=(current_snapshot or {}).get("records", []), requirements=requirements, source_scope=source_scope)
+    extraction = extract_targeted_missing_facts(source_material, current_snapshot, before["missing_fact_manifest"], source_package_id=source_package_id, source_version_id=source_version_id)
+    request_fingerprint = hashlib.sha256(json.dumps({"source_raw_hash": extraction["source_index"].get("source_raw_hash"), "requirements": requirements or [], "source_scope": source_scope or []}, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")).hexdigest()
+    extraction["idempotency_key"] = request_fingerprint
+    extraction["result_fingerprint"] = request_fingerprint
+    merge = merge_fact_snapshot_records(current_snapshot, extraction["candidates"], before["missing_fact_manifest"], extraction["source_index"])
+    after = verify_fact_coverage(records=merge["snapshot"]["records"], requirements=requirements, source_scope=source_scope)
+    return {"schema_version": "fact_coverage_targeted_recheck_v1", "coverage_before": before, "extraction": extraction, "merge": merge, "coverage_after": after, "provider_calls": 0}
+
+
 __all__ = [
     "PROPOSAL_KEY_RE", "UNIT_RELEVANCES", "FORBIDDEN_FIELDS", "PROJECTION_VERSION",
     "ENVELOPE_POLICY_VERSION", "provider_schema_v2", "provider_schema_v3", "contract_v2",
@@ -479,5 +498,5 @@ __all__ = [
     "validate_provider_contract_projection_v1", "build_provider_system_prompt_v3",
     "validate_final_provider_payload_projection", "parse_provider_json_envelope_v1",
     "materialize_units", "project_existing_facts", "build_request", "validate_provider_payload",
-    "canonicalize_requirements", "compile_fact_coverage_authority_v2",
+    "canonicalize_requirements", "compile_fact_coverage_authority_v2", "verify_fact_coverage", "run_targeted_missing_fact_extraction",
 ]

@@ -199,10 +199,10 @@
   "provider_calls": 0,
   "required_count": 6,
   "satisfied_count": 0,
-  "schema_version": "fact_coverage_v1",
+  "schema_version": "fact_coverage_targeted_v1",
   "script_ir_gate": {
     "allowed": false,
-    "reason": "required facts remain absent, unsupported, ambiguous, conflicted or invalid",
+    "reason": "required facts remain unresolved",
     "status": "BLOCKED_PENDING_TARGETED_MISSING_FACTS"
   },
   "status": "FACT_COVERAGE_INSUFFICIENT"

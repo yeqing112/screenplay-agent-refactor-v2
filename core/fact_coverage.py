@@ -10,6 +10,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+from dataclasses import dataclass
 from typing import Any, Iterable
 
 REQUIREMENT_TYPES = (
@@ -27,6 +28,9 @@ DISPOSITION_TO_COVERAGE = {
     "AMBIGUOUS_REVIEW": "AMBIGUOUS",
 }
 CLAIM_COMPATIBLE_REQUIREMENTS = {"CLAIM_OR_BELIEF"}
+TARGETED_SCHEMA_VERSION = "fact_coverage_targeted_v1"
+MISSING_REASONS = ("ABSENT", "INSUFFICIENT_EVIDENCE", "AMBIGUOUS", "CONFLICTED", "INVALID")
+AUTHORITATIVE_AUTHORITIES = {"source_text", "locked_fact", "approved_fact"}
 
 
 def _canonical(value: Any) -> bytes:
@@ -335,4 +339,105 @@ def validate_coverage_payload(payload: Any) -> dict[str, Any]:
     return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
-__all__ = ["REQUIREMENT_TYPES", "COVERAGE_STATUSES", "canonical_fact_components", "build_narrative_unit_index", "validate_narrative_unit_completeness", "requirement_contract", "coverage_matrix_contract", "coverage_provider_schema", "coverage_schema_fingerprint", "compile_fact_coverage", "validate_coverage_payload", "fingerprint"]
+# ---------------------------------------------------------------------------
+# Targeted missing-fact coverage (provider-free extension)
+# ---------------------------------------------------------------------------
+@dataclass(frozen=True)
+class MissingFactManifest:
+    """Stable, serializable description of facts still required downstream."""
+
+    status: str
+    items: tuple[dict[str, Any], ...]
+    fingerprint: str
+    schema_version: str = "missing_fact_manifest_v1"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"schema_version": self.schema_version, "status": self.status, "items": [dict(item) for item in self.items], "count": len(self.items), "fingerprint": self.fingerprint}
+
+    @classmethod
+    def from_dict(cls, value: dict[str, Any]) -> "MissingFactManifest":
+        items = tuple(item for item in (value or {}).get("items", []) if isinstance(item, dict))
+        fp = str((value or {}).get("fingerprint") or fingerprint(list(items)))
+        return cls(status=str((value or {}).get("status") or "FACT_COVERAGE_INSUFFICIENT"), items=items, fingerprint=fp, schema_version=str((value or {}).get("schema_version") or "missing_fact_manifest_v1"))
+
+
+def fact_key(item: dict[str, Any]) -> str:
+    return "|".join(str(item.get(name) or "").strip() for name in ("subject_type", "subject_id", "predicate", "scope"))
+
+
+def _targeted_canonical(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
+
+
+def _targeted_evidence_usable(evidence: Any) -> bool:
+    if not isinstance(evidence, list) or not evidence:
+        return False
+    for row in evidence:
+        if not isinstance(row, dict):
+            return False
+        if row.get("verified") is True and (row.get("anchor_ref") or row.get("source_id")):
+            continue
+        if row.get("anchor_ref") and row.get("excerpt") and row.get("source_raw_hash"):
+            continue
+        return False
+    return True
+
+
+def _targeted_requirement(raw: Any, index: int) -> dict[str, Any]:
+    item = raw if isinstance(raw, dict) else {}
+    subject_type = str(item.get("subject_type") or item.get("semantic_type") or "").strip()
+    subject_id = str(item.get("subject_id") or item.get("entity") or item.get("subject") or "").strip()
+    predicate = str(item.get("predicate") or "").strip()
+    scope = str(item.get("scope") or "global").strip()
+    return {
+        "fact_key": str(item.get("fact_key") or "|".join((subject_type, subject_id, predicate, scope)) or f"requirement_{index:04d}"),
+        "semantic_type": subject_type, "subject_type": subject_type, "entity": subject_id, "subject_id": subject_id,
+        "predicate": predicate, "scope": scope, "consumer": str(item.get("consumer") or "script_ir").strip(),
+        "required": bool(item.get("required", True)), "optional": bool(item.get("optional", False)),
+        "severity": str(item.get("severity") or ("blocking" if item.get("required", True) else "warning")).strip(),
+        "source_scope": item.get("source_scope") if isinstance(item.get("source_scope"), list) else ["source_material"],
+        "dependency": item.get("dependency") if isinstance(item.get("dependency"), list) else [],
+        "description": str(item.get("description") or "").strip(), "expected_value": item.get("expected_value", item.get("value")),
+    }
+
+
+def _targeted_requirement_matches(req: dict[str, Any], record: dict[str, Any]) -> bool:
+    return bool(req.get("fact_key") and req["fact_key"] == fact_key(record)) or all(not str(req.get(name) or "").strip() or str(req.get(name)).strip() == str(record.get(name) or "").strip() for name in ("subject_type", "subject_id", "predicate", "scope"))
+
+
+def build_missing_fact_manifest(requirements: list[dict[str, Any]], records: list[dict[str, Any]], *, source_scope: list[str] | None = None) -> dict[str, Any]:
+    normalized = [_targeted_requirement(item, i) for i, item in enumerate(requirements or [], 1)]
+    rows = [item for item in records or [] if isinstance(item, dict)]
+    missing, coverage = [], []
+    for req in normalized:
+        matches = [row for row in rows if _targeted_requirement_matches(req, row)]
+        reason = None
+        evidence_state: dict[str, Any] = {"record_count": len(matches)}
+        if not matches:
+            reason, evidence_state["state"] = "ABSENT", "absent"
+        elif any(not row.get("subject_type") or not row.get("subject_id") or not row.get("predicate") for row in matches):
+            reason, evidence_state["state"] = "INVALID", "invalid"
+        elif len({_targeted_canonical(row.get("value")) for row in matches}) > 1:
+            reason, evidence_state["state"] = "CONFLICTED", "conflicted"
+        elif any(str(row.get("status") or "").lower() in {"conflict", "unknown"} for row in matches):
+            reason, evidence_state["state"] = "AMBIGUOUS", "ambiguous"
+        elif not any(str(row.get("authority") or "").lower() in AUTHORITATIVE_AUTHORITIES and str(row.get("status") or "").lower() == "confirmed" and _targeted_evidence_usable(row.get("evidence")) for row in matches):
+            reason, evidence_state["state"] = "INSUFFICIENT_EVIDENCE", "evidence_insufficient"
+        elif req.get("expected_value") is not None and not any(_targeted_canonical(row.get("value")) == _targeted_canonical(req.get("expected_value")) for row in matches):
+            reason, evidence_state["state"] = "CONFLICTED", "expected_value_conflict"
+        else:
+            evidence_state["state"] = "satisfied"
+        coverage.append({"fact_key": req["fact_key"], "required": req["required"], "satisfied": reason is None, "reason": reason, "evidence": evidence_state})
+        if reason and req["required"] and not req["optional"]:
+            missing.append({"fact_key": req["fact_key"], "semantic_type": req["semantic_type"], "scope": req["scope"], "entity": req["entity"], "consumer": req["consumer"], "required": req["required"], "optional": req["optional"], "missing_reason": reason, "existing_evidence": evidence_state, "source_scope": source_scope if source_scope is not None else req["source_scope"], "severity": req["severity"], "dependency": req["dependency"], "description": req["description"], "expected_value": req["expected_value"]})
+    status = "FACT_COVERAGE_SUFFICIENT" if not missing else "FACT_COVERAGE_INSUFFICIENT"
+    manifest = MissingFactManifest(status=status, items=tuple(missing), fingerprint=fingerprint(missing)).to_dict()
+    return {"schema_version": TARGETED_SCHEMA_VERSION, "status": status, "coverage": coverage, "missing_fact_manifest": manifest, "required_count": sum(1 for row in normalized if row["required"] and not row["optional"]), "satisfied_count": sum(1 for row in coverage if row["satisfied"]), "blocking_count": len(missing)}
+
+
+def script_ir_gate(coverage: dict[str, Any]) -> dict[str, Any]:
+    allowed = str((coverage or {}).get("status") or "") == "FACT_COVERAGE_SUFFICIENT"
+    return {"allowed": allowed, "status": "SCRIPT_IR_ALLOWED" if allowed else "BLOCKED_PENDING_TARGETED_MISSING_FACTS", "reason": "fact coverage requirements satisfied" if allowed else "required facts remain unresolved"}
+
+
+__all__ = ["REQUIREMENT_TYPES", "COVERAGE_STATUSES", "canonical_fact_components", "build_narrative_unit_index", "validate_narrative_unit_completeness", "requirement_contract", "coverage_matrix_contract", "coverage_provider_schema", "coverage_schema_fingerprint", "compile_fact_coverage", "validate_coverage_payload", "fingerprint", "MISSING_REASONS", "MissingFactManifest", "fact_key", "build_missing_fact_manifest", "script_ir_gate"]

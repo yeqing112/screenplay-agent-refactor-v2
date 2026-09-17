@@ -446,5 +446,17 @@
     "script_ir_gate": "BLOCKED_PENDING_TARGETED_MISSING_FACTS",
     "next_stage": "TARGETED_MISSING_FACT_EXTRACTION",
     "runtime_authority": true
+  },
+  "targeted_missing_fact_extraction": {
+    "status": "CLOSED_PROVIDER_FREE",
+    "provider_calls": 0,
+    "manifest_count": 6,
+    "validated_candidate_count": 0,
+    "unresolved_count": 6,
+    "merge_status": "NO_CHANGE",
+    "fact_coverage_status": "FACT_COVERAGE_INSUFFICIENT",
+    "script_ir_gate": "BLOCKED_PENDING_TARGETED_MISSING_FACTS",
+    "idempotency_key": "1009751497b003674f072af5d3c372e0d0dc152f7bb901665266387bc018753a",
+    "runtime_authority": false
   }
 }
