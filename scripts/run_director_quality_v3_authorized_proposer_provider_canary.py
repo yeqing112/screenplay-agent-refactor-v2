@@ -51,7 +51,7 @@ def _markdown(result: dict[str, Any], audit_records: list[dict[str, Any]], *, at
     usage = [row.get("usage") for row in audit_records if isinstance(row.get("usage"), dict)]
     def _sum(key: str) -> int:
         return sum(int(item.get(key) or 0) for item in usage)
-    cache_hits = sum(1 for item in usage if item.get("cache_hit"))
+    cache_hits = sum(1 for item in usage if item.get("cache_hit") or int(item.get("cached_tokens") or 0) > 0)
     lines = [
         "# Director Quality V3 — Authorized Proposer Provider Canary",
         "",

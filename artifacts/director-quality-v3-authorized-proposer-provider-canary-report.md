@@ -29,13 +29,12 @@
 ## Audit
 
 - Logical provider calls: `4` audit records; transport/parser retries are configured as `0`.
-- Usage (when returned): input `11174`, output `1119`, cached `4096` tokens; cache hit/miss `0/4`.
+- Usage (when returned): input `11174`, output `1119`, cached `4096` tokens; cache hit/miss `2/2`.
 - Latency samples: `4`; estimated cost is provider-dependent and omitted when unavailable.
-- Provider/model: `openai-compatible` / `mimo-v2.5`.
+- Provider/model: `api.xiaomimimo.com` / `mimo-v2.5`.
 - Cache, usage and latency fields are retained only in bounded LLM audit records; credentials are never persisted.
 
 ## Safety Verification
 
 - `dry_run=true`; `fact_snapshot_writes=0`; `authoritative_record_writes=0`; `production_writes=0`.
 - Simulated coverage status: `FACT_COVERAGE_INSUFFICIENT`; formal coverage and ScriptIR status are unchanged.
-
