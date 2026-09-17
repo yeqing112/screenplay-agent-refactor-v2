@@ -23,12 +23,14 @@
 
 ## Six-Requirement Reclassification
 
-| Requirement family | New authority | Blocking stage | ScriptIR gate |
-|---|---|---|---|
-| character visual identity | `PRODUCTION_AUTHORING_DECISION` | `VISUAL_ASSET_GENERATION` | no |
-| character current state | `PRODUCTION_CONTINUITY_STATE` | `SCENE_BLOCKING` | no |
-| scene geometry | `PRODUCTION_AUTHORING_DECISION` | `SCENE_BLOCKING` | no |
-| prop state | `PRODUCTION_CONTINUITY_STATE` | `SHOT_PLAN` | no |
+| Fact key | New authority | Effective scope | Blocking stage | ScriptIR gate |
+|---|---|---|---|---|
+| `character|宋知夏|visual_identity|global` | `PRODUCTION_AUTHORING_DECISION` | global | `VISUAL_ASSET_GENERATION` | no |
+| `character|宋知夏|current_state|global` | `PRODUCTION_CONTINUITY_STATE` | episode | `SCENE_BLOCKING` | no |
+| `character|程雨|visual_identity|global` | `PRODUCTION_AUTHORING_DECISION` | global | `VISUAL_ASSET_GENERATION` | no |
+| `character|程雨|current_state|global` | `PRODUCTION_CONTINUITY_STATE` | episode | `SCENE_BLOCKING` | no |
+| `scene|production_scene|geometry|global` | `PRODUCTION_AUTHORING_DECISION` | scene | `SCENE_BLOCKING` | no |
+| `prop|production_props|state|global` | `PRODUCTION_CONTINUITY_STATE` | scene | `SHOT_PLAN` | no |
 
 The source extractor is still required to preserve explicit source constraints. A genuinely missing `SOURCE_FACT` with `blocking_stage=SCRIPT_IR` continues to fail closed.
 

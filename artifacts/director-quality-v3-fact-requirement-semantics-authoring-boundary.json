@@ -24,6 +24,15 @@
     "geometry": {"authority_class": "PRODUCTION_AUTHORING_DECISION", "blocking_stage": "SCENE_BLOCKING", "script_ir_gate": false},
     "state": {"authority_class": "PRODUCTION_CONTINUITY_STATE", "blocking_stage": "SHOT_PLAN", "script_ir_gate": false}
   },
+  "six_missing_facts": [
+    {"fact_key": "character|宋知夏|visual_identity|global", "classification": "PRODUCTION_AUTHORING_DECISION", "scope": "global", "original_scope": "global", "blocking_stage": "VISUAL_ASSET_GENERATION", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "character|宋知夏|current_state|global", "classification": "PRODUCTION_CONTINUITY_STATE", "scope": "episode", "original_scope": "global", "blocking_stage": "SCENE_BLOCKING", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "character|程雨|visual_identity|global", "classification": "PRODUCTION_AUTHORING_DECISION", "scope": "global", "original_scope": "global", "blocking_stage": "VISUAL_ASSET_GENERATION", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "character|程雨|current_state|global", "classification": "PRODUCTION_CONTINUITY_STATE", "scope": "episode", "original_scope": "global", "blocking_stage": "SCENE_BLOCKING", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "scene|production_scene|geometry|global", "classification": "PRODUCTION_AUTHORING_DECISION", "scope": "scene", "original_scope": "global", "blocking_stage": "SCENE_BLOCKING", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "prop|production_props|state|global", "classification": "PRODUCTION_CONTINUITY_STATE", "scope": "scene", "original_scope": "global", "blocking_stage": "SHOT_PLAN", "script_ir_blocking": false, "authoring_decision": true}
+  ],
+  "script_ir_blocking_facts": [],
   "provider_evidence_contract": {
     "schema_version": "quote_span_v2",
     "provider_fields": ["anchor_ref", "quote_span"],
