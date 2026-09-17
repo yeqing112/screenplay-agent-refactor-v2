@@ -35,6 +35,12 @@ def _text(value: Any) -> str:
 def build_source_index(source_material: Any, *, source_package_id: str = "targeted-source", source_version_id: str = "v1") -> dict[str, Any]:
     if isinstance(source_material, dict) and isinstance(source_material.get("source_index"), dict):
         return copy.deepcopy(source_material["source_index"])
+    if isinstance(source_material, (bytes, bytearray)):
+        # Preserve immutable line endings and byte offsets exactly; decoding a
+        # file with Path.read_text() would normalize CRLF and change the source
+        # hash before evidence validation.
+        raw = bytes(source_material)
+        return build_source_evidence_index(raw, source_package_id=source_package_id, source_version_id=source_version_id)
     if isinstance(source_material, (dict, list)):
         text = json.dumps(source_material, ensure_ascii=False, indent=2)
     else:
@@ -130,8 +136,9 @@ def validate_candidate_fact(candidate: dict[str, Any], requirement: dict[str, An
         # Avoid substring false positives (for example ``male`` in
         # ``female``); a value must be the explicit value field or a bounded
         # token in the immutable excerpt.
-        value_pattern = re.compile(r"(?:^|[=:,;；\s])" + re.escape(value_text) + r"(?:$|[,;；\s])") if value_text else None
-        if value_text and not (re.search(r"value\s*[=:]\s*[\"']?" + re.escape(value_text) + r"[\"']?(?:$|[,;；\s])", support_text, re.IGNORECASE) or value_pattern and value_pattern.search(support_text)):
+        boundary = r"[.,!?;:，。！？；：\s]"
+        value_pattern = re.compile(r"(?:^|[=:,;；\s])" + re.escape(value_text) + r"(?:$|" + boundary + r")") if value_text else None
+        if value_text and not (re.search(r"value\s*[=:]\s*[\"']?" + re.escape(value_text) + r"[\"']?(?:$|" + boundary + r")", support_text, re.IGNORECASE) or value_pattern and value_pattern.search(support_text)):
             errors.append({"code": "EVIDENCE_VALUE_UNSUPPORTED", "message": "Evidence anchor does not support candidate value."})
     existing = [r for r in (existing_records or []) if isinstance(r, dict) and fact_key(r) == fact_key(candidate)]
     if any(str(r.get("authority") or "").lower() in {"source_text", "locked_fact", "approved_fact"} and str(r.get("status") or "").lower() == "confirmed" and _canonical(r.get("value")) != _canonical(candidate.get("value")) for r in existing):

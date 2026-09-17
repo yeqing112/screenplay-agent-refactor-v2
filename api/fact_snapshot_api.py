@@ -10,6 +10,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.fact_snapshot import build_fact_snapshot
+from core.targeted_semantic_evidence_resolution import run_targeted_semantic_evidence_resolution
 from core.fact_coverage_verifier import run_targeted_missing_fact_extraction, verify_fact_coverage
 from models import FactRecord, FactSnapshot, Script, Session
 
@@ -39,6 +40,12 @@ class TargetedFactExtractionRequest(FactCoverageRequest):
 
 class FactCoverageRecheckRequest(FactCoverageRequest):
     snapshot_id: int = Field(validation_alias=AliasChoices("snapshot_id", "snapshotId"))
+
+
+class TargetedSemanticResolutionRequest(BaseModel):
+    missing_manifest: dict[str, Any] = Field(default_factory=dict, validation_alias=AliasChoices("missing_manifest", "missingManifest"))
+    source_material: Any = Field(default=None, validation_alias=AliasChoices("source_material", "sourceMaterial"))
+    snapshot_id: int | None = Field(default=None, validation_alias=AliasChoices("snapshot_id", "snapshotId"))
 
 
 def _source_fingerprint(script: Script | None) -> str:
@@ -120,6 +127,22 @@ def fact_coverage_recheck(book_id: int, episode: int, req: FactCoverageRecheckRe
         snapshot = _snapshot_payload_or_empty(session, book_id, episode, req.snapshot_id)
     result = verify_fact_coverage(records=snapshot.get("records", []), requirements=req.requirements, source_scope=req.source_scope or ["source_material"])
     return {"mode": "provider_free_fact_coverage_recheck", "mutated": False, "llm_called": False, "snapshot": snapshot, **result}
+
+
+@router.post("/{book_id}/episodes/{episode}/fact-coverage/semantic-resolve")
+def fact_coverage_semantic_resolve(book_id: int, episode: int, req: TargetedSemanticResolutionRequest) -> dict[str, Any]:
+    """Retrieve and resolve evidence for manifest facts without persistence.
+
+    The endpoint intentionally has no provider selector: deterministic
+    resolution is the default and any future proposer must be injected by an
+    explicitly authorized server-side adapter, never by request payload.
+    """
+    with Session() as session:
+        snapshot = _snapshot_payload_or_empty(session, book_id, episode, req.snapshot_id)
+        script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
+    source = req.source_material if req.source_material is not None else (script.content if script else "")
+    result = run_targeted_semantic_evidence_resolution(source_material=source, current_snapshot=snapshot, missing_manifest=req.missing_manifest, source_package_id=f"book:{book_id}", source_version_id=f"episode:{episode}")
+    return {"mode": "provider_free_targeted_semantic_evidence_resolution", "mutated": False, "llm_called": False, **result}
 
 
 @router.post("/{book_id}/episodes/{episode}/fact-snapshots/confirm")

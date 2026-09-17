@@ -1,5 +1,11 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-17 — Director Quality V3：Targeted Semantic Evidence Resolution（Provider-free）
+
+- 在现有 SourceEvidenceIndex 与 MissingFactManifest 上增加候选锚点检索、保守的自然语言/代词承接解析、exact quote/source hash/offset 复核与 semantic support validation。
+- 解析结果只能成为受验证的 FactSnapshot candidate，不能让模型输出成为 authority；merge 与 coverage recheck 继续复用既有链路，ScriptIR 仍 fail-closed。
+- 新增 `POST /api/books/{book_id}/episodes/{episode}/fact-coverage/semantic-resolve` 与 `npm run evaluate:targeted-semantic-evidence`；默认 provider calls=0。
+
 ## 2026-09-17 — Director Quality V3：Targeted Missing Fact Extraction（Provider-free）
 
 - 新增 `core/fact_coverage.py`、`core/fact_coverage_verifier.py` 与 `core/targeted_missing_fact_extraction.py`，建立 `MissingFactManifest`、定向候选提取、证据/范围/权威冲突校验、幂等 merge 与 coverage recheck。

@@ -1,0 +1,15 @@
+{
+  "ambiguous": 0,
+  "conflicted": 0,
+  "fact_coverage_status": "FACT_COVERAGE_INSUFFICIENT",
+  "merge_status": "NO_CHANGE",
+  "provider_calls": 0,
+  "remaining_unresolved": 6,
+  "required": 6,
+  "resolved": 0,
+  "result_fingerprint": "85b9ae3065cfe6e86c24d54af04ec623f55495dfc41e71bca250d459512447e7",
+  "schema_version": "director_quality_v3_targeted_semantic_evidence_resolution_stage_v1",
+  "script_ir_gate": "BLOCKED_PENDING_TARGETED_MISSING_FACTS",
+  "status": "CLOSED_PROVIDER_FREE",
+  "unsupported": 6
+}

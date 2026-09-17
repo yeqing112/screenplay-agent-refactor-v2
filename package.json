@@ -41,6 +41,7 @@
     "seed:storyboard-gray-sample": "python scripts/seed-storyboard-gray-sample.py",
     "validate:minimax-h3-gray": "python scripts/validate-minimax-h3-gray.py",
     "evaluate:targeted-missing-facts": "python scripts/run_director_quality_v3_targeted_missing_fact_extraction.py",
+    "evaluate:targeted-semantic-evidence": "python scripts/run_director_quality_v3_targeted_semantic_evidence_resolution.py",
     "preview:storyboard-compiler-v1": "python scripts/preview-storyboard-compiler-v1.py",
     "preview:book75-compiler-v1": "python scripts/preview-storyboard-compiler-v1.py --book-id 75 --target-model jimeng --out artifacts/book75-storyboard-compiler-v1-preview.json --summary-md artifacts/book75-storyboard-compiler-v1-preview.md",
     "preview:machine-prompt-export": "python scripts/preview-storyboard-machine-prompt-export.py",
