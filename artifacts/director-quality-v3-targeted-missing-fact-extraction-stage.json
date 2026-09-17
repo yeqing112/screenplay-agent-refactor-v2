@@ -1,0 +1,12 @@
+{
+  "fact_coverage_status": "FACT_COVERAGE_INSUFFICIENT",
+  "idempotency_key": "1009751497b003674f072af5d3c372e0d0dc152f7bb901665266387bc018753a",
+  "manifest_count": 6,
+  "merge_status": "NO_CHANGE",
+  "provider_calls": 0,
+  "schema_version": "director_quality_v3_targeted_missing_fact_extraction_stage_v1",
+  "script_ir_gate": "BLOCKED_PENDING_TARGETED_MISSING_FACTS",
+  "status": "CLOSED_PROVIDER_FREE",
+  "unresolved_count": 6,
+  "validated_candidate_count": 0
+}

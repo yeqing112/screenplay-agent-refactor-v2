@@ -1,5 +1,13 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-17 — Director Quality V3：Targeted Missing Fact Extraction（Provider-free）
+
+- 新增 `core/fact_coverage.py`、`core/fact_coverage_verifier.py` 与 `core/targeted_missing_fact_extraction.py`，建立 `MissingFactManifest`、定向候选提取、证据/范围/权威冲突校验、幂等 merge 与 coverage recheck。
+- 新增 `/api/books/{book_id}/episodes/{episode}/fact-coverage/{missing-manifest,targeted-extract,recheck}` 只读接口；不调用 LLM、MiMo 或任何媒体 Provider。
+- ScriptIR 确认路径在显式绑定覆盖率不足的 FactSnapshot 时 fail-closed，返回 `BLOCKED_PENDING_TARGETED_MISSING_FACTS`；覆盖率达标才允许打开 gate。
+- 当前真实源材料结果：6 个 required facts、0 个可验证候选、6 个 unresolved，`FACT_COVERAGE_INSUFFICIENT`，ScriptIR 继续阻塞。不得通过降低阈值或猜测解除阻塞。
+- 定向测试：14 passed；Golden 与 Recanary 结果保持 provider-free。
+
 ## 2026-09-13 — Real Production Pilot V1 instrumentation（准备阶段）
 
 - 新增 `core/pilot_instrumentation.py`，提供按 stage/episode/scene/shot/repair attempt 的通用 LLM 审计采集器。

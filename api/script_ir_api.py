@@ -11,7 +11,7 @@ from pydantic import AliasChoices, BaseModel, Field
 
 from core.script_ir import build_script_ir, legacy_markdown_to_script_ir, script_ir_hash, validate_script_ir
 from core.script_renderer import render_script_markdown
-from models import Script, ScriptIRVersion, Session
+from models import FactSnapshot, Script, ScriptIRVersion, Session
 
 router = APIRouter(prefix="/api/books", tags=["script-ir"])
 
@@ -70,6 +70,32 @@ def _source_payload(row: Script, *, book_id: int, episode: int) -> tuple[dict[st
     if isinstance(parsed, dict) and isinstance(parsed.get("scenes"), list):
         return build_script_ir(parsed, book_id=book_id, episode=episode), False
     return legacy_markdown_to_script_ir(raw, book_id=book_id, episode=episode), True
+
+
+def _enforce_fact_coverage_gate(session: Any, source_fact_snapshot_id: str) -> None:
+    """Enforce coverage only when the caller binds a persisted snapshot.
+
+    Older creative-draft callers may omit the binding entirely.  Once a
+    snapshot is explicitly supplied, an evaluated insufficient result is a
+    hard production prerequisite and cannot be bypassed by confirming ScriptIR.
+    """
+    token = str(source_fact_snapshot_id or "").strip()
+    if not token.isdigit():
+        return
+    row = session.query(FactSnapshot).filter_by(id=int(token)).first()
+    if not row:
+        return
+    try:
+        report = json.loads(row.validation_report or "{}")
+    except (TypeError, ValueError, json.JSONDecodeError):
+        report = {}
+    coverage = report.get("fact_coverage") if isinstance(report.get("fact_coverage"), dict) else report.get("coverage")
+    if not isinstance(coverage, dict):
+        return
+    status = str(coverage.get("status") or "").strip()
+    if status and status != "FACT_COVERAGE_SUFFICIENT":
+        from fastapi import HTTPException
+        raise HTTPException(status_code=409, detail={"code": "FACT_COVERAGE_INSUFFICIENT", "coverage": coverage, "script_ir_gate": {"status": "BLOCKED_PENDING_TARGETED_MISSING_FACTS", "allowed": False}})
 
 
 @router.post("/{book_id}/episodes/{episode}/script-ir/build")
@@ -134,6 +160,7 @@ def confirm_script_ir(book_id: int, episode: int, req: ScriptIRConfirmRequest) -
         if not script or _content_hash(script.content or "") != draft.source_fingerprint:
             draft.status = "superseded"; draft.updated_at = datetime.now(); session.commit()
             raise HTTPException(status_code=409, detail="Script source changed; ScriptIR draft is stale and must be regenerated.")
+        _enforce_fact_coverage_gate(session, draft.source_fact_snapshot_id)
         try:
             candidate = build_script_ir(req.payload if req.payload is not None else json.loads(draft.payload_json), book_id=book_id, episode=episode, fact_snapshot_id=draft.source_fact_snapshot_id, source_outline_revision=draft.source_outline_revision)
         except (TypeError, ValueError, json.JSONDecodeError) as exc:

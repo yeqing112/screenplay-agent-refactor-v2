@@ -1,0 +1,209 @@
+{
+  "blocking_count": 6,
+  "coverage": [
+    {
+      "evidence": {
+        "record_count": 0,
+        "state": "absent"
+      },
+      "fact_key": "character|宋知夏|visual_identity|global",
+      "reason": "ABSENT",
+      "required": true,
+      "satisfied": false
+    },
+    {
+      "evidence": {
+        "record_count": 0,
+        "state": "absent"
+      },
+      "fact_key": "character|宋知夏|current_state|global",
+      "reason": "ABSENT",
+      "required": true,
+      "satisfied": false
+    },
+    {
+      "evidence": {
+        "record_count": 0,
+        "state": "absent"
+      },
+      "fact_key": "character|程雨|visual_identity|global",
+      "reason": "ABSENT",
+      "required": true,
+      "satisfied": false
+    },
+    {
+      "evidence": {
+        "record_count": 0,
+        "state": "absent"
+      },
+      "fact_key": "character|程雨|current_state|global",
+      "reason": "ABSENT",
+      "required": true,
+      "satisfied": false
+    },
+    {
+      "evidence": {
+        "record_count": 0,
+        "state": "absent"
+      },
+      "fact_key": "scene|production_scene|geometry|global",
+      "reason": "ABSENT",
+      "required": true,
+      "satisfied": false
+    },
+    {
+      "evidence": {
+        "record_count": 0,
+        "state": "absent"
+      },
+      "fact_key": "prop|production_props|state|global",
+      "reason": "ABSENT",
+      "required": true,
+      "satisfied": false
+    }
+  ],
+  "missing_fact_manifest": {
+    "count": 6,
+    "fingerprint": "4162993b4561237ec423d902dae33545446f759232d3e0ebc3ac28a9df693b26",
+    "items": [
+      {
+        "consumer": "script_ir",
+        "dependency": [],
+        "description": "",
+        "entity": "宋知夏",
+        "existing_evidence": {
+          "record_count": 0,
+          "state": "absent"
+        },
+        "expected_value": null,
+        "fact_key": "character|宋知夏|visual_identity|global",
+        "missing_reason": "ABSENT",
+        "optional": false,
+        "required": true,
+        "scope": "global",
+        "semantic_type": "character",
+        "severity": "blocking",
+        "source_scope": [
+          "immutable_source_material"
+        ]
+      },
+      {
+        "consumer": "script_ir",
+        "dependency": [],
+        "description": "",
+        "entity": "宋知夏",
+        "existing_evidence": {
+          "record_count": 0,
+          "state": "absent"
+        },
+        "expected_value": null,
+        "fact_key": "character|宋知夏|current_state|global",
+        "missing_reason": "ABSENT",
+        "optional": false,
+        "required": true,
+        "scope": "global",
+        "semantic_type": "character",
+        "severity": "blocking",
+        "source_scope": [
+          "immutable_source_material"
+        ]
+      },
+      {
+        "consumer": "script_ir",
+        "dependency": [],
+        "description": "",
+        "entity": "程雨",
+        "existing_evidence": {
+          "record_count": 0,
+          "state": "absent"
+        },
+        "expected_value": null,
+        "fact_key": "character|程雨|visual_identity|global",
+        "missing_reason": "ABSENT",
+        "optional": false,
+        "required": true,
+        "scope": "global",
+        "semantic_type": "character",
+        "severity": "blocking",
+        "source_scope": [
+          "immutable_source_material"
+        ]
+      },
+      {
+        "consumer": "script_ir",
+        "dependency": [],
+        "description": "",
+        "entity": "程雨",
+        "existing_evidence": {
+          "record_count": 0,
+          "state": "absent"
+        },
+        "expected_value": null,
+        "fact_key": "character|程雨|current_state|global",
+        "missing_reason": "ABSENT",
+        "optional": false,
+        "required": true,
+        "scope": "global",
+        "semantic_type": "character",
+        "severity": "blocking",
+        "source_scope": [
+          "immutable_source_material"
+        ]
+      },
+      {
+        "consumer": "scene_blocking",
+        "dependency": [],
+        "description": "",
+        "entity": "production_scene",
+        "existing_evidence": {
+          "record_count": 0,
+          "state": "absent"
+        },
+        "expected_value": null,
+        "fact_key": "scene|production_scene|geometry|global",
+        "missing_reason": "ABSENT",
+        "optional": false,
+        "required": true,
+        "scope": "global",
+        "semantic_type": "scene",
+        "severity": "blocking",
+        "source_scope": [
+          "immutable_source_material"
+        ]
+      },
+      {
+        "consumer": "shot_plan",
+        "dependency": [],
+        "description": "",
+        "entity": "production_props",
+        "existing_evidence": {
+          "record_count": 0,
+          "state": "absent"
+        },
+        "expected_value": null,
+        "fact_key": "prop|production_props|state|global",
+        "missing_reason": "ABSENT",
+        "optional": false,
+        "required": true,
+        "scope": "global",
+        "semantic_type": "prop",
+        "severity": "blocking",
+        "source_scope": [
+          "immutable_source_material"
+        ]
+      }
+    ],
+    "schema_version": "missing_fact_manifest_v1",
+    "status": "FACT_COVERAGE_INSUFFICIENT"
+  },
+  "provider_calls": 0,
+  "required_count": 6,
+  "satisfied_count": 0,
+  "schema_version": "fact_coverage_v1",
+  "script_ir_gate": {
+    "allowed": false,
+    "reason": "required facts remain absent, unsupported, ambiguous, conflicted or invalid",
+    "status": "BLOCKED_PENDING_TARGETED_MISSING_FACTS"
+  },
+  "status": "FACT_COVERAGE_INSUFFICIENT"
+}

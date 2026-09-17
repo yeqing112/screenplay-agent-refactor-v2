@@ -10,6 +10,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.fact_snapshot import build_fact_snapshot
+from core.fact_coverage_verifier import run_targeted_missing_fact_extraction, verify_fact_coverage
 from models import FactRecord, FactSnapshot, Script, Session
 
 router = APIRouter(prefix="/api/books", tags=["fact-snapshot"])
@@ -24,6 +25,20 @@ class FactSnapshotBuildRequest(BaseModel):
 class FactSnapshotConfirmRequest(BaseModel):
     snapshot_id: int = Field(validation_alias=AliasChoices("snapshot_id", "snapshotId"))
     confirmed: bool = False
+
+
+class FactCoverageRequest(BaseModel):
+    requirements: list[dict[str, Any]] = Field(default_factory=list)
+    source_scope: list[str] = Field(default_factory=list, validation_alias=AliasChoices("source_scope", "sourceScope"))
+
+
+class TargetedFactExtractionRequest(FactCoverageRequest):
+    source_material: Any = Field(default=None, validation_alias=AliasChoices("source_material", "sourceMaterial"))
+    snapshot_id: int | None = Field(default=None, validation_alias=AliasChoices("snapshot_id", "snapshotId"))
+
+
+class FactCoverageRecheckRequest(FactCoverageRequest):
+    snapshot_id: int = Field(validation_alias=AliasChoices("snapshot_id", "snapshotId"))
 
 
 def _source_fingerprint(script: Script | None) -> str:
@@ -63,6 +78,48 @@ def list_fact_snapshots(book_id: int, episode: int) -> dict[str, Any]:
     with Session() as session:
         rows = session.query(FactSnapshot).filter_by(book_id=book_id, episode=episode).order_by(FactSnapshot.revision.desc(), FactSnapshot.id.desc()).all()
     return {"items": [_payload(row) for row in rows]}
+
+
+def _snapshot_payload_or_empty(session: Any, book_id: int, episode: int, snapshot_id: int | None = None) -> dict[str, Any]:
+    query = session.query(FactSnapshot).filter_by(book_id=book_id, episode=episode)
+    row = query.filter_by(id=snapshot_id).first() if snapshot_id is not None else query.order_by(FactSnapshot.revision.desc(), FactSnapshot.id.desc()).first()
+    if not row:
+        return {"book_id": book_id, "episode": episode, "revision": 0, "records": [], "source_fingerprint": "", "payload_hash": ""}
+    payload = _payload(row)
+    return payload
+
+
+@router.post("/{book_id}/episodes/{episode}/fact-coverage/missing-manifest")
+def fact_coverage_missing_manifest(book_id: int, episode: int, req: FactCoverageRequest) -> dict[str, Any]:
+    """Return a machine-consumable manifest without any external calls."""
+    with Session() as session:
+        snapshot = _snapshot_payload_or_empty(session, book_id, episode)
+    result = verify_fact_coverage(records=snapshot.get("records", []), requirements=req.requirements, source_scope=req.source_scope or ["source_material"])
+    return {"mode": "provider_free_fact_coverage", "mutated": False, "llm_called": False, "snapshot": snapshot, **result}
+
+
+@router.post("/{book_id}/episodes/{episode}/fact-coverage/targeted-extract")
+def fact_coverage_targeted_extract(book_id: int, episode: int, req: TargetedFactExtractionRequest) -> dict[str, Any]:
+    """Extract only manifest facts, optionally from a selected snapshot.
+
+    This endpoint is intentionally read-only.  The returned merge proposal can
+    be reviewed and persisted through the existing FactSnapshot confirmation
+    flow; it never calls a model or mutates the database.
+    """
+    with Session() as session:
+        snapshot = _snapshot_payload_or_empty(session, book_id, episode, req.snapshot_id)
+        script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
+    source = req.source_material if req.source_material is not None else (script.content if script else "")
+    result = run_targeted_missing_fact_extraction(source_material=source, current_snapshot=snapshot, requirements=req.requirements, source_scope=req.source_scope or ["source_material"], source_package_id=f"book:{book_id}", source_version_id=f"episode:{episode}")
+    return {"mode": "provider_free_targeted_missing_fact_extraction", "mutated": False, "llm_called": False, **result}
+
+
+@router.post("/{book_id}/episodes/{episode}/fact-coverage/recheck")
+def fact_coverage_recheck(book_id: int, episode: int, req: FactCoverageRecheckRequest) -> dict[str, Any]:
+    with Session() as session:
+        snapshot = _snapshot_payload_or_empty(session, book_id, episode, req.snapshot_id)
+    result = verify_fact_coverage(records=snapshot.get("records", []), requirements=req.requirements, source_scope=req.source_scope or ["source_material"])
+    return {"mode": "provider_free_fact_coverage_recheck", "mutated": False, "llm_called": False, "snapshot": snapshot, **result}
 
 
 @router.post("/{book_id}/episodes/{episode}/fact-snapshots/confirm")
