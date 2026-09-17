@@ -1,0 +1,44 @@
+{
+  "schema_version": "director_quality_v3_fact_requirement_semantics_authoring_boundary_v1",
+  "status": "IMPLEMENTED",
+  "provider_calls": 0,
+  "persistence_writes": {
+    "fact_snapshot": 0,
+    "authority": 0,
+    "production": 0
+  },
+  "registry": {
+    "schema_version": "fact_requirement_registry_v1",
+    "authority_classes": [
+      "SOURCE_FACT",
+      "DERIVED_SOURCE_FACT",
+      "PRODUCTION_AUTHORING_DECISION",
+      "PRODUCTION_CONTINUITY_STATE"
+    ],
+    "predicates": ["visual_identity", "current_state", "geometry", "state"],
+    "provider_calls": 0
+  },
+  "reclassification": {
+    "visual_identity": {"authority_class": "PRODUCTION_AUTHORING_DECISION", "blocking_stage": "VISUAL_ASSET_GENERATION", "script_ir_gate": false},
+    "current_state": {"authority_class": "PRODUCTION_CONTINUITY_STATE", "blocking_stage": "SCENE_BLOCKING", "script_ir_gate": false},
+    "geometry": {"authority_class": "PRODUCTION_AUTHORING_DECISION", "blocking_stage": "SCENE_BLOCKING", "script_ir_gate": false},
+    "state": {"authority_class": "PRODUCTION_CONTINUITY_STATE", "blocking_stage": "SHOT_PLAN", "script_ir_gate": false}
+  },
+  "six_missing_facts": [
+    {"fact_key": "character|宋知夏|visual_identity|global", "classification": "PRODUCTION_AUTHORING_DECISION", "scope": "global", "original_scope": "global", "blocking_stage": "VISUAL_ASSET_GENERATION", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "character|宋知夏|current_state|global", "classification": "PRODUCTION_CONTINUITY_STATE", "scope": "episode", "original_scope": "global", "blocking_stage": "SCENE_BLOCKING", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "character|程雨|visual_identity|global", "classification": "PRODUCTION_AUTHORING_DECISION", "scope": "global", "original_scope": "global", "blocking_stage": "VISUAL_ASSET_GENERATION", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "character|程雨|current_state|global", "classification": "PRODUCTION_CONTINUITY_STATE", "scope": "episode", "original_scope": "global", "blocking_stage": "SCENE_BLOCKING", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "scene|production_scene|geometry|global", "classification": "PRODUCTION_AUTHORING_DECISION", "scope": "scene", "original_scope": "global", "blocking_stage": "SCENE_BLOCKING", "script_ir_blocking": false, "authoring_decision": true},
+    {"fact_key": "prop|production_props|state|global", "classification": "PRODUCTION_CONTINUITY_STATE", "scope": "scene", "original_scope": "global", "blocking_stage": "SHOT_PLAN", "script_ir_blocking": false, "authoring_decision": true}
+  ],
+  "script_ir_blocking_facts": [],
+  "provider_evidence_contract": {
+    "schema_version": "quote_span_v2",
+    "provider_fields": ["anchor_ref", "quote_span"],
+    "program_owned": ["exact_text", "char_offsets", "byte_offsets"],
+    "normalization_matching": false,
+    "legacy_replay_compatibility": true
+  },
+  "next_stage_authorization_required": ["SEMANTIC_RETRIEVAL_V2", "PROVIDER_CANARY_V2"]
+}

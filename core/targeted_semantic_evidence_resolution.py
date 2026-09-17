@@ -31,11 +31,14 @@ RESOLUTION_TYPES = (
 SUPPORT_STATUSES = ("SUPPORTED", "NOT_SUPPORTED", "AMBIGUOUS", "CONFLICTED")
 PROVIDER_PROPOSER_FIELDS = {
     "fact_key", "subject_type", "subject_id", "predicate", "scope",
-    "proposed_value", "supporting_anchor_refs", "exact_quotes",
+    "proposed_value", "supporting_anchor_refs", "exact_quotes", "evidence",
     "resolution_type", "confidence", "ambiguity", "conflicting_anchor_refs",
     "reasoning_summary",
 }
-PROVIDER_PROPOSER_REQUIRED_FIELDS = PROVIDER_PROPOSER_FIELDS
+PROVIDER_PROPOSER_REQUIRED_FIELDS = {
+    "fact_key", "subject_type", "subject_id", "predicate", "scope", "proposed_value",
+    "resolution_type", "confidence", "ambiguity", "conflicting_anchor_refs", "reasoning_summary",
+}
 _DECLARATION_RE = re.compile(r"(?:FACT|事实)\s*:", re.IGNORECASE)
 _CJK_RE = re.compile(r"[\u3400-\u9fff]")
 _WORD_RE = re.compile(r"[\w\-]+", re.UNICODE)
@@ -100,6 +103,14 @@ def _aliases(item: dict[str, Any], current_snapshot: dict[str, Any] | None = Non
 
 def _predicate_terms(item: dict[str, Any]) -> list[str]:
     values = [_text(item.get("predicate")), _text(item.get("description"))]
+    try:
+        from core.fact_requirement_semantics import get_requirement_semantics
+        semantics = get_requirement_semantics(item.get("predicate"), requirement=item)
+        retrieval = semantics.get("retrieval_semantics") if isinstance(semantics.get("retrieval_semantics"), dict) else {}
+        values.extend(retrieval.get("terms") or [])
+        values.extend(retrieval.get("aliases") or [])
+    except Exception:
+        pass
     terms: list[str] = []
     for value in values:
         for token in _tokens(value):
@@ -137,6 +148,12 @@ def retrieve_candidate_anchors(
     entity_terms.extend(token for alias in aliases for token in _tokens(alias) if len(token) > 1 and token not in _LEXICAL_STOPWORDS)
     entity_terms = list(dict.fromkeys(entity_terms))
     predicate_terms = _predicate_terms(item)
+    try:
+        from core.fact_requirement_semantics import get_requirement_semantics
+        retrieval = get_requirement_semantics(item.get("predicate"), requirement=item).get("retrieval_semantics") or {}
+        source_surfaces = [str(value) for value in retrieval.get("source_surfaces") or []]
+    except Exception:
+        source_surfaces = []
     expected_terms = _tokens(item.get("expected_value"))
     query_terms = list(dict.fromkeys(entity_terms + predicate_terms + expected_terms))
     anchors = [row for row in (source_index or {}).get("anchors", []) if isinstance(row, dict)]
@@ -149,7 +166,13 @@ def retrieve_candidate_anchors(
         entity_matches = [term for term in entity_terms if term and term.lower() in lower]
         predicate_matches = [term for term in predicate_terms if term and term.lower() in lower]
         expected_matches = [term for term in expected_terms if term and term.lower() in lower]
+        surface_match = [surface for surface in source_surfaces if surface.lower() in str(anchor.get("anchor_surface_class") or "").lower() or surface.lower() in str(anchor.get("unit_type") or "").lower()]
+        # Surface taxonomy is a ranking tie-breaker only; it must never turn
+        # every narrative anchor into a candidate when entity/predicate/value
+        # terms are absent.
         score = len(entity_matches) * 5 + len(predicate_matches) * 2 + len(expected_matches) * 3
+        if score > 0:
+            score += len(surface_match)
         # A nearby anchor can be useful for pronoun resolution, but it must be
         # explicitly marked as context and never promoted on its own.
         coreference_to = None
@@ -175,11 +198,12 @@ def retrieve_candidate_anchors(
             "byte_start": anchor.get("byte_start"),
             "byte_end": anchor.get("byte_end"),
             "scope": _text(item.get("scope") or "global"),
-            "retrieval_reason": "entity_and_predicate_overlap" if entity_matches and predicate_matches else "entity_overlap" if entity_matches else "predicate_or_value_overlap",
+            "retrieval_reason": "entity_and_predicate_overlap" if entity_matches and predicate_matches else "entity_overlap" if entity_matches else "surface_and_semantic_overlap" if surface_match else "predicate_or_value_overlap",
             "lexical_entity_matches": entity_matches,
             "lexical_predicate_matches": predicate_matches,
             "lexical_expected_value_matches": expected_matches,
             "ranking_score": score,
+            "semantic_surface_matches": surface_match,
         })
         if coreference_to:
             ranked[-1]["retrieval_reason"] = "coreference_context"
@@ -190,7 +214,7 @@ def retrieve_candidate_anchors(
         "fact_key": _text(item.get("fact_key")) or fact_key(item),
         "anchor_count": min(len(ranked), max_candidates),
         "anchors": ranked[: max(0, int(max_candidates))],
-        "query": {"entity_aliases": aliases, "predicate_terms": predicate_terms, "expected_value_terms": expected_terms},
+        "query": {"entity_aliases": aliases, "predicate_terms": predicate_terms, "expected_value_terms": expected_terms, "source_surfaces": source_surfaces, "semantic_registry": True},
         "source_evidence_index_fingerprint": (source_index or {}).get("evidence_index_fingerprint"),
         "source_raw_hash": (source_index or {}).get("source_raw_hash"),
     }
@@ -255,6 +279,10 @@ def validate_semantic_support(proposal: dict[str, Any], candidate_set: dict[str,
     """Validate support independently from evidence existence."""
     refs = proposal.get("supporting_anchor_refs") if isinstance(proposal, dict) else []
     quotes = proposal.get("exact_quotes") if isinstance(proposal, dict) else []
+    evidence_rows = proposal.get("evidence") if isinstance(proposal, dict) else []
+    if isinstance(evidence_rows, list) and evidence_rows:
+        refs = [row.get("anchor_ref") for row in evidence_rows if isinstance(row, dict)]
+        quotes = [row.get("quote_span") for row in evidence_rows if isinstance(row, dict)]
     refs = refs if isinstance(refs, list) else []
     quotes = quotes if isinstance(quotes, list) else []
     by_ref = _anchor_map(source_index)
@@ -296,8 +324,14 @@ def validate_semantic_support(proposal: dict[str, Any], candidate_set: dict[str,
         if _text(ref) not in by_ref:
             continue
         expected_quote = by_ref[_text(ref)].get("exact_text")
-        if index >= len(quotes) or quotes[index] != expected_quote:
-            errors.append({"code": "SUPPORT_QUOTE_NOT_EXACT", "message": f"Quote for {ref} is not an immutable exact quote."})
+        quote = quotes[index] if index < len(quotes) else ""
+        # V2 providers return a substring; the program still resolves the
+        # immutable full anchor and computes offsets.  A repeated span is not
+        # accepted without an explicit disambiguator.
+        if not isinstance(quote, str) or not quote or quote not in str(expected_quote or ""):
+            errors.append({"code": "SUPPORT_QUOTE_NOT_SUBSTRING", "message": f"Quote span for {ref} is not a substring of the immutable anchor."})
+        elif str(expected_quote).count(quote) > 1:
+            errors.append({"code": "SUPPORT_QUOTE_AMBIGUOUS", "message": f"Quote span for {ref} occurs multiple times; disambiguation is required."})
     if errors:
         return {"status": "NOT_SUPPORTED", "errors": errors}
     aliases = _aliases(manifest_item)
@@ -338,6 +372,8 @@ def validate_provider_proposal_shape(
         "supporting_anchor_refs", "exact_quotes", "resolution_type", "confidence",
     }
     missing = sorted(required_fields - keys)
+    if strict and "evidence" not in keys and not {"supporting_anchor_refs", "exact_quotes"}.issubset(keys):
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "evidence is required (legacy supporting_anchor_refs/exact_quotes pair may be replayed only for compatibility)"})
     extra = sorted(keys - PROVIDER_PROPOSER_FIELDS)
     if missing:
         errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": f"missing fields: {','.join(missing)}"})
@@ -359,13 +395,23 @@ def validate_provider_proposal_shape(
         errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "invalid resolution_type"})
     refs = proposal.get("supporting_anchor_refs")
     quotes = proposal.get("exact_quotes")
+    evidence_rows = proposal.get("evidence")
     conflicts = proposal.get("conflicting_anchor_refs")
-    if not isinstance(refs, list) or not all(isinstance(ref, str) and ref.strip() for ref in refs):
-        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "supporting_anchor_refs must be a string array"})
-    if not isinstance(quotes, list) or not all(isinstance(quote, str) for quote in quotes):
-        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "exact_quotes must be a string array"})
-    if isinstance(refs, list) and isinstance(quotes, list) and len(refs) != len(quotes):
-        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "exact_quotes must align with supporting_anchor_refs"})
+    if strict and "evidence" in proposal:
+        if not isinstance(evidence_rows, list) or not evidence_rows:
+            errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "evidence must be a non-empty object array"})
+        for row in evidence_rows or []:
+            if not isinstance(row, dict) or set(row) != {"anchor_ref", "quote_span"} or not isinstance(row.get("anchor_ref"), str) or not isinstance(row.get("quote_span"), str) or not row.get("quote_span"):
+                errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "evidence items require anchor_ref and quote_span only"})
+        refs = [row.get("anchor_ref") for row in evidence_rows or [] if isinstance(row, dict)]
+        quotes = [row.get("quote_span") for row in evidence_rows or [] if isinstance(row, dict)]
+    else:
+        if not isinstance(refs, list) or not all(isinstance(ref, str) and ref.strip() for ref in refs):
+            errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "supporting_anchor_refs must be a string array"})
+        if not isinstance(quotes, list) or not all(isinstance(quote, str) for quote in quotes):
+            errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "exact_quotes must be a string array"})
+        if isinstance(refs, list) and isinstance(quotes, list) and len(refs) != len(quotes):
+            errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "exact_quotes must align with supporting_anchor_refs"})
     if conflicts is not None and (not isinstance(conflicts, list) or not all(isinstance(ref, str) for ref in conflicts)):
         errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "conflicting_anchor_refs must be a string array"})
     confidence = proposal.get("confidence")
@@ -384,8 +430,8 @@ def validate_provider_proposal_shape(
             errors.append({"code": "PROVIDER_EVIDENCE_INVALID", "message": f"anchor ref outside candidate set: {ref}"})
     for ref, quote in zip(refs or [], quotes or []):
         anchor = next((row for row in request.get("candidate_anchors") or [] if isinstance(row, dict) and row.get("anchor_ref") == ref), None)
-        if anchor is not None and quote != anchor.get("exact_text"):
-            errors.append({"code": "PROVIDER_EVIDENCE_INVALID", "message": f"exact quote is not immutable for {ref}"})
+        if anchor is not None and (not isinstance(quote, str) or quote not in str(anchor.get("exact_text") or "")):
+            errors.append({"code": "PROVIDER_EVIDENCE_INVALID", "message": f"quote span is not contained in immutable anchor for {ref}"})
     return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
@@ -397,6 +443,14 @@ def _provider_proposal(provider: Callable[..., dict[str, Any]], request: dict[st
     shape = validate_provider_proposal_shape(response, request)
     if shape["status"] != "PASS":
         return None, {"status": "PROVIDER_SCHEMA_INVALID", "provider_calls": 1, "errors": shape["errors"]}
+    if request.get("strict_provider_contract") and isinstance(response, dict) and isinstance(response.get("evidence"), list):
+        # Normalize the new provider-owned span envelope into the existing
+        # resolver seam.  The full immutable anchor remains program-owned.
+        response = {
+            **response,
+            "supporting_anchor_refs": [row.get("anchor_ref") for row in response["evidence"] if isinstance(row, dict)],
+            "exact_quotes": [row.get("quote_span") for row in response["evidence"] if isinstance(row, dict)],
+        }
     return response, {"status": "PROVIDER_RESPONSE_RECEIVED", "provider_calls": 1}
 
 

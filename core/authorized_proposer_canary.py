@@ -41,7 +41,9 @@ def build_proposer_system_prompt() -> str:
     return (
         "You are a conservative source-grounded fact proposer. Return exactly one JSON object "
         "matching the supplied schema. You may only cite the supplied candidate anchors. "
-        "Do not invent evidence, anchors, authority, status, offsets, or additional fields. "
+        "Return evidence as objects with anchor_ref and quote_span; quote_span must be a "
+        "verbatim substring of that anchor, not a paraphrase. Do not invent evidence, "
+        "anchors, authority, status, offsets, or additional fields. "
         "Preserve fact_key, subject_type, subject_id, predicate, and scope exactly. "
         "A high confidence value never substitutes for exact evidence. reasoning_summary is "
         "diagnostic only."
@@ -50,9 +52,15 @@ def build_proposer_system_prompt() -> str:
 
 def build_proposer_request(manifest_item: dict[str, Any], candidate_set: dict[str, Any], source_index: dict[str, Any]) -> dict[str, Any]:
     """Build the bounded provider request; no full source material is included."""
+    try:
+        from core.fact_requirement_semantics import get_requirement_semantics
+        semantics = get_requirement_semantics(manifest_item.get("predicate"), requirement=manifest_item)
+    except Exception:
+        semantics = {}
     return {
         "task": "targeted_missing_fact_proposal",
         "fact": copy.deepcopy(manifest_item),
+        "requirement_semantics": semantics,
         "candidate_anchors": copy.deepcopy(candidate_set.get("anchors") or [])[:8],
         "source_evidence_index_fingerprint": source_index.get("evidence_index_fingerprint"),
         "output_schema": {
@@ -60,15 +68,14 @@ def build_proposer_request(manifest_item: dict[str, Any], candidate_set: dict[st
             "additionalProperties": False,
             "required": [
                 "fact_key", "subject_type", "subject_id", "predicate", "scope", "proposed_value",
-                "supporting_anchor_refs", "exact_quotes", "resolution_type", "confidence", "ambiguity",
+                "evidence", "resolution_type", "confidence", "ambiguity",
                 "conflicting_anchor_refs", "reasoning_summary",
             ],
             "properties": {
                 "fact_key": {"type": "string"}, "subject_type": {"type": "string"},
                 "subject_id": {"type": "string"}, "predicate": {"type": "string"},
                 "scope": {"type": "string"}, "proposed_value": {},
-                "supporting_anchor_refs": {"type": "array", "items": {"type": "string"}},
-                "exact_quotes": {"type": "array", "items": {"type": "string"}},
+                "evidence": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["anchor_ref", "quote_span"], "additionalProperties": False, "properties": {"anchor_ref": {"type": "string"}, "quote_span": {"type": "string", "minLength": 1}}}},
                 "resolution_type": {"enum": list(RESOLUTION_TYPES)},
                 "confidence": {"type": "number", "minimum": 0, "maximum": 1},
                 "ambiguity": {"type": "boolean"},
@@ -103,7 +110,7 @@ def make_llm_provider(*, model_profile: dict[str, Any], audit_records: list[dict
             model_profile=model_profile,
             required_keys={
                 "fact_key", "subject_type", "subject_id", "predicate", "scope", "proposed_value",
-                "supporting_anchor_refs", "exact_quotes", "resolution_type", "confidence", "ambiguity",
+                "evidence", "resolution_type", "confidence", "ambiguity",
                 "conflicting_anchor_refs", "reasoning_summary",
             },
             json_parse_retries=0,
