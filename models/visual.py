@@ -70,6 +70,9 @@ class VisualLocation(Base):
 
     id = Column(Integer, primary_key=True)
     book_id = Column(Integer, nullable=False)
+    # Stable ScriptIR scene identity.  ``name`` remains a display/legacy
+    # lookup key; production authority must prefer this field.
+    scene_id = Column(String, nullable=False, default="", index=True)
     book_title = Column(String, default="")
     name = Column(String, nullable=False)
     category = Column(String, default="")

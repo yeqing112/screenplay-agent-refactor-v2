@@ -22,6 +22,7 @@ import core.llm as llm_client
 from core.prompt_cache import llm_request_fingerprint, summarize_audit_records
 from core.script_ir import resolve_script_payload
 from core.director_treatment_authority import resolve_current_authoritative_treatment
+from core.scene_blocking_authority import resolve_current_authoritative_scene_blocking
 from core.executability import preflight_shot_plan, build_executability_repair_plan
 from models import DirectorTreatment, FactSnapshot, SceneBlocking, Script, Session, ShotPlan, StoryboardShot, VisualLocation
 
@@ -196,13 +197,15 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
                 raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production ShotPlan requires a stable scene_id."})
             scene_id = str(scene.get("scene_id") or "").strip()
             treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
-            blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+            blocking, blocking_authority = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=scene_id)
         else:
             scene_id = str(scene.get("scene_id") or "").strip() if scene else ""
             treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
             blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
         if not treatment or not blocking:
             raise HTTPException(status_code=409, detail=f"ShotPlan requires approved DirectorTreatment and SceneBlocking for scene: {scene_name or '未命名场景'}")
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production" and (blocking.production_status != "ready" or blocking.qualification_state != "PRODUCTION_QUALIFIED"):
+            raise HTTPException(status_code=409, detail={"code": "SCENE_BLOCKING_NOT_PRODUCTION_QUALIFIED", "message": "Current SceneBlocking is not production-qualified."})
         if _json(blocking.unknowns, []):
             raise HTTPException(status_code=409, detail=f"ShotPlan is blocked by unresolved SceneBlocking unknowns: {scene_name}")
         if not scene:
@@ -212,7 +215,10 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
         plan = build_shot_plan(treatment=treatment_payload, blocking=blocking_payload)
         persisted_id = None
         if req.persist:
-            existing = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, evidence_fingerprint=plan["evidence_fingerprint"]).first()
+            existing_query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, evidence_fingerprint=plan["evidence_fingerprint"], workflow_profile=req.workflow_profile)
+            if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+                existing_query = existing_query.filter_by(scene_id=scene_id)
+            existing = existing_query.first()
             if existing:
                 persisted_id = existing.id
             else:
@@ -237,7 +243,7 @@ def _load_v21_director_context(session: Session, book_id: int, episode: int, sce
         if not scene_id:
             raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production ShotPlan requires a stable scene_id."})
         treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
-        blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+        blocking, blocking_authority = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=scene_id)
     else:
         treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=resolved_scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
         blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=resolved_scene_name, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
@@ -285,19 +291,13 @@ def _load_v21_director_context(session: Session, book_id: int, episode: int, sce
             "key_props": _json(location.key_props, []),
         }
     fact_snapshot: dict[str, Any] = {}
-    fact_row = session.query(FactSnapshot).filter_by(
-        book_id=book_id,
-        episode=episode,
-        status="confirmed",
-    ).order_by(FactSnapshot.revision.desc(), FactSnapshot.id.desc()).first()
+    if str(workflow_profile or "shadow").strip().lower() == "production":
+        bound_fact = blocking_authority.get("fact_snapshot") if isinstance(blocking_authority, dict) else {}
+        fact_row = session.query(FactSnapshot).filter_by(id=int(bound_fact.get("id")), book_id=book_id, episode=episode).first() if isinstance(bound_fact, dict) and str(bound_fact.get("id") or "").isdigit() else None
+    else:
+        fact_row = session.query(FactSnapshot).filter_by(book_id=book_id, episode=episode, status="confirmed").order_by(FactSnapshot.revision.desc(), FactSnapshot.id.desc()).first()
     if fact_row:
-        fact_snapshot = {
-            "snapshot_id": str(fact_row.id),
-            "revision": fact_row.revision,
-            "source_fingerprint": fact_row.source_fingerprint,
-            "payload_hash": fact_row.payload_hash,
-            "records": _json(fact_row.records_json, []),
-        }
+        fact_snapshot = {"snapshot_id": str(fact_row.id), "revision": fact_row.revision, "source_fingerprint": fact_row.source_fingerprint, "payload_hash": fact_row.payload_hash, "records": _json(fact_row.records_json, [])}
     asset_bindings: dict[str, Any] = {}
     location_id = str(scene.get("location_id") or "").strip()
     if location_id:
@@ -541,7 +541,7 @@ def preview_creative_shot_plan(book_id: int, episode: int, req: CreativeShotPlan
         if _json(blocking.unknowns, []):
             raise HTTPException(status_code=409, detail=f"Creative ShotPlan blocked by unresolved SceneBlocking unknowns: {scene_name}")
         treatment_payload = {"scene_name": treatment.scene_name, "scene_id": getattr(treatment, "scene_id", ""), "character_intents": _json(treatment.character_intents, {}), "beat_map": _json(treatment.beat_map, []), "prompt_fingerprint": treatment.prompt_fingerprint, "status": treatment.status}
-        blocking_payload = {"scene_name": blocking.scene_name, "scene_id": getattr(blocking, "scene_id", ""), "participants": _json(blocking.participants, []), "unknowns": _json(blocking.unknowns, []), "source_spatial_facts": _json(getattr(blocking, "source_spatial_facts", "[]"), []), "evidence_fingerprint": blocking.evidence_fingerprint, "status": blocking.status}
+        blocking_payload = {"scene_name": blocking.scene_name, "scene_id": getattr(blocking, "scene_id", ""), "participants": _json(blocking.participants, []), "unknowns": _json(blocking.unknowns, []), "source_spatial_facts": _json(getattr(blocking, "source_spatial_facts", "[]"), []), "evidence_fingerprint": blocking.evidence_fingerprint, "status": blocking.status, "qualification_state": getattr(blocking, "qualification_state", ""), "authority_envelope": blocking_authority if str(req.workflow_profile or "").strip().lower() == "production" else {}}
         baseline = build_shot_plan(treatment=treatment_payload, blocking=blocking_payload)
         try:
             candidate = build_creative_shot_plan_candidate(structural_shot_plan=baseline, treatment=treatment_payload, blocking=blocking_payload, llm_output=req.llm_candidate, mode="shadow")
@@ -655,12 +655,16 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
         draft = session.query(ShotPlan).filter_by(id=req.plan_id, book_id=book_id, episode=episode).first()
         if not draft or draft.status != "draft":
             raise HTTPException(status_code=409, detail="ShotPlan draft not found or already finalized.")
-        treatment = session.query(DirectorTreatment).filter_by(id=draft.treatment_id, book_id=book_id, episode=episode, status="approved").first()
-        blocking = session.query(SceneBlocking).filter_by(id=draft.blocking_id, book_id=book_id, episode=episode, status="approved").first()
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+            treatment, _treatment_authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=str(getattr(draft, "scene_id", "") or ""))
+            blocking, _blocking_authority = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=str(getattr(draft, "scene_id", "") or ""))
+        else:
+            treatment = session.query(DirectorTreatment).filter_by(id=draft.treatment_id, book_id=book_id, episode=episode, status="approved").first()
+            blocking = session.query(SceneBlocking).filter_by(id=draft.blocking_id, book_id=book_id, episode=episode, status="approved").first()
         if not treatment or not blocking:
             raise HTTPException(status_code=409, detail="ShotPlan upstream evidence is no longer approved.")
         scene_name = draft.scene_name
-    preview = preview_shot_plan(book_id, episode, ShotPlanPreviewRequest(scene_name=scene_name, workflow_profile=req.workflow_profile))
+    preview = preview_shot_plan(book_id, episode, ShotPlanPreviewRequest(scene_name=scene_name, scene_id=str(getattr(draft, "scene_id", "") or ""), workflow_profile=req.workflow_profile))
     baseline = preview["plan"]
     if req.evidence_fingerprint and req.evidence_fingerprint != draft.evidence_fingerprint:
         raise HTTPException(status_code=409, detail="ShotPlan evidence fingerprint does not match.")
@@ -679,11 +683,14 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
         raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_EXECUTABILITY_BLOCKED", "executability": executability, "repair_plan": build_executability_repair_plan(executability)})
     with Session() as session:
         draft = session.query(ShotPlan).filter_by(id=req.plan_id, book_id=book_id, episode=episode).first()
-        previous = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(ShotPlan.revision.desc(), ShotPlan.id.desc()).first()
+        previous_query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved")
+        if str(req.workflow_profile or "creative_draft").strip().lower() == "production":
+            previous_query = previous_query.filter_by(scene_id=str(getattr(draft, "scene_id", "") or ""))
+        previous = previous_query.order_by(ShotPlan.revision.desc(), ShotPlan.id.desc()).first()
         if previous:
             previous.status = "superseded"; previous.updated_at = datetime.now()
         anchor = {"previous_plan_id": previous.id if previous else None, "previous_revision": previous.revision if previous else None}
-        row = ShotPlan(book_id=book_id, episode=episode, scene_name=scene_name, revision=(previous.revision + 1 if previous else 1), status="approved", treatment_id=draft.treatment_id, blocking_id=draft.blocking_id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": datetime.now().isoformat()}, ensure_ascii=False), workflow_profile=req.workflow_profile, created_at=datetime.now(), updated_at=datetime.now())
+        row = ShotPlan(book_id=book_id, episode=episode, scene_id=str(getattr(draft, "scene_id", "") or "") if str(req.workflow_profile or "creative_draft").strip().lower() == "production" else "", scene_name=scene_name, revision=(previous.revision + 1 if previous else 1), status="approved", treatment_id=draft.treatment_id, blocking_id=draft.blocking_id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": datetime.now().isoformat()}, ensure_ascii=False), workflow_profile=req.workflow_profile, created_at=datetime.now(), updated_at=datetime.now())
         session.add(row); draft.status = "superseded"; draft.updated_at = datetime.now(); session.commit(); session.refresh(row)
         return {"approved": True, "mutated": True, "shot_plan": _payload(row), "rollback_anchor": anchor, "storyboard_generation_allowed": True}
 

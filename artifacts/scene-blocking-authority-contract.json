@@ -1,0 +1,186 @@
+{
+  "schema_version": "scene_blocking_authority_contract_v1",
+  "authority_policy_version": "scene_blocking_authority_policy_v1",
+  "fields": [
+    {
+      "field": "scene_id",
+      "semantic_definition": "stable ScriptIR scene identity",
+      "authority_class": "SOURCE_SPATIAL_CONSTRAINT",
+      "required": true,
+      "shot_plan_blocking": true,
+      "mutation": "immutable",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "scene_name",
+      "semantic_definition": "source-supported display identity",
+      "authority_class": "SOURCE_SPATIAL_CONSTRAINT",
+      "required": true,
+      "shot_plan_blocking": true,
+      "mutation": "immutable_display_identity",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "source_spatial_facts",
+      "semantic_definition": "explicit spatial facts from ScriptIR/FactSnapshot",
+      "authority_class": "SOURCE_SPATIAL_CONSTRAINT",
+      "required": false,
+      "shot_plan_blocking": true,
+      "mutation": "immutable",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "participants",
+      "semantic_definition": "staged participants and authored positions",
+      "authority_class": "BLOCKING_AUTHORING_DECISION",
+      "required": true,
+      "shot_plan_blocking": true,
+      "mutation": "reviewed_edit_preserve_ids",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "beat_transitions",
+      "semantic_definition": "ordered treatment beat handoff into blocking",
+      "authority_class": "DIRECTOR_CONSTRAINT",
+      "required": true,
+      "shot_plan_blocking": true,
+      "mutation": "preserve_beat_ids_order",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "camera_axis",
+      "semantic_definition": "axis planning constraint",
+      "authority_class": "BLOCKING_AUTHORING_DECISION",
+      "required": false,
+      "shot_plan_blocking": true,
+      "mutation": "reviewed_edit",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "spatial_model",
+      "semantic_definition": "scene geometry projection",
+      "authority_class": "BLOCKING_AUTHORING_DECISION",
+      "required": false,
+      "shot_plan_blocking": true,
+      "mutation": "source_locked_else_reviewed_edit",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "creative_decisions",
+      "semantic_definition": "blocking-level staging decisions",
+      "authority_class": "BLOCKING_AUTHORING_DECISION",
+      "required": false,
+      "shot_plan_blocking": true,
+      "mutation": "reviewed_edit",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "derived_constraints",
+      "semantic_definition": "deterministically derived spatial/continuity constraints",
+      "authority_class": "DERIVED_SPATIAL_CONSTRAINT",
+      "required": false,
+      "shot_plan_blocking": true,
+      "mutation": "rule_derived_with_provenance",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "continuity_state",
+      "semantic_definition": "scene entry character state initialization",
+      "authority_class": "DERIVED_SPATIAL_CONSTRAINT",
+      "required": false,
+      "shot_plan_blocking": true,
+      "mutation": "inherit_or_author",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "asset_authority",
+      "semantic_definition": "scene asset authority classification",
+      "authority_class": "SOURCE_SPATIAL_CONSTRAINT",
+      "required": false,
+      "shot_plan_blocking": true,
+      "mutation": "locked_reference_only",
+      "consumer": [
+        "ShotPlan"
+      ]
+    },
+    {
+      "field": "unknowns",
+      "semantic_definition": "unresolved information retained explicitly",
+      "authority_class": "UNKNOWN_UNRESOLVED",
+      "required": false,
+      "shot_plan_blocking": true,
+      "mutation": "resolve_with_evidence_only",
+      "consumer": [
+        "ShotPlan"
+      ]
+    }
+  ],
+  "source_spatial_fields": [
+    "scene_id",
+    "scene_name",
+    "source_spatial_facts"
+  ],
+  "director_constraint_fields": [
+    "beat_transitions",
+    "character_intents",
+    "visual_strategy"
+  ],
+  "blocking_authoring_fields": [
+    "participants",
+    "spatial_model",
+    "camera_axis",
+    "creative_decisions"
+  ],
+  "derived_constraint_fields": [
+    "derived_constraints",
+    "continuity_state"
+  ],
+  "unknown_fields": [
+    "unknowns",
+    "unresolved_facts"
+  ],
+  "shot_plan_blockers": [
+    "scene_id",
+    "scene_name",
+    "source_spatial_facts",
+    "participants",
+    "beat_transitions",
+    "camera_axis",
+    "spatial_model",
+    "creative_decisions",
+    "derived_constraints",
+    "continuity_state",
+    "asset_authority",
+    "unknowns"
+  ],
+  "asset_priority": [
+    "immutable_source",
+    "approved_source_fact",
+    "production_qualified_script_ir",
+    "production_qualified_treatment",
+    "approved_locked_production_asset",
+    "draft_advisory_asset",
+    "llm_proposal"
+  ],
+  "consumer_basis": "core/shot_plan.py and api/shot_plan_api.py actual reads"
+}

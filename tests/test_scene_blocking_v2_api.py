@@ -10,7 +10,7 @@ from core.script_ir import build_script_ir, script_ir_hash
 from core.source_evidence_index import build_source_evidence_index
 from core.director_treatment import build_shadow_treatment
 from core.director_treatment_authority import build_treatment_authority_envelope, payload_hash as treatment_payload_hash
-from models import Book, DirectorTreatment, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, init_db
+from models import Book, DirectorTreatment, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, VisualLocation, init_db
 from models import DirectorTreatmentAuthority, DirectorTreatmentPointer
 
 
@@ -35,6 +35,11 @@ class SceneBlockingV2ApiTests(unittest.TestCase):
             content = json.dumps(source, ensure_ascii=False)
             script = Script(book_id=book.id, episode=1, content=content)
             session.add(script); session.flush()
+            # Production SceneBlocking now requires an explicit locked scene
+            # geometry authority; the fixture models that prerequisite instead
+            # of relying on a name-only legacy location.
+            session.add(VisualLocation(book_id=book.id, scene_id="E01_SC001", name="门厅", asset_status="locked", canonical_facts=json.dumps({"anchors": ["scene_center"], "zones": ["playing_area"]}, ensure_ascii=False)))
+            session.flush()
             raw_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
             records = [
                 {"fact_key": "episode|scenes|scene_existence|episode", "predicate": "scene_existence", "subject_id": "episode", "value": {"minimum": 1, "actual": 1}, "status": "confirmed", "evidence": [{"anchor_ref": "E0001"}]},
@@ -81,6 +86,7 @@ class SceneBlockingV2ApiTests(unittest.TestCase):
             session.query(DirectorTreatmentPointer).filter_by(book_id=self.book_id).delete(synchronize_session=False)
             session.query(DirectorTreatmentAuthority).filter_by(book_id=self.book_id).delete(synchronize_session=False)
             session.query(SceneBlocking).filter_by(book_id=self.book_id).delete()
+            session.query(VisualLocation).filter_by(book_id=self.book_id).delete()
             session.query(DirectorTreatmentPointer).filter_by(book_id=self.book_id).delete()
             session.query(DirectorTreatmentAuthority).filter_by(book_id=self.book_id).delete()
             session.query(DirectorTreatment).filter_by(book_id=self.book_id).delete()

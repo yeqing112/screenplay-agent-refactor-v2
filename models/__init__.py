@@ -16,7 +16,7 @@ from .violation_log import AgentViolationLog
 from .task import TaskRun
 from .agent import AgentSession, AgentPlan, AgentAuditLog, AgentAttachment, AgentMessage, AgentProjectUpdate
 from .director_treatment import DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer
-from .scene_blocking import SceneBlocking
+from .scene_blocking import SceneBlocking, SceneBlockingAuthority, SceneBlockingPointer
 from .shot_plan import ShotPlan
 from .repair import RepairAttempt
 from .director_benchmark import DirectorBenchmarkRun
@@ -37,7 +37,7 @@ __all__ = [
     "AgentSession", "AgentPlan", "AgentAuditLog", "AgentAttachment", "AgentMessage", "AgentProjectUpdate",
     "DirectorTreatment",
     "DirectorTreatmentAuthority", "DirectorTreatmentPointer",
-    "SceneBlocking",
+    "SceneBlocking", "SceneBlockingAuthority", "SceneBlockingPointer",
     "ShotPlan",
     "RepairAttempt",
     "DirectorBenchmarkRun",

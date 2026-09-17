@@ -120,7 +120,7 @@ def extract_spatial_evidence(*, scene: dict[str, Any], treatment: dict[str, Any]
             predicate = _name(raw.get("predicate") or raw.get("relation") or "position")
             value = raw.get("value", raw.get("position") or raw.get("anchor"))
             if subject and predicate and value not in (None, ""):
-                facts.append({"fact_id": _name(raw.get("fact_id")) or f"SPATIAL_{i:04d}", "subject_id": subject, "predicate": predicate, "value": value, "authority": SOURCE_FACT, "evidence_ref": _name(raw.get("evidence_ref") or raw.get("source") or "script")})
+                facts.append({"fact_id": _name(raw.get("fact_id")) or f"SPATIAL_{i:04d}", "subject_id": subject, "predicate": predicate, "value": value, "authority": SOURCE_FACT, "authority_class": "SOURCE_SPATIAL_CONSTRAINT", "evidence_ref": _name(raw.get("evidence_ref") or raw.get("source") or "script")})
     for character_id, intent in _character_intents(treatment).items():
         character_name = _name(intent.get("name")) or character_id
         block = index.get(character_id) or index.get(character_name)
@@ -136,7 +136,7 @@ def extract_spatial_evidence(*, scene: dict[str, Any], treatment: dict[str, Any]
         )
         for predicate, value in mappings:
             if value not in (None, "", []):
-                facts.append({"fact_id": f"{character_id}:{predicate}", "subject_id": character_id, "predicate": predicate, "value": value, "authority": SOURCE_FACT, "evidence_ref": "script.character_blocking"})
+                facts.append({"fact_id": f"{character_id}:{predicate}", "subject_id": character_id, "predicate": predicate, "value": value, "authority": SOURCE_FACT, "authority_class": "SOURCE_SPATIAL_CONSTRAINT", "evidence_ref": "script.character_blocking"})
     records = (fact_snapshot or {}).get("records") if isinstance(fact_snapshot, dict) else []
     intent_name_to_id = {_name(value.get("name")): key for key, value in _character_intents(treatment).items() if _name(value.get("name"))}
     for record in records if isinstance(records, list) else []:
@@ -145,7 +145,7 @@ def extract_spatial_evidence(*, scene: dict[str, Any], treatment: dict[str, Any]
         value = record.get("value")
         if value not in (None, "", []):
             subject = _name(record.get("subject_id")); subject = intent_name_to_id.get(subject, subject)
-            facts.append({"fact_id": _name(record.get("fact_id")) or f"FACT_SPATIAL_{len(facts)+1:04d}", "subject_id": subject, "predicate": _name(record.get("predicate")), "value": value, "authority": SOURCE_FACT, "evidence_ref": record.get("evidence") or ["fact_snapshot"]})
+            facts.append({"fact_id": _name(record.get("fact_id")) or f"FACT_SPATIAL_{len(facts)+1:04d}", "subject_id": subject, "predicate": _name(record.get("predicate")), "value": value, "authority": SOURCE_FACT, "authority_class": "SOURCE_SPATIAL_CONSTRAINT", "evidence_ref": record.get("evidence") or ["fact_snapshot"]})
     seen: dict[tuple[str, str], Any] = {}
     deduped: list[dict[str, Any]] = []
     for fact in facts:
@@ -203,19 +203,19 @@ def plan_director_spatial(*, evidence: dict[str, Any], treatment: dict[str, Any]
         eyeline_value = ids[1] if len(ids) > 1 and index == 0 else ids[0] if len(ids) > 1 else "scene_action"
         participant = {
             "character_id": character_id, "name": name,
-            "start_position": {"value": start_value, "authority": start_authority},
-            "facing": {"value": facing_value, "authority": facing_authority},
-            "eyeline_target": {"value": eyeline_value, "authority": CREATIVE_CHOICE},
-            "screen_side": {"value": "left" if index % 2 == 0 else "right", "authority": DERIVED_CONSTRAINT},
+            "start_position": {"value": start_value, "authority": start_authority, "authority_class": "SOURCE_SPATIAL_CONSTRAINT" if start_authority == SOURCE_FACT else "BLOCKING_AUTHORING_DECISION"},
+            "facing": {"value": facing_value, "authority": facing_authority, "authority_class": "SOURCE_SPATIAL_CONSTRAINT" if facing_authority == SOURCE_FACT else "BLOCKING_AUTHORING_DECISION"},
+            "eyeline_target": {"value": eyeline_value, "authority": CREATIVE_CHOICE, "authority_class": "BLOCKING_AUTHORING_DECISION"},
+            "screen_side": {"value": "left" if index % 2 == 0 else "right", "authority": DERIVED_CONSTRAINT, "authority_class": "DERIVED_SPATIAL_CONSTRAINT"},
             "movement_path": path_fact.get("value") if path_fact and isinstance(path_fact.get("value"), list) else ([path_fact.get("value")] if path_fact else []),
             # V1 projection retained for ShotPlan and older clients.
             "position": start_value, "anchor": start_value if position_fact and position_fact.get("predicate") == "anchor" else None,
             "source": "script_declared" if position_fact else "director_choice",
         }
         if entry_fact:
-            participant["entry"] = {"value": entry_fact.get("value"), "authority": SOURCE_FACT}
+            participant["entry"] = {"value": entry_fact.get("value"), "authority": SOURCE_FACT, "authority_class": "SOURCE_SPATIAL_CONSTRAINT"}
         if exit_fact:
-            participant["exit"] = {"value": exit_fact.get("value"), "authority": SOURCE_FACT}
+            participant["exit"] = {"value": exit_fact.get("value"), "authority": SOURCE_FACT, "authority_class": "SOURCE_SPATIAL_CONSTRAINT"}
         participants.append(participant)
         if not position_fact:
             decisions.append({"decision": "start_position", "subject_id": character_id, "value": start_value, "authority": CREATIVE_CHOICE, "reason": "source did not specify a required position"})

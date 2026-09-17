@@ -1,0 +1,63 @@
+{
+  "artifact": "scene-blocking-consumer-audit",
+  "schema_version": "scene_blocking_consumer_audit_v1",
+  "scope": "provider-free repository audit",
+  "baseline_commit": "d0a9e1f894da2b914db7f090e09bd780d142d0c9",
+  "consumers": [
+    {
+      "path": "core/shot_plan.py",
+      "role": "deterministic ShotPlan builder",
+      "reads": ["blocking.participants", "blocking.unknowns", "blocking.scene_id", "blocking.scene_name", "blocking.source_spatial_facts", "blocking.scene_asset_id", "blocking.props", "blocking.screen_direction", "blocking.evidence_fingerprint"],
+      "production_required": ["participants", "beat_transitions", "scene_id", "source_spatial_facts", "continuity_state", "asset_authority", "unknowns"],
+      "provider_calls": 0
+    },
+    {
+      "path": "api/shot_plan_api.py",
+      "role": "production ShotPlan preview/confirm and V2 context loader",
+      "production_selection": "explicit scene_blocking_pointers -> SceneBlockingAuthority -> current row",
+      "forbidden_selection": ["latest approved SceneBlocking", "latest confirmed FactSnapshot"],
+      "fail_closed_codes": ["SCENE_BLOCKING_POINTER_MISSING", "SCENE_BLOCKING_NOT_PRODUCTION_QUALIFIED", "SCENE_BLOCKING_PAYLOAD_TAMPERED", "DIRECTOR_TREATMENT_CHANGED", "SCRIPT_IR_CHANGED", "FACT_SNAPSHOT_CHANGED"]
+    },
+    {
+      "path": "api/scene_blocking_api.py",
+      "role": "production preview and authority activation",
+      "production_selection": "current ScriptIR + current DirectorTreatment authority + exact bound FactSnapshot + scene_id asset",
+      "mutation_boundary": "preview may persist candidate; confirm atomically creates authority and updates pointer"
+    },
+    {
+      "path": "api/storyboard_materializer_api.py",
+      "role": "downstream consumer (out of this phase scope)",
+      "current_behavior": "consumes the approved ShotPlan and its blocking_id; does not select a blocking by latest revision",
+      "follow_up": "add authority-envelope validation when Storyboard Materializer authority phase is authorized"
+    },
+    {
+      "path": "core/production_policy.py",
+      "role": "legacy readiness policy",
+      "current_behavior": "checks approved/unknown projections; production API gate remains stricter and pointer-based",
+      "follow_up": "reconcile policy surface during ShotPlan Authority Contract phase"
+    }
+  ],
+  "schema": {
+    "source": ["scene_id", "scene_name", "source_spatial_facts"],
+    "director": ["beat_transitions", "treatment lineage"],
+    "blocking_authoring": ["participants", "spatial_model", "camera_axis", "creative_decisions"],
+    "derived": ["derived_constraints", "continuity_state"],
+    "unknown": ["unknowns", "unresolved_facts"],
+    "authority": ["asset_authority", "qualification_state", "stale_status", "payload_hash", "authority_envelope_id"]
+  },
+  "latest_approved_fallback": {
+    "production_scene_blocking": false,
+    "production_fact_snapshot": false,
+    "creative_draft_compatibility": true,
+    "downstream_legacy_surfaces": "documented for later authority migration"
+  },
+  "blocking_rules": [
+    "missing or changed exact FactSnapshot",
+    "missing or stale current DirectorTreatment authority",
+    "missing or stale ScriptIR lineage",
+    "missing scene_id-bound locked scene asset",
+    "unresolved continuity or geometry requirements",
+    "missing pointer, tampered payload, or tampered envelope"
+  ],
+  "provider_calls": 0
+}

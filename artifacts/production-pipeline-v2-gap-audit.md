@@ -591,3 +591,34 @@ Provider Contract Wiring 已完成本地代码与测试收口，但本次真实 
 ### Closure decision
 
 `DIRECTOR_TREATMENT_AUTHORITY_CONTRACT_READY`。本阶段完成后停止，不进入 SceneBlocking Authority Contract、Director Provider Canary、Visual Asset Generation、ShotPlan、Storyboard 或媒体生成阶段。
+
+## Final As-Built Verification：SCENE_BLOCKING_AUTHORITY_CONTRACT（2026-09-18）
+
+本节新增于前述历史记录之后；所有 Baseline Audit 与历史失败证据保持不变。
+
+### Baseline Audit（保留）
+
+- SceneBlocking 生产路径可能按 `scene_name + latest approved` 选择记录，未绑定 current pointer、exact FactSnapshot 与 authority envelope。
+- VisualLocation 的 name-only legacy 记录没有稳定 `scene_id` 约束；repair/validation 可能把 unknown 误清空。
+- geometry 与 character current-state backlog 尚未明确归属 SceneBlocking authoring boundary。
+
+### Final As-Built Verification
+
+- 新增 `scene_blocking_authority_contract_v1`、`scene_blocking_authority_envelope_v1`、`SceneBlockingAuthority` 和 `SceneBlockingPointer`，并为 `VisualLocation` 增加稳定 `scene_id`。
+- Production SceneBlocking preview/confirm 只接受 current authoritative ScriptIR → Treatment lineage，精确读取 Treatment envelope 绑定的 FactSnapshot；不再自行选择 latest confirmed snapshot。
+- 场景资产分为 `LOCKED_PRODUCTION_CONSTRAINT`、`ADVISORY_SCENE_CONTEXT`、`AUTHORING_PENDING`；空 `scene_id` 的旧资产即使 locked 也只能 advisory。资产 fingerprint 覆盖 geometry、look、board、key props、引用路径与状态。
+- SceneBlocking 明确区分 source spatial、director、blocking authoring、derived 与 unknown；连续性初始化记录 provenance，geometry/current-state backlog 不写回 FactSnapshot。
+- Candidate 校验保留 source identity、source spatial facts、beat ids/order、participant identity/entry/exit 和 locked geometry；unknown 关闭必须有显式 resolution provenance。
+- Confirm 在单事务中 re-check upstream lineage，创建 `PRODUCTION_QUALIFIED` authority、更新 current pointer 并保留 rollback anchor；失败不更新 pointer。ShotPlan production 仅通过 pointer + envelope + payload/freshness gate。
+
+### Verification evidence
+
+- Authority contract 专项：**10 passed**；相关 SceneBlocking/ShotPlan/Compiler invariant：**25 passed**。
+- Extended authority/ScriptIR/production-gate regression：**42 passed**；frontend Vitest **291 passed**；frontend production build 通过；Golden **5/5**。
+- Full backend regression：**1471 passed, 11 failed, 921 warnings**。失败均为历史 artifact/离线 replay/真实数据库样本/环境基线问题；本阶段新增 SceneBlocking authority 测试未产生全量回归失败。
+- Provider calls：**0**；未调用真实 LLM、MiMo、Embedding、生图、视频或对象存储。
+- 本阶段新增 migration：`r1a2b3c4d5e6`。Fresh DB 的历史 `f05ab1af29bc` drop 不存在表问题仍独立记录，未修改历史迁移。
+
+### Closure decision
+
+`SCENE_BLOCKING_AUTHORITY_CONTRACT_READY`。本阶段只完成 authority/data boundary；ShotPlan Authority Contract、Storyboard/Provider/媒体阶段保持未启动。
