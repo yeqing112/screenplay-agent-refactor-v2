@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 
 from api.server import app
 from models import Book, DirectorTreatment, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot, init_db
+from tests.test_production_storyboard_gate import _authorize_existing_script
 
 
 def test_materialized_production_shot_has_phase_a_state():
@@ -15,6 +16,7 @@ def test_materialized_production_shot_has_phase_a_state():
         treatment = DirectorTreatment(book_id=book_id, episode=1, scene_name="门厅", status="approved"); session.add(treatment); session.flush()
         blocking = SceneBlocking(book_id=book_id, episode=1, scene_name="门厅", status="approved", treatment_id=treatment.id); session.add(blocking); session.flush()
         session.add(ShotPlan(book_id=book_id, episode=1, scene_name="门厅", status="approved", treatment_id=treatment.id, blocking_id=blocking.id, evidence_fingerprint="fp", shots=json.dumps([{"plan_shot_id": "S01", "event": "进入", "duration_hint_seconds": 4, "camera": {"movement": "static"}, "entry_state": {}, "exit_state": {}}]))); session.commit()
+    _authorize_existing_script(client, book_id)
     response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
     assert response.status_code == 200
     with Session() as session:

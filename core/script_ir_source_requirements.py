@@ -279,7 +279,7 @@ def compile_script_ir_source_requirements(*, source_structure: dict[str, Any] | 
 compile_script_ir_source_requirement_set = compile_script_ir_source_requirements
 
 
-def evaluate_script_ir_source_coverage(requirement_set: dict[str, Any], records: list[dict[str, Any]] | None = None, *, source_evidence_index: dict[str, Any] | None = None) -> dict[str, Any]:
+def evaluate_script_ir_source_coverage(requirement_set: dict[str, Any], records: list[dict[str, Any]] | None = None, *, source_evidence_index: dict[str, Any] | None = None, allow_source_structure_fallback: bool = True) -> dict[str, Any]:
     """Evaluate only formal ScriptIR requirements against authoritative records."""
 
     rows = [row for row in (records or []) if isinstance(row, dict)]
@@ -298,7 +298,7 @@ def evaluate_script_ir_source_coverage(requirement_set: dict[str, Any], records:
                 satisfied, reason = True, None
             else:
                 reason = "INSUFFICIENT_EVIDENCE"
-        elif requirement.get("source_value") not in (None, "", [], {}) and requirement.get("source_evidence_refs") and not requirement.get("source_conflict"):
+        elif allow_source_structure_fallback and requirement.get("source_value") not in (None, "", [], {}) and requirement.get("source_evidence_refs") and not requirement.get("source_conflict"):
             # Source structure is itself an explicit source anchor when the
             # caller supplies it; this is not an inferred FactSnapshot claim.
             satisfied, reason = True, None

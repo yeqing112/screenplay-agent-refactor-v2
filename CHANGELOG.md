@@ -1,5 +1,11 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-18 — SCRIPT_IR_AUTHORITY_ACTIVATION
+
+- 新增 `script_ir_authority_envelope_v1` 与可回放的 `POST .../script-ir/activate`，将 immutable source、SourceEvidenceIndex anchors、FactSnapshot、Source Requirement Contract、coverage 与 ScriptIR payload hash 绑定为生产权威。
+- production resolver 现在只消费明确 `current_script_ir_version_id` 指向的 `PRODUCTION_QUALIFIED` 版本，重新校验 freshness/tamper；不再回退到任意历史 `qualified` 版本。
+- Storyboard Materializer 与 Asset Registry production 入口复用权威 resolver；creative_draft/legacy 兼容路径保留。未调用真实 Provider；详见 `artifacts/script-ir-authority-activation-final-report.md`。
+
 ## 2026-09-18 — Director Quality V3：Fact Requirement Semantics & Authoring Boundary
 
 - 新增 `fact_requirement_registry_v1`，统一定义 predicate 语义、value schema、scope、authority class、blocking stage、retrieval/provider/validation policy 与 authoring fallback。

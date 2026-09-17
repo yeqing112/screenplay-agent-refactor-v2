@@ -142,19 +142,77 @@ def resolve_script_payload(session: Any, script_row: Any, *, workflow_profile: s
     profile = str(workflow_profile or "creative_draft").strip().lower()
     if profile == "production":
         from models import ScriptIRVersion
-
+        from core.fact_coverage import fingerprint
+        from core.fact_snapshot import snapshot_hash
+        from core.script_ir_authority import validate_authority_envelope, validate_source_anchor_bindings
+        from core.source_evidence_index import build_source_evidence_index
         version = None
         current_id = getattr(script_row, "current_script_ir_version_id", None)
         if current_id:
-            version = session.query(ScriptIRVersion).filter_by(id=current_id, book_id=script_row.book_id, episode=script_row.episode, status="qualified").first()
+            version = session.query(ScriptIRVersion).filter_by(id=current_id, book_id=script_row.book_id, episode=script_row.episode).first()
         if version is None:
-            version = session.query(ScriptIRVersion).filter_by(book_id=script_row.book_id, episode=script_row.episode, status="qualified").order_by(ScriptIRVersion.revision.desc(), ScriptIRVersion.id.desc()).first()
-        if version is None:
-            raise HTTPException(status_code=409, detail="Production workflow requires a qualified ScriptIR version.")
+            raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_AUTHORITY_POINTER_MISSING", "message": "Production workflow requires a current ScriptIR authority pointer to a qualified ScriptIR version."})
+        if version.status != "production_qualified" or getattr(version, "qualification_state", "") != "PRODUCTION_QUALIFIED":
+            raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_NOT_PRODUCTION_QUALIFIED", "message": "Current ScriptIR is not production-qualified."})
         try:
             payload = json.loads(version.payload_json or "{}")
         except (TypeError, ValueError, json.JSONDecodeError) as exc:
-            raise HTTPException(status_code=409, detail="Qualified ScriptIR payload is invalid.") from exc
+            raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_PAYLOAD_INVALID", "message": "Production ScriptIR payload is invalid."}) from exc
+        try:
+            envelope = json.loads(version.authority_envelope_json or "{}")
+        except (TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_AUTHORITY_ENVELOPE_INVALID", "message": "Production ScriptIR authority envelope is invalid."}) from exc
+        raw_source_bytes = str(script_row.content or "").encode("utf-8")
+        expected: dict[str, Any] = {"book_id": script_row.book_id, "episode": script_row.episode, "immutable_source_raw_hash": hashlib.sha256(raw_source_bytes).hexdigest()}
+        try:
+            source_package_id = str(envelope.get("source_package_id") or "").strip()
+            source_version_id = str(envelope.get("source_version_id") or "").strip()
+            if not source_package_id or not source_version_id:
+                raise HTTPException(status_code=409, detail={"code": "SOURCE_LINEAGE_REQUIRED", "message": "Production ScriptIR authority has incomplete source lineage."})
+            current_evidence_index = build_source_evidence_index(raw_source_bytes, source_package_id=source_package_id, source_version_id=source_version_id, source_raw_hash=expected["immutable_source_raw_hash"])
+            expected.update({"authority_policy_version": "script_ir_authority_policy_v1", "source_package_id": source_package_id, "source_version_id": source_version_id, "source_evidence_index_fingerprint": current_evidence_index.get("evidence_index_fingerprint")})
+        except HTTPException:
+            raise
+        except (TypeError, UnicodeDecodeError, ValueError) as exc:
+            raise HTTPException(status_code=409, detail={"code": "SOURCE_EVIDENCE_INDEX_INVALID", "message": "Production source evidence index cannot be rebuilt."}) from exc
+        # Recompute contract and requirement fingerprints so a contract/schema
+        # upgrade cannot silently reuse an old production version.
+        try:
+            from core.script_ir_source_requirements import compile_script_ir_source_requirements, evaluate_script_ir_source_coverage, script_ir_source_requirement_contract
+            current_contract = script_ir_source_requirement_contract()
+            raw_source = json.loads(script_row.content or "{}") if str(script_row.content or "").lstrip().startswith("{") else payload
+            if not isinstance(raw_source, dict):
+                raise ValueError("immutable source is not a structured object")
+            current_requirements = compile_script_ir_source_requirements(source_structure=raw_source)
+            expected.update({"source_requirement_contract_version": current_contract["schema_version"], "source_requirement_contract_fingerprint": current_contract["fingerprint"], "compiled_requirement_set_fingerprint": current_requirements["fingerprint"]})
+        except (TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_SOURCE_REQUIREMENTS_UNAVAILABLE", "message": "Current source requirements cannot be recomputed."}) from exc
+        try:
+            from models import FactSnapshot
+            snapshot_id = envelope.get("fact_snapshot_id")
+            snapshot = session.query(FactSnapshot).filter_by(id=int(snapshot_id)).first() if str(snapshot_id or "").isdigit() else None
+            if not snapshot or snapshot.book_id != script_row.book_id or int(snapshot.episode or -1) != int(script_row.episode) or str(snapshot.status).lower() != "confirmed":
+                raise HTTPException(status_code=409, detail={"code": "FACT_SNAPSHOT_BINDING_INVALID", "message": "Bound FactSnapshot is missing, stale or mismatched."})
+            records = json.loads(snapshot.records_json or "[]")
+            if not isinstance(records, list) or snapshot_hash(records) != str(snapshot.payload_hash or ""):
+                raise HTTPException(status_code=409, detail={"code": "FACT_SNAPSHOT_PAYLOAD_HASH_MISMATCH", "message": "Bound FactSnapshot payload hash does not match its records."})
+            if str(snapshot.source_fingerprint or "").strip() and str(snapshot.source_fingerprint) != str(expected["immutable_source_raw_hash"]):
+                raise HTTPException(status_code=409, detail={"code": "FACT_SNAPSHOT_SOURCE_MISMATCH", "message": "Bound FactSnapshot source fingerprint is stale."})
+            coverage = evaluate_script_ir_source_coverage(current_requirements, records=records, allow_source_structure_fallback=False)
+            if coverage.get("status") != "SCRIPT_IR_SOURCE_CONTRACT_COVERAGE_SUFFICIENT":
+                raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_SOURCE_COVERAGE_INSUFFICIENT", "message": "Bound FactSnapshot no longer covers current ScriptIR requirements.", "coverage": coverage})
+            expected.update({"fact_snapshot_id": snapshot.id, "fact_snapshot_revision": snapshot.revision, "fact_snapshot_payload_hash": snapshot.payload_hash, "source_coverage_result_fingerprint": fingerprint(coverage)})
+            anchor_check = validate_source_anchor_bindings(requirement_set=current_requirements, source_evidence_index=current_evidence_index, bindings=envelope.get("source_anchor_bindings"))
+            if anchor_check.get("status") != "PASS":
+                raise HTTPException(status_code=409, detail={"code": "SOURCE_EVIDENCE_BINDING_INVALID", "message": "Production ScriptIR authority source anchors are invalid.", "details": anchor_check})
+        except HTTPException:
+            raise
+        except Exception:
+            raise HTTPException(status_code=409, detail={"code": "FACT_SNAPSHOT_BINDING_INVALID", "message": "Bound FactSnapshot cannot be validated."})
+        report = validate_authority_envelope(envelope, payload=payload, expected=expected)
+        if report["status"] != "PASS":
+            code = "SCRIPT_IR_AUTHORITY_TAMPERED" if any(str(item.get("code")) in {"SCRIPT_IR_AUTHORITY_TAMPERED", "SCRIPT_IR_AUTHORITY_ENVELOPE_TAMPERED"} for item in report.get("errors", [])) else "SCRIPT_IR_AUTHORITY_STALE"
+            raise HTTPException(status_code=409, detail={"code": code, "message": "Production ScriptIR authority validation failed.", "errors": report["errors"], "stale_reasons": report.get("stale_reasons", [])})
         return payload if isinstance(payload, dict) else {"scenes": []}
     try:
         parsed = json.loads(script_row.content or "{}")

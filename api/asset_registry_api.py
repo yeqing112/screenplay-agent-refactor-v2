@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.asset_registry_sync import sync_assets_from_script_ir
+from core.script_ir import resolve_script_payload
 from models import Script, ScriptIRVersion, Session
 
 router = APIRouter(prefix="/api/books", tags=["asset-registry"])
@@ -25,17 +26,24 @@ def sync_asset_registry(book_id: int, episode: int, req: AssetRegistrySyncReques
         script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
         if not script:
             raise HTTPException(status_code=404, detail="No script found for this episode.")
-        version = None
-        if script.current_script_ir_version_id:
-            version = session.query(ScriptIRVersion).filter_by(id=script.current_script_ir_version_id, book_id=book_id, episode=episode, status="qualified").first()
-        if version is None:
-            version = session.query(ScriptIRVersion).filter_by(book_id=book_id, episode=episode, status="qualified").order_by(ScriptIRVersion.revision.desc(), ScriptIRVersion.id.desc()).first()
-        if version is None:
-            raise HTTPException(status_code=409, detail="Asset registry sync requires a qualified ScriptIR.")
-        try:
-            payload = json.loads(version.payload_json or "{}")
-        except (TypeError, ValueError, json.JSONDecodeError) as exc:
-            raise HTTPException(status_code=409, detail="Qualified ScriptIR payload is invalid.") from exc
+        profile = str(getattr(script, "workflow_profile", "creative_draft") or "creative_draft").strip().lower()
+        if profile == "production":
+            payload = resolve_script_payload(session, script, workflow_profile="production")
+            version = session.query(ScriptIRVersion).filter_by(id=script.current_script_ir_version_id, book_id=book_id, episode=episode, status="production_qualified").first() if script.current_script_ir_version_id else None
+            if version is None:
+                raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_AUTHORITY_POINTER_MISSING", "message": "Asset registry sync requires the current production-qualified ScriptIR."})
+        else:
+            version = None
+            if script.current_script_ir_version_id:
+                version = session.query(ScriptIRVersion).filter(ScriptIRVersion.id == script.current_script_ir_version_id, ScriptIRVersion.book_id == book_id, ScriptIRVersion.episode == episode, ScriptIRVersion.status.in_(("qualified", "production_qualified"))).first()
+            if version is None:
+                version = session.query(ScriptIRVersion).filter(ScriptIRVersion.book_id == book_id, ScriptIRVersion.episode == episode, ScriptIRVersion.status.in_(("qualified", "production_qualified"))).order_by(ScriptIRVersion.revision.desc(), ScriptIRVersion.id.desc()).first()
+            if version is None:
+                raise HTTPException(status_code=409, detail="Asset registry sync requires a qualified ScriptIR.")
+            try:
+                payload = json.loads(version.payload_json or "{}")
+            except (TypeError, ValueError, json.JSONDecodeError) as exc:
+                raise HTTPException(status_code=409, detail="Qualified ScriptIR payload is invalid.") from exc
         source = req.source_fingerprint.strip() or version.payload_hash
         result = sync_assets_from_script_ir(session, payload, book_id=book_id, episode=episode, source_fingerprint=source)
         session.commit()

@@ -13,7 +13,7 @@ class ScriptIRVersion(Base):
     book_id = Column(Integer, nullable=False, index=True)
     episode = Column(Integer, nullable=False, index=True)
     revision = Column(Integer, nullable=False, default=1)
-    status = Column(String, nullable=False, default="draft")  # draft / qualified / superseded
+    status = Column(String, nullable=False, default="draft")  # draft / qualified / production_qualified / superseded
     schema_version = Column(String, nullable=False, default="script_ir_v1")
     source_outline_revision = Column(String, nullable=False, default="")
     source_fact_snapshot_id = Column(String, nullable=False, default="")
@@ -22,6 +22,10 @@ class ScriptIRVersion(Base):
     payload_hash = Column(String, nullable=False, default="")
     validation_status = Column(String, nullable=False, default="needs_review")
     validation_report = Column(Text, nullable=False, default="{}")
+    authority_envelope_json = Column(Text, nullable=False, default="{}")
+    qualification_state = Column(String, nullable=False, default="STRUCTURALLY_VALID")
+    stale_status = Column(String, nullable=False, default="UNKNOWN")
+    stale_reasons = Column(Text, nullable=False, default="[]")
     previous_revision_id = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)

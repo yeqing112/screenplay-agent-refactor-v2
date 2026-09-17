@@ -10,6 +10,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.script_ir import build_script_ir, legacy_markdown_to_script_ir, script_ir_hash, validate_script_ir
+from core.script_ir_authority import ScriptIRAuthorityError, activate_script_ir
 from core.script_renderer import render_script_markdown
 from models import FactSnapshot, Script, ScriptIRVersion, Session
 
@@ -28,8 +29,28 @@ class ScriptIRConfirmRequest(BaseModel):
     payload: dict[str, Any] | None = None
 
 
+class ScriptIRActivateRequest(BaseModel):
+    version_id: int = Field(validation_alias=AliasChoices("version_id", "versionId"))
+    confirmed: bool = False
+    fact_snapshot_id: int | None = Field(default=None, validation_alias=AliasChoices("fact_snapshot_id", "factSnapshotId"))
+    source_package_id: str = Field(default="", validation_alias=AliasChoices("source_package_id", "sourcePackageId"))
+    source_version_id: str = Field(default="", validation_alias=AliasChoices("source_version_id", "sourceVersionId"))
+    immutable_source_raw_hash: str = Field(default="", validation_alias=AliasChoices("immutable_source_raw_hash", "immutableSourceRawHash"))
+    source_evidence_index: dict[str, Any] = Field(default_factory=dict, validation_alias=AliasChoices("source_evidence_index", "sourceEvidenceIndex"))
+    source_anchor_bindings: dict[str, Any] = Field(default_factory=dict, validation_alias=AliasChoices("source_anchor_bindings", "sourceAnchorBindings"))
+    source_structure: dict[str, Any] | None = Field(default=None, validation_alias=AliasChoices("source_structure", "sourceStructure"))
+
+
 def _content_hash(content: str) -> str:
     return hashlib.sha256(str(content or "").encode("utf-8")).hexdigest()
+
+
+def _json_object(value: str | None, fallback: Any) -> Any:
+    try:
+        parsed = json.loads(value or "")
+        return parsed if parsed is not None else fallback
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return fallback
 
 
 def _payload(row: ScriptIRVersion) -> dict[str, Any]:
@@ -55,6 +76,10 @@ def _payload(row: ScriptIRVersion) -> dict[str, Any]:
         "payload_hash": row.payload_hash,
         "validation_status": row.validation_status,
         "validation_report": report,
+        "authority_envelope": _json_object(getattr(row, "authority_envelope_json", "{}"), {}),
+        "qualification_state": getattr(row, "qualification_state", "STRUCTURALLY_VALID"),
+        "stale_status": getattr(row, "stale_status", "UNKNOWN"),
+        "stale_reasons": _json_object(getattr(row, "stale_reasons", "[]"), []),
         "previous_revision_id": row.previous_revision_id,
         "created_at": row.created_at.isoformat() if row.created_at else None,
         "updated_at": row.updated_at.isoformat() if row.updated_at else None,
@@ -174,4 +199,30 @@ def confirm_script_ir(book_id: int, episode: int, req: ScriptIRConfirmRequest) -
         draft.status = "qualified"; draft.payload_json = json.dumps(candidate, ensure_ascii=False); draft.payload_hash = script_ir_hash(candidate); draft.validation_status = "qualified"; draft.validation_report = json.dumps(report, ensure_ascii=False); draft.updated_at = datetime.now(); session.commit(); session.refresh(draft)
         script.current_script_ir_version_id = draft.id; script.quality_status = "qualified"; script.workflow_profile = "production"; script.production_status = "blocked"; session.commit()
         return {"confirmed": True, "mutated": True, "script_ir": _payload(draft), "rendered_markdown": render_script_markdown(candidate), "production_status": "blocked"}
+
+
+@router.post("/{book_id}/episodes/{episode}/script-ir/activate")
+def activate_script_ir_version(book_id: int, episode: int, req: ScriptIRActivateRequest) -> dict[str, Any]:
+    """Bind a reviewed ScriptIR draft to immutable source and Fact authority."""
+
+    if not req.confirmed:
+        raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_ACTIVATION_CONFIRMATION_REQUIRED", "message": "ScriptIR authority activation requires confirmed=true."})
+    with Session() as session:
+        draft = session.query(ScriptIRVersion).filter_by(id=req.version_id, book_id=book_id, episode=episode, status="draft").first()
+        script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
+        if not draft or not script:
+            raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_ACTIVATION_TARGET_INVALID", "message": "ScriptIR draft or script source not found."})
+        snapshot_id = req.fact_snapshot_id if req.fact_snapshot_id is not None else (int(draft.source_fact_snapshot_id) if str(draft.source_fact_snapshot_id).isdigit() else None)
+        snapshot = session.query(FactSnapshot).filter_by(id=snapshot_id).first() if snapshot_id is not None else None
+        source_structure = req.source_structure
+        if source_structure is None:
+            try:
+                parsed = json.loads(script.content or "{}")
+            except (TypeError, ValueError, json.JSONDecodeError):
+                parsed = {}
+            source_structure = parsed if isinstance(parsed, dict) else {}
+        try:
+            return activate_script_ir(session=session, script_row=script, draft_row=draft, source_structure=source_structure, source_package_id=req.source_package_id, source_version_id=req.source_version_id, immutable_source_raw_hash=req.immutable_source_raw_hash, source_evidence_index=req.source_evidence_index, source_anchor_bindings=req.source_anchor_bindings, fact_snapshot_row=snapshot)
+        except ScriptIRAuthorityError as exc:
+            raise HTTPException(status_code=409, detail={"code": exc.code, "message": str(exc), **exc.details}) from exc
 

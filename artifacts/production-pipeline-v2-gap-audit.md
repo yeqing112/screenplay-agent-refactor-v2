@@ -521,3 +521,40 @@ Production Materializer 代码与本地测试闭环已收口，可以作为正�
 ### Closure decision
 
 Provider Contract Wiring 已完成本地代码与测试收口，但本次真实 Protocol Canary 未达到首轮 IR 合规门槛，最终状态必须保持 **`PROTOCOL_CANARY_FAILED`**。除非获得新的明确授权并先改进/复测首轮 IR 完整性，否则不得执行更大规模真实 MiMo Pilot。全程未调用生图、视频、对象存储或 GitHub Actions/CI，也未清理或覆盖用户历史产物。
+
+## Final As-Built Verification：SCRIPT_IR_AUTHORITY_ACTIVATION（2026-09-18）
+
+本节记录本阶段相对于前述 Baseline Audit 的最终本地实现复核；Baseline 内容保持不变。
+
+### Baseline Audit（保留）
+
+- 上一阶段已经建立 ScriptIR Source Requirement Contract，但 `status=qualified` 仍可能被误当作生产权威。
+- 生产解析器存在“current pointer 缺失时选择最新 qualified”的风险；Source Evidence path 也不能代替 immutable source anchor。
+- FactSnapshot、source hash、contract fingerprint 与 payload hash 尚未在同一 activation envelope 中闭合。
+
+### Final As-Built Verification
+
+- 新增 `script_ir_authority_envelope_v1`，绑定 book/episode、ScriptIR schema 与 payload hash、source package/version、immutable source raw hash、可重建的 SourceEvidenceIndex fingerprint、FactSnapshot id/revision/payload hash、Source Requirement Contract 与 requirement-set fingerprint、coverage fingerprint、authority policy version、activation revision/time、qualification/stale 状态。
+- 新增 `STRUCTURALLY_VALID → SOURCE_COVERAGE_QUALIFIED → AUTHORITY_BOUND → PRODUCTION_QUALIFIED` 状态模型；只有最后状态可以进入 production。
+- `POST /api/books/{book_id}/episodes/{episode}/script-ir/activate` 是唯一生产权威激活入口。它在单事务中验证结构、placeholder、draft freshness、真实 anchor offsets/lineage/fingerprint、FactSnapshot book/episode/status/records hash、coverage 与源哈希，然后原子更新 `current_script_ir_version_id`；任一失败不更新 pointer。
+- `未命名场景N` 仅保留给 creative/legacy 兼容路径；authority activation 返回 `SCENE_NAME_SOURCE_AUTHORITY_REQUIRED`。
+- production resolver 只读取明确 current pointer，不再回退到历史 qualified 版本；随后重新计算 source evidence index、FactSnapshot records hash、coverage、contract/requirement fingerprints、authority envelope fingerprint 与 ScriptIR payload hash。任何变化均 409 fail-closed 并返回机器可诊断 code/stale reason。
+- Storyboard Materializer 与 Asset Registry production 入口复用同一 resolver，不能绕过 authority 直接消费 `status=qualified`；creative_draft 兼容路径仍保留。
+- downstream backlog 未被 activation 删除或覆盖，继续由当前 episode authority context 传递。
+
+### Activation / Provider Boundary
+
+- Provider calls：**0**（未调用 MiMo、任意 LLM、Embedding、生图、视频或对象存储）。
+- 真实 activation fixture：`SCRIPT_IR_AUTHORITY_ACTIVATED`，`qualification_state=PRODUCTION_QUALIFIED`，`stale_status=FRESH`，production resolver 成功返回同一 payload；测试事务结束后清理 fixture，不写入用户历史项目。
+- production writes：仅测试事务中的 authority envelope、版本状态与 current pointer；无真实生产媒体写入。
+
+### Verification Evidence
+
+- `pytest -q tests/test_script_ir_authority_activation.py tests/test_script_ir.py tests/test_scene_blocking_v2_api.py tests/test_production_storyboard_gate.py tests/test_storyboard_compiler_invariant.py tests/test_asset_registry_sync.py tests/test_script_ir_director_runtime.py`：**29 passed**。
+- 专项覆盖：成功 activation、anchor 缺失/伪造 index、placeholder、draft/source stale、FactSnapshot revision/payload/source 变化、contract/requirement-set 变化、payload tamper、wrong book/episode snapshot、pointer 缺失与 no-fallback、失败不更新 pointer、production Materializer 反向测试（`StoryboardAgent.run()` 调用 **0**）。
+- 全量后端：**1446 passed，11 failures，907 warnings**。11 项均为既有历史/环境基线：Director Quality 历史 artifact 字段漂移 6 项、离线回放 branch 元数据 1 项、历史 provider/dirty-worktree 1 项、无迁移的历史 real-database pilot 2 项、固定测试 book 的残留 FactSnapshot 1 项；本阶段 authority 专项与关联生产门禁无失败。
+- 未执行 GitHub Actions/CI、真实 provider、媒体或对象存储验证；未清理或覆盖用户历史产物。
+
+### Closure Decision
+
+`SCRIPT_IR_AUTHORITY_ACTIVATED` 的本地代码、迁移、测试和 production resolver 闭环已完成。后续阶段建议为 `DIRECTOR_TREATMENT_AUTHORITY_CONTRACT`；本阶段不进入 DirectorTreatment、SceneBlocking、Visual Asset Generation 或 ShotPlan。

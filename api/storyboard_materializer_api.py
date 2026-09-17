@@ -11,6 +11,7 @@ from core.storyboard_materializer import materialize_storyboard_from_shot_plan
 from core.prompt_ir_compiler import compile_phase_a, verbalize_phase_b_deterministic, validate_phase_a_state
 from core.production_policy import evaluate_production_boundary
 from core.qualification_loop import qualify_candidate
+from core.script_ir import resolve_script_payload
 from models import DirectorTreatment, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot
 
 router = APIRouter(prefix="/api/books", tags=["storyboard-materializer"])
@@ -39,14 +40,11 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
         script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
         if not script:
             raise HTTPException(status_code=409, detail="Production materialization requires a script.")
+        script_ir_payload = resolve_script_payload(session, script, workflow_profile="production")
         script_ir_id = script.current_script_ir_version_id
-        script_ir = session.query(ScriptIRVersion).filter_by(id=script_ir_id, book_id=book_id, episode=episode, status="qualified").first() if script_ir_id else None
+        script_ir = session.query(ScriptIRVersion).filter_by(id=script_ir_id, book_id=book_id, episode=episode, status="production_qualified").first() if script_ir_id else None
         if not script_ir:
-            raise HTTPException(status_code=409, detail="Production materialization requires the script's qualified ScriptIR version.")
-        try:
-            script_ir_payload = json.loads(script_ir.payload_json or "{}")
-        except (TypeError, ValueError, json.JSONDecodeError) as exc:
-            raise HTTPException(status_code=409, detail="Qualified ScriptIR payload is invalid.") from exc
+            raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_AUTHORITY_POINTER_MISSING", "message": "Production materialization requires the script's production-qualified ScriptIR version."})
         script_scene_names = {str(item.get("name") or "").strip() for item in (script_ir_payload.get("scenes", []) if isinstance(script_ir_payload, dict) and isinstance(script_ir_payload.get("scenes"), list) else []) if isinstance(item, dict) and str(item.get("name") or "").strip()}
         if not script_scene_names:
             raise HTTPException(status_code=409, detail="Qualified ScriptIR has no structured scenes for production materialization.")
