@@ -1,0 +1,19 @@
+{
+  "schema_version": "fact_coverage_verifier_schema_validation_v2",
+  "status": "FAIL",
+  "parse_error": "Expecting value: line 1 column 1 (char 0)",
+  "errors": [
+    {
+      "code": "PROVIDER_JSON_PARSE_FAILURE",
+      "classification": "COVERAGE_VERIFIER_MODEL_SCHEMA_FAILURE",
+      "message": "Provider returned Markdown fenced JSON rather than a JSON object. No repair or second parse was attempted."
+    }
+  ],
+  "requirement_count": 0,
+  "claim_count": 0,
+  "unit_assessment_count": 0,
+  "input_unit_count": 5,
+  "input_fact_count": 7,
+  "provider_calls": 1,
+  "retries": 0
+}

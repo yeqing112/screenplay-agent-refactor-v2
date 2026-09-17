@@ -1,0 +1,9 @@
+{
+  "schema_version": "fact_coverage_authority_matrix_v2",
+  "status": "NOT_GENERATED_SCHEMA_FAILURE",
+  "provider_calls": 1,
+  "qualification_status": "FACT_COVERAGE_REVIEW_REQUIRED",
+  "rows": [],
+  "counts": {"COVERED": 0, "PARTIALLY_COVERED": 0, "MISSING": 0, "CLAIM_ONLY": 0, "UNSAFE_INFERENCE": 0, "AMBIGUOUS": 0},
+  "reason": "No authority matrix is derived from an invalid provider response."
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "director_v3_runtime_authorization_record_v1",
+  "authorization_id": "director-v3-fact-coverage-verifier-canary-20260917-01",
+  "scope": "DIRECTOR_V3_AUTHORIZED_FACT_COVERAGE_VERIFIER_CANARY",
+  "authorized_execution_base": "b0cc550cd71083a1be5cf9bf28a2750b1370d696",
+  "consumed": true,
+  "provider_calls": 1,
+  "max_provider_calls": 1,
+  "retries": 0,
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "terminal": true,
+  "next_stage": "PROVIDER_SCHEMA_REPAIR",
+  "next_stage_authorized": false
+}

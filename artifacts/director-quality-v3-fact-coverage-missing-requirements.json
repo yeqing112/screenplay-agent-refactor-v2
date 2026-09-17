@@ -1,0 +1,7 @@
+{
+  "schema_version": "missing_fact_requirement_package_v1",
+  "status": "NOT_GENERATED_SCHEMA_FAILURE",
+  "provider_calls": 1,
+  "requirements": [],
+  "reason": "Targeted missing-fact extraction is blocked until the verifier payload satisfies the V2 contract."
+}

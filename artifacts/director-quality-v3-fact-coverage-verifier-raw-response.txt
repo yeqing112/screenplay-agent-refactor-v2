@@ -1,0 +1,5 @@
+[RESPONSE_RECEIVED]
+sha256=a7a49d4f451d92fc9d527b8071f2893c646b60982fca0004040290d853c6e8da
+length=28461
+classification=COVERAGE_VERIFIER_MODEL_SCHEMA_FAILURE
+The full provider payload is intentionally not replayed or normalized in the repository. See response-meta, schema-validation, and final-report for the immutable post-run classification.

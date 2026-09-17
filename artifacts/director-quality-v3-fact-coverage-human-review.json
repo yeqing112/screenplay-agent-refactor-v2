@@ -1,0 +1,8 @@
+{
+  "schema_version": "fact_coverage_human_review_v1",
+  "status": "SCHEMA_FAILURE",
+  "human_review_status": "NOT_RECORDED",
+  "provider_calls": 1,
+  "coverage_status": "FACT_COVERAGE_REVIEW_REQUIRED",
+  "review_gate": "BLOCKED_PENDING_PROVIDER_SCHEMA_REPAIR"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "fact_coverage_verifier_preflight_v2",
+  "status": "PASS",
+  "provider_calls": 0,
+  "execution_base": "b0cc550cd71083a1be5cf9bf28a2750b1370d696",
+  "local_remote_parity": true,
+  "worktree_clean_before_dispatch": true,
+  "source_identity": "PASS",
+  "full_units": 5,
+  "existing_facts": 7,
+  "schema_parity": "PASS",
+  "downstream_disabled": true
+}

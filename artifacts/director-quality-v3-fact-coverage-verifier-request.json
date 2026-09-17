@@ -1,0 +1,12 @@
+{
+  "schema_version": "fact_coverage_verifier_request_v2",
+  "authorization_id": "director-v3-fact-coverage-verifier-canary-20260917-01",
+  "execution_base": "b0cc550cd71083a1be5cf9bf28a2750b1370d696",
+  "request_hash": "ecc8c2d748b64c4b8c3626212a611ea26844d543ee41cd8c8a37c87539c2cbf0",
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "development_preview_leaked": false,
+  "input_unit_count": 5,
+  "input_fact_count": 7,
+  "external_call_confirmed": true
+}

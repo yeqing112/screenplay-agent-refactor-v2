@@ -1,0 +1,8 @@
+{
+  "schema_version": "fact_coverage_requirement_key_map_v2",
+  "status": "NOT_GENERATED_SCHEMA_FAILURE",
+  "provider_calls": 1,
+  "mapping": {},
+  "requirements": [],
+  "reason": "Provider payload did not satisfy the V2 schema; canonicalization was not run."
+}

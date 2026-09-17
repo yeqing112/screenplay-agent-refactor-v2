@@ -268,11 +268,13 @@
     "provider_attempts_by_stage": {
       "fact_attempt_1": 1,
       "fact_attempt_2": 1,
-      "semantic_verifier": 1
+      "semantic_verifier": 1,
+      "coverage_verifier": 1
     },
     "provider_calls_scope": "current_stage_provider_attempts is this full-source foundation stage; cumulative_provider_attempts is all historical attempts",
-    "current_stage_provider_attempts": 0,
-    "fact_coverage_status": "NOT_YET_QUALIFIED",
+    "current_stage_provider_attempts": 1,
+    "cumulative_provider_attempts": 4,
+    "fact_coverage_status": "FACT_COVERAGE_REVIEW_REQUIRED",
     "ready_for_fact_coverage_qualification": true,
     "evidence_authority_status": "PASS"
   },
@@ -334,6 +336,25 @@
     "script_ir_calls": 0,
     "downstream_calls": 0
   },
+  "fact_coverage_verifier": {
+    "status": "DIRECTOR_V3_FACT_COVERAGE_VERIFIER_CANARY_FAILED",
+    "authorization_id": "director-v3-fact-coverage-verifier-canary-20260917-01",
+    "authorization_scope": "DIRECTOR_V3_AUTHORIZED_FACT_COVERAGE_VERIFIER_CANARY",
+    "execution_base": "b0cc550cd71083a1be5cf9bf28a2750b1370d696",
+    "provider": {"provider": "openai-compatible", "model_name": "mimo-v2.5"},
+    "provider_calls": 1,
+    "retries": 0,
+    "failure_classification": "COVERAGE_VERIFIER_MODEL_SCHEMA_FAILURE",
+    "schema_validation": "FAIL",
+    "input_unit_count": 5,
+    "input_fact_count": 7,
+    "coverage_verifier_authorized": false,
+    "coverage_verifier_authorization_consumed": true,
+    "script_ir_calls": 0,
+    "script_ir_authorized": false,
+    "next_stage": "PROVIDER_SCHEMA_REPAIR",
+    "runtime_authority": true
+  },
   "fact_coverage_foundation": {
     "status": "CLOSED",
     "provider_calls": 0,
@@ -345,7 +366,7 @@
     "provider_component_prose_authority": false,
     "canonical_fact_components": "PASS",
     "development_preview": "DEVELOPMENT_ONLY",
-    "fact_coverage_status": "NOT_YET_QUALIFIED",
+    "fact_coverage_status": "FACT_COVERAGE_REVIEW_REQUIRED",
     "coverage_verifier_ready": true,
     "coverage_verifier_authorized": false,
     "script_ir_gate": "BLOCKED_PENDING_FACT_COVERAGE",

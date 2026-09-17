@@ -1,0 +1,14 @@
+{
+  "schema_version": "fact_coverage_verifier_response_meta_v2",
+  "authorization_id": "director-v3-fact-coverage-verifier-canary-20260917-01",
+  "execution_base": "b0cc550cd71083a1be5cf9bf28a2750b1370d696",
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "provider_calls": 1,
+  "response_received": true,
+  "response_sha256": "a7a49d4f451d92fc9d527b8071f2893c646b60982fca0004040290d853c6e8da",
+  "response_length": 28461,
+  "transport_status": "RESPONSE_RECEIVED",
+  "schema_classification": "COVERAGE_VERIFIER_MODEL_SCHEMA_FAILURE",
+  "retries": 0
+}

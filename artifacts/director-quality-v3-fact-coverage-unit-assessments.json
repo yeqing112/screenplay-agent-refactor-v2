@@ -1,0 +1,8 @@
+{
+  "schema_version": "fact_coverage_unit_assessments_v2",
+  "status": "FAIL",
+  "provider_calls": 1,
+  "expected_unit_count": 5,
+  "assessments": [],
+  "reason": "Provider response omitted the required V2 unit_assessments structure."
+}
