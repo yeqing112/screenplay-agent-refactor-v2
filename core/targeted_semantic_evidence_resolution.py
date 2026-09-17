@@ -29,6 +29,13 @@ RESOLUTION_TYPES = (
     "UNSUPPORTED",
 )
 SUPPORT_STATUSES = ("SUPPORTED", "NOT_SUPPORTED", "AMBIGUOUS", "CONFLICTED")
+PROVIDER_PROPOSER_FIELDS = {
+    "fact_key", "subject_type", "subject_id", "predicate", "scope",
+    "proposed_value", "supporting_anchor_refs", "exact_quotes",
+    "resolution_type", "confidence", "ambiguity", "conflicting_anchor_refs",
+    "reasoning_summary",
+}
+PROVIDER_PROPOSER_REQUIRED_FIELDS = PROVIDER_PROPOSER_FIELDS
 _DECLARATION_RE = re.compile(r"(?:FACT|事实)\s*:", re.IGNORECASE)
 _CJK_RE = re.compile(r"[\u3400-\u9fff]")
 _WORD_RE = re.compile(r"[\w\-]+", re.UNICODE)
@@ -308,13 +315,88 @@ def validate_semantic_support(proposal: dict[str, Any], candidate_set: dict[str,
     return {"status": status, "errors": [], "anchor_outcomes": outcomes}
 
 
+def validate_provider_proposal_shape(
+    proposal: Any,
+    request: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate the proposer envelope before semantic validation.
+
+    The provider is never allowed to create source evidence.  This check is
+    intentionally independent of ``validate_semantic_support`` so malformed
+    or out-of-scope responses are classified as provider contract failures.
+    """
+    errors: list[dict[str, str]] = []
+    if not isinstance(proposal, dict):
+        return {"status": "FAIL", "errors": [{"code": "PROVIDER_SCHEMA_INVALID", "message": "proposal must be an object"}]}
+    keys = set(proposal)
+    strict = bool(request.get("strict_provider_contract"))
+    # Existing deterministic/provider-injection callers predate V1's full
+    # diagnostics envelope.  Keep that public resolver seam compatible while
+    # the authorized canary opts into the strict all-fields contract.
+    required_fields = PROVIDER_PROPOSER_REQUIRED_FIELDS if strict else {
+        "fact_key", "subject_type", "subject_id", "predicate", "scope", "proposed_value",
+        "supporting_anchor_refs", "exact_quotes", "resolution_type", "confidence",
+    }
+    missing = sorted(required_fields - keys)
+    extra = sorted(keys - PROVIDER_PROPOSER_FIELDS)
+    if missing:
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": f"missing fields: {','.join(missing)}"})
+    if extra:
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": f"forbidden fields: {','.join(extra)}"})
+    fact = request.get("fact") if isinstance(request.get("fact"), dict) else {}
+    expected = {
+        "fact_key": _text(fact.get("fact_key")),
+        "subject_type": _text(fact.get("subject_type") or fact.get("semantic_type")),
+        "subject_id": _text(fact.get("entity") or fact.get("subject_id")),
+        "predicate": _text(fact.get("predicate")),
+        "scope": _text(fact.get("scope") or "global"),
+    }
+    for field, value in expected.items():
+        if value and _text(proposal.get(field) or ("global" if field == "scope" else "")) != value:
+            errors.append({"code": "PROVIDER_IDENTITY_MISMATCH", "message": f"{field} does not match manifest"})
+    resolution = _text(proposal.get("resolution_type"))
+    if resolution not in RESOLUTION_TYPES:
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "invalid resolution_type"})
+    refs = proposal.get("supporting_anchor_refs")
+    quotes = proposal.get("exact_quotes")
+    conflicts = proposal.get("conflicting_anchor_refs")
+    if not isinstance(refs, list) or not all(isinstance(ref, str) and ref.strip() for ref in refs):
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "supporting_anchor_refs must be a string array"})
+    if not isinstance(quotes, list) or not all(isinstance(quote, str) for quote in quotes):
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "exact_quotes must be a string array"})
+    if isinstance(refs, list) and isinstance(quotes, list) and len(refs) != len(quotes):
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "exact_quotes must align with supporting_anchor_refs"})
+    if conflicts is not None and (not isinstance(conflicts, list) or not all(isinstance(ref, str) for ref in conflicts)):
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "conflicting_anchor_refs must be a string array"})
+    confidence = proposal.get("confidence")
+    if isinstance(confidence, bool) or not isinstance(confidence, (int, float)) or not 0 <= float(confidence) <= 1:
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "confidence must be between 0 and 1"})
+    if strict and not isinstance(proposal.get("ambiguity"), bool):
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "ambiguity must be boolean"})
+    if strict and not isinstance(proposal.get("reasoning_summary"), str):
+        errors.append({"code": "PROVIDER_SCHEMA_INVALID", "message": "reasoning_summary must be a string"})
+    candidate_refs = {
+        _text(row.get("anchor_ref")) for row in (request.get("candidate_anchors") or [])
+        if isinstance(row, dict) and _text(row.get("anchor_ref"))
+    }
+    for ref in (refs or []) + (conflicts or []):
+        if ref not in candidate_refs:
+            errors.append({"code": "PROVIDER_EVIDENCE_INVALID", "message": f"anchor ref outside candidate set: {ref}"})
+    for ref, quote in zip(refs or [], quotes or []):
+        anchor = next((row for row in request.get("candidate_anchors") or [] if isinstance(row, dict) and row.get("anchor_ref") == ref), None)
+        if anchor is not None and quote != anchor.get("exact_text"):
+            errors.append({"code": "PROVIDER_EVIDENCE_INVALID", "message": f"exact quote is not immutable for {ref}"})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors}
+
+
 def _provider_proposal(provider: Callable[..., dict[str, Any]], request: dict[str, Any]) -> tuple[dict[str, Any] | None, dict[str, Any]]:
     try:
         response = provider(request)
     except Exception as exc:  # provider failure is always fail-closed
         return None, {"status": "PROVIDER_ERROR", "error": str(exc)[:500], "provider_calls": 1}
-    if not isinstance(response, dict):
-        return None, {"status": "PROVIDER_SCHEMA_INVALID", "provider_calls": 1}
+    shape = validate_provider_proposal_shape(response, request)
+    if shape["status"] != "PASS":
+        return None, {"status": "PROVIDER_SCHEMA_INVALID", "provider_calls": 1, "errors": shape["errors"]}
     return response, {"status": "PROVIDER_RESPONSE_RECEIVED", "provider_calls": 1}
 
 
@@ -346,7 +428,7 @@ def resolve_semantic_evidence(
         proposal = {"fact_key": manifest_item.get("fact_key"), "subject_type": manifest_item.get("subject_type"), "subject_id": manifest_item.get("entity") or manifest_item.get("subject_id"), "predicate": manifest_item.get("predicate"), "proposed_value": manifest_item.get("expected_value"), "scope": manifest_item.get("scope") or "global", "supporting_anchor_refs": [row.get("anchor_ref") for row in supported], "exact_quotes": [row.get("exact_text") for row in supported], "resolution_type": resolution_type, "confidence": 1.0 if resolution_type == "EXPLICIT_DECLARATION" else 0.9, "ambiguity": False, "conflicting_anchor_refs": []}
         proposal["proposed_value"] = resolved_value
     elif provider is not None and anchors:
-        request = {"fact": copy.deepcopy(manifest_item), "candidate_anchors": copy.deepcopy(anchors), "source_evidence_index_fingerprint": source_index.get("evidence_index_fingerprint")}
+        request = {"fact": copy.deepcopy(manifest_item), "candidate_anchors": copy.deepcopy(anchors), "source_evidence_index_fingerprint": source_index.get("evidence_index_fingerprint"), "strict_provider_contract": bool(manifest_item.get("strict_provider_contract"))}
         proposal, provider_meta = _provider_proposal(provider, request)
         provider_calls = int(provider_meta.get("provider_calls") or 0)
     if proposal is None:
@@ -416,5 +498,5 @@ def run_targeted_semantic_evidence_resolution(
 
 
 __all__ = [
-    "SCHEMA_VERSION", "RESOLUTION_TYPES", "SUPPORT_STATUSES", "retrieve_candidate_anchors", "validate_candidate_anchor_set", "validate_semantic_support", "resolve_semantic_evidence", "proposal_to_candidate_fact", "merge_resolved_proposals", "run_targeted_semantic_evidence_resolution",
+    "SCHEMA_VERSION", "RESOLUTION_TYPES", "SUPPORT_STATUSES", "PROVIDER_PROPOSER_FIELDS", "retrieve_candidate_anchors", "validate_candidate_anchor_set", "validate_provider_proposal_shape", "validate_semantic_support", "resolve_semantic_evidence", "proposal_to_candidate_fact", "merge_resolved_proposals", "run_targeted_semantic_evidence_resolution",
 ]

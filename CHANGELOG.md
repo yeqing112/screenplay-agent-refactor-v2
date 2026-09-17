@@ -1,5 +1,12 @@
 # screenplay-agent-refactor-v2 功能变更说明
 
+## 2026-09-17 — Director Quality V3：Authorized Proposer Provider Canary（受控 dry-run）
+
+- 新增 `core/authorized_proposer_canary.py` 与 `scripts/run_director_quality_v3_authorized_proposer_provider_canary.py`，复用既有 LLM registry/`call_llm_json`，仅向 Provider 发送每个 missing fact 的最多 8 个候选锚点。
+- Provider 输出采用严格 proposer schema，并经 fact identity、候选锚点边界、immutable exact quote 与 semantic support 复核；confidence 不参与 authority，`reasoning_summary` 仅进诊断。
+- canary 默认 provider-free；显式 `--execute` 才允许使用已配置 LLM，且每个 fact 最多一次 logical call、无 transport/parser retry。无论何种模式均不写 FactSnapshot、权威记录、ScriptIR 或生产状态。
+- 逐 fact 报告区分 `SOURCE_GAP`、`NO_CANDIDATE_ANCHOR`、Provider schema/evidence/support 等失败类型，并记录 lexical limitation 与 contextual inference 需人工审查的信号。
+
 ## 2026-09-17 — Director Quality V3：Targeted Semantic Evidence Resolution（Provider-free）
 
 - 在现有 SourceEvidenceIndex 与 MissingFactManifest 上增加候选锚点检索、保守的自然语言/代词承接解析、exact quote/source hash/offset 复核与 semantic support validation。
