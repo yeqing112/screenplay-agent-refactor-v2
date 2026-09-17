@@ -1,0 +1,27 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-canary1-request-forensic-v1",
+  "status": "CLOSED",
+  "provider_calls": 0,
+  "historical_execution_base": "b0cc550cd71083a1be5cf9bf28a2750b1370d696",
+  "historical_request_hash_reconstructed": "0d66385c84ea660f83d7666dba778175082cb422f0d868802d3ac26f6f4288b0",
+  "historical_response_sha256": "a7a49d4f451d92fc9d527b8071f2893c646b60982fca0004040290d853c6e8da",
+  "historical_response_length": 28461,
+  "evidence_basis": "deterministic source-path reconstruction from runner, build_request, and core.llm payload construction",
+  "wire_capture": "NOT_AVAILABLE_PROVIDER_FREE",
+  "provider_visible": {
+    "system_message": {"present": true, "sha256": "5cfbcf21de9404d412dc53637a7d31d86e7f93ac65447cc3bbb4b6f5549d22ae", "length": 573},
+    "user_message": {"present": true, "request_hash": "0d66385c84ea660f83d7666dba778175082cb422f0d868802d3ac26f6f4288b0", "top_level_contract": "legacy-summary-only"},
+    "response_format": {"present": false, "reason": "historical runner did not pass response_format and MiMo profile did not declare one"},
+    "provider_schema": {"present": false, "only_fingerprint_and_enum_summaries": true},
+    "field_level_required_rules": false,
+    "additional_properties_false": false,
+    "proposal_key": true,
+    "requirement_key": false,
+    "fact_refs": false,
+    "unit_assessments": false,
+    "synthetic_shape_example": false
+  },
+  "root_cause": "PROVIDER_SCHEMA_PROJECTION_GAP",
+  "model_capability": "NOT_FAIRLY_ADJUDICATED",
+  "historical_runtime_result_unchanged": "COVERAGE_VERIFIER_MODEL_SCHEMA_FAILURE"
+}

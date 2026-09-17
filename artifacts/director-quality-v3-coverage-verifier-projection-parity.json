@@ -1,0 +1,14 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-projection-parity-v1",
+  "status": "PASS",
+  "provider_calls": 0,
+  "runtime_schema_fingerprint": "7fd93ba76c86a5ff8ef2c595fbc61dcbb26d52444757035a8b49c42f2acc048d",
+  "provider_visible_schema_fingerprint": "7fd93ba76c86a5ff8ef2c595fbc61dcbb26d52444757035a8b49c42f2acc048d",
+  "projection_fingerprint_check": "PASS",
+  "top_level_required_fields": "PASS",
+  "nested_required_fields": "PASS",
+  "additional_properties_false": "PASS",
+  "enum_restrictions": "PASS",
+  "canonical_id_prohibition": "PASS",
+  "hard_fail_on_projection_loss": true
+}

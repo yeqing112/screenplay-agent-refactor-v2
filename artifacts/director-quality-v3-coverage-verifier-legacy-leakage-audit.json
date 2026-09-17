@@ -1,0 +1,13 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-legacy-leakage-audit-v1",
+  "provider_calls": 0,
+  "active_path": [
+    "core.fact_coverage_verifier.build_request",
+    "core.fact_coverage_verifier.build_provider_system_prompt_v3",
+    "scripts.run_director_quality_v3_fact_coverage_verifier_canary.build_inputs"
+  ],
+  "legacy_contract_tokens_in_active_provider_projection": 0,
+  "legacy_symbols_retained_for_historical_v2_compatibility": ["contract_v2", "provider_schema_v2"],
+  "historical_artifacts_excluded_from_active_scan": true,
+  "status": "PASS"
+}

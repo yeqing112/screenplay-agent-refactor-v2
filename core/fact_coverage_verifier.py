@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import copy
 from typing import Any
 
 from core.fact_coverage import COVERAGE_STATUSES, REQUIREMENT_TYPES, fingerprint
@@ -20,6 +21,9 @@ FORBIDDEN_FIELDS = {
     "new_evidence", "new_evidence_refs", "source_modification", "final_authority",
     "final_qualification", "script_ir", "source_search", "replacement_fact",
 }
+
+PROJECTION_VERSION = "provider_contract_projection_v1"
+ENVELOPE_POLICY_VERSION = "json_envelope_policy_v1"
 
 
 def _canonical(value: Any) -> bytes:
@@ -84,6 +88,209 @@ def contract_v2() -> dict[str, Any]:
     }
 
 
+def provider_schema_v3() -> dict[str, Any]:
+    """Return the single provider-visible V3 output schema.
+
+    V3 intentionally keeps the semantic fields from V2 while making the
+    complete JSON Schema a first-class request projection.  The schema is
+    copied so callers cannot mutate the runtime validator's contract.
+    """
+    return copy.deepcopy(provider_schema_v2())
+
+
+def contract_v3() -> dict[str, Any]:
+    schema = provider_schema_v3()
+    return {
+        "schema_version": "fact_coverage_verifier_v3",
+        "provider_owns": [
+            "proposal_key", "requirement_type", "description", "source_unit_refs",
+            "requirement_key", "fact_refs", "coverage_verdict",
+            "source_unit_ref", "relevance", "requirement_keys",
+        ],
+        "program_owns": [
+            "canonical_requirement_id", "final_ordering", "proposal_key_mapping",
+            "final_coverage_disposition", "qualification_status",
+        ],
+        "temporary_proposal_key_pattern": "^P[0-9]{3}$",
+        "canonical_requirement_id_pattern": "^REQ_[0-9]{4}$",
+        "forbidden_provider_fields": sorted(FORBIDDEN_FIELDS),
+        "provider_schema": schema,
+        "provider_schema_fingerprint": schema_fingerprint(schema),
+        "provider_calls": 0,
+        "development_preview_excluded": True,
+    }
+
+
+def _synthetic_shape_example() -> dict[str, Any]:
+    """A shape-only example that contains no evaluation-source content."""
+    return {
+        "requirements": [{
+            "proposal_key": "P001",
+            "requirement_type": "EVENT_OCCURRENCE",
+            "description": "Example structural event",
+            "source_unit_refs": ["NU_0001"],
+        }],
+        "coverage_claims": [{
+            "requirement_key": "P001",
+            "fact_refs": ["FACT_0001"],
+            "coverage_verdict": "COVERED",
+        }],
+        "unit_assessments": [{
+            "source_unit_ref": "NU_0001",
+            "relevance": "RELEVANT",
+            "requirement_keys": ["P001"],
+        }],
+    }
+
+
+def build_provider_contract_projection_v1(*, contract: dict[str, Any], unit_count: int, fact_count: int) -> dict[str, Any]:
+    """Build the complete contract visible to the Provider."""
+    schema = copy.deepcopy(contract.get("provider_schema") or provider_schema_v3())
+    projection = {
+        "projection_version": PROJECTION_VERSION,
+        "schema_version": "fact_coverage_verifier_v3",
+        "schema_fingerprint": schema_fingerprint(schema),
+        "json_schema": schema,
+        "required_top_level_fields": list(schema.get("required") or []),
+        "field_semantics": {
+            "requirements": ["proposal_key", "requirement_type", "description", "source_unit_refs"],
+            "coverage_claims": ["requirement_key", "fact_refs", "coverage_verdict"],
+            "unit_assessments": ["source_unit_ref", "relevance", "requirement_keys"],
+        },
+        "enum_semantics": {
+            "requirement_type": list(REQUIREMENT_TYPES),
+            "coverage_verdict": list(COVERAGE_STATUSES),
+            "relevance": list(UNIT_RELEVANCES),
+        },
+        "forbidden_fields": sorted(FORBIDDEN_FIELDS),
+        "canonical_id_ownership": "program_only",
+        "temporary_key_ownership": "provider_proposal_only",
+        "exact_output_instruction": "Return exactly one JSON object and no Markdown or commentary.",
+        "all_input_units_must_be_assessed": True,
+        "input_unit_count": int(unit_count),
+        "input_fact_count": int(fact_count),
+        "synthetic_shape_example": _synthetic_shape_example(),
+    }
+    projection["projection_fingerprint"] = schema_fingerprint(projection)
+    return projection
+
+
+def validate_provider_contract_projection_v1(projection: Any) -> dict[str, Any]:
+    errors: list[dict[str, Any]] = []
+    if not isinstance(projection, dict):
+        return {"status": "FAIL", "errors": [{"code": "PROJECTION_NOT_OBJECT"}]}
+    required = {
+        "projection_version", "schema_version", "schema_fingerprint", "json_schema",
+        "required_top_level_fields", "field_semantics", "enum_semantics",
+        "forbidden_fields", "canonical_id_ownership", "temporary_key_ownership",
+        "exact_output_instruction", "all_input_units_must_be_assessed",
+        "synthetic_shape_example", "projection_fingerprint",
+    }
+    missing = sorted(required - set(projection))
+    if missing:
+        errors.append({"code": "PROJECTION_REQUIRED_FIELDS_MISSING", "fields": missing})
+    schema = projection.get("json_schema")
+    if not isinstance(schema, dict):
+        errors.append({"code": "PROVIDER_SCHEMA_NOT_OBJECT"})
+    else:
+        if schema_fingerprint(schema) != projection.get("schema_fingerprint"):
+            errors.append({"code": "PROVIDER_SCHEMA_FINGERPRINT_MISMATCH"})
+        if schema.get("additionalProperties") is not False:
+            errors.append({"code": "PROVIDER_SCHEMA_NOT_CLOSED"})
+        expected_top = ["requirements", "coverage_claims", "unit_assessments"]
+        if schema.get("required") != expected_top:
+            errors.append({"code": "PROVIDER_SCHEMA_TOP_LEVEL_REQUIRED_MISMATCH"})
+        properties = schema.get("properties") or {}
+        required_fields = {
+            "requirements": {"proposal_key", "requirement_type", "description", "source_unit_refs"},
+            "coverage_claims": {"requirement_key", "fact_refs", "coverage_verdict"},
+            "unit_assessments": {"source_unit_ref", "relevance", "requirement_keys"},
+        }
+        for name, fields in required_fields.items():
+            if set((properties.get(name) or {}).get("items", {}).get("required") or []) != fields:
+                errors.append({"code": "PROVIDER_SCHEMA_REQUIRED_FIELD_MISMATCH", "path": name})
+    if projection.get("projection_version") != PROJECTION_VERSION:
+        errors.append({"code": "PROJECTION_VERSION_INVALID"})
+    copy_without_fp = {key: value for key, value in projection.items() if key != "projection_fingerprint"}
+    if schema_fingerprint(copy_without_fp) != projection.get("projection_fingerprint"):
+        errors.append({"code": "PROJECTION_FINGERPRINT_MISMATCH"})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors, "schema_fingerprint": projection.get("schema_fingerprint"), "projection_fingerprint": projection.get("projection_fingerprint")}
+
+
+def build_provider_system_prompt_v3(projection: dict[str, Any]) -> str:
+    """Human-readable contract paired with the machine-readable projection."""
+    example = json.dumps(projection.get("synthetic_shape_example"), ensure_ascii=False, indent=2)
+    return (
+        "[FACT_COVERAGE_VERIFIER_V3]\n"
+        "OUTPUT FORMAT IS A HARD CONTRACT. Return exactly one JSON object. "
+        "Do not use Markdown fences, commentary, or text outside the JSON object.\n"
+        "Required top-level keys: requirements, coverage_claims, unit_assessments.\n"
+        "Each requirement uses proposal_key (P###), requirement_type, description, and source_unit_refs.\n"
+        "Each coverage claim uses requirement_key (an existing proposal_key), fact_refs, and coverage_verdict.\n"
+        "Each unit assessment uses source_unit_ref, relevance, and requirement_keys. Assess every supplied unit exactly once.\n"
+        "Canonical REQ identifiers are program-owned; never emit them. Use only supplied facts and units.\n"
+        "The machine-readable output contract, including closed-object rules and enums, is supplied in output_contract.\n"
+        "Shape-only synthetic example (not an answer):\n" + example
+    )
+
+
+def validate_final_provider_payload_projection(*, user_prompt: str, system_prompt: str) -> dict[str, Any]:
+    """Final serialized-message gate; prevents lower adapters dropping the schema."""
+    errors: list[dict[str, Any]] = []
+    try:
+        request = json.loads(str(user_prompt))
+    except Exception as exc:
+        return {"status": "FAIL", "errors": [{"code": "FINAL_USER_PAYLOAD_NOT_JSON", "message": str(exc)[:240]}]}
+    projection = request.get("output_contract") if isinstance(request, dict) else None
+    projection_result = validate_provider_contract_projection_v1(projection)
+    errors.extend(projection_result.get("errors") or [])
+    required_markers = (
+        "OUTPUT FORMAT IS A HARD CONTRACT",
+        "requirements",
+        "coverage_claims",
+        "unit_assessments",
+        "proposal_key",
+        "requirement_key",
+        "fact_refs",
+        "coverage_verdict",
+        "source_unit_ref",
+        "relevance",
+        "requirement_keys",
+        "Do not use Markdown fences",
+    )
+    for marker in required_markers:
+        if marker not in str(system_prompt):
+            errors.append({"code": "FINAL_SYSTEM_PROMPT_MARKER_MISSING", "marker": marker})
+    units = request.get("source_narrative_units") if isinstance(request, dict) else []
+    facts = request.get("existing_facts") if isinstance(request, dict) else []
+    if not isinstance(units, list) or len(units) != int((projection or {}).get("input_unit_count") or -1):
+        errors.append({"code": "FINAL_UNIT_VISIBILITY_MISMATCH"})
+    if not isinstance(facts, list) or len(facts) != int((projection or {}).get("input_fact_count") or -1):
+        errors.append({"code": "FINAL_FACT_VISIBILITY_MISMATCH"})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors, "projection_fingerprint": (projection or {}).get("projection_fingerprint"), "visible_unit_count": len(units) if isinstance(units, list) else 0, "visible_fact_count": len(facts) if isinstance(facts, list) else 0}
+
+
+def parse_provider_json_envelope_v1(raw: str, *, allow_single_fence: bool = True) -> dict[str, Any]:
+    """Parse one JSON object or exactly one Markdown fence, syntax-only."""
+    text = str(raw or "").strip()
+    if not text:
+        raise ValueError("PROVIDER_RESPONSE_EMPTY")
+    candidate = text
+    if text.startswith("```"):
+        if not allow_single_fence:
+            raise ValueError("MARKDOWN_FENCE_FORBIDDEN")
+        match = re.fullmatch(r"```(?:json)?\s*\n?(\{.*\})\s*```", text, flags=re.DOTALL)
+        if not match:
+            raise ValueError("INVALID_SINGLE_JSON_FENCE")
+        candidate = match.group(1).strip()
+    if not candidate.startswith("{") or not candidate.endswith("}"):
+        raise ValueError("JSON_OBJECT_ENVELOPE_REQUIRED")
+    payload = json.loads(candidate)
+    if not isinstance(payload, dict):
+        raise ValueError("PROVIDER_RESPONSE_NOT_OBJECT")
+    return payload
+
+
 def materialize_units(*, narrative_index: dict[str, Any], raw_bytes: bytes, source_raw_hash: str, source_evidence_index: dict[str, Any] | None = None) -> dict[str, Any]:
     text = raw_bytes.decode("utf-8")
     source_by_ref = {str(row.get("anchor_ref")): row for row in (source_evidence_index or {}).get("anchors", []) if isinstance(row, dict)}
@@ -125,8 +332,14 @@ def project_existing_facts(*, fact_records: list[dict[str, Any]], semantic_overl
 
 
 def build_request(*, units: dict[str, Any], facts: dict[str, Any], contract: dict[str, Any], provider: str, model: str) -> dict[str, Any]:
+    v3_contract = contract if contract.get("schema_version") == "fact_coverage_verifier_v3" else contract_v3()
+    projection = build_provider_contract_projection_v1(
+        contract=v3_contract,
+        unit_count=len(units.get("units") or []),
+        fact_count=len(facts.get("facts") or []),
+    )
     return {
-        "task": "fact_coverage_verifier_v2",
+        "task": "fact_coverage_verifier_v3",
         "instructions": {
             "discover_minimal_story_critical_structuring_requirements": True,
             "use_only_supplied_units_and_facts": True,
@@ -137,7 +350,7 @@ def build_request(*, units: dict[str, Any], facts: dict[str, Any], contract: dic
             "avoid_development_preview_or_expected_answers": True,
         },
         "provider": {"provider": provider, "model": model},
-        "contract": {"schema_version": contract["schema_version"], "schema_fingerprint": contract["provider_schema_fingerprint"], "requirement_types": contract["requirement_types"], "coverage_statuses": contract["coverage_statuses"], "unit_relevances": contract["unit_relevances"], "forbidden_provider_fields": contract["forbidden_provider_fields"]},
+        "output_contract": projection,
         "source_narrative_units": units["units"],
         "existing_facts": facts["facts"],
     }
@@ -215,6 +428,10 @@ def validate_provider_payload(payload: Any, *, unit_refs: list[str], fact_ids: l
         if row.get("relevance") == "NO_REQUIRED_FACT" and keys: errors.append({"code": "NO_REQUIRED_FACT_KEYS_NOT_EMPTY", "index": i})
     if sorted(assessed) != sorted(unit_refs): errors.append({"code": "UNIT_ASSESSMENTS_DO_NOT_MATCH_ALL_UNITS"})
     if len(assessed) != len(set(assessed)): errors.append({"code": "DUPLICATE_UNIT_ASSESSMENT"})
+    referenced_by_unit = {str(key) for row in assessments if isinstance(row, dict) for key in (row.get("requirement_keys") or [])}
+    for key in proposal_keys:
+        if key not in referenced_by_unit:
+            errors.append({"code": "PROPOSAL_NOT_REFERENCED_BY_UNIT_ASSESSMENT", "proposal_key": key})
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "requirements": requirements, "coverage_claims": claims, "unit_assessments": assessments, "proposal_keys": proposal_keys, "unit_refs": unit_refs, "fact_ids": fact_ids, "forbidden_fields": forbidden}
 
 
@@ -255,4 +472,12 @@ def compile_fact_coverage_authority_v2(*, canonical: dict[str, Any], semantic_ov
     return {"schema_version": "fact_coverage_authority_matrix_v2", "provider_calls": 0, "rows": rows, "counts": counts, "unit_assessment_counts": {rel: sum(1 for row in unit_assessments if row.get("relevance") == rel) for rel in UNIT_RELEVANCES}, "qualification_status": qualification, "fact_coverage_qualified": qualification == "FACT_COVERAGE_CANDIDATE_QUALIFIED", "runtime_authority": True, "human_review": "NOT_RECORDED", "fingerprint": fingerprint(rows)}
 
 
-__all__ = ["PROPOSAL_KEY_RE", "UNIT_RELEVANCES", "FORBIDDEN_FIELDS", "provider_schema_v2", "contract_v2", "schema_fingerprint", "materialize_units", "project_existing_facts", "build_request", "validate_provider_payload", "canonicalize_requirements", "compile_fact_coverage_authority_v2"]
+__all__ = [
+    "PROPOSAL_KEY_RE", "UNIT_RELEVANCES", "FORBIDDEN_FIELDS", "PROJECTION_VERSION",
+    "ENVELOPE_POLICY_VERSION", "provider_schema_v2", "provider_schema_v3", "contract_v2",
+    "contract_v3", "schema_fingerprint", "build_provider_contract_projection_v1",
+    "validate_provider_contract_projection_v1", "build_provider_system_prompt_v3",
+    "validate_final_provider_payload_projection", "parse_provider_json_envelope_v1",
+    "materialize_units", "project_existing_facts", "build_request", "validate_provider_payload",
+    "canonicalize_requirements", "compile_fact_coverage_authority_v2",
+]

@@ -56,7 +56,7 @@ def profile_from_readonly_main_db() -> dict:
 
 
 def build_inputs():
-    from core.fact_coverage_verifier import build_request, contract_v2, materialize_units, project_existing_facts
+    from core.fact_coverage_verifier import build_request, contract_v3, materialize_units, project_existing_facts
     from core.source_evidence_index import build_source_evidence_index
     raw_path = ROOT / "work/intake/director_v3/evaluation_packages" / f"{SOURCE_PACKAGE}.raw"
     raw_bytes = raw_path.read_bytes()
@@ -77,7 +77,7 @@ def build_inputs():
     facts = project_existing_facts(fact_records=attempt["fact_snapshot"]["records"], semantic_overlay=overlay)
     if facts["fact_count"] != 7:
         raise RuntimeError("existing_fact_count_mismatch")
-    contract = contract_v2()
+    contract = contract_v3()
     profile = profile_from_readonly_main_db()
     request = build_request(units=materialized, facts=facts, contract=contract, provider="openai-compatible", model="mimo-v2.5")
     return raw_bytes, materialized, facts, contract, profile, request
@@ -117,7 +117,14 @@ def main() -> int:
         print(json.dumps({"status": "NOT_AUTHORIZED", "provider_calls": 0}, ensure_ascii=False))
         return 2
     sys.path.insert(0, str(ROOT))
-    from core.fact_coverage_verifier import compile_fact_coverage_authority_v2, canonicalize_requirements, validate_provider_payload
+    from core.fact_coverage_verifier import (
+        build_provider_system_prompt_v3,
+        compile_fact_coverage_authority_v2,
+        canonicalize_requirements,
+        parse_provider_json_envelope_v1,
+        validate_final_provider_payload_projection,
+        validate_provider_payload,
+    )
     from core.llm import call_llm
 
     head = git("rev-parse", "HEAD")
@@ -131,13 +138,20 @@ def main() -> int:
         print(json.dumps({"status": "DIRECTOR_V3_FACT_COVERAGE_VERIFIER_CANARY_BLOCKED", "provider_calls": 0, "preflight": gate}, ensure_ascii=False, indent=2))
         return 2
     request_json = json.dumps(request, ensure_ascii=False, indent=2)
+    system = build_provider_system_prompt_v3(request["output_contract"])
+    transport_projection = validate_final_provider_payload_projection(user_prompt=request_json, system_prompt=system)
+    gate["final_transport_projection"] = transport_projection
+    if transport_projection["status"] != "PASS":
+        gate["status"] = "FAIL"
+        write(ART / "director-quality-v3-fact-coverage-verifier-preflight.json", gate)
+        print(json.dumps({"status": "DIRECTOR_V3_FACT_COVERAGE_VERIFIER_BLOCKED", "provider_calls": 0, "reason": "PROVIDER_CONTRACT_PROJECTION_INCOMPLETE", "preflight": gate}, ensure_ascii=False, indent=2))
+        return 2
     request_hash = sha256_bytes(request_json.encode("utf-8"))
     EVAL_ROOT.mkdir(parents=True, exist_ok=True)
     started = datetime.now(timezone.utc).isoformat()
     ledger = {"schema_version": "director_v3_fact_coverage_verifier_provider_ledger_v2", "stage": "FACT_COVERAGE_VERIFIER", "attempt_number": 1, "dispatched": True, "authorization_id": auth["authorization_id"], "authorization_scope": SCOPE, "execution_base": head, "request_hash": request_hash, "provider": profile.get("provider"), "model": profile.get("model_name"), "started_at": started, "status": "DISPATCHING", "cumulative_attempt_before": 3, "cumulative_attempt_after": 4, "provider_calls": 1}
-    write(EVAL_ROOT / "request.json", {"system_prompt": "", "request": request, "request_hash": request_hash, "execution_base": head, "authorization_id": auth["authorization_id"]})
+    write(EVAL_ROOT / "request.json", {"system_prompt": system, "request": request, "request_hash": request_hash, "execution_base": head, "authorization_id": auth["authorization_id"], "transport_projection": transport_projection})
     write(EVAL_ROOT / "provider-ledger.json", ledger)
-    system = "You are a screenplay fact-coverage verifier. Inspect every supplied source narrative unit and identify only minimal story-critical factual requirements needed for safe screenplay structuring. Use only supplied units and existing facts. Do not create, repair, or modify facts, evidence, source, or ScriptIR. Never generate canonical REQ IDs; use temporary proposal_key values matching P001. Return only a JSON object with requirements, coverage_claims, and unit_assessments. Assess every unit exactly once. Do not mention or infer any development preview or expected answer."
     raw = ""
     error = None
     audit_records: list[dict] = []
@@ -154,7 +168,7 @@ def main() -> int:
     (ART / "director-quality-v3-fact-coverage-verifier-raw-response.txt").write_text(raw_text, encoding="utf-8")
     write(ART / "director-quality-v3-fact-coverage-verifier-preflight.json", gate)
     write(ART / "director-quality-v3-fact-coverage-verifier-runtime-authorization-record.json", {**auth, "consumed": True, "consumed_at": finished, "provider_calls": 1, "execution_base": head})
-    write(ART / "director-quality-v3-fact-coverage-verifier-request.json", {"schema_version": "fact_coverage_verifier_request_v2", "authorization_id": auth["authorization_id"], "execution_base": head, "request_hash": request_hash, "provider": profile.get("provider"), "model": profile.get("model_name"), "development_preview_leaked": False, "request": request, "system_prompt": system})
+    write(ART / "director-quality-v3-fact-coverage-verifier-request.json", {"schema_version": "fact_coverage_verifier_request_v3", "authorization_id": auth["authorization_id"], "execution_base": head, "request_hash": request_hash, "provider": profile.get("provider"), "model": profile.get("model_name"), "development_preview_leaked": False, "request": request, "system_prompt": system, "transport_projection": transport_projection})
     write(ART / "director-quality-v3-fact-coverage-verifier-provider-ledger.json", ledger)
     response_meta = {"schema_version": "fact_coverage_verifier_response_meta_v2", "provider_calls": 1, "response_received": bool(raw_text), "response_sha256": response_hash, "response_length": len(raw_text), "provider": profile.get("provider"), "model": profile.get("model_name"), "started_at": started, "finished_at": finished, "transport_error": error}
     write(ART / "director-quality-v3-fact-coverage-verifier-response-meta.json", response_meta)
@@ -163,7 +177,7 @@ def main() -> int:
     validation = {"status": "FAIL", "errors": [{"code": "EMPTY_PROVIDER_RESPONSE"}], "requirements": [], "coverage_claims": [], "unit_assessments": []}
     if raw_text:
         try:
-            payload = json.loads(raw_text)
+            payload = parse_provider_json_envelope_v1(raw_text, allow_single_fence=True)
             validation = validate_provider_payload(payload, unit_refs=[unit["source_unit_ref"] for unit in materialized["units"]], fact_ids=[row["fact_id"] for row in facts["facts"]])
         except Exception as exc:
             parse_error = str(exc)[:1000]

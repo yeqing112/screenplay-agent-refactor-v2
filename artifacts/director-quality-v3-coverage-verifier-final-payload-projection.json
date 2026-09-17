@@ -1,0 +1,15 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-final-payload-projection-v1",
+  "status": "PASS",
+  "provider_calls": 0,
+  "serialized_message_gate": "PASS",
+  "projection_fingerprint": "93547a39ae8de738af6ccbf9b381990ced7ccc72dd3bab370bc7f70b546dfac6",
+  "user_message_contains_full_output_contract": true,
+  "system_message_contains_human_contract": true,
+  "required_top_level_fields_visible": ["requirements", "coverage_claims", "unit_assessments"],
+  "nested_fields_visible": ["proposal_key", "requirement_type", "description", "source_unit_refs", "requirement_key", "fact_refs", "coverage_verdict", "source_unit_ref", "relevance", "requirement_keys"],
+  "all_input_units_visible": 5,
+  "all_existing_facts_visible": 7,
+  "development_preview_leaked": false,
+  "lower_adapter_loss_guard": "PASS"
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-recanary-readiness-v1",
+  "status": "READY_PROVIDER_SCHEMA_REPAIRED_NOT_AUTHORIZED",
+  "provider_calls": 0,
+  "full_schema_projection": "PASS",
+  "final_transport_projection": "PASS",
+  "runtime_provider_schema_parity": "PASS",
+  "active_contract_version_singular": "PASS",
+  "active_legacy_contract_leakage": 0,
+  "all_narrative_units_visible": "PASS",
+  "all_existing_facts_visible": "PASS",
+  "structured_output_capability_audited": "PASS_UNKNOWN",
+  "envelope_policy_explicit": "PASS",
+  "validator_strict": "PASS",
+  "historical_canary_immutable": "PASS",
+  "coverage_recanary_ready": true,
+  "coverage_recanary_authorized": false,
+  "fact_coverage_status": "FACT_COVERAGE_REVIEW_REQUIRED",
+  "targeted_missing_fact_extraction_ready": false,
+  "script_ir_ready": false,
+  "script_ir_authorized": false,
+  "new_authorization_required": true
+}

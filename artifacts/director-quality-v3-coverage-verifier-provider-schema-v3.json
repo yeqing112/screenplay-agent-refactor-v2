@@ -1,0 +1,17 @@
+{
+  "schema_version": "fact_coverage_verifier_provider_schema_v3",
+  "provider_calls": 0,
+  "schema_fingerprint": "7fd93ba76c86a5ff8ef2c595fbc61dcbb26d52444757035a8b49c42f2acc048d",
+  "schema": {
+    "type": "object",
+    "required": ["requirements", "coverage_claims", "unit_assessments"],
+    "additionalProperties": false,
+    "nested_required_fields": {
+      "requirements": ["proposal_key", "requirement_type", "description", "source_unit_refs"],
+      "coverage_claims": ["requirement_key", "fact_refs", "coverage_verdict"],
+      "unit_assessments": ["source_unit_ref", "relevance", "requirement_keys"]
+    },
+    "canonical_id_prohibition": true,
+    "temporary_proposal_key_pattern": "^P[0-9]{3}$"
+  }
+}

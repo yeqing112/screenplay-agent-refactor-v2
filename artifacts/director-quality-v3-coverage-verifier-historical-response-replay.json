@@ -1,0 +1,14 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-historical-response-replay-v1",
+  "status": "CLOSED",
+  "provider_calls": 0,
+  "historical_runtime_result_preserved": "COVERAGE_VERIFIER_MODEL_SCHEMA_FAILURE",
+  "raw_response_sha256": "a7a49d4f451d92fc9d527b8071f2893c646b60982fca0004040290d853c6e8da",
+  "raw_response_length": 28461,
+  "strict_raw_parse": "FAIL",
+  "single_fence_unwrap": "PASS_BY_POLICY",
+  "post_unwrap_json_parse": "PASS",
+  "post_unwrap_v3_schema_validation": "FAIL",
+  "legacy_shape_semantic_repair": "NOT_PERFORMED",
+  "historical_artifacts_mutated": false
+}

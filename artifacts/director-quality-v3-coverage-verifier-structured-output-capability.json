@@ -1,0 +1,11 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-structured-output-capability-v1",
+  "provider_calls": 0,
+  "state": "STRUCTURED_OUTPUT_SUPPORT_UNKNOWN",
+  "adapter": "core.llm.call_llm",
+  "adapter_behavior": "response_format_dict_pass_through_when_explicitly_supplied",
+  "mimo_profile_declared_response_format": false,
+  "mimo_endpoint_verified": false,
+  "response_format_projected_this_round": false,
+  "decision": "Do not assume json_object/json_schema support; use full-schema prompt projection plus strict runtime validation until separately verified."
+}

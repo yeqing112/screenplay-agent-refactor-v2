@@ -1,0 +1,11 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-legacy-shape-fixture-result-v1",
+  "status": "PASS",
+  "provider_calls": 0,
+  "fixture": "coverage_status/unit_relevances/claim/status/evidence_units",
+  "strict_validation": "FAIL",
+  "automatic_field_rename": false,
+  "automatic_missing_field_fill": false,
+  "automatic_unit_assessment_generation": false,
+  "closed_world_validator": true
+}

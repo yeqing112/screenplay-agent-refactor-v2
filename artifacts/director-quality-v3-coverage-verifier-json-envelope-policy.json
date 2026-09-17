@@ -1,0 +1,12 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-json-envelope-policy-v1",
+  "provider_calls": 0,
+  "policy": "TRANSPORT_ENVELOPE_NORMALIZATION",
+  "allow_single_fence": true,
+  "accepted_forms": ["raw JSON object", "exactly one ```json fence containing only one JSON object", "exactly one ``` fence containing only one JSON object"],
+  "syntax_only": true,
+  "requires_no_leading_or_trailing_prose": true,
+  "inner_payload_unchanged": true,
+  "forbidden_repairs": ["field rename", "missing field fill", "fact ref inference", "unit assessment generation", "enum coercion", "unknown field deletion"],
+  "implementation": "core.fact_coverage_verifier.parse_provider_json_envelope_v1"
+}

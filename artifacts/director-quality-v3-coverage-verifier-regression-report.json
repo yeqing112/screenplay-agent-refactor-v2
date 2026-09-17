@@ -1,0 +1,16 @@
+{
+  "schema_version": "director-quality-v3-coverage-verifier-regression-report-v1",
+  "provider_calls": 0,
+  "full_backend": {"passed": 1388, "failed": 4, "new_failures": 0},
+  "golden": {"fixture_count": 5, "passed": 5, "failed": 0},
+  "known_baseline_failures": [
+    "tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons",
+    "tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean",
+    "tests/test_director_quality_v3_fresh_integration_pilot.py::test_real_database_has_no_non_retired_fresh_candidates_after_six_scene_retirement",
+    "tests/test_director_quality_v3_fresh_integration_pilot.py::test_provider_runner_uses_one_strategy_call_per_scene_and_zero_retries"
+  ],
+  "targeted_projection_tests": {"passed": 48, "failed": 0},
+  "frontend": "NOT_AFFECTED",
+  "ci": "NOT_RUN_BY_SCOPE",
+  "assessment": "PASS_WITH_KNOWN_BASELINE_EXCEPTIONS"
+}

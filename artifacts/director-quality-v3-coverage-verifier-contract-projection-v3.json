@@ -1,0 +1,13 @@
+{
+  "schema_version": "fact_coverage_verifier_contract_projection_v3",
+  "provider_calls": 0,
+  "projection_version": "provider_contract_projection_v1",
+  "ssot_module": "core.fact_coverage_verifier",
+  "runtime_schema_version": "fact_coverage_verifier_v3",
+  "projection_fingerprint": "93547a39ae8de738af6ccbf9b381990ced7ccc72dd3bab370bc7f70b546dfac6",
+  "projection_fields": ["json_schema", "required_top_level_fields", "field_semantics", "enum_semantics", "forbidden_fields", "canonical_id_ownership", "temporary_key_ownership", "exact_output_instruction", "synthetic_shape_example"],
+  "projection_fingerprint_algorithm": "sha256(canonical_json(projection_without_projection_fingerprint))",
+  "canonical_id_ownership": "program_only",
+  "temporary_key_ownership": "provider_proposal_only",
+  "development_preview_leaked": false
+}
