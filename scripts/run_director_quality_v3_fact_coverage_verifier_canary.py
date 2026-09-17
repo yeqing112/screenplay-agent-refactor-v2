@@ -57,6 +57,7 @@ def profile_from_readonly_main_db() -> dict:
 
 def build_inputs():
     from core.fact_coverage_verifier import build_request, contract_v2, materialize_units, project_existing_facts
+    from core.source_evidence_index import build_source_evidence_index
     raw_path = ROOT / "work/intake/director_v3/evaluation_packages" / f"{SOURCE_PACKAGE}.raw"
     raw_bytes = raw_path.read_bytes()
     if sha256_bytes(raw_bytes) != RAW_HASH:
@@ -67,7 +68,8 @@ def build_inputs():
         raise RuntimeError("full_source_narrative_input_not_closed")
     if narrative.get("evidence_index_fingerprint") != EVIDENCE_FP:
         raise RuntimeError("source_evidence_index_fingerprint_mismatch")
-    materialized = materialize_units(narrative_index=narrative, raw_bytes=raw_bytes, source_raw_hash=RAW_HASH)
+    source_index = build_source_evidence_index(raw_bytes, source_package_id=SOURCE_PACKAGE, source_version_id=SOURCE_VERSION, source_raw_hash=RAW_HASH)
+    materialized = materialize_units(narrative_index=narrative, raw_bytes=raw_bytes, source_raw_hash=RAW_HASH, source_evidence_index=source_index)
     if materialized["status"] != "PASS" or materialized["unit_count"] != 5:
         raise RuntimeError("unit_materialization_failed")
     attempt = json.loads((ART / "director-quality-v3-fact-evidence-attempt2-result.json").read_text(encoding="utf-8"))

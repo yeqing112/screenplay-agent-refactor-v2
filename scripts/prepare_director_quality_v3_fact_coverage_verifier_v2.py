@@ -18,9 +18,11 @@ def main() -> int:
     import sys
     sys.path.insert(0, str(ROOT))
     from core.fact_coverage_verifier import contract_v2, materialize_units, schema_fingerprint
+    from core.source_evidence_index import build_source_evidence_index
     narrative = json.loads((ART / "director-quality-v3-full-source-narrative-unit-index.json").read_text(encoding="utf-8"))
     raw = (ROOT / "work/intake/director_v3/evaluation_packages" / f"{SOURCE_PACKAGE}.raw").read_bytes()
-    materialized = materialize_units(narrative_index=narrative, raw_bytes=raw, source_raw_hash=RAW_HASH)
+    source_index = build_source_evidence_index(raw, source_package_id=SOURCE_PACKAGE, source_version_id="SRC79f12d1b7f5eb828:V01:d001bab5cc82", source_raw_hash=RAW_HASH)
+    materialized = materialize_units(narrative_index=narrative, raw_bytes=raw, source_raw_hash=RAW_HASH, source_evidence_index=source_index)
     contract = contract_v2()
     write(ART / "director-quality-v3-fact-coverage-verifier-v2-contract.json", contract)
     write(ART / "director-quality-v3-fact-coverage-verifier-v2-provider-schema.json", {"schema_version": "fact_coverage_verifier_v2_provider_schema", "provider_calls": 0, "schema_fingerprint": contract["provider_schema_fingerprint"], "provider_schema": contract["provider_schema"]})

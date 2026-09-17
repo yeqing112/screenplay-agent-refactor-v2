@@ -84,20 +84,23 @@ def contract_v2() -> dict[str, Any]:
     }
 
 
-def materialize_units(*, narrative_index: dict[str, Any], raw_bytes: bytes, source_raw_hash: str) -> dict[str, Any]:
+def materialize_units(*, narrative_index: dict[str, Any], raw_bytes: bytes, source_raw_hash: str, source_evidence_index: dict[str, Any] | None = None) -> dict[str, Any]:
     text = raw_bytes.decode("utf-8")
+    source_by_ref = {str(row.get("anchor_ref")): row for row in (source_evidence_index or {}).get("anchors", []) if isinstance(row, dict)}
     units: list[dict[str, Any]] = []
     errors: list[str] = []
     for unit in narrative_index.get("units") or []:
         start, end = int(unit["char_start"]), int(unit["char_end"])
         exact_text = text[start:end]
         exact_hash = hashlib.sha256(exact_text.encode("utf-8")).hexdigest()
-        if exact_hash != unit.get("exact_text_hash"):
-            errors.append(f"UNIT_TEXT_HASH_MISMATCH:{unit.get('unit_id')}")
+        anchor_text = "".join(str(source_by_ref[ref].get("exact_text") or "") for ref in unit.get("anchor_refs") or [] if ref in source_by_ref)
+        anchor_hash = hashlib.sha256(anchor_text.encode("utf-8")).hexdigest()
+        if source_evidence_index is not None and anchor_hash != unit.get("exact_text_hash"):
+            errors.append(f"UNIT_ANCHOR_TEXT_HASH_MISMATCH:{unit.get('unit_id')}")
         units.append({
             "source_unit_ref": str(unit["unit_id"]), "source_order": int(unit["source_order"]),
             "char_start": start, "char_end": end, "exact_text": exact_text,
-            "exact_text_sha256": exact_hash, "expected_exact_text_sha256": unit.get("exact_text_hash"),
+            "exact_text_sha256": exact_hash, "anchor_text_sha256": anchor_hash, "expected_anchor_text_sha256": unit.get("exact_text_hash"),
             "anchor_refs": list(unit.get("anchor_refs") or []), "source_raw_hash": source_raw_hash,
         })
     return {"schema_version": "fact_coverage_verifier_unit_materialization_v1", "provider_calls": 0, "units": units, "unit_count": len(units), "errors": errors, "status": "PASS" if not errors else "FAIL", "source_raw_hash": source_raw_hash, "fingerprint": fingerprint(units)}
