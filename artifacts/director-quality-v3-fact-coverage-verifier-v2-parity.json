@@ -1,0 +1,10 @@
+{
+  "schema_version": "fact_coverage_verifier_v2_parity",
+  "status": "PASS",
+  "provider_calls": 0,
+  "ssot_schema_fingerprint": "7fd93ba76c86a5ff8ef2c595fbc61dcbb26d52444757035a8b49c42f2acc048d",
+  "runtime_schema_fingerprint": "7fd93ba76c86a5ff8ef2c595fbc61dcbb26d52444757035a8b49c42f2acc048d",
+  "temporary_key_ownership": "PASS",
+  "canonical_req_ownership": "PASS",
+  "unit_assessment_contract": "PASS"
+}

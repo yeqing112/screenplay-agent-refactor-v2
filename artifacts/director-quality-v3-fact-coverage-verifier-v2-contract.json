@@ -1,0 +1,197 @@
+{
+  "schema_version": "fact_coverage_verifier_v2",
+  "provider_owns": [
+    "proposal_key",
+    "requirement_type",
+    "description",
+    "source_unit_refs",
+    "coverage_verdict",
+    "fact_refs",
+    "unit_assessment"
+  ],
+  "program_owns": [
+    "canonical_requirement_id",
+    "final_ordering",
+    "proposal_key_mapping",
+    "final_coverage_disposition",
+    "qualification_status"
+  ],
+  "temporary_proposal_key_pattern": "^P[0-9]{3}$",
+  "canonical_requirement_id_pattern": "^REQ_[0-9]{4}$",
+  "unit_relevances": [
+    "RELEVANT",
+    "NO_REQUIRED_FACT",
+    "AMBIGUOUS"
+  ],
+  "requirement_types": [
+    "CHARACTER_IDENTITY",
+    "CHARACTER_RELATION",
+    "LOCATION_IDENTITY",
+    "LOCATION_CHANGE",
+    "EVENT_OCCURRENCE",
+    "EVENT_ORDER",
+    "TEMPORAL_ANCHOR",
+    "CAUSAL_RELATION",
+    "OBJECT_STATE",
+    "OBJECT_OWNERSHIP",
+    "REVEAL",
+    "CONFLICT_STATE",
+    "CLAIM_OR_BELIEF",
+    "OUTCOME"
+  ],
+  "coverage_statuses": [
+    "COVERED",
+    "PARTIALLY_COVERED",
+    "MISSING",
+    "CLAIM_ONLY",
+    "UNSAFE_INFERENCE",
+    "AMBIGUOUS"
+  ],
+  "forbidden_provider_fields": [
+    "canonical_requirement_id",
+    "corrected_fact",
+    "evidence_refs",
+    "fact_payload",
+    "final_authority",
+    "final_qualification",
+    "new_evidence",
+    "new_evidence_refs",
+    "new_fact",
+    "new_fact_id",
+    "replacement_fact",
+    "requirement_ref",
+    "script_ir",
+    "source_modification",
+    "source_search"
+  ],
+  "provider_schema": {
+    "type": "object",
+    "required": [
+      "requirements",
+      "coverage_claims",
+      "unit_assessments"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "requirements": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "proposal_key",
+            "requirement_type",
+            "description",
+            "source_unit_refs"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "proposal_key": {
+              "type": "string",
+              "pattern": "^P[0-9]{3}$"
+            },
+            "requirement_type": {
+              "enum": [
+                "CHARACTER_IDENTITY",
+                "CHARACTER_RELATION",
+                "LOCATION_IDENTITY",
+                "LOCATION_CHANGE",
+                "EVENT_OCCURRENCE",
+                "EVENT_ORDER",
+                "TEMPORAL_ANCHOR",
+                "CAUSAL_RELATION",
+                "OBJECT_STATE",
+                "OBJECT_OWNERSHIP",
+                "REVEAL",
+                "CONFLICT_STATE",
+                "CLAIM_OR_BELIEF",
+                "OUTCOME"
+              ]
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_unit_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^NU_[0-9]{4}$"
+              },
+              "minItems": 1
+            }
+          }
+        }
+      },
+      "coverage_claims": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "requirement_key",
+            "fact_refs",
+            "coverage_verdict"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requirement_key": {
+              "type": "string",
+              "pattern": "^P[0-9]{3}$"
+            },
+            "fact_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^FACT_[0-9]{4}$"
+              }
+            },
+            "coverage_verdict": {
+              "enum": [
+                "COVERED",
+                "PARTIALLY_COVERED",
+                "MISSING",
+                "CLAIM_ONLY",
+                "UNSAFE_INFERENCE",
+                "AMBIGUOUS"
+              ]
+            }
+          }
+        }
+      },
+      "unit_assessments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "source_unit_ref",
+            "relevance",
+            "requirement_keys"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source_unit_ref": {
+              "type": "string",
+              "pattern": "^NU_[0-9]{4}$"
+            },
+            "relevance": {
+              "enum": [
+                "RELEVANT",
+                "NO_REQUIRED_FACT",
+                "AMBIGUOUS"
+              ]
+            },
+            "requirement_keys": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^P[0-9]{3}$"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "provider_schema_fingerprint": "7fd93ba76c86a5ff8ef2c595fbc61dcbb26d52444757035a8b49c42f2acc048d",
+  "provider_calls": 0,
+  "development_preview_excluded": true
+}
