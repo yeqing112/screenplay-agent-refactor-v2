@@ -2,9 +2,9 @@
   "dry_run": true,
   "execution": {
     "audit_records": [],
-    "explicit_execute": false,
+    "explicit_execute": true,
     "provider_configured": false,
-    "status": "COMPLETED"
+    "status": "FAIL_CLOSED_PROVIDER_NOT_CONFIGURED"
   },
   "not_authority": true,
   "not_fact_snapshot": true,
@@ -13,7 +13,7 @@
     "fact_snapshot_writes": 0,
     "production_writes": 0
   },
-  "result_fingerprint": "3657458146d00cc43290ddacb23d39bdf98cc834ad9ebca0dc8db1b5aeb83a84",
+  "result_fingerprint": "0a976e48abcd432ebdec54bf96fb91f5b8eb0cd9471c1db1abeae43736860505",
   "results": [
     {
       "accepted": false,
@@ -24,14 +24,14 @@
       },
       "exact_quotes": [],
       "fact_key": "character|宋知夏|visual_identity|global",
-      "final_classification": "SOURCE_GAP",
+      "final_classification": "PROVIDER_NOT_CONFIGURED",
       "missing_reason": "ABSENT",
       "model": "",
       "proposed_value": null,
       "provider": "",
       "provider_called": false,
       "provider_confidence": null,
-      "reject_reason": "SOURCE_GAP",
+      "reject_reason": "PROVIDER_NOT_CONFIGURED",
       "resolution": {
         "diagnostics": {
           "anchor_outcomes": [
@@ -100,6 +100,7 @@
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
       },
+      "retrieval_diagnostic": {},
       "semantic_support_rejection_reason": "",
       "semantic_support_validation": {},
       "supporting_anchor_refs": [],
@@ -139,14 +140,14 @@
       },
       "exact_quotes": [],
       "fact_key": "character|宋知夏|current_state|global",
-      "final_classification": "SOURCE_GAP",
+      "final_classification": "PROVIDER_NOT_CONFIGURED",
       "missing_reason": "ABSENT",
       "model": "",
       "proposed_value": null,
       "provider": "",
       "provider_called": false,
       "provider_confidence": null,
-      "reject_reason": "SOURCE_GAP",
+      "reject_reason": "PROVIDER_NOT_CONFIGURED",
       "resolution": {
         "diagnostics": {
           "anchor_outcomes": [
@@ -215,6 +216,7 @@
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
       },
+      "retrieval_diagnostic": {},
       "semantic_support_rejection_reason": "",
       "semantic_support_validation": {},
       "supporting_anchor_refs": [],
@@ -254,14 +256,14 @@
       },
       "exact_quotes": [],
       "fact_key": "character|程雨|visual_identity|global",
-      "final_classification": "SOURCE_GAP",
+      "final_classification": "PROVIDER_NOT_CONFIGURED",
       "missing_reason": "ABSENT",
       "model": "",
       "proposed_value": null,
       "provider": "",
       "provider_called": false,
       "provider_confidence": null,
-      "reject_reason": "SOURCE_GAP",
+      "reject_reason": "PROVIDER_NOT_CONFIGURED",
       "resolution": {
         "diagnostics": {
           "anchor_outcomes": [
@@ -330,6 +332,7 @@
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
       },
+      "retrieval_diagnostic": {},
       "semantic_support_rejection_reason": "",
       "semantic_support_validation": {},
       "supporting_anchor_refs": [],
@@ -369,14 +372,14 @@
       },
       "exact_quotes": [],
       "fact_key": "character|程雨|current_state|global",
-      "final_classification": "SOURCE_GAP",
+      "final_classification": "PROVIDER_NOT_CONFIGURED",
       "missing_reason": "ABSENT",
       "model": "",
       "proposed_value": null,
       "provider": "",
       "provider_called": false,
       "provider_confidence": null,
-      "reject_reason": "SOURCE_GAP",
+      "reject_reason": "PROVIDER_NOT_CONFIGURED",
       "resolution": {
         "diagnostics": {
           "anchor_outcomes": [
@@ -445,6 +448,7 @@
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
       },
+      "retrieval_diagnostic": {},
       "semantic_support_rejection_reason": "",
       "semantic_support_validation": {},
       "supporting_anchor_refs": [],
@@ -511,6 +515,22 @@
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
       },
+      "retrieval_diagnostic": {
+        "classification_hint": "RETRIEVAL_RECALL_GAP",
+        "entity_terms": [
+          "production_scene"
+        ],
+        "environment_description_present": true,
+        "predicate_terms": [],
+        "prop_noun_mentions_present": true,
+        "query_terms": [],
+        "ranking_zero_reason": "no anchor matched entity/predicate/expected-value terms",
+        "retrieval_taxonomy_mismatch": true,
+        "scene_heading_present": true,
+        "source_scope": [
+          "immutable_source_material"
+        ]
+      },
       "semantic_support_rejection_reason": "",
       "semantic_support_validation": {},
       "supporting_anchor_refs": [],
@@ -551,6 +571,22 @@
         "resolution_type": "UNSUPPORTED",
         "schema_version": "semantic_fact_proposal_v1",
         "support_status": "NOT_SUPPORTED"
+      },
+      "retrieval_diagnostic": {
+        "classification_hint": "RETRIEVAL_RECALL_GAP",
+        "entity_terms": [
+          "production_props"
+        ],
+        "environment_description_present": true,
+        "predicate_terms": [],
+        "prop_noun_mentions_present": true,
+        "query_terms": [],
+        "ranking_zero_reason": "no anchor matched entity/predicate/expected-value terms",
+        "retrieval_taxonomy_mismatch": true,
+        "scene_heading_present": true,
+        "source_scope": [
+          "immutable_source_material"
+        ]
       },
       "semantic_support_rejection_reason": "",
       "semantic_support_validation": {},
@@ -5989,13 +6025,18 @@
       "AUTHORITY_CONFLICT": 0,
       "NO_CANDIDATE_ANCHOR": 2,
       "PROVIDER_AMBIGUOUS": 0,
+      "PROVIDER_CALL_FAILED": 0,
       "PROVIDER_CONFLICTED": 0,
       "PROVIDER_EVIDENCE_INVALID": 0,
+      "PROVIDER_NOT_CONFIGURED": 4,
+      "PROVIDER_NOT_EXECUTED": 0,
       "PROVIDER_SCHEMA_INVALID": 0,
       "PROVIDER_UNSUPPORTED": 0,
       "RESOLVED": 0,
+      "RETRIEVAL_RECALL_GAP": 0,
       "SEMANTIC_SUPPORT_REJECTED": 0,
-      "SOURCE_GAP": 4
+      "SOURCE_FACT_ABSENT": 0,
+      "SOURCE_GAP": 0
     },
     "contextual_inference_authority_reviews": 0,
     "exact_evidence_pass": 0,

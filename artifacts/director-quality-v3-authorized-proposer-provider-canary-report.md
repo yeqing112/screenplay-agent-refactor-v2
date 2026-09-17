@@ -4,7 +4,7 @@
 
 - Scope: only required MissingFactManifest items; maximum 8 candidate anchors per fact.
 - Provider role: `PROPOSER`; FactSnapshot / authority / ScriptIR / production writes are forbidden.
-- Explicit execution requested: `false`; provider configured: `false`.
+- Explicit execution requested: `true`; provider configured: `false`.
 
 ## Canary Results
 
@@ -14,12 +14,17 @@
 
 | Fact | Anchors | Called | Proposed value | Exact evidence | Semantic support | Classification |
 |---|---:|---|---|---|---|---|
-| `character|宋知夏|visual_identity|global` | 8 | false | — | `PASS` | `—` | `SOURCE_GAP` |
-| `character|宋知夏|current_state|global` | 8 | false | — | `PASS` | `—` | `SOURCE_GAP` |
-| `character|程雨|visual_identity|global` | 8 | false | — | `PASS` | `—` | `SOURCE_GAP` |
-| `character|程雨|current_state|global` | 8 | false | — | `PASS` | `—` | `SOURCE_GAP` |
+| `character|宋知夏|visual_identity|global` | 8 | false | — | `PASS` | `—` | `PROVIDER_NOT_CONFIGURED` |
+| `character|宋知夏|current_state|global` | 8 | false | — | `PASS` | `—` | `PROVIDER_NOT_CONFIGURED` |
+| `character|程雨|visual_identity|global` | 8 | false | — | `PASS` | `—` | `PROVIDER_NOT_CONFIGURED` |
+| `character|程雨|current_state|global` | 8 | false | — | `PASS` | `—` | `PROVIDER_NOT_CONFIGURED` |
 | `scene|production_scene|geometry|global` | 0 | false | — | `PASS` | `—` | `NO_CANDIDATE_ANCHOR` |
 | `prop|production_props|state|global` | 0 | false | — | `PASS` | `—` | `NO_CANDIDATE_ANCHOR` |
+
+## Zero-anchor Retrieval Diagnostics
+
+- `scene|production_scene|geometry|global`: query=`[]`, scene_heading=`True`, environment=`True`, prop_mentions=`True`, hint=`RETRIEVAL_RECALL_GAP`.
+- `prop|production_props|state|global`: query=`[]`, scene_heading=`True`, environment=`True`, prop_mentions=`True`, hint=`RETRIEVAL_RECALL_GAP`.
 
 ## Audit
 

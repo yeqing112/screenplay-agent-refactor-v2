@@ -77,6 +77,15 @@ def _markdown(result: dict[str, Any], audit_records: list[dict[str, Any]], *, at
         lines.append(f"| `{row.get('fact_key','')}` | {row.get('candidate_anchor_count',0)} | {str(bool(row.get('provider_called'))).lower()} | {value[:120]} | `{exact}` | `{support}` | `{row.get('final_classification','')}` |")
     lines.extend([
         "",
+        "## Zero-anchor Retrieval Diagnostics",
+        "",
+    ])
+    for row in result.get("results", []):
+        diagnostic = row.get("retrieval_diagnostic") or {}
+        if diagnostic:
+            lines.append(f"- `{row.get('fact_key','')}`: query=`{diagnostic.get('query_terms', [])}`, scene_heading=`{diagnostic.get('scene_heading_present')}`, environment=`{diagnostic.get('environment_description_present')}`, prop_mentions=`{diagnostic.get('prop_noun_mentions_present')}`, hint=`{diagnostic.get('classification_hint')}`.")
+    lines.extend([
+        "",
         "## Audit",
         "",
         f"- Logical provider calls: `{len(audit_records) if audit_records else 0}` audit records; transport/parser retries are configured as `0`.",
@@ -111,6 +120,7 @@ def run(*, source: Path = DEFAULT_SOURCE, manifest: Path = DEFAULT_MANIFEST, sna
         provider=provider,
         model=profile,
         max_candidates=8,
+        execution_authorized=execute,
     )
     result["execution"] = {"explicit_execute": execute, "provider_configured": bool(profile), "audit_records": audit_records}
     if execute and profile is None:

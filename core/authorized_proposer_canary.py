@@ -24,6 +24,8 @@ FINAL_CLASSIFICATIONS = {
     "RESOLVED", "NO_CANDIDATE_ANCHOR", "PROVIDER_UNSUPPORTED", "PROVIDER_AMBIGUOUS",
     "PROVIDER_CONFLICTED", "PROVIDER_SCHEMA_INVALID", "PROVIDER_EVIDENCE_INVALID",
     "SEMANTIC_SUPPORT_REJECTED", "AUTHORITY_CONFLICT", "SOURCE_GAP",
+    "SOURCE_FACT_ABSENT", "RETRIEVAL_RECALL_GAP", "PROVIDER_NOT_CONFIGURED",
+    "PROVIDER_NOT_EXECUTED", "PROVIDER_CALL_FAILED",
 }
 
 
@@ -120,17 +122,23 @@ def make_llm_provider(*, model_profile: dict[str, Any], audit_records: list[dict
     return provider
 
 
-def _classify(row: dict[str, Any], *, provider_enabled: bool) -> str:
+def _classify(row: dict[str, Any], *, provider_enabled: bool, execution_authorized: bool = False) -> str:
     resolution = row.get("resolution") if isinstance(row.get("resolution"), dict) else {}
     diagnostics = resolution.get("diagnostics") if isinstance(resolution.get("diagnostics"), dict) else {}
     provider = diagnostics.get("provider") if isinstance(diagnostics.get("provider"), dict) else {}
     support = diagnostics.get("support") if isinstance(diagnostics.get("support"), dict) else {}
     if not row.get("candidate_anchor_count"):
         return "NO_CANDIDATE_ANCHOR"
+    if not row.get("provider_called"):
+        if not provider_enabled:
+            return "PROVIDER_NOT_CONFIGURED" if execution_authorized else "PROVIDER_NOT_EXECUTED"
+        return "PROVIDER_NOT_EXECUTED"
     if provider.get("status") == "PROVIDER_SCHEMA_INVALID":
         errors = provider.get("errors") or []
         return "PROVIDER_EVIDENCE_INVALID" if any("EVIDENCE" in str(e.get("code")) for e in errors if isinstance(e, dict)) else "PROVIDER_SCHEMA_INVALID"
-    if provider.get("status") in {"PROVIDER_ERROR", "PROVIDER_UNSUPPORTED"}:
+    if provider.get("status") == "PROVIDER_ERROR":
+        return "PROVIDER_CALL_FAILED"
+    if provider.get("status") == "PROVIDER_UNSUPPORTED":
         return "PROVIDER_UNSUPPORTED"
     if support.get("status") == "CONFLICTED" or resolution.get("resolution_type") == "CONFLICTED":
         return "PROVIDER_CONFLICTED"
@@ -142,7 +150,7 @@ def _classify(row: dict[str, Any], *, provider_enabled: bool) -> str:
         return "SEMANTIC_SUPPORT_REJECTED"
     if provider_enabled and provider.get("status") == "NOT_USED":
         return "SOURCE_GAP"
-    return "SOURCE_GAP" if not provider_enabled else "PROVIDER_UNSUPPORTED"
+    return "SOURCE_FACT_ABSENT" if provider_enabled else "PROVIDER_NOT_EXECUTED"
 
 
 def _semantic_rejection_diagnosis(item: dict[str, Any], resolution: dict[str, Any]) -> str:
@@ -162,6 +170,31 @@ def _semantic_rejection_diagnosis(item: dict[str, Any], resolution: dict[str, An
     return ""
 
 
+def _retrieval_diagnostic(item: dict[str, Any], candidate_set: dict[str, Any], source_index: dict[str, Any]) -> dict[str, Any]:
+    """Explain zero-ranked retrieval without broadening the search scope."""
+    anchors = [row for row in (source_index or {}).get("anchors", []) if isinstance(row, dict)]
+    texts = [str(row.get("exact_text") or "").lower() for row in anchors]
+    scene_terms = ("scene", "int.", "ext.", "室内", "室外", "场景", "地点", "门口", "房间")
+    prop_terms = ("桌", "门", "椅", "车", "手机", "箱", "道具", "prop", "table", "door", "phone")
+    scene_heading = any(any(term in text for term in scene_terms) for text in texts)
+    environment = any(any(term in text for term in ("灯", "光", "雨", "夜", "天气", "室内", "室外", "environment", "weather")) for text in texts)
+    prop_mentions = any(any(term in text for term in prop_terms) for text in texts)
+    semantic_type = str(item.get("semantic_type") or item.get("subject_type") or "").lower()
+    taxonomy_mismatch = semantic_type in {"scene", "prop", "location", "object"} and (scene_heading or environment or prop_mentions)
+    return {
+        "query_terms": (candidate_set.get("query") or {}).get("expected_value_terms", []) + (candidate_set.get("query") or {}).get("predicate_terms", []),
+        "entity_terms": (candidate_set.get("query") or {}).get("entity_aliases", []),
+        "predicate_terms": (candidate_set.get("query") or {}).get("predicate_terms", []),
+        "source_scope": item.get("source_scope") or [],
+        "scene_heading_present": scene_heading,
+        "environment_description_present": environment,
+        "prop_noun_mentions_present": prop_mentions,
+        "ranking_zero_reason": "no anchor matched entity/predicate/expected-value terms",
+        "retrieval_taxonomy_mismatch": taxonomy_mismatch,
+        "classification_hint": "RETRIEVAL_RECALL_GAP" if taxonomy_mismatch else "LIKELY_SOURCE_FACT_ABSENT",
+    }
+
+
 def _simulated_coverage(current_snapshot: dict[str, Any], accepted: list[dict[str, Any]], requirements: list[dict[str, Any]], source_index: dict[str, Any]) -> dict[str, Any]:
     records = list((current_snapshot or {}).get("records") or [])
     records.extend(proposal_to_candidate_fact(proposal, source_index) for proposal in accepted)
@@ -172,7 +205,7 @@ def _simulated_coverage(current_snapshot: dict[str, Any], accepted: list[dict[st
         return {"status": "FACT_COVERAGE_INSUFFICIENT", "error": str(exc)[:300]}
 
 
-def run_authorized_proposer_canary(*, source_material: Any, current_snapshot: dict[str, Any], missing_manifest: dict[str, Any], source_package_id: str = "targeted-source", source_version_id: str = "v1", provider: Callable[[dict[str, Any]], dict[str, Any]] | None = None, model: dict[str, Any] | None = None, max_candidates: int = 8) -> dict[str, Any]:
+def run_authorized_proposer_canary(*, source_material: Any, current_snapshot: dict[str, Any], missing_manifest: dict[str, Any], source_package_id: str = "targeted-source", source_version_id: str = "v1", provider: Callable[[dict[str, Any]], dict[str, Any]] | None = None, model: dict[str, Any] | None = None, max_candidates: int = 8, execution_authorized: bool = False) -> dict[str, Any]:
     """Run a bounded, dry-run-only proposer canary."""
     from core.targeted_missing_fact_extraction import build_source_index
     source_index = build_source_index(source_material, source_package_id=source_package_id, source_version_id=source_version_id)
@@ -196,6 +229,7 @@ def run_authorized_proposer_canary(*, source_material: Any, current_snapshot: di
             "model": (model or {}).get("model_name") if model else "",
             "resolution": resolution,
         }
+        row["retrieval_diagnostic"] = _retrieval_diagnostic(item, candidate_set, source_index) if not candidate_set.get("anchors") else {}
         row["proposed_value"] = (resolution.get("proposal") or {}).get("proposed_value") if isinstance(resolution.get("proposal"), dict) else None
         row["supporting_anchor_refs"] = (resolution.get("proposal") or {}).get("supporting_anchor_refs", []) if isinstance(resolution.get("proposal"), dict) else []
         row["exact_quotes"] = (resolution.get("proposal") or {}).get("exact_quotes", []) if isinstance(resolution.get("proposal"), dict) else []
@@ -203,7 +237,7 @@ def run_authorized_proposer_canary(*, source_material: Any, current_snapshot: di
         row["exact_evidence_validation"] = (resolution.get("diagnostics") or {}).get("anchor_validation", {})
         row["semantic_support_validation"] = (resolution.get("diagnostics") or {}).get("support", {})
         row["semantic_support_rejection_reason"] = _semantic_rejection_diagnosis(item, resolution)
-        row["final_classification"] = _classify(row, provider_enabled=provider is not None)
+        row["final_classification"] = _classify(row, provider_enabled=provider is not None, execution_authorized=execution_authorized)
         row["accepted"] = row["final_classification"] == "RESOLVED"
         row["reject_reason"] = "" if row["accepted"] else row["final_classification"]
         if row["accepted"]:

@@ -73,6 +73,18 @@ def test_empty_anchor_set_does_not_call_provider():
     assert result["results"][0]["final_classification"] == "NO_CANDIDATE_ANCHOR"
 
 
+def test_unexecuted_provider_is_not_misreported_as_source_gap():
+    source, _, manifest = _fixture()
+    result = run_authorized_proposer_canary(source_material=source, current_snapshot={}, missing_manifest=manifest, source_package_id="pkg", source_version_id="v1")
+    assert result["results"][0]["final_classification"] == "PROVIDER_NOT_EXECUTED"
+
+
+def test_authorized_but_unconfigured_provider_is_distinct():
+    source, _, manifest = _fixture()
+    result = run_authorized_proposer_canary(source_material=source, current_snapshot={}, missing_manifest=manifest, source_package_id="pkg", source_version_id="v1", execution_authorized=True)
+    assert result["results"][0]["final_classification"] == "PROVIDER_NOT_CONFIGURED"
+
+
 def test_out_of_scope_anchor_and_quote_are_rejected():
     source, index, manifest = _fixture(); item = manifest["items"][0]
     candidate = retrieve_candidate_anchors(item, index)
