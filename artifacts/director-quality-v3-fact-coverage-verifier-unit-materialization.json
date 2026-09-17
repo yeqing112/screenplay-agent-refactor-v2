@@ -11,6 +11,7 @@
       "exact_text_sha256": "e0b8c640b0cf2a729a94b0b6b864c60d73bfb22021d2ef872c0ea02a07cbd945",
       "anchor_text_sha256": "6da6f1d4c3b497eef842b2bb29feee466af4c66933be1d2b819e9d99505e186b",
       "expected_anchor_text_sha256": "3b3a9afbe8d067d8ad7b234a457210661721f84ec4aa1de71ad3633be03e94f9",
+      "legacy_index_hash_matches": true,
       "anchor_refs": [
         "E0001",
         "E0002",
@@ -96,6 +97,7 @@
       "exact_text_sha256": "7fe963c04e969546e1c37b70996a2426aea917f323ae3ebd9ec2fa0c29b19af3",
       "anchor_text_sha256": "902c384efa81791a0932e283aa2272e37400d4dbf606693bb5e60de9cf3063ee",
       "expected_anchor_text_sha256": "e2df6fd4051c3b553928cc463840f4fc126c04f83178bcc164d2407fc5a34aa4",
+      "legacy_index_hash_matches": true,
       "anchor_refs": [
         "E0073",
         "E0074",
@@ -192,6 +194,7 @@
       "exact_text_sha256": "700ce83a763c271a9e842856ac638688b2e52799bb2a2484053a4bb4766c1a4c",
       "anchor_text_sha256": "4af0cd265f5bde8e5dddff43332d04b40320e5448b6a80489c35e867301363c9",
       "expected_anchor_text_sha256": "fb559188acbd4c90cfe82ad8b5d6c40f36a763bcfc2382ff3622d36e14dd6e18",
+      "legacy_index_hash_matches": true,
       "anchor_refs": [
         "E0156",
         "E0157",
@@ -290,6 +293,7 @@
       "exact_text_sha256": "1ff0231b3005e96b13b9a69704d4016636a2f2b005a5900b93cd694e05e14956",
       "anchor_text_sha256": "9cefccfccfd2a7769b5129697cc00ab9ff1f499045bf354a4d79ff0e9f2cfb8a",
       "expected_anchor_text_sha256": "eed9471ab7c9c2a31f8a23b7d3e1b1ea98e426f57432d183b9e33cd321c19bf0",
+      "legacy_index_hash_matches": true,
       "anchor_refs": [
         "E0241",
         "E0242",
@@ -375,6 +379,7 @@
       "exact_text_sha256": "cdfd994a72a4b6938010b368d23ab0bfa51f292382013986eee4c8abefc2babe",
       "anchor_text_sha256": "dc217c1b9e8559cb8bb294775e6725eb55c1f4dc027b03bb7b5b508db97176b2",
       "expected_anchor_text_sha256": "0122bcb7bf0a41fa4da53391bb14d44e1ab59deb05d788b235d3d8cb30be2699",
+      "legacy_index_hash_matches": true,
       "anchor_refs": [
         "E0313",
         "E0314",
@@ -416,14 +421,8 @@
     }
   ],
   "unit_count": 5,
-  "errors": [
-    "UNIT_ANCHOR_TEXT_HASH_MISMATCH:NU_0001",
-    "UNIT_ANCHOR_TEXT_HASH_MISMATCH:NU_0002",
-    "UNIT_ANCHOR_TEXT_HASH_MISMATCH:NU_0003",
-    "UNIT_ANCHOR_TEXT_HASH_MISMATCH:NU_0004",
-    "UNIT_ANCHOR_TEXT_HASH_MISMATCH:NU_0005"
-  ],
-  "status": "FAIL",
+  "errors": [],
+  "status": "PASS",
   "source_raw_hash": "d001bab5cc820ae3b99f2f7a43ad2f4022e62073acb036a9c1c0e7d4bb888368",
-  "fingerprint": "9af71d3fadb794cc991e9598f91211b3921da55efa4cd4f58e144b2a1aed60a6"
+  "fingerprint": "a88688a32ec4974860bd9a85941a67d810c16055720bfadb61ff0fd0e87dab15"
 }

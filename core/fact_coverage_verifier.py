@@ -95,12 +95,13 @@ def materialize_units(*, narrative_index: dict[str, Any], raw_bytes: bytes, sour
         exact_hash = hashlib.sha256(exact_text.encode("utf-8")).hexdigest()
         anchor_text = "".join(str(source_by_ref[ref].get("exact_text") or "") for ref in unit.get("anchor_refs") or [] if ref in source_by_ref)
         anchor_hash = hashlib.sha256(anchor_text.encode("utf-8")).hexdigest()
-        if source_evidence_index is not None and anchor_hash != unit.get("exact_text_hash"):
+        legacy_index_hash_matches = fingerprint(anchor_text) == unit.get("exact_text_hash")
+        if source_evidence_index is not None and not legacy_index_hash_matches:
             errors.append(f"UNIT_ANCHOR_TEXT_HASH_MISMATCH:{unit.get('unit_id')}")
         units.append({
             "source_unit_ref": str(unit["unit_id"]), "source_order": int(unit["source_order"]),
             "char_start": start, "char_end": end, "exact_text": exact_text,
-            "exact_text_sha256": exact_hash, "anchor_text_sha256": anchor_hash, "expected_anchor_text_sha256": unit.get("exact_text_hash"),
+            "exact_text_sha256": exact_hash, "anchor_text_sha256": anchor_hash, "expected_anchor_text_sha256": unit.get("exact_text_hash"), "legacy_index_hash_matches": legacy_index_hash_matches,
             "anchor_refs": list(unit.get("anchor_refs") or []), "source_raw_hash": source_raw_hash,
         })
     return {"schema_version": "fact_coverage_verifier_unit_materialization_v1", "provider_calls": 0, "units": units, "unit_count": len(units), "errors": errors, "status": "PASS" if not errors else "FAIL", "source_raw_hash": source_raw_hash, "fingerprint": fingerprint(units)}
