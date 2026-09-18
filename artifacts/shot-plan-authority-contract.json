@@ -3,6 +3,7 @@
   "authority_policy_version": "shot_plan_authority_policy_v1",
   "default_policy_version": "shot_plan_default_policy_v1",
   "field_contract_source": "core.shot_plan_authority.shot_plan_contract()",
+  "contract_fingerprint": "c7150441ba03a5d8c0916718bcd7e100703352e41e361d9f73d1b2ce7a3794ae",
   "authority_classes": {
     "UPSTREAM_CONSTRAINT": "ScriptIR/Treatment/SceneBlocking facts and identity",
     "SHOT_AUTHORING_DECISION": "camera and reviewed duration decisions",

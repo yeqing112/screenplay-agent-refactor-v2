@@ -112,3 +112,27 @@ def test_action_timing_overlap_requires_explicit_concurrency():
     ]
     with pytest.raises(ValueError, match="overlap"):
         validate_shot_plan_candidate_authority({field: plan[field] for field in ("scene_id", "scene_name", "schema_version", "shots", "unknowns")}, _baseline(), scene_entry={})
+
+
+def test_wrong_scene_id_and_character_identity_transition_are_blocked():
+    baseline = _baseline()
+    wrong_scene = {field: copy.deepcopy(baseline[field]) for field in ("scene_id", "scene_name", "schema_version", "shots", "unknowns")}
+    wrong_scene["scene_id"] = "scene-other"
+    with pytest.raises(ValueError, match="scene_id"):
+        validate_shot_plan_candidate_authority(wrong_scene, baseline, scene_entry={})
+    broken = copy.deepcopy(baseline)
+    broken["shots"][1]["entry_state"]["characters"]["C1"]["position"] = "窗边"
+    broken["shots"][1]["action_beats"] = []
+    broken["shots"][1]["event"] = ""
+    report = validate_shot_continuity(shots=broken["shots"], scene_entry={})
+    assert any(item["code"] == "CHARACTER_STATE_TRANSITION_UNDECLARED" for item in report["errors"])
+
+
+def test_pending_reference_is_not_promoted_to_locked_identity():
+    plan = build_shot_plan(
+        treatment={"scene_name": "空景", "scene_id": "scene-2", "beat_map": [{"beat_id": "B1", "event": "等待"}]},
+        blocking={"scene_name": "空景", "scene_id": "scene-2", "participants": [], "asset_authority": {"authoring_pending": [{"asset_type": "character", "id": "C2"}]}, "props": []},
+    )
+    binding = plan["shots"][0]["asset_bindings"]
+    assert binding["media_asset_pending"] == [{"asset_type": "character", "id": "C2"}]
+    assert binding["locked_visual_references"] == []

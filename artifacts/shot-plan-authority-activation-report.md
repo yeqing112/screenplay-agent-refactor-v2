@@ -49,7 +49,7 @@ new fail-closed pointer requirement instead of the removed latest-approved
 behavior.
 
 Final local run evidence: ShotPlan/SceneBlocking authority and production gate
-suite **30 passed**; deterministic Golden regression **5/5 passed**; full
+suite **33 passed**; deterministic Golden regression **5/5 passed**; full
 backend run **1488 passed, 5 known baseline failures**. The remaining failures
 are historical Director Quality artifact/database expectations and retired
 provider-canary assertions; none enter this ShotPlan authority path. Frontend

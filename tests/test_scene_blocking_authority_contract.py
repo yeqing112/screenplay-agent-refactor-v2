@@ -159,6 +159,18 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         self.assertEqual(plan_confirm.status_code, 200, plan_confirm.text)
         approved = plan_confirm.json()["shot_plan"]
         self.assertEqual(approved["qualification_state"], "PRODUCTION_QUALIFIED")
+        with Session() as session:
+            script_row = session.query(Script).filter_by(book_id=self.book_id, episode=1).one()
+            original_script_content = script_row.content
+            script_row.content = json.dumps({"scenes": [{"name": "伪造旧内容", "scene_id": "wrong"}]}, ensure_ascii=False)
+            session.commit()
+        readiness = self.client.get(f"/api/books/{self.book_id}/episodes/1/storyboard/readiness", params={"workflowProfile": "production"})
+        self.assertEqual(readiness.status_code, 200, readiness.text)
+        self.assertFalse(readiness.json()["allowed"])
+        self.assertTrue(readiness.json()["blocking_issues"])
+        with Session() as session:
+            session.query(Script).filter_by(book_id=self.book_id, episode=1).one().content = original_script_content
+            session.commit()
         with patch("agents.storyboard.StoryboardAgent.run", side_effect=AssertionError("production must not call StoryboardAgent")) as run:
             materialized = self.client.post(f"/api/books/{self.book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
         self.assertEqual(materialized.status_code, 200, materialized.text)
@@ -173,6 +185,33 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         old_materialize = self.client.post(f"/api/books/{self.book_id}/episodes/1/storyboard/materialize", json={"confirmed": True, "planId": old_plan_id})
         self.assertEqual(old_materialize.status_code, 409)
         self.assertEqual(old_materialize.json()["detail"]["code"], "SHOT_PLAN_NOT_CURRENT_POINTER")
+
+    def test_failed_activation_does_not_move_pointer_and_payload_tamper_stales_it(self):
+        blocking_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"}).json()
+        blocking_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": blocking_preview["persisted_draft_id"], "evidenceFingerprint": blocking_preview["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "schemaVersion": "scene_blocking_v2"})
+        self.assertEqual(blocking_confirm.status_code, 200, blocking_confirm.text)
+        plan_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"}).json()
+        first_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/confirm", json={"planId": plan_preview["persisted_draft_id"], "evidenceFingerprint": plan_preview["plan"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production"})
+        self.assertEqual(first_confirm.status_code, 200, first_confirm.text)
+        first_id = first_confirm.json()["shot_plan"]["id"]
+        with Session() as session:
+            pointer_before = session.query(ShotPlanPointer).filter_by(book_id=self.book_id, episode=1, scene_id="E01_SC001").one()
+            pointer_id_before = pointer_before.shot_plan_id
+        second_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"}).json()
+        invalid_plan = json.loads(json.dumps(second_preview["plan"], ensure_ascii=False))
+        invalid_plan["shots"][0]["action_beats"] = [{"action": "冲突动作", "start_seconds": 0, "end_seconds": 99}]
+        failed = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/confirm", json={"planId": second_preview["persisted_draft_id"], "evidenceFingerprint": second_preview["plan"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "plan": {field: invalid_plan[field] for field in ("scene_id", "scene_name", "schema_version", "shots", "unknowns")}})
+        self.assertEqual(failed.status_code, 409)
+        with Session() as session:
+            self.assertEqual(session.query(ShotPlanPointer).filter_by(book_id=self.book_id, episode=1, scene_id="E01_SC001").one().shot_plan_id, pointer_id_before)
+            plan_row = session.query(ShotPlan).filter_by(id=first_id).one()
+            plan_row.shots = "[]"
+            session.commit()
+        tampered = self.client.post(f"/api/books/{self.book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
+        self.assertEqual(tampered.status_code, 409)
+        self.assertEqual(tampered.json()["detail"]["code"], "SHOT_PLAN_PAYLOAD_TAMPERED")
+        with Session() as session:
+            self.assertIsNone(session.query(ShotPlanPointer).filter_by(book_id=self.book_id, episode=1, scene_id="E01_SC001").first())
 
     def test_missing_pointer_and_latest_approved_fallback_are_blocked(self):
         response = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"workflowProfile": "production", "sceneId": "E01_SC001"})
