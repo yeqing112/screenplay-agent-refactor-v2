@@ -1,0 +1,39 @@
+{
+  "schema_version": "shot_plan_authority_contract_v1",
+  "authority_policy_version": "shot_plan_authority_policy_v1",
+  "default_policy_version": "shot_plan_default_policy_v1",
+  "authority_classes": {
+    "UPSTREAM_CONSTRAINT": "ScriptIR/Treatment/SceneBlocking facts and identity",
+    "SHOT_AUTHORING_DECISION": "camera and reviewed duration decisions",
+    "PRODUCTION_CONTINUITY_STATE": "entry/exit state and continuity contract",
+    "DERIVED_EXECUTION_CONSTRAINT": "timed action beats and executability",
+    "UNKNOWN_UNRESOLVED": "explicit blockers that cannot be silently removed"
+  },
+  "lineage": {
+    "script_ir": "id + revision + payload_hash + authority envelope",
+    "director_treatment": "current pointer + revision + payload/authority fingerprint",
+    "scene_blocking": "current pointer + revision + payload/authority fingerprint",
+    "fact_snapshot": "id + revision + payload_hash",
+    "shot_plan": "authority envelope + current scene pointer"
+  },
+  "activation": {
+    "first_activation": "creates authority envelope and current pointer",
+    "subsequent_activation": "supersedes pointer target atomically and retains rollback anchor",
+    "missing_pointer_with_legacy_approved": "fail-closed; explicit migration required",
+    "failed_activation": "pointer remains unchanged"
+  },
+  "validation": {
+    "cardinality": "candidate plan_shot_id sequence must equal baseline sequence",
+    "timing": "all action beat windows must fit duration",
+    "continuity": "character/prop state and screen direction transitions require explicit evidence",
+    "unknowns": "every closed unknown requires a typed resolution; remaining unknowns block activation",
+    "tamper": "payload, envelope, contract and upstream fingerprints are rechecked by resolver"
+  },
+  "consumer_gate": {
+    "materializer": "current pointer only; no latest-approved fallback",
+    "storyboard_readiness": "production resolves every ScriptIR scene through current ShotPlan pointer",
+    "storyboard_agent": "not called in production materializer path",
+    "production_status": "qualification blockers keep materialized output blocked"
+  },
+  "provider_calls": 0
+}

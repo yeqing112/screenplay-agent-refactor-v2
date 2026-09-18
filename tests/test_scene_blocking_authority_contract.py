@@ -2,6 +2,7 @@
 import hashlib
 import json
 import unittest
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
@@ -30,6 +31,10 @@ from models import (
     SceneBlocking,
     SceneBlockingAuthority,
     SceneBlockingPointer,
+    ShotPlan,
+    ShotPlanAuthority,
+    ShotPlanPointer,
+    StoryboardShot,
     Script,
     ScriptIRVersion,
     Session,
@@ -80,7 +85,7 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
 
     def tearDown(self):
         with Session() as session:
-            for model in (SceneBlockingPointer, SceneBlockingAuthority, SceneBlocking, DirectorTreatmentPointer, DirectorTreatmentAuthority, DirectorTreatment, VisualLocation, FactSnapshot, ScriptIRVersion, Script):
+            for model in (StoryboardShot, ShotPlanPointer, ShotPlanAuthority, ShotPlan, SceneBlockingPointer, SceneBlockingAuthority, SceneBlocking, DirectorTreatmentPointer, DirectorTreatmentAuthority, DirectorTreatment, VisualLocation, FactSnapshot, ScriptIRVersion, Script):
                 session.query(model).filter_by(book_id=self.book_id).delete(synchronize_session=False)
             session.query(Book).filter_by(id=self.book_id).delete(synchronize_session=False); session.commit()
 
@@ -140,6 +145,34 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         self.assertNotEqual(replay.json()["persisted_draft_id"], approved["id"])
         plan = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"workflowProfile": "production", "sceneId": "E01_SC001"})
         self.assertEqual(plan.status_code, 200, plan.text)
+
+    def test_shot_plan_activation_and_materializer_use_current_pointer_without_agent(self):
+        blocking_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"})
+        self.assertEqual(blocking_preview.status_code, 200, blocking_preview.text)
+        blocking_body = blocking_preview.json()
+        blocking_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": blocking_body["persisted_draft_id"], "evidenceFingerprint": blocking_body["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "schemaVersion": "scene_blocking_v2"})
+        self.assertEqual(blocking_confirm.status_code, 200, blocking_confirm.text)
+        plan_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"})
+        self.assertEqual(plan_preview.status_code, 200, plan_preview.text)
+        plan_body = plan_preview.json()
+        plan_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/confirm", json={"planId": plan_body["persisted_draft_id"], "evidenceFingerprint": plan_body["plan"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production"})
+        self.assertEqual(plan_confirm.status_code, 200, plan_confirm.text)
+        approved = plan_confirm.json()["shot_plan"]
+        self.assertEqual(approved["qualification_state"], "PRODUCTION_QUALIFIED")
+        with patch("agents.storyboard.StoryboardAgent.run", side_effect=AssertionError("production must not call StoryboardAgent")) as run:
+            materialized = self.client.post(f"/api/books/{self.book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
+        self.assertEqual(materialized.status_code, 200, materialized.text)
+        self.assertEqual(materialized.json()["materialized_count"], 1)
+        self.assertEqual(run.call_count, 0)
+        old_plan_id = approved["id"]
+        second_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"})
+        self.assertEqual(second_preview.status_code, 200, second_preview.text)
+        second_body = second_preview.json()
+        second_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/confirm", json={"planId": second_body["persisted_draft_id"], "evidenceFingerprint": second_body["plan"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production"})
+        self.assertEqual(second_confirm.status_code, 200, second_confirm.text)
+        old_materialize = self.client.post(f"/api/books/{self.book_id}/episodes/1/storyboard/materialize", json={"confirmed": True, "planId": old_plan_id})
+        self.assertEqual(old_materialize.status_code, 409)
+        self.assertEqual(old_materialize.json()["detail"]["code"], "SHOT_PLAN_NOT_CURRENT_POINTER")
 
     def test_missing_pointer_and_latest_approved_fallback_are_blocked(self):
         response = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"workflowProfile": "production", "sceneId": "E01_SC001"})

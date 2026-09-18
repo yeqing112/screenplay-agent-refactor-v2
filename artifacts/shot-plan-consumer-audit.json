@@ -1,0 +1,48 @@
+{
+  "artifact": "shot-plan-consumer-audit",
+  "stage": "SHOT_PLAN_AUTHORITY_CONTRACT",
+  "baseline_audit": {
+    "selection": "production materializer selected approved ShotPlan rows by latest revision per scene",
+    "authority_gap": "no explicit ShotPlan authority envelope or current pointer",
+    "fallbacks": ["latest approved row", "scene-name selection"],
+    "provider_calls": 0,
+    "historical_outputs_preserved": true
+  },
+  "final_as_built_verification": {
+    "production_chain": [
+      "PRODUCTION_QUALIFIED ScriptIR",
+      "Approved DirectorTreatment",
+      "PRODUCTION_QUALIFIED SceneBlocking",
+      "ShotPlan candidate",
+      "executability validation",
+      "continuity validation",
+      "ShotPlan authority envelope",
+      "current ShotPlan pointer",
+      "Storyboard Materializer gate"
+    ],
+    "selection": "shot_plan_pointers -> ShotPlanAuthority -> PRODUCTION_QUALIFIED ShotPlan",
+    "materializer_latest_fallback": false,
+    "explicit_old_plan_id": "blocked with SHOT_PLAN_NOT_CURRENT_POINTER",
+    "cardinality": "materializer requires one-to-one plan_shot_id mapping and preserves N shots",
+    "preserved_fields": [
+      "plan_shot_id", "shot_plan_ref", "camera", "duration", "action_beats",
+      "entry_state", "exit_state", "asset_bindings", "continuity_contract"
+    ],
+    "authority_classes": [
+      "UPSTREAM_CONSTRAINT", "SHOT_AUTHORING_DECISION", "PRODUCTION_CONTINUITY_STATE",
+      "DERIVED_EXECUTION_CONSTRAINT", "UNKNOWN_UNRESOLVED"
+    ],
+    "fail_closed_codes": [
+      "SHOT_PLAN_POINTER_MISSING", "SHOT_PLAN_NOT_CURRENT_POINTER",
+      "SHOT_PLAN_AUTHORITY_MISSING", "SHOT_PLAN_PAYLOAD_TAMPERED",
+      "SCENE_BLOCKING_CHANGED", "DIRECTOR_TREATMENT_CHANGED",
+      "FACT_SNAPSHOT_CHANGED", "SCRIPT_IR_CHANGED",
+      "SHOT_CONTINUITY_CHANGED", "SHOT_EXECUTABILITY_CHANGED"
+    ],
+    "provider_calls": 0,
+    "real_llm": false,
+    "real_media_generation": false,
+    "object_storage": false,
+    "historical_outputs_preserved": true
+  }
+}

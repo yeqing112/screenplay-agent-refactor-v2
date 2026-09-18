@@ -13,7 +13,9 @@ from core.production_policy import evaluate_production_boundary
 from core.qualification_loop import qualify_candidate
 from core.script_ir import resolve_script_payload
 from core.director_treatment_authority import resolve_current_authoritative_treatment
-from models import DirectorTreatment, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot
+from core.scene_blocking_authority import resolve_current_authoritative_scene_blocking
+from core.shot_plan_authority import resolve_current_authoritative_shot_plan
+from models import DirectorTreatment, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, ShotPlanAuthority, StoryboardShot
 
 router = APIRouter(prefix="/api/books", tags=["storyboard-materializer"])
 
@@ -49,26 +51,33 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
         script_scene_names = {str(item.get("name") or "").strip() for item in (script_ir_payload.get("scenes", []) if isinstance(script_ir_payload, dict) and isinstance(script_ir_payload.get("scenes"), list) else []) if isinstance(item, dict) and str(item.get("name") or "").strip()}
         if not script_scene_names:
             raise HTTPException(status_code=409, detail="Qualified ScriptIR has no structured scenes for production materialization.")
-        query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, status="approved")
+        # Production selection is pointer-only.  There is deliberately no
+        # latest-approved fallback: an approved row without a pointer is a
+        # migration/authority error, not an eligible production source.
+        plans = []
+        scene_by_id = {
+            str(item.get("scene_id") or "").strip(): item
+            for item in (script_ir_payload.get("scenes", []) if isinstance(script_ir_payload, dict) and isinstance(script_ir_payload.get("scenes"), list) else [])
+            if isinstance(item, dict) and str(item.get("scene_id") or "").strip()
+        }
+        structured_scenes = [item for item in (script_ir_payload.get("scenes", []) if isinstance(script_ir_payload, dict) and isinstance(script_ir_payload.get("scenes"), list) else []) if isinstance(item, dict)]
+        if len(scene_by_id) != len(structured_scenes):
+            raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Every production ScriptIR scene requires a stable scene_id before materialization."})
         if req.plan_id:
-            # An explicit plan_id is an operator-selected revision and must
-            # remain exact; do not silently substitute a newer plan.
-            query = query.filter_by(id=req.plan_id)
-            plans = query.order_by(ShotPlan.revision.desc(), ShotPlan.id.desc()).all()
+            selected = session.query(ShotPlan).filter_by(id=req.plan_id, book_id=book_id, episode=episode).first()
+            if not selected:
+                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_NOT_FOUND", "message": "Requested ShotPlan does not exist in this production scope."})
+            selected_scene_id = str(getattr(selected, "scene_id", "") or "").strip()
+            if selected_scene_id not in scene_by_id:
+                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_SCENE_NOT_IN_SCRIPT_IR", "message": "Requested ShotPlan scene is not in the current ScriptIR."})
+            current, _ = resolve_current_authoritative_shot_plan(session, book_id=book_id, episode=episode, scene_id=selected_scene_id)
+            if current.id != selected.id:
+                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_NOT_CURRENT_POINTER", "message": "Only the current authoritative ShotPlan pointer may be materialized."})
+            plans = [current]
         else:
-            # Without an explicit revision, materialize one authoritative
-            # approved ShotPlan per scene.  Keeping every approved revision
-            # would duplicate old shots and violate the one-to-one production
-            # projection contract.
-            approved_rows = query.order_by(ShotPlan.scene_name, ShotPlan.revision.desc(), ShotPlan.id.desc()).all()
-            plans = []
-            seen_scene_names: set[str] = set()
-            for row in approved_rows:
-                scene_key = str(row.scene_name or "").strip()
-                if scene_key in seen_scene_names:
-                    continue
-                seen_scene_names.add(scene_key)
-                plans.append(row)
+            for scene_id in scene_by_id:
+                current, _ = resolve_current_authoritative_shot_plan(session, book_id=book_id, episode=episode, scene_id=scene_id)
+                plans.append(current)
         if not plans:
             raise HTTPException(status_code=409, detail="No approved ShotPlan is available for materialization.")
         missing_script_scenes = sorted({str(plan.scene_name or "").strip() for plan in plans} - script_scene_names)
@@ -76,14 +85,19 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
             raise HTTPException(status_code=409, detail=f"Qualified ScriptIR does not contain planned scenes: {', '.join(missing_script_scenes)}")
         created = []
         for plan in plans:
-            plan_scene = next((item for item in (script_ir_payload.get("scenes", []) if isinstance(script_ir_payload, dict) else []) if isinstance(item, dict) and str(item.get("name") or "").strip() == str(plan.scene_name or "").strip()), None)
+            plan_scene = scene_by_id.get(str(getattr(plan, "scene_id", "") or "").strip())
             plan_scene_id = str((plan_scene or {}).get("scene_id") or getattr(plan, "scene_id", "") or "").strip()
-            treatment = None
-            if plan_scene_id:
-                treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=plan_scene_id)
-            blocking = session.query(SceneBlocking).filter_by(id=plan.blocking_id, book_id=book_id, episode=episode, scene_name=plan.scene_name, status="approved").first() if plan.blocking_id else None
+            treatment, treatment_authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=plan_scene_id)
+            blocking, blocking_authority = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=plan_scene_id)
             if not treatment or not blocking or blocking.treatment_id != treatment.id or str(getattr(blocking, "scene_id", "") or "") != plan_scene_id:
                 raise HTTPException(status_code=409, detail=f"Production materialization requires approved Treatment and SceneBlocking lineage for scene: {plan.scene_name}")
+            authority_row = session.query(ShotPlanAuthority).filter_by(shot_plan_id=plan.id).first()
+            if not authority_row:
+                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_AUTHORITY_MISSING", "message": f"ShotPlan authority envelope is missing: {plan.scene_name}"})
+            try:
+                shot_plan_authority_envelope = json.loads(authority_row.envelope_json or "{}")
+            except (TypeError, ValueError, json.JSONDecodeError):
+                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_AUTHORITY_INVALID", "message": f"ShotPlan authority envelope is invalid: {plan.scene_name}"})
             blocking_unknowns = _json_list(getattr(blocking, "unknowns", "[]"))
             blocking_unresolved = _json_list(getattr(blocking, "unresolved_facts", "[]"))
             if blocking_unknowns or blocking_unresolved:
@@ -179,7 +193,7 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                     **draft["meta_info"], "workflow_profile": "production",
                     "plan_shot_id": draft["plan_shot_id"], "action_beats": draft.get("action_beats", []),
                     "asset_bindings": draft.get("asset_bindings", {}), "continuity_contract": draft.get("continuity_contract", {}),
-                    "upstream": {"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id, "shot_plan_id": plan.id},
+                    "upstream": {"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id, "shot_plan_id": plan.id, "shot_plan_authority": shot_plan_authority_envelope},
                     "prompt_compiler": phase_a, "qualification": qualification, "production_pass": production_pass,
                 }
                 row = StoryboardShot(book_id=book_id, episode=episode, scene_name=draft["scene_name"], shot_id=draft["shot_id"], duration=draft["duration"], camera_angle=draft["camera_angle"], camera_movement=draft["camera_movement"], camera_speed=draft["camera_speed"], shot_purpose=draft["shot_purpose"], start_state=json.dumps(draft["start_state"], ensure_ascii=False) if isinstance(draft["start_state"], (dict, list)) else draft["start_state"], action_process=draft["action_process"], end_state=json.dumps(draft["end_state"], ensure_ascii=False) if isinstance(draft["end_state"], (dict, list)) else draft["end_state"], visual_prompt_static=verbalized["static_prompt"], visual_prompt_motion=verbalized["motion_prompt"], visual_prompt_final=verbalized["negative_prompt"], meta_info=json.dumps(persisted_meta, ensure_ascii=False), execution_status="succeeded", quality_status="qualified" if qualification["status"] == "qualified" else "needs_review", production_status="blocked", workflow_profile="production", created_at=datetime.now(), updated_at=datetime.now())

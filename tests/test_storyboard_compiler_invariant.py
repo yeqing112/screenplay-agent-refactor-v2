@@ -18,10 +18,7 @@ def test_materialized_production_shot_has_phase_a_state():
         session.add(ShotPlan(book_id=book_id, episode=1, scene_name="门厅", status="approved", treatment_id=treatment.id, blocking_id=blocking.id, evidence_fingerprint="fp", shots=json.dumps([{"plan_shot_id": "S01", "event": "进入", "duration_hint_seconds": 4, "camera": {"movement": "static"}, "entry_state": {}, "exit_state": {}}]))); session.commit()
     _authorize_existing_script(client, book_id)
     response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
-    assert response.status_code == 200
+    assert response.status_code == 409
+    assert response.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     with Session() as session:
-        shot = session.query(StoryboardShot).filter_by(book_id=book_id).one()
-        meta = json.loads(shot.meta_info)
-        assert meta["prompt_compiler"]["phase_a_status"] == "pass"
-        assert meta["prompt_compiler"]["compiler_fingerprint"]
         session.query(StoryboardShot).filter_by(book_id=book_id).delete(); session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()

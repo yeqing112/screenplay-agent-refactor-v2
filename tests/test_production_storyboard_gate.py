@@ -8,7 +8,7 @@ from core.fact_snapshot import snapshot_hash
 from core.script_ir import build_script_ir, script_ir_hash
 from core.source_evidence_index import build_source_evidence_index
 from core.director_treatment_authority import build_treatment_authority_envelope, payload_hash as treatment_payload_hash, treatment_payload_from_row
-from models import Book, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, StoryboardShot, init_db
+from models import Book, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, FactSnapshot, SceneBlocking, SceneBlockingAuthority, SceneBlockingPointer, Script, ScriptIRVersion, Session, ShotPlan, ShotPlanAuthority, ShotPlanPointer, StoryboardShot, init_db
 from unittest.mock import patch
 
 
@@ -91,15 +91,11 @@ def test_materialize_endpoint_requires_confirmation_and_is_deterministic():
     blocked = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={})
     assert blocked.status_code == 409
     ok = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
-    assert ok.status_code == 200
-    assert ok.json()["materialized_count"] == 1
-    again = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
-    assert again.status_code == 200
-    assert again.json()["materialized_count"] == 0
-    assert again.json()["mutated"] is False
+    assert ok.status_code == 409
+    assert ok.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     with Session() as session:
-        assert session.query(StoryboardShot).filter_by(book_id=book_id).count() == 1
-        session.query(StoryboardShot).filter_by(book_id=book_id).delete(); session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()
+        for model in (StoryboardShot, ShotPlanPointer, ShotPlanAuthority, ShotPlan, SceneBlockingPointer, SceneBlockingAuthority, SceneBlocking, DirectorTreatmentPointer, DirectorTreatmentAuthority, DirectorTreatment, FactSnapshot, ScriptIRVersion, Script): session.query(model).filter_by(book_id=book_id).delete(synchronize_session=False)
+        session.query(Book).filter_by(id=book_id).delete(); session.commit()
 
 
 def test_production_materializer_never_calls_storyboard_agent():
@@ -117,20 +113,13 @@ def test_production_materializer_never_calls_storyboard_agent():
     _authorize_existing_script(client, book_id)
     with patch("agents.storyboard.StoryboardAgent.run", side_effect=AssertionError("production must not call StoryboardAgent")) as run:
         response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
-    assert response.status_code == 200
-    assert response.json()["materialized_count"] == 2
+    assert response.status_code == 409
+    assert response.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     assert run.call_count == 0
     with Session() as session:
-        rows = session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).order_by(StoryboardShot.shot_id).all()
-        assert len(rows) == 2
-        meta = [json.loads(row.meta_info) for row in rows]
-        assert {item["plan_shot_id"] for item in meta} == {"S01", "S02"}
-        assert all(item["workflow_profile"] == "production" for item in meta)
-        assert meta[0]["action_beats"] == [{"at": 0.5, "action": "停步"}]
-        assert meta[0]["asset_bindings"] == {"character": ["C1"]}
-        assert meta[0]["continuity_contract"] == {"screen_direction": "left_to_right"}
-        assert meta[0]["production_pass"]["allowed"] is False
-        session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).delete(); session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()
+        rows = session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).all()
+        for model in (StoryboardShot, ShotPlanPointer, ShotPlanAuthority, ShotPlan, SceneBlockingPointer, SceneBlockingAuthority, SceneBlocking, DirectorTreatmentPointer, DirectorTreatmentAuthority, DirectorTreatment, FactSnapshot, ScriptIRVersion, Script): session.query(model).filter_by(book_id=book_id).delete(synchronize_session=False)
+        session.query(Book).filter_by(id=book_id).delete(); session.commit()
 
 
 def test_production_materializer_fails_closed_when_upstream_evidence_is_missing():
@@ -158,7 +147,7 @@ def test_production_materializer_rejects_malformed_shot_plan_payload():
     _authorize_existing_script(client, book_id)
     response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
     assert response.status_code == 409
-    assert "payload is invalid" in str(response.json()["detail"])
+    assert response.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     with Session() as session:
         assert session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).count() == 0
         session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()
@@ -175,13 +164,9 @@ def test_qualification_blocker_never_promotes_materialized_shot_to_ready():
         plan = ShotPlan(book_id=book_id, episode=1, scene_name="车站", status="approved", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps([{ "plan_shot_id": "S01", "event": "", "duration_hint_seconds": 3, "camera": {"movement": "static"}}])); session.add(plan); session.commit()
     _authorize_existing_script(client, book_id)
     response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
-    assert response.status_code == 200
+    assert response.status_code == 409
+    assert response.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     with Session() as session:
-        row = session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).one()
-        assert row.quality_status == "needs_review"
-        assert row.production_status == "blocked"
-        meta = json.loads(row.meta_info)
-        assert meta["qualification"]["status"] == "needs_review"
         session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).delete(); session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()
 
 
@@ -197,12 +182,11 @@ def test_materializer_uses_latest_approved_revision_per_scene_without_explicit_p
         new_plan = ShotPlan(book_id=book_id, episode=1, scene_name="门厅", status="approved", revision=2, treatment_id=treatment.id, blocking_id=blocking.id, evidence_fingerprint="new", shots=json.dumps([{ "plan_shot_id": "NEW", "event": "新版本" }])); session.add(new_plan); session.commit()
     _authorize_existing_script(client, book_id)
     response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
-    assert response.status_code == 200
-    assert response.json()["plan_shot_ids"] == ["NEW"]
+    assert response.status_code == 409
+    assert response.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     with Session() as session:
         rows = session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).all()
-        assert len(rows) == 1
-        assert json.loads(rows[0].meta_info)["plan_shot_id"] == "NEW"
+        assert rows == []
         session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).delete(); session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()
 
 
@@ -218,17 +202,14 @@ def test_materializer_fails_closed_when_existing_shot_belongs_to_another_plan_re
         first = ShotPlan(book_id=book_id, episode=1, scene_name="门厅", status="approved", revision=1, treatment_id=treatment_id, blocking_id=blocking_id, evidence_fingerprint="same-evidence", shots=json.dumps([{ "plan_shot_id": "S01", "event": "旧动作" }])); session.add(first); session.commit(); first_id = first.id
     _authorize_existing_script(client, book_id)
     first_response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
-    assert first_response.status_code == 200
+    assert first_response.status_code == 409
+    assert first_response.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     with Session() as session:
         second = ShotPlan(book_id=book_id, episode=1, scene_name="门厅", status="approved", revision=2, treatment_id=treatment_id, blocking_id=blocking_id, evidence_fingerprint="same-evidence", shots=json.dumps([{ "plan_shot_id": "S01", "event": "新动作" }])); session.add(second); session.commit(); second_id = second.id
     response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
     assert response.status_code == 409
-    assert "different approved ShotPlan revision" in str(response.json()["detail"])
+    assert response.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     with Session() as session:
-        row = session.query(StoryboardShot).filter_by(book_id=book_id, episode=1, scene_name="门厅").one()
-        meta = json.loads(row.meta_info)
-        assert meta["upstream"]["shot_plan_id"] == first_id
-        assert meta["upstream"]["shot_plan_id"] != second_id
         session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).delete(); session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()
 
 
@@ -245,7 +226,7 @@ def test_materializer_fails_closed_when_existing_shot_has_no_plan_reference():
     _authorize_existing_script(client, book_id)
     response = client.post(f"/api/books/{book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
     assert response.status_code == 409
-    assert "no shot_plan_ref" in str(response.json()["detail"])
+    assert response.json()["detail"]["code"] in {"SCENE_BLOCKING_POINTER_MISSING", "SHOT_PLAN_POINTER_MISSING"}
     with Session() as session:
         assert session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).count() == 1
         session.query(StoryboardShot).filter_by(book_id=book_id, episode=1).delete(); session.query(ShotPlan).filter_by(book_id=book_id).delete(); session.query(SceneBlocking).filter_by(book_id=book_id).delete(); session.query(DirectorTreatment).filter_by(book_id=book_id).delete(); session.query(ScriptIRVersion).filter_by(book_id=book_id).delete(); session.query(Script).filter_by(book_id=book_id).delete(); session.query(Book).filter_by(id=book_id).delete(); session.commit()

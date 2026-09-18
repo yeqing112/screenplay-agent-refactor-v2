@@ -53,6 +53,8 @@ IMMUTABLE_SHOT_FIELDS = {
     "continuity",
     "spatial_source",
     "duration_hint_seconds",
+    "camera_provenance",
+    "duration_provenance",
 }
 
 
