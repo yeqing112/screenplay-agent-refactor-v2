@@ -150,9 +150,10 @@ def create_visual_authoring_request(book_id: int, asset_type: str, canonical_id:
         if existing:
             return {"request": _serialize_request(existing), "deduplicated": True}
         source_constraints = dict(req.source_constraints)
+        structured_snapshot = _structured_asset_snapshot(row, asset_type)
         if not source_constraints:
             # Only structured authority fields are eligible as constraints.
-            source_constraints = {key: value for key, value in _structured_asset_snapshot(row, asset_type).items() if value not in (None, "", [], {})}
+            source_constraints = {key: value for key, value in structured_snapshot.items() if value not in (None, "", [], {})}
         free_space = req.free_authoring_space or sorted(ALLOWED_FIELDS[asset_type])
         request = VisualAuthoringDecisionRequest(
             request_id=request_id,
@@ -164,7 +165,12 @@ def create_visual_authoring_request(book_id: int, asset_type: str, canonical_id:
             source_constraints=json.dumps(source_constraints, ensure_ascii=False),
             free_authoring_space=json.dumps(free_space, ensure_ascii=False),
             forbidden_contradictions=json.dumps(req.forbidden_contradictions, ensure_ascii=False),
-            context_json=json.dumps({**req.context, "advisory_legacy_context": req.advisory_legacy_context}, ensure_ascii=False),
+            context_json=json.dumps({
+                **req.context,
+                "asset_snapshot": structured_snapshot,
+                "asset_snapshot_fingerprint": proposal_payload_fingerprint(structured_snapshot),
+                "advisory_legacy_context": req.advisory_legacy_context,
+            }, ensure_ascii=False),
         )
         session.add(request)
         session.commit()
@@ -203,10 +209,15 @@ def create_visual_authoring_proposal_canary(book_id: int, asset_type: str, canon
         if row is None:
             raise _error(404, "ASSET_NOT_FOUND", "visual asset not found")
         request_payload = _serialize_request(request)
+        request_context = _json(request.context_json, {})
+        expected_snapshot_fingerprint = str(request_context.get("asset_snapshot_fingerprint") or "") if isinstance(request_context, dict) else ""
+        current_snapshot = _structured_asset_snapshot(row, asset_type)
+        if expected_snapshot_fingerprint and expected_snapshot_fingerprint != proposal_payload_fingerprint(current_snapshot):
+            raise _error(409, "AUTHORING_REQUEST_STALE", "asset changed after the authoring request was frozen; create a new request", provider_calls=0)
         context = build_visual_authoring_provider_context(
             request=request_payload,
-            asset=_structured_asset_snapshot(row, asset_type),
-            authoritative_context=_json(request.context_json, {}),
+            asset=current_snapshot,
+            authoritative_context=request_context,
         )
         system, user = build_visual_authoring_provider_prompt(context)
         fingerprint = llm_request_fingerprint(system=system, user=user, profile=profile, extra={"contract": context["contract_version"]})
