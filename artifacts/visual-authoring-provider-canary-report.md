@@ -39,3 +39,9 @@ No real provider was called in this implementation turn, per the execution rule.
 ## Next gate
 
 Run the bounded real canary only after explicit operator confirmation. Do not enter reference-image, director, scene-blocking, shot-plan, video, or media execution canaries from this stage.
+
+## Delivery
+
+- Branch: `codex/unify-formal-workspace`
+- Commit: `59c3963`
+- Remote: `origin/codex/unify-formal-workspace`
