@@ -1,4 +1,5 @@
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
+import { humanizeProductionState, type ProductionNavigationTarget, type ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 
 type DashboardTargetSection = 'content' | 'adaptation' | 'scripts' | 'storyboard' | 'assets' | 'qa' | 'delivery'
 
@@ -19,6 +20,8 @@ interface Props {
   episodeProgress: EpisodeProgress[]
   dashboardActions: DashboardAction[]
   onNavigate: (target: DashboardTargetSection) => void
+  onNavigateTarget?: (target: ProductionNavigationTarget) => void
+  productionWorkspace?: ProductionWorkspaceSnapshot | null
 }
 
 function StatusSummaryItem({ title, value, detail }: { title: string; value: string; detail: string }) {
@@ -38,9 +41,16 @@ export default function ProductWorkspaceDashboardSection({
   episodeProgress,
   dashboardActions,
   onNavigate,
+  onNavigateTarget,
+  productionWorkspace,
 }: Props) {
   const primaryAction = dashboardActions[0] ?? null
   const secondaryActions = dashboardActions.slice(1)
+  const authorityAction = productionWorkspace?.project.next_actions[0] ?? null
+  const actionTitle = authorityAction?.title ?? primaryAction?.title ?? '当前没有新的阻塞'
+  const actionDescription = authorityAction?.description ?? primaryAction?.description ?? '可以继续检查当前生产链路。'
+  const actionSection = (authorityAction?.target_section ?? primaryAction?.targetSection ?? 'dashboard') as DashboardTargetSection
+  const spineOrder = ['CONTENT', 'SCRIPT_IR', 'DIRECTOR_TREATMENT', 'SCENE_BLOCKING', 'SHOT_PLAN', 'STORYBOARD', 'PROMPT_IR', 'VISUAL_ASSET', 'REFERENCE', 'MEDIA', 'QA']
 
   return (
     <div className="space-y-6">
@@ -81,6 +91,28 @@ export default function ProductWorkspaceDashboardSection({
         </div>
       </div>
 
+      {productionWorkspace ? (
+        <div className="rounded-xl border border-violet-500/25 bg-violet-500/5 p-5" aria-label="Production Spine">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium text-white">Production Spine</div>
+              <div className="mt-1 text-xs text-slate-400">当前权威生产状态 · {productionWorkspace.project.overall_progress}%</div>
+            </div>
+            <span className="rounded-full border border-violet-400/30 bg-violet-400/10 px-2 py-1 text-[11px] text-violet-100">
+              {humanizeProductionState(productionWorkspace.project.overall_state)}
+            </span>
+          </div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+            {spineOrder.map((key) => {
+              const stage = productionWorkspace.stages[key]
+              if (!stage) return null
+              const tone = stage.state === 'complete' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-100' : stage.state === 'blocked' ? 'border-rose-500/30 bg-rose-500/10 text-rose-100' : stage.state === 'stale' ? 'border-amber-500/30 bg-amber-500/10 text-amber-100' : 'border-slate-700 bg-slate-950/50 text-slate-300'
+              return <div key={key} className={`rounded-lg border px-3 py-2 ${tone}`}><div className="text-xs font-medium">{stage.state === 'complete' ? '✓ ' : ''}{stage.label}</div><div className="mt-1 text-[11px] opacity-80">{humanizeProductionState(stage.state)}</div></div>
+            })}
+          </div>
+        </div>
+      ) : null}
+
       <div className="grid gap-6 xl:grid-cols-[1.2fr,1fr]">
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <div className="text-sm font-medium text-white">{'\u5355\u96c6 readiness \u603b\u89c8'}</div>
@@ -119,16 +151,16 @@ export default function ProductWorkspaceDashboardSection({
               <div className="min-w-0">
                 <div className="text-sm font-medium text-white">下一步行动</div>
                 <div className="mt-2 text-base font-semibold text-sky-50">
-                  {primaryAction?.title || '当前没有新的阻塞'}
+                  {actionTitle}
                 </div>
                 <div className="mt-2 text-sm leading-6 text-sky-100/80">
-                  {primaryAction?.description || '可以继续按当前模块检查生产链路，或进入单集 readiness 总览复核。'}
+                  {actionDescription}
                 </div>
               </div>
-              {primaryAction ? (
+              {authorityAction || primaryAction ? (
                 <button
                   type="button"
-                  onClick={() => onNavigate(primaryAction.targetSection)}
+                  onClick={() => authorityAction && onNavigateTarget ? onNavigateTarget(authorityAction.target_params) : onNavigate(actionSection)}
                   className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-500"
                 >
                   立即前往
@@ -161,6 +193,20 @@ export default function ProductWorkspaceDashboardSection({
           </div>
         </div>
       </div>
+
+      {productionWorkspace && productionWorkspace.project.current_blockers.length > 0 ? (
+        <div className="rounded-xl border border-rose-500/25 bg-rose-500/5 p-5" aria-label="当前阻塞">
+          <div className="text-sm font-medium text-white">当前阻塞</div>
+          <div className="mt-3 space-y-2">
+            {productionWorkspace.project.current_blockers.slice(0, 6).map((blocker) => (
+              <button key={`${blocker.code}-${blocker.episode ?? 'project'}-${blocker.shot_id ?? ''}-${blocker.asset_key ?? ''}`} type="button" onClick={() => onNavigateTarget ? onNavigateTarget(blocker.target_params) : onNavigate((blocker.target_section || 'dashboard') as DashboardTargetSection)} className="w-full rounded-lg border border-slate-800 bg-slate-950/50 p-3 text-left hover:border-slate-700">
+                <div className="flex items-center justify-between gap-3"><span className="text-sm font-medium text-white">{blocker.title}</span><span className="text-[11px] text-slate-500">{blocker.episode ? `第 ${blocker.episode} 集` : '项目级'}</span></div>
+                <div className="mt-1 text-xs leading-5 text-slate-400">{blocker.description}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -49,8 +49,8 @@ export default function ProductWorkspaceShell({
   }, [])
 
   return (
-    <div className="flex h-full bg-slate-950 text-slate-200">
-      <aside className="w-72 border-r border-slate-800 bg-slate-950 p-4">
+    <div className="flex h-full min-w-0 bg-slate-950 text-slate-200">
+      <aside className="hidden w-72 shrink-0 overflow-y-auto border-r border-slate-800 bg-slate-950 p-4 md:block">
         <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-3">
           <div className="text-[11px] uppercase tracking-[0.2em] text-violet-300/80">Workspace</div>
           <div className="mt-1 text-base font-semibold text-white">正式产品工作台</div>
@@ -104,14 +104,14 @@ export default function ProductWorkspaceShell({
 
       </aside>
 
-      <main className="flex-1 overflow-y-auto">
-        <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/95 px-6 py-4 backdrop-blur">
-          <div className="flex items-center justify-between gap-4">
+      <main className="min-w-0 flex-1 overflow-y-auto">
+        <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/95 px-4 py-3 backdrop-blur md:px-6 md:py-4">
+          <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
             <div>
               <div className="text-xs uppercase tracking-[0.2em] text-slate-500">正式产品工作区</div>
-              <h1 className="mt-1 text-2xl font-semibold text-white">{currentSectionLabel}</h1>
+              <h1 className="mt-1 text-xl font-semibold text-white md:text-2xl">{currentSectionLabel}</h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={onRefreshAll}
@@ -130,9 +130,31 @@ export default function ProductWorkspaceShell({
               )}
             </div>
           </div>
+
+          <label className="mt-3 block md:hidden">
+            <span className="sr-only">选择工作台页面</span>
+            <select
+              aria-label="选择工作台页面"
+              value={section}
+              onChange={(event) => {
+                const nextSection = event.target.value as WorkspaceSection
+                if (!getSectionBlockedReason(nextSection)) onSelectSection(nextSection)
+              }}
+              className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 focus:border-violet-400 focus:outline-none"
+            >
+              {sections.map((item) => {
+                const blockedReason = getSectionBlockedReason(item.id)
+                return (
+                  <option key={item.id} value={item.id} disabled={Boolean(blockedReason)}>
+                    {item.label}{blockedReason ? '（锁定）' : ''}
+                  </option>
+                )
+              })}
+            </select>
+          </label>
         </header>
 
-        <div className="px-6 py-6">
+        <div className="px-4 py-4 md:px-6 md:py-6">
           {error ? (
             <div className="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
               项目数据读取失败：{error}

@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   buildTaskCenterEntries,
+  buildAuthorityBlockerTaskEntries,
   type TaskCenterEntry,
   type TaskCenterQaWorkbenchEpisodeSummary,
   type TaskCenterSection,
@@ -63,6 +64,8 @@ import TaskCenterOverviewPanel from './productWorkspaceTaskCenterOverviewPanel'
 import TaskCenterSelectedTaskPanel from './productWorkspaceTaskCenterSelectedTaskPanel'
 import { fetchAgentTimeline, reconcileAgentProjectUpdates } from '../services/agent'
 import { buildAgentTaskCenterEntries } from './productWorkspaceAgentTasks'
+import type { ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
   bookId: number
@@ -80,6 +83,7 @@ interface Props {
     section: TaskCenterSection,
     options?: WorkspaceTaskRouteOptions,
   ) => void
+  productionWorkspace?: ProductionWorkspaceSnapshot | null
 }
 
 type TaskActionState = {
@@ -140,6 +144,7 @@ export default function ProductWorkspaceTasksSection({
   navigationTarget,
   onRefresh,
   onNavigate,
+  productionWorkspace = null,
 }: Props) {
   const [workflowBucket, setWorkflowBucket] = useState<TaskCenterWorkflowBucket>('attention')
   const [statusFilter, setStatusFilter] = useState<'all' | TaskCenterStatus>('all')
@@ -298,7 +303,11 @@ export default function ProductWorkspaceTasksSection({
     [creativeTasks, pendingTasks, recoveryTaskMetaById, recoveryTaskStatuses, shotsByEpisode],
   )
 
-  const allEntries = useMemo(() => [...baseEntries, ...recoveryEntries, ...agentEntries], [agentEntries, baseEntries, recoveryEntries])
+  const authorityEntries = useMemo(
+    () => buildAuthorityBlockerTaskEntries(productionWorkspace?.project.current_blockers ?? []),
+    [productionWorkspace?.project.current_blockers],
+  )
+  const allEntries = useMemo(() => [...authorityEntries, ...baseEntries, ...recoveryEntries, ...agentEntries], [agentEntries, authorityEntries, baseEntries, recoveryEntries])
   const episodeOptions = useMemo(
     () =>
       Array.from(new Set(allEntries.map((item) => item.episode).filter((item): item is number => Boolean(item))))
@@ -869,7 +878,9 @@ export default function ProductWorkspaceTasksSection({
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.95fr_minmax(0,1.2fr)_0.95fr]">
+    <div>
+      <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} title="任务与生产阻塞" />
+      <div className="grid gap-6 xl:grid-cols-[0.95fr_minmax(0,1.2fr)_0.95fr]">
       <TaskCenterListPanel
         workflowBucket={workflowBucket}
         workflowCounts={workflowCounts}
@@ -947,6 +958,7 @@ export default function ProductWorkspaceTasksSection({
           </div>
         </div>
       ) : null}
+      </div>
     </div>
   )
 }

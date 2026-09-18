@@ -21,6 +21,7 @@ import type { AssetCategoryFilter, AssetStatusFilter, AssetVersionFilter, Recove
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
+import type { ProductionNavigationTarget, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 
 interface UseProductWorkspaceSectionBundlesParams {
   section: WorkspaceSection
@@ -132,6 +133,7 @@ interface UseProductWorkspaceSectionBundlesParams {
   canvasHandoffTarget: CanvasHandoffTarget | null
   taskNavigationTarget: TaskNavigationTarget | null
   qaNavigationTarget: { episode: number | null; shotId: string | null } | null
+  productionWorkspace: ProductionWorkspaceSnapshot | null
   onNavigateSection: (section: WorkspaceSection) => void
   onNavigateTaskSection: TaskNavigateHandler
   makeups: VisualMakeupOutput[]
@@ -168,6 +170,21 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         dashboardActions: params.dashboardActions,
         episodeProgress: params.episodeProgress,
         onNavigateSection: params.onNavigateSection,
+        onNavigateTarget: (target: ProductionNavigationTarget) => {
+          const section = String(target.section || '') as WorkspaceSection
+          if (section === 'dashboard') {
+            params.onNavigateSection('dashboard')
+            return
+          }
+          params.onNavigateTaskSection(section as any, {
+            episode: target.episode ?? null,
+            shotId: target.shot_id ?? null,
+            assetId: target.asset_key ?? null,
+            taskId: target.task_id ?? null,
+            navigationSource: 'tasks',
+          })
+        },
+        productionWorkspace: params.productionWorkspace,
       },
       content: {
         bookId: params.bookId,
@@ -244,6 +261,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         isGeneratingStoryboard: params.isGeneratingStoryboard,
         initialStoryboardEpisode: params.initialStoryboardEpisode,
         initialStoryboardStep: params.initialStoryboardStep,
+        productionWorkspace: params.productionWorkspace,
       },
       canvas: {
         bookId: params.bookId,
@@ -299,6 +317,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onToggleShotBinding: params.onToggleShotBinding,
         onApplyInferredShotBindings: params.onApplyInferredShotBindings,
         onSaveShotBindings: params.onSaveShotBindings,
+        productionWorkspace: params.productionWorkspace,
       },
       qa: {
         bookId: params.bookId,
@@ -325,6 +344,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         taskNavigationTarget: params.taskNavigationTarget,
         onRefreshAll: params.onRefreshAll,
         onNavigateTaskSection: params.onNavigateTaskSection,
+        productionWorkspace: params.productionWorkspace,
       },
       delivery: {
         bookId: params.bookId,

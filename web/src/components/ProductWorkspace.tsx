@@ -12,6 +12,7 @@ import {
   Wrench,
 } from 'lucide-react'
 import { useBookOutputs } from '../hooks/useBookOutputs'
+import { useProductionWorkspace } from '../hooks/useProductionWorkspace'
 import { useProductWorkspaceUpstream } from './productWorkspaceUpstreamController'
 import {
   buildCharacterAssetSummaries,
@@ -123,11 +124,13 @@ export default function ProductWorkspace({
   const [isGeneratingScripts, setIsGeneratingScripts] = useState(false)
   const [isGeneratingStoryboard, setIsGeneratingStoryboard] = useState(false)
   const { data, loading, error, refresh } = useBookOutputs(book.id)
+  const productionWorkspace = useProductionWorkspace(book.id)
 
   const handleRefreshAll = useCallback(() => {
     onRefresh()
     refresh()
-  }, [onRefresh, refresh])
+    void productionWorkspace.refresh()
+  }, [onRefresh, refresh, productionWorkspace.refresh])
 
   const {
     firstScript,
@@ -649,6 +652,7 @@ export default function ProductWorkspace({
     canvasHandoffTarget,
     taskNavigationTarget,
     qaNavigationTarget,
+    productionWorkspace: productionWorkspace.data,
     onNavigateSection: handleSelectSection,
     onNavigateTaskSection: navigateTaskSection,
     makeups,
@@ -665,8 +669,8 @@ export default function ProductWorkspace({
       projectStatus={summary.projectStatus}
       section={section}
       sections={sections}
-      loading={loading}
-      error={error}
+      loading={loading || productionWorkspace.loading}
+      error={error || productionWorkspace.error}
       onSelectSection={handleSelectSection}
       getSectionBlockedReason={getSectionBlockedReason}
       onRefreshAll={handleRefreshAll}

@@ -64,6 +64,8 @@ import { ProductWorkspacePromptAuthorityPanel } from './ProductWorkspacePromptAu
 import { ProductWorkspaceCompileDiagnosticsPanel } from './ProductWorkspaceCompileDiagnosticsPanel'
 import { ProductWorkspaceStoryboardRepairPanel } from './ProductWorkspaceStoryboardRepairPanel'
 import { fetchModelRegistryDefaults, type ModelProfileRecord } from '../services/modelRegistry'
+import type { ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
   bookId: number
@@ -87,6 +89,7 @@ interface Props {
   isGeneratingStoryboard?: boolean
   initialStoryboardEpisode?: number | null
   initialStoryboardStep?: StoryboardStep
+  productionWorkspace?: ProductionWorkspaceSnapshot | null
 }
 
 export function buildStoryboardCanvasHandoffSummary(input: {
@@ -1663,6 +1666,7 @@ export default function ProductWorkspaceStoryboardSection({
   isGeneratingStoryboard,
   initialStoryboardEpisode = null,
   initialStoryboardStep = 'overview',
+  productionWorkspace = null,
 }: Props) {
   const [promptVersions, setPromptVersions] = useState<PromptVersionRecord[]>([])
   const [historyState, setHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
@@ -3436,7 +3440,9 @@ export default function ProductWorkspaceStoryboardSection({
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+    <div>
+      <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} episode={selectedEpisode} title="镜头生产状态" />
+      <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -4463,6 +4469,7 @@ export default function ProductWorkspaceStoryboardSection({
             当前没有可查看的镜头详情。
           </div>
         )}
+      </div>
       </div>
     </div>
   )

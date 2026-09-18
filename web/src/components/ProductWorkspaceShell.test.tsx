@@ -35,4 +35,12 @@ describe('ProductWorkspaceShell navigation accessibility', () => {
     expect(html).toContain('focus-visible:ring-violet-400')
     expect(html.match(/focus-visible:ring-2/g)).toHaveLength(2)
   })
+
+  it('exposes a compact responsive page selector for narrow screens', () => {
+    const html = renderToStaticMarkup(<ProductWorkspaceShell {...baseProps} />)
+
+    expect(html).toContain('aria-label="选择工作台页面"')
+    expect(html).toContain('<select')
+    expect(html).toContain('value="dashboard"')
+  })
 })

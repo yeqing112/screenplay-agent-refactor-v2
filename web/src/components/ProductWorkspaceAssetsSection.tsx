@@ -17,6 +17,8 @@ import {
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
 import SceneSemanticLayersEditor from './SceneSemanticLayersEditor'
 import PropSemanticLayersEditor from './PropSemanticLayersEditor'
+import type { ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
   bookId: number
@@ -88,6 +90,7 @@ interface Props {
   onToggleShotBinding: (shotId: string) => void
   onApplyInferredShotBindings: () => void
   onSaveShotBindings: () => void
+  productionWorkspace?: ProductionWorkspaceSnapshot | null
 }
 
 type AssetCanvasPrimaryActionPlan =
@@ -1088,6 +1091,7 @@ export default function ProductWorkspaceAssetsSection({
   onToggleShotBinding,
   onApplyInferredShotBindings,
   onSaveShotBindings,
+  productionWorkspace = null,
 }: Props) {
   const [referenceSourcePromptDetail, setReferenceSourcePromptDetail] = useState<{
     title: string
@@ -1271,7 +1275,9 @@ export default function ProductWorkspaceAssetsSection({
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.92fr_1.2fr_0.95fr]">
+    <div>
+      <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} episode={assetEpisodeFilter === 'all' ? null : assetEpisodeFilter} title="资产生产状态" />
+      <div className="grid gap-6 xl:grid-cols-[0.92fr_1.2fr_0.95fr]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="text-sm font-medium text-white">资产列表</div>
@@ -2303,6 +2309,7 @@ export default function ProductWorkspaceAssetsSection({
         detail={referenceSourcePromptDetail}
         onClose={() => setReferenceSourcePromptDetail(null)}
       />
+      </div>
     </div>
   )
 }

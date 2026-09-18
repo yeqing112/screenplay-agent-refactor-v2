@@ -1,0 +1,64 @@
+{
+  "schema_version": "frontend_production_state_contract_v1",
+  "source": "GET /api/books/{book_id}/production-workspace",
+  "authority_source": "current_authority_pointers_only",
+  "read_only": true,
+  "provider_calls": 0,
+  "stage_order": [
+    "CONTENT",
+    "SCRIPT_IR",
+    "DIRECTOR_TREATMENT",
+    "SCENE_BLOCKING",
+    "SHOT_PLAN",
+    "STORYBOARD",
+    "PROMPT_IR",
+    "VISUAL_ASSET",
+    "REFERENCE",
+    "MEDIA",
+    "QA"
+  ],
+  "ui_states": [
+    "not_started",
+    "in_progress",
+    "ready",
+    "blocked",
+    "needs_action",
+    "stale",
+    "complete",
+    "warning"
+  ],
+  "invariants": [
+    "Frontend never derives production readiness from raw row counts.",
+    "Frontend never treats legacy status=approved as production-qualified by itself.",
+    "Projection never falls back to latest approved rows when a current pointer is missing.",
+    "Projection reads current pointers and fresh lineage only.",
+    "Projection has no mutation side effects and never calls a provider.",
+    "Workflow actions and runtime provider tasks remain separate in Task Center.",
+    "Creative draft remains compatible but cannot bypass production gates."
+  ],
+  "blocker_shape": [
+    "code",
+    "title",
+    "description",
+    "severity",
+    "stage",
+    "scope",
+    "book_id",
+    "episode",
+    "scene_id",
+    "shot_id",
+    "asset_key",
+    "recommended_action",
+    "target_section",
+    "target_params"
+  ],
+  "domain_types": [
+    "ProductionWorkspaceSnapshot",
+    "ProductionStageSummary",
+    "EpisodeProductionSummary",
+    "ShotProductionSummary",
+    "AssetAuthoritySummary",
+    "ProductionBlocker",
+    "ProductionNavigationTarget"
+  ]
+}

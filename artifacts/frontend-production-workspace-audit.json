@@ -1,0 +1,125 @@
+{
+  "schema_version": "frontend_production_workspace_audit_v1",
+  "audit_scope": "ProductWorkspace and its production-facing sections",
+  "baseline_commit": "0f206ab",
+  "branch": "codex/shot-plan-authority-contract",
+  "capture_status": "code_audit_complete_browser_capture_blocked",
+  "capture_limitations": [
+    "The local frontend builds successfully, but the configured CUA browser inventory was unavailable during this run; no screenshot is claimed as current-run evidence."
+  ],
+  "data_sources": {
+    "primary": {
+      "hook": "web/src/hooks/useBookOutputs.ts",
+      "endpoint": "/api/pipeline/book/{book_id}/outputs",
+      "normalizer": "web/src/domain/bookOutputs.ts",
+      "risk": "The normalized response is a legacy aggregate and does not expose the current Authority Spine pointers as a first-class domain object."
+    },
+    "project_data_controller": {
+      "file": "web/src/components/productWorkspaceProjectDataController.ts",
+      "derivations": [
+        "Scripts, shots, QA, locations, props and makeups are grouped from the aggregate response.",
+        "Episode progress is derived from counts and legacy script decision state."
+      ]
+    },
+    "overview_controller": {
+      "file": "web/src/components/productWorkspaceOverviewController.ts",
+      "derivations": [
+        "Dashboard next action is selected from contentReady, adaptationLocked, episode script count, shot count, visual count and QA count.",
+        "Episode readiness uses hasScript, scriptLocked, scriptReleased, shotCount, imageCount, videoCount and qaCount."
+      ]
+    }
+  },
+  "surfaces": [
+    {
+      "surface": "ProductWorkspace",
+      "file": "web/src/components/ProductWorkspace.tsx",
+      "data_source": "useBookOutputs plus local controller state",
+      "raw_count_inference": ["episode shots", "visual assets", "QA entries"],
+      "legacy_status_inference": ["section blocking", "project status"],
+      "direct_legacy_actions": ["POST /api/pipeline/script", "POST /api/pipeline/storyboard"],
+      "reusable": ["shell", "section lazy loading", "navigation state", "refresh orchestration"],
+      "must_change": ["consume read-only production workspace projection", "gate production actions by authoritative blockers"],
+      "can_remain": ["creative_draft compatibility and existing section bundles"]
+    },
+    {
+      "surface": "Dashboard",
+      "file": "web/src/components/ProductWorkspaceDashboardSection.tsx",
+      "data_source": "overview controller summary and episodeProgress",
+      "raw_count_inference": ["scripts", "shots", "visual assets", "QA"],
+      "legacy_status_inference": ["statusLabel", "current stage"],
+      "reusable": ["next action card", "episode list layout"],
+      "must_change": ["Production Spine", "backend blockers", "episode projection", "human-readable reason codes"]
+    },
+    {
+      "surface": "Content/Adaptation/Scripts",
+      "files": ["ProductWorkspaceContentSection.tsx", "ProductWorkspaceAdaptationSection.tsx", "ProductWorkspaceScriptsSection.tsx"],
+      "data_source": "legacy aggregate plus local draft/lock state",
+      "raw_count_inference": ["script existence", "episode count"],
+      "legacy_status_inference": ["draft/locked/released labels"],
+      "reusable": ["human-readable authoring controls", "existing preview/modals"],
+      "must_change": ["show ScriptIR and upstream stale state without exposing raw JSON by default"]
+    },
+    {
+      "surface": "Storyboard/Shot Workspace",
+      "files": ["ProductWorkspaceStoryboardSection.tsx", "productWorkspaceStoryboard.ts", "ProductWorkspaceStoryboardDecisionPanel.tsx"],
+      "data_source": "normalized StoryboardShotOutput from legacy outputs endpoint",
+      "raw_count_inference": ["prompt readiness", "reference readiness", "media readiness"],
+      "legacy_status_inference": ["asset_status", "production_status", "prompt compiler diagnostics"],
+      "reusable": ["shot selection", "continuity panel", "prompt panels", "media panels"],
+      "must_change": ["authority-aware shot summary", "blocker panel", "production detail disclosure", "no direct readiness reconstruction"]
+    },
+    {
+      "surface": "Assets",
+      "files": ["ProductWorkspaceAssetsSection.tsx", "productWorkspaceAssets.ts", "productWorkspaceAssetViewController.ts"],
+      "data_source": "legacy visual makeups/locations/props and references",
+      "raw_count_inference": ["reference count", "locked count", "asset count"],
+      "legacy_status_inference": ["asset status", "reference status", "prompt stale"],
+      "direct_legacy_actions": ["reference generation and reference status mutation endpoints"],
+      "reusable": ["asset filters", "preview", "binding navigation", "semantic governance panels"],
+      "must_change": ["VisualAssetPointer/Version authority summary", "reference lineage", "authoring pending vs production ready"]
+    },
+    {
+      "surface": "Task Center",
+      "files": ["ProductWorkspaceTasksSection.tsx", "productWorkspaceTaskCenterData.ts", "productWorkspaceTasks.ts"],
+      "data_source": "creative task endpoints, pending recovery tasks, QA workbench and derived local entries",
+      "raw_count_inference": ["missing frames", "missing videos", "open QA"],
+      "legacy_status_inference": ["queued/running/done/error", "recovery kind"],
+      "direct_legacy_actions": ["batch generation and recovery endpoints"],
+      "reusable": ["workflow/runtime split scaffolding", "task detail navigation", "recovery UX"],
+      "must_change": ["production workflow tasks must originate from projection blockers", "keep runtime tasks separate"]
+    },
+    {
+      "surface": "QA",
+      "file": "ProductWorkspaceQaSection.tsx",
+      "data_source": "QA workbench and production-readiness endpoint",
+      "raw_count_inference": ["open issue count"],
+      "legacy_status_inference": ["issue status/fix status"],
+      "reusable": ["validator and repair panels"],
+      "must_change": ["display authority/stale blockers as a QA category without becoming truth owner"]
+    },
+    {
+      "surface": "Canvas/Delivery/Models",
+      "files": ["ProductWorkspaceCanvasBetaSection.tsx", "ProductWorkspaceDeliverySection.tsx", "ProductWorkspaceModelsSection.tsx"],
+      "data_source": "legacy aggregate, canvas graph, export records and model registry",
+      "raw_count_inference": ["canvas node counts", "delivery readiness"],
+      "legacy_status_inference": ["export/model statuses"],
+      "reusable": ["canvas relationship view", "delivery and model management"],
+      "must_change": ["show production vs creative profile and projection links where relevant"]
+    }
+  ],
+  "backend_findings": {
+    "existing_readonly_readiness": "/api/books/{book_id}/production-readiness",
+    "existing_authority_routes": [
+      "/api/books/{book_id}/visual-assets/authority/...",
+      "/api/books/{book_id}/episodes/{episode}/storyboard/readiness",
+      "/api/books/{book_id}/episodes/{episode}/shot-plan/readiness"
+    ],
+    "missing": "A book-level UI projection that aggregates only current authority pointers into project, episode, stage, blocker and next-action summaries.",
+    "required_invariant": "Projection must be read-only, provider-free, pointer-only and must not fall back to latest approved rows."
+  },
+  "priority": {
+    "p0": ["typed projection contract", "book-level projection endpoint", "Dashboard/Shot/Asset/Task Center consumption"],
+    "p1": ["creative_draft compatibility labels", "responsive visual regression", "legacy interface reduction"],
+    "p2": ["advanced authority detail disclosures", "additional deep links and QA category polish"]
+  }
+}

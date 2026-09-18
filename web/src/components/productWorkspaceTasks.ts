@@ -2,6 +2,7 @@ import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildScriptReleaseSummary } from './productWorkspaceScriptRelease'
 import type { ContentTaskState, WorkspaceTaskRouteSection } from './productWorkspaceSectionContracts'
+import type { ProductionBlocker } from '../domain/productionWorkspace'
 
 export type TaskCenterStatus = 'queued' | 'running' | 'done' | 'error' | 'blocked' | 'skipped'
 export type TaskCenterSection = Exclude<WorkspaceTaskRouteSection, 'tasks'>
@@ -93,6 +94,26 @@ export interface TaskCenterQaWorkbenchEpisodeSummary {
   highOpenIssueCount: number
   inProgressCount: number
   resolvedCount: number
+}
+
+/** Convert backend authority blockers into workflow actions without re-deriving truth in the UI. */
+export function buildAuthorityBlockerTaskEntries(blockers: ProductionBlocker[]): TaskCenterEntry[] {
+  return blockers.map((blocker, index) => ({
+    id: `authority-blocker-${blocker.code}-${blocker.episode ?? 'project'}-${blocker.shot_id ?? blocker.asset_key ?? index}`,
+    type: 'workflow_action',
+    target: blocker.title,
+    status: blocker.severity === 'warning' ? 'queued' : 'blocked',
+    progress: '等待处理',
+    detail: blocker.description,
+    statusReason: blocker.code,
+    retryable: false,
+    actionLabel: blocker.recommended_action,
+    actionTarget: (['content', 'adaptation', 'scripts', 'storyboard', 'canvas', 'assets', 'qa', 'delivery'].includes(blocker.target_section) ? blocker.target_section : 'qa') as TaskCenterSection,
+    episode: blocker.episode ?? null,
+    scope: blocker.episode ? 'episode' : 'global',
+    shotId: blocker.shot_id ?? undefined,
+    assetId: blocker.asset_key ?? undefined,
+  }))
 }
 
 interface Params {

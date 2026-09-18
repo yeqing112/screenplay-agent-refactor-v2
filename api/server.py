@@ -52,6 +52,7 @@ from core.transition_frame_extraction import TransitionFrameExtractionError, ext
 from core.decision_packet import decision_packet_fingerprint, normalize_decision_packet
 from core.decision_draft import build_decision_draft_prompt, validate_decision_draft
 from core.production_policy import evaluate_production_boundary, resolve_workflow_profile
+from core.production_workspace_projection import build_production_workspace_projection
 from core.script_beat import build_script_beats, find_issue_beats, is_structural_beat
 from core.qa_resolution import build_resolution_criteria, evaluate_resolution_criteria, route_issue
 from core.script_edit import apply_edits, validate_edits
@@ -16470,6 +16471,19 @@ def get_book_production_readiness(book_id: int):
         if authority_items and readiness["storyboard_materialization_authority"]["status"] == "blocked":
             readiness["status"] = "blocked"
         return {"book_id": book_id, **readiness}
+
+
+@app.get("/api/books/{book_id}/production-workspace")
+def get_book_production_workspace(book_id: int):
+    """Return the read-only UI projection of the current production spine.
+
+    This endpoint intentionally does not reuse the legacy aggregate output or
+    infer readiness from row counts.  It reads current authority pointers,
+    returns deterministic blockers/next actions, and never mutates state or
+    calls a provider.
+    """
+    with Session() as session:
+        return build_production_workspace_projection(session, book_id=book_id)
 
 
 @app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/media-preflight")
