@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "w6f7g8h9i0j1"
+HEAD = "x7g8h9i0j1k2"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -53,6 +53,7 @@ AUTHORITY_TABLES = {
     "visual_asset_pointers",
     "visual_authoring_decision_requests",
     "visual_authoring_decisions",
+    "visual_authoring_proposals",
     "visual_reference_authorities",
     "visual_reference_sets",
     "visual_reference_generation_requests",

@@ -12,7 +12,7 @@ from scripts.verify_migration_chain import audit_graph, fresh_replay, legacy_rep
 def test_revision_graph_is_single_head_and_has_no_forbidden_runtime_shortcuts():
     report = audit_graph()
     assert report["root"] == ["bf85be21e043"]
-    assert report["heads"] == ["w6f7g8h9i0j1"]
+    assert report["heads"] == ["x7g8h9i0j1k2"]
     assert not report["missing_predecessors"]
     assert report["status"] == "PASS"
     assert not report["forbidden_migration_patterns"]
@@ -22,7 +22,7 @@ def test_fresh_upgrade_and_repeat_are_idempotent_with_authority_schema():
     replay, schema = fresh_replay()
     assert replay["first_upgrade"] == "PASS"
     assert replay["second_upgrade"] == "PASS"
-    assert replay["alembic_version"] == "w6f7g8h9i0j1"
+    assert replay["alembic_version"] == "x7g8h9i0j1k2"
     assert schema["status"] == "PASS"
     assert not schema["missing_authority_tables"]
     assert not schema["missing_authority_columns"]

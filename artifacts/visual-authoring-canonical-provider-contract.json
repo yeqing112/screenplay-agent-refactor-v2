@@ -1,0 +1,23 @@
+{
+  "schema_version": "visual_authoring_canonical_provider_contract_v1",
+  "authority_branch": "codex/visual-authoring-provider-canary-reconcile",
+  "proposal_schema": "visual_authoring_proposal_v2",
+  "request_identity": ["request_id", "book_id", "asset_key", "asset_type", "scope"],
+  "asset_key": "book:{book_id}:{asset_type}:{stable_canonical_id}",
+  "allowed_asset_types": ["character", "scene", "prop"],
+  "proposal_top_level": ["schema_version", "request_id", "asset_key", "proposals", "unknowns", "review_notes"],
+  "proposal_field_shape": ["field", "value", "scope", "design_intent", "constraint_refs"],
+  "provider_boundary": {
+    "confirmation": "confirmed_provider_call=true",
+    "temperature": 0,
+    "max_tokens": 1800,
+    "json_parse_retries": 0,
+    "provider_calls_per_fingerprint": 1,
+    "creates_version": false,
+    "moves_pointer": false,
+    "mutates_reference_authority": false,
+    "mutates_prompt_ir": false
+  },
+  "approval_mapping": "one VisualAuthoringDecision per reviewed proposal field",
+  "forbidden_provider_fields": ["authority_status", "version_id", "pointer", "reference_authority", "prompt_ir", "geometry", "continuity", "asset_id", "canonical_id"]
+}

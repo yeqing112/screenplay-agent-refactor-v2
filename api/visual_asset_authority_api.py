@@ -43,7 +43,9 @@ router = APIRouter(prefix="/api/books", tags=["visual-asset-authority"])
 class AuthoringRequestBody(BaseModel):
     missing_field: str
     source_constraints: list[dict] = Field(default_factory=list)
-    free_authoring_space: dict = Field(default_factory=dict)
+    # Provider proposals use a field allow-list; keep accepting the historical
+    # object form for clients that send field metadata.
+    free_authoring_space: list[str] | dict = Field(default_factory=list)
     forbidden_contradictions: list[dict] = Field(default_factory=list)
     scope: dict = Field(default_factory=dict)
     required_by_stage: str = "PromptIR"

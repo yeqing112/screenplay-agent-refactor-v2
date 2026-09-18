@@ -1,7 +1,7 @@
 """Versioned visual asset authority persistence models."""
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy import Column, DateTime, Integer, String, Text, UniqueConstraint
 
 from .base import Base
 
@@ -89,6 +89,48 @@ class VisualAuthoringDecision(Base):
     status = Column(String, nullable=False, default="PROPOSED")
     provenance_json = Column(Text, nullable=False, default="{}")
     revision = Column(Integer, nullable=False, default=1)
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now)
+
+
+class VisualAuthoringProposal(Base):
+    """Provider output kept strictly below the canonical authority spine.
+
+    A proposal is review material.  It is intentionally not a version,
+    pointer, reference authority, or PromptIR mutation.  The request
+    fingerprint is unique per request so an unchanged evidence packet cannot
+    be billed twice.
+    """
+
+    __tablename__ = "visual_authoring_proposals"
+    __table_args__ = (
+        UniqueConstraint(
+            "request_id",
+            "provider_request_fingerprint",
+            name="uq_visual_authoring_proposal_request_fingerprint",
+        ),
+    )
+
+    id = Column(Integer, primary_key=True)
+    proposal_id = Column(String, nullable=False, unique=True, index=True)
+    request_id = Column(String, nullable=False, index=True)
+    book_id = Column(Integer, nullable=False, index=True)
+    asset_key = Column(String, nullable=False, index=True)
+    asset_type = Column(String, nullable=False)
+    scope_json = Column(Text, nullable=False, default="{}")
+    proposed_fields_json = Column(Text, nullable=False, default="{}")
+    explanation_summary = Column(Text, nullable=False, default="")
+    source_constraint_refs_json = Column(Text, nullable=False, default="[]")
+    provider_profile_id = Column(String, nullable=False)
+    provider_model = Column(String, nullable=False, default="")
+    provider_vendor_host = Column(String, nullable=False, default="")
+    provider_request_fingerprint = Column(String, nullable=False, index=True)
+    provider_response_hash = Column(String, nullable=False, default="")
+    proposal_payload_hash = Column(String, nullable=False, default="")
+    validator_status = Column(String, nullable=False, default="PENDING")
+    validator_diagnostics_json = Column(Text, nullable=False, default="{}")
+    audit_json = Column(Text, nullable=False, default="{}")
+    status = Column(String, nullable=False, default="CANDIDATE")
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
 

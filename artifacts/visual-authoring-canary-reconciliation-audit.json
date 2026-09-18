@@ -1,0 +1,38 @@
+{
+  "schema_version": "visual_authoring_canary_reconciliation_audit_v1",
+  "baseline": {
+    "canonical_commit": "5b2a5ae",
+    "legacy_canary_commit": "10962c9",
+    "legacy_branch": "codex/unify-formal-workspace",
+    "relationship": {"ahead_by": 5, "behind_by": 49},
+    "classification": "NON_CANONICAL_PROVIDER_CANARY_BRANCH"
+  },
+  "file_actions": {
+    "PORT": [
+      "core/visual_authoring_provider.py validator and provider-only prompt boundary",
+      "tests/test_visual_authoring_provider_canary.py contract intent"
+    ],
+    "ADAPT": [
+      "api/visual_authoring_provider_api.py provider proposal routes",
+      "VisualAuthoringProposal persistence",
+      "proposal approval to field-level VisualAuthoringDecision rows",
+      "stable asset key construction through core.visual_asset_authority.build_asset_key"
+    ],
+    "DISCARD": [
+      "legacy visual_authority_models.py replacement models",
+      "legacy visual_authority.py compatibility replacement",
+      "legacy p0q1r2s3t4u5 migration that recreates canonical Authority tables",
+      "legacy mutable-row-id asset identity (character:<row_id>)",
+      "legacy visual_asset_authority_api.py and core/visual_asset_authority.py replacements"
+    ]
+  },
+  "canonical_invariants": [
+    "VisualAssetVersion, VisualAssetPointer, VisualReferenceAuthority and PromptIR authority schemas remain canonical",
+    "provider output is review material only",
+    "source constraints are immutable and lock facts are not provider-writable",
+    "one request evidence fingerprint and provider request fingerprint deduplicate unchanged calls",
+    "approval creates one canonical decision row per proposed field without version or pointer mutation"
+  ],
+  "user_artifacts_preserved": true,
+  "real_provider_called": false
+}

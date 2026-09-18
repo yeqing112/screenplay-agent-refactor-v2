@@ -1,0 +1,20 @@
+{
+  "schema_version": "visual_authoring_canonical_real_canary_v1",
+  "status": "NOT_EXECUTED",
+  "reason": "Deterministic reconciliation and local gates are complete; no real provider call was authorized in this turn.",
+  "provider_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "required_next_authorization": "Explicit confirmation for one MiMo provider-only canary using a stable canonical asset key.",
+  "success_contract": [
+    "HTTP 200",
+    "JSON parse PASS",
+    "exact request_id and exact canonical asset_key",
+    "source validation PASS",
+    "status REVIEW_REQUIRED",
+    "VisualAssetVersion delta 0",
+    "VisualAssetPointer delta 0",
+    "VisualReferenceAuthority delta 0",
+    "PromptIR stale delta 0"
+  ]
+}
