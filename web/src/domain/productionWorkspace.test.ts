@@ -6,7 +6,10 @@ import {
 
 describe('production workspace domain contract', () => {
   it('maps engineering states to creator-facing labels', () => {
-    expect(humanizeProductionState('PRODUCTION_QUALIFIED')).toBe('待确认')
+    expect(humanizeProductionState('PRODUCTION_QUALIFIED')).toBe('已确认')
+    expect(humanizeProductionState('FRESH')).toBe('当前有效')
+    expect(humanizeProductionState('AUTHORING_PENDING')).toBe('待完成视觉设计')
+    expect(humanizeProductionState('ASSET_REFERENCE_PENDING')).toBe('待补参考图')
     expect(humanizeProductionState('stale')).toBe('需要更新')
     expect(humanizeProductionState('blocked')).toBe('暂不能继续')
   })

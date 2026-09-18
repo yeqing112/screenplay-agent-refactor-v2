@@ -117,8 +117,20 @@ export function humanizeProductionState(state: string): string {
     stale: '需要更新',
     complete: '已确认',
     warning: '需要注意',
+    PRODUCTION_QUALIFIED: '已确认',
+    FRESH: '当前有效',
+    STALE: '需要更新',
+    AUTHORING_PENDING: '待完成视觉设计',
+    ASSET_AUTHORING_PENDING: '待完成视觉设计',
+    ASSET_REFERENCE_PENDING: '待补参考图',
+    REFERENCE_PENDING: '待补参考图',
+    REFERENCE_LOCKED: '参考图已锁定',
+    BLOCKED: '暂不能继续',
+    READY: '可以继续',
+    COMPLETE: '已确认',
   }
-  return labels[state] ?? '待确认'
+  const normalized = String(state ?? '').trim()
+  return labels[normalized] ?? labels[normalized.toLowerCase()] ?? '待确认'
 }
 
 export function normalizeProductionWorkspaceSnapshot(value: unknown, bookId: number): ProductionWorkspaceSnapshot {

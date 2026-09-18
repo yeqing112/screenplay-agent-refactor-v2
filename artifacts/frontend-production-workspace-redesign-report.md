@@ -51,6 +51,8 @@ upgrade, not a parallel application.
     runtime task separation, upstream blocking, and the next-action CTA.
   - `11-dashboard-final-1024x800.png`: tablet/compact desktop width; the
     sidebar remains usable and the production spine stays within the viewport.
+  - `12-dashboard-final-1920x1080.png`: wide desktop; the content column remains
+    readable without layout overflow while preserving the existing dark shell.
   - Pre-fix captures from the same run are retained as rejected diagnostic
     evidence and are not used for acceptance.
 - Browser interaction check: the Task Center `立即继续` action navigated to
