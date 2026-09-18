@@ -1,0 +1,42 @@
+{
+  "artifact": "storyboard-materializer-consumer-audit",
+  "stage": "STORYBOARD_MATERIALIZER_AUTHORITY_CONTRACT",
+  "provider_calls": 0,
+  "baseline_audit": {
+    "storyboard_shot_schema": "models/storyboard.py: relational display/execution fields plus legacy prompt/media fields and meta_info",
+    "downstream_consumers": [
+      "api/shot_plan_api.py (legacy storyboard read/repair/export views)",
+      "api/server.py (Prompt Compiler, media submission, QA, export, continuity and readiness consumers)",
+      "web/src/domain/bookOutputs.ts (storyboard output normalization)",
+      "tests/* (materializer, prompt compiler, media and QA contracts)"
+    ],
+    "shot_plan_direct_projection": ["scene_id", "scene_name", "plan_shot_id", "dialogue", "duration", "camera", "shot_purpose", "transition", "lighting", "entry_state", "action_process", "action_beats", "exit_state", "asset_bindings", "continuity_contract"],
+    "structural_metadata": ["storyboard database id", "deterministic ordinal shot_id", "materialization_set_id", "projection_fingerprint", "materializer version/policy"],
+    "compiler_output": ["PromptIR Phase A", "static prompt", "motion prompt", "negative prompt", "compiler diagnostics"],
+    "media_output": ["reference image", "generated image", "video", "object-storage URI", "rendering state"],
+    "materializer_must_not_create": ["camera defaults", "duration defaults", "purpose defaults", "new shots", "prompt text", "visual identity", "media state"],
+    "legacy_fallbacks_found": ["duration=3", "camera angle=eye_level", "movement=static", "speed=slow", "purpose=coverage", "generated plan shot id"],
+    "revision_identity": "Before this stage, production relied on meta_info shot_plan_ref and scene-name queries; no set-level current pointer existed.",
+    "old_storyboard_invalidation": "Old rows had no explicit set or pointer state; revision changes could only be detected indirectly.",
+    "production_readiness_baseline": "mixed storyboard/Prompt Compiler/asset/media gates and production_status; materialization was not a first-class authority artifact."
+  },
+  "final_as_built_verification": {
+    "storyboard_shot_projection_fields": ["scene_id", "plan_shot_id", "shot_plan_ref", "camera", "duration", "action_beats", "entry_state", "exit_state", "asset_bindings", "continuity_contract", "shot_purpose"],
+    "explicit_storyboard_shot_identity": ["materialization_set_id", "scene_id", "plan_shot_id", "source_shot_plan_id", "source_shot_plan_revision", "source_shot_plan_authority_fingerprint", "projection_fingerprint"],
+    "authority_classes": ["SHOT_PLAN_PROJECTION", "STRUCTURAL_MATERIALIZATION_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID"],
+    "materialization_set": "StoryboardMaterializationSet with ShotPlan id/revision/hash/authority fingerprint, cardinality, ordered ids, set fingerprint, versions, envelope, status and stale state.",
+    "current_pointer": "StoryboardMaterializationPointer keyed by book_id + episode + scene_id; production never infers current rows from scene_name/latest shot.",
+    "shot_plan_lineage": "Current ShotPlanAuthority envelope is the authority source; ScriptIR, Treatment, SceneBlocking are exact lineage defense-in-depth checks.",
+    "projection_policy": "Pure deterministic N-to-N projection; no Prompt Compiler invocation and no creative rewriting.",
+    "fallback_policy": "Production strict mode rejects missing scene_id, plan_shot_id, camera, duration, action_beats, entry/exit state, asset bindings, continuity contract and purpose. Legacy permissive mode is isolated to non-production callers.",
+    "idempotency": "Same authority envelope + materializer/policy versions + ordered projection fingerprint reuses a complete fresh set and never creates duplicate StoryboardShot rows.",
+    "stale_policy": ["ShotPlan pointer change", "set pointer change", "authority or payload mismatch", "incomplete/cardinality mismatch", "materializer contract/version change"],
+    "legacy_migration": "Rows without scene_id/materialization_set_id/plan_shot_id/authority lineage fail closed with LEGACY_STORYBOARD_MIGRATION_REQUIRED.",
+    "prompt_compiler_handoff": "Each authoritative StoryboardShot stores a downstream-only prompt_compiler_handoff containing set id, shot id, plan identity, authority/projection fingerprints, asset bindings, continuity, camera, duration, action beats and entry/exit state. Prompt fields remain empty during materialization.",
+    "production_status": "MATERIALIZED/quality materialized but production_status remains blocked until downstream PromptIR, assets and media gates pass.",
+    "visual_asset_backlog": "Stable asset identity and pending bindings are preserved; visual authoring/reference generation remains out of scope.",
+    "storyboard_agent_calls": 0,
+    "provider_calls": 0,
+    "production_writes": "Only local authoritative materialization rows/set/pointer are written after confirmed=true; no external provider or media writes."
+  }
+}

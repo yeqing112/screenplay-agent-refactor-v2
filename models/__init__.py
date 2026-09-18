@@ -7,7 +7,7 @@ from .fact_snapshot import FactSnapshot, FactRecord
 from .kv import KV
 from .visual import VisualEraSpec, VisualProp, VisualLocation, VisualMakeup, VisualReferenceAsset, AssetSemanticGovernanceRecord, StoryboardTransitionContract, StoryboardTransitionFrame, StoryboardTransitionContinuityReview, StoryboardVideoRetryAttempt, PublicAssetStorageMigrationRecord, DecisionPacketRecord
 from .bridge import SceneCharacter, SceneProp
-from .storyboard import StoryboardShot
+from .storyboard import StoryboardShot, StoryboardMaterializationSet, StoryboardMaterializationPointer
 from .prompt import StoryboardPromptVersion
 from .acceptance import StoryboardAcceptanceRecord
 from .export_record import ProductionExportRecord
@@ -30,7 +30,7 @@ __all__ = [
     "KV",
     "VisualEraSpec", "VisualProp", "VisualLocation", "VisualMakeup", "VisualReferenceAsset", "AssetSemanticGovernanceRecord", "StoryboardTransitionContract", "StoryboardTransitionFrame", "StoryboardTransitionContinuityReview", "StoryboardVideoRetryAttempt", "PublicAssetStorageMigrationRecord", "DecisionPacketRecord",
     "SceneCharacter", "SceneProp",
-    "StoryboardShot", "StoryboardPromptVersion", "StoryboardAcceptanceRecord", "ProductionExportRecord",
+    "StoryboardShot", "StoryboardMaterializationSet", "StoryboardMaterializationPointer", "StoryboardPromptVersion", "StoryboardAcceptanceRecord", "ProductionExportRecord",
     "QAIssue", "ScriptVersion",
     "AgentViolationLog",
     "TaskRun",

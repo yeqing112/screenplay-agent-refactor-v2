@@ -13,6 +13,16 @@ class StoryboardShot(Base):
 
     # 分镜标识
     scene_name = Column(String, nullable=False)       # 场景名 → visual_locations.name
+    # Production authority identity. Legacy rows may remain NULL and are
+    # intentionally not eligible for production without explicit migration.
+    scene_id = Column(String, nullable=True, index=True)
+    plan_shot_id = Column(String, nullable=True, index=True)
+    materialization_set_id = Column(Integer, nullable=True, index=True)
+    source_shot_plan_id = Column(Integer, nullable=True, index=True)
+    source_shot_plan_revision = Column(Integer, nullable=True)
+    source_shot_plan_authority_fingerprint = Column(String, nullable=True, index=True)
+    projection_fingerprint = Column(String, nullable=True, index=True)
+    materialization_status = Column(String, nullable=False, default="LEGACY")
     shot_id = Column(Integer, nullable=False)          # 全局顺序镜号（整集递增）
 
     # 对话/叙事
@@ -60,5 +70,51 @@ class StoryboardShot(Base):
     meta_info = Column(Text, default="{}")              # JSON 扩展
     notes = Column(Text, default="")
 
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now)
+
+
+class StoryboardMaterializationSet(Base):
+    """Versioned deterministic projection of one authoritative ShotPlan."""
+
+    __tablename__ = "storyboard_materialization_sets"
+
+    id = Column(Integer, primary_key=True)
+    book_id = Column(Integer, nullable=False, index=True)
+    episode = Column(Integer, nullable=False, index=True)
+    scene_id = Column(String, nullable=False, index=True)
+    shot_plan_id = Column(Integer, nullable=False, index=True)
+    shot_plan_revision = Column(Integer, nullable=False)
+    shot_plan_payload_hash = Column(String, nullable=False)
+    shot_plan_authority_fingerprint = Column(String, nullable=False, index=True)
+    expected_shot_count = Column(Integer, nullable=False)
+    materialized_shot_count = Column(Integer, nullable=False, default=0)
+    ordered_plan_shot_ids = Column(Text, nullable=False, default="[]")
+    set_payload_fingerprint = Column(String, nullable=False, unique=True)
+    materializer_version = Column(String, nullable=False)
+    materializer_policy_version = Column(String, nullable=False)
+    authority_envelope_json = Column(Text, nullable=False, default="{}")
+    status = Column(String, nullable=False, default="MATERIALIZED")
+    stale_status = Column(String, nullable=False, default="FRESH")
+    stale_reasons = Column(Text, nullable=False, default="[]")
+    created_at = Column(DateTime, default=datetime.now)
+    activated_at = Column(DateTime, nullable=True)
+    updated_at = Column(DateTime, default=datetime.now)
+
+
+class StoryboardMaterializationPointer(Base):
+    """Explicit scene -> current materialization set selection."""
+
+    __tablename__ = "storyboard_materialization_pointers"
+
+    id = Column(Integer, primary_key=True)
+    book_id = Column(Integer, nullable=False, index=True)
+    episode = Column(Integer, nullable=False, index=True)
+    scene_id = Column(String, nullable=False, index=True)
+    materialization_set_id = Column(Integer, nullable=False, unique=True)
+    shot_plan_id = Column(Integer, nullable=False)
+    shot_plan_revision = Column(Integer, nullable=False)
+    set_payload_fingerprint = Column(String, nullable=False)
+    qualification_state = Column(String, nullable=False, default="MATERIALIZED")
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)

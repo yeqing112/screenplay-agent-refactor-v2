@@ -16439,7 +16439,7 @@ def _build_storyboard_production_readiness(shots: list[Any], assets: dict[str, l
 @app.get("/api/books/{book_id}/production-readiness")
 def get_book_production_readiness(book_id: int):
     """Read-only production preflight; never changes prompts, assets, or media."""
-    from models import Session, StoryboardShot, VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset
+    from models import Session, StoryboardShot, StoryboardMaterializationPointer, StoryboardMaterializationSet, VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset
 
     with Session() as s:
         shots = s.query(StoryboardShot).filter(StoryboardShot.book_id == book_id).order_by(StoryboardShot.episode.asc(), StoryboardShot.shot_id.asc()).all()
@@ -16449,7 +16449,25 @@ def get_book_production_readiness(book_id: int):
             "prop": s.query(VisualProp).filter(VisualProp.book_id == book_id).order_by(VisualProp.id.asc()).all(),
         }
         references = s.query(VisualReferenceAsset).filter(VisualReferenceAsset.book_id == book_id).order_by(VisualReferenceAsset.id.asc()).all()
-        return {"book_id": book_id, **_build_storyboard_production_readiness(shots, assets, references)}
+        readiness = _build_storyboard_production_readiness(shots, assets, references)
+        # Materialization authority is reported separately from prompt/media
+        # readiness.  A legacy row may remain visible for repair, but it is not
+        # allowed to masquerade as the current production storyboard.
+        authority_items = []
+        scene_keys = sorted({(int(getattr(row, "episode", 0) or 0), str(getattr(row, "scene_id", "") or "").strip(), str(getattr(row, "scene_name", "") or "").strip()) for row in shots if str(getattr(row, "workflow_profile", "") or "").strip().lower() == "production" or getattr(row, "materialization_set_id", None)})
+        for episode, scene_id, scene_name in scene_keys:
+            pointer = s.query(StoryboardMaterializationPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).first() if scene_id else None
+            set_row = s.query(StoryboardMaterializationSet).filter_by(id=pointer.materialization_set_id).first() if pointer else None
+            issues = []
+            if not scene_id or not pointer:
+                issues.append({"code": "STORYBOARD_MATERIALIZATION_POINTER_MISSING", "severity": "blocked", "message": "生产分镜必须通过当前物化集合指针选择。"})
+            elif not set_row or set_row.status != "MATERIALIZED" or set_row.stale_status != "FRESH":
+                issues.append({"code": "STORYBOARD_MATERIALIZATION_STALE", "severity": "blocked", "message": "当前分镜物化集合不存在或已过期。"})
+            authority_items.append({"episode": episode, "scene_id": scene_id, "scene_name": scene_name, "status": "blocked" if issues else "materialized", "materialization_set_id": getattr(set_row, "id", None), "issues": issues})
+        readiness["storyboard_materialization_authority"] = {"status": "blocked" if any(item["status"] == "blocked" for item in authority_items) else "pass", "scenes": authority_items, "policy": "current_materialization_pointer_only"}
+        if authority_items and readiness["storyboard_materialization_authority"]["status"] == "blocked":
+            readiness["status"] = "blocked"
+        return {"book_id": book_id, **readiness}
 
 
 @app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/media-preflight")

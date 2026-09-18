@@ -1,0 +1,18 @@
+{
+  "schema_version": "storyboard_materialization_authority_envelope_v1",
+  "policy_version": "storyboard_materializer_policy_v1",
+  "materializer_version": "storyboard_materializer_v2",
+  "authority_classes": {
+    "SHOT_PLAN_PROJECTION": "must inherit from current production-qualified ShotPlan",
+    "STRUCTURAL_MATERIALIZATION_METADATA": "deterministically generated identity, ordinal, set and fingerprints",
+    "COMPILER_OUTPUT": "owned by Prompt Compiler and excluded from projection authority",
+    "MEDIA_STATE": "owned by visual/media pipeline and excluded from materialization",
+    "UNKNOWN_INVALID": "missing contract data; fail closed"
+  },
+  "required_projection_fields": ["scene_id", "plan_shot_id", "camera", "duration", "action_beats", "entry_state", "exit_state", "asset_bindings", "continuity_contract", "shot_purpose"],
+  "current_selection": "storyboard_materialization_pointers -> StoryboardMaterializationSet -> authoritative StoryboardShot rows",
+  "cardinality": "exact N-to-N ordered plan_shot_id projection",
+  "idempotency_key": ["ShotPlan authority fingerprint", "materializer version", "materializer policy version", "ordered projection payload"],
+  "fail_closed_codes": ["SHOT_PLAN_CAMERA_REQUIRED", "SHOT_PLAN_DURATION_REQUIRED", "PLAN_SHOT_ID_REQUIRED", "SHOT_PLAN_ACTION_CONTRACT_INVALID", "STORYBOARD_CARDINALITY_MISMATCH", "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE", "STORYBOARD_PROJECTION_TAMPERED", "LEGACY_STORYBOARD_MIGRATION_REQUIRED"],
+  "provider_calls": 0
+}

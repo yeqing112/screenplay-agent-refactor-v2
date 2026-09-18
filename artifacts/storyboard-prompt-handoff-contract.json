@@ -1,0 +1,8 @@
+{
+  "schema_version": "storyboard_prompt_handoff_v1",
+  "owner": "Prompt Compiler",
+  "materializer_authority": "Storyboard Materializer only supplies immutable structural facts; it does not write PromptIR or verbalized prompt text.",
+  "required_fields": ["materialization_set_id", "storyboard_shot_id", "plan_shot_id", "scene_id", "shot_plan_authority_fingerprint", "storyboard_projection_fingerprint", "asset_identity_bindings", "continuity_contract", "camera", "duration", "action_beats", "entry_state", "exit_state"],
+  "media_state_excluded": true,
+  "provider_calls": 0
+}
