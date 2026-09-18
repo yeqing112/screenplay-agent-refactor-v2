@@ -6,6 +6,7 @@ import type { ProductionBlocker } from '../domain/productionWorkspace'
 
 export type TaskCenterStatus = 'queued' | 'running' | 'done' | 'error' | 'blocked' | 'skipped'
 export type TaskCenterSection = Exclude<WorkspaceTaskRouteSection, 'tasks'>
+export type TaskOrigin = 'AUTHORITY_WORKFLOW' | 'RUNTIME' | 'RECOVERY' | 'AGENT_RUNTIME' | 'LEGACY_HEURISTIC'
 
 export interface TaskCenterEntry {
   id: string
@@ -80,6 +81,7 @@ export interface TaskCenterEntry {
     planFingerprint?: string
     operation?: string
   }
+  origin?: TaskOrigin
 }
 
 interface QaEntry {
@@ -113,7 +115,26 @@ export function buildAuthorityBlockerTaskEntries(blockers: ProductionBlocker[]):
     scope: blocker.episode ? 'episode' : 'global',
     shotId: blocker.shot_id ?? undefined,
     assetId: blocker.asset_key ?? undefined,
+    origin: 'AUTHORITY_WORKFLOW',
   }))
+}
+
+/** Production mode must never let legacy readiness heuristics become workflow actions. */
+export function selectProductionTaskEntries(input: {
+  authority: TaskCenterEntry[]
+  runtime: TaskCenterEntry[]
+  recovery: TaskCenterEntry[]
+  agent: TaskCenterEntry[]
+  legacy: TaskCenterEntry[]
+  production: boolean
+}): TaskCenterEntry[] {
+  if (!input.production) return [...input.authority, ...input.legacy, ...input.runtime, ...input.recovery, ...input.agent]
+  return [
+    ...input.authority.map((entry) => ({ ...entry, origin: 'AUTHORITY_WORKFLOW' as const })),
+    ...input.runtime.map((entry) => ({ ...entry, origin: 'RUNTIME' as const })),
+    ...input.recovery.map((entry) => ({ ...entry, origin: 'RECOVERY' as const })),
+    ...input.agent.map((entry) => ({ ...entry, origin: 'AGENT_RUNTIME' as const })),
+  ]
 }
 
 interface Params {
@@ -225,7 +246,7 @@ export function buildTaskCenterEntries(params: Params): TaskCenterEntry[] {
   entries.push(buildBatchAssetTaskEntry(params.shotsByEpisode))
   entries.push(buildBatchQaTaskEntry(params.qaWorkbenchEpisodes ?? [], params.qaEntries))
 
-  return entries
+  return entries.map((entry) => ({ ...entry, origin: 'LEGACY_HEURISTIC' as const }))
 }
 
 function buildContentTaskEntry(params: Params): TaskCenterEntry {

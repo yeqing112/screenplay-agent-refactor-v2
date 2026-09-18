@@ -149,6 +149,7 @@ export default function TaskCenterListPanel({
                   <div className="mt-1 text-[11px] text-slate-500">
                     {entry.agentMeta ? '智能导演台会话' : entry.scope === 'global' ? '\u6279\u91cf / \u5168\u5c40\u4efb\u52a1' : '\u5355\u96c6\u4efb\u52a1'}
                     {entry.isBatch ? ' | \u8c03\u5ea6\u5165\u53e3' : ''}
+                    {entry.origin ? ` | 来源：${taskOriginLabel(entry.origin)}` : ''}
                   </div>
                 </div>
                 <span className={`rounded-full border px-2 py-0.5 text-[11px] ${statusTone(entry.status)}`}>
@@ -221,6 +222,17 @@ export default function TaskCenterListPanel({
       </div>
     </div>
   )
+}
+
+function taskOriginLabel(origin: NonNullable<TaskCenterEntry['origin']>) {
+  switch (origin) {
+    case 'AUTHORITY_WORKFLOW': return '权威工作流'
+    case 'RUNTIME': return '运行任务'
+    case 'RECOVERY': return '恢复任务'
+    case 'AGENT_RUNTIME': return '智能导演台'
+    case 'LEGACY_HEURISTIC': return '兼容历史'
+    default: return '待确认'
+  }
 }
 
 function statusTone(status: TaskCenterStatus) {

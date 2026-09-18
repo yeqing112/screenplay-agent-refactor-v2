@@ -17,7 +17,7 @@ import type {
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
-import type { ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 
 export type ContentTaskState = {
   mode: 'upload' | 'short'
@@ -150,6 +150,8 @@ export interface DashboardBundle {
   onNavigateSection: (section: WorkspaceSection) => void
   onNavigateTarget: (target: import('../domain/productionWorkspace').ProductionNavigationTarget) => void
   productionWorkspace: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceError?: string | null
 }
 
 export interface ContentBundle {
@@ -231,6 +233,7 @@ export interface StoryboardBundle {
   initialStoryboardEpisode?: number | null
   initialStoryboardStep?: StoryboardStep
   productionWorkspace: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
 }
 
 export type StoryboardStep = 'overview' | 'assets' | 'frame' | 'video' | 'review' | 'more'
@@ -287,6 +290,7 @@ export interface AssetsBundle {
   onApplyInferredShotBindings: () => void
   onSaveShotBindings: () => void
   productionWorkspace: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
 }
 
 export interface CanvasBundle {
@@ -329,6 +333,7 @@ export interface TasksBundle {
   onRefreshAll: () => void
   onNavigateTaskSection: TaskNavigateHandler
   productionWorkspace: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
 }
 
 export interface DeliveryBundle {

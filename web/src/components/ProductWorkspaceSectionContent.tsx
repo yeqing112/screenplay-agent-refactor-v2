@@ -141,6 +141,8 @@ export default function ProductWorkspaceSectionContent({
           onNavigate={dashboard.onNavigateSection}
           onNavigateTarget={dashboard.onNavigateTarget}
           productionWorkspace={dashboard.productionWorkspace}
+          productionWorkspaceState={dashboard.productionWorkspaceState}
+          productionWorkspaceError={dashboard.productionWorkspaceError}
         />
       ) : null}
 
@@ -254,7 +256,8 @@ export default function ProductWorkspaceSectionContent({
             isGeneratingStoryboard={storyboard.isGeneratingStoryboard}
             initialStoryboardEpisode={storyboard.initialStoryboardEpisode}
           initialStoryboardStep={storyboard.initialStoryboardStep}
-          productionWorkspace={storyboard.productionWorkspace}
+            productionWorkspace={storyboard.productionWorkspace}
+            productionWorkspaceState={storyboard.productionWorkspaceState}
           />
         </>
       ) : null}
@@ -320,6 +323,7 @@ export default function ProductWorkspaceSectionContent({
             onApplyInferredShotBindings={assets.onApplyInferredShotBindings}
           onSaveShotBindings={assets.onSaveShotBindings}
           productionWorkspace={assets.productionWorkspace}
+          productionWorkspaceState={assets.productionWorkspaceState}
           />
         </>
       ) : null}
@@ -357,6 +361,7 @@ export default function ProductWorkspaceSectionContent({
           onRefresh={tasks.onRefreshAll}
           onNavigate={tasks.onNavigateTaskSection}
           productionWorkspace={tasks.productionWorkspace}
+          productionWorkspaceState={tasks.productionWorkspaceState}
         />
       ) : null}
 

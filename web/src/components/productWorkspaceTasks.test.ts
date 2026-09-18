@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { buildTaskCenterEntries } from './productWorkspaceTasks'
+import { buildTaskCenterEntries, selectProductionTaskEntries } from './productWorkspaceTasks'
 
 describe('productWorkspaceTasks', () => {
+  it('keeps legacy heuristic workflow entries out of production task center', () => {
+    const legacy = [{ id: 'legacy-storyboard', origin: 'LEGACY_HEURISTIC', status: 'queued' } as any]
+    const authority = [{ id: 'authority-shot-plan', origin: 'AUTHORITY_WORKFLOW', status: 'blocked' } as any]
+    const entries = selectProductionTaskEntries({ authority, runtime: [], recovery: [], agent: [], legacy, production: true })
+    expect(entries.map((item) => item.id)).toEqual(['authority-shot-plan'])
+    expect(entries[0].origin).toBe('AUTHORITY_WORKFLOW')
+  })
+
   it('builds episode tasks and batch tasks together', () => {
     const entries = buildTaskCenterEntries({
       contentReady: true,

@@ -1,0 +1,35 @@
+import type { ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+
+/** Disposable browser-only fixture. It is never selected unless the dev URL opts in explicitly. */
+export const populatedProductionWorkspaceFixture: ProductionWorkspaceSnapshot = {
+  schema_version: 'production_workspace_projection_v1',
+  book_id: 990401,
+  workflow_profile: 'production',
+  read_only: true,
+  authority_source: 'current_authority_pointers_only',
+  provider_calls: 0,
+  project: {
+    title: 'Disposable Production Authority Fixture',
+    overall_state: 'blocked',
+    overall_progress: 62,
+    current_blockers: [{
+      code: 'REFERENCE_NOT_LOCKED', title: '参考图待锁定', description: '镜头 A 的参考图尚未锁定。', severity: 'blocked', stage: 'REFERENCE', scope: 'shot', book_id: 990401, episode: 1, shot_id: 'A', recommended_action: '前往资产中心锁定参考图', target_section: 'assets', target_params: { section: 'assets', episode: 1, shot_id: 'A' },
+    }],
+    next_actions: [],
+  },
+  stages: {
+    CONTENT: { key: 'CONTENT', label: '内容', state: 'complete', detail: '内容已确认', completed: true, blocked: false, stale: false, warning: false, counts: { total: 1, complete: 1 }, reason_codes: [], target_route: { section: 'content' }, blockers: [] },
+    PROMPT_IR: { key: 'PROMPT_IR', label: 'PromptIR', state: 'stale', detail: '1 个镜头需要更新', completed: false, blocked: false, stale: true, warning: false, counts: { total: 2, complete: 1, stale: 1 }, reason_codes: ['PROMPT_IR_STALE'], target_route: { section: 'storyboard', episode: 1 }, blockers: [] },
+    REFERENCE: { key: 'REFERENCE', label: '参考图', state: 'needs_action', detail: '1 个资产待锁定', completed: false, blocked: false, stale: false, warning: false, counts: { total: 3, complete: 1, needs_action: 2 }, reason_codes: ['REFERENCE_NOT_LOCKED'], target_route: { section: 'assets', episode: 1 }, blockers: [] },
+  },
+  episodes: [{ episode: 1, overall_state: 'blocked', overall_progress: 62, blockers: [], next_action: null, stages: {} }],
+  shots: [
+    { episode: 1, shot_id: 'A', storyboard_shot_id: 1, scene_id: 'S1', plan_shot_id: 'PLAN-A', duration: 4, camera: { angle: '中景', movement: '固定', speed: '慢' }, action: '人物停在门口', entry_state: '门关闭', exit_state: '门关闭', prompt_ir_state: 'complete', reference_state: 'needs_action', media_state: 'not_started' },
+    { episode: 1, shot_id: 'B', storyboard_shot_id: 2, scene_id: 'S1', plan_shot_id: 'PLAN-B', duration: 6, camera: { angle: '近景', movement: '推进', speed: '慢' }, action: '人物抬头', entry_state: '门关闭', exit_state: '人物抬头', prompt_ir_state: 'stale', reference_state: 'complete', media_state: 'not_started' },
+  ],
+  assets: [
+    { asset_key: 'character:林晚', asset_type: 'character', current_version_id: 1, revision: 1, authority_status: 'SPEC_APPROVED', stale_status: 'FRESH', reference_state: 'complete', reference_count: 1, locked_reference: true },
+    { asset_key: 'scene:旧公寓门厅', asset_type: 'scene', current_version_id: 2, revision: 1, authority_status: 'AUTHORING_PENDING', stale_status: 'FRESH', reference_state: 'needs_action', reference_count: 0, locked_reference: false },
+    { asset_key: 'prop:铁门钥匙', asset_type: 'prop', current_version_id: 3, revision: 1, authority_status: 'SPEC_APPROVED', stale_status: 'STALE', reference_state: 'stale', reference_count: 1, locked_reference: false },
+  ],
+}

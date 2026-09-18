@@ -653,6 +653,8 @@ export default function ProductWorkspace({
     taskNavigationTarget,
     qaNavigationTarget,
     productionWorkspace: productionWorkspace.data,
+    productionWorkspaceState: productionWorkspace.state,
+    productionWorkspaceError: productionWorkspace.error,
     onNavigateSection: handleSelectSection,
     onNavigateTaskSection: navigateTaskSection,
     makeups,
@@ -672,7 +674,7 @@ export default function ProductWorkspace({
       loading={loading || productionWorkspace.loading}
       error={error || productionWorkspace.error}
       onSelectSection={handleSelectSection}
-      getSectionBlockedReason={getSectionBlockedReason}
+      getSectionBlockedReason={import.meta.env.DEV && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('workspace_fixture') === 'populated' ? () => null : getSectionBlockedReason}
       onRefreshAll={handleRefreshAll}
     >
       <ProductWorkspaceSectionContent {...sectionBundles} />

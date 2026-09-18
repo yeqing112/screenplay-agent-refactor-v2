@@ -64,7 +64,7 @@ import { ProductWorkspacePromptAuthorityPanel } from './ProductWorkspacePromptAu
 import { ProductWorkspaceCompileDiagnosticsPanel } from './ProductWorkspaceCompileDiagnosticsPanel'
 import { ProductWorkspaceStoryboardRepairPanel } from './ProductWorkspaceStoryboardRepairPanel'
 import { fetchModelRegistryDefaults, type ModelProfileRecord } from '../services/modelRegistry'
-import type { ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
@@ -90,6 +90,7 @@ interface Props {
   initialStoryboardEpisode?: number | null
   initialStoryboardStep?: StoryboardStep
   productionWorkspace?: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
 }
 
 export function buildStoryboardCanvasHandoffSummary(input: {
@@ -1667,6 +1668,7 @@ export default function ProductWorkspaceStoryboardSection({
   initialStoryboardEpisode = null,
   initialStoryboardStep = 'overview',
   productionWorkspace = null,
+  productionWorkspaceState,
 }: Props) {
   const [promptVersions, setPromptVersions] = useState<PromptVersionRecord[]>([])
   const [historyState, setHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
@@ -2077,6 +2079,11 @@ export default function ProductWorkspaceStoryboardSection({
       selectedShot,
     ],
   )
+  const productionMode = Boolean(productionWorkspaceState)
+  const authorityShot = useMemo(
+    () => productionWorkspace?.shots.find((shot) => String(shot.episode) === String(selectedShot?.episode ?? selectedEpisode) && String(shot.shot_id) === String(selectedShot?.shot_id ?? '')) ?? null,
+    [productionWorkspace?.shots, selectedEpisode, selectedShot?.episode, selectedShot?.shot_id],
+  )
   const selectedShotCompileContextDisplay = useMemo(
     () => sanitizeCompileContextForDisplay(selectedShot?.prompt_compile_context ?? {}),
     [selectedShot?.prompt_compile_context],
@@ -2208,7 +2215,9 @@ export default function ProductWorkspaceStoryboardSection({
   const promptRecoveryTaskId =
     selectedShotRuntime.pendingTasks.find((item) => item.kind === 'prompt')?.taskId ?? null
   const isGenerationBusy = generationState === 'frame' || generationState === 'video'
-  const canGenerateFromGate = storyboardGate.status === 'ready'
+  const canGenerateFromGate = productionMode
+    ? productionWorkspaceState === 'ready' && Boolean(authorityShot) && ['complete', 'ready', 'PRODUCTION_QUALIFIED'].includes(String(authorityShot?.prompt_ir_state || '').trim()) && !['blocked', 'stale', 'needs_action'].includes(String(authorityShot?.reference_state || '').trim())
+    : storyboardGate.status === 'ready'
   const hasCompiledPrompt = Boolean(
     selectedShot?.prompt_version ||
       String(selectedShot?.visual_prompt_static || '').trim() ||
@@ -3441,7 +3450,7 @@ export default function ProductWorkspaceStoryboardSection({
 
   return (
     <div>
-      <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} episode={selectedEpisode} title="镜头生产状态" />
+      <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} state={productionWorkspaceState} episode={selectedEpisode} title="镜头生产状态" />
       <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="flex items-center justify-between gap-3">

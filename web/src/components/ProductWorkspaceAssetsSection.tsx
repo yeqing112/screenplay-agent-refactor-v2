@@ -17,7 +17,7 @@ import {
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
 import SceneSemanticLayersEditor from './SceneSemanticLayersEditor'
 import PropSemanticLayersEditor from './PropSemanticLayersEditor'
-import type { ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
@@ -91,6 +91,7 @@ interface Props {
   onApplyInferredShotBindings: () => void
   onSaveShotBindings: () => void
   productionWorkspace?: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
 }
 
 type AssetCanvasPrimaryActionPlan =
@@ -1092,6 +1093,7 @@ export default function ProductWorkspaceAssetsSection({
   onApplyInferredShotBindings,
   onSaveShotBindings,
   productionWorkspace = null,
+  productionWorkspaceState,
 }: Props) {
   const [referenceSourcePromptDetail, setReferenceSourcePromptDetail] = useState<{
     title: string
@@ -1110,6 +1112,22 @@ export default function ProductWorkspaceAssetsSection({
   const selectedInsight = selectedAsset
     ? assetEpisodeInsights.get(selectedAsset.id) ?? { shotIds: [], blockerCount: 0, missingReference: false, impactShots: [] }
     : null
+  const productionMode = Boolean(productionWorkspaceState)
+  const findAuthorityAsset = (asset: AssetSummary | null) => {
+    if (!asset || !productionWorkspace) return null
+    return productionWorkspace.assets.find((item) => {
+      const key = String(item.asset_key || '').toLowerCase()
+      const id = String(asset.id || '').toLowerCase()
+      const title = String(asset.title || '').toLowerCase()
+      return key === id || (id && key.endsWith(id)) || (title && key.includes(title))
+    }) ?? null
+  }
+  const canGenerateProductionAssetReference = (asset: AssetSummary | null) => {
+    if (!productionMode) return true
+    const authority = findAuthorityAsset(asset)
+    const status = String(authority?.authority_status || authority?.reference_state || '').trim().toUpperCase()
+    return productionWorkspaceState === 'ready' && Boolean(authority) && !['stale', 'blocked', 'STALE'].includes(String(authority?.stale_status || '').toUpperCase()) && ['COMPLETE', 'READY', 'NEEDS_ACTION', 'NOT_STARTED', 'SPEC_APPROVED', 'APPROVED', 'PRODUCTION_QUALIFIED', 'REFERENCE_PENDING'].includes(status)
+  }
   const selectedAssetRuntimeSummary = useMemo(
     () => (selectedAsset ? buildAssetRuntimeSummary(bookId, selectedAsset, selectedInsight) : null),
     [bookId, selectedAsset, selectedInsight],
@@ -1240,6 +1258,7 @@ export default function ProductWorkspaceAssetsSection({
     }
 
     if (assetCanvasPrimaryActionPlan.action === 'generate_reference') {
+      if (!canGenerateProductionAssetReference(selectedAsset)) return
       onGenerateReference({ useExistingReferences })
       return
     }
@@ -1276,7 +1295,7 @@ export default function ProductWorkspaceAssetsSection({
 
   return (
     <div>
-      <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} episode={assetEpisodeFilter === 'all' ? null : assetEpisodeFilter} title="资产生产状态" />
+      <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} state={productionWorkspaceState} episode={assetEpisodeFilter === 'all' ? null : assetEpisodeFilter} title="资产生产状态" />
       <div className="grid gap-6 xl:grid-cols-[0.92fr_1.2fr_0.95fr]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="flex items-center justify-between gap-3">
@@ -1399,7 +1418,7 @@ export default function ProductWorkspaceAssetsSection({
                       impactShots: [],
                     }
                     const runtimeSummary = buildAssetRuntimeSummary(bookId, asset, insight)
-                    const canQuickGenerate = asset.previewCount === 0 || asset.hasStaleReferencePrompt
+                            const canQuickGenerate = (asset.previewCount === 0 || asset.hasStaleReferencePrompt) && canGenerateProductionAssetReference(asset)
 
                     return (
                       <div
@@ -1771,7 +1790,7 @@ export default function ProductWorkspaceAssetsSection({
                 bookId={bookId}
                 asset={selectedAsset}
                 onRefresh={onRefreshAll}
-                onGenerate={(options) => onGenerateReference(options)}
+                onGenerate={(options) => { if (canGenerateProductionAssetReference(selectedAsset)) onGenerateReference(options) }}
               />
             ) : null}
 
@@ -1780,7 +1799,7 @@ export default function ProductWorkspaceAssetsSection({
                 bookId={bookId}
                 asset={selectedAsset}
                 onRefresh={onRefreshAll}
-                onGenerate={(options) => onGenerateReference(options)}
+                onGenerate={(options) => { if (canGenerateProductionAssetReference(selectedAsset)) onGenerateReference(options) }}
               />
             ) : null}
 
@@ -1810,7 +1829,7 @@ export default function ProductWorkspaceAssetsSection({
                     type="button"
                     onClick={() =>
                       handoffSummary.actionMode === 'generate'
-                        ? onGenerateReference({ useExistingReferences })
+                        ? canGenerateProductionAssetReference(selectedAsset) ? onGenerateReference({ useExistingReferences }) : undefined
                         : onNavigateSection(handoffSummary.actionSection)
                     }
                     className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-100 transition hover:border-sky-500 hover:text-white"
@@ -1922,8 +1941,8 @@ export default function ProductWorkspaceAssetsSection({
                 </div>
                 <button
                   type="button"
-                  onClick={() => onGenerateReference({ useExistingReferences })}
-                  disabled={isGeneratingReference}
+                  onClick={() => { if (canGenerateProductionAssetReference(selectedAsset)) onGenerateReference({ useExistingReferences }) }}
+                  disabled={isGeneratingReference || !canGenerateProductionAssetReference(selectedAsset)}
                   className="rounded-lg border border-sky-500/50 px-3 py-1.5 text-xs font-medium text-sky-200 transition hover:border-sky-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isGeneratingReference ? '\u751f\u6210\u4e2d...' : selectedAsset.hasStaleReferencePrompt ? '\u91cd\u751f\u5e76\u66ff\u6362\u9ed8\u8ba4\u56fe' : '\u751f\u6210\u53c2\u8003\u56fe'}

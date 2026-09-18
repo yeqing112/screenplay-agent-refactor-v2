@@ -1,5 +1,5 @@
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
-import { humanizeProductionState, type ProductionNavigationTarget, type ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import { humanizeProductionState, type ProductionNavigationTarget, type ProductionWorkspaceLoadState, type ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 
 type DashboardTargetSection = 'content' | 'adaptation' | 'scripts' | 'storyboard' | 'assets' | 'qa' | 'delivery'
 
@@ -22,6 +22,23 @@ interface Props {
   onNavigate: (target: DashboardTargetSection) => void
   onNavigateTarget?: (target: ProductionNavigationTarget) => void
   productionWorkspace?: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceError?: string | null
+}
+
+export function resolveProductionDashboardAction(input: {
+  state?: ProductionWorkspaceLoadState
+  snapshot?: ProductionWorkspaceSnapshot | null
+  legacy?: DashboardAction | null
+}) {
+  const production = Boolean(input.state)
+  const ready = input.state === 'ready' && Boolean(input.snapshot)
+  const authority = input.snapshot?.project.next_actions[0] ?? null
+  if (ready) return { action: authority, title: authority?.title ?? '当前没有待处理的生产阻塞', description: authority?.description ?? '当前权威生产链路没有待处理阻塞，可以继续查看已确认结果。' }
+  if (input.state === 'loading') return { action: null, title: '正在读取生产状态', description: '正在读取当前权威指针，请稍候。' }
+  if (input.state === 'unavailable') return { action: null, title: '生产状态暂不可用', description: '无法读取当前权威生产投影，请刷新后重试。' }
+  if (!production) return { action: input.legacy ?? null, title: input.legacy?.title ?? '当前没有新的阻塞', description: input.legacy?.description ?? '可以继续检查当前生产链路。' }
+  return { action: null, title: '生产状态暂不可用', description: '无法读取当前权威生产投影，请刷新后重试。' }
 }
 
 function StatusSummaryItem({ title, value, detail }: { title: string; value: string; detail: string }) {
@@ -43,14 +60,20 @@ export default function ProductWorkspaceDashboardSection({
   onNavigate,
   onNavigateTarget,
   productionWorkspace,
+  productionWorkspaceState,
+  productionWorkspaceError,
 }: Props) {
-  const primaryAction = dashboardActions[0] ?? null
-  const secondaryActions = dashboardActions.slice(1)
+  const isProductionView = Boolean(productionWorkspaceState)
+  const authorityReady = productionWorkspaceState === 'ready' && Boolean(productionWorkspace)
+  const primaryAction = !isProductionView ? dashboardActions[0] ?? null : null
+  const secondaryActions = !isProductionView ? dashboardActions.slice(1) : []
   const authorityAction = productionWorkspace?.project.next_actions[0] ?? null
-  const actionTitle = authorityAction?.title ?? primaryAction?.title ?? '当前没有新的阻塞'
-  const actionDescription = authorityAction?.description ?? primaryAction?.description ?? '可以继续检查当前生产链路。'
+  const dashboardAction = resolveProductionDashboardAction({ state: productionWorkspaceState, snapshot: productionWorkspace, legacy: primaryAction })
+  const actionTitle = productionWorkspaceError && productionWorkspaceState === 'unavailable' ? `${dashboardAction.title}：${productionWorkspaceError}` : dashboardAction.title
+  const actionDescription = dashboardAction.description
   const actionSection = (authorityAction?.target_section ?? primaryAction?.targetSection ?? 'dashboard') as DashboardTargetSection
   const spineOrder = ['CONTENT', 'SCRIPT_IR', 'DIRECTOR_TREATMENT', 'SCENE_BLOCKING', 'SHOT_PLAN', 'STORYBOARD', 'PROMPT_IR', 'VISUAL_ASSET', 'REFERENCE', 'MEDIA', 'QA']
+  const authoritySnapshot = productionWorkspace
 
   return (
     <div className="space-y-6">
@@ -117,7 +140,27 @@ export default function ProductWorkspaceDashboardSection({
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <div className="text-sm font-medium text-white">{'\u5355\u96c6 readiness \u603b\u89c8'}</div>
           <div className="mt-4 space-y-3">
-            {episodeProgress.length > 0 ? (
+            {authorityReady ? (
+              authoritySnapshot && authoritySnapshot.episodes.length > 0 ? authoritySnapshot.episodes.map((item) => (
+                <div key={item.episode} className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-medium text-white">第 {item.episode} 集</div>
+                      <div className="mt-1 text-xs text-slate-500">权威进度 {item.overall_progress}% · {item.blockers.length} 个阻塞</div>
+                    </div>
+                    <span className="rounded-full border border-slate-700 px-2 py-0.5 text-[11px] text-slate-300">{humanizeProductionState(item.overall_state)}</span>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
+                    <span>阶段 {Object.values(item.stages).filter((stage) => stage.state === 'complete').length}/{Object.keys(item.stages).length} 已确认</span>
+                    <span>{item.next_action?.title ?? '当前没有待处理动作'}</span>
+                  </div>
+                </div>
+              )) : (
+                <div className="rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-4 text-sm text-slate-400">当前权威投影还没有可展示的分集。</div>
+              )
+            ) : isProductionView ? (
+              <div className="rounded-xl border border-dashed border-amber-500/30 bg-amber-500/5 p-4 text-sm text-amber-100">{productionWorkspaceState === 'loading' ? '正在读取权威分集状态…' : '生产状态暂不可用，不能使用旧数据代替。'}</div>
+            ) : episodeProgress.length > 0 ? (
               episodeProgress.map((item) => (
                 <div key={item.episode} className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
                   <div className="flex items-center justify-between gap-3">
@@ -157,10 +200,18 @@ export default function ProductWorkspaceDashboardSection({
                   {actionDescription}
                 </div>
               </div>
-              {authorityAction || primaryAction ? (
+              {authorityReady && authorityAction ? (
                 <button
                   type="button"
                   onClick={() => authorityAction && onNavigateTarget ? onNavigateTarget(authorityAction.target_params) : onNavigate(actionSection)}
+                  className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-500"
+                >
+                  立即前往
+                </button>
+              ) : !isProductionView && primaryAction ? (
+                <button
+                  type="button"
+                  onClick={() => onNavigate(actionSection)}
                   className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-500"
                 >
                   立即前往

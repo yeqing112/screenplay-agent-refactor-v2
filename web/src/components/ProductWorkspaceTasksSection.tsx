@@ -4,6 +4,7 @@ import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   buildTaskCenterEntries,
   buildAuthorityBlockerTaskEntries,
+  selectProductionTaskEntries,
   type TaskCenterEntry,
   type TaskCenterQaWorkbenchEpisodeSummary,
   type TaskCenterSection,
@@ -64,7 +65,7 @@ import TaskCenterOverviewPanel from './productWorkspaceTaskCenterOverviewPanel'
 import TaskCenterSelectedTaskPanel from './productWorkspaceTaskCenterSelectedTaskPanel'
 import { fetchAgentTimeline, reconcileAgentProjectUpdates } from '../services/agent'
 import { buildAgentTaskCenterEntries } from './productWorkspaceAgentTasks'
-import type { ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
@@ -84,6 +85,7 @@ interface Props {
     options?: WorkspaceTaskRouteOptions,
   ) => void
   productionWorkspace?: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
 }
 
 type TaskActionState = {
@@ -145,6 +147,7 @@ export default function ProductWorkspaceTasksSection({
   onRefresh,
   onNavigate,
   productionWorkspace = null,
+  productionWorkspaceState,
 }: Props) {
   const [workflowBucket, setWorkflowBucket] = useState<TaskCenterWorkflowBucket>('attention')
   const [statusFilter, setStatusFilter] = useState<'all' | TaskCenterStatus>('all')
@@ -307,7 +310,17 @@ export default function ProductWorkspaceTasksSection({
     () => buildAuthorityBlockerTaskEntries(productionWorkspace?.project.current_blockers ?? []),
     [productionWorkspace?.project.current_blockers],
   )
-  const allEntries = useMemo(() => [...authorityEntries, ...baseEntries, ...recoveryEntries, ...agentEntries], [agentEntries, authorityEntries, baseEntries, recoveryEntries])
+  const productionRuntimeEntries = useMemo(
+    () => baseEntries
+      .filter((entry) => entry.id === 'task-content-import' && ['running', 'error'].includes(entry.status))
+      .map((entry) => ({ ...entry, origin: 'RUNTIME' as const })),
+    [baseEntries],
+  )
+  const productionMode = Boolean(productionWorkspaceState)
+  const allEntries = useMemo(
+    () => selectProductionTaskEntries({ authority: authorityEntries, runtime: productionRuntimeEntries, recovery: recoveryEntries, agent: agentEntries, legacy: baseEntries, production: productionMode }),
+    [agentEntries, authorityEntries, baseEntries, productionMode, productionRuntimeEntries, recoveryEntries],
+  )
   const episodeOptions = useMemo(
     () =>
       Array.from(new Set(allEntries.map((item) => item.episode).filter((item): item is number => Boolean(item))))

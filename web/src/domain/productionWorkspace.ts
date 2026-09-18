@@ -8,6 +8,8 @@ export type ProductionStageState =
   | 'complete'
   | 'warning'
 
+export type ProductionWorkspaceLoadState = 'loading' | 'ready' | 'unavailable'
+
 export interface ProductionNavigationTarget {
   section: string
   episode?: number | null
@@ -105,6 +107,33 @@ export interface ProductionWorkspaceSnapshot {
   episodes: EpisodeProductionSummary[]
   shots: ShotProductionSummary[]
   assets: AssetAuthoritySummary[]
+}
+
+export function validateProductionWorkspaceSnapshot(value: unknown): string[] {
+  const errors: string[] = []
+  if (!value || typeof value !== 'object') return ['投影响应不是对象']
+  const input = value as Record<string, any>
+  if (String(input.schema_version ?? '').trim() !== 'production_workspace_projection_v1') errors.push('schema_version 不受支持')
+  if (String(input.workflow_profile ?? '').trim() !== 'production') errors.push('workflow_profile 不是 production')
+  if (input.read_only !== true) errors.push('read_only 必须为 true')
+  if (String(input.authority_source ?? '').trim() !== 'current_authority_pointers_only') errors.push('authority_source 不受支持')
+  if (Number(input.provider_calls ?? -1) !== 0) errors.push('provider_calls 必须为 0')
+  if (!input.project || typeof input.project !== 'object') errors.push('缺少 project')
+  if (!input.stages || typeof input.stages !== 'object') errors.push('缺少 stages')
+  if (!Array.isArray(input.episodes)) errors.push('episodes 必须是数组')
+  if (!Array.isArray(input.shots)) errors.push('shots 必须是数组')
+  if (!Array.isArray(input.assets)) errors.push('assets 必须是数组')
+  return errors
+}
+
+export function isKnownProductionState(value: unknown): boolean {
+  return new Set(['not_started', 'in_progress', 'ready', 'blocked', 'needs_action', 'stale', 'complete', 'warning']).has(String(value ?? '').trim())
+}
+
+export function isProductionSnapshotGenerationReady(snapshot: ProductionWorkspaceSnapshot | null | undefined): boolean {
+  if (!snapshot || validateProductionWorkspaceSnapshot(snapshot).length > 0) return false
+  if (snapshot.project.overall_state === 'blocked' || snapshot.project.overall_state === 'stale') return false
+  return true
 }
 
 export function humanizeProductionState(state: string): string {

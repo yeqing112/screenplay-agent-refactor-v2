@@ -21,7 +21,7 @@ import type { AssetCategoryFilter, AssetStatusFilter, AssetVersionFilter, Recove
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
-import type { ProductionNavigationTarget, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionNavigationTarget, ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 
 interface UseProductWorkspaceSectionBundlesParams {
   section: WorkspaceSection
@@ -134,6 +134,8 @@ interface UseProductWorkspaceSectionBundlesParams {
   taskNavigationTarget: TaskNavigationTarget | null
   qaNavigationTarget: { episode: number | null; shotId: string | null } | null
   productionWorkspace: ProductionWorkspaceSnapshot | null
+  productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceError?: string | null
   onNavigateSection: (section: WorkspaceSection) => void
   onNavigateTaskSection: TaskNavigateHandler
   makeups: VisualMakeupOutput[]
@@ -185,6 +187,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
           })
         },
         productionWorkspace: params.productionWorkspace,
+        productionWorkspaceState: params.productionWorkspaceState,
+        productionWorkspaceError: params.productionWorkspaceError,
       },
       content: {
         bookId: params.bookId,
@@ -262,6 +266,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         initialStoryboardEpisode: params.initialStoryboardEpisode,
         initialStoryboardStep: params.initialStoryboardStep,
         productionWorkspace: params.productionWorkspace,
+        productionWorkspaceState: params.productionWorkspaceState,
       },
       canvas: {
         bookId: params.bookId,
@@ -318,6 +323,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onApplyInferredShotBindings: params.onApplyInferredShotBindings,
         onSaveShotBindings: params.onSaveShotBindings,
         productionWorkspace: params.productionWorkspace,
+        productionWorkspaceState: params.productionWorkspaceState,
       },
       qa: {
         bookId: params.bookId,
@@ -345,6 +351,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onRefreshAll: params.onRefreshAll,
         onNavigateTaskSection: params.onNavigateTaskSection,
         productionWorkspace: params.productionWorkspace,
+        productionWorkspaceState: params.productionWorkspaceState,
       },
       delivery: {
         bookId: params.bookId,
