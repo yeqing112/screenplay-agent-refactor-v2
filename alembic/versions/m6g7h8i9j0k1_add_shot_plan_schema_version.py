@@ -2,6 +2,7 @@
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect
 
 
 revision = "m6g7h8i9j0k1"
@@ -11,7 +12,8 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column("shot_plans", sa.Column("schema_version", sa.String(), nullable=False, server_default="shot_plan_v1"))
+    if "schema_version" not in {item["name"] for item in inspect(op.get_bind()).get_columns("shot_plans")}:
+        op.add_column("shot_plans", sa.Column("schema_version", sa.String(), nullable=False, server_default="shot_plan_v1"))
 
 
 def downgrade() -> None:

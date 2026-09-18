@@ -2,6 +2,7 @@
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect
 
 
 revision = "k4e5f6g7h8i9"
@@ -32,8 +33,10 @@ def upgrade() -> None:
     )
     op.create_index("ix_script_ir_versions_book_id", "script_ir_versions", ["book_id"])
     op.create_index("ix_script_ir_versions_episode", "script_ir_versions", ["episode"])
-    op.add_column("scripts", sa.Column("current_script_ir_version_id", sa.Integer(), nullable=True))
-    op.create_index("ix_scripts_current_script_ir_version_id", "scripts", ["current_script_ir_version_id"])
+    if "current_script_ir_version_id" not in {item["name"] for item in inspect(op.get_bind()).get_columns("scripts")}:
+        op.add_column("scripts", sa.Column("current_script_ir_version_id", sa.Integer(), nullable=True))
+    if "ix_scripts_current_script_ir_version_id" not in {item["name"] for item in inspect(op.get_bind()).get_indexes("scripts")}:
+        op.create_index("ix_scripts_current_script_ir_version_id", "scripts", ["current_script_ir_version_id"])
 
 
 def downgrade() -> None:

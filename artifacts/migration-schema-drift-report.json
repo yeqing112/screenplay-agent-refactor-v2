@@ -1,0 +1,1584 @@
+{
+  "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
+  "classification_summary": {
+    "CONSTRAINT_DRIFT": 0,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 91,
+    "EXTRA_LEGACY_COLUMN": 1,
+    "INDEX_DRIFT": 61,
+    "MISSING_MIGRATION": 0,
+    "NULLABILITY_DRIFT": 0,
+    "TYPE_DRIFT": 0
+  },
+  "counts": {
+    "blocking": 0,
+    "total": 153
+  },
+  "database": "disposable temporary SQLite database",
+  "entries": [
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_agent_attachments_book_id",
+      "kind": "index",
+      "table": "agent_attachments"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "session_id"
+      ],
+      "index": "ix_agent_attachments_session_id",
+      "kind": "index",
+      "table": "agent_attachments"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "sha256"
+      ],
+      "index": "ix_agent_attachments_sha256",
+      "kind": "index",
+      "table": "agent_attachments"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_agent_attachments_book",
+      "kind": "index",
+      "table": "agent_attachments"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "session_id"
+      ],
+      "index": "ix_agent_attachments_session",
+      "kind": "index",
+      "table": "agent_attachments"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "sha256"
+      ],
+      "index": "ix_agent_attachments_sha",
+      "kind": "index",
+      "table": "agent_attachments"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "evidence_fingerprint"
+      ],
+      "index": "ix_agent_audit_logs_evidence_fingerprint",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "plan_fingerprint"
+      ],
+      "index": "ix_agent_audit_logs_plan_fingerprint",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "plan_id"
+      ],
+      "index": "ix_agent_audit_logs_plan_id",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "request_fingerprint"
+      ],
+      "index": "ix_agent_audit_logs_request_fingerprint",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "session_id"
+      ],
+      "index": "ix_agent_audit_logs_session_id",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "evidence_fingerprint"
+      ],
+      "index": "ix_agent_audit_evidence",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "plan_id"
+      ],
+      "index": "ix_agent_audit_plan",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "plan_fingerprint"
+      ],
+      "index": "ix_agent_audit_plan_fingerprint",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "request_fingerprint"
+      ],
+      "index": "ix_agent_audit_request_fingerprint",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "session_id"
+      ],
+      "index": "ix_agent_audit_session",
+      "kind": "index",
+      "table": "agent_audit_logs"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "session_id"
+      ],
+      "index": "ix_agent_messages_session_id",
+      "kind": "index",
+      "table": "agent_messages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "session_id"
+      ],
+      "index": "ix_agent_messages_session",
+      "kind": "index",
+      "table": "agent_messages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "plan_fingerprint"
+      ],
+      "index": "ix_agent_plans_plan_fingerprint",
+      "kind": "index",
+      "table": "agent_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "session_id"
+      ],
+      "index": "ix_agent_plans_session_id",
+      "kind": "index",
+      "table": "agent_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "plan_fingerprint"
+      ],
+      "index": "ix_agent_plans_fingerprint",
+      "kind": "index",
+      "table": "agent_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "session_id"
+      ],
+      "index": "ix_agent_plans_session",
+      "kind": "index",
+      "table": "agent_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_agent_project_updates_book_id",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_agent_project_updates_created_at",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "dedupe_key"
+      ],
+      "index": "ix_agent_project_updates_dedupe_key",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "evidence_fingerprint"
+      ],
+      "index": "ix_agent_project_updates_evidence_fingerprint",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "updated_at"
+      ],
+      "index": "ix_agent_project_updates_updated_at",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_agent_project_updates_book",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_agent_project_updates_created",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "dedupe_key"
+      ],
+      "index": "ix_agent_project_updates_dedupe",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "evidence_fingerprint"
+      ],
+      "index": "ix_agent_project_updates_evidence",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "updated_at"
+      ],
+      "index": "ix_agent_project_updates_updated",
+      "kind": "index",
+      "table": "agent_project_updates"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_agent_sessions_book_id",
+      "kind": "index",
+      "table": "agent_sessions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "evidence_fingerprint"
+      ],
+      "index": "ix_agent_sessions_evidence_fingerprint",
+      "kind": "index",
+      "table": "agent_sessions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_agent_sessions_book",
+      "kind": "index",
+      "table": "agent_sessions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "evidence_fingerprint"
+      ],
+      "index": "ix_agent_sessions_evidence",
+      "kind": "index",
+      "table": "agent_sessions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "asset_type",
+        "asset_id"
+      ],
+      "index": "ix_asset_semantic_governance_book_asset",
+      "kind": "index",
+      "table": "asset_semantic_governance_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "domain"
+      ],
+      "index": "ix_decision_packet_book_domain",
+      "kind": "index",
+      "table": "decision_packet_records"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_director_treatment_authorities_book_id",
+      "kind": "index",
+      "table": "director_treatment_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_director_treatment_authorities_episode",
+      "kind": "index",
+      "table": "director_treatment_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_director_treatment_authorities_book_episode",
+      "kind": "index",
+      "table": "director_treatment_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_director_treatment_pointers_book_id",
+      "kind": "index",
+      "table": "director_treatment_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_director_treatment_pointers_episode",
+      "kind": "index",
+      "table": "director_treatment_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_director_treatment_pointers_book_episode",
+      "kind": "index",
+      "table": "director_treatment_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "scene_id"
+      ],
+      "index": "uq_director_treatment_pointer_scene",
+      "kind": "index",
+      "table": "director_treatment_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "authority_envelope_id"
+      ],
+      "index": "ix_director_treatments_authority_envelope_id",
+      "kind": "index",
+      "table": "director_treatments"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "source_script_ir_version_id"
+      ],
+      "index": "ix_director_treatments_source_script_ir_version_id",
+      "kind": "index",
+      "table": "director_treatments"
+    },
+    {
+      "blocking": false,
+      "category": "EXTRA_LEGACY_COLUMN",
+      "column": "content",
+      "kind": "column",
+      "table": "episode_outlines"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_prompt_ir_authorities_book_id",
+      "kind": "index",
+      "table": "prompt_ir_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_prompt_ir_authorities_episode",
+      "kind": "index",
+      "table": "prompt_ir_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "prompt_ir_version_id"
+      ],
+      "index": "ix_prompt_ir_authorities_prompt_ir_version_id",
+      "kind": "index",
+      "table": "prompt_ir_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_prompt_ir_authorities_storyboard_shot_id",
+      "kind": "index",
+      "table": "prompt_ir_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_prompt_ir_authorities_book_episode",
+      "kind": "index",
+      "table": "prompt_ir_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_prompt_ir_authorities_shot",
+      "kind": "index",
+      "table": "prompt_ir_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_prompt_ir_pointers_book_id",
+      "kind": "index",
+      "table": "prompt_ir_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_prompt_ir_pointers_episode",
+      "kind": "index",
+      "table": "prompt_ir_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_prompt_ir_pointers_storyboard_shot_id",
+      "kind": "index",
+      "table": "prompt_ir_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_prompt_ir_pointers_book_episode",
+      "kind": "index",
+      "table": "prompt_ir_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_prompt_ir_pointers_shot",
+      "kind": "index",
+      "table": "prompt_ir_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_prompt_ir_versions_book_id",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_prompt_ir_versions_episode",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "materialization_set_id"
+      ],
+      "index": "ix_prompt_ir_versions_materialization_set_id",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "payload_hash"
+      ],
+      "index": "ix_prompt_ir_versions_payload_hash",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "plan_shot_id"
+      ],
+      "index": "ix_prompt_ir_versions_plan_shot_id",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_prompt_ir_versions_scene_id",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_prompt_ir_versions_storyboard_shot_id",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_prompt_ir_versions_book_episode",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "materialization_set_id"
+      ],
+      "index": "ix_prompt_ir_versions_materialization",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "payload_hash"
+      ],
+      "index": "ix_prompt_ir_versions_payload",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_prompt_ir_versions_scene",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_prompt_ir_versions_shot",
+      "kind": "index",
+      "table": "prompt_ir_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "plan_fingerprint"
+      ],
+      "index": "ix_public_asset_storage_migration_records_plan_fingerprint",
+      "kind": "index",
+      "table": "public_asset_storage_migration_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "task_id"
+      ],
+      "index": "ix_public_asset_storage_migration_records_task_id",
+      "kind": "index",
+      "table": "public_asset_storage_migration_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "plan_fingerprint"
+      ],
+      "index": "ix_public_asset_migration_plan",
+      "kind": "index",
+      "table": "public_asset_storage_migration_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "task_id"
+      ],
+      "index": "ix_public_asset_migration_task",
+      "kind": "index",
+      "table": "public_asset_storage_migration_records"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_scene_blocking_authorities_book_id",
+      "kind": "index",
+      "table": "scene_blocking_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_scene_blocking_authorities_episode",
+      "kind": "index",
+      "table": "scene_blocking_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_scene_blocking_authorities_book_episode",
+      "kind": "index",
+      "table": "scene_blocking_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_scene_blocking_pointers_book_id",
+      "kind": "index",
+      "table": "scene_blocking_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_scene_blocking_pointers_episode",
+      "kind": "index",
+      "table": "scene_blocking_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_scene_blocking_pointers_book_episode",
+      "kind": "index",
+      "table": "scene_blocking_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "scene_id"
+      ],
+      "index": "uq_scene_blocking_pointer_scene",
+      "kind": "index",
+      "table": "scene_blocking_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "authority_envelope_id"
+      ],
+      "index": "ix_scene_blockings_authority_envelope_id",
+      "kind": "index",
+      "table": "scene_blockings"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_scene_blockings_scene_id",
+      "kind": "index",
+      "table": "scene_blockings"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "source_script_ir_version_id"
+      ],
+      "index": "ix_scene_blockings_source_script_ir_version_id",
+      "kind": "index",
+      "table": "scene_blockings"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_shot_plan_authorities_book_id",
+      "kind": "index",
+      "table": "shot_plan_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_shot_plan_authorities_episode",
+      "kind": "index",
+      "table": "shot_plan_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_shot_plan_authorities_book_episode",
+      "kind": "index",
+      "table": "shot_plan_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_shot_plan_pointers_book_id",
+      "kind": "index",
+      "table": "shot_plan_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_shot_plan_pointers_episode",
+      "kind": "index",
+      "table": "shot_plan_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_shot_plan_pointers_book_episode",
+      "kind": "index",
+      "table": "shot_plan_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "scene_id"
+      ],
+      "index": "uq_shot_plan_pointer_scene",
+      "kind": "index",
+      "table": "shot_plan_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "authority_envelope_id"
+      ],
+      "index": "ix_shot_plans_authority_envelope_id",
+      "kind": "index",
+      "table": "shot_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_shot_plans_scene_id",
+      "kind": "index",
+      "table": "shot_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "source_script_ir_version_id"
+      ],
+      "index": "ix_shot_plans_source_script_ir_version_id",
+      "kind": "index",
+      "table": "shot_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_storyboard_materialization_pointers_book_id",
+      "kind": "index",
+      "table": "storyboard_materialization_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_storyboard_materialization_pointers_episode",
+      "kind": "index",
+      "table": "storyboard_materialization_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_storyboard_materialization_pointers_book_episode",
+      "kind": "index",
+      "table": "storyboard_materialization_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "scene_id"
+      ],
+      "index": "uq_storyboard_materialization_pointer_scene",
+      "kind": "index",
+      "table": "storyboard_materialization_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_storyboard_materialization_sets_book_id",
+      "kind": "index",
+      "table": "storyboard_materialization_sets"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_storyboard_materialization_sets_episode",
+      "kind": "index",
+      "table": "storyboard_materialization_sets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "shot_plan_authority_fingerprint"
+      ],
+      "index": "ix_storyboard_materialization_sets_shot_plan_authority_fingerprint",
+      "kind": "index",
+      "table": "storyboard_materialization_sets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "shot_plan_authority_fingerprint"
+      ],
+      "index": "ix_storyboard_materialization_sets_authority",
+      "kind": "index",
+      "table": "storyboard_materialization_sets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode"
+      ],
+      "index": "ix_storyboard_materialization_sets_book_episode",
+      "kind": "index",
+      "table": "storyboard_materialization_sets"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "materialization_set_id"
+      ],
+      "index": "ix_storyboard_shots_materialization_set_id",
+      "kind": "index",
+      "table": "storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "plan_shot_id"
+      ],
+      "index": "ix_storyboard_shots_plan_shot_id",
+      "kind": "index",
+      "table": "storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "projection_fingerprint"
+      ],
+      "index": "ix_storyboard_shots_projection_fingerprint",
+      "kind": "index",
+      "table": "storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_storyboard_shots_scene_id",
+      "kind": "index",
+      "table": "storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "source_shot_plan_authority_fingerprint"
+      ],
+      "index": "ix_storyboard_shots_source_shot_plan_authority_fingerprint",
+      "kind": "index",
+      "table": "storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "source_shot_plan_id"
+      ],
+      "index": "ix_storyboard_shots_source_shot_plan_id",
+      "kind": "index",
+      "table": "storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "source_shot_id",
+        "target_shot_id"
+      ],
+      "index": "ix_transition_review_pair",
+      "kind": "index",
+      "table": "storyboard_transition_continuity_reviews"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "source_shot_id",
+        "target_shot_id"
+      ],
+      "index": "ix_transition_contract_pair",
+      "kind": "index",
+      "table": "storyboard_transition_contracts"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "source_shot_id",
+        "target_shot_id"
+      ],
+      "index": "ix_transition_frame_pair",
+      "kind": "index",
+      "table": "storyboard_transition_frames"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "retry_root_task_id",
+        "attempt_number"
+      ],
+      "index": "ix_storyboard_video_retry_root",
+      "kind": "index",
+      "table": "storyboard_video_retry_attempts"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "shot_id"
+      ],
+      "index": "ix_storyboard_video_retry_target",
+      "kind": "index",
+      "table": "storyboard_video_retry_attempts"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_asset_pointers_asset_key",
+      "kind": "index",
+      "table": "visual_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_visual_asset_pointers_asset_type",
+      "kind": "index",
+      "table": "visual_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_visual_asset_pointers_book_id",
+      "kind": "index",
+      "table": "visual_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "scope_key"
+      ],
+      "index": "ix_visual_asset_pointers_scope_key",
+      "kind": "index",
+      "table": "visual_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key",
+        "scope_key"
+      ],
+      "index": "ix_visual_asset_pointers_asset_scope",
+      "kind": "index",
+      "table": "visual_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "asset_type"
+      ],
+      "index": "ix_visual_asset_pointers_book_type",
+      "kind": "index",
+      "table": "visual_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_visual_asset_versions_asset_type",
+      "kind": "index",
+      "table": "visual_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_visual_asset_versions_book_id",
+      "kind": "index",
+      "table": "visual_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "canonical_id"
+      ],
+      "index": "ix_visual_asset_versions_canonical_id",
+      "kind": "index",
+      "table": "visual_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "asset_type"
+      ],
+      "index": "ix_visual_asset_versions_book_type",
+      "kind": "index",
+      "table": "visual_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_authoring_decision_requests_asset_key",
+      "kind": "index",
+      "table": "visual_authoring_decision_requests"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_visual_authoring_decision_requests_book_id",
+      "kind": "index",
+      "table": "visual_authoring_decision_requests"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "request_id"
+      ],
+      "index": "ix_visual_authoring_decision_requests_request_id",
+      "kind": "index",
+      "table": "visual_authoring_decision_requests"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_authoring_requests_asset",
+      "kind": "index",
+      "table": "visual_authoring_decision_requests"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_authoring_decisions_asset_key",
+      "kind": "index",
+      "table": "visual_authoring_decisions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_visual_authoring_decisions_book_id",
+      "kind": "index",
+      "table": "visual_authoring_decisions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "decision_id"
+      ],
+      "index": "ix_visual_authoring_decisions_decision_id",
+      "kind": "index",
+      "table": "visual_authoring_decisions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "request_id"
+      ],
+      "index": "ix_visual_authoring_decisions_request_id",
+      "kind": "index",
+      "table": "visual_authoring_decisions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_authoring_decisions_asset",
+      "kind": "index",
+      "table": "visual_authoring_decisions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_locations_asset_key",
+      "kind": "index",
+      "table": "visual_locations"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_visual_locations_scene_id",
+      "kind": "index",
+      "table": "visual_locations"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_makeups_asset_key",
+      "kind": "index",
+      "table": "visual_makeups"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_props_asset_key",
+      "kind": "index",
+      "table": "visual_props"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_reference_assets_asset_key",
+      "kind": "index",
+      "table": "visual_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_visual_reference_assets_asset_version_id",
+      "kind": "index",
+      "table": "visual_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_reference_authorities_asset_key",
+      "kind": "index",
+      "table": "visual_reference_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_visual_reference_authorities_asset_version_id",
+      "kind": "index",
+      "table": "visual_reference_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "authority_fingerprint"
+      ],
+      "index": "ix_visual_reference_authorities_authority_fingerprint",
+      "kind": "index",
+      "table": "visual_reference_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "visual_reference_asset_id"
+      ],
+      "index": "ix_visual_reference_authorities_visual_reference_asset_id",
+      "kind": "index",
+      "table": "visual_reference_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_reference_authorities_asset",
+      "kind": "index",
+      "table": "visual_reference_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_visual_reference_authorities_version",
+      "kind": "index",
+      "table": "visual_reference_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_reference_generation_requests_asset_key",
+      "kind": "index",
+      "table": "visual_reference_generation_requests"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_visual_reference_generation_requests_asset_version_id",
+      "kind": "index",
+      "table": "visual_reference_generation_requests"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "request_fingerprint"
+      ],
+      "index": "ix_visual_reference_generation_requests_request_fingerprint",
+      "kind": "index",
+      "table": "visual_reference_generation_requests"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_reference_requests_asset",
+      "kind": "index",
+      "table": "visual_reference_generation_requests"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_reference_sets_asset_key",
+      "kind": "index",
+      "table": "visual_reference_sets"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_visual_reference_sets_asset_version_id",
+      "kind": "index",
+      "table": "visual_reference_sets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_key"
+      ],
+      "index": "ix_visual_reference_sets_asset",
+      "kind": "index",
+      "table": "visual_reference_sets"
+    }
+  ],
+  "status": "PASS"
+}

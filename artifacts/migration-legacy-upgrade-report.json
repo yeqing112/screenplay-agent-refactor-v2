@@ -1,0 +1,28 @@
+{
+  "fixtures": [
+    {
+      "fixture": "pre-f05",
+      "row": {
+        "book_id": 990401,
+        "content": "legacy outline payload",
+        "id": 1,
+        "raw_content": "legacy outline payload"
+      },
+      "row_preserved": true,
+      "status": "PASS"
+    },
+    {
+      "authority_promotions": 0,
+      "fixture": "pre-authority",
+      "row_preserved": true,
+      "status": "PASS"
+    },
+    {
+      "authority_promotions": 0,
+      "fixture": "pre-visual-authority",
+      "row_preserved": true,
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

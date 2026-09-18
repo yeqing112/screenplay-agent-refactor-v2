@@ -2,6 +2,7 @@
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect
 
 revision = "o8i9j0k1l2m3"
 down_revision = "n7h8i9j0k1l2"
@@ -10,10 +11,15 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column("script_ir_versions", sa.Column("authority_envelope_json", sa.Text(), nullable=False, server_default="{}"))
-    op.add_column("script_ir_versions", sa.Column("qualification_state", sa.String(), nullable=False, server_default="STRUCTURALLY_VALID"))
-    op.add_column("script_ir_versions", sa.Column("stale_status", sa.String(), nullable=False, server_default="UNKNOWN"))
-    op.add_column("script_ir_versions", sa.Column("stale_reasons", sa.Text(), nullable=False, server_default="[]"))
+    columns = {item["name"] for item in inspect(op.get_bind()).get_columns("script_ir_versions")}
+    for name, type_, default in (
+        ("authority_envelope_json", sa.Text(), "{}"),
+        ("qualification_state", sa.String(), "STRUCTURALLY_VALID"),
+        ("stale_status", sa.String(), "UNKNOWN"),
+        ("stale_reasons", sa.Text(), "[]"),
+    ):
+        if name not in columns:
+            op.add_column("script_ir_versions", sa.Column(name, type_, nullable=False, server_default=default))
 
 
 def downgrade() -> None:

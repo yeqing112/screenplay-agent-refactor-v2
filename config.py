@@ -127,6 +127,11 @@ API_AUTH_ROLE_TOKENS, API_AUTH_ROLE_TOKENS_ERROR = _load_json_object("API_AUTH_R
 # checks.  Development remains the safe default for local workstations.
 DEPLOYMENT_ENV = os.getenv("DEPLOYMENT_ENV", "development").strip().lower() or "development"
 
+# Emergency ORM bootstrap is opt-in and local-only.  A migration failure must
+# never be hidden behind ``Base.metadata.create_all`` in production, test
+# verification, or an otherwise unspecified deployment.
+ALLOW_DEV_CREATE_ALL_FALLBACK = _load_bool("ALLOW_DEV_CREATE_ALL_FALLBACK", False)
+
 # Optional deployment-level request limiter.  It is deliberately disabled by
 # default so local development and existing test clients retain their current
 # behavior.  When enabled, the API middleware applies a process-local fixed

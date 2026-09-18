@@ -9,6 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect
 
 
 revision: str = '33818b3e29bd'
@@ -18,9 +19,11 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.add_column('visual_makeups', sa.Column('shot_ids', sa.Text(), nullable=False, server_default='[]'))
-    op.add_column('visual_locations', sa.Column('shot_ids', sa.Text(), nullable=False, server_default='[]'))
-    op.add_column('visual_props', sa.Column('shot_ids', sa.Text(), nullable=False, server_default='[]'))
+    bind = op.get_bind()
+    for table in ('visual_makeups', 'visual_locations', 'visual_props'):
+        columns = {item['name'] for item in inspect(bind).get_columns(table)}
+        if 'shot_ids' not in columns:
+            op.add_column(table, sa.Column('shot_ids', sa.Text(), nullable=False, server_default='[]'))
 
 
 def downgrade() -> None:

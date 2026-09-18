@@ -13,7 +13,12 @@ Session = sessionmaker(bind=engine)
 
 
 def init_db():
-    """初始化数据库。优先使用 Alembic migration，fallback 到 create_all。"""
+    """Initialize the database through Alembic, failing closed by default.
+
+    ``create_all`` is deliberately not a migration mechanism.  It remains
+    available only as an explicit, local-development escape hatch for an
+    operator who sets ``ALLOW_DEV_CREATE_ALL_FALLBACK=true``.
+    """
     try:
         from alembic.config import Config
         from alembic import command
@@ -23,9 +28,18 @@ def init_db():
         # temporary database without touching the developer database.
         alembic_cfg.set_main_option("sqlalchemy.url", config.DATABASE_URL.replace("%", "%%"))
         command.upgrade(alembic_cfg, "head")
-    except Exception as e:
-        logger.warning("Alembic fallback to create_all: %s", e)
-        Base.metadata.create_all(engine)
+    except Exception:
+        logger.exception("Alembic database initialization failed")
+        allow_fallback = bool(getattr(config, "ALLOW_DEV_CREATE_ALL_FALLBACK", False))
+        deployment_env = str(getattr(config, "DEPLOYMENT_ENV", "development")).strip().lower()
+        if allow_fallback and deployment_env in {"development", "local"}:
+            logger.warning(
+                "Using explicitly authorized local create_all fallback; "
+                "this path is forbidden outside local development."
+            )
+            Base.metadata.create_all(engine)
+        else:
+            raise
     return engine
 
 

@@ -1,0 +1,9 @@
+{
+  "database_scope": "disposable temporary SQLite database",
+  "command": "fresh Alembic upgrade followed by FastAPI TestClient startup",
+  "health_endpoint": "/health",
+  "status_code": 200,
+  "provider_calls": 0,
+  "production_db_writes": 0,
+  "status": "PASS"
+}
