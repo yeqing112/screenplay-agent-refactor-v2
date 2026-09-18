@@ -195,6 +195,140 @@ function toVisualAssetType(category: AssetSummary['category']) {
   return category
 }
 
+type VisualAuthoringProposalView = {
+  proposal_id?: string
+  status?: string
+  asset_key?: string
+  proposed_fields?: {
+    proposals?: Array<{ field?: string; value?: unknown; design_intent?: string }>
+    unknowns?: string[]
+    review_notes?: string[]
+  }
+}
+
+function resolveCanonicalVisualAssetIdentity(
+  asset: AssetSummary,
+  productionWorkspace?: ProductionWorkspaceSnapshot | null,
+) {
+  const selectedKey = String(
+    productionWorkspace?.assets.find((item) => {
+      const key = String(item.asset_key || '').toLowerCase()
+      const id = String(asset.id || '').toLowerCase()
+      return key === id || (id && key.endsWith(id)) || (asset.title && key.includes(String(asset.title).toLowerCase()))
+    })?.asset_key || '',
+  ).trim()
+  const match = selectedKey.match(/^book:([^:]+):(character|scene|prop):(.+)$/i)
+  if (!match) return null
+  return { assetKey: selectedKey, assetType: match[2].toLowerCase(), canonicalId: match[3] }
+}
+
+function VisualAuthoringProposalPanel({
+  bookId,
+  asset,
+  productionWorkspace,
+}: {
+  bookId: number
+  asset: AssetSummary
+  productionWorkspace?: ProductionWorkspaceSnapshot | null
+}) {
+  const identity = resolveCanonicalVisualAssetIdentity(asset, productionWorkspace)
+  const [profiles, setProfiles] = useState<Array<{ id: string; name: string; model_name: string }>>([])
+  const [profileId, setProfileId] = useState('')
+  const [requestId, setRequestId] = useState('')
+  const [proposal, setProposal] = useState<VisualAuthoringProposalView | null>(null)
+  const [state, setState] = useState<'idle' | 'calling' | 'reviewing' | 'error'>('idle')
+  const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    let active = true
+    fetch('/api/model-registry')
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!active) return
+        const available = (payload?.profiles ?? []).filter((item: { capability?: string; enabled?: boolean; key_configured?: boolean }) => item.capability === 'llm' && item.enabled && item.key_configured)
+        setProfiles(available)
+        if (!profileId && available[0]?.id) setProfileId(available[0].id)
+      })
+      .catch(() => undefined)
+    return () => { active = false }
+  }, [profileId])
+
+  const callProvider = async () => {
+    if (!identity || !profileId || bookId <= 0) return
+    if (!window.confirm('确认调用一次真实 LLM 生成视觉设计建议？只会生成待审核 Proposal，不会自动修改资产。')) return
+    setState('calling'); setMessage('')
+    try {
+      const requestResponse = await fetch(`/api/books/${bookId}/visual-assets/authority/${identity.assetType}/${encodeURIComponent(identity.canonicalId)}/authoring-requests`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ missing_field: 'visual_authoring', source_constraints: [], free_authoring_space: [], forbidden_contradictions: [], scope: {}, required_by_stage: 'PromptIR' }),
+      })
+      const requestPayload = await requestResponse.json()
+      if (!requestResponse.ok) throw new Error(requestPayload?.detail?.message || '创建 Provider 请求失败')
+      const nextRequestId = String(requestPayload?.request_id || '')
+      setRequestId(nextRequestId)
+      const proposalResponse = await fetch(`/api/books/${bookId}/visual-assets/authority/${identity.assetType}/${encodeURIComponent(identity.canonicalId)}/authoring-proposals/canary`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId: nextRequestId, modelProfileId: profileId, confirmedProviderCall: true }),
+      })
+      const payload = await proposalResponse.json()
+      if (!proposalResponse.ok) throw new Error(payload?.detail?.message || '视觉设计建议生成失败')
+      setProposal(payload.proposal ?? null)
+      setState('reviewing')
+      setMessage('AI 建议已生成，当前仍待人工审核；生产阻塞不会自动解除。')
+    } catch (error) {
+      setState('error')
+      setMessage(error instanceof Error ? error.message : '视觉设计建议生成失败')
+    }
+  }
+
+  const review = async (action: 'approve' | 'reject') => {
+    if (!proposal?.proposal_id || !identity) return
+    if (!window.confirm(action === 'approve' ? '确认将 Proposal 转为逐字段人工确认结果？不会自动创建 VisualAssetVersion。' : '确认拒绝该视觉设计 Proposal？')) return
+    setState('calling')
+    try {
+      const response = await fetch(`/api/books/${bookId}/visual-assets/authority/authoring-proposals/${encodeURIComponent(proposal.proposal_id)}/${action}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirmed: true }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail?.message || 'Proposal 审核失败')
+      setProposal(payload.proposal ?? { ...proposal, status: action === 'approve' ? 'SUPERSEDED' : 'REJECTED' })
+      setState('reviewing')
+      setMessage(action === 'approve' ? '已写入逐字段 VisualAuthoringDecision；仍需后续版本激活。' : 'Proposal 已拒绝，生产状态保持不变。')
+    } catch (error) {
+      setState('error')
+      setMessage(error instanceof Error ? error.message : 'Proposal 审核失败')
+    }
+  }
+
+  return (
+    <div className="mt-4 rounded-xl border border-sky-500/30 bg-sky-500/5 p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-sm font-medium text-sky-100">AI 视觉设计建议</div>
+          <div className="mt-1 text-xs leading-5 text-sky-100/70">只生成可审核 Proposal，不自动改资产、不创建版本、不解除生产阻塞。</div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <select value={profileId} onChange={(event) => setProfileId(event.target.value)} className="rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 text-xs text-slate-200" aria-label="Provider 模型">
+            <option value="">选择 LLM</option>
+            {profiles.map((profile) => <option key={profile.id} value={profile.id}>{profile.name} · {profile.model_name}</option>)}
+          </select>
+          <button type="button" onClick={() => void callProvider()} disabled={!identity || !profileId || state === 'calling'} className="rounded-lg border border-sky-300/50 bg-sky-400/10 px-3 py-1.5 text-xs text-sky-100 disabled:cursor-not-allowed disabled:opacity-50">
+            {state === 'calling' ? '处理中…' : '生成 AI 建议'}
+          </button>
+        </div>
+      </div>
+      {!identity ? <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-5 text-amber-100">当前资产缺少完整稳定身份（book:type:id），暂不允许调用 Provider。请先完成正式资产身份注册。</div> : null}
+      {identity ? <div className="mt-2 text-[11px] text-slate-500">稳定资产身份：{identity.assetKey}</div> : null}
+      {message ? <div className={`mt-3 rounded-lg border px-3 py-2 text-xs ${state === 'error' ? 'border-rose-500/30 bg-rose-500/10 text-rose-200' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'}`}>{message}</div> : null}
+      {proposal ? <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-3 text-xs text-slate-300">
+        <div>状态：<span className="text-sky-200">{proposal.status || 'REVIEW_REQUIRED'}</span> · Proposal：{proposal.proposal_id}</div>
+        {proposal.proposed_fields?.proposals?.map((item, index) => <div key={`${item.field || 'field'}-${index}`} className="mt-2 rounded border border-slate-800 px-2 py-1.5"><span className="text-slate-500">{item.field}</span>：{String(item.value ?? '')}{item.design_intent ? <span className="ml-2 text-slate-500">({item.design_intent})</span> : null}</div>)}
+        {proposal.status === 'REVIEW_REQUIRED' ? <div className="mt-3 flex gap-2"><button type="button" onClick={() => void review('approve')} className="rounded border border-emerald-400/40 px-2 py-1 text-emerald-200">确认建议</button><button type="button" onClick={() => void review('reject')} className="rounded border border-rose-400/40 px-2 py-1 text-rose-200">拒绝建议</button></div> : null}
+      </div> : null}
+    </div>
+  )
+}
+
 function assetCategoryFilterLabel(category: AssetCategoryFilter) {
   if (category === 'all') return '\u5168\u90e8'
   return assetCategoryLabel(category)
@@ -1927,6 +2061,12 @@ export default function ProductWorkspaceAssetsSection({
               <summary className="cursor-pointer text-sm font-medium text-violet-100">高级：审核资产治理草案与版本化修改</summary>
               <div className="mt-1 text-xs leading-5 text-violet-100/70">治理仅在你生成证据包、确认调用和最终写入后生效。</div>
               <AssetSemanticGovernancePanel key={selectedAsset.id} bookId={bookId} asset={selectedAsset} onRefresh={onRefreshAll} />
+            </details>
+
+            <details className="mt-5 rounded-xl border border-sky-500/25 bg-sky-500/5 p-4">
+              <summary className="cursor-pointer text-sm font-medium text-sky-100">高级：AI 视觉设计建议（Provider Proposal）</summary>
+              <div className="mt-1 text-xs leading-5 text-sky-100/70">仅在正式资产已有完整稳定身份时可用；建议确认后仍需单独激活资产版本。</div>
+              <VisualAuthoringProposalPanel key={`${selectedAsset.id}-${productionWorkspace?.assets.length || 0}`} bookId={bookId} asset={selectedAsset} productionWorkspace={productionWorkspace} />
             </details>
 
             <div className={`mt-5 rounded-xl border p-4 ${shouldHighlightRecoveredReference ? 'border-sky-500/40 bg-sky-500/5' : 'border-slate-800 bg-slate-950/50'}`}>

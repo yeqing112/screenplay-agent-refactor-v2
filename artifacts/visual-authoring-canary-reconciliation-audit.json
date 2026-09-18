@@ -16,7 +16,8 @@
       "api/visual_authoring_provider_api.py provider proposal routes",
       "VisualAuthoringProposal persistence",
       "proposal approval to field-level VisualAuthoringDecision rows",
-      "stable asset key construction through core.visual_asset_authority.build_asset_key"
+      "stable asset key construction through core.visual_asset_authority.build_asset_key",
+      "legacy p0 revision compatibility bridge and in-place additive schema repair"
     ],
     "DISCARD": [
       "legacy visual_authority_models.py replacement models",
@@ -34,5 +35,12 @@
     "approval creates one canonical decision row per proposed field without version or pointer mutation"
   ],
   "user_artifacts_preserved": true,
-  "real_provider_called": false
+  "real_provider_called": true,
+  "real_provider_canary": {
+    "profile_id": "local-llm-2vydoz",
+    "asset_key": "book:987654321:character:char_canary_001",
+    "status": "REVIEW_REQUIRED",
+    "provider_calls": 1,
+    "media_calls": 0
+  }
 }

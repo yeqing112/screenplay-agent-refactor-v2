@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sqlite3
 
 import pytest
 
-from scripts.verify_migration_chain import audit_graph, fresh_replay, legacy_replay
+from scripts.verify_migration_chain import _upgrade, audit_graph, fresh_replay, legacy_replay
 
 
 def test_revision_graph_is_single_head_and_has_no_forbidden_runtime_shortcuts():
@@ -34,6 +35,68 @@ def test_pre_f05_fixture_preserves_legacy_outline_payload():
     pre_f05 = next(item for item in report["fixtures"] if item["fixture"] == "pre-f05")
     assert pre_f05["row_preserved"] is True
     assert pre_f05["row"]["content"] == pre_f05["row"]["raw_content"]
+
+
+def test_historical_visual_canary_revision_upgrades_in_place_to_canonical_head(tmp_path):
+    db = tmp_path / "historical-canary.sqlite"
+    _upgrade(db, "n7h8i9j0k1l2")
+    connection = sqlite3.connect(db)
+    connection.executescript(
+        """
+        CREATE TABLE visual_authoring_decision_requests (
+          id INTEGER PRIMARY KEY, request_id VARCHAR(128) NOT NULL,
+          book_id INTEGER NOT NULL, asset_key VARCHAR(255) NOT NULL,
+          asset_type VARCHAR(32) NOT NULL, canonical_id VARCHAR(128) NOT NULL,
+          scope TEXT NOT NULL DEFAULT '{}', source_constraints TEXT NOT NULL DEFAULT '{}',
+          free_authoring_space TEXT NOT NULL DEFAULT '[]', forbidden_contradictions TEXT NOT NULL DEFAULT '[]',
+          context_json TEXT NOT NULL DEFAULT '{}', status VARCHAR(32) NOT NULL DEFAULT 'PENDING'
+        );
+        CREATE TABLE visual_authoring_decisions (
+          id INTEGER PRIMARY KEY, decision_id VARCHAR(128) NOT NULL,
+          request_id VARCHAR(128) NOT NULL, book_id INTEGER NOT NULL,
+          asset_key VARCHAR(255) NOT NULL, asset_type VARCHAR(32) NOT NULL,
+          decision_json TEXT NOT NULL DEFAULT '{}', confirmed INTEGER NOT NULL DEFAULT 0,
+          status VARCHAR(32) NOT NULL DEFAULT 'APPROVED'
+        );
+        CREATE TABLE visual_authoring_proposals (
+          id INTEGER PRIMARY KEY, proposal_id VARCHAR(128) NOT NULL,
+          request_id VARCHAR(128) NOT NULL, book_id INTEGER NOT NULL,
+          asset_key VARCHAR(255) NOT NULL, asset_type VARCHAR(32) NOT NULL,
+          scope TEXT NOT NULL DEFAULT '{}', proposed_fields_json TEXT NOT NULL DEFAULT '{}',
+          explanation_summary TEXT NOT NULL DEFAULT '', source_constraint_refs TEXT NOT NULL DEFAULT '[]',
+          provider_profile_id VARCHAR(128) NOT NULL, provider_model VARCHAR(255) NOT NULL DEFAULT '',
+          provider_vendor_host VARCHAR(255) NOT NULL DEFAULT '', provider_request_fingerprint VARCHAR(128) NOT NULL,
+          provider_response_hash VARCHAR(128) NOT NULL DEFAULT '', proposal_payload_hash VARCHAR(128) NOT NULL DEFAULT '',
+          validator_status VARCHAR(32) NOT NULL DEFAULT 'PENDING', validator_diagnostics TEXT NOT NULL DEFAULT '{}',
+          audit_json TEXT NOT NULL DEFAULT '{}', status VARCHAR(32) NOT NULL DEFAULT 'CANDIDATE'
+        );
+        CREATE TABLE visual_asset_versions (
+          id INTEGER PRIMARY KEY, book_id INTEGER NOT NULL, asset_key VARCHAR(255) NOT NULL,
+          version INTEGER NOT NULL DEFAULT 1, payload_json TEXT NOT NULL DEFAULT '{}',
+          status VARCHAR(32) NOT NULL DEFAULT 'DRAFT'
+        );
+        CREATE TABLE visual_asset_pointers (
+          id INTEGER PRIMARY KEY, book_id INTEGER NOT NULL, asset_key VARCHAR(255) NOT NULL,
+          version_id INTEGER NOT NULL
+        );
+        CREATE TABLE visual_reference_authorities (
+          id INTEGER PRIMARY KEY, book_id INTEGER NOT NULL, asset_key VARCHAR(255) NOT NULL,
+          reference_json TEXT NOT NULL DEFAULT '{}', status VARCHAR(32) NOT NULL DEFAULT 'CANDIDATE'
+        );
+        INSERT INTO visual_authoring_decision_requests (id, request_id, book_id, asset_key, asset_type, canonical_id)
+          VALUES (1, 'legacy-request', 990401, 'character:legacy', 'character', 'legacy');
+        UPDATE alembic_version SET version_num='p0q1r2s3t4u5';
+        """
+    )
+    connection.commit()
+    connection.close()
+    _upgrade(db)
+    check = sqlite3.connect(db)
+    columns = {row[1] for row in check.execute("pragma table_info(visual_authoring_decision_requests)")}
+    assert "source_constraints_json" in columns
+    assert check.execute("select request_id from visual_authoring_decision_requests where id=1").fetchone()[0] == "legacy-request"
+    assert check.execute("select version_num from alembic_version").fetchone()[0] == "x7g8h9i0j1k2"
+    check.close()
 
 
 def test_init_db_is_fail_closed_by_default(monkeypatch):

@@ -7,6 +7,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from sqlalchemy import inspect as sqlalchemy_inspect, text as sqlalchemy_text
 
 from core.visual_asset_authority import (
     AUTHORING_PENDING,
@@ -126,7 +127,26 @@ def create_authoring_request(book_id: int, asset_type: str, canonical_id: str, b
     request_id = f"VAR-{uuid.uuid4().hex}"
     with Session() as session:
         row = VisualAuthoringDecisionRequest(request_id=request_id, book_id=book_id, asset_key=asset_key, asset_type=asset_type, missing_field=body.missing_field, source_constraints_json=json.dumps(body.source_constraints, ensure_ascii=False), free_authoring_space_json=json.dumps(body.free_authoring_space, ensure_ascii=False), forbidden_contradictions_json=json.dumps(body.forbidden_contradictions, ensure_ascii=False), scope_json=json.dumps(body.scope, ensure_ascii=False), required_by_stage=body.required_by_stage, status="PENDING", created_at=datetime.now(), updated_at=datetime.now())
-        session.add(row); session.commit()
+        # Historical Canary databases may still carry a NOT NULL canonical_id
+        # column.  Keep it populated at the write boundary without exposing
+        # that retired column in the canonical ORM contract.
+        columns = {item["name"] for item in sqlalchemy_inspect(session.get_bind()).get_columns("visual_authoring_decision_requests")}
+        if "canonical_id" in columns:
+            session.execute(sqlalchemy_text("""
+                INSERT INTO visual_authoring_decision_requests
+                (request_id, book_id, asset_key, asset_type, canonical_id,
+                 missing_field, source_constraints_json, free_authoring_space_json,
+                 forbidden_contradictions_json, scope_json, required_by_stage,
+                 status, resolution_json, created_at, updated_at)
+                VALUES (:request_id, :book_id, :asset_key, :asset_type, :canonical_id,
+                        :missing_field, :source_constraints_json, :free_authoring_space_json,
+                        :forbidden_contradictions_json, :scope_json, :required_by_stage,
+                        :status, :resolution_json, :created_at, :updated_at)
+            """), {"request_id": request_id, "book_id": book_id, "asset_key": asset_key, "asset_type": asset_type, "canonical_id": canonical_id, "missing_field": body.missing_field, "source_constraints_json": json.dumps(body.source_constraints, ensure_ascii=False), "free_authoring_space_json": json.dumps(body.free_authoring_space if isinstance(body.free_authoring_space, list) else body.free_authoring_space, ensure_ascii=False), "forbidden_contradictions_json": json.dumps(body.forbidden_contradictions, ensure_ascii=False), "scope_json": json.dumps(body.scope, ensure_ascii=False), "required_by_stage": body.required_by_stage, "status": "PENDING", "resolution_json": "{}", "created_at": datetime.now(), "updated_at": datetime.now()})
+            session.commit()
+            row = session.query(VisualAuthoringDecisionRequest).filter_by(request_id=request_id).first()
+        else:
+            session.add(row); session.commit()
         return {"request_id": request_id, "asset_key": asset_key, "status": "PENDING", "provider_calls": 0}
 
 
