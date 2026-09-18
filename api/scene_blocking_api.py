@@ -207,9 +207,9 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
         if is_production:
             location = session.query(VisualLocation).filter(VisualLocation.book_id == book_id, VisualLocation.scene_id == scene_id).order_by(VisualLocation.id.desc()).first()
             if location is None:
-                # Name-only legacy rows are advisory context, never production
-                # authority; retain them only for preview diagnostics.
-                location = session.query(VisualLocation).filter(VisualLocation.book_id == book_id, VisualLocation.name == scene_name).order_by(VisualLocation.id.desc()).first()
+                # Production authority is identity-based.  A legacy name match
+                # may be shown by an audit UI, but cannot satisfy this gate.
+                location = None
         else:
             location = session.query(VisualLocation).filter(VisualLocation.book_id == book_id, VisualLocation.name == scene_name).order_by(VisualLocation.id.desc()).first()
         if location:
@@ -240,6 +240,10 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
         blocking = build_scene_blocking_v2(scene=scene, treatment=treatment_payload, source_script_hash=source_hash, scene_canonical=scene_canonical, fact_snapshot=fact_snapshot, previous_blocking=previous_payload) if use_v2 else build_scene_blocking(scene=scene, treatment=treatment_payload, source_script_hash=source_hash)
         blocking["scene_id"] = scene_id
         blocking["scene_name"] = scene_name
+        # SceneBlocking's spatial classifier is retained as a compatibility
+        # projection for existing geometry fixtures.  It is not consumed as
+        # VisualAsset authority: production PromptIR resolves only the
+        # versioned VisualAssetPointer/ReferenceAuthority chain.
         asset_authority = classify_scene_asset(location, scene_id=scene_id) if is_production else {"authority_class": "ADVISORY_SCENE_CONTEXT", "locked_constraints": [], "advisory_context": [], "authoring_pending": []}
         if is_production:
             asset_authority = {**asset_authority, "scene_asset_fingerprint": asset_authority.get("fingerprint", "")}

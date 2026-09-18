@@ -1,0 +1,8 @@
+{
+  "schema_version": "visual_authoring_decision_contract_v1",
+  "request_states": ["PENDING", "PROPOSED", "REVIEW_REQUIRED", "APPROVED", "SUPERSEDED"],
+  "decision_fields": ["asset_key", "field", "value", "scope", "authority_class", "source_constraint_refs", "author", "authoring_policy", "status", "provenance", "revision"],
+  "confirmation": "confirmed=true required for an APPROVED decision",
+  "provider_role": "none in this stage; no automatic authoring resolution",
+  "conflict_policy": "source constraint contradiction is fail-closed"
+}

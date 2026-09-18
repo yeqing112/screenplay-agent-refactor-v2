@@ -45,7 +45,10 @@ def sync_asset_registry(book_id: int, episode: int, req: AssetRegistrySyncReques
             except (TypeError, ValueError, json.JSONDecodeError) as exc:
                 raise HTTPException(status_code=409, detail="Qualified ScriptIR payload is invalid.") from exc
         source = req.source_fingerprint.strip() or version.payload_hash
-        result = sync_assets_from_script_ir(session, payload, book_id=book_id, episode=episode, source_fingerprint=source)
+        try:
+            result = sync_assets_from_script_ir(session, payload, book_id=book_id, episode=episode, source_fingerprint=source, workflow_profile=profile)
+        except ValueError as exc:
+            raise HTTPException(status_code=409, detail={"code": str(exc), "message": "Production asset identity registration requires stable canonical IDs; display names are not accepted as authority."}) from exc
         session.commit()
-        return {"mode": "deterministic_asset_registry_sync", "llm_called": False, "confirmed": True, **result}
+        return {"mode": "deterministic_asset_registry_sync", "llm_called": False, "confirmed": True, "identity_registration_only": True, **result}
 

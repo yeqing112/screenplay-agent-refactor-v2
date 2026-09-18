@@ -1,0 +1,45 @@
+{
+  "schema_version": "visual_asset_consumer_audit_v1",
+  "provider_calls": 0,
+  "models": {
+    "mutable_legacy": ["VisualMakeup", "VisualLocation", "VisualProp", "VisualReferenceAsset"],
+    "versioned_authority": ["VisualAssetVersion", "VisualAssetPointer", "VisualReferenceAuthority", "VisualReferenceSet", "VisualReferenceGenerationRequest"],
+    "authoring": ["VisualAuthoringDecisionRequest", "VisualAuthoringDecision"]
+  },
+  "identity": {
+    "character": "book:{book_id}:character:{character_id}",
+    "scene": "book:{book_id}:scene:{scene_id}",
+    "prop": "book:{book_id}:prop:{prop_id}",
+    "name_role": "display_or_legacy_only"
+  },
+  "consumer_matrix": [
+    {"consumer": "core/asset_registry_sync.py", "identity": "ScriptIR stable IDs; production rejects missing IDs", "source_constraints": "ScriptIR/Facts", "authoring": "none; registration only", "legacy_prompt": "not authority"},
+    {"consumer": "api/asset_registry_api.py", "identity": "current qualified ScriptIR", "source_constraints": "ScriptIR", "authoring": "identity registration only", "production_name_fallback": false},
+    {"consumer": "api/scene_blocking_api.py", "identity": "scene_id", "source_constraints": "SceneBlocking geometry and FactSnapshot", "authoring": "look only after geometry", "production_name_fallback": false, "visual_asset_authority": "compatibility_projection_only; PromptIR does not consume mutable row"},
+    {"consumer": "api/shot_plan_api.py", "identity": "scene_id and ShotPlan bindings", "source_constraints": "SceneBlocking/ShotPlan", "authoring": "no visual authoring", "production_name_fallback": false},
+    {"consumer": "core/prompt_ir_authority.py", "identity": "PromptIR canonical bindings", "source_constraints": "current VisualAssetVersion pointer", "authoring": "approved decisions only", "legacy_prompt": "advisory/derived only"},
+    {"consumer": "api/prompt_ir_authority_api.py", "identity": "DB current VisualAssetPointer", "source_constraints": "version payload and reference authority", "authoring": "not accepted from request body", "production_media": "not created"},
+    {"consumer": "image_generation_api", "identity": "legacy reference consumers remain compatibility paths", "source_constraints": "must migrate to authority pointer", "authoring": "not an authority activation", "provider_calls": 0},
+    {"consumer": "video_generation_api", "identity": "PromptIR/adapter boundary", "source_constraints": "must not resolve name/latest cards", "authoring": "not an authority activation", "provider_calls": 0}
+  ],
+  "field_semantics": {
+    "source_constraints": "SOURCE_VISUAL_CONSTRAINT; immutable provenance",
+    "production_authoring": "PRODUCTION_VISUAL_AUTHORING_DECISION; explicit confirmed human/API decision",
+    "variants": "VISUAL_VARIANT_DECISION; episode/scene/shot/story-stage scoped",
+    "reference_media": "REFERENCE_MEDIA_AUTHORITY; version lineage plus checksum and provenance",
+    "legacy_prompt_fields": "ADVISORY_VISUAL_CONTEXT or DERIVED_SERIALIZATION",
+    "geometry": "SceneBlocking authority, never redefined by scene look",
+    "prop_state": "ShotPlan continuity authority, never duplicated by prop look"
+  },
+  "readiness_blockers": {
+    "prompt_ir": ["ASSET_AUTHORING_PENDING", "ASSET_REFERENCE_PENDING"],
+    "model_generation": ["ASSET_AUTHORING_PENDING", "ASSET_REFERENCE_PENDING", "reference_requirement_policy"],
+    "media": ["MODEL_GENERATION_READY", "provider_contract", "storage_contract"]
+  },
+  "risks_found_and_closed": [
+    "status=locked on mutable VisualReferenceAsset was not sufficient authority",
+    "name-to-latest fallback was removed from production registry/SceneBlocking/ShotPlan authority paths",
+    "mutable Visual* rows remain compatibility projections only"
+  ],
+  "source_files": ["models/visual.py", "models/visual_authority.py", "core/asset_registry_sync.py", "core/visual_asset_authority.py", "api/asset_registry_api.py", "api/prompt_ir_authority_api.py", "api/scene_blocking_api.py", "api/shot_plan_api.py", "core/prompt_ir_authority.py"]
+}

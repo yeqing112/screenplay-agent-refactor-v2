@@ -291,10 +291,12 @@ def _load_v21_director_context(session: Session, book_id: int, episode: int, sce
     # leave the planner with an apparently valid contract whose immutable
     # boundary is weaker than the upstream approval boundary.
     scene_canonical: dict[str, Any] = {}
-    location = session.query(VisualLocation).filter(
-        VisualLocation.book_id == book_id,
-        VisualLocation.name == resolved_scene_name,
-    ).order_by(VisualLocation.id.desc()).first()
+    location_query = session.query(VisualLocation).filter(VisualLocation.book_id == book_id)
+    if str(workflow_profile or "shadow").strip().lower() == "production":
+        location_query = location_query.filter(VisualLocation.scene_id == scene_id)
+    else:
+        location_query = location_query.filter(VisualLocation.name == resolved_scene_name)
+    location = location_query.order_by(VisualLocation.id.desc()).first()
     if location:
         scene_canonical = {
             "name": location.name,

@@ -13,6 +13,7 @@ from core.prompt_ir_authority import (
     compile_prompt_ir_from_handoff,
     serialize_prompt_ir_to_adapter,
 )
+from core.visual_asset_authority import build_asset_key, production_asset_binding
 from core.storyboard_materializer import resolve_current_authoritative_materialization
 from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, Session
 
@@ -62,6 +63,46 @@ def _scene_id_for_shot(session, book_id: int, episode: int, shot_id: int) -> str
     return str(row.scene_id).strip()
 
 
+def _production_asset_authority(session, *, book_id: int, handoff: dict) -> dict:
+    """Resolve PromptIR assets only through current VisualAssetVersion pointers."""
+    from models import VisualAssetPointer, VisualAssetVersion, VisualReferenceAuthority
+
+    bindings = handoff.get("asset_identity_bindings") if isinstance(handoff.get("asset_identity_bindings"), dict) else {}
+    canonical = bindings.get("canonical_asset_identity") if isinstance(bindings.get("canonical_asset_identity"), dict) else {}
+    if not canonical:
+        canonical = {
+            "scene": bindings.get("scene_asset_id", ""),
+            "characters": bindings.get("character_asset_ids", []),
+            "props": bindings.get("prop_asset_ids", []),
+        }
+    entries = []
+    for asset_type, key_name in (("scene", "scene"), ("character", "characters"), ("prop", "props")):
+        raw = canonical.get(key_name, [])
+        values = raw if isinstance(raw, list) else ([raw] if raw not in (None, "") else [])
+        for value in values:
+            if isinstance(value, dict):
+                canonical_id = str(value.get("canonical_id") or value.get("asset_id") or value.get("id") or "").strip()
+                display_name = str(value.get("name") or value.get("asset_name") or "").strip()
+            else:
+                canonical_id = str(value or "").strip()
+                display_name = ""
+            if not canonical_id:
+                continue
+            try:
+                asset_key = build_asset_key(book_id=book_id, asset_type=asset_type, canonical_id=canonical_id)
+            except Exception:
+                continue
+            pointer = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key).order_by(VisualAssetPointer.id.desc()).first()
+            version = session.query(VisualAssetVersion).filter_by(id=pointer.current_version_id).first() if pointer else None
+            reference = None
+            if version:
+                authority = session.query(VisualReferenceAuthority).filter_by(asset_key=asset_key, asset_version_id=version.id, status="LOCKED", stale_status="FRESH").order_by(VisualReferenceAuthority.id.desc()).first()
+                if authority:
+                    reference = {"status": authority.status, "stale_status": authority.stale_status, "reference_token": _json(authority.reference_token_mapping_json, {}).get("token", ""), "reference_name": _json(authority.reference_token_mapping_json, {}).get("name", "")}
+            entries.append(production_asset_binding(asset_key=asset_key, asset_type=asset_type, asset_name=display_name, version={"id": version.id, "revision": version.revision, "payload": _json(version.payload_json, {}), "payload_hash": version.payload_hash, "authority_status": version.authority_status, "stale_status": version.stale_status} if version else {}, reference=reference, reference_required=True))
+    return {"bindings": entries, "authority_fingerprint": __import__("core.visual_asset_authority", fromlist=["fingerprint"]).fingerprint(entries), "source": "current_visual_asset_pointers", "provider_calls": 0}
+
+
 @router.post("/{book_id}/episodes/{episode}/storyboard/{shot_id}/prompt-ir/compile")
 def compile_prompt_ir(book_id: int, episode: int, shot_id: int, req: PromptIRCompileRequest):
     with Session() as session:
@@ -73,7 +114,8 @@ def compile_prompt_ir(book_id: int, episode: int, shot_id: int, req: PromptIRCom
         if int(handoff.get("storyboard_shot_id") or 0) != int(row.id) or str(handoff.get("storyboard_projection_fingerprint") or "") != str(row.projection_fingerprint or ""):
             _conflict("STORYBOARD_HANDOFF_STALE", "PromptIR handoff does not match the current Storyboard projection.")
         try:
-            prompt_ir = compile_prompt_ir_from_handoff(handoff, asset_authority=req.asset_authority, retention_policy=req.retention_policy)
+            authoritative_assets = _production_asset_authority(session, book_id=book_id, handoff=handoff)
+            prompt_ir = compile_prompt_ir_from_handoff(handoff, asset_authority=authoritative_assets, retention_policy=req.retention_policy)
         except PromptIRAuthorityError as exc:
             _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
         existing_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=row.id).first()
@@ -98,7 +140,7 @@ def compile_prompt_ir(book_id: int, episode: int, shot_id: int, req: PromptIRCom
         pointer.updated_at = datetime.now()
         session.add(pointer)
         session.commit()
-        return {"mutated": True, "reused": False, "prompt_ir_version_id": version.id, "prompt_ir_authority_id": authority.id, "qualification_state": version.qualification_state, "asset_reference_state": version.asset_reference_state, "model_generation_ready": version.model_generation_ready == "true", "payload_hash": version.payload_hash, "provider_calls": 0}
+        return {"mutated": True, "reused": False, "prompt_ir_version_id": version.id, "prompt_ir_authority_id": authority.id, "qualification_state": version.qualification_state, "asset_reference_state": version.asset_reference_state, "model_generation_ready": version.model_generation_ready == "true", "payload_hash": version.payload_hash, "asset_authority_source": "current_visual_asset_pointers", "provider_calls": 0}
 
 
 @router.post("/{book_id}/episodes/{episode}/storyboard/{shot_id}/prompt-ir/adapter-preview")

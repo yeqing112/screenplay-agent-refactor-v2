@@ -1,0 +1,12 @@
+{
+  "schema_version": "visual_asset_authority_contract_v1",
+  "authority_classes": ["SOURCE_VISUAL_CONSTRAINT", "PRODUCTION_VISUAL_AUTHORING_DECISION", "VISUAL_VARIANT_DECISION", "DERIVED_VISUAL_CONSTRAINT", "REFERENCE_MEDIA_AUTHORITY", "ADVISORY_VISUAL_CONTEXT", "AUTHORING_PENDING", "UNKNOWN"],
+  "lifecycle": ["IDENTITY_REGISTERED", "AUTHORING_PENDING", "SPEC_DRAFT", "SPEC_APPROVED", "REFERENCE_PENDING", "REFERENCE_SELECTED", "REFERENCE_LOCKED", "PRODUCTION_READY", "STALE"],
+  "asset_types": {
+    "character": {"canonical": ["identity", "face", "facial_structure", "apparent_age", "body_type", "skin", "baseline_hairstyle", "persistent_features"], "variant": ["wardrobe", "hairstyle", "makeup", "injury", "dirt_blood_wetness", "accessories", "age_stage", "expression"]},
+    "scene": {"canonical": ["material", "texture", "architecture_style", "color_palette", "lighting_look", "fixed_fixtures", "atmosphere", "visual_condition"], "variant": ["state", "weather", "time_of_day", "dressing", "lighting_variant"], "geometry_authority": "SceneBlocking"},
+    "prop": {"canonical": ["basic_form", "material", "color", "distinctive_features"], "variant": ["open_closed", "condition", "holder", "position", "story_state"], "continuity_authority": "ShotPlan"}
+  },
+  "production_rules": ["stable_asset_key_required", "mutable_row_not_authority", "source_immutable", "reference_does_not_overwrite_spec", "legacy_prompt_not_authority", "precise_stale_propagation"],
+  "reference_requirement_policy": "reference_requirement_policy_v1"
+}

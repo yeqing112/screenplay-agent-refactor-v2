@@ -135,11 +135,11 @@ def _normalize_asset_bindings(raw_bindings: dict[str, Any], asset_authority: dic
         visual_facts = authority.get("visual_facts") if isinstance(authority.get("visual_facts"), list) else []
         canonical_facts = [item for item in visual_facts if isinstance(item, dict) and _text(item.get("fact_key") or item.get("fact"))]
         status = _text(authority.get("authority_status") or "IDENTITY_BOUND")
-        if status not in {"PRODUCTION_AUTHORITATIVE", "LOCKED", "QUALIFIED"}:
+        if status not in {"PRODUCTION_AUTHORITATIVE", "LOCKED", "QUALIFIED", "SPEC_APPROVED", "PRODUCTION_READY", "AUTHORING_PENDING"}:
             status = "IDENTITY_BOUND"
         if not canonical_facts and status == "PRODUCTION_AUTHORITATIVE":
             status = "IDENTITY_BOUND"
-        item = {"asset_type": role, "canonical_asset_id": normalized_id, "asset_revision": authority.get("asset_revision"), "asset_name": _text(name or authority.get("asset_name")), "authority_status": status, "variant_scope": _text(authority.get("variant_scope")), "variant_id": _text(authority.get("variant_id")), "reference_status": "REFERENCE_READY" if locked and ref_token else "REFERENCE_PENDING", "reference_token": ref_token, "authority_fingerprint": _text(authority.get("authority_fingerprint") or fingerprint(authority)) if authority else "", "visual_facts": canonical_facts, "media_readiness": "READY" if locked else "PENDING"}
+        item = {"asset_type": role, "canonical_asset_id": normalized_id, "asset_key": _text(authority.get("asset_key")) or normalized_id, "asset_revision": authority.get("asset_revision"), "asset_name": _text(name or authority.get("asset_name")), "authority_status": status, "variant_scope": _text(authority.get("variant_scope")), "variant_id": _text(authority.get("variant_id")), "reference_status": "REFERENCE_READY" if locked and ref_token else "REFERENCE_PENDING", "reference_token": ref_token, "authority_fingerprint": _text(authority.get("authority_fingerprint") or fingerprint(authority)) if authority else "", "visual_facts": canonical_facts, "media_readiness": "READY" if locked else "PENDING"}
         entries.append(item)
 
     add("scene", canonical.get("scene") or raw.get("scene_asset_id"), raw.get("scene_name"))
@@ -150,9 +150,11 @@ def _normalize_asset_bindings(raw_bindings: dict[str, Any], asset_authority: dic
     for value in props if isinstance(props, list) else []:
         add("prop", value)
     ready_ids = {item["canonical_asset_id"] for item in entries if item["reference_status"] == "REFERENCE_READY"}
-    pending_requirements = [{"asset_id": _text(item.get("asset_id") if isinstance(item, dict) else item), "reason": "ASSET_AUTHORING_PENDING"} for item in pending if _text(item.get("asset_id") if isinstance(item, dict) else item) not in ready_ids]
+    pending_requirements = [{"asset_id": _text(item.get("asset_id") if isinstance(item, dict) else item), "reason": "REFERENCE_PENDING"} for item in pending if _text(item.get("asset_id") if isinstance(item, dict) else item) not in ready_ids]
     for item in entries:
-        if item["reference_status"] == "REFERENCE_PENDING":
+        if item["authority_status"] == "AUTHORING_PENDING":
+            pending_requirements.append({"asset_type": item["asset_type"], "asset_id": item["canonical_asset_id"], "reason": "ASSET_AUTHORING_PENDING"})
+        elif item["reference_status"] == "REFERENCE_PENDING":
             pending_requirements.append({"asset_type": item["asset_type"], "asset_id": item["canonical_asset_id"], "reason": "REFERENCE_PENDING"})
     return entries, pending_requirements
 
@@ -197,7 +199,7 @@ def compile_prompt_ir_from_handoff(handoff: dict[str, Any], *, asset_authority: 
         "retention_policy": policy,
         "serialization": {"static_prompt": "", "motion_prompt": "", "negative_prompt": "", "status": "NOT_SERIALIZED"},
         "qualification_state": "PROMPT_IR_QUALIFIED",
-        "asset_reference_state": "ASSET_REFERENCE_READY" if not pending else "ASSET_REFERENCE_PENDING",
+        "asset_reference_state": "ASSET_AUTHORING_PENDING" if any(item.get("reason") == "ASSET_AUTHORING_PENDING" for item in pending) else ("ASSET_REFERENCE_READY" if not pending else "ASSET_REFERENCE_PENDING"),
         "model_generation_ready": not bool(pending),
         "diagnostics": {"status": "pass", "errors": [], "warnings": [], "pending": pending, "policy_defaults": policy_defaults},
     }

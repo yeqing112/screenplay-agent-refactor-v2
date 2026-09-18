@@ -91,6 +91,7 @@ from api.fact_snapshot_api import router as fact_snapshot_router
 from api.asset_registry_api import router as asset_registry_router
 from api.storyboard_materializer_api import router as storyboard_materializer_router
 from api.prompt_ir_authority_api import router as prompt_ir_authority_router
+from api.visual_asset_authority_api import router as visual_asset_authority_router
 from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
@@ -124,6 +125,7 @@ app.include_router(fact_snapshot_router)
 app.include_router(asset_registry_router)
 app.include_router(storyboard_materializer_router)
 app.include_router(prompt_ir_authority_router)
+app.include_router(visual_asset_authority_router)
 app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft

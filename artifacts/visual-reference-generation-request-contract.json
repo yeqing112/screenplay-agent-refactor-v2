@@ -1,0 +1,7 @@
+{
+  "schema_version": "visual_reference_generation_request_v1",
+  "status": "READY_FOR_PROVIDER_CANARY",
+  "provider_not_called": true,
+  "required_fields": ["asset_version_id", "variant_id", "reference_purpose", "structured_visual_spec_snapshot", "required_source_constraints", "allowed_authoring_fields", "aspect_layout_requirement", "reference_board_type", "request_fingerprint"],
+  "execution_boundary": "draft only; no image provider submission in VISUAL_ASSET_AUTHORITY_AND_AUTHORING"
+}

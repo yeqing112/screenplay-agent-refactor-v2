@@ -1,0 +1,8 @@
+{
+  "schema_version": "reference_media_authority_v1",
+  "statuses": ["CANDIDATE", "SELECTED", "LOCKED", "STALE", "SUPERSEDED"],
+  "required_lineage": ["stable_asset_key", "VisualAssetVersion_id", "VisualAssetVersion_fingerprint", "reference_scope", "image_identity", "checksum", "storage_reference", "generation_import_provenance", "lock_revision"],
+  "reference_sets": {"character": ["single_hero_reference", "six_view_board", "expression_board", "wardrobe_variant_board", "shot_specific_refinement"], "scene": ["canonical_reference", "four_view_spatial_look_board", "state_variant_reference"], "prop": ["canonical_product_reference", "state_variant", "multi_angle_board"]},
+  "reverse_definition_forbidden": true,
+  "locked_legacy_without_lineage": "LEGACY_REFERENCE_MIGRATION_REQUIRED"
+}

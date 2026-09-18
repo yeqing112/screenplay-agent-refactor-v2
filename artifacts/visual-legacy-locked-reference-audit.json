@@ -1,0 +1,15 @@
+{
+  "schema_version": "visual_legacy_locked_reference_audit_v1",
+  "provider_calls": 0,
+  "policy": "do_not_auto_upgrade",
+  "classification": [
+    "AUTHORITY_BINDABLE",
+    "LEGACY_LOCKED_UNBOUND",
+    "STALE",
+    "INVALID"
+  ],
+  "required_for_authority": ["stable_asset_key", "VisualAssetVersion_id", "VisualAssetVersion_fingerprint", "reference_scope", "image_identity", "checksum", "storage_reference", "generation_import_provenance", "lock_revision"],
+  "current_workspace_database": {"status": "empty_or_unseeded", "locked_rows_audited": 0, "authority_bindable": 0, "legacy_locked_unbound": 0, "stale": 0, "invalid": 0},
+  "fixture_policy": "Any locked reference without version lineage is reported as LEGACY_REFERENCE_MIGRATION_REQUIRED; no automatic promotion is performed.",
+  "next_action": "MIGRATION_CHAIN_HARDENING"
+}

@@ -151,7 +151,7 @@ def _location_geometry(location: Any) -> dict[str, Any]:
     return merged
 
 
-def classify_scene_asset(location: Any | None, *, scene_id: str) -> dict[str, Any]:
+def classify_scene_asset(location: Any | None, *, scene_id: str, production_authority: bool | None = None) -> dict[str, Any]:
     """Classify scene location rows without allowing name-only legacy data."""
     if location is None:
         return {"authority_class": "AUTHORING_PENDING", "status": "missing", "reason": "SCENE_ASSET_MISSING", "locked_constraints": [], "advisory_context": [], "authoring_pending": [{"code": "SCENE_ASSET_MISSING"}], "fingerprint": fingerprint({"scene_id": scene_id, "missing": True})}
@@ -163,7 +163,11 @@ def classify_scene_asset(location: Any | None, *, scene_id: str) -> dict[str, An
     identity_match = bool(location_scene_id) and location_scene_id == _text(scene_id)
     geometry = _location_geometry(location)
     has_geometry = bool(geometry)
-    locked = _text(getattr(location, "asset_status", "")).lower() == "locked"
+    # ``None`` preserves the legacy pure-card classifier contract for audit
+    # callers.  Production callers must explicitly attest that a current
+    # VisualAssetVersion pointer was resolved; a mutable ``locked`` row alone
+    # is never enough for production authority.
+    locked = (_text(getattr(location, "asset_status", "")).lower() == "locked") if production_authority is None else bool(production_authority)
     base = {
         "id": getattr(location, "id", None),
         "scene_id": location_scene_id,

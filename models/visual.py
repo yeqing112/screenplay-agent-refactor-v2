@@ -11,6 +11,19 @@ ASSET_STATUS_DRAFT = "draft"
 ASSET_STATUS_REF_READY = "ref_ready"
 ASSET_STATUS_LOCKED = "locked"
 
+# Versioned authority lifecycle.  Legacy ``draft/ref_ready/locked`` values
+# remain readable by compatibility APIs but are never sufficient to activate a
+# VisualAssetVersion pointer in production.
+VISUAL_IDENTITY_REGISTERED = "IDENTITY_REGISTERED"
+VISUAL_AUTHORING_PENDING = "AUTHORING_PENDING"
+VISUAL_SPEC_DRAFT = "SPEC_DRAFT"
+VISUAL_SPEC_APPROVED = "SPEC_APPROVED"
+VISUAL_REFERENCE_PENDING = "REFERENCE_PENDING"
+VISUAL_REFERENCE_SELECTED = "REFERENCE_SELECTED"
+VISUAL_REFERENCE_LOCKED = "REFERENCE_LOCKED"
+VISUAL_PRODUCTION_READY = "PRODUCTION_READY"
+VISUAL_STALE = "STALE"
+
 
 class VisualEraSpec(Base):
     __tablename__ = "visual_era_specs"
@@ -37,6 +50,7 @@ class VisualProp(Base):
 
     id = Column(Integer, primary_key=True)
     book_id = Column(Integer, nullable=False)
+    asset_key = Column(String, default="", index=True)
     book_title = Column(String, default="")
     name = Column(String, nullable=False)
     category = Column(String, default="")
@@ -70,6 +84,7 @@ class VisualLocation(Base):
 
     id = Column(Integer, primary_key=True)
     book_id = Column(Integer, nullable=False)
+    asset_key = Column(String, default="", index=True)
     # Stable ScriptIR scene identity.  ``name`` remains a display/legacy
     # lookup key; production authority must prefer this field.
     scene_id = Column(String, nullable=False, default="", index=True)
@@ -111,6 +126,7 @@ class VisualMakeup(Base):
 
     id = Column(Integer, primary_key=True)
     book_id = Column(Integer, nullable=False)
+    asset_key = Column(String, default="", index=True)
     book_title = Column(String, default="")
     episode = Column(Integer, nullable=False)
     character_name = Column(String, nullable=False)
@@ -143,6 +159,8 @@ class VisualReferenceAsset(Base):
 
     id = Column(Integer, primary_key=True)
     book_id = Column(Integer, nullable=False)
+    asset_key = Column(String, default="", index=True)
+    asset_version_id = Column(Integer, nullable=True, index=True)
     episode = Column(Integer, nullable=True)
     asset_type = Column(String, nullable=False)
     asset_id = Column(String, nullable=False)
@@ -151,6 +169,14 @@ class VisualReferenceAsset(Base):
     local_path = Column(Text, default="")
     reference_token = Column(String, default="")
     status = Column(String, default="candidate")
+    authority_status = Column(String, default="CANDIDATE")
+    reference_scope = Column(Text, default="{}")
+    image_identity = Column(String, default="")
+    checksum = Column(String, default="")
+    generation_provenance = Column(Text, default="{}")
+    lock_revision = Column(Integer, default=0)
+    stale_status = Column(String, default="FRESH")
+    stale_reasons = Column(Text, default="[]")
     prompt = Column(Text, default="")
     model = Column(String, default="")
     notes = Column(Text, default="")
