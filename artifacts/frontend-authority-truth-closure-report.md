@@ -58,12 +58,24 @@ Production Task Center 只合并前四类；列表明确显示来源标签，例
 - No LLM, image, video, embedding, object storage call was made.
 - No authority table or production business data was added/modified.
 
-## 7. Known boundary
+## 7. Full backend suite historical failures
+
+本轮未修改以下历史测试；它们不属于前端 authority closure 回归，不能被解释为本轮引入：
+
+1. `tests/test_director_quality_v24_offline_replay.py`：测试固定期望旧分支 `codex/unify-formal-workspace`，当前分支为 `codex/shot-plan-authority-contract`。
+2. `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py`：测试期望 dirty-worktree reason，但当前安全逻辑提前返回 `HISTORICAL_RECANARY_RETIRED`。
+3. `tests/test_director_quality_v3_fresh_integration_pilot.py`：旧数据库 fixture 期望 6 rows，当前实际为 0。
+4. `tests/test_director_quality_v3_fresh_integration_pilot.py`：旧 provider pilot 期望 3 provider calls，当前 fail-closed 逻辑返回 0。
+5. `tests/test_targeted_missing_fact_api.py`：旧测试期望 read-only extraction 不创建 FactSnapshot，当前既有实现创建 1 条。
+
+这些测试未被修补、重写或伪装为通过；本轮只以定向 authority/materializer 回归作为生产前端闭环门槛。
+
+## 8. Known boundary
 
 - 本轮未进入 Provider Canary；fixture 仅验证 UI projection、门控与来源分类，不代表媒体供应商可用性。
 - 旧 creative/legacy 页面仍保留原有 heuristic，以兼容历史页面；Production 路径已明确隔离。
 
-## 8. Final As-Built Verification
+## 9. Final As-Built Verification
 
 本报告区分此前的 Baseline Audit 与本轮最终实装验证：Baseline 的主要缺口（Dashboard fallback、episode fallback、Task Center 混合 heuristic、projection 失败继续工作、shot/asset 生成未受 authority gate 控制）均已在本轮修复并由单测、构建及真实浏览器 populated fixture 验收覆盖。
 
