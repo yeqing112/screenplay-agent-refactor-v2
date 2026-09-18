@@ -54,21 +54,25 @@ Production Task Center 只合并前四类；列表明确显示来源标签，例
 - Frontend tests：`51 files / 301 tests passed`
 - Frontend build：`npm run build` passed
 - Authority / materializer backend regression：`26 passed, 3 warnings`
+- Deterministic Golden regression：`5 fixtures / 5 passed / 0 failed`
+- Responsive browser checks：`390px / 1024px / 1440px` 已通过；populated Dashboard、Shot、Asset、Task 页面已在真实浏览器复验。
 - Provider calls：`0`
 - No LLM, image, video, embedding, object storage call was made.
 - No authority table or production business data was added/modified.
 
 ## 7. Full backend suite historical failures
 
-本轮未修改以下历史测试；它们不属于前端 authority closure 回归，不能被解释为本轮引入：
+本轮全量后端实跑结果为 `1528 passed / 11 failed / 927 warnings`。失败均未触及本轮 Production 前端 authority closure 代码；相关历史测试、数据库样本和 artifact 未被修补、重写或清理：
 
 1. `tests/test_director_quality_v24_offline_replay.py`：测试固定期望旧分支 `codex/unify-formal-workspace`，当前分支为 `codex/shot-plan-authority-contract`。
-2. `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py`：测试期望 dirty-worktree reason，但当前安全逻辑提前返回 `HISTORICAL_RECANARY_RETIRED`。
-3. `tests/test_director_quality_v3_fresh_integration_pilot.py`：旧数据库 fixture 期望 6 rows，当前实际为 0。
-4. `tests/test_director_quality_v3_fresh_integration_pilot.py`：旧 provider pilot 期望 3 provider calls，当前 fail-closed 逻辑返回 0。
-5. `tests/test_targeted_missing_fact_api.py`：旧测试期望 read-only extraction 不创建 FactSnapshot，当前既有实现创建 1 条。
+2. `tests/test_director_quality_v3_fact_coverage_foundation.py`（3 项）：当前工作树已有的 Director Quality V3 authority artifact 缺少旧版 `provider_attempts_by_stage`、`fact_coverage_foundation`、`fact_semantic_grounding` 字段。
+3. `tests/test_director_quality_v3_fact_semantic_grounding.py`（2 项）：同一历史 authority artifact 缺少旧版 `phase_a_attempt_1_status` 与 semantic grounding 字段。
+4. `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py`：测试期望 dirty-worktree reason，但当前安全逻辑提前返回 `HISTORICAL_RECANARY_RETIRED`。
+5. `tests/test_director_quality_v3_fresh_integration_pilot.py`（2 项）：旧数据库 fixture 期望 6 rows（当前 0），旧 provider pilot 期望 3 provider calls（当前 fail-closed 返回 0）。
+6. `tests/test_director_quality_v3_semantic_verifier_canary.py`：历史 authority artifact 缺少旧版 `semantic_verifier_canary` 字段。
+7. `tests/test_targeted_missing_fact_api.py`：旧测试期望 read-only extraction 不创建 FactSnapshot，当前既有实现创建 1 条。
 
-这些测试未被修补、重写或伪装为通过；本轮只以定向 authority/materializer 回归作为生产前端闭环门槛。
+这些失败是当前工作树既有历史/环境边界；本轮未扩大或掩盖它们。Production authority/materializer 定向回归、Golden 与前端门禁仍以独立结果为准。
 
 ## 8. Known boundary
 
