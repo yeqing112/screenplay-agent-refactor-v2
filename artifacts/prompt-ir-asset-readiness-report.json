@@ -1,0 +1,13 @@
+{
+  "artifact": "prompt-ir-asset-readiness-report",
+  "provider_calls": 0,
+  "states": {
+    "identity_bound": "canonical asset identity known; no visual appearance invented",
+    "visual_specification_bound": "structured authoritative visual facts available",
+    "reference_bound": "locked reference/token available",
+    "asset_authoring_pending": "identity or required reference is not ready",
+    "model_generation_ready": "only true when PromptIR is qualified and every required binding/reference is ready"
+  },
+  "raw_prompt_policy": "authority_prompt_raw is advisory and cannot become a hard visual fact",
+  "visual_asset_backlog_preserved": true
+}

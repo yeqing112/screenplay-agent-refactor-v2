@@ -8,7 +8,7 @@ from .kv import KV
 from .visual import VisualEraSpec, VisualProp, VisualLocation, VisualMakeup, VisualReferenceAsset, AssetSemanticGovernanceRecord, StoryboardTransitionContract, StoryboardTransitionFrame, StoryboardTransitionContinuityReview, StoryboardVideoRetryAttempt, PublicAssetStorageMigrationRecord, DecisionPacketRecord
 from .bridge import SceneCharacter, SceneProp
 from .storyboard import StoryboardShot, StoryboardMaterializationSet, StoryboardMaterializationPointer
-from .prompt import StoryboardPromptVersion
+from .prompt import StoryboardPromptVersion, PromptIRVersion, PromptIRAuthority, PromptIRPointer
 from .acceptance import StoryboardAcceptanceRecord
 from .export_record import ProductionExportRecord
 from .qa_workbench import QAIssue, ScriptVersion
@@ -30,7 +30,7 @@ __all__ = [
     "KV",
     "VisualEraSpec", "VisualProp", "VisualLocation", "VisualMakeup", "VisualReferenceAsset", "AssetSemanticGovernanceRecord", "StoryboardTransitionContract", "StoryboardTransitionFrame", "StoryboardTransitionContinuityReview", "StoryboardVideoRetryAttempt", "PublicAssetStorageMigrationRecord", "DecisionPacketRecord",
     "SceneCharacter", "SceneProp",
-    "StoryboardShot", "StoryboardMaterializationSet", "StoryboardMaterializationPointer", "StoryboardPromptVersion", "StoryboardAcceptanceRecord", "ProductionExportRecord",
+    "StoryboardShot", "StoryboardMaterializationSet", "StoryboardMaterializationPointer", "StoryboardPromptVersion", "PromptIRVersion", "PromptIRAuthority", "PromptIRPointer", "StoryboardAcceptanceRecord", "ProductionExportRecord",
     "QAIssue", "ScriptVersion",
     "AgentViolationLog",
     "TaskRun",

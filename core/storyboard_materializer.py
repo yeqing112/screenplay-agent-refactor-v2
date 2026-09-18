@@ -51,6 +51,8 @@ def _strict_contract_errors(plan: dict[str, Any], shots: list[Any]) -> list[dict
         elif plan_shot_id in seen:
             errors.append({"code": "PLAN_SHOT_ID_DUPLICATE", "message": f"Duplicate plan_shot_id: {plan_shot_id}."})
         seen.add(plan_shot_id)
+        if not _text(item.get("beat_id")):
+            errors.append({"code": "SHOT_PLAN_BEAT_ID_REQUIRED", "message": f"{plan_shot_id or prefix} requires beat_id for PromptIR handoff authority."})
         camera = item.get("camera")
         if not isinstance(camera, dict):
             errors.append({"code": "SHOT_PLAN_CAMERA_REQUIRED", "message": f"{plan_shot_id or prefix} requires an authoritative camera object."})
@@ -84,6 +86,7 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
         "scene_id": scene_id,
         "scene_name": scene_name,
         "plan_shot_id": plan_shot_id,
+        "beat_id": _text(item.get("beat_id")),
         "shot_id": ordinal,
         "dialogue": str(item.get("dialogue") or ""),
         "duration": duration if production else max(1, int(float(duration or 3))),
@@ -101,7 +104,7 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
         "continuity_contract": continuity_contract,
         "meta_info": {
             "authority_classes": {
-                "shot_plan_projection": ["scene_id", "scene_name", "plan_shot_id", "dialogue", "duration", "camera", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract"],
+                "shot_plan_projection": ["scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract"],
                 "structural_materialization_metadata": ["shot_id", "projection_fingerprint"],
                 "compiler_output": [],
                 "media_state": [],
@@ -111,7 +114,7 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
         },
     }
     projection["projection_fingerprint"] = _fingerprint({key: projection[key] for key in (
-        "scene_id", "scene_name", "plan_shot_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract"
+        "scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract"
     )})
     projection["meta_info"]["materializer"] = {"version": MATERIALIZER_VERSION, "policy_version": MATERIALIZER_POLICY_VERSION, "projection_fingerprint": projection["projection_fingerprint"]}
     return projection
@@ -137,7 +140,7 @@ def materialize_storyboard_from_shot_plan(approved_shot_plan: dict[str, Any], tr
 
 
 def projection_payload(shot: dict[str, Any]) -> dict[str, Any]:
-    return {key: shot.get(key) for key in ("scene_id", "scene_name", "plan_shot_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract")}
+    return {key: shot.get(key) for key in ("scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract")}
 
 
 def materialization_set_fingerprint(*, authority_envelope: dict[str, Any], projections: list[dict[str, Any]]) -> str:
@@ -186,6 +189,7 @@ def _row_projection_payload(row: Any, meta: dict[str, Any]) -> dict[str, Any]:
         "scene_id": getattr(row, "scene_id", ""),
         "scene_name": getattr(row, "scene_name", ""),
         "plan_shot_id": getattr(row, "plan_shot_id", "") or handoff.get("plan_shot_id", ""),
+        "beat_id": handoff.get("beat_id", ""),
         "dialogue": getattr(row, "dialogue", "") or "",
         "duration": getattr(row, "duration", None),
         "camera_angle": getattr(row, "camera_angle", "") or "",

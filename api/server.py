@@ -90,6 +90,7 @@ from api.script_ir_api import router as script_ir_router
 from api.fact_snapshot_api import router as fact_snapshot_router
 from api.asset_registry_api import router as asset_registry_router
 from api.storyboard_materializer_api import router as storyboard_materializer_router
+from api.prompt_ir_authority_api import router as prompt_ir_authority_router
 from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
@@ -122,6 +123,7 @@ app.include_router(script_ir_router)
 app.include_router(fact_snapshot_router)
 app.include_router(asset_registry_router)
 app.include_router(storyboard_materializer_router)
+app.include_router(prompt_ir_authority_router)
 app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft
@@ -15468,7 +15470,6 @@ def get_storyboard_structure(book_id: int, episode: int, shot_id: str):
         ).first()
         if not shot:
             raise HTTPException(status_code=404, detail="Storyboard shot not found")
-
         meta_info = safe_json_loads(shot.meta_info) if shot.meta_info else {}
         structure_seed = {
             "shot_id": shot.shot_id,
@@ -15512,7 +15513,6 @@ def patch_storyboard_structure(book_id: int, episode: int, shot_id: str, req: St
         ).first()
         if not shot:
             raise HTTPException(status_code=404, detail="Storyboard shot not found")
-
         current_meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
         if not isinstance(current_meta, dict):
             current_meta = {}
@@ -18892,6 +18892,8 @@ def compile_storyboard_prompts(book_id: int, episode: int, shot_id: str, req: St
         ).first()
         if not shot:
             raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        if str(getattr(shot, "workflow_profile", "") or "").strip().lower() == "production":
+            raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_AUTHORITY_REQUIRED", "message": "Production Prompt Compiler must consume the current storyboard_prompt_handoff_v1 through the PromptIR authority route; legacy direct compile is blocked."})
         shot_meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
         if not isinstance(shot_meta, dict):
             shot_meta = {}
@@ -19004,6 +19006,8 @@ async def compile_storyboard_prompts_async(
         ).first()
         if not shot:
             raise HTTPException(status_code=404, detail="Storyboard shot not found")
+        if str(getattr(shot, "workflow_profile", "") or "").strip().lower() == "production":
+            raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_AUTHORITY_REQUIRED", "message": "Production Prompt Compiler must consume the current storyboard_prompt_handoff_v1 through the PromptIR authority route; legacy direct compile is blocked."})
 
         shot_meta = safe_json_loads(shot.meta_info) if shot.meta_info else {}
         if not isinstance(shot_meta, dict):

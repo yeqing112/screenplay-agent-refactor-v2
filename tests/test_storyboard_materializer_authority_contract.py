@@ -12,6 +12,7 @@ from core.storyboard_materializer import (
 def _shot(**overrides):
     value = {
         "plan_shot_id": "S01",
+        "beat_id": "B01",
         "purpose": "reveal",
         "event": "人物抬头",
         "duration_hint_seconds": 4,

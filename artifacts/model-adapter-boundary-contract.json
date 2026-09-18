@@ -1,0 +1,16 @@
+{
+  "schema_version": "model_adapter_boundary_v1",
+  "owner": "Model Adapter",
+  "rule": "Adapter serializes PromptIR and cannot invent or mutate authority.",
+  "adapters": {
+    "kling": {"adapter_id": "kling", "adapter_version": "kling_adapter_v1"},
+    "seedance": {"adapter_id": "seedance", "adapter_version": "seedance_adapter_v1"},
+    "veo": {"adapter_id": "veo", "adapter_version": "veo_adapter_v1"},
+    "jimeng": {"adapter_id": "jimeng", "adapter_version": "jimeng_adapter_v1"},
+    "flux": {"adapter_id": "flux", "adapter_version": "flux_adapter_v1"},
+    "sd": {"adapter_id": "sd", "adapter_version": "sd_adapter_v1"}
+  },
+  "forbidden_mutations": ["identity", "camera", "duration", "action", "continuity", "asset_binding", "visual_facts"],
+  "reference_policy": "No authoritative reference means no reference-consistency claim.",
+  "provider_calls": 0
+}

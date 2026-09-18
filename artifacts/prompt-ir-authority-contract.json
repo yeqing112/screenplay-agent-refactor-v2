@@ -1,0 +1,12 @@
+{
+  "schema_version": "prompt_ir_authority_v1",
+  "authority_envelope_version": "prompt_ir_authority_envelope_v1",
+  "compiler_version": "prompt_ir_compiler_v2",
+  "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+  "retention_policy_version": "retention_policy_v1",
+  "authority_classes": ["STORYBOARD_CONSTRAINT", "VISUAL_ASSET_CONSTRAINT", "COMPILER_POLICY", "MODEL_ADAPTER_POLICY", "MEDIA_PENDING", "UNKNOWN_INVALID"],
+  "required_production_input": "storyboard_prompt_handoff_v1 from current materialization pointer",
+  "prompt_text_is_derived": true,
+  "model_generation_ready_is_distinct": true,
+  "provider_calls": 0
+}

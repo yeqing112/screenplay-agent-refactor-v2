@@ -1,0 +1,34 @@
+{
+  "artifact": "prompt-ir-consumer-audit",
+  "stage": "PROMPT_IR_AUTHORITY_CONTRACT",
+  "provider_calls": 0,
+  "baseline_audit": {
+    "prompt_ir_schema": "core/prompt_ir.py ShotIR dataclass with defaults for duration/camera/transition/purpose/style/retention and loose AssetBinding/VisualFact records",
+    "phase_a_inputs": ["StoryboardShot relational fields", "prompt_compile_context", "asset_bindings", "continuity", "legacy shot text"],
+    "adapter_inputs": ["ShotIR", "asset binding labels", "visual facts", "retention", "action/camera fields"],
+    "image_consumers": ["core/model_adapter.py", "api/server.py prompt compile/export and image task paths"],
+    "video_consumers": ["api/server.py machine prompt/video submission paths", "H3 reference payload builders"],
+    "prompt_preview_export": ["api/server.py prompt preview, version, export and readiness endpoints"],
+    "asset_binding_logic": "api/server.py rebuilds prompt_compile_context from visual registry and references; legacy fields can include authority_prompt_raw and reference tokens",
+    "reference_logic": "reference token and image readiness are mixed into prompt_compile_context; missing reference could still be verbalized as '以对应参考图为准'",
+    "qa_qualification": "compiler diagnostics/executability persisted in meta_info and readiness, without a versioned PromptIR pointer",
+    "production_defaults": ["duration=3", "camera_angle=MS", "camera_movement=static", "camera_speed=slow", "transition=cut", "shot_purpose=emotion", "style_key=default", "retention defaults"],
+    "authority_risk": "Prompt strings and legacy compiler state live on StoryboardShot; no PromptIR version/pointer separated serialization from authority.",
+    "missing_vs_blocking": "Previous compiler could produce structurally valid ShotIR from incomplete context because dataclass defaults masked missing production facts."
+  },
+  "final_as_built_verification": {
+    "production_input": "Only current StoryboardMaterializationPointer -> authoritative StoryboardShot -> storyboard_prompt_handoff_v1",
+    "prompt_ir_schema": "prompt_ir_authority_v1 structured payload; storyboard facts, asset constraints, compiler policy, retention policy, diagnostics and readiness are separate sections",
+    "authority_classes": ["STORYBOARD_CONSTRAINT", "VISUAL_ASSET_CONSTRAINT", "COMPILER_POLICY", "MODEL_ADAPTER_POLICY", "MEDIA_PENDING", "UNKNOWN_INVALID"],
+    "versioned_artifact": "PromptIRVersion",
+    "authority_envelope": "prompt_ir_authority_envelope_v1",
+    "current_pointer": "PromptIRPointer keyed by storyboard_shot_id",
+    "storyboard_binding": ["materialization_set_id", "storyboard_shot_id", "projection_fingerprint", "scene_id", "plan_shot_id", "ShotPlan authority fingerprint"],
+    "asset_binding": ["asset_type", "canonical_asset_id", "asset_revision", "authority_status", "variant_scope", "variant_id", "reference_status", "reference_token", "authority_fingerprint", "visual_facts", "media_readiness"],
+    "raw_prompt_policy": "authority_prompt_raw is never used by the production PromptIR compiler; only structured authoritative visual_facts may enter hard constraints.",
+    "qualification": ["STRUCTURALLY_VALID", "STORYBOARD_AUTHORITY_BOUND", "ASSET_IDENTITY_BOUND", "COMPILER_POLICY_APPLIED", "PROMPT_IR_QUALIFIED", "ASSET_REFERENCE_READY/PENDING", "MODEL_GENERATION_READY true/false"],
+    "serialization": "static_prompt, motion_prompt and negative_prompt are derived adapter output; they are not PromptIR authority.",
+    "provider_calls": 0,
+    "media_execution": false
+  }
+}

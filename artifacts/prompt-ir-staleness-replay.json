@@ -1,0 +1,14 @@
+{
+  "artifact": "prompt-ir-staleness-replay",
+  "provider_calls": 0,
+  "stale_triggers": [
+    "StoryboardMaterializationPointer changed",
+    "Storyboard projection fingerprint changed",
+    "ShotPlan authority fingerprint changed",
+    "asset authority/revision/reference changed",
+    "retention/compiler policy changed",
+    "PromptIR payload or pointer tampered"
+  ],
+  "adapter_only_change": "PromptIR may remain fresh; only AdapterOutput is regenerated/staled by adapter id/version/capability fingerprint.",
+  "legacy_prompt_text_change": "Derived serialization changes do not alter PromptIR authority hash."
+}
