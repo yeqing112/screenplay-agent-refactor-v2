@@ -69,6 +69,20 @@ def shot_plan_contract() -> dict[str, Any]:
         {"field": "duration_provenance", "semantic_definition": "why duration was selected", "authority_class": DERIVED_EXECUTION_CONSTRAINT, "value_schema": "object", "required": True, "storyboard_blocking": False, "prompt_compiler_blocking": True, "mutation": "immutable_provenance", "provenance": "timing source/default/preflight", "stale": ["executability_policy"]},
         {"field": "unknowns", "semantic_definition": "unresolved plan information", "authority_class": UNKNOWN_UNRESOLVED, "value_schema": "string[]", "required": False, "storyboard_blocking": True, "prompt_compiler_blocking": True, "mutation": "resolve_with_evidence_only", "provenance": "upstream or explicit closure", "stale": ["upstream"]},
     ]
+    upstream_fields = {"scene_id", "scene_name", "plan_shot_id", "beat_id", "participants", "event", "asset_bindings"}
+    continuity_fields = {"entry_state", "exit_state", "continuity_contract"}
+    asset_fields = {"asset_bindings"}
+    executability_fields = {"duration_hint_seconds", "action_beats", "duration_provenance"}
+    for item in fields:
+        field = item["field"]
+        item["optional"] = not bool(item.get("required"))
+        item["mutation_policy"] = item.get("mutation", "reviewed_edit")
+        item["provenance_requirement"] = item.get("provenance", "explicit authority or deterministic derivation")
+        item["upstream_dependency"] = ["ScriptIR", "DirectorTreatment", "SceneBlocking"] if field in upstream_fields else []
+        item["continuity_dependency"] = ["SceneBlocking", "adjacent ShotPlan"] if field in continuity_fields else []
+        item["asset_dependency"] = ["asset registry", "locked reference authority"] if field in asset_fields else []
+        item["executability_dependency"] = ["core.executability.preflight_shot_plan"] if field in executability_fields else []
+        item["stale_dependency"] = list(item.get("stale", []))
     return {
         "schema_version": CONTRACT_SCHEMA_VERSION,
         "authority_policy_version": AUTHORITY_POLICY_VERSION,
@@ -132,13 +146,18 @@ def _state_map(value: Any, key: str) -> dict[str, Any]:
     return {}
 
 
-def _prop_map(value: Any) -> dict[str, dict[str, Any]]:
+def _prop_map(value: Any, *, prefer_exit: bool = False) -> dict[str, dict[str, Any]]:
     data = value if isinstance(value, dict) else {}
     items = data.get("props") if isinstance(data.get("props"), list) else []
     result: dict[str, dict[str, Any]] = {}
     for item in items:
         if isinstance(item, dict) and _text(item.get("prop_id")):
-            result[_text(item["prop_id"])] = item
+            normalized = dict(item)
+            if prefer_exit and "exit_state" in normalized:
+                normalized["state"] = normalized.get("exit_state")
+            elif not prefer_exit and "entry_state" in normalized:
+                normalized["state"] = normalized.get("entry_state")
+            result[_text(item["prop_id"])] = normalized
     return result
 
 
@@ -187,7 +206,7 @@ def validate_shot_continuity(*, shots: list[dict[str, Any]], scene_entry: dict[s
                             if not shot.get("action_beats") and not shot.get("event"):
                                 errors.append({"code": "CHARACTER_STATE_TRANSITION_UNDECLARED", "severity": "blocked", "plan_shot_id": shot_id, "character_id": character_id, "field": field})
         props = _prop_map(entry)
-        exit_props = _prop_map(exit_state)
+        exit_props = _prop_map(exit_state, prefer_exit=True)
         if index > 0:
             for prop_id, before in previous_props.items():
                 after = props.get(prop_id)
@@ -255,6 +274,16 @@ def validate_shot_plan_candidate_authority(raw: dict[str, Any], baseline: dict[s
             start, end = action.get("start_seconds", action.get("at", 0)), action.get("end_seconds", action.get("at", 0))
             if not isinstance(start, (int, float)) or not isinstance(end, (int, float)) or start < 0 or end < start or end > duration:
                 raise ValueError(f"{shot_id} action timing must fit within duration")
+        intervals = []
+        for action in item.get("action_beats") if isinstance(item.get("action_beats"), list) else []:
+            start = action.get("start_seconds", action.get("at", 0)) if isinstance(action, dict) else 0
+            end = action.get("end_seconds", action.get("at", 0)) if isinstance(action, dict) else 0
+            if isinstance(start, (int, float)) and isinstance(end, (int, float)):
+                intervals.append((float(start), float(end), bool(action.get("allow_overlap") or action.get("concurrent"))))
+        ordered_intervals = sorted(intervals)
+        for prior, current in zip(ordered_intervals, ordered_intervals[1:]):
+            if current[0] < prior[1] and not (prior[2] or current[2]):
+                raise ValueError(f"{shot_id} action timing contains an undeclared overlap")
     unknowns = raw.get("unknowns", baseline.get("unknowns", []))
     if not isinstance(unknowns, list):
         raise ValueError("unknowns must be a list")
@@ -291,6 +320,7 @@ def build_shot_plan_authority_envelope(*, plan: dict[str, Any], book_id: int, ep
         "scene_blocking": {"id": getattr(blocking, "id", None), "revision": getattr(blocking, "revision", None), "payload_hash": blocking_payload_hash, "authority_envelope_fingerprint": _text(blocking_envelope.get("envelope_fingerprint"))},
         "source_lineage": {"immutable_source_raw_hash": _text(script_ir_envelope.get("source_lineage", {}).get("immutable_source_raw_hash") if isinstance(script_ir_envelope.get("source_lineage"), dict) else ""), "source_evidence_index_fingerprint": _text(script_ir_envelope.get("source_evidence_index_fingerprint"))},
         "fact_snapshot": fact_meta,
+        "asset_authority": blocking_envelope.get("asset_authority", {}) if isinstance(blocking_envelope.get("asset_authority"), dict) else {},
         "contract": {"schema_version": CONTRACT_SCHEMA_VERSION, "fingerprint": contract_fingerprint(), "requirement_set_fingerprint": fingerprint({"fields": shot_plan_contract()["fields"]})},
         "executability": {"report": executability, "fingerprint": fingerprint(executability)},
         "continuity": {"report": continuity, "fingerprint": fingerprint(continuity)},

@@ -22,6 +22,10 @@ durable authority envelope.
   bounded by the duration preflight.
 - Character and prop entry/exit state, screen direction and declared
   transitions are checked before activation.
+- Prop continuity records now carry `prop_id`, `scene_id`, `shot_id`, entry /
+  exit state, location, holder/owner, visibility, state variant, source,
+  provenance and unresolved fields; asset bindings separately distinguish
+  canonical identity, locked visual references and pending media.
 - Activation creates `ShotPlanAuthority` and atomically swaps the per-scene
   `ShotPlanPointer`; the previous pointer target is retained as a rollback
   anchor and marked superseded.
@@ -45,7 +49,7 @@ new fail-closed pointer requirement instead of the removed latest-approved
 behavior.
 
 Final local run evidence: ShotPlan/SceneBlocking authority and production gate
-suite **28 passed**; deterministic Golden regression **5/5 passed**; full
+suite **30 passed**; deterministic Golden regression **5/5 passed**; full
 backend run **1480 passed, 11 known baseline failures**. The remaining failures
 are historical Director Quality artifact/database expectations and retired
 provider-canary assertions; none enter this ShotPlan authority path. Frontend

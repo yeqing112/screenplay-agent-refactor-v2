@@ -95,3 +95,20 @@ def test_camera_default_has_explicit_authority_provenance():
     plan = _baseline()
     assert plan["shots"][0]["camera_provenance"]["authority_class"] == SHOT_AUTHORING_DECISION
     assert plan["shots"][0]["camera_provenance"]["source"] == "deterministic_default"
+
+
+def test_prop_continuity_projection_contains_identity_state_and_provenance():
+    plan = _baseline()
+    prop = plan["shots"][0]["entry_state"]["props"][0]
+    assert {"prop_id", "scene_id", "shot_id", "entry_state", "exit_state", "location", "holder", "owner", "visibility", "state_variant", "source", "provenance", "unresolved"}.issubset(prop)
+    assert plan["shots"][0]["asset_bindings"]["canonical_asset_identity"]["props"] == ["P1"]
+
+
+def test_action_timing_overlap_requires_explicit_concurrency():
+    plan = _baseline()
+    plan["shots"][0]["action_beats"] = [
+        {"action_id": "A1", "action": "开门", "start_seconds": 0, "end_seconds": 2},
+        {"action_id": "A2", "action": "停步", "start_seconds": 1, "end_seconds": 2.5},
+    ]
+    with pytest.raises(ValueError, match="overlap"):
+        validate_shot_plan_candidate_authority({field: plan[field] for field in ("scene_id", "scene_name", "schema_version", "shots", "unknowns")}, _baseline(), scene_entry={})
