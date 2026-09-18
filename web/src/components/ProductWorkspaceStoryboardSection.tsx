@@ -64,7 +64,7 @@ import { ProductWorkspacePromptAuthorityPanel } from './ProductWorkspacePromptAu
 import { ProductWorkspaceCompileDiagnosticsPanel } from './ProductWorkspaceCompileDiagnosticsPanel'
 import { ProductWorkspaceStoryboardRepairPanel } from './ProductWorkspaceStoryboardRepairPanel'
 import { fetchModelRegistryDefaults, type ModelProfileRecord } from '../services/modelRegistry'
-import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import { humanizeProductionState, type ProductionWorkspaceLoadState, type ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
@@ -195,6 +195,7 @@ const STORYBOARD_STEPS: Array<{ id: StoryboardStep; label: string; shortLabel: s
 
 type StoryboardCanvasPrimaryActionPlan =
   | { action: 'scripts_gate'; label: string; detail: string }
+  | { action: 'production_blocked'; label: string; detail: string; targetSection?: string | null }
   | { action: 'tasks_prompt'; label: string; detail: string }
   | { action: 'tasks_frame'; label: string; detail: string }
   | { action: 'tasks_video'; label: string; detail: string }
@@ -205,6 +206,8 @@ type StoryboardCanvasPrimaryActionPlan =
 
 export function buildStoryboardCanvasPrimaryActionPlan(input: {
   canGenerateFromGate: boolean
+  productionMode?: boolean
+  productionBlocker?: { recommended_action?: string; description?: string; target_section?: string | null } | null
   promptRecoveryTaskId?: string | null
   frameRecoveryTaskId?: string | null
   videoRecoveryTaskId?: string | null
@@ -214,6 +217,14 @@ export function buildStoryboardCanvasPrimaryActionPlan(input: {
   hasAdoptedVideo: boolean
 }) {
   if (!input.canGenerateFromGate) {
+    if (input.productionMode) {
+      return {
+        action: 'production_blocked',
+        label: input.productionBlocker?.recommended_action || '先处理生产阻塞',
+        detail: input.productionBlocker?.description || '当前权威生产状态尚未满足下游执行条件。',
+        targetSection: input.productionBlocker?.target_section,
+      } satisfies StoryboardCanvasPrimaryActionPlan
+    }
     return {
       action: 'scripts_gate',
       label: '返回剧本工作台补放行',
@@ -2217,7 +2228,16 @@ export default function ProductWorkspaceStoryboardSection({
   const isGenerationBusy = generationState === 'frame' || generationState === 'video'
   const canGenerateFromGate = productionMode
     ? productionWorkspaceState === 'ready' && Boolean(authorityShot) && ['complete', 'ready', 'PRODUCTION_QUALIFIED'].includes(String(authorityShot?.prompt_ir_state || '').trim()) && !['blocked', 'stale', 'needs_action'].includes(String(authorityShot?.reference_state || '').trim())
-    : storyboardGate.status === 'ready'
+      : storyboardGate.status === 'ready'
+  const productionBlocker = useMemo(() => {
+    if (!productionMode || !productionWorkspace) return null
+    const episodeSummary = productionWorkspace.episodes.find((item) => String(item.episode) === String(selectedShot?.episode ?? selectedEpisode))
+    return episodeSummary?.next_action
+      ?? episodeSummary?.blockers?.find((item) => String(item.shot_id ?? '') === String(selectedShot?.shot_id ?? ''))
+      ?? productionWorkspace.project.current_blockers.find((item) => String(item.shot_id ?? '') === String(selectedShot?.shot_id ?? ''))
+      ?? productionWorkspace.project.next_actions[0]
+      ?? null
+  }, [productionMode, productionWorkspace, selectedEpisode, selectedShot?.episode, selectedShot?.shot_id])
   const hasCompiledPrompt = Boolean(
     selectedShot?.prompt_version ||
       String(selectedShot?.visual_prompt_static || '').trim() ||
@@ -2276,6 +2296,8 @@ export default function ProductWorkspaceStoryboardSection({
     () =>
       buildStoryboardCanvasPrimaryActionPlan({
         canGenerateFromGate,
+        productionMode,
+        productionBlocker,
         promptRecoveryTaskId,
         frameRecoveryTaskId,
         videoRecoveryTaskId,
@@ -2291,6 +2313,8 @@ export default function ProductWorkspaceStoryboardSection({
       effectiveReferenceAssetIds.length,
       hasAdoptedFrame,
       hasCompiledPrompt,
+      productionBlocker,
+      productionMode,
       promptRecoveryTaskId,
       videoRecoveryTaskId,
     ],
@@ -3353,6 +3377,19 @@ export default function ProductWorkspaceStoryboardSection({
       return
     }
 
+    if (storyboardCanvasPrimaryActionPlan.action === 'production_blocked') {
+      const targetSection = storyboardCanvasPrimaryActionPlan.targetSection
+      const section = targetSection === 'assets' || targetSection === 'tasks' || targetSection === 'storyboard' || targetSection === 'qa' || targetSection === 'delivery'
+        ? targetSection
+        : 'tasks'
+      onNavigateTaskSection?.(section, {
+        episode: selectedShot.episode,
+        shotId: String(selectedShot.shot_id),
+        recoveryIntent: section === 'assets' ? 'reference' : undefined,
+      })
+      return
+    }
+
     if (storyboardCanvasPrimaryActionPlan.action === 'tasks_prompt') {
       onNavigateTaskSection?.('tasks', {
         episode: selectedShot.episode,
@@ -3709,7 +3746,7 @@ export default function ProductWorkspaceStoryboardSection({
               })}
             </nav>
 
-            {productionReadinessState === 'loaded' && productionReadiness ? (
+            {productionReadinessState === 'loaded' && productionReadiness && !productionMode ? (
               <details className={`rounded-xl border p-4 ${
                 productionReadiness.status === 'blocked'
                   ? 'border-rose-500/30 bg-rose-500/10'
@@ -3946,6 +3983,23 @@ export default function ProductWorkspaceStoryboardSection({
                 <MiniMetric label="视频版本" value={`${selectedShot.assets?.videos?.length ?? 0}`} />
               </div> : null}
 
+              {activeStoryboardStep === 'overview' && productionMode && authorityShot ? (
+                <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                  <div className="text-xs font-medium text-slate-300">权威镜头状态</div>
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-300">
+                    <span>镜头 {authorityShot.shot_id}</span>
+                    <span>{authorityShot.duration}s</span>
+                    <span>{authorityShot.camera.angle}</span>
+                    <span>{authorityShot.camera.movement}</span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-400">
+                    <span>PromptIR：{humanizeProductionState(String(authorityShot.prompt_ir_state))}</span>
+                    <span>参考图：{humanizeProductionState(String(authorityShot.reference_state))}</span>
+                    <span>媒体：{humanizeProductionState(String(authorityShot.media_state))}</span>
+                  </div>
+                </div>
+              ) : null}
+
               {activeStoryboardStep === 'video' && selectedExecutability ? (
                 <div className={`mt-4 rounded-xl border p-4 ${
                   selectedExecutability.status === 'blocked'
@@ -4091,6 +4145,9 @@ export default function ProductWorkspaceStoryboardSection({
                   saveMessage={directorShotSaveMessage}
                   canSave={Boolean(selectedShot)}
                   readOnly={!canGenerateFromGate}
+                  readOnlyReason={productionMode
+                    ? productionBlocker?.description || '当前权威生产状态尚未满足下游执行条件。'
+                    : undefined}
                   onDraftChange={setDirectorShotDraft}
                   onSaveAndRecompile={() => saveDirectorShotText(false)}
                   onRestoreSystemVersion={() => saveDirectorShotText(true)}
@@ -4159,7 +4216,9 @@ export default function ProductWorkspaceStoryboardSection({
               /> : (
                 <details className="mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4">
                   <summary className="cursor-pointer text-sm font-medium text-cyan-100">高级：查看机器提示词导出说明</summary>
-                  <div className="mt-2 text-xs leading-5 text-cyan-100/75">上游剧本尚未放行。为避免导出或提交与未定稿内容不一致的机器提示词，此镜头暂只保留现有版本的只读信息。</div>
+                  <div className="mt-2 text-xs leading-5 text-cyan-100/75">{productionMode
+                    ? `${productionBlocker?.description || '当前权威生产状态尚未满足下游执行条件。'} 为避免越过生产门槛，此镜头暂只保留现有版本的只读信息。`
+                    : '上游剧本尚未放行。为避免导出或提交与未定稿内容不一致的机器提示词，此镜头暂只保留现有版本的只读信息。'}</div>
                 </details>
               )) : null}
 

@@ -190,6 +190,7 @@ export function DirectorShotLanguageEditor({
   saveMessage,
   canSave,
   readOnly = false,
+  readOnlyReason,
   onDraftChange,
   onSaveAndRecompile,
   onRestoreSystemVersion,
@@ -201,6 +202,7 @@ export function DirectorShotLanguageEditor({
   saveMessage: string
   canSave: boolean
   readOnly?: boolean
+  readOnlyReason?: string
   onDraftChange: (value: string) => void
   onSaveAndRecompile: () => void | Promise<void>
   onRestoreSystemVersion: () => void | Promise<void>
@@ -226,7 +228,7 @@ export function DirectorShotLanguageEditor({
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
         <div className={`text-xs ${saveState === 'error' ? 'text-rose-200' : 'text-slate-500'}`}>
           {readOnly
-            ? '上游剧本尚未放行：当前仅可查看导演分镜语言，完成放行后才能编辑并重新编译。'
+            ? readOnlyReason || '当前生产状态尚未放行：暂时只能查看导演分镜语言。'
             : saveMessage || '提示：这里保存的是导演语言覆盖层，最终生产仍会先编译为机器语言。'}
         </div>
         {!readOnly ? <div className="flex flex-wrap items-center gap-2">

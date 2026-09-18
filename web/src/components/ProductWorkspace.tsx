@@ -95,6 +95,7 @@ export default function ProductWorkspace({
   onRefresh,
   onBookChange,
 }: Props) {
+  const fixtureEnabled = import.meta.env.DEV && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('workspace_fixture') === 'populated'
   const persistedNavigationState = useMemo(() => readProductWorkspaceNavigationState(book.id), [book.id])
   const urlNavigation = useMemo(() => readUrlWorkspaceNavigation(), [])
   const [section, setSection] = useState<WorkspaceSection>(urlNavigation.section ?? persistedNavigationState?.section ?? 'dashboard')
@@ -563,12 +564,12 @@ export default function ProductWorkspace({
     adaptationCustomNote,
     adaptationLockedAt,
     setAdaptationCustomNote,
-    hasLockedAdaptation: hasLockedAdaptation || legacyAdaptationReady,
+    hasLockedAdaptation: fixtureEnabled || hasLockedAdaptation || legacyAdaptationReady,
     adaptationSectionState: {
       selectedAdaptationId,
       selectedAdaptationName: selectedAdaptation?.name,
       adaptationCustomNote,
-      hasLockedAdaptation,
+      hasLockedAdaptation: fixtureEnabled || hasLockedAdaptation,
       adaptationStateLabel: adaptationSummary.label,
       adaptationStateDetail: adaptationSummary.detail,
       canGenerateCandidates: adaptationSummary.canGenerateCandidates,
@@ -588,7 +589,9 @@ export default function ProductWorkspace({
     onUnlockAdaptation: unlockAdaptation,
     scripts,
     shotsByEpisode,
-    scriptDecisionState,
+    scriptDecisionState: fixtureEnabled
+      ? { ...scriptDecisionState, '1': { lockedAt: 'fixture-locked', releasedAt: 'fixture-released', note: 'disposable browser fixture' } }
+      : scriptDecisionState,
     setScriptDecisionState,
     selectedStoryboardShotId,
     setSelectedStoryboardShotId,

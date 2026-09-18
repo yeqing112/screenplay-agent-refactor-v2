@@ -15,14 +15,38 @@ export const populatedProductionWorkspaceFixture: ProductionWorkspaceSnapshot = 
     current_blockers: [{
       code: 'REFERENCE_NOT_LOCKED', title: '参考图待锁定', description: '镜头 A 的参考图尚未锁定。', severity: 'blocked', stage: 'REFERENCE', scope: 'shot', book_id: 990401, episode: 1, shot_id: 'A', recommended_action: '前往资产中心锁定参考图', target_section: 'assets', target_params: { section: 'assets', episode: 1, shot_id: 'A' },
     }],
-    next_actions: [],
+    next_actions: [{
+      code: 'REFERENCE_NOT_LOCKED', title: '参考图待锁定', description: '镜头 A 的参考图尚未锁定。', severity: 'blocked', stage: 'REFERENCE', scope: 'shot', book_id: 990401, episode: 1, shot_id: 'A', recommended_action: '前往资产中心锁定参考图', target_section: 'assets', target_params: { section: 'assets', episode: 1, shot_id: 'A' },
+    }],
   },
   stages: {
     CONTENT: { key: 'CONTENT', label: '内容', state: 'complete', detail: '内容已确认', completed: true, blocked: false, stale: false, warning: false, counts: { total: 1, complete: 1 }, reason_codes: [], target_route: { section: 'content' }, blockers: [] },
     PROMPT_IR: { key: 'PROMPT_IR', label: 'PromptIR', state: 'stale', detail: '1 个镜头需要更新', completed: false, blocked: false, stale: true, warning: false, counts: { total: 2, complete: 1, stale: 1 }, reason_codes: ['PROMPT_IR_STALE'], target_route: { section: 'storyboard', episode: 1 }, blockers: [] },
     REFERENCE: { key: 'REFERENCE', label: '参考图', state: 'needs_action', detail: '1 个资产待锁定', completed: false, blocked: false, stale: false, warning: false, counts: { total: 3, complete: 1, needs_action: 2 }, reason_codes: ['REFERENCE_NOT_LOCKED'], target_route: { section: 'assets', episode: 1 }, blockers: [] },
   },
-  episodes: [{ episode: 1, overall_state: 'blocked', overall_progress: 62, blockers: [], next_action: null, stages: {} }],
+  episodes: [{
+    episode: 1,
+    overall_state: 'blocked',
+    overall_progress: 62,
+    blockers: [{
+      code: 'REFERENCE_NOT_LOCKED', title: '参考图待锁定', description: '镜头 A 的参考图尚未锁定。', severity: 'blocked', stage: 'REFERENCE', scope: 'shot', book_id: 990401, episode: 1, shot_id: 'A', recommended_action: '前往资产中心锁定参考图', target_section: 'assets', target_params: { section: 'assets', episode: 1, shot_id: 'A' },
+    }],
+    next_action: {
+      code: 'REFERENCE_NOT_LOCKED', title: '参考图待锁定', description: '镜头 A 的参考图尚未锁定。', severity: 'blocked', stage: 'REFERENCE', scope: 'shot', book_id: 990401, episode: 1, shot_id: 'A', recommended_action: '前往资产中心锁定参考图', target_section: 'assets', target_params: { section: 'assets', episode: 1, shot_id: 'A' },
+    },
+    stages: {
+      SCRIPT_IR: { key: 'SCRIPT_IR', label: '剧本结构', state: 'complete', detail: '剧本结构已确认', completed: true, blocked: false, stale: false, warning: false, counts: { total: 1, complete: 1 }, reason_codes: [], target_route: { section: 'scripts', episode: 1 }, blockers: [] },
+      DIRECTOR_TREATMENT: { key: 'DIRECTOR_TREATMENT', label: '导演方案', state: 'complete', detail: '导演方案已确认', completed: true, blocked: false, stale: false, warning: false, counts: { total: 1, complete: 1 }, reason_codes: [], target_route: { section: 'scripts', episode: 1 }, blockers: [] },
+      SCENE_BLOCKING: { key: 'SCENE_BLOCKING', label: '场面调度', state: 'complete', detail: '场面调度已确认', completed: true, blocked: false, stale: false, warning: false, counts: { total: 1, complete: 1 }, reason_codes: [], target_route: { section: 'storyboard', episode: 1 }, blockers: [] },
+      SHOT_PLAN: { key: 'SHOT_PLAN', label: '镜头计划', state: 'complete', detail: '镜头计划已确认', completed: true, blocked: false, stale: false, warning: false, counts: { total: 2, complete: 2 }, reason_codes: [], target_route: { section: 'storyboard', episode: 1 }, blockers: [] },
+      STORYBOARD: { key: 'STORYBOARD', label: '分镜', state: 'ready', detail: '等待参考图', completed: false, blocked: false, stale: false, warning: false, counts: { total: 2, complete: 1 }, reason_codes: ['REFERENCE_NOT_LOCKED'], target_route: { section: 'storyboard', episode: 1 }, blockers: [] },
+      PROMPT_IR: { key: 'PROMPT_IR', label: 'PromptIR', state: 'stale', detail: '1 个镜头需要更新', completed: false, blocked: false, stale: true, warning: false, counts: { total: 2, complete: 1, stale: 1 }, reason_codes: ['PROMPT_IR_STALE'], target_route: { section: 'storyboard', episode: 1 }, blockers: [] },
+      VISUAL_ASSET: { key: 'VISUAL_ASSET', label: '视觉资产', state: 'needs_action', detail: '场景资产待完成', completed: false, blocked: false, stale: false, warning: false, counts: { total: 3, complete: 1 }, reason_codes: ['ASSET_AUTHORING_PENDING'], target_route: { section: 'assets', episode: 1 }, blockers: [] },
+      REFERENCE: { key: 'REFERENCE', label: '参考图', state: 'needs_action', detail: '1 个镜头待锁定参考图', completed: false, blocked: true, stale: false, warning: false, counts: { total: 3, complete: 1 }, reason_codes: ['REFERENCE_NOT_LOCKED'], target_route: { section: 'assets', episode: 1 }, blockers: [] },
+      MEDIA: { key: 'MEDIA', label: '媒体生成', state: 'not_started', detail: '等待上游参考图', completed: false, blocked: false, stale: false, warning: false, counts: { total: 2, complete: 0 }, reason_codes: ['REFERENCE_NOT_LOCKED'], target_route: { section: 'storyboard', episode: 1 }, blockers: [] },
+      QA: { key: 'QA', label: '质量验收', state: 'not_started', detail: '等待媒体生成', completed: false, blocked: false, stale: false, warning: false, counts: { total: 2, complete: 0 }, reason_codes: [], target_route: { section: 'qa', episode: 1 }, blockers: [] },
+    },
+  }],
   shots: [
     { episode: 1, shot_id: 'A', storyboard_shot_id: 1, scene_id: 'S1', plan_shot_id: 'PLAN-A', duration: 4, camera: { angle: '中景', movement: '固定', speed: '慢' }, action: '人物停在门口', entry_state: '门关闭', exit_state: '门关闭', prompt_ir_state: 'complete', reference_state: 'needs_action', media_state: 'not_started' },
     { episode: 1, shot_id: 'B', storyboard_shot_id: 2, scene_id: 'S1', plan_shot_id: 'PLAN-B', duration: 6, camera: { angle: '近景', movement: '推进', speed: '慢' }, action: '人物抬头', entry_state: '门关闭', exit_state: '人物抬头', prompt_ir_state: 'stale', reference_state: 'complete', media_state: 'not_started' },

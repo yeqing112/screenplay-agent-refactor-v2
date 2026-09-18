@@ -41,17 +41,17 @@ Production Task Center 只合并前四类；列表明确显示来源标签，例
 
 - 后端/默认数据库不写入夹具，不修改 active sample registry。
 - fixture 文件：[tests/fixtures/production-workspace-populated/snapshot.json](../tests/fixtures/production-workspace-populated/snapshot.json)
-- 前端只在 Vite DEV 且 URL 显式包含 `?workspace_fixture=populated` 时加载 fixture，并注入一条镜头、一个人物、一个场景、一个道具；默认 URL 完全不启用。
+- 前端只在 Vite DEV 且 URL 显式包含 `?workspace_fixture=populated` 时加载 fixture，并注入两条镜头、一个人物、一个场景、一个道具；默认 URL 完全不启用。
 - 实际浏览器验收使用 Codex IAB：
   - Dashboard：`/?workspace_fixture=populated`
   - Shot：`/?workspace_fixture=populated&section=storyboard&episode=1&shot=A`
   - Asset：`/?workspace_fixture=populated&section=assets&episode=1`
   - Task Center：`/?workspace_fixture=populated&section=tasks`
-- 已确认可见：Dashboard 62% authority spine 与参考图 blocker；Shot 的生成按钮 disabled 且显示上游门槛；Asset Center 显示三类资产、参考图待锁定且生成按钮 disabled；Task Center 显示“来源：权威工作流”。截图已在本轮真实浏览器会话中展示。
+- 已确认可见：Dashboard 62% authority spine、单集 4/10 阶段与权威“参考图待锁定”下一步；Shot 显示镜头 A 的 4 秒/中景/固定、PromptIR 已确认、参考图待处理，主动作指向资产中心且媒体动作未放行；Asset Center 显示人物、场景、道具三类资产及当前版本/影响镜头/参考图状态，生产阻塞时对应生成按钮受门控；Task Center 显示“来源：权威工作流”。截图已在本轮真实浏览器会话中展示。
 
 ## 6. Verification
 
-- Frontend tests：`51 files / 300 tests passed`
+- Frontend tests：`51 files / 301 tests passed`
 - Frontend build：`npm run build` passed
 - Authority / materializer backend regression：`26 passed, 3 warnings`
 - Provider calls：`0`

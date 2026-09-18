@@ -495,6 +495,28 @@ describe('ProductWorkspaceStoryboardSection', () => {
     })
   })
 
+  it('uses the authority blocker instead of mislabeling a production gate as script release', () => {
+    expect(
+      buildStoryboardCanvasPrimaryActionPlan({
+        canGenerateFromGate: false,
+        productionMode: true,
+        productionBlocker: {
+          recommended_action: '前往资产中心锁定参考图',
+          description: '镜头 A 的参考图尚未锁定。',
+          target_section: 'assets',
+        },
+        hasCompiledPrompt: true,
+        hasAdoptedFrame: false,
+        hasAdoptedVideo: false,
+      }),
+    ).toEqual({
+      action: 'production_blocked',
+      label: '前往资产中心锁定参考图',
+      detail: '镜头 A 的参考图尚未锁定。',
+      targetSection: 'assets',
+    })
+  })
+
   it('renders canvas handoff state inside the storyboard detail panel', () => {
     const html = renderStoryboard([makeShot({ shot_id: '1-01', scene_name: '寺庙后院' })], {
       canvasHandoff: {
