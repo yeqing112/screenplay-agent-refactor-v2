@@ -43,5 +43,5 @@ Run the bounded real canary only after explicit operator confirmation. Do not en
 ## Delivery
 
 - Branch: `codex/unify-formal-workspace`
-- Commit: `59c3963`
+- Commit: `38fc155`
 - Remote: `origin/codex/unify-formal-workspace`
