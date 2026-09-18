@@ -864,6 +864,73 @@ type AssetSemanticDraft = {
   affected_shots: Array<{ composite_shot_id: string; scene_name?: string; binding_source?: string }>
 }
 
+function VisualAuthoringProviderPanel({ bookId, asset }: { bookId: number; asset: AssetSummary }) {
+  const [profiles, setProfiles] = useState<Array<{ id: string; name: string; model_name: string; enabled: boolean; key_configured: boolean }>>([])
+  const [profileId, setProfileId] = useState('')
+  const [state, setState] = useState<'idle' | 'loading' | 'calling' | 'error' | 'success'>('idle')
+  const [message, setMessage] = useState('')
+  const [proposal, setProposal] = useState<{ status?: string; proposal_id?: string } | null>(null)
+  const assetType = toVisualAssetType(asset.category)
+
+  useEffect(() => {
+    let active = true
+    fetch('/api/model-registry')
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!active) return
+        const llmProfiles = (payload?.profiles ?? []).filter((item: { capability?: string; enabled?: boolean; key_configured?: boolean }) => item.capability === 'llm' && item.enabled && item.key_configured)
+        setProfiles(llmProfiles)
+        if (!profileId && llmProfiles[0]?.id) setProfileId(llmProfiles[0].id)
+      })
+      .catch(() => undefined)
+    return () => { active = false }
+  }, [profileId])
+
+  const runCanary = async () => {
+    if (!asset.assetRecordId || !profileId) return
+    if (!window.confirm('确认调用一次真实 LLM 生成视觉设计建议？只会生成待审核建议，不会自动修改资产。')) return
+    setState('calling'); setMessage('')
+    try {
+      const requestResponse = await fetch(`/api/books/${bookId}/visual-assets/authority/${assetType}/${asset.assetRecordId}/authoring-requests`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assetKey: `${assetType}:${asset.assetRecordId}`, freeAuthoringSpace: [] }),
+      })
+      const requestPayload = await requestResponse.json()
+      if (!requestResponse.ok) throw new Error(requestPayload?.detail?.message || requestPayload?.detail || '创建视觉设计任务失败')
+      const requestId = requestPayload?.request?.request_id
+      const response = await fetch(`/api/books/${bookId}/visual-assets/authority/${assetType}/${asset.assetRecordId}/authoring-proposals/canary`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId, modelProfileId: profileId, confirmedProviderCall: true }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail?.message || payload?.detail || '视觉设计建议生成失败')
+      setProposal(payload.proposal ?? null); setState('success'); setMessage('AI 已提出视觉设计建议，当前仍待你审核；不会自动写入资产。')
+    } catch (error) {
+      setState('error'); setMessage(error instanceof Error ? error.message : '视觉设计建议生成失败')
+    }
+  }
+
+  return (
+    <div className="mt-4 rounded-xl border border-sky-500/30 bg-sky-500/5 p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-sm font-medium text-sky-100">AI 提议视觉设计</div>
+          <div className="mt-1 text-xs leading-5 text-sky-100/70">AI 只会生成设计建议，不会自动确认、改资产或生成图片。</div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <select value={profileId} onChange={(event) => setProfileId(event.target.value)} className="rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 text-xs text-slate-200" aria-label="Provider 模型">
+            <option value="">选择 LLM</option>
+            {profiles.map((profile) => <option key={profile.id} value={profile.id}>{profile.name} · {profile.model_name}</option>)}
+          </select>
+          <button type="button" onClick={() => void runCanary()} disabled={!profileId || state === 'calling'} className="rounded-lg border border-sky-300/50 bg-sky-400/10 px-3 py-1.5 text-xs text-sky-100 disabled:cursor-not-allowed disabled:opacity-50">{state === 'calling' ? '调用中…' : '生成 AI 建议'}</button>
+        </div>
+      </div>
+      {message ? <div className={`mt-3 rounded-lg border px-3 py-2 text-xs ${state === 'error' ? 'border-rose-500/30 bg-rose-500/10 text-rose-200' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'}`}>{message}</div> : null}
+      {proposal ? <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-2 text-xs text-slate-300">状态：<span className="text-sky-200">{proposal.status ?? 'REVIEW_REQUIRED'}</span> · 提议编号：{proposal.proposal_id}</div> : null}
+    </div>
+  )
+}
+
 function AssetSemanticGovernancePanel({
   bookId,
   asset,
@@ -1902,6 +1969,7 @@ export default function ProductWorkspaceAssetsSection({
               <summary className="cursor-pointer text-sm font-medium text-violet-100">高级：审核资产治理草案与版本化修改</summary>
               <div className="mt-1 text-xs leading-5 text-violet-100/70">治理仅在你生成证据包、确认调用和最终写入后生效。</div>
               <AssetSemanticGovernancePanel key={selectedAsset.id} bookId={bookId} asset={selectedAsset} onRefresh={onRefreshAll} />
+              <VisualAuthoringProviderPanel key={`provider-${selectedAsset.id}`} bookId={bookId} asset={selectedAsset} />
             </details>
 
             <div className={`mt-5 rounded-xl border p-4 ${shouldHighlightRecoveredReference ? 'border-sky-500/40 bg-sky-500/5' : 'border-slate-800 bg-slate-950/50'}`}>

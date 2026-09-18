@@ -1,0 +1,18 @@
+{
+  "stage": "VISUAL_AUTHORING_PROVIDER_CANARY",
+  "status": "NOT_EXECUTED",
+  "reason": "Execution rule for this turn forbids real LLM/provider calls; explicit operator authorization with one model_profile_id is still required.",
+  "logical_provider_calls": 0,
+  "transport_calls": 0,
+  "authority_mutations": {
+    "visual_authoring_proposal": 0,
+    "visual_authoring_decision": 0,
+    "visual_asset_version": 0,
+    "visual_asset_pointer": 0,
+    "visual_reference_authority": 0,
+    "prompt_ir_stale": 0,
+    "image_calls": 0,
+    "video_calls": 0
+  },
+  "next_action": "After deterministic gates are accepted, explicitly authorize exactly one request with an explicit enabled LLM profile."
+}

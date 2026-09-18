@@ -91,6 +91,7 @@ from api.fact_snapshot_api import router as fact_snapshot_router
 from api.asset_registry_api import router as asset_registry_router
 from api.storyboard_materializer_api import router as storyboard_materializer_router
 from api.director_benchmark_api import router as director_benchmark_router
+from api.visual_authoring_provider_api import router as visual_authoring_provider_router
 
 from nodes.registry import REGISTRY, get_handler
 from nodes.runner import NodeRunner, WORKFLOWS_DIR, RUNS_DIR
@@ -123,6 +124,7 @@ app.include_router(fact_snapshot_router)
 app.include_router(asset_registry_router)
 app.include_router(storyboard_materializer_router)
 app.include_router(director_benchmark_router)
+app.include_router(visual_authoring_provider_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft
 # compiled under an older delivery contract must never be deduplicated as if

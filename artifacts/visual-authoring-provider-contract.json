@@ -1,0 +1,25 @@
+{
+  "schema_version": "visual_authoring_proposal_v1",
+  "contract_version": "visual_authoring_provider_contract_v1",
+  "provider_role": "PROPOSE_ONLY",
+  "statuses": ["CANDIDATE", "VALIDATED", "REVIEW_REQUIRED", "REJECTED", "SUPERSEDED"],
+  "required_output": {
+    "schema_version": "visual_authoring_proposal_v1",
+    "request_id": "string",
+    "asset_key": "string",
+    "proposals": "array",
+    "unknowns": "array[string]",
+    "review_notes": "array[string]"
+  },
+  "proposal_item": {
+    "field": "declared free-authoring field",
+    "value": "structured value",
+    "scope": "object",
+    "design_intent": "string",
+    "constraint_refs": "array[string]"
+  },
+  "forbidden_fields": ["approved", "confirmed", "authority_status", "version_id", "pointer", "reference_authority", "checksum", "geometry", "continuity", "media_url", "image_reference", "prompt_ir", "visual_prompt_zh", "visual_prompt_en", "core_prompt_zh", "core_prompt_en", "outfit_prompt_zh", "outfit_prompt_en", "authority_prompt_raw"],
+  "validation": "deterministic; invalid proposals are REJECTED and never promoted",
+  "unknown_policy": "unknowns are valid and preserved; no forced completion",
+  "activation": "human review only; provider never emits APPROVED"
+}

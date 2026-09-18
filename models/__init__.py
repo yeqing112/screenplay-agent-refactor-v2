@@ -20,6 +20,14 @@ from .scene_blocking import SceneBlocking
 from .shot_plan import ShotPlan
 from .repair import RepairAttempt
 from .director_benchmark import DirectorBenchmarkRun
+from .visual_authority_models import (
+    VisualAuthoringDecisionRequest,
+    VisualAuthoringDecision,
+    VisualAuthoringProposal,
+    VisualAssetVersion,
+    VisualAssetPointer,
+    VisualReferenceAuthority,
+)
 
 __all__ = [
     "Base", "engine", "Session",
@@ -40,4 +48,6 @@ __all__ = [
     "ShotPlan",
     "RepairAttempt",
     "DirectorBenchmarkRun",
+    "VisualAuthoringDecisionRequest", "VisualAuthoringDecision", "VisualAuthoringProposal",
+    "VisualAssetVersion", "VisualAssetPointer", "VisualReferenceAuthority",
 ]

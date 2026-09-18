@@ -1,0 +1,19 @@
+{
+  "artifact": "visual-authoring-proposal-validation-report",
+  "validator": "core.visual_authoring_provider.validate_visual_authoring_proposal",
+  "checks": [
+    "schema and required keys",
+    "exact request_id and asset_key binding",
+    "asset type and free-authoring scope",
+    "forbidden field rejection",
+    "source constraint conflict rejection",
+    "duplicate contradictory proposal rejection",
+    "unknown preservation",
+    "geometry/continuity boundary rejection via forbidden authority fields"
+  ],
+  "reason_codes": ["PROVIDER_OUTPUT_FORBIDDEN_FIELD", "PROPOSAL_FIELD_OUT_OF_SCOPE", "SOURCE_VISUAL_CONSTRAINT_CONFLICT", "PROPOSAL_REQUEST_MISMATCH", "PROPOSAL_ASSET_MISMATCH", "PROPOSAL_SCOPE_MISMATCH", "PROPOSAL_SCHEMA_INVALID", "PROPOSAL_DUPLICATE_CONFLICT", "PROPOSAL_UNKNOWN_ALLOWED"],
+  "test_file": "tests/test_visual_authoring_provider_canary.py",
+  "test_result": "5 passed",
+  "provider_calls": 0,
+  "authority_mutations": 0
+}

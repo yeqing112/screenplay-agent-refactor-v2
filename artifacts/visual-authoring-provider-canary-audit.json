@@ -1,0 +1,75 @@
+{
+  "artifact": "visual-authoring-provider-canary-audit",
+  "contract_version": "visual_authoring_provider_contract_v1",
+  "baseline": {
+    "branch": "codex/unify-formal-workspace",
+    "authority_baseline_commit": "5b2a5ae",
+    "provider_calls_before_this_stage": 0
+  },
+  "provider_boundary": {
+    "can_read": [
+      "task-scoped VisualAuthoringDecisionRequest",
+      "asset_key, asset_type, canonical_id and scope",
+      "explicit structured source_constraints",
+      "explicit free_authoring_space and forbidden_contradictions",
+      "bounded structured asset context",
+      "bounded authoritative geometry/continuity context when supplied"
+    ],
+    "must_not_read_as_authority": [
+      "whole-book or unrelated episode context",
+      "legacy visual_prompt_zh/visual_prompt_en/core_prompt_*/outfit_prompt_*",
+      "credentials, API keys or Authorization headers",
+      "media URLs or reference image payloads"
+    ],
+    "can_output": [
+      "structured visual design proposals for fields in free_authoring_space",
+      "design_intent and constraint_refs",
+      "unknowns and review_notes"
+    ],
+    "forbidden_output": [
+      "approval/confirmation/authority status",
+      "VisualAssetVersion, pointer or ReferenceAuthority",
+      "source, geometry or continuity mutation",
+      "PromptIR overwrite, raw provider prompt, media URL or image reference",
+      "asset identity mutation"
+    ]
+  },
+  "source_constraints": {
+    "origin": "VisualAuthoringDecisionRequest.source_constraints",
+    "precedence": "explicit structured source facts outrank provider confidence",
+    "conflict_result": "SOURCE_VISUAL_CONSTRAINT_CONFLICT",
+    "silent_fields": "remain free/unknown; they are never invented as facts"
+  },
+  "free_authoring_space": {
+    "character": ["face", "facial_structure", "baseline_hairstyle", "body_type", "wardrobe", "accessories", "makeup", "color_palette", "visual_temperament", "silhouette"],
+    "scene": ["architecture_style", "materials", "texture", "palette", "lighting_look", "set_dressing", "atmosphere", "surface_finish", "spatial_mood"],
+    "prop": ["material", "finish", "color_palette", "wear_pattern", "style", "visual_detail", "silhouette", "surface_texture"],
+    "out_of_scope_policy": "reject; never silently strip"
+  },
+  "review_flow": [
+    "VisualAuthoringDecisionRequest",
+    "immutable task-scoped provider context",
+    "explicit confirmed_provider_call=true",
+    "provider structured response",
+    "deterministic schema/source/identity validation",
+    "VisualAuthoringProposal(REVIEW_REQUIRED)",
+    "human review",
+    "VisualAuthoringDecision(APPROVED) only through review endpoint"
+  ],
+  "direct_approve_risk": "legacy semantic-governance and direct authority write APIs remain separate; the provider route never calls them",
+  "profile_selection": "explicit model_profile_id; capability=llm, enabled, key_configured and model_name are required; no default fallback",
+  "audit": {
+    "safe_fields": ["request_id", "asset_key", "profile_id", "provider_model", "vendor_host", "request_fingerprint", "system_prompt_sha256", "user_prompt_sha256", "response_hash", "usage", "latency_ms", "parse_status", "validator_status", "transport_attempt_count"],
+    "redacted": ["api_key", "Authorization", "secret", "raw full prompt", "raw full response"],
+    "logical_call_limit": 1,
+    "transport_retry": "only core.llm transport accounting; no parser retry"
+  },
+  "authority_invariants": {
+    "provider_can_create_decision": false,
+    "provider_can_create_visual_asset_version": false,
+    "provider_can_move_pointer": false,
+    "provider_can_create_reference_authority": false,
+    "provider_can_stale_downstream": false,
+    "provider_can_call_image_or_video": false
+  }
+}
