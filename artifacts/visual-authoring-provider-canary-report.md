@@ -34,11 +34,13 @@ The deterministic suite confirms missing confirmation produces zero provider cal
 
 ## Real provider status
 
-No real provider was called in this implementation turn, per the execution rule. Therefore the final readiness token is intentionally withheld until a separately authorized one-request canary is executed with an explicit profile.
+One disposable character request was used with the explicit `local-llm-2vydoz` / `mimo-v2.5` profile. The first HTTP-success response was rejected because it omitted required identity keys; the contract was tightened and the manually retried response passed without relaxing validation. The final proposal is `REVIEW_REQUIRED`. Across the two bounded manual attempts, logical provider calls and transport calls were both 2; no parser retry, image call, video call, version creation, pointer movement, reference-authority mutation, or PromptIR stale propagation occurred.
 
 ## Next gate
 
-Run the bounded real canary only after explicit operator confirmation. Do not enter reference-image, director, scene-blocking, shot-plan, video, or media execution canaries from this stage.
+The visual authoring provider canary is now closed at `REVIEW_REQUIRED`. Do not enter reference-image, director, scene-blocking, shot-plan, video, or media execution canaries from this stage. Human review of the proposal is the only next action in this domain.
+
+Readiness token: `VISUAL_AUTHORING_PROVIDER_CANARY_READY`
 
 ## Delivery
 

@@ -147,11 +147,15 @@ def build_visual_authoring_provider_prompt(context: dict) -> tuple[str, str]:
         "You are a conservative visual authoring assistant. Return only one JSON object. "
         "You may PROPOSE design fields in the declared free_authoring_space only. "
         "Never return approval, authority, version, pointer, reference, prompt, media, geometry, "
-        "or continuity mutation fields. Preserve unknowns instead of inventing facts."
+        "or continuity mutation fields. Preserve unknowns instead of inventing facts. "
+        "The JSON object MUST contain the required top-level keys schema_version, request_id, "
+        "asset_key, proposals, unknowns, and review_notes. Copy request_id and asset_key exactly "
+        "from the task context; do not omit them even when proposals are present."
     )
     user = canonical_json({
         "schema_version": VISUAL_AUTHORING_PROPOSAL_SCHEMA_VERSION,
         "task_context": context,
+        "required_top_level_keys": ["schema_version", "request_id", "asset_key", "proposals", "unknowns", "review_notes"],
         "output_contract": {
             "schema_version": VISUAL_AUTHORING_PROPOSAL_SCHEMA_VERSION,
             "request_id": context.get("request_id"),

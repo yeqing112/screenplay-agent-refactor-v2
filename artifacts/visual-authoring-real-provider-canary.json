@@ -1,18 +1,47 @@
 {
   "stage": "VISUAL_AUTHORING_PROVIDER_CANARY",
-  "status": "NOT_EXECUTED",
-  "reason": "Execution rule for this turn forbids real LLM/provider calls; explicit operator authorization with one model_profile_id is still required.",
-  "logical_provider_calls": 0,
-  "transport_calls": 0,
+  "status": "PASS_REVIEW_REQUIRED",
+  "readiness_token": "VISUAL_AUTHORING_PROVIDER_CANARY_READY",
+  "provider_profile_id": "local-llm-2vydoz",
+  "provider_model": "mimo-v2.5",
+  "vendor_host": "api.xiaomimimo.com",
+  "request_id": "real-canary-20260918-01",
+  "asset_key": "character:21",
+  "proposal_id": "vap_248fbfa5ac7e44d287d9b5b26e4a9b47",
+  "validator_status": "PASS",
+  "final_proposal_status": "REVIEW_REQUIRED",
+  "request_fingerprint": "97eab28205ae26ae17b9e549b66d877cac6b4e7148b1dfe8eb17bf2d8819e7d0",
+  "response_hash": "7ebb8cc0bd176c4e3e19f2395601e8c92b6175ffb0a6972669021fee3af48fd2",
+  "logical_provider_calls": 2,
+  "transport_calls": 2,
+  "successful_attempt": {
+    "http_status": 200,
+    "parse_ok": true,
+    "transport_attempt_count": 1,
+    "prompt_tokens": 507,
+    "cached_tokens": 0,
+    "completion_tokens": 195,
+    "total_tokens": 702,
+    "latency_ms": 21333.01,
+    "cache_hit_rate": 0.0
+  },
+  "prior_failed_attempt": {
+    "http_status": 200,
+    "parse_ok": true,
+    "validator_status": "FAIL",
+    "reason_codes": ["PROPOSAL_SCHEMA_INVALID", "PROPOSAL_REQUEST_MISMATCH", "PROPOSAL_ASSET_MISMATCH"],
+    "follow_up": "Prompt contract was strengthened; validator was not relaxed."
+  },
   "authority_mutations": {
-    "visual_authoring_proposal": 0,
+    "visual_authoring_proposal": 1,
     "visual_authoring_decision": 0,
     "visual_asset_version": 0,
     "visual_asset_pointer": 0,
     "visual_reference_authority": 0,
+    "prompt_ir_version": 0,
     "prompt_ir_stale": 0,
     "image_calls": 0,
     "video_calls": 0
   },
-  "next_action": "After deterministic gates are accepted, explicitly authorize exactly one request with an explicit enabled LLM profile."
+  "next_action": "Human review may now inspect the REVIEW_REQUIRED proposal; this stage does not activate it or authorize media generation."
 }
