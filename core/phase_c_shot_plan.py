@@ -25,6 +25,7 @@ PURPOSES = {
 }
 FRAMINGS = {"EXTREME_WIDE", "WIDE", "MEDIUM_WIDE", "MEDIUM", "MEDIUM_CLOSE", "CLOSE", "EXTREME_CLOSE", "INSERT", "OVER_SHOULDER", "TWO_SHOT", "GROUP_SHOT", "POV"}
 MOVEMENTS = {"NONE", "PAN", "TILT", "DOLLY_IN", "DOLLY_OUT", "TRACK", "ARC", "HANDHELD_FOLLOW", "REFRAME"}
+INFORMATION_VISIBILITY = {"AUDIENCE_ONLY", "CHARACTER_AND_AUDIENCE", "SPECIFIC_CHARACTER_AND_AUDIENCE", "WITHHELD", "AMBIGUOUS", "AUDIENCE_OBSERVES_CHARACTER_DOUBT"}
 
 def _canon(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -66,6 +67,61 @@ def _changed_props(blocking: dict[str, Any], beat_id: str) -> list[str]:
     now = {str(k): (v.get("state") if isinstance(v, dict) else v) for k, v in current.items()}
     return sorted(k for k, value in now.items() if prior.get(k) != value and value not in (None, "", "ABSENT"))
 
+def _interaction_axes(blocking: dict[str, Any]) -> list[dict[str, Any]]:
+    raw = blocking.get("interaction_axes")
+    if not isinstance(raw, list):
+        raw = blocking.get("camera_axis") if isinstance(blocking.get("camera_axis"), list) else []
+    return [a for a in raw if isinstance(a, dict) and str(a.get("axis_id") or a.get("axis_ref") or "").strip()]
+
+def _axis_refs_for_beat(*, beat: dict[str, Any], blocking: dict[str, Any]) -> list[str]:
+    beat_id = str(beat.get("beat_id") or "")
+    subjects = {str(x) for x in (beat.get("characters") or beat.get("participants") or [])}
+    refs = []
+    for axis in _interaction_axes(blocking):
+        axis_id = str(axis.get("axis_id") or axis.get("axis_ref") or "")
+        established = str(axis.get("established_at_beat") or "")
+        axis_subjects = {str(x) for x in (axis.get("subjects") or axis.get("participants") or [])}
+        if established == beat_id or (axis_subjects and subjects & axis_subjects and (not established or beat_id >= established)):
+            refs.append(axis_id)
+    return sorted(set(refs))
+
+def _reaction_refs(decision: dict[str, Any], beat_id: str) -> list[dict[str, Any]]:
+    refs = []
+    for reaction in decision.get("reaction_contracts", []) if isinstance(decision.get("reaction_contracts"), list) else []:
+        if not isinstance(reaction, dict):
+            continue
+        character = str(reaction.get("character_ref") or reaction.get("character_id") or "")
+        refs.append({"reaction_contract_ref": str(reaction.get("contract_id") or f"RC_{beat_id}_{character}"), "character_ref": character, "reaction_type": str(reaction.get("reaction_type") or ""), "required": bool(reaction.get("required", True))})
+    return refs
+
+def build_shot_requirements(*, treatment: dict[str, Any], blocking: dict[str, Any], script_authority: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Compile deterministic obligations only; this function never authors a shot."""
+    decisions = _decisions(treatment)
+    requirements = []
+    beats = _beats(treatment)
+    for index, beat in enumerate(beats):
+        beat_id = str(beat["beat_id"])
+        decision = decisions.get(beat_id, {})
+        reaction_refs = _reaction_refs(decision, beat_id)
+        prop_refs = list(beat.get("prop_refs") or beat.get("critical_prop_refs") or []) or _changed_props(blocking, beat_id)
+        axis_refs = _axis_refs_for_beat(beat=beat, blocking=blocking)
+        required_coverages = ["PRIMARY_BEAT_COVERAGE"]
+        if any(r["required"] for r in reaction_refs) or beat.get("requires_reaction") or beat.get("reaction_required"):
+            required_coverages.append("REACTION_COVERAGE")
+        if prop_refs or str(beat.get("beat_type") or beat.get("type") or "").upper() in {"PROP", "EVIDENCE"}:
+            required_coverages.append("INSERT_EVIDENCE")
+        if index == len(beats) - 1:
+            required_coverages.append("SCENE_EXIT_COVERAGE")
+        delta = decision.get("audience_state_delta") if isinstance(decision.get("audience_state_delta"), dict) else {}
+        requirements.append({"requirement_id": f"REQ_{beat_id}", "beat_refs": [beat_id], "director_decision_refs": [str(decision.get("decision_id"))] if decision.get("decision_id") else [], "required_coverages": sorted(set(required_coverages)), "required_subjects": sorted({str(x) for x in (beat.get("characters") or beat.get("participants") or []) if str(x).strip()}), "reaction_contracts": reaction_refs, "reaction_contract_refs": [x["reaction_contract_ref"] for x in reaction_refs], "blocking_state_refs": [beat_id], "required_axis_refs": axis_refs, "required_prop_refs": sorted({str(x) for x in prop_refs if str(x).strip()}), "information_requirements": [str(x) for x in (delta.get("knowledge_added") or []) if str(x).strip()]})
+    return {"contract_version": SHOT_PLAN_CONTRACT_VERSION, "requirements": requirements, "coverage_contracts": requirements, "continuity_constraints": [{"requirement_ref": r["requirement_id"], "axis_refs": r["required_axis_refs"], "blocking_state_refs": r["blocking_state_refs"]} for r in requirements], "axis_constraints": [{"axis_ref": axis, "policy": "PRESERVE_UNLESS_MOTIVATED_CROSS"} for axis in sorted({a for r in requirements for a in r["required_axis_refs"]})], "source_lineage": script_authority or {}, "provider_provenance": {"origin": "REQUIREMENTS_COMPILER", "provider_calls": 0}}
+
+def build_phase_c_contract(*, requirements: dict[str, Any], coverage_results: list[dict[str, Any]] | None = None, compiled_continuity: dict[str, Any] | None = None, runtime_projection: dict[str, Any] | None = None, authoring_provenance: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Metadata only.  Canonical shots are intentionally absent."""
+    contract = {"contract_version": requirements.get("contract_version", SHOT_PLAN_CONTRACT_VERSION), "requirements": requirements.get("requirements", []), "coverage_results": coverage_results or [], "compiled_continuity": compiled_continuity or {}, "runtime_projection": runtime_projection or {"status": "AUTHORING_DERIVED_OR_PENDING"}, "source_lineage": requirements.get("source_lineage", {}), "authoring_provenance": authoring_provenance or {}}
+    contract["payload_hash"] = _hash(contract)
+    return contract
+
 def build_beat_coverage_contracts(*, treatment: dict[str, Any], blocking: dict[str, Any]) -> list[dict[str, Any]]:
     """Project objective coverage requirements from upstream semantics only."""
     result = []
@@ -87,31 +143,108 @@ def build_beat_coverage_contracts(*, treatment: dict[str, Any], blocking: dict[s
         result.append({"beat_ref": bid, "required_coverages": sorted(set(required)), "required_subjects": sorted({str(x) for x in (beat.get("characters") or beat.get("participants") or []) if str(x).strip()}), "reaction_contract_refs": [str(x.get("contract_id") or x.get("state_delta_ref") or x.get("trigger_ref")) for x in reaction_contracts if isinstance(x, dict)] or ([str(beat.get("reaction_contract"))] if beat.get("reaction_contract") else []), "required_prop_refs": sorted({str(x) for x in prop_refs if str(x).strip()})})
     return result
 
-def compile_shot_coverage(*, treatment: dict[str, Any], blocking: dict[str, Any], shots: list[dict[str, Any]], contracts: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
-    contracts = contracts if contracts is not None else build_beat_coverage_contracts(treatment=treatment, blocking=blocking)
+def compile_shot_coverage(*, treatment: dict[str, Any], blocking: dict[str, Any], shots: list[dict[str, Any]], contracts: list[dict[str, Any]] | None = None, requirements: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    contracts = requirements or contracts or build_beat_coverage_contracts(treatment=treatment, blocking=blocking)
     out = []
     for contract in contracts:
         satisfied = {role: [] for role in contract["required_coverages"]}
+        reaction_results = []
+        prop_results = []
+        subject_results = []
+        state_results = []
+        axis_results = []
+        info_results = []
         for shot in shots:
-            if str(contract["beat_ref"]) in [str(x) for x in shot.get("beat_refs", [])]:
+            beat_refs = [str(x) for x in shot.get("beat_refs", [])]
+            requirement_beats = [str(x) for x in contract.get("beat_refs", [contract.get("beat_ref")]) if x]
+            if set(requirement_beats) & set(beat_refs):
                 for role in shot.get("coverage_roles", []):
-                    if role in satisfied: satisfied[role].append(str(shot["shot_id"]))
-        out.append({"beat_ref": contract["beat_ref"], "required": contract["required_coverages"], "satisfied_by": satisfied, "complete": all(satisfied.values())})
+                    if role in satisfied: satisfied[role].append(str(shot.get("plan_shot_id") or shot.get("shot_id") or ""))
+                shot_subjects = set(map(str, shot.get("subjects") or ([shot.get("dramatic_payload", {}).get("primary_subject")] + shot.get("dramatic_payload", {}).get("secondary_subjects", []))))
+                shot_identity = str(shot.get("plan_shot_id") or shot.get("shot_id") or "")
+                subject_results.append({"shot_id": shot_identity, "subjects": sorted(shot_subjects)})
+                binding = shot.get("spatial_binding") if isinstance(shot.get("spatial_binding"), dict) else {}
+                declared_states = set(map(str, binding.get("blocking_state_refs") or ([binding.get("blocking_state_ref")] if binding.get("blocking_state_ref") else [])))
+                if set(contract.get("blocking_state_refs", [])) <= declared_states: state_results.append(shot_identity)
+                axis = shot.get("axis_contract") if isinstance(shot.get("axis_contract"), dict) else shot.get("continuity_contract", {})
+                declared_axes = set(map(str, axis.get("axis_refs", []))) | ({str(axis.get("axis_ref"))} if axis.get("axis_ref") else set())
+                if not contract.get("required_axis_refs") or set(contract.get("required_axis_refs", [])) <= declared_axes: axis_results.append(shot_identity)
+                if not contract.get("information_requirements") or shot.get("information_visibility") in INFORMATION_VISIBILITY: info_results.append(shot_identity)
+                for reaction in contract.get("reaction_contracts", []):
+                    if "REACTION_COVERAGE" in shot.get("coverage_roles", []) and reaction.get("character_ref") in shot_subjects and str(reaction.get("reaction_contract_ref")) in set(map(str, shot.get("reaction_contract_refs", []))):
+                        reaction_results.append({"reaction_contract_ref": reaction["reaction_contract_ref"], "satisfied_by": [shot_identity], "complete": True})
+                if "INSERT_EVIDENCE" in shot.get("coverage_roles", []):
+                    shot_props = set(map(str, binding.get("prop_refs", [])))
+                    for prop in contract.get("required_prop_refs", []):
+                        if prop in shot_props: prop_results.append({"prop_ref": prop, "satisfied_by": [shot_identity], "complete": True})
+        required_subjects = set(map(str, contract.get("required_subjects", [])))
+        covered_subjects = set(x for item in subject_results for x in item["subjects"])
+        semantic_roles = all(satisfied.values())
+        reaction_complete = all(any(x["reaction_contract_ref"] == ref and x["complete"] for x in reaction_results) for ref in contract.get("reaction_contract_refs", []))
+        props_complete = all(any(x["prop_ref"] == ref and x["complete"] for x in prop_results) for ref in contract.get("required_prop_refs", []))
+        complete = semantic_roles and required_subjects <= covered_subjects and reaction_complete and props_complete and bool(state_results or not contract.get("blocking_state_refs")) and bool(axis_results or not contract.get("required_axis_refs")) and bool(info_results or not contract.get("information_requirements"))
+        out.append({"requirement_ref": contract.get("requirement_id", contract.get("beat_ref")), "beat_ref": contract.get("beat_ref") or (contract.get("beat_refs") or [""])[0], "required": contract["required_coverages"], "satisfied_by": satisfied, "reaction_results": reaction_results, "prop_results": prop_results, "required_subjects": sorted(required_subjects), "covered_subjects": sorted(covered_subjects), "blocking_state_satisfied_by": state_results, "axis_satisfied_by": axis_results, "information_satisfied_by": info_results, "complete": complete})
     return out
 
 def compile_shot_continuity(*, shots: list[dict[str, Any]], blocking: dict[str, Any]) -> dict[str, Any]:
-    axis = str(blocking.get("interaction_axis") or blocking.get("axis_ref") or "AXIS_UNSPECIFIED")
+    axes = {str(a.get("axis_id") or a.get("axis_ref")) for a in _interaction_axes(blocking)}
     compiled = []
     previous = None
     for shot in shots:
-        c = shot.get("continuity_contract") or {}
-        compiled.append({"shot_id": shot["shot_id"], "axis_ref": c.get("axis_ref", axis), "axis_policy": c.get("axis_policy", "PRESERVE"), "screen_direction_state": c.get("screen_direction_state", {}), "blocking_state_ref": c.get("blocking_state_ref")})
+        c = shot.get("axis_contract") or shot.get("continuity_contract") or {}
+        sid = str(shot.get("plan_shot_id") or shot.get("shot_id") or "")
+        axis_ref = str(c.get("axis_ref") or "")
+        row = {"shot_id": sid, "axis_ref": axis_ref, "axis_policy": c.get("axis_policy", "PRESERVE"), "screen_side_assignments": c.get("screen_side_assignments", {}), "look_direction": c.get("look_direction", {}), "blocking_state_refs": (shot.get("spatial_binding") or {}).get("blocking_state_refs", [])}
+        if axis_ref and axis_ref not in axes and c.get("axis_applicability") != "NOT_APPLICABLE": row["error"] = "SHOT_AXIS_REF_INVALID"
+        if previous and axis_ref == previous.get("axis_ref") and row.get("screen_side_assignments") and previous.get("screen_side_assignments") and row["screen_side_assignments"] != previous["screen_side_assignments"] and c.get("axis_policy") != "MOTIVATED_CROSS": row["error"] = "SHOT_AXIS_CONTINUITY_INVALID"
+        compiled.append(row)
         previous = c
-    return {"compiler_version": "shot_continuity_compiler_v1", "shots": compiled}
+    return {"compiler_version": "shot_continuity_compiler_v2", "shots": compiled, "valid": not any(x.get("error") for x in compiled)}
 
 def estimate_runtime(*, shots: list[dict[str, Any]]) -> dict[str, Any]:
     total = round(sum(float(s.get("estimated_duration_ms") or 0) for s in shots), 2)
     return {"estimator_version": "duration_estimator_v1", "shot_count": len(shots), "estimated_duration_ms": total, "estimated_duration_seconds": round(total / 1000, 2)}
+
+def validate_shot_design(*, shots: list[dict[str, Any]], requirements: dict[str, Any], treatment: dict[str, Any], blocking: dict[str, Any], authoring_provenance: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Validate an authored canonical ShotDesignDecision array."""
+    errors: list[dict[str, Any]] = []
+    requirements_list = requirements.get("requirements", []) if isinstance(requirements, dict) else []
+    req_by_id = {str(r.get("requirement_id")): r for r in requirements_list if isinstance(r, dict)}
+    axes = {str(a.get("axis_id") or a.get("axis_ref")) for a in _interaction_axes(blocking)}
+    ids = [str(s.get("plan_shot_id") or "") for s in shots if isinstance(s, dict)]
+    if not ids or len(ids) != len(set(ids)) or any(not x for x in ids): errors.append({"code": "SHOT_ID_INVALID"})
+    provenance = authoring_provenance or {}
+    origin = str(provenance.get("proposal_origin") or provenance.get("origin") or "")
+    if origin not in {"HUMAN_INPUT", "PROVIDER_PROPOSAL", "IMPORTED_REVIEWED_PROPOSAL", "GENERATED_DRAFT"} or (origin == "GENERATED_DRAFT" and not provenance.get("confirmed")):
+        errors.append({"code": "SHOT_AUTHORING_PROVENANCE_INVALID"})
+    for shot in shots:
+        if not isinstance(shot, dict): errors.append({"code": "SHOT_SCHEMA_INVALID"}); continue
+        sid = str(shot.get("plan_shot_id") or "")
+        refs = [str(x) for x in shot.get("requirement_refs", [])]
+        if not refs or any(ref not in req_by_id for ref in refs): errors.append({"code": "SHOT_REQUIREMENT_REF_INVALID", "shot_id": sid})
+        if not shot.get("beat_refs"): errors.append({"code": "SHOT_BEAT_REF_INVALID", "shot_id": sid})
+        if not isinstance(shot.get("director_decision_refs"), list): errors.append({"code": "SHOT_DIRECTOR_DECISION_REF_INVALID", "shot_id": sid})
+        if shot.get("shot_purpose") not in PURPOSES or not set(shot.get("coverage_roles", [])) <= COVERAGE_ROLES: errors.append({"code": "SHOT_SCHEMA_INVALID", "shot_id": sid})
+        subjects = shot.get("subjects") if isinstance(shot.get("subjects"), list) else []
+        camera = shot.get("camera_state") if isinstance(shot.get("camera_state"), dict) else {}
+        if camera.get("framing_class") not in FRAMINGS or camera.get("movement") not in MOVEMENTS or not camera.get("orientation"): errors.append({"code": "SHOT_CAMERA_STATE_INCOMPLETE", "shot_id": sid})
+        if camera.get("movement") != "NONE" and not all(camera.get(x) for x in ("movement_trigger", "movement_target", "movement_end_condition")): errors.append({"code": "SHOT_CAMERA_MOVEMENT_INCOMPLETE", "shot_id": sid})
+        if shot.get("continuous_take") is not True or shot.get("cut_events") not in ([], None): errors.append({"code": "SHOT_INTERNAL_CUT_INVALID", "shot_id": sid})
+        binding = shot.get("spatial_binding") if isinstance(shot.get("spatial_binding"), dict) else {}
+        states = set(map(str, binding.get("blocking_state_refs", [])))
+        axis = shot.get("axis_contract") if isinstance(shot.get("axis_contract"), dict) else {}
+        if axis.get("axis_applicability") != "NOT_APPLICABLE":
+            axis_ref = str(axis.get("axis_ref") or "")
+            declared_axes = set(map(str, axis.get("axis_refs", []))) | ({axis_ref} if axis_ref else set())
+            if not declared_axes or not declared_axes <= axes: errors.append({"code": "SHOT_AXIS_REF_INVALID", "shot_id": sid})
+            if axis.get("axis_policy") == "MOTIVATED_CROSS" and not axis.get("cross_motivation") and not axis.get("reorientation_strategy"): errors.append({"code": "SHOT_AXIS_CROSS_INVALID", "shot_id": sid})
+            if axis_ref == "AXIS_UNSPECIFIED": errors.append({"code": "SHOT_AXIS_REF_INVALID", "shot_id": sid})
+        if not states or not set(map(str, binding.get("subject_zones", {}).keys())).issuperset(set(map(str, subjects))): errors.append({"code": "SHOT_SPATIAL_BINDING_INVALID", "shot_id": sid})
+        if shot.get("information_visibility") not in INFORMATION_VISIBILITY: errors.append({"code": "SHOT_INFORMATION_VISIBILITY_INVALID", "shot_id": sid})
+    coverage = compile_shot_coverage(treatment=treatment, blocking=blocking, shots=shots, requirements=requirements_list)
+    errors.extend({"code": "SHOT_COVERAGE_INCOMPLETE", "requirement_ref": item.get("requirement_ref")} for item in coverage if not item.get("complete"))
+    continuity = compile_shot_continuity(shots=shots, blocking=blocking)
+    return {"valid": not errors, "errors": errors, "coverage": coverage, "continuity": continuity, "phase_c_semantic_ready": not errors}
 
 def validate_shot_plan_contract(*, plan: dict[str, Any], treatment: dict[str, Any], blocking: dict[str, Any]) -> dict[str, Any]:
     errors: list[dict[str, Any]] = []

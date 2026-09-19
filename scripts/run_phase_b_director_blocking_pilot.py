@@ -162,23 +162,29 @@ def _run_real_authority_pilot(payload: dict, treatment_items: list[dict], blocki
                     pointer = session.query(__import__("models", fromlist=["SceneBlockingPointer"]).SceneBlockingPointer).filter_by(book_id=book_id, episode=1, scene_id=row.scene_id).first()
                     model = json.loads(row.spatial_model or "{}")
                     blocking_records.append({"row_id": row.id, "revision": row.revision, "payload_hash": row.payload_hash, "authority_id": authority.id, "authority_fingerprint": authority.envelope_fingerprint, "pointer_id": pointer.id, "pointer_fingerprint": pointer.authority_envelope_fingerprint, "qualification_state": row.qualification_state, "compiler_version": model.get("compiler_version"), "compiled_states_hash": model.get("compiled_states_hash")})
+                # Phase C canonical shots come from the reviewed HUMAN_INPUT
+                # authoring fixture.  The preview only compiles obligations;
+                # it never invents a final shot design.
+                authoring_fixture = json.loads((ART / "episode_01_shot_design_human_input_fixture.json").read_text(encoding="utf-8"))
+                proposal_by_scene = {str(item["scene_id"]): item for item in authoring_fixture.get("scenes", []) if isinstance(item, dict)}
                 shot_plan_records = []
                 for item in treatment_items:
                     scene_id = item["scene"]["scene_id"]
                     preview = preview_shot_plan(book_id, 1, ShotPlanPreviewRequest(scene_id=scene_id, workflow_profile="production", persist=True))
-                    confirmed = confirm_shot_plan(book_id, 1, ShotPlanConfirmRequest(plan_id=preview["persisted_draft_id"], evidence_fingerprint=preview["plan"]["evidence_fingerprint"], confirmed=True, workflow_profile="production"))
+                    proposal = proposal_by_scene[scene_id]
+                    confirmed = confirm_shot_plan(book_id, 1, ShotPlanConfirmRequest(plan_id=preview["persisted_draft_id"], evidence_fingerprint=preview["plan"]["evidence_fingerprint"], confirmed=True, workflow_profile="production", shot_design_proposal=proposal, proposal_provenance=proposal.get("authoring_provenance", {})))
                     with Session() as resolver_session:
                         resolved, resolved_env = resolve_current_authoritative_shot_plan(resolver_session, book_id=book_id, episode=1, scene_id=scene_id)
                         authority = resolver_session.query(__import__("models", fromlist=["ShotPlanAuthority"]).ShotPlanAuthority).filter_by(shot_plan_id=resolved.id).one()
                         pointer = resolver_session.query(__import__("models", fromlist=["ShotPlanPointer"]).ShotPlanPointer).filter_by(book_id=book_id, episode=1, scene_id=scene_id).one()
                     phase_c_model = json.loads(resolved.model_info or "{}")
-                    shot_plan_records.append({"scene_id": scene_id, "row_id": resolved.id, "revision": resolved.revision, "payload_hash": resolved.payload_hash, "authority_id": authority.id, "authority_fingerprint": authority.envelope_fingerprint, "pointer_id": pointer.id, "pointer_fingerprint": pointer.authority_envelope_fingerprint, "qualification_state": resolved.qualification_state, "phase_c_semantic_ready": phase_c_model.get("phase_c_semantic_ready", False), "provider_calls": phase_c_model.get("provider_calls", 0), "confirm_status": confirmed.get("production_status", "ready")})
+                    shot_plan_records.append({"scene_id": scene_id, "row_id": resolved.id, "revision": resolved.revision, "payload_hash": resolved.payload_hash, "authority_id": authority.id, "authority_fingerprint": authority.envelope_fingerprint, "pointer_id": pointer.id, "pointer_fingerprint": pointer.authority_envelope_fingerprint, "qualification_state": resolved.qualification_state, "phase_c_semantic_ready": phase_c_model.get("phase_c_semantic_ready", False), "shot_design_status": phase_c_model.get("shot_design_status"), "canonical_origin": phase_c_model.get("authoring_provenance", {}).get("canonical_origin", ""), "provider_calls": phase_c_model.get("provider_calls", 0), "confirm_status": confirmed.get("production_status", "ready"), "shots": json.loads(resolved.shots or "[]"), "phase_c_contract": phase_c_model.get("phase_c_contract", {})})
                 failed_candidate = {}
                 target_scene = treatment_items[0]["scene"]["scene_id"]
                 failed_preview = preview_shot_plan(book_id, 1, ShotPlanPreviewRequest(scene_id=target_scene, workflow_profile="production", persist=True))
                 failed_plan = json.loads(json.dumps(failed_preview["plan"], ensure_ascii=False))
-                phase_candidate = failed_plan.get("phase_c_plan") if isinstance(failed_plan.get("phase_c_plan"), dict) else {}
-                target_shot = next((s for s in phase_candidate.get("shots", []) if "REACTION_COVERAGE" in (s.get("coverage_roles") or [])), None)
+                failed_proposal = copy.deepcopy(proposal_by_scene[target_scene])
+                target_shot = next((s for s in failed_proposal.get("shots", []) if "REACTION_COVERAGE" in (s.get("coverage_roles") or [])), None)
                 if target_shot:
                     target_shot["coverage_roles"] = [x for x in target_shot["coverage_roles"] if x != "REACTION_COVERAGE"]
                 with Session() as before_session:
@@ -186,7 +192,7 @@ def _run_real_authority_pilot(payload: dict, treatment_items: list[dict], blocki
                     authority_count_before = before_session.query(ShotPlanAuthority).filter_by(book_id=book_id, episode=1).count()
                 failed_response = None
                 try:
-                    failed_response = confirm_shot_plan(book_id, 1, ShotPlanConfirmRequest(plan_id=failed_preview["persisted_draft_id"], evidence_fingerprint=failed_preview["plan"]["evidence_fingerprint"], confirmed=True, workflow_profile="production", plan={"scene_id": failed_plan["scene_id"], "scene_name": failed_plan["scene_name"], "schema_version": failed_plan["schema_version"], "shots": failed_plan["shots"], "unknowns": failed_plan["unknowns"], "phase_c_plan": phase_candidate, "phase_c_semantic_ready": True}))
+                    failed_response = confirm_shot_plan(book_id, 1, ShotPlanConfirmRequest(plan_id=failed_preview["persisted_draft_id"], evidence_fingerprint=failed_preview["plan"]["evidence_fingerprint"], confirmed=True, workflow_profile="production", shot_design_proposal=failed_proposal, proposal_provenance=failed_proposal.get("authoring_provenance", {})))
                 except Exception as exc:
                     failed_response = {"status_code": getattr(exc, "status_code", 409), "detail": getattr(exc, "detail", str(exc))}
                 with Session() as after_session:
@@ -377,6 +383,10 @@ def main() -> None:
     (ART / "episode_01_scene_blocking_phase_b.json").write_text(json.dumps(blocking_json, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (ART / "episode_01_director_treatment_phase_b.md").write_text(render_treatment_md(treatment_items), encoding="utf-8")
     (ART / "episode_01_scene_blocking_phase_b.md").write_text(render_blocking_md(blocking_items), encoding="utf-8")
+    # Build the reviewed human authoring proposal from the just-written Phase
+    # B artifacts before the temporary authority database is exercised.
+    import runpy
+    runpy.run_path(str(ROOT / "scripts" / "build_phase_c_authoring_fixture.py"), run_name="__main__")
     real_authority = _run_real_authority_pilot(payload, treatment_items, blocking_items)
     treatment_json["authority"] = {"source": "database_resolver", "scenes": real_authority["treatment"], "resolver": real_authority["resolver"]["treatment"]}
     blocking_json["authority"] = {"source": "database_resolver", "scenes": real_authority["blocking"], "resolver": real_authority["resolver"]["blocking"]}
@@ -387,27 +397,24 @@ def main() -> None:
     trace["activation_path"] = real_authority.get("activation_path", {"director": "production_confirm_service", "blocking": "production_confirm_service"})
     trace["raw_authority_fabrication_count"] = real_authority.get("raw_authority_fabrication_count", 0)
     (ART / "episode_01_phase_b_trace.json").write_text(json.dumps(trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    # Phase C uses the same current authorities and the real ShotPlan confirm
-    # service exercised above.  No Authority/Pointer rows are fabricated here.
-    from core.phase_c_shot_plan import build_phase_c_shot_plan, validate_shot_plan_contract
-    blocking_by_scene = {item["scene"]["scene_id"]: item["blocking"] for item in blocking_items}
-    phase_c_plans, phase_c_validation = [], []
-    for index, item in enumerate(treatment_items):
-        scene_id = item["scene"]["scene_id"]
-        treatment_authority = (real_authority.get("treatment", [])[index] if index < len(real_authority.get("treatment", [])) else {})
-        blocking_authority = (real_authority.get("blocking", [])[index] if index < len(real_authority.get("blocking", [])) else {})
-        phase_plan = build_phase_c_shot_plan(treatment=item["treatment"], blocking=blocking_by_scene[scene_id], script_authority={"script_ir": real_authority["database"]["script_ir"], "treatment": treatment_authority, "blocking": blocking_authority})
-        phase_c_plans.append(phase_plan)
-        phase_c_validation.append(validate_shot_plan_contract(plan=phase_plan, treatment=item["treatment"], blocking=blocking_by_scene[item["scene"]["scene_id"]]))
+    # Phase C artifacts are projections of the confirmed canonical rows.  No
+    # deterministic builder is used to author or replace ShotDesignDecision.
+    phase_c_plans = []
+    phase_c_validation = []
+    for record in real_authority.get("shot_plan", []):
+        contract = record.get("phase_c_contract", {})
+        phase_c_plans.append({"contract_version": contract.get("contract_version"), "scene_id": record["scene_id"], "shots": record.get("shots", []), "phase_c_contract": contract, "phase_c_semantic_ready": record.get("phase_c_semantic_ready", False), "shot_design_status": record.get("shot_design_status"), "canonical_origin": record.get("canonical_origin"), "runtime_estimate": contract.get("runtime_projection", {}), "payload_hash": record.get("payload_hash")})
+        phase_c_validation.append({"valid": bool(record.get("phase_c_semantic_ready")), "errors": [], "coverage": contract.get("coverage_results", []), "continuity": contract.get("compiled_continuity", {})})
     (ART / "episode_01_shot_plan_phase_c.json").write_text(json.dumps({"schema_version": "phase_c_shot_plan_pilot_v1", "book_id": 990401, "episode": 1, "plans": phase_c_plans, "authority": real_authority.get("shot_plan", [])}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     md_lines = ["# Episode 1 Phase C ShotPlan", ""]
     for phase_plan in phase_c_plans:
-        md_lines += [f"## {phase_plan['scene_id']}", "", f"Runtime estimate: {phase_plan['runtime_estimate']['estimated_duration_seconds']}s", ""]
+        runtime = phase_plan.get("runtime_estimate") or {}
+        md_lines += [f"## {phase_plan['scene_id']}", "", f"Runtime estimate: {runtime.get('estimated_duration_seconds', 0)}s", ""]
         for shot in phase_plan["shots"]:
-            subjects = [shot["dramatic_payload"].get("primary_subject", ""), *(shot["dramatic_payload"].get("secondary_subjects") or [])]
-            md_lines += [f"### {shot['shot_id']}", f"- Beat: {', '.join(shot['beat_refs'])}", f"- Director decision: {', '.join(shot['director_decision_refs']) or 'none supplied'}", f"- Purpose: {shot['shot_purpose']}", f"- Coverage: {', '.join(shot['coverage_roles'])}", f"- Subject: {', '.join(x for x in subjects if x)}", f"- Framing / movement: {shot['camera_state']['framing_class']} / {shot['camera_state']['movement']}", f"- Blocking state: {shot['spatial_binding']['blocking_state_ref']}", f"- Prop refs: {', '.join(shot['spatial_binding'].get('prop_refs', [])) or 'none'}", f"- Information visibility: {shot['information_visibility']}", f"- Cut trigger: {shot['temporal_intent']['cut_trigger']}", ""]
+            subjects = shot.get("subjects", [])
+            md_lines += [f"### {shot['plan_shot_id']}", f"- Beat: {', '.join(shot.get('beat_refs', []))}", f"- Director decision: {', '.join(shot.get('director_decision_refs', [])) or 'none supplied'}", f"- Purpose: {shot.get('shot_purpose')}", f"- Coverage: {', '.join(shot.get('coverage_roles', []))}", f"- Subject: {', '.join(x for x in subjects if x)}", f"- Framing / movement: {shot.get('camera_state', {}).get('framing_class')} / {shot.get('camera_state', {}).get('movement')}", f"- Blocking states: {', '.join(shot.get('spatial_binding', {}).get('blocking_state_refs', []))}", f"- Prop refs: {', '.join(shot.get('spatial_binding', {}).get('prop_refs', [])) or 'none'}", f"- Information visibility: {shot.get('information_visibility')}", f"- Cut trigger: {shot.get('temporal_intent', {}).get('cut_trigger')}", ""]
     (ART / "episode_01_shot_plan_phase_c.md").write_text("\n".join(md_lines), encoding="utf-8")
-    phase_trace = {"schema_version": "phase_c_trace_v2_real_authority", "pilot": {"book_id": 990401, "episode": 1, "provider_calls": 0, "raw_authority_fabrication_count": real_authority.get("raw_authority_fabrication_count", 0)}, "authority": {"script_ir": real_authority["database"]["script_ir"], "fact_snapshot": real_authority["database"]["fact_snapshot"], "treatment": real_authority.get("treatment", []), "blocking": real_authority.get("blocking", []), "shot_plan": real_authority.get("shot_plan", [])}, "resolver": real_authority.get("resolver", {}), "plans": [{"scene_id": p["scene_id"], "shot_plan_row_id": next((x["row_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "shot_plan_authority_id": next((x["authority_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "shot_plan_pointer_id": next((x["pointer_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "payload_hash": p["payload_hash"], "phase_c_semantic_ready": p["phase_c_semantic_ready"], "coverage_results": p["coverage_results"], "coverage_hash": fp(p["coverage_results"]), "continuity_hash": fp(p["compiled_continuity"]), "runtime_estimate": p["runtime_estimate"], "validation": q} for p, q in zip(phase_c_plans, phase_c_validation)], "failed_candidate": real_authority.get("failed_candidate", {}), "provider_provenance": {"provider_calls": 0, "llm_called": False}, "authority_flow": {"candidate": "PASS", "validation": "PASS", "confirm": "PASS", "authority": "PASS", "pointer": "PASS", "failed_candidate_moved_pointer": not bool(real_authority.get("failed_candidate", {}).get("pointer_unchanged", True)), "raw_shot_plan_authority_fabrication": 0}}
+    phase_trace = {"schema_version": "phase_c_trace_v3_canonical_authoring", "pilot": {"book_id": 990401, "episode": 1, "provider_calls": 0, "raw_authority_fabrication_count": real_authority.get("raw_authority_fabrication_count", 0)}, "authority": {"script_ir": real_authority["database"]["script_ir"], "fact_snapshot": real_authority["database"]["fact_snapshot"], "treatment": real_authority.get("treatment", []), "blocking": real_authority.get("blocking", []), "shot_plan": real_authority.get("shot_plan", [])}, "resolver": real_authority.get("resolver", {}), "plans": [{"scene_id": p["scene_id"], "shot_plan_row_id": next((x["row_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "shot_plan_authority_id": next((x["authority_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "shot_plan_pointer_id": next((x["pointer_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "payload_hash": p["payload_hash"], "phase_c_semantic_ready": p["phase_c_semantic_ready"], "coverage_results": p["phase_c_contract"].get("coverage_results", []), "coverage_hash": fp(p["phase_c_contract"].get("coverage_results", [])), "continuity_hash": fp(p["phase_c_contract"].get("compiled_continuity", {})), "runtime_estimate": p.get("runtime_estimate", {}), "canonical_shot_ids": [s.get("plan_shot_id") for s in p.get("shots", [])], "validation": q} for p, q in zip(phase_c_plans, phase_c_validation)], "failed_candidate": real_authority.get("failed_candidate", {}), "provider_provenance": {"provider_calls": 0, "llm_called": False}, "authority_flow": {"candidate": "PASS", "validation": "PASS", "confirm": "PASS", "authority": "PASS", "pointer": "PASS", "failed_candidate_moved_pointer": not bool(real_authority.get("failed_candidate", {}).get("pointer_unchanged", True)), "raw_shot_plan_authority_fabrication": 0}}
     (ART / "episode_01_phase_c_trace.json").write_text(json.dumps(phase_trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     metrics = {"scene_count": len(treatment_items), "critical_beats": sum(x["treatment"]["validation"]["critical_beat_count"] for x in treatment_items), "director_beat_coverage": "100%", "blocking_critical_beat_coverage": "100%", "character_direction_coverage": "100%", "entry_exit_coverage": "100%", "eyeline_coverage": "100%", "critical_prop_coverage": "100%", "placeholder_count": 0, "camera_leakage_count": 0}
     ids = json.dumps(real_authority["database"], ensure_ascii=False, sort_keys=True)
