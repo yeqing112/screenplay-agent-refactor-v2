@@ -4,7 +4,7 @@
 
 - Baseline at `e6e9b85`: 1516 passed, 35 failed, 926 warnings.
 - Contract migration run: all targeted Production authority/downstream fixture failures passed after migration.
-- Final full backend: 1548 passed, 4 failed, 928 warnings.
+- Final full backend: 1549 passed, 4 failed, 928 warnings.
 - Golden regression: 5/5 passed.
 
 ## Failure classification
@@ -41,3 +41,4 @@ Missing timeline, inferred timeline, invalid order, missing ref, duplicate order
 - Migration: no database schema change; no Alembic migration.
 - Unrelated working-tree changes: the five pre-existing `artifacts/migration-*` audit files remain local and are excluded from this commit.
 - Phase B: not started.
+
