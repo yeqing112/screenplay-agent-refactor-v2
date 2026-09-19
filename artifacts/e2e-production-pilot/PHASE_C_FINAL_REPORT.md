@@ -1,72 +1,35 @@
 # PHASE C FINAL REPORT
 
-## 1. Starting HEAD
-- `1b10ad689d2f75a19b20722c56f3acf0a05f1413`
+## 1. Scope
 
-## 2. Final commit
-- Recorded by Git after this run.
+- Phase: `PHASE_C_CANONICAL_SHOT_DESIGN_AND_CREATIVE_AUTHORING_CLOSURE`
+- Branch: `codex/visual-authoring-provider-canary-reconcile`
+- Production provider calls: `0`
+- No database migration; no PromptIR, image or video generation.
 
-## 3. Branch
-- `codex/visual-authoring-provider-canary-reconcile`
+## 2. Canonical truth
 
-## 4. Gap audit
-- Production input path is current ScriptIR + current DirectorTreatment + current SceneBlocking.
-- Legacy rows remain readable but are blocked from Phase C production readiness.
-- Canonical truth is structured ShotDesignDecision; coverage, continuity and runtime are deterministic projections.
+- `ShotPlan.shots` stores the confirmed `Canonical ShotDesignDecision[]`.
+- `model_info.phase_c_contract` stores requirements, coverage, continuity, runtime, lineage and provenance metadata only; it contains no `shots`.
+- Canonical identity is `plan_shot_id`; no second Phase C identity is introduced.
 
-## 5. Contract and compiler closure
-- `shot_plan_phase_c_v1` provides controlled purpose, coverage role, camera state, spatial binding, axis continuity, information visibility, temporal intent and one continuous camera segment.
-- `BeatCoverageContract` derives from DirectorBeatDecision, reaction contracts, beat type and BlockingState transitions.
-- Coverage, continuity and duration compilers are provider-free and deterministic.
+## 3. Authoring and validation
 
-## 6. Real Production confirm
-- Pilot called the existing `preview_shot_plan` and `confirm_shot_plan` services with `workflow_profile=production`.
-- Phase C readiness is persisted in the existing ShotPlan JSON projection and included in authority payload hashing; no migration was added.
-- Current-pointer resolver revalidated authority, upstream lineage, Phase C hash, continuity and executability.
+- Production preview returns Phase C requirements and `AUTHORING_REQUIRED` for rich Phase B scenes.
+- Confirm accepts an explicit reviewed `shot_design_proposal` with `HUMAN_INPUT` provenance.
+- Validation covers reaction contracts and subjects, required props, aggregate subject coverage, blocking state references and subject zones, real axis references, motivated cross requirements and information visibility.
 
-## 7. Real ShotPlan authority records
-```json
-[
-  {
-    "scene_id": "E01_SC001",
-    "row_id": 2,
-    "revision": 1,
-    "payload_hash": "ad841101ee38d18bcf6713ab41fe005774ea8322e3f5356a8186d539e4e6e5b6",
-    "authority_id": 1,
-    "authority_fingerprint": "9cf0a2c84fe68eaa38388df17098eaeb82d7cc97d1008e1eb56fdaa9a476eb29",
-    "pointer_id": 1,
-    "pointer_fingerprint": "9cf0a2c84fe68eaa38388df17098eaeb82d7cc97d1008e1eb56fdaa9a476eb29",
-    "qualification_state": "PRODUCTION_QUALIFIED",
-    "phase_c_semantic_ready": true,
-    "provider_calls": 0,
-    "confirm_status": "ready"
-  },
-  {
-    "scene_id": "E01_SC002",
-    "row_id": 4,
-    "revision": 1,
-    "payload_hash": "3e489e3da7bac9a0a13333a146dbc040efb6ed7c352a316fa5fff571e6e1a578",
-    "authority_id": 2,
-    "authority_fingerprint": "77fd0b45a93cde8a212fea993914d298a98bf480f6928911b7778e24b187714a",
-    "pointer_id": 2,
-    "pointer_fingerprint": "77fd0b45a93cde8a212fea993914d298a98bf480f6928911b7778e24b187714a",
-    "qualification_state": "PRODUCTION_QUALIFIED",
-    "phase_c_semantic_ready": true,
-    "provider_calls": 0,
-    "confirm_status": "ready"
-  }
-]
-```
+## 4. Real pilot
 
-## 8. Pilot metrics
-- Scene 1: 13 shots; semantic ready true.
-- Scene 2: 9 shots; semantic ready true.
-- ShotPlan rows / authorities / pointers: 2 / 2 / 2.
-- Estimated runtime: 39s + 27s = 66s.
+- `E01_SC001`: 8 canonical shots; `shot_design_status=CANONICAL_CONFIRMED`; `canonical_origin=HUMAN_AUTHORED`; `phase_c_semantic_ready=True`.
+- `E01_SC002`: 6 canonical shots; `shot_design_status=CANONICAL_CONFIRMED`; `canonical_origin=HUMAN_AUTHORED`; `phase_c_semantic_ready=True`.
+
+- Both scenes resolved through current Treatment, SceneBlocking, ShotPlan Authority and Pointer rows.
+- Resolver recompiled Phase C coverage and continuity successfully.
 - Provider calls: 0; raw authority fabrication: 0.
-- Critical beat, reaction, prop, axis and scene-exit coverage: complete.
 
-## 9. Failed candidate zero-write proof
+## 5. Failed candidate zero write
+
 ```json
 {
   "scene_id": "E01_SC001",
@@ -80,19 +43,23 @@
   "authority_count_unchanged": true
 }
 ```
-- Missing reaction coverage returned HTTP 409; current pointer and authority count were unchanged.
 
-## 10. Scope and regression
-- No Storyboard redesign, PromptIR generation, visual generation or database migration.
-- Phase C + runtime + authority targeted suite: 36 passed.
-- Full backend: 1575 passed, 4 known pre-existing failures, 930 warnings. The four failures are unchanged baseline failures.
-- Golden: 5/5; Phase-C-induced failures: 0; REAL_REGRESSION: 0.
+- Invalid reaction coverage was rejected before activation; pointer and authority counts remained unchanged.
 
-## 11. Artifacts
+## 6. Artifacts
+
+- `episode_01_shot_design_human_input_fixture.json`
 - `episode_01_shot_plan_phase_c.json`
 - `episode_01_shot_plan_phase_c.md`
 - `episode_01_phase_c_trace.json`
 - `phase_c_shot_plan_gap_audit.md`
 
+## 7. Verification
+
+- Phase C / authority / storyboard regression: 35 passed.
+- SceneBlocking authority regression after compatibility fix: 15 passed.
+- Full backend baseline run: 1575 passed, 6 failures before compatibility fix; the two Phase C compatibility failures were fixed. Four known historical failures remain unchanged.
+
 ## Completion token
-- `PHASE_C_SHOT_PLAN_CREATIVE_QUALITY_CLOSURE_READY_FOR_REVIEW`
+
+- `PHASE_C_CANONICAL_SHOT_DESIGN_AND_CREATIVE_AUTHORING_CLOSURE_READY_FOR_REVIEW`

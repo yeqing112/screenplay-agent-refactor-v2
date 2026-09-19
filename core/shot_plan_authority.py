@@ -129,9 +129,13 @@ def shot_plan_payload_from_row(row: Any) -> dict[str, Any]:
         "unknowns": _json(getattr(row, "unknowns", "[]"), []),
     }
     model_info = _json(getattr(row, "model_info", "{}"), {})
-    if isinstance(model_info, dict) and isinstance(model_info.get("phase_c_plan"), dict):
-        payload["phase_c_contract"] = model_info["phase_c_plan"]
-        payload["phase_c_semantic_ready"] = bool(model_info.get("phase_c_semantic_ready"))
+    contract = model_info.get("phase_c_contract") if isinstance(model_info, dict) else None
+    if not isinstance(contract, dict) and isinstance(model_info, dict) and isinstance(model_info.get("phase_c_plan"), dict):
+        # Read old rows for audit only; they are not Phase C ready.
+        contract = {key: value for key, value in model_info["phase_c_plan"].items() if key != "shots"}
+    if isinstance(contract, dict):
+        payload["phase_c_contract"] = contract
+        payload["phase_c_semantic_ready"] = bool(model_info.get("phase_c_semantic_ready")) and model_info.get("shot_design_status") == "CANONICAL_CONFIRMED"
     return shot_plan_payload_from_dict(payload)
 
 
@@ -400,7 +404,7 @@ def resolve_current_authoritative_shot_plan(session: Any, *, book_id: int, episo
     treatment, treatment_envelope = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
     from core.director_treatment_authority import treatment_payload_from_row
     from core.scene_blocking_authority import blocking_payload_from_row
-    from core.phase_c_shot_plan import validate_shot_plan_contract
+    from core.phase_c_shot_plan import validate_shot_design
     blocking_meta = envelope.get("scene_blocking") if isinstance(envelope.get("scene_blocking"), dict) else {}
     if str(blocking_meta.get("id")) != str(blocking.id) or str(blocking_meta.get("revision")) != str(blocking.revision) or _text(blocking_meta.get("payload_hash")) != _text(blocking_envelope.get("payload_hash")) or _text(blocking_meta.get("authority_envelope_fingerprint")) != _text(blocking_envelope.get("envelope_fingerprint")):
         mark_shot_plan_stale(session, row, ["SCENE_BLOCKING_CHANGED"]); session.commit(); _raise("SCENE_BLOCKING_CHANGED", "ShotPlan SceneBlocking lineage is stale.")
@@ -412,13 +416,19 @@ def resolve_current_authoritative_shot_plan(session: Any, *, book_id: int, episo
     if _canonical(fact_meta) != _canonical(plan_fact_meta):
         mark_shot_plan_stale(session, row, ["FACT_SNAPSHOT_CHANGED"]); session.commit(); _raise("FACT_SNAPSHOT_CHANGED", "ShotPlan FactSnapshot lineage is stale.")
     plan = shot_plan_payload_from_row(row)
-    phase_c_plan = plan.get("phase_c_contract") if isinstance(plan.get("phase_c_contract"), dict) else None
-    if not phase_c_plan or not plan.get("phase_c_semantic_ready"):
+    row_model_info = _json(getattr(row, "model_info", "{}"), {})
+    canonical_phase_c = isinstance(row_model_info, dict) and row_model_info.get("shot_design_status") == "CANONICAL_CONFIRMED"
+    phase_c_contract = plan.get("phase_c_contract") if isinstance(plan.get("phase_c_contract"), dict) else None
+    if canonical_phase_c and (not phase_c_contract or not plan.get("phase_c_semantic_ready")):
         mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_NOT_READY"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_NOT_READY", "Current ShotPlan is legacy or Phase C semantic-not-ready.")
+    if not canonical_phase_c:
+        # Legacy compatibility rows remain readable for existing creative
+        # workflows, but they are not reported as Phase C semantic-ready.
+        return row, envelope
     phase_meta = envelope.get("phase_c") if isinstance(envelope.get("phase_c"), dict) else {}
-    if _text(phase_meta.get("payload_hash")) != _text(phase_c_plan.get("payload_hash")) or not phase_meta.get("semantic_ready"):
+    if _text(phase_meta.get("payload_hash")) != _text(phase_c_contract.get("payload_hash")) or not phase_meta.get("semantic_ready"):
         mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_TAMPERED"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_TAMPERED", "Phase C contract lineage is invalid.")
-    phase_validation = validate_shot_plan_contract(plan=phase_c_plan, treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking))
+    phase_validation = validate_shot_design(shots=plan["shots"], requirements=phase_c_contract, treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking), authoring_provenance=phase_c_contract.get("authoring_provenance"))
     if not phase_validation.get("valid"):
         mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_INVALID"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_INVALID", "Current Phase C contract is no longer valid.", errors=phase_validation.get("errors", []))
     script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()

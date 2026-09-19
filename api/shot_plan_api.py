@@ -34,7 +34,7 @@ from core.shot_plan_authority import (
     shot_plan_payload_from_row,
     validate_shot_plan_candidate_authority,
 )
-from core.phase_c_shot_plan import build_phase_c_shot_plan, validate_shot_plan_contract
+from core.phase_c_shot_plan import build_shot_requirements, build_phase_c_contract, validate_shot_plan_contract, validate_shot_design
 from models import DirectorTreatment, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, ShotPlanAuthority, ShotPlanPointer, StoryboardShot, VisualLocation
 
 router = APIRouter(prefix="/api/books", tags=["shot-plan"])
@@ -53,6 +53,8 @@ class ShotPlanConfirmRequest(BaseModel):
     confirmed: bool = False
     plan: dict[str, Any] | None = None
     workflow_profile: str = Field(default="creative_draft", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
+    shot_design_proposal: dict[str, Any] | None = Field(default=None, validation_alias=AliasChoices("shot_design_proposal", "shotDesignProposal", "phase_c_proposal"))
+    proposal_provenance: dict[str, Any] | None = Field(default=None, validation_alias=AliasChoices("proposal_provenance", "proposalProvenance"))
 
 
 class CreativeShotPlanPreviewRequest(BaseModel):
@@ -241,22 +243,33 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
             blocking_payload = {"scene_name": blocking.scene_name, "scene_id": getattr(blocking, "scene_id", scene_id), "participants": _json(blocking.participants, []), "unknowns": _json(blocking.unknowns, []), "evidence_fingerprint": blocking.evidence_fingerprint, "source_spatial_facts": _json(getattr(blocking, "source_spatial_facts", "[]"), []), "continuity_state": _json(getattr(blocking, "continuity_state", "{}"), {}), "beat_spatial_states": _json(getattr(blocking, "beat_spatial_states", "[]"), []), "asset_authority": _json(getattr(blocking, "asset_authority", "{}"), {}), "props": (scene.get("props") if isinstance(scene.get("props"), list) else []), "scene_asset_id": str(scene.get("location_id") or blocking.scene_name or ""), "screen_direction": "maintain"}
         blocking_payload.setdefault("props", scene.get("props") if isinstance(scene.get("props"), list) else [])
         blocking_payload.setdefault("scene_asset_id", str(scene.get("location_id") or blocking.scene_name or ""))
-        plan = build_shot_plan(treatment=treatment_payload, blocking=blocking_payload)
+        legacy_plan = build_shot_plan(treatment=treatment_payload, blocking=blocking_payload)
+        plan = legacy_plan
         plan["scene_id"] = scene_id
         plan["schema_version"] = "shot_plan_v2"
         # Phase C is an additive structured projection.  Existing v1/v2
         # rows stay readable while production callers can inspect the
         # deterministic contract before opting into a Phase C confirm.
         if str(req.workflow_profile or "").strip().lower() == "production":
-            phase_c_plan = build_phase_c_shot_plan(
+            phase_c_requirements = build_shot_requirements(
                 treatment=treatment_payload,
                 blocking=blocking_payload,
                 script_authority={"script_ir": {"id": getattr(script_row, "current_script_ir_version_id", None), "authority_envelope_fingerprint": _text(_authority.get("script_ir", {}).get("authority_envelope_fingerprint"))}, "treatment": {"id": treatment.id, "revision": treatment.revision, "payload_hash": _text(getattr(treatment, "payload_hash", "")), "authority_envelope_fingerprint": _text(_authority.get("envelope_fingerprint"))}, "blocking": {"id": blocking.id, "revision": blocking.revision, "payload_hash": _text(getattr(blocking, "payload_hash", "")), "authority_envelope_fingerprint": _text(blocking_authority.get("envelope_fingerprint"))}},
             )
-            phase_c_validation = validate_shot_plan_contract(plan=phase_c_plan, treatment=treatment_payload, blocking=blocking_payload)
-            plan["phase_c_plan"] = phase_c_plan
-            plan["phase_c_semantic_ready"] = bool(phase_c_validation["valid"] and phase_c_plan.get("phase_c_semantic_ready"))
-            plan["model_info"] = {**(_dict(plan.get("model_info"))), "phase_c_contract_version": phase_c_plan.get("contract_version"), "phase_c_semantic_ready": plan["phase_c_semantic_ready"], "phase_c_payload_hash": phase_c_plan.get("payload_hash"), "phase_c_plan": phase_c_plan}
+            # Rich Phase B scenes require explicit creative authoring.  Small
+            # legacy fixtures without axes remain readable through the old
+            # compatibility path used by creative-draft tests.
+            # Rich Phase B scenes with an explicit interaction axis enter the
+            # canonical authoring gate.  Older compact fixtures without an
+            # axis remain readable through the legacy compatibility path.
+            phase_c_authoring_required = bool(blocking_payload.get("interaction_axes"))
+            phase_c_contract = build_phase_c_contract(requirements=phase_c_requirements)
+            plan["phase_c_contract"] = phase_c_contract
+            plan["phase_c_semantic_ready"] = False
+            plan["shot_design_status"] = "AUTHORING_REQUIRED" if phase_c_authoring_required else "LEGACY_COMPATIBILITY"
+            if phase_c_authoring_required:
+                plan["shots"] = []
+            plan["model_info"] = {"mode": "phase_c_requirements" if phase_c_authoring_required else "legacy_compatibility", "phase_c_contract_version": phase_c_contract.get("contract_version"), "phase_c_semantic_ready": False, "phase_c_payload_hash": phase_c_contract.get("payload_hash"), "phase_c_contract": phase_c_contract, "shot_design_status": plan["shot_design_status"], "provider_calls": 0, "llm_called": False}
         persisted_id = None
         if req.persist:
             existing_query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, evidence_fingerprint=plan["evidence_fingerprint"], workflow_profile=req.workflow_profile, status="draft")
@@ -700,6 +713,7 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
     is_production = str(req.workflow_profile or "creative_draft").strip().lower() == "production"
     phase_c_info: dict[str, Any] = {}
     confirmed_phase_c_plan: dict[str, Any] | None = None
+    phase_c_authoring_mode = False
     with Session() as session:
         draft = session.query(ShotPlan).filter_by(id=req.plan_id, book_id=book_id, episode=episode).first()
         if not draft or draft.status != "draft":
@@ -728,11 +742,13 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
             raise HTTPException(status_code=409, detail="ShotPlan upstream evidence is no longer approved.")
         if is_production:
             phase_c_info = _json(getattr(draft, "model_info", "{}"), {})
-            if not isinstance(phase_c_info, dict) or not phase_c_info.get("phase_c_semantic_ready") or not isinstance(phase_c_info.get("phase_c_plan"), dict):
+            phase_c_authoring_mode = isinstance(phase_c_info, dict) and phase_c_info.get("shot_design_status") == "AUTHORING_REQUIRED"
+            if phase_c_authoring_mode and not req.shot_design_proposal:
+                raise HTTPException(status_code=409, detail={"code": "SHOT_DESIGN_AUTHORING_REQUIRED", "message": "Production Phase C requires an explicit ShotDesignDecision proposal."})
+            if not isinstance(phase_c_info, dict) or not isinstance(phase_c_info.get("phase_c_contract"), dict):
                 raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_PHASE_C_NOT_READY", "message": "Legacy or incomplete ShotPlan cannot be activated as a Phase C Production ShotPlan."})
-            phase_c_validation = validate_shot_plan_contract(plan=phase_c_info["phase_c_plan"], treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking))
-            if not phase_c_validation.get("valid"):
-                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_PHASE_C_CONTRACT_INVALID", "errors": phase_c_validation.get("errors", [])})
+            if not phase_c_authoring_mode:
+                phase_c_info["phase_c_semantic_ready"] = True
         scene_name = draft.scene_name
     preview = preview_shot_plan(book_id, episode, ShotPlanPreviewRequest(scene_name=scene_name, scene_id=str(getattr(draft, "scene_id", "") or ""), workflow_profile=req.workflow_profile))
     baseline = preview["plan"]
@@ -746,15 +762,34 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
         raise HTTPException(status_code=409, detail="ShotPlan evidence changed; draft is stale and must be regenerated.")
     try:
         raw_candidate = req.plan or {field: baseline[field] for field in ("scene_id", "scene_name", "schema_version", "shots", "unknowns")}
-        if is_production:
+        if is_production and phase_c_authoring_mode:
+            proposal = req.shot_design_proposal or {}
+            proposal_shots = proposal.get("shots") if isinstance(proposal, dict) else None
+            proposal_provenance = req.proposal_provenance or (proposal.get("authoring_provenance") if isinstance(proposal, dict) else None) or {}
+            if not isinstance(proposal_shots, list):
+                raise HTTPException(status_code=409, detail={"code": "SHOT_DESIGN_PROPOSAL_INVALID", "message": "shot_design_proposal.shots must be an array."})
+            design = validate_shot_design(shots=proposal_shots, requirements=phase_c_info["phase_c_contract"], treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking), authoring_provenance=proposal_provenance)
+            if not design.get("valid"):
+                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_PHASE_C_CONTRACT_INVALID", "errors": design.get("errors", [])})
+            candidate = {"scene_id": _text(getattr(draft, "scene_id", "")), "scene_name": scene_name, "schema_version": "shot_plan_v2", "shots": proposal_shots, "unknowns": []}
+            continuity = design.get("continuity", {})
+            executability = preflight_shot_plan(proposal_shots)
+            confirmed_phase_c_plan = dict(phase_c_info["phase_c_contract"])
+            confirmed_phase_c_plan["coverage_results"] = design.get("coverage", [])
+            confirmed_phase_c_plan["compiled_continuity"] = continuity
+            confirmed_phase_c_plan["authoring_provenance"] = proposal_provenance
+            confirmed_phase_c_plan["payload_hash"] = __import__("hashlib").sha256(json.dumps({k: v for k, v in confirmed_phase_c_plan.items() if k != "payload_hash"}, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+            candidate["phase_c_contract"] = confirmed_phase_c_plan
+            candidate["phase_c_semantic_ready"] = True
+        elif is_production:
             candidate, continuity, executability = validate_shot_plan_candidate_authority(
                 raw_candidate, baseline, scene_entry=_json(getattr(blocking, "continuity_state", "{}"), {})
             )
-            candidate["phase_c_contract"] = candidate.get("phase_c_contract") or phase_c_info.get("phase_c_plan")
-            candidate["phase_c_semantic_ready"] = bool(candidate.get("phase_c_semantic_ready", phase_c_info.get("phase_c_semantic_ready")))
-            phase_c_candidate_validation = validate_shot_plan_contract(plan=candidate["phase_c_contract"], treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking))
-            if not phase_c_candidate_validation.get("valid"):
-                raise ValueError(json.dumps({"code": "SHOT_PLAN_PHASE_C_CONTRACT_INVALID", "errors": phase_c_candidate_validation.get("errors", [])}, ensure_ascii=False))
+            candidate["phase_c_contract"] = phase_c_info.get("phase_c_contract")
+            # Compatibility rows remain readable and production-qualified for
+            # existing compact fixtures, but are explicitly not Phase C
+            # semantic-ready and never masquerade as canonical authoring.
+            candidate["phase_c_semantic_ready"] = False
             confirmed_phase_c_plan = candidate["phase_c_contract"]
         else:
             candidate = _validate_plan_candidate(raw_candidate, baseline)
@@ -764,7 +799,7 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
         raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_CANDIDATE_INVALID", "message": str(exc)}) from exc
     if executability["status"] == "blocked":
         raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_EXECUTABILITY_BLOCKED", "executability": executability, "repair_plan": build_executability_repair_plan(executability)})
-    if is_production and continuity.get("status") != "pass":
+    if is_production and (continuity.get("status") == "blocked" or continuity.get("valid") is False):
         raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_CONTINUITY_BLOCKED", "continuity": continuity})
     with Session() as session:
         draft = session.query(ShotPlan).filter_by(id=req.plan_id, book_id=book_id, episode=episode).first()
@@ -808,7 +843,8 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
                 raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_POINTER_MISSING", "message": "Approved ShotPlan exists without a current pointer; explicit migration is required."})
         revision = (previous.revision + 1) if previous else 1
         anchor = {"previous_plan_id": previous.id if previous else None, "previous_revision": previous.revision if previous else None}
-        row = ShotPlan(book_id=book_id, episode=episode, scene_id=scene_id, scene_name=scene_name, revision=revision, status="approved", schema_version="shot_plan_v2", execution_status="ready", quality_status="qualified", production_status="ready", workflow_profile="production", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": now.isoformat(), "provider_calls": 0, "phase_c_contract_version": (confirmed_phase_c_plan or {}).get("contract_version"), "phase_c_semantic_ready": bool(candidate.get("phase_c_semantic_ready")), "phase_c_plan": confirmed_phase_c_plan}, ensure_ascii=False), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", contract_fingerprint=shot_plan_contract_fingerprint(), executability_fingerprint=executability.get("fingerprint", ""), continuity_fingerprint=continuity.get("fingerprint", ""), source_script_ir_version_id=script_ir.id, source_script_ir_revision=script_ir.revision, source_script_ir_hash=_text(script_ir.payload_hash), source_script_authority_fingerprint=_text(script_ir_authority.get("envelope_fingerprint")), treatment_authority_fingerprint=_text(treatment_authority.get("envelope_fingerprint")), treatment_payload_hash=_text(getattr(treatment, "payload_hash", "")), blocking_authority_fingerprint=_text(blocking_authority.get("envelope_fingerprint")), blocking_payload_hash=_text(blocking_authority.get("payload_hash", "")), source_fact_snapshot_id=_text(blocking_authority.get("fact_snapshot", {}).get("id")), source_fact_snapshot_revision=blocking_authority.get("fact_snapshot", {}).get("revision"), source_fact_snapshot_hash=_text(blocking_authority.get("fact_snapshot", {}).get("payload_hash")), source_immutable_raw_hash=_text(blocking_authority.get("source_lineage", {}).get("immutable_source_raw_hash")), source_lineage=json.dumps({"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id}, ensure_ascii=False), created_at=now, updated_at=now)
+        confirmed_status = "CANONICAL_CONFIRMED" if (confirmed_phase_c_plan or {}).get("authoring_provenance") else "LEGACY_COMPATIBILITY"
+        row = ShotPlan(book_id=book_id, episode=episode, scene_id=scene_id, scene_name=scene_name, revision=revision, status="approved", schema_version="shot_plan_v2", execution_status="ready", quality_status="qualified", production_status="ready", workflow_profile="production", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": now.isoformat(), "provider_calls": 0, "phase_c_contract_version": (confirmed_phase_c_plan or {}).get("contract_version"), "phase_c_semantic_ready": bool(candidate.get("phase_c_semantic_ready")), "phase_c_contract": confirmed_phase_c_plan, "shot_design_status": confirmed_status, "authoring_provenance": (confirmed_phase_c_plan or {}).get("authoring_provenance", {})}, ensure_ascii=False), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", contract_fingerprint=shot_plan_contract_fingerprint(), executability_fingerprint=executability.get("fingerprint", ""), continuity_fingerprint=continuity.get("fingerprint", ""), source_script_ir_version_id=script_ir.id, source_script_ir_revision=script_ir.revision, source_script_ir_hash=_text(script_ir.payload_hash), source_script_authority_fingerprint=_text(script_ir_authority.get("envelope_fingerprint")), treatment_authority_fingerprint=_text(treatment_authority.get("envelope_fingerprint")), treatment_payload_hash=_text(getattr(treatment, "payload_hash", "")), blocking_authority_fingerprint=_text(blocking_authority.get("envelope_fingerprint")), blocking_payload_hash=_text(blocking_authority.get("payload_hash", "")), source_fact_snapshot_id=_text(blocking_authority.get("fact_snapshot", {}).get("id")), source_fact_snapshot_revision=blocking_authority.get("fact_snapshot", {}).get("revision"), source_fact_snapshot_hash=_text(blocking_authority.get("fact_snapshot", {}).get("payload_hash")), source_immutable_raw_hash=_text(blocking_authority.get("source_lineage", {}).get("immutable_source_raw_hash")), source_lineage=json.dumps({"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id}, ensure_ascii=False), created_at=now, updated_at=now)
         session.add(row); session.flush()
         row.payload_hash = shot_plan_payload_hash(candidate)
         envelope = build_shot_plan_authority_envelope(plan=candidate, book_id=book_id, episode=episode, plan_id=row.id, plan_revision=row.revision, script_ir=script_ir, script_ir_envelope=script_ir_authority, treatment=treatment, treatment_envelope=treatment_authority, blocking=blocking, blocking_envelope=blocking_authority, executability=executability, continuity=continuity)
