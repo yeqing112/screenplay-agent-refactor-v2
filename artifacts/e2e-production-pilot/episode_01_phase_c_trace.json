@@ -1,46 +1,1052 @@
 {
-  "schema_version": "phase_c_trace_v1",
+  "schema_version": "phase_c_trace_v2_real_authority",
   "pilot": {
     "book_id": 990401,
     "episode": 1,
-    "provider_calls": 0
+    "provider_calls": 0,
+    "raw_authority_fabrication_count": 0
   },
   "authority": {
     "script_ir": {
       "id": 1,
       "revision": 1,
       "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-      "authority_envelope_fingerprint": "4ac174a027acb1834dc76669199e137b7aa96593832ac40be140b58b05681e66"
+      "authority_envelope_fingerprint": "a57b55f2c2689cb3b72ff2cbe1ffdfe7b2c059c77b7b9aa362603908546b5538"
     },
-    "treatment_source": "episode_01_director_treatment_phase_b.json",
-    "blocking_source": "episode_01_scene_blocking_phase_b.json"
+    "fact_snapshot": {
+      "id": 1,
+      "revision": 1,
+      "payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7"
+    },
+    "treatment": [
+      {
+        "row_id": 1,
+        "revision": 1,
+        "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
+        "authority_id": 1,
+        "authority_fingerprint": "bb849b9d6cde9bc5d3b8c0e7d33fac58428fb84848e54a4bca13d10cf23990ab",
+        "pointer_id": 1,
+        "pointer_fingerprint": "bb849b9d6cde9bc5d3b8c0e7d33fac58428fb84848e54a4bca13d10cf23990ab",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "phase_b_semantic_ready": true,
+        "semantic_contract_ready": true,
+        "provenance_contract_ready": true,
+        "phase_b_readiness_reasons": [],
+        "proposal_provenance": {
+          "authoring": {
+            "human_input": true
+          },
+          "proposal_origin": "HUMAN_INPUT",
+          "provider": {
+            "called": false,
+            "calls": 0,
+            "model": null,
+            "profile_id": null,
+            "request_fingerprint": null,
+            "response_fingerprint": null
+          }
+        },
+        "confirmation_event": {
+          "boundary": "production_confirm_service",
+          "canonical_origin": "HUMAN_AUTHORED",
+          "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
+          "confirmation_type": "HUMAN_CONFIRMATION",
+          "confirmed": true,
+          "confirmed_at": "2026-09-20T04:11:33.771869",
+          "source_proposal_origin": "HUMAN_INPUT"
+        },
+        "canonical_origin": "HUMAN_AUTHORED",
+        "provider_provenance": {
+          "called": false,
+          "calls": 0,
+          "model": null,
+          "profile_id": null,
+          "request_fingerprint": null,
+          "response_fingerprint": null
+        },
+        "llm_called": false,
+        "llm_generated": false
+      },
+      {
+        "row_id": 2,
+        "revision": 1,
+        "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
+        "authority_id": 2,
+        "authority_fingerprint": "3ac8adb21070cfb67ebd64ad0b03afcc232f8afa2a2a0a9e145f54f0c2e56b1f",
+        "pointer_id": 2,
+        "pointer_fingerprint": "3ac8adb21070cfb67ebd64ad0b03afcc232f8afa2a2a0a9e145f54f0c2e56b1f",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "phase_b_semantic_ready": true,
+        "semantic_contract_ready": true,
+        "provenance_contract_ready": true,
+        "phase_b_readiness_reasons": [],
+        "proposal_provenance": {
+          "authoring": {
+            "human_input": true
+          },
+          "proposal_origin": "HUMAN_INPUT",
+          "provider": {
+            "called": false,
+            "calls": 0,
+            "model": null,
+            "profile_id": null,
+            "request_fingerprint": null,
+            "response_fingerprint": null
+          }
+        },
+        "confirmation_event": {
+          "boundary": "production_confirm_service",
+          "canonical_origin": "HUMAN_AUTHORED",
+          "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
+          "confirmation_type": "HUMAN_CONFIRMATION",
+          "confirmed": true,
+          "confirmed_at": "2026-09-20T04:11:33.835776",
+          "source_proposal_origin": "HUMAN_INPUT"
+        },
+        "canonical_origin": "HUMAN_AUTHORED",
+        "provider_provenance": {
+          "called": false,
+          "calls": 0,
+          "model": null,
+          "profile_id": null,
+          "request_fingerprint": null,
+          "response_fingerprint": null
+        },
+        "llm_called": false,
+        "llm_generated": false
+      }
+    ],
+    "blocking": [
+      {
+        "row_id": 2,
+        "revision": 1,
+        "payload_hash": "bd306a53f38c831fe9eaee1a45d0e06e60719dffac053f25371c6a616dd831d7",
+        "authority_id": 1,
+        "authority_fingerprint": "2130004c0f39699f03797454018b60a0fe354d4f3d10eac89e05511603c1d54e",
+        "pointer_id": 1,
+        "pointer_fingerprint": "2130004c0f39699f03797454018b60a0fe354d4f3d10eac89e05511603c1d54e",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "compiler_version": "blocking_state_compiler_v1",
+        "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
+      },
+      {
+        "row_id": 4,
+        "revision": 1,
+        "payload_hash": "ef4154e02c84dcd073b761dabeed20b443a0407a3e0a29ef3861f3da83d84f64",
+        "authority_id": 2,
+        "authority_fingerprint": "06628caeb60e84c1b3e137a56bd7089fdf1f0e58ff00c44d120e2542b74da07f",
+        "pointer_id": 2,
+        "pointer_fingerprint": "06628caeb60e84c1b3e137a56bd7089fdf1f0e58ff00c44d120e2542b74da07f",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "compiler_version": "blocking_state_compiler_v1",
+        "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"
+      }
+    ],
+    "shot_plan": [
+      {
+        "scene_id": "E01_SC001",
+        "row_id": 2,
+        "revision": 1,
+        "payload_hash": "ad841101ee38d18bcf6713ab41fe005774ea8322e3f5356a8186d539e4e6e5b6",
+        "authority_id": 1,
+        "authority_fingerprint": "9cf0a2c84fe68eaa38388df17098eaeb82d7cc97d1008e1eb56fdaa9a476eb29",
+        "pointer_id": 1,
+        "pointer_fingerprint": "9cf0a2c84fe68eaa38388df17098eaeb82d7cc97d1008e1eb56fdaa9a476eb29",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "phase_c_semantic_ready": true,
+        "provider_calls": 0,
+        "confirm_status": "ready"
+      },
+      {
+        "scene_id": "E01_SC002",
+        "row_id": 4,
+        "revision": 1,
+        "payload_hash": "3e489e3da7bac9a0a13333a146dbc040efb6ed7c352a316fa5fff571e6e1a578",
+        "authority_id": 2,
+        "authority_fingerprint": "77fd0b45a93cde8a212fea993914d298a98bf480f6928911b7778e24b187714a",
+        "pointer_id": 2,
+        "pointer_fingerprint": "77fd0b45a93cde8a212fea993914d298a98bf480f6928911b7778e24b187714a",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "phase_c_semantic_ready": true,
+        "provider_calls": 0,
+        "confirm_status": "ready"
+      }
+    ]
+  },
+  "resolver": {
+    "treatment": [
+      {
+        "scene_id": "E01_SC001",
+        "status": "PASS"
+      },
+      {
+        "scene_id": "E01_SC002",
+        "status": "PASS"
+      }
+    ],
+    "blocking": [
+      {
+        "scene_id": "E01_SC001",
+        "status": "PASS"
+      },
+      {
+        "scene_id": "E01_SC002",
+        "status": "PASS"
+      }
+    ],
+    "shot_plan": [
+      {
+        "scene_id": "E01_SC001",
+        "status": "PASS",
+        "phase_c_semantic_ready": true
+      },
+      {
+        "scene_id": "E01_SC002",
+        "status": "PASS",
+        "phase_c_semantic_ready": true
+      }
+    ]
   },
   "plans": [
     {
       "scene_id": "E01_SC001",
-      "payload_hash": "a545570a02d0c8ee309a853c1d74be50171921805e55c38c273b2ea3000f5e98",
+      "shot_plan_row_id": 2,
+      "shot_plan_authority_id": 1,
+      "shot_plan_pointer_id": 1,
+      "payload_hash": "dd3bb037913f6950c75d7b87e6275c60ac295d0391ee1a25f59ff228bd0b1319",
       "phase_c_semantic_ready": true,
-      "coverage_hash": "9cdfe6931b9157aebe3b6979807abba7ddcf38cfae7072a88b828d8fedcb77fe",
-      "continuity_hash": "5751b10ff3667a3a45c3f47cda2b52e2e97d272cf836fa4a7cec81732c0b091e",
+      "coverage_results": [
+        {
+          "beat_ref": "SC01-B01",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC001_001"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_001"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B02",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_002"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B03",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC001_003"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_003"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_003"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B04",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC001_004"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_004"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_004"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B05",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_005"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_005"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B06",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_006"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_006"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B07",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC001_007"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_007"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B08",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_008"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_008"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B09",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC001_009"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_009"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_009"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B10",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC001_010"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_010"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_010"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B11",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_011"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_011"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B12",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_012"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_012"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC01-B13",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE",
+            "SCENE_EXIT_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC001_013"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC001_013"
+            ],
+            "SCENE_EXIT_COVERAGE": [
+              "SH_E01_SC001_013"
+            ]
+          },
+          "complete": true
+        }
+      ],
+      "coverage_hash": "9fd5f498d0e51998ab7f40a087b7c82ff5142ffcb34e5e36a7e13f60156d09e1",
+      "continuity_hash": "9b1fe14dcd05bd12ab307d77b53641475d86daa157b899d8b0716ae338ba1829",
       "runtime_estimate": {
         "estimator_version": "duration_estimator_v1",
         "shot_count": 13,
         "estimated_duration_ms": 39000.0,
         "estimated_duration_seconds": 39.0
+      },
+      "validation": {
+        "valid": true,
+        "errors": [],
+        "coverage": [
+          {
+            "beat_ref": "SC01-B01",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC001_001"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_001"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B02",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_002"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B03",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC001_003"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_003"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_003"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B04",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC001_004"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_004"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_004"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B05",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_005"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_005"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B06",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_006"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_006"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B07",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC001_007"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_007"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B08",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_008"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_008"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B09",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC001_009"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_009"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_009"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B10",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC001_010"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_010"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_010"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B11",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_011"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_011"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B12",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_012"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_012"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC01-B13",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE",
+              "SCENE_EXIT_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC001_013"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC001_013"
+              ],
+              "SCENE_EXIT_COVERAGE": [
+                "SH_E01_SC001_013"
+              ]
+            },
+            "complete": true
+          }
+        ]
       }
     },
     {
       "scene_id": "E01_SC002",
-      "payload_hash": "eed379bf54cda57c845d4f9b299dd829283280821a22f518e5d8b1cb7bd6f969",
+      "shot_plan_row_id": 4,
+      "shot_plan_authority_id": 2,
+      "shot_plan_pointer_id": 2,
+      "payload_hash": "3049212c9c32faab14e42fe5b72c4210a1bf0cb66557f990b793790e1fd4f42d",
       "phase_c_semantic_ready": true,
-      "coverage_hash": "d05d6e4976c3195b1d03a1e371e8e8513924317e92c6e0ad564f946f0665874d",
-      "continuity_hash": "ada76c9695a64b8cae9d33142294dc1a99198aedc75062f0bf99abba96eee9c3",
+      "coverage_results": [
+        {
+          "beat_ref": "SC02-B01",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC002_001"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_001"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC02-B02",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_002"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC002_002"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC02-B03",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_003"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC002_003"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC02-B04",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC002_004"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_004"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC002_004"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC02-B05",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC002_005"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_005"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC002_005"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC02-B06",
+          "required": [
+            "INSERT_EVIDENCE",
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC002_006"
+            ],
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_006"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC002_006"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC02-B07",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_007"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC002_007"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC02-B08",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_008"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC002_008"
+            ]
+          },
+          "complete": true
+        },
+        {
+          "beat_ref": "SC02-B09",
+          "required": [
+            "PRIMARY_BEAT_COVERAGE",
+            "REACTION_COVERAGE",
+            "SCENE_EXIT_COVERAGE"
+          ],
+          "satisfied_by": {
+            "PRIMARY_BEAT_COVERAGE": [
+              "SH_E01_SC002_009"
+            ],
+            "REACTION_COVERAGE": [
+              "SH_E01_SC002_009"
+            ],
+            "SCENE_EXIT_COVERAGE": [
+              "SH_E01_SC002_009"
+            ]
+          },
+          "complete": true
+        }
+      ],
+      "coverage_hash": "746bd31fd2264ba02e0b0036e596f1b4d2aeb7afce634cde1f6bf733478d038b",
+      "continuity_hash": "c14058f25847ce12fc75de17c1a014f4fd0c51e9a579867498236fa1b31d16ac",
       "runtime_estimate": {
         "estimator_version": "duration_estimator_v1",
         "shot_count": 9,
         "estimated_duration_ms": 27000.0,
         "estimated_duration_seconds": 27.0
+      },
+      "validation": {
+        "valid": true,
+        "errors": [],
+        "coverage": [
+          {
+            "beat_ref": "SC02-B01",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC002_001"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_001"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC02-B02",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_002"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC002_002"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC02-B03",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_003"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC002_003"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC02-B04",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC002_004"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_004"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC002_004"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC02-B05",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC002_005"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_005"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC002_005"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC02-B06",
+            "required": [
+              "INSERT_EVIDENCE",
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "INSERT_EVIDENCE": [
+                "SH_E01_SC002_006"
+              ],
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_006"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC002_006"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC02-B07",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_007"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC002_007"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC02-B08",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_008"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC002_008"
+              ]
+            },
+            "complete": true
+          },
+          {
+            "beat_ref": "SC02-B09",
+            "required": [
+              "PRIMARY_BEAT_COVERAGE",
+              "REACTION_COVERAGE",
+              "SCENE_EXIT_COVERAGE"
+            ],
+            "satisfied_by": {
+              "PRIMARY_BEAT_COVERAGE": [
+                "SH_E01_SC002_009"
+              ],
+              "REACTION_COVERAGE": [
+                "SH_E01_SC002_009"
+              ],
+              "SCENE_EXIT_COVERAGE": [
+                "SH_E01_SC002_009"
+              ]
+            },
+            "complete": true
+          }
+        ]
       }
     }
-  ]
+  ],
+  "failed_candidate": {
+    "scene_id": "E01_SC001",
+    "code": "SHOT_PLAN_PHASE_C_CONTRACT_INVALID",
+    "status_code": 409,
+    "pointer_before": 2,
+    "pointer_after": 2,
+    "authority_count_before": 2,
+    "authority_count_after": 2,
+    "pointer_unchanged": true,
+    "authority_count_unchanged": true
+  },
+  "provider_provenance": {
+    "provider_calls": 0,
+    "llm_called": false
+  },
+  "authority_flow": {
+    "candidate": "PASS",
+    "validation": "PASS",
+    "confirm": "PASS",
+    "authority": "PASS",
+    "pointer": "PASS",
+    "failed_candidate_moved_pointer": false,
+    "raw_shot_plan_authority_fabrication": 0
+  }
 }

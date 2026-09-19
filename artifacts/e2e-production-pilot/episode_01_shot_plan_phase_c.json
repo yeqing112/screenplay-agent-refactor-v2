@@ -16,9 +16,10 @@
           "director_decision_refs": [
             "DBD_SC01-B01"
           ],
-          "shot_purpose": "FOLLOW_ACTION",
+          "shot_purpose": "ESTABLISH_RELATIONSHIP",
           "coverage_roles": [
-            "PRIMARY_BEAT_COVERAGE"
+            "PRIMARY_BEAT_COVERAGE",
+            "INSERT_EVIDENCE"
           ],
           "dramatic_payload": {
             "primary_subject": "林晚",
@@ -28,10 +29,19 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B01",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_TICKET",
+              "顾沉": "ST_REAR",
+              "陆叔": "ST_REAR",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": [
+              "TICKET"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "MEDIUM",
+            "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -43,7 +53,10 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B01",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "TICKET"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "ACTION_COMPLETION",
@@ -66,7 +79,7 @@
           "director_decision_refs": [
             "DBD_SC01-B02"
           ],
-          "shot_purpose": "FOLLOW_ACTION",
+          "shot_purpose": "ESTABLISH_RELATIONSHIP",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE"
           ],
@@ -78,8 +91,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B02",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_TICKET",
+              "顾沉": "ST_REAR",
+              "陆叔": "ST_REAR",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "MEDIUM",
             "orientation": "EYE_LEVEL",
@@ -93,7 +113,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B02",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "ACTION_COMPLETION",
@@ -116,7 +137,7 @@
           "director_decision_refs": [
             "DBD_SC01-B03"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REVEAL_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
@@ -134,8 +155,17 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B03",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CENTER",
+              "顾沉": "ST_REAR",
+              "陆叔": "ST_REAR",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": [
+              "RED_UMBRELLA"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
@@ -149,7 +179,10 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B03",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "RED_UMBRELLA"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -172,7 +205,7 @@
           "director_decision_refs": [
             "DBD_SC01-B04"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REVEAL_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
@@ -192,8 +225,17 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B04",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CENTER",
+              "顾沉": "ST_REAR",
+              "陆叔": "ST_REAR",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": [
+              "BROKEN_UMBRELLA_RIB"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
@@ -208,7 +250,10 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B04",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "BROKEN_UMBRELLA_RIB"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -231,7 +276,7 @@
           "director_decision_refs": [
             "DBD_SC01-B05"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "WITHHOLD_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
@@ -248,8 +293,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B05",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CENTER",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_REAR",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
@@ -264,7 +316,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B05",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -287,11 +340,10 @@
           "director_decision_refs": [
             "DBD_SC01-B06"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REVEAL_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
-            "REACTION_COVERAGE",
-            "INSERT_EVIDENCE"
+            "REACTION_COVERAGE"
           ],
           "dramatic_payload": {
             "primary_subject": "顾沉",
@@ -307,10 +359,17 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B06",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CENTER",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_REAR",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "INSERT",
+            "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -323,7 +382,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B06",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -346,9 +406,10 @@
           "director_decision_refs": [
             "DBD_SC01-B07"
           ],
-          "shot_purpose": "FOLLOW_ACTION",
+          "shot_purpose": "ESTABLISH_RELATIONSHIP",
           "coverage_roles": [
-            "PRIMARY_BEAT_COVERAGE"
+            "PRIMARY_BEAT_COVERAGE",
+            "INSERT_EVIDENCE"
           ],
           "dramatic_payload": {
             "primary_subject": "陆叔",
@@ -360,10 +421,19 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B07",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CENTER",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_CENTER",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": [
+              "HANDBAG"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "MEDIUM",
+            "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -376,7 +446,10 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B07",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "HANDBAG"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "ACTION_COMPLETION",
@@ -399,11 +472,10 @@
           "director_decision_refs": [
             "DBD_SC01-B08"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REVEAL_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
-            "REACTION_COVERAGE",
-            "INSERT_EVIDENCE"
+            "REACTION_COVERAGE"
           ],
           "dramatic_payload": {
             "primary_subject": "陆叔",
@@ -419,10 +491,17 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B08",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CENTER",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_CENTER",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "INSERT",
+            "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -435,7 +514,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B08",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -458,7 +538,7 @@
           "director_decision_refs": [
             "DBD_SC01-B09"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REVEAL_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
@@ -476,8 +556,17 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B09",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CENTER",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_CENTER",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": [
+              "RED_UMBRELLA"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
@@ -491,7 +580,10 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B09",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "RED_UMBRELLA"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -514,7 +606,7 @@
           "director_decision_refs": [
             "DBD_SC01-B10"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REDIRECT_ATTENTION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
@@ -532,8 +624,17 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B10",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CHECK",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_CENTER",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": [
+              "BROKEN_UMBRELLA_RIB"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
@@ -547,7 +648,10 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B10",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "BROKEN_UMBRELLA_RIB"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -570,7 +674,7 @@
           "director_decision_refs": [
             "DBD_SC01-B11"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REDIRECT_ATTENTION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
@@ -589,8 +693,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B11",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CHECK",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_CENTER",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
@@ -605,7 +716,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B11",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -628,7 +740,7 @@
           "director_decision_refs": [
             "DBD_SC01-B12"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "SHIFT_POWER",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
@@ -645,8 +757,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B12",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CHECK",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_CENTER",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
@@ -661,7 +780,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B12",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -688,7 +808,6 @@
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
-            "INSERT_EVIDENCE",
             "SCENE_EXIT_COVERAGE"
           ],
           "dramatic_payload": {
@@ -705,10 +824,17 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC01-B13",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "ST_CHECK",
+              "顾沉": "ST_CENTER",
+              "陆叔": "ST_CENTER",
+              "售票员": "ST_TICKET"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "INSERT",
+            "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -721,7 +847,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC01-B13",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -740,12 +867,16 @@
         {
           "beat_ref": "SC01-B01",
           "required_coverages": [
+            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE"
           ],
           "required_subjects": [
             "林晚"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [],
+          "required_prop_refs": [
+            "TICKET"
+          ]
         },
         {
           "beat_ref": "SC01-B02",
@@ -755,7 +886,8 @@
           "required_subjects": [
             "售票员"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC01-B03",
@@ -767,7 +899,12 @@
           "required_subjects": [
             "林晚"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B03"
+          ],
+          "required_prop_refs": [
+            "RED_UMBRELLA"
+          ]
         },
         {
           "beat_ref": "SC01-B04",
@@ -780,7 +917,12 @@
             "林晚",
             "顾沉"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B04"
+          ],
+          "required_prop_refs": [
+            "BROKEN_UMBRELLA_RIB"
+          ]
         },
         {
           "beat_ref": "SC01-B05",
@@ -792,12 +934,14 @@
             "林晚",
             "顾沉"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B05"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC01-B06",
           "required_coverages": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
@@ -805,23 +949,29 @@
             "林晚",
             "顾沉"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B06"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC01-B07",
           "required_coverages": [
+            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE"
           ],
           "required_subjects": [
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [],
+          "required_prop_refs": [
+            "HANDBAG"
+          ]
         },
         {
           "beat_ref": "SC01-B08",
           "required_coverages": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
@@ -829,7 +979,10 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B08"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC01-B09",
@@ -841,7 +994,12 @@
           "required_subjects": [
             "林晚"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B09"
+          ],
+          "required_prop_refs": [
+            "RED_UMBRELLA"
+          ]
         },
         {
           "beat_ref": "SC01-B10",
@@ -853,7 +1011,12 @@
           "required_subjects": [
             "林晚"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B10"
+          ],
+          "required_prop_refs": [
+            "BROKEN_UMBRELLA_RIB"
+          ]
         },
         {
           "beat_ref": "SC01-B11",
@@ -865,7 +1028,10 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B11"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC01-B12",
@@ -877,12 +1043,14 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B12"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC01-B13",
           "required_coverages": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
             "SCENE_EXIT_COVERAGE"
@@ -891,16 +1059,23 @@
             "林晚",
             "顾沉"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC01-B13"
+          ],
+          "required_prop_refs": []
         }
       ],
       "coverage_results": [
         {
           "beat_ref": "SC01-B01",
           "required": [
+            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE"
           ],
           "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC001_001"
+            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC001_001"
             ]
@@ -978,14 +1153,10 @@
         {
           "beat_ref": "SC01-B06",
           "required": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
           "satisfied_by": {
-            "INSERT_EVIDENCE": [
-              "SH_E01_SC001_006"
-            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC001_006"
             ],
@@ -998,9 +1169,13 @@
         {
           "beat_ref": "SC01-B07",
           "required": [
+            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE"
           ],
           "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC001_007"
+            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC001_007"
             ]
@@ -1010,14 +1185,10 @@
         {
           "beat_ref": "SC01-B08",
           "required": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
           "satisfied_by": {
-            "INSERT_EVIDENCE": [
-              "SH_E01_SC001_008"
-            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC001_008"
             ],
@@ -1102,15 +1273,11 @@
         {
           "beat_ref": "SC01-B13",
           "required": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
             "SCENE_EXIT_COVERAGE"
           ],
           "satisfied_by": {
-            "INSERT_EVIDENCE": [
-              "SH_E01_SC001_013"
-            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC001_013"
             ],
@@ -1228,16 +1395,78 @@
       },
       "phase_c_semantic_ready": true,
       "source_lineage": {
-        "id": 1,
-        "revision": 1,
-        "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-        "authority_envelope_fingerprint": "4ac174a027acb1834dc76669199e137b7aa96593832ac40be140b58b05681e66"
+        "script_ir": {
+          "id": 1,
+          "revision": 1,
+          "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
+          "authority_envelope_fingerprint": "a57b55f2c2689cb3b72ff2cbe1ffdfe7b2c059c77b7b9aa362603908546b5538"
+        },
+        "treatment": {
+          "row_id": 1,
+          "revision": 1,
+          "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
+          "authority_id": 1,
+          "authority_fingerprint": "bb849b9d6cde9bc5d3b8c0e7d33fac58428fb84848e54a4bca13d10cf23990ab",
+          "pointer_id": 1,
+          "pointer_fingerprint": "bb849b9d6cde9bc5d3b8c0e7d33fac58428fb84848e54a4bca13d10cf23990ab",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "phase_b_semantic_ready": true,
+          "semantic_contract_ready": true,
+          "provenance_contract_ready": true,
+          "phase_b_readiness_reasons": [],
+          "proposal_provenance": {
+            "authoring": {
+              "human_input": true
+            },
+            "proposal_origin": "HUMAN_INPUT",
+            "provider": {
+              "called": false,
+              "calls": 0,
+              "model": null,
+              "profile_id": null,
+              "request_fingerprint": null,
+              "response_fingerprint": null
+            }
+          },
+          "confirmation_event": {
+            "boundary": "production_confirm_service",
+            "canonical_origin": "HUMAN_AUTHORED",
+            "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
+            "confirmation_type": "HUMAN_CONFIRMATION",
+            "confirmed": true,
+            "confirmed_at": "2026-09-20T04:11:33.771869",
+            "source_proposal_origin": "HUMAN_INPUT"
+          },
+          "canonical_origin": "HUMAN_AUTHORED",
+          "provider_provenance": {
+            "called": false,
+            "calls": 0,
+            "model": null,
+            "profile_id": null,
+            "request_fingerprint": null,
+            "response_fingerprint": null
+          },
+          "llm_called": false,
+          "llm_generated": false
+        },
+        "blocking": {
+          "row_id": 2,
+          "revision": 1,
+          "payload_hash": "bd306a53f38c831fe9eaee1a45d0e06e60719dffac053f25371c6a616dd831d7",
+          "authority_id": 1,
+          "authority_fingerprint": "2130004c0f39699f03797454018b60a0fe354d4f3d10eac89e05511603c1d54e",
+          "pointer_id": 1,
+          "pointer_fingerprint": "2130004c0f39699f03797454018b60a0fe354d4f3d10eac89e05511603c1d54e",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "compiler_version": "blocking_state_compiler_v1",
+          "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
+        }
       },
       "provider_provenance": {
         "origin": "DETERMINISTIC_BUILDER",
         "provider_calls": 0
       },
-      "payload_hash": "a545570a02d0c8ee309a853c1d74be50171921805e55c38c273b2ea3000f5e98"
+      "payload_hash": "dd3bb037913f6950c75d7b87e6275c60ac295d0391ee1a25f59ff228bd0b1319"
     },
     {
       "contract_version": "shot_plan_phase_c_v1",
@@ -1252,9 +1481,10 @@
           "director_decision_refs": [
             "DBD_SC02-B01"
           ],
-          "shot_purpose": "FOLLOW_ACTION",
+          "shot_purpose": "ESTABLISH_RELATIONSHIP",
           "coverage_roles": [
-            "PRIMARY_BEAT_COVERAGE"
+            "PRIMARY_BEAT_COVERAGE",
+            "INSERT_EVIDENCE"
           ],
           "dramatic_payload": {
             "primary_subject": "陆叔",
@@ -1264,10 +1494,18 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B01",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_CENTER",
+              "陆叔": "APT_KITCHEN"
+            },
+            "prop_refs": [
+              "APPLE",
+              "DOOR_LOCK"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "MEDIUM",
+            "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -1279,7 +1517,11 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B01",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "APPLE",
+              "DOOR_LOCK"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "ACTION_COMPLETION",
@@ -1302,7 +1544,7 @@
           "director_decision_refs": [
             "DBD_SC02-B02"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "WITHHOLD_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
@@ -1319,8 +1561,13 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B02",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_CENTER",
+              "陆叔": "APT_KITCHEN"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
@@ -1335,7 +1582,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B02",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -1358,11 +1606,10 @@
           "director_decision_refs": [
             "DBD_SC02-B03"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REVEAL_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
-            "REACTION_COVERAGE",
-            "INSERT_EVIDENCE"
+            "REACTION_COVERAGE"
           ],
           "dramatic_payload": {
             "primary_subject": "陆叔",
@@ -1378,10 +1625,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B03",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_CENTER",
+              "陆叔": "APT_CENTER"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "INSERT",
+            "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -1394,7 +1646,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B03",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -1417,7 +1670,7 @@
           "director_decision_refs": [
             "DBD_SC02-B04"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "SHIFT_POWER",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
@@ -1433,8 +1686,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B04",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_TABLE",
+              "陆叔": "APT_CENTER"
+            },
+            "prop_refs": [
+              "HANDBAG"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
@@ -1448,7 +1708,10 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B04",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "HANDBAG"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -1471,7 +1734,7 @@
           "director_decision_refs": [
             "DBD_SC02-B05"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REVEAL_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
@@ -1491,8 +1754,16 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B05",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_TABLE",
+              "陆叔": "APT_CENTER"
+            },
+            "prop_refs": [
+              "POCKET_HARD_OBJECT",
+              "TABLE_SCRATCH"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
@@ -1507,7 +1778,11 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B05",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "POCKET_HARD_OBJECT",
+              "TABLE_SCRATCH"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -1530,7 +1805,7 @@
           "director_decision_refs": [
             "DBD_SC02-B06"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "REVEAL_INFORMATION",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
@@ -1548,8 +1823,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B06",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_TABLE",
+              "陆叔": "APT_CENTER"
+            },
+            "prop_refs": [
+              "RED_FIBER"
+            ]
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "INSERT",
             "orientation": "EYE_LEVEL",
@@ -1563,7 +1845,10 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B06",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": [
+              "RED_FIBER"
+            ]
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -1586,7 +1871,7 @@
           "director_decision_refs": [
             "DBD_SC02-B07"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "ESCALATE_THREAT",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
@@ -1603,8 +1888,13 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B07",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_TABLE",
+              "陆叔": "APT_TABLE"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
             "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
@@ -1619,7 +1909,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B07",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -1642,11 +1933,10 @@
           "director_decision_refs": [
             "DBD_SC02-B08"
           ],
-          "shot_purpose": "CAPTURE_REACTION",
+          "shot_purpose": "ESTABLISH_RELATIONSHIP",
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
-            "REACTION_COVERAGE",
-            "INSERT_EVIDENCE"
+            "REACTION_COVERAGE"
           ],
           "dramatic_payload": {
             "primary_subject": "林晚",
@@ -1662,10 +1952,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B08",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_TABLE",
+              "陆叔": "APT_TABLE"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "INSERT",
+            "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -1678,7 +1973,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B08",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -1705,7 +2001,6 @@
           "coverage_roles": [
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
-            "INSERT_EVIDENCE",
             "SCENE_EXIT_COVERAGE"
           ],
           "dramatic_payload": {
@@ -1720,10 +2015,15 @@
           },
           "spatial_binding": {
             "blocking_state_ref": "SC02-B09",
-            "subject_zones": {}
+            "subject_zones": {
+              "林晚": "APT_TABLE",
+              "陆叔": "APT_TABLE"
+            },
+            "prop_refs": []
           },
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "camera_state": {
-            "framing_class": "INSERT",
+            "framing_class": "MEDIUM_CLOSE",
             "orientation": "EYE_LEVEL",
             "support": "STATIC",
             "movement": "NONE",
@@ -1736,7 +2036,8 @@
             "axis_ref": "AXIS_UNSPECIFIED",
             "axis_policy": "PRESERVE",
             "blocking_state_ref": "SC02-B09",
-            "screen_direction_state": {}
+            "screen_direction_state": {},
+            "prop_refs": []
           },
           "temporal_intent": {
             "duration_mode": "REACTION_HOLD",
@@ -1755,12 +2056,17 @@
         {
           "beat_ref": "SC02-B01",
           "required_coverages": [
+            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE"
           ],
           "required_subjects": [
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [],
+          "required_prop_refs": [
+            "APPLE",
+            "DOOR_LOCK"
+          ]
         },
         {
           "beat_ref": "SC02-B02",
@@ -1772,12 +2078,14 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC02-B02"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC02-B03",
           "required_coverages": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
@@ -1785,7 +2093,10 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC02-B03"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC02-B04",
@@ -1797,7 +2108,12 @@
           "required_subjects": [
             "林晚"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC02-B04"
+          ],
+          "required_prop_refs": [
+            "HANDBAG"
+          ]
         },
         {
           "beat_ref": "SC02-B05",
@@ -1810,7 +2126,13 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC02-B05"
+          ],
+          "required_prop_refs": [
+            "POCKET_HARD_OBJECT",
+            "TABLE_SCRATCH"
+          ]
         },
         {
           "beat_ref": "SC02-B06",
@@ -1822,7 +2144,12 @@
           "required_subjects": [
             "林晚"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC02-B06"
+          ],
+          "required_prop_refs": [
+            "RED_FIBER"
+          ]
         },
         {
           "beat_ref": "SC02-B07",
@@ -1834,12 +2161,14 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC02-B07"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC02-B08",
           "required_coverages": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
@@ -1847,12 +2176,14 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC02-B08"
+          ],
+          "required_prop_refs": []
         },
         {
           "beat_ref": "SC02-B09",
           "required_coverages": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
             "SCENE_EXIT_COVERAGE"
@@ -1861,16 +2192,23 @@
             "林晚",
             "陆叔"
           ],
-          "reaction_contract_refs": []
+          "reaction_contract_refs": [
+            "SC02-B09"
+          ],
+          "required_prop_refs": []
         }
       ],
       "coverage_results": [
         {
           "beat_ref": "SC02-B01",
           "required": [
+            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE"
           ],
           "satisfied_by": {
+            "INSERT_EVIDENCE": [
+              "SH_E01_SC002_001"
+            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC002_001"
             ]
@@ -1896,14 +2234,10 @@
         {
           "beat_ref": "SC02-B03",
           "required": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
           "satisfied_by": {
-            "INSERT_EVIDENCE": [
-              "SH_E01_SC002_003"
-            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC002_003"
             ],
@@ -1992,14 +2326,10 @@
         {
           "beat_ref": "SC02-B08",
           "required": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
           "satisfied_by": {
-            "INSERT_EVIDENCE": [
-              "SH_E01_SC002_008"
-            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC002_008"
             ],
@@ -2012,15 +2342,11 @@
         {
           "beat_ref": "SC02-B09",
           "required": [
-            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE",
             "SCENE_EXIT_COVERAGE"
           ],
           "satisfied_by": {
-            "INSERT_EVIDENCE": [
-              "SH_E01_SC002_009"
-            ],
             "PRIMARY_BEAT_COVERAGE": [
               "SH_E01_SC002_009"
             ],
@@ -2110,16 +2436,108 @@
       },
       "phase_c_semantic_ready": true,
       "source_lineage": {
-        "id": 1,
-        "revision": 1,
-        "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-        "authority_envelope_fingerprint": "4ac174a027acb1834dc76669199e137b7aa96593832ac40be140b58b05681e66"
+        "script_ir": {
+          "id": 1,
+          "revision": 1,
+          "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
+          "authority_envelope_fingerprint": "a57b55f2c2689cb3b72ff2cbe1ffdfe7b2c059c77b7b9aa362603908546b5538"
+        },
+        "treatment": {
+          "row_id": 2,
+          "revision": 1,
+          "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
+          "authority_id": 2,
+          "authority_fingerprint": "3ac8adb21070cfb67ebd64ad0b03afcc232f8afa2a2a0a9e145f54f0c2e56b1f",
+          "pointer_id": 2,
+          "pointer_fingerprint": "3ac8adb21070cfb67ebd64ad0b03afcc232f8afa2a2a0a9e145f54f0c2e56b1f",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "phase_b_semantic_ready": true,
+          "semantic_contract_ready": true,
+          "provenance_contract_ready": true,
+          "phase_b_readiness_reasons": [],
+          "proposal_provenance": {
+            "authoring": {
+              "human_input": true
+            },
+            "proposal_origin": "HUMAN_INPUT",
+            "provider": {
+              "called": false,
+              "calls": 0,
+              "model": null,
+              "profile_id": null,
+              "request_fingerprint": null,
+              "response_fingerprint": null
+            }
+          },
+          "confirmation_event": {
+            "boundary": "production_confirm_service",
+            "canonical_origin": "HUMAN_AUTHORED",
+            "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
+            "confirmation_type": "HUMAN_CONFIRMATION",
+            "confirmed": true,
+            "confirmed_at": "2026-09-20T04:11:33.835776",
+            "source_proposal_origin": "HUMAN_INPUT"
+          },
+          "canonical_origin": "HUMAN_AUTHORED",
+          "provider_provenance": {
+            "called": false,
+            "calls": 0,
+            "model": null,
+            "profile_id": null,
+            "request_fingerprint": null,
+            "response_fingerprint": null
+          },
+          "llm_called": false,
+          "llm_generated": false
+        },
+        "blocking": {
+          "row_id": 4,
+          "revision": 1,
+          "payload_hash": "ef4154e02c84dcd073b761dabeed20b443a0407a3e0a29ef3861f3da83d84f64",
+          "authority_id": 2,
+          "authority_fingerprint": "06628caeb60e84c1b3e137a56bd7089fdf1f0e58ff00c44d120e2542b74da07f",
+          "pointer_id": 2,
+          "pointer_fingerprint": "06628caeb60e84c1b3e137a56bd7089fdf1f0e58ff00c44d120e2542b74da07f",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "compiler_version": "blocking_state_compiler_v1",
+          "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"
+        }
       },
       "provider_provenance": {
         "origin": "DETERMINISTIC_BUILDER",
         "provider_calls": 0
       },
-      "payload_hash": "eed379bf54cda57c845d4f9b299dd829283280821a22f518e5d8b1cb7bd6f969"
+      "payload_hash": "3049212c9c32faab14e42fe5b72c4210a1bf0cb66557f990b793790e1fd4f42d"
+    }
+  ],
+  "authority": [
+    {
+      "scene_id": "E01_SC001",
+      "row_id": 2,
+      "revision": 1,
+      "payload_hash": "ad841101ee38d18bcf6713ab41fe005774ea8322e3f5356a8186d539e4e6e5b6",
+      "authority_id": 1,
+      "authority_fingerprint": "9cf0a2c84fe68eaa38388df17098eaeb82d7cc97d1008e1eb56fdaa9a476eb29",
+      "pointer_id": 1,
+      "pointer_fingerprint": "9cf0a2c84fe68eaa38388df17098eaeb82d7cc97d1008e1eb56fdaa9a476eb29",
+      "qualification_state": "PRODUCTION_QUALIFIED",
+      "phase_c_semantic_ready": true,
+      "provider_calls": 0,
+      "confirm_status": "ready"
+    },
+    {
+      "scene_id": "E01_SC002",
+      "row_id": 4,
+      "revision": 1,
+      "payload_hash": "3e489e3da7bac9a0a13333a146dbc040efb6ed7c352a316fa5fff571e6e1a578",
+      "authority_id": 2,
+      "authority_fingerprint": "77fd0b45a93cde8a212fea993914d298a98bf480f6928911b7778e24b187714a",
+      "pointer_id": 2,
+      "pointer_fingerprint": "77fd0b45a93cde8a212fea993914d298a98bf480f6928911b7778e24b187714a",
+      "qualification_state": "PRODUCTION_QUALIFIED",
+      "phase_c_semantic_ready": true,
+      "provider_calls": 0,
+      "confirm_status": "ready"
     }
   ]
 }

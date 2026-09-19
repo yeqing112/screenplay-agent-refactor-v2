@@ -38,3 +38,22 @@ def test_phase_c_rejects_hidden_cut_and_invented_spatial_state():
     codes = {item["code"] for item in result["errors"]}
     assert {"SHOT_INTERNAL_CUT_INVALID", "SHOT_SPATIAL_BINDING_INVALID"} <= codes
 
+
+def test_phase_c_contract_rejects_invalid_references_and_camera_state():
+    treatment, blocking = _inputs()
+    plan = build_phase_c_shot_plan(treatment=treatment, blocking=blocking)
+    plan["shots"][0]["beat_refs"] = ["MISSING"]
+    plan["shots"][0]["spatial_binding"]["blocking_state_ref"] = "MISSING"
+    plan["shots"][0]["camera_state"] = {}
+    result = validate_shot_plan_contract(plan=plan, treatment=treatment, blocking=blocking)
+    codes = {item["code"] for item in result["errors"]}
+    assert {"SHOT_BEAT_REF_INVALID", "SHOT_BLOCKING_STATE_REF_INVALID", "SHOT_CAMERA_STATE_INCOMPLETE"} <= codes
+
+
+def test_phase_c_missing_reaction_is_a_hard_coverage_failure():
+    treatment, blocking = _inputs()
+    plan = build_phase_c_shot_plan(treatment=treatment, blocking=blocking)
+    reaction_shot = next(shot for shot in plan["shots"] if "REACTION_COVERAGE" in shot["coverage_roles"])
+    reaction_shot["coverage_roles"].remove("REACTION_COVERAGE")
+    result = validate_shot_plan_contract(plan=plan, treatment=treatment, blocking=blocking)
+    assert any(item["code"] == "SHOT_COVERAGE_INCOMPLETE" and item["beat_ref"] == "SC02-B02" for item in result["errors"])

@@ -22,7 +22,9 @@ import core.llm as llm_client
 from core.prompt_cache import llm_request_fingerprint, summarize_audit_records
 from core.script_ir import resolve_script_payload
 from core.director_treatment_authority import resolve_current_authoritative_treatment
+from core.director_treatment_authority import treatment_payload_from_row
 from core.scene_blocking_authority import resolve_current_authoritative_scene_blocking
+from core.scene_blocking_authority import blocking_payload_from_row
 from core.executability import preflight_shot_plan, build_executability_repair_plan
 from core.shot_plan_authority import (
     build_shot_plan_authority_envelope,
@@ -202,6 +204,10 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
         scenes = _script_scenes(script)
         scene_names = [str(item.get("name") or "未命名场景").strip() for item in scenes]
         scene_name = req.scene_name.strip() or (scene_names[0] if scene_names else "")
+        if req.scene_id.strip():
+            selected_by_id = next((item for item in scenes if str(item.get("scene_id") or "").strip() == req.scene_id.strip()), None)
+            if selected_by_id:
+                scene_name = str(selected_by_id.get("name") or "未命名场景").strip()
         if str(req.workflow_profile or "creative_draft").strip().lower() == "production" and not req.scene_id.strip():
             raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production ShotPlan requires a stable scene_id."})
         scene = next((item for item in scenes if isinstance(item, dict) and ((req.scene_id.strip() and str(item.get("scene_id") or "").strip() == req.scene_id.strip()) or (not req.scene_id.strip() and str(item.get("name") or "").strip() == scene_name))), None)
@@ -227,8 +233,14 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
             raise HTTPException(status_code=409, detail=f"ShotPlan is blocked by unresolved SceneBlocking unknowns: {scene_name}")
         if not scene:
             raise HTTPException(status_code=404, detail=f"Scene not found: {scene_name}")
-        treatment_payload = {"scene_name": treatment.scene_name, "scene_id": getattr(treatment, "scene_id", scene_id), "character_intents": _json(treatment.character_intents, {}), "beat_map": _json(treatment.beat_map, []), "prompt_fingerprint": treatment.prompt_fingerprint}
-        blocking_payload = {"scene_name": blocking.scene_name, "scene_id": getattr(blocking, "scene_id", scene_id), "participants": _json(blocking.participants, []), "unknowns": _json(blocking.unknowns, []), "evidence_fingerprint": blocking.evidence_fingerprint, "source_spatial_facts": _json(getattr(blocking, "source_spatial_facts", "[]"), []), "continuity_state": _json(getattr(blocking, "continuity_state", "{}"), {}), "asset_authority": _json(getattr(blocking, "asset_authority", "{}"), {}), "props": (scene.get("props") if isinstance(scene.get("props"), list) else []), "scene_asset_id": str(scene.get("location_id") or blocking.scene_name or ""), "screen_direction": "maintain"}
+        treatment_payload = treatment_payload_from_row(treatment) if str(req.workflow_profile or "").strip().lower() == "production" else {"scene_name": treatment.scene_name, "scene_id": getattr(treatment, "scene_id", scene_id), "character_intents": _json(treatment.character_intents, {}), "beat_map": _json(treatment.beat_map, []), "director_beat_decisions": _json(getattr(treatment, "director_decisions", "[]"), []), "prompt_fingerprint": treatment.prompt_fingerprint}
+        if str(req.workflow_profile or "").strip().lower() == "production":
+            blocking_payload = blocking_payload_from_row(blocking)
+            blocking_payload.update({"scene_name": blocking.scene_name, "evidence_fingerprint": blocking.evidence_fingerprint})
+        else:
+            blocking_payload = {"scene_name": blocking.scene_name, "scene_id": getattr(blocking, "scene_id", scene_id), "participants": _json(blocking.participants, []), "unknowns": _json(blocking.unknowns, []), "evidence_fingerprint": blocking.evidence_fingerprint, "source_spatial_facts": _json(getattr(blocking, "source_spatial_facts", "[]"), []), "continuity_state": _json(getattr(blocking, "continuity_state", "{}"), {}), "beat_spatial_states": _json(getattr(blocking, "beat_spatial_states", "[]"), []), "asset_authority": _json(getattr(blocking, "asset_authority", "{}"), {}), "props": (scene.get("props") if isinstance(scene.get("props"), list) else []), "scene_asset_id": str(scene.get("location_id") or blocking.scene_name or ""), "screen_direction": "maintain"}
+        blocking_payload.setdefault("props", scene.get("props") if isinstance(scene.get("props"), list) else [])
+        blocking_payload.setdefault("scene_asset_id", str(scene.get("location_id") or blocking.scene_name or ""))
         plan = build_shot_plan(treatment=treatment_payload, blocking=blocking_payload)
         plan["scene_id"] = scene_id
         plan["schema_version"] = "shot_plan_v2"
@@ -239,11 +251,12 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
             phase_c_plan = build_phase_c_shot_plan(
                 treatment=treatment_payload,
                 blocking=blocking_payload,
-                script_authority={"script_ir_version_id": getattr(script_row, "current_script_ir_version_id", None)},
+                script_authority={"script_ir": {"id": getattr(script_row, "current_script_ir_version_id", None), "authority_envelope_fingerprint": _text(_authority.get("script_ir", {}).get("authority_envelope_fingerprint"))}, "treatment": {"id": treatment.id, "revision": treatment.revision, "payload_hash": _text(getattr(treatment, "payload_hash", "")), "authority_envelope_fingerprint": _text(_authority.get("envelope_fingerprint"))}, "blocking": {"id": blocking.id, "revision": blocking.revision, "payload_hash": _text(getattr(blocking, "payload_hash", "")), "authority_envelope_fingerprint": _text(blocking_authority.get("envelope_fingerprint"))}},
             )
             phase_c_validation = validate_shot_plan_contract(plan=phase_c_plan, treatment=treatment_payload, blocking=blocking_payload)
             plan["phase_c_plan"] = phase_c_plan
             plan["phase_c_semantic_ready"] = bool(phase_c_validation["valid"] and phase_c_plan.get("phase_c_semantic_ready"))
+            plan["model_info"] = {**(_dict(plan.get("model_info"))), "phase_c_contract_version": phase_c_plan.get("contract_version"), "phase_c_semantic_ready": plan["phase_c_semantic_ready"], "phase_c_payload_hash": phase_c_plan.get("payload_hash"), "phase_c_plan": phase_c_plan}
         persisted_id = None
         if req.persist:
             existing_query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, evidence_fingerprint=plan["evidence_fingerprint"], workflow_profile=req.workflow_profile, status="draft")
@@ -685,6 +698,8 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
     if not req.confirmed:
         raise HTTPException(status_code=409, detail="ShotPlan approval requires confirmed=true.")
     is_production = str(req.workflow_profile or "creative_draft").strip().lower() == "production"
+    phase_c_info: dict[str, Any] = {}
+    confirmed_phase_c_plan: dict[str, Any] | None = None
     with Session() as session:
         draft = session.query(ShotPlan).filter_by(id=req.plan_id, book_id=book_id, episode=episode).first()
         if not draft or draft.status != "draft":
@@ -711,6 +726,13 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
             blocking = session.query(SceneBlocking).filter_by(id=draft.blocking_id, book_id=book_id, episode=episode, status="approved").first()
         if not treatment or not blocking:
             raise HTTPException(status_code=409, detail="ShotPlan upstream evidence is no longer approved.")
+        if is_production:
+            phase_c_info = _json(getattr(draft, "model_info", "{}"), {})
+            if not isinstance(phase_c_info, dict) or not phase_c_info.get("phase_c_semantic_ready") or not isinstance(phase_c_info.get("phase_c_plan"), dict):
+                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_PHASE_C_NOT_READY", "message": "Legacy or incomplete ShotPlan cannot be activated as a Phase C Production ShotPlan."})
+            phase_c_validation = validate_shot_plan_contract(plan=phase_c_info["phase_c_plan"], treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking))
+            if not phase_c_validation.get("valid"):
+                raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_PHASE_C_CONTRACT_INVALID", "errors": phase_c_validation.get("errors", [])})
         scene_name = draft.scene_name
     preview = preview_shot_plan(book_id, episode, ShotPlanPreviewRequest(scene_name=scene_name, scene_id=str(getattr(draft, "scene_id", "") or ""), workflow_profile=req.workflow_profile))
     baseline = preview["plan"]
@@ -728,6 +750,12 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
             candidate, continuity, executability = validate_shot_plan_candidate_authority(
                 raw_candidate, baseline, scene_entry=_json(getattr(blocking, "continuity_state", "{}"), {})
             )
+            candidate["phase_c_contract"] = candidate.get("phase_c_contract") or phase_c_info.get("phase_c_plan")
+            candidate["phase_c_semantic_ready"] = bool(candidate.get("phase_c_semantic_ready", phase_c_info.get("phase_c_semantic_ready")))
+            phase_c_candidate_validation = validate_shot_plan_contract(plan=candidate["phase_c_contract"], treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking))
+            if not phase_c_candidate_validation.get("valid"):
+                raise ValueError(json.dumps({"code": "SHOT_PLAN_PHASE_C_CONTRACT_INVALID", "errors": phase_c_candidate_validation.get("errors", [])}, ensure_ascii=False))
+            confirmed_phase_c_plan = candidate["phase_c_contract"]
         else:
             candidate = _validate_plan_candidate(raw_candidate, baseline)
             continuity = {"status": "pass", "errors": [], "warnings": [], "fingerprint": ""}
@@ -780,7 +808,7 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
                 raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_POINTER_MISSING", "message": "Approved ShotPlan exists without a current pointer; explicit migration is required."})
         revision = (previous.revision + 1) if previous else 1
         anchor = {"previous_plan_id": previous.id if previous else None, "previous_revision": previous.revision if previous else None}
-        row = ShotPlan(book_id=book_id, episode=episode, scene_id=scene_id, scene_name=scene_name, revision=revision, status="approved", schema_version="shot_plan_v2", execution_status="ready", quality_status="qualified", production_status="ready", workflow_profile="production", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": now.isoformat(), "provider_calls": 0}, ensure_ascii=False), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", contract_fingerprint=shot_plan_contract_fingerprint(), executability_fingerprint=executability.get("fingerprint", ""), continuity_fingerprint=continuity.get("fingerprint", ""), source_script_ir_version_id=script_ir.id, source_script_ir_revision=script_ir.revision, source_script_ir_hash=_text(script_ir.payload_hash), source_script_authority_fingerprint=_text(script_ir_authority.get("envelope_fingerprint")), treatment_authority_fingerprint=_text(treatment_authority.get("envelope_fingerprint")), treatment_payload_hash=_text(getattr(treatment, "payload_hash", "")), blocking_authority_fingerprint=_text(blocking_authority.get("envelope_fingerprint")), blocking_payload_hash=_text(blocking_authority.get("payload_hash", "")), source_fact_snapshot_id=_text(blocking_authority.get("fact_snapshot", {}).get("id")), source_fact_snapshot_revision=blocking_authority.get("fact_snapshot", {}).get("revision"), source_fact_snapshot_hash=_text(blocking_authority.get("fact_snapshot", {}).get("payload_hash")), source_immutable_raw_hash=_text(blocking_authority.get("source_lineage", {}).get("immutable_source_raw_hash")), source_lineage=json.dumps({"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id}, ensure_ascii=False), created_at=now, updated_at=now)
+        row = ShotPlan(book_id=book_id, episode=episode, scene_id=scene_id, scene_name=scene_name, revision=revision, status="approved", schema_version="shot_plan_v2", execution_status="ready", quality_status="qualified", production_status="ready", workflow_profile="production", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": now.isoformat(), "provider_calls": 0, "phase_c_contract_version": (confirmed_phase_c_plan or {}).get("contract_version"), "phase_c_semantic_ready": bool(candidate.get("phase_c_semantic_ready")), "phase_c_plan": confirmed_phase_c_plan}, ensure_ascii=False), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", contract_fingerprint=shot_plan_contract_fingerprint(), executability_fingerprint=executability.get("fingerprint", ""), continuity_fingerprint=continuity.get("fingerprint", ""), source_script_ir_version_id=script_ir.id, source_script_ir_revision=script_ir.revision, source_script_ir_hash=_text(script_ir.payload_hash), source_script_authority_fingerprint=_text(script_ir_authority.get("envelope_fingerprint")), treatment_authority_fingerprint=_text(treatment_authority.get("envelope_fingerprint")), treatment_payload_hash=_text(getattr(treatment, "payload_hash", "")), blocking_authority_fingerprint=_text(blocking_authority.get("envelope_fingerprint")), blocking_payload_hash=_text(blocking_authority.get("payload_hash", "")), source_fact_snapshot_id=_text(blocking_authority.get("fact_snapshot", {}).get("id")), source_fact_snapshot_revision=blocking_authority.get("fact_snapshot", {}).get("revision"), source_fact_snapshot_hash=_text(blocking_authority.get("fact_snapshot", {}).get("payload_hash")), source_immutable_raw_hash=_text(blocking_authority.get("source_lineage", {}).get("immutable_source_raw_hash")), source_lineage=json.dumps({"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id}, ensure_ascii=False), created_at=now, updated_at=now)
         session.add(row); session.flush()
         row.payload_hash = shot_plan_payload_hash(candidate)
         envelope = build_shot_plan_authority_envelope(plan=candidate, book_id=book_id, episode=episode, plan_id=row.id, plan_revision=row.revision, script_ir=script_ir, script_ir_envelope=script_ir_authority, treatment=treatment, treatment_envelope=treatment_authority, blocking=blocking, blocking_envelope=blocking_authority, executability=executability, continuity=continuity)

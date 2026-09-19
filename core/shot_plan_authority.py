@@ -107,23 +107,32 @@ def _envelope_fingerprint(value: dict[str, Any]) -> str:
 
 
 def shot_plan_payload_from_dict(plan: dict[str, Any]) -> dict[str, Any]:
-    return {
+    payload = {
         "scene_id": _text(plan.get("scene_id")),
         "scene_name": _text(plan.get("scene_name")),
         "schema_version": _text(plan.get("schema_version") or "shot_plan_v2"),
         "shots": plan.get("shots") if isinstance(plan.get("shots"), list) else [],
         "unknowns": plan.get("unknowns") if isinstance(plan.get("unknowns"), list) else [],
     }
+    if isinstance(plan.get("phase_c_contract"), dict):
+        payload["phase_c_contract"] = plan["phase_c_contract"]
+        payload["phase_c_semantic_ready"] = bool(plan.get("phase_c_semantic_ready"))
+    return payload
 
 
 def shot_plan_payload_from_row(row: Any) -> dict[str, Any]:
-    return shot_plan_payload_from_dict({
+    payload = {
         "scene_id": getattr(row, "scene_id", ""),
         "scene_name": getattr(row, "scene_name", ""),
         "schema_version": getattr(row, "schema_version", "shot_plan_v2"),
         "shots": _json(getattr(row, "shots", "[]"), []),
         "unknowns": _json(getattr(row, "unknowns", "[]"), []),
-    })
+    }
+    model_info = _json(getattr(row, "model_info", "{}"), {})
+    if isinstance(model_info, dict) and isinstance(model_info.get("phase_c_plan"), dict):
+        payload["phase_c_contract"] = model_info["phase_c_plan"]
+        payload["phase_c_semantic_ready"] = bool(model_info.get("phase_c_semantic_ready"))
+    return shot_plan_payload_from_dict(payload)
 
 
 def shot_plan_payload_hash(plan: dict[str, Any]) -> str:
@@ -235,7 +244,7 @@ def validate_shot_continuity(*, shots: list[dict[str, Any]], scene_entry: dict[s
 def validate_shot_plan_candidate_authority(raw: dict[str, Any], baseline: dict[str, Any], *, scene_entry: dict[str, Any] | None = None) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     if not isinstance(raw, dict):
         raise ValueError("ShotPlan candidate must be an object")
-    allowed = {"scene_id", "scene_name", "schema_version", "shots", "unknowns", "unknown_resolutions"}
+    allowed = {"scene_id", "scene_name", "schema_version", "shots", "unknowns", "unknown_resolutions", "phase_c_plan", "phase_c_semantic_ready"}
     unexpected = sorted(set(raw) - allowed)
     if unexpected:
         raise ValueError(f"candidate contains non-whitelisted fields: {', '.join(unexpected)}")
@@ -301,6 +310,9 @@ def validate_shot_plan_candidate_authority(raw: dict[str, Any], baseline: dict[s
     if executability.get("status") == "blocked":
         raise ValueError("ShotPlan executability is blocked")
     result = {"scene_id": _text(baseline.get("scene_id")), "scene_name": _text(baseline.get("scene_name")), "schema_version": _text(raw.get("schema_version") or baseline.get("schema_version") or "shot_plan_v2"), "shots": shots, "unknowns": []}
+    if isinstance(raw.get("phase_c_plan"), dict):
+        result["phase_c_contract"] = raw["phase_c_plan"]
+        result["phase_c_semantic_ready"] = bool(raw.get("phase_c_semantic_ready", raw["phase_c_plan"].get("phase_c_semantic_ready")))
     return result, continuity, executability
 
 
@@ -324,6 +336,7 @@ def build_shot_plan_authority_envelope(*, plan: dict[str, Any], book_id: int, ep
         "contract": {"schema_version": CONTRACT_SCHEMA_VERSION, "fingerprint": contract_fingerprint(), "requirement_set_fingerprint": fingerprint({"fields": shot_plan_contract()["fields"]})},
         "executability": {"report": executability, "fingerprint": fingerprint(executability)},
         "continuity": {"report": continuity, "fingerprint": fingerprint(continuity)},
+        "phase_c": {"contract_version": _text(plan.get("phase_c_contract", {}).get("contract_version")) if isinstance(plan.get("phase_c_contract"), dict) else "", "payload_hash": _text(plan.get("phase_c_contract", {}).get("payload_hash")) if isinstance(plan.get("phase_c_contract"), dict) else "", "semantic_ready": bool(plan.get("phase_c_semantic_ready"))},
         "qualification_state": "PRODUCTION_QUALIFIED", "stale_status": "FRESH", "stale_reasons": [],
         "approved_at": datetime.now(timezone.utc).isoformat(), "activated_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -385,6 +398,9 @@ def resolve_current_authoritative_shot_plan(session: Any, *, book_id: int, episo
         mark_shot_plan_stale(session, row, errors); session.commit(); _raise(errors[0], "ShotPlan authority envelope or payload is invalid.", stale_reasons=errors)
     blocking, blocking_envelope = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=scene_id)
     treatment, treatment_envelope = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
+    from core.director_treatment_authority import treatment_payload_from_row
+    from core.scene_blocking_authority import blocking_payload_from_row
+    from core.phase_c_shot_plan import validate_shot_plan_contract
     blocking_meta = envelope.get("scene_blocking") if isinstance(envelope.get("scene_blocking"), dict) else {}
     if str(blocking_meta.get("id")) != str(blocking.id) or str(blocking_meta.get("revision")) != str(blocking.revision) or _text(blocking_meta.get("payload_hash")) != _text(blocking_envelope.get("payload_hash")) or _text(blocking_meta.get("authority_envelope_fingerprint")) != _text(blocking_envelope.get("envelope_fingerprint")):
         mark_shot_plan_stale(session, row, ["SCENE_BLOCKING_CHANGED"]); session.commit(); _raise("SCENE_BLOCKING_CHANGED", "ShotPlan SceneBlocking lineage is stale.")
@@ -395,12 +411,21 @@ def resolve_current_authoritative_shot_plan(session: Any, *, book_id: int, episo
     plan_fact_meta = envelope.get("fact_snapshot") if isinstance(envelope.get("fact_snapshot"), dict) else {}
     if _canonical(fact_meta) != _canonical(plan_fact_meta):
         mark_shot_plan_stale(session, row, ["FACT_SNAPSHOT_CHANGED"]); session.commit(); _raise("FACT_SNAPSHOT_CHANGED", "ShotPlan FactSnapshot lineage is stale.")
+    plan = shot_plan_payload_from_row(row)
+    phase_c_plan = plan.get("phase_c_contract") if isinstance(plan.get("phase_c_contract"), dict) else None
+    if not phase_c_plan or not plan.get("phase_c_semantic_ready"):
+        mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_NOT_READY"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_NOT_READY", "Current ShotPlan is legacy or Phase C semantic-not-ready.")
+    phase_meta = envelope.get("phase_c") if isinstance(envelope.get("phase_c"), dict) else {}
+    if _text(phase_meta.get("payload_hash")) != _text(phase_c_plan.get("payload_hash")) or not phase_meta.get("semantic_ready"):
+        mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_TAMPERED"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_TAMPERED", "Phase C contract lineage is invalid.")
+    phase_validation = validate_shot_plan_contract(plan=phase_c_plan, treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking))
+    if not phase_validation.get("valid"):
+        mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_INVALID"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_INVALID", "Current Phase C contract is no longer valid.", errors=phase_validation.get("errors", []))
     script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
     ir = session.query(ScriptIRVersion).filter_by(id=getattr(script, "current_script_ir_version_id", None), book_id=book_id, episode=episode).first() if script else None
     script_meta = envelope.get("script_ir") if isinstance(envelope.get("script_ir"), dict) else {}
     if not ir or str(script_meta.get("id")) != str(ir.id) or str(script_meta.get("revision")) != str(ir.revision) or _text(script_meta.get("payload_hash")) != _text(ir.payload_hash):
         mark_shot_plan_stale(session, row, ["SCRIPT_IR_CHANGED"]); session.commit(); _raise("SCRIPT_IR_CHANGED", "ShotPlan ScriptIR lineage is stale.")
-    plan = shot_plan_payload_from_row(row)
     continuity = validate_shot_continuity(shots=plan["shots"], scene_entry=_json(getattr(blocking, "continuity_state", "{}"), {}))
     executability = preflight_shot_plan(plan["shots"])
     if continuity.get("status") == "blocked":
