@@ -1,0 +1,345 @@
+{
+  "baseline_commit": "e6e9b85",
+  "baseline_result": {
+    "passed": 1516,
+    "failed": 35,
+    "warnings": 926
+  },
+  "final_result": {
+    "passed": 1548,
+    "failed": 4,
+    "warnings": 928
+  },
+  "summary": {
+    "phase_a_contract_induced_initial_failures": 31,
+    "migrated": 31,
+    "true_pre_existing_failures": 4,
+    "real_regressions": 0
+  },
+  "failures": [
+    {
+      "test": "test_production_candidate_activation_binds_pointer_without_provider_by_default",
+      "file": "tests/test_director_treatment_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_materialize_endpoint_requires_confirmation_and_is_deterministic",
+      "file": "tests/test_production_storyboard_gate.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_production_materializer_never_calls_storyboard_agent",
+      "file": "tests/test_production_storyboard_gate.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_production_materializer_rejects_malformed_shot_plan_payload",
+      "file": "tests/test_production_storyboard_gate.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_qualification_blocker_never_promotes_materialized_shot_to_ready",
+      "file": "tests/test_production_storyboard_gate.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_materializer_uses_latest_approved_revision_per_scene_without_explicit_plan_id",
+      "file": "tests/test_production_storyboard_gate.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_materializer_fails_closed_when_existing_shot_belongs_to_another_plan_revision",
+      "file": "tests/test_production_storyboard_gate.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_materializer_fails_closed_when_existing_shot_has_no_plan_reference",
+      "file": "tests/test_production_storyboard_gate.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_contract_classifies_authority_layers",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_candidate_cannot_change_source_identity_or_clear_unknown_without_resolution",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_exact_fact_snapshot_change_blocks_and_stales_blocking",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_failed_activation_does_not_move_pointer_and_payload_tamper_stales_it",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_locked_asset_fingerprint_covers_non_geometry_inputs",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_locked_geometry_cannot_be_changed_through_spatial_model_alias",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_locked_scene_asset_and_continuity_have_provenance",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_missing_pointer_and_latest_approved_fallback_are_blocked",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_missing_scene_asset_is_production_blocker_but_not_legacy_authority",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_name_only_locked_scene_asset_is_advisory",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_pointer_or_authority_metadata_tamper_is_fail_closed",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_production_preview_confirm_and_shot_plan_use_explicit_pointer",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_shot_plan_activation_and_materializer_use_current_pointer_without_agent",
+      "file": "tests/test_scene_blocking_authority_contract.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_production_preview_keeps_fact_conflict_blocked",
+      "file": "tests/test_scene_blocking_v2_api.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_production_preview_uses_v2_and_does_not_block_silent_position",
+      "file": "tests/test_scene_blocking_v2_api.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_activation_binds_source_fact_contract_and_pointer_atomically",
+      "file": "tests/test_script_ir_authority_activation.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_activation_requires_real_anchor_binding_and_rejects_placeholder",
+      "file": "tests/test_script_ir_authority_activation.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_fact_snapshot_revision_change_blocks_production_resolver",
+      "file": "tests/test_script_ir_authority_activation.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_fact_snapshot_payload_change_blocks_production_resolver",
+      "file": "tests/test_script_ir_authority_activation.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_source_change_and_payload_tamper_block_production_resolver",
+      "file": "tests/test_script_ir_authority_activation.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_contract_and_requirement_set_changes_are_stale",
+      "file": "tests/test_script_ir_authority_activation.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_activation_failure_does_not_update_current_pointer_and_wrong_snapshot_is_blocked",
+      "file": "tests/test_script_ir_authority_activation.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_placeholder_and_stale_draft_cannot_become_authority",
+      "file": "tests/test_script_ir_authority_activation.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_materialized_production_shot_has_phase_a_state",
+      "file": "tests/test_storyboard_compiler_invariant.py",
+      "failure_code": "SCRIPT_TIMELINE_NOT_EXPLICIT",
+      "category": "OUTDATED_PRODUCTION_FIXTURE",
+      "phase_a_related": true,
+      "expected_behavior_after_new_contract": "合法 Production authority/downstream flow succeeds after explicit timeline migration.",
+      "migration_action": "Use build_explicit_production_script_payload() at raw fixture construction; do not mutate normalized IR."
+    },
+    {
+      "test": "test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons",
+      "file": "tests/test_director_quality_v24_offline_replay.py",
+      "failure_code": "BRANCH_PROVENANCE_EXPECTATION",
+      "category": "TRUE_PRE_EXISTING_FAILURE",
+      "phase_a_related": false,
+      "expected_behavior_after_new_contract": "Unchanged historical test behavior; unrelated to screenplay timeline provenance.",
+      "migration_action": "Do not modify in this phase; track separately."
+    },
+    {
+      "test": "test_authorized_real_path_requires_entire_worktree_clean",
+      "file": "tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py",
+      "failure_code": "HISTORICAL_RECANARY_RETIRED",
+      "category": "TRUE_PRE_EXISTING_FAILURE",
+      "phase_a_related": false,
+      "expected_behavior_after_new_contract": "Unchanged historical test behavior; unrelated to screenplay timeline provenance.",
+      "migration_action": "Do not modify in this phase; track separately."
+    },
+    {
+      "test": "test_default_scope_uses_active_registry",
+      "file": "tests/test_real_llm_gray_selection.py",
+      "failure_code": "ACTIVE_REGISTRY_SCOPE",
+      "category": "TRUE_PRE_EXISTING_FAILURE",
+      "phase_a_related": false,
+      "expected_behavior_after_new_contract": "Unchanged historical test behavior; unrelated to screenplay timeline provenance.",
+      "migration_action": "Do not modify in this phase; track separately."
+    },
+    {
+      "test": "test_targeted_missing_fact_api_is_provider_free_and_fail_closed",
+      "file": "tests/test_targeted_missing_fact_api.py",
+      "failure_code": "FACT_SNAPSHOT_TEST_ISOLATION",
+      "category": "TRUE_PRE_EXISTING_FAILURE",
+      "phase_a_related": false,
+      "expected_behavior_after_new_contract": "Unchanged historical test behavior; unrelated to screenplay timeline provenance.",
+      "migration_action": "Do not modify in this phase; track separately."
+    }
+  ]
+}

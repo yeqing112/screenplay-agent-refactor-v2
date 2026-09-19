@@ -22,6 +22,7 @@ from core.scene_blocking_authority import (
 )
 from core.script_ir import build_script_ir, script_ir_hash
 from core.source_evidence_index import build_source_evidence_index
+from tests.script_fixtures import build_explicit_production_script_payload
 from models import (
     Book,
     DirectorTreatment,
@@ -53,7 +54,7 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         with Session() as session:
             book = Book(title="SceneBlocking authority test", filename="scene-blocking-authority.txt", status="imported")
             session.add(book); session.flush()
-            source = {"scenes": [{"name": "门厅", "scene_id": "E01_SC001", "participants": [{"character_id": "c1"}, {"character_id": "c2"}], "beats": [{"beat_id": "B01", "type": "setup", "event": "两人对视"}], "spatial_facts": [{"subject_id": "c1", "predicate": "anchor", "value": "门口"}], "required_anchors": ["门口"]}]}
+            source = build_explicit_production_script_payload({"scenes": [{"name": "门厅", "scene_id": "E01_SC001", "participants": [{"character_id": "c1"}, {"character_id": "c2"}], "beats": [{"beat_id": "B01", "type": "setup", "event": "两人对视"}], "spatial_facts": [{"subject_id": "c1", "predicate": "anchor", "value": "门口"}], "required_anchors": ["门口"]}]})
             content = json.dumps(source, ensure_ascii=False)
             script = Script(book_id=book.id, episode=1, content=content)
             session.add(script); session.flush()

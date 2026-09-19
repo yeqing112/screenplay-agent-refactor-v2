@@ -9,6 +9,7 @@ from core.script_ir import build_script_ir, script_ir_hash
 from core.source_evidence_index import build_source_evidence_index
 from core.director_treatment_authority import build_treatment_authority_envelope, payload_hash as treatment_payload_hash, treatment_payload_from_row
 from models import Book, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, FactSnapshot, SceneBlocking, SceneBlockingAuthority, SceneBlockingPointer, Script, ScriptIRVersion, Session, ShotPlan, ShotPlanAuthority, ShotPlanPointer, StoryboardShot, init_db
+from tests.script_fixtures import build_explicit_production_script_payload
 from unittest.mock import patch
 
 
@@ -23,8 +24,9 @@ def _authorize_existing_script(client, book_id):
         session.query(DirectorTreatmentAuthority).delete(synchronize_session=False)
         session.commit()
         script = session.query(Script).filter_by(book_id=book_id, episode=1).one()
-        source = json.loads(script.content)
-        content = str(script.content)
+        source = build_explicit_production_script_payload(json.loads(script.content))
+        content = json.dumps(source, ensure_ascii=False)
+        script.content = content
         raw_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
         ir = session.query(ScriptIRVersion).filter_by(book_id=book_id, episode=1).one()
         records = [{"fact_key": "episode|scenes|scene_existence|episode", "predicate": "scene_existence", "subject_id": "episode", "value": {"minimum": 1, "actual": len(source.get("scenes", []))}, "status": "confirmed", "evidence": [{"anchor_ref": "E0001"}]}]

@@ -10,6 +10,7 @@ from core.script_ir import build_script_ir, script_ir_hash
 from core.source_evidence_index import build_source_evidence_index
 from core.director_treatment import build_shadow_treatment
 from core.director_treatment_authority import build_treatment_authority_envelope, payload_hash as treatment_payload_hash
+from tests.script_fixtures import build_explicit_production_script_payload
 from models import Book, DirectorTreatment, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, VisualLocation, init_db
 from models import DirectorTreatmentAuthority, DirectorTreatmentPointer
 
@@ -31,7 +32,7 @@ class SceneBlockingV2ApiTests(unittest.TestCase):
             session.commit()
             book = Book(title="V2 API test", filename="v2-api.txt", status="imported")
             session.add(book); session.flush()
-            source = {"scenes": [{"name": "门厅", "scene_id": "E01_SC001"}]}
+            source = build_explicit_production_script_payload({"scenes": [{"name": "门厅", "scene_id": "E01_SC001"}]})
             content = json.dumps(source, ensure_ascii=False)
             script = Script(book_id=book.id, episode=1, content=content)
             session.add(script); session.flush()

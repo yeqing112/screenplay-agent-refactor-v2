@@ -10,11 +10,12 @@ from core.fact_snapshot import snapshot_hash
 from core.script_ir_authority import validate_authority_envelope
 from core.source_evidence_index import build_source_evidence_index
 from models import Book, FactSnapshot, Script, ScriptIRVersion, Session, init_db
+from tests.script_fixtures import build_explicit_production_script_payload
 
 
 def _create_ready_fixture():
     init_db()
-    source = {"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]}
+    source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
     content = json.dumps(source, ensure_ascii=False)
     raw_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
     with Session() as session:
@@ -45,7 +46,7 @@ def test_activation_binds_source_fact_contract_and_pointer_atomically():
     try:
         draft = client.post(f"/api/books/{book_id}/episodes/1/script-ir/build", json={"persist": True, "sourceFactSnapshotId": str(snapshot_id)}).json()
         version_id = draft["persisted_draft_id"]
-        source = {"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]}
+        source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
         source_index = build_source_evidence_index(json.dumps(source, ensure_ascii=False).encode("utf-8"), source_package_id="SRC_TEST", source_version_id="SRC_TEST:V01:abc", source_raw_hash=raw_hash)
         body = {
             "versionId": version_id, "confirmed": True, "factSnapshotId": snapshot_id,
@@ -75,7 +76,7 @@ def test_activation_requires_real_anchor_binding_and_rejects_placeholder():
     book_id, snapshot_id, raw_hash = _create_ready_fixture()
     try:
         draft = client.post(f"/api/books/{book_id}/episodes/1/script-ir/build", json={"persist": True, "sourceFactSnapshotId": str(snapshot_id)}).json()
-        source = {"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]}
+        source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
         source_index = build_source_evidence_index(json.dumps(source, ensure_ascii=False).encode("utf-8"), source_package_id="SRC_TEST", source_version_id="SRC_TEST:V01:abc", source_raw_hash=raw_hash)
         common = {"versionId": draft["persisted_draft_id"], "confirmed": True, "factSnapshotId": snapshot_id, "sourcePackageId": "SRC_TEST", "sourceVersionId": "SRC_TEST:V01:abc", "immutableSourceRawHash": raw_hash, "sourceEvidenceIndex": source_index, "sourceStructure": source}
         blocked = client.post(f"/api/books/{book_id}/episodes/1/script-ir/activate", json={**common, "sourceAnchorBindings": {}})
@@ -105,7 +106,7 @@ def test_authority_validation_detects_payload_tamper_and_freshness_changes():
 
 
 def _activate_ready_fixture(client, book_id, snapshot_id, raw_hash):
-    source = {"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]}
+    source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
     draft = client.post(f"/api/books/{book_id}/episodes/1/script-ir/build", json={"persist": True, "sourceFactSnapshotId": str(snapshot_id)}).json()
     index = build_source_evidence_index(json.dumps(source, ensure_ascii=False).encode("utf-8"), source_package_id="SRC_TEST", source_version_id="SRC_TEST:V01:abc", source_raw_hash=raw_hash)
     response = client.post(f"/api/books/{book_id}/episodes/1/script-ir/activate", json={
@@ -222,7 +223,7 @@ def test_activation_failure_does_not_update_current_pointer_and_wrong_snapshot_i
     book_id, snapshot_id, raw_hash = _create_ready_fixture()
     try:
         draft = client.post(f"/api/books/{book_id}/episodes/1/script-ir/build", json={"persist": True, "sourceFactSnapshotId": str(snapshot_id)}).json()
-        source = {"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]}
+        source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
         index = build_source_evidence_index(json.dumps(source, ensure_ascii=False).encode("utf-8"), source_package_id="SRC_TEST", source_version_id="SRC_TEST:V01:abc", source_raw_hash=raw_hash)
         blocked = client.post(f"/api/books/{book_id}/episodes/1/script-ir/activate", json={"versionId": draft["persisted_draft_id"], "confirmed": True, "factSnapshotId": snapshot_id, "sourcePackageId": "SRC_TEST", "sourceVersionId": "SRC_TEST:V01:abc", "immutableSourceRawHash": raw_hash, "sourceEvidenceIndex": index, "sourceAnchorBindings": {}})
         assert blocked.status_code == 409
@@ -250,7 +251,7 @@ def test_placeholder_and_stale_draft_cannot_become_authority():
             row.payload_json = json.dumps(payload, ensure_ascii=False)
             row.payload_hash = "tampered-draft"
             session.commit()
-        source = {"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]}
+        source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
         index = build_source_evidence_index(json.dumps(source, ensure_ascii=False).encode("utf-8"), source_package_id="SRC_TEST", source_version_id="SRC_TEST:V01:abc", source_raw_hash=raw_hash)
         blocked = client.post(f"/api/books/{book_id}/episodes/1/script-ir/activate", json={"versionId": draft["persisted_draft_id"], "confirmed": True, "factSnapshotId": snapshot_id, "sourcePackageId": "SRC_TEST", "sourceVersionId": "SRC_TEST:V01:abc", "immutableSourceRawHash": raw_hash, "sourceEvidenceIndex": index, "sourceAnchorBindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|门厅|scene_identity|scene": ["E0001"]}, "sourceStructure": source})
         assert blocked.status_code == 409

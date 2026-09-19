@@ -18,11 +18,13 @@ from core.director_treatment_authority import (
     payload_hash as treatment_payload_hash,
 )
 from core.director_treatment_authority import resolve_current_authoritative_treatment
+from tests.script_fixtures import build_explicit_production_script_payload
 from models import Book, DirectorTreatmentPointer, Session, init_db
 from api.server import app
 from fastapi.testclient import TestClient
 from core.fact_snapshot import snapshot_hash
 from core.source_evidence_index import build_source_evidence_index
+from tests.script_fixtures import build_explicit_production_script_payload
 from models import FactSnapshot, Script, ScriptIRVersion, DirectorTreatment, DirectorTreatmentAuthority
 
 
@@ -100,7 +102,7 @@ def test_production_resolver_has_no_latest_approved_fallback():
 
 def test_production_candidate_activation_binds_pointer_without_provider_by_default():
     init_db(); client = TestClient(app)
-    source = {"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]}
+    source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
     content = json.dumps(source, ensure_ascii=False); raw_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
     with Session() as session:
         book = Book(title="treatment-production-test", filename="treatment-production-test.txt", status="imported"); session.add(book); session.flush()
