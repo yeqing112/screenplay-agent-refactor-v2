@@ -101,7 +101,7 @@
 - Existing Golden baseline: 5/5.
 
 ## 33. Full backend
-- Clean rerun: 1567 passed / 4 failures / 928 warnings. The four failures are unchanged true pre-existing baseline failures.
+- Clean rerun: 1568 passed / 4 failures / 928 warnings. The four failures are unchanged true pre-existing baseline failures.
 
 ## 34. Remaining known failures
 - Four pre-existing failures remain unchanged and are listed in the phase requirements.
