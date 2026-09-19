@@ -436,10 +436,10 @@ def resolve_current_authoritative_shot_plan(session: Any, *, book_id: int, episo
     script_meta = envelope.get("script_ir") if isinstance(envelope.get("script_ir"), dict) else {}
     if not ir or str(script_meta.get("id")) != str(ir.id) or str(script_meta.get("revision")) != str(ir.revision) or _text(script_meta.get("payload_hash")) != _text(ir.payload_hash):
         mark_shot_plan_stale(session, row, ["SCRIPT_IR_CHANGED"]); session.commit(); _raise("SCRIPT_IR_CHANGED", "ShotPlan ScriptIR lineage is stale.")
-    continuity = validate_shot_continuity(shots=plan["shots"], scene_entry=_json(getattr(blocking, "continuity_state", "{}"), {}))
+    continuity = phase_validation.get("continuity") if isinstance(phase_validation.get("continuity"), dict) else {"valid": False, "errors": [{"code": "SHOT_CONTINUITY_CONTRACT_INVALID"}]}
     executability = preflight_shot_plan(plan["shots"])
-    if continuity.get("status") == "blocked":
-        mark_shot_plan_stale(session, row, ["SHOT_CONTINUITY_CHANGED"]); session.commit(); _raise("SHOT_CONTINUITY_CHANGED", "Current ShotPlan continuity is no longer valid.")
+    if not continuity.get("valid"):
+        mark_shot_plan_stale(session, row, ["SHOT_CONTINUITY_CONTRACT_INVALID"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_INVALID", "Current ShotPlan continuity is no longer valid.", errors=continuity.get("errors", []))
     if executability.get("status") == "blocked":
         mark_shot_plan_stale(session, row, ["SHOT_EXECUTABILITY_CHANGED"]); session.commit(); _raise("SHOT_EXECUTABILITY_CHANGED", "Current ShotPlan executability is no longer valid.")
     return row, envelope

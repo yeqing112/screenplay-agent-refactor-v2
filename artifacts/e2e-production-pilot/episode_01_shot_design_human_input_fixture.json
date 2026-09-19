@@ -30,8 +30,8 @@
             "PRIMARY_BEAT_COVERAGE"
           ],
           "subjects": [
-            "售票员",
-            "林晚"
+            "林晚",
+            "售票员"
           ],
           "participants": [
             "售票员",
@@ -40,6 +40,7 @@
             "顾沉"
           ],
           "reaction_contract_refs": [],
+          "information_refs": [],
           "spatial_binding": {
             "blocking_state_refs": [
               "SC01-B01",
@@ -61,8 +62,8 @@
             "support": "STATIC",
             "movement": "NONE",
             "subject_binding": [
-              "售票员",
-              "林晚"
+              "林晚",
+              "售票员"
             ]
           },
           "axis_contract": {
@@ -95,7 +96,7 @@
           "action_beats": [
             {
               "action_id": "SC01-B01_A01",
-              "actor": "售票员",
+              "actor": "林晚",
               "action": "林晚买票逃离。 / 售票员回应车次。",
               "start_seconds": 0,
               "end_seconds": 3
@@ -128,8 +129,8 @@
           "asset_bindings": {
             "scene": "E01_SC001",
             "characters": [
-              "售票员",
-              "林晚"
+              "林晚",
+              "售票员"
             ],
             "props": [
               "TICKET"
@@ -172,6 +173,9 @@
           ],
           "reaction_contract_refs": [
             "RC_SC01-B03_林晚"
+          ],
+          "information_refs": [
+            "INFO_SC01_B03_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
@@ -307,6 +311,9 @@
           "reaction_contract_refs": [
             "RC_SC01-B04_林晚"
           ],
+          "information_refs": [
+            "INFO_SC01_B04_001"
+          ],
           "spatial_binding": {
             "blocking_state_refs": [
               "SC01-B04"
@@ -430,8 +437,8 @@
             "REACTION_COVERAGE"
           ],
           "subjects": [
-            "林晚",
-            "顾沉"
+            "顾沉",
+            "林晚"
           ],
           "participants": [
             "售票员",
@@ -442,6 +449,9 @@
           "reaction_contract_refs": [
             "RC_SC01-B05_顾沉",
             "RC_SC01-B06_顾沉"
+          ],
+          "information_refs": [
+            "INFO_SC01_B06_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
@@ -462,8 +472,8 @@
             "support": "STATIC",
             "movement": "NONE",
             "subject_binding": [
-              "林晚",
-              "顾沉"
+              "顾沉",
+              "林晚"
             ]
           },
           "axis_contract": {
@@ -504,7 +514,7 @@
           "action_beats": [
             {
               "action_id": "SC01-B05_A01",
-              "actor": "林晚",
+              "actor": "顾沉",
               "action": "顾沉出现叫出林晚名字。 / 顾沉指出红伞与断伞骨。",
               "start_seconds": 0,
               "end_seconds": 3
@@ -537,8 +547,8 @@
           "asset_bindings": {
             "scene": "E01_SC001",
             "characters": [
-              "林晚",
-              "顾沉"
+              "顾沉",
+              "林晚"
             ],
             "props": []
           },
@@ -572,8 +582,8 @@
             "REACTION_COVERAGE"
           ],
           "subjects": [
-            "林晚",
-            "陆叔"
+            "陆叔",
+            "林晚"
           ],
           "participants": [
             "售票员",
@@ -583,6 +593,9 @@
           ],
           "reaction_contract_refs": [
             "RC_SC01-B08_陆叔"
+          ],
+          "information_refs": [
+            "INFO_SC01_B08_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
@@ -605,11 +618,11 @@
             "support": "DOLLY",
             "movement": "TRACK",
             "subject_binding": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ],
             "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
+            "movement_target": "陆叔",
             "movement_end_condition": "BEAT_INFORMATION_LANDS"
           },
           "axis_contract": {
@@ -651,7 +664,7 @@
           "action_beats": [
             {
               "action_id": "SC01-B07_A01",
-              "actor": "林晚",
+              "actor": "陆叔",
               "action": "陆叔出现并接过手提包。 / 陆叔对红伞异常，口袋鼓出硬物。",
               "start_seconds": 0,
               "end_seconds": 3
@@ -684,8 +697,8 @@
           "asset_bindings": {
             "scene": "E01_SC001",
             "characters": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ],
             "props": [
               "HANDBAG"
@@ -732,6 +745,10 @@
           "reaction_contract_refs": [
             "RC_SC01-B09_林晚",
             "RC_SC01-B10_林晚"
+          ],
+          "information_refs": [
+            "INFO_SC01_B09_001",
+            "INFO_SC01_B10_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
@@ -879,6 +896,9 @@
             "RC_SC01-B11_林晚",
             "RC_SC01-B12_陆叔"
           ],
+          "information_refs": [
+            "INFO_SC01_B11_001"
+          ],
           "spatial_binding": {
             "blocking_state_refs": [
               "SC01-B11",
@@ -1009,8 +1029,8 @@
             "SCENE_EXIT_COVERAGE"
           ],
           "subjects": [
-            "林晚",
-            "顾沉"
+            "顾沉",
+            "林晚"
           ],
           "participants": [
             "售票员",
@@ -1020,6 +1040,9 @@
           ],
           "reaction_contract_refs": [
             "RC_SC01-B13_顾沉"
+          ],
+          "information_refs": [
+            "INFO_SC01_B13_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
@@ -1039,11 +1062,11 @@
             "support": "DOLLY",
             "movement": "DOLLY_IN",
             "subject_binding": [
-              "林晚",
-              "顾沉"
+              "顾沉",
+              "林晚"
             ],
             "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
+            "movement_target": "顾沉",
             "movement_end_condition": "BEAT_INFORMATION_LANDS"
           },
           "axis_contract": {
@@ -1085,7 +1108,7 @@
           "action_beats": [
             {
               "action_id": "SC01-B13_A01",
-              "actor": "林晚",
+              "actor": "顾沉",
               "action": "顾沉留下伞骨扎手的警告离开。",
               "start_seconds": 0,
               "end_seconds": 3
@@ -1118,8 +1141,8 @@
           "asset_bindings": {
             "scene": "E01_SC001",
             "characters": [
-              "林晚",
-              "顾沉"
+              "顾沉",
+              "林晚"
             ],
             "props": []
           },
@@ -1158,6 +1181,8 @@
             "required_prop_refs": [
               "TICKET"
             ],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1181,6 +1206,8 @@
             ],
             "required_axis_refs": [],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1216,6 +1243,18 @@
             "required_axis_refs": [],
             "required_prop_refs": [
               "RED_UMBRELLA"
+            ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B03_001",
+                "content": "红伞出现",
+                "source_ref": "DBD_SC01-B03",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B03"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B03_001"
             ],
             "information_requirements": [
               "红伞出现"
@@ -1256,6 +1295,18 @@
             "required_prop_refs": [
               "BROKEN_UMBRELLA_RIB"
             ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B04_001",
+                "content": "林晚拥有断伞骨",
+                "source_ref": "DBD_SC01-B04",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B04"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B04_001"
+            ],
             "information_requirements": [
               "林晚拥有断伞骨"
             ]
@@ -1294,6 +1345,8 @@
               "AXIS_LW_GC"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1330,6 +1383,18 @@
               "AXIS_LW_GC"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B06_001",
+                "content": "顾沉知道伞骨",
+                "source_ref": "DBD_SC01-B06",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B06"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B06_001"
+            ],
             "information_requirements": [
               "顾沉知道伞骨"
             ]
@@ -1362,6 +1427,8 @@
             "required_prop_refs": [
               "HANDBAG"
             ],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1399,6 +1466,18 @@
               "AXIS_LW_LS"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B08_001",
+                "content": "陆叔对红伞异常",
+                "source_ref": "DBD_SC01-B08",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B08"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B08_001"
+            ],
             "information_requirements": [
               "陆叔对红伞异常"
             ]
@@ -1439,6 +1518,18 @@
             ],
             "required_prop_refs": [
               "RED_UMBRELLA"
+            ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B09_001",
+                "content": "红伞消失",
+                "source_ref": "DBD_SC01-B09",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B09"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B09_001"
             ],
             "information_requirements": [
               "红伞消失"
@@ -1481,6 +1572,18 @@
             "required_prop_refs": [
               "BROKEN_UMBRELLA_RIB"
             ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B10_001",
+                "content": "断伞骨丢失",
+                "source_ref": "DBD_SC01-B10",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B10"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B10_001"
+            ],
             "information_requirements": [
               "断伞骨丢失"
             ]
@@ -1520,6 +1623,18 @@
               "AXIS_LW_LS"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B11_001",
+                "content": "林晚放弃登车",
+                "source_ref": "DBD_SC01-B11",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B11"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B11_001"
+            ],
             "information_requirements": [
               "林晚放弃登车"
             ]
@@ -1559,6 +1674,8 @@
               "AXIS_LW_LS"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1597,6 +1714,18 @@
               "AXIS_LW_LS"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B13_001",
+                "content": "顾沉留下双关警告",
+                "source_ref": "DBD_SC01-B13",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B13"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B13_001"
+            ],
             "information_requirements": [
               "顾沉留下双关警告"
             ]
@@ -1627,6 +1756,8 @@
             "required_prop_refs": [
               "TICKET"
             ],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1650,6 +1781,8 @@
             ],
             "required_axis_refs": [],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1685,6 +1818,18 @@
             "required_axis_refs": [],
             "required_prop_refs": [
               "RED_UMBRELLA"
+            ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B03_001",
+                "content": "红伞出现",
+                "source_ref": "DBD_SC01-B03",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B03"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B03_001"
             ],
             "information_requirements": [
               "红伞出现"
@@ -1725,6 +1870,18 @@
             "required_prop_refs": [
               "BROKEN_UMBRELLA_RIB"
             ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B04_001",
+                "content": "林晚拥有断伞骨",
+                "source_ref": "DBD_SC01-B04",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B04"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B04_001"
+            ],
             "information_requirements": [
               "林晚拥有断伞骨"
             ]
@@ -1763,6 +1920,8 @@
               "AXIS_LW_GC"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1799,6 +1958,18 @@
               "AXIS_LW_GC"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B06_001",
+                "content": "顾沉知道伞骨",
+                "source_ref": "DBD_SC01-B06",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B06"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B06_001"
+            ],
             "information_requirements": [
               "顾沉知道伞骨"
             ]
@@ -1831,6 +2002,8 @@
             "required_prop_refs": [
               "HANDBAG"
             ],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -1868,6 +2041,18 @@
               "AXIS_LW_LS"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B08_001",
+                "content": "陆叔对红伞异常",
+                "source_ref": "DBD_SC01-B08",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B08"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B08_001"
+            ],
             "information_requirements": [
               "陆叔对红伞异常"
             ]
@@ -1908,6 +2093,18 @@
             ],
             "required_prop_refs": [
               "RED_UMBRELLA"
+            ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B09_001",
+                "content": "红伞消失",
+                "source_ref": "DBD_SC01-B09",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B09"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B09_001"
             ],
             "information_requirements": [
               "红伞消失"
@@ -1950,6 +2147,18 @@
             "required_prop_refs": [
               "BROKEN_UMBRELLA_RIB"
             ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B10_001",
+                "content": "断伞骨丢失",
+                "source_ref": "DBD_SC01-B10",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B10"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B10_001"
+            ],
             "information_requirements": [
               "断伞骨丢失"
             ]
@@ -1989,6 +2198,18 @@
               "AXIS_LW_LS"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B11_001",
+                "content": "林晚放弃登车",
+                "source_ref": "DBD_SC01-B11",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B11"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B11_001"
+            ],
             "information_requirements": [
               "林晚放弃登车"
             ]
@@ -2028,6 +2249,8 @@
               "AXIS_LW_LS"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -2066,6 +2289,18 @@
               "AXIS_LW_LS"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC01_B13_001",
+                "content": "顾沉留下双关警告",
+                "source_ref": "DBD_SC01-B13",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC01-B13"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC01_B13_001"
+            ],
             "information_requirements": [
               "顾沉留下双关警告"
             ]
@@ -2243,8 +2478,8 @@
             "REACTION_COVERAGE"
           ],
           "subjects": [
-            "林晚",
-            "陆叔"
+            "陆叔",
+            "林晚"
           ],
           "participants": [
             "林晚",
@@ -2253,6 +2488,7 @@
           "reaction_contract_refs": [
             "RC_SC02-B02_林晚"
           ],
+          "information_refs": [],
           "spatial_binding": {
             "blocking_state_refs": [
               "SC02-B01",
@@ -2273,8 +2509,8 @@
             "support": "STATIC",
             "movement": "NONE",
             "subject_binding": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ]
           },
           "axis_contract": {
@@ -2315,7 +2551,7 @@
           "action_beats": [
             {
               "action_id": "SC02-B01_A01",
-              "actor": "林晚",
+              "actor": "陆叔",
               "action": "陆叔锁门并洗苹果。 / 林晚试探早到车站。",
               "start_seconds": 0,
               "end_seconds": 3
@@ -2344,8 +2580,8 @@
           "asset_bindings": {
             "scene": "E01_SC002",
             "characters": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ],
             "props": [
               "APPLE",
@@ -2378,8 +2614,8 @@
             "REACTION_COVERAGE"
           ],
           "subjects": [
-            "林晚",
-            "陆叔"
+            "陆叔",
+            "林晚"
           ],
           "participants": [
             "林晚",
@@ -2387,6 +2623,9 @@
           ],
           "reaction_contract_refs": [
             "RC_SC02-B03_陆叔"
+          ],
+          "information_refs": [
+            "INFO_SC02_B03_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
@@ -2404,8 +2643,8 @@
             "support": "STATIC",
             "movement": "NONE",
             "subject_binding": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ]
           },
           "axis_contract": {
@@ -2446,7 +2685,7 @@
           "action_beats": [
             {
               "action_id": "SC02-B03_A01",
-              "actor": "林晚",
+              "actor": "陆叔",
               "action": "陆叔声称一直在一起（Gaslighting）。",
               "start_seconds": 0,
               "end_seconds": 3
@@ -2475,8 +2714,8 @@
           "asset_bindings": {
             "scene": "E01_SC002",
             "characters": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ],
             "props": []
           },
@@ -2491,39 +2730,43 @@
           "plan_shot_id": "SH_E01_SC002_003",
           "scene_id": "E01_SC002",
           "beat_refs": [
-            "SC02-B03"
+            "SC02-B04"
           ],
-          "beat_id": "SC02-B03",
+          "beat_id": "SC02-B04",
           "director_decision_refs": [
-            "DBD_SC02-B03"
+            "DBD_SC02-B04"
           ],
           "requirement_refs": [
-            "REQ_SC02-B03"
+            "REQ_SC02-B04"
           ],
           "shot_purpose": "CAPTURE_REACTION",
           "coverage_roles": [
+            "INSERT_EVIDENCE",
             "PRIMARY_BEAT_COVERAGE",
             "REACTION_COVERAGE"
           ],
           "subjects": [
-            "陆叔"
+            "林晚"
           ],
           "participants": [
             "林晚",
             "陆叔"
           ],
           "reaction_contract_refs": [
-            "RC_SC02-B03_陆叔"
+            "RC_SC02-B04_林晚"
           ],
+          "information_refs": [],
           "spatial_binding": {
             "blocking_state_refs": [
-              "SC02-B03"
+              "SC02-B04"
             ],
             "subject_zones": {
-              "林晚": "APT_CENTER",
+              "林晚": "APT_TABLE",
               "陆叔": "APT_CENTER"
             },
-            "prop_refs": []
+            "prop_refs": [
+              "HANDBAG"
+            ]
           },
           "camera_state": {
             "framing_class": "MEDIUM_CLOSE",
@@ -2531,7 +2774,7 @@
             "support": "STATIC",
             "movement": "NONE",
             "subject_binding": [
-              "陆叔"
+              "林晚"
             ]
           },
           "axis_contract": {
@@ -2560,7 +2803,7 @@
           },
           "continuous_take": true,
           "cut_events": [],
-          "shot_description": "陆叔声称一直在一起（Gaslighting）。",
+          "shot_description": "林晚短暂自我怀疑后寻找物证。",
           "camera": {
             "shot_size": "MEDIUM_CLOSE",
             "angle": "eye_level",
@@ -2571,9 +2814,9 @@
           "duration_hint_seconds": 4,
           "action_beats": [
             {
-              "action_id": "SC02-B03_A01",
-              "actor": "陆叔",
-              "action": "陆叔声称一直在一起（Gaslighting）。",
+              "action_id": "SC02-B04_A01",
+              "actor": "林晚",
+              "action": "林晚短暂自我怀疑后寻找物证。",
               "start_seconds": 0,
               "end_seconds": 3
             }
@@ -2582,7 +2825,7 @@
             "scene_id": "E01_SC002",
             "shot_id": "SH_E01_SC002_003",
             "characters": {
-              "林晚": "APT_CENTER",
+              "林晚": "APT_TABLE",
               "陆叔": "APT_CENTER"
             },
             "props": [],
@@ -2592,7 +2835,7 @@
             "scene_id": "E01_SC002",
             "shot_id": "SH_E01_SC002_003",
             "characters": {
-              "林晚": "APT_CENTER",
+              "林晚": "APT_TABLE",
               "陆叔": "APT_CENTER"
             },
             "props": [],
@@ -2601,31 +2844,30 @@
           "asset_bindings": {
             "scene": "E01_SC002",
             "characters": [
-              "陆叔"
+              "林晚"
             ],
-            "props": []
+            "props": [
+              "HANDBAG"
+            ]
           },
           "continuity_contract": {
             "screen_direction": "maintain",
             "axis_ref": "AXIS_LW_LS_APT",
             "axis_policy": "PRESERVE",
-            "blocking_state_ref": "SC02-B03"
+            "blocking_state_ref": "SC02-B04"
           }
         },
         {
           "plan_shot_id": "SH_E01_SC002_004",
           "scene_id": "E01_SC002",
           "beat_refs": [
-            "SC02-B04",
             "SC02-B05"
           ],
-          "beat_id": "SC02-B04",
+          "beat_id": "SC02-B05",
           "director_decision_refs": [
-            "DBD_SC02-B04",
             "DBD_SC02-B05"
           ],
           "requirement_refs": [
-            "REQ_SC02-B04",
             "REQ_SC02-B05"
           ],
           "shot_purpose": "CAPTURE_REACTION",
@@ -2635,20 +2877,21 @@
             "REACTION_COVERAGE"
           ],
           "subjects": [
-            "林晚",
-            "陆叔"
+            "陆叔",
+            "林晚"
           ],
           "participants": [
             "林晚",
             "陆叔"
           ],
           "reaction_contract_refs": [
-            "RC_SC02-B04_林晚",
             "RC_SC02-B05_陆叔"
+          ],
+          "information_refs": [
+            "INFO_SC02_B05_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
-              "SC02-B04",
               "SC02-B05"
             ],
             "subject_zones": {
@@ -2656,7 +2899,6 @@
               "陆叔": "APT_CENTER"
             },
             "prop_refs": [
-              "HANDBAG",
               "POCKET_HARD_OBJECT",
               "TABLE_SCRATCH"
             ]
@@ -2667,11 +2909,11 @@
             "support": "DOLLY",
             "movement": "REFRAME",
             "subject_binding": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ],
             "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
+            "movement_target": "陆叔",
             "movement_end_condition": "BEAT_INFORMATION_LANDS"
           },
           "axis_contract": {
@@ -2694,13 +2936,13 @@
             "duration_mode": "REACTION_HOLD",
             "cut_trigger": "AUTHORED_INFORMATION_LANDS"
           },
-          "information_visibility": "AUDIENCE_OBSERVES_CHARACTER_DOUBT",
+          "information_visibility": "CHARACTER_AND_AUDIENCE",
           "authoring_provenance": {
             "proposal_origin": "HUMAN_INPUT"
           },
           "continuous_take": true,
           "cut_events": [],
-          "shot_description": "林晚短暂自我怀疑后寻找物证。 / 口袋硬物显现。",
+          "shot_description": "口袋硬物显现。",
           "camera": {
             "shot_size": "MEDIUM_CLOSE",
             "angle": "eye_level",
@@ -2711,9 +2953,9 @@
           "duration_hint_seconds": 4,
           "action_beats": [
             {
-              "action_id": "SC02-B04_A01",
-              "actor": "林晚",
-              "action": "林晚短暂自我怀疑后寻找物证。 / 口袋硬物显现。",
+              "action_id": "SC02-B05_A01",
+              "actor": "陆叔",
+              "action": "口袋硬物显现。",
               "start_seconds": 0,
               "end_seconds": 3
             }
@@ -2741,11 +2983,10 @@
           "asset_bindings": {
             "scene": "E01_SC002",
             "characters": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ],
             "props": [
-              "HANDBAG",
               "POCKET_HARD_OBJECT",
               "TABLE_SCRATCH"
             ]
@@ -2754,7 +2995,7 @@
             "screen_direction": "maintain",
             "axis_ref": "AXIS_LW_LS_APT",
             "axis_policy": "PRESERVE",
-            "blocking_state_ref": "SC02-B04"
+            "blocking_state_ref": "SC02-B05"
           }
         },
         {
@@ -2785,6 +3026,9 @@
           ],
           "reaction_contract_refs": [
             "RC_SC02-B06_林晚"
+          ],
+          "information_refs": [
+            "INFO_SC02_B06_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
@@ -2906,8 +3150,8 @@
             "REACTION_COVERAGE"
           ],
           "subjects": [
-            "林晚",
-            "陆叔"
+            "陆叔",
+            "林晚"
           ],
           "participants": [
             "林晚",
@@ -2916,6 +3160,7 @@
           "reaction_contract_refs": [
             "RC_SC02-B07_陆叔"
           ],
+          "information_refs": [],
           "spatial_binding": {
             "blocking_state_refs": [
               "SC02-B07"
@@ -2932,11 +3177,11 @@
             "support": "DOLLY",
             "movement": "DOLLY_IN",
             "subject_binding": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ],
             "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
+            "movement_target": "陆叔",
             "movement_end_condition": "BEAT_INFORMATION_LANDS"
           },
           "axis_contract": {
@@ -2977,7 +3222,7 @@
           "action_beats": [
             {
               "action_id": "SC02-B07_A01",
-              "actor": "林晚",
+              "actor": "陆叔",
               "action": "陆叔笑容消失、威胁升级。",
               "start_seconds": 0,
               "end_seconds": 3
@@ -3006,8 +3251,8 @@
           "asset_bindings": {
             "scene": "E01_SC002",
             "characters": [
-              "林晚",
-              "陆叔"
+              "陆叔",
+              "林晚"
             ],
             "props": []
           },
@@ -3051,6 +3296,9 @@
           "reaction_contract_refs": [
             "RC_SC02-B08_林晚",
             "RC_SC02-B09_陆叔"
+          ],
+          "information_refs": [
+            "INFO_SC02_B08_001"
           ],
           "spatial_binding": {
             "blocking_state_refs": [
@@ -3184,6 +3432,8 @@
               "APPLE",
               "DOOR_LOCK"
             ],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -3220,6 +3470,8 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -3256,6 +3508,18 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC02_B03_001",
+                "content": "陆叔开始说谎",
+                "source_ref": "DBD_SC02-B03",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC02-B03"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC02_B03_001"
+            ],
             "information_requirements": [
               "陆叔开始说谎"
             ]
@@ -3296,6 +3560,8 @@
             "required_prop_refs": [
               "HANDBAG"
             ],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -3335,6 +3601,18 @@
             "required_prop_refs": [
               "POCKET_HARD_OBJECT",
               "TABLE_SCRATCH"
+            ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC02_B05_001",
+                "content": "口袋硬物",
+                "source_ref": "DBD_SC02-B05",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC02-B05"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC02_B05_001"
             ],
             "information_requirements": [
               "口袋硬物"
@@ -3376,6 +3654,18 @@
             "required_prop_refs": [
               "RED_FIBER"
             ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC02_B06_001",
+                "content": "暗红纤维碎屑",
+                "source_ref": "DBD_SC02-B06",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC02-B06"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC02_B06_001"
+            ],
             "information_requirements": [
               "暗红纤维碎屑"
             ]
@@ -3414,6 +3704,8 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -3450,6 +3742,18 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC02_B08_001",
+                "content": "碎屑与伞骨同源",
+                "source_ref": "DBD_SC02-B08",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC02-B08"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC02_B08_001"
+            ],
             "information_requirements": [
               "碎屑与伞骨同源"
             ]
@@ -3489,6 +3793,8 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           }
         ],
@@ -3518,6 +3824,8 @@
               "APPLE",
               "DOOR_LOCK"
             ],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -3554,6 +3862,8 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -3590,6 +3900,18 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC02_B03_001",
+                "content": "陆叔开始说谎",
+                "source_ref": "DBD_SC02-B03",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC02-B03"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC02_B03_001"
+            ],
             "information_requirements": [
               "陆叔开始说谎"
             ]
@@ -3630,6 +3952,8 @@
             "required_prop_refs": [
               "HANDBAG"
             ],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -3669,6 +3993,18 @@
             "required_prop_refs": [
               "POCKET_HARD_OBJECT",
               "TABLE_SCRATCH"
+            ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC02_B05_001",
+                "content": "口袋硬物",
+                "source_ref": "DBD_SC02-B05",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC02-B05"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC02_B05_001"
             ],
             "information_requirements": [
               "口袋硬物"
@@ -3710,6 +4046,18 @@
             "required_prop_refs": [
               "RED_FIBER"
             ],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC02_B06_001",
+                "content": "暗红纤维碎屑",
+                "source_ref": "DBD_SC02-B06",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC02-B06"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC02_B06_001"
+            ],
             "information_requirements": [
               "暗红纤维碎屑"
             ]
@@ -3748,6 +4096,8 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           },
           {
@@ -3784,6 +4134,18 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [
+              {
+                "information_ref": "INFO_SC02_B08_001",
+                "content": "碎屑与伞骨同源",
+                "source_ref": "DBD_SC02-B08",
+                "source_field": "audience_state_delta.knowledge_added",
+                "beat_ref": "SC02-B08"
+              }
+            ],
+            "required_information_refs": [
+              "INFO_SC02_B08_001"
+            ],
             "information_requirements": [
               "碎屑与伞骨同源"
             ]
@@ -3823,6 +4185,8 @@
               "AXIS_LW_LS_APT"
             ],
             "required_prop_refs": [],
+            "required_information": [],
+            "required_information_refs": [],
             "information_requirements": []
           }
         ],

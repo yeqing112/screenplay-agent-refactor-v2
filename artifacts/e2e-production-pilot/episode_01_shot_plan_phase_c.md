@@ -9,13 +9,14 @@ Runtime estimate: authoring-derived / pending
 - Director decision: DBD_SC01-B01, DBD_SC01-B02
 - Purpose: ESTABLISH_SPACE
 - Coverage: INSERT_EVIDENCE, PRIMARY_BEAT_COVERAGE
-- Subject: 售票员, 林晚
+- Subject: 林晚, 售票员
 - Reaction refs: none
 - Framing / movement: WIDE / NONE
 - Blocking states: SC01-B01, SC01-B02
 - Axis: NOT_APPLICABLE / PRESERVE
 - Screen sides: none
 - Prop refs: TICKET
+- Information refs: none
 - Information visibility: AUDIENCE_ONLY
 - Duration intent: ACTION_COMPLETION; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -32,6 +33,7 @@ Runtime estimate: authoring-derived / pending
 - Axis: NOT_APPLICABLE / PRESERVE
 - Screen sides: none
 - Prop refs: RED_UMBRELLA
+- Information refs: INFO_SC01_B03_001
 - Information visibility: CHARACTER_AND_AUDIENCE
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -48,6 +50,7 @@ Runtime estimate: authoring-derived / pending
 - Axis: NOT_APPLICABLE / PRESERVE
 - Screen sides: none
 - Prop refs: BROKEN_UMBRELLA_RIB
+- Information refs: INFO_SC01_B04_001
 - Information visibility: CHARACTER_AND_AUDIENCE
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -57,13 +60,14 @@ Runtime estimate: authoring-derived / pending
 - Director decision: DBD_SC01-B05, DBD_SC01-B06
 - Purpose: INTRODUCE_INFORMATION
 - Coverage: PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE
-- Subject: 林晚, 顾沉
+- Subject: 顾沉, 林晚
 - Reaction refs: RC_SC01-B05_顾沉, RC_SC01-B06_顾沉
 - Framing / movement: TWO_SHOT / NONE
 - Blocking states: SC01-B05, SC01-B06
 - Axis: AXIS_LW_GC / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '顾沉': 'RIGHT'}
 - Prop refs: none
+- Information refs: INFO_SC01_B06_001
 - Information visibility: CHARACTER_AND_AUDIENCE
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -73,13 +77,14 @@ Runtime estimate: authoring-derived / pending
 - Director decision: DBD_SC01-B07, DBD_SC01-B08
 - Purpose: SHIFT_POWER
 - Coverage: INSERT_EVIDENCE, PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE
-- Subject: 林晚, 陆叔
+- Subject: 陆叔, 林晚
 - Reaction refs: RC_SC01-B08_陆叔
 - Framing / movement: MEDIUM_WIDE / TRACK
 - Blocking states: SC01-B07, SC01-B08
 - Axis: AXIS_LW_GC / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '顾沉': 'RIGHT'}
 - Prop refs: HANDBAG
+- Information refs: INFO_SC01_B08_001
 - Information visibility: CHARACTER_AND_AUDIENCE
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -96,6 +101,7 @@ Runtime estimate: authoring-derived / pending
 - Axis: AXIS_LW_GC / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '顾沉': 'RIGHT'}
 - Prop refs: BROKEN_UMBRELLA_RIB, RED_UMBRELLA
+- Information refs: INFO_SC01_B09_001, INFO_SC01_B10_001
 - Information visibility: AUDIENCE_ONLY
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -112,6 +118,7 @@ Runtime estimate: authoring-derived / pending
 - Axis: AXIS_LW_GC / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '顾沉': 'RIGHT'}
 - Prop refs: none
+- Information refs: INFO_SC01_B11_001
 - Information visibility: CHARACTER_AND_AUDIENCE
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -121,13 +128,14 @@ Runtime estimate: authoring-derived / pending
 - Director decision: DBD_SC01-B13
 - Purpose: SCENE_EXIT
 - Coverage: PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE, SCENE_EXIT_COVERAGE
-- Subject: 林晚, 顾沉
+- Subject: 顾沉, 林晚
 - Reaction refs: RC_SC01-B13_顾沉
 - Framing / movement: MEDIUM_CLOSE / DOLLY_IN
 - Blocking states: SC01-B13
 - Axis: AXIS_LW_GC / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '顾沉': 'RIGHT'}
 - Prop refs: none
+- Information refs: INFO_SC01_B13_001
 - Information visibility: AUDIENCE_ONLY
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -141,13 +149,14 @@ Runtime estimate: authoring-derived / pending
 - Director decision: DBD_SC02-B01, DBD_SC02-B02
 - Purpose: ESTABLISH_RELATIONSHIP
 - Coverage: INSERT_EVIDENCE, PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE
-- Subject: 林晚, 陆叔
+- Subject: 陆叔, 林晚
 - Reaction refs: RC_SC02-B02_林晚
 - Framing / movement: WIDE / NONE
 - Blocking states: SC02-B01, SC02-B02
 - Axis: AXIS_LW_LS_APT / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '陆叔': 'RIGHT'}
 - Prop refs: APPLE, DOOR_LOCK
+- Information refs: none
 - Information visibility: AUDIENCE_ONLY
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -157,46 +166,49 @@ Runtime estimate: authoring-derived / pending
 - Director decision: DBD_SC02-B03
 - Purpose: INTRODUCE_INFORMATION
 - Coverage: PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE
-- Subject: 林晚, 陆叔
+- Subject: 陆叔, 林晚
 - Reaction refs: RC_SC02-B03_陆叔
 - Framing / movement: OVER_SHOULDER / NONE
 - Blocking states: SC02-B03
 - Axis: AXIS_LW_LS_APT / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '陆叔': 'RIGHT'}
 - Prop refs: none
+- Information refs: INFO_SC02_B03_001
 - Information visibility: CHARACTER_AND_AUDIENCE
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
 
 ### SH_E01_SC002_003
-- Beat: SC02-B03
-- Director decision: DBD_SC02-B03
+- Beat: SC02-B04
+- Director decision: DBD_SC02-B04
 - Purpose: CAPTURE_REACTION
-- Coverage: PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE
-- Subject: 陆叔
-- Reaction refs: RC_SC02-B03_陆叔
+- Coverage: INSERT_EVIDENCE, PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE
+- Subject: 林晚
+- Reaction refs: RC_SC02-B04_林晚
 - Framing / movement: MEDIUM_CLOSE / NONE
-- Blocking states: SC02-B03
+- Blocking states: SC02-B04
 - Axis: AXIS_LW_LS_APT / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '陆叔': 'RIGHT'}
-- Prop refs: none
+- Prop refs: HANDBAG
+- Information refs: none
 - Information visibility: AUDIENCE_OBSERVES_CHARACTER_DOUBT
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
 
 ### SH_E01_SC002_004
-- Beat: SC02-B04, SC02-B05
-- Director decision: DBD_SC02-B04, DBD_SC02-B05
+- Beat: SC02-B05
+- Director decision: DBD_SC02-B05
 - Purpose: CAPTURE_REACTION
 - Coverage: INSERT_EVIDENCE, PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE
-- Subject: 林晚, 陆叔
-- Reaction refs: RC_SC02-B04_林晚, RC_SC02-B05_陆叔
+- Subject: 陆叔, 林晚
+- Reaction refs: RC_SC02-B05_陆叔
 - Framing / movement: MEDIUM_CLOSE / REFRAME
-- Blocking states: SC02-B04, SC02-B05
+- Blocking states: SC02-B05
 - Axis: AXIS_LW_LS_APT / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '陆叔': 'RIGHT'}
-- Prop refs: HANDBAG, POCKET_HARD_OBJECT, TABLE_SCRATCH
-- Information visibility: AUDIENCE_OBSERVES_CHARACTER_DOUBT
+- Prop refs: POCKET_HARD_OBJECT, TABLE_SCRATCH
+- Information refs: INFO_SC02_B05_001
+- Information visibility: CHARACTER_AND_AUDIENCE
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
 
@@ -212,6 +224,7 @@ Runtime estimate: authoring-derived / pending
 - Axis: AXIS_LW_LS_APT / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '陆叔': 'RIGHT'}
 - Prop refs: RED_FIBER
+- Information refs: INFO_SC02_B06_001
 - Information visibility: AUDIENCE_ONLY
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -221,13 +234,14 @@ Runtime estimate: authoring-derived / pending
 - Director decision: DBD_SC02-B07
 - Purpose: ESCALATE_THREAT
 - Coverage: PRIMARY_BEAT_COVERAGE, REACTION_COVERAGE
-- Subject: 林晚, 陆叔
+- Subject: 陆叔, 林晚
 - Reaction refs: RC_SC02-B07_陆叔
 - Framing / movement: CLOSE / DOLLY_IN
 - Blocking states: SC02-B07
 - Axis: AXIS_LW_LS_APT / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '陆叔': 'RIGHT'}
 - Prop refs: none
+- Information refs: none
 - Information visibility: CHARACTER_AND_AUDIENCE
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS
@@ -244,6 +258,7 @@ Runtime estimate: authoring-derived / pending
 - Axis: AXIS_LW_LS_APT / PRESERVE
 - Screen sides: {'林晚': 'LEFT', '陆叔': 'RIGHT'}
 - Prop refs: none
+- Information refs: INFO_SC02_B08_001
 - Information visibility: AUDIENCE_ONLY
 - Duration intent: REACTION_HOLD; authoring hint=4s
 - Cut trigger: AUTHORED_INFORMATION_LANDS

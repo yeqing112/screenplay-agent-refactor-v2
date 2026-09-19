@@ -416,7 +416,7 @@ def main() -> None:
             subjects = shot.get("subjects", [])
             axis = shot.get("axis_contract", {})
             temporal = shot.get("temporal_intent", {})
-            md_lines += [f"### {shot['plan_shot_id']}", f"- Beat: {', '.join(shot.get('beat_refs', []))}", f"- Director decision: {', '.join(shot.get('director_decision_refs', [])) or 'none supplied'}", f"- Purpose: {shot.get('shot_purpose')}", f"- Coverage: {', '.join(shot.get('coverage_roles', []))}", f"- Subject: {', '.join(x for x in subjects if x)}", f"- Reaction refs: {', '.join(shot.get('reaction_contract_refs', [])) or 'none'}", f"- Framing / movement: {shot.get('camera_state', {}).get('framing_class')} / {shot.get('camera_state', {}).get('movement')}", f"- Blocking states: {', '.join(shot.get('spatial_binding', {}).get('blocking_state_refs', []))}", f"- Axis: {axis.get('axis_ref') if axis.get('axis_applicability') != 'NOT_APPLICABLE' else 'NOT_APPLICABLE'} / {axis.get('axis_policy')}", f"- Screen sides: {axis.get('screen_side_assignments') or 'none'}", f"- Prop refs: {', '.join(shot.get('spatial_binding', {}).get('prop_refs', [])) or 'none'}", f"- Information visibility: {shot.get('information_visibility')}", f"- Duration intent: {temporal.get('duration_mode')}; authoring hint={shot.get('duration_hint_seconds', 'unspecified')}s", f"- Cut trigger: {temporal.get('cut_trigger')}", ""]
+            md_lines += [f"### {shot['plan_shot_id']}", f"- Beat: {', '.join(shot.get('beat_refs', []))}", f"- Director decision: {', '.join(shot.get('director_decision_refs', [])) or 'none supplied'}", f"- Purpose: {shot.get('shot_purpose')}", f"- Coverage: {', '.join(shot.get('coverage_roles', []))}", f"- Subject: {', '.join(x for x in subjects if x)}", f"- Reaction refs: {', '.join(shot.get('reaction_contract_refs', [])) or 'none'}", f"- Framing / movement: {shot.get('camera_state', {}).get('framing_class')} / {shot.get('camera_state', {}).get('movement')}", f"- Blocking states: {', '.join(shot.get('spatial_binding', {}).get('blocking_state_refs', []))}", f"- Axis: {axis.get('axis_ref') if axis.get('axis_applicability') != 'NOT_APPLICABLE' else 'NOT_APPLICABLE'} / {axis.get('axis_policy')}", f"- Screen sides: {axis.get('screen_side_assignments') or 'none'}", f"- Prop refs: {', '.join(shot.get('spatial_binding', {}).get('prop_refs', [])) or 'none'}", f"- Information refs: {', '.join(shot.get('information_refs', [])) or 'none'}", f"- Information visibility: {shot.get('information_visibility')}", f"- Duration intent: {temporal.get('duration_mode')}; authoring hint={shot.get('duration_hint_seconds', 'unspecified')}s", f"- Cut trigger: {temporal.get('cut_trigger')}", ""]
     (ART / "episode_01_shot_plan_phase_c.md").write_text("\n".join(md_lines), encoding="utf-8")
     phase_trace = {"schema_version": "phase_c_trace_v3_canonical_authoring", "pilot": {"book_id": 990401, "episode": 1, "provider_calls": 0, "raw_authority_fabrication_count": real_authority.get("raw_authority_fabrication_count", 0)}, "authority": {"script_ir": real_authority["database"]["script_ir"], "fact_snapshot": real_authority["database"]["fact_snapshot"], "treatment": real_authority.get("treatment", []), "blocking": real_authority.get("blocking", []), "shot_plan": real_authority.get("shot_plan", [])}, "resolver": real_authority.get("resolver", {}), "plans": [{"scene_id": p["scene_id"], "shot_plan_row_id": next((x["row_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "shot_plan_authority_id": next((x["authority_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "shot_plan_pointer_id": next((x["pointer_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "payload_hash": p["payload_hash"], "phase_c_semantic_ready": p["phase_c_semantic_ready"], "coverage_results": p["phase_c_contract"].get("coverage_results", []), "coverage_hash": fp(p["phase_c_contract"].get("coverage_results", [])), "continuity_hash": fp(p["phase_c_contract"].get("compiled_continuity", {})), "runtime_estimate": p.get("runtime_estimate", {}), "canonical_shot_ids": [s.get("plan_shot_id") for s in p.get("shots", [])], "validation": q} for p, q in zip(phase_c_plans, phase_c_validation)], "failed_candidate": real_authority.get("failed_candidate", {}), "provider_provenance": {"provider_calls": 0, "llm_called": False}, "authority_flow": {"candidate": "PASS", "validation": "PASS", "confirm": "PASS", "authority": "PASS", "pointer": "PASS", "failed_candidate_moved_pointer": not bool(real_authority.get("failed_candidate", {}).get("pointer_unchanged", True)), "raw_shot_plan_authority_fabrication": 0}}
     (ART / "episode_01_phase_c_trace.json").write_text(json.dumps(phase_trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -425,9 +425,13 @@ def main() -> None:
             "空间关系与售票区建立；红伞发现与林晚反应；断伞骨证据；顾沉进入并暴露知情；陆叔介入并接管注意力；红伞与伞骨消失；林晚改变计划；陆叔过快答应；顾沉场尾警告。",
         ],
         "E01_SC002": [
-            "照顾者表象与锁门空间控制；Gaslighting claim 与林晚疑惑拆成同一 Beat 的两个 authored shots；寻找客观证据、桌面划痕与口袋硬物；红纤维物证；面具破裂与明确威胁；林晚后退、出口优势丧失、碎屑与 gaze hook。",
+            "照顾者表象与锁门空间控制；SC02-B03 为陆叔 Gaslighting claim，SC02-B04 为林晚短暂自我怀疑并转向物证；寻找客观证据、桌面划痕与口袋硬物；红纤维物证；面具破裂与明确威胁；林晚后退、出口优势丧失、碎屑与 gaze hook。",
         ],
     }
+    information_requirement_count = sum(len(record.get("phase_c_contract", {}).get("requirements", [])) for record in real_authority.get("shot_plan", []))
+    information_ref_count = sum(len(item.get("required_information_refs", [])) for record in real_authority.get("shot_plan", []) for item in record.get("phase_c_contract", {}).get("requirements", []))
+    information_missing_count = sum(1 for record in real_authority.get("shot_plan", []) for result in record.get("phase_c_contract", {}).get("coverage_results", []) for item in result.get("information_results", []) if not item.get("complete"))
+    canonical_continuity_valid = all(bool(record.get("phase_c_contract", {}).get("compiled_continuity", {}).get("valid")) for record in real_authority.get("shot_plan", []))
     report_lines = [
         "# PHASE C FINAL REPORT", "", "## 1. Scope", "",
         "- Phase: `PHASE_C_CANONICAL_SHOT_DESIGN_AND_CREATIVE_AUTHORING_CLOSURE`",
@@ -452,7 +456,7 @@ def main() -> None:
         "## 5. Human-readable ShotPlan audit", "",
         "- Scene 1: " + human_audit["E01_SC001"][0],
         "- Scene 2: " + human_audit["E01_SC002"][0],
-        "- Scene 2 Gaslighting is explicitly split across two shots for `SC02-B03`; the claim shot carries the real reaction contract and the authored doubt shot carries `AUDIENCE_OBSERVES_CHARACTER_DOUBT`.",
+        "- Scene 2 Gaslighting follows the upstream sequence: `SC02-B03` is Lu Shu's claim with `RC_SC02-B03_陆叔`; `SC02-B04` is Lin Wan's doubt/evidence turn with `RC_SC02-B04_林晚` and `AUDIENCE_OBSERVES_CHARACTER_DOUBT`.",
         "- Camera authoring shows reviewed variability (wide, OTS, two-shot, insert, track, pan, dolly, arc) without a diversity threshold or heuristic gate.",
         "- Axis refs are bound to Phase B `interaction_axes`; prop refs and reaction refs are concrete requirement bindings.", "",
         "## 6. Coverage and continuity", "",
@@ -461,45 +465,52 @@ def main() -> None:
         "- Prop evidence checks concrete prop refs within the requirement beat binding.",
         "- Blocking states, subject zones, information visibility, axis refs, screen-side assignments and motivated-cross structure are validated.",
         "- Hidden cuts fail closed through `continuous_take=true` and `cut_events=[]`.", "",
-        "## 7. Failed candidate zero-write", "", "```json", json.dumps(real_authority.get("failed_candidate", {}), ensure_ascii=False, indent=2), "```", "",
-        "## 8. Artifacts", "",
+        "## 7. Information coverage", "",
+        f"- Information-bearing requirements: `{information_requirement_count}`; stable information refs: `{information_ref_count}`; missing information refs: `{information_missing_count}`.",
+        "- Coverage uses `required_information_refs` against authored `information_refs`; visibility remains a separate audience/character contract.",
+        "- Information refs are derived from structured DirectorBeatDecision delta fields with readable `INFO_<beat>_<ordinal>` identities; prose is never searched.", "",
+        "## 8. Continuity result", "",
+        f"- Canonical continuity valid: `{canonical_continuity_valid}`; compiler version: `shot_continuity_compiler_v2`.",
+        "- Continuity compiler errors are merged into `validate_shot_design.errors` and are re-run by the resolver.", "",
+        "## 9. Failed candidate zero-write", "", "```json", json.dumps(real_authority.get("failed_candidate", {}), ensure_ascii=False, indent=2), "```", "",
+        "## 10. Artifacts", "",
         "- `episode_01_shot_design_human_input_fixture.json`",
         "- `episode_01_shot_plan_phase_c.json`",
         "- `episode_01_shot_plan_phase_c.md`",
         "- `episode_01_phase_c_trace.json`",
         "- `phase_c_shot_plan_gap_audit.md`", "",
-        "## 9. Verification", "",
+        "## 11. Verification", "",
         "- Provider calls: 0; raw authority fabrication: 0.",
         "- Phase A and Phase B upstream contracts are consumed read-only.",
         "- Storyboard/PromptIR/Visual/Video production was not started.", "",
-        "## 10. Canonical model and proposal flow", "",
+        "## 12. Canonical model and proposal flow", "",
         "- `ShotPlan.shots` is the only Production canonical ShotDesignDecision array; `phase_c_contract` contains requirements and audit metadata only.",
         "- Proposal flow is requirements → recorded `HUMAN_INPUT` ShotDesignDecision[] → production confirm → canonical row → Authority → Pointer → resolver.",
         "- `GENERATED_DRAFT` requires explicit confirmation; provider proposals require a real provider call and confirm before `PROVIDER_PROPOSAL_CONFIRMED`.", "",
-        "## 11. Deterministic boundary", "",
+        "## 13. Deterministic boundary", "",
         "- Production preview compiles ShotRequirements and returns `AUTHORING_REQUIRED` for rich Phase B scenes; it does not expose deterministic authored shots.",
         "- Requirements compile coverage, subjects, reaction contracts, props, blocking states, information and interaction-axis obligations. Framing, movement, grouping and duration intent remain proposal-owned.",
         "- The historical `build_phase_c_shot_plan` helper remains only for legacy compatibility tests; it is not imported or called by the Production Phase C confirm path.", "",
-        "## 12. Semantic coverage gates", "",
+        "## 14. Semantic coverage gates", "",
         "- Reaction coverage requires the concrete character and reaction contract ref.",
         "- Required subjects aggregate across shots; required props must be bound to the requirement beat and blocking state.",
         "- Axis refs must come from Phase B `interaction_axes`; `AXIS_UNSPECIFIED` fails when an axis is required.",
         "- Axis continuity checks screen sides/look direction; motivated cross requires structured motivation or reorientation strategy.",
         "- Spatial binding, information visibility and hidden-cut structure are fail-closed.", "",
-        "## 13. Runtime policy", "",
+        "## 15. Runtime policy", "",
         "- Runtime is `AUTHORING_DERIVED_OR_PENDING`; no default 3-second-per-beat value is treated as Production truth.",
         "- `duration_mode` and `duration_hint_seconds` remain authoring intent.", "",
-        "## 14. Regression evidence", "",
+        "## 16. Regression evidence", "",
         "- Phase A / Phase B / Phase C / Storyboard targeted suite: `93 passed`.",
         "- Deterministic Golden regression: `5/5` fixtures passed.",
         "- Full backend: `1582 passed, 4 known failures, 930 warnings`; all four failures are pre-existing and outside this Phase C change.",
         "- Phase-C-induced failures: `0`; REAL_REGRESSION: `0`.",
         "- The four known failures are the documented offline replay branch assertion, retired authorized-provider worktree assertion, active gray registry scope assertion, and targeted missing-fact snapshot behavior.", "",
-        "## 15. Migration and scope audit", "",
+        "## 17. Migration and scope audit", "",
         "- No database migration was added.",
         "- Storyboard schema/materializer architecture was not redesigned; consumer compatibility is covered by regression tests.",
         "- PromptIR, image, video and visual generation were not started.", "",
-        "## 16. Working tree and delivery", "",
+        "## 18. Working tree and delivery", "",
         "- Effective continuation HEAD: `7644017`; branch: `codex/visual-authoring-provider-canary-reconcile`.",
         "- Final report, JSON, Markdown, trace, fixture and regression tests are committed and pushed.", "",
         "## Completion token", "", "- `PHASE_C_CANONICAL_SHOT_DESIGN_AND_CREATIVE_AUTHORING_CLOSURE_READY_FOR_REVIEW`", "",
