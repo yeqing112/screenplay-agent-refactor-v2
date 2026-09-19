@@ -4983,11 +4983,11 @@
       {
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "07a94ca26ffad57756941339fa72c38ce4b6ef864f1d4f81686e35fe2da20e6f",
+        "payload_hash": "2fdcba6804cb4c8eb73126792f5ee4d6b3f197ac9d872c87dd9b27d0ffd1d2cb",
         "authority_id": 1,
-        "authority_fingerprint": "d08cb6de64839860732c55eb554f063fd10f96d40e88a28550d8fd3ea430b331",
+        "authority_fingerprint": "ca559c2103faecc2665fae8bef453a05be4ee0eea1c9995ad69b4b1d40254197",
         "pointer_id": 1,
-        "pointer_fingerprint": "d08cb6de64839860732c55eb554f063fd10f96d40e88a28550d8fd3ea430b331",
+        "pointer_fingerprint": "ca559c2103faecc2665fae8bef453a05be4ee0eea1c9995ad69b4b1d40254197",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
@@ -4995,11 +4995,11 @@
       {
         "row_id": 4,
         "revision": 1,
-        "payload_hash": "91206479b12b62e8e6e0c4f1e5884680666ca0989ce13b08b07ba8ce9a841b8f",
+        "payload_hash": "506c442ab2824edd0ec8fd73acf2c4a4f268d8e8870fcdb80cfa523c345d13f4",
         "authority_id": 2,
-        "authority_fingerprint": "93d2fe4f671b54aa67ef29928a9014156355f34bc9ac41c585e844d44eefd26c",
+        "authority_fingerprint": "18fa82d16dd59f995f5906c8c3805aa3d6731258531f3f47e257f878c27b0671",
         "pointer_id": 2,
-        "pointer_fingerprint": "93d2fe4f671b54aa67ef29928a9014156355f34bc9ac41c585e844d44eefd26c",
+        "pointer_fingerprint": "18fa82d16dd59f995f5906c8c3805aa3d6731258531f3f47e257f878c27b0671",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"

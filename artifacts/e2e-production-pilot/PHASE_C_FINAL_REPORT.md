@@ -99,7 +99,7 @@
 
 ## 14. Regression evidence
 
-- Phase A / Phase B / Phase C / Storyboard targeted suite: `94 passed`.
+- Phase A / Phase B / Phase C / Storyboard targeted suite: `93 passed`.
 - Deterministic Golden regression: `5/5` fixtures passed.
 - Full backend: `1582 passed, 4 known failures, 930 warnings`; all four failures are pre-existing and outside this Phase C change.
 - Phase-C-induced failures: `0`; REAL_REGRESSION: `0`.

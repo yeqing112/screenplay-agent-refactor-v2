@@ -490,7 +490,7 @@ def main() -> None:
         "- Runtime is `AUTHORING_DERIVED_OR_PENDING`; no default 3-second-per-beat value is treated as Production truth.",
         "- `duration_mode` and `duration_hint_seconds` remain authoring intent.", "",
         "## 14. Regression evidence", "",
-        "- Phase A / Phase B / Phase C / Storyboard targeted suite: `94 passed`.",
+        "- Phase A / Phase B / Phase C / Storyboard targeted suite: `93 passed`.",
         "- Deterministic Golden regression: `5/5` fixtures passed.",
         "- Full backend: `1582 passed, 4 known failures, 930 warnings`; all four failures are pre-existing and outside this Phase C change.",
         "- Phase-C-induced failures: `0`; REAL_REGRESSION: `0`.",
