@@ -60,7 +60,7 @@ def render_reader_script(script_ir: dict[str, Any], *, production: bool = False)
         for scene in script_ir.get("scenes") or []:
             if not isinstance(scene, dict):
                 continue
-            if _text(scene.get("timeline_origin")).upper() != "EXPLICIT":
+            if _text(scene.get("timeline_origin")).upper() != "EXPLICIT" or scene.get("production_eligible") is not True:
                 raise ValueError("SCRIPT_TIMELINE_NOT_EXPLICIT")
             if not isinstance(scene.get("script_blocks"), list) or not scene.get("script_blocks"):
                 raise ValueError("SCRIPT_BLOCK_ORDER_REQUIRED")

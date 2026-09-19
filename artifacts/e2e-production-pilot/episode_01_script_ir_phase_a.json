@@ -925,7 +925,8 @@
         }
       ],
       "asset_mentions": [],
-      "timeline_origin": "EXPLICIT"
+      "timeline_origin": "EXPLICIT",
+      "production_eligible": true
     },
     {
       "scene_id": "E01_SC002",
@@ -1556,7 +1557,8 @@
         }
       ],
       "asset_mentions": [],
-      "timeline_origin": "EXPLICIT"
+      "timeline_origin": "EXPLICIT",
+      "production_eligible": true
     }
   ],
   "scene_transitions": [
@@ -1581,5 +1583,5 @@
       "status": "RESOLVED"
     }
   ],
-  "payload_hash": "6eaf7d50f8e10dc6c84f14176406afe3d4d7457f3cac65776b68e8fe6a0c9ea4"
+  "payload_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db"
 }

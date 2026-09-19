@@ -100,10 +100,6 @@ def normalize_script_blocks(raw: Any, *, scene_id: str, beat_ids: list[str], dia
             order = raw_block.get("order")
             block_type = _text(raw_block.get("type") or raw_block.get("block_type"))
             ref = _text(raw_block.get("ref"))
-            if not ref and block_type.upper() == "ACTION":
-                ref = raw_block.get("action_ref") or raw_block.get("beat_ref")
-            if not ref and block_type.upper() == "DIALOGUE":
-                ref = raw_block.get("dialogue_ref")
             blocks.append({
                 # Preserve authority-relevant invalid values for the validator;
                 # never silently renumber an explicit production timeline.
@@ -204,6 +200,7 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "dialogues": dialogues,
             "script_blocks": script_blocks,
             "timeline_origin": timeline_origin,
+            "production_eligible": timeline_origin == "EXPLICIT",
             "state_in": raw_scene.get("state_in") if isinstance(raw_scene.get("state_in"), dict) else {},
             "state_out": raw_scene.get("state_out") if isinstance(raw_scene.get("state_out"), dict) else {},
             "required_visual_proofs": raw_scene.get("required_visual_proofs") if isinstance(raw_scene.get("required_visual_proofs"), list) else [],

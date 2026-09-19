@@ -43,3 +43,8 @@ Targeted timeline, renderer, creative-quality, ScriptIR, authority-activation, a
 - Full backend: 1516 passed, 35 failed, 926 warnings. The failures are historical integration fixtures that activate minimal ScriptIR payloads without explicit `script_blocks`, plus unrelated pre-existing branch/provider checks; they now surface the intended `SCRIPT_TIMELINE_NOT_EXPLICIT` blocker where applicable. No unrelated source files were changed to mask them.
 - Frontend: no frontend files or build scripts were touched.
 - Migration: no database schema migration required.
+
+Additional closure checks:
+
+- Inferred scenes serialize `production_eligible=false`; explicit scenes serialize `production_eligible=true`.
+- Explicit block aliases such as `action_ref`/`dialogue_ref` are not promoted into `ref`; missing `ref` remains missing and emits `SCRIPT_BLOCK_REF_MISSING`.
