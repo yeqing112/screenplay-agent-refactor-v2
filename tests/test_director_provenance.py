@@ -9,6 +9,7 @@ from core.director_provenance import (
 )
 from api.director_treatment_api import _validate_llm_candidate
 from core.director_treatment_authority import build_treatment_authority_envelope
+from core.director_treatment_authority import validate_phase_b_provenance_readiness
 
 
 def test_human_input_confirms_as_human_authored():
@@ -64,3 +65,43 @@ def test_authority_envelope_fingerprint_binds_provenance():
     first = build_treatment_authority_envelope(treatment=treatment, evidence=evidence, script_ir={}, script_ir_version=version, script_ir_envelope=ir_envelope, treatment_id=1, treatment_revision=1, provenance=human, confirmation=event, canonical_origin="HUMAN_AUTHORED")
     second = build_treatment_authority_envelope(treatment=treatment, evidence=evidence, script_ir={}, script_ir_version=version, script_ir_envelope=ir_envelope, treatment_id=1, treatment_revision=1, provenance=provider, confirmation=provider_event, canonical_origin="PROVIDER_PROPOSAL_CONFIRMED")
     assert first["envelope_fingerprint"] != second["envelope_fingerprint"]
+
+
+def test_missing_provenance_is_legacy_readable_but_not_phase_b_ready():
+    result = validate_phase_b_provenance_readiness(
+        envelope={"semantic_contract": {"version": "director_semantic_contract_v1"}},
+        model_info={"mode": "legacy", "llm_called": False},
+    )
+    assert result["ready"] is False
+    assert result["invalid"] is False
+    assert result["reasons"] == ["DIRECTOR_PROVENANCE_CONTRACT_MISSING"]
+
+
+def test_complete_provenance_is_phase_b_ready():
+    provenance = proposal_provenance("HUMAN_INPUT", provider={"called": False, "calls": 0}, human_input=True)
+    event = confirmation_event(provenance, confirmed_at="2026-09-20T00:00:00Z")
+    envelope = {
+        "proposal_provenance": provenance,
+        "confirmation_event": event,
+        "canonical_origin_summary": "HUMAN_AUTHORED",
+        "provider_provenance": provenance["provider"],
+        "provenance": {"proposal_provenance": provenance, "confirmation_event": event, "canonical_origin": "HUMAN_AUTHORED", "provider": provenance["provider"]},
+    }
+    result = validate_phase_b_provenance_readiness(
+        envelope=envelope,
+        model_info={"proposal_provenance": provenance, "confirmation_event": event, "canonical_origin": "HUMAN_AUTHORED", **project_legacy_flags(provenance)},
+    )
+    assert result["ready"] is True
+    assert result["reasons"] == []
+
+
+def test_invalid_confirmation_and_provider_projection_are_tamper():
+    provenance = proposal_provenance("HUMAN_INPUT", provider={"called": False, "calls": 0})
+    event = confirmation_event(provenance, confirmed_at="2026-09-20T00:00:00Z")
+    event["source_proposal_origin"] = "PROVIDER_PROPOSAL"
+    result = validate_phase_b_provenance_readiness(
+        envelope={"proposal_provenance": provenance, "confirmation_event": event, "canonical_origin_summary": "HUMAN_AUTHORED", "provider_provenance": {**provenance["provider"], "calls": 1}},
+        model_info={},
+    )
+    assert result["invalid"] is True
+    assert result["reasons"] == ["DIRECTOR_PROVENANCE_TAMPERED"]

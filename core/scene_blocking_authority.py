@@ -474,6 +474,12 @@ def resolve_current_authoritative_scene_blocking(session: Any, *, book_id: int, 
         reason = _text(detail.get("code") or "DIRECTOR_TREATMENT_CHANGED")
         mark_scene_blocking_stale(session, row, [reason]); session.commit()
         raise
+    if not treatment_envelope.get("phase_b_semantic_ready"):
+        _raise(
+            "DIRECTOR_TREATMENT_SEMANTIC_NOT_READY",
+            "SceneBlocking requires a Phase B semantic-ready DirectorTreatment.",
+            reasons=treatment_envelope.get("phase_b_readiness_reasons", []),
+        )
     treatment_meta = envelope.get("treatment") if isinstance(envelope.get("treatment"), dict) else {}
     if str(treatment_meta.get("id")) != str(treatment.id) or str(treatment_meta.get("revision")) != str(treatment.revision) or _text(treatment_meta.get("payload_hash")) != _text(getattr(treatment, "payload_hash", "")) or _text(treatment_meta.get("authority_envelope_fingerprint")) != _text(treatment_envelope.get("envelope_fingerprint")):
         mark_scene_blocking_stale(session, row, ["DIRECTOR_TREATMENT_CHANGED"]); session.commit(); _raise("DIRECTOR_TREATMENT_CHANGED", "SceneBlocking treatment lineage is stale.")

@@ -4,6 +4,14 @@ from __future__ import annotations
 import copy
 
 from core.blocking_state_compiler import COMPILER_VERSION, compile_blocking_states
+from core.director_provenance import confirmation_event, proposal_provenance, resolve_canonical_origin
+
+
+def build_phase_b_production_director_provenance() -> tuple[dict, dict, str]:
+    """Build the raw provenance/event pair used by Production fixtures."""
+    provenance = proposal_provenance("HUMAN_INPUT", provider={"called": False, "calls": 0}, human_input=True)
+    event = confirmation_event(provenance, confirmed_at="2026-09-20T00:00:00Z")
+    return provenance, event, resolve_canonical_origin(provenance, event)
 
 
 def build_phase_b_production_blocking_candidate(blocking: dict) -> dict:

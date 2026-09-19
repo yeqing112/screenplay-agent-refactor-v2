@@ -10,6 +10,7 @@ from core.source_evidence_index import build_source_evidence_index
 from core.director_treatment_authority import build_treatment_authority_envelope, payload_hash as treatment_payload_hash, treatment_payload_from_row
 from models import Book, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, FactSnapshot, SceneBlocking, SceneBlockingAuthority, SceneBlockingPointer, Script, ScriptIRVersion, Session, ShotPlan, ShotPlanAuthority, ShotPlanPointer, StoryboardShot, init_db
 from tests.script_fixtures import build_explicit_production_script_payload
+from tests.phase_b_contract_fixtures import build_phase_b_production_director_provenance
 from unittest.mock import patch
 
 
@@ -52,6 +53,7 @@ def _authorize_existing_script(client, book_id):
         ir_row = session.query(ScriptIRVersion).filter_by(id=script_row.current_script_ir_version_id).one()
         ir_payload = json.loads(ir_row.payload_json or "{}")
         ir_envelope = json.loads(ir_row.authority_envelope_json or "{}")
+        provenance, confirmation, canonical_origin = build_phase_b_production_director_provenance()
         for treatment in session.query(DirectorTreatment).filter_by(book_id=book_id, episode=1).all():
             scene = next((item for item in ir_payload.get("scenes", []) if isinstance(item, dict) and str(item.get("name") or "").strip() == str(treatment.scene_name or "").strip()), None)
             if not scene:
@@ -71,7 +73,10 @@ def _authorize_existing_script(client, book_id):
             treatment.stale_status = "FRESH"
             formal = treatment_payload_from_row(treatment)
             treatment.payload_hash = treatment_payload_hash(formal)
-            envelope = build_treatment_authority_envelope(treatment=formal, evidence={"book_id": book_id, "episode": 1, "scene": scene, "scene_id": scene_id, "scene_name": scene.get("name"), "characters": [], "locked_references": []}, script_ir=ir_payload, script_ir_version=ir_row, script_ir_envelope=ir_envelope, treatment_id=treatment.id, treatment_revision=treatment.revision)
+            model_info = json.loads(treatment.model_info or "{}")
+            model_info.update({"proposal_provenance": provenance, "confirmation_event": confirmation, "canonical_origin": canonical_origin, "llm_called": False, "llm_generated": False})
+            treatment.model_info = json.dumps(model_info, ensure_ascii=False)
+            envelope = build_treatment_authority_envelope(treatment=formal, evidence={"book_id": book_id, "episode": 1, "scene": scene, "scene_id": scene_id, "scene_name": scene.get("name"), "characters": [], "locked_references": []}, script_ir=ir_payload, script_ir_version=ir_row, script_ir_envelope=ir_envelope, treatment_id=treatment.id, treatment_revision=treatment.revision, provenance=provenance, confirmation=confirmation, canonical_origin=canonical_origin)
             authority = DirectorTreatmentAuthority(book_id=book_id, episode=1, scene_id=scene_id, treatment_id=treatment.id, treatment_revision=treatment.revision, payload_hash=treatment.payload_hash, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]")
             session.add(authority); session.flush(); treatment.authority_envelope_id = authority.id
             session.add(DirectorTreatmentPointer(book_id=book_id, episode=1, scene_id=scene_id, treatment_id=treatment.id, treatment_revision=treatment.revision, authority_envelope_fingerprint=envelope["envelope_fingerprint"], qualification_state="PRODUCTION_QUALIFIED"))

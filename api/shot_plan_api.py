@@ -211,7 +211,7 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
             treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
             blocking, blocking_authority = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=scene_id)
             if not _authority.get("phase_b_semantic_ready"):
-                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Current DirectorTreatment is not Phase B semantic-ready."})
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_SEMANTIC_NOT_READY", "message": "Current DirectorTreatment is not Phase B semantic-ready."})
             if not blocking_authority.get("phase_b_semantic_ready"):
                 raise HTTPException(status_code=409, detail={"code": "BLOCKING_SEMANTIC_CONTRACT_REQUIRED", "message": "Current SceneBlocking is not Phase B semantic-ready."})
         else:
@@ -681,7 +681,7 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
             treatment, treatment_authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
             blocking, blocking_authority = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=scene_id)
             if not treatment_authority.get("phase_b_semantic_ready"):
-                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Current DirectorTreatment is not Phase B semantic-ready."})
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_SEMANTIC_NOT_READY", "message": "Current DirectorTreatment is not Phase B semantic-ready."})
             if not blocking_authority.get("phase_b_semantic_ready"):
                 raise HTTPException(status_code=409, detail={"code": "BLOCKING_SEMANTIC_CONTRACT_REQUIRED", "message": "Current SceneBlocking is not Phase B semantic-ready."})
             if treatment.id != draft.treatment_id or blocking.id != draft.blocking_id:

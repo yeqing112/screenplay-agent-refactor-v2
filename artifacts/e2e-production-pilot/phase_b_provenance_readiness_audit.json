@@ -1,0 +1,25 @@
+{
+  "phase": "PHASE_B_PROVENANCE_READINESS_CLOSURE",
+  "new_authority_ready": true,
+  "legacy_semantic_without_provenance_ready": false,
+  "legacy_authority_readable": true,
+  "tampered_provenance_fail_closed": true,
+  "shot_plan_blocks_legacy_semantic_authority": true,
+  "blocking_consumer_blocks_legacy_treatment": true,
+  "pilot_treatment_ready_scenes": 2,
+  "pilot_treatment_not_ready_scenes": 0,
+  "pilot_blocking_resolver": "PASS",
+  "pilot_provider_calls": 0,
+  "evidence": {
+    "targeted_command": "python -m pytest -q tests/test_director_quality_v3_evaluation_upstream_phase_a.py tests/test_script_ir_authority_activation.py tests/test_director_blocking_phase_b.py tests/test_phase_b_production_contract_enforcement.py tests/test_director_provenance.py tests/test_director_runtime_e2e.py tests/test_scene_blocking_authority_contract.py tests/test_director_treatment_authority_contract.py tests/test_scene_blocking_v2_api.py tests/test_shot_plan.py",
+    "targeted_result": "88 passed",
+    "legacy_test": "SceneBlockingAuthorityContractTests.test_legacy_semantic_authority_without_provenance_is_readable_but_blocks_production",
+    "shot_plan_legacy_test": "SceneBlockingAuthorityContractTests.test_shot_plan_blocks_legacy_semantic_treatment_without_provenance",
+    "provenance_unit_tests": "tests/test_director_provenance.py",
+    "trace": "artifacts/e2e-production-pilot/episode_01_phase_b_trace.json"
+  },
+  "migration": "none",
+  "phase_c_started": false,
+  "full_backend": "1573 passed / 4 failures / 930 warnings",
+  "golden": "5 passed / 0 failed"
+}

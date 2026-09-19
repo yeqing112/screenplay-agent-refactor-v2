@@ -211,6 +211,8 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
                 raise HTTPException(status_code=409, detail={"code": "SCENE_ID_NOT_FOUND", "message": "The requested scene_id is not present in the current ScriptIR."})
             scene_id = _text(scene.get("scene_id"))
             treatment, treatment_authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
+            if not treatment_authority.get("phase_b_semantic_ready"):
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_SEMANTIC_NOT_READY", "message": "Current DirectorTreatment is not Phase B semantic-ready.", "reasons": treatment_authority.get("phase_b_readiness_reasons", [])})
         else:
             treatment_query = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, status="approved")
             if req.scene_name.strip() and not req.treatment_id:
@@ -463,6 +465,8 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
         # update the scene pointer atomically.  No latest-approved fallback is
         # consulted at any point.
         treatment, treatment_envelope = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=_text(draft.scene_id))
+        if not treatment_envelope.get("phase_b_semantic_ready"):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_SEMANTIC_NOT_READY", "message": "Current DirectorTreatment is not Phase B semantic-ready.", "reasons": treatment_envelope.get("phase_b_readiness_reasons", [])})
         if treatment.id != draft.treatment_id:
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_POINTER_CHANGED", "message": "Current DirectorTreatment changed; regenerate SceneBlocking."})
         script_row = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()

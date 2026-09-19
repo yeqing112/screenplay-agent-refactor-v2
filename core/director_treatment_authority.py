@@ -236,6 +236,77 @@ def validate_treatment_candidate(candidate: dict[str, Any], baseline: dict[str, 
     return result
 
 
+def validate_phase_b_provenance_readiness(*, envelope: dict[str, Any], model_info: dict[str, Any]) -> dict[str, Any]:
+    """Validate the structured provenance contract used by Phase B readiness.
+
+    Missing provenance is a legacy compatibility state: the authority remains
+    readable, but it cannot feed a Phase B production consumer.  Once a
+    provenance field is present, contradictory or malformed values are
+    authority tamper and must be handled by the resolver as fail-closed.
+    """
+    from core.director_provenance import project_legacy_flags, proposal_provenance, resolve_canonical_origin
+
+    envelope = envelope if isinstance(envelope, dict) else {}
+    model_info = model_info if isinstance(model_info, dict) else {}
+    raw_provenance = envelope.get("proposal_provenance")
+    raw_event = envelope.get("confirmation_event")
+    raw_canonical = envelope.get("canonical_origin_summary")
+    raw_provider = envelope.get("provider_provenance")
+    nested = envelope.get("provenance") if isinstance(envelope.get("provenance"), dict) else {}
+    missing = []
+    if not isinstance(raw_provenance, dict) or not raw_provenance:
+        missing.append("proposal_provenance")
+    if not isinstance(raw_event, dict) or not raw_event:
+        missing.append("confirmation_event")
+    if not _text(raw_canonical):
+        missing.append("canonical_origin_summary")
+    if not isinstance(raw_provider, dict) or not raw_provider:
+        missing.append("provider_provenance")
+    if missing:
+        return {"ready": False, "invalid": False, "reasons": ["DIRECTOR_PROVENANCE_CONTRACT_MISSING"], "missing": missing}
+
+    try:
+        provenance = proposal_provenance(
+            raw_provenance.get("proposal_origin", ""),
+            provider=raw_provenance.get("provider"),
+            human_input=(raw_provenance.get("authoring") or {}).get("human_input", False),
+        )
+    except (TypeError, ValueError) as exc:
+        return {"ready": False, "invalid": True, "reasons": ["DIRECTOR_PROVENANCE_TAMPERED"], "detail": str(exc)}
+
+    if provenance != raw_provenance or raw_provider != provenance["provider"]:
+        return {"ready": False, "invalid": True, "reasons": ["DIRECTOR_PROVENANCE_TAMPERED"], "detail": "proposal/provider provenance projection mismatch"}
+    if nested and (
+        nested.get("proposal_provenance") != provenance
+        or nested.get("confirmation_event") != raw_event
+        or _text(nested.get("canonical_origin")) != _text(raw_canonical)
+        or nested.get("provider") != provenance["provider"]
+    ):
+        return {"ready": False, "invalid": True, "reasons": ["DIRECTOR_PROVENANCE_TAMPERED"], "detail": "nested provenance projection mismatch"}
+
+    try:
+        expected_canonical = resolve_canonical_origin(provenance, raw_event)
+    except (TypeError, ValueError) as exc:
+        return {"ready": False, "invalid": True, "reasons": ["DIRECTOR_PROVENANCE_TAMPERED"], "detail": str(exc)}
+    if (
+        raw_event.get("source_proposal_origin") != provenance["proposal_origin"]
+        or raw_event.get("confirmation_type") != "HUMAN_CONFIRMATION"
+        or not _text(raw_event.get("confirmed_at"))
+        or raw_event.get("canonical_origin") != expected_canonical
+        or _text(raw_canonical) != expected_canonical
+    ):
+        return {"ready": False, "invalid": True, "reasons": ["DIRECTOR_PROVENANCE_TAMPERED"], "detail": "confirmation or canonical origin mismatch"}
+
+    if (
+        model_info.get("proposal_provenance") != provenance
+        or model_info.get("confirmation_event") != raw_event
+        or _text(model_info.get("canonical_origin")) != expected_canonical
+        or any(model_info.get(key) != value for key, value in project_legacy_flags(provenance).items())
+    ):
+        return {"ready": False, "invalid": True, "reasons": ["DIRECTOR_PROVENANCE_TAMPERED"], "detail": "model_info provenance projection mismatch"}
+    return {"ready": True, "invalid": False, "reasons": [], "missing": [], "proposal_origin": provenance["proposal_origin"], "canonical_origin": expected_canonical, "provider": provenance["provider"]}
+
+
 def _current_script_ir(session: Any, script_row: Any) -> tuple[Any, dict[str, Any], dict[str, Any]]:
     from models import ScriptIRVersion
     current_id = getattr(script_row, "current_script_ir_version_id", None)
@@ -294,21 +365,11 @@ def resolve_current_authoritative_treatment(session: Any, *, book_id: int, episo
     if not treatment or not authority or str(pointer.treatment_revision) != str(getattr(treatment, "revision", "")) or str(authority.treatment_revision) != str(getattr(treatment, "revision", "")) or str(authority.scene_id) != _text(scene_id) or str(authority.book_id) != str(book_id) or str(authority.episode) != str(episode) or treatment.status != "approved" or treatment.qualification_state != "PRODUCTION_QUALIFIED" or authority.qualification_state != "PRODUCTION_QUALIFIED":
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_NOT_PRODUCTION_QUALIFIED", "message": "Current DirectorTreatment is not production-qualified."})
     envelope = _json(authority.envelope_json, {})
-    # Provenance is a single canonical source for model_info projections and
-    # the bound envelope.  Detect drift before returning an authoritative row.
-    provenance_block = envelope.get("provenance") if isinstance(envelope.get("provenance"), dict) else {}
-    envelope_provenance = envelope.get("proposal_provenance") if isinstance(envelope.get("proposal_provenance"), dict) else provenance_block.get("proposal_provenance")
-    envelope_event = envelope.get("confirmation_event") if isinstance(envelope.get("confirmation_event"), dict) else provenance_block.get("confirmation_event")
-    envelope_canonical = _text(envelope.get("canonical_origin_summary") or provenance_block.get("canonical_origin"))
     model_info = _json(getattr(treatment, "model_info", "{}"), {})
-    if isinstance(envelope_provenance, dict) and envelope_provenance:
-        if not isinstance(model_info, dict) or model_info.get("proposal_provenance") != envelope_provenance or model_info.get("confirmation_event") != envelope_event or _text(model_info.get("canonical_origin")) != envelope_canonical:
-            mark_treatment_stale(session, treatment, ["DIRECTOR_PROVENANCE_TAMPERED"]); session.commit()
-            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_TAMPERED", "message": "Treatment provenance projections do not match the bound authority envelope."})
-        from core.director_provenance import project_legacy_flags
-        if any(model_info.get(key) != value for key, value in project_legacy_flags(envelope_provenance).items()):
-            mark_treatment_stale(session, treatment, ["DIRECTOR_PROVENANCE_PROJECTION_MISMATCH"]); session.commit()
-            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_TAMPERED", "message": "Legacy provenance projections do not match canonical provenance."})
+    provenance_readiness = validate_phase_b_provenance_readiness(envelope=envelope, model_info=model_info)
+    if provenance_readiness.get("invalid"):
+        mark_treatment_stale(session, treatment, ["DIRECTOR_PROVENANCE_TAMPERED"]); session.commit()
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_TAMPERED", "message": provenance_readiness.get("detail", "Treatment provenance contract is invalid.")})
     if authority.stale_status == "STALE" or treatment.stale_status == "STALE":
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_STALE", "message": "Current DirectorTreatment is stale.", "stale_reasons": _json(authority.stale_reasons, [])})
     if treatment.payload_hash != payload_hash(treatment_payload_from_row(treatment)):
@@ -379,7 +440,11 @@ def resolve_current_authoritative_treatment(session: Any, *, book_id: int, episo
     semantic = envelope.get("semantic_contract") if isinstance(envelope.get("semantic_contract"), dict) else {}
     decisions = _json(getattr(treatment, "director_decisions", "{}"), {})
     from core.director_semantics import DIRECTOR_CONTRACT_VERSION
-    envelope["phase_b_semantic_ready"] = bool(_text(semantic.get("version")) == DIRECTOR_CONTRACT_VERSION and isinstance(decisions.get("director_beat_decisions"), list))
+    semantic_ready = bool(_text(semantic.get("version")) == DIRECTOR_CONTRACT_VERSION and isinstance(decisions.get("director_beat_decisions"), list))
+    envelope["semantic_contract_ready"] = semantic_ready
+    envelope["provenance_contract_ready"] = bool(provenance_readiness.get("ready"))
+    envelope["phase_b_readiness_reasons"] = ([] if semantic_ready else ["DIRECTOR_SEMANTIC_CONTRACT_REQUIRED"]) + list(provenance_readiness.get("reasons", []))
+    envelope["phase_b_semantic_ready"] = bool(semantic_ready and provenance_readiness.get("ready"))
     return treatment, envelope
 
 
@@ -396,4 +461,4 @@ def mark_treatment_stale(session: Any, treatment: Any, reasons: list[str]) -> No
     session.query(DirectorTreatmentPointer).filter_by(treatment_id=treatment.id).delete(synchronize_session=False)
 
 
-__all__ = ["SCHEMA_VERSION", "CONTRACT_SCHEMA_VERSION", "AUTHORITY_POLICY_VERSION", "QUALIFICATION_STATES", "STALE_STATUSES", "SOURCE_CONSTRAINT_FIELDS", "DIRECTOR_DECISION_FIELDS", "DOWNSTREAM_AUTHORING_FIELDS", "treatment_contract", "contract_fingerprint", "treatment_payload_from_row", "payload_hash", "classify_asset_authority", "build_treatment_authority_envelope", "validate_treatment_candidate", "resolve_scene_for_treatment", "resolve_current_authoritative_treatment", "mark_treatment_stale"]
+__all__ = ["SCHEMA_VERSION", "CONTRACT_SCHEMA_VERSION", "AUTHORITY_POLICY_VERSION", "QUALIFICATION_STATES", "STALE_STATUSES", "SOURCE_CONSTRAINT_FIELDS", "DIRECTOR_DECISION_FIELDS", "DOWNSTREAM_AUTHORING_FIELDS", "treatment_contract", "contract_fingerprint", "treatment_payload_from_row", "payload_hash", "classify_asset_authority", "build_treatment_authority_envelope", "validate_treatment_candidate", "validate_phase_b_provenance_readiness", "resolve_scene_for_treatment", "resolve_current_authoritative_treatment", "mark_treatment_stale"]

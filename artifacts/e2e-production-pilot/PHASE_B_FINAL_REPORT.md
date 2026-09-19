@@ -56,7 +56,7 @@
 
 ## 19. Real ScriptIR Authority IDs
 ```json
-{"book_id": 990401, "fact_snapshot": {"id": 1, "payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "revision": 1}, "script_ir": {"authority_envelope_fingerprint": "0fba62fb2cd7390554fd265ea2d3d3bc84f873e012adb4b45f9414b3675668b1", "id": 1, "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "revision": 1}, "script_ir_activation": {"authority_envelope": {"authority_activated_at": "2026-09-19T16:25:55.970821+00:00", "authority_policy_version": "script_ir_authority_policy_v1", "authority_revision": 1, "book_id": 990401, "compiled_requirement_set_fingerprint": "4bf92a59d3e9ebae7f95eca9f0093892def829be894c34b741a4a6f864f7bf55", "envelope_fingerprint": "0fba62fb2cd7390554fd265ea2d3d3bc84f873e012adb4b45f9414b3675668b1", "episode": 1, "fact_snapshot_id": 1, "fact_snapshot_payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "fact_snapshot_revision": 1, "immutable_source_raw_hash": "19621b84219895021dc8b3debbe8873d3a233acfadc223852f7faa2bcac3dee3", "qualification_state": "PRODUCTION_QUALIFIED", "qualified": true, "schema_version": "script_ir_authority_envelope_v1", "script_ir_payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "script_ir_schema_version": "script_ir_v1", "source_anchor_bindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|旧火车站售票厅|scene_identity|scene": ["E0001"], "scene|林晚的公寓客厅|scene_identity|scene": ["E0001"]}, "source_coverage_result_fingerprint": "94f229ecdd103c47ca4628dc6940866a7b59a713f3c42c73876420be4e50f179", "source_evidence_index_fingerprint": "3593c48ff0f90255a90346073e75a178b23e79dea81548b58b45d4a222c60c3d", "source_package_id": "PHASE_B_PILOT", "source_requirement_contract_fingerprint": "398bfc5e93d2ecbc10f949c344c9786c1eae54b70cbf703310c4f3e2e696020f", "source_requirement_contract_version": "script_ir_source_requirement_contract_v1", "source_version_id": "PHASE_B_PILOT:1", "stale": false, "stale_reasons": [], "stale_status": "FRESH"}, "downstream_requirement_backlog": "preserved", "production_writes": 1, "provider_calls": 0, "qualification_state": "PRODUCTION_QUALIFIED", "revision": 1, "script_ir_version_id": 1, "status": "SCRIPT_IR_AUTHORITY_ACTIVATED"}}
+{"book_id": 990401, "fact_snapshot": {"id": 1, "payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "revision": 1}, "script_ir": {"authority_envelope_fingerprint": "4ac174a027acb1834dc76669199e137b7aa96593832ac40be140b58b05681e66", "id": 1, "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "revision": 1}, "script_ir_activation": {"authority_envelope": {"authority_activated_at": "2026-09-19T17:14:38.302627+00:00", "authority_policy_version": "script_ir_authority_policy_v1", "authority_revision": 1, "book_id": 990401, "compiled_requirement_set_fingerprint": "4bf92a59d3e9ebae7f95eca9f0093892def829be894c34b741a4a6f864f7bf55", "envelope_fingerprint": "4ac174a027acb1834dc76669199e137b7aa96593832ac40be140b58b05681e66", "episode": 1, "fact_snapshot_id": 1, "fact_snapshot_payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "fact_snapshot_revision": 1, "immutable_source_raw_hash": "19621b84219895021dc8b3debbe8873d3a233acfadc223852f7faa2bcac3dee3", "qualification_state": "PRODUCTION_QUALIFIED", "qualified": true, "schema_version": "script_ir_authority_envelope_v1", "script_ir_payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "script_ir_schema_version": "script_ir_v1", "source_anchor_bindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|旧火车站售票厅|scene_identity|scene": ["E0001"], "scene|林晚的公寓客厅|scene_identity|scene": ["E0001"]}, "source_coverage_result_fingerprint": "94f229ecdd103c47ca4628dc6940866a7b59a713f3c42c73876420be4e50f179", "source_evidence_index_fingerprint": "3593c48ff0f90255a90346073e75a178b23e79dea81548b58b45d4a222c60c3d", "source_package_id": "PHASE_B_PILOT", "source_requirement_contract_fingerprint": "398bfc5e93d2ecbc10f949c344c9786c1eae54b70cbf703310c4f3e2e696020f", "source_requirement_contract_version": "script_ir_source_requirement_contract_v1", "source_version_id": "PHASE_B_PILOT:1", "stale": false, "stale_reasons": [], "stale_status": "FRESH"}, "downstream_requirement_backlog": "preserved", "production_writes": 1, "provider_calls": 0, "qualification_state": "PRODUCTION_QUALIFIED", "revision": 1, "script_ir_version_id": 1, "status": "SCRIPT_IR_AUTHORITY_ACTIVATED"}}
 ```
 
 ## 20. Real FactSnapshot lineage
@@ -95,13 +95,13 @@
 - Phase A source artifact is consumed read-only; screenplay and ScriptIR contract are not modified.
 
 ## 31. Phase B targeted
-- Phase B semantic/compiler/enforcement targeted tests: 12 passed.
+- Phase B targeted command recorded in Section 42: 88 passed.
 
 ## 32. Golden
 - Existing Golden baseline: 5/5.
 
 ## 33. Full backend
-- Clean rerun: 1568 passed / 4 failures / 928 warnings. The four failures are unchanged true pre-existing baseline failures.
+- Full backend: 1573 passed / 4 failures / 930 warnings. The four failures are unchanged true pre-existing baseline failures.
 
 ## 34. Remaining known failures
 - Four pre-existing failures remain unchanged and are listed in the phase requirements.
@@ -115,20 +115,23 @@
 ## 37. Confirmation Phase C not started
 - ShotPlan, Storyboard, PromptIR, Visual and Video work remain out of scope.
 
-## 38. Proposal provenance
-- `ProposalProvenance` records proposal origin, provider call truth and authoring input. `ConfirmationEvent` records the production confirmation boundary.
+## 38. Readiness contract
+- `phase_b_semantic_ready` is the single Production readiness result: current semantic contract AND validated provenance contract.
 
-## 39. Canonical origin transitions
-- `HUMAN_INPUT` and `GENERATED_DRAFT` confirm to `HUMAN_AUTHORED`; `PROVIDER_PROPOSAL` confirms to `PROVIDER_PROPOSAL_CONFIRMED`.
+## 39. Provenance readiness
+- Missing provenance remains readable but returns `phase_b_semantic_ready=false` with `DIRECTOR_PROVENANCE_CONTRACT_MISSING`; invalid provenance is stale/fail-closed with `DIRECTOR_PROVENANCE_TAMPERED`.
 
-## 40. Provider truth and projections
-- Provider metadata includes called, calls, profile, model and request/response fingerprints. `llm_called` and `llm_generated` are deterministic projections only.
+## 40. Readiness regression
+- New authority: ready=true; legacy semantic authority without provenance: ready=false; ShotPlan and Blocking Production consumers are blocked through the Director resolver boundary.
 
-## 41. Pilot provenance
-- Each scene records `proposal_origin=HUMAN_INPUT`, `canonical_origin=HUMAN_AUTHORED`, `provider.called=false`, `provider.calls=0`, and `llm_called=false` in the trace.
+## 41. Provenance readiness audit
+- See `phase_b_provenance_readiness_audit.json` for positive, legacy, tamper and downstream blocking evidence.
 
-## 42. Test contract migration
-- Detailed per-test migration is recorded in `phase_b_test_contract_migration_audit.json`; all six Phase B-induced fixtures pass.
+## 42. Targeted command
+- `python -m pytest -q tests/test_director_quality_v3_evaluation_upstream_phase_a.py tests/test_script_ir_authority_activation.py tests/test_director_blocking_phase_b.py tests/test_phase_b_production_contract_enforcement.py tests/test_director_provenance.py tests/test_director_runtime_e2e.py tests/test_scene_blocking_authority_contract.py tests/test_director_treatment_authority_contract.py tests/test_scene_blocking_v2_api.py tests/test_shot_plan.py` → 88 passed.
 
-## 43. Completion token
-- `PHASE_B_PROVENANCE_AND_TEST_CONTRACT_CLOSURE_READY_FOR_REVIEW`
+## 43. GitHub CI
+- No remote GitHub Actions run was claimed; evidence is from the local clean full-suite rerun.
+
+## 44. Completion token
+- `PHASE_B_PROVENANCE_READINESS_CLOSURE_READY_FOR_REVIEW`
