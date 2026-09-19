@@ -13,7 +13,7 @@
 
 The Production authority, DirectorTreatment, SceneBlocking, ShotPlan, Storyboard materializer, ScriptIR Authority, and compiler integration fixtures were old payloads containing only beats/dialogues or empty scenes. They now use `tests/script_fixtures.py::build_explicit_production_script_payload()`, which constructs raw input with explicit `script_blocks` and `timeline_origin=EXPLICIT`; `build_script_ir()` derives `production_eligible=true`.
 
-The migrated fixture set is recorded in `phase-a-test-fixture-contract-migration-audit.json`. No normalized payload is mutated after build, and no gate or authority function is mocked.
+32 contract-related fixture candidates were migrated. The migrated fixture set is recorded in `phase-a-test-fixture-contract-migration-audit.json`. No normalized payload is mutated after build, and no gate or authority function is mocked.
 
 ### `TRUE_PRE_EXISTING_FAILURE`
 

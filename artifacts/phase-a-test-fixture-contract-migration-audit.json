@@ -11,10 +11,11 @@
     "warnings": 928
   },
   "summary": {
-    "phase_a_contract_induced_initial_failures": 31,
-    "migrated": 31,
+    "phase_a_contract_induced_initial_failures": 32,
+    "migrated": 32,
     "true_pre_existing_failures": 4,
-    "real_regressions": 0
+    "real_regressions": 0,
+    "note": "Inventory contains 32 contract-related fixture candidates observed across the baseline and targeted migration run; baseline full-suite collection was 1551 tests and final collection is 1553 after the added sanity test."
   },
   "failures": [
     {
