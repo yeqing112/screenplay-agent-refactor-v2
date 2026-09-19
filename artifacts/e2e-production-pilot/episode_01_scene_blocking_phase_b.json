@@ -4978,8 +4978,42 @@
     }
   ],
   "authority": {
-    "status": "PRODUCTION_QUALIFIED",
-    "pointer_policy": "current_only",
-    "latest_approved_fallback": false
+    "source": "database_resolver",
+    "scenes": [
+      {
+        "row_id": 1,
+        "revision": 1,
+        "payload_hash": "1c2a61c4a1b6540c9a54870293d7e42ff6be43a415432cc3db5bd35388cba21c",
+        "authority_id": 1,
+        "authority_fingerprint": "ae6b18c0e5a882f38c4327d90ae7c7b6cc8ccd79af38d043b5a36ce0739329fe",
+        "pointer_id": 1,
+        "pointer_fingerprint": "ae6b18c0e5a882f38c4327d90ae7c7b6cc8ccd79af38d043b5a36ce0739329fe",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "compiler_version": "blocking_state_compiler_v1",
+        "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
+      },
+      {
+        "row_id": 2,
+        "revision": 1,
+        "payload_hash": "df0330978faf15f743d684fbc7c0c5a8a5ad204cdea3269d31f3dba553480b1e",
+        "authority_id": 2,
+        "authority_fingerprint": "091ac4d2fc65c7849ba0ba32435a990dd7c12893282211d643ec9ac159921046",
+        "pointer_id": 2,
+        "pointer_fingerprint": "091ac4d2fc65c7849ba0ba32435a990dd7c12893282211d643ec9ac159921046",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "compiler_version": "blocking_state_compiler_v1",
+        "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"
+      }
+    ],
+    "resolver": [
+      {
+        "scene_id": "E01_SC001",
+        "status": "PASS"
+      },
+      {
+        "scene_id": "E01_SC002",
+        "status": "PASS"
+      }
+    ]
   }
 }

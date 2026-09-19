@@ -1,43 +1,119 @@
 # PHASE B FINAL REPORT
 
-## 1. DirectorTreatment 成品链接
+## 1. Starting HEAD
+- `3ebaee2`
+
+## 2. Final commit
+- `0240b50`
+
+## 3. Branch
+- `codex/visual-authoring-provider-canary-reconcile`
+
+## 4. Heuristic-removal audit
+- Production gates validate schema, references, state transitions, lineage, immutability, pointers and deterministic projections; no text quality heuristic is used.
+
+## 5. DirectorBeatDecision schema
+- Structured decision_id, beat_ref, dramatic_purpose, audience_state_delta, character_state_deltas, performance_objectives, reaction_contracts, information_policy, tempo_function and source_refs.
+
+## 6. Director deterministic contract
+- Controlled enums and critical/reaction beat coverage are validated by `validate_director_contract`.
+
+## 7. ReactionContract
+- Required reaction beats fail with `DIRECTOR_REACTION_CONTRACT_MISSING` when no required contract exists.
+
+## 8. Audience / Character state delta
+- Audience delta lists and controlled character dimensions are persisted in `director_decisions`.
+
+## 9. Creative Reviewer boundary
+- `review_director_creative_quality` is advisory and reports zero authority writes and pointer moves.
+
+## 10. Director Production wiring
+- Structured decisions are persisted in the existing DirectorTreatment payload and bound through the existing authority envelope/pointer.
+
+## 11. InitialBlockingState
+- One initial state per scene is persisted inside the existing SceneBlocking JSON payload.
+
+## 12. BlockingTransition schema
+- Blocking changes are represented as typed transitions with beat, subject, property, from/to and director decision refs.
+
+## 13. BlockingStateCompiler
+- `blocking_state_compiler_v1` materializes complete BeatSpatialState snapshots.
+
+## 14. Determinism proof
+- Compiler output is hashed with canonical JSON; the trace records compiled state hashes for both scenes.
+
+## 15. BeatSpatialState projection proof
+- BeatSpatialState is marked `DERIVED_PROJECTION`; movement paths are generated projections of transitions.
+
+## 16. Prop / possession continuity
+- Prop state transitions are compiled across ordered beats, including umbrella, rib, handbag and ticket continuity.
+
+## 17. Exit-access continuity
+- Exit access is part of the compiler state and carries forward when no transition changes it.
+
+## 18. Blocking Production wiring
+- Existing SceneBlocking authority envelope and current pointer are used; no parallel authority tables were added.
+
+## 19. Real ScriptIR Authority IDs
+```json
+{"book_id": 990401, "fact_snapshot": {"id": 1, "payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "revision": 1}, "script_ir": {"authority_envelope_fingerprint": "5b20f8449241d608558384c2d400bbb72b99b5811d113b094313163de7e2dcb2", "id": 1, "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "revision": 1}, "script_ir_activation": {"authority_envelope": {"authority_activated_at": "2026-09-19T15:06:46.163423+00:00", "authority_policy_version": "script_ir_authority_policy_v1", "authority_revision": 1, "book_id": 990401, "compiled_requirement_set_fingerprint": "4bf92a59d3e9ebae7f95eca9f0093892def829be894c34b741a4a6f864f7bf55", "envelope_fingerprint": "5b20f8449241d608558384c2d400bbb72b99b5811d113b094313163de7e2dcb2", "episode": 1, "fact_snapshot_id": 1, "fact_snapshot_payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "fact_snapshot_revision": 1, "immutable_source_raw_hash": "19621b84219895021dc8b3debbe8873d3a233acfadc223852f7faa2bcac3dee3", "qualification_state": "PRODUCTION_QUALIFIED", "qualified": true, "schema_version": "script_ir_authority_envelope_v1", "script_ir_payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "script_ir_schema_version": "script_ir_v1", "source_anchor_bindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|旧火车站售票厅|scene_identity|scene": ["E0001"], "scene|林晚的公寓客厅|scene_identity|scene": ["E0001"]}, "source_coverage_result_fingerprint": "94f229ecdd103c47ca4628dc6940866a7b59a713f3c42c73876420be4e50f179", "source_evidence_index_fingerprint": "3593c48ff0f90255a90346073e75a178b23e79dea81548b58b45d4a222c60c3d", "source_package_id": "PHASE_B_PILOT", "source_requirement_contract_fingerprint": "398bfc5e93d2ecbc10f949c344c9786c1eae54b70cbf703310c4f3e2e696020f", "source_requirement_contract_version": "script_ir_source_requirement_contract_v1", "source_version_id": "PHASE_B_PILOT:1", "stale": false, "stale_reasons": [], "stale_status": "FRESH"}, "downstream_requirement_backlog": "preserved", "production_writes": 1, "provider_calls": 0, "qualification_state": "PRODUCTION_QUALIFIED", "revision": 1, "script_ir_version_id": 1, "status": "SCRIPT_IR_AUTHORITY_ACTIVATED"}}
+```
+
+## 20. Real FactSnapshot lineage
+- id=1; revision=1; payload_hash=7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7
+
+## 21. Real Treatment Authority / Pointer IDs
+- See `authority.treatment` in the trace; each scene has real row, authority and pointer IDs.
+
+## 22. Real Blocking Authority / Pointer IDs
+- See `authority.blocking` in the trace; each scene has real row, authority and pointer IDs.
+
+## 23. Resolver results
+- Treatment resolver: PASS for both scenes; Blocking resolver: PASS for both scenes.
+
+## 24. Compiler version/hash
+- Both scenes use `blocking_state_compiler_v1`; hashes are recorded in the trace and JSON.
+
+## 25. Failed-candidate pointer tests
+- Deterministic contract tests cover failed decision/transition validation; failed candidates do not enter the authority write boundary.
+
+## 26. Stale tests
+- Existing current-only resolver tests cover missing pointer and stale lineage fail-closed behavior.
+
+## 27. Treatment artifact
 - [episode_01_director_treatment_phase_b.md](episode_01_director_treatment_phase_b.md)
 - [episode_01_director_treatment_phase_b.json](episode_01_director_treatment_phase_b.json)
 
-## 2. SceneBlocking 成品链接
+## 28. Blocking artifact
 - [episode_01_scene_blocking_phase_b.md](episode_01_scene_blocking_phase_b.md)
 - [episode_01_scene_blocking_phase_b.json](episode_01_scene_blocking_phase_b.json)
 
-## 3. 用户现在能看到什么
-两份 Markdown 成果分别说明每场戏如何导演、如何表演，以及人物、道具、出口和互动如何在空间中发生。JSON 与 Markdown 来自同一候选 payload。
+## 29. Trace artifact
+- [episode_01_phase_b_trace.json](episode_01_phase_b_trace.json) contains only real DB IDs and resolver output; no symbolic current pointer.
 
-## Gap Audit 结论
-原有 Treatment 的模板化目标、人物方向和原有 Blocking 的补齐式空间规则已被阻断；Phase B 成品的 placeholder=0。
+## 30. Phase A regression
+- Phase A source artifact is consumed read-only; screenplay and ScriptIR contract are not modified.
 
-## Authority / lineage
-- 复用现有 DirectorTreatment / SceneBlocking current-only pointer 语义；未新增平行 Production Truth。
-- ScriptIR、SceneTransition、D029/D027 顺序、红伞事实均只读。
-- [Trace](episode_01_phase_b_trace.json)
+## 31. Phase B targeted
+- `tests/test_phase_b_semantic_contract.py` and `tests/test_director_blocking_phase_b.py`: 8 passed.
 
-## Metrics
+## 32. Golden
+- Existing Golden baseline: 5/5.
 
-- scene_count: **2**
-- critical_beats: **18**
-- director_beat_coverage: **100%**
-- blocking_critical_beat_coverage: **100%**
-- character_direction_coverage: **100%**
-- entry_exit_coverage: **100%**
-- eyeline_coverage: **100%**
-- critical_prop_coverage: **100%**
-- placeholder_count: **0**
-- camera_leakage_count: **0**
+## 33. Full backend
+- Full backend: 1557 passed / 4 known pre-existing failures / 928 warnings.
 
-## Provider
-- provider_not_called=true；provider calls=0；image/video calls=0。候选来自 bounded deterministic recorded authoring，未伪称真实 AI 导演结果。
+## 34. Remaining known failures
+- Four pre-existing failures remain unchanged and are listed in the phase requirements.
 
-## Validation
-- Candidate → Validate → Repair → Confirm → Authority：PASS；repair count=0。
-- camera leakage=0；当前指针策略=current only；stale upstream fail-closed；无 latest-approved fallback。
+## 35. Working tree
+- Unrelated migration audit files remain excluded from the commit.
 
-## Scope
-Phase B 到此停止；未进入 ShotPlan creative quality、Storyboard、PromptIR、Visual、Flux 或 Video。
+## 36. Migration status
+- Pilot database was initialized through Alembic; no new migration was added.
+
+## 37. Confirmation Phase C not started
+- ShotPlan, Storyboard, PromptIR, Visual and Video work remain out of scope.
+
+## 38. Completion token
+- `PHASE_B_SEMANTIC_CONTRACT_AND_AUTHORITY_CLOSURE_READY_FOR_REVIEW`

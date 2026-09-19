@@ -85,6 +85,10 @@ def scene_blocking_contract() -> dict[str, Any]:
         {"field": "prop_spatial_states", "semantic_definition": "beat-bound prop location and state", "authority_class": BLOCKING_AUTHORING_DECISION, "required": False, "shot_plan_blocking": True, "mutation": "reviewed_edit_preserve_ids", "consumer": ["ShotPlan"]},
         {"field": "interactions", "semantic_definition": "spatial interaction contracts", "authority_class": BLOCKING_AUTHORING_DECISION, "required": False, "shot_plan_blocking": True, "mutation": "reviewed_edit", "consumer": ["ShotPlan"]},
         {"field": "interaction_axes", "semantic_definition": "relationship axes without camera placement", "authority_class": DERIVED_SPATIAL_CONSTRAINT, "required": False, "shot_plan_blocking": True, "mutation": "reviewed_edit", "consumer": ["ShotPlan"]},
+        {"field": "initial_state", "semantic_definition": "canonical initial blocking state", "authority_class": BLOCKING_AUTHORING_DECISION, "required": True, "shot_plan_blocking": True, "mutation": "reviewed_edit", "consumer": ["BlockingStateCompiler"]},
+        {"field": "blocking_transitions", "semantic_definition": "canonical blocking changes", "authority_class": BLOCKING_AUTHORING_DECISION, "required": True, "shot_plan_blocking": True, "mutation": "reviewed_edit", "consumer": ["BlockingStateCompiler"]},
+        {"field": "compiler_version", "semantic_definition": "deterministic compiler version", "authority_class": DERIVED_SPATIAL_CONSTRAINT, "required": True, "shot_plan_blocking": True, "mutation": "immutable", "consumer": ["BlockingStateCompiler"]},
+        {"field": "compiled_states_hash", "semantic_definition": "hash of compiler output", "authority_class": DERIVED_SPATIAL_CONSTRAINT, "required": True, "shot_plan_blocking": True, "mutation": "derived", "consumer": ["BlockingStateCompiler"]},
     ]
     return {
         "schema_version": CONTRACT_SCHEMA_VERSION,
@@ -120,31 +124,60 @@ def blocking_payload_from_dict(blocking: dict[str, Any]) -> dict[str, Any]:
         "space_model", "zones", "anchors", "connections", "characters", "movement_paths",
         "beat_spatial_states", "eyelines", "prop_spatial_states", "critical_props",
         "interactions", "interaction_axes", "director_direction_refs", "provenance",
+        "initial_state", "blocking_transitions", "compiler_version",
+        "compiled_states_hash", "movement_path_projection",
     )
     return {key: blocking.get(key) for key in keys if key in blocking}
 
 
 def blocking_payload_from_row(row: Any) -> dict[str, Any]:
-    return blocking_payload_from_dict({
+    model = _json(getattr(row, "spatial_model", "{}"), {})
+    model = model if isinstance(model, dict) else {}
+    if "initial_state" not in model and "blocking_transitions" not in model:
+        return blocking_payload_from_dict({
+            "scene_id": _text(getattr(row, "scene_id", "")),
+            "scene_name": _text(getattr(row, "scene_name", "")),
+            "space": model,
+            "participants": _json(getattr(row, "participants", "[]"), []),
+            "beat_transitions": _json(getattr(row, "beat_transitions", "[]"), []),
+            "spatial_rules": _json(getattr(row, "spatial_rules", "[]"), []),
+            "source_spatial_facts": _json(getattr(row, "source_spatial_facts", "[]"), []),
+            "creative_decisions": _json(getattr(row, "creative_decisions", "[]"), []),
+            "derived_constraints": _json(getattr(row, "derived_constraints", "{}"), {}),
+            "unresolved_facts": _json(getattr(row, "unresolved_facts", "[]"), []),
+            "unknowns": _json(getattr(row, "unknowns", "[]"), []),
+            "camera_axis": _json(getattr(row, "camera_axis", "{}"), {}),
+            "continuity_state": _json(getattr(row, "continuity_state", "{}"), {}),
+            "asset_authority": _json(getattr(row, "asset_authority", "{}"), {}),
+            "treatment_id": getattr(row, "treatment_id", None),
+            "treatment_revision": getattr(row, "treatment_revision", None),
+            "treatment_fingerprint": _text(getattr(row, "treatment_authority_fingerprint", "")),
+            "source_script_hash": _text(getattr(row, "source_script_ir_hash", "") or getattr(row, "source_script_hash", "")),
+        })
+    # The existing spatial_model JSON column carries the additive Phase B
+    # contract.  Rehydrate that canonical payload first, then overlay the
+    # immutable row metadata so hashes cover exactly what was persisted.
+    persisted = dict(model)
+    persisted.update({
         "scene_id": _text(getattr(row, "scene_id", "")),
         "scene_name": _text(getattr(row, "scene_name", "")),
-        "space": _json(getattr(row, "spatial_model", "{}"), {}),
-        "participants": _json(getattr(row, "participants", "[]"), []),
-        "beat_transitions": _json(getattr(row, "beat_transitions", "[]"), []),
-        "spatial_rules": _json(getattr(row, "spatial_rules", "[]"), []),
-        "source_spatial_facts": _json(getattr(row, "source_spatial_facts", "[]"), []),
-        "creative_decisions": _json(getattr(row, "creative_decisions", "[]"), []),
-        "derived_constraints": _json(getattr(row, "derived_constraints", "{}"), {}),
-        "unresolved_facts": _json(getattr(row, "unresolved_facts", "[]"), []),
-        "unknowns": _json(getattr(row, "unknowns", "[]"), []),
-        "camera_axis": _json(getattr(row, "camera_axis", "{}"), {}),
-        "continuity_state": _json(getattr(row, "continuity_state", "{}"), {}),
-        "asset_authority": _json(getattr(row, "asset_authority", "{}"), {}),
+        "participants": _json(getattr(row, "participants", "[]"), persisted.get("participants", [])),
+        "beat_transitions": _json(getattr(row, "beat_transitions", "[]"), persisted.get("beat_transitions", [])),
+        "spatial_rules": _json(getattr(row, "spatial_rules", "[]"), persisted.get("spatial_rules", [])),
+        "source_spatial_facts": _json(getattr(row, "source_spatial_facts", "[]"), persisted.get("source_spatial_facts", [])),
+        "creative_decisions": _json(getattr(row, "creative_decisions", "[]"), persisted.get("creative_decisions", [])),
+        "derived_constraints": _json(getattr(row, "derived_constraints", "{}"), persisted.get("derived_constraints", {})),
+        "unresolved_facts": _json(getattr(row, "unresolved_facts", "[]"), persisted.get("unresolved_facts", [])),
+        "unknowns": _json(getattr(row, "unknowns", "[]"), persisted.get("unknowns", [])),
+        "camera_axis": _json(getattr(row, "camera_axis", "{}"), persisted.get("camera_axis", {})),
+        "continuity_state": _json(getattr(row, "continuity_state", "{}"), persisted.get("continuity_state", {})),
+        "asset_authority": _json(getattr(row, "asset_authority", "{}"), persisted.get("asset_authority", {})),
         "treatment_id": getattr(row, "treatment_id", None),
         "treatment_revision": getattr(row, "treatment_revision", None),
         "treatment_fingerprint": _text(getattr(row, "treatment_authority_fingerprint", "")),
         "source_script_hash": _text(getattr(row, "source_script_ir_hash", "") or getattr(row, "source_script_hash", "")),
     })
+    return blocking_payload_from_dict(persisted)
 
 
 def blocking_payload_hash(blocking: dict[str, Any]) -> str:
@@ -277,7 +310,7 @@ def validate_scene_blocking_candidate_authority(raw: dict[str, Any], baseline: d
     """Validate a reviewed candidate while preserving immutable boundaries."""
     if not isinstance(raw, dict):
         raise ValueError("SceneBlocking candidate must be an object")
-    allowed = {"scene_id", "scene_name", "space", "spatial_model", "participants", "beat_transitions", "spatial_rules", "unknowns", "unknown_resolutions", "schema_version", "source_spatial_facts", "creative_decisions", "derived_constraints", "unresolved_facts", "camera_axis", "continuity_state", "asset_authority", "validation", "conflicts", "space_model", "zones", "anchors", "connections", "characters", "movement_paths", "beat_spatial_states", "eyelines", "prop_spatial_states", "critical_props", "interactions", "interaction_axes", "director_direction_refs", "provenance"}
+    allowed = {"scene_id", "scene_name", "space", "spatial_model", "participants", "beat_transitions", "spatial_rules", "unknowns", "unknown_resolutions", "schema_version", "source_spatial_facts", "creative_decisions", "derived_constraints", "unresolved_facts", "camera_axis", "continuity_state", "asset_authority", "validation", "conflicts", "space_model", "zones", "anchors", "connections", "characters", "movement_paths", "beat_spatial_states", "eyelines", "prop_spatial_states", "critical_props", "interactions", "interaction_axes", "director_direction_refs", "provenance", "initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash", "movement_path_projection"}
     unexpected = sorted(set(raw) - allowed)
     if unexpected:
         raise ValueError(f"candidate contains non-whitelisted fields: {', '.join(unexpected)}")
@@ -316,7 +349,7 @@ def validate_scene_blocking_candidate_authority(raw: dict[str, Any], baseline: d
         raise ValueError("unknowns must be a list")
     validate_unknown_resolution(baseline_unknowns=baseline.get("unknowns", []) if isinstance(baseline.get("unknowns"), list) else [], candidate_unknowns=unknowns, resolutions=raw.get("unknown_resolutions"))
     result = dict(baseline)
-    for key in ("scene_id", "scene_name", "space", "spatial_model", "participants", "beat_transitions", "spatial_rules", "unknowns", "schema_version", "creative_decisions", "derived_constraints", "unresolved_facts", "camera_axis", "continuity_state", "asset_authority", "validation", "space_model", "zones", "anchors", "connections", "characters", "movement_paths", "beat_spatial_states", "eyelines", "prop_spatial_states", "critical_props", "interactions", "interaction_axes", "director_direction_refs", "provenance"):
+    for key in ("scene_id", "scene_name", "space", "spatial_model", "participants", "beat_transitions", "spatial_rules", "unknowns", "schema_version", "creative_decisions", "derived_constraints", "unresolved_facts", "camera_axis", "continuity_state", "asset_authority", "validation", "space_model", "zones", "anchors", "connections", "characters", "movement_paths", "beat_spatial_states", "eyelines", "prop_spatial_states", "critical_props", "interactions", "interaction_axes", "director_direction_refs", "provenance", "initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash", "movement_path_projection"):
         if key in raw:
             result[key] = raw[key]
     result["source_spatial_facts"] = baseline_facts
@@ -343,7 +376,7 @@ def build_scene_blocking_authority_envelope(*, blocking: dict[str, Any], book_id
         "treatment": {"id": getattr(treatment, "id", None), "revision": getattr(treatment, "revision", None), "payload_hash": _text(getattr(treatment, "payload_hash", "")), "authority_envelope_fingerprint": _text(treatment_envelope.get("envelope_fingerprint"))},
         "source_lineage": {"immutable_source_raw_hash": _text(script_ir_envelope.get("source_lineage", {}).get("immutable_source_raw_hash") or script_ir_envelope.get("immutable_source_raw_hash")), "source_package_id": _text(script_ir_envelope.get("source_package_id") or script_ir_envelope.get("source_lineage", {}).get("source_package_id")), "source_version_id": _text(script_ir_envelope.get("source_version_id") or script_ir_envelope.get("source_lineage", {}).get("source_version_id")), "source_evidence_index_fingerprint": _text(script_ir_envelope.get("source_evidence_index_fingerprint") or script_ir_envelope.get("source_lineage", {}).get("source_evidence_index_fingerprint"))},
         "fact_snapshot": fact_meta,
-        "authority_classes": {"source_spatial_constraints": blocking.get("source_spatial_facts", []), "director_constraints": {"treatment_id": getattr(treatment, "id", None), "beat_transitions": blocking.get("beat_transitions", [])}, "blocking_authoring_decisions": {"participants": blocking.get("participants", []), "camera_axis": blocking.get("camera_axis", {}), "creative_decisions": blocking.get("creative_decisions", []), "spatial_model": blocking.get("space", blocking.get("spatial_model", {})), "space_model": blocking.get("space_model", blocking.get("space", {})), "zones": blocking.get("zones", []), "connections": blocking.get("connections", []), "characters": blocking.get("characters", blocking.get("participants", [])), "movement_paths": blocking.get("movement_paths", []), "beat_spatial_states": blocking.get("beat_spatial_states", []), "eyelines": blocking.get("eyelines", []), "prop_spatial_states": blocking.get("prop_spatial_states", []), "interactions": blocking.get("interactions", []), "interaction_axes": blocking.get("interaction_axes", []), "provenance": blocking.get("provenance", {})}, "derived_spatial_constraints": blocking.get("derived_constraints", {}), "unknown_unresolved": blocking.get("unknowns", [])},
+        "authority_classes": {"source_spatial_constraints": blocking.get("source_spatial_facts", []), "director_constraints": {"treatment_id": getattr(treatment, "id", None), "beat_transitions": blocking.get("beat_transitions", [])}, "blocking_authoring_decisions": {"participants": blocking.get("participants", []), "camera_axis": blocking.get("camera_axis", {}), "creative_decisions": blocking.get("creative_decisions", []), "spatial_model": blocking.get("space", blocking.get("spatial_model", {})), "space_model": blocking.get("space_model", blocking.get("space", {})), "zones": blocking.get("zones", []), "connections": blocking.get("connections", []), "characters": blocking.get("characters", blocking.get("participants", [])), "movement_paths": blocking.get("movement_paths", []), "beat_spatial_states": blocking.get("beat_spatial_states", []), "eyelines": blocking.get("eyelines", []), "prop_spatial_states": blocking.get("prop_spatial_states", []), "interactions": blocking.get("interactions", []), "interaction_axes": blocking.get("interaction_axes", []), "initial_state": blocking.get("initial_state", {}), "blocking_transitions": blocking.get("blocking_transitions", []), "compiler_version": blocking.get("compiler_version", ""), "compiled_states_hash": blocking.get("compiled_states_hash", ""), "movement_path_projection": blocking.get("movement_path_projection", []), "provenance": blocking.get("provenance", {})}, "derived_spatial_constraints": blocking.get("derived_constraints", {}), "unknown_unresolved": blocking.get("unknowns", [])},
         "asset_authority": asset_authority,
         "continuity_state": continuity_state,
         "contract": {"schema_version": CONTRACT_SCHEMA_VERSION, "fingerprint": contract_fingerprint(), "requirement_set_fingerprint": fingerprint({"blocking_fields": contract["shot_plan_blockers"]})},

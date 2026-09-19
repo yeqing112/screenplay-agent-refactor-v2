@@ -59,6 +59,21 @@
 - TURN_2：陆叔接包后带来短暂安全感，随后异常和伞骨消失撕开伪装。
 - OUT：林晚借忘拿东西留下调查，带着主动试探进入下一场。
 
+### DirectorBeatDecision（Production 语义）
+- `SC01-B01` `SETUP_RELATIONSHIP`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=林晚:HOLD_POSITION→ACTIVE_BEAT；reaction=无强制反应；origin=HUMAN_AUTHORED。
+- `SC01-B02` `SETUP_RELATIONSHIP`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=售票员:HOLD_POSITION→ACTIVE_BEAT；reaction=无强制反应；origin=HUMAN_AUTHORED。
+- `SC01-B03` `INTRODUCE_ANOMALY`；audience delta：added=['红伞出现'] confirmed=[] belief_shift=[]；performance=林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B04` `INTRODUCE_ANOMALY`；audience delta：added=['林晚拥有断伞骨'] confirmed=[] belief_shift=[]；performance=林晚:OBSERVE_REACTION→ACTIVE_BEAT, 顾沉:OBSERVE_REACTION→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B05` `RAISE_SUSPICION`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=顾沉:TEST_OTHER_CHARACTER→ACTIVE_BEAT, 林晚:TEST_OTHER_CHARACTER→ACTIVE_BEAT；reaction=顾沉:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B06` `INTRODUCE_ANOMALY`；audience delta：added=['顾沉知道伞骨'] confirmed=[] belief_shift=[]；performance=顾沉:OBSERVE_REACTION→ACTIVE_BEAT, 林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=顾沉:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B07` `SETUP_RELATIONSHIP`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=陆叔:HOLD_POSITION→ACTIVE_BEAT, 林晚:HOLD_POSITION→ACTIVE_BEAT；reaction=无强制反应；origin=HUMAN_AUTHORED。
+- `SC01-B08` `INTRODUCE_ANOMALY`；audience delta：added=['陆叔对红伞异常'] confirmed=[] belief_shift=[]；performance=陆叔:OBSERVE_REACTION→ACTIVE_BEAT, 林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=陆叔:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B09` `INTRODUCE_ANOMALY`；audience delta：added=['红伞消失'] confirmed=[] belief_shift=[]；performance=林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B10` `TRIGGER_DECISION`；audience delta：added=['断伞骨丢失'] confirmed=[] belief_shift=[]；performance=林晚:CONTROL_EXIT→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B11` `TRIGGER_DECISION`；audience delta：added=['林晚放弃登车'] confirmed=[] belief_shift=[]；performance=林晚:CONTROL_EXIT→ACTIVE_BEAT, 陆叔:CONTROL_EXIT→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B12` `SHIFT_POWER`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=陆叔:OBSERVE_REACTION→ACTIVE_BEAT, 林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=陆叔:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC01-B13` `ESCALATE_THREAT`；audience delta：added=['顾沉留下双关警告'] confirmed=[] belief_shift=[]；performance=顾沉:PRESSURE_WITHOUT_OPEN_THREAT→ACTIVE_BEAT, 林晚:PRESSURE_WITHOUT_OPEN_THREAT→ACTIVE_BEAT；reaction=顾沉:RECOGNITION；origin=HUMAN_AUTHORED。
+
 ### 关键 Beat 导演意图
 - `SC01-B03`：让“林晚看见站台红伞。”成为可表演的因果转折。；表演：反应必须先于下一步行动，保留信息进入身体的时间。；节奏：hold_then_turn
 - `SC01-B04`：让“手提包掉落露出断伞骨。”成为可表演的因果转折。；表演：反应必须先于下一步行动，保留信息进入身体的时间。；节奏：hold_then_turn
@@ -133,6 +148,17 @@
 - GASLIGHTING：D029后林晚的动作停顿，开始重新检查自己的记忆。
 - RECONFIRM：划痕、硬物、纤维让林晚恢复确定性，陆叔逐步失去伪装。
 - OUT：林晚后退至茶几，面对明确威胁和飘落纤维。
+
+### DirectorBeatDecision（Production 语义）
+- `SC02-B01` `SETUP_RELATIONSHIP`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=陆叔:HOLD_POSITION→ACTIVE_BEAT；reaction=无强制反应；origin=HUMAN_AUTHORED。
+- `SC02-B02` `RAISE_SUSPICION`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=林晚:TEST_OTHER_CHARACTER→ACTIVE_BEAT, 陆叔:TEST_OTHER_CHARACTER→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC02-B03` `INTRODUCE_ANOMALY`；audience delta：added=['陆叔开始说谎'] confirmed=[] belief_shift=[]；performance=陆叔:OBSERVE_REACTION→ACTIVE_BEAT, 林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=陆叔:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC02-B04` `SHIFT_POWER`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC02-B05` `INTRODUCE_ANOMALY`；audience delta：added=['口袋硬物'] confirmed=[] belief_shift=[]；performance=陆叔:OBSERVE_REACTION→ACTIVE_BEAT, 林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=陆叔:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC02-B06` `INTRODUCE_ANOMALY`；audience delta：added=['暗红纤维碎屑'] confirmed=[] belief_shift=[]；performance=林晚:OBSERVE_REACTION→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC02-B07` `ESCALATE_THREAT`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=陆叔:PRESSURE_WITHOUT_OPEN_THREAT→ACTIVE_BEAT, 林晚:PRESSURE_WITHOUT_OPEN_THREAT→ACTIVE_BEAT；reaction=陆叔:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC02-B08` `SETUP_RELATIONSHIP`；audience delta：added=['碎屑与伞骨同源'] confirmed=[] belief_shift=[]；performance=林晚:OBSERVE_REACTION→ACTIVE_BEAT, 陆叔:OBSERVE_REACTION→ACTIVE_BEAT；reaction=林晚:RECOGNITION；origin=HUMAN_AUTHORED。
+- `SC02-B09` `HOOK_NEXT_SCENE`；audience delta：added=[] confirmed=[] belief_shift=[]；performance=陆叔:WITHHOLD_RESPONSE→ACTIVE_BEAT, 林晚:WITHHOLD_RESPONSE→ACTIVE_BEAT；reaction=陆叔:RECOGNITION；origin=HUMAN_AUTHORED。
 
 ### 关键 Beat 导演意图
 - `SC02-B02`：让“林晚试探早到车站。”成为可表演的因果转折。；表演：反应必须先于下一步行动，保留信息进入身体的时间。；节奏：measured
