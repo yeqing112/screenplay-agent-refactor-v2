@@ -72,3 +72,15 @@
 - 锁定 Visual Asset 参考图（人物六视图 / 场景四视图）
 - 在 ShotPlan 层引入受控 Shot Authoring Provider（可选增强）
 - 把 990401 作为正式 production sample 注册进 sample registry
+## 11. 提交与分支
+
+- commit：7dfe613
+- branch：codex/visual-authoring-provider-canary-reconcile
+- Migration gate：MIGRATION_CHAIN_HARDENING_READY（fresh PASS / legacy PASS / drift PASS）
+- 后端全量边界：相关 32 测试通过；本轮不改后端逻辑，未引入新回归风险
+
+## 12. 下一步建议
+
+- 将 990401 注册为正式 production sample，纳入 `npm run e2e:real-samples`
+- 前端真浏览器验证剧本阅读模式与整集分镜总览
+
