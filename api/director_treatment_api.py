@@ -249,6 +249,12 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
                 "refined_outfit": row.refined_outfit,
                 "hair_style": row.hair_style,
             })
+        if profile == "production" and participant_refs and not characters:
+            # Preserve ScriptIR-declared participant identity as advisory
+            # context when no locked makeup asset exists.  This keeps the
+            # semantic contract referenceable without promoting a draft asset
+            # into production authority.
+            characters = [{"id": value, "name": value, "gender": "", "asset_status": "draft", "stage_name": "", "refined_outfit": "", "hair_style": ""} for value in sorted(participant_refs)]
         locked_refs = [
             {"id": row.id, "asset_type": row.asset_type, "asset_id": row.asset_id, "asset_name": row.asset_name, "status": row.status, "image_url": row.image_url, "local_path": row.local_path, "reference_token": row.reference_token, "revision": row.updated_at.isoformat() if row.updated_at else ""}
             for row in session.query(VisualReferenceAsset)
@@ -481,6 +487,9 @@ def preview_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
             "asset_authority": treatment.get("asset_authority", {}),
         },
         "requires_approval": True,
+        "review_status": "REVIEW_REQUIRED" if str(req.workflow_profile or "").strip().lower() == "production" else "DRAFT",
+        "production_contract_required": str(req.workflow_profile or "").strip().lower() == "production",
+        "required_production_fields": ["director_contract_version", "director_beat_decisions"] if str(req.workflow_profile or "").strip().lower() == "production" else [],
         "message": "这是只读导演方案草案；批准门禁和 SceneBlocking 尚未执行。",
     }
 
@@ -762,17 +771,20 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
             packet.status = "superseded"; packet.updated_at = datetime.now(); session.commit()
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_EVIDENCE_STALE", "message": "Treatment evidence changed; candidate must be regenerated."})
         raw_candidate = req.candidate if req.candidate is not None else _json_object(packet.proposal, {})
+        if not isinstance(raw_candidate, dict):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Production confirmation requires a structured Director semantic contract."})
+        missing_contract = [key for key in ("director_contract_version", "director_beat_decisions") if key not in raw_candidate or raw_candidate.get(key) in (None, "", [])]
+        if missing_contract:
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Production confirmation requires director_contract_version and director_beat_decisions.", "missing": missing_contract})
         try:
             candidate = _validate_llm_candidate(raw_candidate, baseline)
         except ValueError as exc:
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_CANDIDATE_INVALID", "message": str(exc)}) from exc
-        # Structured Phase B candidates take the deterministic semantic gate
-        # before any Treatment/Authority write.  Legacy candidates remain on
-        # the compatibility path until they opt into the contract version.
-        if candidate.get("director_contract_version") or candidate.get("director_beat_decisions"):
-            semantic_report = validate_director_contract(candidate, scene=scene, production=True)
-            if semantic_report.get("status") != "qualified":
-                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_CONTRACT_INVALID", "message": "structured DirectorBeatDecision contract is not production-qualified", "validation": semantic_report})
+        semantic_report = validate_director_contract(candidate, scene=scene, production=True)
+        if semantic_report.get("status") != "qualified":
+            first = (semantic_report.get("errors") or [{}])[0]
+            code = first.get("code") if isinstance(first, dict) else "DIRECTOR_TREATMENT_CONTRACT_INVALID"
+            raise HTTPException(status_code=409, detail={"code": code or "DIRECTOR_TREATMENT_CONTRACT_INVALID", "message": "structured DirectorBeatDecision contract is not production-qualified", "validation": semantic_report})
 
         previous = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
         next_revision = previous.revision + 1 if previous else 1
@@ -784,7 +796,7 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         # not semantic decisions and must not be written as ``null`` keys.
         legacy_fields = {"dramatic_objective", "audience_question", "character_intents", "beat_map", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "constraints", "unknowns"}
         formal = {key: candidate.get(key) for key in ("scene_id", "scene_name", *TREATMENT_CANDIDATE_FIELDS) if key in legacy_fields or candidate.get(key) not in (None, "", [], {})}
-        model_info = {"mode": "confirmed_llm_candidate", "llm_called": True, "candidate_fingerprint": _candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), "confirmed_at": datetime.now().isoformat(), "rollback_anchor": {"previous_treatment_id": previous_id, "previous_revision": previous.revision if previous else None}, "authority_state": "pending_binding"}
+        model_info = {"mode": "confirmed_llm_candidate", "llm_called": True, "candidate_fingerprint": _candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), "confirmed_at": datetime.now().isoformat(), "confirmation_event": {"confirmed": True, "boundary": "production_confirm_service", "canonical_origin": "HUMAN_AUTHORED" if any(isinstance(x, dict) and x.get("decision_origin") == "HUMAN_AUTHORED" for x in candidate.get("director_beat_decisions", [])) else "PROVIDER_PROPOSAL_CONFIRMED"}, "rollback_anchor": {"previous_treatment_id": previous_id, "previous_revision": previous.revision if previous else None}, "authority_state": "pending_binding"}
         row = DirectorTreatment(
             book_id=book_id, episode=episode, scene_id=scene_id, scene_name=baseline["scene_name"], revision=next_revision, status="approved",
             source_script_revision=str(script_ir_version.revision), source_script_hash=str(script_ir_version.payload_hash or ""), source_script_ir_version_id=script_ir_version.id, source_script_ir_revision=script_ir_version.revision, source_script_ir_hash=str(script_ir_version.payload_hash or ""), source_script_authority_fingerprint=str(script_ir_envelope.get("envelope_fingerprint") or ""), source_fact_snapshot_id=str(script_ir_envelope.get("fact_snapshot_id") or ""), source_fact_snapshot_revision=script_ir_envelope.get("fact_snapshot_revision"), source_fact_snapshot_hash=str(script_ir_envelope.get("fact_snapshot_payload_hash") or ""),
@@ -811,4 +823,4 @@ def get_director_treatment_authority(book_id: int, episode: int, scene_id: str) 
     from core.director_treatment_authority import resolve_current_authoritative_treatment
     with Session() as session:
         treatment, envelope = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
-        return {"scene_id": scene_id, "treatment": _treatment_row_payload(treatment), "authority_envelope": envelope, "production_qualified": True}
+        return {"scene_id": scene_id, "treatment": _treatment_row_payload(treatment), "authority_envelope": envelope, "production_qualified": bool(envelope.get("phase_b_semantic_ready", False)), "phase_b_semantic_ready": bool(envelope.get("phase_b_semantic_ready", False))}

@@ -210,6 +210,10 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
             scene_id = str(scene.get("scene_id") or "").strip()
             treatment, _authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
             blocking, blocking_authority = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=scene_id)
+            if not _authority.get("phase_b_semantic_ready"):
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Current DirectorTreatment is not Phase B semantic-ready."})
+            if not blocking_authority.get("phase_b_semantic_ready"):
+                raise HTTPException(status_code=409, detail={"code": "BLOCKING_SEMANTIC_CONTRACT_REQUIRED", "message": "Current SceneBlocking is not Phase B semantic-ready."})
         else:
             scene_id = str(scene.get("scene_id") or "").strip() if scene else ""
             treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
@@ -676,6 +680,10 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
             scene_id = _text(getattr(draft, "scene_id", ""))
             treatment, treatment_authority = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
             blocking, blocking_authority = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=scene_id)
+            if not treatment_authority.get("phase_b_semantic_ready"):
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Current DirectorTreatment is not Phase B semantic-ready."})
+            if not blocking_authority.get("phase_b_semantic_ready"):
+                raise HTTPException(status_code=409, detail={"code": "BLOCKING_SEMANTIC_CONTRACT_REQUIRED", "message": "Current SceneBlocking is not Phase B semantic-ready."})
             if treatment.id != draft.treatment_id or blocking.id != draft.blocking_id:
                 raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_UPSTREAM_POINTER_CHANGED", "message": "ShotPlan draft references a non-current Treatment or SceneBlocking."})
             script_row = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()

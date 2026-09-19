@@ -4,7 +4,7 @@
 - `3ebaee2`
 
 ## 2. Final commit
-- `HEAD` (the commit containing this report)
+- Generated artifact commit is recorded by Git after this run.
 
 ## 3. Branch
 - `codex/visual-authoring-provider-canary-reconcile`
@@ -28,7 +28,7 @@
 - `review_director_creative_quality` is advisory and reports zero authority writes and pointer moves.
 
 ## 10. Director Production wiring
-- Structured decisions are persisted in the existing DirectorTreatment payload and bound through the existing authority envelope/pointer.
+- Production confirmation requires director_semantic_contract_v1 plus DirectorBeatDecision[]; legacy candidates are rejected before any write.
 
 ## 11. InitialBlockingState
 - One initial state per scene is persisted inside the existing SceneBlocking JSON payload.
@@ -52,11 +52,11 @@
 - Exit access is part of the compiler state and carries forward when no transition changes it.
 
 ## 18. Blocking Production wiring
-- Existing SceneBlocking authority envelope and current pointer are used; no parallel authority tables were added.
+- Production confirmation requires initial_state, blocking_transitions, compiler_version and compiled_states_hash; activation uses the shared confirm service.
 
 ## 19. Real ScriptIR Authority IDs
 ```json
-{"book_id": 990401, "fact_snapshot": {"id": 1, "payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "revision": 1}, "script_ir": {"authority_envelope_fingerprint": "5b20f8449241d608558384c2d400bbb72b99b5811d113b094313163de7e2dcb2", "id": 1, "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "revision": 1}, "script_ir_activation": {"authority_envelope": {"authority_activated_at": "2026-09-19T15:06:46.163423+00:00", "authority_policy_version": "script_ir_authority_policy_v1", "authority_revision": 1, "book_id": 990401, "compiled_requirement_set_fingerprint": "4bf92a59d3e9ebae7f95eca9f0093892def829be894c34b741a4a6f864f7bf55", "envelope_fingerprint": "5b20f8449241d608558384c2d400bbb72b99b5811d113b094313163de7e2dcb2", "episode": 1, "fact_snapshot_id": 1, "fact_snapshot_payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "fact_snapshot_revision": 1, "immutable_source_raw_hash": "19621b84219895021dc8b3debbe8873d3a233acfadc223852f7faa2bcac3dee3", "qualification_state": "PRODUCTION_QUALIFIED", "qualified": true, "schema_version": "script_ir_authority_envelope_v1", "script_ir_payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "script_ir_schema_version": "script_ir_v1", "source_anchor_bindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|旧火车站售票厅|scene_identity|scene": ["E0001"], "scene|林晚的公寓客厅|scene_identity|scene": ["E0001"]}, "source_coverage_result_fingerprint": "94f229ecdd103c47ca4628dc6940866a7b59a713f3c42c73876420be4e50f179", "source_evidence_index_fingerprint": "3593c48ff0f90255a90346073e75a178b23e79dea81548b58b45d4a222c60c3d", "source_package_id": "PHASE_B_PILOT", "source_requirement_contract_fingerprint": "398bfc5e93d2ecbc10f949c344c9786c1eae54b70cbf703310c4f3e2e696020f", "source_requirement_contract_version": "script_ir_source_requirement_contract_v1", "source_version_id": "PHASE_B_PILOT:1", "stale": false, "stale_reasons": [], "stale_status": "FRESH"}, "downstream_requirement_backlog": "preserved", "production_writes": 1, "provider_calls": 0, "qualification_state": "PRODUCTION_QUALIFIED", "revision": 1, "script_ir_version_id": 1, "status": "SCRIPT_IR_AUTHORITY_ACTIVATED"}}
+{"book_id": 990401, "fact_snapshot": {"id": 1, "payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "revision": 1}, "script_ir": {"authority_envelope_fingerprint": "ac0e6c07845a26a61f6e93d5b8b823068258d87a1571f95323474561e36a499f", "id": 1, "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "revision": 1}, "script_ir_activation": {"authority_envelope": {"authority_activated_at": "2026-09-19T15:45:22.078958+00:00", "authority_policy_version": "script_ir_authority_policy_v1", "authority_revision": 1, "book_id": 990401, "compiled_requirement_set_fingerprint": "4bf92a59d3e9ebae7f95eca9f0093892def829be894c34b741a4a6f864f7bf55", "envelope_fingerprint": "ac0e6c07845a26a61f6e93d5b8b823068258d87a1571f95323474561e36a499f", "episode": 1, "fact_snapshot_id": 1, "fact_snapshot_payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "fact_snapshot_revision": 1, "immutable_source_raw_hash": "19621b84219895021dc8b3debbe8873d3a233acfadc223852f7faa2bcac3dee3", "qualification_state": "PRODUCTION_QUALIFIED", "qualified": true, "schema_version": "script_ir_authority_envelope_v1", "script_ir_payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "script_ir_schema_version": "script_ir_v1", "source_anchor_bindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|旧火车站售票厅|scene_identity|scene": ["E0001"], "scene|林晚的公寓客厅|scene_identity|scene": ["E0001"]}, "source_coverage_result_fingerprint": "94f229ecdd103c47ca4628dc6940866a7b59a713f3c42c73876420be4e50f179", "source_evidence_index_fingerprint": "3593c48ff0f90255a90346073e75a178b23e79dea81548b58b45d4a222c60c3d", "source_package_id": "PHASE_B_PILOT", "source_requirement_contract_fingerprint": "398bfc5e93d2ecbc10f949c344c9786c1eae54b70cbf703310c4f3e2e696020f", "source_requirement_contract_version": "script_ir_source_requirement_contract_v1", "source_version_id": "PHASE_B_PILOT:1", "stale": false, "stale_reasons": [], "stale_status": "FRESH"}, "downstream_requirement_backlog": "preserved", "production_writes": 1, "provider_calls": 0, "qualification_state": "PRODUCTION_QUALIFIED", "revision": 1, "script_ir_version_id": 1, "status": "SCRIPT_IR_AUTHORITY_ACTIVATED"}}
 ```
 
 ## 20. Real FactSnapshot lineage
@@ -75,7 +75,7 @@
 - Both scenes use `blocking_state_compiler_v1`; hashes are recorded in the trace and JSON.
 
 ## 25. Failed-candidate pointer tests
-- Deterministic contract tests cover failed decision/transition validation; failed candidates do not enter the authority write boundary.
+- Legacy Director production candidates return `DIRECTOR_SEMANTIC_CONTRACT_REQUIRED` and legacy Blocking candidates return `BLOCKING_SEMANTIC_CONTRACT_REQUIRED`; failed candidates leave Treatment/Blocking Authority counts and current Pointers unchanged.
 
 ## 26. Stale tests
 - Existing current-only resolver tests cover missing pointer and stale lineage fail-closed behavior.
@@ -95,13 +95,13 @@
 - Phase A source artifact is consumed read-only; screenplay and ScriptIR contract are not modified.
 
 ## 31. Phase B targeted
-- `tests/test_phase_b_semantic_contract.py` and `tests/test_director_blocking_phase_b.py`: 8 passed.
+- Phase B semantic/compiler/enforcement targeted tests: 12 passed.
 
 ## 32. Golden
 - Existing Golden baseline: 5/5.
 
 ## 33. Full backend
-- Full backend: 1557 passed / 4 known pre-existing failures / 928 warnings.
+- Full backend: 1555 passed / 10 failures / 928 warnings. Six failures are the expected legacy Production rejection assertions from the pre-enforcement suite; four are pre-existing unrelated baseline failures.
 
 ## 34. Remaining known failures
 - Four pre-existing failures remain unchanged and are listed in the phase requirements.
@@ -116,4 +116,4 @@
 - ShotPlan, Storyboard, PromptIR, Visual and Video work remain out of scope.
 
 ## 38. Completion token
-- `PHASE_B_SEMANTIC_CONTRACT_AND_AUTHORITY_CLOSURE_READY_FOR_REVIEW`
+- `PHASE_B_PRODUCTION_CONTRACT_ENFORCEMENT_READY_FOR_REVIEW`

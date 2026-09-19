@@ -170,6 +170,7 @@ def build_treatment_authority_envelope(*, treatment: dict[str, Any], evidence: d
         "source_lineage": {"source_package_id": _text(script_ir_envelope.get("source_package_id")), "source_version_id": _text(script_ir_envelope.get("source_version_id")), "immutable_source_raw_hash": _text(script_ir_envelope.get("immutable_source_raw_hash")), "source_evidence_index_fingerprint": _text(script_ir_envelope.get("source_evidence_index_fingerprint"))},
         "fact_snapshot": {"id": script_ir_envelope.get("fact_snapshot_id"), "revision": script_ir_envelope.get("fact_snapshot_revision"), "payload_hash": _text(script_ir_envelope.get("fact_snapshot_payload_hash"))},
         "contract": {"schema_version": CONTRACT_SCHEMA_VERSION, "fingerprint": contract_fingerprint(), "requirement_set_fingerprint": fingerprint({"scene_id": scene_id, "required": [item["field"] for item in contract["fields"] if item.get("required")]})},
+        "semantic_contract": {"version": _text(treatment.get("director_contract_version")), "decision_count": len(treatment.get("director_beat_decisions") or []) if isinstance(treatment.get("director_beat_decisions"), list) else 0},
         "asset_authority": assets,
         "qualification_state": qualification_state,
         "stale_status": "FRESH",
@@ -347,6 +348,10 @@ def resolve_current_authoritative_treatment(session: Any, *, book_id: int, episo
         fact = session.query(FactSnapshot).filter_by(id=int(fact_meta["id"]), book_id=book_id, episode=episode).first()
         if not fact or str(fact.revision) != str(fact_meta.get("revision")) or str(fact.payload_hash) != str(fact_meta.get("payload_hash")) or str(fact.status).lower() != "confirmed":
             _stale_raise("Bound FactSnapshot has changed.", ["FACT_SNAPSHOT_CHANGED"])
+    semantic = envelope.get("semantic_contract") if isinstance(envelope.get("semantic_contract"), dict) else {}
+    decisions = _json(getattr(treatment, "director_decisions", "{}"), {})
+    from core.director_semantics import DIRECTOR_CONTRACT_VERSION
+    envelope["phase_b_semantic_ready"] = bool(_text(semantic.get("version")) == DIRECTOR_CONTRACT_VERSION and isinstance(decisions.get("director_beat_decisions"), list))
     return treatment, envelope
 
 

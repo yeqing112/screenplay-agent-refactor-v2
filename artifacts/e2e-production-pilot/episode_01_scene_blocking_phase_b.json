@@ -1154,7 +1154,7 @@
         "beat_spatial_states": "DERIVED_PROJECTION"
       },
       "source_script_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
-      "treatment_fingerprint": "a7459b717e89b5fa8bb5cbf3f65af8258aae1bd20b29782b172b1020fce51c90",
+      "treatment_fingerprint": "25fd3fea476c325343d1e955281a63ee243fe38077a893a14fa1dc13d0f965ea",
       "provider_not_called": true,
       "model_info": {
         "mode": "deterministic_phase_b_canonical",
@@ -1865,7 +1865,7 @@
         "critical_beat_coverage": 10
       },
       "status": "ready_for_review",
-      "blocking_fingerprint": "1689791e39d0ee54dc6d2f7b7e21a7518e0fa6c18a4933193f8a1b7c5133321b",
+      "blocking_fingerprint": "6d8a1823b2e9a257dc7a40621d442870e61a3c0b5c8983f4c3b5e4d77051d89c",
       "compiler_version": "blocking_state_compiler_v1",
       "zone_ids": [
         "ST_CENTER",
@@ -3740,7 +3740,7 @@
         "beat_spatial_states": "DERIVED_PROJECTION"
       },
       "source_script_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
-      "treatment_fingerprint": "69d6aea14486baf632ee5a7446dbef8abcab6d9c4111c86df02147d2ff6dac05",
+      "treatment_fingerprint": "1868f026d9337420eff355bae57c10c6113f1e2d440233fa5eeccd58aa79dc8f",
       "provider_not_called": true,
       "model_info": {
         "mode": "deterministic_phase_b_canonical",
@@ -4221,7 +4221,7 @@
         "critical_beat_coverage": 8
       },
       "status": "ready_for_review",
-      "blocking_fingerprint": "0a11d015456ccbce150fed7830107402d5f2d4f0279b76af06193876300d55f0",
+      "blocking_fingerprint": "9fc78aeb8d4634fc17ce5550e3b3c9cece46c2944dc0df1fc9acf934d711af4c",
       "compiler_version": "blocking_state_compiler_v1",
       "zone_ids": [
         "APT_CENTER",
@@ -4981,25 +4981,25 @@
     "source": "database_resolver",
     "scenes": [
       {
-        "row_id": 1,
+        "row_id": 2,
         "revision": 1,
-        "payload_hash": "1c2a61c4a1b6540c9a54870293d7e42ff6be43a415432cc3db5bd35388cba21c",
+        "payload_hash": "8187e52b235de2d01a0960880dab78288b6f6eda593e37a36e7e97f03cd4481e",
         "authority_id": 1,
-        "authority_fingerprint": "ae6b18c0e5a882f38c4327d90ae7c7b6cc8ccd79af38d043b5a36ce0739329fe",
+        "authority_fingerprint": "bece4e7a77128af4aff77f5630845551248cf2081a16d9f8f2712cff1f085ecf",
         "pointer_id": 1,
-        "pointer_fingerprint": "ae6b18c0e5a882f38c4327d90ae7c7b6cc8ccd79af38d043b5a36ce0739329fe",
+        "pointer_fingerprint": "bece4e7a77128af4aff77f5630845551248cf2081a16d9f8f2712cff1f085ecf",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
       },
       {
-        "row_id": 2,
+        "row_id": 4,
         "revision": 1,
-        "payload_hash": "df0330978faf15f743d684fbc7c0c5a8a5ad204cdea3269d31f3dba553480b1e",
+        "payload_hash": "d8ed7e555c58c1f44a0995d1f3ca9dade3d0c79756912d3a03bed66dd7016594",
         "authority_id": 2,
-        "authority_fingerprint": "091ac4d2fc65c7849ba0ba32435a990dd7c12893282211d643ec9ac159921046",
+        "authority_fingerprint": "280a75bfd7aafe1afa62a209bebb8ff6abb3f81104192f5ebdcc209591e2c1dc",
         "pointer_id": 2,
-        "pointer_fingerprint": "091ac4d2fc65c7849ba0ba32435a990dd7c12893282211d643ec9ac159921046",
+        "pointer_fingerprint": "280a75bfd7aafe1afa62a209bebb8ff6abb3f81104192f5ebdcc209591e2c1dc",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"

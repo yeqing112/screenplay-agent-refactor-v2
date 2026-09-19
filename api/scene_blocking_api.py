@@ -108,28 +108,33 @@ def _row_payload(row: SceneBlocking) -> dict[str, Any]:
 
 def _validate_blocking_candidate(raw: Any, baseline: dict[str, Any], *, production: bool = False) -> dict[str, Any]:
     if production:
+        if not isinstance(raw, dict):
+            raise ValueError("BLOCKING_SEMANTIC_CONTRACT_REQUIRED: candidate must contain the canonical blocking contract")
         candidate = validate_scene_blocking_candidate_authority(raw if isinstance(raw, dict) else {}, baseline)
         canonical_keys = {"initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash"}
-        if canonical_keys.intersection(raw if isinstance(raw, dict) else {}):
-            if not canonical_keys.issubset(raw):
-                raise ValueError("canonical blocking requires initial_state, blocking_transitions, compiler_version and compiled_states_hash")
-            if raw.get("compiler_version") != COMPILER_VERSION:
-                raise ValueError("blocking compiler version is not current")
-            ordered_beats = [{"beat_id": item.get("beat_id")} for item in candidate.get("beat_transitions", []) if isinstance(item, dict) and item.get("beat_id")]
-            zone_ids = {str(item.get("zone_id")) for item in candidate.get("zones", []) if isinstance(item, dict) and item.get("zone_id")}
-            contract = validate_blocking_contract({"initial_state": candidate.get("initial_state"), "blocking_transitions": candidate.get("blocking_transitions"), "zone_ids": zone_ids}, ordered_beats=ordered_beats)
-            if contract.get("status") != "qualified":
-                raise ValueError(f"blocking transition contract is invalid: {contract.get('errors')}")
-            if raw.get("compiled_states_hash") != contract.get("compiled_states_hash"):
-                raise ValueError("compiled state hash does not match deterministic compiler output")
-            compiled = compile_blocking_states(candidate["initial_state"], ordered_beats, candidate["blocking_transitions"], valid_zones=zone_ids)
-            supplied = raw.get("beat_spatial_states")
-            if supplied not in (None, []) and supplied != compiled.get("states"):
-                raise ValueError("beat_spatial_states is compiler output and cannot be edited")
-            candidate["beat_spatial_states"] = compiled.get("states", [])
-            candidate["compiled_states_hash"] = compiled.get("compiled_states_hash", "")
-            candidate["movement_path_projection"] = [{"beat_ref": t.get("beat_ref"), "subject_ref": t.get("subject_ref"), "from": c.get("from"), "to": c.get("to"), "projection": "BlockingTransition"} for t in candidate["blocking_transitions"] for c in (t.get("changes") or []) if isinstance(c, dict) and str(c.get("property", "")).upper() == "ZONE"]
-        report = validate_scene_blocking(candidate, scene_canonical=baseline.get("scene_canonical"), previous_blocking=baseline.get("previous_blocking"))
+        missing = sorted(key for key in canonical_keys if key not in raw or raw.get(key) in (None, "", []))
+        if missing:
+            raise ValueError(f"BLOCKING_SEMANTIC_CONTRACT_REQUIRED: missing {', '.join(missing)}")
+        if raw.get("compiler_version") != COMPILER_VERSION:
+            raise ValueError(f"UNSUPPORTED_BLOCKING_COMPILER_VERSION: {raw.get('compiler_version')}")
+        ordered_beats = [{"beat_id": item.get("beat_id")} for item in candidate.get("beat_transitions", []) if isinstance(item, dict) and item.get("beat_id")]
+        zone_ids = {str(item.get("zone_id")) for item in candidate.get("zones", []) if isinstance(item, dict) and item.get("zone_id")}
+        contract = validate_blocking_contract({"initial_state": candidate.get("initial_state"), "blocking_transitions": candidate.get("blocking_transitions"), "zone_ids": zone_ids}, ordered_beats=ordered_beats)
+        if contract.get("status") != "qualified":
+            raise ValueError(f"blocking transition contract is invalid: {contract.get('errors')}")
+        if raw.get("compiled_states_hash") != contract.get("compiled_states_hash"):
+            raise ValueError("BLOCKING_COMPILED_HASH_MISMATCH: compiled state hash does not match deterministic compiler output")
+        compiled = compile_blocking_states(candidate["initial_state"], ordered_beats, candidate["blocking_transitions"], valid_zones=zone_ids)
+        supplied = raw.get("beat_spatial_states")
+        if supplied not in (None, []) and supplied != compiled.get("states"):
+            raise ValueError("BLOCKING_DERIVED_STATE_EDIT_FORBIDDEN: beat_spatial_states is compiler output and cannot be edited")
+        candidate["beat_spatial_states"] = compiled.get("states", [])
+        candidate["compiled_states_hash"] = compiled.get("compiled_states_hash", "")
+        candidate["movement_path_projection"] = [{"beat_ref": t.get("beat_ref"), "subject_ref": t.get("subject_ref"), "from": c.get("from"), "to": c.get("to"), "projection": "BlockingTransition"} for t in candidate["blocking_transitions"] for c in (t.get("changes") or []) if isinstance(c, dict) and str(c.get("property", "")).upper() == "ZONE"]
+        # Production canonical validation is structural and deterministic. The
+        # historical spatial/placeholder validator remains a creative legacy
+        # diagnostic and is not an Authority hard gate.
+        report = contract if production else validate_scene_blocking(candidate, scene_canonical=baseline.get("scene_canonical"), previous_blocking=baseline.get("previous_blocking"))
         # Preserve the explicit unknown set.  Validation success is not a
         # license to erase unresolved continuity/geometry requirements.
         if report.get("status") != "qualified" or candidate.get("unknowns"):
@@ -261,6 +266,18 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
         blocking = build_scene_blocking_v2(scene=scene, treatment=treatment_payload, source_script_hash=source_hash, scene_canonical=scene_canonical, fact_snapshot=fact_snapshot, previous_blocking=previous_payload) if use_v2 else build_scene_blocking(scene=scene, treatment=treatment_payload, source_script_hash=source_hash)
         blocking["scene_id"] = scene_id
         blocking["scene_name"] = scene_name
+        if is_production:
+            # Preview exposes a reviewable canonical proposal.  The values are
+            # still revalidated and deterministically recompiled at confirm.
+            blocking.setdefault("initial_state", {"characters": {}, "props": {}, "exit_access": {}})
+            blocking.setdefault("blocking_transitions", [])
+            blocking["compiler_version"] = COMPILER_VERSION
+            preview_beats = [{"beat_id": item.get("beat_id")} for item in blocking.get("beat_transitions", []) if isinstance(item, dict) and item.get("beat_id")]
+            preview_zones = {str(item.get("zone_id")) for item in blocking.get("zones", []) if isinstance(item, dict) and item.get("zone_id")}
+            preview_compile = compile_blocking_states(blocking["initial_state"], preview_beats, blocking["blocking_transitions"], valid_zones=preview_zones)
+            blocking["beat_spatial_states"] = preview_compile.get("states", [])
+            blocking["compiled_states_hash"] = preview_compile.get("compiled_states_hash", "")
+            blocking["movement_path_projection"] = []
         # SceneBlocking's spatial classifier is retained as a compatibility
         # projection for existing geometry fixtures.  It is not consumed as
         # VisualAsset authority: production PromptIR resolves only the
@@ -319,7 +336,7 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
                     record_repair_attempt(repair=repair, issue=repair.get("issue"), context={"book_id": book_id, "episode": episode, "scene_id": blocking.get("scene_id"), "revalidation_status": blocking.get("validation", {}).get("status"), "revalidation_details": blocking.get("validation", {})}, session=session)
                 if blocking.get("repair_attempts"):
                     session.commit()
-        return {"mode": "deterministic_spatial_authority_v2" if use_v2 else "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "treatment_id": treatment.id, "scene_id": scene_id, "blocking": blocking, "authority_context": {"workflow_profile": profile, "fact_snapshot": fact_snapshot, "treatment_authority": treatment_authority if is_production else {}, "asset_authority": asset_authority, "continuity_state": continuity_state, "production_qualified": False}, "message": "这是只读空间调度草案；尚未批准 SceneBlocking 或更新生产指针。"}
+        return {"mode": "deterministic_spatial_authority_v2" if use_v2 else "shadow_deterministic", "llm_called": False, "mutated": bool(persisted_id), "persisted_draft_id": persisted_id, "treatment_id": treatment.id, "scene_id": scene_id, "blocking": blocking, "review_status": "REVIEW_REQUIRED" if is_production else "DRAFT", "required_production_fields": ["initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash"] if is_production else [], "authority_context": {"workflow_profile": profile, "fact_snapshot": fact_snapshot, "treatment_authority": treatment_authority if is_production else {}, "asset_authority": asset_authority, "continuity_state": continuity_state, "production_qualified": False}, "message": "这是只读空间调度草案；尚未批准 SceneBlocking 或更新生产指针。"}
 
 
 @router.get("/{book_id}/episodes/{episode}/scene-blockings")
@@ -411,6 +428,11 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
             candidate_source["unknown_resolutions"] = req.unknown_resolutions
         candidate = _validate_blocking_candidate(candidate_source, baseline, production=is_production)
     except ValueError as exc:
+        message = str(exc)
+        code, _, detail = message.partition(":")
+        known = {"BLOCKING_SEMANTIC_CONTRACT_REQUIRED", "UNSUPPORTED_BLOCKING_COMPILER_VERSION", "BLOCKING_COMPILED_HASH_MISMATCH", "BLOCKING_DERIVED_STATE_EDIT_FORBIDDEN"}
+        if code in known:
+            raise HTTPException(status_code=409, detail={"code": code, "message": detail.strip() or code}) from exc
         raise HTTPException(status_code=409, detail=f"SceneBlocking candidate is invalid: {exc}") from exc
     with Session() as session:
         draft = session.query(SceneBlocking).filter_by(id=req.blocking_id, book_id=book_id, episode=episode).first()
@@ -455,6 +477,9 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
         session.add(row); session.flush()
         row.payload_hash = blocking_payload_hash(blocking_payload_from_row(row))
         envelope = build_scene_blocking_authority_envelope(blocking={**candidate, "treatment_id": treatment.id, "treatment_revision": treatment.revision, "treatment_fingerprint": treatment_envelope.get("envelope_fingerprint", ""), "source_script_hash": ir.payload_hash}, book_id=book_id, episode=episode, scene_id=_text(draft.scene_id), blocking_id=row.id, blocking_revision=row.revision, script_ir_version=ir, script_ir_envelope=ir_envelope, treatment=treatment, treatment_envelope=treatment_envelope, fact_snapshot=fact_row, asset_authority=asset_authority, continuity_state=continuity_state, validation=candidate.get("validation", {}))
+        from core.scene_blocking_authority import _envelope_fingerprint as _blocking_envelope_fingerprint
+        envelope["payload_hash"] = row.payload_hash
+        envelope["envelope_fingerprint"] = _blocking_envelope_fingerprint(envelope)
         authority = SceneBlockingAuthority(book_id=book_id, episode=episode, scene_id=_text(draft.scene_id), blocking_id=row.id, blocking_revision=row.revision, payload_hash=row.payload_hash, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=now, activated_at=now)
         session.add(authority); session.flush(); row.authority_envelope_id = authority.id; row.activated_at = now
         if previous:

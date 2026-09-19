@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import HTTPException
+from core.blocking_state_compiler import COMPILER_VERSION
 
 
 SCHEMA_VERSION = "scene_blocking_authority_envelope_v1"
@@ -380,6 +381,7 @@ def build_scene_blocking_authority_envelope(*, blocking: dict[str, Any], book_id
         "asset_authority": asset_authority,
         "continuity_state": continuity_state,
         "contract": {"schema_version": CONTRACT_SCHEMA_VERSION, "fingerprint": contract_fingerprint(), "requirement_set_fingerprint": fingerprint({"blocking_fields": contract["shot_plan_blockers"]})},
+        "semantic_contract": {"compiler_version": _text(blocking.get("compiler_version")), "compiled_states_hash": _text(blocking.get("compiled_states_hash")), "canonical_fields": ["initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash"]},
         "validation": {"report": validation, "fingerprint": validation_fingerprint(validation)},
         "qualification_state": qualification_state, "stale_status": "FRESH", "stale_reasons": [],
         "approved_at": approved_at or datetime.now(timezone.utc).isoformat(), "activated_at": datetime.now(timezone.utc).isoformat(),
@@ -498,6 +500,8 @@ def resolve_current_authoritative_scene_blocking(session: Any, *, book_id: int, 
         expected_asset_fp = _text((envelope.get("asset_authority") or {}).get("scene_asset_fingerprint")) if isinstance(envelope.get("asset_authority"), dict) else ""
         if expected_asset_fp and expected_asset_fp != _text(asset_state.get("fingerprint")):
             mark_scene_blocking_stale(session, row, ["SCENE_ASSET_CHANGED"]); session.commit(); _raise("SCENE_ASSET_CHANGED", "Bound scene asset authority is stale.")
+    model = _json(getattr(row, "spatial_model", "{}"), {})
+    envelope["phase_b_semantic_ready"] = bool(all(key in model and model.get(key) not in (None, "", []) for key in ("initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash")) and model.get("compiler_version") == COMPILER_VERSION)
     return row, envelope
 
 

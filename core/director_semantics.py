@@ -24,6 +24,7 @@ PERFORMANCE_ACTIONS = frozenset({
 REACTION_TYPES = frozenset({"HESITATION", "RECOGNITION", "FEAR_RESPONSE", "DECISION", "WITHDRAWAL", "ATTENTION_SHIFT", "RESISTANCE"})
 DECISION_ORIGINS = frozenset({"HUMAN_AUTHORED", "PROVIDER_PROPOSAL_CONFIRMED", "DETERMINISTIC_DERIVED", "GENERATED_DRAFT"})
 PRODUCTION_ORIGINS = frozenset({"HUMAN_AUTHORED", "PROVIDER_PROPOSAL_CONFIRMED"})
+DIRECTOR_CONTRACT_VERSION = "director_semantic_contract_v1"
 
 
 def _text(value: Any) -> str:
@@ -52,6 +53,12 @@ def _decision_error(code: str, message: str, **extra: Any) -> dict[str, Any]:
 def validate_director_contract(treatment: dict[str, Any], *, scene: dict[str, Any], production: bool = False) -> dict[str, Any]:
     """Validate only deterministic DirectorBeatDecision invariants."""
     errors: list[dict[str, Any]] = []
+    if production:
+        version = _text(treatment.get("director_contract_version") if isinstance(treatment, dict) else "")
+        if not version:
+            errors.append(_decision_error("DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "director_contract_version is required for Production"))
+        elif version != DIRECTOR_CONTRACT_VERSION:
+            errors.append(_decision_error("UNSUPPORTED_PRODUCTION_CONTRACT_VERSION", "unsupported Director semantic contract version", version=version))
     decisions = treatment.get("director_beat_decisions") if isinstance(treatment, dict) else None
     if not isinstance(decisions, list):
         return {"status": "blocked", "errors": [_decision_error("DIRECTOR_BEAT_DECISION_MISSING", "director_beat_decisions must be a list")], "warnings": []}
@@ -123,8 +130,8 @@ def review_director_creative_quality(treatment: dict[str, Any]) -> dict[str, Any
     """Advisory review; it can never qualify, mutate or move authority."""
     decisions = [x for x in _list(treatment.get("director_beat_decisions")) if isinstance(x, dict)]
     purposes = Counter(_text(x.get("dramatic_purpose")) for x in decisions)
-    repeated = sorted(key for key, count in purposes.items() if key and count > 3)
-    return {"status": "REVIEW_RECOMMENDED" if repeated else "PASS", "observations": ([{"code": "REPEATED_DRAMATIC_PURPOSE", "value": key} for key in repeated]), "mutated": False, "authority_write": 0, "pointer_move": 0, "source_fact_write": 0}
+    duplicate_counts = {key: count for key, count in sorted(purposes.items()) if key and count > 1}
+    return {"dramatic_purpose_distribution": dict(sorted(purposes.items())), "duplicate_purpose_counts": duplicate_counts, "mutated": False, "authority_write": 0, "pointer_move": 0, "source_fact_write": 0}
 
 
-__all__ = ["DRAMATIC_PURPOSES", "STATE_DIMENSIONS", "PERFORMANCE_ACTIONS", "REACTION_TYPES", "validate_director_contract", "build_suggested_director_decisions", "review_director_creative_quality"]
+__all__ = ["DRAMATIC_PURPOSES", "STATE_DIMENSIONS", "PERFORMANCE_ACTIONS", "REACTION_TYPES", "DIRECTOR_CONTRACT_VERSION", "validate_director_contract", "build_suggested_director_decisions", "review_director_creative_quality"]

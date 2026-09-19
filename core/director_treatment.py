@@ -213,7 +213,7 @@ def build_director_treatment_v2(*, scene: dict[str, Any], characters: list[dict[
     critical = [b for b in base.get("beat_map", []) if isinstance(b, dict) and (str(b.get("importance", "")).lower() == "critical" or b.get("requires_reaction") is True)]
     base["beat_directions"] = list(d.get("beat_directions") or [{"beat_ref": b.get("beat_id"), "director_intent": f"让“{b.get('event')}”成为可表演的因果转折。", "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。", "information_strategy": b.get("information_delta") or b.get("information_change") or "维持已声明信息边界。", "tempo": "hold_then_turn" if str(b.get("beat_type") or b.get("type")).upper() in {"REVEAL", "DECISION", "ESCALATION", "HOOK"} else "measured", "reaction_intent": "回应该节拍带来的信息或权力变化。" if b.get("requires_reaction") else "允许无反应停留。", "coverage_priority": "CRITICAL"} for b in critical])
     base["director_beat_decisions"] = list(d.get("director_beat_decisions") or build_suggested_director_decisions(scene, origin="GENERATED_DRAFT"))
-    base["director_contract_version"] = "director_beat_decision_v1"
+    base["director_contract_version"] = "director_semantic_contract_v1"
     base["performance_arc"] = list(d.get("performance_arc") or [{"phase": "IN", "state": "带着前场状态进入"}, {"phase": "TURN", "state": "在关键揭示后改变策略"}, {"phase": "OUT", "state": "带着本场新问题离开"}])
     base["rhythm_strategy"] = d.get("rhythm_strategy") or {"opening": "建立可读空间", "reveal": "揭示前留反应停顿", "escalation": "缩短行动间隔但不跳过因果", "button": "把最后反应留给观众"}
     base["visual_priority"] = list(d.get("visual_priority") or ["人物可见反应", "关键道具状态", "人物与出口/障碍的空间关系"])
