@@ -17,6 +17,7 @@ from core.fact_coverage import fingerprint
 from core.fact_snapshot import snapshot_hash
 from core.source_evidence_index import build_source_evidence_index, validate_source_evidence_index
 from core.script_ir import script_ir_hash, validate_script_ir
+from core.script_creative_quality import run_script_creative_quality_gate
 from core.script_ir_source_requirements import (
     CONTRACT_SCHEMA_VERSION,
     compile_script_ir_source_requirements,
@@ -209,6 +210,14 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     structural = validate_script_ir(payload)
     if structural.get("status") != "qualified":
         raise ScriptIRAuthorityError("SCRIPT_IR_NOT_STRUCTURALLY_VALID", "ScriptIR structural validation failed.", details={"validation": structural})
+    creative = run_script_creative_quality_gate(payload, production=True)
+    if not creative.get("qualified"):
+        first_error = (creative.get("hard_errors") or [{}])[0]
+        raise ScriptIRAuthorityError(
+            str(first_error.get("code") or "SCRIPT_CREATIVE_QUALITY_BLOCKED"),
+            "ScriptIR creative quality and explicit timeline gates failed.",
+            details={"creative_quality": creative},
+        )
     scenes = payload.get("scenes") if isinstance(payload.get("scenes"), list) else []
     if any(_text(scene.get("name")).startswith("未命名场景") for scene in scenes if isinstance(scene, dict)):
         raise ScriptIRAuthorityError("SCENE_NAME_SOURCE_AUTHORITY_REQUIRED", "Placeholder scene names cannot become production authority.")

@@ -94,13 +94,10 @@ def normalize_script_blocks(raw: Any, *, scene_id: str, beat_ids: list[str], dia
     """
     if isinstance(raw, list):
         blocks = []
-        seen_orders: set[int] = set()
         for block_index, raw_block in enumerate(raw, start=1):
             if not isinstance(raw_block, dict):
                 continue
             order = raw_block.get("order")
-            if not isinstance(order, int) or isinstance(order, bool):
-                order = block_index * 10
             block_type = _text(raw_block.get("type") or raw_block.get("block_type"))
             ref = _text(raw_block.get("ref"))
             if not ref and block_type.upper() == "ACTION":
@@ -108,7 +105,9 @@ def normalize_script_blocks(raw: Any, *, scene_id: str, beat_ids: list[str], dia
             if not ref and block_type.upper() == "DIALOGUE":
                 ref = raw_block.get("dialogue_ref")
             blocks.append({
-                "order": int(order),
+                # Preserve authority-relevant invalid values for the validator;
+                # never silently renumber an explicit production timeline.
+                "order": order,
                 "type": block_type.upper(),
                 "ref": _text(ref),
                 "beat_refs": [
@@ -116,7 +115,6 @@ def normalize_script_blocks(raw: Any, *, scene_id: str, beat_ids: list[str], dia
                     if _text(item)
                 ],
             })
-            seen_orders.add(int(order))
         return blocks
     # Deterministic fallback: interleave by index so the reader flows.
     blocks: list[dict[str, Any]] = []
@@ -165,6 +163,11 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             dialogue_ids=dialogue_ids,
             action_ids=action_ids,
         )
+        timeline_origin = _text(raw_scene.get("timeline_origin")).upper()
+        if not isinstance(raw_scene.get("script_blocks"), list):
+            timeline_origin = "LEGACY_INFERRED"
+        elif timeline_origin not in {"EXPLICIT", "LEGACY_INFERRED", "UNKNOWN"}:
+            timeline_origin = "EXPLICIT"
         # When legacy input has actions but no explicit timeline, retain any
         # dramatic beats that are not already realized by an action.  This
         # makes the generated timeline complete without duplicating beats that
@@ -200,6 +203,7 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "actions": actions,
             "dialogues": dialogues,
             "script_blocks": script_blocks,
+            "timeline_origin": timeline_origin,
             "state_in": raw_scene.get("state_in") if isinstance(raw_scene.get("state_in"), dict) else {},
             "state_out": raw_scene.get("state_out") if isinstance(raw_scene.get("state_out"), dict) else {},
             "required_visual_proofs": raw_scene.get("required_visual_proofs") if isinstance(raw_scene.get("required_visual_proofs"), list) else [],
@@ -233,24 +237,6 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "status": _text(raw_transition.get("status")) or "RESOLVED",
         })
     open_questions = source.get("open_questions") if isinstance(source.get("open_questions"), list) else []
-    # Keep the intentional ambiguity of the two-ticket line explicit for
-    # downstream review.  It remains visible in the Reader as dialogue, while
-    # the resolution obligation lives only in ScriptIR metadata.
-    has_two_ticket_line = any(
-        isinstance(dialogue, dict)
-        and "两张去南城的票" in _text(dialogue.get("text") or dialogue.get("content"))
-        for scene in scenes
-        for dialogue in (scene.get("dialogues") or [])
-    )
-    if has_two_ticket_line and not any(
-        isinstance(item, dict) and _text(item.get("code")) == "OPEN_QUESTION_REQUIRES_FUTURE_RESOLUTION"
-        for item in open_questions
-    ):
-        open_questions.append({
-            "code": "OPEN_QUESTION_REQUIRES_FUTURE_RESOLUTION",
-            "subject": "两张去南城的票",
-            "status": "unresolved",
-        })
     result = {
         "schema_version": SCHEMA_VERSION,
         "book_id": int(book_id),

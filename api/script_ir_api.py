@@ -207,7 +207,7 @@ def confirm_script_ir(book_id: int, episode: int, req: ScriptIRConfirmRequest) -
         # Phase A: optional Creative Quality Gate.  When enforced, a hard
         # error blocks promotion to qualified.  Soft diagnostics never block.
         if req.enforce_creative_quality:
-            creative = run_script_creative_quality_gate(candidate)
+            creative = run_script_creative_quality_gate(candidate, production=True)
             if not creative["qualified"]:
                 raise HTTPException(
                     status_code=409,
@@ -226,7 +226,8 @@ def confirm_script_ir(book_id: int, episode: int, req: ScriptIRConfirmRequest) -
             previous.status = "superseded"; previous.updated_at = datetime.now()
         draft.status = "qualified"; draft.payload_json = json.dumps(candidate, ensure_ascii=False); draft.payload_hash = script_ir_hash(candidate); draft.validation_status = "qualified"; draft.validation_report = json.dumps(report, ensure_ascii=False); draft.updated_at = datetime.now(); session.commit(); session.refresh(draft)
         script.current_script_ir_version_id = draft.id; script.quality_status = "qualified"; script.workflow_profile = "production"; script.production_status = "blocked"; session.commit()
-        return {"confirmed": True, "mutated": True, "script_ir": _payload(draft), "rendered_markdown": render_reader_script(candidate), "production_status": "blocked"}
+        rendered = render_reader_script(candidate, production=bool(req.enforce_creative_quality))
+        return {"confirmed": True, "mutated": True, "script_ir": _payload(draft), "rendered_markdown": rendered, "production_status": "blocked"}
 
 
 @router.post("/{book_id}/episodes/{episode}/script-ir/creative-quality")
@@ -249,7 +250,7 @@ def script_ir_creative_quality(book_id: int, episode: int, req: ScriptIRCreative
                 candidate = json.loads(draft.payload_json or "{}")
             except (TypeError, ValueError, json.JSONDecodeError):
                 raise HTTPException(status_code=409, detail="ScriptIR payload is invalid.")
-        creative = run_script_creative_quality_gate(candidate)
+        creative = run_script_creative_quality_gate(candidate, production=True)
         return {
             "book_id": book_id,
             "episode": episode,

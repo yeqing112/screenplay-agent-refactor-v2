@@ -48,7 +48,7 @@ def _render_scene_header(scene: dict[str, Any], index: int) -> list[str]:
     return [header, ""]
 
 
-def render_reader_script(script_ir: dict[str, Any]) -> str:
+def render_reader_script(script_ir: dict[str, Any], *, production: bool = False) -> str:
     """Professional screenplay for a human reader.
 
     Renders strictly in ``scene.script_blocks`` order: ACTION blocks resolve
@@ -56,6 +56,42 @@ def render_reader_script(script_ir: dict[str, Any]) -> str:
     dialogue.  It never emits episode objective, beat ids, dialogue ids,
     assertion modes, camera direction or internal engineering labels.
     """
+    if production:
+        for scene in script_ir.get("scenes") or []:
+            if not isinstance(scene, dict):
+                continue
+            if _text(scene.get("timeline_origin")).upper() != "EXPLICIT":
+                raise ValueError("SCRIPT_TIMELINE_NOT_EXPLICIT")
+            if not isinstance(scene.get("script_blocks"), list) or not scene.get("script_blocks"):
+                raise ValueError("SCRIPT_BLOCK_ORDER_REQUIRED")
+            seen_orders = set()
+            action_refs = {
+                _text(item.get("action_id")) for item in (scene.get("actions") or [])
+                if isinstance(item, dict) and _text(item.get("action_id"))
+            }
+            beat_refs = {
+                _text(item.get("beat_id")) for item in (scene.get("dramatic_beats") or scene.get("beats") or [])
+                if isinstance(item, dict) and _text(item.get("beat_id"))
+            }
+            dialogue_refs = {
+                _text(item.get("dialogue_id")) for item in (scene.get("dialogues") or [])
+                if isinstance(item, dict) and _text(item.get("dialogue_id"))
+            }
+            for block in scene["script_blocks"]:
+                if not isinstance(block, dict) or not isinstance(block.get("order"), int) or isinstance(block.get("order"), bool):
+                    raise ValueError("SCRIPT_BLOCK_ORDER_REQUIRED")
+                if block["order"] in seen_orders:
+                    raise ValueError("SCRIPT_BLOCK_ORDER_CONFLICT")
+                seen_orders.add(block["order"])
+                block_type = _text(block.get("type")).upper()
+                ref = _text(block.get("ref"))
+                if block_type not in {"ACTION", "DIALOGUE"}:
+                    raise ValueError("SCRIPT_BLOCK_TYPE_INVALID")
+                if not ref:
+                    raise ValueError("SCRIPT_BLOCK_REF_MISSING")
+                valid_refs = (action_refs | beat_refs) if block_type == "ACTION" else dialogue_refs
+                if ref not in valid_refs:
+                    raise ValueError("SCRIPT_BLOCK_TARGET_MISSING")
     title = _text(script_ir.get("title")) or f"第{_text(script_ir.get('episode')) or 1}集"
     lines = [f"# {title}", ""]
     for index, scene in enumerate(script_ir.get("scenes") or [], start=1):

@@ -482,6 +482,20 @@ def _gate_script_blocks(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
     return errors
 
 
+def _gate_timeline_origin(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
+    errors: list[dict[str, Any]] = []
+    for scene in _scene_order(script_ir):
+        origin = _text(scene.get("timeline_origin")).upper()
+        if origin != "EXPLICIT":
+            errors.append(_error(
+                "SCRIPT_TIMELINE_NOT_EXPLICIT",
+                f"场景 {_text(scene.get('scene_id'))} 的 screenplay timeline 来源为 {origin or 'UNKNOWN'}，Production 只接受 EXPLICIT。",
+                scene_id=_text(scene.get("scene_id")),
+                timeline_origin=origin or "UNKNOWN",
+            ))
+    return errors
+
+
 def validate_script_blocks(scene: dict[str, Any]) -> list[dict[str, Any]]:
     """Validate one scene's explicit screenplay timeline deterministically.
 
@@ -494,8 +508,13 @@ def validate_script_blocks(scene: dict[str, Any]) -> list[dict[str, Any]]:
     return _gate_script_blocks({"scenes": [scene]})
 
 
-def run_hard_gates(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
+def run_hard_gates(script_ir: dict[str, Any], *, production: bool = False) -> list[dict[str, Any]]:
     errors: list[dict[str, Any]] = []
+    if production:
+        # Provenance is the first fail-closed decision: inferred content must
+        # not be promoted merely because its inferred blocks happen to pass
+        # structural checks.
+        errors.extend(_gate_timeline_origin(script_ir))
     errors.extend(_gate_scene_transitions(script_ir))
     errors.extend(_gate_character_knowledge(script_ir))
     errors.extend(_gate_character_state_discontinuity(script_ir))
@@ -644,13 +663,13 @@ def run_soft_diagnostics(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
 # Top-level gate
 # ---------------------------------------------------------------------------
 
-def run_script_creative_quality_gate(script_ir: dict[str, Any]) -> dict[str, Any]:
+def run_script_creative_quality_gate(script_ir: dict[str, Any], *, production: bool = False) -> dict[str, Any]:
     """Run the full Script Creative Quality Gate.
 
     Returns a read-only report.  Hard errors (severity=blocked) must fail the
     production gate; soft diagnostics are advisory.
     """
-    hard_errors = run_hard_gates(script_ir)
+    hard_errors = run_hard_gates(script_ir, production=production)
     soft_diagnostics = run_soft_diagnostics(script_ir)
     status = "PRODUCTION_QUALIFIED" if not hard_errors else "CREATIVE_QUALITY_BLOCKED"
     scenes = _scene_order(script_ir)
