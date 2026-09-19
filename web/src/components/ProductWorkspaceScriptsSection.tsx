@@ -398,10 +398,22 @@ export default function ProductWorkspaceScriptsSection({
                 />
               </div>
 
-              <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
-                <div className="text-sm font-medium text-white">脚本正文摘录</div>
-                <div className="mt-3 max-h-[340px] overflow-auto whitespace-pre-wrap text-sm leading-6 text-slate-300">
-                  {selectedScript?.content?.trim() || '当前还没有可展示的正式剧本内容。'}
+              <div className="mt-5 overflow-hidden rounded-xl border border-slate-700 bg-slate-950/60">
+                <div className="flex items-center justify-between gap-3 border-b border-slate-800 bg-slate-900/70 px-4 py-3">
+                  <div>
+                    <div className="text-sm font-semibold text-white">阅读剧本</div>
+                    <div className="mt-0.5 text-[11px] text-slate-500">第 {selectedSummary?.episode ?? '-'} 集 · 完整正文，直接按剧本阅读</div>
+                  </div>
+                  <span className="rounded-full border border-slate-700 bg-slate-950/60 px-2 py-0.5 text-[11px] text-slate-400">
+                    {selectedScenes.length} 个场次
+                  </span>
+                </div>
+                <div className="max-h-[520px] overflow-auto px-5 py-4 text-[15px] leading-7 text-slate-200">
+                  {selectedScript?.content?.trim() ? (
+                    <div className="whitespace-pre-wrap font-serif">{selectedScript.content.trim()}</div>
+                  ) : (
+                    <div className="text-sm text-slate-500">当前还没有可展示的正式剧本内容。</div>
+                  )}
                 </div>
               </div>
 

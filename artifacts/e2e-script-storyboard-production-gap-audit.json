@@ -1,0 +1,174 @@
+{
+  "audit_id": "e2e-script-storyboard-production-gap-audit",
+  "generated_at": "2026-09-19T06:15:12.100204+00:00",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "head_commit": "5a06a77c02bd9cf9e62f39a6805ea6df86781166",
+  "canonical_baseline": "5b2a5ae",
+  "canonical_lineage_ok": true,
+  "pilot_target": {
+    "book_id": 990401,
+    "episode": 1,
+    "title": "红伞倒影",
+    "status": "scripted"
+  },
+  "layers": {
+    "script": {
+      "authoring_source": "existing_legacy_draft (from Script.content markdown)",
+      "production_authoring_proposal": false,
+      "gap": "SCRIPT_AUTHORING_PROVIDER_MISSING",
+      "detail": "ScriptIR consumes existing Script row; there is no SCRIPT_AUTHORING_PROPOSAL flow."
+    },
+    "script_ir": {
+      "authoring_source": "deterministic normalization",
+      "production_authority": false,
+      "gap": "SCRIPT_IR_AUTHORITY_NOT_ACTIVATED_FOR_990401",
+      "detail": "990401 has no script_ir_versions rows; 990402 has qualified IR ep1-3."
+    },
+    "director_treatment": {
+      "authoring_source": "deterministic shadow (build_shadow_treatment)",
+      "llm_called": false,
+      "gap": "TREATMENT_AUTHORING_PROVIDER_OPTIONAL",
+      "detail": "Production-adequate for Pilot; no creative provider required."
+    },
+    "scene_blocking": {
+      "authoring_source": "deterministic evidence-first (extract_spatial_evidence + planner)",
+      "llm_called": false,
+      "gap": "BLOCKING_AUTHORING_PROVIDER_OPTIONAL",
+      "detail": "Deterministic blocking is sufficient for Pilot."
+    },
+    "shot_plan": {
+      "authoring_source": "deterministic build_shot_plan (MS/eye_level/static/slow)",
+      "llm_called": false,
+      "gap": "SHOT_AUTHORING_PROVIDER_NOT_ACTIVATED",
+      "detail": "ShotPlan defaults to MS/static/4s; needs Shot Authoring variety for production quality."
+    },
+    "storyboard_materializer": {
+      "authoring_source": "deterministic N->N projection (materialize_storyboard_from_shot_plan)",
+      "llm_called": false,
+      "gap": null,
+      "detail": "Ready and fail-closed in production mode."
+    },
+    "prompt_ir": {
+      "authoring_source": "compiler",
+      "llm_called": false,
+      "gap": "ASSET_REFERENCE_PENDING",
+      "detail": "PromptIR can be PROMPT_IR_QUALIFIED with ASSET_REFERENCE_PENDING; not a blocker for readable storyboard."
+    }
+  },
+  "existing_assets_for_pilot": {
+    "books": [
+      {
+        "id": 990301,
+        "title": "导演运行时灰度样本",
+        "status": "storyboarded"
+      },
+      {
+        "id": 990306,
+        "title": "生产就绪度测试",
+        "status": "imported"
+      },
+      {
+        "id": 990307,
+        "title": "结构治理测试",
+        "status": "imported"
+      },
+      {
+        "id": 990400,
+        "title": "导演运行时灰度样本",
+        "status": "storyboarded"
+      },
+      {
+        "id": 990401,
+        "title": "潮汐回声·生产链路测试样本",
+        "status": "scripted"
+      },
+      {
+        "id": 990402,
+        "title": "潮汐回声",
+        "status": "outlined"
+      }
+    ],
+    "scripts": [
+      {
+        "episode": 1,
+        "status": "draft",
+        "l": 6225,
+        "c": null
+      },
+      {
+        "episode": 2,
+        "status": "draft",
+        "l": 4219,
+        "c": null
+      },
+      {
+        "episode": 3,
+        "status": "draft",
+        "l": 4489,
+        "c": null
+      },
+      {
+        "episode": 4,
+        "status": "draft",
+        "l": 3886,
+        "c": null
+      },
+      {
+        "episode": 5,
+        "status": "draft",
+        "l": 5470,
+        "c": null
+      },
+      {
+        "episode": 6,
+        "status": "draft",
+        "l": 5978,
+        "c": null
+      },
+      {
+        "episode": 7,
+        "status": "draft",
+        "l": 5387,
+        "c": null
+      },
+      {
+        "episode": 8,
+        "status": "draft",
+        "l": 4618,
+        "c": null
+      },
+      {
+        "episode": 9,
+        "status": "draft",
+        "l": 10047,
+        "c": null
+      },
+      {
+        "episode": 10,
+        "status": "draft",
+        "l": 4819,
+        "c": null
+      }
+    ],
+    "script_ir": [],
+    "treatments": 0,
+    "blockings": 0,
+    "shot_plans": 0,
+    "storyboard_shots": 164
+  },
+  "decisions": {
+    "pilot_uses_existing_complete_script": true,
+    "pilot_uses_deterministic_authority_chain": true,
+    "real_llm_call": false,
+    "real_llm_justification": "Current config default is qwen3-max via local Ollama; awaiting user confirmation for MiMo before any paid/external call.",
+    "image_video_storage_calls": 0
+  },
+  "next_actions": [
+    "Build SCRIPT_AUTHORING_PROPOSAL over existing complete script",
+    "Activate ScriptIR authority for 990401 ep1",
+    "Run Treatment -> Blocking -> ShotPlan -> Materializer for 990401 ep1 scenes",
+    "Upgrade render_script_markdown to readable screenplay",
+    "Emit artifacts/e2e-production-pilot/*",
+    "Frontend reading/overview modes"
+  ]
+}

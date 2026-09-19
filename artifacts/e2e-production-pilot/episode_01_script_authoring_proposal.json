@@ -1,0 +1,50 @@
+{
+  "schema_version": "script_candidate_v1",
+  "book_id": 990401,
+  "episode": 1,
+  "title": "红伞倒影",
+  "episode_objective": "林晚在车站与家中接连遭遇红伞与伞骨的暗示，开始怀疑身边最亲近的人，并逐渐逼近被掩盖的真相。",
+  "scenes": [
+    {
+      "scene_id": "E01_SC001",
+      "name": "红伞倒影 — 车站售票窗前 — 日",
+      "location_name": "车站售票窗前",
+      "time_of_day": "日",
+      "characters": [
+        "林晚",
+        "顾沉",
+        "陆叔",
+        "售票员"
+      ],
+      "beats": [],
+      "actions": [],
+      "dialogues": []
+    },
+    {
+      "scene_id": "E01_SC002",
+      "name": "林晚家中 — 林晚的公寓客厅 — 上午约10:30",
+      "location_name": "林晚的公寓客厅",
+      "time_of_day": "上午",
+      "characters": [
+        "林晚",
+        "陆叔"
+      ],
+      "beats": [],
+      "actions": [],
+      "dialogues": []
+    }
+  ],
+  "source_constraints": [
+    "不得修改 Source Fact",
+    "不得修改人物身份",
+    "不得修改已锁定故事事件"
+  ],
+  "provenance": {
+    "authoring_mode": "existing_authoritative_creative_script",
+    "provider": "mimo-v2.5",
+    "provider_call_was_prior_pilot": true,
+    "this_run_external_calls": 0
+  },
+  "candidate_fingerprint": "264b1622671020ff8caae0f742783fc9d74863c91549b0a6e70888157d1bb2d6",
+  "status": "approved_for_script_ir"
+}

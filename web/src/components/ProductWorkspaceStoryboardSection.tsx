@@ -3617,6 +3617,67 @@ export default function ProductWorkspaceStoryboardSection({
             </div>
           ) : null}
         </div>
+
+        {currentShots.length > 0 ? (
+          <details className="mt-4 rounded-xl border border-slate-800 bg-slate-950/50 p-3">
+            <summary className="cursor-pointer text-sm font-medium text-slate-300">
+              整集分镜总览（{currentShots.length} 镜 · 按场景连续阅读）
+            </summary>
+            <div className="mt-3 max-h-[560px] space-y-4 overflow-auto pr-1">
+              {(() => {
+                const grouped: Array<{ scene: string; shots: typeof currentShots }> = []
+                for (const shot of currentShots) {
+                  const key = String(shot.scene_name || '未命名场景')
+                  const last = grouped[grouped.length - 1]
+                  if (last && last.scene === key) {
+                    last.shots.push(shot)
+                  } else {
+                    grouped.push({ scene: key, shots: [shot] })
+                  }
+                }
+                return grouped.map((group) => (
+                  <div key={group.scene}>
+                    <div className="sticky top-0 rounded-md bg-slate-900/90 px-2 py-1.5 text-xs font-semibold text-sky-200">
+                      场景：{group.scene}
+                    </div>
+                    <div className="mt-2 space-y-2">
+                      {group.shots.map((shot) => {
+                        const dialogue = String(shot.dialogue || '').trim()
+                        const action = String(shot.action_process || '').trim()
+                        return (
+                          <button
+                            key={String(shot.shot_id)}
+                            type="button"
+                            data-shot-id={String(shot.shot_id)}
+                            onClick={() => onSelectShot(String(shot.shot_id))}
+                            className="w-full rounded-lg border border-slate-800 bg-slate-900/50 p-2.5 text-left transition hover:border-sky-600/50"
+                          >
+                            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
+                              <span className="font-semibold text-white">镜号 {String(shot.shot_id)}</span>
+                              <span className="rounded border border-slate-700 px-1.5 py-0.5">{shot.camera_angle || '-'}</span>
+                              <span className="rounded border border-slate-700 px-1.5 py-0.5">{shot.camera_movement || '-'}</span>
+                              <span className="rounded border border-slate-700 px-1.5 py-0.5">{shot.duration ?? '-'}s</span>
+                              {shot.transition ? <span className="rounded border border-slate-700 px-1.5 py-0.5">转场 {shot.transition}</span> : null}
+                            </div>
+                            {dialogue ? (
+                              <div className="mt-1.5 text-[13px] leading-5 text-slate-200">对白：{dialogue}</div>
+                            ) : null}
+                            {action ? (
+                              <div className="mt-1 text-[12px] leading-5 text-slate-400">动作：{action}</div>
+                            ) : null}
+                            {shot.lighting ? (
+                              <div className="mt-1 text-[11px] text-slate-500">光影：{shot.lighting}</div>
+                            ) : null}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))
+              })()}
+            </div>
+          </details>
+        ) : null}
       </div>
 
       <div className="space-y-6">

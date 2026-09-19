@@ -1,0 +1,50 @@
+{
+  "episode_title": "红伞倒影",
+  "book_id": 990401,
+  "episode": 1,
+  "source": {
+    "script_row_status": "draft",
+    "script_char_count": 6225
+  },
+  "script": {
+    "mode": "existing_authoritative_creative_script",
+    "version": "legacy_draft_1",
+    "hash": "69b6e83bef6fc5ca"
+  },
+  "script_ir": {
+    "mode": "deterministic_build",
+    "status": "qualified",
+    "payload_hash": "1d65fddf3139c57b15f5250b3afe9e24dd55da0a2c4a5ff2eeaa6e426dae3e6f"
+  },
+  "director_treatment": {
+    "mode": "production_pilot_authoring",
+    "scene_count": 2,
+    "status": "approved"
+  },
+  "scene_blocking": {
+    "mode": "deterministic_evidence_first",
+    "scene_count": 2,
+    "status": "approved"
+  },
+  "shot_plan": {
+    "mode": "reverse_from_real_storyboard",
+    "scene_count": 2,
+    "shot_count": 16,
+    "status": "approved"
+  },
+  "storyboard": {
+    "mode": "real_storyboard_shots",
+    "shot_count": 16,
+    "status": "materialized"
+  },
+  "prompt_ir": {
+    "status": "PROMPT_IR_QUALIFIED_WITH_ASSET_REFERENCE_PENDING",
+    "blocker": "Visual asset references not yet locked"
+  },
+  "external_calls": {
+    "llm": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0
+  }
+}
