@@ -26,6 +26,13 @@ DIRECTOR_DECISION_FIELDS = (
     "relationship_power_shift", "audience_emotion", "information_strategy",
     "performance_direction", "visual_strategy", "coverage_strategy",
     "sound_strategy", "edit_rhythm",
+    # Phase B semantic projections live in the same director_decisions JSON
+    # column.  They are additive to the existing authority spine; no second
+    # Treatment production truth is introduced.
+    "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out",
+    "suspicion_or_information_strategy", "character_directions", "beat_directions",
+    "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent",
+    "prohibited_interpretations",
 )
 DOWNSTREAM_AUTHORING_FIELDS = ("character_blocking", "scene_geometry", "production_prop_continuity", "shot_coverage", "camera_placement")
 
@@ -90,7 +97,7 @@ def contract_fingerprint() -> str:
 
 def treatment_payload_from_row(row: Any) -> dict[str, Any]:
     """Canonical formal payload; metadata never participates in payload hash."""
-    return {
+    payload = {
         "scene_id": _text(getattr(row, "scene_id", "")),
         "scene_name": _text(getattr(row, "scene_name", "")),
         "dramatic_objective": _text(getattr(row, "dramatic_objective", "")),
@@ -108,6 +115,15 @@ def treatment_payload_from_row(row: Any) -> dict[str, Any]:
         "constraints": _json(getattr(row, "constraints", "[]"), []),
         "unknowns": _json(getattr(row, "unknowns", "[]"), []),
     }
+    # Phase B fields are persisted in the existing director_decisions JSON
+    # projection so deployments do not need a parallel table or pointer.  Do
+    # not add empty keys for legacy rows: their payload hashes remain stable.
+    decisions = _json(getattr(row, "director_decisions", "{}"), {})
+    if isinstance(decisions, dict):
+        for field in DIRECTOR_DECISION_FIELDS:
+            if field in decisions and decisions[field] not in (None, "", [], {}):
+                payload[field] = decisions[field]
+    return payload
 
 
 def payload_hash(payload: dict[str, Any]) -> str:

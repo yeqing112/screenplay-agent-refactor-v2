@@ -1,0 +1,1369 @@
+{
+  "schema_version": "scene_blocking_v2_phase_b_pilot",
+  "book_id": 990401,
+  "episode": 1,
+  "scenes": [
+    {
+      "schema_version": "scene_blocking_v2_phase_b",
+      "scene_id": "E01_SC001",
+      "scene_name": "旧火车站售票厅",
+      "space_model": {
+        "geometry_precision": "RELATIVE",
+        "zones": [
+          {
+            "zone_id": "ST_TICKET",
+            "name": "售票窗口",
+            "spatial_relation": "大厅一侧固定锚点",
+            "allowed_characters": [
+              "林晚",
+              "售票员"
+            ],
+            "key_props": [
+              "车票"
+            ]
+          },
+          {
+            "zone_id": "ST_CENTER",
+            "name": "售票大厅中央",
+            "spatial_relation": "售票窗与检票口之间",
+            "allowed_characters": [
+              "林晚",
+              "顾沉",
+              "陆叔"
+            ],
+            "key_props": [
+              "手提包"
+            ]
+          },
+          {
+            "zone_id": "ST_PLATFORM_SIGHT",
+            "name": "站台视觉区域",
+            "spatial_relation": "从大厅可见的远侧",
+            "allowed_characters": [
+              "林晚",
+              "顾沉"
+            ],
+            "key_props": [
+              "红伞"
+            ]
+          },
+          {
+            "zone_id": "ST_CHECK",
+            "name": "检票口方向",
+            "spatial_relation": "林晚原计划离开的连接方向",
+            "allowed_characters": [
+              "林晚",
+              "陆叔"
+            ],
+            "key_props": []
+          },
+          {
+            "zone_id": "ST_REAR",
+            "name": "大厅后侧来人方向",
+            "spatial_relation": "顾沉和陆叔进入的相对方向",
+            "allowed_characters": [
+              "顾沉",
+              "陆叔"
+            ],
+            "key_props": []
+          }
+        ],
+        "anchors": [
+          "售票窗口",
+          "检票口",
+          "站台视觉区域",
+          "大厅后侧"
+        ],
+        "connections": [
+          {
+            "from": "ST_TICKET",
+            "to": "ST_CENTER",
+            "relation": "面对",
+            "continuity": "固定"
+          },
+          {
+            "from": "ST_CENTER",
+            "to": "ST_CHECK",
+            "relation": "通向",
+            "continuity": "林晚的离开方向"
+          },
+          {
+            "from": "ST_REAR",
+            "to": "ST_CENTER",
+            "relation": "进入",
+            "continuity": "人物出现路径"
+          }
+        ],
+        "authority": "LOCKED_VISUAL_LOCATION_OR_RELATIVE_SPATIAL_MODEL"
+      },
+      "zones": [
+        {
+          "zone_id": "ST_TICKET",
+          "name": "售票窗口",
+          "spatial_relation": "大厅一侧固定锚点",
+          "allowed_characters": [
+            "林晚",
+            "售票员"
+          ],
+          "key_props": [
+            "车票"
+          ]
+        },
+        {
+          "zone_id": "ST_CENTER",
+          "name": "售票大厅中央",
+          "spatial_relation": "售票窗与检票口之间",
+          "allowed_characters": [
+            "林晚",
+            "顾沉",
+            "陆叔"
+          ],
+          "key_props": [
+            "手提包"
+          ]
+        },
+        {
+          "zone_id": "ST_PLATFORM_SIGHT",
+          "name": "站台视觉区域",
+          "spatial_relation": "从大厅可见的远侧",
+          "allowed_characters": [
+            "林晚",
+            "顾沉"
+          ],
+          "key_props": [
+            "红伞"
+          ]
+        },
+        {
+          "zone_id": "ST_CHECK",
+          "name": "检票口方向",
+          "spatial_relation": "林晚原计划离开的连接方向",
+          "allowed_characters": [
+            "林晚",
+            "陆叔"
+          ],
+          "key_props": []
+        },
+        {
+          "zone_id": "ST_REAR",
+          "name": "大厅后侧来人方向",
+          "spatial_relation": "顾沉和陆叔进入的相对方向",
+          "allowed_characters": [
+            "顾沉",
+            "陆叔"
+          ],
+          "key_props": []
+        }
+      ],
+      "anchors": [
+        "售票窗口",
+        "检票口",
+        "站台视觉区域",
+        "大厅后侧"
+      ],
+      "connections": [
+        {
+          "from": "ST_TICKET",
+          "to": "ST_CENTER",
+          "relation": "面对",
+          "continuity": "固定"
+        },
+        {
+          "from": "ST_CENTER",
+          "to": "ST_CHECK",
+          "relation": "通向",
+          "continuity": "林晚的离开方向"
+        },
+        {
+          "from": "ST_REAR",
+          "to": "ST_CENTER",
+          "relation": "进入",
+          "continuity": "人物出现路径"
+        }
+      ],
+      "characters": [
+        {
+          "character": "林晚",
+          "entry": "already_present_at_ST_TICKET",
+          "initial_position": "ST_TICKET",
+          "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+          "movement_path": [
+            {
+              "beat_ref": "SC01-B03",
+              "from": "ST_TICKET",
+              "to": "ST_CENTER",
+              "reason": "红伞吸引注意"
+            },
+            {
+              "beat_ref": "SC01-B10",
+              "from": "ST_CENTER",
+              "to": "ST_CHECK",
+              "reason": "准备离开后停住调查"
+            }
+          ],
+          "exit": "以回家为借口向ST_CHECK后退"
+        },
+        {
+          "character": "顾沉",
+          "entry": "从ST_REAR进入",
+          "initial_position": "ST_REAR",
+          "facing": "林晚与手提包",
+          "movement_path": [
+            {
+              "beat_ref": "SC01-B05",
+              "from": "ST_REAR",
+              "to": "ST_CENTER",
+              "reason": "接近并提问"
+            }
+          ],
+          "exit": "从ST_CENTER向人群方向离开"
+        },
+        {
+          "character": "陆叔",
+          "entry": "从ST_REAR进入",
+          "initial_position": "ST_REAR",
+          "facing": "林晚",
+          "movement_path": [
+            {
+              "beat_ref": "SC01-B07",
+              "from": "ST_REAR",
+              "to": "ST_CENTER",
+              "reason": "接过手提包并挡住林晚与出口的直线"
+            }
+          ],
+          "exit": "与林晚一起朝ST_CHECK返回"
+        },
+        {
+          "character": "售票员",
+          "entry": "already_present_at_ST_TICKET",
+          "initial_position": "ST_TICKET",
+          "facing": "林晚",
+          "movement_path": [],
+          "exit": "remains_at_ST_TICKET"
+        }
+      ],
+      "participants": [
+        {
+          "character": "林晚",
+          "entry": "already_present_at_ST_TICKET",
+          "initial_position": "ST_TICKET",
+          "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+          "movement_path": [
+            {
+              "beat_ref": "SC01-B03",
+              "from": "ST_TICKET",
+              "to": "ST_CENTER",
+              "reason": "红伞吸引注意"
+            },
+            {
+              "beat_ref": "SC01-B10",
+              "from": "ST_CENTER",
+              "to": "ST_CHECK",
+              "reason": "准备离开后停住调查"
+            }
+          ],
+          "exit": "以回家为借口向ST_CHECK后退"
+        },
+        {
+          "character": "顾沉",
+          "entry": "从ST_REAR进入",
+          "initial_position": "ST_REAR",
+          "facing": "林晚与手提包",
+          "movement_path": [
+            {
+              "beat_ref": "SC01-B05",
+              "from": "ST_REAR",
+              "to": "ST_CENTER",
+              "reason": "接近并提问"
+            }
+          ],
+          "exit": "从ST_CENTER向人群方向离开"
+        },
+        {
+          "character": "陆叔",
+          "entry": "从ST_REAR进入",
+          "initial_position": "ST_REAR",
+          "facing": "林晚",
+          "movement_path": [
+            {
+              "beat_ref": "SC01-B07",
+              "from": "ST_REAR",
+              "to": "ST_CENTER",
+              "reason": "接过手提包并挡住林晚与出口的直线"
+            }
+          ],
+          "exit": "与林晚一起朝ST_CHECK返回"
+        },
+        {
+          "character": "售票员",
+          "entry": "already_present_at_ST_TICKET",
+          "initial_position": "ST_TICKET",
+          "facing": "林晚",
+          "movement_path": [],
+          "exit": "remains_at_ST_TICKET"
+        }
+      ],
+      "movement_paths": [
+        {
+          "beat_ref": "SC01-B03",
+          "from": "ST_TICKET",
+          "to": "ST_CENTER",
+          "reason": "红伞吸引注意"
+        },
+        {
+          "beat_ref": "SC01-B10",
+          "from": "ST_CENTER",
+          "to": "ST_CHECK",
+          "reason": "准备离开后停住调查"
+        },
+        {
+          "beat_ref": "SC01-B05",
+          "from": "ST_REAR",
+          "to": "ST_CENTER",
+          "reason": "接近并提问"
+        },
+        {
+          "beat_ref": "SC01-B07",
+          "from": "ST_REAR",
+          "to": "ST_CENTER",
+          "reason": "接过手提包并挡住林晚与出口的直线"
+        }
+      ],
+      "beat_spatial_states": [
+        {
+          "beat_ref": "SC01-B03",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B03"
+        },
+        {
+          "beat_ref": "SC01-B04",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B04"
+        },
+        {
+          "beat_ref": "SC01-B05",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B05"
+        },
+        {
+          "beat_ref": "SC01-B06",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B06"
+        },
+        {
+          "beat_ref": "SC01-B08",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B08"
+        },
+        {
+          "beat_ref": "SC01-B09",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B09"
+        },
+        {
+          "beat_ref": "SC01-B10",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B10"
+        },
+        {
+          "beat_ref": "SC01-B11",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B11"
+        },
+        {
+          "beat_ref": "SC01-B12",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B12"
+        },
+        {
+          "beat_ref": "SC01-B13",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC01-B13"
+        }
+      ],
+      "eyelines": [
+        {
+          "source": "林晚",
+          "target": "RED_UMBRELLA",
+          "beat_ref": "SC01-B03",
+          "provenance": "SCRIPT_ACTION"
+        },
+        {
+          "source": "顾沉",
+          "target": "HANDBAG",
+          "beat_ref": "SC01-B04",
+          "provenance": "SCRIPT_ACTION"
+        },
+        {
+          "source": "顾沉",
+          "target": "RED_UMBRELLA",
+          "beat_ref": "SC01-B06",
+          "provenance": "DIRECTOR_AUTHORING_DECISION"
+        },
+        {
+          "source": "林晚",
+          "target": "陆叔",
+          "beat_ref": "SC01-B08",
+          "provenance": "DIRECTOR_AUTHORING_DECISION"
+        },
+        {
+          "source": "林晚",
+          "target": "HANDBAG",
+          "beat_ref": "SC01-B10",
+          "provenance": "SCRIPT_ACTION"
+        }
+      ],
+      "prop_spatial_states": [
+        {
+          "prop_id": "RED_UMBRELLA",
+          "beat_ref": "SC01-B03",
+          "zone": "ST_PLATFORM_SIGHT",
+          "state": "visible"
+        },
+        {
+          "prop_id": "RED_UMBRELLA",
+          "beat_ref": "SC01-B09",
+          "zone": "ST_PLATFORM_SIGHT",
+          "state": "absent; water_trace_remains"
+        },
+        {
+          "prop_id": "BROKEN_UMBRELLA_RIB",
+          "beat_ref": "SC01-B04",
+          "zone": "HANDBAG",
+          "state": "visible_inside_bag"
+        },
+        {
+          "prop_id": "BROKEN_UMBRELLA_RIB",
+          "beat_ref": "SC01-B10",
+          "zone": "HANDBAG",
+          "state": "missing"
+        },
+        {
+          "prop_id": "HANDBAG",
+          "beat_ref": "SC01-B07",
+          "zone": "ST_CENTER",
+          "state": "transferred_to_LU_SHU"
+        },
+        {
+          "prop_id": "TICKET",
+          "beat_ref": "SC01-B01",
+          "zone": "ST_TICKET",
+          "state": "held_by_LIN_WAN"
+        }
+      ],
+      "critical_props": [
+        "RED_UMBRELLA",
+        "BROKEN_UMBRELLA_RIB",
+        "HANDBAG",
+        "TICKET"
+      ],
+      "interactions": [
+        {
+          "beat_ref": "SC01-B05",
+          "actor": "顾沉",
+          "target": "林晚",
+          "interaction": "approaches_and_questions",
+          "spatial_effect": "缩短距离但保留林晚退向检票口的可能"
+        },
+        {
+          "beat_ref": "SC01-B07",
+          "actor": "陆叔",
+          "target": "HANDBAG",
+          "interaction": "takes_bag",
+          "spatial_effect": "陆叔获得道具控制权并介入林晚出口方向"
+        },
+        {
+          "beat_ref": "SC01-B12",
+          "actor": "陆叔",
+          "target": "林晚",
+          "interaction": "agrees_too_quickly_to_return",
+          "spatial_effect": "两人共同转向ST_CHECK"
+        }
+      ],
+      "interaction_axes": [
+        {
+          "axis_id": "AXIS_LW_GC",
+          "subjects": [
+            "林晚",
+            "顾沉"
+          ],
+          "established_at_beat": "SC01-B05",
+          "continuity_requirement": "PRESERVE_UNLESS_MOTIVATED_CROSS"
+        },
+        {
+          "axis_id": "AXIS_LW_LS",
+          "subjects": [
+            "林晚",
+            "陆叔"
+          ],
+          "established_at_beat": "SC01-B07",
+          "continuity_requirement": "PRESERVE_UNLESS_MOTIVATED_CROSS"
+        }
+      ],
+      "director_direction_refs": [
+        "SC01-B03",
+        "SC01-B04",
+        "SC01-B05",
+        "SC01-B06",
+        "SC01-B08",
+        "SC01-B09",
+        "SC01-B10",
+        "SC01-B11",
+        "SC01-B12",
+        "SC01-B13"
+      ],
+      "provenance": {
+        "space_model": "RELATIVE_SPATIAL_MODEL",
+        "characters": "DIRECTOR_AUTHORING_DECISION",
+        "beat_spatial_states": "DIRECTOR_AUTHORING_DECISION",
+        "props": "SCRIPT_ACTION",
+        "eyelines": "DIRECTOR_AUTHORING_DECISION"
+      },
+      "source_script_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
+      "treatment_fingerprint": "01731b4e411c264cad120e368d71babf70d350313d68619a3b0a876e2183e351",
+      "provider_not_called": true,
+      "model_info": {
+        "mode": "deterministic_phase_b_candidate",
+        "llm_called": false,
+        "provider_not_called": true,
+        "provider_calls": 0,
+        "repair_count": 0
+      },
+      "spatial_rule": "relative positions are authoritative within the locked location; no camera decision is encoded",
+      "validation": {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "blocker_count": 0,
+        "warning_count": 0,
+        "critical_beat_count": 10,
+        "covered_critical_beat_count": 10,
+        "camera_leakage_count": 0
+      },
+      "status": "ready_for_review",
+      "blocking_fingerprint": "6dccea37aa1ee6cadbd4cb4f91ce2bff1362bafff4c8beba9dee1b273e414d86"
+    },
+    {
+      "schema_version": "scene_blocking_v2_phase_b",
+      "scene_id": "E01_SC002",
+      "scene_name": "林晚的公寓客厅",
+      "space_model": {
+        "geometry_precision": "RELATIVE",
+        "zones": [
+          {
+            "zone_id": "APT_ENTRY",
+            "name": "玄关/门",
+            "spatial_relation": "林晚进出和可见出口",
+            "allowed_characters": [
+              "林晚",
+              "陆叔"
+            ],
+            "key_props": [
+              "门锁",
+              "水渍",
+              "暗红纤维"
+            ]
+          },
+          {
+            "zone_id": "APT_CENTER",
+            "name": "客厅中央",
+            "spatial_relation": "门、厨房、茶几之间的初始缓冲区",
+            "allowed_characters": [
+              "林晚",
+              "陆叔"
+            ],
+            "key_props": [
+              "手提包"
+            ]
+          },
+          {
+            "zone_id": "APT_KITCHEN",
+            "name": "厨房/水槽",
+            "spatial_relation": "陆叔可用日常动作介入客厅",
+            "allowed_characters": [
+              "陆叔"
+            ],
+            "key_props": [
+              "苹果",
+              "水槽"
+            ]
+          },
+          {
+            "zone_id": "APT_TABLE",
+            "name": "茶几",
+            "spatial_relation": "林晚后退时的物证和身体边界",
+            "allowed_characters": [
+              "林晚",
+              "陆叔"
+            ],
+            "key_props": [
+              "茶几划痕"
+            ]
+          },
+          {
+            "zone_id": "APT_WINDOW",
+            "name": "窗户",
+            "spatial_relation": "侧向光线和纤维飘落可见区域",
+            "allowed_characters": [
+              "林晚",
+              "陆叔"
+            ],
+            "key_props": [
+              "暗红纤维"
+            ]
+          }
+        ],
+        "anchors": [
+          "玄关门",
+          "厨房水槽",
+          "茶几",
+          "窗户"
+        ],
+        "connections": [
+          {
+            "from": "APT_ENTRY",
+            "to": "APT_CENTER",
+            "relation": "进入客厅",
+            "continuity": "门始终可见"
+          },
+          {
+            "from": "APT_CENTER",
+            "to": "APT_KITCHEN",
+            "relation": "照顾动作路径",
+            "continuity": "陆叔借日常移动介入出口"
+          },
+          {
+            "from": "APT_CENTER",
+            "to": "APT_TABLE",
+            "relation": "后退边界",
+            "continuity": "林晚后段退至此处"
+          }
+        ],
+        "authority": "LOCKED_VISUAL_LOCATION_OR_RELATIVE_SPATIAL_MODEL"
+      },
+      "zones": [
+        {
+          "zone_id": "APT_ENTRY",
+          "name": "玄关/门",
+          "spatial_relation": "林晚进出和可见出口",
+          "allowed_characters": [
+            "林晚",
+            "陆叔"
+          ],
+          "key_props": [
+            "门锁",
+            "水渍",
+            "暗红纤维"
+          ]
+        },
+        {
+          "zone_id": "APT_CENTER",
+          "name": "客厅中央",
+          "spatial_relation": "门、厨房、茶几之间的初始缓冲区",
+          "allowed_characters": [
+            "林晚",
+            "陆叔"
+          ],
+          "key_props": [
+            "手提包"
+          ]
+        },
+        {
+          "zone_id": "APT_KITCHEN",
+          "name": "厨房/水槽",
+          "spatial_relation": "陆叔可用日常动作介入客厅",
+          "allowed_characters": [
+            "陆叔"
+          ],
+          "key_props": [
+            "苹果",
+            "水槽"
+          ]
+        },
+        {
+          "zone_id": "APT_TABLE",
+          "name": "茶几",
+          "spatial_relation": "林晚后退时的物证和身体边界",
+          "allowed_characters": [
+            "林晚",
+            "陆叔"
+          ],
+          "key_props": [
+            "茶几划痕"
+          ]
+        },
+        {
+          "zone_id": "APT_WINDOW",
+          "name": "窗户",
+          "spatial_relation": "侧向光线和纤维飘落可见区域",
+          "allowed_characters": [
+            "林晚",
+            "陆叔"
+          ],
+          "key_props": [
+            "暗红纤维"
+          ]
+        }
+      ],
+      "anchors": [
+        "玄关门",
+        "厨房水槽",
+        "茶几",
+        "窗户"
+      ],
+      "connections": [
+        {
+          "from": "APT_ENTRY",
+          "to": "APT_CENTER",
+          "relation": "进入客厅",
+          "continuity": "门始终可见"
+        },
+        {
+          "from": "APT_CENTER",
+          "to": "APT_KITCHEN",
+          "relation": "照顾动作路径",
+          "continuity": "陆叔借日常移动介入出口"
+        },
+        {
+          "from": "APT_CENTER",
+          "to": "APT_TABLE",
+          "relation": "后退边界",
+          "continuity": "林晚后段退至此处"
+        }
+      ],
+      "characters": [
+        {
+          "character": "林晚",
+          "entry": "从APT_ENTRY进入",
+          "initial_position": "APT_CENTER靠近门的内侧",
+          "facing": "陆叔_then_环境物证",
+          "movement_path": [
+            {
+              "beat_ref": "SC02-B02",
+              "from": "APT_CENTER",
+              "to": "APT_CENTER靠近陆叔",
+              "reason": "主动试探"
+            },
+            {
+              "beat_ref": "SC02-B04",
+              "from": "APT_CENTER",
+              "to": "APT_TABLE侧边",
+              "reason": "被Gaslighting后寻找物证"
+            },
+            {
+              "beat_ref": "SC02-B07",
+              "from": "APT_TABLE侧边",
+              "to": "APT_TABLE后缘",
+              "reason": "面对威胁后退"
+            }
+          ],
+          "exit": "remains_trapped_at_APT_TABLE"
+        },
+        {
+          "character": "陆叔",
+          "entry": "随林晚从APT_ENTRY进入并锁门",
+          "initial_position": "APT_ENTRY与APT_CENTER之间",
+          "facing": "林晚",
+          "movement_path": [
+            {
+              "beat_ref": "SC02-B01",
+              "from": "APT_ENTRY",
+              "to": "APT_KITCHEN",
+              "reason": "用洗苹果建立照顾日常"
+            },
+            {
+              "beat_ref": "SC02-B03",
+              "from": "APT_KITCHEN",
+              "to": "APT_CENTER与APT_ENTRY之间",
+              "reason": "D029后介入出口关系"
+            },
+            {
+              "beat_ref": "SC02-B07",
+              "from": "APT_CENTER",
+              "to": "APT_TABLE前方",
+              "reason": "威胁显形并压缩距离"
+            }
+          ],
+          "exit": "remains_between_LIN_WAN_and_APT_ENTRY"
+        }
+      ],
+      "participants": [
+        {
+          "character": "林晚",
+          "entry": "从APT_ENTRY进入",
+          "initial_position": "APT_CENTER靠近门的内侧",
+          "facing": "陆叔_then_环境物证",
+          "movement_path": [
+            {
+              "beat_ref": "SC02-B02",
+              "from": "APT_CENTER",
+              "to": "APT_CENTER靠近陆叔",
+              "reason": "主动试探"
+            },
+            {
+              "beat_ref": "SC02-B04",
+              "from": "APT_CENTER",
+              "to": "APT_TABLE侧边",
+              "reason": "被Gaslighting后寻找物证"
+            },
+            {
+              "beat_ref": "SC02-B07",
+              "from": "APT_TABLE侧边",
+              "to": "APT_TABLE后缘",
+              "reason": "面对威胁后退"
+            }
+          ],
+          "exit": "remains_trapped_at_APT_TABLE"
+        },
+        {
+          "character": "陆叔",
+          "entry": "随林晚从APT_ENTRY进入并锁门",
+          "initial_position": "APT_ENTRY与APT_CENTER之间",
+          "facing": "林晚",
+          "movement_path": [
+            {
+              "beat_ref": "SC02-B01",
+              "from": "APT_ENTRY",
+              "to": "APT_KITCHEN",
+              "reason": "用洗苹果建立照顾日常"
+            },
+            {
+              "beat_ref": "SC02-B03",
+              "from": "APT_KITCHEN",
+              "to": "APT_CENTER与APT_ENTRY之间",
+              "reason": "D029后介入出口关系"
+            },
+            {
+              "beat_ref": "SC02-B07",
+              "from": "APT_CENTER",
+              "to": "APT_TABLE前方",
+              "reason": "威胁显形并压缩距离"
+            }
+          ],
+          "exit": "remains_between_LIN_WAN_and_APT_ENTRY"
+        }
+      ],
+      "movement_paths": [
+        {
+          "beat_ref": "SC02-B02",
+          "from": "APT_CENTER",
+          "to": "APT_CENTER靠近陆叔",
+          "reason": "主动试探"
+        },
+        {
+          "beat_ref": "SC02-B04",
+          "from": "APT_CENTER",
+          "to": "APT_TABLE侧边",
+          "reason": "被Gaslighting后寻找物证"
+        },
+        {
+          "beat_ref": "SC02-B07",
+          "from": "APT_TABLE侧边",
+          "to": "APT_TABLE后缘",
+          "reason": "面对威胁后退"
+        },
+        {
+          "beat_ref": "SC02-B01",
+          "from": "APT_ENTRY",
+          "to": "APT_KITCHEN",
+          "reason": "用洗苹果建立照顾日常"
+        },
+        {
+          "beat_ref": "SC02-B03",
+          "from": "APT_KITCHEN",
+          "to": "APT_CENTER与APT_ENTRY之间",
+          "reason": "D029后介入出口关系"
+        },
+        {
+          "beat_ref": "SC02-B07",
+          "from": "APT_CENTER",
+          "to": "APT_TABLE前方",
+          "reason": "威胁显形并压缩距离"
+        }
+      ],
+      "beat_spatial_states": [
+        {
+          "beat_ref": "SC02-B02",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER靠近门的内侧",
+              "facing": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_ENTRY与APT_CENTER之间",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC02-B02"
+        },
+        {
+          "beat_ref": "SC02-B03",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER靠近门的内侧",
+              "facing": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_ENTRY与APT_CENTER之间",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC02-B03"
+        },
+        {
+          "beat_ref": "SC02-B04",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER靠近门的内侧",
+              "facing": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_ENTRY与APT_CENTER之间",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC02-B04"
+        },
+        {
+          "beat_ref": "SC02-B05",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER靠近门的内侧",
+              "facing": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_ENTRY与APT_CENTER之间",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC02-B05"
+        },
+        {
+          "beat_ref": "SC02-B06",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER靠近门的内侧",
+              "facing": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_ENTRY与APT_CENTER之间",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC02-B06"
+        },
+        {
+          "beat_ref": "SC02-B07",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER靠近门的内侧",
+              "facing": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_ENTRY与APT_CENTER之间",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC02-B07"
+        },
+        {
+          "beat_ref": "SC02-B08",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER靠近门的内侧",
+              "facing": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_ENTRY与APT_CENTER之间",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC02-B08"
+        },
+        {
+          "beat_ref": "SC02-B09",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER靠近门的内侧",
+              "facing": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_ENTRY与APT_CENTER之间",
+              "facing": "林晚"
+            }
+          },
+          "props": {},
+          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
+          "director_direction_ref": "SC02-B09"
+        }
+      ],
+      "eyelines": [
+        {
+          "source": "林晚",
+          "target": "陆叔",
+          "beat_ref": "SC02-B02",
+          "provenance": "DIRECTOR_AUTHORING_DECISION"
+        },
+        {
+          "source": "陆叔",
+          "target": "林晚",
+          "beat_ref": "SC02-B03",
+          "provenance": "DIRECTOR_AUTHORING_DECISION"
+        },
+        {
+          "source": "林晚",
+          "target": "TABLE_SCRATCH",
+          "beat_ref": "SC02-B05",
+          "provenance": "SCRIPT_ACTION"
+        },
+        {
+          "source": "林晚",
+          "target": "POCKET_HARD_OBJECT",
+          "beat_ref": "SC02-B05",
+          "provenance": "SCRIPT_ACTION"
+        },
+        {
+          "source": "林晚",
+          "target": "RED_FIBER",
+          "beat_ref": "SC02-B06",
+          "provenance": "SCRIPT_ACTION"
+        },
+        {
+          "source": "陆叔",
+          "target": "RED_FIBER",
+          "beat_ref": "SC02-B09",
+          "provenance": "SCRIPT_ACTION"
+        }
+      ],
+      "prop_spatial_states": [
+        {
+          "prop_id": "DOOR_LOCK",
+          "beat_ref": "SC02-B01",
+          "zone": "APT_ENTRY",
+          "state": "locked_by_LU_SHU"
+        },
+        {
+          "prop_id": "APPLE",
+          "beat_ref": "SC02-B01",
+          "zone": "APT_KITCHEN",
+          "state": "washed_by_LU_SHU"
+        },
+        {
+          "prop_id": "TABLE_SCRATCH",
+          "beat_ref": "SC02-B05",
+          "zone": "APT_TABLE",
+          "state": "visible_to_LIN_WAN"
+        },
+        {
+          "prop_id": "POCKET_HARD_OBJECT",
+          "beat_ref": "SC02-B05",
+          "zone": "APT_CENTER",
+          "state": "in_LU_SHU_pocket"
+        },
+        {
+          "prop_id": "RED_FIBER",
+          "beat_ref": "SC02-B06",
+          "zone": "APT_ENTRY",
+          "state": "visible_on_water_trace"
+        },
+        {
+          "prop_id": "HANDBAG",
+          "beat_ref": "SC02-B04",
+          "zone": "APT_CENTER",
+          "state": "with_LIN_WAN"
+        }
+      ],
+      "critical_props": [
+        "DOOR_LOCK",
+        "APPLE",
+        "TABLE_SCRATCH",
+        "POCKET_HARD_OBJECT",
+        "RED_FIBER",
+        "HANDBAG"
+      ],
+      "interactions": [
+        {
+          "beat_ref": "SC02-B01",
+          "actor": "陆叔",
+          "target": "DOOR_LOCK",
+          "interaction": "locks_door",
+          "spatial_effect": "出口从可用变成被陆叔控制"
+        },
+        {
+          "beat_ref": "SC02-B03",
+          "actor": "陆叔",
+          "target": "林晚",
+          "interaction": "gaslights_memory",
+          "spatial_effect": "林晚停止向前并转向环境"
+        },
+        {
+          "beat_ref": "SC02-B07",
+          "actor": "陆叔",
+          "target": "林晚",
+          "interaction": "threatens",
+          "spatial_effect": "陆叔站到林晚与门之间"
+        }
+      ],
+      "interaction_axes": [
+        {
+          "axis_id": "AXIS_LW_LS_APT",
+          "subjects": [
+            "林晚",
+            "陆叔"
+          ],
+          "established_at_beat": "SC02-B02",
+          "continuity_requirement": "PRESERVE_UNLESS_MOTIVATED_CROSS"
+        }
+      ],
+      "director_direction_refs": [
+        "SC02-B02",
+        "SC02-B03",
+        "SC02-B04",
+        "SC02-B05",
+        "SC02-B06",
+        "SC02-B07",
+        "SC02-B08",
+        "SC02-B09"
+      ],
+      "provenance": {
+        "space_model": "RELATIVE_SPATIAL_MODEL",
+        "characters": "DIRECTOR_AUTHORING_DECISION",
+        "beat_spatial_states": "DIRECTOR_AUTHORING_DECISION",
+        "props": "SCRIPT_ACTION",
+        "eyelines": "DIRECTOR_AUTHORING_DECISION"
+      },
+      "source_script_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
+      "treatment_fingerprint": "1942e419c762fc04440376caee7f48a274ce18c4d8c498dcf8209bf52d283204",
+      "provider_not_called": true,
+      "model_info": {
+        "mode": "deterministic_phase_b_candidate",
+        "llm_called": false,
+        "provider_not_called": true,
+        "provider_calls": 0,
+        "repair_count": 0
+      },
+      "spatial_rule": "relative positions are authoritative within the locked location; no camera decision is encoded",
+      "validation": {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "blocker_count": 0,
+        "warning_count": 0,
+        "critical_beat_count": 8,
+        "covered_critical_beat_count": 8,
+        "camera_leakage_count": 0
+      },
+      "status": "ready_for_review",
+      "blocking_fingerprint": "5e11a939d2a40c5066398ab7a9f4e3d606e4cf95037abada1761627facfcd7d5"
+    }
+  ],
+  "authority": {
+    "status": "PRODUCTION_QUALIFIED",
+    "pointer_policy": "current_only",
+    "latest_approved_fallback": false
+  }
+}

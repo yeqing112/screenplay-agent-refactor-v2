@@ -365,3 +365,96 @@ def repair_scene_blocking(candidate: dict[str, Any], *, max_attempts: int = 2, r
         return issues
 
     return qualify_candidate(current, [validator], max_attempts=max_attempts, repair_recorder=repair_recorder, repair_context=repair_context)
+
+
+# ---------------------------------------------------------------------------
+# Phase B materialized blocking contract
+
+def validate_scene_blocking_phase_b(blocking: dict[str, Any], *, scene: dict[str, Any] | None = None, locked_geometry: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Fail closed on an unmaterialized Phase B spatial candidate.
+
+    This is additive to the historical V2 validator.  It deliberately speaks
+    in spatial events only; camera placement, lens, shot size and duration are
+    rejected here and remain Phase C concerns.
+    """
+    errors: list[dict[str, Any]] = []
+    warnings: list[dict[str, Any]] = []
+    if not isinstance(blocking, dict):
+        return {"status": "blocked", "errors": [{"code": "BLOCKING_NOT_MATERIALIZED", "severity": "blocker"}], "warnings": []}
+    placeholder_tokens = ("由确定性调度补齐", "待后续生成", "maintain", "默认位置", "未指定")
+    for field in ("space_model", "zones", "movement_paths", "beat_spatial_states", "eyelines", "prop_spatial_states", "interactions"):
+        value = blocking.get(field)
+        if value in (None, "", [], {}):
+            errors.append({"code": "BLOCKING_NOT_MATERIALIZED" if field == "space_model" else "BLOCKING_SPACE_MODEL_MISSING", "field": field, "severity": "blocker", "message": f"{field} is absent"})
+    if any(token in str(blocking.get("spatial_rule") or "") for token in placeholder_tokens) or any(token in str(blocking.get("spatial_rules") or "") for token in placeholder_tokens):
+        errors.append({"code": "BLOCKING_NOT_MATERIALIZED", "severity": "blocker", "message": "placeholder spatial rule"})
+    participants = blocking.get("characters") if isinstance(blocking.get("characters"), list) else blocking.get("participants") if isinstance(blocking.get("participants"), list) else []
+    for person in participants:
+        if not isinstance(person, dict) or not str(person.get("entry") or "").strip() or not str(person.get("exit") or "").strip():
+            errors.append({"code": "BLOCKING_CHARACTER_ENTRY_EXIT_MISSING", "severity": "blocker", "message": "each core character needs entry and exit"})
+            break
+    beats = scene.get("dramatic_beats") if isinstance(scene, dict) and isinstance(scene.get("dramatic_beats"), list) else scene.get("beats", []) if isinstance(scene, dict) else []
+    required = {str(b.get("beat_id")) for b in beats if isinstance(b, dict) and (str(b.get("importance", "")).lower() == "critical" or b.get("requires_reaction") is True)}
+    states = blocking.get("beat_spatial_states") if isinstance(blocking.get("beat_spatial_states"), list) else []
+    covered = {str(x.get("beat_ref")) for x in states if isinstance(x, dict)}
+    missing = sorted(required - covered)
+    if missing:
+        errors.append({"code": "BLOCKING_CRITICAL_BEAT_COVERAGE_INCOMPLETE", "severity": "blocker", "missing": missing})
+    eyelines = blocking.get("eyelines") if isinstance(blocking.get("eyelines"), list) else []
+    if any(not isinstance(x, dict) or not x.get("source") or not x.get("target") or not x.get("beat_ref") for x in eyelines):
+        errors.append({"code": "BLOCKING_EYELINE_MISSING", "severity": "blocker", "message": "eyeline records require source, target and beat_ref"})
+    props = blocking.get("prop_spatial_states") if isinstance(blocking.get("prop_spatial_states"), list) else []
+    critical_props = set(blocking.get("critical_props") or [])
+    if critical_props and not critical_props.issubset({str(x.get("prop_id")) for x in props if isinstance(x, dict)}):
+        errors.append({"code": "BLOCKING_PROP_STATE_MISSING", "severity": "blocker", "missing": sorted(critical_props - {str(x.get("prop_id")) for x in props if isinstance(x, dict)})})
+    leaked: list[str] = []
+    forbidden = {"shot_size", "lens", "camera_movement", "duration", "edit_cut", "cut_strategy", "camera_position"}
+    def walk(value: Any, path: str = "") -> None:
+        if isinstance(value, dict):
+            for key, item in value.items():
+                if str(key).lower() in forbidden:
+                    leaked.append(path + "/" + str(key))
+                walk(item, path + "/" + str(key))
+        elif isinstance(value, list):
+            for i, item in enumerate(value):
+                walk(item, path + f"/{i}")
+    walk(blocking)
+    if leaked:
+        errors.append({"code": "BLOCKING_CAMERA_DESIGN_LEAK", "severity": "blocker", "paths": leaked})
+    axis = blocking.get("interaction_axes")
+    if not isinstance(axis, list) or not axis:
+        errors.append({"code": "BLOCKING_CAMERA_DESIGN_LEAK", "severity": "blocker", "message": "blocking requires interaction axes, not camera_axis"})
+    if isinstance(locked_geometry, dict) and blocking.get("space_model"):
+        locked_zones = {str(x.get("zone_id") or x.get("id")) for x in locked_geometry.get("zones", []) if isinstance(x, dict)}
+        used_zones = {str(x.get("zone_id")) for x in blocking.get("zones", []) if isinstance(x, dict)}
+        if locked_zones and not used_zones.issubset(locked_zones):
+            errors.append({"code": "BLOCKING_GEOMETRY_AUTHORITY_CONFLICT", "severity": "blocker", "message": "blocking references zones outside locked geometry"})
+    return {"status": "qualified" if not errors else "blocked", "errors": errors, "warnings": warnings, "blocker_count": len(errors), "warning_count": len(warnings), "critical_beat_count": len(required), "covered_critical_beat_count": len(required & covered), "camera_leakage_count": len(leaked)}
+
+
+def build_scene_blocking_phase_b(*, scene: dict[str, Any], treatment: dict[str, Any], source_script_hash: str = "", directives: dict[str, Any] | None = None, locked_geometry: dict[str, Any] | None = None, provider_not_called: bool = True) -> dict[str, Any]:
+    """Materialize relative spatial choreography bound to a V2 treatment."""
+    d = directives if isinstance(directives, dict) else {}
+    scene_id = _name(scene.get("scene_id") or scene.get("id") or treatment.get("scene_id"))
+    name = _name(scene.get("name") or treatment.get("scene_name")) or "未命名场景"
+    zones = list(d.get("zones") or [])
+    anchors = list(d.get("anchors") or [])
+    connections = list(d.get("connections") or [])
+    space_model = d.get("space_model") or {"geometry_precision": "RELATIVE", "zones": zones, "anchors": anchors, "connections": connections, "authority": "LOCKED_VISUAL_LOCATION_OR_RELATIVE_SPATIAL_MODEL"}
+    chars = list(d.get("characters") or [])
+    if not chars:
+        for item in treatment.get("character_directions", []) if isinstance(treatment.get("character_directions"), list) else []:
+            if isinstance(item, dict):
+                chars.append({"character": item.get("character"), "entry": "already_present", "initial_position": "scene_center", "facing": "toward the active interaction", "movement_path": [], "exit": "remains_in_scene"})
+    beats = scene.get("dramatic_beats") if isinstance(scene.get("dramatic_beats"), list) else scene.get("beats", []) if isinstance(scene.get("beats"), list) else []
+    critical = [b for b in beats if isinstance(b, dict) and (str(b.get("importance", "")).lower() == "critical" or b.get("requires_reaction") is True)]
+    states = list(d.get("beat_spatial_states") or [{"beat_ref": b.get("beat_id"), "characters": {str(p.get("character")): {"zone": p.get("initial_position"), "facing": p.get("facing")} for p in chars if isinstance(p, dict)}, "props": {}, "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared", "director_direction_ref": b.get("beat_id")} for b in critical])
+    eyelines = list(d.get("eyelines") or [{"source": str(p.get("character")), "target": "active_interaction", "beat_ref": b.get("beat_id"), "provenance": "DIRECTOR_AUTHORING_DECISION"} for b in critical[: max(1, len(chars))] for p in chars[:1] if isinstance(p, dict)])
+    props = list(d.get("prop_spatial_states") or [])
+    interactions = list(d.get("interactions") or [])
+    axes = list(d.get("interaction_axes") or [{"axis_id": f"AXIS_{i+1:02d}", "subjects": [str(p.get("character")) for p in chars[:2] if isinstance(p, dict)], "established_at_beat": (critical[0].get("beat_id") if critical else "SCENE_START"), "continuity_requirement": "PRESERVE_UNLESS_MOTIVATED_CROSS"} for i in range(1 if len(chars) > 1 else 0)])
+    result = {"schema_version": "scene_blocking_v2_phase_b", "scene_id": scene_id, "scene_name": name, "space_model": space_model, "zones": zones, "anchors": anchors, "connections": connections, "characters": chars, "participants": chars, "movement_paths": [x for p in chars if isinstance(p, dict) for x in p.get("movement_path", []) if isinstance(x, dict)], "beat_spatial_states": states, "eyelines": eyelines, "prop_spatial_states": props, "critical_props": list(d.get("critical_props") or []), "interactions": interactions, "interaction_axes": axes, "director_direction_refs": list(d.get("director_direction_refs") or [x.get("director_direction_ref") for x in states if isinstance(x, dict)]), "provenance": d.get("provenance") or {"space_model": "LOCKED_LOCATION_GEOMETRY" if locked_geometry else "RELATIVE_SPATIAL_MODEL", "characters": "DIRECTOR_AUTHORING_DECISION", "beat_spatial_states": "DIRECTOR_AUTHORING_DECISION", "props": "SCRIPT_ACTION", "eyelines": "DIRECTOR_AUTHORING_DECISION"}, "source_script_hash": source_script_hash, "treatment_fingerprint": treatment.get("candidate_fingerprint") or treatment.get("prompt_fingerprint"), "provider_not_called": bool(provider_not_called), "model_info": {"mode": "deterministic_phase_b_candidate", "llm_called": False, "provider_not_called": bool(provider_not_called), "provider_calls": 0, "repair_count": 0}, "spatial_rule": "relative positions are authoritative within the locked location; no camera decision is encoded"}
+    result["validation"] = validate_scene_blocking_phase_b(result, scene=scene, locked_geometry=locked_geometry)
+    result["status"] = "ready_for_review" if result["validation"]["status"] == "qualified" else "blocked"
+    result["blocking_fingerprint"] = hashlib.sha256(_canonical(result).encode("utf-8")).hexdigest()
+    return result

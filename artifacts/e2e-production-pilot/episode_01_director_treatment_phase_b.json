@@ -1,0 +1,1032 @@
+{
+  "schema_version": "director_treatment_v2_phase_b_pilot",
+  "book_id": 990401,
+  "episode": 1,
+  "script_ir": {
+    "pointer": "current:990401:E01",
+    "payload_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db"
+  },
+  "scenes": [
+    {
+      "scene_name": "旧火车站售票厅",
+      "dramatic_objective": "围绕“林晚买票逃离。”建立冲突，并通过“顾沉留下伞骨扎手的警告离开。”推进本场戏。",
+      "audience_question": "新信息将如何改变观众对人物关系的判断？",
+      "character_intents": {
+        "林晚": {
+          "name": "林晚",
+          "goal": "完成本场戏的叙事目标",
+          "obstacle": "场景中的对立力量或信息缺口",
+          "tactic": "通过行动而非解释推进局面",
+          "subtext": "",
+          "emotion_in": "克制",
+          "emotion_out": "变化中",
+          "power_in": 0.5,
+          "power_out": 0.5
+        },
+        "顾沉": {
+          "name": "顾沉",
+          "goal": "完成本场戏的叙事目标",
+          "obstacle": "场景中的对立力量或信息缺口",
+          "tactic": "通过行动而非解释推进局面",
+          "subtext": "",
+          "emotion_in": "克制",
+          "emotion_out": "变化中",
+          "power_in": 0.5,
+          "power_out": 0.5
+        },
+        "陆叔": {
+          "name": "陆叔",
+          "goal": "完成本场戏的叙事目标",
+          "obstacle": "场景中的对立力量或信息缺口",
+          "tactic": "通过行动而非解释推进局面",
+          "subtext": "",
+          "emotion_in": "克制",
+          "emotion_out": "变化中",
+          "power_in": 0.5,
+          "power_out": 0.5
+        },
+        "售票员": {
+          "name": "售票员",
+          "goal": "完成本场戏的叙事目标",
+          "obstacle": "场景中的对立力量或信息缺口",
+          "tactic": "通过行动而非解释推进局面",
+          "subtext": "",
+          "emotion_in": "克制",
+          "emotion_out": "变化中",
+          "power_in": 0.5,
+          "power_out": 0.5
+        }
+      },
+      "beat_map": [
+        {
+          "beat_id": "SC01-B01",
+          "type": "action",
+          "event": "林晚买票逃离。",
+          "dramatic_function": "推进可见行动",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "ACTION",
+          "objective": "买票逃离",
+          "characters": [
+            "林晚"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": false,
+          "importance": "normal"
+        },
+        {
+          "beat_id": "SC01-B02",
+          "type": "action",
+          "event": "售票员回应车次。",
+          "dramatic_function": "推进可见行动",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "ACTION",
+          "objective": "购票流程",
+          "characters": [
+            "售票员"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": false,
+          "importance": "normal"
+        },
+        {
+          "beat_id": "SC01-B03",
+          "type": "reveal",
+          "event": "林晚看见站台红伞。",
+          "dramatic_function": "揭示新信息",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVEAL",
+          "objective": "红伞第一次出现必须形成强视觉注意点",
+          "characters": [
+            "林晚"
+          ],
+          "information_delta": "红伞出现",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC01-B04",
+          "type": "reveal",
+          "event": "手提包掉落露出断伞骨。",
+          "dramatic_function": "揭示新信息",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVEAL",
+          "objective": "展示林晚拥有断伞骨",
+          "characters": [
+            "林晚",
+            "顾沉"
+          ],
+          "information_delta": "林晚拥有断伞骨",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC01-B05",
+          "type": "question",
+          "event": "顾沉出现叫出林晚名字。",
+          "dramatic_function": "推进当前叙事节拍",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "QUESTION",
+          "objective": "引入威胁感来源",
+          "characters": [
+            "顾沉",
+            "林晚"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "normal"
+        },
+        {
+          "beat_id": "SC01-B06",
+          "type": "reveal",
+          "event": "顾沉指出红伞与断伞骨。",
+          "dramatic_function": "揭示新信息",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVEAL",
+          "objective": "顾沉知道得过多",
+          "characters": [
+            "顾沉",
+            "林晚"
+          ],
+          "information_delta": "顾沉知道伞骨",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC01-B07",
+          "type": "action",
+          "event": "陆叔出现并接过手提包。",
+          "dramatic_function": "推进可见行动",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "ACTION",
+          "objective": "引入陆叔长辈伪装",
+          "characters": [
+            "陆叔",
+            "林晚"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": false,
+          "importance": "normal"
+        },
+        {
+          "beat_id": "SC01-B08",
+          "type": "reveal",
+          "event": "陆叔对红伞异常，口袋鼓出硬物。",
+          "dramatic_function": "揭示新信息",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVEAL",
+          "objective": "怀疑从顾沉引向陆叔",
+          "characters": [
+            "陆叔",
+            "林晚"
+          ],
+          "information_delta": "陆叔对红伞异常",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC01-B09",
+          "type": "reveal",
+          "event": "红伞消失仅剩水渍。",
+          "dramatic_function": "揭示新信息",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVEAL",
+          "objective": "确认异常并非幻觉",
+          "characters": [
+            "林晚"
+          ],
+          "information_delta": "红伞消失",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC01-B10",
+          "type": "decision",
+          "event": "林晚发现包扣被动过，断伞骨不见。",
+          "dramatic_function": "形成决策与权力变化",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "DECISION",
+          "objective": "推动她放弃登车",
+          "characters": [
+            "林晚"
+          ],
+          "information_delta": "断伞骨丢失",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC01-B11",
+          "type": "decision",
+          "event": "林晚决定不上车，谎称忘东西。",
+          "dramatic_function": "形成决策与权力变化",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "DECISION",
+          "objective": "林晚主动试探",
+          "characters": [
+            "林晚",
+            "陆叔"
+          ],
+          "information_delta": "林晚放弃登车",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC01-B12",
+          "type": "reaction",
+          "event": "陆叔立刻同意返回。",
+          "dramatic_function": "推进当前叙事节拍",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REACTION",
+          "objective": "陆叔过快同意成为新怀疑节拍",
+          "characters": [
+            "陆叔",
+            "林晚"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC01-B13",
+          "type": "escalation",
+          "event": "顾沉留下伞骨扎手的警告离开。",
+          "dramatic_function": "推进当前叙事节拍",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "ESCALATION",
+          "objective": "强化谜样威胁",
+          "characters": [
+            "顾沉",
+            "林晚"
+          ],
+          "information_delta": "顾沉留下双关警告",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        }
+      ],
+      "relationship_power_shift": "由节拍中的行动与决策呈现，不预设未声明的关系事实。",
+      "audience_emotion": "从建立预期到产生变化，再留下下一步悬念。",
+      "information_strategy": "只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。",
+      "performance_direction": "以目标、阻碍和策略驱动表演，避免只标注单一情绪。",
+      "visual_strategy": "优先呈现可观察的空间关系、动作节拍和关键道具状态。",
+      "coverage_strategy": "先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。",
+      "sound_strategy": "声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。",
+      "edit_rhythm": "按节拍强弱切换，信息揭示前保留反应空间。",
+      "constraints": [
+        "不得覆盖锁定资产事实",
+        "不得把未声明内容伪装成剧本事实"
+      ],
+      "unknowns": [],
+      "source_script_revision": "phase_a_current",
+      "skill_id": "",
+      "skill_version": "",
+      "status": "ready_for_review",
+      "prompt_fingerprint": "e7ab46f79cdffc026a8dfb4da4d8e98708ef307259cb3b61a3c85e0065c76b94",
+      "model_info": {
+        "mode": "deterministic_phase_b_candidate",
+        "llm_called": false,
+        "provider_not_called": true,
+        "provider_calls": 0,
+        "repair_count": 0
+      },
+      "scene_id": "E01_SC001",
+      "scene_objective": "让林晚从只想离开车站转为主动留下调查；观众的主要怀疑从顾沉逐渐转向陆叔，但顾沉的知识来源仍保持不确定。",
+      "dramatic_question": "红伞和断伞骨究竟把谁与这场异常联系在一起，而林晚能否在被带走前保住主动权？",
+      "audience_state_in": "观众只知道林晚准备逃离，不知道红伞意味着什么，也无法判断顾沉是警告者还是威胁者。",
+      "audience_state_out": "观众知道顾沉掌握异常信息，开始强烈怀疑陆叔与红伞消失有关，但仍不知道红伞的完整来源。",
+      "suspicion_or_information_strategy": [
+        {
+          "order": 1,
+          "beat_ref": "SC01-B03",
+          "information": "红伞在站台视觉区域出现",
+          "visibility": "AUDIENCE_SEES",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚"
+          ],
+          "withheld_from": [
+            "售票员"
+          ],
+          "dramatic_effect": "把逃离行动变成必须观察的危险。"
+        },
+        {
+          "order": 2,
+          "beat_ref": "SC01-B06",
+          "information": "顾沉知道断伞骨",
+          "visibility": "BOTH_SEE",
+          "audience_knows": true,
+          "character_knows": [
+            "顾沉",
+            "林晚"
+          ],
+          "withheld_from": [
+            "陆叔"
+          ],
+          "dramatic_effect": "先把怀疑推向顾沉。"
+        },
+        {
+          "order": 3,
+          "beat_ref": "SC01-B08",
+          "information": "陆叔对红伞异常并接触包",
+          "visibility": "AUDIENCE_SEES",
+          "audience_knows": true,
+          "character_knows": [
+            "陆叔",
+            "林晚"
+          ],
+          "withheld_from": [
+            "顾沉"
+          ],
+          "dramatic_effect": "让陆叔的照顾出现可见裂缝。"
+        },
+        {
+          "order": 4,
+          "beat_ref": "SC01-B09",
+          "information": "红伞消失，只剩水迹",
+          "visibility": "CONFIRMATION",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚"
+          ],
+          "withheld_from": [],
+          "dramatic_effect": "把异常从错觉变成事实。"
+        },
+        {
+          "order": 5,
+          "beat_ref": "SC01-B10",
+          "information": "断伞骨从包内消失",
+          "visibility": "CONFIRMATION",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚"
+          ],
+          "withheld_from": [
+            "陆叔"
+          ],
+          "dramatic_effect": "完成怀疑从顾沉向陆叔的转移。"
+        },
+        {
+          "order": 6,
+          "beat_ref": "SC01-B12",
+          "information": "陆叔过快同意返回",
+          "visibility": "AUDIENCE_SEES",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚"
+          ],
+          "withheld_from": [
+            "陆叔"
+          ],
+          "dramatic_effect": "让林晚把返回变成主动试探。"
+        }
+      ],
+      "character_directions": [
+        {
+          "character": "林晚",
+          "objective": "离开车站并隐藏自己对红伞的恐惧",
+          "obstacle": "顾沉知道断伞骨；陆叔的照顾开始出现异常",
+          "strategy": "先买票和否认，再借返回取物脱身，最后观察并试探陆叔",
+          "strategy_shift": "断伞骨消失后从逃离改为主动调查",
+          "subtext": "我必须让他们相信我还没有看懂",
+          "performance_notes": "恐惧压在动作下面；在包扣被动过时先停住，再抬眼确认陆叔",
+          "avoid": "不要从第一拍就把陆叔演成已被识破的反派"
+        },
+        {
+          "character": "顾沉",
+          "objective": "确认林晚是否仍持有断伞骨并留下警告",
+          "obstacle": "不能证明自己知道这些信息的来源",
+          "strategy": "用正常甚至温和的语气提问，让知识本身产生压力",
+          "strategy_shift": "从试探转为只留下一个可复述的危险提示",
+          "subtext": "我知道得比我应该知道的多",
+          "performance_notes": "不阴森、不威胁；停顿和视线比音量更危险",
+          "avoid": "不要用邪笑、狠厉语气或直接暴露反派身份"
+        },
+        {
+          "character": "陆叔",
+          "objective": "把林晚带离车站并维持可信的长辈伪装",
+          "obstacle": "红伞和包的异常可能暴露他与现场的关系",
+          "strategy": "先接包、安抚、快速答应返回，用身体遮挡和过快反应控制局面",
+          "strategy_shift": "林晚决定回家后短暂恢复慈祥，但答应过快泄露焦虑",
+          "subtext": "只要她跟我回去，我就能重新掌控叙事",
+          "performance_notes": "前三分之二保持可信的照顾者；异常只通过微停顿、遮挡和口袋动作泄漏",
+          "avoid": "不要一出场就带恶意表演"
+        },
+        {
+          "character": "售票员",
+          "objective": "完成售票并保持车站日常秩序",
+          "obstacle": "眼前人物的紧张不属于他的工作范围",
+          "strategy": "机械回应，不替观众解释红伞",
+          "strategy_shift": "从日常背景中退出",
+          "subtext": "我只处理票务",
+          "performance_notes": "表演保持平直，让红伞出现更突兀",
+          "avoid": "不要替戏剧信息做解释"
+        }
+      ],
+      "beat_directions": [
+        {
+          "beat_ref": "SC01-B03",
+          "director_intent": "让“林晚看见站台红伞。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "红伞出现",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B04",
+          "director_intent": "让“手提包掉落露出断伞骨。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "林晚拥有断伞骨",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B05",
+          "director_intent": "让“顾沉出现叫出林晚名字。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "维持已声明信息边界。",
+          "tempo": "measured",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B06",
+          "director_intent": "让“顾沉指出红伞与断伞骨。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "顾沉知道伞骨",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B08",
+          "director_intent": "让“陆叔对红伞异常，口袋鼓出硬物。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "陆叔对红伞异常",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B09",
+          "director_intent": "让“红伞消失仅剩水渍。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "红伞消失",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B10",
+          "director_intent": "让“林晚发现包扣被动过，断伞骨不见。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "断伞骨丢失",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B11",
+          "director_intent": "让“林晚决定不上车，谎称忘东西。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "林晚放弃登车",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B12",
+          "director_intent": "让“陆叔立刻同意返回。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "维持已声明信息边界。",
+          "tempo": "measured",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC01-B13",
+          "director_intent": "让“顾沉留下伞骨扎手的警告离开。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "顾沉留下双关警告",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        }
+      ],
+      "performance_arc": [
+        {
+          "phase": "IN",
+          "state": "林晚压住焦虑，动作目标是买票离开。"
+        },
+        {
+          "phase": "TURN_1",
+          "state": "红伞触发记忆，顾沉的知识让她不安。"
+        },
+        {
+          "phase": "TURN_2",
+          "state": "陆叔接包后带来短暂安全感，随后异常和伞骨消失撕开伪装。"
+        },
+        {
+          "phase": "OUT",
+          "state": "林晚借忘拿东西留下调查，带着主动试探进入下一场。"
+        }
+      ],
+      "rhythm_strategy": {
+        "opening": "让售票日常完整落地",
+        "red_umbrella": "出现后留出林晚反应再进入顾沉",
+        "bag_reveal": "连续短动作但不跳过包扣和伞骨确认",
+        "exit": "陆叔过快答应形成反常的短促收束"
+      },
+      "visual_priority": [
+        "林晚被压住的反应",
+        "红伞与断伞骨的状态变化",
+        "陆叔接包和口袋遮挡造成的关系变化",
+        "林晚与检票口/返回方向的选择"
+      ],
+      "scene_exit_intent": "林晚表面回家，实际把返回变成一次对陆叔的主动试探；顾沉的警告留在观众耳边。",
+      "prohibited_interpretations": [
+        "顾沉不是已确认的反派",
+        "陆叔前段不能被演成明显恶人",
+        "红伞意义不能被本场解释完",
+        "Blocking 不得写入镜头规格"
+      ],
+      "source_script_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
+      "schema_version": "director_treatment_v2",
+      "provider_not_called": true,
+      "validation": {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "blocker_count": 0,
+        "warning_count": 0,
+        "critical_beat_count": 10,
+        "covered_critical_beat_count": 10
+      },
+      "candidate_fingerprint": "01731b4e411c264cad120e368d71babf70d350313d68619a3b0a876e2183e351"
+    },
+    {
+      "scene_name": "林晚的公寓客厅",
+      "dramatic_objective": "围绕“陆叔锁门并洗苹果。”建立冲突，并通过“陆叔盯住碎屑、手停在半空。”推进本场戏。",
+      "audience_question": "新信息将如何改变观众对人物关系的判断？",
+      "character_intents": {
+        "陆叔": {
+          "name": "陆叔",
+          "goal": "完成本场戏的叙事目标",
+          "obstacle": "场景中的对立力量或信息缺口",
+          "tactic": "通过行动而非解释推进局面",
+          "subtext": "",
+          "emotion_in": "克制",
+          "emotion_out": "变化中",
+          "power_in": 0.5,
+          "power_out": 0.5
+        },
+        "林晚": {
+          "name": "林晚",
+          "goal": "完成本场戏的叙事目标",
+          "obstacle": "场景中的对立力量或信息缺口",
+          "tactic": "通过行动而非解释推进局面",
+          "subtext": "",
+          "emotion_in": "克制",
+          "emotion_out": "变化中",
+          "power_in": 0.5,
+          "power_out": 0.5
+        }
+      },
+      "beat_map": [
+        {
+          "beat_id": "SC02-B01",
+          "type": "action",
+          "event": "陆叔锁门并洗苹果。",
+          "dramatic_function": "推进可见行动",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "ACTION",
+          "objective": "建立密闭空间与日常伪装",
+          "characters": [
+            "陆叔"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": false,
+          "importance": "normal"
+        },
+        {
+          "beat_id": "SC02-B02",
+          "type": "question",
+          "event": "林晚试探早到车站。",
+          "dramatic_function": "推进当前叙事节拍",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "QUESTION",
+          "objective": "林晚主动试探",
+          "characters": [
+            "林晚",
+            "陆叔"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC02-B03",
+          "type": "reveal",
+          "event": "陆叔声称一直在一起（Gaslighting）。",
+          "dramatic_function": "揭示新信息",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVEAL",
+          "objective": "陆叔修改记忆的起点",
+          "characters": [
+            "陆叔",
+            "林晚"
+          ],
+          "information_delta": "陆叔开始说谎",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC02-B04",
+          "type": "reaction",
+          "event": "林晚短暂自我怀疑后寻找物证。",
+          "dramatic_function": "推进当前叙事节拍",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REACTION",
+          "objective": "观众看到陆叔正在 Gaslight 林晚",
+          "characters": [
+            "林晚"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC02-B05",
+          "type": "reveal",
+          "event": "口袋硬物显现。",
+          "dramatic_function": "揭示新信息",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVEAL",
+          "objective": "把怀疑推向证据",
+          "characters": [
+            "陆叔",
+            "林晚"
+          ],
+          "information_delta": "口袋硬物",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC02-B06",
+          "type": "reveal",
+          "event": "玄关暗红纤维出现。",
+          "dramatic_function": "揭示新信息",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVEAL",
+          "objective": "串联伞骨与水渍",
+          "characters": [
+            "林晚"
+          ],
+          "information_delta": "暗红纤维碎屑",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC02-B07",
+          "type": "escalation",
+          "event": "陆叔笑容消失、威胁升级。",
+          "dramatic_function": "推进当前叙事节拍",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "ESCALATION",
+          "objective": "Gaslighting 升级为威胁",
+          "characters": [
+            "陆叔",
+            "林晚"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC02-B08",
+          "type": "reversal",
+          "event": "林晚后退，纤维碎屑飘落。",
+          "dramatic_function": "推进当前叙事节拍",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "REVERSAL",
+          "objective": "林晚的恐惧成为反驳谎言的证据",
+          "characters": [
+            "林晚",
+            "陆叔"
+          ],
+          "information_delta": "碎屑与伞骨同源",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        },
+        {
+          "beat_id": "SC02-B09",
+          "type": "hook",
+          "event": "陆叔盯住碎屑、手停在半空。",
+          "dramatic_function": "推进当前叙事节拍",
+          "information_change": "",
+          "emotion_change": "",
+          "beat_type": "HOOK",
+          "objective": "集尾强钩子",
+          "characters": [
+            "陆叔",
+            "林晚"
+          ],
+          "information_delta": "",
+          "emotional_delta": "",
+          "requires_reaction": true,
+          "importance": "critical"
+        }
+      ],
+      "relationship_power_shift": "由节拍中的行动与决策呈现，不预设未声明的关系事实。",
+      "audience_emotion": "从建立预期到产生变化，再留下下一步悬念。",
+      "information_strategy": "只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。",
+      "performance_direction": "以目标、阻碍和策略驱动表演，避免只标注单一情绪。",
+      "visual_strategy": "优先呈现可观察的空间关系、动作节拍和关键道具状态。",
+      "coverage_strategy": "先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。",
+      "sound_strategy": "声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。",
+      "edit_rhythm": "按节拍强弱切换，信息揭示前保留反应空间。",
+      "constraints": [
+        "不得覆盖锁定资产事实",
+        "不得把未声明内容伪装成剧本事实"
+      ],
+      "unknowns": [],
+      "source_script_revision": "phase_a_current",
+      "skill_id": "",
+      "skill_version": "",
+      "status": "ready_for_review",
+      "prompt_fingerprint": "ae451bb77bebd696f0c32a11a63f6961128c2638ea4fd0b8025e0567afa4d581",
+      "model_info": {
+        "mode": "deterministic_phase_b_candidate",
+        "llm_called": false,
+        "provider_not_called": true,
+        "provider_calls": 0,
+        "repair_count": 0
+      },
+      "scene_id": "E01_SC002",
+      "scene_objective": "让陆叔先用照顾和日常秩序动摇林晚对自己记忆的信任，再让连续物证帮助林晚重新确认判断，最终使陆叔从伪装的长辈转为明确威胁。",
+      "dramatic_question": "林晚能否在陆叔重写她的记忆之前，用空间中的客观证据保住自己的判断？",
+      "audience_state_in": "观众已经怀疑陆叔，但尚未看到他如何控制林晚的认知，也不知道红伞证据是否仍在他身上。",
+      "audience_state_out": "观众确认陆叔至少在撒谎并主动操纵林晚；林晚重获确定性，却被逼到没有出口的位置。",
+      "suspicion_or_information_strategy": [
+        {
+          "order": 1,
+          "beat_ref": "SC02-B02",
+          "information": "林晚主动问陆叔是否早到车站",
+          "visibility": "BOTH_SEE",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚",
+            "陆叔"
+          ],
+          "withheld_from": [],
+          "dramatic_effect": "林晚第一次把调查带回家。"
+        },
+        {
+          "order": 2,
+          "beat_ref": "SC02-B03",
+          "information": "陆叔说‘我不是一直和你在一起吗’",
+          "visibility": "MISDIRECT",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚",
+            "陆叔"
+          ],
+          "withheld_from": [],
+          "dramatic_effect": "先让林晚怀疑自己，再让观众等待反证。"
+        },
+        {
+          "order": 3,
+          "beat_ref": "SC02-B05",
+          "information": "茶几划痕和口袋硬物出现",
+          "visibility": "AUDIENCE_SEES",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚"
+          ],
+          "withheld_from": [
+            "陆叔"
+          ],
+          "dramatic_effect": "物证逐步夺回记忆的可靠性。"
+        },
+        {
+          "order": 4,
+          "beat_ref": "SC02-B06",
+          "information": "玄关水渍与暗红纤维确认红伞链",
+          "visibility": "CONFIRMATION",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚",
+            "陆叔"
+          ],
+          "withheld_from": [],
+          "dramatic_effect": "陆叔的解释失效。"
+        },
+        {
+          "order": 5,
+          "beat_ref": "SC02-B07",
+          "information": "‘睡醒了，就什么都记不起来了’成为威胁",
+          "visibility": "BOTH_SEE",
+          "audience_knows": true,
+          "character_knows": [
+            "林晚",
+            "陆叔"
+          ],
+          "withheld_from": [],
+          "dramatic_effect": "照顾者伪装破裂。"
+        }
+      ],
+      "character_directions": [
+        {
+          "character": "陆叔",
+          "objective": "让林晚接受他的版本并留在可控空间",
+          "obstacle": "林晚开始主动验证记忆，环境物证不断抵抗他的说法",
+          "strategy": "先照顾和日常化，再用Gaslighting否定她的记忆，最后以威胁夺回空间控制",
+          "strategy_shift": "从关切长辈转为控制者，再短暂撕破伪装",
+          "subtext": "只要她怀疑自己，我就能决定什么是真的",
+          "performance_notes": "前段动作细致；D029后减少照顾动作并侵入出口路径；D027才允许威胁显形",
+          "avoid": "不要在苹果和锁门阶段就暴露杀意"
+        },
+        {
+          "character": "林晚",
+          "objective": "确认自己没有记错并找到能支撑判断的客观证据",
+          "obstacle": "陆叔否认车站事实并控制门、厨房与她的退路",
+          "strategy": "先主动试探，再被D029动摇，随后按顺序寻找划痕、硬物和纤维",
+          "strategy_shift": "从靠近询问转为停止前进、转向物证，最后退到茶几",
+          "subtext": "我必须相信我看到的东西",
+          "performance_notes": "被Gaslighting时让身体停住而非立即反击；证据出现后重新稳住呼吸",
+          "avoid": "不要把她演成已掌握完整真相"
+        }
+      ],
+      "beat_directions": [
+        {
+          "beat_ref": "SC02-B02",
+          "director_intent": "让“林晚试探早到车站。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "维持已声明信息边界。",
+          "tempo": "measured",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC02-B03",
+          "director_intent": "让“陆叔声称一直在一起（Gaslighting）。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "陆叔开始说谎",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC02-B04",
+          "director_intent": "让“林晚短暂自我怀疑后寻找物证。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "维持已声明信息边界。",
+          "tempo": "measured",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC02-B05",
+          "director_intent": "让“口袋硬物显现。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "口袋硬物",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC02-B06",
+          "director_intent": "让“玄关暗红纤维出现。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "暗红纤维碎屑",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC02-B07",
+          "director_intent": "让“陆叔笑容消失、威胁升级。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "维持已声明信息边界。",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC02-B08",
+          "director_intent": "让“林晚后退，纤维碎屑飘落。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "碎屑与伞骨同源",
+          "tempo": "measured",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        },
+        {
+          "beat_ref": "SC02-B09",
+          "director_intent": "让“陆叔盯住碎屑、手停在半空。”成为可表演的因果转折。",
+          "performance_direction": "反应必须先于下一步行动，保留信息进入身体的时间。",
+          "information_strategy": "维持已声明信息边界。",
+          "tempo": "hold_then_turn",
+          "reaction_intent": "回应该节拍带来的信息或权力变化。",
+          "coverage_priority": "CRITICAL"
+        }
+      ],
+      "performance_arc": [
+        {
+          "phase": "IN",
+          "state": "林晚保持警惕，陆叔用照顾把空间做成日常。"
+        },
+        {
+          "phase": "GASLIGHTING",
+          "state": "D029后林晚的动作停顿，开始重新检查自己的记忆。"
+        },
+        {
+          "phase": "RECONFIRM",
+          "state": "划痕、硬物、纤维让林晚恢复确定性，陆叔逐步失去伪装。"
+        },
+        {
+          "phase": "OUT",
+          "state": "林晚后退至茶几，面对明确威胁和飘落纤维。"
+        }
+      ],
+      "rhythm_strategy": {
+        "opening": "锁门、洗苹果、日常关切要完整而缓慢",
+        "gaslighting": "D029前后留沉默让自我怀疑发生",
+        "evidence": "每个物证之间保留林晚重新定位的间隔",
+        "threat": "D027后节奏收紧但不剪掉她的退路变化"
+      },
+      "visual_priority": [
+        "门与出口关系",
+        "厨房和茶几之间的控制路径",
+        "林晚视线从陆叔转向客观物证",
+        "暗红纤维和陆叔表情的反向确认"
+      ],
+      "scene_exit_intent": "林晚身体退入茶几边缘，陆叔盯住飘落纤维，空间和威胁同时锁死。",
+      "prohibited_interpretations": [
+        "D029之前陆叔不能像公开威胁者",
+        "Gaslighting必须先于物证确认",
+        "D027必须晚于证据升级",
+        "不要用镜头规格替代表演或空间决策"
+      ],
+      "source_script_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
+      "schema_version": "director_treatment_v2",
+      "provider_not_called": true,
+      "validation": {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "blocker_count": 0,
+        "warning_count": 0,
+        "critical_beat_count": 8,
+        "covered_critical_beat_count": 8
+      },
+      "candidate_fingerprint": "1942e419c762fc04440376caee7f48a274ce18c4d8c498dcf8209bf52d283204"
+    }
+  ],
+  "authority": {
+    "status": "PRODUCTION_QUALIFIED",
+    "pointer_policy": "current_only",
+    "latest_approved_fallback": false
+  }
+}

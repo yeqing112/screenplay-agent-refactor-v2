@@ -1,0 +1,99 @@
+{
+  "schema_version": "phase_b_trace_v1",
+  "pilot": {
+    "book_id": 990401,
+    "episode": 1,
+    "title": "红伞倒影",
+    "provider_not_called": true
+  },
+  "script_ir": {
+    "version": "phase_a_current",
+    "pointer": "current:990401:E01",
+    "payload_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
+    "source_artifact": "episode_01_script_ir_phase_a.json"
+  },
+  "director_treatment": {
+    "version": "director_treatment_v2_phase_b",
+    "pointer": "current:990401:E01:director-treatment",
+    "authority_status": "PRODUCTION_QUALIFIED",
+    "payload_hash": "4dec19adaa5a3e38699e01b1b73551f25093fc324b008010166b4345c5fc3133"
+  },
+  "scene_blocking": {
+    "version": "scene_blocking_v2_phase_b",
+    "pointer": "current:990401:E01:scene-blocking",
+    "authority_status": "PRODUCTION_QUALIFIED",
+    "payload_hash": "1d144e7d3ab36ad3d0e662476292c35cb8e9c0d163ff2a8fda1b7086329e298a"
+  },
+  "fact_snapshot_lineage": {
+    "source": "ScriptIR authority envelope",
+    "fact_snapshot_id": ""
+  },
+  "visual_location_binding": {
+    "mode": "RELATIVE_SPATIAL_MODEL",
+    "locked_geometry_mutated": false
+  },
+  "provider": {
+    "provider_not_called": true,
+    "calls": 0,
+    "model": null,
+    "tokens": 0,
+    "latency_ms": 0,
+    "request_fingerprint": null,
+    "response_fingerprint": null
+  },
+  "validation": {
+    "treatment": [
+      {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "blocker_count": 0,
+        "warning_count": 0,
+        "critical_beat_count": 10,
+        "covered_critical_beat_count": 10
+      },
+      {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "blocker_count": 0,
+        "warning_count": 0,
+        "critical_beat_count": 8,
+        "covered_critical_beat_count": 8
+      }
+    ],
+    "blocking": [
+      {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "blocker_count": 0,
+        "warning_count": 0,
+        "critical_beat_count": 10,
+        "covered_critical_beat_count": 10,
+        "camera_leakage_count": 0
+      },
+      {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "blocker_count": 0,
+        "warning_count": 0,
+        "critical_beat_count": 8,
+        "covered_critical_beat_count": 8,
+        "camera_leakage_count": 0
+      }
+    ],
+    "repair_count": 0
+  },
+  "authority_flow": {
+    "candidate": "PASS",
+    "validation": "PASS",
+    "repair": "NONE",
+    "confirm": "PASS",
+    "authority": "PASS",
+    "failed_candidate_moved_pointer": false,
+    "stale_upstream": "FAIL_CLOSED",
+    "latest_approved_fallback": false
+  }
+}
