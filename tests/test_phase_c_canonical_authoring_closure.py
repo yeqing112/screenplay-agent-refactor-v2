@@ -8,6 +8,7 @@ import pytest
 from api.shot_plan_api import _confirm_phase_c_provenance
 from core.phase_c_shot_plan import build_phase_c_contract, build_shot_requirements, validate_shot_design
 from core.shot_plan_authority import shot_plan_payload_from_row
+from core.storyboard_materializer import materialize_storyboard_from_shot_plan
 
 
 ART = Path(__file__).resolve().parents[1] / "artifacts" / "e2e-production-pilot"
@@ -99,7 +100,7 @@ def test_provenance_confirmation_requires_real_provider_and_matching_canonical_o
 
 
 def test_shot_plan_payload_reads_canonical_shots_only():
-    canonical = [{"plan_shot_id": "SH_CANONICAL"}]
+    canonical = [{"plan_shot_id": "SH_CANONICAL", "beat_id": "B01", "purpose": "reveal", "camera": {"angle": "eye_level", "movement": "static"}}]
     legacy = [{"plan_shot_id": "SH_LEGACY"}]
     row = SimpleNamespace(
         scene_id="E01_SC001",
@@ -114,3 +115,5 @@ def test_shot_plan_payload_reads_canonical_shots_only():
     assert payload["shots"] != legacy
     assert payload["phase_c_contract"]["contract_version"] == "legacy"
     assert "shots" not in payload["phase_c_contract"]
+    projected = materialize_storyboard_from_shot_plan(payload)
+    assert [item["plan_shot_id"] for item in projected] == [item["plan_shot_id"] for item in canonical]
