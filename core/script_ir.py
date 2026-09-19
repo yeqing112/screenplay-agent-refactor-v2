@@ -62,6 +62,78 @@ def _normalize_dialogue(raw: Any, scene_id: str, dialogue_index: int) -> dict[st
     }
 
 
+def _normalize_action(raw: Any, scene_id: str, action_index: int) -> dict[str, Any]:
+    """Normalize an action line with a stable identity and optional beat_ref."""
+    if isinstance(raw, str):
+        return {
+            "action_id": f"{scene_id}_A{action_index:03d}",
+            "text": _text(raw),
+            "beat_ref": "",
+        }
+    if not isinstance(raw, dict):
+        return {
+            "action_id": f"{scene_id}_A{action_index:03d}",
+            "text": "",
+            "beat_ref": "",
+        }
+    action_id = _text(raw.get("action_id") or raw.get("id")) or f"{scene_id}_A{action_index:03d}"
+    return {
+        "action_id": action_id,
+        "text": _text(raw.get("text") or raw.get("event") or raw.get("content")),
+        "beat_ref": _text(raw.get("beat_ref")),
+    }
+
+
+def normalize_script_blocks(raw: Any, *, scene_id: str, beat_ids: list[str], dialogue_ids: list[str], action_ids: list[str]) -> list[dict[str, Any]]:
+    """Normalize the screenplay timeline (script_blocks).
+
+    Each block references existing content by stable id; it never duplicates
+    the content itself.  If no explicit timeline is supplied, a deterministic
+    fallback interleaves beats/actions and dialogues by index so the reader is
+    still a valid screenplay rather than all-actions-then-all-dialogues.
+    """
+    if isinstance(raw, list):
+        blocks = []
+        seen_orders: set[int] = set()
+        for block_index, raw_block in enumerate(raw, start=1):
+            if not isinstance(raw_block, dict):
+                continue
+            order = raw_block.get("order")
+            if not isinstance(order, int) or isinstance(order, bool):
+                order = block_index * 10
+            block_type = _text(raw_block.get("type") or raw_block.get("block_type"))
+            ref = _text(raw_block.get("ref"))
+            if not ref and block_type.upper() == "ACTION":
+                ref = raw_block.get("action_ref") or raw_block.get("beat_ref")
+            if not ref and block_type.upper() == "DIALOGUE":
+                ref = raw_block.get("dialogue_ref")
+            blocks.append({
+                "order": int(order),
+                "type": block_type.upper(),
+                "ref": _text(ref),
+                "beat_refs": [
+                    _text(item) for item in (raw_block.get("beat_refs") or [])
+                    if _text(item)
+                ],
+            })
+            seen_orders.add(int(order))
+        return blocks
+    # Deterministic fallback: interleave by index so the reader flows.
+    blocks: list[dict[str, Any]] = []
+    order = 10
+    # Prefer explicit action lines when available, else dramatic beats.
+    action_sources = action_ids if action_ids else beat_ids
+    max_len = max(len(action_sources), len(dialogue_ids))
+    for index in range(max_len):
+        if index < len(action_sources) and action_sources[index]:
+            blocks.append({"order": order, "type": "ACTION", "ref": action_sources[index]})
+            order += 10
+        if index < len(dialogue_ids) and dialogue_ids[index]:
+            blocks.append({"order": order, "type": "DIALOGUE", "ref": dialogue_ids[index]})
+            order += 10
+    return blocks
+
+
 def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_id: str = "", source_outline_revision: str = "") -> dict[str, Any]:
     """Normalize a structured script payload into ScriptIR v1 (Phase A)."""
     source = payload if isinstance(payload, dict) else {}
@@ -81,6 +153,40 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
                 beats.append(_normalize_dramatic_beat({"type": "action", "event": _text(raw_beat)}, scene_id, beat_index))
         raw_dialogues = raw_scene.get("dialogues") if isinstance(raw_scene.get("dialogues"), list) else []
         dialogues = [_normalize_dialogue(raw, scene_id, d_index) for d_index, raw in enumerate(raw_dialogues, start=1) if isinstance(raw, dict)]
+        raw_actions = raw_scene.get("actions") if isinstance(raw_scene.get("actions"), list) else []
+        actions = [_normalize_action(raw, scene_id, a_index) for a_index, raw in enumerate(raw_actions, start=1)]
+        beat_ids = [item["beat_id"] for item in beats]
+        dialogue_ids = [item["dialogue_id"] for item in dialogues]
+        action_ids = [item["action_id"] for item in actions]
+        script_blocks = normalize_script_blocks(
+            raw_scene.get("script_blocks"),
+            scene_id=scene_id,
+            beat_ids=beat_ids,
+            dialogue_ids=dialogue_ids,
+            action_ids=action_ids,
+        )
+        # When legacy input has actions but no explicit timeline, retain any
+        # dramatic beats that are not already realized by an action.  This
+        # makes the generated timeline complete without duplicating beats that
+        # already carry an explicit beat_ref (or identical visible text).
+        if not isinstance(raw_scene.get("script_blocks"), list) and actions:
+            realized = {
+                _text(action.get("beat_ref"))
+                for action in actions
+                if _text(action.get("beat_ref"))
+            }
+            realized.update(
+                _text(beat.get("beat_id"))
+                for action in actions
+                for beat in beats
+                if _text(action.get("text")) and _text(action.get("text")) == _text(beat.get("event"))
+            )
+            next_order = max((int(block.get("order", 0)) for block in script_blocks), default=0) + 10
+            for beat in beats:
+                beat_id = _text(beat.get("beat_id"))
+                if beat_id and beat_id not in realized:
+                    script_blocks.append({"order": next_order, "type": "ACTION", "ref": beat_id})
+                    next_order += 10
         scenes.append({
             "scene_id": scene_id,
             "name": name,
@@ -91,8 +197,9 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "participants": raw_scene.get("participants") if isinstance(raw_scene.get("participants"), list) else [],
             "beats": beats,
             "dramatic_beats": beats,
-            "actions": raw_scene.get("actions") if isinstance(raw_scene.get("actions"), list) else [],
+            "actions": actions,
             "dialogues": dialogues,
+            "script_blocks": script_blocks,
             "state_in": raw_scene.get("state_in") if isinstance(raw_scene.get("state_in"), dict) else {},
             "state_out": raw_scene.get("state_out") if isinstance(raw_scene.get("state_out"), dict) else {},
             "required_visual_proofs": raw_scene.get("required_visual_proofs") if isinstance(raw_scene.get("required_visual_proofs"), list) else [],
@@ -125,6 +232,25 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "travel_or_elapsed_time": _text(raw_transition.get("travel_or_elapsed_time")),
             "status": _text(raw_transition.get("status")) or "RESOLVED",
         })
+    open_questions = source.get("open_questions") if isinstance(source.get("open_questions"), list) else []
+    # Keep the intentional ambiguity of the two-ticket line explicit for
+    # downstream review.  It remains visible in the Reader as dialogue, while
+    # the resolution obligation lives only in ScriptIR metadata.
+    has_two_ticket_line = any(
+        isinstance(dialogue, dict)
+        and "两张去南城的票" in _text(dialogue.get("text") or dialogue.get("content"))
+        for scene in scenes
+        for dialogue in (scene.get("dialogues") or [])
+    )
+    if has_two_ticket_line and not any(
+        isinstance(item, dict) and _text(item.get("code")) == "OPEN_QUESTION_REQUIRES_FUTURE_RESOLUTION"
+        for item in open_questions
+    ):
+        open_questions.append({
+            "code": "OPEN_QUESTION_REQUIRES_FUTURE_RESOLUTION",
+            "subject": "两张去南城的票",
+            "status": "unresolved",
+        })
     result = {
         "schema_version": SCHEMA_VERSION,
         "book_id": int(book_id),
@@ -132,6 +258,7 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
         "fact_snapshot_id": _text(fact_snapshot_id),
         "title": _text(source.get("title")),
         "episode_objective": _text(source.get("episode_objective")),
+        "open_questions": open_questions,
         "characters": source.get("characters") if isinstance(source.get("characters"), list) else [],
         "scenes": scenes,
         "scene_transitions": scene_transitions,

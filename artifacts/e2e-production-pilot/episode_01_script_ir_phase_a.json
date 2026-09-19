@@ -5,6 +5,13 @@
   "fact_snapshot_id": "",
   "title": "红伞倒影",
   "episode_objective": "林晚准备逃离，却在车站与家中接连遭遇红伞与断伞骨的暗示。她放弃登车以试探陆叔，并逐步意识到身边最亲近的人正在修改她的记忆。",
+  "open_questions": [
+    {
+      "code": "OPEN_QUESTION_REQUIRES_FUTURE_RESOLUTION",
+      "subject": "两张去南城的票",
+      "status": "unresolved"
+    }
+  ],
   "characters": [
     "林晚",
     "顾沉",
@@ -29,7 +36,7 @@
         {
           "beat_id": "SC01-B01",
           "type": "ACTION",
-          "event": "林晚站在售票窗前，额角有汗，攥紧旧皮包。",
+          "event": "林晚买票逃离。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -46,14 +53,13 @@
         {
           "beat_id": "SC01-B02",
           "type": "ACTION",
-          "event": "林晚要两张去南城的票，最早一班。",
+          "event": "售票员回应车次。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ACTION",
-          "objective": "买票逃离",
+          "objective": "购票流程",
           "characters": [
-            "林晚",
             "售票员"
           ],
           "information_delta": "",
@@ -64,7 +70,7 @@
         {
           "beat_id": "SC01-B03",
           "type": "REVEAL",
-          "event": "林晚看见站台立柱旁一把收起的红色雨伞。",
+          "event": "林晚看见站台红伞。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -81,7 +87,7 @@
         {
           "beat_id": "SC01-B04",
           "type": "REVEAL",
-          "event": "林晚的手提包掉落，露出断裂的暗红色伞骨。",
+          "event": "手提包掉落露出断伞骨。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -99,7 +105,7 @@
         {
           "beat_id": "SC01-B05",
           "type": "QUESTION",
-          "event": "顾沉突然出现，叫出林晚的名字。",
+          "event": "顾沉出现叫出林晚名字。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -117,12 +123,12 @@
         {
           "beat_id": "SC01-B06",
           "type": "REVEAL",
-          "event": "顾沉说那把伞挺眼熟，伞骨断过、修补过但没修好。",
+          "event": "顾沉指出红伞与断伞骨。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVEAL",
-          "objective": "顾沉知道得过多，危险感来源于此",
+          "objective": "顾沉知道得过多",
           "characters": [
             "顾沉",
             "林晚"
@@ -135,12 +141,12 @@
         {
           "beat_id": "SC01-B07",
           "type": "ACTION",
-          "event": "陆叔提着网兜出现，热心招呼林晚，接过她的手提包。",
+          "event": "陆叔出现并接过手提包。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ACTION",
-          "objective": "引入陆叔作为长辈伪装",
+          "objective": "引入陆叔长辈伪装",
           "characters": [
             "陆叔",
             "林晚"
@@ -153,12 +159,12 @@
         {
           "beat_id": "SC01-B08",
           "type": "REVEAL",
-          "event": "陆叔对红伞的追问反应异常，外套口袋鼓出长条状硬物。",
+          "event": "陆叔对红伞异常，口袋鼓出硬物。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVEAL",
-          "objective": "把怀疑从顾沉引向陆叔",
+          "objective": "怀疑从顾沉引向陆叔",
           "characters": [
             "陆叔",
             "林晚"
@@ -171,7 +177,7 @@
         {
           "beat_id": "SC01-B09",
           "type": "REVEAL",
-          "event": "站台立柱旁的红伞不见了，只留下一小片深色水渍。",
+          "event": "红伞消失仅剩水渍。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -188,7 +194,7 @@
         {
           "beat_id": "SC01-B10",
           "type": "DECISION",
-          "event": "林晚发现包扣被重新动过，断伞骨不见了。",
+          "event": "林晚发现包扣被动过，断伞骨不见。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -205,12 +211,12 @@
         {
           "beat_id": "SC01-B11",
           "type": "DECISION",
-          "event": "林晚决定不上车，对陆叔说忘了拿一样东西，先回去。",
+          "event": "林晚决定不上车，谎称忘东西。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "DECISION",
-          "objective": "林晚采取主动试探策略",
+          "objective": "林晚主动试探",
           "characters": [
             "林晚",
             "陆叔"
@@ -223,12 +229,12 @@
         {
           "beat_id": "SC01-B12",
           "type": "REACTION",
-          "event": "陆叔没有劝她登车，反而立刻同意回去。",
+          "event": "陆叔立刻同意返回。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REACTION",
-          "objective": "陆叔过快同意本身成为新的怀疑节拍",
+          "objective": "陆叔过快同意成为新怀疑节拍",
           "characters": [
             "陆叔",
             "林晚"
@@ -241,12 +247,12 @@
         {
           "beat_id": "SC01-B13",
           "type": "ESCALATION",
-          "event": "顾沉低声说伞骨断了就该扔掉，容易扎手，然后走进人群消失。",
+          "event": "顾沉留下伞骨扎手的警告离开。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ESCALATION",
-          "objective": "强化谜样威胁并留下警示",
+          "objective": "强化谜样威胁",
           "characters": [
             "顾沉",
             "林晚"
@@ -261,7 +267,7 @@
         {
           "beat_id": "SC01-B01",
           "type": "ACTION",
-          "event": "林晚站在售票窗前，额角有汗，攥紧旧皮包。",
+          "event": "林晚买票逃离。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -278,14 +284,13 @@
         {
           "beat_id": "SC01-B02",
           "type": "ACTION",
-          "event": "林晚要两张去南城的票，最早一班。",
+          "event": "售票员回应车次。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ACTION",
-          "objective": "买票逃离",
+          "objective": "购票流程",
           "characters": [
-            "林晚",
             "售票员"
           ],
           "information_delta": "",
@@ -296,7 +301,7 @@
         {
           "beat_id": "SC01-B03",
           "type": "REVEAL",
-          "event": "林晚看见站台立柱旁一把收起的红色雨伞。",
+          "event": "林晚看见站台红伞。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -313,7 +318,7 @@
         {
           "beat_id": "SC01-B04",
           "type": "REVEAL",
-          "event": "林晚的手提包掉落，露出断裂的暗红色伞骨。",
+          "event": "手提包掉落露出断伞骨。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -331,7 +336,7 @@
         {
           "beat_id": "SC01-B05",
           "type": "QUESTION",
-          "event": "顾沉突然出现，叫出林晚的名字。",
+          "event": "顾沉出现叫出林晚名字。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -349,12 +354,12 @@
         {
           "beat_id": "SC01-B06",
           "type": "REVEAL",
-          "event": "顾沉说那把伞挺眼熟，伞骨断过、修补过但没修好。",
+          "event": "顾沉指出红伞与断伞骨。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVEAL",
-          "objective": "顾沉知道得过多，危险感来源于此",
+          "objective": "顾沉知道得过多",
           "characters": [
             "顾沉",
             "林晚"
@@ -367,12 +372,12 @@
         {
           "beat_id": "SC01-B07",
           "type": "ACTION",
-          "event": "陆叔提着网兜出现，热心招呼林晚，接过她的手提包。",
+          "event": "陆叔出现并接过手提包。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ACTION",
-          "objective": "引入陆叔作为长辈伪装",
+          "objective": "引入陆叔长辈伪装",
           "characters": [
             "陆叔",
             "林晚"
@@ -385,12 +390,12 @@
         {
           "beat_id": "SC01-B08",
           "type": "REVEAL",
-          "event": "陆叔对红伞的追问反应异常，外套口袋鼓出长条状硬物。",
+          "event": "陆叔对红伞异常，口袋鼓出硬物。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVEAL",
-          "objective": "把怀疑从顾沉引向陆叔",
+          "objective": "怀疑从顾沉引向陆叔",
           "characters": [
             "陆叔",
             "林晚"
@@ -403,7 +408,7 @@
         {
           "beat_id": "SC01-B09",
           "type": "REVEAL",
-          "event": "站台立柱旁的红伞不见了，只留下一小片深色水渍。",
+          "event": "红伞消失仅剩水渍。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -420,7 +425,7 @@
         {
           "beat_id": "SC01-B10",
           "type": "DECISION",
-          "event": "林晚发现包扣被重新动过，断伞骨不见了。",
+          "event": "林晚发现包扣被动过，断伞骨不见。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -437,12 +442,12 @@
         {
           "beat_id": "SC01-B11",
           "type": "DECISION",
-          "event": "林晚决定不上车，对陆叔说忘了拿一样东西，先回去。",
+          "event": "林晚决定不上车，谎称忘东西。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "DECISION",
-          "objective": "林晚采取主动试探策略",
+          "objective": "林晚主动试探",
           "characters": [
             "林晚",
             "陆叔"
@@ -455,12 +460,12 @@
         {
           "beat_id": "SC01-B12",
           "type": "REACTION",
-          "event": "陆叔没有劝她登车，反而立刻同意回去。",
+          "event": "陆叔立刻同意返回。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REACTION",
-          "objective": "陆叔过快同意本身成为新的怀疑节拍",
+          "objective": "陆叔过快同意成为新怀疑节拍",
           "characters": [
             "陆叔",
             "林晚"
@@ -473,12 +478,12 @@
         {
           "beat_id": "SC01-B13",
           "type": "ESCALATION",
-          "event": "顾沉低声说伞骨断了就该扔掉，容易扎手，然后走进人群消失。",
+          "event": "顾沉留下伞骨扎手的警告离开。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ESCALATION",
-          "objective": "强化谜样威胁并留下警示",
+          "objective": "强化谜样威胁",
           "characters": [
             "顾沉",
             "林晚"
@@ -490,13 +495,51 @@
         }
       ],
       "actions": [
-        "林晚站在售票窗前，额角有汗，攥紧旧皮包。",
-        "林晚看向站台。一把收起的红伞斜靠在立柱旁。",
-        "林晚的手提包掉落，搭扣弹开，露出一截断裂的暗红色伞骨。",
-        "陆叔从侧面快步走来，手里拎着网兜。",
-        "陆叔接过林晚的手提包，掂了掂。",
-        "林晚发现包扣被重新动过，断伞骨不见了。",
-        "陆叔没有劝她登车，反而立刻同意回去。"
+        {
+          "action_id": "A001",
+          "text": "林晚站在售票窗前，额角有汗，攥紧旧皮包。",
+          "beat_ref": "SC01-B01"
+        },
+        {
+          "action_id": "A002",
+          "text": "林晚看向站台。一把收起的红伞斜靠在立柱旁。",
+          "beat_ref": "SC01-B03"
+        },
+        {
+          "action_id": "A003",
+          "text": "林晚的手提包掉落，搭扣弹开，露出一截断裂的暗红色伞骨。",
+          "beat_ref": "SC01-B04"
+        },
+        {
+          "action_id": "A004",
+          "text": "陆叔从侧面快步走来，手里拎着网兜，接过林晚的手提包，掂了掂。",
+          "beat_ref": "SC01-B07"
+        },
+        {
+          "action_id": "A005",
+          "text": "站台立柱旁的红伞不见了，只留下一小片深色水渍。",
+          "beat_ref": "SC01-B09"
+        },
+        {
+          "action_id": "A006",
+          "text": "林晚低头看向手提包。包扣的位置不对。她打开包。断裂的暗红色伞骨不见了。",
+          "beat_ref": "SC01-B10"
+        },
+        {
+          "action_id": "A007",
+          "text": "林晚抬起眼，看向陆叔。",
+          "beat_ref": "SC01-B10"
+        },
+        {
+          "action_id": "A008",
+          "text": "陆叔没有劝她登车，反而立刻点头答应回去。",
+          "beat_ref": "SC01-B12"
+        },
+        {
+          "action_id": "A009",
+          "text": "顾沉低声说完，走进人群，消失不见。",
+          "beat_ref": "SC01-B13"
+        }
       ],
       "dialogues": [
         {
@@ -690,6 +733,160 @@
           "character_knowledge_ref": ""
         }
       ],
+      "script_blocks": [
+        {
+          "order": 10,
+          "type": "ACTION",
+          "ref": "A001"
+        },
+        {
+          "order": 20,
+          "type": "DIALOGUE",
+          "ref": "D001"
+        },
+        {
+          "order": 30,
+          "type": "DIALOGUE",
+          "ref": "D002"
+        },
+        {
+          "order": 40,
+          "type": "DIALOGUE",
+          "ref": "D003"
+        },
+        {
+          "order": 50,
+          "type": "ACTION",
+          "ref": "A002"
+        },
+        {
+          "order": 60,
+          "type": "ACTION",
+          "ref": "A003"
+        },
+        {
+          "order": 70,
+          "type": "DIALOGUE",
+          "ref": "D004"
+        },
+        {
+          "order": 80,
+          "type": "DIALOGUE",
+          "ref": "D005"
+        },
+        {
+          "order": 90,
+          "type": "DIALOGUE",
+          "ref": "D006"
+        },
+        {
+          "order": 100,
+          "type": "DIALOGUE",
+          "ref": "D007",
+          "beat_refs": [
+            "SC01-B05"
+          ]
+        },
+        {
+          "order": 110,
+          "type": "DIALOGUE",
+          "ref": "D008"
+        },
+        {
+          "order": 120,
+          "type": "DIALOGUE",
+          "ref": "D009",
+          "beat_refs": [
+            "SC01-B06"
+          ]
+        },
+        {
+          "order": 130,
+          "type": "DIALOGUE",
+          "ref": "D010"
+        },
+        {
+          "order": 140,
+          "type": "ACTION",
+          "ref": "A004"
+        },
+        {
+          "order": 150,
+          "type": "DIALOGUE",
+          "ref": "D011"
+        },
+        {
+          "order": 160,
+          "type": "DIALOGUE",
+          "ref": "D012"
+        },
+        {
+          "order": 170,
+          "type": "DIALOGUE",
+          "ref": "D013"
+        },
+        {
+          "order": 180,
+          "type": "DIALOGUE",
+          "ref": "D014",
+          "beat_refs": [
+            "SC01-B08"
+          ]
+        },
+        {
+          "order": 190,
+          "type": "DIALOGUE",
+          "ref": "D015"
+        },
+        {
+          "order": 200,
+          "type": "ACTION",
+          "ref": "A005"
+        },
+        {
+          "order": 210,
+          "type": "ACTION",
+          "ref": "A006"
+        },
+        {
+          "order": 220,
+          "type": "ACTION",
+          "ref": "A007"
+        },
+        {
+          "order": 230,
+          "type": "DIALOGUE",
+          "ref": "D016"
+        },
+        {
+          "order": 240,
+          "type": "DIALOGUE",
+          "ref": "D017",
+          "beat_refs": [
+            "SC01-B11"
+          ]
+        },
+        {
+          "order": 250,
+          "type": "ACTION",
+          "ref": "A008"
+        },
+        {
+          "order": 260,
+          "type": "DIALOGUE",
+          "ref": "D018"
+        },
+        {
+          "order": 270,
+          "type": "DIALOGUE",
+          "ref": "D019"
+        },
+        {
+          "order": 280,
+          "type": "ACTION",
+          "ref": "A009"
+        }
+      ],
       "state_in": {
         "林晚": "压抑、急于逃离",
         "顾沉": "平静、观察者",
@@ -698,9 +895,8 @@
       },
       "state_out": {
         "林晚": "决定不上车、怀疑转向陆叔",
-        "陆叔": "表面热心、暗中警觉",
-        "顾沉": "离开",
-        "售票员": "例行公事"
+        "顾沉": "留下双关警告后离开",
+        "陆叔": "表面热心、暗中警觉"
       },
       "required_visual_proofs": [],
       "blocking_hints": [],
@@ -745,12 +941,12 @@
         {
           "beat_id": "SC02-B01",
           "type": "ACTION",
-          "event": "陆叔跟着林晚进公寓，反手把门锁旋了两圈。",
+          "event": "陆叔锁门并洗苹果。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ACTION",
-          "objective": "建立密闭空间与不安",
+          "objective": "建立密闭空间与日常伪装",
           "characters": [
             "陆叔"
           ],
@@ -762,12 +958,12 @@
         {
           "beat_id": "SC02-B02",
           "type": "QUESTION",
-          "event": "林晚问陆叔是不是早上很早就去过车站。",
+          "event": "林晚试探早到车站。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "QUESTION",
-          "objective": "林晚开始主动试探",
+          "objective": "林晚主动试探",
           "characters": [
             "林晚",
             "陆叔"
@@ -779,13 +975,13 @@
         },
         {
           "beat_id": "SC02-B03",
-          "type": "DECEPTION",
-          "event": "陆叔说自己不是一直和林晚在一起吗，从家里送到车站。",
+          "type": "REVEAL",
+          "event": "陆叔声称一直在一起（Gaslighting）。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVEAL",
-          "objective": "陆叔故意修改林晚记忆的 Gaslighting 起点",
+          "objective": "陆叔修改记忆的起点",
           "characters": [
             "陆叔",
             "林晚"
@@ -798,12 +994,12 @@
         {
           "beat_id": "SC02-B04",
           "type": "REACTION",
-          "event": "林晚因记忆模糊开始短暂怀疑自己，随后抓住茶几划痕与伞骨线索。",
+          "event": "林晚短暂自我怀疑后寻找物证。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REACTION",
-          "objective": "让观众看到陆叔正在 Gaslight 林晚",
+          "objective": "观众看到陆叔正在 Gaslight 林晚",
           "characters": [
             "林晚"
           ],
@@ -815,7 +1011,7 @@
         {
           "beat_id": "SC02-B05",
           "type": "REVEAL",
-          "event": "陆叔口袋轮廓显现长条状硬物，像是断伞骨。",
+          "event": "口袋硬物显现。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -833,12 +1029,12 @@
         {
           "beat_id": "SC02-B06",
           "type": "REVEAL",
-          "event": "玄关地板有一片带暗红痕迹的水渍与纤维碎屑。",
+          "event": "玄关暗红纤维出现。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVEAL",
-          "objective": "把伞骨与水渍、鞋底线索串联",
+          "objective": "串联伞骨与水渍",
           "characters": [
             "林晚"
           ],
@@ -850,12 +1046,12 @@
         {
           "beat_id": "SC02-B07",
           "type": "ESCALATION",
-          "event": "陆叔的笑容第一次完全消失，说林晚累了，好好睡一觉。",
+          "event": "陆叔笑容消失、威胁升级。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ESCALATION",
-          "objective": "威胁浮出水面，Gaslighting 升级",
+          "objective": "Gaslighting 升级为威胁",
           "characters": [
             "陆叔",
             "林晚"
@@ -868,12 +1064,12 @@
         {
           "beat_id": "SC02-B08",
           "type": "REVERSAL",
-          "event": "林晚后退撞到茶几，水瓶滚落，带起暗红色纤维碎屑飘落。",
+          "event": "林晚后退，纤维碎屑飘落。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVERSAL",
-          "objective": "林晚的恐惧成为反驳陆叔谎言的证据",
+          "objective": "林晚的恐惧成为反驳谎言的证据",
           "characters": [
             "林晚",
             "陆叔"
@@ -886,12 +1082,12 @@
         {
           "beat_id": "SC02-B09",
           "type": "HOOK",
-          "event": "陆叔的目光瞬间锁定那片飘落的碎屑，手停在半空。",
+          "event": "陆叔盯住碎屑、手停在半空。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "HOOK",
-          "objective": "集尾强钩子，真相仍藏在迷雾中",
+          "objective": "集尾强钩子",
           "characters": [
             "陆叔",
             "林晚"
@@ -906,12 +1102,12 @@
         {
           "beat_id": "SC02-B01",
           "type": "ACTION",
-          "event": "陆叔跟着林晚进公寓，反手把门锁旋了两圈。",
+          "event": "陆叔锁门并洗苹果。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ACTION",
-          "objective": "建立密闭空间与不安",
+          "objective": "建立密闭空间与日常伪装",
           "characters": [
             "陆叔"
           ],
@@ -923,12 +1119,12 @@
         {
           "beat_id": "SC02-B02",
           "type": "QUESTION",
-          "event": "林晚问陆叔是不是早上很早就去过车站。",
+          "event": "林晚试探早到车站。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "QUESTION",
-          "objective": "林晚开始主动试探",
+          "objective": "林晚主动试探",
           "characters": [
             "林晚",
             "陆叔"
@@ -940,13 +1136,13 @@
         },
         {
           "beat_id": "SC02-B03",
-          "type": "DECEPTION",
-          "event": "陆叔说自己不是一直和林晚在一起吗，从家里送到车站。",
+          "type": "REVEAL",
+          "event": "陆叔声称一直在一起（Gaslighting）。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVEAL",
-          "objective": "陆叔故意修改林晚记忆的 Gaslighting 起点",
+          "objective": "陆叔修改记忆的起点",
           "characters": [
             "陆叔",
             "林晚"
@@ -959,12 +1155,12 @@
         {
           "beat_id": "SC02-B04",
           "type": "REACTION",
-          "event": "林晚因记忆模糊开始短暂怀疑自己，随后抓住茶几划痕与伞骨线索。",
+          "event": "林晚短暂自我怀疑后寻找物证。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REACTION",
-          "objective": "让观众看到陆叔正在 Gaslight 林晚",
+          "objective": "观众看到陆叔正在 Gaslight 林晚",
           "characters": [
             "林晚"
           ],
@@ -976,7 +1172,7 @@
         {
           "beat_id": "SC02-B05",
           "type": "REVEAL",
-          "event": "陆叔口袋轮廓显现长条状硬物，像是断伞骨。",
+          "event": "口袋硬物显现。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
@@ -994,12 +1190,12 @@
         {
           "beat_id": "SC02-B06",
           "type": "REVEAL",
-          "event": "玄关地板有一片带暗红痕迹的水渍与纤维碎屑。",
+          "event": "玄关暗红纤维出现。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVEAL",
-          "objective": "把伞骨与水渍、鞋底线索串联",
+          "objective": "串联伞骨与水渍",
           "characters": [
             "林晚"
           ],
@@ -1011,12 +1207,12 @@
         {
           "beat_id": "SC02-B07",
           "type": "ESCALATION",
-          "event": "陆叔的笑容第一次完全消失，说林晚累了，好好睡一觉。",
+          "event": "陆叔笑容消失、威胁升级。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "ESCALATION",
-          "objective": "威胁浮出水面，Gaslighting 升级",
+          "objective": "Gaslighting 升级为威胁",
           "characters": [
             "陆叔",
             "林晚"
@@ -1029,12 +1225,12 @@
         {
           "beat_id": "SC02-B08",
           "type": "REVERSAL",
-          "event": "林晚后退撞到茶几，水瓶滚落，带起暗红色纤维碎屑飘落。",
+          "event": "林晚后退，纤维碎屑飘落。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "REVERSAL",
-          "objective": "林晚的恐惧成为反驳陆叔谎言的证据",
+          "objective": "林晚的恐惧成为反驳谎言的证据",
           "characters": [
             "林晚",
             "陆叔"
@@ -1047,12 +1243,12 @@
         {
           "beat_id": "SC02-B09",
           "type": "HOOK",
-          "event": "陆叔的目光瞬间锁定那片飘落的碎屑，手停在半空。",
+          "event": "陆叔盯住碎屑、手停在半空。",
           "dramatic_function": "",
           "information_change": "",
           "emotion_change": "",
           "beat_type": "HOOK",
-          "objective": "集尾强钩子，真相仍藏在迷雾中",
+          "objective": "集尾强钩子",
           "characters": [
             "陆叔",
             "林晚"
@@ -1064,13 +1260,56 @@
         }
       ],
       "actions": [
-        "陆叔反手把门锁旋了两圈，发出清晰的咔哒声。",
-        "陆叔走向厨房，洗了一个苹果。",
-        "林晚的目光落在茶几边缘一道新鲜的划痕上。",
-        "陆叔外套口袋的长条状硬物轮廓再次显现。",
-        "玄关地板出现一片带暗红痕迹的水渍与纤维碎屑。",
-        "陆叔说林晚累了，好好睡一觉，手指即将触到她的脸颊。",
-        "林晚后退撞到茶几，水瓶滚落，暗红色纤维碎屑飘起。"
+        {
+          "action_id": "A101",
+          "text": "陆叔跟着林晚进公寓，反手把门锁旋了两圈，发出清晰的咔哒声。",
+          "beat_ref": "SC02-B01"
+        },
+        {
+          "action_id": "A102",
+          "text": "陆叔走向厨房，洗了一个苹果。",
+          "beat_ref": "SC02-B01"
+        },
+        {
+          "action_id": "A103",
+          "text": "林晚没有坐下，盯着陆叔的背影。",
+          "beat_ref": "SC02-B02"
+        },
+        {
+          "action_id": "A104",
+          "text": "林晚短暂怀疑自己的记忆，随即重新寻找客观证据。",
+          "beat_ref": "SC02-B04"
+        },
+        {
+          "action_id": "A105",
+          "text": "林晚的目光落在茶几边缘一道新鲜的划痕上。",
+          "beat_ref": "SC02-B04"
+        },
+        {
+          "action_id": "A106",
+          "text": "陆叔外套口袋的长条状硬物轮廓显现。",
+          "beat_ref": "SC02-B05"
+        },
+        {
+          "action_id": "A107",
+          "text": "玄关地板出现一片带暗红痕迹的水渍与纤维碎屑。",
+          "beat_ref": "SC02-B06"
+        },
+        {
+          "action_id": "A108",
+          "text": "陆叔的笑容第一次完全消失，抬手指向林晚的脸颊。",
+          "beat_ref": "SC02-B07"
+        },
+        {
+          "action_id": "A109",
+          "text": "林晚后退撞到茶几，水瓶滚落，暗红色纤维碎屑飘起。",
+          "beat_ref": "SC02-B08"
+        },
+        {
+          "action_id": "A110",
+          "text": "陆叔的目光瞬间锁定那片飘落的碎屑，手停在半空。",
+          "beat_ref": "SC02-B09"
+        }
       ],
       "dialogues": [
         {
@@ -1183,13 +1422,118 @@
           "character_knowledge_ref": ""
         }
       ],
+      "script_blocks": [
+        {
+          "order": 10,
+          "type": "ACTION",
+          "ref": "A101"
+        },
+        {
+          "order": 20,
+          "type": "DIALOGUE",
+          "ref": "D020"
+        },
+        {
+          "order": 30,
+          "type": "ACTION",
+          "ref": "A102"
+        },
+        {
+          "order": 40,
+          "type": "ACTION",
+          "ref": "A103"
+        },
+        {
+          "order": 50,
+          "type": "DIALOGUE",
+          "ref": "D021"
+        },
+        {
+          "order": 60,
+          "type": "DIALOGUE",
+          "ref": "D022"
+        },
+        {
+          "order": 70,
+          "type": "DIALOGUE",
+          "ref": "D023"
+        },
+        {
+          "order": 80,
+          "type": "DIALOGUE",
+          "ref": "D024"
+        },
+        {
+          "order": 90,
+          "type": "DIALOGUE",
+          "ref": "D028"
+        },
+        {
+          "order": 100,
+          "type": "DIALOGUE",
+          "ref": "D029",
+          "beat_refs": [
+            "SC02-B03"
+          ]
+        },
+        {
+          "order": 110,
+          "type": "ACTION",
+          "ref": "A104"
+        },
+        {
+          "order": 120,
+          "type": "ACTION",
+          "ref": "A105"
+        },
+        {
+          "order": 130,
+          "type": "DIALOGUE",
+          "ref": "D025"
+        },
+        {
+          "order": 140,
+          "type": "ACTION",
+          "ref": "A106"
+        },
+        {
+          "order": 150,
+          "type": "DIALOGUE",
+          "ref": "D026"
+        },
+        {
+          "order": 160,
+          "type": "ACTION",
+          "ref": "A107"
+        },
+        {
+          "order": 170,
+          "type": "DIALOGUE",
+          "ref": "D027"
+        },
+        {
+          "order": 180,
+          "type": "ACTION",
+          "ref": "A108"
+        },
+        {
+          "order": 190,
+          "type": "ACTION",
+          "ref": "A109"
+        },
+        {
+          "order": 200,
+          "type": "ACTION",
+          "ref": "A110"
+        }
+      ],
       "state_in": {
         "林晚": "决定不上车、怀疑转向陆叔",
         "陆叔": "表面热心、暗中警觉"
       },
       "state_out": {
-        "林晚": "确认陆叔在修改她的记忆，恐惧但清醒",
-        "陆叔": "谎言被逼到边缘，决断加重"
+        "林晚": "确认陆叔在修改记忆、恐惧但清醒",
+        "陆叔": "谎言被逼到边缘、决断加重"
       },
       "required_visual_proofs": [],
       "blocking_hints": [],
@@ -1235,5 +1579,5 @@
       "status": "RESOLVED"
     }
   ],
-  "payload_hash": "00196bb0220ea4dd32dbdbb06669b29642134e1505446f001d0dbb81d10195bb"
+  "payload_hash": "c0d46b7837eaec23277041b1dad83a0ded1e908b8dad611fa9a77d53774b52c8"
 }

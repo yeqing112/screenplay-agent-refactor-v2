@@ -166,7 +166,11 @@ def build_script_ir_version(book_id: int, episode: int, req: ScriptIRBuildReques
             "persisted_draft_id": persisted_id,
             "legacy_reconstruction": legacy,
             "validation": report,
-            "rendered_markdown": render_script_markdown(ir),
+            # Production-facing screenplay content always uses the explicit
+            # Reader timeline renderer.  Keep the legacy renderer available
+            # to old direct consumers, but do not expose its grouped output
+            # as the production page's screenplay.
+            "rendered_markdown": render_reader_script(ir),
             "version": _payload(version) if persisted_id else {"payload": ir, "payload_hash": version.payload_hash, "source_fingerprint": source_fingerprint, "validation_status": report["status"]},
         }
 
@@ -222,7 +226,7 @@ def confirm_script_ir(book_id: int, episode: int, req: ScriptIRConfirmRequest) -
             previous.status = "superseded"; previous.updated_at = datetime.now()
         draft.status = "qualified"; draft.payload_json = json.dumps(candidate, ensure_ascii=False); draft.payload_hash = script_ir_hash(candidate); draft.validation_status = "qualified"; draft.validation_report = json.dumps(report, ensure_ascii=False); draft.updated_at = datetime.now(); session.commit(); session.refresh(draft)
         script.current_script_ir_version_id = draft.id; script.quality_status = "qualified"; script.workflow_profile = "production"; script.production_status = "blocked"; session.commit()
-        return {"confirmed": True, "mutated": True, "script_ir": _payload(draft), "rendered_markdown": render_script_markdown(candidate), "production_status": "blocked"}
+        return {"confirmed": True, "mutated": True, "script_ir": _payload(draft), "rendered_markdown": render_reader_script(candidate), "production_status": "blocked"}
 
 
 @router.post("/{book_id}/episodes/{episode}/script-ir/creative-quality")

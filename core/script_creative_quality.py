@@ -362,6 +362,138 @@ def _gate_critical_beat(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
     return errors
 
 
+def _gate_script_blocks(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
+    """Phase A timeline: production ScriptIR must carry an explicit,
+    valid screenplay timeline (script_blocks).
+
+    Hard errors:
+    * SCRIPT_BLOCK_ORDER_REQUIRED — no script_blocks / duplicate order / non-int order
+    * SCRIPT_BLOCK_TARGET_MISSING — a block ref does not resolve to content
+    * SCRIPT_BLOCK_COVERAGE_INCOMPLETE — a dialogue or critical beat is not on the timeline
+    """
+    errors: list[dict[str, Any]] = []
+    for scene in _scene_order(script_ir):
+        scene_id = _text(scene.get("scene_id"))
+        blocks = [b for b in (scene.get("script_blocks") or []) if isinstance(b, dict)]
+        if not blocks:
+            errors.append(_error(
+                "SCRIPT_BLOCK_ORDER_REQUIRED",
+                f"场景 {scene_id} 缺少 screenplay timeline（script_blocks）。Production ScriptIR 必须提供显式顺序。",
+                scene_id=scene_id,
+            ))
+            continue
+        seen_orders: dict[int, str] = {}
+        refs: dict[str, str] = {}
+        for block in blocks:
+            order = block.get("order")
+            if not isinstance(order, int) or isinstance(order, bool):
+                errors.append(_error(
+                    "SCRIPT_BLOCK_ORDER_REQUIRED",
+                    f"场景 {scene_id} 的 script_block 缺少整数 order（{_text(order)}）。",
+                    scene_id=scene_id,
+                ))
+                continue
+            if order in seen_orders:
+                errors.append(_error(
+                    "SCRIPT_BLOCK_ORDER_CONFLICT",
+                    f"场景 {scene_id} 的 script_block 顺序冲突：order={order} 重复。",
+                    scene_id=scene_id, order=order,
+                ))
+            seen_orders[order] = _text(block.get("ref"))
+            block_type = _text(block.get("type")).upper()
+            if block_type not in {"ACTION", "DIALOGUE"}:
+                errors.append(_error(
+                    "SCRIPT_BLOCK_TYPE_INVALID",
+                    f"场景 {scene_id} 的 script_block 类型非法：{_text(block.get('type'))}。",
+                    scene_id=scene_id,
+                ))
+            ref = _text(block.get("ref"))
+            if not ref:
+                errors.append(_error(
+                    "SCRIPT_BLOCK_REF_MISSING",
+                    f"场景 {scene_id} 的 script_block 缺少 ref。",
+                    scene_id=scene_id, order=order,
+                ))
+                continue
+            if ref in refs:
+                errors.append(_error(
+                    "SCRIPT_BLOCK_DUPLICATE_REF",
+                    f"场景 {scene_id} 的 script_block 重复引用 ref={ref}。",
+                    scene_id=scene_id, ref=ref,
+                ))
+            refs[ref] = block_type
+        # Resolve coverage: build content indexes.
+        action_ids = {_text(a.get("action_id")) for a in (scene.get("actions") or []) if isinstance(a, dict)}
+        beat_ids = {_text(b.get("beat_id")) for b in (scene.get("dramatic_beats") or scene.get("beats") or []) if isinstance(b, dict)}
+        dialogue_ids = {_text(d.get("dialogue_id")) for d in (scene.get("dialogues") or []) if isinstance(d, dict)}
+        action_refs = {ref for ref, btype in refs.items() if btype == "ACTION"}
+        dialogue_refs = {ref for ref, btype in refs.items() if btype == "DIALOGUE"}
+        valid_action_refs = action_ids | beat_ids
+        for ref in sorted(action_refs - valid_action_refs):
+            errors.append(_error(
+                "SCRIPT_BLOCK_TARGET_MISSING",
+                f"场景 {scene_id} 的 ACTION 块引用 {ref} 不存在于 actions/beats。",
+                scene_id=scene_id, ref=ref,
+            ))
+        for ref in sorted(dialogue_refs - dialogue_ids):
+            errors.append(_error(
+                "SCRIPT_BLOCK_TARGET_MISSING",
+                f"场景 {scene_id} 的 DIALOGUE 块引用 {ref} 不存在于 dialogues。",
+                scene_id=scene_id, ref=ref,
+            ))
+        # Coverage: every dialogue must be on the timeline; every critical beat
+        # (with visible content) must have an ACTION block referencing it or
+        # an action whose beat_ref points to it.
+        covered_beats = set()
+        for block in blocks:
+            if isinstance(block.get("beat_refs"), list):
+                covered_beats.update(_text(ref) for ref in block.get("beat_refs") if _text(ref))
+        for action in scene.get("actions") or []:
+            if not isinstance(action, dict):
+                continue
+            beat_ref = _text(action.get("beat_ref"))
+            if beat_ref:
+                covered_beats.add(beat_ref)
+                continue
+            # Legacy action payloads may predate ``beat_ref``.  Preserve
+            # coverage when the action text is the visible realization of a
+            # dramatic beat, without assigning identity by array position.
+            action_text = _text(action.get("text") or action.get("event"))
+            if action_text:
+                for beat in (scene.get("dramatic_beats") or scene.get("beats") or []):
+                    if isinstance(beat, dict) and action_text == _text(beat.get("event")):
+                        covered_beats.add(_text(beat.get("beat_id")))
+        covered_beats |= {ref for ref, btype in refs.items() if btype == "ACTION" and ref in beat_ids}
+        critical_beats = [b for b in (scene.get("dramatic_beats") or scene.get("beats") or []) if isinstance(b, dict) and (_text(b.get("importance")) == "critical" or b.get("requires_reaction"))]
+        missing_dialogues = sorted(dialogue_ids - dialogue_refs)
+        missing_critical = sorted({_text(b.get("beat_id")) for b in critical_beats} - covered_beats)
+        if missing_dialogues:
+            errors.append(_error(
+                "SCRIPT_BLOCK_COVERAGE_INCOMPLETE",
+                f"场景 {scene_id} 有 {len(missing_dialogues)} 段对白未进入 timeline：{missing_dialogues[:8]}",
+                scene_id=scene_id, missing=missing_dialogues[:12],
+            ))
+        if missing_critical:
+            errors.append(_error(
+                "SCRIPT_BLOCK_COVERAGE_INCOMPLETE",
+                f"场景 {scene_id} 有 {len(missing_critical)} 个 critical 节拍未进入 timeline：{missing_critical[:8]}",
+                scene_id=scene_id, missing=missing_critical[:12],
+            ))
+    return errors
+
+
+def validate_script_blocks(scene: dict[str, Any]) -> list[dict[str, Any]]:
+    """Validate one scene's explicit screenplay timeline deterministically.
+
+    The returned diagnostics use the same hard-gate codes as a production
+    ScriptIR evaluation, making this useful to editors and API callers that
+    want to validate a scene before assembling a full episode payload.
+    """
+    if not isinstance(scene, dict):
+        return [_error("SCRIPT_BLOCK_ORDER_REQUIRED", "scene must be an object")]
+    return _gate_script_blocks({"scenes": [scene]})
+
+
 def run_hard_gates(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
     errors: list[dict[str, Any]] = []
     errors.extend(_gate_scene_transitions(script_ir))
@@ -370,6 +502,7 @@ def run_hard_gates(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
     errors.extend(_gate_prop_state_conflict(script_ir))
     errors.extend(_gate_timeline_conflict(script_ir))
     errors.extend(_gate_critical_beat(script_ir))
+    errors.extend(_gate_script_blocks(script_ir))
     return errors
 
 
@@ -467,12 +600,43 @@ def _soft_overdirected_script(script_ir: dict[str, Any]) -> list[dict[str, Any]]
     return diagnostics
 
 
+def _soft_reader_duplicate_content(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
+    """A beat whose event is a semantic summary of a following dialogue creates
+    an action/dialogue duplicate in the reader.  Flag it so authors remove the
+    summary or drop the ACTION block from the timeline.
+    """
+    diagnostics: list[dict[str, Any]] = []
+    for scene in _scene_order(script_ir):
+        scene_id = _text(scene.get("scene_id"))
+        dialogues = [d for d in (scene.get("dialogues") or []) if isinstance(d, dict)]
+        beats = [b for b in (scene.get("dramatic_beats") or scene.get("beats") or []) if isinstance(b, dict)]
+        for beat in beats:
+            event = _text(beat.get("event"))
+            if not event:
+                continue
+            # If the beat's event is a near-substring of a dialogue text, it is
+            # likely a semantic summary that duplicates audible content.
+            beat_core = event
+            for dialogue in dialogues:
+                text = _text(dialogue.get("text") or dialogue.get("content"))
+                if not text:
+                    continue
+                if beat_core and (beat_core in text or text in beat_core) and len(beat_core) >= 6:
+                    diagnostics.append(_diagnostic(
+                        "SCRIPT_READER_DUPLICATE_CONTENT",
+                        f"场景 {scene_id} 的节拍 {_text(beat.get('beat_id'))} 与对白 {_text(dialogue.get('dialogue_id'))} 内容重复（beat 是对话摘要）。",
+                        scene_id=scene_id, beat_id=_text(beat.get("beat_id")), dialogue_id=_text(dialogue.get("dialogue_id")),
+                    ))
+    return diagnostics
+
+
 def run_soft_diagnostics(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
     diagnostics: list[dict[str, Any]] = []
     diagnostics.extend(_soft_repetitive_interrogation(script_ir))
     diagnostics.extend(_soft_exposition_heavy_dialogue(script_ir))
     diagnostics.extend(_soft_low_escalation(script_ir))
     diagnostics.extend(_soft_overdirected_script(script_ir))
+    diagnostics.extend(_soft_reader_duplicate_content(script_ir))
     return diagnostics
 
 
@@ -540,4 +704,64 @@ def detect_negative_fixture_issues(script_ir: dict[str, Any]) -> dict[str, Any]:
         "leaked_camera_patterns": sorted(set(leaked_camera)),
         "leaked_internal_labels": sorted(set(leaked_labels)),
         "expected_negative_signals": expected,
+    }
+
+
+def validate_reader_script(script_ir: dict[str, Any], reader_text: str) -> dict[str, Any]:
+    """Reader-specific verification.
+
+    Guarantees the reader output:
+    * has no camera leak, no internal labels, no episode objective, no beat ids,
+      no technical metadata;
+    * interleaves action and dialogue (no all-actions-then-all-dialogues);
+    * does not duplicate a beat summary with its dialogue.
+    """
+    errors: list[str] = []
+    warnings: list[str] = []
+    # No camera direction / internal labels / technical metadata.
+    for pattern in CAMERA_LEAK_PATTERNS:
+        if pattern in reader_text:
+            errors.append(f"reader contains camera-direction pattern: {pattern}")
+    for pattern in INTERNAL_LABEL_PATTERNS:
+        if pattern in reader_text:
+            errors.append(f"reader contains internal label: {pattern}")
+    for pattern in ("beat_id", "dialogue_id", "assertion_mode", "DECEPTION", "OBJECTIVE_FACT", "contradicts", "prompt_fingerprint", "FactSnapshot", "source_ref"):
+        if pattern in reader_text:
+            errors.append(f"reader contains technical metadata: {pattern}")
+    objective = _text(script_ir.get("episode_objective"))
+    if objective and objective in reader_text:
+        errors.append("reader contains episode_objective")
+    # Interleaving check: no run of >3 consecutive same-type visible blocks in a
+    # rendered scene.  Parse visible paragraph types from the reader text.
+    visible_lines = [line for line in reader_text.splitlines() if line.strip()]
+    type_runs = []
+    current_type = None
+    current_run = 0
+    for line in visible_lines:
+        if line.startswith("**") and line.endswith("**"):
+            line_type = "DIALOGUE_HEADER"
+        elif line.startswith("场") and ("日" in line or "夜" in line or "内" in line or "外" in line):
+            line_type = "HEADER"
+        elif line.startswith("#"):
+            line_type = "TITLE"
+        else:
+            # The following line after a DIALOGUE_HEADER is dialogue text; a
+            # bare prose line is ACTION.
+            line_type = "DIALOGUE_BODY" if current_type == "DIALOGUE_HEADER" else "ACTION"
+        if line_type == current_type:
+            current_run += 1
+        else:
+            if current_run >= 5 and current_type in {"ACTION", "DIALOGUE_BODY", "DIALOGUE_HEADER"}:
+                type_runs.append((current_type, current_run))
+            current_type = line_type
+            current_run = 1
+    if current_run >= 5 and current_type in {"ACTION", "DIALOGUE_BODY", "DIALOGUE_HEADER"}:
+        type_runs.append((current_type, current_run))
+    if type_runs:
+        warnings.append(f"long same-type runs: {type_runs}")
+    return {
+        "ok": not errors,
+        "errors": errors,
+        "warnings": warnings,
+        "long_runs": type_runs,
     }

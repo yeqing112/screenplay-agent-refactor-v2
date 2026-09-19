@@ -49,43 +49,102 @@ def _render_scene_header(scene: dict[str, Any], index: int) -> list[str]:
 
 
 def render_reader_script(script_ir: dict[str, Any]) -> str:
-    """Professional screenplay for a human reader."""
+    """Professional screenplay for a human reader.
+
+    Renders strictly in ``scene.script_blocks`` order: ACTION blocks resolve
+    the referenced action/beat text, DIALOGUE blocks resolve the referenced
+    dialogue.  It never emits episode objective, beat ids, dialogue ids,
+    assertion modes, camera direction or internal engineering labels.
+    """
     title = _text(script_ir.get("title")) or f"第{_text(script_ir.get('episode')) or 1}集"
     lines = [f"# {title}", ""]
-    objective = _text(script_ir.get("episode_objective"))
-    if objective:
-        lines.extend([f"本集目标：{objective}", ""])
     for index, scene in enumerate(script_ir.get("scenes") or [], start=1):
         if not isinstance(scene, dict):
             continue
         lines.extend(_render_scene_header(scene, index))
-        # Interleave beats and dialogues in source order when available.
-        beats = [b for b in (scene.get("dramatic_beats") or scene.get("beats") or []) if isinstance(b, dict)]
-        dialogues = [d for d in (scene.get("dialogues") or []) if isinstance(d, dict)]
-        cursor_b = 0
-        cursor_d = 0
-        # Merge by original order when beats carry an order; otherwise render
-        # actions first, then dialogues (legacy path).
-        merged = list(beats) + list(dialogues)
-        # Prefer a deterministic render: all beats (as prose), then dialogues.
-        for beat in beats:
-            event = _clean_action(beat.get("event"))
-            if event:
-                lines.append(event)
-                lines.append("")
-        for dialogue in dialogues:
-            speaker = _text(dialogue.get("speaker")) or "角色"
-            parenthetical = _text(dialogue.get("parenthetical"))
-            text = _text(dialogue.get("text") or dialogue.get("content"))
-            if not text:
-                continue
-            if parenthetical:
-                lines.append(f"**{speaker}**（{parenthetical}）")
-            else:
-                lines.append(f"**{speaker}**")
-            lines.append(text)
-            lines.append("")
+        # Build content indexes.
+        actions_by_id = {}
+        for action in scene.get("actions") or []:
+            if isinstance(action, dict) and _text(action.get("action_id")):
+                actions_by_id[_text(action["action_id"])] = action
+        beats_by_id = {}
+        for beat in scene.get("dramatic_beats") or scene.get("beats") or []:
+            if isinstance(beat, dict) and _text(beat.get("beat_id")):
+                beats_by_id[_text(beat["beat_id"])] = beat
+        dialogues_by_id = {}
+        for dialogue in scene.get("dialogues") or []:
+            if isinstance(dialogue, dict) and _text(dialogue.get("dialogue_id")):
+                dialogues_by_id[_text(dialogue["dialogue_id"])] = dialogue
+        blocks = [b for b in (scene.get("script_blocks") or []) if isinstance(b, dict)]
+        if not blocks:
+            # Deterministic fallback when no explicit timeline exists.
+            blocks = _fallback_blocks(scene)
+        for block in sorted(blocks, key=lambda item: _order_key(item)):
+            block_type = _text(block.get("type")).upper()
+            ref = _text(block.get("ref"))
+            if block_type == "ACTION":
+                content = ""
+                if ref:
+                    action = actions_by_id.get(ref)
+                    if action is not None:
+                        content = _clean_action(action.get("text"))
+                    else:
+                        beat = beats_by_id.get(ref)
+                        if beat is not None:
+                            content = _clean_action(beat.get("event"))
+                elif "action_id" in block:
+                    action = actions_by_id.get(_text(block.get("action_id")))
+                    if action is not None:
+                        content = _clean_action(action.get("text"))
+                if content:
+                    lines.append(content)
+                    lines.append("")
+            elif block_type == "DIALOGUE":
+                dialogue = dialogues_by_id.get(ref) if ref else None
+                if dialogue is None and ref:
+                    dialogue = next((d for d in (scene.get("dialogues") or []) if isinstance(d, dict) and _text(d.get("id")) == ref), None)
+                if dialogue is not None:
+                    speaker = _text(dialogue.get("speaker")) or "角色"
+                    parenthetical = _text(dialogue.get("parenthetical"))
+                    text = _text(dialogue.get("text") or dialogue.get("content"))
+                    if text:
+                        if parenthetical:
+                            lines.append(f"**{speaker}**（{parenthetical}）")
+                        else:
+                            lines.append(f"**{speaker}**")
+                        lines.append(text)
+                        lines.append("")
     return "\n".join(lines).strip() + "\n"
+
+
+def _order_key(block: dict[str, Any]) -> tuple[int, int]:
+    order = block.get("order")
+    if isinstance(order, int) and not isinstance(order, bool):
+        return (int(order), 0)
+    raw = _text(block.get("order"))
+    try:
+        return (int(float(raw)), 0)
+    except (TypeError, ValueError):
+        return (10**9, 0)
+
+
+def _fallback_blocks(scene: dict[str, Any]) -> list[dict[str, Any]]:
+    """Deterministic interleave fallback for payloads without script_blocks."""
+    actions = [a for a in (scene.get("actions") or []) if isinstance(a, dict) and _text(a.get("action_id"))]
+    beats = [b for b in (scene.get("dramatic_beats") or scene.get("beats") or []) if isinstance(b, dict) and _text(b.get("beat_id"))]
+    dialogues = [d for d in (scene.get("dialogues") or []) if isinstance(d, dict) and _text(d.get("dialogue_id"))]
+    action_sources = actions if actions else beats
+    blocks: list[dict[str, Any]] = []
+    order = 10
+    max_len = max(len(action_sources), len(dialogues))
+    for index in range(max_len):
+        if index < len(action_sources):
+            blocks.append({"order": order, "type": "ACTION", "ref": _text(action_sources[index].get("action_id") or action_sources[index].get("beat_id"))})
+            order += 10
+        if index < len(dialogues):
+            blocks.append({"order": order, "type": "DIALOGUE", "ref": _text(dialogues[index].get("dialogue_id"))})
+            order += 10
+    return blocks
 
 
 def render_technical_script_view(script_ir: dict[str, Any]) -> str:
