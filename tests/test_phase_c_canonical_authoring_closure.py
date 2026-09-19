@@ -1,8 +1,13 @@
 import copy
 import json
+from types import SimpleNamespace
 from pathlib import Path
 
+import pytest
+
+from api.shot_plan_api import _confirm_phase_c_provenance
 from core.phase_c_shot_plan import build_phase_c_contract, build_shot_requirements, validate_shot_design
+from core.shot_plan_authority import shot_plan_payload_from_row
 
 
 ART = Path(__file__).resolve().parents[1] / "artifacts" / "e2e-production-pilot"
@@ -82,3 +87,30 @@ def test_missing_required_prop_axis_and_unconfirmed_generated_draft_fail_closed(
     provenance = {"proposal_origin": "GENERATED_DRAFT", "confirmed": False}
     result = validate_shot_design(shots=proposal["shots"], requirements=requirements, treatment=treatment, blocking=blocking, authoring_provenance=provenance)
     assert any(error["code"] == "SHOT_AUTHORING_PROVENANCE_INVALID" for error in result["errors"])
+
+
+def test_provenance_confirmation_requires_real_provider_and_matching_canonical_origin():
+    with pytest.raises(ValueError, match="PROVIDER_PROPOSAL requires a provider call"):
+        _confirm_phase_c_provenance({"proposal_origin": "PROVIDER_PROPOSAL", "provider": {"called": False, "calls": 0}}, confirmed_at="now")
+    with pytest.raises(ValueError, match="canonical origin"):
+        _confirm_phase_c_provenance({"proposal_origin": "HUMAN_INPUT", "canonical_origin": "PROVIDER_PROPOSAL_CONFIRMED"}, confirmed_at="now")
+    with pytest.raises(ValueError, match="GENERATED_DRAFT requires explicit confirmation"):
+        _confirm_phase_c_provenance({"proposal_origin": "GENERATED_DRAFT", "confirmed": False}, confirmed_at="now")
+
+
+def test_shot_plan_payload_reads_canonical_shots_only():
+    canonical = [{"plan_shot_id": "SH_CANONICAL"}]
+    legacy = [{"plan_shot_id": "SH_LEGACY"}]
+    row = SimpleNamespace(
+        scene_id="E01_SC001",
+        scene_name="station",
+        schema_version="shot_plan_v2",
+        shots=json.dumps(canonical, ensure_ascii=False),
+        unknowns="[]",
+        model_info=json.dumps({"phase_c_plan": {"shots": legacy, "contract_version": "legacy"}, "phase_c_semantic_ready": True, "shot_design_status": "CANONICAL_CONFIRMED"}),
+    )
+    payload = shot_plan_payload_from_row(row)
+    assert payload["shots"] == canonical
+    assert payload["shots"] != legacy
+    assert payload["phase_c_contract"]["contract_version"] == "legacy"
+    assert "shots" not in payload["phase_c_contract"]

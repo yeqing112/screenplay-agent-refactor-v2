@@ -217,6 +217,13 @@ def validate_shot_design(*, shots: list[dict[str, Any]], requirements: dict[str,
     origin = str(provenance.get("proposal_origin") or provenance.get("origin") or "")
     if origin not in {"HUMAN_INPUT", "PROVIDER_PROPOSAL", "IMPORTED_REVIEWED_PROPOSAL", "GENERATED_DRAFT"} or (origin == "GENERATED_DRAFT" and not provenance.get("confirmed")):
         errors.append({"code": "SHOT_AUTHORING_PROVENANCE_INVALID"})
+    provider = provenance.get("provider") if isinstance(provenance.get("provider"), dict) else {}
+    if origin == "PROVIDER_PROPOSAL" and (not provider.get("called") or int(provider.get("calls", 0) or 0) <= 0):
+        errors.append({"code": "SHOT_AUTHORING_PROVENANCE_INVALID", "reason": "PROVIDER_PROPOSAL_REQUIRES_PROVIDER_CALL"})
+    expected_canonical = {"HUMAN_INPUT": "HUMAN_AUTHORED", "GENERATED_DRAFT": "HUMAN_AUTHORED", "PROVIDER_PROPOSAL": "PROVIDER_PROPOSAL_CONFIRMED", "IMPORTED_REVIEWED_PROPOSAL": "IMPORTED_REVIEWED_CONFIRMED"}.get(origin)
+    declared_canonical = str(provenance.get("canonical_origin") or "")
+    if declared_canonical and declared_canonical != expected_canonical:
+        errors.append({"code": "SHOT_AUTHORING_PROVENANCE_INVALID", "reason": "CANONICAL_ORIGIN_TRANSITION_INVALID"})
     for shot in shots:
         if not isinstance(shot, dict): errors.append({"code": "SHOT_SCHEMA_INVALID"}); continue
         sid = str(shot.get("plan_shot_id") or "")

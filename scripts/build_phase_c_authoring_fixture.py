@@ -28,6 +28,7 @@ GROUPS = {
     "E01_SC002": [
         (["SC02-B01", "SC02-B02"], "ESTABLISH_RELATIONSHIP", "WIDE", "NONE", "AUDIENCE_ONLY"),
         (["SC02-B03"], "INTRODUCE_INFORMATION", "OVER_SHOULDER", "NONE", "CHARACTER_AND_AUDIENCE"),
+        (["SC02-B03"], "CAPTURE_REACTION", "MEDIUM_CLOSE", "NONE", "AUDIENCE_OBSERVES_CHARACTER_DOUBT", "UNCERTAIN_CHARACTER"),
         (["SC02-B04", "SC02-B05"], "CAPTURE_REACTION", "MEDIUM_CLOSE", "REFRAME", "AUDIENCE_OBSERVES_CHARACTER_DOUBT"),
         (["SC02-B06"], "CONFIRM_EVIDENCE", "INSERT", "NONE", "AUDIENCE_ONLY"),
         (["SC02-B07"], "ESCALATE_THREAT", "CLOSE", "DOLLY_IN", "CHARACTER_AND_AUDIENCE"),
@@ -42,21 +43,35 @@ def _state(blocking: dict, beat_id: str) -> dict:
             return {"state_ref": beat_id, "subject_zones": {str(k): (v.get("zone") if isinstance(v, dict) else v) for k, v in chars.items()}}
     return {"state_ref": beat_id, "subject_zones": {}}
 
+
+def _axes(blocking: dict) -> list[dict]:
+    raw = blocking.get("interaction_axes")
+    return [item for item in raw if isinstance(item, dict)] if isinstance(raw, list) else []
+
 def build_scene(treatment: dict, blocking: dict) -> dict:
     req = build_shot_requirements(treatment=treatment, blocking=blocking, script_authority={"source": "current_phase_b_authority"})
     by_beat = {str(r["beat_refs"][0]): r for r in req["requirements"]}
     beat_map = {str(b["beat_id"]): b for b in treatment.get("beat_map", [])}
     shots = []
-    for index, (beats, purpose, framing, movement, visibility) in enumerate(GROUPS[str(treatment["scene_id"])], 1):
+    for index, group in enumerate(GROUPS[str(treatment["scene_id"])], 1):
+        beats, purpose, framing, movement, visibility = group[:5]
+        subject_mode = group[5] if len(group) > 5 else ""
         bound = [by_beat[beat] for beat in beats]
         subjects = sorted({s for item in bound for s in item["required_subjects"]})
+        if subject_mode == "UNCERTAIN_CHARACTER" and len(subjects) > 1:
+            subjects = [subjects[-1]]
         requirement_refs = [item["requirement_id"] for item in bound]
         reaction_refs = sorted({x for item in bound for x in item["reaction_contract_refs"]})
         prop_refs = sorted({x for item in bound for x in item["required_prop_refs"]})
         axis_refs = sorted({x for item in bound for x in item["required_axis_refs"]})
         coverage = sorted({x for item in bound for x in item["required_coverages"]})
         first_state = _state(blocking, beats[0])
-        axis = {"axis_applicability": "REQUIRED" if axis_refs else "NOT_APPLICABLE", "axis_ref": axis_refs[0] if axis_refs else None, "axis_refs": axis_refs, "axis_policy": "PRESERVE", "screen_side_assignments": {}}
+        axis = {"axis_applicability": "REQUIRED" if axis_refs else "NOT_APPLICABLE", "axis_ref": axis_refs[0] if axis_refs else None, "axis_refs": axis_refs, "axis_policy": "PRESERVE", "screen_side_assignments": {}, "look_direction": {}}
+        if axis_refs:
+            axis_def = next((item for item in _axes(blocking) if str(item.get("axis_id") or item.get("axis_ref")) == axis_refs[0]), {})
+            axis_subjects = [str(item) for item in (axis_def.get("subjects") or axis_def.get("participants") or [])]
+            axis["screen_side_assignments"] = {subject: ("LEFT" if offset == 0 else "RIGHT") for offset, subject in enumerate(axis_subjects)}
+            axis["look_direction"] = {subject: ("SCREEN_RIGHT" if offset == 0 else "SCREEN_LEFT") for offset, subject in enumerate(axis_subjects)}
         camera = {"framing_class": framing, "orientation": "EYE_LEVEL", "support": "STATIC" if movement == "NONE" else "DOLLY", "movement": movement, "subject_binding": subjects}
         if movement != "NONE":
             camera.update({"movement_trigger": "AUTHORED_BEAT_TRANSITION", "movement_target": subjects[0] if subjects else "PRIMARY_SUBJECT", "movement_end_condition": "BEAT_INFORMATION_LANDS"})

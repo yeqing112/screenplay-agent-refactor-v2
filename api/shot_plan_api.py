@@ -16,6 +16,7 @@ from core.scene_directing_strategy import build_scene_directing_strategy, SceneD
 from core.director_patch_validator import validate_compiled_patch_result
 from core.director_patch_compiler import compile_creative_patches, DirectorPatchCompileError
 from core.director_quality_validator import score_director_quality
+from core.director_provenance import confirmation_event, proposal_provenance, resolve_canonical_origin
 from core.director_local_repair import build_director_repair_options
 from core.director_prompt import build_director_patch_prompt
 import core.llm as llm_client
@@ -100,6 +101,29 @@ def _dict(value: Any) -> dict[str, Any]:
 
 def _text(value: Any) -> str:
     return str(value or "").strip()
+
+
+def _confirm_phase_c_provenance(raw: dict[str, Any], *, confirmed_at: str) -> dict[str, Any]:
+    """Reuse the shared proposal -> production provenance transition."""
+    source = raw if isinstance(raw, dict) else {}
+    origin = _text(source.get("proposal_origin") or source.get("origin")).upper()
+    declared_canonical = _text(source.get("canonical_origin"))
+    provider = source.get("provider") if isinstance(source.get("provider"), dict) else {}
+    authoring = source.get("authoring") if isinstance(source.get("authoring"), dict) else {}
+    normalized = proposal_provenance(
+        origin,
+        provider=provider,
+        human_input=bool(authoring.get("human_input", origin == "HUMAN_INPUT")),
+    )
+    if origin == "GENERATED_DRAFT" and source.get("confirmed") is not True:
+        raise ValueError("DIRECTOR_PROVENANCE_INVALID: GENERATED_DRAFT requires explicit confirmation")
+    event = confirmation_event(normalized, confirmed_at=confirmed_at)
+    if declared_canonical and declared_canonical != event["canonical_origin"]:
+        raise ValueError("DIRECTOR_PROVENANCE_INVALID: canonical origin does not match proposal origin")
+    normalized["confirmed"] = True
+    normalized["confirmation_event"] = event
+    normalized["canonical_origin"] = resolve_canonical_origin(normalized, event)
+    return normalized
 
 
 def _v21_runtime_summary(*, candidate: dict[str, Any], compilation: dict[str, Any], validation: dict[str, Any]) -> dict[str, Any]:
@@ -768,6 +792,10 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
             proposal_provenance = req.proposal_provenance or (proposal.get("authoring_provenance") if isinstance(proposal, dict) else None) or {}
             if not isinstance(proposal_shots, list):
                 raise HTTPException(status_code=409, detail={"code": "SHOT_DESIGN_PROPOSAL_INVALID", "message": "shot_design_proposal.shots must be an array."})
+            try:
+                proposal_provenance = _confirm_phase_c_provenance(proposal_provenance, confirmed_at=datetime.now().isoformat())
+            except ValueError as exc:
+                raise HTTPException(status_code=409, detail={"code": "SHOT_AUTHORING_PROVENANCE_INVALID", "message": str(exc)}) from exc
             design = validate_shot_design(shots=proposal_shots, requirements=phase_c_info["phase_c_contract"], treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking), authoring_provenance=proposal_provenance)
             if not design.get("valid"):
                 raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_PHASE_C_CONTRACT_INVALID", "errors": design.get("errors", [])})
@@ -843,7 +871,8 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
                 raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_POINTER_MISSING", "message": "Approved ShotPlan exists without a current pointer; explicit migration is required."})
         revision = (previous.revision + 1) if previous else 1
         anchor = {"previous_plan_id": previous.id if previous else None, "previous_revision": previous.revision if previous else None}
-        confirmed_status = "CANONICAL_CONFIRMED" if (confirmed_phase_c_plan or {}).get("authoring_provenance") else "LEGACY_COMPATIBILITY"
+        canonical_origin = _text((confirmed_phase_c_plan or {}).get("authoring_provenance", {}).get("canonical_origin"))
+        confirmed_status = "CANONICAL_CONFIRMED" if canonical_origin in {"HUMAN_AUTHORED", "PROVIDER_PROPOSAL_CONFIRMED", "IMPORTED_REVIEWED_CONFIRMED"} else "LEGACY_COMPATIBILITY"
         row = ShotPlan(book_id=book_id, episode=episode, scene_id=scene_id, scene_name=scene_name, revision=revision, status="approved", schema_version="shot_plan_v2", execution_status="ready", quality_status="qualified", production_status="ready", workflow_profile="production", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(candidate["shots"], ensure_ascii=False), unknowns="[]", evidence_fingerprint=draft.evidence_fingerprint, model_info=json.dumps({"mode": "confirmed_human_candidate", "rollback_anchor": anchor, "confirmed_at": now.isoformat(), "provider_calls": 0, "phase_c_contract_version": (confirmed_phase_c_plan or {}).get("contract_version"), "phase_c_semantic_ready": bool(candidate.get("phase_c_semantic_ready")), "phase_c_contract": confirmed_phase_c_plan, "shot_design_status": confirmed_status, "authoring_provenance": (confirmed_phase_c_plan or {}).get("authoring_provenance", {})}, ensure_ascii=False), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", contract_fingerprint=shot_plan_contract_fingerprint(), executability_fingerprint=executability.get("fingerprint", ""), continuity_fingerprint=continuity.get("fingerprint", ""), source_script_ir_version_id=script_ir.id, source_script_ir_revision=script_ir.revision, source_script_ir_hash=_text(script_ir.payload_hash), source_script_authority_fingerprint=_text(script_ir_authority.get("envelope_fingerprint")), treatment_authority_fingerprint=_text(treatment_authority.get("envelope_fingerprint")), treatment_payload_hash=_text(getattr(treatment, "payload_hash", "")), blocking_authority_fingerprint=_text(blocking_authority.get("envelope_fingerprint")), blocking_payload_hash=_text(blocking_authority.get("payload_hash", "")), source_fact_snapshot_id=_text(blocking_authority.get("fact_snapshot", {}).get("id")), source_fact_snapshot_revision=blocking_authority.get("fact_snapshot", {}).get("revision"), source_fact_snapshot_hash=_text(blocking_authority.get("fact_snapshot", {}).get("payload_hash")), source_immutable_raw_hash=_text(blocking_authority.get("source_lineage", {}).get("immutable_source_raw_hash")), source_lineage=json.dumps({"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id}, ensure_ascii=False), created_at=now, updated_at=now)
         session.add(row); session.flush()
         row.payload_hash = shot_plan_payload_hash(candidate)
