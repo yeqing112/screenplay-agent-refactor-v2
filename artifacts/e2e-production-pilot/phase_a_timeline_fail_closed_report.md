@@ -34,3 +34,12 @@ Activation now fails closed with the first applicable timeline or creative-quali
 ## Verification
 
 Targeted timeline, renderer, creative-quality, ScriptIR, authority-activation, and Reader API tests are run for this change. Golden regression remains 5/5. Full-backend historical failures are reported separately when present.
+
+## Current verification record
+
+- Timeline fail-closed regression tests: 3 passed.
+- Script creative quality / ScriptIR / renderer targeted suite: 15 passed.
+- Golden regression: 5/5 passed.
+- Full backend: 1516 passed, 35 failed, 926 warnings. The failures are historical integration fixtures that activate minimal ScriptIR payloads without explicit `script_blocks`, plus unrelated pre-existing branch/provider checks; they now surface the intended `SCRIPT_TIMELINE_NOT_EXPLICIT` blocker where applicable. No unrelated source files were changed to mask them.
+- Frontend: no frontend files or build scripts were touched.
+- Migration: no database schema migration required.
