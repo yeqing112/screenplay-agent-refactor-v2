@@ -24,6 +24,15 @@ from models import (
 )
 
 
+def _provider_call(candidate):
+    def call(*args, **kwargs):
+        callback = kwargs.get("audit_callback")
+        if callback:
+            callback({"profile_id": "test-profile", "vendor_model": "test-model", "request_fingerprint": "test-request", "response_sha256": "test-response"})
+        return candidate
+    return call
+
+
 class DirectorRuntimeE2ETests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -103,7 +112,7 @@ class DirectorRuntimeE2ETests(unittest.TestCase):
             "beat_map": treatment["beat_map"],
             "visual_strategy": treatment["visual_strategy"],
         }
-        with patch("api.director_treatment_api.llm_client.call_llm_json", return_value=candidate):
+        with patch("api.director_treatment_api.llm_client.call_llm_json", side_effect=_provider_call(candidate)):
             treatment_draft = self.client.post(
                 f"{base}/director-treatment/llm-draft",
                 json={

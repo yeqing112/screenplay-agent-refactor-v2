@@ -9,6 +9,15 @@ from api.server import app
 from models import Book, DecisionPacketRecord, DirectorTreatment, Script, Session, VisualMakeup, init_db
 
 
+def _provider_call(candidate):
+    def call(*args, **kwargs):
+        callback = kwargs.get("audit_callback")
+        if callback:
+            callback({"profile_id": "test-profile", "vendor_model": "test-model", "request_fingerprint": "test-request", "response_sha256": "test-response"})
+        return candidate
+    return call
+
+
 class DirectorTreatmentShadowTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -145,7 +154,7 @@ class DirectorTreatmentShadowTests(unittest.TestCase):
             ],
             "visual_strategy": "用空间阻挡与行动反差呈现权力变化",
         }
-        with patch("api.director_treatment_api.llm_client.call_llm_json", return_value=candidate) as call:
+        with patch("api.director_treatment_api.llm_client.call_llm_json", side_effect=_provider_call(candidate)) as call:
             response = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/llm-draft", json={
                 "packetFingerprint": fingerprint,
                 "confirmed": True,
@@ -172,7 +181,7 @@ class DirectorTreatmentShadowTests(unittest.TestCase):
             "beat_map": preview["treatment"]["beat_map"],
             "visual_strategy": "用门口阻挡和行动方向呈现关系变化",
         }
-        with patch("api.director_treatment_api.llm_client.call_llm_json", return_value=candidate):
+        with patch("api.director_treatment_api.llm_client.call_llm_json", side_effect=_provider_call(candidate)):
             draft = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/llm-draft", json={
                 "packetFingerprint": preview["packet_fingerprint"], "confirmed": True, "allowExternalCall": True,
             }).json()
@@ -197,7 +206,7 @@ class DirectorTreatmentShadowTests(unittest.TestCase):
             "dramatic_objective": "候选目标", "audience_question": "问题", "character_intents": {character_id: {}},
             "beat_map": preview["treatment"]["beat_map"], "visual_strategy": "空间关系",
         }
-        with patch("api.director_treatment_api.llm_client.call_llm_json", return_value=candidate):
+        with patch("api.director_treatment_api.llm_client.call_llm_json", side_effect=_provider_call(candidate)):
             draft = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/llm-draft", json={
                 "packetFingerprint": preview["packet_fingerprint"], "confirmed": True, "allowExternalCall": True,
             }).json()
@@ -216,10 +225,10 @@ class DirectorTreatmentShadowTests(unittest.TestCase):
 
     def test_candidate_history_is_replayable_without_exposing_secrets(self):
         preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/preview", json={}).json()
-        with patch("api.director_treatment_api.llm_client.call_llm_json", return_value={
+        with patch("api.director_treatment_api.llm_client.call_llm_json", side_effect=_provider_call({
             "dramatic_objective": "候选目标", "audience_question": "问题", "character_intents": {},
             "beat_map": preview["treatment"]["beat_map"], "visual_strategy": "空间策略",
-        }):
+        })):
             response = self.client.post(f"/api/books/{self.book_id}/episodes/1/director-treatment/llm-draft", json={
                 "packetFingerprint": preview["packet_fingerprint"], "confirmed": True, "allowExternalCall": True,
             })

@@ -28,6 +28,15 @@ from tests.script_fixtures import build_explicit_production_script_payload
 from models import FactSnapshot, Script, ScriptIRVersion, DirectorTreatment, DirectorTreatmentAuthority
 
 
+def _provider_call(candidate):
+    def call(*args, **kwargs):
+        callback = kwargs.get("audit_callback")
+        if callback:
+            callback({"profile_id": "test-profile", "vendor_model": "test-model", "request_fingerprint": "test-request", "response_sha256": "test-response"})
+        return candidate
+    return call
+
+
 class Row:
     scene_id = "E01_SC001"
     scene_name = "门厅"
@@ -100,7 +109,7 @@ def test_production_resolver_has_no_latest_approved_fallback():
         session.query(Book).filter_by(id=book_id).delete(); session.commit()
 
 
-def test_production_candidate_activation_binds_pointer_without_provider_by_default():
+def test_production_candidate_activation_binds_pointer_with_recorded_provider_provenance():
     init_db(); client = TestClient(app)
     source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
     content = json.dumps(source, ensure_ascii=False); raw_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
@@ -116,12 +125,12 @@ def test_production_candidate_activation_binds_pointer_without_provider_by_defau
         preview = client.post(f"/api/books/{book_id}/episodes/1/director-treatment/preview", json={"workflowProfile": "production", "sceneId": "E01_SC001"}); assert preview.status_code == 200, preview.text
         base = preview.json()["treatment"]
         candidate = {"scene_id": base["scene_id"], "scene_name": base["scene_name"], "dramatic_objective": "重新组织冲突", "audience_question": base["audience_question"], "character_intents": base["character_intents"], "beat_map": base["beat_map"], "visual_strategy": base["visual_strategy"]}
-        with patch("api.director_treatment_api.llm_client.call_llm_json", return_value=candidate):
+        with patch("api.director_treatment_api.llm_client.call_llm_json", side_effect=_provider_call(candidate)):
             generated = client.post(f"/api/books/{book_id}/episodes/1/director-treatment/llm-draft", json={"workflowProfile": "production", "sceneId": "E01_SC001", "packetFingerprint": preview.json()["packet_fingerprint"], "confirmed": True, "allowExternalCall": True})
         assert generated.status_code == 200, generated.text
         approved = client.post(f"/api/books/{book_id}/episodes/1/director-treatment/confirm", json={"workflowProfile": "production", "packetId": generated.json()["packet_id"], "packetFingerprint": generated.json()["packet_fingerprint"], "confirmed": True})
         assert approved.status_code == 200, approved.text
-        body = approved.json(); assert body["authority_bound"] is True; assert body["qualification_state"] == "PRODUCTION_QUALIFIED"; assert body["provider_calls"] == 0
+        body = approved.json(); assert body["authority_bound"] is True; assert body["qualification_state"] == "PRODUCTION_QUALIFIED"; assert body["provider_calls"] == 1
         blocking = client.post(f"/api/books/{book_id}/episodes/1/scene-blocking/preview", json={"workflowProfile": "production", "sceneId": "E01_SC001"})
         assert blocking.status_code == 200, blocking.text
         with Session() as session:

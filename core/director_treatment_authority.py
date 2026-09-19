@@ -180,6 +180,10 @@ def build_treatment_authority_envelope(*, treatment: dict[str, Any], evidence: d
             "canonical_origin": canonical_origin,
             "provider": provenance.get("provider", {}) if isinstance(provenance, dict) else {},
         },
+        "proposal_provenance": provenance,
+        "confirmation_event": confirmation,
+        "canonical_origin_summary": canonical_origin,
+        "provider_provenance": provenance.get("provider", {}) if isinstance(provenance, dict) else {},
         "asset_authority": assets,
         "qualification_state": qualification_state,
         "stale_status": "FRESH",
@@ -290,6 +294,21 @@ def resolve_current_authoritative_treatment(session: Any, *, book_id: int, episo
     if not treatment or not authority or str(pointer.treatment_revision) != str(getattr(treatment, "revision", "")) or str(authority.treatment_revision) != str(getattr(treatment, "revision", "")) or str(authority.scene_id) != _text(scene_id) or str(authority.book_id) != str(book_id) or str(authority.episode) != str(episode) or treatment.status != "approved" or treatment.qualification_state != "PRODUCTION_QUALIFIED" or authority.qualification_state != "PRODUCTION_QUALIFIED":
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_NOT_PRODUCTION_QUALIFIED", "message": "Current DirectorTreatment is not production-qualified."})
     envelope = _json(authority.envelope_json, {})
+    # Provenance is a single canonical source for model_info projections and
+    # the bound envelope.  Detect drift before returning an authoritative row.
+    provenance_block = envelope.get("provenance") if isinstance(envelope.get("provenance"), dict) else {}
+    envelope_provenance = envelope.get("proposal_provenance") if isinstance(envelope.get("proposal_provenance"), dict) else provenance_block.get("proposal_provenance")
+    envelope_event = envelope.get("confirmation_event") if isinstance(envelope.get("confirmation_event"), dict) else provenance_block.get("confirmation_event")
+    envelope_canonical = _text(envelope.get("canonical_origin_summary") or provenance_block.get("canonical_origin"))
+    model_info = _json(getattr(treatment, "model_info", "{}"), {})
+    if isinstance(envelope_provenance, dict) and envelope_provenance:
+        if not isinstance(model_info, dict) or model_info.get("proposal_provenance") != envelope_provenance or model_info.get("confirmation_event") != envelope_event or _text(model_info.get("canonical_origin")) != envelope_canonical:
+            mark_treatment_stale(session, treatment, ["DIRECTOR_PROVENANCE_TAMPERED"]); session.commit()
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_TAMPERED", "message": "Treatment provenance projections do not match the bound authority envelope."})
+        from core.director_provenance import project_legacy_flags
+        if any(model_info.get(key) != value for key, value in project_legacy_flags(envelope_provenance).items()):
+            mark_treatment_stale(session, treatment, ["DIRECTOR_PROVENANCE_PROJECTION_MISMATCH"]); session.commit()
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_TAMPERED", "message": "Legacy provenance projections do not match canonical provenance."})
     if authority.stale_status == "STALE" or treatment.stale_status == "STALE":
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_STALE", "message": "Current DirectorTreatment is stale.", "stale_reasons": _json(authority.stale_reasons, [])})
     if treatment.payload_hash != payload_hash(treatment_payload_from_row(treatment)):

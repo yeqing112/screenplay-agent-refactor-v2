@@ -1,7 +1,7 @@
 # PHASE B FINAL REPORT
 
 ## 1. Starting HEAD
-- `3ebaee2`
+- `7dba11e`
 
 ## 2. Final commit
 - Generated artifact commit is recorded by Git after this run.
@@ -56,7 +56,7 @@
 
 ## 19. Real ScriptIR Authority IDs
 ```json
-{"book_id": 990401, "fact_snapshot": {"id": 1, "payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "revision": 1}, "script_ir": {"authority_envelope_fingerprint": "cee64bb3c2edb2d88391d91afedd7a73ddd2935dc49057a8840b318bc6abc436", "id": 1, "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "revision": 1}, "script_ir_activation": {"authority_envelope": {"authority_activated_at": "2026-09-19T15:58:38.733829+00:00", "authority_policy_version": "script_ir_authority_policy_v1", "authority_revision": 1, "book_id": 990401, "compiled_requirement_set_fingerprint": "4bf92a59d3e9ebae7f95eca9f0093892def829be894c34b741a4a6f864f7bf55", "envelope_fingerprint": "cee64bb3c2edb2d88391d91afedd7a73ddd2935dc49057a8840b318bc6abc436", "episode": 1, "fact_snapshot_id": 1, "fact_snapshot_payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "fact_snapshot_revision": 1, "immutable_source_raw_hash": "19621b84219895021dc8b3debbe8873d3a233acfadc223852f7faa2bcac3dee3", "qualification_state": "PRODUCTION_QUALIFIED", "qualified": true, "schema_version": "script_ir_authority_envelope_v1", "script_ir_payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "script_ir_schema_version": "script_ir_v1", "source_anchor_bindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|旧火车站售票厅|scene_identity|scene": ["E0001"], "scene|林晚的公寓客厅|scene_identity|scene": ["E0001"]}, "source_coverage_result_fingerprint": "94f229ecdd103c47ca4628dc6940866a7b59a713f3c42c73876420be4e50f179", "source_evidence_index_fingerprint": "3593c48ff0f90255a90346073e75a178b23e79dea81548b58b45d4a222c60c3d", "source_package_id": "PHASE_B_PILOT", "source_requirement_contract_fingerprint": "398bfc5e93d2ecbc10f949c344c9786c1eae54b70cbf703310c4f3e2e696020f", "source_requirement_contract_version": "script_ir_source_requirement_contract_v1", "source_version_id": "PHASE_B_PILOT:1", "stale": false, "stale_reasons": [], "stale_status": "FRESH"}, "downstream_requirement_backlog": "preserved", "production_writes": 1, "provider_calls": 0, "qualification_state": "PRODUCTION_QUALIFIED", "revision": 1, "script_ir_version_id": 1, "status": "SCRIPT_IR_AUTHORITY_ACTIVATED"}}
+{"book_id": 990401, "fact_snapshot": {"id": 1, "payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "revision": 1}, "script_ir": {"authority_envelope_fingerprint": "0fba62fb2cd7390554fd265ea2d3d3bc84f873e012adb4b45f9414b3675668b1", "id": 1, "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "revision": 1}, "script_ir_activation": {"authority_envelope": {"authority_activated_at": "2026-09-19T16:25:55.970821+00:00", "authority_policy_version": "script_ir_authority_policy_v1", "authority_revision": 1, "book_id": 990401, "compiled_requirement_set_fingerprint": "4bf92a59d3e9ebae7f95eca9f0093892def829be894c34b741a4a6f864f7bf55", "envelope_fingerprint": "0fba62fb2cd7390554fd265ea2d3d3bc84f873e012adb4b45f9414b3675668b1", "episode": 1, "fact_snapshot_id": 1, "fact_snapshot_payload_hash": "7b25176bd6804fd3c3e1915bb801b5befd4dc87e4e4dcd640227ca9c223ae5b7", "fact_snapshot_revision": 1, "immutable_source_raw_hash": "19621b84219895021dc8b3debbe8873d3a233acfadc223852f7faa2bcac3dee3", "qualification_state": "PRODUCTION_QUALIFIED", "qualified": true, "schema_version": "script_ir_authority_envelope_v1", "script_ir_payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76", "script_ir_schema_version": "script_ir_v1", "source_anchor_bindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|旧火车站售票厅|scene_identity|scene": ["E0001"], "scene|林晚的公寓客厅|scene_identity|scene": ["E0001"]}, "source_coverage_result_fingerprint": "94f229ecdd103c47ca4628dc6940866a7b59a713f3c42c73876420be4e50f179", "source_evidence_index_fingerprint": "3593c48ff0f90255a90346073e75a178b23e79dea81548b58b45d4a222c60c3d", "source_package_id": "PHASE_B_PILOT", "source_requirement_contract_fingerprint": "398bfc5e93d2ecbc10f949c344c9786c1eae54b70cbf703310c4f3e2e696020f", "source_requirement_contract_version": "script_ir_source_requirement_contract_v1", "source_version_id": "PHASE_B_PILOT:1", "stale": false, "stale_reasons": [], "stale_status": "FRESH"}, "downstream_requirement_backlog": "preserved", "production_writes": 1, "provider_calls": 0, "qualification_state": "PRODUCTION_QUALIFIED", "revision": 1, "script_ir_version_id": 1, "status": "SCRIPT_IR_AUTHORITY_ACTIVATED"}}
 ```
 
 ## 20. Real FactSnapshot lineage
@@ -101,7 +101,7 @@
 - Existing Golden baseline: 5/5.
 
 ## 33. Full backend
-- Full backend: 1555 passed / 10 failures / 928 warnings. Six failures are the expected legacy Production rejection assertions from the pre-enforcement suite; four are pre-existing unrelated baseline failures.
+- Clean rerun: 1567 passed / 4 failures / 928 warnings. The four failures are unchanged true pre-existing baseline failures.
 
 ## 34. Remaining known failures
 - Four pre-existing failures remain unchanged and are listed in the phase requirements.
@@ -116,17 +116,19 @@
 - ShotPlan, Storyboard, PromptIR, Visual and Video work remain out of scope.
 
 ## 38. Proposal provenance
-- Human Input and Generated Draft proposals resolve to `HUMAN_AUTHORED` only at the production confirmation boundary.
-- Provider proposals require provider truth (`called`, `calls`, profile/model and request/response fingerprints) and resolve to `PROVIDER_PROPOSAL_CONFIRMED`.
+- `ProposalProvenance` records proposal origin, provider call truth and authoring input. `ConfirmationEvent` records the production confirmation boundary.
 
-## 39. Confirmation event and authority binding
-- Confirmation events are persisted in Treatment model metadata and the authority envelope. Envelope fingerprints include proposal provenance, confirmation event, canonical origin and provider truth.
+## 39. Canonical origin transitions
+- `HUMAN_INPUT` and `GENERATED_DRAFT` confirm to `HUMAN_AUTHORED`; `PROVIDER_PROPOSAL` confirms to `PROVIDER_PROPOSAL_CONFIRMED`.
 
-## 40. Pilot provider truth
-- Pilot `proposal_origin=HUMAN_INPUT`, canonical origin `HUMAN_AUTHORED`, `llm_called=false`, provider calls `0`.
+## 40. Provider truth and projections
+- Provider metadata includes called, calls, profile, model and request/response fingerprints. `llm_called` and `llm_generated` are deterministic projections only.
 
-## 41. Test contract migration
-- The complete failure classification is recorded in `phase_b_test_contract_migration_audit.json`; six failures are outdated Phase B production fixtures and four are unchanged true pre-existing failures.
+## 41. Pilot provenance
+- Each scene records `proposal_origin=HUMAN_INPUT`, `canonical_origin=HUMAN_AUTHORED`, `provider.called=false`, `provider.calls=0`, and `llm_called=false` in the trace.
 
-## 42. Completion token
+## 42. Test contract migration
+- Detailed per-test migration is recorded in `phase_b_test_contract_migration_audit.json`; all six Phase B-induced fixtures pass.
+
+## 43. Completion token
 - `PHASE_B_PROVENANCE_AND_TEST_CONTRACT_CLOSURE_READY_FOR_REVIEW`

@@ -6,7 +6,7 @@
     "id": 1,
     "revision": 1,
     "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-    "authority_envelope_fingerprint": "cee64bb3c2edb2d88391d91afedd7a73ddd2935dc49057a8840b318bc6abc436"
+    "authority_envelope_fingerprint": "0fba62fb2cd7390554fd265ea2d3d3bc84f873e012adb4b45f9414b3675668b1"
   },
   "scenes": [
     {
@@ -2364,20 +2364,88 @@
         "revision": 1,
         "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
         "authority_id": 1,
-        "authority_fingerprint": "b9d40888fc33492c5f617d44f08cbe358ced6a282a446d304ca14b604890280c",
+        "authority_fingerprint": "c8f20d5b73801f9fc5130978c32dc76902417ed8822537d7ef3f39e51429b45b",
         "pointer_id": 1,
-        "pointer_fingerprint": "b9d40888fc33492c5f617d44f08cbe358ced6a282a446d304ca14b604890280c",
-        "qualification_state": "PRODUCTION_QUALIFIED"
+        "pointer_fingerprint": "c8f20d5b73801f9fc5130978c32dc76902417ed8822537d7ef3f39e51429b45b",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "proposal_provenance": {
+          "authoring": {
+            "human_input": true
+          },
+          "proposal_origin": "HUMAN_INPUT",
+          "provider": {
+            "called": false,
+            "calls": 0,
+            "model": null,
+            "profile_id": null,
+            "request_fingerprint": null,
+            "response_fingerprint": null
+          }
+        },
+        "confirmation_event": {
+          "boundary": "production_confirm_service",
+          "canonical_origin": "HUMAN_AUTHORED",
+          "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
+          "confirmation_type": "HUMAN_CONFIRMATION",
+          "confirmed": true,
+          "confirmed_at": "2026-09-20T00:25:56.037326",
+          "source_proposal_origin": "HUMAN_INPUT"
+        },
+        "canonical_origin": "HUMAN_AUTHORED",
+        "provider_provenance": {
+          "called": false,
+          "calls": 0,
+          "model": null,
+          "profile_id": null,
+          "request_fingerprint": null,
+          "response_fingerprint": null
+        },
+        "llm_called": false,
+        "llm_generated": false
       },
       {
         "row_id": 2,
         "revision": 1,
         "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
         "authority_id": 2,
-        "authority_fingerprint": "db2b699730bed1b9b6cc6f9b71bbf4b6ce8929f88e6389a3e3e84bca554b4518",
+        "authority_fingerprint": "f3762064517f27846992e336c0122c27d2e76533f47f5fa421e43d5921f27053",
         "pointer_id": 2,
-        "pointer_fingerprint": "db2b699730bed1b9b6cc6f9b71bbf4b6ce8929f88e6389a3e3e84bca554b4518",
-        "qualification_state": "PRODUCTION_QUALIFIED"
+        "pointer_fingerprint": "f3762064517f27846992e336c0122c27d2e76533f47f5fa421e43d5921f27053",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "proposal_provenance": {
+          "authoring": {
+            "human_input": true
+          },
+          "proposal_origin": "HUMAN_INPUT",
+          "provider": {
+            "called": false,
+            "calls": 0,
+            "model": null,
+            "profile_id": null,
+            "request_fingerprint": null,
+            "response_fingerprint": null
+          }
+        },
+        "confirmation_event": {
+          "boundary": "production_confirm_service",
+          "canonical_origin": "HUMAN_AUTHORED",
+          "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
+          "confirmation_type": "HUMAN_CONFIRMATION",
+          "confirmed": true,
+          "confirmed_at": "2026-09-20T00:25:56.169734",
+          "source_proposal_origin": "HUMAN_INPUT"
+        },
+        "canonical_origin": "HUMAN_AUTHORED",
+        "provider_provenance": {
+          "called": false,
+          "calls": 0,
+          "model": null,
+          "profile_id": null,
+          "request_fingerprint": null,
+          "response_fingerprint": null
+        },
+        "llm_called": false,
+        "llm_generated": false
       }
     ],
     "resolver": [

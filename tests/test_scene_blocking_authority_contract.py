@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 
 from api.server import app
 from core.director_treatment import build_shadow_treatment
+from core.director_semantics import build_suggested_director_decisions, DIRECTOR_CONTRACT_VERSION
 from core.director_treatment_authority import build_treatment_authority_envelope, payload_hash as treatment_payload_hash
 from core.fact_snapshot import snapshot_hash
 from core.scene_blocking_authority import (
@@ -42,6 +43,7 @@ from models import (
     VisualLocation,
     init_db,
 )
+from tests.phase_b_contract_fixtures import build_phase_b_production_blocking_candidate
 
 
 class SceneBlockingAuthorityContractTests(unittest.TestCase):
@@ -74,11 +76,13 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
             script_row = session.query(Script).filter_by(book_id=self.book_id, episode=1).one(); ir_row = session.query(ScriptIRVersion).filter_by(id=version_id).one(); fact = session.query(FactSnapshot).filter_by(id=snapshot_id).one(); scene = json.loads(ir_row.payload_json)["scenes"][0]
             shadow = build_shadow_treatment(scene=scene, characters=[{"id": "c1", "name": "林默"}, {"id": "c2", "name": "苏晴"}], source_script_revision=str(ir_row.revision))
             formal = {"scene_id": scene["scene_id"], "scene_name": scene["name"], **{field: shadow[field] for field in ("dramatic_objective", "audience_question", "character_intents", "beat_map", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "constraints", "unknowns")}}
+            formal["director_contract_version"] = DIRECTOR_CONTRACT_VERSION
+            formal["director_beat_decisions"] = build_suggested_director_decisions(scene)
             # Some repository-wide legacy tests intentionally recycle SQLite
             # primary keys after cleanup.  Use a deterministic book-scoped id
             # here so the authority table's global unique(treatment_id)
             # constraint cannot collide with an unrelated fixture.
-            row = DirectorTreatment(id=self.book_id * 100 + 1, book_id=self.book_id, episode=1, scene_id=scene["scene_id"], scene_name=scene["name"], revision=1, status="approved", source_script_revision="1", source_script_hash=ir_row.payload_hash, source_script_ir_version_id=ir_row.id, source_script_ir_revision=ir_row.revision, source_script_ir_hash=ir_row.payload_hash, source_script_authority_fingerprint=json.loads(ir_row.authority_envelope_json)["envelope_fingerprint"], source_fact_snapshot_id=str(fact.id), source_fact_snapshot_revision=fact.revision, source_fact_snapshot_hash=fact.payload_hash, dramatic_objective=formal["dramatic_objective"], audience_question=formal["audience_question"], character_intents=json.dumps(formal["character_intents"], ensure_ascii=False), beat_map=json.dumps(formal["beat_map"], ensure_ascii=False), source_constraints=json.dumps({"scene_identity": {"scene_id": scene["scene_id"], "scene_name": scene["name"]}, "declared_participants": scene.get("participants", []), "source_beats": formal["beat_map"]}, ensure_ascii=False), director_decisions=json.dumps({}, ensure_ascii=False), unknown_unresolved=json.dumps(formal["unknowns"], ensure_ascii=False), relationship_power_shift=formal["relationship_power_shift"], audience_emotion=formal["audience_emotion"], information_strategy=formal["information_strategy"], performance_direction=formal["performance_direction"], visual_strategy=formal["visual_strategy"], coverage_strategy=formal["coverage_strategy"], sound_strategy=formal["sound_strategy"], edit_rhythm=formal["edit_rhythm"], constraints=json.dumps(formal["constraints"], ensure_ascii=False), unknowns=json.dumps(formal["unknowns"], ensure_ascii=False), model_info=json.dumps({"mode": "test", "llm_called": False}), prompt_fingerprint="sb-auth-treatment", payload_hash=treatment_payload_hash(formal), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", workflow_profile="production")
+            row = DirectorTreatment(id=self.book_id * 100 + 1, book_id=self.book_id, episode=1, scene_id=scene["scene_id"], scene_name=scene["name"], revision=1, status="approved", source_script_revision="1", source_script_hash=ir_row.payload_hash, source_script_ir_version_id=ir_row.id, source_script_ir_revision=ir_row.revision, source_script_ir_hash=ir_row.payload_hash, source_script_authority_fingerprint=json.loads(ir_row.authority_envelope_json)["envelope_fingerprint"], source_fact_snapshot_id=str(fact.id), source_fact_snapshot_revision=fact.revision, source_fact_snapshot_hash=fact.payload_hash, dramatic_objective=formal["dramatic_objective"], audience_question=formal["audience_question"], character_intents=json.dumps(formal["character_intents"], ensure_ascii=False), beat_map=json.dumps(formal["beat_map"], ensure_ascii=False), source_constraints=json.dumps({"scene_identity": {"scene_id": scene["scene_id"], "scene_name": scene["name"]}, "declared_participants": scene.get("participants", []), "source_beats": formal["beat_map"]}, ensure_ascii=False), director_decisions=json.dumps({"director_contract_version": formal["director_contract_version"], "director_beat_decisions": formal["director_beat_decisions"]}, ensure_ascii=False), unknown_unresolved=json.dumps(formal["unknowns"], ensure_ascii=False), relationship_power_shift=formal["relationship_power_shift"], audience_emotion=formal["audience_emotion"], information_strategy=formal["information_strategy"], performance_direction=formal["performance_direction"], visual_strategy=formal["visual_strategy"], coverage_strategy=formal["coverage_strategy"], sound_strategy=formal["sound_strategy"], edit_rhythm=formal["edit_rhythm"], constraints=json.dumps(formal["constraints"], ensure_ascii=False), unknowns=json.dumps(formal["unknowns"], ensure_ascii=False), model_info=json.dumps({"mode": "test", "llm_called": False}), prompt_fingerprint="sb-auth-treatment", payload_hash=treatment_payload_hash(formal), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", workflow_profile="production")
             session.add(row); session.flush()
             treatment_envelope = build_treatment_authority_envelope(treatment=formal, evidence={"book_id": self.book_id, "episode": 1, "scene": scene, "scene_id": scene["scene_id"], "scene_name": scene["name"], "characters": [], "locked_references": []}, script_ir=json.loads(ir_row.payload_json), script_ir_version=ir_row, script_ir_envelope=json.loads(ir_row.authority_envelope_json), treatment_id=row.id, treatment_revision=1)
             authority = DirectorTreatmentAuthority(book_id=self.book_id, episode=1, scene_id=scene["scene_id"], treatment_id=row.id, treatment_revision=1, payload_hash=row.payload_hash, envelope_fingerprint=treatment_envelope["envelope_fingerprint"], envelope_json=json.dumps(treatment_envelope, ensure_ascii=False), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]")
@@ -135,7 +139,7 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"})
         self.assertEqual(preview.status_code, 200, preview.text)
         body = preview.json(); self.assertFalse(body["llm_called"]); self.assertEqual(body["blocking"]["production_blockers"], [])
-        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": body["persisted_draft_id"], "evidenceFingerprint": body["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "schemaVersion": "scene_blocking_v2"})
+        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": body["persisted_draft_id"], "evidenceFingerprint": body["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "schemaVersion": "scene_blocking_v2", "blocking": build_phase_b_production_blocking_candidate(body["blocking"])})
         self.assertEqual(confirm.status_code, 200, confirm.text)
         approved = confirm.json()["scene_blocking"]
         self.assertEqual(approved["qualification_state"], "PRODUCTION_QUALIFIED"); self.assertEqual(approved["production_status"], "ready"); self.assertTrue(confirm.json()["authority_envelope"]["envelope_fingerprint"])
@@ -151,7 +155,7 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         blocking_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"})
         self.assertEqual(blocking_preview.status_code, 200, blocking_preview.text)
         blocking_body = blocking_preview.json()
-        blocking_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": blocking_body["persisted_draft_id"], "evidenceFingerprint": blocking_body["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "schemaVersion": "scene_blocking_v2"})
+        blocking_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": blocking_body["persisted_draft_id"], "evidenceFingerprint": blocking_body["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "schemaVersion": "scene_blocking_v2", "blocking": build_phase_b_production_blocking_candidate(blocking_body["blocking"])})
         self.assertEqual(blocking_confirm.status_code, 200, blocking_confirm.text)
         plan_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"})
         self.assertEqual(plan_preview.status_code, 200, plan_preview.text)
@@ -189,7 +193,7 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
 
     def test_failed_activation_does_not_move_pointer_and_payload_tamper_stales_it(self):
         blocking_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"}).json()
-        blocking_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": blocking_preview["persisted_draft_id"], "evidenceFingerprint": blocking_preview["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "schemaVersion": "scene_blocking_v2"})
+        blocking_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": blocking_preview["persisted_draft_id"], "evidenceFingerprint": blocking_preview["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "schemaVersion": "scene_blocking_v2", "blocking": build_phase_b_production_blocking_candidate(blocking_preview["blocking"])})
         self.assertEqual(blocking_confirm.status_code, 200, blocking_confirm.text)
         plan_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"}).json()
         first_confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/confirm", json={"planId": plan_preview["persisted_draft_id"], "evidenceFingerprint": plan_preview["plan"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production"})
@@ -223,7 +227,7 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"}).json()
         with Session() as session:
             fact = session.query(FactSnapshot).filter_by(book_id=self.book_id, episode=1).one(); fact.payload_hash = "changed"; session.commit()
-        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": preview["persisted_draft_id"], "evidenceFingerprint": preview["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production"})
+        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": preview["persisted_draft_id"], "evidenceFingerprint": preview["blocking"]["evidence_fingerprint"], "confirmed": True, "workflowProfile": "production", "blocking": build_phase_b_production_blocking_candidate(preview["blocking"])})
         self.assertEqual(confirm.status_code, 409)
         self.assertIn(confirm.json()["detail"]["code"], {"FACT_SNAPSHOT_CHANGED", "SCRIPT_IR_AUTHORITY_STALE", "DIRECTOR_TREATMENT_STALE"})
 
@@ -264,13 +268,13 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200, response.text)
         body = response.json(); self.assertTrue(body["blocking"]["production_blockers"])
         self.assertEqual(body["blocking"]["production_blockers"][0]["code"], "SCENE_ASSET_MISSING")
-        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": body["persisted_draft_id"], "confirmed": True, "workflowProfile": "production"})
+        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": body["persisted_draft_id"], "confirmed": True, "workflowProfile": "production", "blocking": build_phase_b_production_blocking_candidate(body["blocking"])})
         self.assertEqual(confirm.status_code, 409)
         self.assertEqual(confirm.json()["detail"]["code"], "SCENE_BLOCKING_NOT_READY")
 
     def test_pointer_or_authority_metadata_tamper_is_fail_closed(self):
         preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"}).json()
-        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": preview["persisted_draft_id"], "confirmed": True, "workflowProfile": "production"})
+        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": preview["persisted_draft_id"], "confirmed": True, "workflowProfile": "production", "blocking": build_phase_b_production_blocking_candidate(preview["blocking"])})
         self.assertEqual(confirm.status_code, 200, confirm.text)
         with Session() as session:
             pointer = session.query(SceneBlockingPointer).filter_by(book_id=self.book_id, episode=1, scene_id="E01_SC001").one()

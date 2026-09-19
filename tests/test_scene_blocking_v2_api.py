@@ -9,10 +9,12 @@ from core.fact_snapshot import snapshot_hash
 from core.script_ir import build_script_ir, script_ir_hash
 from core.source_evidence_index import build_source_evidence_index
 from core.director_treatment import build_shadow_treatment
+from core.director_semantics import build_suggested_director_decisions, DIRECTOR_CONTRACT_VERSION
 from core.director_treatment_authority import build_treatment_authority_envelope, payload_hash as treatment_payload_hash
 from tests.script_fixtures import build_explicit_production_script_payload
 from models import Book, DirectorTreatment, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, VisualLocation, init_db
 from models import DirectorTreatmentAuthority, DirectorTreatmentPointer
+from tests.phase_b_contract_fixtures import build_phase_b_production_blocking_candidate
 
 
 class SceneBlockingV2ApiTests(unittest.TestCase):
@@ -71,8 +73,10 @@ class SceneBlockingV2ApiTests(unittest.TestCase):
             scene = ir_payload["scenes"][0]
             shadow = build_shadow_treatment(scene=scene, characters=[{"id": "c1", "name": "林默"}, {"id": "c2", "name": "苏晴"}], source_script_revision=str(ir_row.revision))
             shadow["scene_id"] = scene["scene_id"]
+            shadow["director_contract_version"] = DIRECTOR_CONTRACT_VERSION
+            shadow["director_beat_decisions"] = build_suggested_director_decisions(scene)
             shadow["source_constraints"] = {"scene_identity": {"scene_id": scene["scene_id"], "scene_name": scene["name"]}, "declared_participants": [], "source_beats": shadow["beat_map"], "explicit_story_constraints": []}
-            candidate_fields = ("dramatic_objective", "audience_question", "character_intents", "beat_map", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "constraints", "unknowns")
+            candidate_fields = ("dramatic_objective", "audience_question", "character_intents", "beat_map", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "constraints", "unknowns", "director_contract_version", "director_beat_decisions")
             formal = {"scene_id": scene["scene_id"], "scene_name": scene["name"], **{field: shadow[field] for field in candidate_fields}}
             row = DirectorTreatment(book_id=self.book_id, episode=1, scene_id=scene["scene_id"], scene_name=scene["name"], revision=1, status="approved", source_script_revision=str(ir_row.revision), source_script_hash=ir_row.payload_hash, source_script_ir_version_id=ir_row.id, source_script_ir_revision=ir_row.revision, source_script_ir_hash=ir_row.payload_hash, source_script_authority_fingerprint=json.loads(ir_row.authority_envelope_json)["envelope_fingerprint"], source_fact_snapshot_id=str(snapshot_id), source_fact_snapshot_revision=snapshot.revision, source_fact_snapshot_hash=snapshot.payload_hash, dramatic_objective=formal["dramatic_objective"], audience_question=formal["audience_question"], character_intents=json.dumps(formal["character_intents"], ensure_ascii=False), beat_map=json.dumps(formal["beat_map"], ensure_ascii=False), source_constraints=json.dumps(shadow["source_constraints"], ensure_ascii=False), director_decisions=json.dumps({field: formal[field] for field in candidate_fields if field not in {"beat_map", "constraints", "unknowns"}}, ensure_ascii=False), unknown_unresolved=json.dumps(formal["unknowns"], ensure_ascii=False), relationship_power_shift=formal["relationship_power_shift"], audience_emotion=formal["audience_emotion"], information_strategy=formal["information_strategy"], performance_direction=formal["performance_direction"], visual_strategy=formal["visual_strategy"], coverage_strategy=formal["coverage_strategy"], sound_strategy=formal["sound_strategy"], edit_rhythm=formal["edit_rhythm"], constraints=json.dumps(formal["constraints"], ensure_ascii=False), unknowns=json.dumps(formal["unknowns"], ensure_ascii=False), model_info=json.dumps({"mode": "deterministic_test_fixture", "llm_called": False}), prompt_fingerprint="test-authority", payload_hash=treatment_payload_hash(formal), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=__import__("datetime").datetime.now(), activated_at=__import__("datetime").datetime.now(), workflow_profile="production")
             session.add(row); session.flush()
@@ -105,7 +109,7 @@ class SceneBlockingV2ApiTests(unittest.TestCase):
         self.assertEqual(body["blocking"]["unknowns"], [])
         self.assertEqual(body["blocking"]["status"], "ready_for_review")
         draft_id = body["persisted_draft_id"]
-        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": draft_id, "evidenceFingerprint": body["blocking"]["evidence_fingerprint"], "confirmed": True, "workflow_profile": "production", "schema_version": "scene_blocking_v2"})
+        confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": draft_id, "evidenceFingerprint": body["blocking"]["evidence_fingerprint"], "confirmed": True, "workflow_profile": "production", "schema_version": "scene_blocking_v2", "blocking": build_phase_b_production_blocking_candidate(body["blocking"])})
         self.assertEqual(confirm.status_code, 200, confirm.text)
         self.assertEqual(confirm.json()["scene_blocking"]["schema_version"], "scene_blocking_v2")
 

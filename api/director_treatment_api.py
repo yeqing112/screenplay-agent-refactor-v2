@@ -17,7 +17,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.director_treatment import build_shadow_treatment
-from core.director_semantics import validate_director_contract
+from core.director_semantics import validate_director_contract, build_suggested_director_decisions, DIRECTOR_CONTRACT_VERSION
 from core.director_provenance import confirmation_event, project_legacy_flags, proposal_provenance, resolve_canonical_origin
 from core.director_treatment_authority import (
     build_treatment_authority_envelope,
@@ -317,6 +317,12 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
         treatment["director_decisions"] = {field: treatment.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if treatment.get(field) not in (None, "", [], {})}
         treatment["asset_authority"] = classify_asset_authority({"characters": characters, "locked_references": locked_refs})
         treatment["qualification_state"] = "REVIEW_REQUIRED" if profile == "production" else "DRAFT"
+        if profile == "production":
+            # Production preview carries a deterministic, reviewable semantic
+            # candidate.  Confirmation still rewrites decision provenance at
+            # the service boundary and revalidates the contract.
+            treatment["director_contract_version"] = DIRECTOR_CONTRACT_VERSION
+            treatment["director_beat_decisions"] = build_suggested_director_decisions(scene)
         treatment["proposal_origin"] = "GENERATED_DRAFT"
         treatment["proposal_provenance"] = proposal_provenance("GENERATED_DRAFT", provider={"called": False, "calls": 0}, human_input=False)
         treatment["evidence_fingerprint"] = evidence["evidence_fingerprint"]
@@ -710,10 +716,11 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
         if previous:
             previous.status = "superseded"
             previous.updated_at = datetime.now()
+        provenance_projection = project_legacy_flags(info.get("proposal_provenance")) if isinstance(info.get("proposal_provenance"), dict) else {"llm_called": False, "llm_generated": False}
         model_info = {
             **(baseline.get("model_info") if isinstance(baseline.get("model_info"), dict) else {}),
-            "mode": "confirmed_llm_candidate",
-            "llm_called": True,
+            "mode": "confirmed_director_candidate",
+            **provenance_projection,
             "candidate_decision": candidate.get("decision"),
             "candidate_fingerprint": _candidate_fingerprint(candidate, current_packet["packet_fingerprint"]),
             "confirmed_at": datetime.now().isoformat(),
@@ -846,7 +853,7 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         model_info["authority_state"] = "production_qualified"; row.model_info = json.dumps(model_info, ensure_ascii=False)
         packet.status = "confirmed"; packet.confirmed_at = datetime.now(); packet.proposal = json.dumps(candidate, ensure_ascii=False); packet.updated_at = datetime.now()
         session.commit(); session.refresh(row)
-        return {"approved": True, "authority_bound": True, "qualification_state": "PRODUCTION_QUALIFIED", "treatment": _treatment_row_payload(row), "authority_envelope": envelope, "packet_id": packet.id, "packet_fingerprint": packet.packet_fingerprint, "rollback_anchor": model_info["rollback_anchor"], "mutated": True, "production_operations": ["director_treatment_authority_bound", "current_treatment_pointer_updated"], "provider_calls": 0}
+        return {"approved": True, "authority_bound": True, "qualification_state": "PRODUCTION_QUALIFIED", "treatment": _treatment_row_payload(row), "authority_envelope": envelope, "packet_id": packet.id, "packet_fingerprint": packet.packet_fingerprint, "rollback_anchor": model_info["rollback_anchor"], "mutated": True, "production_operations": ["director_treatment_authority_bound", "current_treatment_pointer_updated"], "provider_calls": provenance["provider"]["calls"]}
 
 
 @router.get("/{book_id}/episodes/{episode}/director-treatment/authority/{scene_id}")
