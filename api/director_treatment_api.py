@@ -18,6 +18,7 @@ from pydantic import AliasChoices, BaseModel, Field
 
 from core.director_treatment import build_shadow_treatment
 from core.director_semantics import validate_director_contract
+from core.director_provenance import confirmation_event, project_legacy_flags, proposal_provenance, resolve_canonical_origin
 from core.director_treatment_authority import (
     build_treatment_authority_envelope,
     classify_asset_authority,
@@ -134,6 +135,7 @@ TREATMENT_CANDIDATE_FIELDS = {
     "suspicion_or_information_strategy", "character_directions", "beat_directions",
     "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent",
     "prohibited_interpretations",
+    "proposal_origin", "proposal_provenance",
 }
 
 
@@ -315,6 +317,8 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
         treatment["director_decisions"] = {field: treatment.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if treatment.get(field) not in (None, "", [], {})}
         treatment["asset_authority"] = classify_asset_authority({"characters": characters, "locked_references": locked_refs})
         treatment["qualification_state"] = "REVIEW_REQUIRED" if profile == "production" else "DRAFT"
+        treatment["proposal_origin"] = "GENERATED_DRAFT"
+        treatment["proposal_provenance"] = proposal_provenance("GENERATED_DRAFT", provider={"called": False, "calls": 0}, human_input=False)
         treatment["evidence_fingerprint"] = evidence["evidence_fingerprint"]
         return treatment, evidence, script_row
 
@@ -536,7 +540,7 @@ def generate_director_treatment_llm_draft(book_id: int, episode: int, req: Direc
                 conflicts=json.dumps(packet["conflicts"], ensure_ascii=False),
                 allowed_operations=json.dumps(packet["allowed_operations"], ensure_ascii=False),
                 proposal=json.dumps({"decision": "awaiting_llm"}, ensure_ascii=False),
-                model_info=json.dumps({"mode": "director_treatment_llm_draft", "llm_generated": False}, ensure_ascii=False),
+                model_info=json.dumps({"mode": "director_treatment_proposal", "proposal_provenance": proposal_provenance("GENERATED_DRAFT", provider={"called": False, "calls": 0})}, ensure_ascii=False),
             )
             session.add(row)
             session.commit()
@@ -544,18 +548,21 @@ def generate_director_treatment_llm_draft(book_id: int, episode: int, req: Direc
         info = _json_object(row.model_info, {})
         if isinstance(info, dict) and info.get("llm_draft_in_progress"):
             raise HTTPException(status_code=409, detail="This Treatment evidence packet already has an LLM request in progress.")
-        if isinstance(info, dict) and info.get("llm_generated"):
-            return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": _json_object(row.proposal, {}), "llm_called": False, "deduplicated": True, "domain_write_performed": False}
+        existing_provenance = info.get("proposal_provenance") if isinstance(info, dict) else None
+        if isinstance(existing_provenance, dict) and existing_provenance.get("proposal_origin") == "PROVIDER_PROPOSAL":
+            return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": _json_object(row.proposal, {}), **project_legacy_flags(existing_provenance), "deduplicated": True, "domain_write_performed": False}
         row.model_info = json.dumps({**(info if isinstance(info, dict) else {}), "llm_draft_in_progress": True, "llm_draft_started_at": datetime.now().isoformat()}, ensure_ascii=False)
         row.status = "draft"
         session.commit()
         packet_id = row.id
 
+    audit_records: list[dict[str, Any]] = []
     try:
         raw = llm_client.call_llm_json(
             prompt,
             system="你是受证据约束的 DirectorTreatment 编译器。",
             required_keys={"dramatic_objective", "audience_question", "character_intents", "beat_map", "visual_strategy"},
+            audit_callback=lambda record: audit_records.append(dict(record)) if isinstance(record, dict) else None,
             estimated_tokens=5000,
         )
         candidate = _validate_llm_candidate(raw, treatment)
@@ -573,12 +580,17 @@ def generate_director_treatment_llm_draft(book_id: int, episode: int, req: Direc
         if not row:
             raise HTTPException(status_code=409, detail="Treatment decision packet disappeared while the LLM was running.")
         info = _json_object(row.model_info, {})
+        provider_record = audit_records[-1] if audit_records else {}
+        provider = {"called": bool(audit_records), "calls": len(audit_records), "profile_id": provider_record.get("profile_id"), "model": provider_record.get("vendor_model"), "request_fingerprint": provider_record.get("request_fingerprint"), "response_fingerprint": provider_record.get("response_sha256")}
+        provenance = proposal_provenance("PROVIDER_PROPOSAL", provider=provider)
+        candidate["proposal_origin"] = "PROVIDER_PROPOSAL"
+        candidate["proposal_provenance"] = provenance
         row.proposal = json.dumps(candidate, ensure_ascii=False)
-        row.model_info = json.dumps({**(info if isinstance(info, dict) else {}), "llm_draft_in_progress": False, "llm_generated": True, "generated_at": datetime.now().isoformat()}, ensure_ascii=False)
+        row.model_info = json.dumps({**(info if isinstance(info, dict) else {}), "llm_draft_in_progress": False, "proposal_provenance": provenance, "provider_audit": provider_record, "generated_at": datetime.now().isoformat(), **project_legacy_flags(provenance)}, ensure_ascii=False)
         row.status = "draft"
         row.updated_at = datetime.now()
         session.commit()
-        return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": candidate, "llm_called": True, "deduplicated": False, "domain_write_performed": False}
+        return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": candidate, **project_legacy_flags(provenance), "deduplicated": False, "domain_write_performed": False}
 
 
 @router.get("/{book_id}/episodes/{episode}/director-treatments")
@@ -658,8 +670,8 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
         if packet.status in {"confirmed", "superseded"}:
             raise HTTPException(status_code=409, detail="This Treatment packet has already been finalized.")
         info = _json_object(packet.model_info, {})
-        if not isinstance(info, dict) or not info.get("llm_generated"):
-            raise HTTPException(status_code=409, detail="Only an LLM-generated candidate can be approved.")
+        if not isinstance(info, dict):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_REQUIRED", "message": "Production confirmation requires proposal provenance."})
         scope = _json_object(packet.scope, {})
         scene_name = str(scope.get("scene_name") or "").strip() if isinstance(scope, dict) else ""
 
@@ -747,8 +759,8 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         if req.packet_fingerprint and req.packet_fingerprint != packet.packet_fingerprint:
             raise HTTPException(status_code=409, detail="Treatment packet fingerprint does not match.")
         info = _json_object(packet.model_info, {})
-        if not isinstance(info, dict) or not info.get("llm_generated"):
-            raise HTTPException(status_code=409, detail="Only an LLM-generated candidate can be approved.")
+        if not isinstance(info, dict):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_REQUIRED", "message": "Production confirmation requires proposal provenance."})
         scope = _json_object(packet.scope, {})
         scene_id = str(scope.get("scene_id") or "").strip() if isinstance(scope, dict) else ""
         scene_name = str(scope.get("scene_name") or "").strip() if isinstance(scope, dict) else ""
@@ -776,10 +788,30 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         missing_contract = [key for key in ("director_contract_version", "director_beat_decisions") if key not in raw_candidate or raw_candidate.get(key) in (None, "", [])]
         if missing_contract:
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Production confirmation requires director_contract_version and director_beat_decisions.", "missing": missing_contract})
+        raw_provenance = info.get("proposal_provenance") or raw_candidate.get("proposal_provenance")
+        if not isinstance(raw_provenance, dict):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_REQUIRED", "message": "Production confirmation requires explicit proposal provenance."})
+        try:
+            provenance = proposal_provenance(raw_provenance.get("proposal_origin", ""), provider=raw_provenance.get("provider"), human_input=(raw_provenance.get("authoring") or {}).get("human_input", False))
+            event = confirmation_event(provenance, confirmed_at=datetime.now().isoformat())
+            canonical_origin = resolve_canonical_origin(provenance, event)
+        except (TypeError, ValueError) as exc:
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_INVALID", "message": str(exc)}) from exc
         try:
             candidate = _validate_llm_candidate(raw_candidate, baseline)
         except ValueError as exc:
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_CANDIDATE_INVALID", "message": str(exc)}) from exc
+        candidate["proposal_origin"] = provenance["proposal_origin"]
+        candidate["proposal_provenance"] = provenance
+        decisions = []
+        for decision in candidate.get("director_beat_decisions", []):
+            normalized = dict(decision)
+            normalized["proposal_origin"] = provenance["proposal_origin"]
+            normalized["decision_origin"] = canonical_origin
+            normalized["confirmation_event_ref"] = "production_confirm_service"
+            normalized["review_status"] = "CONFIRMED"
+            decisions.append(normalized)
+        candidate["director_beat_decisions"] = decisions
         semantic_report = validate_director_contract(candidate, scene=scene, production=True)
         if semantic_report.get("status") != "qualified":
             first = (semantic_report.get("errors") or [{}])[0]
@@ -795,15 +827,15 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         # additive Phase B projection fields.  Empty optional projections are
         # not semantic decisions and must not be written as ``null`` keys.
         legacy_fields = {"dramatic_objective", "audience_question", "character_intents", "beat_map", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "constraints", "unknowns"}
-        formal = {key: candidate.get(key) for key in ("scene_id", "scene_name", *TREATMENT_CANDIDATE_FIELDS) if key in legacy_fields or candidate.get(key) not in (None, "", [], {})}
-        model_info = {"mode": "confirmed_llm_candidate", "llm_called": True, "candidate_fingerprint": _candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), "confirmed_at": datetime.now().isoformat(), "confirmation_event": {"confirmed": True, "boundary": "production_confirm_service", "canonical_origin": "HUMAN_AUTHORED" if any(isinstance(x, dict) and x.get("decision_origin") == "HUMAN_AUTHORED" for x in candidate.get("director_beat_decisions", [])) else "PROVIDER_PROPOSAL_CONFIRMED"}, "rollback_anchor": {"previous_treatment_id": previous_id, "previous_revision": previous.revision if previous else None}, "authority_state": "pending_binding"}
+        formal = {key: candidate.get(key) for key in ("scene_id", "scene_name", *TREATMENT_CANDIDATE_FIELDS) if key not in {"proposal_origin", "proposal_provenance"} and (key in legacy_fields or candidate.get(key) not in (None, "", [], {}))}
+        model_info = {"mode": "confirmed_director_candidate", "proposal_provenance": provenance, "confirmation_event": event, "canonical_origin": canonical_origin, **project_legacy_flags(provenance), "candidate_fingerprint": _candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), "confirmed_at": datetime.now().isoformat(), "rollback_anchor": {"previous_treatment_id": previous_id, "previous_revision": previous.revision if previous else None}, "authority_state": "pending_binding"}
         row = DirectorTreatment(
             book_id=book_id, episode=episode, scene_id=scene_id, scene_name=baseline["scene_name"], revision=next_revision, status="approved",
             source_script_revision=str(script_ir_version.revision), source_script_hash=str(script_ir_version.payload_hash or ""), source_script_ir_version_id=script_ir_version.id, source_script_ir_revision=script_ir_version.revision, source_script_ir_hash=str(script_ir_version.payload_hash or ""), source_script_authority_fingerprint=str(script_ir_envelope.get("envelope_fingerprint") or ""), source_fact_snapshot_id=str(script_ir_envelope.get("fact_snapshot_id") or ""), source_fact_snapshot_revision=script_ir_envelope.get("fact_snapshot_revision"), source_fact_snapshot_hash=str(script_ir_envelope.get("fact_snapshot_payload_hash") or ""),
             dramatic_objective=formal["dramatic_objective"], audience_question=formal["audience_question"], character_intents=json.dumps(formal["character_intents"], ensure_ascii=False), beat_map=json.dumps(formal["beat_map"], ensure_ascii=False), source_constraints=json.dumps(baseline.get("source_constraints", {}), ensure_ascii=False), director_decisions=json.dumps({field: formal.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if formal.get(field) not in (None, "", [], {})}, ensure_ascii=False), unknown_unresolved=json.dumps(formal.get("unknowns", []), ensure_ascii=False), relationship_power_shift=formal["relationship_power_shift"], audience_emotion=formal["audience_emotion"], information_strategy=formal["information_strategy"], performance_direction=formal["performance_direction"], visual_strategy=formal["visual_strategy"], coverage_strategy=formal["coverage_strategy"], sound_strategy=formal["sound_strategy"], edit_rhythm=formal["edit_rhythm"], constraints=json.dumps(formal["constraints"], ensure_ascii=False), unknowns=json.dumps(formal["unknowns"], ensure_ascii=False), skill_id=baseline.get("skill_id", ""), skill_version=baseline.get("skill_version", ""), decision_packet_id=packet.id, model_info=json.dumps(model_info, ensure_ascii=False), prompt_fingerprint=_candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), payload_hash=treatment_payload_hash(formal), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=datetime.now(), activated_at=datetime.now(), created_at=datetime.now(), updated_at=datetime.now(), workflow_profile="production",
         )
         session.add(row); session.flush()
-        envelope = build_treatment_authority_envelope(treatment=formal, evidence=evidence, script_ir=script_ir_payload, script_ir_version=script_ir_version, script_ir_envelope=script_ir_envelope, treatment_id=row.id, treatment_revision=row.revision, qualification_state="PRODUCTION_QUALIFIED")
+        envelope = build_treatment_authority_envelope(treatment=formal, evidence=evidence, script_ir=script_ir_payload, script_ir_version=script_ir_version, script_ir_envelope=script_ir_envelope, treatment_id=row.id, treatment_revision=row.revision, qualification_state="PRODUCTION_QUALIFIED", provenance=provenance, confirmation=event, canonical_origin=canonical_origin)
         authority = DirectorTreatmentAuthority(book_id=book_id, episode=episode, scene_id=scene_id, treatment_id=row.id, treatment_revision=row.revision, payload_hash=row.payload_hash, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=row.approved_at, activated_at=row.activated_at, created_at=datetime.now(), updated_at=datetime.now())
         session.add(authority); session.flush(); row.authority_envelope_id = authority.id
         pointer = session.query(DirectorTreatmentPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).first()

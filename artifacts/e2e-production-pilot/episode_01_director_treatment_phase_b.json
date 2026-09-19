@@ -6,7 +6,7 @@
     "id": 1,
     "revision": 1,
     "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-    "authority_envelope_fingerprint": "ac0e6c07845a26a61f6e93d5b8b823068258d87a1571f95323474561e36a499f"
+    "authority_envelope_fingerprint": "cee64bb3c2edb2d88391d91afedd7a73ddd2935dc49057a8840b318bc6abc436"
   },
   "scenes": [
     {
@@ -584,8 +584,8 @@
             "ScriptIR:SC01-B01"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B02",
@@ -630,8 +630,8 @@
             "ScriptIR:SC01-B02"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B03",
@@ -686,8 +686,8 @@
             "ScriptIR:SC01-B03"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B04",
@@ -749,8 +749,8 @@
             "ScriptIR:SC01-B04"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B05",
@@ -810,8 +810,8 @@
             "ScriptIR:SC01-B05"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B06",
@@ -873,8 +873,8 @@
             "ScriptIR:SC01-B06"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B07",
@@ -926,8 +926,8 @@
             "ScriptIR:SC01-B07"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B08",
@@ -989,8 +989,8 @@
             "ScriptIR:SC01-B08"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B09",
@@ -1045,8 +1045,8 @@
             "ScriptIR:SC01-B09"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B10",
@@ -1101,8 +1101,8 @@
             "ScriptIR:SC01-B10"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B11",
@@ -1164,8 +1164,8 @@
             "ScriptIR:SC01-B11"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B12",
@@ -1225,8 +1225,8 @@
             "ScriptIR:SC01-B12"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC01-B13",
@@ -1288,8 +1288,8 @@
             "ScriptIR:SC01-B13"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         }
       ],
       "director_contract_version": "director_semantic_contract_v1",
@@ -1350,7 +1350,22 @@
         "covered_beat_count": 10,
         "decision_count": 13
       },
-      "candidate_fingerprint": "25fd3fea476c325343d1e955281a63ee243fe38077a893a14fa1dc13d0f965ea"
+      "candidate_fingerprint": "25fd3fea476c325343d1e955281a63ee243fe38077a893a14fa1dc13d0f965ea",
+      "proposal_origin": "HUMAN_INPUT",
+      "proposal_provenance": {
+        "proposal_origin": "HUMAN_INPUT",
+        "provider": {
+          "called": false,
+          "calls": 0,
+          "profile_id": null,
+          "model": null,
+          "request_fingerprint": null,
+          "response_fingerprint": null
+        },
+        "authoring": {
+          "human_input": true
+        }
+      }
     },
     {
       "scene_name": "林晚的公寓客厅",
@@ -1779,8 +1794,8 @@
             "ScriptIR:SC02-B01"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC02-B02",
@@ -1840,8 +1855,8 @@
             "ScriptIR:SC02-B02"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC02-B03",
@@ -1903,8 +1918,8 @@
             "ScriptIR:SC02-B03"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC02-B04",
@@ -1957,8 +1972,8 @@
             "ScriptIR:SC02-B04"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC02-B05",
@@ -2020,8 +2035,8 @@
             "ScriptIR:SC02-B05"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC02-B06",
@@ -2076,8 +2091,8 @@
             "ScriptIR:SC02-B06"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC02-B07",
@@ -2137,8 +2152,8 @@
             "ScriptIR:SC02-B07"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC02-B08",
@@ -2200,8 +2215,8 @@
             "ScriptIR:SC02-B08"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         },
         {
           "decision_id": "DBD_SC02-B09",
@@ -2261,8 +2276,8 @@
             "ScriptIR:SC02-B09"
           ],
           "director_notes": "",
-          "decision_origin": "HUMAN_AUTHORED",
-          "review_status": "CONFIRMED"
+          "decision_origin": "GENERATED_DRAFT",
+          "review_status": "REVIEW_REQUIRED"
         }
       ],
       "director_contract_version": "director_semantic_contract_v1",
@@ -2323,7 +2338,22 @@
         "covered_beat_count": 8,
         "decision_count": 9
       },
-      "candidate_fingerprint": "1868f026d9337420eff355bae57c10c6113f1e2d440233fa5eeccd58aa79dc8f"
+      "candidate_fingerprint": "1868f026d9337420eff355bae57c10c6113f1e2d440233fa5eeccd58aa79dc8f",
+      "proposal_origin": "HUMAN_INPUT",
+      "proposal_provenance": {
+        "proposal_origin": "HUMAN_INPUT",
+        "provider": {
+          "called": false,
+          "calls": 0,
+          "profile_id": null,
+          "model": null,
+          "request_fingerprint": null,
+          "response_fingerprint": null
+        },
+        "authoring": {
+          "human_input": true
+        }
+      }
     }
   ],
   "authority": {
@@ -2332,21 +2362,21 @@
       {
         "row_id": 1,
         "revision": 1,
-        "payload_hash": "5a7078edf06edf3e4af50075f10b946b2ff1a6d9d0734713be36acd31c42bf8f",
+        "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
         "authority_id": 1,
-        "authority_fingerprint": "0722feb499d020fc50ccc481466bafcadb0de9ebbdcdddb04213270df8757ce9",
+        "authority_fingerprint": "b9d40888fc33492c5f617d44f08cbe358ced6a282a446d304ca14b604890280c",
         "pointer_id": 1,
-        "pointer_fingerprint": "0722feb499d020fc50ccc481466bafcadb0de9ebbdcdddb04213270df8757ce9",
+        "pointer_fingerprint": "b9d40888fc33492c5f617d44f08cbe358ced6a282a446d304ca14b604890280c",
         "qualification_state": "PRODUCTION_QUALIFIED"
       },
       {
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "5c2f3ba78bf3101ec1810d0d707e1d65056e6dc0ebcdb552e5273954ecf29cca",
+        "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
         "authority_id": 2,
-        "authority_fingerprint": "cf3739cd4a65e1f12333cc058f696be4127f7c6ccdcc5c3b19765c3bb7ac988c",
+        "authority_fingerprint": "db2b699730bed1b9b6cc6f9b71bbf4b6ce8929f88e6389a3e3e84bca554b4518",
         "pointer_id": 2,
-        "pointer_fingerprint": "cf3739cd4a65e1f12333cc058f696be4127f7c6ccdcc5c3b19765c3bb7ac988c",
+        "pointer_fingerprint": "db2b699730bed1b9b6cc6f9b71bbf4b6ce8929f88e6389a3e3e84bca554b4518",
         "qualification_state": "PRODUCTION_QUALIFIED"
       }
     ],

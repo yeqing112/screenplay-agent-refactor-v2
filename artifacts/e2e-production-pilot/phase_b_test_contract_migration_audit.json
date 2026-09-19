@@ -1,0 +1,20 @@
+{
+  "phase": "PHASE_B_PROVENANCE_AND_TEST_CONTRACT_CLOSURE",
+  "classification": {
+    "phase_b_outdated_contract": [
+      "tests/test_director_treatment_authority_contract.py::test_production_candidate_activation_binds_pointer_without_provider_by_default",
+      "tests/test_scene_blocking_authority_contract.py::test_failed_activation_does_not_move_pointer_and_payload_tamper_stales_it",
+      "tests/test_scene_blocking_authority_contract.py::test_pointer_or_authority_metadata_tamper_is_fail_closed",
+      "tests/test_scene_blocking_authority_contract.py::test_production_preview_confirm_and_shot_plan_use_explicit_pointer",
+      "tests/test_scene_blocking_authority_contract.py::test_shot_plan_activation_and_materializer_use_current_pointer_without_agent",
+      "tests/test_scene_blocking_v2_api.py::test_production_preview_uses_v2_and_does_not_block_silent_position"
+    ],
+    "TRUE_PRE_EXISTING_FAILURE": [
+      "test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons",
+      "test_authorized_real_path_requires_entire_worktree_clean",
+      "test_default_scope_uses_active_registry",
+      "test_targeted_missing_fact_api_is_provider_free_and_fail_closed"
+    ]
+  },
+  "migration_action": "Production fixtures must submit semantic contracts and explicit proposal provenance; legacy production success expectations remain rejected with 409."
+}

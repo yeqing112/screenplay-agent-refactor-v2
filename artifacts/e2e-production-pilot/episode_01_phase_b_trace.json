@@ -13,7 +13,7 @@
         "id": 1,
         "revision": 1,
         "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-        "authority_envelope_fingerprint": "ac0e6c07845a26a61f6e93d5b8b823068258d87a1571f95323474561e36a499f"
+        "authority_envelope_fingerprint": "cee64bb3c2edb2d88391d91afedd7a73ddd2935dc49057a8840b318bc6abc436"
       },
       "fact_snapshot": {
         "id": 1,
@@ -44,13 +44,13 @@
           "compiled_requirement_set_fingerprint": "4bf92a59d3e9ebae7f95eca9f0093892def829be894c34b741a4a6f864f7bf55",
           "source_coverage_result_fingerprint": "94f229ecdd103c47ca4628dc6940866a7b59a713f3c42c73876420be4e50f179",
           "authority_revision": 1,
-          "authority_activated_at": "2026-09-19T15:45:22.078958+00:00",
+          "authority_activated_at": "2026-09-19T15:58:38.733829+00:00",
           "qualification_state": "PRODUCTION_QUALIFIED",
           "qualified": true,
           "stale": false,
           "stale_status": "FRESH",
           "stale_reasons": [],
-          "envelope_fingerprint": "ac0e6c07845a26a61f6e93d5b8b823068258d87a1571f95323474561e36a499f",
+          "envelope_fingerprint": "cee64bb3c2edb2d88391d91afedd7a73ddd2935dc49057a8840b318bc6abc436",
           "source_anchor_bindings": {
             "episode|scenes|scene_existence|episode": [
               "E0001"
@@ -72,21 +72,21 @@
       {
         "row_id": 1,
         "revision": 1,
-        "payload_hash": "5a7078edf06edf3e4af50075f10b946b2ff1a6d9d0734713be36acd31c42bf8f",
+        "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
         "authority_id": 1,
-        "authority_fingerprint": "0722feb499d020fc50ccc481466bafcadb0de9ebbdcdddb04213270df8757ce9",
+        "authority_fingerprint": "b9d40888fc33492c5f617d44f08cbe358ced6a282a446d304ca14b604890280c",
         "pointer_id": 1,
-        "pointer_fingerprint": "0722feb499d020fc50ccc481466bafcadb0de9ebbdcdddb04213270df8757ce9",
+        "pointer_fingerprint": "b9d40888fc33492c5f617d44f08cbe358ced6a282a446d304ca14b604890280c",
         "qualification_state": "PRODUCTION_QUALIFIED"
       },
       {
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "5c2f3ba78bf3101ec1810d0d707e1d65056e6dc0ebcdb552e5273954ecf29cca",
+        "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
         "authority_id": 2,
-        "authority_fingerprint": "cf3739cd4a65e1f12333cc058f696be4127f7c6ccdcc5c3b19765c3bb7ac988c",
+        "authority_fingerprint": "db2b699730bed1b9b6cc6f9b71bbf4b6ce8929f88e6389a3e3e84bca554b4518",
         "pointer_id": 2,
-        "pointer_fingerprint": "cf3739cd4a65e1f12333cc058f696be4127f7c6ccdcc5c3b19765c3bb7ac988c",
+        "pointer_fingerprint": "db2b699730bed1b9b6cc6f9b71bbf4b6ce8929f88e6389a3e3e84bca554b4518",
         "qualification_state": "PRODUCTION_QUALIFIED"
       }
     ],
@@ -94,11 +94,11 @@
       {
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "8187e52b235de2d01a0960880dab78288b6f6eda593e37a36e7e97f03cd4481e",
+        "payload_hash": "0fc31fc1dbd62e3e157b2fa931d6097412b836ecac2ab9bbae2816b59dde95c1",
         "authority_id": 1,
-        "authority_fingerprint": "bece4e7a77128af4aff77f5630845551248cf2081a16d9f8f2712cff1f085ecf",
+        "authority_fingerprint": "ea983ea0d4b45e867b0145a0d0ed6f01147eefa6072bd00dcb2c6d5283937fd9",
         "pointer_id": 1,
-        "pointer_fingerprint": "bece4e7a77128af4aff77f5630845551248cf2081a16d9f8f2712cff1f085ecf",
+        "pointer_fingerprint": "ea983ea0d4b45e867b0145a0d0ed6f01147eefa6072bd00dcb2c6d5283937fd9",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
@@ -106,11 +106,11 @@
       {
         "row_id": 4,
         "revision": 1,
-        "payload_hash": "d8ed7e555c58c1f44a0995d1f3ca9dade3d0c79756912d3a03bed66dd7016594",
+        "payload_hash": "3bb07eeceb046ab303632a49517b73344718a40ebd5337a0447b5a2d414af117",
         "authority_id": 2,
-        "authority_fingerprint": "280a75bfd7aafe1afa62a209bebb8ff6abb3f81104192f5ebdcc209591e2c1dc",
+        "authority_fingerprint": "c4673f6184312b157322c73ee70aa133cdaa51dc5a8303f16b27f058a7e48839",
         "pointer_id": 2,
-        "pointer_fingerprint": "280a75bfd7aafe1afa62a209bebb8ff6abb3f81104192f5ebdcc209591e2c1dc",
+        "pointer_fingerprint": "c4673f6184312b157322c73ee70aa133cdaa51dc5a8303f16b27f058a7e48839",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"

@@ -113,7 +113,7 @@ def _run_real_authority_pilot(payload: dict, treatment_items: list[dict], blocki
                         conflicts=json.dumps(packet["conflicts"], ensure_ascii=False),
                         allowed_operations=json.dumps(packet["allowed_operations"], ensure_ascii=False),
                         proposal=json.dumps(item["treatment"], ensure_ascii=False),
-                        model_info=json.dumps({"mode": "pilot_confirm_service", "llm_generated": True}, ensure_ascii=False),
+                        model_info=json.dumps({"mode": "pilot_confirm_service", "proposal_provenance": item["treatment"].get("proposal_provenance"), "llm_called": False, "llm_generated": False}, ensure_ascii=False),
                     )
                     packet_session.add(record); packet_session.commit(); packet_session.refresh(record)
                     packet_id, packet_fp = record.id, record.packet_fingerprint
@@ -297,12 +297,12 @@ def main() -> None:
     for scene in payload.get("scenes", []):
         chars, td, bd = scene_directives(str(scene.get("scene_id")))
         t = build_director_treatment_v2(scene=scene, characters=chars, source_script_revision="phase_a_current", source_script_hash=script_hash, directives=td)
-        # The pilot's accepted decisions are explicit authoring input.  The
-        # builder's GENERATED_DRAFT suggestions never qualify by themselves.
-        for decision in t.get("director_beat_decisions", []):
-            decision["decision_origin"] = "HUMAN_AUTHORED"
-            decision["review_status"] = "CONFIRMED"
-        t["semantic_validation"] = __import__("core.director_semantics", fromlist=["validate_director_contract"]).validate_director_contract(t, scene=scene, production=True)
+        # The pilot's accepted packet is explicit human input.  Canonical
+        # decision origin and confirmation status are assigned by the
+        # production confirm service, never by the candidate fixture.
+        t["proposal_origin"] = "HUMAN_INPUT"
+        t["proposal_provenance"] = {"proposal_origin": "HUMAN_INPUT", "provider": {"called": False, "calls": 0, "profile_id": None, "model": None, "request_fingerprint": None, "response_fingerprint": None}, "authoring": {"human_input": True}}
+        t["semantic_validation"] = __import__("core.director_semantics", fromlist=["validate_director_contract"]).validate_director_contract(t, scene=scene, production=False)
         b = build_scene_blocking_phase_b(scene=scene, treatment=t, source_script_hash=script_hash, directives=bd)
         # Canonical blocking input is InitialBlockingState + BlockingTransition.
         # The prior movement/prop prose remains only as authoring source for

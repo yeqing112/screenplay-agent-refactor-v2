@@ -151,10 +151,13 @@ def classify_asset_authority(evidence: dict[str, Any]) -> dict[str, Any]:
     return {"locked_constraints": locked, "advisory_context": advisory, "authoring_pending": pending, "locked_constraint_fingerprint": fingerprint(locked)}
 
 
-def build_treatment_authority_envelope(*, treatment: dict[str, Any], evidence: dict[str, Any], script_ir: dict[str, Any], script_ir_version: Any, script_ir_envelope: dict[str, Any], treatment_id: int, treatment_revision: int, qualification_state: str = "PRODUCTION_QUALIFIED", approved_at: str | None = None) -> dict[str, Any]:
+def build_treatment_authority_envelope(*, treatment: dict[str, Any], evidence: dict[str, Any], script_ir: dict[str, Any], script_ir_version: Any, script_ir_envelope: dict[str, Any], treatment_id: int, treatment_revision: int, qualification_state: str = "PRODUCTION_QUALIFIED", approved_at: str | None = None, provenance: dict[str, Any] | None = None, confirmation: dict[str, Any] | None = None, canonical_origin: str = "") -> dict[str, Any]:
     scene_id = _text(treatment.get("scene_id") or evidence.get("scene_id"))
     contract = treatment_contract()
     assets = classify_asset_authority(evidence)
+    provenance = provenance if isinstance(provenance, dict) else {}
+    confirmation = confirmation if isinstance(confirmation, dict) else {}
+    canonical_origin = _text(canonical_origin)
     envelope = {
         "schema_version": SCHEMA_VERSION,
         "authority_policy_version": AUTHORITY_POLICY_VERSION,
@@ -171,6 +174,12 @@ def build_treatment_authority_envelope(*, treatment: dict[str, Any], evidence: d
         "fact_snapshot": {"id": script_ir_envelope.get("fact_snapshot_id"), "revision": script_ir_envelope.get("fact_snapshot_revision"), "payload_hash": _text(script_ir_envelope.get("fact_snapshot_payload_hash"))},
         "contract": {"schema_version": CONTRACT_SCHEMA_VERSION, "fingerprint": contract_fingerprint(), "requirement_set_fingerprint": fingerprint({"scene_id": scene_id, "required": [item["field"] for item in contract["fields"] if item.get("required")]})},
         "semantic_contract": {"version": _text(treatment.get("director_contract_version")), "decision_count": len(treatment.get("director_beat_decisions") or []) if isinstance(treatment.get("director_beat_decisions"), list) else 0},
+        "provenance": {
+            "proposal_provenance": provenance,
+            "confirmation_event": confirmation,
+            "canonical_origin": canonical_origin,
+            "provider": provenance.get("provider", {}) if isinstance(provenance, dict) else {},
+        },
         "asset_authority": assets,
         "qualification_state": qualification_state,
         "stale_status": "FRESH",
@@ -186,7 +195,7 @@ def validate_treatment_candidate(candidate: dict[str, Any], baseline: dict[str, 
     """Reject authority mutations while allowing director decisions to change."""
     if not isinstance(candidate, dict):
         raise ValueError("candidate must be an object")
-    allowed = set(DIRECTOR_DECISION_FIELDS) | {"scene_id", "scene_name", "beat_map", "constraints", "unknowns", "decision", "confidence", "human_confirmation_required", "note"}
+    allowed = set(DIRECTOR_DECISION_FIELDS) | {"scene_id", "scene_name", "beat_map", "constraints", "unknowns", "decision", "confidence", "human_confirmation_required", "note", "proposal_origin", "proposal_provenance"}
     unexpected = sorted(set(candidate) - allowed)
     if unexpected:
         raise ValueError(f"non-whitelisted fields: {', '.join(unexpected)}")
