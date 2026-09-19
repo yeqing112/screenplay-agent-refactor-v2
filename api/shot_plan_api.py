@@ -32,6 +32,7 @@ from core.shot_plan_authority import (
     shot_plan_payload_from_row,
     validate_shot_plan_candidate_authority,
 )
+from core.phase_c_shot_plan import build_phase_c_shot_plan, validate_shot_plan_contract
 from models import DirectorTreatment, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, ShotPlanAuthority, ShotPlanPointer, StoryboardShot, VisualLocation
 
 router = APIRouter(prefix="/api/books", tags=["shot-plan"])
@@ -231,6 +232,18 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
         plan = build_shot_plan(treatment=treatment_payload, blocking=blocking_payload)
         plan["scene_id"] = scene_id
         plan["schema_version"] = "shot_plan_v2"
+        # Phase C is an additive structured projection.  Existing v1/v2
+        # rows stay readable while production callers can inspect the
+        # deterministic contract before opting into a Phase C confirm.
+        if str(req.workflow_profile or "").strip().lower() == "production":
+            phase_c_plan = build_phase_c_shot_plan(
+                treatment=treatment_payload,
+                blocking=blocking_payload,
+                script_authority={"script_ir_version_id": getattr(script_row, "current_script_ir_version_id", None)},
+            )
+            phase_c_validation = validate_shot_plan_contract(plan=phase_c_plan, treatment=treatment_payload, blocking=blocking_payload)
+            plan["phase_c_plan"] = phase_c_plan
+            plan["phase_c_semantic_ready"] = bool(phase_c_validation["valid"] and phase_c_plan.get("phase_c_semantic_ready"))
         persisted_id = None
         if req.persist:
             existing_query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, evidence_fingerprint=plan["evidence_fingerprint"], workflow_profile=req.workflow_profile, status="draft")
