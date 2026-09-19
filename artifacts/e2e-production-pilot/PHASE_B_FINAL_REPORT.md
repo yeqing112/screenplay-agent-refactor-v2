@@ -41,23 +41,3 @@
 
 ## Scope
 Phase B 到此停止；未进入 ShotPlan creative quality、Storyboard、PromptIR、Visual、Flux 或 Video。
-
-## Verification
-
-- Phase B targeted tests: `30 passed` (including existing Treatment/Blocking authority regression).
-- Phase A targeted regression: `29 passed`.
-- Golden regression: `5/5 passed`.
-- Full backend: `1553 passed / 4 failed / 928 warnings`; all four are unchanged `TRUE_PRE_EXISTING_FAILURE` baseline cases:
-  - `test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons`
-  - `test_authorized_real_path_requires_entire_worktree_clean`
-  - `test_default_scope_uses_active_registry`
-  - `test_targeted_missing_fact_api_is_provider_free_and_fail_closed`
-- No database schema or migration was added; migration audit files remain outside this Phase B change.
-- Phase C was not started.
-
-## Repository
-
-- Commit: Phase B commit for this report
-- Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Unrelated migration audit changes: not committed.
-

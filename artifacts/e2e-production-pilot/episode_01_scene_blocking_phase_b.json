@@ -331,244 +331,693 @@
       ],
       "beat_spatial_states": [
         {
-          "beat_ref": "SC01-B03",
+          "beat_ref": "SC01-B01",
           "characters": {
             "林晚": {
               "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
               "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
               "zone": "ST_REAR",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B03"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "ABSENT"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "ABSENT"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "ABSENT"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
+        },
+        {
+          "beat_ref": "SC01-B02",
+          "characters": {
+            "林晚": {
+              "zone": "ST_TICKET",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚",
+              "attention_target": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚",
+              "attention_target": "林晚"
+            }
+          },
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "ABSENT"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "ABSENT"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "ABSENT"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
+        },
+        {
+          "beat_ref": "SC01-B03",
+          "characters": {
+            "林晚": {
+              "zone": "ST_CENTER",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_REAR",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_REAR",
+              "facing": "林晚",
+              "attention_target": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚",
+              "attention_target": "林晚"
+            }
+          },
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "visible"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "ABSENT"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "ABSENT"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B04",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CENTER",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
               "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
               "zone": "ST_REAR",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B04"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "visible"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "visible_inside_bag"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "ABSENT"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B05",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CENTER",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
-              "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
               "zone": "ST_REAR",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B05"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "visible"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "visible_inside_bag"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "ABSENT"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B06",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CENTER",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
-              "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
               "zone": "ST_REAR",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B06"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "visible"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "visible_inside_bag"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "ABSENT"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
+        },
+        {
+          "beat_ref": "SC01-B07",
+          "characters": {
+            "林晚": {
+              "zone": "ST_CENTER",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+            },
+            "顾沉": {
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
+            },
+            "陆叔": {
+              "zone": "ST_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
+            },
+            "售票员": {
+              "zone": "ST_TICKET",
+              "facing": "林晚",
+              "attention_target": "林晚"
+            }
+          },
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "visible"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "visible_inside_bag"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "transferred_to_LU_SHU"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B08",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CENTER",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
-              "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
-              "zone": "ST_REAR",
-              "facing": "林晚"
+              "zone": "ST_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B08"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "visible"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "visible_inside_bag"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "transferred_to_LU_SHU"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B09",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CENTER",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
-              "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
-              "zone": "ST_REAR",
-              "facing": "林晚"
+              "zone": "ST_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B09"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "absent; water_trace_remains"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "visible_inside_bag"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "transferred_to_LU_SHU"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B10",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CHECK",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
-              "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
-              "zone": "ST_REAR",
-              "facing": "林晚"
+              "zone": "ST_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B10"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "absent; water_trace_remains"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "missing"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "transferred_to_LU_SHU"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B11",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CHECK",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
-              "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
-              "zone": "ST_REAR",
-              "facing": "林晚"
+              "zone": "ST_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B11"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "absent; water_trace_remains"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "missing"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "transferred_to_LU_SHU"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B12",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CHECK",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
-              "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
-              "zone": "ST_REAR",
-              "facing": "林晚"
+              "zone": "ST_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B12"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "absent; water_trace_remains"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "missing"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "transferred_to_LU_SHU"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC01-B13",
           "characters": {
             "林晚": {
-              "zone": "ST_TICKET",
-              "facing": "售票窗口_then_ST_PLATFORM_SIGHT"
+              "zone": "ST_CHECK",
+              "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+              "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
             },
             "顾沉": {
-              "zone": "ST_REAR",
-              "facing": "林晚与手提包"
+              "zone": "ST_CENTER",
+              "facing": "林晚与手提包",
+              "attention_target": "林晚与手提包"
             },
             "陆叔": {
-              "zone": "ST_REAR",
-              "facing": "林晚"
+              "zone": "ST_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             },
             "售票员": {
               "zone": "ST_TICKET",
-              "facing": "林晚"
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC01-B13"
+          "props": {
+            "RED_UMBRELLA": {
+              "zone": "ST_PLATFORM_SIGHT",
+              "state": "absent; water_trace_remains"
+            },
+            "BROKEN_UMBRELLA_RIB": {
+              "zone": "HANDBAG",
+              "state": "missing"
+            },
+            "HANDBAG": {
+              "zone": "ST_CENTER",
+              "state": "transferred_to_LU_SHU"
+            },
+            "TICKET": {
+              "zone": "ST_TICKET",
+              "state": "held_by_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "ST_TICKET": {
+              "state": "AVAILABLE"
+            },
+            "ST_REAR": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         }
       ],
       "eyelines": [
@@ -691,29 +1140,24 @@
         }
       ],
       "director_direction_refs": [
-        "SC01-B03",
-        "SC01-B04",
-        "SC01-B05",
-        "SC01-B06",
-        "SC01-B08",
-        "SC01-B09",
-        "SC01-B10",
-        "SC01-B11",
-        "SC01-B12",
-        "SC01-B13"
+        "DBD_SC01-B01",
+        "DBD_SC01-B03",
+        "DBD_SC01-B04",
+        "DBD_SC01-B05",
+        "DBD_SC01-B07",
+        "DBD_SC01-B09",
+        "DBD_SC01-B10"
       ],
       "provenance": {
-        "space_model": "RELATIVE_SPATIAL_MODEL",
-        "characters": "DIRECTOR_AUTHORING_DECISION",
-        "beat_spatial_states": "DIRECTOR_AUTHORING_DECISION",
-        "props": "SCRIPT_ACTION",
-        "eyelines": "DIRECTOR_AUTHORING_DECISION"
+        "initial_state": "DIRECTOR_AUTHORING_DECISION",
+        "blocking_transitions": "DIRECTOR_AUTHORING_DECISION",
+        "beat_spatial_states": "DERIVED_PROJECTION"
       },
       "source_script_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
-      "treatment_fingerprint": "01731b4e411c264cad120e368d71babf70d350313d68619a3b0a876e2183e351",
+      "treatment_fingerprint": "a7459b717e89b5fa8bb5cbf3f65af8258aae1bd20b29782b172b1020fce51c90",
       "provider_not_called": true,
       "model_info": {
-        "mode": "deterministic_phase_b_candidate",
+        "mode": "deterministic_phase_b_canonical",
         "llm_called": false,
         "provider_not_called": true,
         "provider_calls": 0,
@@ -723,15 +1167,1646 @@
       "validation": {
         "status": "qualified",
         "errors": [],
-        "warnings": [],
-        "blocker_count": 0,
-        "warning_count": 0,
+        "states": [
+          {
+            "beat_ref": "SC01-B01",
+            "characters": {
+              "林晚": {
+                "zone": "ST_TICKET",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_REAR",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "ABSENT"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B02",
+            "characters": {
+              "林晚": {
+                "zone": "ST_TICKET",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_REAR",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "ABSENT"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B03",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_REAR",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B04",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_REAR",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B05",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B06",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B07",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B08",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B09",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B10",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CHECK",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "missing"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B11",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CHECK",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "missing"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B12",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CHECK",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "missing"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B13",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CHECK",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "missing"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          }
+        ],
+        "compiler_version": "blocking_state_compiler_v1",
+        "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0",
+        "state_count": 13,
         "critical_beat_count": 10,
-        "covered_critical_beat_count": 10,
-        "camera_leakage_count": 0
+        "critical_beat_coverage": 10
       },
       "status": "ready_for_review",
-      "blocking_fingerprint": "6dccea37aa1ee6cadbd4cb4f91ce2bff1362bafff4c8beba9dee1b273e414d86"
+      "blocking_fingerprint": "1689791e39d0ee54dc6d2f7b7e21a7518e0fa6c18a4933193f8a1b7c5133321b",
+      "compiler_version": "blocking_state_compiler_v1",
+      "zone_ids": [
+        "ST_CENTER",
+        "ST_CHECK",
+        "ST_PLATFORM_SIGHT",
+        "ST_REAR",
+        "ST_TICKET"
+      ],
+      "initial_state": {
+        "characters": {
+          "林晚": {
+            "zone": "ST_TICKET",
+            "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+            "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+          },
+          "顾沉": {
+            "zone": "ST_REAR",
+            "facing": "林晚与手提包",
+            "attention_target": "林晚与手提包"
+          },
+          "陆叔": {
+            "zone": "ST_REAR",
+            "facing": "林晚",
+            "attention_target": "林晚"
+          },
+          "售票员": {
+            "zone": "ST_TICKET",
+            "facing": "林晚",
+            "attention_target": "林晚"
+          }
+        },
+        "props": {
+          "RED_UMBRELLA": {
+            "zone": "ST_PLATFORM_SIGHT",
+            "state": "ABSENT"
+          },
+          "BROKEN_UMBRELLA_RIB": {
+            "zone": "HANDBAG",
+            "state": "ABSENT"
+          },
+          "HANDBAG": {
+            "zone": "ST_CENTER",
+            "state": "ABSENT"
+          },
+          "TICKET": {
+            "zone": "ST_TICKET",
+            "state": "ABSENT"
+          }
+        },
+        "exit_access": {
+          "ST_TICKET": {
+            "state": "AVAILABLE"
+          },
+          "ST_REAR": {
+            "state": "AVAILABLE"
+          }
+        }
+      },
+      "blocking_transitions": [
+        {
+          "transition_id": "BT_SC01-B03_林晚_ZONE",
+          "beat_ref": "SC01-B03",
+          "subject_type": "CHARACTER",
+          "subject_ref": "林晚",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "ST_TICKET",
+              "to": "ST_CENTER"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B03"
+        },
+        {
+          "transition_id": "BT_SC01-B10_林晚_ZONE",
+          "beat_ref": "SC01-B10",
+          "subject_type": "CHARACTER",
+          "subject_ref": "林晚",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "ST_CENTER",
+              "to": "ST_CHECK"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B10"
+        },
+        {
+          "transition_id": "BT_SC01-B05_顾沉_ZONE",
+          "beat_ref": "SC01-B05",
+          "subject_type": "CHARACTER",
+          "subject_ref": "顾沉",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "ST_REAR",
+              "to": "ST_CENTER"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B05"
+        },
+        {
+          "transition_id": "BT_SC01-B07_陆叔_ZONE",
+          "beat_ref": "SC01-B07",
+          "subject_type": "CHARACTER",
+          "subject_ref": "陆叔",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "ST_REAR",
+              "to": "ST_CENTER"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B07"
+        },
+        {
+          "transition_id": "BT_SC01-B03_RED_UMBRELLA_STATE",
+          "beat_ref": "SC01-B03",
+          "subject_type": "PROP",
+          "subject_ref": "RED_UMBRELLA",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "visible"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B03"
+        },
+        {
+          "transition_id": "BT_SC01-B09_RED_UMBRELLA_STATE",
+          "beat_ref": "SC01-B09",
+          "subject_type": "PROP",
+          "subject_ref": "RED_UMBRELLA",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "visible",
+              "to": "absent; water_trace_remains"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B09"
+        },
+        {
+          "transition_id": "BT_SC01-B04_BROKEN_UMBRELLA_RIB_STATE",
+          "beat_ref": "SC01-B04",
+          "subject_type": "PROP",
+          "subject_ref": "BROKEN_UMBRELLA_RIB",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "visible_inside_bag"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B04"
+        },
+        {
+          "transition_id": "BT_SC01-B10_BROKEN_UMBRELLA_RIB_STATE",
+          "beat_ref": "SC01-B10",
+          "subject_type": "PROP",
+          "subject_ref": "BROKEN_UMBRELLA_RIB",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "visible_inside_bag",
+              "to": "missing"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B10"
+        },
+        {
+          "transition_id": "BT_SC01-B07_HANDBAG_STATE",
+          "beat_ref": "SC01-B07",
+          "subject_type": "PROP",
+          "subject_ref": "HANDBAG",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "transferred_to_LU_SHU"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B07"
+        },
+        {
+          "transition_id": "BT_SC01-B01_TICKET_STATE",
+          "beat_ref": "SC01-B01",
+          "subject_type": "PROP",
+          "subject_ref": "TICKET",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "held_by_LIN_WAN"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC01-B01"
+        }
+      ],
+      "movement_path_projection": [
+        {
+          "beat_ref": "SC01-B03",
+          "from": "ST_TICKET",
+          "to": "ST_CENTER",
+          "subject_ref": "林晚",
+          "projection": "BlockingTransition"
+        },
+        {
+          "beat_ref": "SC01-B10",
+          "from": "ST_CENTER",
+          "to": "ST_CHECK",
+          "subject_ref": "林晚",
+          "projection": "BlockingTransition"
+        },
+        {
+          "beat_ref": "SC01-B05",
+          "from": "ST_REAR",
+          "to": "ST_CENTER",
+          "subject_ref": "顾沉",
+          "projection": "BlockingTransition"
+        },
+        {
+          "beat_ref": "SC01-B07",
+          "from": "ST_REAR",
+          "to": "ST_CENTER",
+          "subject_ref": "陆叔",
+          "projection": "BlockingTransition"
+        }
+      ],
+      "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0",
+      "semantic_validation": {
+        "status": "qualified",
+        "errors": [],
+        "states": [
+          {
+            "beat_ref": "SC01-B01",
+            "characters": {
+              "林晚": {
+                "zone": "ST_TICKET",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_REAR",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "ABSENT"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B02",
+            "characters": {
+              "林晚": {
+                "zone": "ST_TICKET",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_REAR",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "ABSENT"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B03",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_REAR",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B04",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_REAR",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B05",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B06",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_REAR",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "ABSENT"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B07",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B08",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "visible"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B09",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CENTER",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "visible_inside_bag"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B10",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CHECK",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "missing"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B11",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CHECK",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "missing"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B12",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CHECK",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "missing"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC01-B13",
+            "characters": {
+              "林晚": {
+                "zone": "ST_CHECK",
+                "facing": "售票窗口_then_ST_PLATFORM_SIGHT",
+                "attention_target": "售票窗口_then_ST_PLATFORM_SIGHT"
+              },
+              "顾沉": {
+                "zone": "ST_CENTER",
+                "facing": "林晚与手提包",
+                "attention_target": "林晚与手提包"
+              },
+              "陆叔": {
+                "zone": "ST_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              },
+              "售票员": {
+                "zone": "ST_TICKET",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "RED_UMBRELLA": {
+                "zone": "ST_PLATFORM_SIGHT",
+                "state": "absent; water_trace_remains"
+              },
+              "BROKEN_UMBRELLA_RIB": {
+                "zone": "HANDBAG",
+                "state": "missing"
+              },
+              "HANDBAG": {
+                "zone": "ST_CENTER",
+                "state": "transferred_to_LU_SHU"
+              },
+              "TICKET": {
+                "zone": "ST_TICKET",
+                "state": "held_by_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "ST_TICKET": {
+                "state": "AVAILABLE"
+              },
+              "ST_REAR": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          }
+        ],
+        "compiler_version": "blocking_state_compiler_v1",
+        "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0",
+        "state_count": 13,
+        "critical_beat_count": 10,
+        "critical_beat_coverage": 10
+      }
     },
     {
       "schema_version": "scene_blocking_v2_phase_b",
@@ -1073,132 +3148,463 @@
       ],
       "beat_spatial_states": [
         {
+          "beat_ref": "SC02-B01",
+          "characters": {
+            "林晚": {
+              "zone": "APT_CENTER",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
+            },
+            "陆叔": {
+              "zone": "APT_KITCHEN",
+              "facing": "林晚",
+              "attention_target": "林晚"
+            }
+          },
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "ABSENT"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "ABSENT"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "ABSENT"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "ABSENT"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
+        },
+        {
           "beat_ref": "SC02-B02",
           "characters": {
             "林晚": {
-              "zone": "APT_CENTER靠近门的内侧",
-              "facing": "陆叔_then_环境物证"
+              "zone": "APT_CENTER",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
             },
             "陆叔": {
-              "zone": "APT_ENTRY与APT_CENTER之间",
-              "facing": "林晚"
+              "zone": "APT_KITCHEN",
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC02-B02"
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "ABSENT"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "ABSENT"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "ABSENT"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "ABSENT"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC02-B03",
           "characters": {
             "林晚": {
-              "zone": "APT_CENTER靠近门的内侧",
-              "facing": "陆叔_then_环境物证"
+              "zone": "APT_CENTER",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
             },
             "陆叔": {
-              "zone": "APT_ENTRY与APT_CENTER之间",
-              "facing": "林晚"
+              "zone": "APT_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC02-B03"
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "ABSENT"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "ABSENT"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "ABSENT"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "ABSENT"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC02-B04",
           "characters": {
             "林晚": {
-              "zone": "APT_CENTER靠近门的内侧",
-              "facing": "陆叔_then_环境物证"
+              "zone": "APT_TABLE",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
             },
             "陆叔": {
-              "zone": "APT_ENTRY与APT_CENTER之间",
-              "facing": "林晚"
+              "zone": "APT_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC02-B04"
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "ABSENT"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "ABSENT"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "ABSENT"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "with_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC02-B05",
           "characters": {
             "林晚": {
-              "zone": "APT_CENTER靠近门的内侧",
-              "facing": "陆叔_then_环境物证"
+              "zone": "APT_TABLE",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
             },
             "陆叔": {
-              "zone": "APT_ENTRY与APT_CENTER之间",
-              "facing": "林晚"
+              "zone": "APT_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC02-B05"
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "visible_to_LIN_WAN"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "in_LU_SHU_pocket"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "ABSENT"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "with_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC02-B06",
           "characters": {
             "林晚": {
-              "zone": "APT_CENTER靠近门的内侧",
-              "facing": "陆叔_then_环境物证"
+              "zone": "APT_TABLE",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
             },
             "陆叔": {
-              "zone": "APT_ENTRY与APT_CENTER之间",
-              "facing": "林晚"
+              "zone": "APT_CENTER",
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC02-B06"
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "visible_to_LIN_WAN"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "in_LU_SHU_pocket"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "visible_on_water_trace"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "with_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC02-B07",
           "characters": {
             "林晚": {
-              "zone": "APT_CENTER靠近门的内侧",
-              "facing": "陆叔_then_环境物证"
+              "zone": "APT_TABLE",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
             },
             "陆叔": {
-              "zone": "APT_ENTRY与APT_CENTER之间",
-              "facing": "林晚"
+              "zone": "APT_TABLE",
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC02-B07"
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "visible_to_LIN_WAN"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "in_LU_SHU_pocket"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "visible_on_water_trace"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "with_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC02-B08",
           "characters": {
             "林晚": {
-              "zone": "APT_CENTER靠近门的内侧",
-              "facing": "陆叔_then_环境物证"
+              "zone": "APT_TABLE",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
             },
             "陆叔": {
-              "zone": "APT_ENTRY与APT_CENTER之间",
-              "facing": "林晚"
+              "zone": "APT_TABLE",
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC02-B08"
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "visible_to_LIN_WAN"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "in_LU_SHU_pocket"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "visible_on_water_trace"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "with_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         },
         {
           "beat_ref": "SC02-B09",
           "characters": {
             "林晚": {
-              "zone": "APT_CENTER靠近门的内侧",
-              "facing": "陆叔_then_环境物证"
+              "zone": "APT_TABLE",
+              "facing": "陆叔_then_环境物证",
+              "attention_target": "陆叔_then_环境物证"
             },
             "陆叔": {
-              "zone": "APT_ENTRY与APT_CENTER之间",
-              "facing": "林晚"
+              "zone": "APT_TABLE",
+              "facing": "林晚",
+              "attention_target": "林晚"
             }
           },
-          "props": {},
-          "spatial_effect": "NO_POSITION_CHANGE unless a movement is declared",
-          "director_direction_ref": "SC02-B09"
+          "props": {
+            "DOOR_LOCK": {
+              "zone": "APT_ENTRY",
+              "state": "locked_by_LU_SHU"
+            },
+            "APPLE": {
+              "zone": "APT_KITCHEN",
+              "state": "washed_by_LU_SHU"
+            },
+            "TABLE_SCRATCH": {
+              "zone": "APT_TABLE",
+              "state": "visible_to_LIN_WAN"
+            },
+            "POCKET_HARD_OBJECT": {
+              "zone": "APT_CENTER",
+              "state": "in_LU_SHU_pocket"
+            },
+            "RED_FIBER": {
+              "zone": "APT_ENTRY",
+              "state": "visible_on_water_trace"
+            },
+            "HANDBAG": {
+              "zone": "APT_CENTER",
+              "state": "with_LIN_WAN"
+            }
+          },
+          "exit_access": {
+            "APT_CENTER": {
+              "state": "AVAILABLE"
+            },
+            "APT_ENTRY": {
+              "state": "AVAILABLE"
+            }
+          },
+          "authority_class": "DERIVED_PROJECTION",
+          "compiler_version": "blocking_state_compiler_v1"
         }
       ],
       "eyelines": [
@@ -1320,27 +3726,24 @@
         }
       ],
       "director_direction_refs": [
-        "SC02-B02",
-        "SC02-B03",
-        "SC02-B04",
-        "SC02-B05",
-        "SC02-B06",
-        "SC02-B07",
-        "SC02-B08",
-        "SC02-B09"
+        "DBD_SC02-B01",
+        "DBD_SC02-B02",
+        "DBD_SC02-B03",
+        "DBD_SC02-B04",
+        "DBD_SC02-B05",
+        "DBD_SC02-B06",
+        "DBD_SC02-B07"
       ],
       "provenance": {
-        "space_model": "RELATIVE_SPATIAL_MODEL",
-        "characters": "DIRECTOR_AUTHORING_DECISION",
-        "beat_spatial_states": "DIRECTOR_AUTHORING_DECISION",
-        "props": "SCRIPT_ACTION",
-        "eyelines": "DIRECTOR_AUTHORING_DECISION"
+        "initial_state": "DIRECTOR_AUTHORING_DECISION",
+        "blocking_transitions": "DIRECTOR_AUTHORING_DECISION",
+        "beat_spatial_states": "DERIVED_PROJECTION"
       },
       "source_script_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
-      "treatment_fingerprint": "1942e419c762fc04440376caee7f48a274ce18c4d8c498dcf8209bf52d283204",
+      "treatment_fingerprint": "69d6aea14486baf632ee5a7446dbef8abcab6d9c4111c86df02147d2ff6dac05",
       "provider_not_called": true,
       "model_info": {
-        "mode": "deterministic_phase_b_candidate",
+        "mode": "deterministic_phase_b_canonical",
         "llm_called": false,
         "provider_not_called": true,
         "provider_calls": 0,
@@ -1350,15 +3753,1228 @@
       "validation": {
         "status": "qualified",
         "errors": [],
-        "warnings": [],
-        "blocker_count": 0,
-        "warning_count": 0,
+        "states": [
+          {
+            "beat_ref": "SC02-B01",
+            "characters": {
+              "林晚": {
+                "zone": "APT_CENTER",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_KITCHEN",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "ABSENT"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B02",
+            "characters": {
+              "林晚": {
+                "zone": "APT_CENTER",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_KITCHEN",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "ABSENT"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B03",
+            "characters": {
+              "林晚": {
+                "zone": "APT_CENTER",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "ABSENT"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B04",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "ABSENT"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B05",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B06",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "visible_on_water_trace"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B07",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_TABLE",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "visible_on_water_trace"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B08",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_TABLE",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "visible_on_water_trace"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B09",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_TABLE",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "visible_on_water_trace"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          }
+        ],
+        "compiler_version": "blocking_state_compiler_v1",
+        "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b",
+        "state_count": 9,
         "critical_beat_count": 8,
-        "covered_critical_beat_count": 8,
-        "camera_leakage_count": 0
+        "critical_beat_coverage": 8
       },
       "status": "ready_for_review",
-      "blocking_fingerprint": "5e11a939d2a40c5066398ab7a9f4e3d606e4cf95037abada1761627facfcd7d5"
+      "blocking_fingerprint": "0a11d015456ccbce150fed7830107402d5f2d4f0279b76af06193876300d55f0",
+      "compiler_version": "blocking_state_compiler_v1",
+      "zone_ids": [
+        "APT_CENTER",
+        "APT_ENTRY",
+        "APT_KITCHEN",
+        "APT_TABLE",
+        "APT_WINDOW"
+      ],
+      "initial_state": {
+        "characters": {
+          "林晚": {
+            "zone": "APT_CENTER",
+            "facing": "陆叔_then_环境物证",
+            "attention_target": "陆叔_then_环境物证"
+          },
+          "陆叔": {
+            "zone": "APT_ENTRY",
+            "facing": "林晚",
+            "attention_target": "林晚"
+          }
+        },
+        "props": {
+          "DOOR_LOCK": {
+            "zone": "APT_ENTRY",
+            "state": "ABSENT"
+          },
+          "APPLE": {
+            "zone": "APT_KITCHEN",
+            "state": "ABSENT"
+          },
+          "TABLE_SCRATCH": {
+            "zone": "APT_TABLE",
+            "state": "ABSENT"
+          },
+          "POCKET_HARD_OBJECT": {
+            "zone": "APT_CENTER",
+            "state": "ABSENT"
+          },
+          "RED_FIBER": {
+            "zone": "APT_ENTRY",
+            "state": "ABSENT"
+          },
+          "HANDBAG": {
+            "zone": "APT_CENTER",
+            "state": "ABSENT"
+          }
+        },
+        "exit_access": {
+          "APT_CENTER": {
+            "state": "AVAILABLE"
+          },
+          "APT_ENTRY": {
+            "state": "AVAILABLE"
+          }
+        }
+      },
+      "blocking_transitions": [
+        {
+          "transition_id": "BT_SC02-B02_林晚_ZONE",
+          "beat_ref": "SC02-B02",
+          "subject_type": "CHARACTER",
+          "subject_ref": "林晚",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "APT_CENTER",
+              "to": "APT_CENTER"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B02"
+        },
+        {
+          "transition_id": "BT_SC02-B04_林晚_ZONE",
+          "beat_ref": "SC02-B04",
+          "subject_type": "CHARACTER",
+          "subject_ref": "林晚",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "APT_CENTER",
+              "to": "APT_TABLE"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B04"
+        },
+        {
+          "transition_id": "BT_SC02-B07_林晚_ZONE",
+          "beat_ref": "SC02-B07",
+          "subject_type": "CHARACTER",
+          "subject_ref": "林晚",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "APT_TABLE",
+              "to": "APT_TABLE"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B07"
+        },
+        {
+          "transition_id": "BT_SC02-B01_陆叔_ZONE",
+          "beat_ref": "SC02-B01",
+          "subject_type": "CHARACTER",
+          "subject_ref": "陆叔",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "APT_ENTRY",
+              "to": "APT_KITCHEN"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B01"
+        },
+        {
+          "transition_id": "BT_SC02-B03_陆叔_ZONE",
+          "beat_ref": "SC02-B03",
+          "subject_type": "CHARACTER",
+          "subject_ref": "陆叔",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "APT_KITCHEN",
+              "to": "APT_CENTER"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B03"
+        },
+        {
+          "transition_id": "BT_SC02-B07_陆叔_ZONE",
+          "beat_ref": "SC02-B07",
+          "subject_type": "CHARACTER",
+          "subject_ref": "陆叔",
+          "changes": [
+            {
+              "property": "ZONE",
+              "from": "APT_CENTER",
+              "to": "APT_TABLE"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B07"
+        },
+        {
+          "transition_id": "BT_SC02-B01_DOOR_LOCK_STATE",
+          "beat_ref": "SC02-B01",
+          "subject_type": "PROP",
+          "subject_ref": "DOOR_LOCK",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "locked_by_LU_SHU"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B01"
+        },
+        {
+          "transition_id": "BT_SC02-B01_APPLE_STATE",
+          "beat_ref": "SC02-B01",
+          "subject_type": "PROP",
+          "subject_ref": "APPLE",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "washed_by_LU_SHU"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B01"
+        },
+        {
+          "transition_id": "BT_SC02-B05_TABLE_SCRATCH_STATE",
+          "beat_ref": "SC02-B05",
+          "subject_type": "PROP",
+          "subject_ref": "TABLE_SCRATCH",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "visible_to_LIN_WAN"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B05"
+        },
+        {
+          "transition_id": "BT_SC02-B05_POCKET_HARD_OBJECT_STATE",
+          "beat_ref": "SC02-B05",
+          "subject_type": "PROP",
+          "subject_ref": "POCKET_HARD_OBJECT",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "in_LU_SHU_pocket"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B05"
+        },
+        {
+          "transition_id": "BT_SC02-B06_RED_FIBER_STATE",
+          "beat_ref": "SC02-B06",
+          "subject_type": "PROP",
+          "subject_ref": "RED_FIBER",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "visible_on_water_trace"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B06"
+        },
+        {
+          "transition_id": "BT_SC02-B04_HANDBAG_STATE",
+          "beat_ref": "SC02-B04",
+          "subject_type": "PROP",
+          "subject_ref": "HANDBAG",
+          "changes": [
+            {
+              "property": "PROP_STATE",
+              "from": "ABSENT",
+              "to": "with_LIN_WAN"
+            }
+          ],
+          "cause": "DIRECTOR_BEAT_DECISION",
+          "director_decision_ref": "DBD_SC02-B04"
+        }
+      ],
+      "movement_path_projection": [
+        {
+          "beat_ref": "SC02-B02",
+          "from": "APT_CENTER",
+          "to": "APT_CENTER",
+          "subject_ref": "林晚",
+          "projection": "BlockingTransition"
+        },
+        {
+          "beat_ref": "SC02-B04",
+          "from": "APT_CENTER",
+          "to": "APT_TABLE",
+          "subject_ref": "林晚",
+          "projection": "BlockingTransition"
+        },
+        {
+          "beat_ref": "SC02-B07",
+          "from": "APT_TABLE",
+          "to": "APT_TABLE",
+          "subject_ref": "林晚",
+          "projection": "BlockingTransition"
+        },
+        {
+          "beat_ref": "SC02-B01",
+          "from": "APT_ENTRY",
+          "to": "APT_KITCHEN",
+          "subject_ref": "陆叔",
+          "projection": "BlockingTransition"
+        },
+        {
+          "beat_ref": "SC02-B03",
+          "from": "APT_KITCHEN",
+          "to": "APT_CENTER",
+          "subject_ref": "陆叔",
+          "projection": "BlockingTransition"
+        },
+        {
+          "beat_ref": "SC02-B07",
+          "from": "APT_CENTER",
+          "to": "APT_TABLE",
+          "subject_ref": "陆叔",
+          "projection": "BlockingTransition"
+        }
+      ],
+      "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b",
+      "semantic_validation": {
+        "status": "qualified",
+        "errors": [],
+        "states": [
+          {
+            "beat_ref": "SC02-B01",
+            "characters": {
+              "林晚": {
+                "zone": "APT_CENTER",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_KITCHEN",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "ABSENT"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B02",
+            "characters": {
+              "林晚": {
+                "zone": "APT_CENTER",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_KITCHEN",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "ABSENT"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B03",
+            "characters": {
+              "林晚": {
+                "zone": "APT_CENTER",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "ABSENT"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B04",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "ABSENT"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "ABSENT"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B05",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "ABSENT"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B06",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_CENTER",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "visible_on_water_trace"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B07",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_TABLE",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "visible_on_water_trace"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B08",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_TABLE",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "visible_on_water_trace"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          },
+          {
+            "beat_ref": "SC02-B09",
+            "characters": {
+              "林晚": {
+                "zone": "APT_TABLE",
+                "facing": "陆叔_then_环境物证",
+                "attention_target": "陆叔_then_环境物证"
+              },
+              "陆叔": {
+                "zone": "APT_TABLE",
+                "facing": "林晚",
+                "attention_target": "林晚"
+              }
+            },
+            "props": {
+              "DOOR_LOCK": {
+                "zone": "APT_ENTRY",
+                "state": "locked_by_LU_SHU"
+              },
+              "APPLE": {
+                "zone": "APT_KITCHEN",
+                "state": "washed_by_LU_SHU"
+              },
+              "TABLE_SCRATCH": {
+                "zone": "APT_TABLE",
+                "state": "visible_to_LIN_WAN"
+              },
+              "POCKET_HARD_OBJECT": {
+                "zone": "APT_CENTER",
+                "state": "in_LU_SHU_pocket"
+              },
+              "RED_FIBER": {
+                "zone": "APT_ENTRY",
+                "state": "visible_on_water_trace"
+              },
+              "HANDBAG": {
+                "zone": "APT_CENTER",
+                "state": "with_LIN_WAN"
+              }
+            },
+            "exit_access": {
+              "APT_CENTER": {
+                "state": "AVAILABLE"
+              },
+              "APT_ENTRY": {
+                "state": "AVAILABLE"
+              }
+            },
+            "authority_class": "DERIVED_PROJECTION",
+            "compiler_version": "blocking_state_compiler_v1"
+          }
+        ],
+        "compiler_version": "blocking_state_compiler_v1",
+        "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b",
+        "state_count": 9,
+        "critical_beat_count": 8,
+        "critical_beat_coverage": 8
+      }
     }
   ],
   "authority": {

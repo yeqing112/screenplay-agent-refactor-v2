@@ -14,6 +14,7 @@ import json
 from typing import Any
 
 from core.qualification_loop import qualify_candidate
+from core.blocking_state_compiler import COMPILER_VERSION, compile_blocking_states, validate_blocking_contract
 
 SOURCE_FACT = "SOURCE_FACT"
 CREATIVE_CHOICE = "CREATIVE_CHOICE"
@@ -458,3 +459,24 @@ def build_scene_blocking_phase_b(*, scene: dict[str, Any], treatment: dict[str, 
     result["status"] = "ready_for_review" if result["validation"]["status"] == "qualified" else "blocked"
     result["blocking_fingerprint"] = hashlib.sha256(_canonical(result).encode("utf-8")).hexdigest()
     return result
+
+
+def build_scene_blocking_contract(*, scene: dict[str, Any], treatment: dict[str, Any], initial_state: dict[str, Any], blocking_transitions: list[dict[str, Any]], zone_ids: list[str] | set[str], source_script_hash: str = "", provenance: dict[str, Any] | None = None, provider_not_called: bool = True) -> dict[str, Any]:
+    """Build canonical BlockingTransition truth and its derived projections."""
+    beats = scene.get("dramatic_beats") if isinstance(scene.get("dramatic_beats"), list) else scene.get("beats", []) if isinstance(scene.get("beats"), list) else []
+    compile_report = compile_blocking_states(initial_state, beats, blocking_transitions, valid_zones=set(zone_ids))
+    validation = validate_blocking_contract({"initial_state": initial_state, "blocking_transitions": blocking_transitions, "zone_ids": list(zone_ids)}, ordered_beats=beats)
+    validation["compiler_version"] = COMPILER_VERSION
+    validation["compiled_states_hash"] = compile_report.get("compiled_states_hash", "")
+    states = compile_report.get("states", [])
+    movement_projection = []
+    for transition in blocking_transitions:
+        for change in transition.get("changes", []) if isinstance(transition, dict) else []:
+            if str(change.get("property", "")).upper() == "ZONE":
+                movement_projection.append({"beat_ref": transition.get("beat_ref"), "from": change.get("from"), "to": change.get("to"), "subject_ref": transition.get("subject_ref"), "projection": "BlockingTransition"})
+    payload = {"schema_version": "scene_blocking_v2_phase_b", "compiler_version": COMPILER_VERSION, "scene_id": _name(scene.get("scene_id") or scene.get("id") or treatment.get("scene_id")), "scene_name": _name(scene.get("name") or treatment.get("scene_name")), "zone_ids": sorted(str(x) for x in zone_ids), "initial_state": copy.deepcopy(initial_state), "blocking_transitions": copy.deepcopy(blocking_transitions), "beat_spatial_states": states, "movement_path_projection": movement_projection, "director_direction_refs": sorted({_name(t.get("director_decision_ref")) for t in blocking_transitions if _name(t.get("director_decision_ref"))}), "provenance": provenance or {"initial_state": "DIRECTOR_AUTHORING_DECISION", "blocking_transitions": "DIRECTOR_AUTHORING_DECISION", "beat_spatial_states": "DERIVED_PROJECTION"}, "source_script_hash": source_script_hash, "treatment_fingerprint": treatment.get("candidate_fingerprint") or treatment.get("prompt_fingerprint"), "provider_not_called": bool(provider_not_called), "model_info": {"mode": "deterministic_phase_b_canonical", "llm_called": False, "provider_not_called": bool(provider_not_called), "provider_calls": 0, "repair_count": 0}}
+    payload["validation"] = validation
+    payload["status"] = "ready_for_review" if validation.get("status") == "qualified" else "blocked"
+    payload["blocking_fingerprint"] = hashlib.sha256(_canonical({key: value for key, value in payload.items() if key not in {"blocking_fingerprint", "validation", "beat_spatial_states", "movement_path_projection"}}).encode("utf-8")).hexdigest()
+    payload["compiled_states_hash"] = compile_report.get("compiled_states_hash", "")
+    return payload

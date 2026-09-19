@@ -305,7 +305,7 @@
       "skill_id": "",
       "skill_version": "",
       "status": "ready_for_review",
-      "prompt_fingerprint": "e7ab46f79cdffc026a8dfb4da4d8e98708ef307259cb3b61a3c85e0065c76b94",
+      "prompt_fingerprint": "b3d7f05839371a881690d37c84787b17ff9a595c5d1dbc53fe3c6d5974ae144b",
       "model_info": {
         "mode": "deterministic_phase_b_candidate",
         "llm_called": false,
@@ -538,6 +538,759 @@
           "coverage_priority": "CRITICAL"
         }
       ],
+      "director_beat_decisions": [
+        {
+          "decision_id": "DBD_SC01-B01",
+          "beat_ref": "SC01-B01",
+          "dramatic_purpose": "SETUP_RELATIONSHIP",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "HOLD_POSITION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "PROGRESS_BEAT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B01"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B02",
+          "beat_ref": "SC01-B02",
+          "dramatic_purpose": "SETUP_RELATIONSHIP",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "售票员",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "售票员",
+              "action": "HOLD_POSITION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "售票员"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "PROGRESS_BEAT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B02"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B03",
+          "beat_ref": "SC01-B03",
+          "dramatic_purpose": "INTRODUCE_ANOMALY",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "红伞出现"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC01-B03",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B03"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B03"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B04",
+          "beat_ref": "SC01-B04",
+          "dramatic_purpose": "INTRODUCE_ANOMALY",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "林晚拥有断伞骨"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "顾沉",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC01-B04",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B04"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚",
+              "顾沉"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B04"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B05",
+          "beat_ref": "SC01-B05",
+          "dramatic_purpose": "RAISE_SUSPICION",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "顾沉",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "顾沉",
+              "action": "TEST_OTHER_CHARACTER",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "TEST_OTHER_CHARACTER",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "顾沉",
+              "trigger_ref": "SC01-B05",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B05"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "顾沉",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B05"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B06",
+          "beat_ref": "SC01-B06",
+          "dramatic_purpose": "INTRODUCE_ANOMALY",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "顾沉知道伞骨"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "顾沉",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "顾沉",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "顾沉",
+              "trigger_ref": "SC01-B06",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B06"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "顾沉",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B06"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B07",
+          "beat_ref": "SC01-B07",
+          "dramatic_purpose": "SETUP_RELATIONSHIP",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "陆叔",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "陆叔",
+              "action": "HOLD_POSITION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "HOLD_POSITION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "陆叔",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "PROGRESS_BEAT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B07"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B08",
+          "beat_ref": "SC01-B08",
+          "dramatic_purpose": "INTRODUCE_ANOMALY",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "陆叔对红伞异常"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "陆叔",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "陆叔",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "陆叔",
+              "trigger_ref": "SC01-B08",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B08"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "陆叔",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B08"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B09",
+          "beat_ref": "SC01-B09",
+          "dramatic_purpose": "INTRODUCE_ANOMALY",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "红伞消失"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC01-B09",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B09"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B09"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B10",
+          "beat_ref": "SC01-B10",
+          "dramatic_purpose": "TRIGGER_DECISION",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "断伞骨丢失"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "CONTROL_EXIT",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC01-B10",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B10"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B10"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B11",
+          "beat_ref": "SC01-B11",
+          "dramatic_purpose": "TRIGGER_DECISION",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "林晚放弃登车"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "CONTROL_EXIT",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "陆叔",
+              "action": "CONTROL_EXIT",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC01-B11",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B11"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚",
+              "陆叔"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B11"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B12",
+          "beat_ref": "SC01-B12",
+          "dramatic_purpose": "SHIFT_POWER",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "陆叔",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "陆叔",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "陆叔",
+              "trigger_ref": "SC01-B12",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B12"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "陆叔",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B12"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC01-B13",
+          "beat_ref": "SC01-B13",
+          "dramatic_purpose": "ESCALATE_THREAT",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "顾沉留下双关警告"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "顾沉",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "顾沉",
+              "action": "PRESSURE_WITHOUT_OPEN_THREAT",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "PRESSURE_WITHOUT_OPEN_THREAT",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "顾沉",
+              "trigger_ref": "SC01-B13",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC01-B13"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "顾沉",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC01-B13"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        }
+      ],
+      "director_contract_version": "director_beat_decision_v1",
       "performance_arc": [
         {
           "phase": "IN",
@@ -587,7 +1340,15 @@
         "critical_beat_count": 10,
         "covered_critical_beat_count": 10
       },
-      "candidate_fingerprint": "01731b4e411c264cad120e368d71babf70d350313d68619a3b0a876e2183e351"
+      "semantic_validation": {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "required_beat_count": 10,
+        "covered_beat_count": 10,
+        "decision_count": 13
+      },
+      "candidate_fingerprint": "a7459b717e89b5fa8bb5cbf3f65af8258aae1bd20b29782b172b1020fce51c90"
     },
     {
       "scene_name": "林晚的公寓客厅",
@@ -795,7 +1556,7 @@
       "skill_id": "",
       "skill_version": "",
       "status": "ready_for_review",
-      "prompt_fingerprint": "ae451bb77bebd696f0c32a11a63f6961128c2638ea4fd0b8025e0567afa4d581",
+      "prompt_fingerprint": "040c87369a683ef10f6bec0e0ce55e61cd36f6b78e46ec1e82a891a3e129bd74",
       "model_info": {
         "mode": "deterministic_phase_b_candidate",
         "llm_called": false,
@@ -972,6 +1733,537 @@
           "coverage_priority": "CRITICAL"
         }
       ],
+      "director_beat_decisions": [
+        {
+          "decision_id": "DBD_SC02-B01",
+          "beat_ref": "SC02-B01",
+          "dramatic_purpose": "SETUP_RELATIONSHIP",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "陆叔",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "陆叔",
+              "action": "HOLD_POSITION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "陆叔"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "PROGRESS_BEAT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B01"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC02-B02",
+          "beat_ref": "SC02-B02",
+          "dramatic_purpose": "RAISE_SUSPICION",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "TEST_OTHER_CHARACTER",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "陆叔",
+              "action": "TEST_OTHER_CHARACTER",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC02-B02",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC02-B02"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚",
+              "陆叔"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B02"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC02-B03",
+          "beat_ref": "SC02-B03",
+          "dramatic_purpose": "INTRODUCE_ANOMALY",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "陆叔开始说谎"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "陆叔",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "陆叔",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "陆叔",
+              "trigger_ref": "SC02-B03",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC02-B03"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "陆叔",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B03"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC02-B04",
+          "beat_ref": "SC02-B04",
+          "dramatic_purpose": "SHIFT_POWER",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC02-B04",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC02-B04"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B04"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC02-B05",
+          "beat_ref": "SC02-B05",
+          "dramatic_purpose": "INTRODUCE_ANOMALY",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "口袋硬物"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "陆叔",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "陆叔",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "陆叔",
+              "trigger_ref": "SC02-B05",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC02-B05"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "陆叔",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B05"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC02-B06",
+          "beat_ref": "SC02-B06",
+          "dramatic_purpose": "INTRODUCE_ANOMALY",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "暗红纤维碎屑"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC02-B06",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC02-B06"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B06"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC02-B07",
+          "beat_ref": "SC02-B07",
+          "dramatic_purpose": "ESCALATE_THREAT",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "陆叔",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "陆叔",
+              "action": "PRESSURE_WITHOUT_OPEN_THREAT",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "PRESSURE_WITHOUT_OPEN_THREAT",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "陆叔",
+              "trigger_ref": "SC02-B07",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC02-B07"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "陆叔",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B07"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC02-B08",
+          "beat_ref": "SC02-B08",
+          "dramatic_purpose": "SETUP_RELATIONSHIP",
+          "audience_state_delta": {
+            "knowledge_added": [
+              "碎屑与伞骨同源"
+            ],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "林晚",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "林晚",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "陆叔",
+              "action": "OBSERVE_REACTION",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "林晚",
+              "trigger_ref": "SC02-B08",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC02-B08"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "林晚",
+              "陆叔"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B08"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        },
+        {
+          "decision_id": "DBD_SC02-B09",
+          "beat_ref": "SC02-B09",
+          "dramatic_purpose": "HOOK_NEXT_SCENE",
+          "audience_state_delta": {
+            "knowledge_added": [],
+            "knowledge_confirmed": [],
+            "knowledge_invalidated": [],
+            "belief_shift": [],
+            "open_question_added": [],
+            "open_question_resolved": []
+          },
+          "character_state_deltas": [
+            {
+              "character_ref": "陆叔",
+              "dimension": "ATTENTION_TARGET",
+              "from": "UNFOCUSED",
+              "to": "ACTIVE_BEAT"
+            }
+          ],
+          "performance_objectives": [
+            {
+              "character_ref": "陆叔",
+              "action": "WITHHOLD_RESPONSE",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            },
+            {
+              "character_ref": "林晚",
+              "action": "WITHHOLD_RESPONSE",
+              "target": "ACTIVE_BEAT",
+              "success_condition": "beat action remains legible"
+            }
+          ],
+          "reaction_contracts": [
+            {
+              "character_ref": "陆叔",
+              "trigger_ref": "SC02-B09",
+              "reaction_type": "RECOGNITION",
+              "required": true,
+              "state_delta_ref": "SC02-B09"
+            }
+          ],
+          "information_policy": {
+            "audience_knows_truth": true,
+            "characters_with_truth": [
+              "陆叔",
+              "林晚"
+            ],
+            "characters_uncertain": [],
+            "withheld_from": []
+          },
+          "tempo_function": "HOLD_FOR_DOUBT",
+          "blocking_requirements": [],
+          "source_refs": [
+            "ScriptIR:SC02-B09"
+          ],
+          "director_notes": "",
+          "decision_origin": "HUMAN_AUTHORED",
+          "review_status": "CONFIRMED"
+        }
+      ],
+      "director_contract_version": "director_beat_decision_v1",
       "performance_arc": [
         {
           "phase": "IN",
@@ -1021,7 +2313,15 @@
         "critical_beat_count": 8,
         "covered_critical_beat_count": 8
       },
-      "candidate_fingerprint": "1942e419c762fc04440376caee7f48a274ce18c4d8c498dcf8209bf52d283204"
+      "semantic_validation": {
+        "status": "qualified",
+        "errors": [],
+        "warnings": [],
+        "required_beat_count": 8,
+        "covered_beat_count": 8,
+        "decision_count": 9
+      },
+      "candidate_fingerprint": "69d6aea14486baf632ee5a7446dbef8abcab6d9c4111c86df02147d2ff6dac05"
     }
   ],
   "authority": {

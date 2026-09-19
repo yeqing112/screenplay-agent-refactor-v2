@@ -17,6 +17,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.director_treatment import build_shadow_treatment
+from core.director_semantics import validate_director_contract
 from core.director_treatment_authority import (
     build_treatment_authority_envelope,
     classify_asset_authority,
@@ -131,7 +132,7 @@ TREATMENT_CANDIDATE_FIELDS = {
     # boundary succeeds.
     "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out",
     "suspicion_or_information_strategy", "character_directions", "beat_directions",
-    "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent",
+    "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent",
     "prohibited_interpretations",
 }
 
@@ -305,7 +306,7 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
             "source_beats": treatment.get("beat_map", []),
             "explicit_story_constraints": scene.get("required_visual_proofs") if isinstance(scene.get("required_visual_proofs"), list) else [],
         }
-        treatment["director_decisions"] = {field: treatment.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if treatment.get(field) not in (None, "", [], {})}
+        treatment["director_decisions"] = {field: treatment.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if treatment.get(field) not in (None, "", [], {})}
         treatment["asset_authority"] = classify_asset_authority({"characters": characters, "locked_references": locked_refs})
         treatment["qualification_state"] = "REVIEW_REQUIRED" if profile == "production" else "DRAFT"
         treatment["evidence_fingerprint"] = evidence["evidence_fingerprint"]
@@ -765,6 +766,13 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
             candidate = _validate_llm_candidate(raw_candidate, baseline)
         except ValueError as exc:
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_CANDIDATE_INVALID", "message": str(exc)}) from exc
+        # Structured Phase B candidates take the deterministic semantic gate
+        # before any Treatment/Authority write.  Legacy candidates remain on
+        # the compatibility path until they opt into the contract version.
+        if candidate.get("director_contract_version") or candidate.get("director_beat_decisions"):
+            semantic_report = validate_director_contract(candidate, scene=scene, production=True)
+            if semantic_report.get("status") != "qualified":
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_CONTRACT_INVALID", "message": "structured DirectorBeatDecision contract is not production-qualified", "validation": semantic_report})
 
         previous = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
         next_revision = previous.revision + 1 if previous else 1
@@ -780,7 +788,7 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         row = DirectorTreatment(
             book_id=book_id, episode=episode, scene_id=scene_id, scene_name=baseline["scene_name"], revision=next_revision, status="approved",
             source_script_revision=str(script_ir_version.revision), source_script_hash=str(script_ir_version.payload_hash or ""), source_script_ir_version_id=script_ir_version.id, source_script_ir_revision=script_ir_version.revision, source_script_ir_hash=str(script_ir_version.payload_hash or ""), source_script_authority_fingerprint=str(script_ir_envelope.get("envelope_fingerprint") or ""), source_fact_snapshot_id=str(script_ir_envelope.get("fact_snapshot_id") or ""), source_fact_snapshot_revision=script_ir_envelope.get("fact_snapshot_revision"), source_fact_snapshot_hash=str(script_ir_envelope.get("fact_snapshot_payload_hash") or ""),
-            dramatic_objective=formal["dramatic_objective"], audience_question=formal["audience_question"], character_intents=json.dumps(formal["character_intents"], ensure_ascii=False), beat_map=json.dumps(formal["beat_map"], ensure_ascii=False), source_constraints=json.dumps(baseline.get("source_constraints", {}), ensure_ascii=False), director_decisions=json.dumps({field: formal.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if formal.get(field) not in (None, "", [], {})}, ensure_ascii=False), unknown_unresolved=json.dumps(formal.get("unknowns", []), ensure_ascii=False), relationship_power_shift=formal["relationship_power_shift"], audience_emotion=formal["audience_emotion"], information_strategy=formal["information_strategy"], performance_direction=formal["performance_direction"], visual_strategy=formal["visual_strategy"], coverage_strategy=formal["coverage_strategy"], sound_strategy=formal["sound_strategy"], edit_rhythm=formal["edit_rhythm"], constraints=json.dumps(formal["constraints"], ensure_ascii=False), unknowns=json.dumps(formal["unknowns"], ensure_ascii=False), skill_id=baseline.get("skill_id", ""), skill_version=baseline.get("skill_version", ""), decision_packet_id=packet.id, model_info=json.dumps(model_info, ensure_ascii=False), prompt_fingerprint=_candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), payload_hash=treatment_payload_hash(formal), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=datetime.now(), activated_at=datetime.now(), created_at=datetime.now(), updated_at=datetime.now(), workflow_profile="production",
+            dramatic_objective=formal["dramatic_objective"], audience_question=formal["audience_question"], character_intents=json.dumps(formal["character_intents"], ensure_ascii=False), beat_map=json.dumps(formal["beat_map"], ensure_ascii=False), source_constraints=json.dumps(baseline.get("source_constraints", {}), ensure_ascii=False), director_decisions=json.dumps({field: formal.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if formal.get(field) not in (None, "", [], {})}, ensure_ascii=False), unknown_unresolved=json.dumps(formal.get("unknowns", []), ensure_ascii=False), relationship_power_shift=formal["relationship_power_shift"], audience_emotion=formal["audience_emotion"], information_strategy=formal["information_strategy"], performance_direction=formal["performance_direction"], visual_strategy=formal["visual_strategy"], coverage_strategy=formal["coverage_strategy"], sound_strategy=formal["sound_strategy"], edit_rhythm=formal["edit_rhythm"], constraints=json.dumps(formal["constraints"], ensure_ascii=False), unknowns=json.dumps(formal["unknowns"], ensure_ascii=False), skill_id=baseline.get("skill_id", ""), skill_version=baseline.get("skill_version", ""), decision_packet_id=packet.id, model_info=json.dumps(model_info, ensure_ascii=False), prompt_fingerprint=_candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), payload_hash=treatment_payload_hash(formal), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=datetime.now(), activated_at=datetime.now(), created_at=datetime.now(), updated_at=datetime.now(), workflow_profile="production",
         )
         session.add(row); session.flush()
         envelope = build_treatment_authority_envelope(treatment=formal, evidence=evidence, script_ir=script_ir_payload, script_ir_version=script_ir_version, script_ir_envelope=script_ir_envelope, treatment_id=row.id, treatment_revision=row.revision, qualification_state="PRODUCTION_QUALIFIED")

@@ -31,7 +31,7 @@ DIRECTOR_DECISION_FIELDS = (
     # Treatment production truth is introduced.
     "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out",
     "suspicion_or_information_strategy", "character_directions", "beat_directions",
-    "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent",
+    "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent",
     "prohibited_interpretations",
 )
 DOWNSTREAM_AUTHORING_FIELDS = ("character_blocking", "scene_geometry", "production_prop_continuity", "shot_coverage", "camera_placement")

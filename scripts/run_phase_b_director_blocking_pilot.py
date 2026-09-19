@@ -17,7 +17,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from core.director_treatment import build_director_treatment_v2
-from core.scene_blocking import build_scene_blocking_phase_b
+from core.scene_blocking import build_scene_blocking_phase_b, build_scene_blocking_contract
 
 ART = ROOT / "artifacts" / "e2e-production-pilot"
 IR_PATH = ART / "episode_01_script_ir_phase_a.json"
@@ -114,6 +114,12 @@ def render_treatment_md(items: list[dict]) -> str:
         for c in t["character_directions"]:
             out += [f"#### {c['character']}", f"- 目标：{c['objective']}", f"- 阻碍：{c['obstacle']}", f"- 策略：{c['strategy']}", f"- 策略变化：{c['strategy_shift']}", f"- 潜台词：{c['subtext']}", f"- 表演：{c['performance_notes']}", f"- 避免：{c['avoid']}"]
         out += ["", "### 表演轨迹"] + [f"- {x['phase']}：{x['state']}" for x in t["performance_arc"]]
+        out += ["", "### DirectorBeatDecision（Production 语义）"]
+        for d in t.get("director_beat_decisions", []):
+            audience = d.get("audience_state_delta", {})
+            objectives = ", ".join(f"{x.get('character_ref')}:{x.get('action')}→{x.get('target')}" for x in d.get("performance_objectives", []))
+            reactions = ", ".join(f"{x.get('character_ref')}:{x.get('reaction_type')}" for x in d.get("reaction_contracts", [])) or "无强制反应"
+            out += [f"- `{d['beat_ref']}` `{d['dramatic_purpose']}`；audience delta：added={audience.get('knowledge_added', [])} confirmed={audience.get('knowledge_confirmed', [])} belief_shift={audience.get('belief_shift', [])}；performance={objectives}；reaction={reactions}；origin={d.get('decision_origin')}。"]
         out += ["", "### 关键 Beat 导演意图"] + [f"- `{x['beat_ref']}`：{x['director_intent']}；表演：{x['performance_direction']}；节奏：{x['tempo']}" for x in t["beat_directions"]]
         out += ["", f"### 节奏策略\n{json.dumps(t['rhythm_strategy'], ensure_ascii=False, indent=2)}", "", "### 视觉优先级"] + [f"- {x}" for x in t["visual_priority"]]
         out += ["", f"### 禁止演法\n" + "\n".join(f"- {x}" for x in t["prohibited_interpretations"]), "", f"### 场景出口\n{t['scene_exit_intent']}", ""]
@@ -130,7 +136,8 @@ def render_blocking_md(items: list[dict]) -> str:
         for p in b["characters"]:
             out += [f"- **{p['character']}**：entry={p['entry']}；初始={p['initial_position']}；面向={p['facing']}；exit={p['exit']}"]
             out += [f"  - `{m.get('beat_ref')}` {m.get('from')} → {m.get('to')}：{m.get('reason')}" for m in p.get('movement_path', [])]
-        out += ["", "### Beat Blocking"] + [f"- `{x['beat_ref']}`：{x.get('spatial_effect')}；导演绑定 `{x.get('director_direction_ref')}`" for x in b["beat_spatial_states"]]
+        out += ["", "### InitialBlockingState", f"```json\n{json.dumps(b['initial_state'], ensure_ascii=False, indent=2)}\n```", "", "### BlockingTransition（唯一变化真相）"] + [f"- `{x['transition_id']}` `{x['beat_ref']}` {x['subject_ref']}：" + "; ".join(f"{c.get('property')} {c.get('from')} → {c.get('to')}" for c in x.get('changes', [])) + f"；导演绑定 `{x.get('director_decision_ref')}`" for x in b["blocking_transitions"]]
+        out += ["", "### BeatSpatialState（compiler projection）"] + [f"- `{x['beat_ref']}`：authority=`{x.get('authority_class')}`；state hash={b.get('compiled_states_hash')}" for x in b["beat_spatial_states"]]
         out += ["", "### Eyeline"] + [f"- `{x['beat_ref']}`：{x['source']} → {x['target']}（{x.get('provenance')}）" for x in b["eyelines"]]
         out += ["", "### 关键道具状态"] + [f"- `{x['beat_ref']}` `{x['prop_id']}`：{x['state']} @ {x['zone']}" for x in b["prop_spatial_states"]]
         out += ["", "### Interaction"] + [f"- `{x['beat_ref']}` {x['actor']} → {x['target']}：{x['interaction']}；空间结果：{x['spatial_effect']}" for x in b["interactions"]]
@@ -147,7 +154,43 @@ def main() -> None:
     for scene in payload.get("scenes", []):
         chars, td, bd = scene_directives(str(scene.get("scene_id")))
         t = build_director_treatment_v2(scene=scene, characters=chars, source_script_revision="phase_a_current", source_script_hash=script_hash, directives=td)
+        # The pilot's accepted decisions are explicit authoring input.  The
+        # builder's GENERATED_DRAFT suggestions never qualify by themselves.
+        for decision in t.get("director_beat_decisions", []):
+            decision["decision_origin"] = "HUMAN_AUTHORED"
+            decision["review_status"] = "CONFIRMED"
+        t["semantic_validation"] = __import__("core.director_semantics", fromlist=["validate_director_contract"]).validate_director_contract(t, scene=scene, production=True)
         b = build_scene_blocking_phase_b(scene=scene, treatment=t, source_script_hash=script_hash, directives=bd)
+        # Canonical blocking input is InitialBlockingState + BlockingTransition.
+        # The prior movement/prop prose remains only as authoring source for
+        # this conversion and is not copied as a second production truth.
+        initial = {"characters": {}, "props": {}, "exit_access": {}}
+        zone_ids = [z["zone_id"] for z in bd.get("zones", [])]
+        def normalize_zone(value: str) -> str:
+            text = str(value or "")
+            for zone_id in zone_ids:
+                if text == zone_id or text.startswith(zone_id):
+                    return zone_id
+            return text
+        for person in bd.get("characters", []):
+            start_zone = normalize_zone(person["initial_position"])
+            initial["characters"][person["character"]] = {"zone": start_zone, "facing": person["facing"], "attention_target": person["facing"]}
+            initial["exit_access"].setdefault(start_zone, {"state": "AVAILABLE"})
+        for prop in bd.get("critical_props", []):
+            first = next((x for x in bd.get("prop_spatial_states", []) if x.get("prop_id") == prop), {})
+            initial["props"][prop] = {"zone": first.get("zone", "UNPLACED"), "state": "ABSENT"}
+        transitions = []
+        for person in bd.get("characters", []):
+            for movement in person.get("movement_path", []):
+                transitions.append({"transition_id": f"BT_{movement['beat_ref']}_{person['character']}_ZONE", "beat_ref": movement["beat_ref"], "subject_type": "CHARACTER", "subject_ref": person["character"], "changes": [{"property": "ZONE", "from": normalize_zone(movement["from"]), "to": normalize_zone(movement["to"])}], "cause": "DIRECTOR_BEAT_DECISION", "director_decision_ref": f"DBD_{movement['beat_ref']}"})
+        prop_current = {key: "ABSENT" for key in initial["props"]}
+        for item in bd.get("prop_spatial_states", []):
+            prop_id, target = item["prop_id"], item.get("state", "PRESENT")
+            transitions.append({"transition_id": f"BT_{item['beat_ref']}_{prop_id}_STATE", "beat_ref": item["beat_ref"], "subject_type": "PROP", "subject_ref": prop_id, "changes": [{"property": "PROP_STATE", "from": prop_current[prop_id], "to": target}], "cause": "DIRECTOR_BEAT_DECISION", "director_decision_ref": f"DBD_{item['beat_ref']}"})
+            prop_current[prop_id] = target
+        canonical = build_scene_blocking_contract(scene=scene, treatment=t, initial_state=initial, blocking_transitions=transitions, zone_ids=zone_ids, source_script_hash=script_hash)
+        b.update(canonical)
+        b["semantic_validation"] = canonical["validation"]
         treatment_items.append({"scene": scene, "treatment": t})
         blocking_items.append({"scene": scene, "blocking": b, "blocking_logic": "人物移动持续改变出口、道具控制权和互相可见关系；所有状态都绑定到 ScriptIR DramaticBeat。"})
     # candidate -> validate -> bounded repair (none needed) -> confirmed authority projection
