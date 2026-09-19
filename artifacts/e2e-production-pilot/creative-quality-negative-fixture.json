@@ -1,0 +1,238 @@
+{
+  "fixture_kind": "creative-quality-negative-fixture",
+  "note": "保留旧版《红伞倒影》16镜版本的问题特征，用于验证剧本质量闸门能发现回归。Treatment/Blocking/ShotPlan 层信号在 Phase B/C 覆盖。",
+  "detection": {
+    "script_gate_status": "CREATIVE_QUALITY_BLOCKED",
+    "detected_script_issues": [
+      "CHARACTER_STATEMENT_CONTINUITY_CONFLICT",
+      "CRITICAL_BEAT_MISSING",
+      "SCENE_TRANSITION_UNRESOLVED"
+    ],
+    "leaked_camera_patterns": [
+      "主观视角",
+      "推近",
+      "特写",
+      "镜头"
+    ],
+    "leaked_internal_labels": [
+      "【视觉证明"
+    ],
+    "expected_negative_signals": [
+      "SCENE_TRANSITION_UNRESOLVED",
+      "CHARACTER_STATEMENT_CONTINUITY_CONFLICT",
+      "DIRECTOR_TREATMENT_PLACEHOLDER",
+      "BLOCKING_NOT_MATERIALIZED",
+      "SHOT_COVERAGE_INCOMPLETE",
+      "NON_ATOMIC_SHOT",
+      "SHOT_RUNTIME_MISMATCH",
+      "CAMERA_MOVEMENT_SEMANTIC_CONFLICT"
+    ]
+  },
+  "payload": {
+    "schema_version": "script_ir_v1",
+    "book_id": 990401,
+    "episode": 1,
+    "fact_snapshot_id": "",
+    "title": "红伞倒影（负面样例）",
+    "episode_objective": "林晚在车站和家中遭遇红伞暗示。",
+    "characters": [
+      "林晚",
+      "顾沉",
+      "陆叔"
+    ],
+    "scenes": [
+      {
+        "scene_id": "E01_SC001",
+        "name": "车站",
+        "location_id": "",
+        "location_name": "车站",
+        "time_of_day": "日",
+        "weather": "",
+        "participants": [
+          "林晚",
+          "顾沉",
+          "陆叔"
+        ],
+        "beats": [
+          {
+            "beat_id": "SC01-B01",
+            "type": "ACTION",
+            "event": "镜头推近林晚的脸，主观视角特写。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": "",
+            "beat_type": "ACTION",
+            "objective": "",
+            "characters": [],
+            "information_delta": "",
+            "emotional_delta": "",
+            "requires_reaction": false,
+            "importance": "normal"
+          },
+          {
+            "beat_id": "SC01-B02",
+            "type": "ACTION",
+            "event": "【视觉证明1：划痕】林晚看向站台红伞。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": "",
+            "beat_type": "ACTION",
+            "objective": "",
+            "characters": [],
+            "information_delta": "",
+            "emotional_delta": "",
+            "requires_reaction": false,
+            "importance": "normal"
+          },
+          {
+            "beat_id": "SC01-B03",
+            "type": "ACTION",
+            "event": "顾沉说：那把伞挺眼熟。镜头特写伞骨。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": "",
+            "beat_type": "ACTION",
+            "objective": "",
+            "characters": [],
+            "information_delta": "",
+            "emotional_delta": "",
+            "requires_reaction": false,
+            "importance": "normal"
+          }
+        ],
+        "dramatic_beats": [
+          {
+            "beat_id": "SC01-B01",
+            "type": "ACTION",
+            "event": "镜头推近林晚的脸，主观视角特写。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": "",
+            "beat_type": "ACTION",
+            "objective": "",
+            "characters": [],
+            "information_delta": "",
+            "emotional_delta": "",
+            "requires_reaction": false,
+            "importance": "normal"
+          },
+          {
+            "beat_id": "SC01-B02",
+            "type": "ACTION",
+            "event": "【视觉证明1：划痕】林晚看向站台红伞。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": "",
+            "beat_type": "ACTION",
+            "objective": "",
+            "characters": [],
+            "information_delta": "",
+            "emotional_delta": "",
+            "requires_reaction": false,
+            "importance": "normal"
+          },
+          {
+            "beat_id": "SC01-B03",
+            "type": "ACTION",
+            "event": "顾沉说：那把伞挺眼熟。镜头特写伞骨。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": "",
+            "beat_type": "ACTION",
+            "objective": "",
+            "characters": [],
+            "information_delta": "",
+            "emotional_delta": "",
+            "requires_reaction": false,
+            "importance": "normal"
+          }
+        ],
+        "actions": [
+          "镜头推近",
+          "镜头特写",
+          "镜头顺着她的视线"
+        ],
+        "dialogues": [
+          {
+            "dialogue_id": "D001",
+            "speaker": "顾沉",
+            "parenthetical": "",
+            "text": "我们一直在一起，你忘了？",
+            "assertion_mode": "OBJECTIVE_FACT",
+            "contradicts_fact_refs": [
+              "SC01-B03"
+            ],
+            "audience_should_notice": false,
+            "character_knowledge_ref": ""
+          }
+        ],
+        "state_in": {},
+        "state_out": {},
+        "required_visual_proofs": [],
+        "blocking_hints": [],
+        "character_blocking": [],
+        "props": [],
+        "asset_mentions": []
+      },
+      {
+        "scene_id": "E01_SC002",
+        "name": "公寓",
+        "location_id": "",
+        "location_name": "公寓",
+        "time_of_day": "夜",
+        "weather": "",
+        "participants": [
+          "林晚",
+          "陆叔"
+        ],
+        "beats": [
+          {
+            "beat_id": "SC02-B01",
+            "type": "ACTION",
+            "event": "陆叔说一直在一起。镜头切换。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": "",
+            "beat_type": "ACTION",
+            "objective": "",
+            "characters": [],
+            "information_delta": "",
+            "emotional_delta": "",
+            "requires_reaction": false,
+            "importance": "normal"
+          }
+        ],
+        "dramatic_beats": [
+          {
+            "beat_id": "SC02-B01",
+            "type": "ACTION",
+            "event": "陆叔说一直在一起。镜头切换。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": "",
+            "beat_type": "ACTION",
+            "objective": "",
+            "characters": [],
+            "information_delta": "",
+            "emotional_delta": "",
+            "requires_reaction": false,
+            "importance": "normal"
+          }
+        ],
+        "actions": [
+          "切到公寓"
+        ],
+        "dialogues": [],
+        "state_in": {},
+        "state_out": {},
+        "required_visual_proofs": [],
+        "blocking_hints": [],
+        "character_blocking": [],
+        "props": [],
+        "asset_mentions": []
+      }
+    ],
+    "scene_transitions": [],
+    "payload_hash": "a1e4693fbd8fca37c1e7adf27a5389657c3a0af884315e4d3903e0a7e1dcb40d"
+  }
+}

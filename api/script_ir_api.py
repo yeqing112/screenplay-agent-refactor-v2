@@ -11,7 +11,8 @@ from pydantic import AliasChoices, BaseModel, Field
 
 from core.script_ir import build_script_ir, legacy_markdown_to_script_ir, script_ir_hash, validate_script_ir
 from core.script_ir_authority import ScriptIRAuthorityError, activate_script_ir
-from core.script_renderer import render_script_markdown
+from core.script_renderer import render_reader_script, render_script_markdown, render_technical_script_view
+from core.script_creative_quality import run_script_creative_quality_gate
 from models import FactSnapshot, Script, ScriptIRVersion, Session
 
 router = APIRouter(prefix="/api/books", tags=["script-ir"])
@@ -27,6 +28,12 @@ class ScriptIRConfirmRequest(BaseModel):
     version_id: int = Field(validation_alias=AliasChoices("version_id", "versionId"))
     confirmed: bool = False
     payload: dict[str, Any] | None = None
+    enforce_creative_quality: bool = Field(default=False, validation_alias=AliasChoices("enforce_creative_quality", "enforceCreativeQuality"))
+
+
+class ScriptIRCreativeQualityRequest(BaseModel):
+    version_id: int | None = Field(default=None, validation_alias=AliasChoices("version_id", "versionId"))
+    payload: dict[str, Any] | None = Field(default=None)
 
 
 class ScriptIRActivateRequest(BaseModel):
@@ -193,12 +200,61 @@ def confirm_script_ir(book_id: int, episode: int, req: ScriptIRConfirmRequest) -
         report = validate_script_ir(candidate)
         if report["status"] != "qualified":
             raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_NOT_QUALIFIED", "validation": report})
+        # Phase A: optional Creative Quality Gate.  When enforced, a hard
+        # error blocks promotion to qualified.  Soft diagnostics never block.
+        if req.enforce_creative_quality:
+            creative = run_script_creative_quality_gate(candidate)
+            if not creative["qualified"]:
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "code": "SCRIPT_CREATIVE_QUALITY_BLOCKED",
+                        "message": "剧本未通过专业质量闸门（Phase A）。",
+                        "creative_quality": {
+                            "status": creative["status"],
+                            "hard_errors": creative["hard_errors"],
+                            "soft_diagnostics": creative["soft_diagnostics"],
+                        },
+                    },
+                )
         previous = session.query(ScriptIRVersion).filter_by(book_id=book_id, episode=episode, status="qualified").order_by(ScriptIRVersion.revision.desc(), ScriptIRVersion.id.desc()).first()
         if previous:
             previous.status = "superseded"; previous.updated_at = datetime.now()
         draft.status = "qualified"; draft.payload_json = json.dumps(candidate, ensure_ascii=False); draft.payload_hash = script_ir_hash(candidate); draft.validation_status = "qualified"; draft.validation_report = json.dumps(report, ensure_ascii=False); draft.updated_at = datetime.now(); session.commit(); session.refresh(draft)
         script.current_script_ir_version_id = draft.id; script.quality_status = "qualified"; script.workflow_profile = "production"; script.production_status = "blocked"; session.commit()
         return {"confirmed": True, "mutated": True, "script_ir": _payload(draft), "rendered_markdown": render_script_markdown(candidate), "production_status": "blocked"}
+
+
+@router.post("/{book_id}/episodes/{episode}/script-ir/creative-quality")
+def script_ir_creative_quality(book_id: int, episode: int, req: ScriptIRCreativeQualityRequest) -> dict[str, Any]:
+    """Run the read-only Script Creative Quality Gate on a candidate.
+
+    Never writes a version or moves a pointer.  The payload is either supplied
+    directly or resolved from an existing draft.
+    """
+    with Session() as session:
+        if req.payload is not None:
+            candidate = build_script_ir(req.payload, book_id=book_id, episode=episode)
+        else:
+            if req.version_id is None:
+                raise HTTPException(status_code=409, detail="Provide version_id or payload to evaluate.")
+            draft = session.query(ScriptIRVersion).filter_by(id=req.version_id, book_id=book_id, episode=episode).first()
+            if not draft:
+                raise HTTPException(status_code=404, detail="ScriptIR version not found.")
+            try:
+                candidate = json.loads(draft.payload_json or "{}")
+            except (TypeError, ValueError, json.JSONDecodeError):
+                raise HTTPException(status_code=409, detail="ScriptIR payload is invalid.")
+        creative = run_script_creative_quality_gate(candidate)
+        return {
+            "book_id": book_id,
+            "episode": episode,
+            "mode": "readonly_creative_quality",
+            "mutated": False,
+            "creative_quality": creative,
+            "reader_script_preview": render_reader_script(candidate)[:600],
+            "technical_view_available": True,
+        }
 
 
 @router.post("/{book_id}/episodes/{episode}/script-ir/activate")

@@ -1,11 +1,23 @@
 {
   "schema_version": 1,
-  "active_book_ids": [990400],
-  "retired_book_ids": [990306],
+  "active_book_ids": [
+    990400,
+    990401
+  ],
+  "retired_book_ids": [
+    990306
+  ],
   "retired": {
     "990306": {
       "reason": "旧测试项目缺少剧本来源与结构化镜头证据，不作为生产验收样本",
       "retired_at": "2026-09-12"
+    }
+  },
+  "sample_classes": {
+    "990401": {
+      "class": "E2E_INTEGRATION_SAMPLE",
+      "note": "证明 Authority Pipeline 能跑通，但不证明 Creative Quality 达到生产级；Phase A-D 完成并重验收后才可升级为 PRODUCTION_QUALITY_GOLDEN_SAMPLE。",
+      "negative_fixture": true
     }
   }
 }

@@ -21,8 +21,49 @@ def _text(value: Any) -> str:
     return str(value or "").strip()
 
 
+def _normalize_dramatic_beat(raw: Any, scene_id: str, beat_index: int) -> dict[str, Any]:
+    """Normalize a raw beat into a DramaticBeat.
+
+    Keeps the legacy ``type``/``event``/``dramatic_function`` fields so old
+    consumers continue to work, and adds the Phase A dramatic structure.
+    """
+    beat_id = _text(raw.get("beat_id") or raw.get("id")) or f"{scene_id}_B{beat_index:02d}"
+    raw_type = _text(raw.get("type"))
+    event = _text(raw.get("event") or raw.get("description") or raw.get("content"))
+    return {
+        "beat_id": beat_id,
+        "type": raw_type,
+        "event": event,
+        "dramatic_function": _text(raw.get("dramatic_function")),
+        "information_change": _text(raw.get("information_change")),
+        "emotion_change": _text(raw.get("emotion_change")),
+        # Phase A: dramatic beat contract
+        "beat_type": _text(raw.get("beat_type") or raw.get("dramatic_type") or raw_type),
+        "objective": _text(raw.get("objective")),
+        "characters": raw.get("characters") if isinstance(raw.get("characters"), list) else [],
+        "information_delta": _text(raw.get("information_delta") or raw.get("information_change")),
+        "emotional_delta": _text(raw.get("emotional_delta") or raw.get("emotion_change")),
+        "requires_reaction": bool(raw.get("requires_reaction")) if raw.get("requires_reaction") is not None else False,
+        "importance": _text(raw.get("importance")) or ("critical" if raw.get("requires_reaction") else "normal"),
+    }
+
+
+def _normalize_dialogue(raw: Any, scene_id: str, dialogue_index: int) -> dict[str, Any]:
+    """Normalize a raw dialogue with Character Knowledge / Deception semantics."""
+    return {
+        "dialogue_id": _text(raw.get("dialogue_id") or raw.get("id")) or f"{scene_id}_D{dialogue_index:03d}",
+        "speaker": _text(raw.get("speaker")),
+        "parenthetical": _text(raw.get("parenthetical") or raw.get("direction")),
+        "text": _text(raw.get("text") or raw.get("content")),
+        "assertion_mode": _text(raw.get("assertion_mode")) or "OBJECTIVE_FACT",
+        "contradicts_fact_refs": raw.get("contradicts_fact_refs") if isinstance(raw.get("contradicts_fact_refs"), list) else [],
+        "audience_should_notice": bool(raw.get("audience_should_notice")) if raw.get("audience_should_notice") is not None else False,
+        "character_knowledge_ref": _text(raw.get("character_knowledge_ref")),
+    }
+
+
 def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_id: str = "", source_outline_revision: str = "") -> dict[str, Any]:
-    """Normalize a structured script payload into ScriptIR v1."""
+    """Normalize a structured script payload into ScriptIR v1 (Phase A)."""
     source = payload if isinstance(payload, dict) else {}
     raw_scenes = source.get("scenes") if isinstance(source.get("scenes"), list) else []
     scenes: list[dict[str, Any]] = []
@@ -35,16 +76,11 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
         beats = []
         for beat_index, raw_beat in enumerate(raw_beats, start=1):
             if isinstance(raw_beat, dict):
-                beats.append({
-                    "beat_id": _text(raw_beat.get("beat_id") or raw_beat.get("id")) or f"{scene_id}_B{beat_index:02d}",
-                    "type": _text(raw_beat.get("type")),
-                    "event": _text(raw_beat.get("event") or raw_beat.get("description") or raw_beat.get("content")),
-                    "dramatic_function": _text(raw_beat.get("dramatic_function")),
-                    "information_change": _text(raw_beat.get("information_change")),
-                    "emotion_change": _text(raw_beat.get("emotion_change")),
-                })
+                beats.append(_normalize_dramatic_beat(raw_beat, scene_id, beat_index))
             elif _text(raw_beat):
-                beats.append({"beat_id": f"{scene_id}_B{beat_index:02d}", "type": "action", "event": _text(raw_beat), "dramatic_function": "", "information_change": "", "emotion_change": ""})
+                beats.append(_normalize_dramatic_beat({"type": "action", "event": _text(raw_beat)}, scene_id, beat_index))
+        raw_dialogues = raw_scene.get("dialogues") if isinstance(raw_scene.get("dialogues"), list) else []
+        dialogues = [_normalize_dialogue(raw, scene_id, d_index) for d_index, raw in enumerate(raw_dialogues, start=1) if isinstance(raw, dict)]
         scenes.append({
             "scene_id": scene_id,
             "name": name,
@@ -54,8 +90,9 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "weather": _text(raw_scene.get("weather")),
             "participants": raw_scene.get("participants") if isinstance(raw_scene.get("participants"), list) else [],
             "beats": beats,
+            "dramatic_beats": beats,
             "actions": raw_scene.get("actions") if isinstance(raw_scene.get("actions"), list) else [],
-            "dialogues": raw_scene.get("dialogues") if isinstance(raw_scene.get("dialogues"), list) else [],
+            "dialogues": dialogues,
             "state_in": raw_scene.get("state_in") if isinstance(raw_scene.get("state_in"), dict) else {},
             "state_out": raw_scene.get("state_out") if isinstance(raw_scene.get("state_out"), dict) else {},
             "required_visual_proofs": raw_scene.get("required_visual_proofs") if isinstance(raw_scene.get("required_visual_proofs"), list) else [],
@@ -69,6 +106,25 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "props": raw_scene.get("props") if isinstance(raw_scene.get("props"), list) else [],
             "asset_mentions": raw_scene.get("asset_mentions") if isinstance(raw_scene.get("asset_mentions"), list) else [],
         })
+    # Phase A: SceneTransitionContract normalization.
+    raw_transitions = source.get("scene_transitions") if isinstance(source.get("scene_transitions"), list) else []
+    scene_transitions = []
+    for transition_index, raw_transition in enumerate(raw_transitions, start=1):
+        if not isinstance(raw_transition, dict):
+            continue
+        scene_transitions.append({
+            "transition_id": _text(raw_transition.get("transition_id") or raw_transition.get("id")) or f"T{transition_index:03d}",
+            "from_scene_id": _text(raw_transition.get("from_scene_id")),
+            "to_scene_id": _text(raw_transition.get("to_scene_id")),
+            "time_relation": _text(raw_transition.get("time_relation")) or "later",
+            "location_change": bool(raw_transition.get("location_change")) if raw_transition.get("location_change") is not None else False,
+            "exit_state": raw_transition.get("exit_state") if isinstance(raw_transition.get("exit_state"), dict) else {},
+            "entry_state": raw_transition.get("entry_state") if isinstance(raw_transition.get("entry_state"), dict) else {},
+            "transition_event": _text(raw_transition.get("transition_event")),
+            "causal_reason": _text(raw_transition.get("causal_reason")),
+            "travel_or_elapsed_time": _text(raw_transition.get("travel_or_elapsed_time")),
+            "status": _text(raw_transition.get("status")) or "RESOLVED",
+        })
     result = {
         "schema_version": SCHEMA_VERSION,
         "book_id": int(book_id),
@@ -78,6 +134,7 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
         "episode_objective": _text(source.get("episode_objective")),
         "characters": source.get("characters") if isinstance(source.get("characters"), list) else [],
         "scenes": scenes,
+        "scene_transitions": scene_transitions,
     }
     result["payload_hash"] = script_ir_hash(result)
     return result
@@ -127,6 +184,27 @@ def validate_script_ir(payload: Any) -> dict[str, Any]:
         beats = scene.get("beats")
         if not isinstance(beats, list) or not beats:
             warnings.append({"code": "SCENE_BEATS_EMPTY", "message": f"{scene_id or name} has no beats."})
+    transitions = payload.get("scene_transitions")
+    if not isinstance(transitions, list) or not transitions:
+        warnings.append({"code": "SCENE_TRANSITIONS_EMPTY", "message": "ScriptIR has no SceneTransitionContract records."})
+    else:
+        seen_transition_keys: set[tuple[str, str]] = set()
+        for transition in transitions:
+            if not isinstance(transition, dict):
+                errors.append({"code": "SCENE_TRANSITION_INVALID", "message": "Each SceneTransitionContract must be an object."})
+                continue
+            from_id = _text(transition.get("from_scene_id"))
+            to_id = _text(transition.get("to_scene_id"))
+            if not from_id or not to_id:
+                errors.append({"code": "SCENE_TRANSITION_INVALID", "message": "SceneTransitionContract requires from_scene_id and to_scene_id."})
+            key = (from_id, to_id)
+            if key in seen_transition_keys:
+                errors.append({"code": "SCENE_TRANSITION_DUPLICATE", "message": f"Duplicate transition {from_id} → {to_id}."})
+            seen_transition_keys.add(key)
+            if not _text(transition.get("causal_reason")):
+                errors.append({"code": "SCENE_TRANSITION_CAUSAL_REASON_REQUIRED", "message": f"Transition {from_id} → {to_id} requires causal_reason."})
+            if not _text(transition.get("transition_event")):
+                errors.append({"code": "SCENE_TRANSITION_EVENT_REQUIRED", "message": f"Transition {from_id} → {to_id} requires transition_event."})
     return {"status": "qualified" if not errors else "needs_review", "errors": errors, "warnings": warnings}
 
 
