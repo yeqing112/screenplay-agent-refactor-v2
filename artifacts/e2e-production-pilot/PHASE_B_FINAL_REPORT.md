@@ -4,7 +4,7 @@
 - `3ebaee2`
 
 ## 2. Final commit
-- `0240b50`
+- `HEAD` (the commit containing this report)
 
 ## 3. Branch
 - `codex/visual-authoring-provider-canary-reconcile`
