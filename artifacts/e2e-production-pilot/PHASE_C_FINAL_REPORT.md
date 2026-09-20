@@ -194,11 +194,12 @@
 
 ## 21. Working tree and delivery
 
-- Final commit: `5a6c79d` (report generation commit).
+- Final commit: `HEAD` (verified against the remote branch at delivery; exact SHA is reported with the pushed commit).
 - Branch: `codex/visual-authoring-provider-canary-reconcile`.
 - Final report, JSON, Markdown, trace, fixture and regression tests are committed and pushed.
 
 ## Completion token
 
 - `PHASE_C_FINAL_ACCEPTANCE_EVIDENCE_AND_AUTHORING_PROVENANCE_CLOSURE_READY_FOR_REVIEW`
+
 
