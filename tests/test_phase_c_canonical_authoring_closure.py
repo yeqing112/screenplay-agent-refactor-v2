@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from scripts.build_phase_c_authoring_fixture import GROUPS, build_scene
 from api.shot_plan_api import _confirm_phase_c_provenance
 from core.phase_c_shot_plan import build_phase_c_contract, build_shot_requirements, compile_shot_continuity, compile_shot_coverage, validate_shot_design
 from core.shot_plan_authority import shot_plan_payload_from_row, shot_plan_payload_hash
@@ -188,3 +189,53 @@ def test_pilot_gaslighting_uses_upstream_reactions_and_explicit_information_refs
     assert doubt["subjects"] == ["林晚"]
     assert doubt["reaction_contract_refs"] == ["RC_SC02-B04_林晚"]
     assert doubt["information_visibility"] == "AUDIENCE_OBSERVES_CHARACTER_DOUBT"
+
+
+def test_human_input_fixture_declares_all_canonical_creative_fields_and_no_builder_creative_fields():
+    audit = json.loads((ART / "phase_c_authoring_provenance_audit.json").read_text(encoding="utf-8"))
+    assert audit["source"] == "HUMAN_INPUT_FIXTURE"
+    assert audit["builder_generated_creative_fields"] == []
+    for scene_rows in GROUPS.values():
+        for authored in scene_rows:
+            assert authored["shot_purpose"]
+            assert authored["subjects"]
+            assert authored["information_visibility"]
+            camera = authored["camera_state"]
+            assert all(camera.get(field) for field in ("framing_class", "orientation", "support", "movement"))
+            if camera["movement"] != "NONE":
+                assert all(camera.get(field) for field in ("movement_trigger", "movement_target", "movement_end_condition"))
+            axis = authored["axis_contract"]
+            assert all(field in axis for field in ("axis_policy", "screen_side_assignments", "look_direction"))
+            temporal = authored["temporal_intent"]
+            assert temporal.get("duration_mode") and temporal.get("cut_trigger")
+            assert "duration_hint_seconds" in authored
+
+
+def test_missing_authored_camera_orientation_fails_fixture_build():
+    treatments, blockings, _ = _pilot_docs()
+    scene_id = treatments[0]["scene_id"]
+    original = GROUPS[scene_id][0]["camera_state"].pop("orientation")
+    try:
+        with pytest.raises(ValueError, match=r"camera_state\.orientation"):
+            build_scene(treatments[0], blockings[0])
+    finally:
+        GROUPS[scene_id][0]["camera_state"]["orientation"] = original
+
+
+def test_missing_authored_axis_and_movement_fields_fail_closed():
+    treatments, blockings, proposals = _pilot_docs()
+    treatment, blocking, proposal = treatments[1], blockings[1], proposals[1]
+    required_axis = next(item for item in GROUPS[treatment["scene_id"]] if item["axis_contract"]["axis_applicability"] == "REQUIRED")
+    screen_sides = required_axis["axis_contract"].pop("screen_side_assignments")
+    try:
+        with pytest.raises(ValueError, match=r"axis_contract\.screen_side_assignments"):
+            build_scene(treatment, blocking)
+    finally:
+        required_axis["axis_contract"]["screen_side_assignments"] = screen_sides
+
+    broken = copy.deepcopy(proposal["shots"])
+    moving = next(item for item in broken if item["camera_state"]["movement"] != "NONE")
+    moving["camera_state"].pop("movement_trigger")
+    requirements = build_shot_requirements(treatment=treatment, blocking=blocking)
+    result = validate_shot_design(shots=broken, requirements=requirements, treatment=treatment, blocking=blocking, authoring_provenance=proposal["authoring_provenance"])
+    assert any(error["code"] == "SHOT_CAMERA_MOVEMENT_INCOMPLETE" for error in result["errors"])

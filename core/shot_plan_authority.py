@@ -348,14 +348,15 @@ def build_shot_plan_authority_envelope(*, plan: dict[str, Any], book_id: int, ep
     return envelope
 
 
-def mark_shot_plan_stale(session: Any, plan: Any, reasons: list[str]) -> None:
+def mark_shot_plan_stale(session: Any, plan: Any, reasons: list[str], *, remove_pointer: bool = True) -> None:
     from models import ShotPlanAuthority, ShotPlanPointer
     normalized = sorted({_text(item) for item in reasons if _text(item)})
     plan.status = "stale"; plan.production_status = "blocked"; plan.qualification_state = "STALE"; plan.stale_status = "STALE"; plan.stale_reasons = json.dumps(normalized, ensure_ascii=False); plan.updated_at = datetime.now()
     authority = session.query(ShotPlanAuthority).filter_by(shot_plan_id=plan.id).first()
     if authority:
         authority.qualification_state = "STALE"; authority.stale_status = "STALE"; authority.stale_reasons = json.dumps(normalized, ensure_ascii=False); authority.updated_at = datetime.now()
-    session.query(ShotPlanPointer).filter_by(shot_plan_id=plan.id).delete(synchronize_session=False)
+    if remove_pointer:
+        session.query(ShotPlanPointer).filter_by(shot_plan_id=plan.id).delete(synchronize_session=False)
 
 
 def _raise(code: str, message: str, **extra: Any) -> None:
@@ -430,7 +431,7 @@ def resolve_current_authoritative_shot_plan(session: Any, *, book_id: int, episo
         mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_TAMPERED"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_TAMPERED", "Phase C contract lineage is invalid.")
     phase_validation = validate_shot_design(shots=plan["shots"], requirements=phase_c_contract, treatment=treatment_payload_from_row(treatment), blocking=blocking_payload_from_row(blocking), authoring_provenance=phase_c_contract.get("authoring_provenance"))
     if not phase_validation.get("valid"):
-        mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_INVALID"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_INVALID", "Current Phase C contract is no longer valid.", errors=phase_validation.get("errors", []))
+        mark_shot_plan_stale(session, row, ["SHOT_PLAN_PHASE_C_INVALID"], remove_pointer=False); session.commit(); _raise("SHOT_PLAN_PHASE_C_INVALID", "Current Phase C contract is no longer valid.", errors=phase_validation.get("errors", []))
     script = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
     ir = session.query(ScriptIRVersion).filter_by(id=getattr(script, "current_script_ir_version_id", None), book_id=book_id, episode=episode).first() if script else None
     script_meta = envelope.get("script_ir") if isinstance(envelope.get("script_ir"), dict) else {}
@@ -439,7 +440,7 @@ def resolve_current_authoritative_shot_plan(session: Any, *, book_id: int, episo
     continuity = phase_validation.get("continuity") if isinstance(phase_validation.get("continuity"), dict) else {"valid": False, "errors": [{"code": "SHOT_CONTINUITY_CONTRACT_INVALID"}]}
     executability = preflight_shot_plan(plan["shots"])
     if not continuity.get("valid"):
-        mark_shot_plan_stale(session, row, ["SHOT_CONTINUITY_CONTRACT_INVALID"]); session.commit(); _raise("SHOT_PLAN_PHASE_C_INVALID", "Current ShotPlan continuity is no longer valid.", errors=continuity.get("errors", []))
+        mark_shot_plan_stale(session, row, ["SHOT_CONTINUITY_CONTRACT_INVALID"], remove_pointer=False); session.commit(); _raise("SHOT_PLAN_PHASE_C_INVALID", "Current ShotPlan continuity is no longer valid.", errors=continuity.get("errors", []))
     if executability.get("status") == "blocked":
         mark_shot_plan_stale(session, row, ["SHOT_EXECUTABILITY_CHANGED"]); session.commit(); _raise("SHOT_EXECUTABILITY_CHANGED", "Current ShotPlan executability is no longer valid.")
     return row, envelope

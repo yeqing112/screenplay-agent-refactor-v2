@@ -1,0 +1,39 @@
+{
+  "schema_version": "phase_c_authoring_provenance_audit_v1",
+  "source": "HUMAN_INPUT_FIXTURE",
+  "canonical_creative_fields": [
+    "shot_purpose",
+    "subjects",
+    "camera_state.framing_class",
+    "camera_state.orientation",
+    "camera_state.support",
+    "camera_state.movement",
+    "camera_state.movement_trigger",
+    "camera_state.movement_target",
+    "camera_state.movement_end_condition",
+    "axis_contract.axis_policy",
+    "axis_contract.screen_side_assignments",
+    "axis_contract.look_direction",
+    "temporal_intent.duration_mode",
+    "temporal_intent.cut_trigger",
+    "duration_hint_seconds",
+    "information_visibility"
+  ],
+  "deterministic_binding_fields": [
+    "plan_shot_id",
+    "scene_id",
+    "beat_id",
+    "director_decision_refs",
+    "requirement_refs",
+    "blocking_state_refs",
+    "prop_refs",
+    "participants",
+    "asset_bindings"
+  ],
+  "builder_generated_creative_fields": [],
+  "proposal_origin": "HUMAN_INPUT",
+  "provider": {
+    "called": false,
+    "calls": 0
+  }
+}

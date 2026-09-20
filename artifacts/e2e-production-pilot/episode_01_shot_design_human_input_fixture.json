@@ -196,12 +196,12 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "REFRAME",
-            "subject_binding": [
-              "林晚"
-            ],
             "movement_trigger": "AUTHORED_BEAT_TRANSITION",
             "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
+            "subject_binding": [
+              "林晚"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "NOT_APPLICABLE",
@@ -617,13 +617,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "TRACK",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -917,13 +917,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "PAN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "林晚",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "林晚",
               "陆叔"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -1061,13 +1061,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "DOLLY_IN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "顾沉",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "顾沉",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "顾沉",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -2443,13 +2443,7 @@
         }
       },
       "authoring_provenance": {
-        "proposal_origin": "HUMAN_INPUT",
-        "confirmed": true,
-        "canonical_origin": "HUMAN_AUTHORED",
-        "provider": {
-          "called": false,
-          "calls": 0
-        }
+        "proposal_origin": "HUMAN_INPUT"
       }
     },
     {
@@ -2908,13 +2902,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "REFRAME",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -3176,13 +3170,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "DOLLY_IN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -3316,13 +3310,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "ARC",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "林晚",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "林晚",
               "陆叔"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -4286,13 +4280,7 @@
         }
       },
       "authoring_provenance": {
-        "proposal_origin": "HUMAN_INPUT",
-        "confirmed": true,
-        "canonical_origin": "HUMAN_AUTHORED",
-        "provider": {
-          "called": false,
-          "calls": 0
-        }
+        "proposal_origin": "HUMAN_INPUT"
       }
     }
   ]

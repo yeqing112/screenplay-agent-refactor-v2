@@ -195,12 +195,12 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "REFRAME",
-            "subject_binding": [
-              "林晚"
-            ],
             "movement_trigger": "AUTHORED_BEAT_TRANSITION",
             "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
+            "subject_binding": [
+              "林晚"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "NOT_APPLICABLE",
@@ -616,13 +616,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "TRACK",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -916,13 +916,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "PAN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "林晚",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "林晚",
               "陆叔"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -1060,13 +1060,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "DOLLY_IN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "顾沉",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "顾沉",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "顾沉",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -1342,12 +1342,12 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "REFRAME",
-            "subject_binding": [
-              "林晚"
-            ],
             "movement_trigger": "AUTHORED_BEAT_TRANSITION",
             "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
+            "subject_binding": [
+              "林晚"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "NOT_APPLICABLE",
@@ -1763,13 +1763,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "TRACK",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -2063,13 +2063,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "PAN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "林晚",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "林晚",
               "陆叔"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -2207,13 +2207,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "DOLLY_IN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "顾沉",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "顾沉",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "顾沉",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -3797,19 +3797,19 @@
         "source_lineage": {
           "script_ir": {
             "id": 1,
-            "authority_envelope_fingerprint": "7663e6d877a917ff375b85c55d2be095e37d63404ed7860e2e9b4e44c6f5b8b4"
+            "authority_envelope_fingerprint": "7a5bb17752e33de371a5f5c6f8cabe643b591e51af4eec33d8cd515228871a8b"
           },
           "treatment": {
             "id": 1,
             "revision": 1,
             "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
-            "authority_envelope_fingerprint": "c3bf3dfa621262b3c9b6f84dcd9ca45e9c6a3e9e5039dead95ce3fe00af411a4"
+            "authority_envelope_fingerprint": "ec26f20285e969af09d792d5d7ae9f327941dccf658e3f1529259b264acff46f"
           },
           "blocking": {
             "id": 2,
             "revision": 1,
-            "payload_hash": "6841489b9b78e64490025e7e61dcc0af9d834c515d402239d6fc28d4ab1912a7",
-            "authority_envelope_fingerprint": "34b28a6c23b09c9a92aab84a6e99cd76c7777f5ed1d56bd0c41880f657732744"
+            "payload_hash": "a0a96f832e17c44a58dba16dd5e51aba630ef6be6de492b5f19bd74dd317009f",
+            "authority_envelope_fingerprint": "7af7fea7128d5cf354ae149abe8e8446dc60977a6f278c52de58bf8dcc3860b6"
           }
         },
         "authoring_provenance": {
@@ -3830,14 +3830,14 @@
             "confirmed": true,
             "boundary": "production_confirm_service",
             "confirmation_type": "HUMAN_CONFIRMATION",
-            "confirmed_at": "2026-09-20T07:50:15.187715",
+            "confirmed_at": "2026-09-20T08:31:43.223627",
             "source_proposal_origin": "HUMAN_INPUT",
             "canonical_origin": "HUMAN_AUTHORED",
             "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
           },
           "canonical_origin": "HUMAN_AUTHORED"
         },
-        "payload_hash": "4f9c091e620ea17d6c63ab2e270393313f784382511392980681eac83c8dabda"
+        "payload_hash": "661d3bf221bce5a8342c0a50ef53a3c4817fdd86ccca9b89de943bbc78af1d28"
       },
       "phase_c_semantic_ready": true,
       "shot_design_status": "CANONICAL_CONFIRMED",
@@ -3845,7 +3845,7 @@
       "runtime_estimate": {
         "status": "AUTHORING_DERIVED_OR_PENDING"
       },
-      "payload_hash": "f98f13aeed79d21ae069313d8e1fc3a6ff10795a5df414d0734060a516d19fbb"
+      "payload_hash": "eef595cb973ac31ed8be316fc614728445f765697833b68015b59e4f794547fa"
     },
     {
       "contract_version": "shot_plan_phase_c_v1",
@@ -4304,13 +4304,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "REFRAME",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -4572,13 +4572,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "DOLLY_IN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -4712,13 +4712,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "ARC",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "林晚",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "林晚",
               "陆叔"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -5254,13 +5254,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "REFRAME",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -5522,13 +5522,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "DOLLY_IN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -5662,13 +5662,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "ARC",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "林晚",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "林晚",
               "陆叔"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -6844,19 +6844,19 @@
         "source_lineage": {
           "script_ir": {
             "id": 1,
-            "authority_envelope_fingerprint": "7663e6d877a917ff375b85c55d2be095e37d63404ed7860e2e9b4e44c6f5b8b4"
+            "authority_envelope_fingerprint": "7a5bb17752e33de371a5f5c6f8cabe643b591e51af4eec33d8cd515228871a8b"
           },
           "treatment": {
             "id": 2,
             "revision": 1,
             "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
-            "authority_envelope_fingerprint": "c62416bcd1388757b50e25fa6c9839aa6c65cd6ac234e90544cfd9e2f160494e"
+            "authority_envelope_fingerprint": "1e73707b1d90179bda3305cbb4b20580cc0f3f1665dab448f601326ed06f3987"
           },
           "blocking": {
             "id": 4,
             "revision": 1,
-            "payload_hash": "9858c92d00bbc11126abbf40ad0b31480f70b4bef12c3038e084359751c41865",
-            "authority_envelope_fingerprint": "5e3fd89c97efee64a16e799eba715143b2d5b556db94ba46ed8544cffdf288c2"
+            "payload_hash": "32b158dcb75ca0ba16dd9fa918a8b36340b2e2fe834312d74aa6c70da8cb654a",
+            "authority_envelope_fingerprint": "c29c0660b6d9d76feef2a411d1e9ba17cd1b7ddc7377da00d21b37ec84d50c08"
           }
         },
         "authoring_provenance": {
@@ -6877,14 +6877,14 @@
             "confirmed": true,
             "boundary": "production_confirm_service",
             "confirmation_type": "HUMAN_CONFIRMATION",
-            "confirmed_at": "2026-09-20T07:50:15.310409",
+            "confirmed_at": "2026-09-20T08:31:43.333393",
             "source_proposal_origin": "HUMAN_INPUT",
             "canonical_origin": "HUMAN_AUTHORED",
             "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
           },
           "canonical_origin": "HUMAN_AUTHORED"
         },
-        "payload_hash": "157b6b61c7a8885af5efa1cec356556121605ee44649622892459d478aa94e78"
+        "payload_hash": "1b448996e606ce3669fe494b813d0a3fbc21f84892b91a8a9ab93b96763cfeaf"
       },
       "phase_c_semantic_ready": true,
       "shot_design_status": "CANONICAL_CONFIRMED",
@@ -6892,7 +6892,7 @@
       "runtime_estimate": {
         "status": "AUTHORING_DERIVED_OR_PENDING"
       },
-      "payload_hash": "fca1befdd8cfe6d7b0eee6ca70f56bfbaaed5676261b9b53eba8538502019a4d"
+      "payload_hash": "5f4091a44e4959bfdf04dc1daa3e1915f639ddab48da01a8f1d93f57da263648"
     }
   ],
   "authority": [
@@ -6900,11 +6900,11 @@
       "scene_id": "E01_SC001",
       "row_id": 2,
       "revision": 1,
-      "payload_hash": "f98f13aeed79d21ae069313d8e1fc3a6ff10795a5df414d0734060a516d19fbb",
+      "payload_hash": "eef595cb973ac31ed8be316fc614728445f765697833b68015b59e4f794547fa",
       "authority_id": 1,
-      "authority_fingerprint": "2d9fedf48dd9e86122683e09018e6bb5f68d0b0f6161c869f2ae4f88dff7476e",
+      "authority_fingerprint": "4d13b0a60fb1a4bbfeb4ad1ec50b74a2e787973577a975b5413f361eae4d4044",
       "pointer_id": 1,
-      "pointer_fingerprint": "2d9fedf48dd9e86122683e09018e6bb5f68d0b0f6161c869f2ae4f88dff7476e",
+      "pointer_fingerprint": "4d13b0a60fb1a4bbfeb4ad1ec50b74a2e787973577a975b5413f361eae4d4044",
       "qualification_state": "PRODUCTION_QUALIFIED",
       "phase_c_semantic_ready": true,
       "shot_design_status": "CANONICAL_CONFIRMED",
@@ -7100,12 +7100,12 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "REFRAME",
-            "subject_binding": [
-              "林晚"
-            ],
             "movement_trigger": "AUTHORED_BEAT_TRANSITION",
             "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
+            "subject_binding": [
+              "林晚"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "NOT_APPLICABLE",
@@ -7521,13 +7521,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "TRACK",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -7821,13 +7821,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "PAN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "林晚",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "林晚",
               "陆叔"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -7965,13 +7965,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "DOLLY_IN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "顾沉",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "顾沉",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "顾沉",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -9555,19 +9555,19 @@
         "source_lineage": {
           "script_ir": {
             "id": 1,
-            "authority_envelope_fingerprint": "7663e6d877a917ff375b85c55d2be095e37d63404ed7860e2e9b4e44c6f5b8b4"
+            "authority_envelope_fingerprint": "7a5bb17752e33de371a5f5c6f8cabe643b591e51af4eec33d8cd515228871a8b"
           },
           "treatment": {
             "id": 1,
             "revision": 1,
             "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
-            "authority_envelope_fingerprint": "c3bf3dfa621262b3c9b6f84dcd9ca45e9c6a3e9e5039dead95ce3fe00af411a4"
+            "authority_envelope_fingerprint": "ec26f20285e969af09d792d5d7ae9f327941dccf658e3f1529259b264acff46f"
           },
           "blocking": {
             "id": 2,
             "revision": 1,
-            "payload_hash": "6841489b9b78e64490025e7e61dcc0af9d834c515d402239d6fc28d4ab1912a7",
-            "authority_envelope_fingerprint": "34b28a6c23b09c9a92aab84a6e99cd76c7777f5ed1d56bd0c41880f657732744"
+            "payload_hash": "a0a96f832e17c44a58dba16dd5e51aba630ef6be6de492b5f19bd74dd317009f",
+            "authority_envelope_fingerprint": "7af7fea7128d5cf354ae149abe8e8446dc60977a6f278c52de58bf8dcc3860b6"
           }
         },
         "authoring_provenance": {
@@ -9588,25 +9588,25 @@
             "confirmed": true,
             "boundary": "production_confirm_service",
             "confirmation_type": "HUMAN_CONFIRMATION",
-            "confirmed_at": "2026-09-20T07:50:15.187715",
+            "confirmed_at": "2026-09-20T08:31:43.223627",
             "source_proposal_origin": "HUMAN_INPUT",
             "canonical_origin": "HUMAN_AUTHORED",
             "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
           },
           "canonical_origin": "HUMAN_AUTHORED"
         },
-        "payload_hash": "4f9c091e620ea17d6c63ab2e270393313f784382511392980681eac83c8dabda"
+        "payload_hash": "661d3bf221bce5a8342c0a50ef53a3c4817fdd86ccca9b89de943bbc78af1d28"
       }
     },
     {
       "scene_id": "E01_SC002",
       "row_id": 4,
       "revision": 1,
-      "payload_hash": "fca1befdd8cfe6d7b0eee6ca70f56bfbaaed5676261b9b53eba8538502019a4d",
+      "payload_hash": "5f4091a44e4959bfdf04dc1daa3e1915f639ddab48da01a8f1d93f57da263648",
       "authority_id": 2,
-      "authority_fingerprint": "b61bcb2fe5c4ad9a08919e88df1b4ca4bdc595d008258a778055a6f235479b53",
+      "authority_fingerprint": "b8bd900bae898787b2c66391162e44c43d0a06fedea4f32482a9627a3dc4fa02",
       "pointer_id": 2,
-      "pointer_fingerprint": "b61bcb2fe5c4ad9a08919e88df1b4ca4bdc595d008258a778055a6f235479b53",
+      "pointer_fingerprint": "b8bd900bae898787b2c66391162e44c43d0a06fedea4f32482a9627a3dc4fa02",
       "qualification_state": "PRODUCTION_QUALIFIED",
       "phase_c_semantic_ready": true,
       "shot_design_status": "CANONICAL_CONFIRMED",
@@ -10067,13 +10067,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "REFRAME",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -10335,13 +10335,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "DOLLY_IN",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "陆叔",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "陆叔",
               "林晚"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "陆叔",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -10475,13 +10475,13 @@
             "orientation": "EYE_LEVEL",
             "support": "DOLLY",
             "movement": "ARC",
+            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+            "movement_target": "林晚",
+            "movement_end_condition": "BEAT_INFORMATION_LANDS",
             "subject_binding": [
               "林晚",
               "陆叔"
-            ],
-            "movement_trigger": "AUTHORED_BEAT_TRANSITION",
-            "movement_target": "林晚",
-            "movement_end_condition": "BEAT_INFORMATION_LANDS"
+            ]
           },
           "axis_contract": {
             "axis_applicability": "REQUIRED",
@@ -11657,19 +11657,19 @@
         "source_lineage": {
           "script_ir": {
             "id": 1,
-            "authority_envelope_fingerprint": "7663e6d877a917ff375b85c55d2be095e37d63404ed7860e2e9b4e44c6f5b8b4"
+            "authority_envelope_fingerprint": "7a5bb17752e33de371a5f5c6f8cabe643b591e51af4eec33d8cd515228871a8b"
           },
           "treatment": {
             "id": 2,
             "revision": 1,
             "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
-            "authority_envelope_fingerprint": "c62416bcd1388757b50e25fa6c9839aa6c65cd6ac234e90544cfd9e2f160494e"
+            "authority_envelope_fingerprint": "1e73707b1d90179bda3305cbb4b20580cc0f3f1665dab448f601326ed06f3987"
           },
           "blocking": {
             "id": 4,
             "revision": 1,
-            "payload_hash": "9858c92d00bbc11126abbf40ad0b31480f70b4bef12c3038e084359751c41865",
-            "authority_envelope_fingerprint": "5e3fd89c97efee64a16e799eba715143b2d5b556db94ba46ed8544cffdf288c2"
+            "payload_hash": "32b158dcb75ca0ba16dd9fa918a8b36340b2e2fe834312d74aa6c70da8cb654a",
+            "authority_envelope_fingerprint": "c29c0660b6d9d76feef2a411d1e9ba17cd1b7ddc7377da00d21b37ec84d50c08"
           }
         },
         "authoring_provenance": {
@@ -11690,14 +11690,14 @@
             "confirmed": true,
             "boundary": "production_confirm_service",
             "confirmation_type": "HUMAN_CONFIRMATION",
-            "confirmed_at": "2026-09-20T07:50:15.310409",
+            "confirmed_at": "2026-09-20T08:31:43.333393",
             "source_proposal_origin": "HUMAN_INPUT",
             "canonical_origin": "HUMAN_AUTHORED",
             "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
           },
           "canonical_origin": "HUMAN_AUTHORED"
         },
-        "payload_hash": "157b6b61c7a8885af5efa1cec356556121605ee44649622892459d478aa94e78"
+        "payload_hash": "1b448996e606ce3669fe494b813d0a3fbc21f84892b91a8a9ab93b96763cfeaf"
       }
     }
   ]
