@@ -152,26 +152,18 @@
 
 ## 14. Storyboard Production Handoff
 
-- Handoff schema: `storyboard_handoff_v1`; projection version: `storyboard_handoff_projection_v1`.
-- `ShotPlan.shots[]` remains the sole canonical creative authority. Legacy `purpose` and `camera` copies are ignored by the Production adapter.
-- Mapping: `shot_purpose → purpose`; `camera_state.framing_class/orientation/movement → camera.shot_size/angle/movement`; `duration_hint_seconds → duration`; `axis_contract + spatial_binding → continuity_contract`.
-- Camera speed has no Phase C canonical source and is optional/unspecified. `camera_side` and `screen_direction=maintain` are not generated.
-- Action beats are deterministic beat/actor/event references; no invented `0 → 3` second timeline is consumed.
-- Entry and exit states resolve from the first and last `Blocking Authority` state refs. Invalid refs fail closed.
-- Projection fingerprint is based on the canonical Phase C source fields plus projection version; repeated projection is byte-identical.
-- Scene 1: `8 canonical → 8 handoff → 8 materialized`; Scene 2: `7 canonical → 7 handoff → 7 materialized`.
-- Total: `15 → 15 → 15`; exact `plan_shot_id` order preserved; `creative_fallback_count=0`; `legacy_truth_reads=0`.
-- Production path proof: current Phase C Authority payload → `project_shot_design_to_storyboard_handoff()` → `materialize_storyboard_from_handoff(..., production=True)`.
-- Negative gates covered: missing purpose, missing camera state, missing duration, invalid Blocking state ref, tampered legacy camera/purpose, and failed handoff validation before writes.
+- `ShotPlan.shots[]` remains the sole canonical creative authority; the handoff schema is `storyboard_handoff_v1`.
+- Scene 1: `8 → 8 → 8` shots; Scene 2: `7 → 7 → 7` shots.
+- Production handoff validation: `production=True`; id order preserved=`True`; creative fallback count=`0`; legacy truth reads=`0`.
+- `shot_purpose`, `camera_state`, `duration_hint_seconds`, Blocking state refs and `axis_contract` are projected deterministically; camera speed, camera side, lighting and transition remain unspecified when no canonical source exists.
+- Action beats carry beat/actor/event refs and do not fabricate a 0→3 second internal timeline.
 
 ## 15. Production Legacy Fallback Shutdown
 
-- Production Storyboard materialization now has an explicit API gate requiring the current authoritative ShotPlan to expose `phase_c_semantic_ready=true`.
-- A legacy `PRODUCTION_QUALIFIED` ShotPlan with `phase_c_semantic_ready=false` remains readable and auditable but cannot enter new Storyboard Production materialization.
-- The Production API no longer imports or calls `materialize_storyboard_from_shot_plan(..., production=True)`; legacy materializer compatibility remains outside the Production API.
-- Real legacy Authority/Pointer request result: HTTP `409`, code `SHOT_PLAN_PHASE_C_NOT_READY`.
-- Rejection occurs before set reuse or writes: MaterializationSet unchanged, MaterializationPointer unchanged, StoryboardShot count unchanged, ShotPlan stale state unchanged, and ShotPlan Pointer unchanged.
-- The current Phase C Authority continues through `storyboard_handoff_v1` and Production materialization with the existing `8→8→8`, `7→7→7` cardinality proof.
+- Production materialization requires current `phase_c_semantic_ready=true`.
+- Legacy Production-qualified ShotPlans remain readable/auditable but cannot enter new Production materialization.
+- The Production API has no `materialize_storyboard_from_shot_plan(..., production=True)` fallback.
+- Real legacy Authority/Pointer attempt returns HTTP `409 SHOT_PLAN_PHASE_C_NOT_READY` with zero writes and unchanged ShotPlan state.
 
 ## 16. Verification
 
@@ -221,13 +213,10 @@
 
 ## 23. Working tree and delivery
 
-- Delivery implementation commit: `b7f0289453a66da07fa893400ee10b68e515b3ea`.
-- Report verification commit: this docs-only follow-up commit; the final remote SHA is reported in the delivery message.
+- Final commit: pending final commit SHA; this line is amended after commit and must equal remote HEAD.
 - Branch: `codex/visual-authoring-provider-canary-reconcile`.
 - Final report, JSON, Markdown, trace, fixture and regression tests are committed and pushed.
 
 ## Completion token
 
 - `PHASE_C_PRODUCTION_LEGACY_FALLBACK_SHUTDOWN_READY_FOR_REVIEW`
-
-

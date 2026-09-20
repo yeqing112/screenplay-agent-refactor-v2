@@ -11,7 +11,7 @@
       "id": 1,
       "revision": 1,
       "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-      "authority_envelope_fingerprint": "c4899366e2caa5e2256acbfe7d7d82b4b97b2c870f7834ed347906207df14523"
+      "authority_envelope_fingerprint": "e6dc4a40c039412ac5b6cb5679fc017debb8867e84ad00e888e7c2defadb0c80"
     },
     "fact_snapshot": {
       "id": 1,
@@ -24,9 +24,9 @@
         "revision": 1,
         "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
         "authority_id": 1,
-        "authority_fingerprint": "9bac5458e842a5c1a7ce1c895575d9f8ea3efff0f57fd7120dc6b7ad71a1f79f",
+        "authority_fingerprint": "5dc6f757608578749db2d9b3dfe1e29dfbb544493fafa6ba432c74548d8ec136",
         "pointer_id": 1,
-        "pointer_fingerprint": "9bac5458e842a5c1a7ce1c895575d9f8ea3efff0f57fd7120dc6b7ad71a1f79f",
+        "pointer_fingerprint": "5dc6f757608578749db2d9b3dfe1e29dfbb544493fafa6ba432c74548d8ec136",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_b_semantic_ready": true,
         "semantic_contract_ready": true,
@@ -52,7 +52,7 @@
           "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
           "confirmation_type": "HUMAN_CONFIRMATION",
           "confirmed": true,
-          "confirmed_at": "2026-09-20T13:18:57.489294",
+          "confirmed_at": "2026-09-21T00:47:16.373990",
           "source_proposal_origin": "HUMAN_INPUT"
         },
         "canonical_origin": "HUMAN_AUTHORED",
@@ -72,9 +72,9 @@
         "revision": 1,
         "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
         "authority_id": 2,
-        "authority_fingerprint": "fbd5dfe8baf49c58b396f3a223c5eac790a868b411efb0cc02dc5ae5cbac44da",
+        "authority_fingerprint": "d44fd56d87038f3989bbe9fb8ec0cb10891951e0fa3c1ff8405e451199ed518e",
         "pointer_id": 2,
-        "pointer_fingerprint": "fbd5dfe8baf49c58b396f3a223c5eac790a868b411efb0cc02dc5ae5cbac44da",
+        "pointer_fingerprint": "d44fd56d87038f3989bbe9fb8ec0cb10891951e0fa3c1ff8405e451199ed518e",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_b_semantic_ready": true,
         "semantic_contract_ready": true,
@@ -100,7 +100,7 @@
           "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
           "confirmation_type": "HUMAN_CONFIRMATION",
           "confirmed": true,
-          "confirmed_at": "2026-09-20T13:18:57.556460",
+          "confirmed_at": "2026-09-21T00:47:16.429286",
           "source_proposal_origin": "HUMAN_INPUT"
         },
         "canonical_origin": "HUMAN_AUTHORED",
@@ -118,25 +118,27 @@
     ],
     "blocking": [
       {
+        "scene_id": "E01_SC001",
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "b826c9b7710eb391f314dbdd4e5ff890754bff82803f7c48dd5df9647ce8e706",
+        "payload_hash": "bc2da1f550bb9c0e7d376f2819fd1bbe868a22aa74166f1efa222a06ed948023",
         "authority_id": 1,
-        "authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+        "authority_fingerprint": "30d03bb153eb6e96916a1049fbea412b04d2f6fc02db0cc96090b5c83b734136",
         "pointer_id": 1,
-        "pointer_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+        "pointer_fingerprint": "30d03bb153eb6e96916a1049fbea412b04d2f6fc02db0cc96090b5c83b734136",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
       },
       {
+        "scene_id": "E01_SC002",
         "row_id": 4,
         "revision": 1,
-        "payload_hash": "ecb4f929c57fbb3cb85d9bdae9716565d7aeea89d7ea0c6a5665aaed7ad28995",
+        "payload_hash": "a67900989cc05b08af6fee016d35abb882021e6734ab0c3dc40b84313b57660c",
         "authority_id": 2,
-        "authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+        "authority_fingerprint": "0395751f3f64539862533aa67b0875c5cb7cbe02c8367f1275603f875b66296e",
         "pointer_id": 2,
-        "pointer_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+        "pointer_fingerprint": "0395751f3f64539862533aa67b0875c5cb7cbe02c8367f1275603f875b66296e",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"
@@ -147,11 +149,11 @@
         "scene_id": "E01_SC001",
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "fb7087aa4e13396016b6cd98daa2213f605f38b5906ae2b04259c09f83b2b856",
+        "payload_hash": "bfd059e8114cf29a571595cc4f6ad8fd4e524fa7c2afa8f3e601ed822469a2a5",
         "authority_id": 1,
-        "authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
+        "authority_fingerprint": "b3f4b9abab0615f2b1f4becfefd1e52e8411b395791fbd79342ed95bafbd247a",
         "pointer_id": 1,
-        "pointer_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
+        "pointer_fingerprint": "b3f4b9abab0615f2b1f4becfefd1e52e8411b395791fbd79342ed95bafbd247a",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_c_semantic_ready": true,
         "shot_design_status": "CANONICAL_CONFIRMED",
@@ -2802,19 +2804,19 @@
           "source_lineage": {
             "script_ir": {
               "id": 1,
-              "authority_envelope_fingerprint": "c4899366e2caa5e2256acbfe7d7d82b4b97b2c870f7834ed347906207df14523"
+              "authority_envelope_fingerprint": "e6dc4a40c039412ac5b6cb5679fc017debb8867e84ad00e888e7c2defadb0c80"
             },
             "treatment": {
               "id": 1,
               "revision": 1,
               "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
-              "authority_envelope_fingerprint": "9bac5458e842a5c1a7ce1c895575d9f8ea3efff0f57fd7120dc6b7ad71a1f79f"
+              "authority_envelope_fingerprint": "5dc6f757608578749db2d9b3dfe1e29dfbb544493fafa6ba432c74548d8ec136"
             },
             "blocking": {
               "id": 2,
               "revision": 1,
-              "payload_hash": "b826c9b7710eb391f314dbdd4e5ff890754bff82803f7c48dd5df9647ce8e706",
-              "authority_envelope_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891"
+              "payload_hash": "bc2da1f550bb9c0e7d376f2819fd1bbe868a22aa74166f1efa222a06ed948023",
+              "authority_envelope_fingerprint": "30d03bb153eb6e96916a1049fbea412b04d2f6fc02db0cc96090b5c83b734136"
             }
           },
           "authoring_provenance": {
@@ -2835,25 +2837,25 @@
               "confirmed": true,
               "boundary": "production_confirm_service",
               "confirmation_type": "HUMAN_CONFIRMATION",
-              "confirmed_at": "2026-09-20T13:18:57.821757",
+              "confirmed_at": "2026-09-21T00:47:16.680832",
               "source_proposal_origin": "HUMAN_INPUT",
               "canonical_origin": "HUMAN_AUTHORED",
               "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
             },
             "canonical_origin": "HUMAN_AUTHORED"
           },
-          "payload_hash": "337d7278bb80c461a66d622cde47cce7084eb2de60168e44671b18b6cf3fdf51"
+          "payload_hash": "b5af9428e25507d2a9f949be6217e55007b44ce671002eeb4f4babba1fd34fb4"
         }
       },
       {
         "scene_id": "E01_SC002",
         "row_id": 4,
         "revision": 1,
-        "payload_hash": "95869e9ddc3bc49c5063affdac2e3bd0fa1197a849ba948b44e0fb32165f5c5b",
+        "payload_hash": "8ea766b84e00c310d7d3571c1dfcde71201dcf01388fd235a910f0a79b96f35a",
         "authority_id": 2,
-        "authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
+        "authority_fingerprint": "dc4ef3568f23b320d88c0107d8833a922ea4c482181404f68d2c0fc7436f217c",
         "pointer_id": 2,
-        "pointer_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
+        "pointer_fingerprint": "dc4ef3568f23b320d88c0107d8833a922ea4c482181404f68d2c0fc7436f217c",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_c_semantic_ready": true,
         "shot_design_status": "CANONICAL_CONFIRMED",
@@ -4904,19 +4906,19 @@
           "source_lineage": {
             "script_ir": {
               "id": 1,
-              "authority_envelope_fingerprint": "c4899366e2caa5e2256acbfe7d7d82b4b97b2c870f7834ed347906207df14523"
+              "authority_envelope_fingerprint": "e6dc4a40c039412ac5b6cb5679fc017debb8867e84ad00e888e7c2defadb0c80"
             },
             "treatment": {
               "id": 2,
               "revision": 1,
               "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
-              "authority_envelope_fingerprint": "fbd5dfe8baf49c58b396f3a223c5eac790a868b411efb0cc02dc5ae5cbac44da"
+              "authority_envelope_fingerprint": "d44fd56d87038f3989bbe9fb8ec0cb10891951e0fa3c1ff8405e451199ed518e"
             },
             "blocking": {
               "id": 4,
               "revision": 1,
-              "payload_hash": "ecb4f929c57fbb3cb85d9bdae9716565d7aeea89d7ea0c6a5665aaed7ad28995",
-              "authority_envelope_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527"
+              "payload_hash": "a67900989cc05b08af6fee016d35abb882021e6734ab0c3dc40b84313b57660c",
+              "authority_envelope_fingerprint": "0395751f3f64539862533aa67b0875c5cb7cbe02c8367f1275603f875b66296e"
             }
           },
           "authoring_provenance": {
@@ -4937,14 +4939,14 @@
               "confirmed": true,
               "boundary": "production_confirm_service",
               "confirmation_type": "HUMAN_CONFIRMATION",
-              "confirmed_at": "2026-09-20T13:18:57.970173",
+              "confirmed_at": "2026-09-21T00:47:16.797740",
               "source_proposal_origin": "HUMAN_INPUT",
               "canonical_origin": "HUMAN_AUTHORED",
               "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
             },
             "canonical_origin": "HUMAN_AUTHORED"
           },
-          "payload_hash": "5e1863ac1daef1afcd1cd503736ba9a5b6fe4de0bfc242297410ef100c07ba52"
+          "payload_hash": "64799ba00109a79a15e775321c4ae4b8062a519a38bc119efba3ce50307cc021"
         }
       }
     ]
@@ -4989,7 +4991,7 @@
       "shot_plan_row_id": 2,
       "shot_plan_authority_id": 1,
       "shot_plan_pointer_id": 1,
-      "payload_hash": "fb7087aa4e13396016b6cd98daa2213f605f38b5906ae2b04259c09f83b2b856",
+      "payload_hash": "bfd059e8114cf29a571595cc4f6ad8fd4e524fa7c2afa8f3e601ed822469a2a5",
       "phase_c_semantic_ready": true,
       "coverage_results": [
         {
@@ -6721,7 +6723,7 @@
       "shot_plan_row_id": 4,
       "shot_plan_authority_id": 2,
       "shot_plan_pointer_id": 2,
-      "payload_hash": "95869e9ddc3bc49c5063affdac2e3bd0fa1197a849ba948b44e0fb32165f5c5b",
+      "payload_hash": "8ea766b84e00c310d7d3571c1dfcde71201dcf01388fd235a910f0a79b96f35a",
       "phase_c_semantic_ready": true,
       "coverage_results": [
         {
@@ -8088,8 +8090,8 @@
     "projection_version": "storyboard_handoff_projection_v1",
     "source": "current Phase C canonical Authority + Phase B Blocking Authority",
     "projection_fingerprint": {
-      "E01_SC001": "7b92a816233248d7b8695cc47b772d500177fdb021341e8fa67ebdc13c54ea23",
-      "E01_SC002": "66db643f227d2f10577a271ec8389162c1355fba63ac4b75a3444e66ddcbe8ff"
+      "E01_SC001": "fe7666b2509ea2bd4513869bf165ef75db70b6f970d5b7041f8af7d36033177a",
+      "E01_SC002": "9deb15a31e9071e45d8a7fbef8344eca03ed633904b73065cfd344876e3f828e"
     },
     "scene_counts": [
       {
@@ -8112,22 +8114,5 @@
     },
     "creative_fallback_count": 0,
     "legacy_truth_reads": 0
-  },
-  "production_storyboard_gate": {
-    "requires_phase_c_semantic_ready": true,
-    "legacy_fallback": false,
-    "legacy_production_attempt": {
-      "status_code": 409,
-      "code": "SHOT_PLAN_PHASE_C_NOT_READY",
-      "materialization_set_unchanged": true,
-      "pointer_unchanged": true,
-      "storyboard_shot_count_unchanged": true,
-      "shot_plan_stale_unchanged": true,
-      "shot_plan_pointer_unchanged": true,
-      "authority_state": "PRODUCTION_QUALIFIED",
-      "phase_c_semantic_ready": false
-    },
-    "production_error_code": "SHOT_PLAN_PHASE_C_NOT_READY",
-    "zero_write": true
   }
 }

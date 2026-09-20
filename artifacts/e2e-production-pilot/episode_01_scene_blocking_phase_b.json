@@ -4981,25 +4981,27 @@
     "source": "database_resolver",
     "scenes": [
       {
+        "scene_id": "E01_SC001",
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "a0a96f832e17c44a58dba16dd5e51aba630ef6be6de492b5f19bd74dd317009f",
+        "payload_hash": "bc2da1f550bb9c0e7d376f2819fd1bbe868a22aa74166f1efa222a06ed948023",
         "authority_id": 1,
-        "authority_fingerprint": "7af7fea7128d5cf354ae149abe8e8446dc60977a6f278c52de58bf8dcc3860b6",
+        "authority_fingerprint": "30d03bb153eb6e96916a1049fbea412b04d2f6fc02db0cc96090b5c83b734136",
         "pointer_id": 1,
-        "pointer_fingerprint": "7af7fea7128d5cf354ae149abe8e8446dc60977a6f278c52de58bf8dcc3860b6",
+        "pointer_fingerprint": "30d03bb153eb6e96916a1049fbea412b04d2f6fc02db0cc96090b5c83b734136",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
       },
       {
+        "scene_id": "E01_SC002",
         "row_id": 4,
         "revision": 1,
-        "payload_hash": "32b158dcb75ca0ba16dd9fa918a8b36340b2e2fe834312d74aa6c70da8cb654a",
+        "payload_hash": "a67900989cc05b08af6fee016d35abb882021e6734ab0c3dc40b84313b57660c",
         "authority_id": 2,
-        "authority_fingerprint": "c29c0660b6d9d76feef2a411d1e9ba17cd1b7ddc7377da00d21b37ec84d50c08",
+        "authority_fingerprint": "0395751f3f64539862533aa67b0875c5cb7cbe02c8367f1275603f875b66296e",
         "pointer_id": 2,
-        "pointer_fingerprint": "c29c0660b6d9d76feef2a411d1e9ba17cd1b7ddc7377da00d21b37ec84d50c08",
+        "pointer_fingerprint": "0395751f3f64539862533aa67b0875c5cb7cbe02c8367f1275603f875b66296e",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"

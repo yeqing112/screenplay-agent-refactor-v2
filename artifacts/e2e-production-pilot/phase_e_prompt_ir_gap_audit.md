@@ -2,41 +2,50 @@
 
 ## Scope
 
-Phase E closes the boundary from the current `StoryboardProductionSnapshot` to
-structured PromptIR v2 and provider neutral generation payloads. Compilation is
-deterministic, provider free, and consumes no legacy prompt column as semantic
-authority.
+Phase E closes the production boundary from the current
+`StoryboardProductionSnapshot` to structured PromptIR v2 and provider-neutral
+model generation payloads. The compiler is deterministic, provider-free, and
+never treats legacy `visual_prompt_static`, `visual_prompt_motion`, or
+`visual_prompt_final` as semantic authority.
 
-## Authority audit
+## Authority and readiness audit
 
 | Boundary | Result | Evidence |
 | --- | --- | --- |
-| PromptIRVersion / Authority / Pointer | Current pointer is the only resolvable version; scene compile writes all shots after pure compilation succeeds | `api/prompt_ir_authority_api.py`, `core/prompt_ir_phase_e.py` |
-| Prompt compiler handoff | Snapshot rows carry the structured handoff and visual semantic handoff; action beats fall back to immutable projection payload when the handoff copy is absent | `core/storyboard_materializer.py` |
-| `visual_prompt_static/motion/final` | Not read by Phase E and never written by the snapshot compiler | semantic closure tests |
-| Model adapter | Deterministic registry with explicit model profile and capability gates | `MODEL_ADAPTER_REGISTRY`, generation payload artifact |
-| Generation payload | `generation_payload_v1` includes PromptIR reference, policy, model profile, adapter version, semantic projection, and fingerprint | `episode_01_generation_payload_phase_e.json` |
-| Visual Asset Authority | Required asset classes must resolve through explicit bindings; ambiguous historical pointers are rejected rather than selected by newest row | `_production_asset_authority()` |
-| Provider readiness | Qualification is distinct from model generation readiness; this pilot has zero provider, LLM, image, and video calls | Phase E trace |
-| Legacy bypass | A non-empty legacy `visual_prompt_final` does not change adapter output | `test_prompt_ir_phase_e_semantic_closure.py` |
-| Stale propagation | Snapshot freshness is required; current materialization and asset lineage are part of the authority envelope | compiler and trace evidence |
-| Tamper validation | Payload fingerprint and exact structured semantic diff reject missing, extra, and changed fields | semantic closure tests |
-| Current-only resolver | Scene compile resolves current Storyboard materialization pointers before compiling; no latest/max fallback is used | scene compile endpoint |
+| Current Storyboard authority | PASS | Current materialization pointer/set/rows are resolved before compile; stale materialization invalidates downstream PromptIR |
+| PromptIR activation | PASS | 15 versions, 15 authorities, and 15 pointers activated atomically for 15 current shots |
+| Compiler handoff | PASS | Structured prompt compiler handoff, visual semantic handoff, and immutable projection payload are carried by the snapshot |
+| Legacy prompt bypass | PASS | Legacy visual prompt columns are not read by Phase E semantic compilation or adapter projection |
+| Semantic qualification | PASS | `prompt_ir_semantic_ready` is true for all 15 resolver-positive rows |
+| Model readiness separation | PASS | Adapter readiness remains false with `PROVIDER_CONFIG_MISSING`; no provider call is attempted |
+| Asset authority | PASS | Current scene and `prop:TICKET` bindings resolve through explicit Visual Asset Authority pointers |
+| Current-only rule | PASS | Resolver rejects stale/tampered pointers and does not use newest/max historical rows |
+| Adapter projection | PASS | 15 `image_generic_adapter_v1` payloads preserve structured sections and add no cinematic, lens, lighting, quality, or other unauthorized facts |
+| Atomic failure behavior | PASS | Required-asset failure returned without changing counts or pointer hashes |
+| Idempotency | PASS | Repeated identical compile reused current payloads with unchanged counts |
+| Stale propagation | PASS | Storyboard stale marked 8 PromptIR rows stale; Visual Asset stale marked 8 PromptIR rows stale |
+| Tamper validation | PASS | Pointer, authority envelope, and payload tamper cases each failed closed with HTTP 409 |
+| Provider activity | PASS | Provider, LLM, image, and video calls were all zero |
+
+## Persisted pilot evidence
+
+- `episode_01_phase_e_trace.json` is the real temporary SQLite/Alembic trace.
+- `episode_01_prompt_ir_phase_e.json` contains 15 persisted PromptIR payloads.
+- `episode_01_generation_payload_phase_e.json` contains 15 persisted adapter previews.
+- `episode_01_prompt_ir_phase_e.md` lists each current `plan_shot_id` and its structured semantic fields.
 
 ## Semantic fields carried
 
 PromptIR v2 preserves subjects, props, information references, reaction
-contract references, coverage roles, camera framing/orientation/support and
-movement trigger/target/end condition, temporal intent, visibility, axis and
-spatial references. The adapter serializes these sections without adding style,
-lens, lighting, quality, or other un-authorized visual facts.
+contracts, coverage roles, camera framing/orientation/support and movement
+trigger/target/end condition, temporal intent, visibility, axis, spatial
+references, and explicit asset bindings. The adapter serializes those sections
+without inventing visual style or cinematography facts.
 
-## Pilot result
+## Verification
 
-- Scene `E01_SC001`: 8 PromptIR artifacts.
-- Scene `E01_SC002`: 7 PromptIR artifacts.
-- Total: 15 PromptIR artifacts, one per `plan_shot_id`.
-- Adapter previews: 15 deterministic `image_generic_adapter_v1` payloads.
-- Provider / LLM / image / video calls: 0.
-- No database migration was added in Phase E.
-
+- Phase E semantic closure: 15 passed.
+- Combined Phase E/Authority/Visual Asset/Phase D regression: 48 passed.
+- Deterministic Golden regression: 5/5 passed.
+- Full suite baseline: 1624 passed, with the four pre-existing failures listed in `PHASE_E_FINAL_REPORT.md`.
+- No migration was added.

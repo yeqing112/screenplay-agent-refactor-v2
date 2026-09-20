@@ -15,7 +15,7 @@
       "handoff_shots": 8,
       "materialized_shots": 8,
       "id_order_preserved": true,
-      "handoff_fingerprint": "7b92a816233248d7b8695cc47b772d500177fdb021341e8fa67ebdc13c54ea23"
+      "handoff_fingerprint": "fe7666b2509ea2bd4513869bf165ef75db70b6f970d5b7041f8af7d36033177a"
     },
     {
       "scene_id": "E01_SC002",
@@ -23,20 +23,7 @@
       "handoff_shots": 7,
       "materialized_shots": 7,
       "id_order_preserved": true,
-      "handoff_fingerprint": "66db643f227d2f10577a271ec8389162c1355fba63ac4b75a3444e66ddcbe8ff"
+      "handoff_fingerprint": "9deb15a31e9071e45d8a7fbef8344eca03ed633904b73065cfd344876e3f828e"
     }
-  ],
-  "production_phase_c_gate": true,
-  "legacy_production_fallback_enabled": false,
-  "legacy_production_attempt": {
-    "status_code": 409,
-    "code": "SHOT_PLAN_PHASE_C_NOT_READY",
-    "materialization_set_unchanged": true,
-    "pointer_unchanged": true,
-    "storyboard_shot_count_unchanged": true,
-    "shot_plan_stale_unchanged": true,
-    "shot_plan_pointer_unchanged": true,
-    "authority_state": "PRODUCTION_QUALIFIED",
-    "phase_c_semantic_ready": false
-  }
+  ]
 }

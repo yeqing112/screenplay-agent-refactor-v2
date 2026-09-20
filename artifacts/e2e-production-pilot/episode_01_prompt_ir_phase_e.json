@@ -1,6 +1,15 @@
 {
   "image_calls": 0,
   "llm_calls": 0,
+  "pilot": {
+    "book_id": 990401,
+    "database": "temporary SQLite migrated through Alembic",
+    "episode": 1,
+    "image_generation_started": false,
+    "llm_calls": 0,
+    "provider_calls": 0,
+    "video_generation_started": false
+  },
   "prompt_ir": [
     {
       "action": {
@@ -33,12 +42,34 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
-          "character:售票员",
+          "scene:E01_SC001",
           "character:林晚",
-          "prop:TICKET",
-          "scene:E01_SC001"
+          "character:售票员",
+          "prop:TICKET"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC001",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC001",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:TICKET",
+            "authority_fingerprint": "19d26788c41cfa0979237951a56d9af2a7a2ef8ee0227b9275b18be7754e7751",
+            "identity_ref": "prop:TICKET",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "WIDE",
@@ -87,16 +118,19 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "AUDIENCE_ONLY",
-      "payload_hash": "4dfc0a7b71c7e41161b2f66cc2ddd26d07aa8e545b2e5b26ef8ae14a2eb1903c",
+      "model_generation_ready": false,
+      "payload_hash": "c48ea9ebe238f1a9df536581b517833455cd7db0e1b3dbeda1b61166ef1a9bbf",
       "plan_shot_id": "SH_E01_SC001_001",
-      "prompt_ir_payload_fingerprint": "4dfc0a7b71c7e41161b2f66cc2ddd26d07aa8e545b2e5b26ef8ae14a2eb1903c",
-      "prompt_ir_semantic_fingerprint": "dba1e3af9e9ae7797e2349efbc2288e241e2d42d8da878d3ff08ba7eef39d102",
+      "prompt_ir_payload_fingerprint": "c48ea9ebe238f1a9df536581b517833455cd7db0e1b3dbeda1b61166ef1a9bbf",
+      "prompt_ir_semantic_fingerprint": "d57fc5b65e290f4f6562bbf4c9b1b4065fcdb7c94c73d90507b79e555764c496",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "TICKET",
           "prop_ref": "TICKET"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC001",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -120,12 +154,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "cf941e5ed023065f42ae7ae2217e4f5304beb8e908f2c30d99396d0f466eb365",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "d3b4c453f905f3521541dc8e5a247707d75b034ff6b9fe3dcaee5f68a257081d",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "dab2b250e22081e9cc0cfe37e94d45f55c0d4b31403d4d50e91a31d5e2266e00",
-        "storyboard_set_payload_fingerprint": "set-1",
-        "visual_semantic_handoff_fingerprint": "dcb9b8b1cda5ced0dc4db44c7d26eabde6082c51573ce126511f7f27ff8fc315"
+        "storyboard_projection_fingerprint": "e698393ca3094da87d9c2ee1195c871b22912482f30d54a1b641b88d2f34aa8a",
+        "storyboard_set_payload_fingerprint": "acdf65d91770d5827d47b131b3a3a022fc53bea4713afa7aefc6f9b58eb341d9",
+        "visual_semantic_handoff_fingerprint": "f81c77f87e6890df0b666340b12dc2dcad22d90221d948bfc40162c48b80ea28"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -181,11 +216,33 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
+          "scene:E01_SC001",
           "character:林晚",
-          "prop:RED_UMBRELLA",
-          "scene:E01_SC001"
+          "prop:RED_UMBRELLA"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC001",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC001",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:RED_UMBRELLA",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "WIDE",
@@ -233,16 +290,19 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
-      "payload_hash": "127282979bb340dbac13f3c3f9ce377ce7d534e6ac7b32df59b18106b3d8be6a",
+      "model_generation_ready": false,
+      "payload_hash": "fc44f7a90e12bad6396de9878cd72851c14537146b3a754493bde23b5ade85a0",
       "plan_shot_id": "SH_E01_SC001_002",
-      "prompt_ir_payload_fingerprint": "127282979bb340dbac13f3c3f9ce377ce7d534e6ac7b32df59b18106b3d8be6a",
-      "prompt_ir_semantic_fingerprint": "c1fe6cdcbcbb7c31749bdd6fcfd6eadfccc57348126ef7b2e43e97bff488a8b3",
+      "prompt_ir_payload_fingerprint": "fc44f7a90e12bad6396de9878cd72851c14537146b3a754493bde23b5ade85a0",
+      "prompt_ir_semantic_fingerprint": "b083746e05f106e5e4e90c893a25c86bd0a57c0d04d712f3e356bc436a517ed4",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "RED_UMBRELLA",
           "prop_ref": "RED_UMBRELLA"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC001",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -268,12 +328,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "cf941e5ed023065f42ae7ae2217e4f5304beb8e908f2c30d99396d0f466eb365",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "d3b4c453f905f3521541dc8e5a247707d75b034ff6b9fe3dcaee5f68a257081d",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "8668dfd228604239e29ecddeeaae78315ce394b1857a8f9cb9bc1c248fd9e5a4",
-        "storyboard_set_payload_fingerprint": "set-1",
-        "visual_semantic_handoff_fingerprint": "003ed4023f854ee9889aacdd69be7876a7296cbf0c92d890c6aba49d57a10f07"
+        "storyboard_projection_fingerprint": "7cd30766f1251dc077fa811920c56648caab6887e3f1fe0ad30a2666e9afb0c8",
+        "storyboard_set_payload_fingerprint": "acdf65d91770d5827d47b131b3a3a022fc53bea4713afa7aefc6f9b58eb341d9",
+        "visual_semantic_handoff_fingerprint": "02ef3ebc6528b6a5b490a6aad7b38e5dccde69e85714bedb6f43bea4f99f1082"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -325,12 +386,34 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
+          "scene:E01_SC001",
           "character:林晚",
           "character:顾沉",
-          "prop:BROKEN_UMBRELLA_RIB",
-          "scene:E01_SC001"
+          "prop:BROKEN_UMBRELLA_RIB"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC001",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC001",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "INSERT",
@@ -379,16 +462,19 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
-      "payload_hash": "0f424712b6b23799c709ae201bb5bbf65b2498b9a78e50ba8999d8b761a1502a",
+      "model_generation_ready": false,
+      "payload_hash": "628ce56566cec60768fae9b30dfcad716eb70a0049d1cc24619037305f21b3ac",
       "plan_shot_id": "SH_E01_SC001_003",
-      "prompt_ir_payload_fingerprint": "0f424712b6b23799c709ae201bb5bbf65b2498b9a78e50ba8999d8b761a1502a",
-      "prompt_ir_semantic_fingerprint": "dda023de32d4139e8d9eeb3af43b981601c9de96d19e0e1206cf2178d8a48483",
+      "prompt_ir_payload_fingerprint": "628ce56566cec60768fae9b30dfcad716eb70a0049d1cc24619037305f21b3ac",
+      "prompt_ir_semantic_fingerprint": "df6219f925b5c05478c51a7af6e6776f39673eb49a998b6609264386ea820184",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "BROKEN_UMBRELLA_RIB",
           "prop_ref": "BROKEN_UMBRELLA_RIB"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC001",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -414,12 +500,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "cf941e5ed023065f42ae7ae2217e4f5304beb8e908f2c30d99396d0f466eb365",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "d3b4c453f905f3521541dc8e5a247707d75b034ff6b9fe3dcaee5f68a257081d",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "cfa084179802260da302133f165046e9617b948672cadd86a8c7075e321fbd1d",
-        "storyboard_set_payload_fingerprint": "set-1",
-        "visual_semantic_handoff_fingerprint": "1fb196e7c3c28c88e7bacdc52f52a22ee6d3641cc5cf24e9e4fe90d547c393b0"
+        "storyboard_projection_fingerprint": "478332ff734d7ee435d987cdd208d769878af5e47093674a92a4ccb703797561",
+        "storyboard_set_payload_fingerprint": "acdf65d91770d5827d47b131b3a3a022fc53bea4713afa7aefc6f9b58eb341d9",
+        "visual_semantic_handoff_fingerprint": "e0dad9d8b724da2d22755c421ac783dd6cd5982e0d8ee9462f2f5390b07bd32b"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -487,11 +574,27 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
-          "character:林晚",
+          "scene:E01_SC001",
           "character:顾沉",
-          "scene:E01_SC001"
+          "character:林晚"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC001",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC001",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "TWO_SHOT",
@@ -546,11 +649,14 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
-      "payload_hash": "5b79135a50a1f997e28f0082549ad02e195b05ea8fe35237a50be9064a507205",
+      "model_generation_ready": false,
+      "payload_hash": "00fd0e53e1eb259e1d09691afadf23fd60fa636c66adae514e57cbb93404428a",
       "plan_shot_id": "SH_E01_SC001_004",
-      "prompt_ir_payload_fingerprint": "5b79135a50a1f997e28f0082549ad02e195b05ea8fe35237a50be9064a507205",
-      "prompt_ir_semantic_fingerprint": "625c90a50fab835b3e896aca21bcf43277b4cfd3e8c2180aacf00706a3a4f4ea",
+      "prompt_ir_payload_fingerprint": "00fd0e53e1eb259e1d09691afadf23fd60fa636c66adae514e57cbb93404428a",
+      "prompt_ir_semantic_fingerprint": "0a7dec64c23c13997e97664aa46b80b81465483cfcfe0ed2c902ceeaad25a622",
+      "prompt_ir_semantic_ready": true,
       "props": [],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC001",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -579,12 +685,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "cf941e5ed023065f42ae7ae2217e4f5304beb8e908f2c30d99396d0f466eb365",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "d3b4c453f905f3521541dc8e5a247707d75b034ff6b9fe3dcaee5f68a257081d",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "bab501cbe071800516ea48052bd4e781fe3066f3ea8e2e8d9ecc96c6628edf06",
-        "storyboard_set_payload_fingerprint": "set-1",
-        "visual_semantic_handoff_fingerprint": "45eaa6bf6f82e87fe68431c6cc884d943569e96b066a783abe040df4e62e0dd0"
+        "storyboard_projection_fingerprint": "2bad93cf96964eb67c8eee669d9553cd26ca9045bb160facac5ef72cba20c5eb",
+        "storyboard_set_payload_fingerprint": "acdf65d91770d5827d47b131b3a3a022fc53bea4713afa7aefc6f9b58eb341d9",
+        "visual_semantic_handoff_fingerprint": "05cc23026f1568ccc4bd6b4f82c848bc0c506208b947295931a55fa3b8c82f8a"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -651,12 +758,34 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
-          "character:林晚",
+          "scene:E01_SC001",
           "character:陆叔",
-          "prop:HANDBAG",
-          "scene:E01_SC001"
+          "character:林晚",
+          "prop:HANDBAG"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC001",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC001",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:HANDBAG",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:HANDBAG",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "MEDIUM_WIDE",
@@ -714,16 +843,19 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
-      "payload_hash": "122d643d214bdb02ada2ad2a371f7350188696891085c409b99bdf36adadd9cb",
+      "model_generation_ready": false,
+      "payload_hash": "8e9cd0d0525ffa1ae6c33232f5a7bc2c8d704bb21ce65fba778b47361a073a15",
       "plan_shot_id": "SH_E01_SC001_005",
-      "prompt_ir_payload_fingerprint": "122d643d214bdb02ada2ad2a371f7350188696891085c409b99bdf36adadd9cb",
-      "prompt_ir_semantic_fingerprint": "ee3d368e35fac8fbbe75232aa2e9f3fdc761c7ccc70a922e1cf7e1dfa43d53f0",
+      "prompt_ir_payload_fingerprint": "8e9cd0d0525ffa1ae6c33232f5a7bc2c8d704bb21ce65fba778b47361a073a15",
+      "prompt_ir_semantic_fingerprint": "970a290db603e1887f5c555331f6219fb1e130669b67e6ced7cad6a5871794e6",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "HANDBAG",
           "prop_ref": "HANDBAG"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC001",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -752,12 +884,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "cf941e5ed023065f42ae7ae2217e4f5304beb8e908f2c30d99396d0f466eb365",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "d3b4c453f905f3521541dc8e5a247707d75b034ff6b9fe3dcaee5f68a257081d",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "a8eb376949a26dca5730958972420e96b04e776bf19bae2062374d39478a2b12",
-        "storyboard_set_payload_fingerprint": "set-1",
-        "visual_semantic_handoff_fingerprint": "1a4e2292be87fbb548584ccb72d3b820bd05f747f36bcddef13b4ca0633a2b81"
+        "storyboard_projection_fingerprint": "abc49114e3f8ac69774ad8b8926fbaba24c1fbf841fd27d4095aca3310111f32",
+        "storyboard_set_payload_fingerprint": "acdf65d91770d5827d47b131b3a3a022fc53bea4713afa7aefc6f9b58eb341d9",
+        "visual_semantic_handoff_fingerprint": "d3d339737dbea5627089a929ad1653f043d648ff14a9ac745d51c6ace0a3f707"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -824,12 +957,40 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
+          "scene:E01_SC001",
           "character:林晚",
           "prop:BROKEN_UMBRELLA_RIB",
-          "prop:RED_UMBRELLA",
-          "scene:E01_SC001"
+          "prop:RED_UMBRELLA"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC001",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC001",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:RED_UMBRELLA",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "INSERT",
@@ -887,10 +1048,12 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "AUDIENCE_ONLY",
-      "payload_hash": "30f111c3736e76c6283853f2cf871e658d81bf9ccfa9d2cde0f478911bd7349d",
+      "model_generation_ready": false,
+      "payload_hash": "1263dedc499f22cabc04ccdd66714d6d11c435a00cc5d654f3aee76ab3b9904b",
       "plan_shot_id": "SH_E01_SC001_006",
-      "prompt_ir_payload_fingerprint": "30f111c3736e76c6283853f2cf871e658d81bf9ccfa9d2cde0f478911bd7349d",
-      "prompt_ir_semantic_fingerprint": "321e12a030b73c08e3a0635fba8e08b1768e04b1ebf285e2a6a667cf88aa91b6",
+      "prompt_ir_payload_fingerprint": "1263dedc499f22cabc04ccdd66714d6d11c435a00cc5d654f3aee76ab3b9904b",
+      "prompt_ir_semantic_fingerprint": "6a2e93d4b84bad8b6bae3f5a0134da8ff8d63962fe6a4f8d95c20ebd8f795467",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "BROKEN_UMBRELLA_RIB",
@@ -901,6 +1064,7 @@
           "prop_ref": "RED_UMBRELLA"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC001",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -931,12 +1095,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "cf941e5ed023065f42ae7ae2217e4f5304beb8e908f2c30d99396d0f466eb365",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "d3b4c453f905f3521541dc8e5a247707d75b034ff6b9fe3dcaee5f68a257081d",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "3a04397ef6e4b339df3bdf0bcdba604bbfa7c4e0ba76e78c605648c3dfd720a0",
-        "storyboard_set_payload_fingerprint": "set-1",
-        "visual_semantic_handoff_fingerprint": "eca3ac161d6e5fe5cdcd919c25ca0a9f32d03fa1364d4615a39a583f27e88b62"
+        "storyboard_projection_fingerprint": "91847fde30f91d8ca74d877ef34fdd2ee36f230c2827910be0616899f2f0f31e",
+        "storyboard_set_payload_fingerprint": "acdf65d91770d5827d47b131b3a3a022fc53bea4713afa7aefc6f9b58eb341d9",
+        "visual_semantic_handoff_fingerprint": "f928acf09074f3605292452bd5f8625d4afa988f0d2d0ac4dbfe1162ab9d0034"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -1002,11 +1167,27 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
+          "scene:E01_SC001",
           "character:林晚",
-          "character:陆叔",
-          "scene:E01_SC001"
+          "character:陆叔"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC001",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC001",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "MEDIUM",
@@ -1062,11 +1243,14 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
-      "payload_hash": "fa51d6fd31e9d305c63e6dc4f697a79b7f7657c56d63e30dc9fc183940f32d0f",
+      "model_generation_ready": false,
+      "payload_hash": "c5e028b9cd9567d97980bd3ee2201bec01e9ee849408727fa06089efeb1a3159",
       "plan_shot_id": "SH_E01_SC001_007",
-      "prompt_ir_payload_fingerprint": "fa51d6fd31e9d305c63e6dc4f697a79b7f7657c56d63e30dc9fc183940f32d0f",
-      "prompt_ir_semantic_fingerprint": "f3b9c49e78f186045b0fcc09f99a76e1c902df43a3a4fe812a9e66c902d31694",
+      "prompt_ir_payload_fingerprint": "c5e028b9cd9567d97980bd3ee2201bec01e9ee849408727fa06089efeb1a3159",
+      "prompt_ir_semantic_fingerprint": "e12a7a64aefa1f5d704b0051a1021744d33155ed49a352651ffe344fe4a49202",
+      "prompt_ir_semantic_ready": true,
       "props": [],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC001",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -1095,12 +1279,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "cf941e5ed023065f42ae7ae2217e4f5304beb8e908f2c30d99396d0f466eb365",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "d3b4c453f905f3521541dc8e5a247707d75b034ff6b9fe3dcaee5f68a257081d",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "0e218b50f8d995b1e9c048794a5bdcbbffd2741c664766b4540995ac73630274",
-        "storyboard_set_payload_fingerprint": "set-1",
-        "visual_semantic_handoff_fingerprint": "329169866cb45abe8d5ce2125b8611c5a86c75fc956a3606f28961754c7eb8ac"
+        "storyboard_projection_fingerprint": "84b61c5cc00534b0a22bf8029a5d6cfca3afeaf9afb25078e32233730cabc151",
+        "storyboard_set_payload_fingerprint": "acdf65d91770d5827d47b131b3a3a022fc53bea4713afa7aefc6f9b58eb341d9",
+        "visual_semantic_handoff_fingerprint": "12ba50e2bf552abfcfa37fc36dd20331e288291dc2ae29636e7ce441f2c2b782"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -1155,11 +1340,27 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
-          "character:林晚",
+          "scene:E01_SC001",
           "character:顾沉",
-          "scene:E01_SC001"
+          "character:林晚"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC001",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC001",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "MEDIUM_CLOSE",
@@ -1215,11 +1416,14 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "AUDIENCE_ONLY",
-      "payload_hash": "69c30b4baa0da4ac6a1d23d40d6ca1beb04f423ff612fafb48d1c778df3686cc",
+      "model_generation_ready": false,
+      "payload_hash": "6ea897f364c4fa834ec8323e685cad9366cec85544df00f9ee20608386fb0c20",
       "plan_shot_id": "SH_E01_SC001_008",
-      "prompt_ir_payload_fingerprint": "69c30b4baa0da4ac6a1d23d40d6ca1beb04f423ff612fafb48d1c778df3686cc",
-      "prompt_ir_semantic_fingerprint": "141889f92f236ef001c50f509d4ad1ef292ccb2030a13360120d6dd9ab2b3a59",
+      "prompt_ir_payload_fingerprint": "6ea897f364c4fa834ec8323e685cad9366cec85544df00f9ee20608386fb0c20",
+      "prompt_ir_semantic_fingerprint": "5ca181fb2369f9af4ebd9af0d960bbec34f14114eca8e3981ae1a2be92061231",
+      "prompt_ir_semantic_ready": true,
       "props": [],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC001",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -1245,12 +1449,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "cf941e5ed023065f42ae7ae2217e4f5304beb8e908f2c30d99396d0f466eb365",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "d3b4c453f905f3521541dc8e5a247707d75b034ff6b9fe3dcaee5f68a257081d",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "5f85219ef9cd5a406a84ea547b4b088f4f7817410bb8eb9a98645f23fd80bfe7",
-        "storyboard_set_payload_fingerprint": "set-1",
-        "visual_semantic_handoff_fingerprint": "65de2da101aadf896ac0e39aeea62dd9b122416ca3a9c392bb907235bc331ca3"
+        "storyboard_projection_fingerprint": "81d18dd806f8b9ae197771396a7b62d8258dcd541f88e8e257e2bb2075c25afd",
+        "storyboard_set_payload_fingerprint": "acdf65d91770d5827d47b131b3a3a022fc53bea4713afa7aefc6f9b58eb341d9",
+        "visual_semantic_handoff_fingerprint": "ece792cbd6b98e36318c300fbf5fe351f93347bbebe0ffd371f2478e5c57a332"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -1316,13 +1521,41 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
-          "character:林晚",
+          "scene:E01_SC002",
           "character:陆叔",
+          "character:林晚",
           "prop:APPLE",
-          "prop:DOOR_LOCK",
-          "scene:E01_SC002"
+          "prop:DOOR_LOCK"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC002",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC002",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:APPLE",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:APPLE",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:DOOR_LOCK",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:DOOR_LOCK",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "WIDE",
@@ -1380,10 +1613,12 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "AUDIENCE_ONLY",
-      "payload_hash": "1bad2b59379f77099c24d5bea4dfce70d6df5b11dfd9b9ed67798e417b120e8c",
+      "model_generation_ready": false,
+      "payload_hash": "063e4136a4281749d22396c333fef881681a17913da0e7d149085e3f90e0b9ae",
       "plan_shot_id": "SH_E01_SC002_001",
-      "prompt_ir_payload_fingerprint": "1bad2b59379f77099c24d5bea4dfce70d6df5b11dfd9b9ed67798e417b120e8c",
-      "prompt_ir_semantic_fingerprint": "f3572acb9e9069b8956a29497a6f280f8302a634ee588e20251c78e346ec6fc7",
+      "prompt_ir_payload_fingerprint": "063e4136a4281749d22396c333fef881681a17913da0e7d149085e3f90e0b9ae",
+      "prompt_ir_semantic_fingerprint": "8ebe0368087a7079b3623cf1aec091e23663a3a7d737da5a10ee5ab6a9b713db",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "APPLE",
@@ -1394,6 +1629,7 @@
           "prop_ref": "DOOR_LOCK"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC002",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -1420,12 +1656,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "66af6def4197f52e477982b8df781da2d127109e767dcfe2c85f2048db67e0a7",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "2dcbd1b6020fd67a16d838a0f68a2d908c957730387d6672190d00b8ed17e3b9",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "e96d2c59295f86184b32acfbb3eb62d8735eebc6dabafe0917a800bce3bb5dcf",
-        "storyboard_set_payload_fingerprint": "set-2",
-        "visual_semantic_handoff_fingerprint": "3ad6d21e91d63dc0eb428843eae025b3eb293b04b59fd5a9e4e73b48e8ec6228"
+        "storyboard_projection_fingerprint": "a965bcee3d815b9690e55967b3f89d9a586aed493bb7644abf313d47f33f35bb",
+        "storyboard_set_payload_fingerprint": "f38c3737dd90d65986c1e7f787b0db1cfd996677ff35b75188a114ae0a250ea3",
+        "visual_semantic_handoff_fingerprint": "4fe0486f1ec1884b8585e9cf653ba3a6013f2a57749244f0966744d61518aa13"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -1443,7 +1680,7 @@
           "陆叔": "APT_KITCHEN"
         }
       },
-      "storyboard_shot_id": 1,
+      "storyboard_shot_id": 9,
       "subjects": [
         {
           "asset_identity_ref": "陆叔",
@@ -1481,11 +1718,27 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
-          "character:林晚",
+          "scene:E01_SC002",
           "character:陆叔",
-          "scene:E01_SC002"
+          "character:林晚"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC002",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC002",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "OVER_SHOULDER",
@@ -1540,11 +1793,14 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
-      "payload_hash": "17dd2d65414d1aea57d7139e7a6283e38c0e3b6a6344ba961ee204422793048e",
+      "model_generation_ready": false,
+      "payload_hash": "cfd02dd91597a354660f881ca9afb18150b4981594de99a8b73125e67f792905",
       "plan_shot_id": "SH_E01_SC002_002",
-      "prompt_ir_payload_fingerprint": "17dd2d65414d1aea57d7139e7a6283e38c0e3b6a6344ba961ee204422793048e",
-      "prompt_ir_semantic_fingerprint": "0b4b093bbf28ddd2e034e1155f69aeb7389cda7aeaf22d5a65bea85d1df87e09",
+      "prompt_ir_payload_fingerprint": "cfd02dd91597a354660f881ca9afb18150b4981594de99a8b73125e67f792905",
+      "prompt_ir_semantic_fingerprint": "4988a80fe4c4f392c4f63acde226c3ba14a49e43d297b66de50a4f7d278f5717",
+      "prompt_ir_semantic_ready": true,
       "props": [],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC002",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -1569,12 +1825,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "66af6def4197f52e477982b8df781da2d127109e767dcfe2c85f2048db67e0a7",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "2dcbd1b6020fd67a16d838a0f68a2d908c957730387d6672190d00b8ed17e3b9",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "eb357643437164a483edd5ba050862ce748c888f59a7a6d46cf9040595a58d6f",
-        "storyboard_set_payload_fingerprint": "set-2",
-        "visual_semantic_handoff_fingerprint": "dff2e557615ede9e9a8d6cd4f6a1919d6e7b4a83fce937facf6233bfab8dbc39"
+        "storyboard_projection_fingerprint": "05f24821ed0f0269c4658a42fcf330114d01621f1587ab265601f3b8827594e0",
+        "storyboard_set_payload_fingerprint": "f38c3737dd90d65986c1e7f787b0db1cfd996677ff35b75188a114ae0a250ea3",
+        "visual_semantic_handoff_fingerprint": "7d06de395cd1efc380e8e0197b53e6b0674aea009b675be8a7068a3957bab84e"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -1588,7 +1845,7 @@
           "陆叔": "APT_CENTER"
         }
       },
-      "storyboard_shot_id": 2,
+      "storyboard_shot_id": 10,
       "subjects": [
         {
           "asset_identity_ref": "陆叔",
@@ -1625,11 +1882,33 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
+          "scene:E01_SC002",
           "character:林晚",
-          "prop:HANDBAG",
-          "scene:E01_SC002"
+          "prop:HANDBAG"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC002",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC002",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:HANDBAG",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:HANDBAG",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "MEDIUM_CLOSE",
@@ -1685,16 +1964,19 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "AUDIENCE_OBSERVES_CHARACTER_DOUBT",
-      "payload_hash": "4a2fe585df4d216fae4b51aa7a56cf8acb6fa53663c064fd5211c9993a13ec24",
+      "model_generation_ready": false,
+      "payload_hash": "af8a876425db6e9271fb04cbc33030c834f373bd766b0a666e337f2b711fd53d",
       "plan_shot_id": "SH_E01_SC002_003",
-      "prompt_ir_payload_fingerprint": "4a2fe585df4d216fae4b51aa7a56cf8acb6fa53663c064fd5211c9993a13ec24",
-      "prompt_ir_semantic_fingerprint": "19459dcba8f80efffa901e49d62f786a74f31cea29d57d7af11c88d41ce88ce1",
+      "prompt_ir_payload_fingerprint": "af8a876425db6e9271fb04cbc33030c834f373bd766b0a666e337f2b711fd53d",
+      "prompt_ir_semantic_fingerprint": "fa0b75cdb176437753dc96adbe8978b18462240a8f4d95fedaa489405d4e3957",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "HANDBAG",
           "prop_ref": "HANDBAG"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC002",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -1718,12 +2000,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "66af6def4197f52e477982b8df781da2d127109e767dcfe2c85f2048db67e0a7",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "2dcbd1b6020fd67a16d838a0f68a2d908c957730387d6672190d00b8ed17e3b9",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "4a4122084f3eb349e96c1127c129803d76ed09d311a902bd9699bc5d7dea422b",
-        "storyboard_set_payload_fingerprint": "set-2",
-        "visual_semantic_handoff_fingerprint": "9a1e490ef27f385d18c0231d0fe075c3aa34e04dda7f25d246ea3df52853f8db"
+        "storyboard_projection_fingerprint": "654c690904066b2718c95637b1d313dfc56ea352e2de2c90abf27b234e48a081",
+        "storyboard_set_payload_fingerprint": "f38c3737dd90d65986c1e7f787b0db1cfd996677ff35b75188a114ae0a250ea3",
+        "visual_semantic_handoff_fingerprint": "422deb9071d7aca9513f93bb531c1d172f194f29982549a982276916d2e00b2b"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -1739,7 +2022,7 @@
           "陆叔": "APT_CENTER"
         }
       },
-      "storyboard_shot_id": 3,
+      "storyboard_shot_id": 11,
       "subjects": [
         {
           "asset_identity_ref": "林晚",
@@ -1773,13 +2056,41 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
-          "character:林晚",
+          "scene:E01_SC002",
           "character:陆叔",
+          "character:林晚",
           "prop:POCKET_HARD_OBJECT",
-          "prop:TABLE_SCRATCH",
-          "scene:E01_SC002"
+          "prop:TABLE_SCRATCH"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC002",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC002",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:POCKET_HARD_OBJECT",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:POCKET_HARD_OBJECT",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:TABLE_SCRATCH",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:TABLE_SCRATCH",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "MEDIUM_CLOSE",
@@ -1837,10 +2148,12 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
-      "payload_hash": "1806d5ee2d7d8d1b52f65f386ae66ec7eeb9a54e4d2c8cc2bdba046a06a4bcef",
+      "model_generation_ready": false,
+      "payload_hash": "36e0f04801441b934e6ec04061b9c5f82cde46dce301fad09e506df2ed42a58c",
       "plan_shot_id": "SH_E01_SC002_004",
-      "prompt_ir_payload_fingerprint": "1806d5ee2d7d8d1b52f65f386ae66ec7eeb9a54e4d2c8cc2bdba046a06a4bcef",
-      "prompt_ir_semantic_fingerprint": "8cda786e122bf8cd3341458366c1b2300055976e4411d4b29d20a9d4e1842482",
+      "prompt_ir_payload_fingerprint": "36e0f04801441b934e6ec04061b9c5f82cde46dce301fad09e506df2ed42a58c",
+      "prompt_ir_semantic_fingerprint": "7084bfbb0d9e42757a7f658875c37817a360d1498d21c8a81e9d6f4f971889bc",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "POCKET_HARD_OBJECT",
@@ -1851,6 +2164,7 @@
           "prop_ref": "TABLE_SCRATCH"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC002",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -1876,12 +2190,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "66af6def4197f52e477982b8df781da2d127109e767dcfe2c85f2048db67e0a7",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "2dcbd1b6020fd67a16d838a0f68a2d908c957730387d6672190d00b8ed17e3b9",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "64bb9bc030554db6d4bf80d2acf74392c1019f9105bba6b7055e23b34720d1ae",
-        "storyboard_set_payload_fingerprint": "set-2",
-        "visual_semantic_handoff_fingerprint": "cbd52545f7ac781b649045de9f2c47b1acac4d5eae44086dcde8c6117ad73526"
+        "storyboard_projection_fingerprint": "017297fd6fe0895ebc7410f8390f9e86e44c4bfbebc7fbca4f4cd98a7c72f500",
+        "storyboard_set_payload_fingerprint": "f38c3737dd90d65986c1e7f787b0db1cfd996677ff35b75188a114ae0a250ea3",
+        "visual_semantic_handoff_fingerprint": "253a00aefa100d30a1d405e0af1764da428543338d5cf2ab6047fc1b34ead985"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -1898,7 +2213,7 @@
           "陆叔": "APT_CENTER"
         }
       },
-      "storyboard_shot_id": 4,
+      "storyboard_shot_id": 12,
       "subjects": [
         {
           "asset_identity_ref": "陆叔",
@@ -1935,11 +2250,33 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
+          "scene:E01_SC002",
           "character:林晚",
-          "prop:RED_FIBER",
-          "scene:E01_SC002"
+          "prop:RED_FIBER"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC002",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC002",
+            "stale_status": "FRESH"
+          },
+          {
+            "asset_authority_ref": "book:990401:prop:RED_FIBER",
+            "authority_fingerprint": "",
+            "identity_ref": "prop:RED_FIBER",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "INSERT",
@@ -1995,16 +2332,19 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "AUDIENCE_ONLY",
-      "payload_hash": "4e4c96734fbb093dd14910109bf9e5267c112eb1de02230c9fac95582cdf2adb",
+      "model_generation_ready": false,
+      "payload_hash": "9d53d77040cfc8c23b8a331e092e71a6555be64d14e29560bcb48ec1a542b562",
       "plan_shot_id": "SH_E01_SC002_005",
-      "prompt_ir_payload_fingerprint": "4e4c96734fbb093dd14910109bf9e5267c112eb1de02230c9fac95582cdf2adb",
-      "prompt_ir_semantic_fingerprint": "1ae6783e275ccc242cc532143fff3af2934013357aeac660958616a19520d836",
+      "prompt_ir_payload_fingerprint": "9d53d77040cfc8c23b8a331e092e71a6555be64d14e29560bcb48ec1a542b562",
+      "prompt_ir_semantic_fingerprint": "2e835f021873193e019d0b680ac38689badb821bc2cde89849c4ee7ff57d499b",
+      "prompt_ir_semantic_ready": true,
       "props": [
         {
           "asset_identity_ref": "RED_FIBER",
           "prop_ref": "RED_FIBER"
         }
       ],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC002",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -2030,12 +2370,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "66af6def4197f52e477982b8df781da2d127109e767dcfe2c85f2048db67e0a7",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "2dcbd1b6020fd67a16d838a0f68a2d908c957730387d6672190d00b8ed17e3b9",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "f31e702588328016c11671e7f04aba65a03cf489e8f92b37f75ad3626e15cb62",
-        "storyboard_set_payload_fingerprint": "set-2",
-        "visual_semantic_handoff_fingerprint": "d1f26796972c262b5fda5834330ca474a9994d892203519ee71450eb864a4f59"
+        "storyboard_projection_fingerprint": "6f846740c68a7993e6d6ed5dfcd0d38295fb5dbe172ddf50fb245146cc2e0842",
+        "storyboard_set_payload_fingerprint": "f38c3737dd90d65986c1e7f787b0db1cfd996677ff35b75188a114ae0a250ea3",
+        "visual_semantic_handoff_fingerprint": "fcf73b8e1c4933df4c6690fc2230fce45a68766016d568daf60c76b028d52e78"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -2051,7 +2392,7 @@
           "陆叔": "APT_CENTER"
         }
       },
-      "storyboard_shot_id": 5,
+      "storyboard_shot_id": 13,
       "subjects": [
         {
           "asset_identity_ref": "林晚",
@@ -2085,11 +2426,27 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
-          "character:林晚",
+          "scene:E01_SC002",
           "character:陆叔",
-          "scene:E01_SC002"
+          "character:林晚"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC002",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC002",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "CLOSE",
@@ -2144,11 +2501,14 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
-      "payload_hash": "f6e7a958adf0070df968111453750f630b5dc852a4fd460e704191571cc60ea4",
+      "model_generation_ready": false,
+      "payload_hash": "f0f189a18e47adc63218e3d7e69d72093a9eca736b0d5e0af822c80e05639ac0",
       "plan_shot_id": "SH_E01_SC002_006",
-      "prompt_ir_payload_fingerprint": "f6e7a958adf0070df968111453750f630b5dc852a4fd460e704191571cc60ea4",
-      "prompt_ir_semantic_fingerprint": "4aebbc30e5963dfe2a1a18d1394586133294e8a1b5be9b0bf195affabfb1c540",
+      "prompt_ir_payload_fingerprint": "f0f189a18e47adc63218e3d7e69d72093a9eca736b0d5e0af822c80e05639ac0",
+      "prompt_ir_semantic_fingerprint": "826c54e31c07f7554f0a1baa9214eebf8243b8573f8beb17b729b8c6eb7ecce9",
+      "prompt_ir_semantic_ready": true,
       "props": [],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC002",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -2171,12 +2531,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "66af6def4197f52e477982b8df781da2d127109e767dcfe2c85f2048db67e0a7",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "2dcbd1b6020fd67a16d838a0f68a2d908c957730387d6672190d00b8ed17e3b9",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "58e0f7a2f047cc24d4f2f07ac81e24829865aacff8479f11103bd335b287e428",
-        "storyboard_set_payload_fingerprint": "set-2",
-        "visual_semantic_handoff_fingerprint": "b2dff89111417c98a5391692c4aec7d6584cdd6593f576eda170db144c257ddb"
+        "storyboard_projection_fingerprint": "1e74c7226aad262ce92958207be0c81c598e17349e291f82edd6b9aadc85f58c",
+        "storyboard_set_payload_fingerprint": "f38c3737dd90d65986c1e7f787b0db1cfd996677ff35b75188a114ae0a250ea3",
+        "visual_semantic_handoff_fingerprint": "dbb2ca73aeb84f499770f333a0d08c2a94894feff36425c73f97037b5cd3d447"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -2190,7 +2551,7 @@
           "陆叔": "APT_TABLE"
         }
       },
-      "storyboard_shot_id": 6,
+      "storyboard_shot_id": 14,
       "subjects": [
         {
           "asset_identity_ref": "陆叔",
@@ -2240,11 +2601,27 @@
       },
       "asset_authority_bindings": {
         "identity_refs": [
+          "scene:E01_SC002",
           "character:林晚",
-          "character:陆叔",
-          "scene:E01_SC002"
+          "character:陆叔"
         ],
-        "resolved": []
+        "resolved": [
+          {
+            "asset_authority_ref": "book:990401:scene:E01_SC002",
+            "authority_fingerprint": "",
+            "identity_ref": "scene:E01_SC002",
+            "stale_status": "FRESH"
+          }
+        ]
+      },
+      "authority_classes": {
+        "adapter_output": "MODEL_ADAPTER_OUTPUT",
+        "asset_bindings": "ASSET_AUTHORITY_BINDING",
+        "generation_policy": "GENERATION_POLICY",
+        "media_metadata": "MEDIA_REQUEST_METADATA",
+        "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+        "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+        "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
       },
       "camera": {
         "framing_class": "TWO_SHOT",
@@ -2299,11 +2676,14 @@
         "target_media": "IMAGE"
       },
       "information_visibility": "AUDIENCE_ONLY",
-      "payload_hash": "51c88b09d58a8434bbb0ace0ed407da59e762fee7af0c4519779fc37ba56e86a",
+      "model_generation_ready": false,
+      "payload_hash": "436de6f5f928660955fc71075f159993d28e2a9896b81c78fd2d2cfe25b752d5",
       "plan_shot_id": "SH_E01_SC002_007",
-      "prompt_ir_payload_fingerprint": "51c88b09d58a8434bbb0ace0ed407da59e762fee7af0c4519779fc37ba56e86a",
-      "prompt_ir_semantic_fingerprint": "19b4856060d60c7943340a83052df35624f6e134aac2da593be67ef39dbb66dc",
+      "prompt_ir_payload_fingerprint": "436de6f5f928660955fc71075f159993d28e2a9896b81c78fd2d2cfe25b752d5",
+      "prompt_ir_semantic_fingerprint": "2c48fa0358575e3e87dcb2dce1669173cfcedc985469ef8e455ea6a6473dbb0f",
+      "prompt_ir_semantic_ready": true,
       "props": [],
+      "qualification_state": "PROMPT_IR_QUALIFIED",
       "scene_id": "E01_SC002",
       "schema_version": "prompt_ir_v2",
       "semantic_refs": {
@@ -2333,12 +2713,13 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "",
-        "shot_plan_authority_fingerprint": "",
+        "blocking_authority_fingerprint": "66af6def4197f52e477982b8df781da2d127109e767dcfe2c85f2048db67e0a7",
+        "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "shot_plan_authority_fingerprint": "2dcbd1b6020fd67a16d838a0f68a2d908c957730387d6672190d00b8ed17e3b9",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "2e25efc0fb3f3e756cbc558bcf7327b36237ef4f09eb19c205825ce412f9ab73",
-        "storyboard_set_payload_fingerprint": "set-2",
-        "visual_semantic_handoff_fingerprint": "a65899c6209392f87fddfca258024a7f6c736fd29535e32683392022d483fc6c"
+        "storyboard_projection_fingerprint": "ba9461941872c6fdf9324f25273aacca8da4d9ba287d0d3c0eaadc07a00061a4",
+        "storyboard_set_payload_fingerprint": "f38c3737dd90d65986c1e7f787b0db1cfd996677ff35b75188a114ae0a250ea3",
+        "visual_semantic_handoff_fingerprint": "c87726581fc83f1be2a072a7da7257e21cbb16d67fb110220adac67f04ad79fe"
       },
       "spatial": {
         "blocking_state_refs": [
@@ -2353,7 +2734,7 @@
           "陆叔": "APT_TABLE"
         }
       },
-      "storyboard_shot_id": 7,
+      "storyboard_shot_id": 15,
       "subjects": [
         {
           "asset_identity_ref": "林晚",
@@ -2373,38 +2754,49 @@
       }
     }
   ],
+  "prompt_ir_count": 15,
   "provider_calls": 0,
   "scenes": [
     {
-      "plan_shot_ids": [
-        "SH_E01_SC001_001",
-        "SH_E01_SC001_002",
-        "SH_E01_SC001_003",
-        "SH_E01_SC001_004",
-        "SH_E01_SC001_005",
-        "SH_E01_SC001_006",
-        "SH_E01_SC001_007",
-        "SH_E01_SC001_008"
-      ],
+      "materialization_set_id": 1,
+      "projection_payload_rows": 8,
+      "prompt_compiler_handoff_rows": 8,
       "scene_id": "E01_SC001",
-      "shot_count": 8,
-      "storyboard_materialization_set_id": 1
+      "semantic_ready": true,
+      "storyboard_pointer_id": 1,
+      "storyboard_shot_count": 8,
+      "storyboard_shot_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "visual_semantic_handoff_rows": 8
     },
     {
-      "plan_shot_ids": [
-        "SH_E01_SC002_001",
-        "SH_E01_SC002_002",
-        "SH_E01_SC002_003",
-        "SH_E01_SC002_004",
-        "SH_E01_SC002_005",
-        "SH_E01_SC002_006",
-        "SH_E01_SC002_007"
-      ],
+      "materialization_set_id": 2,
+      "projection_payload_rows": 7,
+      "prompt_compiler_handoff_rows": 7,
       "scene_id": "E01_SC002",
-      "shot_count": 7,
-      "storyboard_materialization_set_id": 2
+      "semantic_ready": true,
+      "storyboard_pointer_id": 2,
+      "storyboard_shot_count": 7,
+      "storyboard_shot_ids": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "visual_semantic_handoff_rows": 7
     }
   ],
-  "schema_version": "prompt_ir_phase_e_pilot_v1",
+  "schema_version": "prompt_ir_phase_e_pilot_v2_real_production",
   "video_calls": 0
 }
