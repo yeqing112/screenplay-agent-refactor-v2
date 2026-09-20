@@ -154,3 +154,25 @@ partial materialization is accepted.
 ## Completion token
 
 `PHASE_D_STORYBOARD_MATERIALIZATION_AND_VISUAL_SEMANTIC_CLOSURE_READY_FOR_REVIEW`
+
+## 12. Materialization Reuse & Stale Immutability
+
+- `validate_current_materialization_authority()` is the canonical validator shared by the resolver and Production reuse path.
+- Untouched FRESH Sets reuse the same Set and Pointer IDs with no duplicate StoryboardShot rows; the real pilot records `reused=true` for both scenes.
+- Semantic, prompt, projection-column, authority-envelope/handoff and Set-fingerprint tampering all fail closed with HTTP `409` and persist the Set as `STALE`.
+- A resolver-staled Set cannot transition back to `FRESH` and cannot trigger an automatic replacement Set with the same fingerprint; the real pilot records `STORYBOARD_MATERIALIZATION_STALE` and unchanged Set count.
+- Pointer recovery is permitted only for a complete, fully revalidated, never-stale FRESH Set; no Set fields or rows are rewritten.
+- Evidence: `phase_d_materialization_reuse_audit.json`, `episode_01_phase_d_trace.json`, and `tests/test_storyboard_phase_d_reuse_stale_closure.py`.
+- Provider calls: `0`; PromptIR/image/video generation: not started; migrations added: `0`.
+
+## 13. Verification update
+
+- Reuse/stale closure regression: `4 passed`; combined Phase D targeted regression: `17 passed`.
+- Existing Phase D semantic/materializer regression: `13 passed`.
+- Real Production pilot: PASS; Scene 1 `8` shots, Scene 2 `7` shots; direct materialization tamper cases all HTTP `409`.
+
+## Completion token
+
+`PHASE_D_MATERIALIZATION_REUSE_AND_STALE_REACTIVATION_CLOSURE_READY_FOR_REVIEW`
+
+- Full backend rerun: 1608 passed, 4 failed, 930 warnings; the same four historical failures remain unchanged: 	est_director_quality_v24_offline_replay, 	est_director_quality_v3_final_spine_topology_preflight_wiring, 	est_real_llm_gray_selection, and 	est_targeted_missing_fact_api.\n

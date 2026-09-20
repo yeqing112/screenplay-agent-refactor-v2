@@ -84,6 +84,19 @@ def _run_resolver(*, book_id: int, episode: int, scene_id: str) -> dict[str, Any
         return {"status": "FAIL", **_error(exc)}
 
 
+def _run_materialize(*, book_id: int, episode: int, scene_id: str) -> dict[str, Any]:
+    """Call the real Production materialization API after a mutation."""
+    from api.storyboard_materializer_api import MaterializeRequest, materialize_storyboard
+    from models import Session, ShotPlan
+
+    try:
+        with Session() as session:
+            plan = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).order_by(ShotPlan.id.desc()).first()
+        return materialize_storyboard(book_id, episode, MaterializeRequest(confirmed=True, plan_id=plan.id))
+    except Exception as exc:
+        return {"status": "FAIL", **_error(exc)}
+
+
 def _run_case(*, engine, baseline: Path, db_file: Path, book_id: int, episode: int, scene_id: str, name: str, mutate: Callable[[], Any], action: Callable[[], Any]) -> dict[str, Any]:
     from models import Session
 
@@ -146,6 +159,30 @@ def _tamper_semantic(path: str, value: Any, *, scene_id: str) -> Callable[[], An
             session.commit()
             return {"row_id": row.id, "path": path, "old": old, "new": value}
     return mutate
+
+
+def _tamper_handoff_for_scene(scene_id: str) -> dict[str, Any]:
+    from models import Session, StoryboardMaterializationPointer, StoryboardMaterializationSet
+    with Session() as session:
+        pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=990401, episode=1, scene_id=scene_id).one()
+        row = session.query(StoryboardMaterializationSet).filter_by(id=pointer.materialization_set_id).one()
+        envelope = _json(row.authority_envelope_json, {})
+        old = envelope.get("storyboard_handoff", {}).get("handoff_fingerprint")
+        envelope.setdefault("storyboard_handoff", {})["handoff_fingerprint"] = "tampered"
+        row.authority_envelope_json = json.dumps(envelope, ensure_ascii=False, sort_keys=True)
+        session.commit()
+        return {"old": old, "new": "tampered"}
+
+
+def _tamper_set_for_scene(scene_id: str) -> dict[str, Any]:
+    from models import Session, StoryboardMaterializationPointer, StoryboardMaterializationSet
+    with Session() as session:
+        pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=990401, episode=1, scene_id=scene_id).one()
+        row = session.query(StoryboardMaterializationSet).filter_by(id=pointer.materialization_set_id).one()
+        old = row.set_payload_fingerprint
+        row.set_payload_fingerprint = "tampered"
+        session.commit()
+        return {"old": old, "new": "tampered"}
 
 
 def _render_markdown(scene_id: str, scene_name: str, semantics: list[dict[str, Any]], projections: list[dict[str, Any]]) -> str:
@@ -355,6 +392,20 @@ def materialize_and_capture(*, db_file, book_id: int, episode: int, authority: d
             return {"row_id": row.id, "field": "visual_prompt_static", "value": "bypass"}
 
     cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=episode, scene_id="E01_SC001", name="prompt_premature_mutation", mutate=prompt_mutation, action=resolver("E01_SC001")))
+
+    # Direct Production materialization must share the resolver's complete
+    # validator and fail closed after every protected-field mutation.
+    cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=episode, scene_id="E01_SC001", name="semantic_tamper_then_materialize", mutate=_tamper_semantic("information_refs", "__TOGGLE__", scene_id="E01_SC001"), action=lambda: _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")))
+    cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=episode, scene_id="E01_SC001", name="prompt_tamper_then_materialize", mutate=prompt_mutation, action=lambda: _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")))
+    cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=1, scene_id="E01_SC001", name="projection_tamper_then_materialize", mutate=_tamper_row_field("camera_movement", "tampered", scene_id="E01_SC001"), action=lambda: _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")))
+    cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=1, scene_id="E01_SC001", name="handoff_tamper_then_materialize", mutate=lambda: _tamper_handoff_for_scene("E01_SC001"), action=lambda: _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")))
+    cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=1, scene_id="E01_SC001", name="set_fingerprint_tamper_then_materialize", mutate=lambda: _tamper_set_for_scene("E01_SC001"), action=lambda: _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")))
+
+    def resolver_then_materialize() -> dict[str, Any]:
+        resolved = _run_resolver(book_id=book_id, episode=1, scene_id="E01_SC001")
+        return {"resolver": resolved, "materialize": _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")}
+
+    cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=1, scene_id="E01_SC001", name="resolver_stale_then_materialize", mutate=_tamper_semantic("information_refs", "__TOGGLE__", scene_id="E01_SC001"), action=resolver_then_materialize))
 
     def failed_materialization() -> dict[str, Any]:
         from api.shot_plan_api import ShotPlanPreviewRequest, preview_shot_plan

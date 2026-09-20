@@ -1,0 +1,105 @@
+{
+  "schema_version": "phase_d_materialization_reuse_audit_v1",
+  "validator_shared_by": [
+    "resolver",
+    "production_reuse"
+  ],
+  "stale_to_fresh_transition_allowed": false,
+  "tests": {
+    "fresh_reuse": "PASS",
+    "semantic_tamper_then_materialize": "FAIL_CLOSED",
+    "resolver_stale_then_materialize": "FAIL_CLOSED",
+    "prompt_tamper_then_materialize": "FAIL_CLOSED",
+    "projection_tamper_then_materialize": "FAIL_CLOSED",
+    "handoff_envelope_tamper_then_materialize": "FAIL_CLOSED",
+    "set_fingerprint_tamper_then_materialize": "FAIL_CLOSED"
+  },
+  "evidence": {
+    "fresh_reuse": {
+      "same_set": true,
+      "same_pointer": true,
+      "no_duplicate_storyboard_shots": true,
+      "calls": [
+        {
+          "confirmed": true,
+          "mutated": false,
+          "reused": true,
+          "materialized_count": 0,
+          "plan_shot_ids": [],
+          "materialization_set_ids": [
+            1
+          ],
+          "production_status": "blocked",
+          "materialization_status": "MATERIALIZED",
+          "llm_called": false,
+          "provider_calls": 0
+        },
+        {
+          "confirmed": true,
+          "mutated": false,
+          "reused": true,
+          "materialized_count": 0,
+          "plan_shot_ids": [],
+          "materialization_set_ids": [
+            2
+          ],
+          "production_status": "blocked",
+          "materialization_status": "MATERIALIZED",
+          "llm_called": false,
+          "provider_calls": 0
+        }
+      ]
+    },
+    "semantic_tamper_then_materialize": {
+      "status_code": 409,
+      "code": "STORYBOARD_SEMANTIC_MISMATCH",
+      "stale_status": "STALE",
+      "set_count_before": 1,
+      "set_count_after": 1
+    },
+    "resolver_stale_then_materialize": {
+      "resolver": "STORYBOARD_SEMANTIC_MISMATCH",
+      "materialize": "STORYBOARD_MATERIALIZATION_STALE",
+      "stale_status": "STALE"
+    },
+    "prompt_tamper_then_materialize": {
+      "status_code": 409,
+      "code": "STORYBOARD_PROMPT_PREMATURE_MUTATION",
+      "stale_status": "STALE",
+      "set_count_before": 1,
+      "set_count_after": 1
+    },
+    "projection_tamper_then_materialize": {
+      "status_code": 409,
+      "code": "STORYBOARD_PROJECTION_TAMPERED",
+      "stale_status": "STALE",
+      "set_count_before": 1,
+      "set_count_after": 1
+    },
+    "handoff_envelope_tamper_then_materialize": {
+      "status_code": 409,
+      "code": "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
+      "stale_status": "STALE",
+      "set_count_before": 1,
+      "set_count_after": 1
+    },
+    "set_fingerprint_tamper_then_materialize": {
+      "status_code": 409,
+      "code": "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH",
+      "stale_status": "STALE",
+      "set_count_before": 1,
+      "set_count_after": 1
+    }
+  },
+  "provider_calls": 0,
+  "prompt_ir_started": false,
+  "image_generation_started": false,
+  "video_generation_started": false,
+  "database_migrations_added": 0,
+  "verification": {
+    "targeted_phase_d": "17 passed",
+    "full_backend": "1608 passed, 4 historical failures, 930 warnings",
+    "golden": "5/5",
+    "real_pilot": "PASS"
+  }
+}

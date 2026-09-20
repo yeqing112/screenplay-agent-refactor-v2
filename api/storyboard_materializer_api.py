@@ -30,6 +30,7 @@ from core.storyboard_materializer import (
     projection_fingerprint,
     _row_projection_payload,
     validate_materialization_set,
+    validate_current_materialization_authority,
 )
 from core.storyboard_visual_semantics import (
     build_visual_semantic_handoff_set,
@@ -65,6 +66,7 @@ class MaterializeRequest(BaseModel):
 
 
 def _conflict(code: str, message: str, **extra):
+    extra.setdefault("reused", False)
     raise HTTPException(status_code=409, detail={"code": code, "message": message, **extra})
 
 
@@ -80,39 +82,20 @@ def _authority_row_payload(row, envelope: dict, *, plan: ShotPlan) -> dict:
 
 
 def _existing_set_is_fresh(session, *, pointer, set_row, plan, authority_envelope, expected_ids):
+    """Compatibility wrapper over the canonical authority validator.
+
+    Reuse must never maintain a second freshness policy.  The validator also
+    rechecks the complete projection, semantic handoff and fingerprints.
+    """
     if not pointer or not set_row:
         return False, []
-    if pointer.materialization_set_id != set_row.id or pointer.shot_plan_id != plan.id or pointer.shot_plan_revision != plan.revision:
-        return False, []
-    if pointer.set_payload_fingerprint != set_row.set_payload_fingerprint or set_row.stale_status != "FRESH" or set_row.status != "MATERIALIZED":
-        return False, []
-    if set_row.shot_plan_authority_fingerprint != str(authority_envelope.get("envelope_fingerprint") or ""):
-        return False, []
-    rows = session.query(StoryboardShot).filter_by(materialization_set_id=set_row.id, book_id=plan.book_id, episode=plan.episode, scene_id=str(getattr(plan, "scene_id", "") or "")).order_by(StoryboardShot.shot_id).all()
-    if len(rows) != len(expected_ids) or [str(row.plan_shot_id or "") for row in rows] != expected_ids:
-        return False, rows
-    if any(row.materialization_status != "MATERIALIZED" or not row.projection_fingerprint for row in rows):
-        return False, rows
-    for row in rows:
-        meta = _json(getattr(row, "meta_info", "{}"), {})
-        stored_payload = meta.get("projection_payload") if isinstance(meta.get("projection_payload"), dict) else None
-        if stored_payload is not None:
-            from core.storyboard_materializer import _live_row_projection_payload
-            live_payload = _live_row_projection_payload(row, meta)
-            live_payload.pop("visual_semantic_handoff", None)
-            protected_payload = dict(stored_payload)
-            protected_payload.pop("visual_semantic_handoff", None)
-            if json.dumps(live_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str) != json.dumps(protected_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str):
-                return False, rows
-        if str(row.projection_fingerprint or "") != projection_fingerprint(_row_projection_payload(row, meta)):
-            return False, rows
-        if any(str(getattr(row, field, "") or "").strip() for field in ("visual_prompt_static", "visual_prompt_motion", "visual_prompt_final")):
-            return False, rows
-        if not isinstance(meta.get("visual_semantic_handoff"), dict):
-            return False, rows
-    return True, rows
-
-
+    result = validate_current_materialization_authority(
+        session, book_id=plan.book_id, episode=plan.episode,
+        scene_id=str(getattr(plan, "scene_id", "") or ""),
+    )
+    if not result.get("valid") or result.get("set") is None or result["set"].id != set_row.id:
+        return False, result.get("rows", [])
+    return bool(result.get("reusable")), result.get("rows", [])
 @router.post("/{book_id}/episodes/{episode}/storyboard/materialize")
 def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) -> dict:
     if not req.confirmed:
@@ -236,32 +219,64 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
             set_fingerprint = materialization_set_fingerprint(authority_envelope={"shot_plan": authority_envelope, "treatment": treatment_envelope, "blocking": blocking_envelope, "storyboard_handoff": storyboard_handoff}, projections=projections)
             pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).first()
             set_row = session.query(StoryboardMaterializationSet).filter_by(set_payload_fingerprint=set_fingerprint).first()
+
+            # Validate the pointer's current Set before considering any new
+            # Set. This prevents tampered materialization from being bypassed.
+            current_set = session.query(StoryboardMaterializationSet).filter_by(id=pointer.materialization_set_id).first() if pointer and pointer.materialization_set_id else None
+            if current_set is not None:
+                if current_set.stale_status == "FRESH" and current_set.status == "MATERIALIZED":
+                    current_validation = validate_current_materialization_authority(
+                        session, book_id=book_id, episode=episode, scene_id=scene_id,
+                    )
+                    if not current_validation.get("valid"):
+                        detail = current_validation.get("detail") or {}
+                        _conflict(
+                            str(detail.get("code") or "STORYBOARD_MATERIALIZATION_INVALID"),
+                            str(detail.get("message") or "Current materialization authority is invalid."),
+                            stale_reasons=detail.get("stale_reasons") or current_validation.get("errors", []),
+                        )
+                elif current_set.set_payload_fingerprint == set_fingerprint:
+                    _conflict(
+                        "STORYBOARD_MATERIALIZATION_STALE",
+                        "A stale materialization Set cannot be reactivated or replaced in place.",
+                        stale_reasons=_json(current_set.stale_reasons, []),
+                    )
+
+            # A deleted Pointer may be recovered only by validating the
+            # complete never-stale Set.  No Set fields or rows are rewritten.
+            if pointer is None and set_row is not None:
+                if set_row.status != "MATERIALIZED" or set_row.stale_status != "FRESH":
+                    _conflict(
+                        "STORYBOARD_MATERIALIZATION_STALE",
+                        "A stale materialization Set cannot be reactivated.",
+                        stale_reasons=_json(set_row.stale_reasons, []),
+                    )
+                validation = validate_current_materialization_authority(
+                    session, book_id=book_id, episode=episode, scene_id=scene_id,
+                    materialization_set_id=set_row.id,
+                )
+                if not validation.get("valid"):
+                    detail = validation.get("detail") or {}
+                    _conflict(
+                        str(detail.get("code") or "STORYBOARD_MATERIALIZATION_INVALID"),
+                        str(detail.get("message") or "Materialization Set validation failed."),
+                        stale_reasons=detail.get("stale_reasons") or validation.get("errors", []),
+                    )
+                pointer = StoryboardMaterializationPointer(
+                    book_id=book_id, episode=episode, scene_id=scene_id,
+                    materialization_set_id=set_row.id, shot_plan_id=plan.id,
+                    shot_plan_revision=plan.revision,
+                    set_payload_fingerprint=set_row.set_payload_fingerprint,
+                    qualification_state="MATERIALIZED", updated_at=datetime.now(),
+                )
+                session.add(pointer)
+                reused_set_ids.append(set_row.id)
+                continue
+
             is_fresh, existing_rows = _existing_set_is_fresh(session, pointer=pointer, set_row=set_row, plan=plan, authority_envelope=authority_envelope, expected_ids=expected_ids)
             if is_fresh:
                 reused_set_ids.append(set_row.id)
                 continue
-
-            # A complete set with the same deterministic fingerprint can be
-            # reactivated when its pointer was removed or interrupted.  An
-            # incomplete set is never silently repaired or duplicated.
-            if set_row is not None:
-                candidate_rows = session.query(StoryboardShot).filter_by(materialization_set_id=set_row.id, book_id=book_id, episode=episode).order_by(StoryboardShot.shot_id).all()
-                if len(candidate_rows) == len(expected_ids) and [str(row.plan_shot_id or "") for row in candidate_rows] == expected_ids and all(str(row.projection_fingerprint or "") for row in candidate_rows):
-                    set_row.status = "MATERIALIZED"
-                    set_row.stale_status = "FRESH"
-                    set_row.stale_reasons = "[]"
-                    set_row.updated_at = datetime.now()
-                    pointer = pointer or StoryboardMaterializationPointer(book_id=book_id, episode=episode, scene_id=scene_id)
-                    pointer.materialization_set_id = set_row.id
-                    pointer.shot_plan_id = plan.id
-                    pointer.shot_plan_revision = plan.revision
-                    pointer.set_payload_fingerprint = set_fingerprint
-                    pointer.qualification_state = "MATERIALIZED"
-                    pointer.updated_at = datetime.now()
-                    session.add(pointer)
-                    reused_set_ids.append(set_row.id)
-                    continue
-                _conflict("STORYBOARD_MATERIALIZATION_SET_INCOMPLETE", f"Existing materialization set is incomplete for scene: {plan.scene_name}")
 
             # Any legacy row in this scene is an explicit migration boundary;
             # never guess its relation to the current ShotPlan.

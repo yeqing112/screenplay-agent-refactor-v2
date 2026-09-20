@@ -385,7 +385,7 @@ def mark_materialization_set_stale(session: Any, set_row: Any, reasons: list[str
         pass
 
 
-def resolve_current_authoritative_materialization(session: Any, *, book_id: int, episode: int, scene_id: str):
+def _resolve_current_authoritative_materialization(session: Any, *, book_id: int, episode: int, scene_id: str, materialization_set_id: int | None = None):
     """Resolve and validate the current materialization set, fail-closed."""
     from fastapi import HTTPException
     from models import StoryboardMaterializationPointer, StoryboardMaterializationSet, StoryboardShot
@@ -395,6 +395,11 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
     from core.storyboard_visual_semantics import compare_shotplan_storyboard_semantics, semantic_diff, validate_asset_identity_bindings
 
     pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=book_id, episode=episode, scene_id=_text(scene_id)).first()
+    if not pointer and materialization_set_id is not None:
+        candidate = session.query(StoryboardMaterializationSet).filter_by(id=materialization_set_id, book_id=book_id, episode=episode, scene_id=_text(scene_id)).first()
+        if candidate is not None:
+            from types import SimpleNamespace
+            pointer = SimpleNamespace(materialization_set_id=candidate.id, shot_plan_id=candidate.shot_plan_id, shot_plan_revision=candidate.shot_plan_revision, set_payload_fingerprint=candidate.set_payload_fingerprint)
     if not pointer:
         raise HTTPException(status_code=409, detail={"code": "STORYBOARD_MATERIALIZATION_POINTER_MISSING", "message": "No current StoryboardMaterializationSet pointer exists."})
     set_row = session.query(StoryboardMaterializationSet).filter_by(id=pointer.materialization_set_id, book_id=book_id, episode=episode, scene_id=_text(scene_id)).first()
@@ -543,4 +548,35 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
     return set_row, rows, resolved_envelope
 
 
-__all__ = ["MATERIALIZER_VERSION", "MATERIALIZER_POLICY_VERSION", "MATERIALIZATION_SCHEMA_VERSION", "SHOT_PLAN_PROJECTION", "PRODUCTION_CONTINUITY_STATE", "ASSET_IDENTITY_BINDING", "STRUCTURAL_MATERIALIZATION_METADATA", "DOWNSTREAM_HANDOFF_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID", "materialize_storyboard_from_shot_plan", "materialize_storyboard_from_handoff", "projection_payload", "projection_fingerprint", "materialization_set_fingerprint", "build_materialization_authority_envelope", "authority_envelope_fingerprint", "build_storyboard_production_snapshot", "validate_materialization_set", "mark_materialization_set_stale", "resolve_current_authoritative_materialization"]
+
+
+def validate_current_materialization_authority(session: Any, *, book_id: int, episode: int, scene_id: str, materialization_set_id: int | None = None) -> dict[str, Any]:
+    """Validate current materialization authority through one canonical path."""
+    try:
+        set_row, rows, envelope = _resolve_current_authoritative_materialization(
+            session, book_id=book_id, episode=episode, scene_id=scene_id, materialization_set_id=materialization_set_id
+        )
+        return {
+            "valid": True, "reusable": True, "errors": [], "set": set_row,
+            "rows": rows, "current_handoff": (envelope or {}).get("storyboard_handoff", {}),
+            "set_fingerprint": _text(getattr(set_row, "set_payload_fingerprint", "")),
+            "current_envelope": envelope,
+            "storyboard_semantic_ready": bool((envelope or {}).get("storyboard_semantic_ready")),
+        }
+    except Exception as exc:
+        from fastapi import HTTPException
+        if isinstance(exc, HTTPException):
+            detail = exc.detail if isinstance(exc.detail, dict) else {"message": str(exc.detail)}
+            return {"valid": False, "reusable": False,
+                    "errors": [str(detail.get("code") or "STORYBOARD_MATERIALIZATION_INVALID")],
+                    "detail": detail, "exception": exc}
+        raise
+
+
+def resolve_current_authoritative_materialization(session: Any, *, book_id: int, episode: int, scene_id: str):
+    """Resolve the current Set through the shared canonical validator."""
+    result = validate_current_materialization_authority(session, book_id=book_id, episode=episode, scene_id=scene_id)
+    if not result.get("valid"):
+        raise result["exception"]
+    return result["set"], result["rows"], result["current_envelope"]
+__all__ = ["MATERIALIZER_VERSION", "MATERIALIZER_POLICY_VERSION", "MATERIALIZATION_SCHEMA_VERSION", "SHOT_PLAN_PROJECTION", "PRODUCTION_CONTINUITY_STATE", "ASSET_IDENTITY_BINDING", "STRUCTURAL_MATERIALIZATION_METADATA", "DOWNSTREAM_HANDOFF_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID", "materialize_storyboard_from_shot_plan", "materialize_storyboard_from_handoff", "projection_payload", "projection_fingerprint", "materialization_set_fingerprint", "build_materialization_authority_envelope", "authority_envelope_fingerprint", "build_storyboard_production_snapshot", "validate_materialization_set", "mark_materialization_set_stale", "resolve_current_authoritative_materialization", "validate_current_materialization_authority"]

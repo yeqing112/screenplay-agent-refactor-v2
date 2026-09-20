@@ -40,16 +40,16 @@
       "materialized_shot_count": 8,
       "set_status": "MATERIALIZED",
       "stale_status": "FRESH",
-      "set_fingerprint": "071303572f8cfcb2eb0e517d9fffeef8fc27d7417466efce7e82ba802498869f",
+      "set_fingerprint": "eb4f127534e789c6c24229c4f9ea83c9bb5eac32e3f77fa694b91eb971eee2a7",
       "projection_fingerprints": [
-        "b0a5f5eb632141d0097bb0a2c0faabcdef8dc555d1f328b0604610a1dd163cec",
-        "2132cf5b8b7f1f7c3402432610b9cba71c6d18ec07d6709ff490cae7f444cc81",
-        "0234c12c301cee0c3e9d4aa2a998be2079d43821c3188e2f410589192fb96216",
-        "97b8f7418529c3c537b474b201c3af0ad1a3872dd5ff42197460b819c5dd9542",
-        "3f487e7b121e12858fbcf5091bf0d299c893238055581d401360ac3ad8924b7a",
-        "893732787295ff465833f5295340201d2045fc6be2ae74cd32398f83f77b53fe",
-        "4953edca6763a2d541083d0a717fe7419db6ee694f4f099ac5d6f8bcb8234c42",
-        "038377f365d60a1e94368b8b3bef5caa30c84eb0e1c29d9429dce6d4c8da4442"
+        "3e3a876f2e2f0c540e032bf3bd0b8c3a4961505fc0bb775a2e6dd144e2f9ada7",
+        "442f9d435febe14234c8ba7136738ed6b95818696bba8ffbb53a6e25f9dd0317",
+        "2ebeee808777bba88ba2986949e42cb31b324fb00a8cf6b4ca6223b4313d1178",
+        "6a14ccf37eb180d127653e24dd481d04938940cf7d14a252e0e4960f4d4710fb",
+        "6af1b5b3873386ff386f480ab562774832843998630eee3c4a28336e187f8b10",
+        "58e03cef69bf4f22b0b260719d24e89ee9da7787aa07956840d3bf7eb68ee310",
+        "17ac0d8fd3e9d92823fef752a93e4baa28c1b82651a5e1cb73e20317e09e7625",
+        "5c79743d4850402dfcb62abb80598907f53b2305e47bb65b99c234110f4c7ae2"
       ],
       "prompt_fields_empty": true,
       "handoff_fingerprint": "afd424bfef1ac09960266e2e6f125588673f462ddb16333c6b6a4c62bfcf9fad",
@@ -95,15 +95,15 @@
       "materialized_shot_count": 7,
       "set_status": "MATERIALIZED",
       "stale_status": "FRESH",
-      "set_fingerprint": "d8d0f041e21649bfdfe65acd2380e16b0fe9bce92919f94c0eb7837f3523b355",
+      "set_fingerprint": "c0945b1faab11edd6e062d8889c97f062e13aa5d926940a27c20e339055116bc",
       "projection_fingerprints": [
-        "6cca98180d1f19e37609b08a16959c242fee2d8576fafd61e0843b0fc51ee0bb",
-        "2345e2b131d623a491fb75d488b3c82493bee6ad2c9667e612fe2c67ff770550",
-        "8074dc2e4594387290fca23dfab400e518832e2a18d5543a15326ca0041edec1",
-        "87c486ca78eabb6099f752731b18ee6c2deafb5a95dee2e7c5e3906dc7e3f5f6",
-        "81195a108b34ce870c67c7e64d12e5ae1cca13713163862d66e5f1904da8d49f",
-        "b8856a8a6becb189377b8b832bd009d7273d67f10c3b4e1dd838e2720aa2226f",
-        "bc46ce62e4fb07a1eff7b21408a43e9fb832c2abf79ecfeb11241560c7392633"
+        "a606f2506f3fac689aa3b2686143be74792c50f4a895fb5343786dcb223ab23f",
+        "631eb750a71613eeba1f07b0b54f21f65386060f3d7c9bc40337b3ff31314070",
+        "4abfd6882204929143f23663b4e7c900bd6a3d2f493438dbbb5d021c2af098c3",
+        "241d4dec01f2100c86e9e914f79d514b8a0b85a258a09ac6202cfbef01bb7d7c",
+        "5ac271b9daf3de41670a2d94e30c7df8e8e1d7751e7834bce69c2fe789465487",
+        "b437518f9793be3ebc658a0481834ca8705411369c9ec5b19589af247b4b6503",
+        "fd9ba8c34cc4c1e975f0844df84fb5dfb94620a22b3a8aa0193cab8b31bf89f9"
       ],
       "prompt_fields_empty": true,
       "handoff_fingerprint": "bc37810c010ab66560ec6726322b3b2b142fdfbf5f26703dc8a2f681224a25bd",
@@ -172,7 +172,8 @@
         "status_code": 409,
         "detail": {
           "code": "STORYBOARD_PROJECTION_TAMPERED",
-          "message": "Storyboard projection columns no longer match their immutable projection payload."
+          "message": "Storyboard projection columns no longer match their immutable projection payload.",
+          "reused": false
         }
       },
       "before": {
@@ -296,7 +297,8 @@
               }
             },
             "empty": false
-          }
+          },
+          "reused": false
         }
       },
       "before": {
@@ -420,7 +422,8 @@
               }
             },
             "empty": false
-          }
+          },
+          "reused": false
         }
       },
       "before": {
@@ -548,7 +551,8 @@
               }
             },
             "empty": false
-          }
+          },
+          "reused": false
         }
       },
       "before": {
@@ -679,7 +683,8 @@
               }
             },
             "empty": false
-          }
+          },
+          "reused": false
         }
       },
       "before": {
@@ -811,7 +816,8 @@
               }
             },
             "empty": false
-          }
+          },
+          "reused": false
         }
       },
       "before": {
@@ -852,7 +858,8 @@
           "stale_reasons": [
             "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
             "STORYBOARD_HANDOFF_FINGERPRINT_INVALID"
-          ]
+          ],
+          "reused": false
         }
       },
       "before": {
@@ -881,7 +888,7 @@
       "case": "set_fingerprint_tamper",
       "scene_id": "E01_SC001",
       "mutation": {
-        "old": "071303572f8cfcb2eb0e517d9fffeef8fc27d7417466efce7e82ba802498869f",
+        "old": "eb4f127534e789c6c24229c4f9ea83c9bb5eac32e3f77fa694b91eb971eee2a7",
         "new": "tampered"
       },
       "result": {
@@ -889,7 +896,8 @@
         "status_code": 409,
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH",
-          "message": "Current pointer does not match the materialization set fingerprint."
+          "message": "Current pointer does not match the materialization set fingerprint.",
+          "reused": false
         }
       },
       "before": {
@@ -928,7 +936,8 @@
         "status_code": 409,
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_STALE",
-          "message": "ShotPlan authority changed; materialization must be recreated."
+          "message": "ShotPlan authority changed; materialization must be recreated.",
+          "reused": false
         }
       },
       "before": {
@@ -967,7 +976,8 @@
         "status_code": 409,
         "detail": {
           "code": "SCENE_BLOCKING_CHANGED",
-          "message": "ShotPlan SceneBlocking lineage is stale."
+          "message": "ShotPlan SceneBlocking lineage is stale.",
+          "reused": false
         }
       },
       "before": {
@@ -1002,7 +1012,8 @@
         "status_code": 409,
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
-          "message": "Materialization set cardinality is incomplete."
+          "message": "Materialization set cardinality is incomplete.",
+          "reused": false
         }
       },
       "before": {
@@ -1038,7 +1049,8 @@
         "status_code": 409,
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
-          "message": "Materialization set cardinality is incomplete."
+          "message": "Materialization set cardinality is incomplete.",
+          "reused": false
         }
       },
       "before": {
@@ -1080,7 +1092,8 @@
         "status_code": 409,
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
-          "message": "Materialization set cardinality is incomplete."
+          "message": "Materialization set cardinality is incomplete.",
+          "reused": false
         }
       },
       "before": {
@@ -1117,7 +1130,8 @@
         "status_code": 409,
         "detail": {
           "code": "STORYBOARD_PROMPT_PREMATURE_MUTATION",
-          "message": "Prompt fields must remain uncompiled during Phase D."
+          "message": "Prompt fields must remain uncompiled during Phase D.",
+          "reused": false
         }
       },
       "before": {
@@ -1138,6 +1152,351 @@
         "stale_status": "STALE",
         "stale_reasons": [
           "STORYBOARD_PROMPT_PREMATURE_MUTATION"
+        ]
+      }
+    },
+    {
+      "case": "semantic_tamper_then_materialize",
+      "scene_id": "E01_SC001",
+      "mutation": {
+        "row_id": 1,
+        "path": "information_refs",
+        "old": [],
+        "new": "__TOGGLE__"
+      },
+      "result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ],
+          "reused": false
+        }
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "zero_write": null,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_SEMANTIC_MISMATCH"
+        ]
+      }
+    },
+    {
+      "case": "prompt_tamper_then_materialize",
+      "scene_id": "E01_SC001",
+      "mutation": {
+        "row_id": 1,
+        "field": "visual_prompt_static",
+        "value": "bypass"
+      },
+      "result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_PROMPT_PREMATURE_MUTATION",
+          "message": "Prompt fields must remain uncompiled during Phase D.",
+          "stale_reasons": [
+            "STORYBOARD_PROMPT_PREMATURE_MUTATION"
+          ],
+          "reused": false
+        }
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "zero_write": null,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_PROMPT_PREMATURE_MUTATION"
+        ]
+      }
+    },
+    {
+      "case": "projection_tamper_then_materialize",
+      "scene_id": "E01_SC001",
+      "mutation": {
+        "row_id": 1,
+        "field": "camera_movement",
+        "old": "none",
+        "new": "tampered"
+      },
+      "result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_PROJECTION_TAMPERED",
+          "message": "Storyboard projection columns no longer match their immutable projection payload.",
+          "stale_reasons": [
+            "STORYBOARD_PROJECTION_TAMPERED"
+          ],
+          "reused": false
+        }
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "zero_write": null,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_PROJECTION_TAMPERED"
+        ]
+      }
+    },
+    {
+      "case": "handoff_tamper_then_materialize",
+      "scene_id": "E01_SC001",
+      "mutation": {
+        "old": "afd424bfef1ac09960266e2e6f125588673f462ddb16333c6b6a4c62bfcf9fad",
+        "new": "tampered"
+      },
+      "result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
+          "message": "Storyboard materialization authority envelope is stale or tampered.",
+          "stale_reasons": [
+            "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
+            "STORYBOARD_HANDOFF_FINGERPRINT_INVALID"
+          ],
+          "reused": false
+        }
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "zero_write": null,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
+          "STORYBOARD_HANDOFF_FINGERPRINT_INVALID"
+        ]
+      }
+    },
+    {
+      "case": "set_fingerprint_tamper_then_materialize",
+      "scene_id": "E01_SC001",
+      "mutation": {
+        "old": "eb4f127534e789c6c24229c4f9ea83c9bb5eac32e3f77fa694b91eb971eee2a7",
+        "new": "tampered"
+      },
+      "result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH",
+          "message": "Current pointer does not match the materialization set fingerprint.",
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH"
+          ],
+          "reused": false
+        }
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "zero_write": null,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH"
+        ]
+      }
+    },
+    {
+      "case": "resolver_stale_then_materialize",
+      "scene_id": "E01_SC001",
+      "mutation": {
+        "row_id": 1,
+        "path": "information_refs",
+        "old": [],
+        "new": "__TOGGLE__"
+      },
+      "result": {
+        "resolver": {
+          "status": "FAIL",
+          "status_code": 409,
+          "detail": {
+            "code": "STORYBOARD_SEMANTIC_MISMATCH",
+            "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+            "semantic_diff": {
+              "missing_semantic": [],
+              "extra_semantic": [],
+              "camera_mismatch": [],
+              "continuity_mismatch": [],
+              "asset_binding_mismatch": [],
+              "missing_shots": [],
+              "extra_shots": [],
+              "per_shot": {
+                "SH_E01_SC001_001": {
+                  "missing_semantic": [],
+                  "extra_semantic": [],
+                  "changed_semantic": [
+                    "information_refs"
+                  ],
+                  "camera_mismatch": [],
+                  "continuity_mismatch": [],
+                  "asset_binding_mismatch": [],
+                  "empty": false
+                },
+                "SH_E01_SC001_002": {
+                  "missing_semantic": [],
+                  "extra_semantic": [],
+                  "changed_semantic": [],
+                  "camera_mismatch": [],
+                  "continuity_mismatch": [],
+                  "asset_binding_mismatch": [],
+                  "empty": true
+                },
+                "SH_E01_SC001_003": {
+                  "missing_semantic": [],
+                  "extra_semantic": [],
+                  "changed_semantic": [],
+                  "camera_mismatch": [],
+                  "continuity_mismatch": [],
+                  "asset_binding_mismatch": [],
+                  "empty": true
+                },
+                "SH_E01_SC001_004": {
+                  "missing_semantic": [],
+                  "extra_semantic": [],
+                  "changed_semantic": [],
+                  "camera_mismatch": [],
+                  "continuity_mismatch": [],
+                  "asset_binding_mismatch": [],
+                  "empty": true
+                },
+                "SH_E01_SC001_005": {
+                  "missing_semantic": [],
+                  "extra_semantic": [],
+                  "changed_semantic": [],
+                  "camera_mismatch": [],
+                  "continuity_mismatch": [],
+                  "asset_binding_mismatch": [],
+                  "empty": true
+                },
+                "SH_E01_SC001_006": {
+                  "missing_semantic": [],
+                  "extra_semantic": [],
+                  "changed_semantic": [],
+                  "camera_mismatch": [],
+                  "continuity_mismatch": [],
+                  "asset_binding_mismatch": [],
+                  "empty": true
+                },
+                "SH_E01_SC001_007": {
+                  "missing_semantic": [],
+                  "extra_semantic": [],
+                  "changed_semantic": [],
+                  "camera_mismatch": [],
+                  "continuity_mismatch": [],
+                  "asset_binding_mismatch": [],
+                  "empty": true
+                },
+                "SH_E01_SC001_008": {
+                  "missing_semantic": [],
+                  "extra_semantic": [],
+                  "changed_semantic": [],
+                  "camera_mismatch": [],
+                  "continuity_mismatch": [],
+                  "asset_binding_mismatch": [],
+                  "empty": true
+                }
+              },
+              "empty": false
+            }
+          }
+        },
+        "materialize": {
+          "status": "FAIL",
+          "status_code": 409,
+          "detail": {
+            "code": "STORYBOARD_MATERIALIZATION_STALE",
+            "message": "A stale materialization Set cannot be reactivated or replaced in place.",
+            "stale_reasons": [
+              "STORYBOARD_SEMANTIC_MISMATCH"
+            ],
+            "reused": false
+          }
+        }
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "zero_write": null,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_SEMANTIC_MISMATCH"
         ]
       }
     },
