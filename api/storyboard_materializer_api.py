@@ -15,13 +15,16 @@ from pydantic import AliasChoices, BaseModel, Field
 from core.script_ir import resolve_script_payload
 from core.director_treatment_authority import resolve_current_authoritative_treatment
 from core.scene_blocking_authority import resolve_current_authoritative_scene_blocking
+from core.scene_blocking_authority import blocking_payload_from_row
 from core.shot_plan_authority import resolve_current_authoritative_shot_plan, shot_plan_payload_from_row
+from core.storyboard_handoff import project_shot_design_to_storyboard_handoff
 from core.storyboard_materializer import (
     MATERIALIZATION_SCHEMA_VERSION,
     MATERIALIZER_POLICY_VERSION,
     MATERIALIZER_VERSION,
     build_materialization_authority_envelope,
     materialization_set_fingerprint,
+    materialize_storyboard_from_handoff,
     materialize_storyboard_from_shot_plan,
     projection_payload,
     validate_materialization_set,
@@ -150,7 +153,17 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                 _conflict("SHOT_PLAN_PAYLOAD_INVALID", f"Approved ShotPlan payload is invalid for scene: {plan.scene_name}")
             plan_payload = shot_plan_payload_from_row(plan)
             try:
-                projections = materialize_storyboard_from_shot_plan(plan_payload, production=True)
+                # The current Phase C Authority is the only creative source
+                # for the new Production path.  Older production-qualified
+                # rows remain readable for compatibility until an explicit
+                # migration exists; they never enter the Phase C handoff.
+                if plan_payload.get("phase_c_semantic_ready") is True:
+                    blocking_payload = blocking_payload_from_row(blocking)
+                    storyboard_handoff = project_shot_design_to_storyboard_handoff(plan_payload, blocking=blocking_payload, require_phase_c=True)
+                    projections = materialize_storyboard_from_handoff(storyboard_handoff, production=True)
+                else:
+                    storyboard_handoff = {"schema_version": "legacy_storyboard_compatibility", "projection_version": "legacy", "handoff_fingerprint": "", "source_shot_plan_fingerprint": ""}
+                    projections = materialize_storyboard_from_shot_plan(plan_payload, production=True)
             except (TypeError, ValueError, json.JSONDecodeError) as exc:
                 code = str(exc).split(":", 1)[0] if ":" in str(exc) else "SHOT_PLAN_MATERIALIZATION_BLOCKED"
                 _conflict(code, str(exc))
@@ -170,8 +183,11 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                 "ordered_plan_shot_ids": expected_ids,
                 "materializer_version": MATERIALIZER_VERSION,
                 "materializer_policy_version": MATERIALIZER_POLICY_VERSION,
+                "handoff_schema_version": storyboard_handoff.get("schema_version"),
+                "handoff_projection_version": storyboard_handoff.get("projection_version"),
+                "handoff_fingerprint": storyboard_handoff.get("handoff_fingerprint"),
             }
-            set_fingerprint = materialization_set_fingerprint(authority_envelope={"shot_plan": authority_envelope, "treatment": treatment_envelope, "blocking": blocking_envelope}, projections=projections)
+            set_fingerprint = materialization_set_fingerprint(authority_envelope={"shot_plan": authority_envelope, "treatment": treatment_envelope, "blocking": blocking_envelope, "storyboard_handoff": storyboard_handoff}, projections=projections)
             pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).first()
             set_row = session.query(StoryboardMaterializationSet).filter_by(set_payload_fingerprint=set_fingerprint).first()
             is_fresh, existing_rows = _existing_set_is_fresh(session, pointer=pointer, set_row=set_row, plan=plan, authority_envelope=authority_envelope, expected_ids=expected_ids)
@@ -225,9 +241,15 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                 shot_plan={"id": plan.id, "revision": plan.revision, "payload_hash": plan_payload_hash, "authority_fingerprint": authority_fp},
                 materialization_set={"id": set_row.id, "fingerprint": set_fingerprint, "expected_shot_count": len(expected_ids), "actual_shot_count": len(projections), "ordered_plan_shot_ids": expected_ids, "materializer_version": MATERIALIZER_VERSION, "materializer_policy_version": MATERIALIZER_POLICY_VERSION},
             )
+            set_envelope["storyboard_handoff"] = {
+                "schema_version": storyboard_handoff.get("schema_version"),
+                "projection_version": storyboard_handoff.get("projection_version"),
+                "source_shot_plan_fingerprint": storyboard_handoff.get("source_shot_plan_fingerprint"),
+                "handoff_fingerprint": storyboard_handoff.get("handoff_fingerprint"),
+            }
             set_row.authority_envelope_json = json.dumps(set_envelope, ensure_ascii=False, sort_keys=True)
             for projection in projections:
-                handoff = {"schema_version": "storyboard_prompt_handoff_v1", "materialization_set_id": set_row.id, "storyboard_shot_id": None, "plan_shot_id": projection["plan_shot_id"], "beat_id": projection.get("beat_id", ""), "scene_id": scene_id, "shot_plan_id": plan.id, "shot_plan_revision": plan.revision, "shot_plan_authority_fingerprint": authority_fp, "storyboard_projection_fingerprint": projection["projection_fingerprint"], "asset_identity_bindings": projection["asset_bindings"], "continuity_contract": projection["continuity_contract"], "camera": projection["meta_info"].get("camera", {}), "duration": projection["duration"], "action_beats": projection["action_beats"], "entry_state": projection["start_state"], "exit_state": projection["end_state"], "shot_purpose": projection["shot_purpose"], "transition": projection["transition"]}
+                handoff = {"schema_version": "storyboard_prompt_handoff_v1", "storyboard_handoff_schema_version": storyboard_handoff.get("schema_version"), "storyboard_handoff_projection_version": storyboard_handoff.get("projection_version"), "storyboard_handoff_fingerprint": storyboard_handoff.get("handoff_fingerprint"), "materialization_set_id": set_row.id, "storyboard_shot_id": None, "plan_shot_id": projection["plan_shot_id"], "beat_id": projection.get("beat_id", ""), "scene_id": scene_id, "shot_plan_id": plan.id, "shot_plan_revision": plan.revision, "shot_plan_authority_fingerprint": authority_fp, "storyboard_projection_fingerprint": projection["projection_fingerprint"], "asset_identity_bindings": projection["asset_bindings"], "continuity_contract": projection["continuity_contract"], "camera": projection["meta_info"].get("camera", {}), "duration": projection["duration"], "action_beats": projection["action_beats"], "entry_state": projection["start_state"], "exit_state": projection["end_state"], "shot_purpose": projection["shot_purpose"], "transition": projection["transition"]}
                 meta = {**projection["meta_info"], "action_beats": projection["action_beats"], "asset_bindings": projection["asset_bindings"], "continuity_contract": projection["continuity_contract"], "projection_payload": projection_payload(projection), "upstream": {"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id, "shot_plan_id": plan.id, "shot_plan_authority_fingerprint": authority_fp}, "prompt_compiler_handoff": handoff}
                 row = StoryboardShot(book_id=book_id, episode=episode, scene_name=projection["scene_name"], scene_id=scene_id, plan_shot_id=projection["plan_shot_id"], materialization_set_id=set_row.id, source_shot_plan_id=plan.id, source_shot_plan_revision=plan.revision, source_shot_plan_authority_fingerprint=authority_fp, projection_fingerprint=projection["projection_fingerprint"], materialization_status="MATERIALIZED", shot_id=projection["shot_id"], dialogue=projection["dialogue"], duration=int(float(projection["duration"])), camera_angle=projection["camera_angle"], camera_movement=projection["camera_movement"], camera_speed=projection["camera_speed"], shot_purpose=projection["shot_purpose"], transition=projection["transition"], lighting=projection["lighting"], start_state=json.dumps(projection["start_state"], ensure_ascii=False) if isinstance(projection["start_state"], (dict, list)) else projection["start_state"], action_process=projection["action_process"], end_state=json.dumps(projection["end_state"], ensure_ascii=False) if isinstance(projection["end_state"], (dict, list)) else projection["end_state"], visual_prompt_static="", visual_prompt_motion="", visual_prompt_final="", asset_links=json.dumps(projection["asset_bindings"], ensure_ascii=False), meta_info=json.dumps(meta, ensure_ascii=False, sort_keys=True), execution_status="succeeded", quality_status="materialized", production_status="blocked", workflow_profile="production", created_at=datetime.now(), updated_at=datetime.now())
                 session.add(row)

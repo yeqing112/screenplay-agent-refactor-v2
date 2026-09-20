@@ -18,6 +18,13 @@ COMPILER_OUTPUT = "COMPILER_OUTPUT"
 MEDIA_STATE = "MEDIA_STATE"
 UNKNOWN_INVALID = "UNKNOWN_INVALID"
 
+from core.storyboard_handoff import (
+    HANDOFF_SCHEMA_VERSION,
+    HANDOFF_PROJECTION_VERSION,
+    project_shot_design_to_storyboard_handoff,
+    validate_storyboard_handoff,
+)
+
 
 def _canonical(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
@@ -92,6 +99,8 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
         "duration": duration if production else max(1, int(float(duration or 3))),
         "camera_angle": _text(camera.get("angle")),
         "camera_movement": _text(camera.get("movement")),
+        # Camera speed is intentionally optional.  Phase C has no canonical
+        # speed intent; an empty value is preserved as unspecified metadata.
         "camera_speed": _text(camera.get("speed")),
         "shot_purpose": _text(item.get("purpose")),
         "transition": _text(item.get("transition")),
@@ -113,6 +122,8 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
             "shot_plan_ref": {"plan_shot_id": plan_shot_id},
         },
     }
+    if isinstance(item.get("meta_info"), dict):
+        projection["meta_info"].update(item["meta_info"])
     projection["projection_fingerprint"] = _fingerprint({key: projection[key] for key in (
         "scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract"
     )})
@@ -120,9 +131,39 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
     return projection
 
 
+def materialize_storyboard_from_handoff(handoff: dict[str, Any], *, production: bool = True) -> list[dict[str, Any]]:
+    """Materialize a validated ``storyboard_handoff_v1`` object."""
+    errors = validate_storyboard_handoff(handoff)
+    if errors:
+        first = errors[0]
+        code = str(first.get("code") or "STORYBOARD_HANDOFF_INVALID")
+        raise ValueError(f"{code}: Storyboard handoff failed strict validation.")
+    scene_id = _text(handoff.get("scene_id"))
+    scene_name = _text(handoff.get("scene_name"))
+    projections = []
+    for ordinal, item in enumerate(handoff["shots"], start=1):
+        projection = _projection_fields(item, scene_id=scene_id, scene_name=scene_name, ordinal=ordinal, production=production)
+        projection["meta_info"]["handoff"] = {
+            "schema_version": HANDOFF_SCHEMA_VERSION,
+            "projection_version": HANDOFF_PROJECTION_VERSION,
+            "handoff_fingerprint": handoff.get("handoff_fingerprint"),
+            "storyboard_handoff_shot_fingerprint": item.get("storyboard_handoff_shot_fingerprint"),
+        }
+        projections.append(projection)
+    return projections
+
+
 def materialize_storyboard_from_shot_plan(approved_shot_plan: dict[str, Any], treatment: dict[str, Any] | None = None, blocking: dict[str, Any] | None = None, asset_snapshot: dict[str, Any] | None = None, *, production: bool = False) -> list[dict[str, Any]]:
     """Project ShotPlan intent into StoryboardShot-shaped dictionaries."""
     plan = approved_shot_plan if isinstance(approved_shot_plan, dict) else {}
+    if production and plan.get("schema_version") == HANDOFF_SCHEMA_VERSION:
+        return materialize_storyboard_from_handoff(plan, production=True)
+    # Current Phase C Production input is projected exactly once at this
+    # boundary.  Legacy callers without semantic readiness retain the old
+    # permissive/strict compatibility path below.
+    if production and plan.get("phase_c_semantic_ready") is True and isinstance(plan.get("shots"), list) and any(isinstance(item, dict) and isinstance(item.get("camera_state"), dict) for item in plan["shots"]):
+        handoff = project_shot_design_to_storyboard_handoff(plan, blocking=blocking, require_phase_c=True)
+        return materialize_storyboard_from_handoff(handoff, production=True)
     shots = plan.get("shots") if isinstance(plan.get("shots"), list) else []
     if any(not isinstance(item, dict) for item in shots):
         raise ValueError("Approved ShotPlan contains a non-object shot; materialization is fail-closed.")
@@ -261,4 +302,4 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
     return set_row, rows, envelope
 
 
-__all__ = ["MATERIALIZER_VERSION", "MATERIALIZER_POLICY_VERSION", "MATERIALIZATION_SCHEMA_VERSION", "SHOT_PLAN_PROJECTION", "STRUCTURAL_MATERIALIZATION_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID", "materialize_storyboard_from_shot_plan", "projection_payload", "projection_fingerprint", "materialization_set_fingerprint", "build_materialization_authority_envelope", "validate_materialization_set", "mark_materialization_set_stale", "resolve_current_authoritative_materialization"]
+__all__ = ["MATERIALIZER_VERSION", "MATERIALIZER_POLICY_VERSION", "MATERIALIZATION_SCHEMA_VERSION", "SHOT_PLAN_PROJECTION", "STRUCTURAL_MATERIALIZATION_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID", "materialize_storyboard_from_shot_plan", "materialize_storyboard_from_handoff", "projection_payload", "projection_fingerprint", "materialization_set_fingerprint", "build_materialization_authority_envelope", "validate_materialization_set", "mark_materialization_set_stale", "resolve_current_authoritative_materialization"]

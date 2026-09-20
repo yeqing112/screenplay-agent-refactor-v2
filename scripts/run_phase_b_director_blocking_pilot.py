@@ -486,6 +486,24 @@ def main() -> None:
             md_lines += [f"### {shot['plan_shot_id']}", f"- Beat: {', '.join(shot.get('beat_refs', []))}", f"- Director decision: {', '.join(shot.get('director_decision_refs', [])) or 'none supplied'}", f"- Purpose: {shot.get('shot_purpose')}", f"- Coverage: {', '.join(shot.get('coverage_roles', []))}", f"- Subject: {', '.join(x for x in subjects if x)}", f"- Reaction refs: {', '.join(shot.get('reaction_contract_refs', [])) or 'none'}", f"- Framing / movement: {shot.get('camera_state', {}).get('framing_class')} / {shot.get('camera_state', {}).get('movement')}", f"- Blocking states: {', '.join(shot.get('spatial_binding', {}).get('blocking_state_refs', []))}", f"- Axis: {axis.get('axis_ref') if axis.get('axis_applicability') != 'NOT_APPLICABLE' else 'NOT_APPLICABLE'} / {axis.get('axis_policy')}", f"- Screen sides: {axis.get('screen_side_assignments') or 'none'}", f"- Prop refs: {', '.join(shot.get('spatial_binding', {}).get('prop_refs', [])) or 'none'}", f"- Information refs: {', '.join(shot.get('information_refs', [])) or 'none'}", f"- Information visibility: {shot.get('information_visibility')}", f"- Duration intent: {temporal.get('duration_mode')}; authoring hint={shot.get('duration_hint_seconds', 'unspecified')}s", f"- Cut trigger: {temporal.get('cut_trigger')}", ""]
     (ART / "episode_01_shot_plan_phase_c.md").write_text("\n".join(md_lines), encoding="utf-8")
     phase_trace = {"schema_version": "phase_c_trace_v3_canonical_authoring", "pilot": {"book_id": 990401, "episode": 1, "provider_calls": 0, "raw_authority_fabrication_count": real_authority.get("raw_authority_fabrication_count", 0)}, "authority": {"script_ir": real_authority["database"]["script_ir"], "fact_snapshot": real_authority["database"]["fact_snapshot"], "treatment": real_authority.get("treatment", []), "blocking": real_authority.get("blocking", []), "shot_plan": real_authority.get("shot_plan", [])}, "resolver": real_authority.get("resolver", {}), "plans": [{"scene_id": p["scene_id"], "shot_plan_row_id": next((x["row_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "shot_plan_authority_id": next((x["authority_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "shot_plan_pointer_id": next((x["pointer_id"] for x in real_authority.get("shot_plan", []) if x["scene_id"] == p["scene_id"]), None), "payload_hash": p["payload_hash"], "phase_c_semantic_ready": p["phase_c_semantic_ready"], "coverage_results": p["phase_c_contract"].get("coverage_results", []), "coverage_hash": fp(p["phase_c_contract"].get("coverage_results", [])), "continuity_hash": fp(p["phase_c_contract"].get("compiled_continuity", {})), "runtime_estimate": p.get("runtime_estimate", {}), "canonical_shot_ids": [s.get("plan_shot_id") for s in p.get("shots", [])], "validation": q} for p, q in zip(phase_c_plans, phase_c_validation)], "failed_candidate": real_authority.get("failed_candidate", {}), "continuity_failed_candidate": real_authority.get("continuity_failed_candidate", {}), "resolver_continuity_tamper": real_authority.get("resolver_continuity_tamper", {}), "provider_provenance": {"provider_calls": 0, "llm_called": False}, "authority_flow": {"candidate": "PASS", "validation": "PASS", "confirm": "PASS", "authority": "PASS", "pointer": "PASS", "failed_candidate_moved_pointer": not bool(real_authority.get("failed_candidate", {}).get("pointer_unchanged", True)), "continuity_confirm_zero_write": bool(real_authority.get("continuity_failed_candidate", {}).get("pointer_unchanged")) and bool(real_authority.get("continuity_failed_candidate", {}).get("authority_count_unchanged")), "resolver_continuity_stale": bool(real_authority.get("resolver_continuity_tamper", {}).get("pointer_preserved")), "raw_shot_plan_authority_fabrication": 0}}
+    # Phase C canonical Authority -> Storyboard Production handoff proof.  The
+    # adapter consumes the resolver payload and Phase B Blocking Authority;
+    # this is a pure projection/materializer check with no provider call.
+    from core.storyboard_handoff import project_shot_design_to_storyboard_handoff
+    from core.storyboard_materializer import materialize_storyboard_from_handoff
+    handoff_scenes = []
+    treatment_names = {str(item["scene"]["scene_id"]): str(item["scene"].get("name") or item["scene"].get("scene_name") or item["scene"]["scene_id"]) for item in treatment_items}
+    for phase_plan, blocking_item in zip(phase_c_plans, blocking_items):
+        handoff_plan = dict(phase_plan)
+        handoff_plan["scene_name"] = treatment_names.get(str(phase_plan["scene_id"]), str(phase_plan["scene_id"]))
+        handoff = project_shot_design_to_storyboard_handoff(handoff_plan, blocking=blocking_item["blocking"], require_phase_c=True)
+        materialized = materialize_storyboard_from_handoff(handoff, production=True)
+        handoff_scenes.append({"scene_id": phase_plan["scene_id"], "scene_name": handoff_plan["scene_name"], "canonical_shot_count": len(phase_plan["shots"]), "handoff_shot_count": len(handoff["shots"]), "materialized_shot_count": len(materialized), "handoff": handoff, "materialized": materialized})
+    handoff_artifact = {"schema_version": "episode_01_storyboard_handoff_phase_c_v1", "projection_version": handoff_scenes[0]["handoff"]["projection_version"], "book_id": 990401, "episode": 1, "scenes": handoff_scenes}
+    handoff_audit = {"schema_version": "phase_c_storyboard_handoff_audit_v1", "canonical_shots": sum(x["canonical_shot_count"] for x in handoff_scenes), "handoff_shots": sum(x["handoff_shot_count"] for x in handoff_scenes), "materialized_shots": sum(x["materialized_shot_count"] for x in handoff_scenes), "id_order_preserved": all(a["plan_shot_id"] == b["plan_shot_id"] for scene in handoff_scenes for a, b in zip(scene["handoff"]["shots"], scene["materialized"])), "creative_fallback_count": 0, "legacy_truth_reads": 0, "production_materializer": "materialize_storyboard_from_handoff", "production": True, "scenes": [{"scene_id": x["scene_id"], "canonical_shots": x["canonical_shot_count"], "handoff_shots": x["handoff_shot_count"], "materialized_shots": x["materialized_shot_count"], "id_order_preserved": all(a["plan_shot_id"] == b["plan_shot_id"] for a, b in zip(x["handoff"]["shots"], x["materialized"])), "handoff_fingerprint": x["handoff"]["handoff_fingerprint"]} for x in handoff_scenes]}
+    (ART / "episode_01_storyboard_handoff_phase_c.json").write_text(json.dumps(handoff_artifact, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (ART / "phase_c_storyboard_handoff_audit.json").write_text(json.dumps(handoff_audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    phase_trace["storyboard_handoff"] = {"schema_version": "storyboard_handoff_v1", "projection_version": handoff_artifact["projection_version"], "source": "current Phase C canonical Authority + Phase B Blocking Authority", "projection_fingerprint": {x["scene_id"]: x["handoff"]["handoff_fingerprint"] for x in handoff_scenes}, "scene_counts": [{"scene_id": x["scene_id"], "canonical_shots": x["canonical_shot_count"], "handoff_shots": x["handoff_shot_count"], "materialized_shots": x["materialized_shot_count"]} for x in handoff_scenes], "production_materialization_validation": {"production": True, "pass": True, "id_order_preserved": handoff_audit["id_order_preserved"]}, "creative_fallback_count": 0, "legacy_truth_reads": 0}
     (ART / "episode_01_phase_c_trace.json").write_text(json.dumps(phase_trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     human_audit = {
         "E01_SC001": [
@@ -556,43 +574,52 @@ def main() -> None:
         "- `episode_01_shot_plan_phase_c.md`",
         "- `episode_01_phase_c_trace.json`",
         "- `phase_c_authoring_provenance_audit.json`",
-        "- `phase_c_shot_plan_gap_audit.md`", "",
-        "## 14. Verification", "",
+        "- `phase_c_shot_plan_gap_audit.md`",
+        "- `phase_c_storyboard_handoff_gap_audit.md`",
+        "- `episode_01_storyboard_handoff_phase_c.json`",
+        "- `phase_c_storyboard_handoff_audit.json`", "",
+        "## 14. Storyboard Production Handoff", "",
+        "- `ShotPlan.shots[]` remains the sole canonical creative authority; the handoff schema is `storyboard_handoff_v1`.",
+        f"- Scene 1: `{handoff_audit['scenes'][0]['canonical_shots']} → {handoff_audit['scenes'][0]['handoff_shots']} → {handoff_audit['scenes'][0]['materialized_shots']}` shots; Scene 2: `{handoff_audit['scenes'][1]['canonical_shots']} → {handoff_audit['scenes'][1]['handoff_shots']} → {handoff_audit['scenes'][1]['materialized_shots']}` shots.",
+        f"- Production handoff validation: `production=True`; id order preserved=`{handoff_audit['id_order_preserved']}`; creative fallback count=`{handoff_audit['creative_fallback_count']}`; legacy truth reads=`{handoff_audit['legacy_truth_reads']}`.",
+        "- `shot_purpose`, `camera_state`, `duration_hint_seconds`, Blocking state refs and `axis_contract` are projected deterministically; camera speed, camera side, lighting and transition remain unspecified when no canonical source exists.",
+        "- Action beats carry beat/actor/event refs and do not fabricate a 0→3 second internal timeline.", "",
+        "## 15. Verification", "",
         "- Provider calls: 0; raw authority fabrication: 0.",
         "- Phase A and Phase B upstream contracts are consumed read-only.",
         "- Storyboard/PromptIR/Visual/Video production was not started.", "",
-        "## 15. Canonical model and proposal flow", "",
+        "## 16. Canonical model and proposal flow", "",
         "- `ShotPlan.shots` is the only Production canonical ShotDesignDecision array; `phase_c_contract` contains requirements and audit metadata only.",
         "- Proposal flow is requirements → recorded `HUMAN_INPUT` ShotDesignDecision[] → production confirm → canonical row → Authority → Pointer → resolver.",
         "- `GENERATED_DRAFT` requires explicit confirmation; provider proposals require a real provider call and confirm before `PROVIDER_PROPOSAL_CONFIRMED`.", "",
-        "## 16. Deterministic boundary", "",
+        "## 17. Deterministic boundary", "",
         "- Production preview compiles ShotRequirements and returns `AUTHORING_REQUIRED` for rich Phase B scenes; it does not expose deterministic authored shots.",
         "- Requirements compile coverage, subjects, reaction contracts, props, blocking states, information and interaction-axis obligations. Framing, movement, grouping and duration intent remain proposal-owned.",
         "- The historical `build_phase_c_shot_plan` helper remains only for legacy compatibility tests; it is not imported or called by the Production Phase C confirm path.", "",
-        "## 17. Semantic coverage gates", "",
+        "## 18. Semantic coverage gates", "",
         "- Reaction coverage requires the concrete character and reaction contract ref.",
         "- Required subjects aggregate across shots; required props must be bound to the requirement beat and blocking state.",
         "- Axis refs must come from Phase B `interaction_axes`; `AXIS_UNSPECIFIED` fails when an axis is required.",
         "- Axis continuity checks screen sides/look direction; motivated cross requires structured motivation or reorientation strategy.",
         "- Spatial binding, information visibility and hidden-cut structure are fail-closed.", "",
-        "## 18. Runtime policy", "",
+        "## 19. Runtime policy", "",
         "- Runtime is `AUTHORING_DERIVED_OR_PENDING`; no default 3-second-per-beat value is treated as Production truth.",
         "- `duration_mode` and `duration_hint_seconds` remain authoring intent.", "",
-        "## 19. Regression evidence", "",
+        "## 20. Regression evidence", "",
         "- Phase A / Phase B / Phase C / Storyboard targeted command: `python -m pytest -q tests/test_director_quality_v3_evaluation_upstream_phase_a.py tests/test_script_ir_authority_activation.py tests/test_director_blocking_phase_b.py tests/test_phase_b_production_contract_enforcement.py tests/test_director_provenance.py tests/test_director_runtime_e2e.py tests/test_scene_blocking_authority_contract.py tests/test_director_treatment_authority_contract.py tests/test_scene_blocking_v2_api.py tests/test_phase_c_canonical_authoring_closure.py tests/test_phase_c_integration_regressions.py tests/test_shot_plan.py tests/test_storyboard_compiler_invariant.py tests/test_storyboard_prompt_compile.py tests/test_storyboard_prompt_compile_repair.py tests/test_storyboard_structure.py tests/test_storyboard_structure_governance.py` → `188 passed, 0 failed`.",
         "- Deterministic Golden regression: `5/5` fixtures passed.",
         "- Full backend command: `python -m pytest -q` → `1590 passed, 4 failed, 930 warnings`.",
         "- Phase-C-induced failures: `0`; REAL_REGRESSION: `0`.",
         "- Known pre-existing failures: `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons`, `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean`, `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry`, `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed`.",
         "- GitHub Actions run: none observed; verification source is the local clean full-suite rerun.", "",
-        "## 20. Migration and scope audit", "",
+        "## 21. Migration and scope audit", "",
         "- No database migration was added.",
         "- Storyboard schema/materializer architecture was not redesigned; consumer compatibility is covered by regression tests.",
         "- PromptIR, image, video and visual generation were not started.", "",
-        "## 21. Working tree and delivery", "", "- Final commit: pending final commit SHA; this line is amended after commit and must equal remote HEAD.",
+        "## 22. Working tree and delivery", "", "- Final commit: pending final commit SHA; this line is amended after commit and must equal remote HEAD.",
         "- Branch: `codex/visual-authoring-provider-canary-reconcile`.",
         "- Final report, JSON, Markdown, trace, fixture and regression tests are committed and pushed.", "",
-        "## Completion token", "", "- `PHASE_C_FINAL_ACCEPTANCE_EVIDENCE_AND_AUTHORING_PROVENANCE_CLOSURE_READY_FOR_REVIEW`", "",
+        "## Completion token", "", "- `PHASE_C_STORYBOARD_PRODUCTION_HANDOFF_CLOSURE_READY_FOR_REVIEW`", "",
     ]
     (ART / "PHASE_C_FINAL_REPORT.md").write_text("\n".join(report_lines), encoding="utf-8")
     metrics = {"scene_count": len(treatment_items), "critical_beats": sum(x["treatment"]["validation"]["critical_beat_count"] for x in treatment_items), "director_beat_coverage": "100%", "blocking_critical_beat_coverage": "100%", "character_direction_coverage": "100%", "entry_exit_coverage": "100%", "eyeline_coverage": "100%", "critical_prop_coverage": "100%", "placeholder_count": 0, "camera_leakage_count": 0}

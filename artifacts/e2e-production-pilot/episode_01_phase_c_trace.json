@@ -11,7 +11,7 @@
       "id": 1,
       "revision": 1,
       "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-      "authority_envelope_fingerprint": "7a5bb17752e33de371a5f5c6f8cabe643b591e51af4eec33d8cd515228871a8b"
+      "authority_envelope_fingerprint": "c4899366e2caa5e2256acbfe7d7d82b4b97b2c870f7834ed347906207df14523"
     },
     "fact_snapshot": {
       "id": 1,
@@ -24,9 +24,9 @@
         "revision": 1,
         "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
         "authority_id": 1,
-        "authority_fingerprint": "ec26f20285e969af09d792d5d7ae9f327941dccf658e3f1529259b264acff46f",
+        "authority_fingerprint": "9bac5458e842a5c1a7ce1c895575d9f8ea3efff0f57fd7120dc6b7ad71a1f79f",
         "pointer_id": 1,
-        "pointer_fingerprint": "ec26f20285e969af09d792d5d7ae9f327941dccf658e3f1529259b264acff46f",
+        "pointer_fingerprint": "9bac5458e842a5c1a7ce1c895575d9f8ea3efff0f57fd7120dc6b7ad71a1f79f",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_b_semantic_ready": true,
         "semantic_contract_ready": true,
@@ -52,7 +52,7 @@
           "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
           "confirmation_type": "HUMAN_CONFIRMATION",
           "confirmed": true,
-          "confirmed_at": "2026-09-20T08:31:42.945190",
+          "confirmed_at": "2026-09-20T13:18:57.489294",
           "source_proposal_origin": "HUMAN_INPUT"
         },
         "canonical_origin": "HUMAN_AUTHORED",
@@ -72,9 +72,9 @@
         "revision": 1,
         "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
         "authority_id": 2,
-        "authority_fingerprint": "1e73707b1d90179bda3305cbb4b20580cc0f3f1665dab448f601326ed06f3987",
+        "authority_fingerprint": "fbd5dfe8baf49c58b396f3a223c5eac790a868b411efb0cc02dc5ae5cbac44da",
         "pointer_id": 2,
-        "pointer_fingerprint": "1e73707b1d90179bda3305cbb4b20580cc0f3f1665dab448f601326ed06f3987",
+        "pointer_fingerprint": "fbd5dfe8baf49c58b396f3a223c5eac790a868b411efb0cc02dc5ae5cbac44da",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_b_semantic_ready": true,
         "semantic_contract_ready": true,
@@ -100,7 +100,7 @@
           "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
           "confirmation_type": "HUMAN_CONFIRMATION",
           "confirmed": true,
-          "confirmed_at": "2026-09-20T08:31:42.995996",
+          "confirmed_at": "2026-09-20T13:18:57.556460",
           "source_proposal_origin": "HUMAN_INPUT"
         },
         "canonical_origin": "HUMAN_AUTHORED",
@@ -120,11 +120,11 @@
       {
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "a0a96f832e17c44a58dba16dd5e51aba630ef6be6de492b5f19bd74dd317009f",
+        "payload_hash": "b826c9b7710eb391f314dbdd4e5ff890754bff82803f7c48dd5df9647ce8e706",
         "authority_id": 1,
-        "authority_fingerprint": "7af7fea7128d5cf354ae149abe8e8446dc60977a6f278c52de58bf8dcc3860b6",
+        "authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
         "pointer_id": 1,
-        "pointer_fingerprint": "7af7fea7128d5cf354ae149abe8e8446dc60977a6f278c52de58bf8dcc3860b6",
+        "pointer_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "104b497f7ee654289fd1f2ad0bd031084e1edf30e4123e10c087d98416ff2fd0"
@@ -132,11 +132,11 @@
       {
         "row_id": 4,
         "revision": 1,
-        "payload_hash": "32b158dcb75ca0ba16dd9fa918a8b36340b2e2fe834312d74aa6c70da8cb654a",
+        "payload_hash": "ecb4f929c57fbb3cb85d9bdae9716565d7aeea89d7ea0c6a5665aaed7ad28995",
         "authority_id": 2,
-        "authority_fingerprint": "c29c0660b6d9d76feef2a411d1e9ba17cd1b7ddc7377da00d21b37ec84d50c08",
+        "authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
         "pointer_id": 2,
-        "pointer_fingerprint": "c29c0660b6d9d76feef2a411d1e9ba17cd1b7ddc7377da00d21b37ec84d50c08",
+        "pointer_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "compiler_version": "blocking_state_compiler_v1",
         "compiled_states_hash": "22cd404a5c5936fcd7eca86a99b779b3cd0d3582470d7178ffab19f6c546230b"
@@ -147,11 +147,11 @@
         "scene_id": "E01_SC001",
         "row_id": 2,
         "revision": 1,
-        "payload_hash": "eef595cb973ac31ed8be316fc614728445f765697833b68015b59e4f794547fa",
+        "payload_hash": "fb7087aa4e13396016b6cd98daa2213f605f38b5906ae2b04259c09f83b2b856",
         "authority_id": 1,
-        "authority_fingerprint": "4d13b0a60fb1a4bbfeb4ad1ec50b74a2e787973577a975b5413f361eae4d4044",
+        "authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
         "pointer_id": 1,
-        "pointer_fingerprint": "4d13b0a60fb1a4bbfeb4ad1ec50b74a2e787973577a975b5413f361eae4d4044",
+        "pointer_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_c_semantic_ready": true,
         "shot_design_status": "CANONICAL_CONFIRMED",
@@ -2802,19 +2802,19 @@
           "source_lineage": {
             "script_ir": {
               "id": 1,
-              "authority_envelope_fingerprint": "7a5bb17752e33de371a5f5c6f8cabe643b591e51af4eec33d8cd515228871a8b"
+              "authority_envelope_fingerprint": "c4899366e2caa5e2256acbfe7d7d82b4b97b2c870f7834ed347906207df14523"
             },
             "treatment": {
               "id": 1,
               "revision": 1,
               "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
-              "authority_envelope_fingerprint": "ec26f20285e969af09d792d5d7ae9f327941dccf658e3f1529259b264acff46f"
+              "authority_envelope_fingerprint": "9bac5458e842a5c1a7ce1c895575d9f8ea3efff0f57fd7120dc6b7ad71a1f79f"
             },
             "blocking": {
               "id": 2,
               "revision": 1,
-              "payload_hash": "a0a96f832e17c44a58dba16dd5e51aba630ef6be6de492b5f19bd74dd317009f",
-              "authority_envelope_fingerprint": "7af7fea7128d5cf354ae149abe8e8446dc60977a6f278c52de58bf8dcc3860b6"
+              "payload_hash": "b826c9b7710eb391f314dbdd4e5ff890754bff82803f7c48dd5df9647ce8e706",
+              "authority_envelope_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891"
             }
           },
           "authoring_provenance": {
@@ -2835,25 +2835,25 @@
               "confirmed": true,
               "boundary": "production_confirm_service",
               "confirmation_type": "HUMAN_CONFIRMATION",
-              "confirmed_at": "2026-09-20T08:31:43.223627",
+              "confirmed_at": "2026-09-20T13:18:57.821757",
               "source_proposal_origin": "HUMAN_INPUT",
               "canonical_origin": "HUMAN_AUTHORED",
               "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
             },
             "canonical_origin": "HUMAN_AUTHORED"
           },
-          "payload_hash": "661d3bf221bce5a8342c0a50ef53a3c4817fdd86ccca9b89de943bbc78af1d28"
+          "payload_hash": "337d7278bb80c461a66d622cde47cce7084eb2de60168e44671b18b6cf3fdf51"
         }
       },
       {
         "scene_id": "E01_SC002",
         "row_id": 4,
         "revision": 1,
-        "payload_hash": "5f4091a44e4959bfdf04dc1daa3e1915f639ddab48da01a8f1d93f57da263648",
+        "payload_hash": "95869e9ddc3bc49c5063affdac2e3bd0fa1197a849ba948b44e0fb32165f5c5b",
         "authority_id": 2,
-        "authority_fingerprint": "b8bd900bae898787b2c66391162e44c43d0a06fedea4f32482a9627a3dc4fa02",
+        "authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
         "pointer_id": 2,
-        "pointer_fingerprint": "b8bd900bae898787b2c66391162e44c43d0a06fedea4f32482a9627a3dc4fa02",
+        "pointer_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_c_semantic_ready": true,
         "shot_design_status": "CANONICAL_CONFIRMED",
@@ -4904,19 +4904,19 @@
           "source_lineage": {
             "script_ir": {
               "id": 1,
-              "authority_envelope_fingerprint": "7a5bb17752e33de371a5f5c6f8cabe643b591e51af4eec33d8cd515228871a8b"
+              "authority_envelope_fingerprint": "c4899366e2caa5e2256acbfe7d7d82b4b97b2c870f7834ed347906207df14523"
             },
             "treatment": {
               "id": 2,
               "revision": 1,
               "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
-              "authority_envelope_fingerprint": "1e73707b1d90179bda3305cbb4b20580cc0f3f1665dab448f601326ed06f3987"
+              "authority_envelope_fingerprint": "fbd5dfe8baf49c58b396f3a223c5eac790a868b411efb0cc02dc5ae5cbac44da"
             },
             "blocking": {
               "id": 4,
               "revision": 1,
-              "payload_hash": "32b158dcb75ca0ba16dd9fa918a8b36340b2e2fe834312d74aa6c70da8cb654a",
-              "authority_envelope_fingerprint": "c29c0660b6d9d76feef2a411d1e9ba17cd1b7ddc7377da00d21b37ec84d50c08"
+              "payload_hash": "ecb4f929c57fbb3cb85d9bdae9716565d7aeea89d7ea0c6a5665aaed7ad28995",
+              "authority_envelope_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527"
             }
           },
           "authoring_provenance": {
@@ -4937,14 +4937,14 @@
               "confirmed": true,
               "boundary": "production_confirm_service",
               "confirmation_type": "HUMAN_CONFIRMATION",
-              "confirmed_at": "2026-09-20T08:31:43.333393",
+              "confirmed_at": "2026-09-20T13:18:57.970173",
               "source_proposal_origin": "HUMAN_INPUT",
               "canonical_origin": "HUMAN_AUTHORED",
               "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
             },
             "canonical_origin": "HUMAN_AUTHORED"
           },
-          "payload_hash": "1b448996e606ce3669fe494b813d0a3fbc21f84892b91a8a9ab93b96763cfeaf"
+          "payload_hash": "5e1863ac1daef1afcd1cd503736ba9a5b6fe4de0bfc242297410ef100c07ba52"
         }
       }
     ]
@@ -4989,7 +4989,7 @@
       "shot_plan_row_id": 2,
       "shot_plan_authority_id": 1,
       "shot_plan_pointer_id": 1,
-      "payload_hash": "eef595cb973ac31ed8be316fc614728445f765697833b68015b59e4f794547fa",
+      "payload_hash": "fb7087aa4e13396016b6cd98daa2213f605f38b5906ae2b04259c09f83b2b856",
       "phase_c_semantic_ready": true,
       "coverage_results": [
         {
@@ -6721,7 +6721,7 @@
       "shot_plan_row_id": 4,
       "shot_plan_authority_id": 2,
       "shot_plan_pointer_id": 2,
-      "payload_hash": "5f4091a44e4959bfdf04dc1daa3e1915f639ddab48da01a8f1d93f57da263648",
+      "payload_hash": "95869e9ddc3bc49c5063affdac2e3bd0fa1197a849ba948b44e0fb32165f5c5b",
       "phase_c_semantic_ready": true,
       "coverage_results": [
         {
@@ -8082,5 +8082,35 @@
     "continuity_confirm_zero_write": true,
     "resolver_continuity_stale": true,
     "raw_shot_plan_authority_fabrication": 0
+  },
+  "storyboard_handoff": {
+    "schema_version": "storyboard_handoff_v1",
+    "projection_version": "storyboard_handoff_projection_v1",
+    "source": "current Phase C canonical Authority + Phase B Blocking Authority",
+    "projection_fingerprint": {
+      "E01_SC001": "7b92a816233248d7b8695cc47b772d500177fdb021341e8fa67ebdc13c54ea23",
+      "E01_SC002": "66db643f227d2f10577a271ec8389162c1355fba63ac4b75a3444e66ddcbe8ff"
+    },
+    "scene_counts": [
+      {
+        "scene_id": "E01_SC001",
+        "canonical_shots": 8,
+        "handoff_shots": 8,
+        "materialized_shots": 8
+      },
+      {
+        "scene_id": "E01_SC002",
+        "canonical_shots": 7,
+        "handoff_shots": 7,
+        "materialized_shots": 7
+      }
+    ],
+    "production_materialization_validation": {
+      "production": true,
+      "pass": true,
+      "id_order_preserved": true
+    },
+    "creative_fallback_count": 0,
+    "legacy_truth_reads": 0
   }
 }

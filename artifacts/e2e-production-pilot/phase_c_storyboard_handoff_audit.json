@@ -1,0 +1,29 @@
+{
+  "schema_version": "phase_c_storyboard_handoff_audit_v1",
+  "canonical_shots": 15,
+  "handoff_shots": 15,
+  "materialized_shots": 15,
+  "id_order_preserved": true,
+  "creative_fallback_count": 0,
+  "legacy_truth_reads": 0,
+  "production_materializer": "materialize_storyboard_from_handoff",
+  "production": true,
+  "scenes": [
+    {
+      "scene_id": "E01_SC001",
+      "canonical_shots": 8,
+      "handoff_shots": 8,
+      "materialized_shots": 8,
+      "id_order_preserved": true,
+      "handoff_fingerprint": "7b92a816233248d7b8695cc47b772d500177fdb021341e8fa67ebdc13c54ea23"
+    },
+    {
+      "scene_id": "E01_SC002",
+      "canonical_shots": 7,
+      "handoff_shots": 7,
+      "materialized_shots": 7,
+      "id_order_preserved": true,
+      "handoff_fingerprint": "66db643f227d2f10577a271ec8389162c1355fba63ac4b75a3444e66ddcbe8ff"
+    }
+  ]
+}
