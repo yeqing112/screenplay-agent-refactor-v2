@@ -254,6 +254,38 @@ def authority_envelope_fingerprint(envelope: dict[str, Any]) -> str:
     return _fingerprint(payload)
 
 
+def build_storyboard_production_snapshot(*, materialization_set: Any, rows: list[Any], authority_envelope: dict[str, Any]) -> dict[str, Any]:
+    """Build a read-only Phase D → Phase E boundary snapshot.
+
+    The snapshot is assembled at runtime from the already-resolved current
+    Set; it is not persisted as another authority table and contains no
+    prompt prose or media payload.
+    """
+    ordered = []
+    for row in rows:
+        meta = _parse_json(getattr(row, "meta_info", "{}"), {})
+        semantic = meta.get("visual_semantic_handoff") if isinstance(meta, dict) else {}
+        ordered.append({
+            "plan_shot_id": _text(getattr(row, "plan_shot_id", "")),
+            "storyboard_shot_id": getattr(row, "id", None),
+            "projection_fingerprint": _text(getattr(row, "projection_fingerprint", "")),
+            "visual_semantic_handoff": semantic,
+        })
+    return {
+        "schema_version": "storyboard_production_snapshot_v1",
+        "storyboard_materialization_authority": {
+            "materialization_set_id": getattr(materialization_set, "id", None),
+            "set_payload_fingerprint": _text(getattr(materialization_set, "set_payload_fingerprint", "")),
+            "status": getattr(materialization_set, "status", ""),
+            "stale_status": getattr(materialization_set, "stale_status", ""),
+        },
+        "authority_envelope": authority_envelope if isinstance(authority_envelope, dict) else {},
+        "ordered_shots": ordered,
+        "prompt_prose": False,
+        "media_state": "NOT_GENERATED",
+    }
+
+
 def validate_materialization_set(*, expected_plan_shot_ids: list[str], projections: list[dict[str, Any]], set_row: Any | None = None) -> list[dict[str, Any]]:
     errors: list[dict[str, Any]] = []
     actual = [_text(item.get("plan_shot_id")) for item in projections]
@@ -454,4 +486,4 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
     return set_row, rows, resolved_envelope
 
 
-__all__ = ["MATERIALIZER_VERSION", "MATERIALIZER_POLICY_VERSION", "MATERIALIZATION_SCHEMA_VERSION", "SHOT_PLAN_PROJECTION", "PRODUCTION_CONTINUITY_STATE", "ASSET_IDENTITY_BINDING", "STRUCTURAL_MATERIALIZATION_METADATA", "DOWNSTREAM_HANDOFF_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID", "materialize_storyboard_from_shot_plan", "materialize_storyboard_from_handoff", "projection_payload", "projection_fingerprint", "materialization_set_fingerprint", "build_materialization_authority_envelope", "authority_envelope_fingerprint", "validate_materialization_set", "mark_materialization_set_stale", "resolve_current_authoritative_materialization"]
+__all__ = ["MATERIALIZER_VERSION", "MATERIALIZER_POLICY_VERSION", "MATERIALIZATION_SCHEMA_VERSION", "SHOT_PLAN_PROJECTION", "PRODUCTION_CONTINUITY_STATE", "ASSET_IDENTITY_BINDING", "STRUCTURAL_MATERIALIZATION_METADATA", "DOWNSTREAM_HANDOFF_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID", "materialize_storyboard_from_shot_plan", "materialize_storyboard_from_handoff", "projection_payload", "projection_fingerprint", "materialization_set_fingerprint", "build_materialization_authority_envelope", "authority_envelope_fingerprint", "build_storyboard_production_snapshot", "validate_materialization_set", "mark_materialization_set_stale", "resolve_current_authoritative_materialization"]

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from core.storyboard_handoff import project_shot_design_to_storyboard_handoff
-from core.storyboard_materializer import materialize_storyboard_from_handoff
+from core.storyboard_materializer import build_storyboard_production_snapshot, materialize_storyboard_from_handoff
 from core.storyboard_visual_semantics import (
     VISUAL_SEMANTIC_HANDOFF_SCHEMA_VERSION,
     compare_shotplan_storyboard_semantics,
@@ -77,3 +77,27 @@ def test_asset_identity_gate_requires_only_declared_subjects_and_props():
     broken = copy.deepcopy(semantic)
     broken["asset_identity_bindings"]["canonical_asset_identity"]["props"] = []
     assert validate_asset_identity_bindings(semantic=broken, required_subjects=["林晚", "陆叔"], required_props=["POCKET_HARD_OBJECT"], scene_id="E01_SC002")
+
+
+def test_production_snapshot_is_read_only_structured_boundary():
+    _plan, handoff = next(_pilot())
+    projections = materialize_storyboard_from_handoff(handoff, production=True)
+
+    class SetRow:
+        id = 7
+        set_payload_fingerprint = "set-fp"
+        status = "MATERIALIZED"
+        stale_status = "FRESH"
+
+    class Row:
+        def __init__(self, value):
+            self.id = value.get("shot_id")
+            self.plan_shot_id = value.get("plan_shot_id")
+            self.projection_fingerprint = value.get("projection_fingerprint")
+            self.meta_info = json.dumps(value.get("meta_info", {}), ensure_ascii=False)
+
+    snapshot = build_storyboard_production_snapshot(materialization_set=SetRow(), rows=[Row(item) for item in projections], authority_envelope={"storyboard_handoff": {"handoff_fingerprint": handoff["handoff_fingerprint"]}})
+    assert snapshot["schema_version"] == "storyboard_production_snapshot_v1"
+    assert len(snapshot["ordered_shots"]) == len(projections)
+    assert snapshot["prompt_prose"] is False
+    assert snapshot["media_state"] == "NOT_GENERATED"
