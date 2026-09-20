@@ -15,9 +15,13 @@ from core.prompt_ir_authority import (
 )
 from core.prompt_ir_phase_e import (
     PromptIRPhaseEError,
+    MODEL_ADAPTER_REGISTRY,
+    adapt_prompt_ir_to_generation_payload,
     build_generation_policy,
+    build_model_profile,
     compile_storyboard_snapshot_to_prompt_ir,
     fingerprint as phase_e_fingerprint,
+    resolve_current_authoritative_prompt_ir,
 )
 from core.visual_asset_authority import build_asset_key, production_asset_binding
 from core.storyboard_materializer import build_storyboard_production_snapshot, resolve_current_authoritative_materialization
@@ -34,6 +38,8 @@ class PromptIRCompileRequest(BaseModel):
 class AdapterPreviewRequest(BaseModel):
     adapter_id: str = "kling"
     capability_profile: dict = Field(default_factory=dict)
+    model_profile: dict = Field(default_factory=dict)
+    generation_policy: dict = Field(default_factory=dict)
 
 
 class PhaseECompileRequest(BaseModel):
@@ -82,9 +88,9 @@ def _production_asset_authority(session, *, book_id: int, handoff: dict) -> dict
     canonical = bindings.get("canonical_asset_identity") if isinstance(bindings.get("canonical_asset_identity"), dict) else {}
     if not canonical:
         canonical = {
-            "scene": bindings.get("scene_asset_id", ""),
-            "characters": bindings.get("character_asset_ids", []),
-            "props": bindings.get("prop_asset_ids", []),
+            "scene": bindings.get("scene") or bindings.get("scene_asset_id", ""),
+            "characters": bindings.get("characters") or bindings.get("character_asset_ids", []),
+            "props": bindings.get("props") or bindings.get("prop_asset_ids", []),
         }
     entries = []
     for asset_type, key_name in (("scene", "scene"), ("character", "characters"), ("prop", "props")):
@@ -174,6 +180,21 @@ def preview_prompt_ir_adapter(book_id: int, episode: int, shot_id: int, req: Ada
             _conflict("PROMPT_IR_NOT_QUALIFIED", "Current PromptIR is missing, stale or not qualified.")
         if version.payload_hash != pointer.payload_hash:
             _conflict("PROMPT_IR_PAYLOAD_TAMPERED", "PromptIR payload no longer matches the current pointer.")
+        if version.schema_version == "prompt_ir_v2":
+            meta = _json(row.meta_info, {})
+            handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else {}
+            try:
+                asset_authority = _production_asset_authority(session, book_id=book_id, handoff=handoff if isinstance(handoff, dict) else {})
+                registry = MODEL_ADAPTER_REGISTRY.get(req.adapter_id.lower(), {})
+                profile_input = dict(req.model_profile) if req.model_profile else {"adapter_id": req.adapter_id, "model_family": registry.get("model_family", req.adapter_id.upper()), "capabilities": req.capability_profile}
+                profile = build_model_profile(profile_input)
+                resolved = resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=row.id, generation_policy=req.generation_policy or None, asset_authority=asset_authority, model_profile=profile)
+                output = adapt_prompt_ir_to_generation_payload(resolved["payload"], generation_policy=req.generation_policy or None, model_profile=profile)
+            except PromptIRPhaseEError as exc:
+                _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
+            except HTTPException:
+                raise
+            return {"prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "model_generation_ready": bool(output.get("readiness", {}).get("ready")), "generation_payload": output, "provider_calls": 0, "llm_calls": 0, "media_generated": False}
         output = serialize_prompt_ir_to_adapter(_json(version.payload_json, {}), req.adapter_id, capability_profile=req.capability_profile)
         return {"prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "model_generation_ready": version.model_generation_ready == "true" and output.get("status") == "ready", "adapter_output": output, "provider_calls": 0}
 
@@ -200,10 +221,22 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
                 raise
             snapshots.append(build_storyboard_production_snapshot(materialization_set=materialization_set, rows=rows, authority_envelope=set_envelope))
         policy = build_generation_policy(req.generation_policy)
+        asset_authority = dict(req.asset_authority or {})
+        if not asset_authority:
+            by_key = {}
+            for snapshot in snapshots:
+                for row in snapshot.get("ordered_shots", []):
+                    handoff = row.get("prompt_compiler_handoff") if isinstance(row.get("prompt_compiler_handoff"), dict) else {}
+                    current = _production_asset_authority(session, book_id=book_id, handoff=handoff)
+                    for binding in current.get("bindings", []):
+                        key = str(binding.get("asset_key") or binding.get("canonical_asset_id") or "")
+                        if key:
+                            by_key[key] = binding
+            asset_authority = {"bindings": list(by_key.values()), "source": "current_visual_asset_pointers", "authority_fingerprint": phase_e_fingerprint(list(by_key.values()))}
         try:
             compiled = []
             for snapshot in snapshots:
-                compiled.extend(compile_storyboard_snapshot_to_prompt_ir(snapshot, generation_policy=policy, asset_authority=req.asset_authority))
+                compiled.extend(compile_storyboard_snapshot_to_prompt_ir(snapshot, generation_policy=policy, asset_authority=asset_authority))
         except PromptIRPhaseEError as exc:
             # Compilation is pure; no session mutation has occurred.
             _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
@@ -221,6 +254,19 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
             if existing and existing.payload_hash == ir["payload_hash"] and existing.stale_status == "FRESH":
                 results.append({"storyboard_shot_id": shot_id, "prompt_ir_version_id": existing.id, "reused": True, "payload_hash": existing.payload_hash})
                 continue
+            if existing:
+                previous_payload = _json(existing.payload_json, {})
+                reasons = ["PROMPT_IR_RECOMPILED"]
+                if previous_payload.get("generation_policy", {}).get("fingerprint") != ir.get("generation_policy", {}).get("fingerprint"):
+                    reasons.append("GENERATION_POLICY_CHANGED")
+                existing.stale_status = "STALE"
+                existing.stale_reasons = json.dumps(sorted(set(reasons)), ensure_ascii=False)
+                existing.updated_at = datetime.now()
+                previous_authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=existing.id).first()
+                if previous_authority:
+                    previous_authority.stale_status = "STALE"
+                    previous_authority.stale_reasons = existing.stale_reasons
+                    previous_authority.updated_at = datetime.now()
             pending_writes.append((ir, existing_pointer, existing))
 
         for ir, existing_pointer, existing in pending_writes:
@@ -230,6 +276,7 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
                 "compiler_provenance": ir["compiler_provenance"],
                 "generation_policy": ir["generation_policy"],
                 "asset_authority_bindings": ir["asset_authority_bindings"],
+                "prompt_ir_payload_hash": ir["payload_hash"],
                 "qualification_state": "PROMPT_IR_QUALIFIED",
                 "model_generation_ready": False,
                 "stale_status": "FRESH",
@@ -240,6 +287,7 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
             session.flush()
             authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=book_id, episode=episode, storyboard_shot_id=version.storyboard_shot_id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=datetime.now(), updated_at=datetime.now())
             session.add(authority)
+            session.flush()
             pointer = existing_pointer or PromptIRPointer(book_id=book_id, episode=episode, storyboard_shot_id=version.storyboard_shot_id)
             pointer.prompt_ir_version_id = version.id
             pointer.payload_hash = version.payload_hash

@@ -309,7 +309,10 @@ def propagate_visual_asset_staleness(session: Any, *, asset_key: str, reason: st
             payload = json.loads(prompt.payload_json or "{}")
         except (TypeError, ValueError, json.JSONDecodeError):
             continue
-        if asset_key in json.dumps(payload.get("assets", {}), ensure_ascii=False):
+        # V1 stored bindings under ``assets``; Phase E v2 stores them under
+        # ``asset_authority_bindings``.  Both are lineage-bearing references.
+        lineage_payload = {"assets": payload.get("assets", {}), "asset_authority_bindings": payload.get("asset_authority_bindings", {})}
+        if asset_key in json.dumps(lineage_payload, ensure_ascii=False):
             prompt.stale_status = "STALE"
             try:
                 previous_reasons = json.loads(prompt.stale_reasons or "[]")

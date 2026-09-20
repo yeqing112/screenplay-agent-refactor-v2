@@ -305,4 +305,10 @@ def resolve_current_prompt_ir(session: Any, *, book_id: int, episode: int, story
     return version, authority
 
 
-__all__ = ["PROMPT_IR_SCHEMA_VERSION", "PROMPT_IR_AUTHORITY_ENVELOPE_VERSION", "PROMPT_IR_COMPILER_VERSION", "PROMPT_IR_COMPILER_POLICY_VERSION", "RETENTION_POLICY_VERSION", "STORYBOARD_CONSTRAINT", "VISUAL_ASSET_CONSTRAINT", "COMPILER_POLICY", "MODEL_ADAPTER_POLICY", "MEDIA_PENDING", "UNKNOWN_INVALID", "PromptIRAuthorityError", "prompt_ir_authority_contract", "contract_fingerprint", "prompt_ir_payload_hash", "compile_prompt_ir_from_handoff", "build_prompt_ir_authority_envelope", "ADAPTER_CONTRACTS", "serialize_prompt_ir_to_adapter", "mark_prompt_ir_stale", "resolve_current_prompt_ir", "fingerprint"]
+def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, model_profile: dict[str, Any] | None = None):
+    """Compatibility export for the Phase E v2 current-only resolver."""
+    from core.prompt_ir_phase_e import resolve_current_authoritative_prompt_ir as _resolve
+    return _resolve(session, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, generation_policy=generation_policy, asset_authority=asset_authority, model_profile=model_profile)
+
+
+__all__ = ["PROMPT_IR_SCHEMA_VERSION", "PROMPT_IR_AUTHORITY_ENVELOPE_VERSION", "PROMPT_IR_COMPILER_VERSION", "PROMPT_IR_COMPILER_POLICY_VERSION", "RETENTION_POLICY_VERSION", "STORYBOARD_CONSTRAINT", "VISUAL_ASSET_CONSTRAINT", "COMPILER_POLICY", "MODEL_ADAPTER_POLICY", "MEDIA_PENDING", "UNKNOWN_INVALID", "PromptIRAuthorityError", "prompt_ir_authority_contract", "contract_fingerprint", "prompt_ir_payload_hash", "compile_prompt_ir_from_handoff", "build_prompt_ir_authority_envelope", "ADAPTER_CONTRACTS", "serialize_prompt_ir_to_adapter", "mark_prompt_ir_stale", "resolve_current_prompt_ir", "resolve_current_authoritative_prompt_ir", "fingerprint"]

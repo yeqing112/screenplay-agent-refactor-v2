@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import copy
 import json
+from datetime import datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -13,9 +15,14 @@ from core.prompt_ir_phase_e import (
     compare_prompt_ir_adapter_payload_semantics,
     compile_storyboard_snapshot_to_prompt_ir,
     validate_prompt_ir_against_snapshot,
+    fingerprint,
+    resolve_current_authoritative_prompt_ir,
 )
 from core.storyboard_handoff import project_shot_design_to_storyboard_handoff
 from core.storyboard_materializer import build_storyboard_production_snapshot, materialize_storyboard_from_handoff, projection_payload
+from models import Base, PromptIRAuthority, PromptIRPointer, PromptIRVersion, StoryboardShot
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 
 ART = Path(__file__).resolve().parents[1] / "artifacts" / "e2e-production-pilot"
@@ -156,3 +163,75 @@ def test_stale_required_asset_authority_cannot_compile():
             snapshots[0],
             asset_authority={"bindings": [{"asset_type": "character", "canonical_asset_id": identity.split(":", 1)[1], "stale_status": "STALE"}]},
         )
+
+
+def _persist_v2_for_resolver(db, snapshot, ir):
+    now = datetime.now()
+    shot = StoryboardShot(book_id=77, episode=1, scene_name=snapshot["scene_id"], scene_id=snapshot["scene_id"], plan_shot_id=ir["plan_shot_id"], materialization_set_id=1, source_shot_plan_id=1, source_shot_plan_revision=1, source_shot_plan_authority_fingerprint="", projection_fingerprint=ir["source_authority"]["storyboard_projection_fingerprint"], materialization_status="MATERIALIZED", shot_id=int(ir["storyboard_shot_id"]), created_at=now, updated_at=now)
+    db.add(shot)
+    db.flush()
+    ir = copy.deepcopy(ir)
+    ir["storyboard_shot_id"] = shot.id
+    # Keep the current snapshot row identity aligned with the persisted shot.
+    ir["source_authority"]["storyboard_materialization_set_id"] = 1
+    payload_hash = fingerprint({key: value for key, value in ir.items() if key not in {"prompt_ir_payload_fingerprint", "payload_hash"}})
+    ir["prompt_ir_payload_fingerprint"] = payload_hash
+    ir["payload_hash"] = payload_hash
+    envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "source_authority": ir["source_authority"], "compiler_provenance": ir["compiler_provenance"], "generation_policy": ir["generation_policy"], "asset_authority_bindings": ir["asset_authority_bindings"], "prompt_ir_payload_hash": payload_hash, "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
+    envelope["envelope_fingerprint"] = fingerprint(envelope)
+    version = PromptIRVersion(book_id=77, episode=1, scene_id=snapshot["scene_id"], storyboard_shot_id=shot.id, materialization_set_id=1, plan_shot_id=ir["plan_shot_id"], schema_version="prompt_ir_v2", payload_json=json.dumps(ir, ensure_ascii=False, sort_keys=True), payload_hash=payload_hash, compiler_version=ir["compiler_provenance"]["compiler_version"], compiler_policy_version=ir["compiler_provenance"]["compiler_policy_version"], retention_policy_version="generation_policy_v1", authority_envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="ASSET_REFERENCE_PENDING", model_generation_ready="false", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
+    db.add(version)
+    db.flush()
+    authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=77, episode=1, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
+    pointer = PromptIRPointer(book_id=77, episode=1, storyboard_shot_id=shot.id, prompt_ir_version_id=version.id, payload_hash=payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now)
+    db.add_all([authority, pointer])
+    db.commit()
+    return shot, version, authority, pointer
+
+
+def test_current_resolver_revalidates_pointer_and_authority_envelope(monkeypatch):
+    snapshots = _snapshots()
+    ir = compile_storyboard_snapshot_to_prompt_ir(snapshots[0])[0]
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    SessionLocal = sessionmaker(bind=engine)
+    db = SessionLocal()
+    shot, version, authority, pointer = _persist_v2_for_resolver(db, snapshots[0], ir)
+    source_row = snapshots[0]["ordered_shots"][0]
+    current_row = SimpleNamespace(id=shot.id, plan_shot_id=shot.plan_shot_id, projection_fingerprint=source_row["projection_fingerprint"], meta_info=json.dumps({"visual_semantic_handoff": source_row["visual_semantic_handoff"], "projection_payload": source_row["projection_payload"], "prompt_compiler_handoff": source_row["prompt_compiler_handoff"]}, ensure_ascii=False))
+    current_set = SimpleNamespace(id=1, scene_id=snapshots[0]["scene_id"], set_payload_fingerprint="set-1", status="MATERIALIZED", stale_status="FRESH")
+    monkeypatch.setattr("core.storyboard_materializer.resolve_current_authoritative_materialization", lambda *args, **kwargs: (current_set, [current_row], snapshots[0]["authority_envelope"]))
+    monkeypatch.setattr("core.storyboard_materializer.build_storyboard_production_snapshot", lambda **kwargs: snapshots[0])
+    resolved = resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id)
+    assert resolved["payload"]["qualification_state"] == "PROMPT_IR_QUALIFIED"
+    pointer.payload_hash = "tampered"
+    db.commit()
+    with pytest.raises(Exception) as exc_info:
+        resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id)
+    assert getattr(exc_info.value, "detail", {}).get("code") == "PROMPT_IR_POINTER_TAMPERED"
+
+
+def test_materialization_and_v2_asset_changes_stale_prompt_authority():
+    from core.storyboard_materializer import mark_materialization_set_stale
+    from core.visual_asset_authority import propagate_visual_asset_staleness
+
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    SessionLocal = sessionmaker(bind=engine)
+    db = SessionLocal()
+    now = datetime.now()
+    payload = {"schema_version": "prompt_ir_v2", "asset_authority_bindings": {"resolved": [{"asset_authority_ref": "book:character:LIN_WAN"}]}}
+    version = PromptIRVersion(book_id=78, episode=1, scene_id="S", storyboard_shot_id=1, materialization_set_id=9, plan_shot_id="P", schema_version="prompt_ir_v2", payload_json=json.dumps(payload), payload_hash="h", compiler_version="c", compiler_policy_version="p", retention_policy_version="g", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="ASSET_REFERENCE_PENDING", model_generation_ready="false", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
+    db.add(version); db.flush()
+    authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=78, episode=1, storyboard_shot_id=1, envelope_fingerprint="e", envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
+    db.add(authority); db.commit()
+    set_row = SimpleNamespace(id=9, status="MATERIALIZED", stale_status="FRESH", stale_reasons="[]", updated_at=now)
+    mark_materialization_set_stale(db, set_row, ["STORYBOARD_POINTER_CHANGED"])
+    db.commit()
+    assert version.stale_status == "STALE" and authority.stale_status == "STALE"
+    version.stale_status = authority.stale_status = "FRESH"
+    db.commit()
+    result = propagate_visual_asset_staleness(db, asset_key="book:character:LIN_WAN", reason="VISUAL_ASSET_VERSION_REPLACED")
+    db.commit()
+    assert result["prompt_ir_staled"] == 1
+    assert version.stale_status == "STALE" and authority.stale_status == "STALE"

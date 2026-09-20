@@ -479,7 +479,11 @@ def main() -> None:
     runpy.run_path(str(ROOT / "scripts" / "build_phase_c_authoring_fixture.py"), run_name="__main__")
     post_setup = None
     retain_database = False
-    if os.environ.get("PHASE_D_REAL_PILOT") == "1":
+    if os.environ.get("PHASE_E_REAL_PILOT") == "1":
+        from scripts.phase_e_prompt_ir_real_pilot import materialize_and_capture
+        post_setup = materialize_and_capture
+        retain_database = False
+    elif os.environ.get("PHASE_D_REAL_PILOT") == "1":
         from scripts.phase_d_real_materialization import materialize_and_capture
         post_setup = materialize_and_capture
         retain_database = False

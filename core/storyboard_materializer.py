@@ -286,6 +286,7 @@ def build_storyboard_production_snapshot(*, materialization_set: Any, rows: list
         },
         "authority_envelope": authority_envelope if isinstance(authority_envelope, dict) else {},
         "ordered_shots": ordered,
+        "storyboard_semantic_ready": bool((authority_envelope or {}).get("storyboard_semantic_ready", True)),
         "prompt_prose": False,
         "media_state": "NOT_GENERATED",
     }
@@ -386,6 +387,23 @@ def mark_materialization_set_stale(session: Any, set_row: Any, reasons: list[str
     try:
         from models import StoryboardShot
         session.query(StoryboardShot).filter_by(materialization_set_id=set_row.id).update({"materialization_status": "STALE", "production_status": "blocked"}, synchronize_session=False)
+    except Exception:
+        pass
+    # PromptIR versions are downstream of the materialization set.  A stale
+    # Storyboard set must never leave a downstream PromptIR marked current.
+    try:
+        from models import PromptIRAuthority, PromptIRVersion
+        downstream_reason = json.dumps(sorted(set(normalized + ["STORYBOARD_MATERIALIZATION_STALE"])), ensure_ascii=False)
+        versions = session.query(PromptIRVersion).filter_by(materialization_set_id=set_row.id).all()
+        for version in versions:
+            version.stale_status = "STALE"
+            version.stale_reasons = downstream_reason
+            version.updated_at = __import__("datetime").datetime.now()
+            authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).first()
+            if authority:
+                authority.stale_status = "STALE"
+                authority.stale_reasons = downstream_reason
+                authority.updated_at = __import__("datetime").datetime.now()
     except Exception:
         pass
 
