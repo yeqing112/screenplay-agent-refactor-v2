@@ -41,6 +41,23 @@ def test_resolver_stale_then_materialize_cannot_reactivate_or_replace_set():
     assert case["result"]["materialize"]["detail"]["code"] == "STORYBOARD_MATERIALIZATION_STALE"
     assert case["set_after"]["stale_status"] == "STALE"
     assert case["before"]["set_count"] == case["after"]["set_count"]
+    assert case["set_id_after"] == case["set_id_before"]
+    assert case["stale_status_after"] == "STALE"
+
+
+def test_pointer_recovery_only_attaches_a_fully_validated_fresh_set():
+    cases = {item["case"]: item for item in _trace()["negative_cases"]}
+    fresh = cases["pointer_recovery_fresh"]
+    assert fresh["materialize_result"]["reused"] is True
+    assert fresh["set_id_after"] == fresh["set_id_before"]
+    assert fresh["pointer_after"] != fresh["pointer_before"]
+    assert fresh["stale_status_after"] == "FRESH"
+
+    tampered = cases["tampered_set_pointer_deleted"]
+    assert tampered["materialize_result"]["status_code"] == 409
+    assert tampered["materialize_result"]["detail"]["reused"] is False
+    assert tampered["set_id_after"] is None
+    assert tampered["stale_status_after"] == "STALE"
 
 
 def test_reuse_path_uses_shared_validator_and_has_no_stale_reactivation_assignment():

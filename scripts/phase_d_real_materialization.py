@@ -64,7 +64,15 @@ def _counts(session, *, book_id: int, episode: int, scene_id: str) -> dict[str, 
     pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).first()
     set_count = session.query(StoryboardMaterializationSet).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).count()
     shot_count = session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).count()
-    return {"set_count": set_count, "shot_count": shot_count, "pointer_id": pointer.id if pointer else None, "materialization_set_id": pointer.materialization_set_id if pointer else None}
+    current_set = session.query(StoryboardMaterializationSet).filter_by(id=pointer.materialization_set_id).first() if pointer else None
+    return {
+        "set_count": set_count,
+        "shot_count": shot_count,
+        "pointer_id": pointer.id if pointer else None,
+        "materialization_set_id": pointer.materialization_set_id if pointer else None,
+        "set_status": current_set.status if current_set else None,
+        "stale_status": current_set.stale_status if current_set else None,
+    }
 
 
 def _restore(engine, source: Path, target: Path) -> None:
@@ -111,9 +119,28 @@ def _run_case(*, engine, baseline: Path, db_file: Path, book_id: int, episode: i
     with Session() as session:
         after = _counts(session, book_id=book_id, episode=episode, scene_id=scene_id)
         pointer = session.query(__import__("models", fromlist=["StoryboardMaterializationPointer"]).StoryboardMaterializationPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).first()
-        set_row = session.query(__import__("models", fromlist=["StoryboardMaterializationSet"]).StoryboardMaterializationSet).filter_by(id=pointer.materialization_set_id).first() if pointer else None
+        target_set_id = pointer.materialization_set_id if pointer else before.get("materialization_set_id")
+        set_row = session.query(__import__("models", fromlist=["StoryboardMaterializationSet"]).StoryboardMaterializationSet).filter_by(id=target_set_id).first() if target_set_id else None
         stale = {"status": set_row.status, "stale_status": set_row.stale_status, "stale_reasons": _json(set_row.stale_reasons, [])} if set_row else {}
-    return {"case": name, "scene_id": scene_id, "mutation": mutation, "result": result, "before": before, "after": after, "zero_write": before == after if name == "failed_materialization_zero_write" else None, "set_after": stale}
+    direct_result = result.get("materialize") if isinstance(result, dict) and isinstance(result.get("materialize"), dict) else result
+    return {
+        "case": name,
+        "scene_id": scene_id,
+        "mutation": mutation,
+        "result": result,
+        "materialize_result": direct_result,
+        "before": before,
+        "after": after,
+        "set_id_before": before.get("materialization_set_id"),
+        "set_id_after": after.get("materialization_set_id"),
+        "pointer_before": before.get("pointer_id"),
+        "pointer_after": after.get("pointer_id"),
+        "stale_status_before": before.get("stale_status"),
+        "stale_status_after": stale.get("stale_status"),
+        "reused": bool(direct_result.get("reused")) if isinstance(direct_result, dict) else False,
+        "zero_write": before == after if name == "failed_materialization_zero_write" else None,
+        "set_after": stale,
+    }
 
 
 def _tamper_row_field(field: str, value: Any, *, scene_id: str) -> Callable[[], Any]:
@@ -183,6 +210,17 @@ def _tamper_set_for_scene(scene_id: str) -> dict[str, Any]:
         row.set_payload_fingerprint = "tampered"
         session.commit()
         return {"old": old, "new": "tampered"}
+
+
+def _delete_pointer_for_scene(scene_id: str) -> dict[str, Any]:
+    from models import Session, StoryboardMaterializationPointer
+    with Session() as session:
+        pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=990401, episode=1, scene_id=scene_id).one()
+        pointer_id = pointer.id
+        set_id = pointer.materialization_set_id
+        session.delete(pointer)
+        session.commit()
+        return {"deleted_pointer_id": pointer_id, "set_id": set_id}
 
 
 def _render_markdown(scene_id: str, scene_name: str, semantics: list[dict[str, Any]], projections: list[dict[str, Any]]) -> str:
@@ -406,6 +444,8 @@ def materialize_and_capture(*, db_file, book_id: int, episode: int, authority: d
         return {"resolver": resolved, "materialize": _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")}
 
     cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=1, scene_id="E01_SC001", name="resolver_stale_then_materialize", mutate=_tamper_semantic("information_refs", "__TOGGLE__", scene_id="E01_SC001"), action=resolver_then_materialize))
+    cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=1, scene_id="E01_SC001", name="pointer_recovery_fresh", mutate=lambda: _delete_pointer_for_scene("E01_SC001"), action=lambda: _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")))
+    cases.append(_run_case(engine=engine, baseline=baseline, db_file=Path(db_file), book_id=book_id, episode=1, scene_id="E01_SC001", name="tampered_set_pointer_deleted", mutate=lambda: (_tamper_semantic("information_refs", "__TOGGLE__", scene_id="E01_SC001")(), _delete_pointer_for_scene("E01_SC001")), action=lambda: _run_materialize(book_id=book_id, episode=1, scene_id="E01_SC001")))
 
     def failed_materialization() -> dict[str, Any]:
         from api.shot_plan_api import ShotPlanPreviewRequest, preview_shot_plan
@@ -457,6 +497,16 @@ def materialize_and_capture(*, db_file, book_id: int, episode: int, authority: d
         "semantic_projection_count": sum(len(scene.get("visual_semantic_handoff", [])) for scene in storyboard["scenes"]),
         "idempotency": idempotency,
         "negative_cases": cases,
+        "reuse_validation": {
+            "validator": "validate_current_materialization_authority",
+            "shared_by": ["resolver", "production_reuse"],
+            "fresh_set_requires_full_revalidation": True,
+        },
+        "stale_reactivation": {
+            "allowed": False,
+            "cases": ["resolver_stale_then_materialize"],
+            "same_set_reactivated": False,
+        },
         "prompt_ir_started": False,
         "image_generation_started": False,
         "video_generation_started": False,

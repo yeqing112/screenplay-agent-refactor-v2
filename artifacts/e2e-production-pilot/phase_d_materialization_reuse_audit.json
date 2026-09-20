@@ -12,7 +12,9 @@
     "prompt_tamper_then_materialize": "FAIL_CLOSED",
     "projection_tamper_then_materialize": "FAIL_CLOSED",
     "handoff_envelope_tamper_then_materialize": "FAIL_CLOSED",
-    "set_fingerprint_tamper_then_materialize": "FAIL_CLOSED"
+    "set_fingerprint_tamper_then_materialize": "FAIL_CLOSED",
+    "pointer_recovery_fresh": "PASS",
+    "tampered_set_pointer_deleted": "FAIL_CLOSED"
   },
   "evidence": {
     "fresh_reuse": {
@@ -89,6 +91,55 @@
       "stale_status": "STALE",
       "set_count_before": 1,
       "set_count_after": 1
+    },
+    "pointer_recovery_fresh": {
+      "status_code": null,
+      "code": null,
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 3,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "FRESH",
+      "reused": true,
+      "set_after": {
+        "status": "MATERIALIZED",
+        "stale_status": "FRESH",
+        "stale_reasons": []
+      }
+    },
+    "tampered_set_pointer_deleted": {
+      "status_code": 409,
+      "code": "STORYBOARD_SEMANTIC_MISMATCH",
+      "set_id_before": 1,
+      "set_id_after": null,
+      "pointer_before": 1,
+      "pointer_after": null,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_SEMANTIC_MISMATCH"
+        ]
+      }
+    },
+    "reuse_validation": {
+      "validator": "validate_current_materialization_authority",
+      "shared_by": [
+        "resolver",
+        "production_reuse"
+      ],
+      "fresh_set_requires_full_revalidation": true
+    },
+    "stale_reactivation": {
+      "allowed": false,
+      "cases": [
+        "resolver_stale_then_materialize"
+      ],
+      "same_set_reactivated": false
     }
   },
   "provider_calls": 0,
@@ -97,8 +148,8 @@
   "video_generation_started": false,
   "database_migrations_added": 0,
   "verification": {
-    "targeted_phase_d": "17 passed",
-    "full_backend": "1608 passed, 4 historical failures, 930 warnings",
+    "targeted_phase_d": "18 passed",
+    "full_backend": "1609 passed, 4 historical failures, 930 warnings",
     "golden": "5/5",
     "real_pilot": "PASS"
   }

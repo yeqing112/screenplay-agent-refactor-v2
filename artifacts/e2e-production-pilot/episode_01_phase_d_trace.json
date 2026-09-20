@@ -40,16 +40,16 @@
       "materialized_shot_count": 8,
       "set_status": "MATERIALIZED",
       "stale_status": "FRESH",
-      "set_fingerprint": "eb4f127534e789c6c24229c4f9ea83c9bb5eac32e3f77fa694b91eb971eee2a7",
+      "set_fingerprint": "8f8af64d0e10457de1f65077fbf2d92628f23ace4092a4ae3cf38ca74e58c526",
       "projection_fingerprints": [
-        "3e3a876f2e2f0c540e032bf3bd0b8c3a4961505fc0bb775a2e6dd144e2f9ada7",
-        "442f9d435febe14234c8ba7136738ed6b95818696bba8ffbb53a6e25f9dd0317",
-        "2ebeee808777bba88ba2986949e42cb31b324fb00a8cf6b4ca6223b4313d1178",
-        "6a14ccf37eb180d127653e24dd481d04938940cf7d14a252e0e4960f4d4710fb",
-        "6af1b5b3873386ff386f480ab562774832843998630eee3c4a28336e187f8b10",
-        "58e03cef69bf4f22b0b260719d24e89ee9da7787aa07956840d3bf7eb68ee310",
-        "17ac0d8fd3e9d92823fef752a93e4baa28c1b82651a5e1cb73e20317e09e7625",
-        "5c79743d4850402dfcb62abb80598907f53b2305e47bb65b99c234110f4c7ae2"
+        "9bf0c69d90282c28f5e5ee216be61a00b9a29f18374ac6c18bc394507ef5c990",
+        "f7bbacdcc201ce59727180270602b104a989e10a1ee07c0ca555f27df420ec60",
+        "72993c1e69821764b69d27f8b9a5c1d917d8c08ceefd2151dac8f0afa3f638ca",
+        "c61cd56335a545692d34664f0819296f39aac844de40ddfd501227fe4b8f06a1",
+        "97217a4dcc26f4bd3a3afc727d32573a5949b66b6486f089f90e42c174c06f58",
+        "877b9e49b8ae91352985184cc02e8a1b87e9d7c425ec2ea9b2c7a23532021435",
+        "ad027e81e7ab2fe7bbda425ed14acf5145c3fdb157124972436836063e01cc6c",
+        "8b463d9d40b3f3c063044736bb7d6a6c15af030dc13559a5ab7293b371987a1b"
       ],
       "prompt_fields_empty": true,
       "handoff_fingerprint": "afd424bfef1ac09960266e2e6f125588673f462ddb16333c6b6a4c62bfcf9fad",
@@ -95,15 +95,15 @@
       "materialized_shot_count": 7,
       "set_status": "MATERIALIZED",
       "stale_status": "FRESH",
-      "set_fingerprint": "c0945b1faab11edd6e062d8889c97f062e13aa5d926940a27c20e339055116bc",
+      "set_fingerprint": "74c0f99e5be121e4d1d3c1edff63027842bb0b69df4c349a78b7aa827237b1f9",
       "projection_fingerprints": [
-        "a606f2506f3fac689aa3b2686143be74792c50f4a895fb5343786dcb223ab23f",
-        "631eb750a71613eeba1f07b0b54f21f65386060f3d7c9bc40337b3ff31314070",
-        "4abfd6882204929143f23663b4e7c900bd6a3d2f493438dbbb5d021c2af098c3",
-        "241d4dec01f2100c86e9e914f79d514b8a0b85a258a09ac6202cfbef01bb7d7c",
-        "5ac271b9daf3de41670a2d94e30c7df8e8e1d7751e7834bce69c2fe789465487",
-        "b437518f9793be3ebc658a0481834ca8705411369c9ec5b19589af247b4b6503",
-        "fd9ba8c34cc4c1e975f0844df84fb5dfb94620a22b3a8aa0193cab8b31bf89f9"
+        "c0346e7dcffdf6fb6bbb85aa3351ccd576b35e04c3b940c22e417ad5d31130e1",
+        "ecc38a2b8c3e62099019f525342d368dbaf1735a21a2971f00053f5f1c228916",
+        "674ff06d3bb0e23d1d572f7d6068aceaac238b45c3750cfb865aecbacffd6d80",
+        "5578ebd00ed86519e6f386c328645b1393a5968f118f80ea0a6fdab60b0c9758",
+        "dd927b53d6418d8f3ba5223f39b7e583c1c5054eabffa3b1b9e1cac8edae9c42",
+        "f74e6f00d47925a209bc1f80c33f8d19b311900f949a7d2681dc74160500a4db",
+        "90924c3e7ef15430a81538bdbeb36058c7d666fc52919639ad62c6380cf360b7"
       ],
       "prompt_fields_empty": true,
       "handoff_fingerprint": "bc37810c010ab66560ec6726322b3b2b142fdfbf5f26703dc8a2f681224a25bd",
@@ -173,21 +173,45 @@
         "detail": {
           "code": "STORYBOARD_PROJECTION_TAMPERED",
           "message": "Storyboard projection columns no longer match their immutable projection payload.",
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_PROJECTION_TAMPERED"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_PROJECTION_TAMPERED",
+          "message": "Storyboard projection columns no longer match their immutable projection payload.",
+          "stale_reasons": [
+            "STORYBOARD_PROJECTION_TAMPERED"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -298,21 +322,131 @@
             },
             "empty": false
           },
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "semantic_diff": {
+            "missing_semantic": [],
+            "extra_semantic": [],
+            "camera_mismatch": [],
+            "continuity_mismatch": [],
+            "asset_binding_mismatch": [],
+            "missing_shots": [],
+            "extra_shots": [],
+            "per_shot": {
+              "SH_E01_SC001_001": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [
+                  "information_refs"
+                ],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": false
+              },
+              "SH_E01_SC001_002": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_003": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_004": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_005": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_006": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_007": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_008": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              }
+            },
+            "empty": false
+          },
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -423,21 +557,131 @@
             },
             "empty": false
           },
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "semantic_diff": {
+            "missing_semantic": [],
+            "extra_semantic": [],
+            "camera_mismatch": [],
+            "continuity_mismatch": [],
+            "asset_binding_mismatch": [],
+            "missing_shots": [],
+            "extra_shots": [],
+            "per_shot": {
+              "SH_E01_SC001_001": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [
+                  "reaction_contract_refs"
+                ],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": false
+              },
+              "SH_E01_SC001_002": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_003": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_004": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_005": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_006": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_007": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_008": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              }
+            },
+            "empty": false
+          },
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -552,27 +796,140 @@
             },
             "empty": false
           },
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "semantic_diff": {
+            "missing_semantic": [],
+            "extra_semantic": [],
+            "camera_mismatch": [
+              "SH_E01_SC001_001:camera.movement"
+            ],
+            "continuity_mismatch": [],
+            "asset_binding_mismatch": [],
+            "missing_shots": [],
+            "extra_shots": [],
+            "per_shot": {
+              "SH_E01_SC001_001": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [
+                  "camera.movement"
+                ],
+                "camera_mismatch": [
+                  "camera.movement"
+                ],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": false
+              },
+              "SH_E01_SC001_002": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_003": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_004": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_005": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_006": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_007": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_008": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              }
+            },
+            "empty": false
+          },
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
         "stale_status": "STALE",
         "stale_reasons": [
-          "STORYBOARD_CAMERA_SEMANTIC_MISMATCH",
           "STORYBOARD_SEMANTIC_MISMATCH"
         ]
       }
@@ -684,27 +1041,142 @@
             },
             "empty": false
           },
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "semantic_diff": {
+            "missing_semantic": [],
+            "extra_semantic": [
+              "SH_E01_SC001_001:continuity.screen_side_assignments.__tampered__"
+            ],
+            "camera_mismatch": [],
+            "continuity_mismatch": [
+              "SH_E01_SC001_001:continuity.screen_side_assignments.__tampered__"
+            ],
+            "asset_binding_mismatch": [],
+            "missing_shots": [],
+            "extra_shots": [],
+            "per_shot": {
+              "SH_E01_SC001_001": {
+                "missing_semantic": [],
+                "extra_semantic": [
+                  "continuity.screen_side_assignments.__tampered__"
+                ],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [
+                  "continuity.screen_side_assignments.__tampered__"
+                ],
+                "asset_binding_mismatch": [],
+                "empty": false
+              },
+              "SH_E01_SC001_002": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_003": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_004": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_005": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_006": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_007": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_008": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              }
+            },
+            "empty": false
+          },
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
         "stale_status": "STALE",
         "stale_reasons": [
-          "STORYBOARD_CONTINUITY_SEMANTIC_MISMATCH",
           "STORYBOARD_SEMANTIC_MISMATCH"
         ]
       }
@@ -817,27 +1289,140 @@
             },
             "empty": false
           },
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "semantic_diff": {
+            "missing_semantic": [],
+            "extra_semantic": [],
+            "camera_mismatch": [],
+            "continuity_mismatch": [],
+            "asset_binding_mismatch": [
+              "SH_E01_SC001_001:asset_identity_bindings.canonical_asset_identity.characters"
+            ],
+            "missing_shots": [],
+            "extra_shots": [],
+            "per_shot": {
+              "SH_E01_SC001_001": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [
+                  "asset_identity_bindings.canonical_asset_identity.characters"
+                ],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [
+                  "asset_identity_bindings.canonical_asset_identity.characters"
+                ],
+                "empty": false
+              },
+              "SH_E01_SC001_002": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_003": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_004": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_005": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_006": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_007": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_008": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              }
+            },
+            "empty": false
+          },
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
         "stale_status": "STALE",
         "stale_reasons": [
-          "STORYBOARD_ASSET_BINDING_MISMATCH",
           "STORYBOARD_SEMANTIC_MISMATCH"
         ]
       }
@@ -858,29 +1443,50 @@
           "stale_reasons": [
             "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
             "STORYBOARD_HANDOFF_FINGERPRINT_INVALID"
-          ],
-          "reused": false
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
+          "message": "Storyboard materialization authority envelope is stale or tampered.",
+          "stale_reasons": [
+            "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
+            "STORYBOARD_HANDOFF_FINGERPRINT_INVALID"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
         "stale_status": "STALE",
         "stale_reasons": [
-          "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
-          "STORYBOARD_HANDOFF_FINGERPRINT_INVALID"
+          "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED"
         ]
       }
     },
@@ -888,7 +1494,7 @@
       "case": "set_fingerprint_tamper",
       "scene_id": "E01_SC001",
       "mutation": {
-        "old": "eb4f127534e789c6c24229c4f9ea83c9bb5eac32e3f77fa694b91eb971eee2a7",
+        "old": "8f8af64d0e10457de1f65077fbf2d92628f23ace4092a4ae3cf38ca74e58c526",
         "new": "tampered"
       },
       "result": {
@@ -897,21 +1503,45 @@
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH",
           "message": "Current pointer does not match the materialization set fingerprint.",
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH",
+          "message": "Current pointer does not match the materialization set fingerprint.",
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -937,27 +1567,51 @@
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_STALE",
           "message": "ShotPlan authority changed; materialization must be recreated.",
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_STALE"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_MATERIALIZATION_STALE",
+          "message": "ShotPlan authority changed; materialization must be recreated.",
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_STALE"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
         "stale_status": "STALE",
         "stale_reasons": [
-          "SHOT_PLAN_POINTER_CHANGED"
+          "STORYBOARD_MATERIALIZATION_STALE"
         ]
       }
     },
@@ -977,21 +1631,45 @@
         "detail": {
           "code": "SCENE_BLOCKING_CHANGED",
           "message": "ShotPlan SceneBlocking lineage is stale.",
-          "reused": false
+          "stale_reasons": [
+            "SCENE_BLOCKING_CHANGED"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "SCENE_BLOCKING_CHANGED",
+          "message": "ShotPlan SceneBlocking lineage is stale.",
+          "stale_reasons": [
+            "SCENE_BLOCKING_CHANGED"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 7,
         "pointer_id": 2,
-        "materialization_set_id": 2
+        "materialization_set_id": 2,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 7,
         "pointer_id": 2,
-        "materialization_set_id": 2
+        "materialization_set_id": 2,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 2,
+      "set_id_after": 2,
+      "pointer_before": 2,
+      "pointer_after": 2,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1013,21 +1691,45 @@
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
           "message": "Materialization set cardinality is incomplete.",
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
+          "message": "Materialization set cardinality is incomplete.",
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 7,
         "pointer_id": 2,
-        "materialization_set_id": 2
+        "materialization_set_id": 2,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 6,
         "pointer_id": 2,
-        "materialization_set_id": 2
+        "materialization_set_id": 2,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 2,
+      "set_id_after": 2,
+      "pointer_before": 2,
+      "pointer_after": 2,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1050,21 +1752,45 @@
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
           "message": "Materialization set cardinality is incomplete.",
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
+          "message": "Materialization set cardinality is incomplete.",
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 7,
         "pointer_id": 2,
-        "materialization_set_id": 2
+        "materialization_set_id": 2,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 2,
-        "materialization_set_id": 2
+        "materialization_set_id": 2,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 2,
+      "set_id_after": 2,
+      "pointer_before": 2,
+      "pointer_after": 2,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1093,21 +1819,45 @@
         "detail": {
           "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
           "message": "Materialization set cardinality is incomplete.",
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE",
+          "message": "Materialization set cardinality is incomplete.",
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 7,
         "pointer_id": 2,
-        "materialization_set_id": 2
+        "materialization_set_id": 2,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 7,
         "pointer_id": 2,
-        "materialization_set_id": 2
+        "materialization_set_id": 2,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 2,
+      "set_id_after": 2,
+      "pointer_before": 2,
+      "pointer_after": 2,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1131,21 +1881,45 @@
         "detail": {
           "code": "STORYBOARD_PROMPT_PREMATURE_MUTATION",
           "message": "Prompt fields must remain uncompiled during Phase D.",
-          "reused": false
+          "stale_reasons": [
+            "STORYBOARD_PROMPT_PREMATURE_MUTATION"
+          ]
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_PROMPT_PREMATURE_MUTATION",
+          "message": "Prompt fields must remain uncompiled during Phase D.",
+          "stale_reasons": [
+            "STORYBOARD_PROMPT_PREMATURE_MUTATION"
+          ]
         }
       },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1176,18 +1950,41 @@
           "reused": false
         }
       },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ],
+          "reused": false
+        }
+      },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1217,18 +2014,41 @@
           "reused": false
         }
       },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_PROMPT_PREMATURE_MUTATION",
+          "message": "Prompt fields must remain uncompiled during Phase D.",
+          "stale_reasons": [
+            "STORYBOARD_PROMPT_PREMATURE_MUTATION"
+          ],
+          "reused": false
+        }
+      },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1259,18 +2079,41 @@
           "reused": false
         }
       },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_PROJECTION_TAMPERED",
+          "message": "Storyboard projection columns no longer match their immutable projection payload.",
+          "stale_reasons": [
+            "STORYBOARD_PROJECTION_TAMPERED"
+          ],
+          "reused": false
+        }
+      },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1300,25 +2143,48 @@
           "reused": false
         }
       },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
+          "message": "Storyboard materialization authority envelope is stale or tampered.",
+          "stale_reasons": [
+            "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
+            "STORYBOARD_HANDOFF_FINGERPRINT_INVALID"
+          ],
+          "reused": false
+        }
+      },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
         "stale_status": "STALE",
         "stale_reasons": [
-          "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED",
-          "STORYBOARD_HANDOFF_FINGERPRINT_INVALID"
+          "STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED"
         ]
       }
     },
@@ -1326,10 +2192,22 @@
       "case": "set_fingerprint_tamper_then_materialize",
       "scene_id": "E01_SC001",
       "mutation": {
-        "old": "eb4f127534e789c6c24229c4f9ea83c9bb5eac32e3f77fa694b91eb971eee2a7",
+        "old": "8f8af64d0e10457de1f65077fbf2d92628f23ace4092a4ae3cf38ca74e58c526",
         "new": "tampered"
       },
       "result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH",
+          "message": "Current pointer does not match the materialization set fingerprint.",
+          "stale_reasons": [
+            "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH"
+          ],
+          "reused": false
+        }
+      },
+      "materialize_result": {
         "status": "FAIL",
         "status_code": 409,
         "detail": {
@@ -1345,14 +2223,25 @@
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1463,7 +2352,10 @@
                 }
               },
               "empty": false
-            }
+            },
+            "stale_reasons": [
+              "STORYBOARD_SEMANTIC_MISMATCH"
+            ]
           }
         },
         "materialize": {
@@ -1479,18 +2371,177 @@
           }
         }
       },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_MATERIALIZATION_STALE",
+          "message": "A stale materialization Set cannot be reactivated or replaced in place.",
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ],
+          "reused": false
+        }
+      },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "STALE",
+        "stale_status": "STALE"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
+      "zero_write": null,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_SEMANTIC_MISMATCH"
+        ]
+      }
+    },
+    {
+      "case": "pointer_recovery_fresh",
+      "scene_id": "E01_SC001",
+      "mutation": {
+        "deleted_pointer_id": 1,
+        "set_id": 1
+      },
+      "result": {
+        "confirmed": true,
+        "mutated": false,
+        "reused": true,
+        "materialized_count": 0,
+        "plan_shot_ids": [],
+        "materialization_set_ids": [
+          1
+        ],
+        "production_status": "blocked",
+        "materialization_status": "MATERIALIZED",
+        "llm_called": false,
+        "provider_calls": 0
+      },
+      "materialize_result": {
+        "confirmed": true,
+        "mutated": false,
+        "reused": true,
+        "materialized_count": 0,
+        "plan_shot_ids": [],
+        "materialization_set_ids": [
+          1
+        ],
+        "production_status": "blocked",
+        "materialization_status": "MATERIALIZED",
+        "llm_called": false,
+        "provider_calls": 0
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 3,
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
+      },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 3,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "FRESH",
+      "reused": true,
+      "zero_write": null,
+      "set_after": {
+        "status": "MATERIALIZED",
+        "stale_status": "FRESH",
+        "stale_reasons": []
+      }
+    },
+    {
+      "case": "tampered_set_pointer_deleted",
+      "scene_id": "E01_SC001",
+      "mutation": [
+        {
+          "row_id": 1,
+          "path": "information_refs",
+          "old": [],
+          "new": "__TOGGLE__"
+        },
+        {
+          "deleted_pointer_id": 1,
+          "set_id": 1
+        }
+      ],
+      "result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ],
+          "reused": false
+        }
+      },
+      "materialize_result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "stale_reasons": [
+            "STORYBOARD_SEMANTIC_MISMATCH"
+          ],
+          "reused": false
+        }
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": null,
+        "materialization_set_id": null,
+        "set_status": null,
+        "stale_status": null
+      },
+      "set_id_before": 1,
+      "set_id_after": null,
+      "pointer_before": 1,
+      "pointer_after": null,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "STALE",
+      "reused": false,
       "zero_write": null,
       "set_after": {
         "status": "STALE",
@@ -1512,18 +2563,33 @@
         "status_code": 409,
         "detail": "Storyboard materialization requires confirmed=true."
       },
+      "materialize_result": {
+        "status_code": 409,
+        "detail": "Storyboard materialization requires confirmed=true."
+      },
       "before": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
       "after": {
         "set_count": 1,
         "shot_count": 8,
         "pointer_id": 1,
-        "materialization_set_id": 1
+        "materialization_set_id": 1,
+        "set_status": "MATERIALIZED",
+        "stale_status": "FRESH"
       },
+      "set_id_before": 1,
+      "set_id_after": 1,
+      "pointer_before": 1,
+      "pointer_after": 1,
+      "stale_status_before": "FRESH",
+      "stale_status_after": "FRESH",
+      "reused": false,
       "zero_write": true,
       "set_after": {
         "status": "MATERIALIZED",
@@ -1532,6 +2598,21 @@
       }
     }
   ],
+  "reuse_validation": {
+    "validator": "validate_current_materialization_authority",
+    "shared_by": [
+      "resolver",
+      "production_reuse"
+    ],
+    "fresh_set_requires_full_revalidation": true
+  },
+  "stale_reactivation": {
+    "allowed": false,
+    "cases": [
+      "resolver_stale_then_materialize"
+    ],
+    "same_set_reactivated": false
+  },
   "prompt_ir_started": false,
   "image_generation_started": false,
   "video_generation_started": false

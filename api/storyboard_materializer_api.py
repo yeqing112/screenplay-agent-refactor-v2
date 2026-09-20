@@ -31,6 +31,7 @@ from core.storyboard_materializer import (
     _row_projection_payload,
     validate_materialization_set,
     validate_current_materialization_authority,
+    mark_materialization_set_stale,
 )
 from core.storyboard_visual_semantics import (
     build_visual_semantic_handoff_set,
@@ -229,6 +230,9 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                         session, book_id=book_id, episode=episode, scene_id=scene_id,
                     )
                     if not current_validation.get("valid"):
+                        if current_validation.get("set") is not None:
+                            mark_materialization_set_stale(session, current_validation["set"], current_validation.get("errors", []))
+                            session.commit()
                         detail = current_validation.get("detail") or {}
                         _conflict(
                             str(detail.get("code") or "STORYBOARD_MATERIALIZATION_INVALID"),
@@ -256,6 +260,9 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                     materialization_set_id=set_row.id,
                 )
                 if not validation.get("valid"):
+                    if validation.get("set") is not None:
+                        mark_materialization_set_stale(session, validation["set"], validation.get("errors", []))
+                        session.commit()
                     detail = validation.get("detail") or {}
                     _conflict(
                         str(detail.get("code") or "STORYBOARD_MATERIALIZATION_INVALID"),
