@@ -1,0 +1,148 @@
+{
+  "adapter_ids": [
+    "image_generic"
+  ],
+  "evidence": {
+    "adapter_semantic_loss": "0",
+    "atomic_all_shot_activation": "PASS",
+    "exact_projection_validation": "PASS",
+    "idempotent_compile": "PASS",
+    "legacy_visual_prompt_bypass": "PASS",
+    "stale_asset_propagation": "PASS",
+    "stale_storyboard_propagation": "PASS",
+    "tamper_validation": "PASS",
+    "zero_write_compile_failure": "PASS"
+  },
+  "generation_payload_fingerprints": [
+    "84e8e2d2c0297210edfb877fa048fc3cc1a6a1a27639354bb1e4e872de60b793",
+    "385e8e0562029450fc6791d84bfb836e144b0068128f7adb06fa7fcf3786c7ce",
+    "c89022c0441125fbcd91d472dff0573add8c7ce036756e227f38fd7e660ef585",
+    "b43e3db94c5461853b936379a7f7f8842f7fc30bbdc25d8ae4fe1b630b3d6f62",
+    "bcc311f023f99b768c5e6c002fae09fe3110c9e45b806df2e9fb6ae4997dba70",
+    "f6ec9c899dd73a0169323d8f1b73882ae1852ef8074383cb358b0790d9de243b",
+    "c46dd5bc696413f60a3732fb5915b01fa6464166b8c05d268e50f14e79d595cc",
+    "baa5fa94c23deaf14810dc8799deed830ae1f8662b5b84a45746b3f5a689c3e8",
+    "fd53d4713af548ed43350b1c1b9aacae228231d477f28544b6632dba4a6c4709",
+    "90318c13dca237ff6f42ec1d0be796c9eaeca4dea0d8c0754bf3ee646dc2fb19",
+    "18771845db2ce3e51656fd178e8c2352ca40b4cfd229c0c7b8cea4b13ee769d3",
+    "27c2ff152af69ca85a30c65b274f739777c4014ddda15ff2ec1075645cf3d687",
+    "994b469ac94bd35298c130907cb0b9ccc17bbbe4b97d37fb2a4664286fbd1b4f",
+    "635bcf2b3bbfd5f770725e14b52698b37744c261687975d951587ef4aeeb5bfe",
+    "b637bac98a8741ae3454cfa8d2d4a5640ca48ddd3766a47b453448978897b7e5"
+  ],
+  "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+  "image_calls": 0,
+  "llm_calls": 0,
+  "model_profile": {
+    "adapter_id": "image_generic",
+    "capabilities": {},
+    "model_family": "GENERIC_IMAGE",
+    "schema_version": "model_profile_v1"
+  },
+  "phase": "PHASE_E_PROMPT_IR_SEMANTIC_COMPILATION_AND_MODEL_ADAPTER_CLOSURE",
+  "prompt_ir_authority_ids": [
+    "pilot:1",
+    "pilot:2",
+    "pilot:3",
+    "pilot:4",
+    "pilot:5",
+    "pilot:6",
+    "pilot:7",
+    "pilot:8",
+    "pilot:9",
+    "pilot:10",
+    "pilot:11",
+    "pilot:12",
+    "pilot:13",
+    "pilot:14",
+    "pilot:15"
+  ],
+  "prompt_ir_count": 15,
+  "prompt_ir_fingerprints": [
+    "4dfc0a7b71c7e41161b2f66cc2ddd26d07aa8e545b2e5b26ef8ae14a2eb1903c",
+    "127282979bb340dbac13f3c3f9ce377ce7d534e6ac7b32df59b18106b3d8be6a",
+    "0f424712b6b23799c709ae201bb5bbf65b2498b9a78e50ba8999d8b761a1502a",
+    "5b79135a50a1f997e28f0082549ad02e195b05ea8fe35237a50be9064a507205",
+    "122d643d214bdb02ada2ad2a371f7350188696891085c409b99bdf36adadd9cb",
+    "30f111c3736e76c6283853f2cf871e658d81bf9ccfa9d2cde0f478911bd7349d",
+    "fa51d6fd31e9d305c63e6dc4f697a79b7f7657c56d63e30dc9fc183940f32d0f",
+    "69c30b4baa0da4ac6a1d23d40d6ca1beb04f423ff612fafb48d1c778df3686cc",
+    "1bad2b59379f77099c24d5bea4dfce70d6df5b11dfd9b9ed67798e417b120e8c",
+    "17dd2d65414d1aea57d7139e7a6283e38c0e3b6a6344ba961ee204422793048e",
+    "4a2fe585df4d216fae4b51aa7a56cf8acb6fa53663c064fd5211c9993a13ec24",
+    "1806d5ee2d7d8d1b52f65f386ae66ec7eeb9a54e4d2c8cc2bdba046a06a4bcef",
+    "4e4c96734fbb093dd14910109bf9e5267c112eb1de02230c9fac95582cdf2adb",
+    "f6e7a958adf0070df968111453750f630b5dc852a4fd460e704191571cc60ea4",
+    "51c88b09d58a8434bbb0ace0ed407da59e762fee7af0c4519779fc37ba56e86a"
+  ],
+  "prompt_ir_pointer_ids": [
+    "pilot:1",
+    "pilot:2",
+    "pilot:3",
+    "pilot:4",
+    "pilot:5",
+    "pilot:6",
+    "pilot:7",
+    "pilot:8",
+    "pilot:9",
+    "pilot:10",
+    "pilot:11",
+    "pilot:12",
+    "pilot:13",
+    "pilot:14",
+    "pilot:15"
+  ],
+  "prompt_ir_version_ids": [
+    "pilot:1",
+    "pilot:2",
+    "pilot:3",
+    "pilot:4",
+    "pilot:5",
+    "pilot:6",
+    "pilot:7",
+    "pilot:8",
+    "pilot:9",
+    "pilot:10",
+    "pilot:11",
+    "pilot:12",
+    "pilot:13",
+    "pilot:14",
+    "pilot:15"
+  ],
+  "provider_calls": 0,
+  "scenes": [
+    {
+      "plan_shot_ids": [
+        "SH_E01_SC001_001",
+        "SH_E01_SC001_002",
+        "SH_E01_SC001_003",
+        "SH_E01_SC001_004",
+        "SH_E01_SC001_005",
+        "SH_E01_SC001_006",
+        "SH_E01_SC001_007",
+        "SH_E01_SC001_008"
+      ],
+      "scene_id": "E01_SC001",
+      "shot_count": 8,
+      "storyboard_materialization_set_id": 1
+    },
+    {
+      "plan_shot_ids": [
+        "SH_E01_SC002_001",
+        "SH_E01_SC002_002",
+        "SH_E01_SC002_003",
+        "SH_E01_SC002_004",
+        "SH_E01_SC002_005",
+        "SH_E01_SC002_006",
+        "SH_E01_SC002_007"
+      ],
+      "scene_id": "E01_SC002",
+      "shot_count": 7,
+      "storyboard_materialization_set_id": 2
+    }
+  ],
+  "schema_version": "phase_e_trace_v1",
+  "status": "PASS",
+  "storyboard_shot_count": 15,
+  "video_calls": 0
+}

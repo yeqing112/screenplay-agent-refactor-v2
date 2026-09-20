@@ -1,0 +1,2410 @@
+{
+  "image_calls": 0,
+  "llm_calls": 0,
+  "prompt_ir": [
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC001_001_ACTION_001",
+            "actor_refs": [
+              "林晚",
+              "售票员"
+            ],
+            "beat_refs": [
+              "SC01-B01"
+            ],
+            "event_ref": "SC01-B01",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          },
+          {
+            "action_id": "SH_E01_SC001_001_ACTION_002",
+            "actor_refs": [
+              "林晚",
+              "售票员"
+            ],
+            "beat_refs": [
+              "SC01-B02"
+            ],
+            "event_ref": "SC01-B02",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:售票员",
+          "character:林晚",
+          "prop:TICKET",
+          "scene:E01_SC001"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "WIDE",
+        "movement": "NONE",
+        "movement_end_condition": null,
+        "movement_target": null,
+        "movement_trigger": null,
+        "orientation": "EYE_LEVEL",
+        "support": "STATIC"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": null,
+        "axis_refs": [],
+        "look_direction": {},
+        "screen_side_assignments": {}
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC001",
+        "scene_ref": "E01_SC001"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "TICKET"
+        ],
+        "must_include_subject_refs": [
+          "林晚",
+          "售票员"
+        ],
+        "must_preserve_axis": false
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "AUDIENCE_ONLY",
+      "payload_hash": "4dfc0a7b71c7e41161b2f66cc2ddd26d07aa8e545b2e5b26ef8ae14a2eb1903c",
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_ir_payload_fingerprint": "4dfc0a7b71c7e41161b2f66cc2ddd26d07aa8e545b2e5b26ef8ae14a2eb1903c",
+      "prompt_ir_semantic_fingerprint": "dba1e3af9e9ae7797e2349efbc2288e241e2d42d8da878d3ff08ba7eef39d102",
+      "props": [
+        {
+          "asset_identity_ref": "TICKET",
+          "prop_ref": "TICKET"
+        }
+      ],
+      "scene_id": "E01_SC001",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC01-B01",
+          "SC01-B02"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC01-B01",
+          "DBD_SC01-B02"
+        ],
+        "information_refs": [],
+        "reaction_contract_refs": [],
+        "requirement_refs": [
+          "REQ_SC01-B01",
+          "REQ_SC01-B02"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 1,
+        "storyboard_projection_fingerprint": "dab2b250e22081e9cc0cfe37e94d45f55c0d4b31403d4d50e91a31d5e2266e00",
+        "storyboard_set_payload_fingerprint": "set-1",
+        "visual_semantic_handoff_fingerprint": "dcb9b8b1cda5ced0dc4db44c7d26eabde6082c51573ce126511f7f27ff8fc315"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC01-B01",
+          "SC01-B02"
+        ],
+        "entry_state_ref": "SC01-B01",
+        "exit_state_ref": "SC01-B02",
+        "prop_refs": [
+          "TICKET"
+        ],
+        "subject_zones": {
+          "售票员": "ST_TICKET",
+          "林晚": "ST_TICKET",
+          "陆叔": "ST_REAR",
+          "顾沉": "ST_REAR"
+        }
+      },
+      "storyboard_shot_id": 1,
+      "subjects": [
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        },
+        {
+          "asset_identity_ref": "售票员",
+          "subject_ref": "售票员"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "ACTION_COMPLETION"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC001_002_ACTION_001",
+            "actor_refs": [
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC01-B03"
+            ],
+            "event_ref": "SC01-B03",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "prop:RED_UMBRELLA",
+          "scene:E01_SC001"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "WIDE",
+        "movement": "REFRAME",
+        "movement_end_condition": "BEAT_INFORMATION_LANDS",
+        "movement_target": "林晚",
+        "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+        "orientation": "EYE_LEVEL",
+        "support": "DOLLY"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": null,
+        "axis_refs": [],
+        "look_direction": {},
+        "screen_side_assignments": {}
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC001",
+        "scene_ref": "E01_SC001"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "RED_UMBRELLA"
+        ],
+        "must_include_subject_refs": [
+          "林晚"
+        ],
+        "must_preserve_axis": false
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "CHARACTER_AND_AUDIENCE",
+      "payload_hash": "127282979bb340dbac13f3c3f9ce377ce7d534e6ac7b32df59b18106b3d8be6a",
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_ir_payload_fingerprint": "127282979bb340dbac13f3c3f9ce377ce7d534e6ac7b32df59b18106b3d8be6a",
+      "prompt_ir_semantic_fingerprint": "c1fe6cdcbcbb7c31749bdd6fcfd6eadfccc57348126ef7b2e43e97bff488a8b3",
+      "props": [
+        {
+          "asset_identity_ref": "RED_UMBRELLA",
+          "prop_ref": "RED_UMBRELLA"
+        }
+      ],
+      "scene_id": "E01_SC001",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC01-B03"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC01-B03"
+        ],
+        "information_refs": [
+          "INFO_SC01_B03_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC01-B03_林晚"
+        ],
+        "requirement_refs": [
+          "REQ_SC01-B03"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 1,
+        "storyboard_projection_fingerprint": "8668dfd228604239e29ecddeeaae78315ce394b1857a8f9cb9bc1c248fd9e5a4",
+        "storyboard_set_payload_fingerprint": "set-1",
+        "visual_semantic_handoff_fingerprint": "003ed4023f854ee9889aacdd69be7876a7296cbf0c92d890c6aba49d57a10f07"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC01-B03"
+        ],
+        "entry_state_ref": "SC01-B03",
+        "exit_state_ref": "SC01-B03",
+        "prop_refs": [
+          "RED_UMBRELLA"
+        ],
+        "subject_zones": {
+          "售票员": "ST_TICKET",
+          "林晚": "ST_CENTER",
+          "陆叔": "ST_REAR",
+          "顾沉": "ST_REAR"
+        }
+      },
+      "storyboard_shot_id": 2,
+      "subjects": [
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC001_003_ACTION_001",
+            "actor_refs": [
+              "林晚",
+              "顾沉"
+            ],
+            "beat_refs": [
+              "SC01-B04"
+            ],
+            "event_ref": "SC01-B04",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:顾沉",
+          "prop:BROKEN_UMBRELLA_RIB",
+          "scene:E01_SC001"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "INSERT",
+        "movement": "NONE",
+        "movement_end_condition": null,
+        "movement_target": null,
+        "movement_trigger": null,
+        "orientation": "EYE_LEVEL",
+        "support": "STATIC"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": null,
+        "axis_refs": [],
+        "look_direction": {},
+        "screen_side_assignments": {}
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC001",
+        "scene_ref": "E01_SC001"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "BROKEN_UMBRELLA_RIB"
+        ],
+        "must_include_subject_refs": [
+          "林晚",
+          "顾沉"
+        ],
+        "must_preserve_axis": false
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "CHARACTER_AND_AUDIENCE",
+      "payload_hash": "0f424712b6b23799c709ae201bb5bbf65b2498b9a78e50ba8999d8b761a1502a",
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_ir_payload_fingerprint": "0f424712b6b23799c709ae201bb5bbf65b2498b9a78e50ba8999d8b761a1502a",
+      "prompt_ir_semantic_fingerprint": "dda023de32d4139e8d9eeb3af43b981601c9de96d19e0e1206cf2178d8a48483",
+      "props": [
+        {
+          "asset_identity_ref": "BROKEN_UMBRELLA_RIB",
+          "prop_ref": "BROKEN_UMBRELLA_RIB"
+        }
+      ],
+      "scene_id": "E01_SC001",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC01-B04"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC01-B04"
+        ],
+        "information_refs": [
+          "INFO_SC01_B04_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC01-B04_林晚"
+        ],
+        "requirement_refs": [
+          "REQ_SC01-B04"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 1,
+        "storyboard_projection_fingerprint": "cfa084179802260da302133f165046e9617b948672cadd86a8c7075e321fbd1d",
+        "storyboard_set_payload_fingerprint": "set-1",
+        "visual_semantic_handoff_fingerprint": "1fb196e7c3c28c88e7bacdc52f52a22ee6d3641cc5cf24e9e4fe90d547c393b0"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC01-B04"
+        ],
+        "entry_state_ref": "SC01-B04",
+        "exit_state_ref": "SC01-B04",
+        "prop_refs": [
+          "BROKEN_UMBRELLA_RIB"
+        ],
+        "subject_zones": {
+          "售票员": "ST_TICKET",
+          "林晚": "ST_CENTER",
+          "陆叔": "ST_REAR",
+          "顾沉": "ST_REAR"
+        }
+      },
+      "storyboard_shot_id": 3,
+      "subjects": [
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        },
+        {
+          "asset_identity_ref": "顾沉",
+          "subject_ref": "顾沉"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC001_004_ACTION_001",
+            "actor_refs": [
+              "顾沉",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC01-B05"
+            ],
+            "event_ref": "SC01-B05",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          },
+          {
+            "action_id": "SH_E01_SC001_004_ACTION_002",
+            "actor_refs": [
+              "顾沉",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC01-B06"
+            ],
+            "event_ref": "SC01-B06",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:顾沉",
+          "scene:E01_SC001"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "TWO_SHOT",
+        "movement": "NONE",
+        "movement_end_condition": null,
+        "movement_target": null,
+        "movement_trigger": null,
+        "orientation": "EYE_LEVEL",
+        "support": "STATIC"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_GC",
+        "axis_refs": [
+          "AXIS_LW_GC"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "顾沉": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "顾沉": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC001",
+        "scene_ref": "E01_SC001"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [],
+        "must_include_subject_refs": [
+          "顾沉",
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "CHARACTER_AND_AUDIENCE",
+      "payload_hash": "5b79135a50a1f997e28f0082549ad02e195b05ea8fe35237a50be9064a507205",
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_ir_payload_fingerprint": "5b79135a50a1f997e28f0082549ad02e195b05ea8fe35237a50be9064a507205",
+      "prompt_ir_semantic_fingerprint": "625c90a50fab835b3e896aca21bcf43277b4cfd3e8c2180aacf00706a3a4f4ea",
+      "props": [],
+      "scene_id": "E01_SC001",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC01-B05",
+          "SC01-B06"
+        ],
+        "coverage_roles": [
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC01-B05",
+          "DBD_SC01-B06"
+        ],
+        "information_refs": [
+          "INFO_SC01_B06_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC01-B05_顾沉",
+          "RC_SC01-B06_顾沉"
+        ],
+        "requirement_refs": [
+          "REQ_SC01-B05",
+          "REQ_SC01-B06"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 1,
+        "storyboard_projection_fingerprint": "bab501cbe071800516ea48052bd4e781fe3066f3ea8e2e8d9ecc96c6628edf06",
+        "storyboard_set_payload_fingerprint": "set-1",
+        "visual_semantic_handoff_fingerprint": "45eaa6bf6f82e87fe68431c6cc884d943569e96b066a783abe040df4e62e0dd0"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC01-B05",
+          "SC01-B06"
+        ],
+        "entry_state_ref": "SC01-B05",
+        "exit_state_ref": "SC01-B06",
+        "prop_refs": [],
+        "subject_zones": {
+          "售票员": "ST_TICKET",
+          "林晚": "ST_CENTER",
+          "陆叔": "ST_REAR",
+          "顾沉": "ST_CENTER"
+        }
+      },
+      "storyboard_shot_id": 4,
+      "subjects": [
+        {
+          "asset_identity_ref": "顾沉",
+          "subject_ref": "顾沉"
+        },
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC001_005_ACTION_001",
+            "actor_refs": [
+              "陆叔",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC01-B07"
+            ],
+            "event_ref": "SC01-B07",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          },
+          {
+            "action_id": "SH_E01_SC001_005_ACTION_002",
+            "actor_refs": [
+              "陆叔",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC01-B08"
+            ],
+            "event_ref": "SC01-B08",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "prop:HANDBAG",
+          "scene:E01_SC001"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "MEDIUM_WIDE",
+        "movement": "TRACK",
+        "movement_end_condition": "BEAT_INFORMATION_LANDS",
+        "movement_target": "陆叔",
+        "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+        "orientation": "EYE_LEVEL",
+        "support": "DOLLY"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_GC",
+        "axis_refs": [
+          "AXIS_LW_GC",
+          "AXIS_LW_LS"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "顾沉": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "顾沉": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC001",
+        "scene_ref": "E01_SC001"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "HANDBAG"
+        ],
+        "must_include_subject_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "CHARACTER_AND_AUDIENCE",
+      "payload_hash": "122d643d214bdb02ada2ad2a371f7350188696891085c409b99bdf36adadd9cb",
+      "plan_shot_id": "SH_E01_SC001_005",
+      "prompt_ir_payload_fingerprint": "122d643d214bdb02ada2ad2a371f7350188696891085c409b99bdf36adadd9cb",
+      "prompt_ir_semantic_fingerprint": "ee3d368e35fac8fbbe75232aa2e9f3fdc761c7ccc70a922e1cf7e1dfa43d53f0",
+      "props": [
+        {
+          "asset_identity_ref": "HANDBAG",
+          "prop_ref": "HANDBAG"
+        }
+      ],
+      "scene_id": "E01_SC001",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC01-B07",
+          "SC01-B08"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC01-B07",
+          "DBD_SC01-B08"
+        ],
+        "information_refs": [
+          "INFO_SC01_B08_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC01-B08_陆叔"
+        ],
+        "requirement_refs": [
+          "REQ_SC01-B07",
+          "REQ_SC01-B08"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 1,
+        "storyboard_projection_fingerprint": "a8eb376949a26dca5730958972420e96b04e776bf19bae2062374d39478a2b12",
+        "storyboard_set_payload_fingerprint": "set-1",
+        "visual_semantic_handoff_fingerprint": "1a4e2292be87fbb548584ccb72d3b820bd05f747f36bcddef13b4ca0633a2b81"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC01-B07",
+          "SC01-B08"
+        ],
+        "entry_state_ref": "SC01-B07",
+        "exit_state_ref": "SC01-B08",
+        "prop_refs": [
+          "HANDBAG"
+        ],
+        "subject_zones": {
+          "售票员": "ST_TICKET",
+          "林晚": "ST_CENTER",
+          "陆叔": "ST_CENTER",
+          "顾沉": "ST_CENTER"
+        }
+      },
+      "storyboard_shot_id": 5,
+      "subjects": [
+        {
+          "asset_identity_ref": "陆叔",
+          "subject_ref": "陆叔"
+        },
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC001_006_ACTION_001",
+            "actor_refs": [
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC01-B09"
+            ],
+            "event_ref": "SC01-B09",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          },
+          {
+            "action_id": "SH_E01_SC001_006_ACTION_002",
+            "actor_refs": [
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC01-B10"
+            ],
+            "event_ref": "SC01-B10",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "prop:BROKEN_UMBRELLA_RIB",
+          "prop:RED_UMBRELLA",
+          "scene:E01_SC001"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "INSERT",
+        "movement": "NONE",
+        "movement_end_condition": null,
+        "movement_target": null,
+        "movement_trigger": null,
+        "orientation": "EYE_LEVEL",
+        "support": "STATIC"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_GC",
+        "axis_refs": [
+          "AXIS_LW_GC",
+          "AXIS_LW_LS"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "顾沉": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "顾沉": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC001",
+        "scene_ref": "E01_SC001"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "BROKEN_UMBRELLA_RIB",
+          "RED_UMBRELLA"
+        ],
+        "must_include_subject_refs": [
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "AUDIENCE_ONLY",
+      "payload_hash": "30f111c3736e76c6283853f2cf871e658d81bf9ccfa9d2cde0f478911bd7349d",
+      "plan_shot_id": "SH_E01_SC001_006",
+      "prompt_ir_payload_fingerprint": "30f111c3736e76c6283853f2cf871e658d81bf9ccfa9d2cde0f478911bd7349d",
+      "prompt_ir_semantic_fingerprint": "321e12a030b73c08e3a0635fba8e08b1768e04b1ebf285e2a6a667cf88aa91b6",
+      "props": [
+        {
+          "asset_identity_ref": "BROKEN_UMBRELLA_RIB",
+          "prop_ref": "BROKEN_UMBRELLA_RIB"
+        },
+        {
+          "asset_identity_ref": "RED_UMBRELLA",
+          "prop_ref": "RED_UMBRELLA"
+        }
+      ],
+      "scene_id": "E01_SC001",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC01-B09",
+          "SC01-B10"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC01-B09",
+          "DBD_SC01-B10"
+        ],
+        "information_refs": [
+          "INFO_SC01_B09_001",
+          "INFO_SC01_B10_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC01-B09_林晚",
+          "RC_SC01-B10_林晚"
+        ],
+        "requirement_refs": [
+          "REQ_SC01-B09",
+          "REQ_SC01-B10"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 1,
+        "storyboard_projection_fingerprint": "3a04397ef6e4b339df3bdf0bcdba604bbfa7c4e0ba76e78c605648c3dfd720a0",
+        "storyboard_set_payload_fingerprint": "set-1",
+        "visual_semantic_handoff_fingerprint": "eca3ac161d6e5fe5cdcd919c25ca0a9f32d03fa1364d4615a39a583f27e88b62"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC01-B09",
+          "SC01-B10"
+        ],
+        "entry_state_ref": "SC01-B09",
+        "exit_state_ref": "SC01-B10",
+        "prop_refs": [
+          "BROKEN_UMBRELLA_RIB",
+          "RED_UMBRELLA"
+        ],
+        "subject_zones": {
+          "售票员": "ST_TICKET",
+          "林晚": "ST_CENTER",
+          "陆叔": "ST_CENTER",
+          "顾沉": "ST_CENTER"
+        }
+      },
+      "storyboard_shot_id": 6,
+      "subjects": [
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC001_007_ACTION_001",
+            "actor_refs": [
+              "林晚",
+              "陆叔"
+            ],
+            "beat_refs": [
+              "SC01-B11"
+            ],
+            "event_ref": "SC01-B11",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          },
+          {
+            "action_id": "SH_E01_SC001_007_ACTION_002",
+            "actor_refs": [
+              "林晚",
+              "陆叔"
+            ],
+            "beat_refs": [
+              "SC01-B12"
+            ],
+            "event_ref": "SC01-B12",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "scene:E01_SC001"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "MEDIUM",
+        "movement": "PAN",
+        "movement_end_condition": "BEAT_INFORMATION_LANDS",
+        "movement_target": "林晚",
+        "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+        "orientation": "EYE_LEVEL",
+        "support": "DOLLY"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_GC",
+        "axis_refs": [
+          "AXIS_LW_GC",
+          "AXIS_LW_LS"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "顾沉": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "顾沉": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC001",
+        "scene_ref": "E01_SC001"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [],
+        "must_include_subject_refs": [
+          "林晚",
+          "陆叔"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "CHARACTER_AND_AUDIENCE",
+      "payload_hash": "fa51d6fd31e9d305c63e6dc4f697a79b7f7657c56d63e30dc9fc183940f32d0f",
+      "plan_shot_id": "SH_E01_SC001_007",
+      "prompt_ir_payload_fingerprint": "fa51d6fd31e9d305c63e6dc4f697a79b7f7657c56d63e30dc9fc183940f32d0f",
+      "prompt_ir_semantic_fingerprint": "f3b9c49e78f186045b0fcc09f99a76e1c902df43a3a4fe812a9e66c902d31694",
+      "props": [],
+      "scene_id": "E01_SC001",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC01-B11",
+          "SC01-B12"
+        ],
+        "coverage_roles": [
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC01-B11",
+          "DBD_SC01-B12"
+        ],
+        "information_refs": [
+          "INFO_SC01_B11_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC01-B11_林晚",
+          "RC_SC01-B12_陆叔"
+        ],
+        "requirement_refs": [
+          "REQ_SC01-B11",
+          "REQ_SC01-B12"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 1,
+        "storyboard_projection_fingerprint": "0e218b50f8d995b1e9c048794a5bdcbbffd2741c664766b4540995ac73630274",
+        "storyboard_set_payload_fingerprint": "set-1",
+        "visual_semantic_handoff_fingerprint": "329169866cb45abe8d5ce2125b8611c5a86c75fc956a3606f28961754c7eb8ac"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC01-B11",
+          "SC01-B12"
+        ],
+        "entry_state_ref": "SC01-B11",
+        "exit_state_ref": "SC01-B12",
+        "prop_refs": [],
+        "subject_zones": {
+          "售票员": "ST_TICKET",
+          "林晚": "ST_CHECK",
+          "陆叔": "ST_CENTER",
+          "顾沉": "ST_CENTER"
+        }
+      },
+      "storyboard_shot_id": 7,
+      "subjects": [
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        },
+        {
+          "asset_identity_ref": "陆叔",
+          "subject_ref": "陆叔"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC001_008_ACTION_001",
+            "actor_refs": [
+              "顾沉",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC01-B13"
+            ],
+            "event_ref": "SC01-B13",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:顾沉",
+          "scene:E01_SC001"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "MEDIUM_CLOSE",
+        "movement": "DOLLY_IN",
+        "movement_end_condition": "BEAT_INFORMATION_LANDS",
+        "movement_target": "顾沉",
+        "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+        "orientation": "EYE_LEVEL",
+        "support": "DOLLY"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_GC",
+        "axis_refs": [
+          "AXIS_LW_GC",
+          "AXIS_LW_LS"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "顾沉": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "顾沉": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC001",
+        "scene_ref": "E01_SC001"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [],
+        "must_include_subject_refs": [
+          "顾沉",
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "AUDIENCE_ONLY",
+      "payload_hash": "69c30b4baa0da4ac6a1d23d40d6ca1beb04f423ff612fafb48d1c778df3686cc",
+      "plan_shot_id": "SH_E01_SC001_008",
+      "prompt_ir_payload_fingerprint": "69c30b4baa0da4ac6a1d23d40d6ca1beb04f423ff612fafb48d1c778df3686cc",
+      "prompt_ir_semantic_fingerprint": "141889f92f236ef001c50f509d4ad1ef292ccb2030a13360120d6dd9ab2b3a59",
+      "props": [],
+      "scene_id": "E01_SC001",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC01-B13"
+        ],
+        "coverage_roles": [
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE",
+          "SCENE_EXIT_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC01-B13"
+        ],
+        "information_refs": [
+          "INFO_SC01_B13_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC01-B13_顾沉"
+        ],
+        "requirement_refs": [
+          "REQ_SC01-B13"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 1,
+        "storyboard_projection_fingerprint": "5f85219ef9cd5a406a84ea547b4b088f4f7817410bb8eb9a98645f23fd80bfe7",
+        "storyboard_set_payload_fingerprint": "set-1",
+        "visual_semantic_handoff_fingerprint": "65de2da101aadf896ac0e39aeea62dd9b122416ca3a9c392bb907235bc331ca3"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC01-B13"
+        ],
+        "entry_state_ref": "SC01-B13",
+        "exit_state_ref": "SC01-B13",
+        "prop_refs": [],
+        "subject_zones": {
+          "售票员": "ST_TICKET",
+          "林晚": "ST_CHECK",
+          "陆叔": "ST_CENTER",
+          "顾沉": "ST_CENTER"
+        }
+      },
+      "storyboard_shot_id": 8,
+      "subjects": [
+        {
+          "asset_identity_ref": "顾沉",
+          "subject_ref": "顾沉"
+        },
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC002_001_ACTION_001",
+            "actor_refs": [
+              "陆叔",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC02-B01"
+            ],
+            "event_ref": "SC02-B01",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          },
+          {
+            "action_id": "SH_E01_SC002_001_ACTION_002",
+            "actor_refs": [
+              "陆叔",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC02-B02"
+            ],
+            "event_ref": "SC02-B02",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "prop:APPLE",
+          "prop:DOOR_LOCK",
+          "scene:E01_SC002"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "WIDE",
+        "movement": "NONE",
+        "movement_end_condition": null,
+        "movement_target": null,
+        "movement_trigger": null,
+        "orientation": "EYE_LEVEL",
+        "support": "STATIC"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_LS_APT",
+        "axis_refs": [
+          "AXIS_LW_LS_APT"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "陆叔": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "陆叔": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC002",
+        "scene_ref": "E01_SC002"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "APPLE",
+          "DOOR_LOCK"
+        ],
+        "must_include_subject_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "AUDIENCE_ONLY",
+      "payload_hash": "1bad2b59379f77099c24d5bea4dfce70d6df5b11dfd9b9ed67798e417b120e8c",
+      "plan_shot_id": "SH_E01_SC002_001",
+      "prompt_ir_payload_fingerprint": "1bad2b59379f77099c24d5bea4dfce70d6df5b11dfd9b9ed67798e417b120e8c",
+      "prompt_ir_semantic_fingerprint": "f3572acb9e9069b8956a29497a6f280f8302a634ee588e20251c78e346ec6fc7",
+      "props": [
+        {
+          "asset_identity_ref": "APPLE",
+          "prop_ref": "APPLE"
+        },
+        {
+          "asset_identity_ref": "DOOR_LOCK",
+          "prop_ref": "DOOR_LOCK"
+        }
+      ],
+      "scene_id": "E01_SC002",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC02-B01",
+          "SC02-B02"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC02-B01",
+          "DBD_SC02-B02"
+        ],
+        "information_refs": [],
+        "reaction_contract_refs": [
+          "RC_SC02-B02_林晚"
+        ],
+        "requirement_refs": [
+          "REQ_SC02-B01",
+          "REQ_SC02-B02"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 2,
+        "storyboard_projection_fingerprint": "e96d2c59295f86184b32acfbb3eb62d8735eebc6dabafe0917a800bce3bb5dcf",
+        "storyboard_set_payload_fingerprint": "set-2",
+        "visual_semantic_handoff_fingerprint": "3ad6d21e91d63dc0eb428843eae025b3eb293b04b59fd5a9e4e73b48e8ec6228"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC02-B01",
+          "SC02-B02"
+        ],
+        "entry_state_ref": "SC02-B01",
+        "exit_state_ref": "SC02-B02",
+        "prop_refs": [
+          "APPLE",
+          "DOOR_LOCK"
+        ],
+        "subject_zones": {
+          "林晚": "APT_CENTER",
+          "陆叔": "APT_KITCHEN"
+        }
+      },
+      "storyboard_shot_id": 1,
+      "subjects": [
+        {
+          "asset_identity_ref": "陆叔",
+          "subject_ref": "陆叔"
+        },
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC002_002_ACTION_001",
+            "actor_refs": [
+              "陆叔",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC02-B03"
+            ],
+            "event_ref": "SC02-B03",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "scene:E01_SC002"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "OVER_SHOULDER",
+        "movement": "NONE",
+        "movement_end_condition": null,
+        "movement_target": null,
+        "movement_trigger": null,
+        "orientation": "EYE_LEVEL",
+        "support": "STATIC"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_LS_APT",
+        "axis_refs": [
+          "AXIS_LW_LS_APT"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "陆叔": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "陆叔": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC002",
+        "scene_ref": "E01_SC002"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [],
+        "must_include_subject_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "CHARACTER_AND_AUDIENCE",
+      "payload_hash": "17dd2d65414d1aea57d7139e7a6283e38c0e3b6a6344ba961ee204422793048e",
+      "plan_shot_id": "SH_E01_SC002_002",
+      "prompt_ir_payload_fingerprint": "17dd2d65414d1aea57d7139e7a6283e38c0e3b6a6344ba961ee204422793048e",
+      "prompt_ir_semantic_fingerprint": "0b4b093bbf28ddd2e034e1155f69aeb7389cda7aeaf22d5a65bea85d1df87e09",
+      "props": [],
+      "scene_id": "E01_SC002",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC02-B03"
+        ],
+        "coverage_roles": [
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC02-B03"
+        ],
+        "information_refs": [
+          "INFO_SC02_B03_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC02-B03_陆叔"
+        ],
+        "requirement_refs": [
+          "REQ_SC02-B03"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 2,
+        "storyboard_projection_fingerprint": "eb357643437164a483edd5ba050862ce748c888f59a7a6d46cf9040595a58d6f",
+        "storyboard_set_payload_fingerprint": "set-2",
+        "visual_semantic_handoff_fingerprint": "dff2e557615ede9e9a8d6cd4f6a1919d6e7b4a83fce937facf6233bfab8dbc39"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC02-B03"
+        ],
+        "entry_state_ref": "SC02-B03",
+        "exit_state_ref": "SC02-B03",
+        "prop_refs": [],
+        "subject_zones": {
+          "林晚": "APT_CENTER",
+          "陆叔": "APT_CENTER"
+        }
+      },
+      "storyboard_shot_id": 2,
+      "subjects": [
+        {
+          "asset_identity_ref": "陆叔",
+          "subject_ref": "陆叔"
+        },
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC002_003_ACTION_001",
+            "actor_refs": [
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC02-B04"
+            ],
+            "event_ref": "SC02-B04",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "prop:HANDBAG",
+          "scene:E01_SC002"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "MEDIUM_CLOSE",
+        "movement": "NONE",
+        "movement_end_condition": null,
+        "movement_target": null,
+        "movement_trigger": null,
+        "orientation": "EYE_LEVEL",
+        "support": "STATIC"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_LS_APT",
+        "axis_refs": [
+          "AXIS_LW_LS_APT"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "陆叔": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "陆叔": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC002",
+        "scene_ref": "E01_SC002"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "HANDBAG"
+        ],
+        "must_include_subject_refs": [
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "AUDIENCE_OBSERVES_CHARACTER_DOUBT",
+      "payload_hash": "4a2fe585df4d216fae4b51aa7a56cf8acb6fa53663c064fd5211c9993a13ec24",
+      "plan_shot_id": "SH_E01_SC002_003",
+      "prompt_ir_payload_fingerprint": "4a2fe585df4d216fae4b51aa7a56cf8acb6fa53663c064fd5211c9993a13ec24",
+      "prompt_ir_semantic_fingerprint": "19459dcba8f80efffa901e49d62f786a74f31cea29d57d7af11c88d41ce88ce1",
+      "props": [
+        {
+          "asset_identity_ref": "HANDBAG",
+          "prop_ref": "HANDBAG"
+        }
+      ],
+      "scene_id": "E01_SC002",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC02-B04"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC02-B04"
+        ],
+        "information_refs": [],
+        "reaction_contract_refs": [
+          "RC_SC02-B04_林晚"
+        ],
+        "requirement_refs": [
+          "REQ_SC02-B04"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 2,
+        "storyboard_projection_fingerprint": "4a4122084f3eb349e96c1127c129803d76ed09d311a902bd9699bc5d7dea422b",
+        "storyboard_set_payload_fingerprint": "set-2",
+        "visual_semantic_handoff_fingerprint": "9a1e490ef27f385d18c0231d0fe075c3aa34e04dda7f25d246ea3df52853f8db"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC02-B04"
+        ],
+        "entry_state_ref": "SC02-B04",
+        "exit_state_ref": "SC02-B04",
+        "prop_refs": [
+          "HANDBAG"
+        ],
+        "subject_zones": {
+          "林晚": "APT_TABLE",
+          "陆叔": "APT_CENTER"
+        }
+      },
+      "storyboard_shot_id": 3,
+      "subjects": [
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC002_004_ACTION_001",
+            "actor_refs": [
+              "陆叔",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC02-B05"
+            ],
+            "event_ref": "SC02-B05",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "prop:POCKET_HARD_OBJECT",
+          "prop:TABLE_SCRATCH",
+          "scene:E01_SC002"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "MEDIUM_CLOSE",
+        "movement": "REFRAME",
+        "movement_end_condition": "BEAT_INFORMATION_LANDS",
+        "movement_target": "陆叔",
+        "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+        "orientation": "EYE_LEVEL",
+        "support": "DOLLY"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_LS_APT",
+        "axis_refs": [
+          "AXIS_LW_LS_APT"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "陆叔": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "陆叔": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC002",
+        "scene_ref": "E01_SC002"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "POCKET_HARD_OBJECT",
+          "TABLE_SCRATCH"
+        ],
+        "must_include_subject_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "CHARACTER_AND_AUDIENCE",
+      "payload_hash": "1806d5ee2d7d8d1b52f65f386ae66ec7eeb9a54e4d2c8cc2bdba046a06a4bcef",
+      "plan_shot_id": "SH_E01_SC002_004",
+      "prompt_ir_payload_fingerprint": "1806d5ee2d7d8d1b52f65f386ae66ec7eeb9a54e4d2c8cc2bdba046a06a4bcef",
+      "prompt_ir_semantic_fingerprint": "8cda786e122bf8cd3341458366c1b2300055976e4411d4b29d20a9d4e1842482",
+      "props": [
+        {
+          "asset_identity_ref": "POCKET_HARD_OBJECT",
+          "prop_ref": "POCKET_HARD_OBJECT"
+        },
+        {
+          "asset_identity_ref": "TABLE_SCRATCH",
+          "prop_ref": "TABLE_SCRATCH"
+        }
+      ],
+      "scene_id": "E01_SC002",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC02-B05"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC02-B05"
+        ],
+        "information_refs": [
+          "INFO_SC02_B05_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC02-B05_陆叔"
+        ],
+        "requirement_refs": [
+          "REQ_SC02-B05"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 2,
+        "storyboard_projection_fingerprint": "64bb9bc030554db6d4bf80d2acf74392c1019f9105bba6b7055e23b34720d1ae",
+        "storyboard_set_payload_fingerprint": "set-2",
+        "visual_semantic_handoff_fingerprint": "cbd52545f7ac781b649045de9f2c47b1acac4d5eae44086dcde8c6117ad73526"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC02-B05"
+        ],
+        "entry_state_ref": "SC02-B05",
+        "exit_state_ref": "SC02-B05",
+        "prop_refs": [
+          "POCKET_HARD_OBJECT",
+          "TABLE_SCRATCH"
+        ],
+        "subject_zones": {
+          "林晚": "APT_TABLE",
+          "陆叔": "APT_CENTER"
+        }
+      },
+      "storyboard_shot_id": 4,
+      "subjects": [
+        {
+          "asset_identity_ref": "陆叔",
+          "subject_ref": "陆叔"
+        },
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC002_005_ACTION_001",
+            "actor_refs": [
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC02-B06"
+            ],
+            "event_ref": "SC02-B06",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "prop:RED_FIBER",
+          "scene:E01_SC002"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "INSERT",
+        "movement": "NONE",
+        "movement_end_condition": null,
+        "movement_target": null,
+        "movement_trigger": null,
+        "orientation": "EYE_LEVEL",
+        "support": "STATIC"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_LS_APT",
+        "axis_refs": [
+          "AXIS_LW_LS_APT"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "陆叔": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "陆叔": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC002",
+        "scene_ref": "E01_SC002"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [
+          "RED_FIBER"
+        ],
+        "must_include_subject_refs": [
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "AUDIENCE_ONLY",
+      "payload_hash": "4e4c96734fbb093dd14910109bf9e5267c112eb1de02230c9fac95582cdf2adb",
+      "plan_shot_id": "SH_E01_SC002_005",
+      "prompt_ir_payload_fingerprint": "4e4c96734fbb093dd14910109bf9e5267c112eb1de02230c9fac95582cdf2adb",
+      "prompt_ir_semantic_fingerprint": "1ae6783e275ccc242cc532143fff3af2934013357aeac660958616a19520d836",
+      "props": [
+        {
+          "asset_identity_ref": "RED_FIBER",
+          "prop_ref": "RED_FIBER"
+        }
+      ],
+      "scene_id": "E01_SC002",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC02-B06"
+        ],
+        "coverage_roles": [
+          "INSERT_EVIDENCE",
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC02-B06"
+        ],
+        "information_refs": [
+          "INFO_SC02_B06_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC02-B06_林晚"
+        ],
+        "requirement_refs": [
+          "REQ_SC02-B06"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 2,
+        "storyboard_projection_fingerprint": "f31e702588328016c11671e7f04aba65a03cf489e8f92b37f75ad3626e15cb62",
+        "storyboard_set_payload_fingerprint": "set-2",
+        "visual_semantic_handoff_fingerprint": "d1f26796972c262b5fda5834330ca474a9994d892203519ee71450eb864a4f59"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC02-B06"
+        ],
+        "entry_state_ref": "SC02-B06",
+        "exit_state_ref": "SC02-B06",
+        "prop_refs": [
+          "RED_FIBER"
+        ],
+        "subject_zones": {
+          "林晚": "APT_TABLE",
+          "陆叔": "APT_CENTER"
+        }
+      },
+      "storyboard_shot_id": 5,
+      "subjects": [
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC002_006_ACTION_001",
+            "actor_refs": [
+              "陆叔",
+              "林晚"
+            ],
+            "beat_refs": [
+              "SC02-B07"
+            ],
+            "event_ref": "SC02-B07",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "scene:E01_SC002"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "CLOSE",
+        "movement": "DOLLY_IN",
+        "movement_end_condition": "BEAT_INFORMATION_LANDS",
+        "movement_target": "陆叔",
+        "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+        "orientation": "EYE_LEVEL",
+        "support": "DOLLY"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_LS_APT",
+        "axis_refs": [
+          "AXIS_LW_LS_APT"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "陆叔": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "陆叔": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC002",
+        "scene_ref": "E01_SC002"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [],
+        "must_include_subject_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "CHARACTER_AND_AUDIENCE",
+      "payload_hash": "f6e7a958adf0070df968111453750f630b5dc852a4fd460e704191571cc60ea4",
+      "plan_shot_id": "SH_E01_SC002_006",
+      "prompt_ir_payload_fingerprint": "f6e7a958adf0070df968111453750f630b5dc852a4fd460e704191571cc60ea4",
+      "prompt_ir_semantic_fingerprint": "4aebbc30e5963dfe2a1a18d1394586133294e8a1b5be9b0bf195affabfb1c540",
+      "props": [],
+      "scene_id": "E01_SC002",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC02-B07"
+        ],
+        "coverage_roles": [
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC02-B07"
+        ],
+        "information_refs": [],
+        "reaction_contract_refs": [
+          "RC_SC02-B07_陆叔"
+        ],
+        "requirement_refs": [
+          "REQ_SC02-B07"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 2,
+        "storyboard_projection_fingerprint": "58e0f7a2f047cc24d4f2f07ac81e24829865aacff8479f11103bd335b287e428",
+        "storyboard_set_payload_fingerprint": "set-2",
+        "visual_semantic_handoff_fingerprint": "b2dff89111417c98a5391692c4aec7d6584cdd6593f576eda170db144c257ddb"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC02-B07"
+        ],
+        "entry_state_ref": "SC02-B07",
+        "exit_state_ref": "SC02-B07",
+        "prop_refs": [],
+        "subject_zones": {
+          "林晚": "APT_TABLE",
+          "陆叔": "APT_TABLE"
+        }
+      },
+      "storyboard_shot_id": 6,
+      "subjects": [
+        {
+          "asset_identity_ref": "陆叔",
+          "subject_ref": "陆叔"
+        },
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    },
+    {
+      "action": {
+        "action_beats": [
+          {
+            "action_id": "SH_E01_SC002_007_ACTION_001",
+            "actor_refs": [
+              "林晚",
+              "陆叔"
+            ],
+            "beat_refs": [
+              "SC02-B08"
+            ],
+            "event_ref": "SC02-B08",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          },
+          {
+            "action_id": "SH_E01_SC002_007_ACTION_002",
+            "actor_refs": [
+              "林晚",
+              "陆叔"
+            ],
+            "beat_refs": [
+              "SC02-B09"
+            ],
+            "event_ref": "SC02-B09",
+            "projection_origin": "SHOT_PLAN_PROJECTION"
+          }
+        ]
+      },
+      "asset_authority_bindings": {
+        "identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "scene:E01_SC002"
+        ],
+        "resolved": []
+      },
+      "camera": {
+        "framing_class": "TWO_SHOT",
+        "movement": "ARC",
+        "movement_end_condition": "BEAT_INFORMATION_LANDS",
+        "movement_target": "林晚",
+        "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+        "orientation": "EYE_LEVEL",
+        "support": "DOLLY"
+      },
+      "compiler_provenance": {
+        "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+        "compiler_version": "prompt_ir_semantic_compiler_v1",
+        "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+      },
+      "continuity": {
+        "axis_policy": "PRESERVE",
+        "axis_ref": "AXIS_LW_LS_APT",
+        "axis_refs": [
+          "AXIS_LW_LS_APT"
+        ],
+        "look_direction": {
+          "林晚": "SCREEN_RIGHT",
+          "陆叔": "SCREEN_LEFT"
+        },
+        "screen_side_assignments": {
+          "林晚": "LEFT",
+          "陆叔": "RIGHT"
+        }
+      },
+      "environment": {
+        "asset_identity_ref": "E01_SC002",
+        "scene_ref": "E01_SC002"
+      },
+      "generation_constraints": {
+        "must_include_prop_refs": [],
+        "must_include_subject_refs": [
+          "林晚",
+          "陆叔"
+        ],
+        "must_preserve_axis": true
+      },
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "information_visibility": "AUDIENCE_ONLY",
+      "payload_hash": "51c88b09d58a8434bbb0ace0ed407da59e762fee7af0c4519779fc37ba56e86a",
+      "plan_shot_id": "SH_E01_SC002_007",
+      "prompt_ir_payload_fingerprint": "51c88b09d58a8434bbb0ace0ed407da59e762fee7af0c4519779fc37ba56e86a",
+      "prompt_ir_semantic_fingerprint": "19b4856060d60c7943340a83052df35624f6e134aac2da593be67ef39dbb66dc",
+      "props": [],
+      "scene_id": "E01_SC002",
+      "schema_version": "prompt_ir_v2",
+      "semantic_refs": {
+        "beat_refs": [
+          "SC02-B08",
+          "SC02-B09"
+        ],
+        "coverage_roles": [
+          "PRIMARY_BEAT_COVERAGE",
+          "REACTION_COVERAGE",
+          "SCENE_EXIT_COVERAGE"
+        ],
+        "director_decision_refs": [
+          "DBD_SC02-B08",
+          "DBD_SC02-B09"
+        ],
+        "information_refs": [
+          "INFO_SC02_B08_001"
+        ],
+        "reaction_contract_refs": [
+          "RC_SC02-B08_林晚",
+          "RC_SC02-B09_陆叔"
+        ],
+        "requirement_refs": [
+          "REQ_SC02-B08",
+          "REQ_SC02-B09"
+        ]
+      },
+      "source_authority": {
+        "blocking_authority_fingerprint": "",
+        "shot_plan_authority_fingerprint": "",
+        "storyboard_materialization_set_id": 2,
+        "storyboard_projection_fingerprint": "2e25efc0fb3f3e756cbc558bcf7327b36237ef4f09eb19c205825ce412f9ab73",
+        "storyboard_set_payload_fingerprint": "set-2",
+        "visual_semantic_handoff_fingerprint": "a65899c6209392f87fddfca258024a7f6c736fd29535e32683392022d483fc6c"
+      },
+      "spatial": {
+        "blocking_state_refs": [
+          "SC02-B08",
+          "SC02-B09"
+        ],
+        "entry_state_ref": "SC02-B08",
+        "exit_state_ref": "SC02-B09",
+        "prop_refs": [],
+        "subject_zones": {
+          "林晚": "APT_TABLE",
+          "陆叔": "APT_TABLE"
+        }
+      },
+      "storyboard_shot_id": 7,
+      "subjects": [
+        {
+          "asset_identity_ref": "林晚",
+          "subject_ref": "林晚"
+        },
+        {
+          "asset_identity_ref": "陆叔",
+          "subject_ref": "陆叔"
+        }
+      ],
+      "temporal": {
+        "continuous_take": true,
+        "cut_events": [],
+        "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+        "duration_hint_seconds": 4,
+        "duration_mode": "REACTION_HOLD"
+      }
+    }
+  ],
+  "provider_calls": 0,
+  "scenes": [
+    {
+      "plan_shot_ids": [
+        "SH_E01_SC001_001",
+        "SH_E01_SC001_002",
+        "SH_E01_SC001_003",
+        "SH_E01_SC001_004",
+        "SH_E01_SC001_005",
+        "SH_E01_SC001_006",
+        "SH_E01_SC001_007",
+        "SH_E01_SC001_008"
+      ],
+      "scene_id": "E01_SC001",
+      "shot_count": 8,
+      "storyboard_materialization_set_id": 1
+    },
+    {
+      "plan_shot_ids": [
+        "SH_E01_SC002_001",
+        "SH_E01_SC002_002",
+        "SH_E01_SC002_003",
+        "SH_E01_SC002_004",
+        "SH_E01_SC002_005",
+        "SH_E01_SC002_006",
+        "SH_E01_SC002_007"
+      ],
+      "scene_id": "E01_SC002",
+      "shot_count": 7,
+      "storyboard_materialization_set_id": 2
+    }
+  ],
+  "schema_version": "prompt_ir_phase_e_pilot_v1",
+  "video_calls": 0
+}
