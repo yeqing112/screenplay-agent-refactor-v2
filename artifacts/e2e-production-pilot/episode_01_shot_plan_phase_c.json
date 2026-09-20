@@ -3797,19 +3797,19 @@
         "source_lineage": {
           "script_ir": {
             "id": 1,
-            "authority_envelope_fingerprint": "e6dc4a40c039412ac5b6cb5679fc017debb8867e84ad00e888e7c2defadb0c80"
+            "authority_envelope_fingerprint": "7463e04e8de6b64f2fec16de50c30ffc8eda1c401816e30f2ec1764a6c039682"
           },
           "treatment": {
             "id": 1,
             "revision": 1,
             "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
-            "authority_envelope_fingerprint": "5dc6f757608578749db2d9b3dfe1e29dfbb544493fafa6ba432c74548d8ec136"
+            "authority_envelope_fingerprint": "545356cdab9894b846342423b39ce2efd650c6e0e1b8dc3ea198667fae430c34"
           },
           "blocking": {
             "id": 2,
             "revision": 1,
-            "payload_hash": "bc2da1f550bb9c0e7d376f2819fd1bbe868a22aa74166f1efa222a06ed948023",
-            "authority_envelope_fingerprint": "30d03bb153eb6e96916a1049fbea412b04d2f6fc02db0cc96090b5c83b734136"
+            "payload_hash": "c07cc6a4a19b687df5749ef37ed3cd711f738959c043d6024d21fcd28da78523",
+            "authority_envelope_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622"
           }
         },
         "authoring_provenance": {
@@ -3830,14 +3830,14 @@
             "confirmed": true,
             "boundary": "production_confirm_service",
             "confirmation_type": "HUMAN_CONFIRMATION",
-            "confirmed_at": "2026-09-21T00:47:16.680832",
+            "confirmed_at": "2026-09-21T03:49:30.279485",
             "source_proposal_origin": "HUMAN_INPUT",
             "canonical_origin": "HUMAN_AUTHORED",
             "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
           },
           "canonical_origin": "HUMAN_AUTHORED"
         },
-        "payload_hash": "b5af9428e25507d2a9f949be6217e55007b44ce671002eeb4f4babba1fd34fb4"
+        "payload_hash": "9a4350edc9e6e8972eeeaa0371b407fb1f415f3a7f32ddec51bec8f853922b63"
       },
       "phase_c_semantic_ready": true,
       "shot_design_status": "CANONICAL_CONFIRMED",
@@ -3845,7 +3845,7 @@
       "runtime_estimate": {
         "status": "AUTHORING_DERIVED_OR_PENDING"
       },
-      "payload_hash": "bfd059e8114cf29a571595cc4f6ad8fd4e524fa7c2afa8f3e601ed822469a2a5"
+      "payload_hash": "7becdeef512cc7a083195f2d88a24ca4f91b2fde223cee6c7bb8dfdc1a20bf0a"
     },
     {
       "contract_version": "shot_plan_phase_c_v1",
@@ -6844,19 +6844,19 @@
         "source_lineage": {
           "script_ir": {
             "id": 1,
-            "authority_envelope_fingerprint": "e6dc4a40c039412ac5b6cb5679fc017debb8867e84ad00e888e7c2defadb0c80"
+            "authority_envelope_fingerprint": "7463e04e8de6b64f2fec16de50c30ffc8eda1c401816e30f2ec1764a6c039682"
           },
           "treatment": {
             "id": 2,
             "revision": 1,
             "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
-            "authority_envelope_fingerprint": "d44fd56d87038f3989bbe9fb8ec0cb10891951e0fa3c1ff8405e451199ed518e"
+            "authority_envelope_fingerprint": "dde2f62ed6cb8dffd8b3b8d5d1197f6a840b15124efa0fdd7d0d2a7c1cdf0ebb"
           },
           "blocking": {
             "id": 4,
             "revision": 1,
-            "payload_hash": "a67900989cc05b08af6fee016d35abb882021e6734ab0c3dc40b84313b57660c",
-            "authority_envelope_fingerprint": "0395751f3f64539862533aa67b0875c5cb7cbe02c8367f1275603f875b66296e"
+            "payload_hash": "9a52fae51fdcad944d8f2e04c48cd750ec3a4a3b16b9fa38e077af8bf80f40a0",
+            "authority_envelope_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f"
           }
         },
         "authoring_provenance": {
@@ -6877,14 +6877,14 @@
             "confirmed": true,
             "boundary": "production_confirm_service",
             "confirmation_type": "HUMAN_CONFIRMATION",
-            "confirmed_at": "2026-09-21T00:47:16.797740",
+            "confirmed_at": "2026-09-21T03:49:30.402151",
             "source_proposal_origin": "HUMAN_INPUT",
             "canonical_origin": "HUMAN_AUTHORED",
             "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
           },
           "canonical_origin": "HUMAN_AUTHORED"
         },
-        "payload_hash": "64799ba00109a79a15e775321c4ae4b8062a519a38bc119efba3ce50307cc021"
+        "payload_hash": "dfe3f3b24a700b20c60a119edc933a6fa041d49b2e73dde6854074b652c15b06"
       },
       "phase_c_semantic_ready": true,
       "shot_design_status": "CANONICAL_CONFIRMED",
@@ -6892,7 +6892,7 @@
       "runtime_estimate": {
         "status": "AUTHORING_DERIVED_OR_PENDING"
       },
-      "payload_hash": "8ea766b84e00c310d7d3571c1dfcde71201dcf01388fd235a910f0a79b96f35a"
+      "payload_hash": "f97d45a37c80c93c967b9d90a83ac68d2bbd885e9f305f8ea965e5be231247e0"
     }
   ],
   "authority": [
@@ -6900,11 +6900,11 @@
       "scene_id": "E01_SC001",
       "row_id": 2,
       "revision": 1,
-      "payload_hash": "bfd059e8114cf29a571595cc4f6ad8fd4e524fa7c2afa8f3e601ed822469a2a5",
+      "payload_hash": "7becdeef512cc7a083195f2d88a24ca4f91b2fde223cee6c7bb8dfdc1a20bf0a",
       "authority_id": 1,
-      "authority_fingerprint": "b3f4b9abab0615f2b1f4becfefd1e52e8411b395791fbd79342ed95bafbd247a",
+      "authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
       "pointer_id": 1,
-      "pointer_fingerprint": "b3f4b9abab0615f2b1f4becfefd1e52e8411b395791fbd79342ed95bafbd247a",
+      "pointer_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
       "qualification_state": "PRODUCTION_QUALIFIED",
       "phase_c_semantic_ready": true,
       "shot_design_status": "CANONICAL_CONFIRMED",
@@ -9555,19 +9555,19 @@
         "source_lineage": {
           "script_ir": {
             "id": 1,
-            "authority_envelope_fingerprint": "e6dc4a40c039412ac5b6cb5679fc017debb8867e84ad00e888e7c2defadb0c80"
+            "authority_envelope_fingerprint": "7463e04e8de6b64f2fec16de50c30ffc8eda1c401816e30f2ec1764a6c039682"
           },
           "treatment": {
             "id": 1,
             "revision": 1,
             "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
-            "authority_envelope_fingerprint": "5dc6f757608578749db2d9b3dfe1e29dfbb544493fafa6ba432c74548d8ec136"
+            "authority_envelope_fingerprint": "545356cdab9894b846342423b39ce2efd650c6e0e1b8dc3ea198667fae430c34"
           },
           "blocking": {
             "id": 2,
             "revision": 1,
-            "payload_hash": "bc2da1f550bb9c0e7d376f2819fd1bbe868a22aa74166f1efa222a06ed948023",
-            "authority_envelope_fingerprint": "30d03bb153eb6e96916a1049fbea412b04d2f6fc02db0cc96090b5c83b734136"
+            "payload_hash": "c07cc6a4a19b687df5749ef37ed3cd711f738959c043d6024d21fcd28da78523",
+            "authority_envelope_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622"
           }
         },
         "authoring_provenance": {
@@ -9588,25 +9588,25 @@
             "confirmed": true,
             "boundary": "production_confirm_service",
             "confirmation_type": "HUMAN_CONFIRMATION",
-            "confirmed_at": "2026-09-21T00:47:16.680832",
+            "confirmed_at": "2026-09-21T03:49:30.279485",
             "source_proposal_origin": "HUMAN_INPUT",
             "canonical_origin": "HUMAN_AUTHORED",
             "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
           },
           "canonical_origin": "HUMAN_AUTHORED"
         },
-        "payload_hash": "b5af9428e25507d2a9f949be6217e55007b44ce671002eeb4f4babba1fd34fb4"
+        "payload_hash": "9a4350edc9e6e8972eeeaa0371b407fb1f415f3a7f32ddec51bec8f853922b63"
       }
     },
     {
       "scene_id": "E01_SC002",
       "row_id": 4,
       "revision": 1,
-      "payload_hash": "8ea766b84e00c310d7d3571c1dfcde71201dcf01388fd235a910f0a79b96f35a",
+      "payload_hash": "f97d45a37c80c93c967b9d90a83ac68d2bbd885e9f305f8ea965e5be231247e0",
       "authority_id": 2,
-      "authority_fingerprint": "dc4ef3568f23b320d88c0107d8833a922ea4c482181404f68d2c0fc7436f217c",
+      "authority_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
       "pointer_id": 2,
-      "pointer_fingerprint": "dc4ef3568f23b320d88c0107d8833a922ea4c482181404f68d2c0fc7436f217c",
+      "pointer_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
       "qualification_state": "PRODUCTION_QUALIFIED",
       "phase_c_semantic_ready": true,
       "shot_design_status": "CANONICAL_CONFIRMED",
@@ -11657,19 +11657,19 @@
         "source_lineage": {
           "script_ir": {
             "id": 1,
-            "authority_envelope_fingerprint": "e6dc4a40c039412ac5b6cb5679fc017debb8867e84ad00e888e7c2defadb0c80"
+            "authority_envelope_fingerprint": "7463e04e8de6b64f2fec16de50c30ffc8eda1c401816e30f2ec1764a6c039682"
           },
           "treatment": {
             "id": 2,
             "revision": 1,
             "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
-            "authority_envelope_fingerprint": "d44fd56d87038f3989bbe9fb8ec0cb10891951e0fa3c1ff8405e451199ed518e"
+            "authority_envelope_fingerprint": "dde2f62ed6cb8dffd8b3b8d5d1197f6a840b15124efa0fdd7d0d2a7c1cdf0ebb"
           },
           "blocking": {
             "id": 4,
             "revision": 1,
-            "payload_hash": "a67900989cc05b08af6fee016d35abb882021e6734ab0c3dc40b84313b57660c",
-            "authority_envelope_fingerprint": "0395751f3f64539862533aa67b0875c5cb7cbe02c8367f1275603f875b66296e"
+            "payload_hash": "9a52fae51fdcad944d8f2e04c48cd750ec3a4a3b16b9fa38e077af8bf80f40a0",
+            "authority_envelope_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f"
           }
         },
         "authoring_provenance": {
@@ -11690,14 +11690,14 @@
             "confirmed": true,
             "boundary": "production_confirm_service",
             "confirmation_type": "HUMAN_CONFIRMATION",
-            "confirmed_at": "2026-09-21T00:47:16.797740",
+            "confirmed_at": "2026-09-21T03:49:30.402151",
             "source_proposal_origin": "HUMAN_INPUT",
             "canonical_origin": "HUMAN_AUTHORED",
             "confirmation_actor": "USER_CONFIRMATION_BOUNDARY"
           },
           "canonical_origin": "HUMAN_AUTHORED"
         },
-        "payload_hash": "64799ba00109a79a15e775321c4ae4b8062a519a38bc119efba3ce50307cc021"
+        "payload_hash": "dfe3f3b24a700b20c60a119edc933a6fa041d49b2e73dde6854074b652c15b06"
       }
     }
   ]

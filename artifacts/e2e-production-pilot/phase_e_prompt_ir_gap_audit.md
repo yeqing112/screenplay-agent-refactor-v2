@@ -1,51 +1,35 @@
-# Phase E PromptIR semantic compilation and model adapter gap audit
+# Phase E Production Boundary Authority and Reuse Gap Audit
 
-## Scope
+## Closed blockers
 
-Phase E closes the production boundary from the current
-`StoryboardProductionSnapshot` to structured PromptIR v2 and provider-neutral
-model generation payloads. The compiler is deterministic, provider-free, and
-never treats legacy `visual_prompt_static`, `visual_prompt_motion`, or
-`visual_prompt_final` as semantic authority.
-
-## Authority and readiness audit
-
-| Boundary | Result | Evidence |
+| Former gap | Production result | Evidence |
 | --- | --- | --- |
-| Current Storyboard authority | PASS | Current materialization pointer/set/rows are resolved before compile; stale materialization invalidates downstream PromptIR |
-| PromptIR activation | PASS | 15 versions, 15 authorities, and 15 pointers activated atomically for 15 current shots |
-| Compiler handoff | PASS | Structured prompt compiler handoff, visual semantic handoff, and immutable projection payload are carried by the snapshot |
-| Legacy prompt bypass | PASS | Legacy visual prompt columns are not read by Phase E semantic compilation or adapter projection |
-| Semantic qualification | PASS | `prompt_ir_semantic_ready` is true for all 15 resolver-positive rows |
-| Model readiness separation | PASS | Adapter readiness remains false with `PROVIDER_CONFIG_MISSING`; no provider call is attempted |
-| Asset authority | PASS | Current scene and `prop:TICKET` bindings resolve through explicit Visual Asset Authority pointers |
-| Current-only rule | PASS | Resolver rejects stale/tampered pointers and does not use newest/max historical rows |
-| Adapter projection | PASS | 15 `image_generic_adapter_v1` payloads preserve structured sections and add no cinematic, lens, lighting, quality, or other unauthorized facts |
-| Atomic failure behavior | PASS | Required-asset failure returned without changing counts or pointer hashes |
-| Idempotency | PASS | Repeated identical compile reused current payloads with unchanged counts |
-| Stale propagation | PASS | Storyboard stale marked 8 PromptIR rows stale; Visual Asset stale marked 8 PromptIR rows stale |
-| Tamper validation | PASS | Pointer, authority envelope, and payload tamper cases each failed closed with HTTP 409 |
-| Provider activity | PASS | Provider, LLM, image, and video calls were all zero |
+| Legacy V1 could overwrite current pointer | Closed; single-shot endpoint returns `PROMPT_IR_LEGACY_PRODUCTION_DISABLED` | API contract and pilot legacy gate |
+| Legacy adapter fallback | Closed; adapter preview requires `prompt_ir_v2` | Pilot V1 adapter gate |
+| Reuse checked only hash/FRESH | Closed; reuse calls `validate_current_prompt_ir_authority` | 15/15 clean reuse and tamper compile-again trace |
+| Request asset authority injection | Closed; Production request has only GenerationPolicy | Fake `FAKE` binding absent from persisted payload |
+| Missing GenerationPolicy defaulted to TEXT_TO_IMAGE | Closed; explicit mode and target are required | `GENERATION_POLICY_REQUIRED` 409 |
+| Visual Reference latest fallback | Closed; no `order_by(id.desc())`; ambiguous matches fail | `visual_reference_latest_fallback=false` audit field |
+| `*_REFERENCE` checked only identity | Closed; requires concrete LOCKED/FRESH authority and current asset fingerprint | Required reference missing/stale validators |
 
-## Persisted pilot evidence
+## Canonical validation
 
-- `episode_01_phase_e_trace.json` is the real temporary SQLite/Alembic trace.
-- `episode_01_prompt_ir_phase_e.json` contains 15 persisted PromptIR payloads.
-- `episode_01_generation_payload_phase_e.json` contains 15 persisted adapter previews.
-- `episode_01_prompt_ir_phase_e.md` lists each current `plan_shot_id` and its structured semantic fields.
+`validate_current_prompt_ir_authority()` is the shared reuse/resolution contract.
+It validates the current Pointer → Version → Authority chain, v2 schema,
+FRESH state, pointer/version hashes, payload JSON and fingerprint, authority
+envelope fingerprint and payload/policy/asset bindings, current Storyboard
+materialization and semantic recompilation, GenerationPolicy fingerprint, and
+current Visual Asset/Reference lineage.
 
-## Semantic fields carried
+## Compatibility boundary
 
-PromptIR v2 preserves subjects, props, information references, reaction
-contracts, coverage roles, camera framing/orientation/support and movement
-trigger/target/end condition, temporal intent, visibility, axis, spatial
-references, and explicit asset bindings. The adapter serializes those sections
-without inventing visual style or cinematography facts.
+V1 models, the legacy compiler, and `serialize_prompt_ir_to_adapter()` remain
+available for read, audit, and compatibility tests. They are not reachable from
+Production adapter preview or Production compile mutation.
 
-## Verification
+## Remaining negative proof
 
-- Phase E semantic closure: 15 passed.
-- Combined Phase E/Authority/Visual Asset/Phase D regression: 48 passed.
-- Deterministic Golden regression: 5/5 passed.
-- Full suite baseline: 1624 passed, with the four pre-existing failures listed in `PHASE_E_FINAL_REPORT.md`.
-- No migration was added.
+The pilot intentionally does not create reference media. It proves the negative
+required-reference gate with an existing current asset version and no concrete
+LOCKED/FRESH reference authority. No provider or image generation is used to
+manufacture a positive reference.

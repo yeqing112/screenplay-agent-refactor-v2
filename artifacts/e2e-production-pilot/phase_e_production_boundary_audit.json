@@ -1,0 +1,188 @@
+{
+  "asset_authority_source": {
+    "fake_binding_in_payload": false,
+    "fake_request_result": {
+      "compiled_count": 15,
+      "llm_calls": 0,
+      "media_generated": false,
+      "mutated": false,
+      "provider_calls": 0,
+      "reused_count": 15,
+      "schema_version": "prompt_ir_phase_e_compile_v1",
+      "shots": [
+        {
+          "payload_hash": "891b787d25407d71e13b1ba597b9a8b5e4255e50f4377c49e1650613b2b96c5d",
+          "prompt_ir_version_id": 1,
+          "reused": true,
+          "storyboard_shot_id": 1
+        },
+        {
+          "payload_hash": "2d5ee30673273f8d437950141d835d0aeb5dc9531aa52408ddbf5365c590dbf7",
+          "prompt_ir_version_id": 2,
+          "reused": true,
+          "storyboard_shot_id": 2
+        },
+        {
+          "payload_hash": "2205638af7de8b2187c9c8c2a33f4de429098454021e3c5c8f489dd420df52ef",
+          "prompt_ir_version_id": 3,
+          "reused": true,
+          "storyboard_shot_id": 3
+        },
+        {
+          "payload_hash": "cd9ec0c65a20b397d8e47e4e1ffe923dfe23e0c18d321e88cf113620163e0df3",
+          "prompt_ir_version_id": 4,
+          "reused": true,
+          "storyboard_shot_id": 4
+        },
+        {
+          "payload_hash": "13906c038564b78ddac7e779e1e14814ce25f2ac02dea13a8b8a43c6cac130d6",
+          "prompt_ir_version_id": 5,
+          "reused": true,
+          "storyboard_shot_id": 5
+        },
+        {
+          "payload_hash": "ee3161794acc3f43460cfa50510ba34fb70f465e9d79335373e15e82b88b28ce",
+          "prompt_ir_version_id": 6,
+          "reused": true,
+          "storyboard_shot_id": 6
+        },
+        {
+          "payload_hash": "b87630dce2895c866e116860a944c3def92f1c58351eca38851c9052302dde04",
+          "prompt_ir_version_id": 7,
+          "reused": true,
+          "storyboard_shot_id": 7
+        },
+        {
+          "payload_hash": "c4fbdf34fa5b8b6760e14432dbad691feb612b95e9703fe38ebf63f454ba7a81",
+          "prompt_ir_version_id": 8,
+          "reused": true,
+          "storyboard_shot_id": 8
+        },
+        {
+          "payload_hash": "8f32b3538dacb0577c613b0aa6bb19418f4d0cd10dde69b76411476969c4bb30",
+          "prompt_ir_version_id": 9,
+          "reused": true,
+          "storyboard_shot_id": 9
+        },
+        {
+          "payload_hash": "d4b7544a16b48389cecf6551d307318ccac29b9883c5ddc49938c890ca543b23",
+          "prompt_ir_version_id": 10,
+          "reused": true,
+          "storyboard_shot_id": 10
+        },
+        {
+          "payload_hash": "bc63fabd828e369c6e0675c577b7ae433715e0c5db9fe63a1bfe2b3420d61624",
+          "prompt_ir_version_id": 11,
+          "reused": true,
+          "storyboard_shot_id": 11
+        },
+        {
+          "payload_hash": "54d2642ece4edbdb5c7a1a1998357ad636ae13787b8ebbc74d1edd508a6d910e",
+          "prompt_ir_version_id": 12,
+          "reused": true,
+          "storyboard_shot_id": 12
+        },
+        {
+          "payload_hash": "c2ff84b6a293e058e07c0b9ecfaf062fb2756dbfc98b96611c6c6a0ff7cc0714",
+          "prompt_ir_version_id": 13,
+          "reused": true,
+          "storyboard_shot_id": 13
+        },
+        {
+          "payload_hash": "d0c024a7ac9e52c9b4152fbb4884e7fabb391a0b84687e05d5c352ab78e6e831",
+          "prompt_ir_version_id": 14,
+          "reused": true,
+          "storyboard_shot_id": 14
+        },
+        {
+          "payload_hash": "d50ef275ed0125f70b3d0f7f8ed2a6fd585b774d01b428916c5eaf704e26ea2a",
+          "prompt_ir_version_id": 15,
+          "reused": true,
+          "storyboard_shot_id": 15
+        }
+      ]
+    },
+    "request_asset_authority_allowed": false,
+    "source": "current_visual_asset_pointers"
+  },
+  "db_migration_added": 0,
+  "generation_policy_contract": {
+    "explicit_policy_result": {
+      "mode": "TEXT_TO_IMAGE",
+      "target_media": "IMAGE"
+    },
+    "missing_policy_result": {
+      "detail": {
+        "code": "GENERATION_POLICY_REQUIRED",
+        "message": "Production PromptIR compilation requires an explicit generation_policy.mode and target_media."
+      },
+      "status_code": 409
+    }
+  },
+  "generation_policy_required": true,
+  "image_calls": 0,
+  "legacy_v1_gate": {
+    "adapter_preview": {
+      "detail": {
+        "code": "PROMPT_IR_V2_REQUIRED",
+        "message": "Production adapter preview accepts only prompt_ir_v2."
+      },
+      "status_code": 409
+    },
+    "compile": {
+      "detail": {
+        "code": "PROMPT_IR_V2_REQUIRED",
+        "message": "Production PromptIR authority must resolve to prompt_ir_v2."
+      },
+      "status_code": 409
+    }
+  },
+  "legacy_v1_production_enabled": false,
+  "llm_calls": 0,
+  "production_prompt_schema": "prompt_ir_v2",
+  "prompt_ir_reuse_uses_full_validator": true,
+  "provider_calls": 0,
+  "reference_authority_resolution": {
+    "latest_fallback": false,
+    "required_reference_missing": {
+      "detail": {
+        "code": "PROMPT_IR_REQUIRED_REFERENCE_AUTHORITY_MISSING",
+        "diagnostics": [
+          {
+            "code": "PROMPT_IR_REQUIRED_REFERENCE_AUTHORITY_MISSING",
+            "message": "Required current reference authority is missing: prop:TICKET.",
+            "severity": "blocked"
+          }
+        ],
+        "message": "Required current reference authority is missing: prop:TICKET."
+      },
+      "status_code": 409
+    }
+  },
+  "request_asset_authority_allowed": false,
+  "schema_version": "phase_e_production_boundary_audit_v1",
+  "tamper_compile_again": [
+    {
+      "case": "pointer_tamper",
+      "error_code": "PROMPT_IR_STALE",
+      "status_code": 409
+    },
+    {
+      "case": "authority_envelope_tamper",
+      "error_code": "PROMPT_IR_STALE",
+      "status_code": 409
+    },
+    {
+      "case": "payload_tamper",
+      "error_code": "PROMPT_IR_STALE",
+      "status_code": 409
+    },
+    {
+      "case": "semantic_tamper",
+      "error_code": "PROMPT_IR_STALE",
+      "status_code": 409
+    }
+  ],
+  "video_calls": 0,
+  "visual_reference_latest_fallback": false
+}

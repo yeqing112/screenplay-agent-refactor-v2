@@ -15,7 +15,7 @@
       "handoff_shots": 8,
       "materialized_shots": 8,
       "id_order_preserved": true,
-      "handoff_fingerprint": "fe7666b2509ea2bd4513869bf165ef75db70b6f970d5b7041f8af7d36033177a"
+      "handoff_fingerprint": "1b42e78f9877f114a4c0cb23a751289922d62a48d7edcbfce56b352108437ad4"
     },
     {
       "scene_id": "E01_SC002",
@@ -23,7 +23,7 @@
       "handoff_shots": 7,
       "materialized_shots": 7,
       "id_order_preserved": true,
-      "handoff_fingerprint": "9deb15a31e9071e45d8a7fbef8344eca03ed633904b73065cfd344876e3f828e"
+      "handoff_fingerprint": "dce3147567cdf3925c8b717e403a31acbe62af9b534b78d9343ef1fd7d94d8e7"
     }
   ]
 }
