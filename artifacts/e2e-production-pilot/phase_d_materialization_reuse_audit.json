@@ -152,5 +152,11 @@
     "full_backend": "1609 passed, 4 historical failures, 930 warnings",
     "golden": "5/5",
     "real_pilot": "PASS"
+  },
+  "delivery": {
+    "continuation_start": "d385eb5",
+    "implementation_commit": "9b6ca1eb90aec5b177e96eb6cdb235ce92068903",
+    "branch": "codex/visual-authoring-provider-canary-reconcile",
+    "github_actions": "none observed"
   }
 }
