@@ -22,11 +22,19 @@ from core.storyboard_materializer import (
     MATERIALIZATION_SCHEMA_VERSION,
     MATERIALIZER_POLICY_VERSION,
     MATERIALIZER_VERSION,
+    authority_envelope_fingerprint,
     build_materialization_authority_envelope,
     materialization_set_fingerprint,
     materialize_storyboard_from_handoff,
     projection_payload,
+    projection_fingerprint,
+    _row_projection_payload,
     validate_materialization_set,
+)
+from core.storyboard_visual_semantics import (
+    build_visual_semantic_handoff_set,
+    compare_shotplan_storyboard_semantics,
+    validate_asset_identity_bindings,
 )
 from models import (
     Script,
@@ -80,11 +88,19 @@ def _existing_set_is_fresh(session, *, pointer, set_row, plan, authority_envelop
         return False, []
     if set_row.shot_plan_authority_fingerprint != str(authority_envelope.get("envelope_fingerprint") or ""):
         return False, []
-    rows = session.query(StoryboardShot).filter_by(materialization_set_id=set_row.id, book_id=plan.book_id, episode=plan.episode).order_by(StoryboardShot.shot_id).all()
+    rows = session.query(StoryboardShot).filter_by(materialization_set_id=set_row.id, book_id=plan.book_id, episode=plan.episode, scene_id=str(getattr(plan, "scene_id", "") or "")).order_by(StoryboardShot.shot_id).all()
     if len(rows) != len(expected_ids) or [str(row.plan_shot_id or "") for row in rows] != expected_ids:
         return False, rows
     if any(row.materialization_status != "MATERIALIZED" or not row.projection_fingerprint for row in rows):
         return False, rows
+    for row in rows:
+        meta = _json(getattr(row, "meta_info", "{}"), {})
+        if str(row.projection_fingerprint or "") != projection_fingerprint(_row_projection_payload(row, meta)):
+            return False, rows
+        if any(str(getattr(row, field, "") or "").strip() for field in ("visual_prompt_static", "visual_prompt_motion", "visual_prompt_final")):
+            return False, rows
+        if not isinstance(meta.get("visual_semantic_handoff"), dict):
+            return False, rows
     return True, rows
 
 
@@ -160,7 +176,31 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
             try:
                 blocking_payload = blocking_payload_from_row(blocking)
                 storyboard_handoff = project_shot_design_to_storyboard_handoff(plan_payload, blocking=blocking_payload, require_phase_c=True)
-                projections = materialize_storyboard_from_handoff(storyboard_handoff, production=True)
+                authority_envelope_for_plan = authority_by_plan.get(plan.id) if not req.plan_id else authority_envelope
+                authority_fp_for_projection = str(authority_envelope_for_plan.get("envelope_fingerprint") or "") if isinstance(authority_envelope_for_plan, dict) else ""
+                projections = materialize_storyboard_from_handoff(
+                    storyboard_handoff,
+                    production=True,
+                    shot_plan_id=plan.id,
+                    source_authority_fingerprint=authority_fp_for_projection,
+                    blocking_authority_fingerprint=str(blocking_envelope.get("envelope_fingerprint") or ""),
+                )
+                expected_semantics = build_visual_semantic_handoff_set(
+                    scene_id=scene_id,
+                    handoff=storyboard_handoff,
+                    shot_plan_id=plan.id,
+                    source_authority_fingerprint=authority_fp_for_projection,
+                    blocking_authority_fingerprint=str(blocking_envelope.get("envelope_fingerprint") or ""),
+                )
+                actual_semantics = [item.get("visual_semantic_handoff", {}) for item in projections]
+                semantic_result = compare_shotplan_storyboard_semantics(expected_semantics, actual_semantics)
+                if not semantic_result.get("empty"):
+                    _conflict("STORYBOARD_SEMANTIC_MISMATCH", "ShotPlan to Storyboard semantic projection is not exact.", semantic_diff=semantic_result)
+                for source, semantic in zip(plan_payload.get("shots", []), actual_semantics):
+                    spatial = source.get("spatial_binding") if isinstance(source.get("spatial_binding"), dict) else {}
+                    asset_errors = validate_asset_identity_bindings(semantic=semantic, required_subjects=list(source.get("subjects") or []), required_props=list(spatial.get("prop_refs") or []), scene_id=scene_id)
+                    if asset_errors:
+                        _conflict("STORYBOARD_ASSET_BINDING_MISMATCH", "ShotPlan declared asset identities are not fully bound.", errors=asset_errors)
             except (TypeError, ValueError, json.JSONDecodeError) as exc:
                 code = str(exc).split(":", 1)[0] if ":" in str(exc) else "SHOT_PLAN_MATERIALIZATION_BLOCKED"
                 _conflict(code, str(exc))
@@ -244,10 +284,14 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
                 "source_shot_plan_fingerprint": storyboard_handoff.get("source_shot_plan_fingerprint"),
                 "handoff_fingerprint": storyboard_handoff.get("handoff_fingerprint"),
             }
+            # The handoff binding is part of the immutable envelope; refresh
+            # its fingerprint after adding it rather than fingerprinting a
+            # partial envelope.
+            set_envelope["authority_fingerprint"] = authority_envelope_fingerprint(set_envelope)
             set_row.authority_envelope_json = json.dumps(set_envelope, ensure_ascii=False, sort_keys=True)
             for projection in projections:
-                handoff = {"schema_version": "storyboard_prompt_handoff_v1", "storyboard_handoff_schema_version": storyboard_handoff.get("schema_version"), "storyboard_handoff_projection_version": storyboard_handoff.get("projection_version"), "storyboard_handoff_fingerprint": storyboard_handoff.get("handoff_fingerprint"), "materialization_set_id": set_row.id, "storyboard_shot_id": None, "plan_shot_id": projection["plan_shot_id"], "beat_id": projection.get("beat_id", ""), "scene_id": scene_id, "shot_plan_id": plan.id, "shot_plan_revision": plan.revision, "shot_plan_authority_fingerprint": authority_fp, "storyboard_projection_fingerprint": projection["projection_fingerprint"], "asset_identity_bindings": projection["asset_bindings"], "continuity_contract": projection["continuity_contract"], "camera": projection["meta_info"].get("camera", {}), "duration": projection["duration"], "action_beats": projection["action_beats"], "entry_state": projection["start_state"], "exit_state": projection["end_state"], "shot_purpose": projection["shot_purpose"], "transition": projection["transition"]}
-                meta = {**projection["meta_info"], "action_beats": projection["action_beats"], "asset_bindings": projection["asset_bindings"], "continuity_contract": projection["continuity_contract"], "projection_payload": projection_payload(projection), "upstream": {"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id, "shot_plan_id": plan.id, "shot_plan_authority_fingerprint": authority_fp}, "prompt_compiler_handoff": handoff}
+                handoff = {"schema_version": "storyboard_prompt_handoff_v1", "storyboard_visual_semantic_handoff_schema_version": "storyboard_visual_semantic_handoff_v1", "storyboard_handoff_schema_version": storyboard_handoff.get("schema_version"), "storyboard_handoff_projection_version": storyboard_handoff.get("projection_version"), "storyboard_handoff_fingerprint": storyboard_handoff.get("handoff_fingerprint"), "materialization_set_id": set_row.id, "storyboard_shot_id": None, "plan_shot_id": projection["plan_shot_id"], "beat_id": projection.get("beat_id", ""), "scene_id": scene_id, "shot_plan_id": plan.id, "shot_plan_revision": plan.revision, "shot_plan_authority_fingerprint": authority_fp, "storyboard_projection_fingerprint": projection["projection_fingerprint"], "asset_identity_bindings": projection["asset_bindings"], "continuity_contract": projection["continuity_contract"], "camera": projection["meta_info"].get("camera", {}), "duration": projection["duration"], "action_beats": projection["action_beats"], "entry_state": projection["start_state"], "exit_state": projection["end_state"], "shot_purpose": projection["shot_purpose"], "transition": projection["transition"], "visual_semantic_handoff": projection.get("visual_semantic_handoff", {})}
+                meta = {**projection["meta_info"], "action_beats": projection["action_beats"], "asset_bindings": projection["asset_bindings"], "continuity_contract": projection["continuity_contract"], "projection_payload": projection_payload(projection), "upstream": {"script_ir_id": script_ir.id, "treatment_id": treatment.id, "blocking_id": blocking.id, "blocking_authority_fingerprint": str(blocking_envelope.get("envelope_fingerprint") or ""), "shot_plan_id": plan.id, "shot_plan_authority_fingerprint": authority_fp}, "prompt_compiler_handoff": handoff}
                 row = StoryboardShot(book_id=book_id, episode=episode, scene_name=projection["scene_name"], scene_id=scene_id, plan_shot_id=projection["plan_shot_id"], materialization_set_id=set_row.id, source_shot_plan_id=plan.id, source_shot_plan_revision=plan.revision, source_shot_plan_authority_fingerprint=authority_fp, projection_fingerprint=projection["projection_fingerprint"], materialization_status="MATERIALIZED", shot_id=projection["shot_id"], dialogue=projection["dialogue"], duration=int(float(projection["duration"])), camera_angle=projection["camera_angle"], camera_movement=projection["camera_movement"], camera_speed=projection["camera_speed"], shot_purpose=projection["shot_purpose"], transition=projection["transition"], lighting=projection["lighting"], start_state=json.dumps(projection["start_state"], ensure_ascii=False) if isinstance(projection["start_state"], (dict, list)) else projection["start_state"], action_process=projection["action_process"], end_state=json.dumps(projection["end_state"], ensure_ascii=False) if isinstance(projection["end_state"], (dict, list)) else projection["end_state"], visual_prompt_static="", visual_prompt_motion="", visual_prompt_final="", asset_links=json.dumps(projection["asset_bindings"], ensure_ascii=False), meta_info=json.dumps(meta, ensure_ascii=False, sort_keys=True), execution_status="succeeded", quality_status="materialized", production_status="blocked", workflow_profile="production", created_at=datetime.now(), updated_at=datetime.now())
                 session.add(row)
                 session.flush()

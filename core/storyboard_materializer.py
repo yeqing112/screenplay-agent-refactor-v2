@@ -24,6 +24,23 @@ from core.storyboard_handoff import (
     project_shot_design_to_storyboard_handoff,
     validate_storyboard_handoff,
 )
+from core.storyboard_visual_semantics import (
+    ASSET_IDENTITY_BINDING,
+    DOWNSTREAM_HANDOFF_METADATA,
+    PRODUCTION_CONTINUITY_STATE,
+    VISUAL_SEMANTIC_HANDOFF_SCHEMA_VERSION,
+    VISUAL_SEMANTIC_PROJECTION_VERSION,
+    build_visual_semantic_handoff,
+    build_visual_semantic_handoff_set,
+    semantic_projection_fingerprint,
+)
+
+# Phase D authority classes.  ``COMPILER_OUTPUT`` is retained as a
+# compatibility alias for older callers; Production materialization never
+# writes compiler output.
+ASSET_IDENTITY_BINDING = ASSET_IDENTITY_BINDING
+PRODUCTION_CONTINUITY_STATE = PRODUCTION_CONTINUITY_STATE
+DOWNSTREAM_HANDOFF_METADATA = DOWNSTREAM_HANDOFF_METADATA
 
 
 def _canonical(value: Any) -> str:
@@ -114,7 +131,10 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
         "meta_info": {
             "authority_classes": {
                 "shot_plan_projection": ["scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract"],
+                "production_continuity_state": ["start_state", "end_state", "continuity_contract"],
+                "asset_identity_binding": ["asset_bindings"],
                 "structural_materialization_metadata": ["shot_id", "projection_fingerprint"],
+                "downstream_handoff_metadata": ["visual_semantic_handoff"],
                 "compiler_output": [],
                 "media_state": [],
             },
@@ -124,14 +144,23 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
     }
     if isinstance(item.get("meta_info"), dict):
         projection["meta_info"].update(item["meta_info"])
+    semantic = build_visual_semantic_handoff(
+        scene_id=scene_id,
+        plan_shot_id=plan_shot_id,
+        handoff_shot=item,
+        shot_plan_id=item.get("shot_plan_id"),
+    )
+    projection["visual_semantic_handoff"] = semantic
+    projection["meta_info"]["visual_semantic_handoff"] = semantic
+    projection["meta_info"]["semantic_projection_fingerprint"] = semantic_projection_fingerprint(semantic)
     projection["projection_fingerprint"] = _fingerprint({key: projection[key] for key in (
         "scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract"
-    )})
+    )} | {"visual_semantic_handoff": semantic})
     projection["meta_info"]["materializer"] = {"version": MATERIALIZER_VERSION, "policy_version": MATERIALIZER_POLICY_VERSION, "projection_fingerprint": projection["projection_fingerprint"]}
     return projection
 
 
-def materialize_storyboard_from_handoff(handoff: dict[str, Any], *, production: bool = True) -> list[dict[str, Any]]:
+def materialize_storyboard_from_handoff(handoff: dict[str, Any], *, production: bool = True, shot_plan_id: Any = None, source_authority_fingerprint: str = "", blocking_authority_fingerprint: str = "", materialization_set_id: Any = None) -> list[dict[str, Any]]:
     """Materialize a validated ``storyboard_handoff_v1`` object."""
     errors = validate_storyboard_handoff(handoff)
     if errors:
@@ -143,12 +172,31 @@ def materialize_storyboard_from_handoff(handoff: dict[str, Any], *, production: 
     projections = []
     for ordinal, item in enumerate(handoff["shots"], start=1):
         projection = _projection_fields(item, scene_id=scene_id, scene_name=scene_name, ordinal=ordinal, production=production)
+        semantic = build_visual_semantic_handoff(
+            scene_id=scene_id,
+            plan_shot_id=_text(item.get("plan_shot_id")),
+            handoff_shot=item,
+            shot_plan_id=shot_plan_id,
+            source_authority_fingerprint=source_authority_fingerprint,
+            blocking_authority_fingerprint=blocking_authority_fingerprint,
+            materialization_set_id=materialization_set_id,
+        )
+        projection["visual_semantic_handoff"] = semantic
+        projection["meta_info"]["visual_semantic_handoff"] = semantic
+        projection["meta_info"]["semantic_projection_fingerprint"] = semantic_projection_fingerprint(semantic)
         projection["meta_info"]["handoff"] = {
             "schema_version": HANDOFF_SCHEMA_VERSION,
             "projection_version": HANDOFF_PROJECTION_VERSION,
             "handoff_fingerprint": handoff.get("handoff_fingerprint"),
             "storyboard_handoff_shot_fingerprint": item.get("storyboard_handoff_shot_fingerprint"),
         }
+        # Include the complete structured semantic payload in the protected
+        # projection fingerprint.  Prompt/media fields are intentionally not
+        # part of this payload.
+        projection["projection_fingerprint"] = _fingerprint({key: projection[key] for key in (
+            "scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract", "visual_semantic_handoff"
+        )})
+        projection["meta_info"]["materializer"] = {"version": MATERIALIZER_VERSION, "policy_version": MATERIALIZER_POLICY_VERSION, "projection_fingerprint": projection["projection_fingerprint"]}
         projections.append(projection)
     return projections
 
@@ -181,7 +229,12 @@ def materialize_storyboard_from_shot_plan(approved_shot_plan: dict[str, Any], tr
 
 
 def projection_payload(shot: dict[str, Any]) -> dict[str, Any]:
-    return {key: shot.get(key) for key in ("scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract")}
+    payload = {key: shot.get(key) for key in ("scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract")}
+    semantic = shot.get("visual_semantic_handoff")
+    if not isinstance(semantic, dict) and isinstance(shot.get("meta_info"), dict):
+        semantic = shot["meta_info"].get("visual_semantic_handoff")
+    payload["visual_semantic_handoff"] = semantic if isinstance(semantic, dict) else {}
+    return payload
 
 
 def materialization_set_fingerprint(*, authority_envelope: dict[str, Any], projections: list[dict[str, Any]]) -> str:
@@ -190,8 +243,15 @@ def materialization_set_fingerprint(*, authority_envelope: dict[str, Any], proje
 
 def build_materialization_authority_envelope(*, script_ir: dict[str, Any], treatment: dict[str, Any], blocking: dict[str, Any], shot_plan: dict[str, Any], materialization_set: dict[str, Any], stale_status: str = "FRESH", stale_reasons: list[str] | None = None) -> dict[str, Any]:
     envelope = {"schema_version": MATERIALIZATION_SCHEMA_VERSION, "authority_policy_version": MATERIALIZER_POLICY_VERSION, "script_ir": script_ir, "director_treatment": treatment, "scene_blocking": blocking, "shot_plan": shot_plan, "materialization": materialization_set, "stale_status": stale_status, "stale_reasons": sorted(set(stale_reasons or []))}
-    envelope["authority_fingerprint"] = _fingerprint(envelope)
+    envelope["authority_fingerprint"] = authority_envelope_fingerprint(envelope)
     return envelope
+
+
+def authority_envelope_fingerprint(envelope: dict[str, Any]) -> str:
+    """Fingerprint an authority envelope after all nested bindings are set."""
+    payload = dict(envelope) if isinstance(envelope, dict) else {}
+    payload.pop("authority_fingerprint", None)
+    return _fingerprint(payload)
 
 
 def validate_materialization_set(*, expected_plan_shot_ids: list[str], projections: list[dict[str, Any]], set_row: Any | None = None) -> list[dict[str, Any]]:
@@ -266,6 +326,9 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
     from fastapi import HTTPException
     from models import StoryboardMaterializationPointer, StoryboardMaterializationSet, StoryboardShot
     from core.shot_plan_authority import resolve_current_authoritative_shot_plan, shot_plan_payload_from_row
+    from core.scene_blocking_authority import blocking_payload_from_row, resolve_current_authoritative_scene_blocking
+    from core.director_treatment_authority import resolve_current_authoritative_treatment
+    from core.storyboard_visual_semantics import compare_shotplan_storyboard_semantics, semantic_diff, validate_asset_identity_bindings
 
     pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=book_id, episode=episode, scene_id=_text(scene_id)).first()
     if not pointer:
@@ -281,16 +344,65 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
         mark_materialization_set_stale(session, set_row, [str((exc.detail or {}).get("code") if isinstance(exc.detail, dict) else "SHOT_PLAN_AUTHORITY_CHANGED")])
         session.commit()
         raise
+    try:
+        blocking, blocking_envelope = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=_text(scene_id))
+        treatment, treatment_envelope = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=_text(scene_id))
+    except HTTPException as exc:
+        detail = exc.detail if isinstance(exc.detail, dict) else {}
+        code = str(detail.get("code") or "BLOCKING_AUTHORITY_CHANGED")
+        mark_materialization_set_stale(session, set_row, [code, "BLOCKING_POINTER_CHANGED"])
+        session.commit()
+        raise
     if plan.id != pointer.shot_plan_id or plan.revision != pointer.shot_plan_revision or str(set_row.shot_plan_authority_fingerprint) != str(plan_envelope.get("envelope_fingerprint") or "") or pointer.set_payload_fingerprint != set_row.set_payload_fingerprint:
         mark_materialization_set_stale(session, set_row, ["SHOT_PLAN_POINTER_CHANGED"])
         session.commit()
         raise HTTPException(status_code=409, detail={"code": "STORYBOARD_MATERIALIZATION_STALE", "message": "ShotPlan authority changed; materialization must be recreated."})
-    expected_ids = [_text(item.get("plan_shot_id")) for item in shot_plan_payload_from_row(plan).get("shots", [])]
+    plan_payload = shot_plan_payload_from_row(plan)
+    if plan_payload.get("phase_c_semantic_ready") is not True:
+        mark_materialization_set_stale(session, set_row, ["SHOT_PLAN_PHASE_C_NOT_READY"])
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": "SHOT_PLAN_PHASE_C_NOT_READY", "message": "Current ShotPlan is not Phase C semantic-ready."})
+    try:
+        blocking_payload = blocking_payload_from_row(blocking)
+        current_handoff = project_shot_design_to_storyboard_handoff(plan_payload, blocking=blocking_payload, require_phase_c=True)
+    except (TypeError, ValueError, json.JSONDecodeError) as exc:
+        code = str(exc).split(":", 1)[0] if ":" in str(exc) else "STORYBOARD_HANDOFF_INVALID"
+        mark_materialization_set_stale(session, set_row, [code])
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": code, "message": str(exc)})
+    set_envelope = _parse_json(set_row.authority_envelope_json, {})
+    stored_handoff = set_envelope.get("storyboard_handoff") if isinstance(set_envelope.get("storyboard_handoff"), dict) else {}
+    envelope_errors: list[str] = []
+    if not set_envelope or _text(set_envelope.get("authority_fingerprint")) != authority_envelope_fingerprint(set_envelope):
+        envelope_errors.append("STORYBOARD_AUTHORITY_ENVELOPE_TAMPERED")
+    if _text(stored_handoff.get("schema_version")) != _text(current_handoff.get("schema_version")) or _text(stored_handoff.get("projection_version")) != _text(current_handoff.get("projection_version")):
+        envelope_errors.append("STORYBOARD_HANDOFF_SCHEMA_CHANGED")
+    if _text(stored_handoff.get("source_shot_plan_fingerprint")) != _text(current_handoff.get("source_shot_plan_fingerprint")) or _text(stored_handoff.get("handoff_fingerprint")) != _text(current_handoff.get("handoff_fingerprint")):
+        envelope_errors.append("STORYBOARD_HANDOFF_FINGERPRINT_INVALID")
+    blocking_meta = set_envelope.get("blocking") if isinstance(set_envelope.get("blocking"), dict) else {}
+    if str(blocking_meta.get("id")) != str(blocking.id) or str(blocking_meta.get("revision")) != str(blocking.revision) or _text(blocking_meta.get("authority_fingerprint")) != _text(blocking_envelope.get("envelope_fingerprint")):
+        envelope_errors.append("BLOCKING_POINTER_CHANGED")
+    if envelope_errors:
+        mark_materialization_set_stale(session, set_row, envelope_errors)
+        session.commit()
+        code = envelope_errors[0]
+        raise HTTPException(status_code=409, detail={"code": code, "message": "Storyboard materialization authority envelope is stale or tampered.", "stale_reasons": envelope_errors})
+
+    expected_ids = [_text(item.get("plan_shot_id")) for item in plan_payload.get("shots", [])]
+    stored_ids = _parse_json(set_row.ordered_plan_shot_ids, [])
+    if stored_ids != expected_ids:
+        mark_materialization_set_stale(session, set_row, ["STORYBOARD_MATERIALIZATION_SET_INCOMPLETE"])
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE", "message": "Materialization set order or cardinality is invalid."})
     rows = session.query(StoryboardShot).filter_by(materialization_set_id=set_row.id, book_id=book_id, episode=episode, scene_id=_text(scene_id)).order_by(StoryboardShot.shot_id).all()
     if len(rows) != len(expected_ids) or [str(row.plan_shot_id or "") for row in rows] != expected_ids or int(set_row.expected_shot_count) != len(expected_ids) or int(set_row.materialized_shot_count) != len(rows):
         mark_materialization_set_stale(session, set_row, ["STORYBOARD_MATERIALIZATION_SET_INCOMPLETE"])
         session.commit()
         raise HTTPException(status_code=409, detail={"code": "STORYBOARD_MATERIALIZATION_SET_INCOMPLETE", "message": "Materialization set cardinality is incomplete."})
+    expected_semantics = build_visual_semantic_handoff_set(scene_id=_text(scene_id), handoff=current_handoff, shot_plan_id=plan.id, source_authority_fingerprint=str(plan_envelope.get("envelope_fingerprint") or ""), blocking_authority_fingerprint=str(blocking_envelope.get("envelope_fingerprint") or ""), materialization_set_id=set_row.id)
+    expected_by_id = {_text(item.get("plan_shot_id")): item for item in expected_semantics}
+    actual_semantics: list[dict[str, Any]] = []
+    row_projections: list[dict[str, Any]] = []
     for row in rows:
         meta = _parse_json(row.meta_info, {})
         stored = str(row.projection_fingerprint or "")
@@ -298,8 +410,48 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
             mark_materialization_set_stale(session, set_row, ["STORYBOARD_PROJECTION_TAMPERED"])
             session.commit()
             raise HTTPException(status_code=409, detail={"code": "STORYBOARD_PROJECTION_TAMPERED", "message": "Storyboard projection payload no longer matches its authority fingerprint."})
-    envelope = _parse_json(set_row.authority_envelope_json, {})
-    return set_row, rows, envelope
+        if str(getattr(row, "source_shot_plan_authority_fingerprint", "") or "") != str(plan_envelope.get("envelope_fingerprint") or ""):
+            mark_materialization_set_stale(session, set_row, ["STORYBOARD_PROJECTION_TAMPERED"])
+            session.commit()
+            raise HTTPException(status_code=409, detail={"code": "STORYBOARD_PROJECTION_TAMPERED", "message": "StoryboardShot source authority fingerprint changed."})
+        if any(str(getattr(row, field, "") or "").strip() for field in ("visual_prompt_static", "visual_prompt_motion", "visual_prompt_final")):
+            mark_materialization_set_stale(session, set_row, ["STORYBOARD_PROMPT_PREMATURE_MUTATION"])
+            session.commit()
+            raise HTTPException(status_code=409, detail={"code": "STORYBOARD_PROMPT_PREMATURE_MUTATION", "message": "Prompt fields must remain uncompiled during Phase D."})
+        semantic = meta.get("visual_semantic_handoff") if isinstance(meta.get("visual_semantic_handoff"), dict) else {}
+        if _text(semantic.get("schema_version")) != VISUAL_SEMANTIC_HANDOFF_SCHEMA_VERSION:
+            mark_materialization_set_stale(session, set_row, ["STORYBOARD_VISUAL_SEMANTIC_HANDOFF_MISSING"])
+            session.commit()
+            raise HTTPException(status_code=409, detail={"code": "STORYBOARD_VISUAL_SEMANTIC_HANDOFF_MISSING", "message": "StoryboardShot has no Phase D visual semantic handoff."})
+        actual_semantics.append(semantic)
+        row_projections.append(_row_projection_payload(row, meta))
+    semantic_result = compare_shotplan_storyboard_semantics(expected=expected_semantics, actual=actual_semantics)
+    if not semantic_result.get("empty"):
+        reasons = ["STORYBOARD_SEMANTIC_MISMATCH"]
+        if semantic_result.get("camera_mismatch"): reasons.append("STORYBOARD_CAMERA_SEMANTIC_MISMATCH")
+        if semantic_result.get("continuity_mismatch"): reasons.append("STORYBOARD_CONTINUITY_SEMANTIC_MISMATCH")
+        if semantic_result.get("asset_binding_mismatch"): reasons.append("STORYBOARD_ASSET_BINDING_MISMATCH")
+        mark_materialization_set_stale(session, set_row, reasons)
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": reasons[0], "message": "Storyboard visual semantic projection does not match the current ShotPlan.", "semantic_diff": semantic_result})
+    # Required identities are checked against the canonical ShotPlan fields;
+    # missing identity bindings fail closed without requiring a reference image.
+    for source, semantic in zip(plan_payload.get("shots", []), actual_semantics):
+        spatial = source.get("spatial_binding") if isinstance(source.get("spatial_binding"), dict) else {}
+        asset_errors = validate_asset_identity_bindings(semantic=semantic, required_subjects=list(source.get("subjects") or []), required_props=list(spatial.get("prop_refs") or []), scene_id=_text(scene_id))
+        if asset_errors:
+            mark_materialization_set_stale(session, set_row, ["STORYBOARD_ASSET_BINDING_MISMATCH"])
+            session.commit()
+            raise HTTPException(status_code=409, detail={"code": "STORYBOARD_ASSET_BINDING_MISMATCH", "message": "Storyboard asset identity bindings do not satisfy the ShotPlan.", "errors": asset_errors})
+    expected_set_fp = materialization_set_fingerprint(authority_envelope={"shot_plan": plan_envelope, "treatment": treatment_envelope, "blocking": blocking_envelope, "storyboard_handoff": current_handoff}, projections=row_projections)
+    if _text(set_row.set_payload_fingerprint) != expected_set_fp:
+        mark_materialization_set_stale(session, set_row, ["STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH"])
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH", "message": "Materialization set fingerprint no longer matches its canonical projection."})
+    resolved_envelope = dict(set_envelope)
+    resolved_envelope["storyboard_semantic_ready"] = True
+    resolved_envelope["semantic_projection_count"] = len(actual_semantics)
+    return set_row, rows, resolved_envelope
 
 
-__all__ = ["MATERIALIZER_VERSION", "MATERIALIZER_POLICY_VERSION", "MATERIALIZATION_SCHEMA_VERSION", "SHOT_PLAN_PROJECTION", "STRUCTURAL_MATERIALIZATION_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID", "materialize_storyboard_from_shot_plan", "materialize_storyboard_from_handoff", "projection_payload", "projection_fingerprint", "materialization_set_fingerprint", "build_materialization_authority_envelope", "validate_materialization_set", "mark_materialization_set_stale", "resolve_current_authoritative_materialization"]
+__all__ = ["MATERIALIZER_VERSION", "MATERIALIZER_POLICY_VERSION", "MATERIALIZATION_SCHEMA_VERSION", "SHOT_PLAN_PROJECTION", "PRODUCTION_CONTINUITY_STATE", "ASSET_IDENTITY_BINDING", "STRUCTURAL_MATERIALIZATION_METADATA", "DOWNSTREAM_HANDOFF_METADATA", "COMPILER_OUTPUT", "MEDIA_STATE", "UNKNOWN_INVALID", "materialize_storyboard_from_shot_plan", "materialize_storyboard_from_handoff", "projection_payload", "projection_fingerprint", "materialization_set_fingerprint", "build_materialization_authority_envelope", "authority_envelope_fingerprint", "validate_materialization_set", "mark_materialization_set_stale", "resolve_current_authoritative_materialization"]

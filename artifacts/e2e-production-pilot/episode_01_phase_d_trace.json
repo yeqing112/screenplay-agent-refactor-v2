@@ -1,0 +1,111 @@
+{
+  "schema_version": "phase_d_storyboard_trace_v1",
+  "scenes": [
+    {
+      "scene_id": "E01_SC001",
+      "shot_plan_authority_id": 1,
+      "shot_plan_pointer_id": 1,
+      "blocking_authority_id": 1,
+      "blocking_pointer_id": 1,
+      "handoff_fingerprint": "560d1cc77589899f0322221bd72672e1fd3ea3563fde56bc6838173b74924f76",
+      "materialization_set_id": null,
+      "storyboard_pointer_id": null,
+      "storyboard_shot_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "plan_shot_id_order": [
+        "SH_E01_SC001_001",
+        "SH_E01_SC001_002",
+        "SH_E01_SC001_003",
+        "SH_E01_SC001_004",
+        "SH_E01_SC001_005",
+        "SH_E01_SC001_006",
+        "SH_E01_SC001_007",
+        "SH_E01_SC001_008"
+      ],
+      "projection_fingerprints": [
+        "8bd136c74b2a2e68a642bc7f5c92713590c0b0557e4a08c0c742f0933cd57139",
+        "e97f1190654f444f3e68f650d918256e15ef0b56729553238cb05e323e9bb9ba",
+        "7041754c9693436d4e1ef215f0739837492c667c5030d9fb064c46fd54d93681",
+        "94a527fb6b67af1747ec4209ecc55e8a4e87a1b3cd112c9b768847f7190efca7",
+        "0cf12015d38dd45f8420802a57f6b473d133180e3ea1d4ce239e836824e9230a",
+        "c82074f2e4be38b392e68572611a2c81011a89f949fb0df0e74b49daf04c05cf",
+        "7ec043c85ecb4cb1191e245048c81de32e12a94c5e40f9fb07011532083adb3b",
+        "b2668ad9503ce02648dfc8f07774bdd9d6c4e12a85c2a23b18ccbe48494a2d2c"
+      ],
+      "semantic_fingerprints": [
+        "f81c77f87e6890df0b666340b12dc2dcad22d90221d948bfc40162c48b80ea28",
+        "02ef3ebc6528b6a5b490a6aad7b38e5dccde69e85714bedb6f43bea4f99f1082",
+        "e0dad9d8b724da2d22755c421ac783dd6cd5982e0d8ee9462f2f5390b07bd32b",
+        "05cc23026f1568ccc4bd6b4f82c848bc0c506208b947295931a55fa3b8c82f8a",
+        "d3d339737dbea5627089a929ad1653f043d648ff14a9ac745d51c6ace0a3f707",
+        "f928acf09074f3605292452bd5f8625d4afa988f0d2d0ac4dbfe1162ab9d0034",
+        "12ba50e2bf552abfcfa37fc36dd20331e288291dc2ae29636e7ce441f2c2b782",
+        "ece792cbd6b98e36318c300fbf5fe351f93347bbebe0ffd371f2478e5c57a332"
+      ],
+      "readiness": true
+    },
+    {
+      "scene_id": "E01_SC002",
+      "shot_plan_authority_id": 2,
+      "shot_plan_pointer_id": 2,
+      "blocking_authority_id": 2,
+      "blocking_pointer_id": 2,
+      "handoff_fingerprint": "ad7ed3bfe94edb3587b83a60de8138f912fdbfd2ef3dadf5ee795feacdfe8af7",
+      "materialization_set_id": null,
+      "storyboard_pointer_id": null,
+      "storyboard_shot_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "plan_shot_id_order": [
+        "SH_E01_SC002_001",
+        "SH_E01_SC002_002",
+        "SH_E01_SC002_003",
+        "SH_E01_SC002_004",
+        "SH_E01_SC002_005",
+        "SH_E01_SC002_006",
+        "SH_E01_SC002_007"
+      ],
+      "projection_fingerprints": [
+        "11b0c5341c6d04285b0c63abbeb9f1d041be80c1cca655fc5dbe40892b6b3087",
+        "d9e5a814f8270a4df6654a25a658e3267f796c3311c81e460a70196f89aefc88",
+        "32397651da633849a890779f3d9a47a480abf3aba16a93bdfd52943d56dde073",
+        "18fa2df0b2f02f05b846a1b4fdf9a7ec105a5cb999a7da07b84e6c79827b5308",
+        "90d96a211e708c7520d9706d04a0a028ec9c2124186c9a9fe59dade2a6fc386c",
+        "29f9f1615e6c69a9d924998df2dad44d0ccd30de956130ba0f1c5c27c2e8d57c",
+        "c5c8330b471ef7aeb776b17009abc51e91698bab92e7a76b216d2b3ed8d833f5"
+      ],
+      "semantic_fingerprints": [
+        "4fe0486f1ec1884b8585e9cf653ba3a6013f2a57749244f0966744d61518aa13",
+        "7d06de395cd1efc380e8e0197b53e6b0674aea009b675be8a7068a3957bab84e",
+        "422deb9071d7aca9513f93bb531c1d172f194f29982549a982276916d2e00b2b",
+        "253a00aefa100d30a1d405e0af1764da428543338d5cf2ab6047fc1b34ead985",
+        "fcf73b8e1c4933df4c6690fc2230fce45a68766016d568daf60c76b028d52e78",
+        "dbb2ca73aeb84f499770f333a0d08c2a94894feff36425c73f97037b5cd3d447",
+        "c87726581fc83f1be2a072a7da7257e21cbb16d67fb110220adac67f04ad79fe"
+      ],
+      "readiness": true
+    }
+  ],
+  "canonical_shot_count": 15,
+  "materialized_shot_count": 15,
+  "semantic_projection_count": 15,
+  "provider_calls": 0,
+  "raw_authority_fabrication": 0,
+  "prompt_ir_started": false,
+  "image_generation_started": false,
+  "video_generation_started": false
+}

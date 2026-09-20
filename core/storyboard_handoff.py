@@ -208,6 +208,18 @@ def project_shot_design_to_storyboard_handoff(
         handoff_shot = {
             "plan_shot_id": plan_shot_id,
             "beat_id": _text(source.get("beat_id")) or beat_refs[0],
+            # Structured Phase C semantic refs are carried through the
+            # handoff so the materializer never has to recover truth from
+            # prose fields or from legacy Storyboard columns.
+            "beat_refs": beat_refs,
+            "subjects": list(source.get("subjects") or []),
+            "camera_state": dict(camera_state),
+            "axis_contract": dict(source.get("axis_contract") or {}) if isinstance(source.get("axis_contract"), dict) else {},
+            "spatial_binding": dict(spatial),
+            "temporal_intent": dict(source.get("temporal_intent") or {}) if isinstance(source.get("temporal_intent"), dict) else {},
+            "information_visibility": source.get("information_visibility"),
+            "continuous_take": source.get("continuous_take") is True,
+            "cut_events": list(source.get("cut_events") or []),
             "purpose": purpose,
             "camera": camera,
             "duration_hint_seconds": duration,
