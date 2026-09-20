@@ -1,0 +1,373 @@
+"""Phase E semantic PromptIR compiler and provider-neutral adapter boundary.
+
+This module consumes only a validated ``StoryboardProductionSnapshot``.  It
+does not read ScriptIR, ShotPlan prose, legacy ``visual_prompt_*`` columns or
+call a provider.  All values in the PromptIR are projections of structured
+Storyboard semantics, explicit asset authority and explicit runtime policy.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+from typing import Any
+
+
+PROMPT_IR_SCHEMA_VERSION = "prompt_ir_v2"
+GENERATION_POLICY_SCHEMA_VERSION = "generation_policy_v1"
+MODEL_PROFILE_SCHEMA_VERSION = "model_profile_v1"
+GENERATION_PAYLOAD_SCHEMA_VERSION = "generation_payload_v1"
+PROMPT_IR_COMPILER_VERSION = "prompt_ir_semantic_compiler_v1"
+PROMPT_IR_COMPILER_POLICY_VERSION = "prompt_ir_compiler_policy_v1"
+
+SOURCE_SEMANTIC_PROJECTION = "SOURCE_SEMANTIC_PROJECTION"
+STORYBOARD_SEMANTIC_PROJECTION = "STORYBOARD_SEMANTIC_PROJECTION"
+ASSET_AUTHORITY_BINDING = "ASSET_AUTHORITY_BINDING"
+GENERATION_POLICY = "GENERATION_POLICY"
+MODEL_AGNOSTIC_PROMPT_SEMANTIC = "MODEL_AGNOSTIC_PROMPT_SEMANTIC"
+MODEL_ADAPTER_OUTPUT = "MODEL_ADAPTER_OUTPUT"
+MEDIA_REQUEST_METADATA = "MEDIA_REQUEST_METADATA"
+UNKNOWN_INVALID = "UNKNOWN_INVALID"
+
+
+class PromptIRPhaseEError(ValueError):
+    def __init__(self, code: str, message: str, *, diagnostics: list[dict[str, Any]] | None = None):
+        super().__init__(f"{code}: {message}")
+        self.code = code
+        self.message = message
+        self.diagnostics = diagnostics or [{"code": code, "message": message, "severity": "blocked"}]
+
+
+def canonical(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
+
+
+def fingerprint(value: Any) -> str:
+    return hashlib.sha256(canonical(value).encode("utf-8")).hexdigest()
+
+
+def _text(value: Any) -> str:
+    return str(value or "").strip()
+
+
+def _dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
+
+
+def build_generation_policy(policy: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Normalize explicit policy; no visual defaults are introduced."""
+    raw = dict(policy) if isinstance(policy, dict) else {}
+    mode = _text(raw.get("mode") or "TEXT_TO_IMAGE").upper()
+    target = _text(raw.get("target_media") or ("VIDEO" if mode.endswith("VIDEO") else "IMAGE")).upper()
+    required = sorted({_text(item).upper() for item in _list(raw.get("required_asset_classes")) if _text(item)})
+    optional = sorted({_text(item).upper() for item in _list(raw.get("optional_asset_classes")) if _text(item)})
+    result = {
+        "schema_version": GENERATION_POLICY_SCHEMA_VERSION,
+        "mode": mode,
+        "target_media": target,
+        "required_asset_classes": required,
+        "optional_asset_classes": optional,
+        "style_profile_id": _text(raw.get("style_profile_id")),
+        "language": _text(raw.get("language")),
+        "source": _text(raw.get("source") or "explicit_request"),
+    }
+    if mode not in {"TEXT_TO_IMAGE", "IMAGE_TO_VIDEO", "TEXT_TO_VIDEO", "IMAGE_EDIT"}:
+        raise PromptIRPhaseEError("GENERATION_POLICY_INVALID", f"Unsupported generation policy mode: {mode}.")
+    result["fingerprint"] = fingerprint({key: value for key, value in result.items() if key != "fingerprint"})
+    return result
+
+
+def build_model_profile(profile: dict[str, Any] | None = None) -> dict[str, Any]:
+    raw = dict(profile) if isinstance(profile, dict) else {}
+    family = _text(raw.get("model_family")).upper()
+    adapter_id = _text(raw.get("adapter_id") or family.lower())
+    capabilities = dict(raw.get("capabilities")) if isinstance(raw.get("capabilities"), dict) else {}
+    result = {
+        "schema_version": MODEL_PROFILE_SCHEMA_VERSION,
+        "model_family": family,
+        "adapter_id": adapter_id,
+        "capabilities": capabilities,
+        "provider_config_ref": _text(raw.get("provider_config_ref")),
+    }
+    result["fingerprint"] = fingerprint({key: value for key, value in result.items() if key != "fingerprint"})
+    return result
+
+
+def _asset_identity_index(semantic: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    bindings = _dict(semantic.get("asset_identity_bindings"))
+    canonical_assets = _dict(bindings.get("canonical_asset_identity"))
+    result: dict[str, dict[str, Any]] = {}
+    for asset_type, key in (("scene", "scene"), ("character", "characters"), ("prop", "props")):
+        values = canonical_assets.get(key)
+        if not isinstance(values, list):
+            values = [values] if values not in (None, "") else []
+        for value in values:
+            identity = _text(value.get("canonical_id") if isinstance(value, dict) else value)
+            if identity:
+                result[f"{asset_type}:{identity}"] = {"asset_type": asset_type, "asset_identity_ref": identity}
+    return result
+
+
+def _snapshot_authority(snapshot: dict[str, Any], semantic: dict[str, Any], row: dict[str, Any]) -> dict[str, Any]:
+    envelope = _dict(snapshot.get("authority_envelope"))
+    shot_plan = _dict(envelope.get("shot_plan"))
+    blocking = _dict(envelope.get("scene_blocking") or envelope.get("blocking"))
+    authority = _dict(snapshot.get("storyboard_materialization_authority"))
+    provenance = _dict(semantic.get("projection_provenance"))
+    return {
+        "storyboard_materialization_set_id": authority.get("materialization_set_id"),
+        "storyboard_set_payload_fingerprint": _text(authority.get("set_payload_fingerprint")),
+        "storyboard_projection_fingerprint": _text(row.get("projection_fingerprint")),
+        "visual_semantic_handoff_fingerprint": fingerprint({key: value for key, value in semantic.items() if key != "projection_provenance"}),
+        "shot_plan_authority_fingerprint": _text(provenance.get("source_shot_plan_authority_fingerprint") or shot_plan.get("authority_fingerprint")),
+        "blocking_authority_fingerprint": _text(provenance.get("blocking_authority_fingerprint") or blocking.get("authority_fingerprint")),
+    }
+
+
+def _semantic_prompt_projection(snapshot: dict[str, Any], row: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:
+    semantic = _dict(row.get("visual_semantic_handoff"))
+    if not semantic or _text(semantic.get("schema_version")) != "storyboard_visual_semantic_handoff_v1":
+        raise PromptIRPhaseEError("PROMPT_IR_SEMANTIC_HANDOFF_MISSING", "StoryboardProductionSnapshot row has no current visual semantic handoff.")
+    if _text(snapshot.get("storyboard_materialization_authority", {}).get("stale_status")) != "FRESH":
+        raise PromptIRPhaseEError("STORYBOARD_MATERIALIZATION_STALE", "PromptIR compilation requires a fresh StoryboardProductionSnapshot.")
+    assets = _asset_identity_index(semantic)
+    characters = []
+    for subject in _list(semantic.get("subjects")):
+        identity = _text(subject)
+        characters.append({"subject_ref": identity, "asset_identity_ref": assets.get(f"character:{identity}", {}).get("asset_identity_ref", identity)})
+    props = []
+    for prop in _list(semantic.get("props")):
+        identity = _text(prop)
+        props.append({"prop_ref": identity, "asset_identity_ref": assets.get(f"prop:{identity}", {}).get("asset_identity_ref", identity)})
+    camera = _dict(semantic.get("camera"))
+    continuity = _dict(semantic.get("continuity"))
+    temporal = _dict(semantic.get("temporal_intent"))
+    projection = _dict(row.get("projection_payload"))
+    prompt_handoff = _dict(row.get("prompt_compiler_handoff"))
+    duration = projection.get("duration")
+    if duration is None:
+        duration = projection.get("duration_hint_seconds")
+    source_authority = _snapshot_authority(snapshot, semantic, row)
+    return {
+        "schema_version": PROMPT_IR_SCHEMA_VERSION,
+        "scene_id": _text(semantic.get("scene_id") or snapshot.get("scene_id")),
+        "plan_shot_id": _text(semantic.get("plan_shot_id") or row.get("plan_shot_id")),
+        "storyboard_shot_id": row.get("storyboard_shot_id"),
+        "source_authority": source_authority,
+        "semantic_refs": {
+            "beat_refs": _list(semantic.get("beat_refs")),
+            "director_decision_refs": _list(semantic.get("director_decision_refs")),
+            "requirement_refs": _list(semantic.get("requirement_refs")),
+            "information_refs": _list(semantic.get("information_refs")),
+            "reaction_contract_refs": _list(semantic.get("reaction_contract_refs")),
+            "coverage_roles": _list(semantic.get("coverage_roles")),
+        },
+        "subjects": characters,
+        "props": props,
+        "environment": {
+            "scene_ref": _text(semantic.get("scene_id") or snapshot.get("scene_id")),
+            "asset_identity_ref": _dict(semantic.get("asset_identity_bindings")).get("canonical_asset_identity", {}).get("scene"),
+        },
+        "action": {"action_beats": _list(prompt_handoff.get("action_beats")) or _list(projection.get("action_beats"))},
+        "camera": {key: camera.get(key) for key in ("framing_class", "orientation", "support", "movement", "movement_trigger", "movement_target", "movement_end_condition")},
+        "continuity": {key: continuity.get(key) for key in ("axis_ref", "axis_refs", "axis_policy", "screen_side_assignments", "look_direction")},
+        "spatial": {
+            "entry_state_ref": _text(_dict(semantic.get("spatial")).get("entry_state_ref")),
+            "exit_state_ref": _text(_dict(semantic.get("spatial")).get("exit_state_ref")),
+            "blocking_state_refs": _list(_dict(semantic.get("spatial")).get("blocking_state_refs")),
+            "subject_zones": _dict(_dict(semantic.get("spatial")).get("subject_zones")),
+            "prop_refs": _list(_dict(semantic.get("spatial")).get("prop_refs")),
+        },
+        "temporal": {
+            "duration_hint_seconds": duration,
+            "duration_mode": temporal.get("duration_mode"),
+            "cut_trigger": temporal.get("cut_trigger"),
+            "continuous_take": continuity.get("continuous_take"),
+            "cut_events": _list(continuity.get("cut_events")),
+        },
+        "information_visibility": semantic.get("information_visibility"),
+        "generation_constraints": {
+            "must_include_subject_refs": [_text(item.get("subject_ref")) for item in characters if _text(item.get("subject_ref"))],
+            "must_include_prop_refs": [_text(item.get("prop_ref")) for item in props if _text(item.get("prop_ref"))],
+            "must_preserve_axis": bool(continuity.get("axis_ref") or continuity.get("axis_refs")),
+        },
+        "asset_authority_bindings": {"identity_refs": sorted(assets), "resolved": []},
+        "generation_policy": policy,
+        "compiler_provenance": {"origin": "STORYBOARD_PRODUCTION_SNAPSHOT", "compiler_version": PROMPT_IR_COMPILER_VERSION, "compiler_policy_version": PROMPT_IR_COMPILER_POLICY_VERSION},
+    }
+
+
+def prompt_ir_semantic_projection(prompt_ir: dict[str, Any]) -> dict[str, Any]:
+    payload = dict(prompt_ir) if isinstance(prompt_ir, dict) else {}
+    # Hashes are transport metadata; all structured authority, including
+    # current asset identities and the explicit generation policy, remains in
+    # the semantic comparison.  This is what makes subject/prop/asset and
+    # policy tampering fail closed.
+    for key in ("prompt_ir_payload_fingerprint", "payload_hash", "prompt_ir_semantic_fingerprint"):
+        payload.pop(key, None)
+    return payload
+
+
+def _prompt_ir_payload_basis(prompt_ir: dict[str, Any]) -> dict[str, Any]:
+    payload = dict(prompt_ir) if isinstance(prompt_ir, dict) else {}
+    for key in ("prompt_ir_payload_fingerprint", "payload_hash"):
+        payload.pop(key, None)
+    return payload
+
+
+def _diff(expected: Any, actual: Any, path: str = "") -> list[dict[str, Any]]:
+    errors: list[dict[str, Any]] = []
+    if isinstance(expected, dict):
+        if not isinstance(actual, dict):
+            return [{"code": "PROMPT_IR_SEMANTIC_MISMATCH", "path": path or "$", "kind": "changed"}]
+        for key in expected:
+            if key not in actual:
+                errors.append({"code": "PROMPT_IR_SEMANTIC_MISSING", "path": f"{path}.{key}" if path else key})
+            else:
+                errors.extend(_diff(expected[key], actual[key], f"{path}.{key}" if path else key))
+        for key in actual:
+            if key not in expected:
+                errors.append({"code": "PROMPT_IR_SEMANTIC_EXTRA", "path": f"{path}.{key}" if path else key})
+        return errors
+    if expected != actual:
+        errors.append({"code": "PROMPT_IR_SEMANTIC_MISMATCH", "path": path or "$", "expected": expected, "actual": actual})
+    return errors
+
+
+def compare_prompt_ir_semantics(expected: dict[str, Any], actual: dict[str, Any]) -> dict[str, Any]:
+    errors = _diff(prompt_ir_semantic_projection(expected), prompt_ir_semantic_projection(actual))
+    return {"empty": not errors, "errors": errors, "missing": [item for item in errors if item.get("code") == "PROMPT_IR_SEMANTIC_MISSING"], "extra": [item for item in errors if item.get("code") == "PROMPT_IR_SEMANTIC_EXTRA"]}
+
+
+def compile_storyboard_snapshot_to_prompt_ir(snapshot: dict[str, Any], *, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    policy = build_generation_policy(generation_policy)
+    if not isinstance(snapshot, dict) or snapshot.get("schema_version") != "storyboard_production_snapshot_v1":
+        raise PromptIRPhaseEError("STORYBOARD_SNAPSHOT_INVALID", "PromptIR compilation requires storyboard_production_snapshot_v1.")
+    if snapshot.get("prompt_prose") is not False or snapshot.get("media_state") != "NOT_GENERATED":
+        raise PromptIRPhaseEError("STORYBOARD_SNAPSHOT_NOT_PRODUCTION_SAFE", "Snapshot contains prompt prose or generated media state.")
+    rows = _list(snapshot.get("ordered_shots"))
+    if not rows:
+        raise PromptIRPhaseEError("STORYBOARD_SNAPSHOT_EMPTY", "Snapshot contains no ordered StoryboardShots.")
+    result: list[dict[str, Any]] = []
+    for row in rows:
+        ir = _semantic_prompt_projection(snapshot, row, policy)
+        # Asset authority binds concrete current identities without changing
+        # the semantic subject/prop lists.  Unknown identities are a hard
+        # error only when the policy explicitly requires that asset class.
+        authority = _dict(asset_authority)
+        bindings = _list(authority.get("bindings"))
+        resolved = {f"{_text(item.get('asset_type')).lower()}:{_text(item.get('canonical_asset_id') or item.get('asset_id') or item.get('id'))}": item for item in bindings if isinstance(item, dict)}
+        required = set(policy.get("required_asset_classes", []))
+        for identity_key in ir["asset_authority_bindings"]["identity_refs"]:
+            identity = identity_key.split(":", 1)[1] if ":" in identity_key else identity_key
+            asset_type = identity_key.split(":", 1)[0].upper() if ":" in identity_key else ""
+            if asset_type in required and identity_key not in resolved:
+                raise PromptIRPhaseEError("PROMPT_IR_REQUIRED_ASSET_AUTHORITY_MISSING", f"Required current asset authority is missing: {identity_key}.")
+            if identity_key in resolved:
+                item = resolved[identity_key]
+                stale_status = _text(item.get("stale_status") or "FRESH").upper()
+                if stale_status != "FRESH":
+                    raise PromptIRPhaseEError("PROMPT_IR_ASSET_AUTHORITY_STALE", f"Current asset authority is stale: {identity_key}.")
+                ir["asset_authority_bindings"]["resolved"].append({"identity_ref": identity_key, "asset_authority_ref": _text(item.get("asset_key") or item.get("canonical_asset_id") or identity), "authority_fingerprint": _text(item.get("authority_fingerprint") or item.get("payload_hash")), "stale_status": _text(item.get("stale_status") or "FRESH")})
+        ir["asset_authority_bindings"]["resolved"] = sorted(ir["asset_authority_bindings"]["resolved"], key=lambda item: item["identity_ref"])
+        ir["prompt_ir_semantic_fingerprint"] = fingerprint(prompt_ir_semantic_projection(ir))
+        ir["prompt_ir_payload_fingerprint"] = fingerprint(_prompt_ir_payload_basis(ir))
+        ir["payload_hash"] = ir["prompt_ir_payload_fingerprint"]
+        result.append(ir)
+    return result
+
+
+def validate_prompt_ir_against_snapshot(snapshot: dict[str, Any], prompt_ir: dict[str, Any], *, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None) -> dict[str, Any]:
+    expected_list = compile_storyboard_snapshot_to_prompt_ir(snapshot, generation_policy=generation_policy or prompt_ir.get("generation_policy"), asset_authority=asset_authority)
+    expected = next((item for item in expected_list if item.get("plan_shot_id") == prompt_ir.get("plan_shot_id")), None)
+    if expected is None:
+        return {"valid": False, "errors": [{"code": "PROMPT_IR_SHOT_NOT_IN_SNAPSHOT"}], "semantic_diff": {"empty": False}}
+    diff = compare_prompt_ir_semantics(expected, prompt_ir)
+    actual_fp = fingerprint(_prompt_ir_payload_basis(prompt_ir))
+    stored_fp = _text(prompt_ir.get("prompt_ir_payload_fingerprint") or prompt_ir.get("payload_hash"))
+    if stored_fp and stored_fp != actual_fp:
+        diff["errors"].append({"code": "PROMPT_IR_FINGERPRINT_TAMPERED"})
+    diff["valid"] = not diff["errors"]
+    return diff
+
+
+MODEL_ADAPTER_REGISTRY = {
+    "flux": {"adapter_id": "flux", "adapter_version": "flux_adapter_v1", "model_family": "FLUX", "supports_reference_images": True, "supports_negative_prompt": False},
+    "image_generic": {"adapter_id": "image_generic", "adapter_version": "image_generic_adapter_v1", "model_family": "GENERIC_IMAGE", "supports_reference_images": True, "supports_negative_prompt": False},
+    "video_generic": {"adapter_id": "video_generic", "adapter_version": "video_generic_adapter_v1", "model_family": "GENERIC_VIDEO", "supports_reference_images": True, "supports_negative_prompt": False},
+}
+
+
+def _adapter_sections(prompt_ir: dict[str, Any]) -> dict[str, Any]:
+    """Deterministic semantic sections; no style or visual facts are added."""
+    subjects = [item.get("subject_ref") for item in _list(prompt_ir.get("subjects"))]
+    props = [item.get("prop_ref") for item in _list(prompt_ir.get("props"))]
+    camera = _dict(prompt_ir.get("camera"))
+    action = _dict(prompt_ir.get("action"))
+    return {
+        "SUBJECT": subjects,
+        "ENVIRONMENT": prompt_ir.get("environment", {}),
+        "PROPS": props,
+        "ACTION": action.get("action_beats", []),
+        "CAMERA": camera,
+        "CONTINUITY": prompt_ir.get("continuity", {}),
+        "TEMPORAL": prompt_ir.get("temporal", {}),
+        "VISIBILITY": prompt_ir.get("information_visibility"),
+        "CONSTRAINTS": prompt_ir.get("generation_constraints", {}),
+    }
+
+
+def render_prompt_surface(prompt_ir: dict[str, Any], *, surface: str = "static") -> dict[str, Any]:
+    sections = _adapter_sections(prompt_ir)
+    ordered = ["SUBJECT", "ENVIRONMENT", "PROPS", "ACTION", "CAMERA", "CONTINUITY", "TEMPORAL", "VISIBILITY", "CONSTRAINTS"]
+    text = "\n".join(f"{key}: {canonical(sections[key])}" for key in ordered if sections[key] not in (None, [], {}, ""))
+    return {"surface": surface, "renderer_version": "prompt_surface_renderer_v1", "text": text, "render_fingerprint": fingerprint({"surface": surface, "sections": sections})}
+
+
+def compare_prompt_ir_adapter_payload_semantics(prompt_ir: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any]:
+    projection = payload.get("semantic_projection") if isinstance(payload.get("semantic_projection"), dict) else {}
+    expected = _adapter_sections(prompt_ir)
+    return {"empty": expected == projection, "expected": expected, "actual": projection, "unsupported": payload.get("unsupported", [])}
+
+
+def adapt_prompt_ir_to_generation_payload(prompt_ir: dict[str, Any], *, generation_policy: dict[str, Any] | None = None, model_profile: dict[str, Any] | None = None) -> dict[str, Any]:
+    policy = build_generation_policy(generation_policy or prompt_ir.get("generation_policy"))
+    profile = build_model_profile(model_profile)
+    adapter = MODEL_ADAPTER_REGISTRY.get(profile.get("adapter_id"))
+    if not adapter:
+        raise PromptIRPhaseEError("MODEL_ADAPTER_NOT_REGISTERED", f"No deterministic adapter is registered for {profile.get('adapter_id')}.")
+    refs = _list(prompt_ir.get("asset_authority_bindings", {}).get("resolved"))
+    requires_refs = bool(policy.get("required_asset_classes"))
+    if requires_refs and not profile.get("capabilities", {}).get("supports_reference_images", adapter.get("supports_reference_images", False)):
+        raise PromptIRPhaseEError("MODEL_ADAPTER_CAPABILITY_UNSUPPORTED", "ModelProfile cannot represent required reference images.")
+    required_identity_types = set(policy.get("required_asset_classes", []))
+    missing = [kind for kind in required_identity_types if not any(_text(item.get("identity_ref")).split(":", 1)[0].upper() == kind for item in refs)]
+    if missing:
+        raise PromptIRPhaseEError("MODEL_ADAPTER_REQUIRED_ASSET_MISSING", "Required asset authority bindings are missing.", diagnostics=[{"code": "MODEL_ADAPTER_REQUIRED_ASSET_MISSING", "asset_class": item} for item in missing])
+    static_surface = render_prompt_surface(prompt_ir, surface="static")
+    motion_surface = render_prompt_surface(prompt_ir, surface="motion")
+    request: dict[str, Any] = {"prompt": static_surface["text"], "motion_prompt": motion_surface["text"], "reference_bindings": refs}
+    if profile.get("capabilities", {}).get("supports_negative_prompt", adapter.get("supports_negative_prompt", False)):
+        request["negative_prompt"] = ""
+    payload = {
+        "schema_version": GENERATION_PAYLOAD_SCHEMA_VERSION,
+        "model_family": profile.get("model_family"),
+        "prompt_ir_ref": {"storyboard_shot_id": prompt_ir.get("storyboard_shot_id"), "plan_shot_id": prompt_ir.get("plan_shot_id"), "fingerprint": prompt_ir.get("prompt_ir_payload_fingerprint") or prompt_ir.get("payload_hash")},
+        "generation_policy": policy,
+        "model_profile": profile,
+        "request": request,
+        "adapter": {"adapter_id": adapter["adapter_id"], "adapter_version": adapter["adapter_version"]},
+        "semantic_projection": _adapter_sections(prompt_ir),
+        "unsupported": [],
+        "provider_calls": 0,
+    }
+    payload["generation_payload_fingerprint"] = fingerprint(payload)
+    return payload
+
+
+__all__ = [
+    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload",
+]

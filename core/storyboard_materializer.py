@@ -265,14 +265,19 @@ def build_storyboard_production_snapshot(*, materialization_set: Any, rows: list
     for row in rows:
         meta = _parse_json(getattr(row, "meta_info", "{}"), {})
         semantic = meta.get("visual_semantic_handoff") if isinstance(meta, dict) else {}
+        projection = meta.get("projection_payload") if isinstance(meta.get("projection_payload"), dict) else {}
+        handoff = meta.get("prompt_compiler_handoff") if isinstance(meta.get("prompt_compiler_handoff"), dict) else {}
         ordered.append({
             "plan_shot_id": _text(getattr(row, "plan_shot_id", "")),
             "storyboard_shot_id": getattr(row, "id", None),
             "projection_fingerprint": _text(getattr(row, "projection_fingerprint", "")),
             "visual_semantic_handoff": semantic,
+            "projection_payload": projection,
+            "prompt_compiler_handoff": handoff,
         })
     return {
         "schema_version": "storyboard_production_snapshot_v1",
+        "scene_id": _text(getattr(materialization_set, "scene_id", "")),
         "storyboard_materialization_authority": {
             "materialization_set_id": getattr(materialization_set, "id", None),
             "set_payload_fingerprint": _text(getattr(materialization_set, "set_payload_fingerprint", "")),
