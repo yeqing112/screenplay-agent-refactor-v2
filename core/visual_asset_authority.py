@@ -358,6 +358,39 @@ def propagate_visual_reference_staleness(session: Any, *, authority_fingerprint:
     return {"references_staled": len(refs), "prompt_ir_staled": prompt_count}
 
 
+def resolve_current_visual_asset_authority(session: Any, *, book_id: int, asset_key: str, expected_asset_type: str = "", expected_scope_key: str = "") -> dict[str, Any]:
+    """Resolve and validate one current VisualAssetPointer/Version chain."""
+    from models import VisualAssetPointer, VisualAssetVersion
+    pointers = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key).all()
+    if not pointers:
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_INVALID", "No current VisualAssetPointer exists for the required asset.", diagnostics=[{"asset_key": asset_key}])
+    if expected_scope_key:
+        pointers = [item for item in pointers if str(item.scope_key or "") == str(expected_scope_key)]
+    elif len(pointers) > 1:
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_AMBIGUOUS", "Current VisualAssetPointer scope is ambiguous; an exact scope is required.", diagnostics=[{"asset_key": asset_key, "pointer_count": len(pointers)}])
+    if len(pointers) != 1:
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_AMBIGUOUS", "Current VisualAssetPointer scope is ambiguous.", diagnostics=[{"asset_key": asset_key, "pointer_count": len(pointers)}])
+    pointer = pointers[0]
+    if _text(pointer.stale_status).upper() != "FRESH":
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_STALE", "Current VisualAssetPointer is stale.", diagnostics=[{"asset_key": asset_key}])
+    if not pointer.current_version_id:
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_INVALID", "Current VisualAssetPointer has no current_version_id.")
+    version = session.query(VisualAssetVersion).filter_by(id=pointer.current_version_id).first()
+    if version is None:
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_INVALID", "Current VisualAssetPointer points to a missing VisualAssetVersion.")
+    if str(version.book_id) != str(pointer.book_id) or str(version.asset_key) != str(pointer.asset_key) or (expected_asset_type and str(version.asset_type) != str(expected_asset_type)):
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_TAMPERED", "VisualAssetPointer and VisualAssetVersion identity does not match.")
+    if _text(version.stale_status).upper() != "FRESH":
+        raise VisualAssetAuthorityError("VISUAL_ASSET_VERSION_STALE", "Current VisualAssetVersion is stale.")
+    if _text(pointer.payload_hash) != _text(version.payload_hash):
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_TAMPERED", "VisualAssetPointer payload_hash does not match the current version.")
+    if _text(pointer.authority_status) != _text(version.authority_status):
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_TAMPERED", "VisualAssetPointer authority_status does not match the current version.")
+    if _text(version.authority_status).upper() not in {SPEC_APPROVED, PRODUCTION_READY, "LOCKED", "QUALIFIED", "PRODUCTION_AUTHORITATIVE"}:
+        raise VisualAssetAuthorityError("VISUAL_ASSET_AUTHORITY_NOT_QUALIFIED", "Current VisualAssetVersion is not production qualified.")
+    return {"pointer": pointer, "version": version, "integrity_valid": True, "asset_key": asset_key}
+
+
 def asset_readiness(*, identity_ready: bool, authoring_status: str, spec_approved: bool, reference_required: bool, reference_locked: bool) -> dict[str, Any]:
     if not identity_ready:
         return {"identity_ready": False, "visual_spec_ready": False, "reference_ready": False, "media_ready": False, "status": "ASSET_IDENTITY_PENDING", "blocking_reason": "IDENTITY_PENDING"}

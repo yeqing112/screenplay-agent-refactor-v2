@@ -14,11 +14,13 @@ from core.prompt_ir_phase_e import (
     build_generation_policy,
     build_model_profile,
     compile_storyboard_snapshot_to_prompt_ir,
+    classify_prompt_ir_compile_transition,
+    compare_prompt_ir_semantics,
     fingerprint as phase_e_fingerprint,
     resolve_current_authoritative_prompt_ir,
-    validate_current_prompt_ir_authority,
+    validate_prompt_ir_integrity,
 )
-from core.visual_asset_authority import build_asset_key, production_asset_binding
+from core.visual_asset_authority import VisualAssetAuthorityError, build_asset_key, production_asset_binding, resolve_current_visual_asset_authority
 from core.storyboard_materializer import build_storyboard_production_snapshot, resolve_current_authoritative_materialization
 from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, Session
 
@@ -76,7 +78,7 @@ def _scene_id_for_shot(session, book_id: int, episode: int, shot_id: int) -> str
 
 def _production_asset_authority(session, *, book_id: int, handoff: dict) -> dict:
     """Resolve PromptIR assets only through current VisualAssetVersion pointers."""
-    from models import VisualAssetPointer, VisualAssetVersion, VisualReferenceAuthority
+    from models import VisualReferenceAuthority
 
     bindings = handoff.get("asset_identity_bindings") if isinstance(handoff.get("asset_identity_bindings"), dict) else {}
     canonical = bindings.get("canonical_asset_identity") if isinstance(bindings.get("canonical_asset_identity"), dict) else {}
@@ -106,13 +108,12 @@ def _production_asset_authority(session, *, book_id: int, handoff: dict) -> dict
             # A production asset binding must come from the current pointer
             # for a declared scope.  Never infer authority from the newest
             # historical pointer when more than one scope is present.
-            pointers = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key).all()
-            if len(pointers) == 1:
-                pointer = pointers[0]
-            else:
-                default = [item for item in pointers if str(item.scope_key or "") in {"", "canonical"}]
-                pointer = default[0] if len(default) == 1 else None
-            version = session.query(VisualAssetVersion).filter_by(id=pointer.current_version_id).first() if pointer else None
+            try:
+                resolved_asset = resolve_current_visual_asset_authority(session, book_id=book_id, asset_key=asset_key, expected_asset_type=asset_type)
+                pointer = resolved_asset["pointer"]
+                version = resolved_asset["version"]
+            except VisualAssetAuthorityError as exc:
+                _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
             reference = None
             if version:
                 candidates = session.query(VisualReferenceAuthority).filter_by(asset_key=asset_key).all()
@@ -216,7 +217,10 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
         if not compiled:
             _conflict("PROMPT_IR_SNAPSHOT_EMPTY", "Current Storyboard materialization contains no shots.")
 
-        # Reuse all identical current payloads before creating any versions.
+        # Classify every existing current row from stored integrity first.  A
+        # valid old row may be obsolete because current upstream authority
+        # changed; that is a legal explicit revision, not a tamper.
+        snapshot_by_shot = {int(row.get("storyboard_shot_id")): snapshot for snapshot in snapshots for row in snapshot.get("ordered_shots", [])}
         existing_by_shot = {int(item.storyboard_shot_id): item for item in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         results = []
         pending_writes = []
@@ -224,28 +228,40 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
             shot_id = int(ir["storyboard_shot_id"])
             existing_pointer = existing_by_shot.get(shot_id)
             existing = session.query(PromptIRVersion).filter_by(id=existing_pointer.prompt_ir_version_id).first() if existing_pointer else None
+            revision_causes = []
             if existing and existing_pointer:
-                # Reuse is permitted only after the same full current
-                # authority validator used by the production resolver.
-                validate_current_prompt_ir_authority(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, expected_prompt_ir=ir, generation_policy=policy, asset_authority=asset_authority)
-                results.append({"storyboard_shot_id": shot_id, "prompt_ir_version_id": existing.id, "reused": True, "payload_hash": existing.payload_hash})
-                continue
+                integrity = validate_prompt_ir_integrity(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, allow_stale=True)
+                current_payload = integrity["payload"]
+                transition = classify_prompt_ir_compile_transition(current_payload=current_payload, expected_payload=ir)
+                old_policy = current_payload.get("generation_policy") if isinstance(current_payload.get("generation_policy"), dict) else {}
+                old_source = current_payload.get("source_authority")
+                old_assets = current_payload.get("asset_authority_bindings")
+                old_expected = next(item for item in compile_storyboard_snapshot_to_prompt_ir(snapshot_by_shot[shot_id], generation_policy=old_policy, asset_authority=asset_authority, allow_default_policy=False) if int(item.get("storyboard_shot_id")) == shot_id)
+                upstream_diff = compare_prompt_ir_semantics(old_expected, current_payload)
+                if not upstream_diff.get("empty"):
+                    expected_source = old_expected.get("source_authority")
+                    expected_assets = old_expected.get("asset_authority_bindings")
+                    upstream_changed = old_source != expected_source or old_assets != expected_assets
+                    if not upstream_changed:
+                        _conflict("PROMPT_IR_CURRENT_INTEGRITY_INVALID", "Stored PromptIR differs from current deterministic semantics without an authoritative upstream change.", diagnostics=upstream_diff.get("errors", []))
+                    revision_causes.append("UPSTREAM_AUTHORITY_CHANGED")
+                if (existing.stale_status != "FRESH" or integrity["authority"].stale_status != "FRESH") and not revision_causes:
+                    _conflict("PROMPT_IR_STALE", "Current PromptIR is stale without a validated upstream revision.")
+                if transition == "REUSE" and not revision_causes:
+                    results.append({"storyboard_shot_id": shot_id, "prompt_ir_version_id": existing.id, "reused": True, "payload_hash": existing.payload_hash})
+                    continue
+                if old_policy.get("fingerprint") != policy.get("fingerprint"):
+                    revision_causes.append("GENERATION_POLICY_CHANGED")
+                if old_assets != ir.get("asset_authority_bindings"):
+                    revision_causes.append("VISUAL_ASSET_AUTHORITY_CHANGED")
+                if old_source != ir.get("source_authority"):
+                    revision_causes.append("STORYBOARD_AUTHORITY_CHANGED")
             if existing:
-                previous_payload = _json(existing.payload_json, {})
-                reasons = ["PROMPT_IR_RECOMPILED"]
-                if previous_payload.get("generation_policy", {}).get("fingerprint") != ir.get("generation_policy", {}).get("fingerprint"):
-                    reasons.append("GENERATION_POLICY_CHANGED")
-                existing.stale_status = "STALE"
-                existing.stale_reasons = json.dumps(sorted(set(reasons)), ensure_ascii=False)
-                existing.updated_at = datetime.now()
-                previous_authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=existing.id).first()
-                if previous_authority:
-                    previous_authority.stale_status = "STALE"
-                    previous_authority.stale_reasons = existing.stale_reasons
-                    previous_authority.updated_at = datetime.now()
-            pending_writes.append((ir, existing_pointer, existing))
+                pending_writes.append((ir, existing_pointer, existing, sorted(set(revision_causes))))
+            else:
+                pending_writes.append((ir, existing_pointer, existing, []))
 
-        for ir, existing_pointer, existing in pending_writes:
+        for ir, existing_pointer, existing, revision_causes in pending_writes:
             envelope = {
                 "schema_version": "prompt_ir_authority_envelope_v2",
                 "source_authority": ir["source_authority"],
@@ -256,6 +272,7 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
                 "qualification_state": "PROMPT_IR_QUALIFIED",
                 "model_generation_ready": False,
                 "stale_status": "FRESH",
+                "revision_causes": revision_causes,
             }
             envelope["envelope_fingerprint"] = phase_e_fingerprint(envelope)
             version = PromptIRVersion(book_id=book_id, episode=episode, scene_id=str(ir.get("scene_id") or ""), storyboard_shot_id=int(ir["storyboard_shot_id"]), materialization_set_id=int(ir["source_authority"].get("storyboard_materialization_set_id") or 0), plan_shot_id=str(ir["plan_shot_id"]), schema_version=ir["schema_version"], payload_json=json.dumps(ir, ensure_ascii=False, sort_keys=True), payload_hash=ir["payload_hash"], compiler_version=ir["compiler_provenance"]["compiler_version"], compiler_policy_version=ir["compiler_provenance"]["compiler_policy_version"], retention_policy_version="generation_policy_v1", authority_envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="ASSET_REFERENCE_PENDING", model_generation_ready="false", stale_status="FRESH", stale_reasons="[]", created_at=datetime.now(), updated_at=datetime.now())
@@ -271,6 +288,15 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
             pointer.updated_at = datetime.now()
             session.add(pointer)
             results.append({"storyboard_shot_id": version.storyboard_shot_id, "prompt_ir_version_id": version.id, "prompt_ir_authority_id": authority.id, "reused": False, "payload_hash": version.payload_hash})
+            if existing is not None:
+                existing.stale_status = "STALE"
+                existing.stale_reasons = json.dumps(sorted(set(revision_causes or ["PROMPT_IR_REVISED"])), ensure_ascii=False)
+                existing.updated_at = datetime.now()
+                previous_authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=existing.id).first()
+                if previous_authority:
+                    previous_authority.stale_status = "STALE"
+                    previous_authority.stale_reasons = existing.stale_reasons
+                    previous_authority.updated_at = datetime.now()
         session.commit()
         return {"schema_version": "prompt_ir_phase_e_compile_v1", "mutated": bool(pending_writes), "reused_count": sum(1 for item in results if item["reused"]), "compiled_count": len(results), "shots": results, "provider_calls": 0, "llm_calls": 0, "media_generated": False}
 

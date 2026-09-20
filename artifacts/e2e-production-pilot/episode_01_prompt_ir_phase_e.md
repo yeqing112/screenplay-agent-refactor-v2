@@ -15,7 +15,7 @@
 - Visibility: `AUDIENCE_ONLY`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": null, "axis_refs": [], "look_direction": {}, "screen_side_assignments": {}}`
 - Spatial: `{"blocking_state_refs": ["SC01-B01", "SC01-B02"], "entry_state_ref": "SC01-B01", "exit_state_ref": "SC01-B02", "prop_refs": ["TICKET"], "subject_zones": {"售票员": "ST_TICKET", "林晚": "ST_TICKET", "陆叔": "ST_REAR", "顾沉": "ST_REAR"}}`
-- PromptIR fingerprint: `891b787d25407d71e13b1ba597b9a8b5e4255e50f4377c49e1650613b2b96c5d`
+- PromptIR fingerprint: `b96e0ef23fc0600243afe40523bd9c4e2350f75680ac8de86f379c1248e4a044`
 
 ## SH_E01_SC001_002
 
@@ -30,7 +30,7 @@
 - Visibility: `CHARACTER_AND_AUDIENCE`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": null, "axis_refs": [], "look_direction": {}, "screen_side_assignments": {}}`
 - Spatial: `{"blocking_state_refs": ["SC01-B03"], "entry_state_ref": "SC01-B03", "exit_state_ref": "SC01-B03", "prop_refs": ["RED_UMBRELLA"], "subject_zones": {"售票员": "ST_TICKET", "林晚": "ST_CENTER", "陆叔": "ST_REAR", "顾沉": "ST_REAR"}}`
-- PromptIR fingerprint: `2d5ee30673273f8d437950141d835d0aeb5dc9531aa52408ddbf5365c590dbf7`
+- PromptIR fingerprint: `2ebac6aa0c089ed77d86f595eee40054ddf7e3bc4fa09be3d33dfbef7d85c3be`
 
 ## SH_E01_SC001_003
 
@@ -45,7 +45,7 @@
 - Visibility: `CHARACTER_AND_AUDIENCE`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": null, "axis_refs": [], "look_direction": {}, "screen_side_assignments": {}}`
 - Spatial: `{"blocking_state_refs": ["SC01-B04"], "entry_state_ref": "SC01-B04", "exit_state_ref": "SC01-B04", "prop_refs": ["BROKEN_UMBRELLA_RIB"], "subject_zones": {"售票员": "ST_TICKET", "林晚": "ST_CENTER", "陆叔": "ST_REAR", "顾沉": "ST_REAR"}}`
-- PromptIR fingerprint: `2205638af7de8b2187c9c8c2a33f4de429098454021e3c5c8f489dd420df52ef`
+- PromptIR fingerprint: `93c29e690732888e2113e461b0565a7e51d873d744a54bccc8df1c60f190b3ac`
 
 ## SH_E01_SC001_004
 
@@ -60,7 +60,7 @@
 - Visibility: `CHARACTER_AND_AUDIENCE`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_GC", "axis_refs": ["AXIS_LW_GC"], "look_direction": {"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "顾沉": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC01-B05", "SC01-B06"], "entry_state_ref": "SC01-B05", "exit_state_ref": "SC01-B06", "prop_refs": [], "subject_zones": {"售票员": "ST_TICKET", "林晚": "ST_CENTER", "陆叔": "ST_REAR", "顾沉": "ST_CENTER"}}`
-- PromptIR fingerprint: `cd9ec0c65a20b397d8e47e4e1ffe923dfe23e0c18d321e88cf113620163e0df3`
+- PromptIR fingerprint: `0abefe7a3e46b87a1e6737f6e0f4fc7afa9a1a3b0f00c4437d9c8f2098d9162a`
 
 ## SH_E01_SC001_005
 
@@ -75,7 +75,7 @@
 - Visibility: `CHARACTER_AND_AUDIENCE`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_GC", "axis_refs": ["AXIS_LW_GC", "AXIS_LW_LS"], "look_direction": {"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "顾沉": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC01-B07", "SC01-B08"], "entry_state_ref": "SC01-B07", "exit_state_ref": "SC01-B08", "prop_refs": ["HANDBAG"], "subject_zones": {"售票员": "ST_TICKET", "林晚": "ST_CENTER", "陆叔": "ST_CENTER", "顾沉": "ST_CENTER"}}`
-- PromptIR fingerprint: `13906c038564b78ddac7e779e1e14814ce25f2ac02dea13a8b8a43c6cac130d6`
+- PromptIR fingerprint: `dccd8f74a9565335a655093468e2a857fc2c67757b1b7ebc26f3b6e9286ab732`
 
 ## SH_E01_SC001_006
 
@@ -90,7 +90,7 @@
 - Visibility: `AUDIENCE_ONLY`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_GC", "axis_refs": ["AXIS_LW_GC", "AXIS_LW_LS"], "look_direction": {"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "顾沉": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC01-B09", "SC01-B10"], "entry_state_ref": "SC01-B09", "exit_state_ref": "SC01-B10", "prop_refs": ["BROKEN_UMBRELLA_RIB", "RED_UMBRELLA"], "subject_zones": {"售票员": "ST_TICKET", "林晚": "ST_CENTER", "陆叔": "ST_CENTER", "顾沉": "ST_CENTER"}}`
-- PromptIR fingerprint: `ee3161794acc3f43460cfa50510ba34fb70f465e9d79335373e15e82b88b28ce`
+- PromptIR fingerprint: `c2f884c0c1c9f67d70f0c669045a2c026b988813bc9782f5fa3ecd4571d8673d`
 
 ## SH_E01_SC001_007
 
@@ -105,7 +105,7 @@
 - Visibility: `CHARACTER_AND_AUDIENCE`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_GC", "axis_refs": ["AXIS_LW_GC", "AXIS_LW_LS"], "look_direction": {"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "顾沉": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC01-B11", "SC01-B12"], "entry_state_ref": "SC01-B11", "exit_state_ref": "SC01-B12", "prop_refs": [], "subject_zones": {"售票员": "ST_TICKET", "林晚": "ST_CHECK", "陆叔": "ST_CENTER", "顾沉": "ST_CENTER"}}`
-- PromptIR fingerprint: `b87630dce2895c866e116860a944c3def92f1c58351eca38851c9052302dde04`
+- PromptIR fingerprint: `2550e370501601fefd764b2dd5519c3969c855a8125677a280f7a251884c2965`
 
 ## SH_E01_SC001_008
 
@@ -120,7 +120,7 @@
 - Visibility: `AUDIENCE_ONLY`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_GC", "axis_refs": ["AXIS_LW_GC", "AXIS_LW_LS"], "look_direction": {"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "顾沉": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC01-B13"], "entry_state_ref": "SC01-B13", "exit_state_ref": "SC01-B13", "prop_refs": [], "subject_zones": {"售票员": "ST_TICKET", "林晚": "ST_CHECK", "陆叔": "ST_CENTER", "顾沉": "ST_CENTER"}}`
-- PromptIR fingerprint: `c4fbdf34fa5b8b6760e14432dbad691feb612b95e9703fe38ebf63f454ba7a81`
+- PromptIR fingerprint: `c7d927430686fd23506da27f35c8090374ca701c5028c5d289ec14267cc65c13`
 
 ## SH_E01_SC002_001
 
@@ -135,7 +135,7 @@
 - Visibility: `AUDIENCE_ONLY`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_LS_APT", "axis_refs": ["AXIS_LW_LS_APT"], "look_direction": {"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "陆叔": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC02-B01", "SC02-B02"], "entry_state_ref": "SC02-B01", "exit_state_ref": "SC02-B02", "prop_refs": ["APPLE", "DOOR_LOCK"], "subject_zones": {"林晚": "APT_CENTER", "陆叔": "APT_KITCHEN"}}`
-- PromptIR fingerprint: `8f32b3538dacb0577c613b0aa6bb19418f4d0cd10dde69b76411476969c4bb30`
+- PromptIR fingerprint: `d8e4b9556279126bcc46307ae470ee8289c17d8c2f505a7e3da26a4db7a5d2cc`
 
 ## SH_E01_SC002_002
 
@@ -150,7 +150,7 @@
 - Visibility: `CHARACTER_AND_AUDIENCE`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_LS_APT", "axis_refs": ["AXIS_LW_LS_APT"], "look_direction": {"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "陆叔": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC02-B03"], "entry_state_ref": "SC02-B03", "exit_state_ref": "SC02-B03", "prop_refs": [], "subject_zones": {"林晚": "APT_CENTER", "陆叔": "APT_CENTER"}}`
-- PromptIR fingerprint: `d4b7544a16b48389cecf6551d307318ccac29b9883c5ddc49938c890ca543b23`
+- PromptIR fingerprint: `568d4eb6ba9b6e2f535f0705d9940404f1d55fdd10949b903e9fab9ffb5dbbc2`
 
 ## SH_E01_SC002_003
 
@@ -165,7 +165,7 @@
 - Visibility: `AUDIENCE_OBSERVES_CHARACTER_DOUBT`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_LS_APT", "axis_refs": ["AXIS_LW_LS_APT"], "look_direction": {"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "陆叔": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC02-B04"], "entry_state_ref": "SC02-B04", "exit_state_ref": "SC02-B04", "prop_refs": ["HANDBAG"], "subject_zones": {"林晚": "APT_TABLE", "陆叔": "APT_CENTER"}}`
-- PromptIR fingerprint: `bc63fabd828e369c6e0675c577b7ae433715e0c5db9fe63a1bfe2b3420d61624`
+- PromptIR fingerprint: `8d6cd5dea9754ae45776157a600c81766747215e5cb0dadf953f877b6d191b35`
 
 ## SH_E01_SC002_004
 
@@ -180,7 +180,7 @@
 - Visibility: `CHARACTER_AND_AUDIENCE`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_LS_APT", "axis_refs": ["AXIS_LW_LS_APT"], "look_direction": {"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "陆叔": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC02-B05"], "entry_state_ref": "SC02-B05", "exit_state_ref": "SC02-B05", "prop_refs": ["POCKET_HARD_OBJECT", "TABLE_SCRATCH"], "subject_zones": {"林晚": "APT_TABLE", "陆叔": "APT_CENTER"}}`
-- PromptIR fingerprint: `54d2642ece4edbdb5c7a1a1998357ad636ae13787b8ebbc74d1edd508a6d910e`
+- PromptIR fingerprint: `b63911d5ac1ae0039188f6a3364753012b27454d87790a01e4d499830dde7827`
 
 ## SH_E01_SC002_005
 
@@ -195,7 +195,7 @@
 - Visibility: `AUDIENCE_ONLY`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_LS_APT", "axis_refs": ["AXIS_LW_LS_APT"], "look_direction": {"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "陆叔": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC02-B06"], "entry_state_ref": "SC02-B06", "exit_state_ref": "SC02-B06", "prop_refs": ["RED_FIBER"], "subject_zones": {"林晚": "APT_TABLE", "陆叔": "APT_CENTER"}}`
-- PromptIR fingerprint: `c2ff84b6a293e058e07c0b9ecfaf062fb2756dbfc98b96611c6c6a0ff7cc0714`
+- PromptIR fingerprint: `42aa527e8900b89766ae4d08784f1c134ae7099d0c324eb55c3fd98a8bbd9e6a`
 
 ## SH_E01_SC002_006
 
@@ -210,7 +210,7 @@
 - Visibility: `CHARACTER_AND_AUDIENCE`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_LS_APT", "axis_refs": ["AXIS_LW_LS_APT"], "look_direction": {"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "陆叔": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC02-B07"], "entry_state_ref": "SC02-B07", "exit_state_ref": "SC02-B07", "prop_refs": [], "subject_zones": {"林晚": "APT_TABLE", "陆叔": "APT_TABLE"}}`
-- PromptIR fingerprint: `d0c024a7ac9e52c9b4152fbb4884e7fabb391a0b84687e05d5c352ab78e6e831`
+- PromptIR fingerprint: `cb3fd5a340be72f2ca415124fd202790a5a277fbc94d44a3129d6930e1a96c33`
 
 ## SH_E01_SC002_007
 
@@ -225,4 +225,4 @@
 - Visibility: `AUDIENCE_ONLY`
 - Axis: `{"axis_policy": "PRESERVE", "axis_ref": "AXIS_LW_LS_APT", "axis_refs": ["AXIS_LW_LS_APT"], "look_direction": {"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}, "screen_side_assignments": {"林晚": "LEFT", "陆叔": "RIGHT"}}`
 - Spatial: `{"blocking_state_refs": ["SC02-B08", "SC02-B09"], "entry_state_ref": "SC02-B08", "exit_state_ref": "SC02-B09", "prop_refs": [], "subject_zones": {"林晚": "APT_TABLE", "陆叔": "APT_TABLE"}}`
-- PromptIR fingerprint: `d50ef275ed0125f70b3d0f7f8ed2a6fd585b774d01b428916c5eaf704e26ea2a`
+- PromptIR fingerprint: `49fa4a992c990af66b6ce15260e14117227b670bc4a4c0522d332883f65c0aad`

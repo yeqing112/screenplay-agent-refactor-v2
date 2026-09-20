@@ -50,16 +50,16 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+            "asset_version_id": 10,
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:TICKET",
             "asset_version_fingerprint": "19d26788c41cfa0979237951a56d9af2a7a2ef8ee0227b9275b18be7754e7751",
-            "asset_version_id": 1,
+            "asset_version_id": 9,
             "authority_fingerprint": "19d26788c41cfa0979237951a56d9af2a7a2ef8ee0227b9275b18be7754e7751",
             "identity_ref": "prop:TICKET",
             "stale_status": "FRESH"
@@ -123,10 +123,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "891b787d25407d71e13b1ba597b9a8b5e4255e50f4377c49e1650613b2b96c5d",
+      "payload_hash": "b96e0ef23fc0600243afe40523bd9c4e2350f75680ac8de86f379c1248e4a044",
       "plan_shot_id": "SH_E01_SC001_001",
-      "prompt_ir_payload_fingerprint": "891b787d25407d71e13b1ba597b9a8b5e4255e50f4377c49e1650613b2b96c5d",
-      "prompt_ir_semantic_fingerprint": "c11a33181c417e45e6c408bef17d4204d5b0679917ff3cdd43f33abe03af7c41",
+      "prompt_ir_payload_fingerprint": "b96e0ef23fc0600243afe40523bd9c4e2350f75680ac8de86f379c1248e4a044",
+      "prompt_ir_semantic_fingerprint": "2df6dd58420c668534ed8a46e3bafad6d2f5bd72d647478f93eb18171f1fd3b5",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -158,12 +158,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622",
+        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
+        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "4c96f62410ea50b1358484b818af5f9146f19914f023a81b2b3d6a4867cd9599",
-        "storyboard_set_payload_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "storyboard_projection_fingerprint": "35af25302d150735e317364eaef2244fadc8d80c43a7de565d135aa9168deb87",
+        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "visual_semantic_handoff_fingerprint": "f81c77f87e6890df0b666340b12dc2dcad22d90221d948bfc40162c48b80ea28"
       },
       "spatial": {
@@ -227,17 +227,17 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+            "asset_version_id": 10,
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
+            "asset_version_id": 7,
+            "authority_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
             "identity_ref": "prop:RED_UMBRELLA",
             "stale_status": "FRESH"
           }
@@ -299,10 +299,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "2d5ee30673273f8d437950141d835d0aeb5dc9531aa52408ddbf5365c590dbf7",
+      "payload_hash": "2ebac6aa0c089ed77d86f595eee40054ddf7e3bc4fa09be3d33dfbef7d85c3be",
       "plan_shot_id": "SH_E01_SC001_002",
-      "prompt_ir_payload_fingerprint": "2d5ee30673273f8d437950141d835d0aeb5dc9531aa52408ddbf5365c590dbf7",
-      "prompt_ir_semantic_fingerprint": "8e15b79c6ef342900a72725551a6c83bbcb9ddedc6da827ba4124c3e13dbf204",
+      "prompt_ir_payload_fingerprint": "2ebac6aa0c089ed77d86f595eee40054ddf7e3bc4fa09be3d33dfbef7d85c3be",
+      "prompt_ir_semantic_fingerprint": "f6b19006dac1dfb381a028a15d2aac9313b0eae360b66e5559c002610b8ad22d",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -336,12 +336,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622",
+        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
+        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "db57e4f126c4479e81a88cadfbc6a8d7ce0e76a3d9b986206b1c7ef250511004",
-        "storyboard_set_payload_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "storyboard_projection_fingerprint": "f5a5c4fad69840219f7b903fad2305f9682c14ffd4502251fa7fb164e9b7e69a",
+        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "visual_semantic_handoff_fingerprint": "02ef3ebc6528b6a5b490a6aad7b38e5dccde69e85714bedb6f43bea4f99f1082"
       },
       "spatial": {
@@ -402,17 +402,17 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+            "asset_version_id": 10,
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
+            "asset_version_id": 2,
+            "authority_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
             "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
             "stale_status": "FRESH"
           }
@@ -475,10 +475,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "2205638af7de8b2187c9c8c2a33f4de429098454021e3c5c8f489dd420df52ef",
+      "payload_hash": "93c29e690732888e2113e461b0565a7e51d873d744a54bccc8df1c60f190b3ac",
       "plan_shot_id": "SH_E01_SC001_003",
-      "prompt_ir_payload_fingerprint": "2205638af7de8b2187c9c8c2a33f4de429098454021e3c5c8f489dd420df52ef",
-      "prompt_ir_semantic_fingerprint": "0da9ee9947421a8a9d51ff61fb9b8f70778e087e5c7c6f691c69aa8cfd42da51",
+      "prompt_ir_payload_fingerprint": "93c29e690732888e2113e461b0565a7e51d873d744a54bccc8df1c60f190b3ac",
+      "prompt_ir_semantic_fingerprint": "4761a2899c175305d88078d11a093f3c099d8d16709a0b9781e4fddb615fe48a",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -512,12 +512,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622",
+        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
+        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "d2cb8584c7133079deae8bdde50f68e25f6017c0ac9f90e0deeb0ede0084845c",
-        "storyboard_set_payload_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "storyboard_projection_fingerprint": "cc69c087a97da452a531840f14b5ddabe277fa42916ca58133ed0e51e63ebafe",
+        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "visual_semantic_handoff_fingerprint": "e0dad9d8b724da2d22755c421ac783dd6cd5982e0d8ee9462f2f5390b07bd32b"
       },
       "spatial": {
@@ -593,9 +593,9 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+            "asset_version_id": 10,
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "stale_status": "FRESH"
           }
@@ -664,10 +664,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "cd9ec0c65a20b397d8e47e4e1ffe923dfe23e0c18d321e88cf113620163e0df3",
+      "payload_hash": "0abefe7a3e46b87a1e6737f6e0f4fc7afa9a1a3b0f00c4437d9c8f2098d9162a",
       "plan_shot_id": "SH_E01_SC001_004",
-      "prompt_ir_payload_fingerprint": "cd9ec0c65a20b397d8e47e4e1ffe923dfe23e0c18d321e88cf113620163e0df3",
-      "prompt_ir_semantic_fingerprint": "269d9475f598a74739e20dbbe5280a2a6b0c2f779860c95f21dfc6bae69c785c",
+      "prompt_ir_payload_fingerprint": "0abefe7a3e46b87a1e6737f6e0f4fc7afa9a1a3b0f00c4437d9c8f2098d9162a",
+      "prompt_ir_semantic_fingerprint": "ffd53f4bb2528aa4786f72c559bab0857309c65fc0af9bd8cbaa5aaa1eb4d238",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -699,12 +699,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622",
+        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
+        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "696f92250bb366eb183838098763883a0ba15f364aab3d6c6f6396f954ecc5c8",
-        "storyboard_set_payload_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "storyboard_projection_fingerprint": "545c2d25e6694116a5d9c6a8842e8483007c4764900d4170876f44cabf6fb701",
+        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "visual_semantic_handoff_fingerprint": "05cc23026f1568ccc4bd6b4f82c848bc0c506208b947295931a55fa3b8c82f8a"
       },
       "spatial": {
@@ -780,17 +780,17 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+            "asset_version_id": 10,
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:HANDBAG",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "71a415f0129a56d418f16c89af3c4cbda4de63607c7bef0634aa2b6582a31538",
+            "asset_version_id": 4,
+            "authority_fingerprint": "71a415f0129a56d418f16c89af3c4cbda4de63607c7bef0634aa2b6582a31538",
             "identity_ref": "prop:HANDBAG",
             "stale_status": "FRESH"
           }
@@ -862,10 +862,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "13906c038564b78ddac7e779e1e14814ce25f2ac02dea13a8b8a43c6cac130d6",
+      "payload_hash": "dccd8f74a9565335a655093468e2a857fc2c67757b1b7ebc26f3b6e9286ab732",
       "plan_shot_id": "SH_E01_SC001_005",
-      "prompt_ir_payload_fingerprint": "13906c038564b78ddac7e779e1e14814ce25f2ac02dea13a8b8a43c6cac130d6",
-      "prompt_ir_semantic_fingerprint": "c923bf83257252011175d11d95cb37ed19c9a2ff417ebd9cfe7902196c73d696",
+      "prompt_ir_payload_fingerprint": "dccd8f74a9565335a655093468e2a857fc2c67757b1b7ebc26f3b6e9286ab732",
+      "prompt_ir_semantic_fingerprint": "ed7f64e30d1642137546eeaa91ad89dfb9ddbb607459b6cff440e2a7cf2b41e8",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -902,12 +902,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622",
+        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
+        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "3ec4206d6c9686a56cd2203ff19a59ae000367f0c00cbd521c73802635f99eef",
-        "storyboard_set_payload_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "storyboard_projection_fingerprint": "8b226161890a5fbf2050bc040f417cd630d81c76a9ec504ff245a862cc840540",
+        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "visual_semantic_handoff_fingerprint": "d3d339737dbea5627089a929ad1653f043d648ff14a9ac745d51c6ace0a3f707"
       },
       "spatial": {
@@ -983,25 +983,25 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+            "asset_version_id": 10,
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
+            "asset_version_id": 2,
+            "authority_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
             "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
+            "asset_version_id": 7,
+            "authority_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
             "identity_ref": "prop:RED_UMBRELLA",
             "stale_status": "FRESH"
           }
@@ -1073,10 +1073,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "ee3161794acc3f43460cfa50510ba34fb70f465e9d79335373e15e82b88b28ce",
+      "payload_hash": "c2f884c0c1c9f67d70f0c669045a2c026b988813bc9782f5fa3ecd4571d8673d",
       "plan_shot_id": "SH_E01_SC001_006",
-      "prompt_ir_payload_fingerprint": "ee3161794acc3f43460cfa50510ba34fb70f465e9d79335373e15e82b88b28ce",
-      "prompt_ir_semantic_fingerprint": "40227cfb3e800e6b1b51df26e76101720c92dd8ff6df44d326ed77cf3f6e7910",
+      "prompt_ir_payload_fingerprint": "c2f884c0c1c9f67d70f0c669045a2c026b988813bc9782f5fa3ecd4571d8673d",
+      "prompt_ir_semantic_fingerprint": "5cfac4114fb90473d3517f3a9987d2ba0e0391e7c87bb1ed8ceab49135c1767e",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -1119,12 +1119,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622",
+        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
+        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "9d2c7f4d74b1dc912ecf7563fb52382797d625e3460e5637ed596e272e36a75b",
-        "storyboard_set_payload_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "storyboard_projection_fingerprint": "a5e684c69497a6c06361ad8d5f734678fd72688b08d6c3e81a5ccc5b4a24a9f4",
+        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "visual_semantic_handoff_fingerprint": "f928acf09074f3605292452bd5f8625d4afa988f0d2d0ac4dbfe1162ab9d0034"
       },
       "spatial": {
@@ -1198,9 +1198,9 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+            "asset_version_id": 10,
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "stale_status": "FRESH"
           }
@@ -1270,10 +1270,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "b87630dce2895c866e116860a944c3def92f1c58351eca38851c9052302dde04",
+      "payload_hash": "2550e370501601fefd764b2dd5519c3969c855a8125677a280f7a251884c2965",
       "plan_shot_id": "SH_E01_SC001_007",
-      "prompt_ir_payload_fingerprint": "b87630dce2895c866e116860a944c3def92f1c58351eca38851c9052302dde04",
-      "prompt_ir_semantic_fingerprint": "4df31e9ada982895ed9d9d02929730f9a944e225084fc4bf9522852a39515c00",
+      "prompt_ir_payload_fingerprint": "2550e370501601fefd764b2dd5519c3969c855a8125677a280f7a251884c2965",
+      "prompt_ir_semantic_fingerprint": "d46f6d67aae51e15e53a8e2f180f0212195212316738770f9c50b1a166af4878",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -1305,12 +1305,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622",
+        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
+        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "9e18b24cb2bc9d2dc31fc985b00f172827316ee910644e12201f1e5a5f3b529b",
-        "storyboard_set_payload_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "storyboard_projection_fingerprint": "338d063568b3cff2465b363107eb71efaa271101f060b6c5a9c50578c1b8a2a4",
+        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "visual_semantic_handoff_fingerprint": "12ba50e2bf552abfcfa37fc36dd20331e288291dc2ae29636e7ce441f2c2b782"
       },
       "spatial": {
@@ -1373,9 +1373,9 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+            "asset_version_id": 10,
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "stale_status": "FRESH"
           }
@@ -1445,10 +1445,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "c4fbdf34fa5b8b6760e14432dbad691feb612b95e9703fe38ebf63f454ba7a81",
+      "payload_hash": "c7d927430686fd23506da27f35c8090374ca701c5028c5d289ec14267cc65c13",
       "plan_shot_id": "SH_E01_SC001_008",
-      "prompt_ir_payload_fingerprint": "c4fbdf34fa5b8b6760e14432dbad691feb612b95e9703fe38ebf63f454ba7a81",
-      "prompt_ir_semantic_fingerprint": "141274cad2ef4392a8833b486edf6a25141d06b24fcd001add13dcbaa71f3d7e",
+      "prompt_ir_payload_fingerprint": "c7d927430686fd23506da27f35c8090374ca701c5028c5d289ec14267cc65c13",
+      "prompt_ir_semantic_fingerprint": "a025fbe7b40420fbdfdc310ccbffcf0a3a730aad4e9ff1efa6688c1442dd93a6",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -1477,12 +1477,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "d927e3f63279a41f0992657d909ac792e0c89f36fb7ba36901efff379011d622",
+        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "31864d8e0a41da9e80fab4baf09308546516f20cf533194cead800f865784b07",
+        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "6fd943beeab2578a27c694e2ee20bd5732b1cd313de7afc4d0dd9db8fd728470",
-        "storyboard_set_payload_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "storyboard_projection_fingerprint": "918529a45d573d9c3177b0a309eb9e7030154684ff6ec1f86cf5fd3db8ba5a83",
+        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "visual_semantic_handoff_fingerprint": "ece792cbd6b98e36318c300fbf5fe351f93347bbebe0ffd371f2478e5c57a332"
       },
       "spatial": {
@@ -1558,25 +1558,25 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+            "asset_version_id": 11,
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:APPLE",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "10ff684a8071dd7f7d27c276068aabfb962d97e5ab3387ca895dbbff1f06e812",
+            "asset_version_id": 1,
+            "authority_fingerprint": "10ff684a8071dd7f7d27c276068aabfb962d97e5ab3387ca895dbbff1f06e812",
             "identity_ref": "prop:APPLE",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:DOOR_LOCK",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "bf33b28c4f7995de223faecc547c35a86772d615f7d1f296d782c5bb3a360149",
+            "asset_version_id": 3,
+            "authority_fingerprint": "bf33b28c4f7995de223faecc547c35a86772d615f7d1f296d782c5bb3a360149",
             "identity_ref": "prop:DOOR_LOCK",
             "stale_status": "FRESH"
           }
@@ -1648,10 +1648,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "8f32b3538dacb0577c613b0aa6bb19418f4d0cd10dde69b76411476969c4bb30",
+      "payload_hash": "d8e4b9556279126bcc46307ae470ee8289c17d8c2f505a7e3da26a4db7a5d2cc",
       "plan_shot_id": "SH_E01_SC002_001",
-      "prompt_ir_payload_fingerprint": "8f32b3538dacb0577c613b0aa6bb19418f4d0cd10dde69b76411476969c4bb30",
-      "prompt_ir_semantic_fingerprint": "046e38f1e690ea45e3aa3b4281d6bc1dd721e59bc49c7edd3cf04afa5bbc1004",
+      "prompt_ir_payload_fingerprint": "d8e4b9556279126bcc46307ae470ee8289c17d8c2f505a7e3da26a4db7a5d2cc",
+      "prompt_ir_semantic_fingerprint": "6471de033324bcff352bdd8f9d077d9bfc6239f3e295fb56b556a4e52ed57f61",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -1690,12 +1690,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f",
+        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
+        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "6bdab1b38ac9e841a808e029ac068ee0198490137b5d3d621d66815c0ff9e633",
-        "storyboard_set_payload_fingerprint": "7d1fb8a43d20cc570133c336858e380134cca06f67047cb7f130198f8fd2f2f3",
+        "storyboard_projection_fingerprint": "0a47b4cc081b8e20eff95ade528b8da50c743ef383d01e12f5a544bef8147cd9",
+        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
         "visual_semantic_handoff_fingerprint": "4fe0486f1ec1884b8585e9cf653ba3a6013f2a57749244f0966744d61518aa13"
       },
       "spatial": {
@@ -1759,9 +1759,9 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+            "asset_version_id": 11,
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "stale_status": "FRESH"
           }
@@ -1830,10 +1830,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "d4b7544a16b48389cecf6551d307318ccac29b9883c5ddc49938c890ca543b23",
+      "payload_hash": "568d4eb6ba9b6e2f535f0705d9940404f1d55fdd10949b903e9fab9ffb5dbbc2",
       "plan_shot_id": "SH_E01_SC002_002",
-      "prompt_ir_payload_fingerprint": "d4b7544a16b48389cecf6551d307318ccac29b9883c5ddc49938c890ca543b23",
-      "prompt_ir_semantic_fingerprint": "932b27df354cd73332ab8427934e38cc1b59fe85324c4033ef245c2939c08970",
+      "prompt_ir_payload_fingerprint": "568d4eb6ba9b6e2f535f0705d9940404f1d55fdd10949b903e9fab9ffb5dbbc2",
+      "prompt_ir_semantic_fingerprint": "9f2bcc5e893ae93ee92343f796d58f6e89addaf3bf9f8fb6ad2b9edbbb5bd2ee",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -1861,12 +1861,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f",
+        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
+        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "f9230e78490b16da01ca726f7209e516893dfa2e962b3e3e233ca5fe5f893b86",
-        "storyboard_set_payload_fingerprint": "7d1fb8a43d20cc570133c336858e380134cca06f67047cb7f130198f8fd2f2f3",
+        "storyboard_projection_fingerprint": "0ba4d2c2159a8f743b5c1f52725884eec6f6c9026588039bc57edad7a1e003ff",
+        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
         "visual_semantic_handoff_fingerprint": "7d06de395cd1efc380e8e0197b53e6b0674aea009b675be8a7068a3957bab84e"
       },
       "spatial": {
@@ -1925,17 +1925,17 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+            "asset_version_id": 11,
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:HANDBAG",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "71a415f0129a56d418f16c89af3c4cbda4de63607c7bef0634aa2b6582a31538",
+            "asset_version_id": 4,
+            "authority_fingerprint": "71a415f0129a56d418f16c89af3c4cbda4de63607c7bef0634aa2b6582a31538",
             "identity_ref": "prop:HANDBAG",
             "stale_status": "FRESH"
           }
@@ -2005,10 +2005,10 @@
       },
       "information_visibility": "AUDIENCE_OBSERVES_CHARACTER_DOUBT",
       "model_generation_ready": false,
-      "payload_hash": "bc63fabd828e369c6e0675c577b7ae433715e0c5db9fe63a1bfe2b3420d61624",
+      "payload_hash": "8d6cd5dea9754ae45776157a600c81766747215e5cb0dadf953f877b6d191b35",
       "plan_shot_id": "SH_E01_SC002_003",
-      "prompt_ir_payload_fingerprint": "bc63fabd828e369c6e0675c577b7ae433715e0c5db9fe63a1bfe2b3420d61624",
-      "prompt_ir_semantic_fingerprint": "2710a01ed074d33b0aa62b4c4ae8a0f9293d8816c6ad3c288e4e5eec2587a0b0",
+      "prompt_ir_payload_fingerprint": "8d6cd5dea9754ae45776157a600c81766747215e5cb0dadf953f877b6d191b35",
+      "prompt_ir_semantic_fingerprint": "c25c02b9aeaf40cf652273b69dd837b443d9fd83cc73d052642a977cf28a8108",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -2040,12 +2040,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f",
+        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
+        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "2bf83f9cc737dbec74b63b1db68cb2b88e97d9f8c21f51c3fa3d3d44246296f7",
-        "storyboard_set_payload_fingerprint": "7d1fb8a43d20cc570133c336858e380134cca06f67047cb7f130198f8fd2f2f3",
+        "storyboard_projection_fingerprint": "da643633dffc4f20ebdfa08d5127f83cb699c79b16581eddf18632e29cfec68a",
+        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
         "visual_semantic_handoff_fingerprint": "422deb9071d7aca9513f93bb531c1d172f194f29982549a982276916d2e00b2b"
       },
       "spatial": {
@@ -2105,25 +2105,25 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+            "asset_version_id": 11,
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:POCKET_HARD_OBJECT",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "52f8ff73ee9dbd1890475391ab1ae3390d82f2d70b9ee5a4c37927b1186381fc",
+            "asset_version_id": 5,
+            "authority_fingerprint": "52f8ff73ee9dbd1890475391ab1ae3390d82f2d70b9ee5a4c37927b1186381fc",
             "identity_ref": "prop:POCKET_HARD_OBJECT",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:TABLE_SCRATCH",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "625c30701544f1359411fcb8e03c1cfcf921b20a5adbc8b688cee8fba802b763",
+            "asset_version_id": 8,
+            "authority_fingerprint": "625c30701544f1359411fcb8e03c1cfcf921b20a5adbc8b688cee8fba802b763",
             "identity_ref": "prop:TABLE_SCRATCH",
             "stale_status": "FRESH"
           }
@@ -2195,10 +2195,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "54d2642ece4edbdb5c7a1a1998357ad636ae13787b8ebbc74d1edd508a6d910e",
+      "payload_hash": "b63911d5ac1ae0039188f6a3364753012b27454d87790a01e4d499830dde7827",
       "plan_shot_id": "SH_E01_SC002_004",
-      "prompt_ir_payload_fingerprint": "54d2642ece4edbdb5c7a1a1998357ad636ae13787b8ebbc74d1edd508a6d910e",
-      "prompt_ir_semantic_fingerprint": "265bdd15b52c3cc84fe0ad355a6e9ccf2876df63694413b261b991831fe67986",
+      "prompt_ir_payload_fingerprint": "b63911d5ac1ae0039188f6a3364753012b27454d87790a01e4d499830dde7827",
+      "prompt_ir_semantic_fingerprint": "5100475ea9488d785d817a2526aa32d0241d0279657805a52a3e9836e66c240d",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -2236,12 +2236,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f",
+        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
+        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "b8669ecf429e48ea52cc058e5ca080730ad0a3dc4438e949648512ab28e2c50a",
-        "storyboard_set_payload_fingerprint": "7d1fb8a43d20cc570133c336858e380134cca06f67047cb7f130198f8fd2f2f3",
+        "storyboard_projection_fingerprint": "40efc9844621ac631218723b6453d4f4f7183b0b8aa0da28633ebe132d0e03b6",
+        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
         "visual_semantic_handoff_fingerprint": "253a00aefa100d30a1d405e0af1764da428543338d5cf2ab6047fc1b34ead985"
       },
       "spatial": {
@@ -2303,17 +2303,17 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+            "asset_version_id": 11,
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "stale_status": "FRESH"
           },
           {
             "asset_authority_ref": "book:990401:prop:RED_FIBER",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "a24881e736ace0d037eeecaaa26431450dd33097eb4ff6293999d2c7abb98660",
+            "asset_version_id": 6,
+            "authority_fingerprint": "a24881e736ace0d037eeecaaa26431450dd33097eb4ff6293999d2c7abb98660",
             "identity_ref": "prop:RED_FIBER",
             "stale_status": "FRESH"
           }
@@ -2383,10 +2383,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "c2ff84b6a293e058e07c0b9ecfaf062fb2756dbfc98b96611c6c6a0ff7cc0714",
+      "payload_hash": "42aa527e8900b89766ae4d08784f1c134ae7099d0c324eb55c3fd98a8bbd9e6a",
       "plan_shot_id": "SH_E01_SC002_005",
-      "prompt_ir_payload_fingerprint": "c2ff84b6a293e058e07c0b9ecfaf062fb2756dbfc98b96611c6c6a0ff7cc0714",
-      "prompt_ir_semantic_fingerprint": "aee26e511a0aaae124d5a5e841aad2a83e0a92253d652c92fb428788c7d98d90",
+      "prompt_ir_payload_fingerprint": "42aa527e8900b89766ae4d08784f1c134ae7099d0c324eb55c3fd98a8bbd9e6a",
+      "prompt_ir_semantic_fingerprint": "605cdb84dd9c80d5c34d382df0a20cab2e31d5d93a42cc3c177e7097eb5f455d",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -2420,12 +2420,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f",
+        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
+        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "e9b8cf42a27618434dff987ca310bb384da99519b1c1a5d2bb7f9247cdca36eb",
-        "storyboard_set_payload_fingerprint": "7d1fb8a43d20cc570133c336858e380134cca06f67047cb7f130198f8fd2f2f3",
+        "storyboard_projection_fingerprint": "f56837e3f0256b845a3a1d61247c9d1452e0273b2ef496db857cce91178c215c",
+        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
         "visual_semantic_handoff_fingerprint": "fcf73b8e1c4933df4c6690fc2230fce45a68766016d568daf60c76b028d52e78"
       },
       "spatial": {
@@ -2483,9 +2483,9 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+            "asset_version_id": 11,
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "stale_status": "FRESH"
           }
@@ -2554,10 +2554,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "d0c024a7ac9e52c9b4152fbb4884e7fabb391a0b84687e05d5c352ab78e6e831",
+      "payload_hash": "cb3fd5a340be72f2ca415124fd202790a5a277fbc94d44a3129d6930e1a96c33",
       "plan_shot_id": "SH_E01_SC002_006",
-      "prompt_ir_payload_fingerprint": "d0c024a7ac9e52c9b4152fbb4884e7fabb391a0b84687e05d5c352ab78e6e831",
-      "prompt_ir_semantic_fingerprint": "b6990e7fc9334f2c6fd9b8b1a33d82688f22b635ed9bb0bf226f2d296da601d8",
+      "prompt_ir_payload_fingerprint": "cb3fd5a340be72f2ca415124fd202790a5a277fbc94d44a3129d6930e1a96c33",
+      "prompt_ir_semantic_fingerprint": "927de0a20a7dfd732f7b46774a623758e3c3ab34ff3f4f062f90d985350ea55e",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -2583,12 +2583,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f",
+        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
+        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "9e9eb17a43df7fb4508c98ccabcfc005eaec39f9dd2cafbe9172eab84929ee94",
-        "storyboard_set_payload_fingerprint": "7d1fb8a43d20cc570133c336858e380134cca06f67047cb7f130198f8fd2f2f3",
+        "storyboard_projection_fingerprint": "3fa893c6866e9d8f2000a63d56e6ffe459c666b8b433f6e2b6df99a7bba85d11",
+        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
         "visual_semantic_handoff_fingerprint": "dbb2ca73aeb84f499770f333a0d08c2a94894feff36425c73f97037b5cd3d447"
       },
       "spatial": {
@@ -2660,9 +2660,9 @@
         "resolved": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "asset_version_fingerprint": "",
-            "asset_version_id": null,
-            "authority_fingerprint": "",
+            "asset_version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+            "asset_version_id": 11,
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "stale_status": "FRESH"
           }
@@ -2731,10 +2731,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "d50ef275ed0125f70b3d0f7f8ed2a6fd585b774d01b428916c5eaf704e26ea2a",
+      "payload_hash": "49fa4a992c990af66b6ce15260e14117227b670bc4a4c0522d332883f65c0aad",
       "plan_shot_id": "SH_E01_SC002_007",
-      "prompt_ir_payload_fingerprint": "d50ef275ed0125f70b3d0f7f8ed2a6fd585b774d01b428916c5eaf704e26ea2a",
-      "prompt_ir_semantic_fingerprint": "45ca49d3b908e959e8595539b152402021124a2fd372841801759afc3556e736",
+      "prompt_ir_payload_fingerprint": "49fa4a992c990af66b6ce15260e14117227b670bc4a4c0522d332883f65c0aad",
+      "prompt_ir_semantic_fingerprint": "b9889ea8056c5da191e46a55310220fe06995e43e3a0cfce0a14910659d9b651",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -2767,12 +2767,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "999f5a297a623441bdb243a0dd50e5d5b1ef8efa48292b2bb687b1f974d12d5f",
+        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "1880ccd9af527e037a82731096cc86935b60b0b9dc96365257d4ea79f422f356",
+        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "14f824ade07bd9f544eb4373c2acad0cec30c5516e47b344c0f07627662d8988",
-        "storyboard_set_payload_fingerprint": "7d1fb8a43d20cc570133c336858e380134cca06f67047cb7f130198f8fd2f2f3",
+        "storyboard_projection_fingerprint": "8e0dd0288de6880ab9d021cd00e8dfe1e519cc0bfd9bed4cf03380b035a3809f",
+        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
         "visual_semantic_handoff_fingerprint": "c87726581fc83f1be2a072a7da7257e21cbb16d67fb110220adac67f04ad79fe"
       },
       "spatial": {

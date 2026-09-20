@@ -285,6 +285,11 @@ def compare_prompt_ir_semantics(expected: dict[str, Any], actual: dict[str, Any]
     return {"empty": not errors, "errors": errors, "missing": [item for item in errors if item.get("code") == "PROMPT_IR_SEMANTIC_MISSING"], "extra": [item for item in errors if item.get("code") == "PROMPT_IR_SEMANTIC_EXTRA"]}
 
 
+def classify_prompt_ir_compile_transition(*, current_payload: dict[str, Any], expected_payload: dict[str, Any]) -> str:
+    """Classify a compile intent after the stored current row is trusted."""
+    return "REUSE" if _text(current_payload.get("payload_hash") or current_payload.get("prompt_ir_payload_fingerprint")) == _text(expected_payload.get("payload_hash") or expected_payload.get("prompt_ir_payload_fingerprint")) else "REVISION"
+
+
 def compile_storyboard_snapshot_to_prompt_ir(snapshot: dict[str, Any], *, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, allow_default_policy: bool = True) -> list[dict[str, Any]]:
     policy = build_generation_policy(generation_policy, allow_default=allow_default_policy)
     if not isinstance(snapshot, dict) or snapshot.get("schema_version") != "storyboard_production_snapshot_v1":
@@ -484,6 +489,43 @@ def _mark_phase_e_prompt_stale(session: Any, version: Any, authority: Any, reaso
         authority.stale_reasons = json.dumps(normalized, ensure_ascii=False)
 
 
+def validate_prompt_ir_integrity(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, allow_stale: bool = False) -> dict[str, Any]:
+    """Validate stored PromptIR truth without judging whether it is current."""
+    from fastapi import HTTPException
+    from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion
+
+    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id).first()
+    if pointer is None:
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_NOT_CURRENT", "message": "No current PromptIR pointer exists."})
+    version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id).first()
+    authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=pointer.prompt_ir_version_id, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id).first()
+    if version is None or authority is None:
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_POINTER_TAMPERED", "message": "Current PromptIR pointer does not resolve to one matching version and authority."})
+    if version.schema_version != PROMPT_IR_SCHEMA_VERSION:
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_V2_REQUIRED", "message": "Production PromptIR authority must resolve to prompt_ir_v2."})
+    if not allow_stale and (version.stale_status != "FRESH" or authority.stale_status != "FRESH"):
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_STALE", "message": "Current PromptIR version or authority is stale."})
+    if _text(pointer.qualification_state) != _text(version.qualification_state) or _text(authority.qualification_state) != _text(version.qualification_state):
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_CURRENT_INTEGRITY_INVALID", "message": "PromptIR qualification states disagree."})
+    if _text(pointer.payload_hash) != _text(version.payload_hash):
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_POINTER_TAMPERED", "message": "PromptIR pointer payload hash does not match the current version."})
+    try:
+        payload = json.loads(version.payload_json or "{}")
+    except (TypeError, ValueError, json.JSONDecodeError):
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_TAMPERED", "message": "PromptIR payload is not valid JSON."})
+    if not isinstance(payload, dict) or fingerprint(_prompt_ir_payload_basis(payload)) != _text(version.payload_hash):
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_TAMPERED", "message": "PromptIR payload fingerprint is invalid."})
+    try:
+        envelope = json.loads(authority.envelope_json or "{}")
+    except (TypeError, ValueError, json.JSONDecodeError):
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_AUTHORITY_ENVELOPE_TAMPERED", "message": "PromptIR authority envelope is not valid JSON."})
+    if not isinstance(envelope, dict) or _text(authority.envelope_fingerprint) != fingerprint({key: value for key, value in envelope.items() if key != "envelope_fingerprint"}) or _text(envelope.get("envelope_fingerprint")) != _text(authority.envelope_fingerprint):
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_AUTHORITY_ENVELOPE_TAMPERED", "message": "PromptIR authority envelope fingerprint is invalid."})
+    if _text(envelope.get("prompt_ir_payload_hash")) != _text(version.payload_hash) or envelope.get("generation_policy") != payload.get("generation_policy") or envelope.get("asset_authority_bindings") != payload.get("asset_authority_bindings"):
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_AUTHORITY_ENVELOPE_TAMPERED", "message": "PromptIR authority envelope does not bind the current payload lineage."})
+    return {"integrity_valid": True, "current_lineage_valid": None, "obsolete_due_to_upstream_change": None, "tampered": False, "pointer": pointer, "version": version, "authority": authority, "payload": payload, "authority_envelope": envelope}
+
+
 def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, model_profile: dict[str, Any] | None = None):
     """Resolve one v2 PromptIR through its current pointer and live lineage.
 
@@ -573,5 +615,5 @@ def validate_current_prompt_ir_authority(session: Any, *, book_id: int, episode:
 
 
 __all__ = [
-    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
+    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
 ]

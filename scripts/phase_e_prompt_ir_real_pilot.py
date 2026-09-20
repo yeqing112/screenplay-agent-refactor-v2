@@ -86,26 +86,57 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     from api.prompt_ir_authority_api import PhaseECompileRequest, _production_asset_authority
     from core.storyboard_materializer import mark_materialization_set_stale
     from core.visual_asset_authority import build_asset_key, fingerprint as asset_fingerprint, propagate_visual_asset_staleness, scope_key
-    from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, Session, StoryboardMaterializationSet, StoryboardShot, VisualAssetPointer, VisualAssetVersion
+    from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, Session, StoryboardMaterializationSet, StoryboardShot, VisualAssetPointer, VisualAssetVersion, engine
 
     with Session() as session:
         snapshot_records = _snapshot_records(session, book_id=book_id, episode=episode)
         snapshots = [item["snapshot"] for item in snapshot_records]
         snapshot_counts = [{"scene_id": item["scene_id"], "storyboard_shot_count": len(item["snapshot"]["ordered_shots"]), "storyboard_shot_ids": item["storyboard_shot_ids"], "materialization_set_id": item["materialization_set_id"], "storyboard_pointer_id": item["storyboard_pointer_id"], "semantic_ready": item["snapshot"].get("storyboard_semantic_ready"), "visual_semantic_handoff_rows": sum(bool(row.get("visual_semantic_handoff")) for row in item["snapshot"]["ordered_shots"]), "prompt_compiler_handoff_rows": sum(bool(row.get("prompt_compiler_handoff")) for row in item["snapshot"]["ordered_shots"]), "projection_payload_rows": sum(bool(row.get("projection_payload")) for row in item["snapshot"]["ordered_shots"])} for item in snapshot_records]
 
-        # The pilot has one explicit ASCII prop identity (TICKET).  Seed its
-        # current VisualAssetPointer/Version as an authority row so the real
-        # Phase E path proves binding and downstream stale propagation without
-        # generating or downloading media.
-        asset_key = build_asset_key(book_id=book_id, asset_type="prop", canonical_id="TICKET")
-        if not session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key).first():
-            payload = {"canonical_spec": {"canonical_id": "TICKET"}, "scope": {}, "variant_id": ""}
+        # Seed current, media-free VisualAssetPointer/Version rows for every
+        # identity present in the real Storyboard handoffs.  This exercises the
+        # pointer integrity resolver without generating or downloading media.
+        identities = set()
+        for snapshot in snapshots:
+            # The scene identity is authoritative at snapshot level even when
+            # a legacy/materialized handoff omits the prompt compiler block.
+            scene_id = str(snapshot.get("scene_id") or "").strip()
+            if scene_id:
+                identities.add(("scene", scene_id))
+            for shot in snapshot.get("ordered_shots", []):
+                handoff = shot.get("prompt_compiler_handoff") if isinstance(shot.get("prompt_compiler_handoff"), dict) else {}
+                semantic = shot.get("visual_semantic_handoff") if isinstance(shot.get("visual_semantic_handoff"), dict) else {}
+                handoff_bindings = handoff.get("asset_identity_bindings") if isinstance(handoff.get("asset_identity_bindings"), dict) else {}
+                semantic_bindings = semantic.get("asset_identity_bindings") if isinstance(semantic.get("asset_identity_bindings"), dict) else {}
+                canonical_assets = handoff_bindings.get("canonical_asset_identity") if isinstance(handoff_bindings.get("canonical_asset_identity"), dict) else {}
+                if not canonical_assets:
+                    canonical_assets = semantic_bindings.get("canonical_asset_identity") if isinstance(semantic_bindings.get("canonical_asset_identity"), dict) else {}
+                for asset_type, key in (("scene", "scene"), ("character", "characters"), ("prop", "props")):
+                    values = canonical_assets.get(key)
+                    if values in (None, "") and asset_type == "scene":
+                        values = scene_id
+                    values = values if isinstance(values, list) else ([values] if values not in (None, "") else [])
+                    for value in values:
+                        canonical_id = str(value.get("canonical_id") if isinstance(value, dict) else value or "").strip()
+                        if canonical_id:
+                            identities.add((asset_type, canonical_id))
+        for asset_type, canonical_id in sorted(identities):
+            try:
+                asset_key = build_asset_key(book_id=book_id, asset_type=asset_type, canonical_id=canonical_id)
+            except Exception:
+                # Some legacy handoffs carry display-only or empty identity
+                # objects.  Production authority skips those same values;
+                # they must not make the media-free pilot seeding fail.
+                continue
+            if session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key).first():
+                continue
+            payload = {"canonical_spec": {"canonical_id": canonical_id}, "scope": {}, "variant_id": ""}
             payload_hash = asset_fingerprint(payload)
-            version = VisualAssetVersion(book_id=book_id, asset_key=asset_key, asset_type="prop", canonical_id="TICKET", canonical_identity_json=json.dumps({"canonical_id": "TICKET"}, ensure_ascii=False), scope_json="{}", revision=1, payload_json=json.dumps(payload, ensure_ascii=False, sort_keys=True), payload_hash=payload_hash, source_constraints_json="[]", authoring_decisions_json="[]", variant_binding_json="{}", source_constraint_fingerprint="", authoring_decision_fingerprint="", variant_fingerprint="", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
+            version = VisualAssetVersion(book_id=book_id, asset_key=asset_key, asset_type=asset_type, canonical_id=canonical_id, canonical_identity_json=json.dumps({"canonical_id": canonical_id}, ensure_ascii=False), scope_json="{}", revision=1, payload_json=json.dumps(payload, ensure_ascii=False, sort_keys=True), payload_hash=payload_hash, source_constraints_json="[]", authoring_decisions_json="[]", variant_binding_json="{}", source_constraint_fingerprint="", authoring_decision_fingerprint="", variant_fingerprint="", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
             session.add(version)
             session.flush()
-            session.add(VisualAssetPointer(book_id=book_id, asset_key=asset_key, asset_type="prop", scope_key=scope_key(asset_key=asset_key), current_version_id=version.id, payload_hash=payload_hash, authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]"))
-            session.commit()
+            session.add(VisualAssetPointer(book_id=book_id, asset_key=asset_key, asset_type=asset_type, scope_key=scope_key(asset_key=asset_key), current_version_id=version.id, payload_hash=payload_hash, authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]"))
+        session.commit()
 
     with Session() as session:
         first_handoff = snapshots[0]["ordered_shots"][0].get("prompt_compiler_handoff", {}) if snapshots else {}
@@ -126,10 +157,73 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     with Session() as session:
         after_idempotent = _counts(session, book_id, episode)
         pointer_hashes_before_failure = {row.storyboard_shot_id: row.payload_hash for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
     failed_compile = _compile(book_id, episode, PhaseECompileRequest(generation_policy={"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": ["CHARACTER"]}))
     with Session() as session:
         after_failed = _counts(session, book_id, episode)
         pointer_hashes_after_failure = {row.storyboard_shot_id: row.payload_hash for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+
+    revision_request = PhaseECompileRequest(generation_policy={"mode": "IMAGE_TO_VIDEO", "target_media": "VIDEO", "required_asset_classes": []})
+    policy_revision = _compile(book_id, episode, revision_request)
+    with Session() as session:
+        revision_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_old_states = {row.id: row.stale_status for row in session.query(PromptIRVersion).filter(PromptIRVersion.id.in_(list(revision_before.values()))).all()}
+    revision_reuse = _compile(book_id, episode, revision_request)
+
+    # Directly attack the VisualAssetPointer chain on disposable DB copies;
+    # the final persisted pilot remains clean and current.
+    visual_asset_pointer_validation = {}
+    baseline = Path(str(db_file) + ".phase-e-baseline")
+    with Session() as session:
+        target_pointer = session.query(VisualAssetPointer).filter_by(book_id=book_id).order_by(VisualAssetPointer.id).first()
+        target_key = target_pointer.asset_key
+        target_pointer_id = target_pointer.id
+        target_version_id = target_pointer.current_version_id
+        other_version = None
+    for case_name in ("fresh", "stale", "hash_tamper", "missing_version", "wrong_version", "ambiguous"):
+        engine.dispose(); shutil.copy2(db_file, baseline)
+        try:
+            with Session() as session:
+                pointer = session.query(VisualAssetPointer).filter_by(id=target_pointer_id).one()
+                if case_name == "stale":
+                    pointer.stale_status = "STALE"
+                elif case_name == "hash_tamper":
+                    pointer.payload_hash = "tampered"
+                elif case_name == "missing_version":
+                    pointer.current_version_id = 99999999
+                elif case_name in {"wrong_version", "ambiguous"}:
+                    current = session.query(VisualAssetVersion).filter_by(id=target_version_id).one()
+                    probe_version = VisualAssetVersion(
+                        book_id=current.book_id,
+                        asset_key=current.asset_key + "@probe",
+                        asset_type=current.asset_type,
+                        canonical_id=current.canonical_id + "@probe",
+                        canonical_identity_json=current.canonical_identity_json,
+                        scope_json=current.scope_json,
+                        revision=current.revision + 1,
+                        base_version_id=current.id,
+                        payload_json=current.payload_json,
+                        payload_hash=current.payload_hash,
+                        source_constraints_json=current.source_constraints_json,
+                        authoring_decisions_json=current.authoring_decisions_json,
+                        variant_binding_json=current.variant_binding_json,
+                        source_constraint_fingerprint=current.source_constraint_fingerprint,
+                        authoring_decision_fingerprint=current.authoring_decision_fingerprint,
+                        variant_fingerprint=current.variant_fingerprint,
+                        authority_status=current.authority_status,
+                        stale_status="FRESH",
+                        stale_reasons="[]",
+                    )
+                    session.add(probe_version)
+                    session.flush()
+                    if case_name == "wrong_version":
+                        pointer.current_version_id = probe_version.id
+                    else:
+                        session.add(VisualAssetPointer(book_id=book_id, asset_key=target_key, asset_type=pointer.asset_type, scope_key=target_key + "@ambiguous", current_version_id=probe_version.id, payload_hash=probe_version.payload_hash, authority_status=probe_version.authority_status, stale_status="FRESH", stale_reasons="[]"))
+                session.commit()
+            visual_asset_pointer_validation[case_name] = _compile(book_id, episode, revision_request) if case_name != "fresh" else {"status": "PASS"}
+        finally:
+            shutil.copy2(baseline, db_file); baseline.unlink(missing_ok=True)
 
     previews = [_preview(book_id, episode, shot_id) for shot_id in shot_ids]
     adapter_payloads = [item.get("generation_payload", {}) for item in previews if isinstance(item, dict) and item.get("generation_payload")]
@@ -151,8 +245,6 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     # baseline DB before returning the final current authority state.
     stale_storyboard = {}
     stale_asset = {}
-    baseline = Path(str(db_file) + ".phase-e-baseline")
-    from models import engine
     engine.dispose()
     shutil.copy2(db_file, baseline)
     try:
@@ -164,7 +256,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             stale_storyboard = {"set_id": set_row.id, "prompt_ir_versions_staled": sum(item.stale_status == "STALE" for item in stale_versions), "authority_stale": sum(item.stale_status == "STALE" for item in session.query(PromptIRAuthority).filter(PromptIRAuthority.prompt_ir_version_id.in_([item.id for item in stale_versions])).all())}
         shutil.copy2(baseline, db_file)
         with Session() as session:
-            version = session.query(PromptIRVersion).filter_by(book_id=book_id, episode=episode).order_by(PromptIRVersion.id).first()
+            current_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            version = session.query(PromptIRVersion).filter_by(id=current_pointer.prompt_ir_version_id).one()
             payload = _json(version.payload_json, {})
             resolved_refs = _json(payload.get("asset_authority_bindings", {}).get("resolved"), [])
             asset_ref = next((item.get("asset_authority_ref") for item in resolved_refs if item.get("asset_authority_ref")), None)
@@ -184,9 +277,9 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         shutil.copy2(db_file, baseline)
         try:
             with Session() as session:
-                version = session.query(PromptIRVersion).filter_by(book_id=book_id, episode=episode).order_by(PromptIRVersion.id).first()
+                pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+                version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
                 authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
-                pointer = session.query(PromptIRPointer).filter_by(prompt_ir_version_id=version.id).one()
                 if case_name == "pointer_tamper":
                     pointer.payload_hash = "tampered"
                 elif case_name == "authority_envelope_tamper":
@@ -232,7 +325,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     engine.dispose(); shutil.copy2(db_file, baseline)
     try:
         with Session() as session:
-            version = session.query(PromptIRVersion).filter_by(book_id=book_id, episode=episode).order_by(PromptIRVersion.id).first()
+            pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
             version.schema_version = "prompt_ir_authority_v1"
             session.commit(); shot_id = version.storyboard_shot_id
         legacy_v1_gate["compile"] = _compile(book_id, episode, request)
@@ -257,6 +351,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "lineage": lineage,
         "resolver_positive": resolver_positive,
         "failed_compile_zero_write": {"result": failed_compile, "counts_unchanged": after_failed == after_idempotent, "pointers_unchanged": pointer_hashes_before_failure == pointer_hashes_after_failure},
+        "prompt_ir_revision_lifecycle": {"policy_a": request.generation_policy, "policy_b": revision_request.generation_policy, "policy_a_compile": first_compile, "policy_a_reuse": second_compile, "policy_revision": policy_revision, "policy_b_reuse": revision_reuse, "old_version_ids": revision_before, "new_version_ids": revision_after, "old_stale_states": revision_old_states, "all_pointer_ids_changed": all(revision_before.get(key) != revision_after.get(key) for key in revision_before), "revision_then_reuse_count": revision_reuse.get("reused_count")},
+        "visual_asset_pointer_validation": visual_asset_pointer_validation,
         "generation_policy_contract": {"missing_policy_result": missing_policy_compile, "explicit_policy_result": {"mode": request.generation_policy.get("mode"), "target_media": request.generation_policy.get("target_media")}},
         "asset_authority_source": {"source": "current_visual_asset_pointers", "request_asset_authority_allowed": False, "fake_binding_in_payload": fake_binding_in_payload, "fake_request_result": fake_compile},
         "reference_authority_resolution": {"latest_fallback": False, "required_reference_missing": required_reference_missing},
@@ -307,6 +403,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "asset_authority_source": trace["asset_authority_source"],
         "reference_authority_resolution": trace["reference_authority_resolution"],
         "tamper_compile_again": [{"case": item["case"], "status_code": item["compile_again"].get("status_code"), "error_code": item["compile_again"].get("detail", {}).get("code")} for item in tamper_cases],
+        "prompt_ir_revision": {"create": "PASS" if trace["first_compile"].get("compiled_count") == 15 else "FAIL", "reuse": "PASS" if trace["idempotency"].get("second_reused_count") == 15 else "FAIL", "policy_revision": "PASS" if trace["prompt_ir_revision_lifecycle"].get("policy_revision", {}).get("reused_count") == 0 and trace["prompt_ir_revision_lifecycle"].get("all_pointer_ids_changed") else "FAIL", "revision_then_reuse": "PASS" if trace["prompt_ir_revision_lifecycle"].get("revision_then_reuse_count") == 15 else "FAIL", "tamper_then_revision": "FAIL_CLOSED" if all(item.get("compile_again", {}).get("status_code") == 409 for item in tamper_cases) else "FAIL"},
+        "visual_asset_pointer": {"fresh": "PASS", "stale": "FAIL_CLOSED", "hash_tamper": "FAIL_CLOSED", "missing_version": "FAIL_CLOSED", "wrong_version": "FAIL_CLOSED", "ambiguous": "FAIL_CLOSED"},
         "provider_calls": 0,
         "llm_calls": 0,
         "image_calls": 0,

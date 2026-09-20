@@ -22,7 +22,7 @@
 - Screen sides: `{}`
 - Look direction: `{}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["林晚", "售票员"], "props": ["TICKET"], "scene": "E01_SC001"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `4c96f62410ea50b1358484b818af5f9146f19914f023a81b2b3d6a4867cd9599`
+- Projection fingerprint: `35af25302d150735e317364eaef2244fadc8d80c43a7de565d135aa9168deb87`
 
 ## 2. SH_E01_SC001_002
 
@@ -42,7 +42,7 @@
 - Screen sides: `{}`
 - Look direction: `{}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["林晚"], "props": ["RED_UMBRELLA"], "scene": "E01_SC001"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `db57e4f126c4479e81a88cadfbc6a8d7ce0e76a3d9b986206b1c7ef250511004`
+- Projection fingerprint: `f5a5c4fad69840219f7b903fad2305f9682c14ffd4502251fa7fb164e9b7e69a`
 
 ## 3. SH_E01_SC001_003
 
@@ -62,7 +62,7 @@
 - Screen sides: `{}`
 - Look direction: `{}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["林晚", "顾沉"], "props": ["BROKEN_UMBRELLA_RIB"], "scene": "E01_SC001"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `d2cb8584c7133079deae8bdde50f68e25f6017c0ac9f90e0deeb0ede0084845c`
+- Projection fingerprint: `cc69c087a97da452a531840f14b5ddabe277fa42916ca58133ed0e51e63ebafe`
 
 ## 4. SH_E01_SC001_004
 
@@ -82,7 +82,7 @@
 - Screen sides: `{"林晚": "LEFT", "顾沉": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["顾沉", "林晚"], "props": [], "scene": "E01_SC001"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `696f92250bb366eb183838098763883a0ba15f364aab3d6c6f6396f954ecc5c8`
+- Projection fingerprint: `545c2d25e6694116a5d9c6a8842e8483007c4764900d4170876f44cabf6fb701`
 
 ## 5. SH_E01_SC001_005
 
@@ -102,7 +102,7 @@
 - Screen sides: `{"林晚": "LEFT", "顾沉": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["陆叔", "林晚"], "props": ["HANDBAG"], "scene": "E01_SC001"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `3ec4206d6c9686a56cd2203ff19a59ae000367f0c00cbd521c73802635f99eef`
+- Projection fingerprint: `8b226161890a5fbf2050bc040f417cd630d81c76a9ec504ff245a862cc840540`
 
 ## 6. SH_E01_SC001_006
 
@@ -122,7 +122,7 @@
 - Screen sides: `{"林晚": "LEFT", "顾沉": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["林晚"], "props": ["BROKEN_UMBRELLA_RIB", "RED_UMBRELLA"], "scene": "E01_SC001"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `9d2c7f4d74b1dc912ecf7563fb52382797d625e3460e5637ed596e272e36a75b`
+- Projection fingerprint: `a5e684c69497a6c06361ad8d5f734678fd72688b08d6c3e81a5ccc5b4a24a9f4`
 
 ## 7. SH_E01_SC001_007
 
@@ -142,7 +142,7 @@
 - Screen sides: `{"林晚": "LEFT", "顾沉": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["林晚", "陆叔"], "props": [], "scene": "E01_SC001"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `9e18b24cb2bc9d2dc31fc985b00f172827316ee910644e12201f1e5a5f3b529b`
+- Projection fingerprint: `338d063568b3cff2465b363107eb71efaa271101f060b6c5a9c50578c1b8a2a4`
 
 ## 8. SH_E01_SC001_008
 
@@ -162,7 +162,7 @@
 - Screen sides: `{"林晚": "LEFT", "顾沉": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "顾沉": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["顾沉", "林晚"], "props": [], "scene": "E01_SC001"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `6fd943beeab2578a27c694e2ee20bd5732b1cd313de7afc4d0dd9db8fd728470`
+- Projection fingerprint: `918529a45d573d9c3177b0a309eb9e7030154684ff6ec1f86cf5fd3db8ba5a83`
 
 
 # Episode 01 Storyboard — E01_SC002 林晚的公寓客厅
@@ -187,7 +187,7 @@
 - Screen sides: `{"林晚": "LEFT", "陆叔": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["陆叔", "林晚"], "props": ["APPLE", "DOOR_LOCK"], "scene": "E01_SC002"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `6bdab1b38ac9e841a808e029ac068ee0198490137b5d3d621d66815c0ff9e633`
+- Projection fingerprint: `0a47b4cc081b8e20eff95ade528b8da50c743ef383d01e12f5a544bef8147cd9`
 
 ## 2. SH_E01_SC002_002
 
@@ -207,7 +207,7 @@
 - Screen sides: `{"林晚": "LEFT", "陆叔": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["陆叔", "林晚"], "props": [], "scene": "E01_SC002"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `f9230e78490b16da01ca726f7209e516893dfa2e962b3e3e233ca5fe5f893b86`
+- Projection fingerprint: `0ba4d2c2159a8f743b5c1f52725884eec6f6c9026588039bc57edad7a1e003ff`
 
 ## 3. SH_E01_SC002_003
 
@@ -227,7 +227,7 @@
 - Screen sides: `{"林晚": "LEFT", "陆叔": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["林晚"], "props": ["HANDBAG"], "scene": "E01_SC002"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `2bf83f9cc737dbec74b63b1db68cb2b88e97d9f8c21f51c3fa3d3d44246296f7`
+- Projection fingerprint: `da643633dffc4f20ebdfa08d5127f83cb699c79b16581eddf18632e29cfec68a`
 
 ## 4. SH_E01_SC002_004
 
@@ -247,7 +247,7 @@
 - Screen sides: `{"林晚": "LEFT", "陆叔": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["陆叔", "林晚"], "props": ["POCKET_HARD_OBJECT", "TABLE_SCRATCH"], "scene": "E01_SC002"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `b8669ecf429e48ea52cc058e5ca080730ad0a3dc4438e949648512ab28e2c50a`
+- Projection fingerprint: `40efc9844621ac631218723b6453d4f4f7183b0b8aa0da28633ebe132d0e03b6`
 
 ## 5. SH_E01_SC002_005
 
@@ -267,7 +267,7 @@
 - Screen sides: `{"林晚": "LEFT", "陆叔": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["林晚"], "props": ["RED_FIBER"], "scene": "E01_SC002"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `e9b8cf42a27618434dff987ca310bb384da99519b1c1a5d2bb7f9247cdca36eb`
+- Projection fingerprint: `f56837e3f0256b845a3a1d61247c9d1452e0273b2ef496db857cce91178c215c`
 
 ## 6. SH_E01_SC002_006
 
@@ -287,7 +287,7 @@
 - Screen sides: `{"林晚": "LEFT", "陆叔": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["陆叔", "林晚"], "props": [], "scene": "E01_SC002"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `9e9eb17a43df7fb4508c98ccabcfc005eaec39f9dd2cafbe9172eab84929ee94`
+- Projection fingerprint: `3fa893c6866e9d8f2000a63d56e6ffe459c666b8b433f6e2b6df99a7bba85d11`
 
 ## 7. SH_E01_SC002_007
 
@@ -307,5 +307,5 @@
 - Screen sides: `{"林晚": "LEFT", "陆叔": "RIGHT"}`
 - Look direction: `{"林晚": "SCREEN_RIGHT", "陆叔": "SCREEN_LEFT"}`
 - Asset identity bindings: `{"canonical_asset_identity": {"characters": ["林晚", "陆叔"], "props": [], "scene": "E01_SC002"}, "identity_source": "SHOT_PLAN_ASSET_BINDINGS"}`
-- Projection fingerprint: `14f824ade07bd9f544eb4373c2acad0cec30c5516e47b344c0f07627662d8988`
+- Projection fingerprint: `8e0dd0288de6880ab9d021cd00e8dfe1e519cc0bfd9bed4cf03380b035a3809f`
 

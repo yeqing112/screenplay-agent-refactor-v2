@@ -40,16 +40,16 @@
       "materialized_shot_count": 8,
       "set_status": "MATERIALIZED",
       "stale_status": "FRESH",
-      "set_fingerprint": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+      "set_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
       "projection_fingerprints": [
-        "4c96f62410ea50b1358484b818af5f9146f19914f023a81b2b3d6a4867cd9599",
-        "db57e4f126c4479e81a88cadfbc6a8d7ce0e76a3d9b986206b1c7ef250511004",
-        "d2cb8584c7133079deae8bdde50f68e25f6017c0ac9f90e0deeb0ede0084845c",
-        "696f92250bb366eb183838098763883a0ba15f364aab3d6c6f6396f954ecc5c8",
-        "3ec4206d6c9686a56cd2203ff19a59ae000367f0c00cbd521c73802635f99eef",
-        "9d2c7f4d74b1dc912ecf7563fb52382797d625e3460e5637ed596e272e36a75b",
-        "9e18b24cb2bc9d2dc31fc985b00f172827316ee910644e12201f1e5a5f3b529b",
-        "6fd943beeab2578a27c694e2ee20bd5732b1cd313de7afc4d0dd9db8fd728470"
+        "35af25302d150735e317364eaef2244fadc8d80c43a7de565d135aa9168deb87",
+        "f5a5c4fad69840219f7b903fad2305f9682c14ffd4502251fa7fb164e9b7e69a",
+        "cc69c087a97da452a531840f14b5ddabe277fa42916ca58133ed0e51e63ebafe",
+        "545c2d25e6694116a5d9c6a8842e8483007c4764900d4170876f44cabf6fb701",
+        "8b226161890a5fbf2050bc040f417cd630d81c76a9ec504ff245a862cc840540",
+        "a5e684c69497a6c06361ad8d5f734678fd72688b08d6c3e81a5ccc5b4a24a9f4",
+        "338d063568b3cff2465b363107eb71efaa271101f060b6c5a9c50578c1b8a2a4",
+        "918529a45d573d9c3177b0a309eb9e7030154684ff6ec1f86cf5fd3db8ba5a83"
       ],
       "prompt_fields_empty": true,
       "handoff_fingerprint": "afd424bfef1ac09960266e2e6f125588673f462ddb16333c6b6a4c62bfcf9fad",
@@ -95,15 +95,15 @@
       "materialized_shot_count": 7,
       "set_status": "MATERIALIZED",
       "stale_status": "FRESH",
-      "set_fingerprint": "7d1fb8a43d20cc570133c336858e380134cca06f67047cb7f130198f8fd2f2f3",
+      "set_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
       "projection_fingerprints": [
-        "6bdab1b38ac9e841a808e029ac068ee0198490137b5d3d621d66815c0ff9e633",
-        "f9230e78490b16da01ca726f7209e516893dfa2e962b3e3e233ca5fe5f893b86",
-        "2bf83f9cc737dbec74b63b1db68cb2b88e97d9f8c21f51c3fa3d3d44246296f7",
-        "b8669ecf429e48ea52cc058e5ca080730ad0a3dc4438e949648512ab28e2c50a",
-        "e9b8cf42a27618434dff987ca310bb384da99519b1c1a5d2bb7f9247cdca36eb",
-        "9e9eb17a43df7fb4508c98ccabcfc005eaec39f9dd2cafbe9172eab84929ee94",
-        "14f824ade07bd9f544eb4373c2acad0cec30c5516e47b344c0f07627662d8988"
+        "0a47b4cc081b8e20eff95ade528b8da50c743ef383d01e12f5a544bef8147cd9",
+        "0ba4d2c2159a8f743b5c1f52725884eec6f6c9026588039bc57edad7a1e003ff",
+        "da643633dffc4f20ebdfa08d5127f83cb699c79b16581eddf18632e29cfec68a",
+        "40efc9844621ac631218723b6453d4f4f7183b0b8aa0da28633ebe132d0e03b6",
+        "f56837e3f0256b845a3a1d61247c9d1452e0273b2ef496db857cce91178c215c",
+        "3fa893c6866e9d8f2000a63d56e6ffe459c666b8b433f6e2b6df99a7bba85d11",
+        "8e0dd0288de6880ab9d021cd00e8dfe1e519cc0bfd9bed4cf03380b035a3809f"
       ],
       "prompt_fields_empty": true,
       "handoff_fingerprint": "bc37810c010ab66560ec6726322b3b2b142fdfbf5f26703dc8a2f681224a25bd",
@@ -1494,7 +1494,7 @@
       "case": "set_fingerprint_tamper",
       "scene_id": "E01_SC001",
       "mutation": {
-        "old": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "old": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "new": "tampered"
       },
       "result": {
@@ -2192,7 +2192,7 @@
       "case": "set_fingerprint_tamper_then_materialize",
       "scene_id": "E01_SC001",
       "mutation": {
-        "old": "184b6e2c514b6f7a33cc97d5eddea0ef328cf0d889c19a350c581741b63b3628",
+        "old": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
         "new": "tampered"
       },
       "result": {

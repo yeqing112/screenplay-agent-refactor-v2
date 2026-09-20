@@ -14,17 +14,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "b829f3c131f4e0bdc4a9d163ecd34c4497957b3546bdd23a916fa2119e1e6549",
+      "generation_payload_fingerprint": "df781d3edefcae6735c3c90b0fc4fc1b984d8332bca1a3d782aec2b84cb86fa2",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -36,7 +36,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "891b787d25407d71e13b1ba597b9a8b5e4255e50f4377c49e1650613b2b96c5d",
+        "fingerprint": "f369e9902de3274d0f84060c5e8da11211a813a6e7e5b31a440ebc20352d1e53",
         "plan_shot_id": "SH_E01_SC001_001",
         "storyboard_shot_id": 1
       },
@@ -44,7 +44,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -56,7 +56,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -155,17 +155,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "a87c2731bd3bafc255bb0bd8cfec31412cce4b218412582997aa0f56d6b1150d",
+      "generation_payload_fingerprint": "43d5d83ee3f6484b2695c5a7e8abca1f303a29bc2fc041dc648166b201e00f04",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -177,7 +177,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "2d5ee30673273f8d437950141d835d0aeb5dc9531aa52408ddbf5365c590dbf7",
+        "fingerprint": "280960ca5e97447fe549979f2e71d007364cc0a0264ad2878ef56a09bf1badc2",
         "plan_shot_id": "SH_E01_SC001_002",
         "storyboard_shot_id": 2
       },
@@ -185,7 +185,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -197,7 +197,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -206,7 +206,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
             "identity_ref": "prop:RED_UMBRELLA",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -281,17 +281,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "0df96837efd3bc4e60cb02d111ae0f01ae26023b7ddd5ca832ee719ea7401538",
+      "generation_payload_fingerprint": "293a8e596dbd7e2428372f288dd11a2e0cbd937896021982a45ed4cedd53b8cd",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -303,7 +303,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "2205638af7de8b2187c9c8c2a33f4de429098454021e3c5c8f489dd420df52ef",
+        "fingerprint": "0893286ce04d06da11213ab3a843fa16501106c4e5529d5b6936d74194944ce0",
         "plan_shot_id": "SH_E01_SC001_003",
         "storyboard_shot_id": 3
       },
@@ -311,7 +311,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -323,7 +323,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -332,7 +332,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
             "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -410,17 +410,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "558c21e339c4d2e7ea46fad1bff9dd29ddbcee5029aa56575a967fbb1a651023",
+      "generation_payload_fingerprint": "ecac1c24fa2182f4e80241cb2e586d4854d399ddcf7a0e0ec9d50b65c04f4b73",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -432,7 +432,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "cd9ec0c65a20b397d8e47e4e1ffe923dfe23e0c18d321e88cf113620163e0df3",
+        "fingerprint": "a44717cd8bd6d148f2de3563d05089c5a9589e6bee4522355071ce4273ff38d1",
         "plan_shot_id": "SH_E01_SC001_004",
         "storyboard_shot_id": 4
       },
@@ -440,7 +440,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -452,7 +452,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -546,17 +546,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "3c92bd823758f74201f2b91a00aa85f136de9aa6f6167cc37cdf02ddc5c3a3d3",
+      "generation_payload_fingerprint": "8302f62c2f93700f20c3b30cc8819754bfa88e7e8b81f82dcf2a4f5b0db48ff8",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -568,7 +568,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "13906c038564b78ddac7e779e1e14814ce25f2ac02dea13a8b8a43c6cac130d6",
+        "fingerprint": "d51d912e8e223a07c57e62bf2e96c712c89a451056b542cc50435e6cd35c675c",
         "plan_shot_id": "SH_E01_SC001_005",
         "storyboard_shot_id": 5
       },
@@ -576,7 +576,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -588,7 +588,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -597,7 +597,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:HANDBAG",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "71a415f0129a56d418f16c89af3c4cbda4de63607c7bef0634aa2b6582a31538",
             "identity_ref": "prop:HANDBAG",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -696,17 +696,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "5c290d36a59d7ede255fd5a19a95d965cb7e415c45bbb27c90d1ff63c524e3d2",
+      "generation_payload_fingerprint": "6fd5e5ff243f998ca8301e1d14ac7b14ddfca11b572428d3f0e81ba69b85a9a5",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -718,7 +718,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "ee3161794acc3f43460cfa50510ba34fb70f465e9d79335373e15e82b88b28ce",
+        "fingerprint": "d14a79e9446104b669bfa79503311fa55c50d50d09515ec12b8cfec731e1ad5d",
         "plan_shot_id": "SH_E01_SC001_006",
         "storyboard_shot_id": 6
       },
@@ -726,7 +726,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -738,7 +738,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -747,7 +747,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
             "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -756,7 +756,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
             "identity_ref": "prop:RED_UMBRELLA",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -853,17 +853,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "1bebac118a0d856e6916b64ff886912b3ed4ba209a4056cfd346b6a7affd5c6e",
+      "generation_payload_fingerprint": "72ea083e90ed6ebe0f29e217cb82f722c47d9d4fd31954167aba037596a98fb8",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -875,7 +875,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "b87630dce2895c866e116860a944c3def92f1c58351eca38851c9052302dde04",
+        "fingerprint": "e416714e85ef595ddd9c6645a06712d8e5091e1eb4c252b06c21e24afafb7755",
         "plan_shot_id": "SH_E01_SC001_007",
         "storyboard_shot_id": 7
       },
@@ -883,7 +883,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -895,7 +895,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -990,17 +990,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "7ea2e23e112f938c91b02e74feccf65769d6ca4cf86e9f3249a875a9478e89d8",
+      "generation_payload_fingerprint": "89ba5f9c2326e61991ed3323703d2415da06a668f9abdf73e242b5ad8b66ff1b",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -1012,7 +1012,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "c4fbdf34fa5b8b6760e14432dbad691feb612b95e9703fe38ebf63f454ba7a81",
+        "fingerprint": "ce6c2b2a745ec31d3ad86cd69548569933294ca34617ccca119cf17ebde147ff",
         "plan_shot_id": "SH_E01_SC001_008",
         "storyboard_shot_id": 8
       },
@@ -1020,7 +1020,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -1032,7 +1032,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC001",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
             "identity_ref": "scene:E01_SC001",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1115,17 +1115,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "0c1efddc57badcf5015e2e90abd86ff9f3962a60175e6c61088797ca62097082",
+      "generation_payload_fingerprint": "120e4c8994f7f82f67b513254e6c27620488ca5e7b51e8113bcf9d934d847fb8",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -1137,7 +1137,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "8f32b3538dacb0577c613b0aa6bb19418f4d0cd10dde69b76411476969c4bb30",
+        "fingerprint": "9008e4930e6ed55458ff7cd600abec95c7965e2c43a9777348f139dbaa1da85a",
         "plan_shot_id": "SH_E01_SC002_001",
         "storyboard_shot_id": 9
       },
@@ -1145,7 +1145,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -1157,7 +1157,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1166,7 +1166,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:APPLE",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "10ff684a8071dd7f7d27c276068aabfb962d97e5ab3387ca895dbbff1f06e812",
             "identity_ref": "prop:APPLE",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1175,7 +1175,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:DOOR_LOCK",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "bf33b28c4f7995de223faecc547c35a86772d615f7d1f296d782c5bb3a360149",
             "identity_ref": "prop:DOOR_LOCK",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1275,17 +1275,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "64ab82d44f7374fa29d36c398b2565e2b5b914e6078e8b6ac296e6538b600022",
+      "generation_payload_fingerprint": "69e88645c53a935973187bed3f5d0b4fe08d3d0ba0dad6c85533b9ca3e8aaa20",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -1297,7 +1297,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "d4b7544a16b48389cecf6551d307318ccac29b9883c5ddc49938c890ca543b23",
+        "fingerprint": "7b973cafcbeaba19c0ac7faa036a5ec7d2a6d785d96731d347c245e43f07c406",
         "plan_shot_id": "SH_E01_SC002_002",
         "storyboard_shot_id": 10
       },
@@ -1305,7 +1305,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -1317,7 +1317,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1399,17 +1399,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "d487200ca027389737b18f1766d8a886f2ab950a99a175057d7244d16402f330",
+      "generation_payload_fingerprint": "c95f777176fc36875029cca14119f635dc7cdb56943cd68d8c8f7d63fe0f4a75",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -1421,7 +1421,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "bc63fabd828e369c6e0675c577b7ae433715e0c5db9fe63a1bfe2b3420d61624",
+        "fingerprint": "7d304dfb411fbde9409c3790a25ed189449f8dd9f6f2ce68c1291ea02be79000",
         "plan_shot_id": "SH_E01_SC002_003",
         "storyboard_shot_id": 11
       },
@@ -1429,7 +1429,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -1441,7 +1441,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1450,7 +1450,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:HANDBAG",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "71a415f0129a56d418f16c89af3c4cbda4de63607c7bef0634aa2b6582a31538",
             "identity_ref": "prop:HANDBAG",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1533,17 +1533,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "fc6fd06e40834b634e0f7a4ab479cd8e71e398ab1e08bb342049cd1d1a044b1d",
+      "generation_payload_fingerprint": "f48a05c27a50624e3e481d76990e06da5fce477e9be1c7ec51d2c0ecbb8fb8ea",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -1555,7 +1555,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "54d2642ece4edbdb5c7a1a1998357ad636ae13787b8ebbc74d1edd508a6d910e",
+        "fingerprint": "d19361418351c026e0f51839177578a6f60bbafb73421adbb0708fb05e60e79a",
         "plan_shot_id": "SH_E01_SC002_004",
         "storyboard_shot_id": 12
       },
@@ -1563,7 +1563,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -1575,7 +1575,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1584,7 +1584,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:POCKET_HARD_OBJECT",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "52f8ff73ee9dbd1890475391ab1ae3390d82f2d70b9ee5a4c37927b1186381fc",
             "identity_ref": "prop:POCKET_HARD_OBJECT",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1593,7 +1593,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:TABLE_SCRATCH",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "625c30701544f1359411fcb8e03c1cfcf921b20a5adbc8b688cee8fba802b763",
             "identity_ref": "prop:TABLE_SCRATCH",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1681,17 +1681,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "edfdd9ad3286b8c0e8bded741e829d207a7c5e3eec95772dc709534db1fbbf5b",
+      "generation_payload_fingerprint": "18a80427bc99d25ba66e3df3d7226cd56e2fa7e7d4ee7f533147d7662696524e",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -1703,7 +1703,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "c2ff84b6a293e058e07c0b9ecfaf062fb2756dbfc98b96611c6c6a0ff7cc0714",
+        "fingerprint": "131728a39404bfec34055efb6786840caea80453e14dabd944045162e7bc3809",
         "plan_shot_id": "SH_E01_SC002_005",
         "storyboard_shot_id": 13
       },
@@ -1711,7 +1711,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -1723,7 +1723,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1732,7 +1732,7 @@
           },
           {
             "asset_authority_ref": "book:990401:prop:RED_FIBER",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "a24881e736ace0d037eeecaaa26431450dd33097eb4ff6293999d2c7abb98660",
             "identity_ref": "prop:RED_FIBER",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1815,17 +1815,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "3eb4c2459d6aa98500a0cfe910608c443c2de13bd3d19dde5da89c2bd03ec0d3",
+      "generation_payload_fingerprint": "361bea835fe2e0425cfa50739cdf0b6f7965070ef371c9754289a7cdd916ffa4",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -1837,7 +1837,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "d0c024a7ac9e52c9b4152fbb4884e7fabb391a0b84687e05d5c352ab78e6e831",
+        "fingerprint": "5fa3885b2ee44a77248917145d85313f10b4115478acc118960859c201d67955",
         "plan_shot_id": "SH_E01_SC002_006",
         "storyboard_shot_id": 14
       },
@@ -1845,7 +1845,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -1857,7 +1857,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
@@ -1939,17 +1939,17 @@
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1"
       },
-      "generation_payload_fingerprint": "da4b1366ab92a9719f91cb7e8f292b1d6c017d69ab8249a1ac7ec83aec59a094",
+      "generation_payload_fingerprint": "afa0884e2b4229246e852a82f88116b6d2e7ae443f6bfedd9f0a1b83fb88fd6b",
       "generation_policy": {
-        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "language": "",
-        "mode": "TEXT_TO_IMAGE",
+        "mode": "IMAGE_TO_VIDEO",
         "optional_asset_classes": [],
         "required_asset_classes": [],
         "schema_version": "generation_policy_v1",
         "source": "explicit_request",
         "style_profile_id": "",
-        "target_media": "IMAGE"
+        "target_media": "VIDEO"
       },
       "model_family": "GENERIC_IMAGE",
       "model_profile": {
@@ -1961,7 +1961,7 @@
         "schema_version": "model_profile_v1"
       },
       "prompt_ir_ref": {
-        "fingerprint": "d50ef275ed0125f70b3d0f7f8ed2a6fd585b774d01b428916c5eaf704e26ea2a",
+        "fingerprint": "3be23f5d09edfde9b7d9d4d5d377cad23de9fad141c816a608ce88c2c9b80a1c",
         "plan_shot_id": "SH_E01_SC002_007",
         "storyboard_shot_id": 15
       },
@@ -1969,7 +1969,7 @@
       "readiness": {
         "adapter_registered": true,
         "model_profile_fingerprint": "f7082f11854af9a2392bf906668021d0a4165acac8bf92b04258e31334accdc1",
-        "policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "policy_fingerprint": "af3b17810498da7e3a3c8ddabb3cd53b73c7aba7d0808a1ab34aa39a3534072f",
         "ready": false,
         "reasons": [
           "PROVIDER_CONFIG_MISSING"
@@ -1981,7 +1981,7 @@
         "reference_bindings": [
           {
             "asset_authority_ref": "book:990401:scene:E01_SC002",
-            "authority_fingerprint": "",
+            "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
             "identity_ref": "scene:E01_SC002",
             "reference_authority_fingerprint": "",
             "reference_authority_ref": "",
