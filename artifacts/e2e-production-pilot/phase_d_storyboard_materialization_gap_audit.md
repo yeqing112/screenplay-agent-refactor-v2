@@ -63,6 +63,15 @@ does not move the Pointer.  A repeated request with the same deterministic Set
 fingerprint reuses the existing fresh Set; it never selects a latest Set by
 timestamp or ID.
 
+The real Phase D pilot runs this sequence against a temporary SQLite database
+migrated through Alembic.  It records persisted Set, Pointer and StoryboardShot
+IDs in `episode_01_phase_d_trace.json`; negative cases restore a valid baseline
+database before each mutation so no test relies on repairing a stale Set.
+
+The resolver also compares mutable StoryboardShot columns with the protected
+projection payload.  A direct camera, duration, purpose or state column edit
+cannot remain fresh by leaving `meta_info.projection_payload` untouched.
+
 ## Out of scope
 
 No PromptIR compilation, prompt prose, image/video generation, provider call,

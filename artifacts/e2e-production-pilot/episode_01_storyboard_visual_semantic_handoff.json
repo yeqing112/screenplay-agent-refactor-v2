@@ -96,8 +96,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
-            "blocking_authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+            "source_shot_plan_authority_fingerprint": "84a3d445573587187b155288a1592507245769a5897a61f0402e6d21d3d0c4f7",
+            "blocking_authority_fingerprint": "ffa99832daa9c8a90826008fd8fc029f995f948c6f25652af65fd05164dffb0d",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "f3198d9e144efb3f2f4d72dae75621df974281aedfdf0e5b964ee5c5053875ba"
           }
@@ -191,8 +191,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
-            "blocking_authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+            "source_shot_plan_authority_fingerprint": "84a3d445573587187b155288a1592507245769a5897a61f0402e6d21d3d0c4f7",
+            "blocking_authority_fingerprint": "ffa99832daa9c8a90826008fd8fc029f995f948c6f25652af65fd05164dffb0d",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "c372b6a95cadceb54fb42f5b18cbc5b6d55e7753231b93b13387c64c0fdcc882"
           }
@@ -288,8 +288,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
-            "blocking_authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+            "source_shot_plan_authority_fingerprint": "84a3d445573587187b155288a1592507245769a5897a61f0402e6d21d3d0c4f7",
+            "blocking_authority_fingerprint": "ffa99832daa9c8a90826008fd8fc029f995f948c6f25652af65fd05164dffb0d",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "b8c0fa86baf1b1142b75a656aec24e95f3023ea5037546af47a609224820d54e"
           }
@@ -391,8 +391,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
-            "blocking_authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+            "source_shot_plan_authority_fingerprint": "84a3d445573587187b155288a1592507245769a5897a61f0402e6d21d3d0c4f7",
+            "blocking_authority_fingerprint": "ffa99832daa9c8a90826008fd8fc029f995f948c6f25652af65fd05164dffb0d",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "a10d57ae893ea722d08c36ec6a99f6d21e75a13bc557d0160a89accd83d5fd89"
           }
@@ -501,8 +501,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
-            "blocking_authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+            "source_shot_plan_authority_fingerprint": "84a3d445573587187b155288a1592507245769a5897a61f0402e6d21d3d0c4f7",
+            "blocking_authority_fingerprint": "ffa99832daa9c8a90826008fd8fc029f995f948c6f25652af65fd05164dffb0d",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "09a01f357dfcebb8905074674ae135c60433ced37dfc29f3bb548602b75887eb"
           }
@@ -614,8 +614,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
-            "blocking_authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+            "source_shot_plan_authority_fingerprint": "84a3d445573587187b155288a1592507245769a5897a61f0402e6d21d3d0c4f7",
+            "blocking_authority_fingerprint": "ffa99832daa9c8a90826008fd8fc029f995f948c6f25652af65fd05164dffb0d",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "e4f3923976bd7ef2e7804a4ab2459c00440333ea78ed538ca65f37f223f24642"
           }
@@ -718,8 +718,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
-            "blocking_authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+            "source_shot_plan_authority_fingerprint": "84a3d445573587187b155288a1592507245769a5897a61f0402e6d21d3d0c4f7",
+            "blocking_authority_fingerprint": "ffa99832daa9c8a90826008fd8fc029f995f948c6f25652af65fd05164dffb0d",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "d2bd42f9e34a685dc180171dff275303633825291c22befdb9d0436f00d24181"
           }
@@ -818,8 +818,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "73dcf61b1e8bc1969b449994e4bbe6e2ad5da866afd51aae978743f359c69dda",
-            "blocking_authority_fingerprint": "2ccb550026f578cffd4b62dbf5b3e68b46ed0fab1628d4c1523018984f655891",
+            "source_shot_plan_authority_fingerprint": "84a3d445573587187b155288a1592507245769a5897a61f0402e6d21d3d0c4f7",
+            "blocking_authority_fingerprint": "ffa99832daa9c8a90826008fd8fc029f995f948c6f25652af65fd05164dffb0d",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "21fcc3fceac9bdb961eeb40063f82ac2a538eda21b4af460b0a5d34dd30e31f2"
           }
@@ -931,8 +931,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
-            "blocking_authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+            "source_shot_plan_authority_fingerprint": "d6479c2245cd2d4cbc76f494a20000cd2e2b7f324576f068531040cc64330dff",
+            "blocking_authority_fingerprint": "bba772a1bfd35f2efca100a56965fe1afc10a9ae632aa388d1a5877140a62799",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "db3f5ed410443aa01cc0ce2f345eb1ab4f5580cf6e537d13705b6a62ebea6fa6"
           }
@@ -1027,8 +1027,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
-            "blocking_authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+            "source_shot_plan_authority_fingerprint": "d6479c2245cd2d4cbc76f494a20000cd2e2b7f324576f068531040cc64330dff",
+            "blocking_authority_fingerprint": "bba772a1bfd35f2efca100a56965fe1afc10a9ae632aa388d1a5877140a62799",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "f3923d8fc8d9dc307c526b7671621e57a26067279d58bc360f9f3d5480d8edaf"
           }
@@ -1126,8 +1126,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
-            "blocking_authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+            "source_shot_plan_authority_fingerprint": "d6479c2245cd2d4cbc76f494a20000cd2e2b7f324576f068531040cc64330dff",
+            "blocking_authority_fingerprint": "bba772a1bfd35f2efca100a56965fe1afc10a9ae632aa388d1a5877140a62799",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "3e305bb188f589d0eb1ecf9269bc06d4136b6b1ac6ca916f5e7bd37ba1ce1173"
           }
@@ -1232,8 +1232,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
-            "blocking_authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+            "source_shot_plan_authority_fingerprint": "d6479c2245cd2d4cbc76f494a20000cd2e2b7f324576f068531040cc64330dff",
+            "blocking_authority_fingerprint": "bba772a1bfd35f2efca100a56965fe1afc10a9ae632aa388d1a5877140a62799",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "a643f80bd3a360a7ee7cd5fec4ee9e63d8448b66d0b2846aec4a9a2b13172c36"
           }
@@ -1333,8 +1333,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
-            "blocking_authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+            "source_shot_plan_authority_fingerprint": "d6479c2245cd2d4cbc76f494a20000cd2e2b7f324576f068531040cc64330dff",
+            "blocking_authority_fingerprint": "bba772a1bfd35f2efca100a56965fe1afc10a9ae632aa388d1a5877140a62799",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "2ebfcaf94e500933a8d7e0c71fe1fae527cda790daa1875d968dbea24d083c6c"
           }
@@ -1427,8 +1427,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
-            "blocking_authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+            "source_shot_plan_authority_fingerprint": "d6479c2245cd2d4cbc76f494a20000cd2e2b7f324576f068531040cc64330dff",
+            "blocking_authority_fingerprint": "bba772a1bfd35f2efca100a56965fe1afc10a9ae632aa388d1a5877140a62799",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "f39d2f5b1f6bf53ed5a1ed9c08e936e1565a7477d37e7a1a6d71a382aaa8a238"
           }
@@ -1529,8 +1529,8 @@
           },
           "projection_origin": "STORYBOARD_MATERIALIZATION_PROJECTION",
           "projection_provenance": {
-            "source_shot_plan_authority_fingerprint": "e2e145c47b3bf67330b6301f02131ca62ba2f178b586186e72e3ecb3e7a3c2d5",
-            "blocking_authority_fingerprint": "61c566a2f5c631d3c9f1cd51aeb1e852f2d610b7b1e94942b11d50f9c6b2d527",
+            "source_shot_plan_authority_fingerprint": "d6479c2245cd2d4cbc76f494a20000cd2e2b7f324576f068531040cc64330dff",
+            "blocking_authority_fingerprint": "bba772a1bfd35f2efca100a56965fe1afc10a9ae632aa388d1a5877140a62799",
             "handoff_fingerprint": "",
             "storyboard_handoff_shot_fingerprint": "321d55484ac85988dda3ae0d0bb89be76f9e8c6af2787793b54f85e22529220a"
           }

@@ -1,25 +1,21 @@
-# PHASE D FINAL REPORT (READ-ONLY CLOSURE EVIDENCE)
-
-> Status: this report records the completed deterministic Storyboard semantic
-> closure and projection checks. The current pilot did **not** invoke the
-> Production materialization API against a temporary migrated database, so it
-> does not claim real `MaterializationSet`, `Pointer` or `StoryboardShot` DB
-> identity evidence. The final Production readiness token is intentionally
-> withheld until that pilot is completed.
+# PHASE D FINAL REPORT
 
 ## 1. Scope and delivery
 
 - Phase: `PHASE_D_STORYBOARD_MATERIALIZATION_AND_VISUAL_SEMANTIC_CLOSURE`
 - Starting HEAD: `22553f24fe245ceec1a8b59fa8c1d9a9dd0282a2`
-- Implementation commits: `783558c` (`Close Phase D storyboard semantic materialization`) and `57cba4f` (`Add read-only storyboard production snapshot`)
+- Implementation commit: `bdebe75` (`Run Phase D through real storyboard production materialization`)
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
-- This report is the remaining docs-only change; remote publication is recorded
-  by the commit that adds this file.
+- Production pilot: temporary SQLite database migrated through Alembic; no
+  provider, PromptIR compiler, image generation or video generation.
+- Implementation changes: `core/storyboard_materializer.py`,
+  `scripts/run_phase_b_director_blocking_pilot.py`, and
+  `scripts/phase_d_real_materialization.py`.
 
 ## 2. Gap audit and authority classes
 
-The full audit is in `phase_d_storyboard_materialization_gap_audit.md`.  The
-implementation uses these explicit classes:
+The gap audit is in `phase_d_storyboard_materialization_gap_audit.md`.
+Storyboard uses these classes only:
 
 - `SHOT_PLAN_PROJECTION`
 - `PRODUCTION_CONTINUITY_STATE`
@@ -29,131 +25,99 @@ implementation uses these explicit classes:
 - `MEDIA_STATE`
 - `UNKNOWN_INVALID`
 
-`STORYBOARD_CREATIVE_DECISION` was not added.  Storyboard remains a
-deterministic projection and does not infer framing, movement, sides, props,
-duration, action semantics or visual variants.
+`STORYBOARD_CREATIVE_DECISION` was not introduced. Storyboard remains a
+deterministic projection of the current ShotPlan and Blocking authorities.
 
 ## 3. MaterializationSet and Pointer contract
 
-`StoryboardMaterializationSet` remains an immutable version stored through the
-existing authority envelope JSON; no database migration was added.  Its
-fingerprint binds the current ShotPlan Authority, current Blocking Authority,
-`storyboard_handoff_v1` schema/projection/source/handoff fingerprints, exact
-count and ordered `plan_shot_id` values.
+`StoryboardMaterializationSet` is an immutable materialization version. Its
+fingerprint binds the current ShotPlan, Treatment, Blocking, handoff schema and
+fingerprints, exact count, exact ordered `plan_shot_id` values and every
+projection payload. Upstream changes create a new explicit materialization;
+the previous Set and rows become `STALE`.
 
-`StoryboardMaterializationPointer` is the only Production current pointer.
-The resolver does not use `latest()`, timestamp ordering, `max(id)` or a
-fallback Set.  A changed upstream creates a new explicit materialization; the
-old Set and rows are marked `STALE`.
+`StoryboardMaterializationPointer` is the only Production current selector.
+The resolver does not use `latest()`, timestamps, `max(id)` or a fallback Set.
 
 ## 4. Resolver revalidation
 
-`resolve_current_authoritative_materialization()` now revalidates:
+`resolve_current_authoritative_materialization()` revalidates:
 
-- current ShotPlan Authority and Phase C readiness;
-- current Blocking Authority and treatment lineage;
-- authority-envelope and handoff fingerprints;
+- current ShotPlan Authority and `phase_c_semantic_ready`;
+- current Blocking Authority and Treatment lineage;
+- authority envelope and `storyboard_handoff_v1` fingerprints;
 - Set fingerprint, count and exact order;
-- every row projection fingerprint and source Authority fingerprint;
-- every `storyboard_visual_semantic_handoff_v1` payload;
-- declared scene, subject and prop identity bindings;
+- mutable StoryboardShot columns against the protected projection payload;
+- per-row projection fingerprints and source authority fingerprints;
+- structured visual semantic handoff and asset identity bindings;
 - empty Phase D prompt fields.
 
-Tampering is detected and marked stale.  It is never auto-repaired in place.
+Tamper is detected, persisted as stale and returned as HTTP `409`. It is not
+repaired in place.
 
-## 5. Canonical counts and order
+## 5. Real Production materialization identity evidence
 
-The deterministic Phase D projection artifact proves:
+The trace is `episode_01_phase_d_trace.json`. It records persisted database
+identity from the real materialization API:
 
-- Scene 1: `8` canonical → `8` handoff → `8` materialized → `8` semantic projections.
-- Scene 2: `7` canonical → `7` handoff → `7` materialized → `7` semantic projections.
-- Total: `15` canonical → `15` projected materialization rows; exact
-  `plan_shot_id` order preserved.
-- `storyboard_semantic_ready`: `true` for `2/2` scenes, recomputed from the structured payload.
+| Scene | Canonical | Handoff | Materialized | Set ID | Pointer ID | StoryboardShot IDs |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `E01_SC001` | 8 | 8 | 8 | 1 | 1 | 1–8 |
+| `E01_SC002` | 7 | 7 | 7 | 2 | 2 | 9–15 |
+| **Total** | **15** | **15** | **15** |  |  | **15 rows** |
 
-Evidence:
-
-- `episode_01_storyboard_phase_d.json`
-- `episode_01_storyboard_phase_d.md`
-- `episode_01_phase_d_trace.json`
-
-The trace intentionally contains `null` for `materialization_set_id` and
-`storyboard_pointer_id`; the storyboard shot IDs in that file are projection
-IDs, not persisted Production database IDs.
+Both scenes resolved successfully with `readiness=true`; exact
+`plan_shot_id` order is preserved. The trace contains the ShotPlan Authority,
+ShotPlan Pointer, Blocking Authority, Blocking Pointer, Set, Storyboard Pointer,
+StoryboardShot IDs, handoff fingerprint, projection fingerprints and semantic
+fingerprints.
 
 ## 6. Visual semantic projection
 
-`storyboard_visual_semantic_handoff_v1` is generated without prompt prose.  It
-preserves, per shot:
+`storyboard_visual_semantic_handoff_v1` is structured and prompt-free. Each
+shot preserves:
 
 - beat, DirectorDecision, requirement, information, reaction and coverage refs;
-- subject and prop refs;
-- camera framing/orientation/support/movement and movement trigger/target/end;
+- subject, prop and canonical scene/character/prop asset identities;
+- camera framing, orientation, support, movement and movement conditions;
 - duration mode, cut trigger, duration hint, continuous-take and cut events;
 - information visibility;
 - axis ref(s), policy, applicability, screen sides and look direction;
 - Blocking state refs, entry/exit refs and subject zones;
-- canonical scene/character/prop asset identities;
 - projection provenance and semantic fingerprint.
 
-`compare_shotplan_storyboard_semantics()` is a structured deterministic diff;
-it reports missing semantics, extra semantics, camera mismatch, continuity
-mismatch and asset-binding mismatch.  No keyword, regex, text similarity or
-quality score is used.
+`compare_shotplan_storyboard_semantics()` compares only structured IDs, refs and
+enum-like values. Missing and extra semantics, camera mismatch, continuity
+mismatch and asset-binding mismatch are hard-gated before writes.
 
-## 7. Prompt and media boundary
+## 7. Asset and media boundary
 
-`visual_prompt_static`, `visual_prompt_motion` and `visual_prompt_final` remain
-empty during Phase D.  A non-empty mutation fails with
-`STORYBOARD_PROMPT_PREMATURE_MUTATION`.  PromptIR compilation, provider calls,
-image generation and video generation were not started.
+Asset gates cover only identities explicitly required by ShotPlan. No reference
+image or visual variant is selected. `visual_prompt_static`,
+`visual_prompt_motion` and `visual_prompt_final` are empty for all 15 rows;
+direct mutation returns `STORYBOARD_PROMPT_PREMATURE_MUTATION`.
+Media state remains `NOT_GENERATED`.
 
-The read-only `storyboard_production_snapshot_v1` boundary is available for a
-later PromptIR stage and creates no second database truth.
+## 8. Atomicity, idempotency and negative evidence
 
-## 8. Failure and stale behavior (code-level evidence)
+The real temporary-DB trace records these cases, each restored from a valid
+baseline before mutation:
 
-The resolver and materializer fail closed for:
+- repeated materialization: same Set, same Pointer, no duplicate rows;
+- failed materialization with `confirmed=false`: zero Storyboard writes and
+  Pointer unchanged;
+- ShotPlan Pointer change and Blocking Pointer change: current Set stale, 409;
+- projection column tamper: `STORYBOARD_PROJECTION_TAMPERED`, stale Set;
+- handoff and Set fingerprint tamper: 409, stale Set;
+- missing, extra and reordered shot: `STORYBOARD_MATERIALIZATION_SET_INCOMPLETE`;
+- information, camera, axis and asset semantic mismatch: structured semantic
+  mismatch, stale Set;
+- premature prompt mutation: `STORYBOARD_PROMPT_PREMATURE_MUTATION`.
 
-- ShotPlan Pointer or payload changes;
-- Blocking Pointer or fingerprint changes;
-- handoff, Set or row fingerprint tamper;
-- missing, extra or reordered StoryboardShot rows;
-- information, reaction, camera, axis or asset semantic mismatch;
-- missing required identity binding;
-- premature prompt mutation.
+The pilot proves failed candidates do not move the current Pointer and that no
+partial materialization is accepted.
 
-The resolver/materializer code rejects these cases before activation and the
-targeted tests cover the fail-closed behavior. A real temporary-DB API pilot
-is still required to produce persisted Set/Pointer/row IDs and an observed
-zero-write failure trace.
-
-## 9. Tests and regression evidence
-
-- Phase D semantic closure tests: `5 passed`.
-- Storyboard handoff/materializer/Phase C/Production gate targeted set:
-  `33 passed` in the final targeted run; the combined Storyboard/PromptIR
-  boundary run was `47 passed` before the snapshot test was added.
-- Deterministic Golden regression: `5/5` fixtures passed.
-- Full backend: `1603 passed, 4 failed, 930 warnings`.
-- The four failures are unchanged historical baseline failures:
-  `test_director_quality_v24_offline_replay`,
-  `test_director_quality_v3_final_spine_topology_preflight_wiring`,
-  `test_real_llm_gray_selection`, and
-  `test_targeted_missing_fact_api`.
-- Phase-D-induced failures in the recorded local runs: `0`.
-- `REAL_REGRESSION=0` relative to the recorded Phase C baseline.
-- GitHub Actions: no remote run was claimed; evidence is from local tests.
-
-## 10. Migration and heuristic audit
-
-- Database migrations added: `0`.
-- Provider calls: `0`.
-- Raw Authority fabrication: `0` in the pilot evidence.
-- No legacy Production fallback and no latest/max fallback.
-- No PromptIR, Flux, video adapter, image or video generation.
-
-## 11. Artifacts
+## 9. Artifacts
 
 - `phase_d_storyboard_materialization_gap_audit.md`
 - `episode_01_storyboard_phase_d.json`
@@ -162,11 +126,31 @@ zero-write failure trace.
 - `episode_01_phase_d_trace.json`
 - `PHASE_D_FINAL_REPORT.md`
 
-## Completion status
+## 10. Verification
 
-The required completion token
+- Real Phase D pilot: PASS, 2 scenes, 15 persisted StoryboardShot rows.
+- Phase D / authority / resolver targeted tests: `41 passed`.
+- Storyboard, PromptIR and visual authority regression set: `213 passed`.
+- Deterministic Golden regression: `5/5 passed`.
+- Full backend: `1604 passed, 4 failed, 930 warnings`.
+- The four failures are unchanged historical baseline failures:
+  `test_director_quality_v24_offline_replay`,
+  `test_director_quality_v3_final_spine_topology_preflight_wiring`,
+  `test_real_llm_gray_selection`, and
+  `test_targeted_missing_fact_api`.
+- Phase-D-induced failures: `0` relative to the recorded baseline.
+- `REAL_REGRESSION=0`.
+
+## 11. Migration and heuristic audit
+
+- Database migrations added: `0`.
+- Provider calls: `0`.
+- Raw Authority fabrication in the pilot: `0`.
+- No latest/max/fallback resolver path.
+- No prompt prose, keyword, regex, text-similarity or quality-score gate.
+- PromptIR compiler, Flux adapter, image generation and video generation were
+  not started.
+
+## Completion token
+
 `PHASE_D_STORYBOARD_MATERIALIZATION_AND_VISUAL_SEMANTIC_CLOSURE_READY_FOR_REVIEW`
-is **not emitted** by this report because the real Production DB materialization
-pilot and persisted identity/stale trace are still outstanding.
-
-
