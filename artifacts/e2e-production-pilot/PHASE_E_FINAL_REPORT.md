@@ -19,7 +19,7 @@ identical compile reuses the current payloads.
   GenerationPayload v1.
 - Exact semantic comparison and payload fingerprint tamper gates.
 - Current Visual Asset Pointer resolution without newest-row fallback.
-- 12 focused Phase E tests, all passing.
+- 13 focused Phase E tests, all passing.
 - 15-shot pilot reports, JSON artifacts, adapter payloads, and trace.
 
 ## Evidence
