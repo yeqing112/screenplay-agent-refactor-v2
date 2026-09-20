@@ -37,6 +37,7 @@ from models import (
     ShotPlanAuthority,
     ShotPlanPointer,
     StoryboardShot,
+    StoryboardMaterializationSet,
     Script,
     ScriptIRVersion,
     Session,
@@ -225,11 +226,25 @@ class SceneBlockingAuthorityContractTests(unittest.TestCase):
         with Session() as session:
             session.query(Script).filter_by(book_id=self.book_id, episode=1).one().content = original_script_content
             session.commit()
+        with Session() as session:
+            legacy_plan = session.query(ShotPlan).filter_by(id=approved["id"], book_id=self.book_id, episode=1).one()
+            current_pointer = session.query(ShotPlanPointer).filter_by(book_id=self.book_id, episode=1, scene_id="E01_SC001").one()
+            pointer_before = (current_pointer.shot_plan_id, current_pointer.plan_revision, current_pointer.authority_envelope_fingerprint)
+            set_count_before = session.query(StoryboardMaterializationSet).filter_by(book_id=self.book_id, episode=1).count()
+            shot_count_before = session.query(StoryboardShot).filter_by(book_id=self.book_id, episode=1).count()
+            plan_stale_before = legacy_plan.stale_status
         with patch("agents.storyboard.StoryboardAgent.run", side_effect=AssertionError("production must not call StoryboardAgent")) as run:
             materialized = self.client.post(f"/api/books/{self.book_id}/episodes/1/storyboard/materialize", json={"confirmed": True})
-        self.assertEqual(materialized.status_code, 200, materialized.text)
-        self.assertEqual(materialized.json()["materialized_count"], 1)
+        self.assertEqual(materialized.status_code, 409, materialized.text)
+        self.assertEqual(materialized.json()["detail"]["code"], "SHOT_PLAN_PHASE_C_NOT_READY")
         self.assertEqual(run.call_count, 0)
+        with Session() as session:
+            legacy_plan = session.query(ShotPlan).filter_by(id=approved["id"], book_id=self.book_id, episode=1).one()
+            current_pointer = session.query(ShotPlanPointer).filter_by(book_id=self.book_id, episode=1, scene_id="E01_SC001").one()
+            self.assertEqual(session.query(StoryboardMaterializationSet).filter_by(book_id=self.book_id, episode=1).count(), set_count_before)
+            self.assertEqual(session.query(StoryboardShot).filter_by(book_id=self.book_id, episode=1).count(), shot_count_before)
+            self.assertEqual((current_pointer.shot_plan_id, current_pointer.plan_revision, current_pointer.authority_envelope_fingerprint), pointer_before)
+            self.assertEqual(legacy_plan.stale_status, plan_stale_before)
         old_plan_id = approved["id"]
         second_preview = self.client.post(f"/api/books/{self.book_id}/episodes/1/shot-plan/preview", json={"persist": True, "workflowProfile": "production", "sceneId": "E01_SC001"})
         self.assertEqual(second_preview.status_code, 200, second_preview.text)

@@ -25,7 +25,6 @@ from core.storyboard_materializer import (
     build_materialization_authority_envelope,
     materialization_set_fingerprint,
     materialize_storyboard_from_handoff,
-    materialize_storyboard_from_shot_plan,
     projection_payload,
     validate_materialization_set,
 )
@@ -152,18 +151,16 @@ def materialize_storyboard(book_id: int, episode: int, req: MaterializeRequest) 
             if not isinstance(raw, list):
                 _conflict("SHOT_PLAN_PAYLOAD_INVALID", f"Approved ShotPlan payload is invalid for scene: {plan.scene_name}")
             plan_payload = shot_plan_payload_from_row(plan)
+            if plan_payload.get("phase_c_semantic_ready") is not True:
+                _conflict(
+                    "SHOT_PLAN_PHASE_C_NOT_READY",
+                    "Production Storyboard materialization requires the current Phase C semantic-ready ShotPlan.",
+                    scene_id=scene_id,
+                )
             try:
-                # The current Phase C Authority is the only creative source
-                # for the new Production path.  Older production-qualified
-                # rows remain readable for compatibility until an explicit
-                # migration exists; they never enter the Phase C handoff.
-                if plan_payload.get("phase_c_semantic_ready") is True:
-                    blocking_payload = blocking_payload_from_row(blocking)
-                    storyboard_handoff = project_shot_design_to_storyboard_handoff(plan_payload, blocking=blocking_payload, require_phase_c=True)
-                    projections = materialize_storyboard_from_handoff(storyboard_handoff, production=True)
-                else:
-                    storyboard_handoff = {"schema_version": "legacy_storyboard_compatibility", "projection_version": "legacy", "handoff_fingerprint": "", "source_shot_plan_fingerprint": ""}
-                    projections = materialize_storyboard_from_shot_plan(plan_payload, production=True)
+                blocking_payload = blocking_payload_from_row(blocking)
+                storyboard_handoff = project_shot_design_to_storyboard_handoff(plan_payload, blocking=blocking_payload, require_phase_c=True)
+                projections = materialize_storyboard_from_handoff(storyboard_handoff, production=True)
             except (TypeError, ValueError, json.JSONDecodeError) as exc:
                 code = str(exc).split(":", 1)[0] if ":" in str(exc) else "SHOT_PLAN_MATERIALIZATION_BLOCKED"
                 _conflict(code, str(exc))

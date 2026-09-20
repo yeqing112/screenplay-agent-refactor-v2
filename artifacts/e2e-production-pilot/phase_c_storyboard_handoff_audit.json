@@ -25,5 +25,18 @@
       "id_order_preserved": true,
       "handoff_fingerprint": "66db643f227d2f10577a271ec8389162c1355fba63ac4b75a3444e66ddcbe8ff"
     }
-  ]
+  ],
+  "production_phase_c_gate": true,
+  "legacy_production_fallback_enabled": false,
+  "legacy_production_attempt": {
+    "status_code": 409,
+    "code": "SHOT_PLAN_PHASE_C_NOT_READY",
+    "materialization_set_unchanged": true,
+    "pointer_unchanged": true,
+    "storyboard_shot_count_unchanged": true,
+    "shot_plan_stale_unchanged": true,
+    "shot_plan_pointer_unchanged": true,
+    "authority_state": "PRODUCTION_QUALIFIED",
+    "phase_c_semantic_ready": false
+  }
 }
