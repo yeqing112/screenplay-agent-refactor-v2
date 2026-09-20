@@ -57,9 +57,17 @@ def _list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
-def build_generation_policy(policy: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Normalize explicit policy; no visual defaults are introduced."""
+def build_generation_policy(policy: dict[str, Any] | None = None, *, allow_default: bool = True) -> dict[str, Any]:
+    """Normalize a policy.
+
+    Pure compiler fixtures may request the historical deterministic default by
+    leaving ``allow_default`` enabled.  Production entry points always pass
+    ``allow_default=False`` so an omitted policy cannot silently become a
+    TEXT_TO_IMAGE request.
+    """
     raw = dict(policy) if isinstance(policy, dict) else {}
+    if not allow_default and (not _text(raw.get("mode")) or not _text(raw.get("target_media"))):
+        raise PromptIRPhaseEError("GENERATION_POLICY_REQUIRED", "Production PromptIR compilation requires an explicit mode and target_media.")
     mode = _text(raw.get("mode") or "TEXT_TO_IMAGE").upper()
     target = _text(raw.get("target_media") or ("VIDEO" if mode.endswith("VIDEO") else "IMAGE")).upper()
     required = sorted({_text(item).upper() for item in _list(raw.get("required_asset_classes")) if _text(item)})
@@ -277,8 +285,8 @@ def compare_prompt_ir_semantics(expected: dict[str, Any], actual: dict[str, Any]
     return {"empty": not errors, "errors": errors, "missing": [item for item in errors if item.get("code") == "PROMPT_IR_SEMANTIC_MISSING"], "extra": [item for item in errors if item.get("code") == "PROMPT_IR_SEMANTIC_EXTRA"]}
 
 
-def compile_storyboard_snapshot_to_prompt_ir(snapshot: dict[str, Any], *, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None) -> list[dict[str, Any]]:
-    policy = build_generation_policy(generation_policy)
+def compile_storyboard_snapshot_to_prompt_ir(snapshot: dict[str, Any], *, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, allow_default_policy: bool = True) -> list[dict[str, Any]]:
+    policy = build_generation_policy(generation_policy, allow_default=allow_default_policy)
     if not isinstance(snapshot, dict) or snapshot.get("schema_version") != "storyboard_production_snapshot_v1":
         raise PromptIRPhaseEError("STORYBOARD_SNAPSHOT_INVALID", "PromptIR compilation requires storyboard_production_snapshot_v1.")
     if snapshot.get("prompt_prose") is not False or snapshot.get("media_state") != "NOT_GENERATED":
@@ -301,7 +309,8 @@ def compile_storyboard_snapshot_to_prompt_ir(snapshot: dict[str, Any], *, genera
         for identity_key in ir["asset_authority_bindings"]["identity_refs"]:
             identity = identity_key.split(":", 1)[1] if ":" in identity_key else identity_key
             asset_type = identity_key.split(":", 1)[0].upper() if ":" in identity_key else ""
-            requires_authority = asset_type in required or f"{asset_type}_REFERENCE" in required
+            reference_required = f"{asset_type}_REFERENCE" in required
+            requires_authority = asset_type in required or reference_required
             if requires_authority and identity_key not in resolved:
                 raise PromptIRPhaseEError("PROMPT_IR_REQUIRED_ASSET_AUTHORITY_MISSING", f"Required current asset authority is missing: {identity_key}.")
             if identity_key in resolved:
@@ -311,7 +320,26 @@ def compile_storyboard_snapshot_to_prompt_ir(snapshot: dict[str, Any], *, genera
                     raise PromptIRPhaseEError("PROMPT_IR_ASSET_AUTHORITY_STALE", f"Current asset authority is stale: {identity_key}.")
                 if requires_authority and _text(item.get("authority_status")).upper() not in {"SPEC_APPROVED", "PRODUCTION_READY", "LOCKED", "QUALIFIED", "PRODUCTION_AUTHORITATIVE"}:
                     raise PromptIRPhaseEError("PROMPT_IR_REQUIRED_ASSET_AUTHORITY_MISSING", f"Required asset authority is not production qualified: {identity_key}.")
-                ir["asset_authority_bindings"]["resolved"].append({"identity_ref": identity_key, "asset_authority_ref": _text(item.get("asset_key") or item.get("canonical_asset_id") or identity), "authority_fingerprint": _text(item.get("authority_fingerprint") or item.get("payload_hash")), "stale_status": _text(item.get("stale_status") or "FRESH")})
+                if reference_required:
+                    reference = item.get("reference_authority") if isinstance(item.get("reference_authority"), dict) else {}
+                    if not reference:
+                        raise PromptIRPhaseEError("PROMPT_IR_REQUIRED_REFERENCE_AUTHORITY_MISSING", f"Required current reference authority is missing: {identity_key}.")
+                    ref_status = _text(reference.get("status")).upper()
+                    ref_stale = _text(reference.get("stale_status") or "FRESH").upper()
+                    if ref_status not in {"LOCKED", "REFERENCE_LOCKED"} or ref_stale != "FRESH":
+                        raise PromptIRPhaseEError("VISUAL_REFERENCE_AUTHORITY_STALE", f"Required reference authority is not LOCKED and FRESH: {identity_key}.")
+                    current_version_fp = _text(item.get("asset_version_fingerprint") or item.get("payload_hash") or item.get("authority_fingerprint"))
+                    ref_version_fp = _text(reference.get("asset_version_fingerprint"))
+                    if not ref_version_fp or ref_version_fp != current_version_fp:
+                        raise PromptIRPhaseEError("VISUAL_REFERENCE_AUTHORITY_STALE", f"Reference authority is bound to a different asset version: {identity_key}.")
+                resolved_binding = {"identity_ref": identity_key, "asset_authority_ref": _text(item.get("asset_key") or item.get("canonical_asset_id") or identity), "authority_fingerprint": _text(item.get("authority_fingerprint") or item.get("payload_hash")), "asset_version_id": item.get("asset_version_id"), "asset_version_fingerprint": _text(item.get("asset_version_fingerprint") or item.get("payload_hash")), "stale_status": _text(item.get("stale_status") or "FRESH")}
+                if reference_required:
+                    reference = item.get("reference_authority")
+                    resolved_binding["reference_authority_ref"] = reference.get("authority_fingerprint")
+                    resolved_binding["reference_authority_fingerprint"] = reference.get("authority_fingerprint")
+                    resolved_binding["reference_asset_version_fingerprint"] = reference.get("asset_version_fingerprint")
+                    resolved_binding["reference_token"] = reference.get("reference_token", "")
+                ir["asset_authority_bindings"]["resolved"].append(resolved_binding)
         order = {identity: index for index, identity in enumerate(ir["asset_authority_bindings"]["identity_refs"])}
         ir["asset_authority_bindings"]["resolved"] = sorted(ir["asset_authority_bindings"]["resolved"], key=lambda item: order.get(item["identity_ref"], 10**9))
         ir["prompt_ir_semantic_fingerprint"] = fingerprint(prompt_ir_semantic_projection(ir))
@@ -355,6 +383,7 @@ def evaluate_model_generation_readiness(prompt_ir: dict[str, Any], *, generation
     for asset_class in required:
         if not any(_text(item.get("identity_ref")).split(":", 1)[0].upper() == asset_class or _text(item.get("identity_ref")).split(":", 1)[0].upper() + "_REFERENCE" == asset_class for item in refs if isinstance(item, dict)):
             reasons.append(f"REQUIRED_ASSET_MISSING:{asset_class}")
+    reference_required = any(_text(item).upper().endswith("_REFERENCE") for item in required)
     if required and adapter and not profile.get("capabilities", {}).get("supports_reference_images", adapter.get("supports_reference_images", False)):
         reasons.append("MODEL_ADAPTER_UNSUPPORTED_CAPABILITY:REFERENCE_IMAGES")
     if not profile.get("provider_config_ref"):
@@ -401,13 +430,22 @@ def adapt_prompt_ir_to_generation_payload(prompt_ir: dict[str, Any], *, generati
     if not adapter:
         raise PromptIRPhaseEError("MODEL_ADAPTER_NOT_REGISTERED", f"No deterministic adapter is registered for {profile.get('adapter_id')}.")
     refs = _list(prompt_ir.get("asset_authority_bindings", {}).get("resolved"))
-    requires_refs = bool(policy.get("required_asset_classes"))
-    if requires_refs and not profile.get("capabilities", {}).get("supports_reference_images", adapter.get("supports_reference_images", False)):
+    requires_refs = any(_text(item).upper().endswith("_REFERENCE") for item in policy.get("required_asset_classes", []))
+    if policy.get("required_asset_classes") and not profile.get("capabilities", {}).get("supports_reference_images", adapter.get("supports_reference_images", False)):
         raise PromptIRPhaseEError("MODEL_ADAPTER_CAPABILITY_UNSUPPORTED", "ModelProfile cannot represent required reference images.")
     required_identity_types = set(policy.get("required_asset_classes", []))
     missing = [kind for kind in required_identity_types if not any(_text(item.get("identity_ref")).split(":", 1)[0].upper() == kind or _text(item.get("identity_ref")).split(":", 1)[0].upper() + "_REFERENCE" == kind for item in refs)]
     if missing:
-        raise PromptIRPhaseEError("MODEL_ADAPTER_REQUIRED_ASSET_MISSING", "Required asset authority bindings are missing.", diagnostics=[{"code": "MODEL_ADAPTER_REQUIRED_ASSET_MISSING", "asset_class": item} for item in missing])
+        reference_missing = [item for item in missing if item.endswith("_REFERENCE")]
+        code = "PROMPT_IR_REQUIRED_REFERENCE_AUTHORITY_MISSING" if reference_missing else "MODEL_ADAPTER_REQUIRED_ASSET_MISSING"
+        raise PromptIRPhaseEError(code, "Required authority bindings are missing.", diagnostics=[{"code": code, "asset_class": item} for item in missing])
+    for asset_class in required_identity_types:
+        if asset_class.endswith("_REFERENCE"):
+            base = asset_class.removesuffix("_REFERENCE")
+            for item in refs:
+                identity_type = _text(item.get("identity_ref")).split(":", 1)[0].upper()
+                if identity_type == base and not item.get("reference_authority_fingerprint"):
+                    raise PromptIRPhaseEError("PROMPT_IR_REQUIRED_REFERENCE_AUTHORITY_MISSING", f"Required reference authority is not bound: {item.get('identity_ref')}")
     static_surface = render_prompt_surface(prompt_ir, surface="static")
     motion_surface = render_prompt_surface(prompt_ir, surface="motion")
     reference_bindings = []
@@ -415,7 +453,7 @@ def adapt_prompt_ir_to_generation_payload(prompt_ir: dict[str, Any], *, generati
         identity_ref = _text(ref.get("identity_ref"))
         asset_type = identity_ref.split(":", 1)[0].upper() if ":" in identity_ref else "ASSET"
         role = {"SCENE": "SCENE_REFERENCE", "CHARACTER": "SUBJECT_REFERENCE", "PROP": "PROP_REFERENCE"}.get(asset_type, f"{asset_type}_REFERENCE")
-        reference_bindings.append({"role": role, "identity_ref": identity_ref, "asset_authority_ref": _text(ref.get("asset_authority_ref")), "authority_fingerprint": _text(ref.get("authority_fingerprint"))})
+        reference_bindings.append({"role": role, "identity_ref": identity_ref, "asset_authority_ref": _text(ref.get("asset_authority_ref")), "authority_fingerprint": _text(ref.get("authority_fingerprint")), "reference_authority_ref": _text(ref.get("reference_authority_ref")), "reference_authority_fingerprint": _text(ref.get("reference_authority_fingerprint")), "reference_token": _text(ref.get("reference_token"))})
     request: dict[str, Any] = {"prompt": static_surface["text"], "motion_prompt": motion_surface["text"], "reference_bindings": reference_bindings}
     if profile.get("capabilities", {}).get("supports_negative_prompt", adapter.get("supports_negative_prompt", False)):
         request["negative_prompt"] = ""
@@ -470,8 +508,12 @@ def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episo
     authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=pointer.prompt_ir_version_id, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id).first()
     if version is None or authority is None:
         fail("PROMPT_IR_POINTER_TAMPERED", "Current PromptIR pointer does not resolve to one matching version and authority.", version=version, authority=authority)
-    if version.schema_version != PROMPT_IR_SCHEMA_VERSION or version.stale_status != "FRESH" or authority.stale_status != "FRESH":
+    if version.schema_version != PROMPT_IR_SCHEMA_VERSION:
+        fail("PROMPT_IR_V2_REQUIRED", "Production PromptIR authority must resolve to prompt_ir_v2.", version=version, authority=authority)
+    if version.stale_status != "FRESH" or authority.stale_status != "FRESH":
         fail("PROMPT_IR_STALE", "Current PromptIR version or authority is stale.", version=version, authority=authority)
+    if _text(pointer.qualification_state) != _text(version.qualification_state) or _text(authority.qualification_state) != _text(version.qualification_state):
+        fail("PROMPT_IR_CURRENT_AUTHORITY_INVALID", "PromptIR pointer, version, and authority qualification states disagree.", version=version, authority=authority)
     if _text(pointer.payload_hash) != _text(version.payload_hash):
         fail("PROMPT_IR_POINTER_TAMPERED", "PromptIR pointer payload hash does not match the current version.", version=version, authority=authority)
     try:
@@ -488,6 +530,8 @@ def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episo
         fail("PROMPT_IR_AUTHORITY_ENVELOPE_TAMPERED", "PromptIR authority envelope fingerprint is invalid.", version=version, authority=authority)
     if _text(envelope.get("prompt_ir_payload_hash")) != _text(version.payload_hash):
         fail("PROMPT_IR_AUTHORITY_ENVELOPE_TAMPERED", "PromptIR authority envelope does not bind the current payload hash.", version=version, authority=authority)
+    if envelope.get("generation_policy") != payload.get("generation_policy") or envelope.get("asset_authority_bindings") != payload.get("asset_authority_bindings"):
+        fail("PROMPT_IR_AUTHORITY_ENVELOPE_TAMPERED", "PromptIR authority envelope does not bind the current policy and asset lineage.", version=version, authority=authority)
     row = session.query(StoryboardShot).filter_by(id=storyboard_shot_id, book_id=book_id, episode=episode).first()
     if row is None or not _text(row.scene_id):
         fail("PROMPT_IR_STALE", "PromptIR StoryboardShot lineage is missing.", version=version, authority=authority)
@@ -514,6 +558,20 @@ def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episo
     return {"version": version, "authority": authority, "pointer": pointer, "payload": payload, "snapshot": snapshot, "authority_envelope": envelope, "model_generation_ready": bool(readiness.get("ready")), "readiness": readiness}
 
 
+def validate_current_prompt_ir_authority(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, expected_prompt_ir: dict[str, Any] | None = None, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, model_profile: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Canonical current-authority validator used by resolver and reuse."""
+    resolved = resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, generation_policy=generation_policy, asset_authority=asset_authority, model_profile=model_profile)
+    if expected_prompt_ir is not None:
+        diff = compare_prompt_ir_semantics(expected_prompt_ir, resolved["payload"])
+        if not diff.get("empty"):
+            from fastapi import HTTPException
+            raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_CURRENT_AUTHORITY_INVALID", "message": "Current PromptIR does not equal the newly compiled semantic payload.", "diagnostics": diff.get("errors", [])})
+        if _text(expected_prompt_ir.get("payload_hash") or expected_prompt_ir.get("prompt_ir_payload_fingerprint")) != _text(resolved["version"].payload_hash):
+            from fastapi import HTTPException
+            raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_CURRENT_AUTHORITY_INVALID", "message": "Current PromptIR payload hash differs from the newly compiled payload."})
+    return {"valid": True, "reusable": True, **resolved}
+
+
 __all__ = [
-    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "resolve_current_authoritative_prompt_ir",
+    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
 ]

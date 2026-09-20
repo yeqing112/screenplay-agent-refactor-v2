@@ -328,6 +328,36 @@ def propagate_visual_asset_staleness(session: Any, *, asset_key: str, reason: st
     return {"versions_staled": len(versions), "pointers_staled": len(pointers), "references_staled": len(refs) + len(legacy_refs), "prompt_ir_staled": prompt_count}
 
 
+def propagate_visual_reference_staleness(session: Any, *, authority_fingerprint: str, reason: str) -> dict[str, int]:
+    """Stale one concrete reference authority and PromptIR rows bound to it."""
+    from models import PromptIRAuthority, PromptIRVersion, VisualReferenceAuthority
+    refs = session.query(VisualReferenceAuthority).filter_by(authority_fingerprint=authority_fingerprint).all()
+    for ref in refs:
+        ref.stale_status = STALE
+        ref.status = "STALE"
+        ref.stale_reasons = json.dumps([_text(reason)], ensure_ascii=False)
+        ref.updated_at = datetime.now()
+    prompt_count = 0
+    for prompt in session.query(PromptIRVersion).all():
+        try:
+            payload = json.loads(prompt.payload_json or "{}")
+        except (TypeError, ValueError, json.JSONDecodeError):
+            continue
+        bindings = _dict(payload.get("asset_authority_bindings"))
+        if authority_fingerprint not in json.dumps(bindings, ensure_ascii=False):
+            continue
+        prompt.stale_status = STALE
+        prompt.stale_reasons = json.dumps([f"VISUAL_REFERENCE_CHANGED:{authority_fingerprint}", _text(reason)], ensure_ascii=False)
+        prompt.updated_at = datetime.now()
+        authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=prompt.id).first()
+        if authority:
+            authority.stale_status = STALE
+            authority.stale_reasons = prompt.stale_reasons
+            authority.updated_at = datetime.now()
+        prompt_count += 1
+    return {"references_staled": len(refs), "prompt_ir_staled": prompt_count}
+
+
 def asset_readiness(*, identity_ready: bool, authoring_status: str, spec_approved: bool, reference_required: bool, reference_locked: bool) -> dict[str, Any]:
     if not identity_ready:
         return {"identity_ready": False, "visual_spec_ready": False, "reference_ready": False, "media_ready": False, "status": "ASSET_IDENTITY_PENDING", "blocking_reason": "IDENTITY_PENDING"}
@@ -344,13 +374,14 @@ def production_asset_binding(*, asset_key: str, asset_type: str, asset_name: str
     reference = _dict(reference)
     payload = _dict(version.get("payload"))
     ready = bool(version and _text(version.get("authority_status")) in {SPEC_APPROVED, PRODUCTION_READY} and _text(version.get("stale_status")) != STALE)
-    ref_ready = bool(reference and _text(reference.get("status")).upper() == REFERENCE_LOCKED and _text(reference.get("stale_status") or "FRESH") == "FRESH")
+    ref_ready = bool(reference and _text(reference.get("status")).upper() in {"LOCKED", REFERENCE_LOCKED} and _text(reference.get("stale_status") or "FRESH") == "FRESH")
     spec = _dict(payload.get("canonical_spec"))
     authoring = _dict(payload.get("authoring_spec"))
     variant = _dict(payload.get("variant_spec"))
     facts = [{"fact_key": key, "value": value, "authority_class": DERIVED_VISUAL_CONSTRAINT} for source in (spec, authoring, variant) for key, value in source.items() if value not in (None, "", [], {})]
     status = _text(version.get("authority_status")) if ready else AUTHORING_PENDING
-    return {"asset_type": asset_type, "canonical_asset_id": asset_key.rsplit(":", 1)[-1], "asset_key": asset_key, "asset_name": asset_name, "asset_revision": version.get("revision"), "authority_status": status, "variant_scope": payload.get("scope", {}), "variant_id": payload.get("variant_id", ""), "reference_status": "REFERENCE_READY" if ref_ready else "REFERENCE_PENDING", "reference_token": _text(reference.get("reference_token") or reference.get("reference_name")) if ref_ready else "", "authority_fingerprint": _text(version.get("payload_hash")), "visual_facts": facts, "media_readiness": "READY" if ref_ready or not reference_required else "PENDING", "readiness": asset_readiness(identity_ready=True, authoring_status="APPROVED" if ready else AUTHORING_PENDING, spec_approved=ready, reference_required=reference_required, reference_locked=ref_ready)}
+    reference_authority = dict(reference) if isinstance(reference, dict) else {}
+    return {"asset_type": asset_type, "canonical_asset_id": asset_key.rsplit(":", 1)[-1], "asset_key": asset_key, "asset_name": asset_name, "asset_revision": version.get("revision"), "asset_version_id": version.get("id"), "asset_version_fingerprint": _text(version.get("payload_hash")), "authority_status": status, "stale_status": _text(version.get("stale_status") or "FRESH"), "variant_scope": payload.get("scope", {}), "variant_id": payload.get("variant_id", ""), "reference_status": "REFERENCE_READY" if ref_ready else "REFERENCE_PENDING", "reference_token": _text(reference.get("reference_token") or reference.get("reference_name")) if ref_ready else "", "authority_fingerprint": _text(version.get("payload_hash")), "reference_authority": reference_authority, "visual_facts": facts, "media_readiness": "READY" if ref_ready or not reference_required else "PENDING", "readiness": asset_readiness(identity_ready=True, authoring_status="APPROVED" if ready else AUTHORING_PENDING, spec_approved=ready, reference_required=reference_required, reference_locked=ref_ready)}
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]

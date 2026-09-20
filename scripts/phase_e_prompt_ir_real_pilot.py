@@ -111,6 +111,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         first_handoff = snapshots[0]["ordered_shots"][0].get("prompt_compiler_handoff", {}) if snapshots else {}
         asset_binding_probe = _production_asset_authority(session, book_id=book_id, handoff=first_handoff if isinstance(first_handoff, dict) else {})
     request = PhaseECompileRequest(generation_policy={"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": []})
+    missing_policy_compile = _compile(book_id, episode, PhaseECompileRequest())
     first_compile = _compile(book_id, episode, request)
     with Session() as session:
         after_compile = _counts(session, book_id, episode)
@@ -178,7 +179,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     # Tamper cases each restore the clean compiled DB before running the v2
     # resolver, so each result demonstrates fail-closed behavior independently.
     tamper_cases = []
-    for case_name in ("pointer_tamper", "authority_envelope_tamper", "payload_tamper"):
+    for case_name in ("pointer_tamper", "authority_envelope_tamper", "payload_tamper", "semantic_tamper"):
         engine.dispose()
         shutil.copy2(db_file, baseline)
         try:
@@ -195,6 +196,21 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
                 else:
                     payload = _json(version.payload_json, {})
                     payload["camera"]["movement"] = "TAMPERED"
+                    if case_name == "semantic_tamper":
+                        payload_basis = dict(payload)
+                        payload_basis.pop("prompt_ir_payload_fingerprint", None)
+                        payload_basis.pop("payload_hash", None)
+                        new_hash = fingerprint(payload_basis)
+                        payload["prompt_ir_payload_fingerprint"] = new_hash
+                        payload["payload_hash"] = new_hash
+                        version.payload_hash = new_hash
+                        pointer.payload_hash = new_hash
+                        envelope = _json(authority.envelope_json, {})
+                        envelope["prompt_ir_payload_hash"] = new_hash
+                        envelope.pop("envelope_fingerprint", None)
+                        envelope["envelope_fingerprint"] = fingerprint(envelope)
+                        authority.envelope_json = json.dumps(envelope, ensure_ascii=False, sort_keys=True)
+                        authority.envelope_fingerprint = envelope["envelope_fingerprint"]
                     version.payload_json = json.dumps(payload, ensure_ascii=False, sort_keys=True)
                 session.commit()
                 shot_id = version.storyboard_shot_id
@@ -204,10 +220,31 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
                     result = {"status": "UNEXPECTED_PASS"}
                 except Exception as exc:
                     result = _error(exc)
-            tamper_cases.append({"case": case_name, "result": result})
+            compile_again = _compile(book_id, episode, request)
+            tamper_cases.append({"case": case_name, "resolver_result": result, "compile_again": compile_again})
         finally:
             shutil.copy2(baseline, db_file)
             baseline.unlink(missing_ok=True)
+
+    # Legacy V1 pointers remain readable in storage but are blocked from both
+    # Production compile reuse and Production adapter preview.
+    legacy_v1_gate = {}
+    engine.dispose(); shutil.copy2(db_file, baseline)
+    try:
+        with Session() as session:
+            version = session.query(PromptIRVersion).filter_by(book_id=book_id, episode=episode).order_by(PromptIRVersion.id).first()
+            version.schema_version = "prompt_ir_authority_v1"
+            session.commit(); shot_id = version.storyboard_shot_id
+        legacy_v1_gate["compile"] = _compile(book_id, episode, request)
+        legacy_v1_gate["adapter_preview"] = _preview(book_id, episode, shot_id)
+    finally:
+        shutil.copy2(baseline, db_file); baseline.unlink(missing_ok=True)
+
+    required_reference_missing = _compile(book_id, episode, PhaseECompileRequest(generation_policy={"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": ["PROP_REFERENCE"]}))
+    fake_request = PhaseECompileRequest(**{"generation_policy": {"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": []}, "asset_authority": {"bindings": [{"canonical_asset_id": "FAKE", "authority_status": "PRODUCTION_READY", "stale_status": "FRESH"}]}})
+    fake_compile = _compile(book_id, episode, fake_request)
+    with Session() as session:
+        fake_binding_in_payload = any("FAKE" in (row.payload_json or "") for row in session.query(PromptIRVersion).filter_by(book_id=book_id, episode=episode).all())
 
     trace = {
         "schema_version": "phase_e_prompt_ir_trace_v2_real_production",
@@ -220,6 +257,10 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "lineage": lineage,
         "resolver_positive": resolver_positive,
         "failed_compile_zero_write": {"result": failed_compile, "counts_unchanged": after_failed == after_idempotent, "pointers_unchanged": pointer_hashes_before_failure == pointer_hashes_after_failure},
+        "generation_policy_contract": {"missing_policy_result": missing_policy_compile, "explicit_policy_result": {"mode": request.generation_policy.get("mode"), "target_media": request.generation_policy.get("target_media")}},
+        "asset_authority_source": {"source": "current_visual_asset_pointers", "request_asset_authority_allowed": False, "fake_binding_in_payload": fake_binding_in_payload, "fake_request_result": fake_compile},
+        "reference_authority_resolution": {"latest_fallback": False, "required_reference_missing": required_reference_missing},
+        "legacy_v1_gate": legacy_v1_gate,
         "atomic_activation": {"compiled_count": first_compile.get("compiled_count"), "version_count": after_compile.get("versions"), "authority_count": after_compile.get("authorities"), "pointer_count": after_compile.get("pointers"), "all_shots_activated": first_compile.get("compiled_count") == 15 == after_compile.get("versions") == after_compile.get("authorities") == after_compile.get("pointers")},
         "idempotency": {"same_counts": after_compile == after_idempotent, "second_reused_count": second_compile.get("reused_count")},
         "stale_propagation": {"storyboard": stale_storyboard, "asset": stale_asset},
@@ -253,11 +294,31 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "image_calls": 0,
         "video_calls": 0,
     }
+    audit_artifact = {
+        "schema_version": "phase_e_production_boundary_audit_v1",
+        "legacy_v1_production_enabled": False,
+        "production_prompt_schema": "prompt_ir_v2",
+        "generation_policy_required": True,
+        "request_asset_authority_allowed": False,
+        "prompt_ir_reuse_uses_full_validator": True,
+        "visual_reference_latest_fallback": False,
+        "legacy_v1_gate": legacy_v1_gate,
+        "generation_policy_contract": trace["generation_policy_contract"],
+        "asset_authority_source": trace["asset_authority_source"],
+        "reference_authority_resolution": trace["reference_authority_resolution"],
+        "tamper_compile_again": [{"case": item["case"], "status_code": item["compile_again"].get("status_code"), "error_code": item["compile_again"].get("detail", {}).get("code")} for item in tamper_cases],
+        "provider_calls": 0,
+        "llm_calls": 0,
+        "image_calls": 0,
+        "video_calls": 0,
+        "db_migration_added": 0,
+    }
     markdown_lines = ["# Episode 01 PromptIR Phase E pilot", "", "> Real temporary SQLite + Alembic production authority snapshot. Provider-free.", ""]
     for item in payloads:
         markdown_lines.extend([f"## {item.get('plan_shot_id', '')}", "", f"- StoryboardShot ID: `{item.get('storyboard_shot_id')}`", f"- Subjects: `{json.dumps(item.get('subjects', []), ensure_ascii=False, sort_keys=True)}`", f"- Props: `{json.dumps(item.get('props', []), ensure_ascii=False, sort_keys=True)}`", f"- Information refs: `{json.dumps(item.get('semantic_refs', {}).get('information_refs', []), ensure_ascii=False, sort_keys=True)}`", f"- Reaction refs: `{json.dumps(item.get('semantic_refs', {}).get('reaction_contract_refs', []), ensure_ascii=False, sort_keys=True)}`", f"- Coverage roles: `{json.dumps(item.get('semantic_refs', {}).get('coverage_roles', []), ensure_ascii=False, sort_keys=True)}`", f"- Camera: `{json.dumps(item.get('camera', {}), ensure_ascii=False, sort_keys=True)}`", f"- Temporal: `{json.dumps(item.get('temporal', {}), ensure_ascii=False, sort_keys=True)}`", f"- Visibility: `{item.get('information_visibility')}`", f"- Axis: `{json.dumps(item.get('continuity', {}), ensure_ascii=False, sort_keys=True)}`", f"- Spatial: `{json.dumps(item.get('spatial', {}), ensure_ascii=False, sort_keys=True)}`", f"- PromptIR fingerprint: `{item.get('prompt_ir_payload_fingerprint')}`", ""])
     (ART / "episode_01_prompt_ir_phase_e.json").write_text(json.dumps(prompt_ir_artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (ART / "episode_01_generation_payload_phase_e.json").write_text(json.dumps(generation_artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (ART / "phase_e_production_boundary_audit.json").write_text(json.dumps(audit_artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (ART / "episode_01_prompt_ir_phase_e.md").write_text("\n".join(markdown_lines), encoding="utf-8")
     (ART / "episode_01_phase_e_trace.json").write_text(json.dumps(trace, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return trace

@@ -7,12 +7,6 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from core.prompt_ir_authority import (
-    PromptIRAuthorityError,
-    build_prompt_ir_authority_envelope,
-    compile_prompt_ir_from_handoff,
-    serialize_prompt_ir_to_adapter,
-)
 from core.prompt_ir_phase_e import (
     PromptIRPhaseEError,
     MODEL_ADAPTER_REGISTRY,
@@ -22,6 +16,7 @@ from core.prompt_ir_phase_e import (
     compile_storyboard_snapshot_to_prompt_ir,
     fingerprint as phase_e_fingerprint,
     resolve_current_authoritative_prompt_ir,
+    validate_current_prompt_ir_authority,
 )
 from core.visual_asset_authority import build_asset_key, production_asset_binding
 from core.storyboard_materializer import build_storyboard_production_snapshot, resolve_current_authoritative_materialization
@@ -44,7 +39,6 @@ class AdapterPreviewRequest(BaseModel):
 
 class PhaseECompileRequest(BaseModel):
     generation_policy: dict = Field(default_factory=dict)
-    asset_authority: dict = Field(default_factory=dict)
 
 
 def _conflict(code: str, message: str, **extra):
@@ -121,51 +115,26 @@ def _production_asset_authority(session, *, book_id: int, handoff: dict) -> dict
             version = session.query(VisualAssetVersion).filter_by(id=pointer.current_version_id).first() if pointer else None
             reference = None
             if version:
-                authority = session.query(VisualReferenceAuthority).filter_by(asset_key=asset_key, asset_version_id=version.id, status="LOCKED", stale_status="FRESH").order_by(VisualReferenceAuthority.id.desc()).first()
+                candidates = session.query(VisualReferenceAuthority).filter_by(asset_key=asset_key).all()
+                current = [item for item in candidates if int(item.asset_version_id or 0) == int(version.id)]
+                valid = [item for item in current if str(item.status or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.stale_status or "FRESH").upper() == "FRESH"]
+                if len(valid) > 1:
+                    _conflict("VISUAL_REFERENCE_AUTHORITY_AMBIGUOUS", "More than one LOCKED/FRESH reference authority matches the current asset version.", asset_key=asset_key, asset_version_id=version.id)
+                authority = valid[0] if valid else next((item for item in current if str(item.status or "").upper() in {"LOCKED", "REFERENCE_LOCKED"}), None)
                 if authority:
-                    reference = {"status": authority.status, "stale_status": authority.stale_status, "reference_token": _json(authority.reference_token_mapping_json, {}).get("token", ""), "reference_name": _json(authority.reference_token_mapping_json, {}).get("name", "")}
-            entries.append(production_asset_binding(asset_key=asset_key, asset_type=asset_type, asset_name=display_name, version={"id": version.id, "revision": version.revision, "payload": _json(version.payload_json, {}), "payload_hash": version.payload_hash, "authority_status": version.authority_status, "stale_status": version.stale_status} if version else {}, reference=reference, reference_required=True))
+                    reference = {"status": authority.status, "stale_status": authority.stale_status, "authority_fingerprint": authority.authority_fingerprint, "asset_version_id": authority.asset_version_id, "asset_version_fingerprint": authority.asset_version_fingerprint, "reference_token": _json(authority.reference_token_mapping_json, {}).get("token", ""), "reference_name": _json(authority.reference_token_mapping_json, {}).get("name", "")}
+                    if str(authority.asset_version_fingerprint or "") != str(version.payload_hash or ""):
+                        reference["stale_status"] = "STALE"
+            entries.append(production_asset_binding(asset_key=asset_key, asset_type=asset_type, asset_name=display_name, version={"id": version.id, "revision": version.revision, "payload": _json(version.payload_json, {}), "payload_hash": version.payload_hash, "authority_status": version.authority_status, "stale_status": version.stale_status} if version else {}, reference=reference, reference_required=False))
     return {"bindings": entries, "authority_fingerprint": __import__("core.visual_asset_authority", fromlist=["fingerprint"]).fingerprint(entries), "source": "current_visual_asset_pointers", "provider_calls": 0}
 
 
 @router.post("/{book_id}/episodes/{episode}/storyboard/{shot_id}/prompt-ir/compile")
 def compile_prompt_ir(book_id: int, episode: int, shot_id: int, req: PromptIRCompileRequest):
-    with Session() as session:
-        materialization_set, row, _set_envelope = _load_current(session, book_id=book_id, episode=episode, shot_id=shot_id)
-        meta = _json(row.meta_info, {})
-        handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else None
-        if not isinstance(handoff, dict):
-            _conflict("STORYBOARD_HANDOFF_MISSING", "Authoritative StoryboardShot has no storyboard_prompt_handoff_v1.")
-        if int(handoff.get("storyboard_shot_id") or 0) != int(row.id) or str(handoff.get("storyboard_projection_fingerprint") or "") != str(row.projection_fingerprint or ""):
-            _conflict("STORYBOARD_HANDOFF_STALE", "PromptIR handoff does not match the current Storyboard projection.")
-        try:
-            authoritative_assets = _production_asset_authority(session, book_id=book_id, handoff=handoff)
-            prompt_ir = compile_prompt_ir_from_handoff(handoff, asset_authority=authoritative_assets, retention_policy=req.retention_policy)
-        except PromptIRAuthorityError as exc:
-            _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
-        existing_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=row.id).first()
-        if existing_pointer:
-            existing = session.query(PromptIRVersion).filter_by(id=existing_pointer.prompt_ir_version_id).first()
-            if existing and existing.payload_hash == prompt_ir["payload_hash"] and existing.stale_status == "FRESH":
-                return {"mutated": False, "reused": True, "prompt_ir_version_id": existing.id, "qualification_state": existing.qualification_state, "asset_reference_state": existing.asset_reference_state, "model_generation_ready": existing.model_generation_ready == "true", "provider_calls": 0}
-            if existing:
-                existing.stale_status = "STALE"
-                existing.stale_reasons = json.dumps(["PROMPT_IR_RECOMPILED"], ensure_ascii=False)
-                existing.updated_at = datetime.now()
-        envelope = build_prompt_ir_authority_envelope(prompt_ir=prompt_ir, handoff=handoff, validation=prompt_ir.get("diagnostics", {}))
-        version = PromptIRVersion(book_id=book_id, episode=episode, scene_id=str(handoff["scene_id"]), storyboard_shot_id=row.id, materialization_set_id=int(handoff["materialization_set_id"]), plan_shot_id=str(handoff["plan_shot_id"]), schema_version=prompt_ir["schema_version"], payload_json=json.dumps(prompt_ir, ensure_ascii=False, sort_keys=True), payload_hash=prompt_ir["payload_hash"], compiler_version=prompt_ir["compiler_policy"]["compiler_version"], compiler_policy_version=prompt_ir["compiler_policy"]["compiler_policy_version"], retention_policy_version=prompt_ir["retention_policy"]["version"], authority_envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state=prompt_ir["qualification_state"], asset_reference_state=prompt_ir["asset_reference_state"], model_generation_ready="true" if prompt_ir["model_generation_ready"] else "false", stale_status="FRESH", stale_reasons="[]", created_at=datetime.now(), updated_at=datetime.now())
-        session.add(version)
-        session.flush()
-        authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=book_id, episode=episode, storyboard_shot_id=row.id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state=prompt_ir["qualification_state"], stale_status="FRESH", stale_reasons="[]", created_at=datetime.now(), updated_at=datetime.now())
-        session.add(authority)
-        pointer = existing_pointer or PromptIRPointer(book_id=book_id, episode=episode, storyboard_shot_id=row.id)
-        pointer.prompt_ir_version_id = version.id
-        pointer.payload_hash = prompt_ir["payload_hash"]
-        pointer.qualification_state = prompt_ir["qualification_state"]
-        pointer.updated_at = datetime.now()
-        session.add(pointer)
-        session.commit()
-        return {"mutated": True, "reused": False, "prompt_ir_version_id": version.id, "prompt_ir_authority_id": authority.id, "qualification_state": version.qualification_state, "asset_reference_state": version.asset_reference_state, "model_generation_ready": version.model_generation_ready == "true", "payload_hash": version.payload_hash, "asset_authority_source": "current_visual_asset_pointers", "provider_calls": 0}
+    # V1 single-shot compilation is readable/auditable elsewhere, but cannot
+    # mutate Production PromptIR pointers because it has no explicit episode
+    # GenerationPolicy or atomic authority contract.
+    _conflict("PROMPT_IR_LEGACY_PRODUCTION_DISABLED", "Legacy single-shot PromptIR compilation is disabled for Production; use the episode-level Phase E compiler.")
 
 
 @router.post("/{book_id}/episodes/{episode}/storyboard/{shot_id}/prompt-ir/adapter-preview")
@@ -176,27 +145,28 @@ def preview_prompt_ir_adapter(book_id: int, episode: int, shot_id: int, req: Ada
         if not pointer:
             _conflict("PROMPT_IR_POINTER_MISSING", "Model Adapter requires a current qualified PromptIR pointer.")
         version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).first()
+        if version is not None and version.schema_version != "prompt_ir_v2":
+            _conflict("PROMPT_IR_V2_REQUIRED", "Production adapter preview accepts only prompt_ir_v2.")
         if not version or version.stale_status != "FRESH" or version.qualification_state != "PROMPT_IR_QUALIFIED":
             _conflict("PROMPT_IR_NOT_QUALIFIED", "Current PromptIR is missing, stale or not qualified.")
         if version.payload_hash != pointer.payload_hash:
             _conflict("PROMPT_IR_PAYLOAD_TAMPERED", "PromptIR payload no longer matches the current pointer.")
-        if version.schema_version == "prompt_ir_v2":
-            meta = _json(row.meta_info, {})
-            handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else {}
-            try:
-                asset_authority = _production_asset_authority(session, book_id=book_id, handoff=handoff if isinstance(handoff, dict) else {})
-                registry = MODEL_ADAPTER_REGISTRY.get(req.adapter_id.lower(), {})
-                profile_input = dict(req.model_profile) if req.model_profile else {"adapter_id": req.adapter_id, "model_family": registry.get("model_family", req.adapter_id.upper()), "capabilities": req.capability_profile}
-                profile = build_model_profile(profile_input)
-                resolved = resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=row.id, generation_policy=req.generation_policy or None, asset_authority=asset_authority, model_profile=profile)
-                output = adapt_prompt_ir_to_generation_payload(resolved["payload"], generation_policy=req.generation_policy or None, model_profile=profile)
-            except PromptIRPhaseEError as exc:
-                _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
-            except HTTPException:
-                raise
-            return {"prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "model_generation_ready": bool(output.get("readiness", {}).get("ready")), "generation_payload": output, "provider_calls": 0, "llm_calls": 0, "media_generated": False}
-        output = serialize_prompt_ir_to_adapter(_json(version.payload_json, {}), req.adapter_id, capability_profile=req.capability_profile)
-        return {"prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "model_generation_ready": version.model_generation_ready == "true" and output.get("status") == "ready", "adapter_output": output, "provider_calls": 0}
+        if req.generation_policy and (not req.generation_policy.get("mode") or not req.generation_policy.get("target_media")):
+            _conflict("GENERATION_POLICY_REQUIRED", "An adapter preview override requires explicit mode and target_media.")
+        meta = _json(row.meta_info, {})
+        handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else {}
+        try:
+            asset_authority = _production_asset_authority(session, book_id=book_id, handoff=handoff if isinstance(handoff, dict) else {})
+            registry = MODEL_ADAPTER_REGISTRY.get(req.adapter_id.lower(), {})
+            profile_input = dict(req.model_profile) if req.model_profile else {"adapter_id": req.adapter_id, "model_family": registry.get("model_family", req.adapter_id.upper()), "capabilities": req.capability_profile}
+            profile = build_model_profile(profile_input)
+            resolved = resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=row.id, generation_policy=req.generation_policy or None, asset_authority=asset_authority, model_profile=profile)
+            output = adapt_prompt_ir_to_generation_payload(resolved["payload"], generation_policy=req.generation_policy or None, model_profile=profile)
+        except PromptIRPhaseEError as exc:
+            _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
+        except HTTPException:
+            raise
+        return {"prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "model_generation_ready": bool(output.get("readiness", {}).get("ready")), "generation_payload": output, "provider_calls": 0, "llm_calls": 0, "media_generated": False}
 
 
 @router.post("/{book_id}/episodes/{episode}/prompt-ir/compile")
@@ -220,23 +190,26 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
             except HTTPException:
                 raise
             snapshots.append(build_storyboard_production_snapshot(materialization_set=materialization_set, rows=rows, authority_envelope=set_envelope))
-        policy = build_generation_policy(req.generation_policy)
-        asset_authority = dict(req.asset_authority or {})
-        if not asset_authority:
-            by_key = {}
-            for snapshot in snapshots:
-                for row in snapshot.get("ordered_shots", []):
-                    handoff = row.get("prompt_compiler_handoff") if isinstance(row.get("prompt_compiler_handoff"), dict) else {}
-                    current = _production_asset_authority(session, book_id=book_id, handoff=handoff)
-                    for binding in current.get("bindings", []):
-                        key = str(binding.get("asset_key") or binding.get("canonical_asset_id") or "")
-                        if key:
-                            by_key[key] = binding
-            asset_authority = {"bindings": list(by_key.values()), "source": "current_visual_asset_pointers", "authority_fingerprint": phase_e_fingerprint(list(by_key.values()))}
+        if not isinstance(req.generation_policy, dict) or not req.generation_policy.get("mode") or not req.generation_policy.get("target_media"):
+            _conflict("GENERATION_POLICY_REQUIRED", "Production PromptIR compilation requires an explicit generation_policy.mode and target_media.")
+        policy = build_generation_policy(req.generation_policy, allow_default=False)
+        # Production authority is always resolved from current pointers.  The
+        # request model intentionally has no asset_authority field; Pydantic's
+        # extra-field handling therefore cannot turn caller data into authority.
+        by_key = {}
+        for snapshot in snapshots:
+            for row in snapshot.get("ordered_shots", []):
+                handoff = row.get("prompt_compiler_handoff") if isinstance(row.get("prompt_compiler_handoff"), dict) else {}
+                current = _production_asset_authority(session, book_id=book_id, handoff=handoff)
+                for binding in current.get("bindings", []):
+                    key = str(binding.get("asset_key") or binding.get("canonical_asset_id") or "")
+                    if key:
+                        by_key[key] = binding
+        asset_authority = {"bindings": list(by_key.values()), "source": "current_visual_asset_pointers", "authority_fingerprint": phase_e_fingerprint(list(by_key.values()))}
         try:
             compiled = []
             for snapshot in snapshots:
-                compiled.extend(compile_storyboard_snapshot_to_prompt_ir(snapshot, generation_policy=policy, asset_authority=asset_authority))
+                compiled.extend(compile_storyboard_snapshot_to_prompt_ir(snapshot, generation_policy=policy, asset_authority=asset_authority, allow_default_policy=False))
         except PromptIRPhaseEError as exc:
             # Compilation is pure; no session mutation has occurred.
             _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
@@ -251,7 +224,10 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
             shot_id = int(ir["storyboard_shot_id"])
             existing_pointer = existing_by_shot.get(shot_id)
             existing = session.query(PromptIRVersion).filter_by(id=existing_pointer.prompt_ir_version_id).first() if existing_pointer else None
-            if existing and existing.payload_hash == ir["payload_hash"] and existing.stale_status == "FRESH":
+            if existing and existing_pointer:
+                # Reuse is permitted only after the same full current
+                # authority validator used by the production resolver.
+                validate_current_prompt_ir_authority(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, expected_prompt_ir=ir, generation_policy=policy, asset_authority=asset_authority)
                 results.append({"storyboard_shot_id": shot_id, "prompt_ir_version_id": existing.id, "reused": True, "payload_hash": existing.payload_hash})
                 continue
             if existing:
