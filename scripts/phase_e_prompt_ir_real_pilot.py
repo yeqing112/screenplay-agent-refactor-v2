@@ -14,7 +14,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from core.prompt_ir_phase_e import fingerprint, resolve_current_authoritative_prompt_ir
+from core.prompt_ir_phase_e import build_generation_policy, fingerprint, resolve_current_authoritative_prompt_ir
 
 ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / "artifacts" / "e2e-production-pilot"
@@ -158,6 +158,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         after_idempotent = _counts(session, book_id, episode)
         pointer_hashes_before_failure = {row.storyboard_shot_id: row.payload_hash for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         revision_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_authority_before = {row.storyboard_shot_id: session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_pointer_rows_before = {row.storyboard_shot_id: row.id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
     failed_compile = _compile(book_id, episode, PhaseECompileRequest(generation_policy={"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": ["CHARACTER"]}))
     with Session() as session:
         after_failed = _counts(session, book_id, episode)
@@ -167,13 +169,75 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     policy_revision = _compile(book_id, episode, revision_request)
     with Session() as session:
         revision_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_authority_after = {row.storyboard_shot_id: session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_pointer_rows_after = {row.storyboard_shot_id: row.id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         revision_old_states = {row.id: row.stale_status for row in session.query(PromptIRVersion).filter(PromptIRVersion.id.in_(list(revision_before.values()))).all()}
     revision_reuse = _compile(book_id, episode, revision_request)
+
+    # Exercise a legitimate upstream VisualAssetVersion A -> B activation
+    # through the existing visual-authority API, then explicitly recompile
+    # PromptIR under the unchanged policy.  The temporary DB is restored after
+    # the evidence is captured so the final pilot remains clean/current.
+    asset_revision = {"status": "NOT_RUN"}
+    baseline = Path(str(db_file) + ".phase-e-baseline")
+    engine.dispose(); shutil.copy2(db_file, baseline)
+    try:
+        from api.visual_asset_authority_api import VisualVersionBody, create_visual_asset_version
+
+        with Session() as session:
+            prompt_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            prompt_version = session.query(PromptIRVersion).filter_by(id=prompt_pointer.prompt_ir_version_id).one()
+            prompt_payload = _json(prompt_version.payload_json, {})
+            resolved_assets = _json(prompt_payload.get("asset_authority_bindings", {}).get("resolved"), [])
+            target_asset_key = next((item.get("asset_authority_ref") for item in resolved_assets if str(item.get("identity_ref", "")).startswith("scene:")), None)
+            target_pointer = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=target_asset_key).one()
+            target_version = session.query(VisualAssetVersion).filter_by(id=target_pointer.current_version_id).one()
+            old_asset_version_id = target_version.id
+            old_asset_pointer = {"id": target_pointer.id, "asset_key": target_pointer.asset_key, "current_version_id": target_pointer.current_version_id, "payload_hash": target_pointer.payload_hash, "authority_status": target_pointer.authority_status, "stale_status": target_pointer.stale_status}
+            old_prompt_ids = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            old_prompt_authority_ids = {row.storyboard_shot_id: session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            target_asset_type = target_pointer.asset_type
+            target_canonical_id = target_version.canonical_id
+
+        asset_activation = create_visual_asset_version(
+            book_id,
+            target_asset_type,
+            VisualVersionBody(
+                canonical_id=target_canonical_id,
+                canonical_identity={"canonical_id": target_canonical_id, "revision_marker": "B"},
+                base_version_id=old_asset_version_id,
+                variant_decisions=[{"field": "revision_marker", "value": "B"}],
+                confirmed=True,
+            ),
+        )
+        asset_revision_compile = _compile(book_id, episode, revision_request)
+        with Session() as session:
+            current_asset_pointer = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=target_asset_key).one()
+            new_prompt_ids = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            new_prompt_authority_ids = {row.storyboard_shot_id: session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            old_prompt_stale = {row.id: row.stale_status for row in session.query(PromptIRVersion).filter(PromptIRVersion.id.in_(list(old_prompt_ids.values()))).all()}
+            asset_revision = {
+                "status": "PASS" if asset_revision_compile.get("status_code") is None and current_asset_pointer.current_version_id != old_asset_version_id else "FAIL",
+                "activation": asset_activation,
+                "compile": asset_revision_compile,
+                "asset_key": target_asset_key,
+                "asset_pointer_before": old_asset_pointer,
+                "asset_pointer_after": {"id": current_asset_pointer.id, "asset_key": current_asset_pointer.asset_key, "current_version_id": current_asset_pointer.current_version_id, "payload_hash": current_asset_pointer.payload_hash, "authority_status": current_asset_pointer.authority_status, "stale_status": current_asset_pointer.stale_status},
+                "old_asset_version_id": old_asset_version_id,
+                "new_asset_version_id": current_asset_pointer.current_version_id,
+                "old_prompt_ir_version_ids": old_prompt_ids,
+                "new_prompt_ir_version_ids": new_prompt_ids,
+                "old_prompt_ir_authority_ids": old_prompt_authority_ids,
+                "new_prompt_ir_authority_ids": new_prompt_authority_ids,
+                "changed_shot_ids": sorted(str(shot_id) for shot_id in old_prompt_ids if old_prompt_ids[shot_id] != new_prompt_ids.get(shot_id)),
+                "old_stale_states": old_prompt_stale,
+            }
+    finally:
+        shutil.copy2(baseline, db_file); baseline.unlink(missing_ok=True)
 
     # Directly attack the VisualAssetPointer chain on disposable DB copies;
     # the final persisted pilot remains clean and current.
     visual_asset_pointer_validation = {}
-    baseline = Path(str(db_file) + ".phase-e-baseline")
     with Session() as session:
         target_pointer = session.query(VisualAssetPointer).filter_by(book_id=book_id).order_by(VisualAssetPointer.id).first()
         target_key = target_pointer.asset_key
@@ -227,6 +291,24 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
 
     previews = [_preview(book_id, episode, shot_id) for shot_id in shot_ids]
     adapter_payloads = [item.get("generation_payload", {}) for item in previews if isinstance(item, dict) and item.get("generation_payload")]
+
+    # Adapter preview must consume the same validated VisualAssetPointer chain
+    # as compile.  Mutate only the pointer on a disposable DB copy and expect
+    # a fail-closed response before any adapter payload is produced.
+    adapter_pointer_tamper = {"status": "NOT_RUN"}
+    engine.dispose(); shutil.copy2(db_file, baseline)
+    try:
+        with Session() as session:
+            prompt_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_ids[0]).one()
+            prompt_version = session.query(PromptIRVersion).filter_by(id=prompt_pointer.prompt_ir_version_id).one()
+            resolved_assets = _json(_json(prompt_version.payload_json, {}).get("asset_authority_bindings", {}).get("resolved"), [])
+            target_asset_key = next(item.get("asset_authority_ref") for item in resolved_assets if item.get("asset_authority_ref"))
+            asset_pointer = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=target_asset_key).one()
+            asset_pointer.payload_hash = "tampered"
+            session.commit()
+        adapter_pointer_tamper = _preview(book_id, episode, shot_ids[0])
+    finally:
+        shutil.copy2(baseline, db_file); baseline.unlink(missing_ok=True)
 
     # Resolver positive proof uses the persisted current pointer and current
     # Storyboard materialization.  Negative proofs run on a disposable copy of
@@ -351,7 +433,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "lineage": lineage,
         "resolver_positive": resolver_positive,
         "failed_compile_zero_write": {"result": failed_compile, "counts_unchanged": after_failed == after_idempotent, "pointers_unchanged": pointer_hashes_before_failure == pointer_hashes_after_failure},
-        "prompt_ir_revision_lifecycle": {"policy_a": request.generation_policy, "policy_b": revision_request.generation_policy, "policy_a_compile": first_compile, "policy_a_reuse": second_compile, "policy_revision": policy_revision, "policy_b_reuse": revision_reuse, "old_version_ids": revision_before, "new_version_ids": revision_after, "old_stale_states": revision_old_states, "all_pointer_ids_changed": all(revision_before.get(key) != revision_after.get(key) for key in revision_before), "revision_then_reuse_count": revision_reuse.get("reused_count")},
+        "prompt_ir_revision_lifecycle": {"policy_a": request.generation_policy, "policy_b": revision_request.generation_policy, "old_policy_fingerprint": _json(payloads[0].get("generation_policy"), {}).get("fingerprint") if payloads else "", "new_policy_fingerprint": build_generation_policy(revision_request.generation_policy, allow_default=False).get("fingerprint"), "policy_a_compile": first_compile, "policy_a_reuse": second_compile, "policy_revision": policy_revision, "policy_b_reuse": revision_reuse, "old_version_ids": revision_before, "new_version_ids": revision_after, "old_authority_ids": revision_authority_before, "new_authority_ids": revision_authority_after, "pointer_rows_before": revision_pointer_rows_before, "pointer_rows_after": revision_pointer_rows_after, "old_stale_states": revision_old_states, "all_pointer_ids_changed": all(revision_before.get(key) != revision_after.get(key) for key in revision_before), "revision_then_reuse_count": revision_reuse.get("reused_count")},
+        "asset_revision": asset_revision,
         "visual_asset_pointer_validation": visual_asset_pointer_validation,
         "generation_policy_contract": {"missing_policy_result": missing_policy_compile, "explicit_policy_result": {"mode": request.generation_policy.get("mode"), "target_media": request.generation_policy.get("target_media")}},
         "asset_authority_source": {"source": "current_visual_asset_pointers", "request_asset_authority_allowed": False, "fake_binding_in_payload": fake_binding_in_payload, "fake_request_result": fake_compile},
@@ -362,6 +445,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "stale_propagation": {"storyboard": stale_storyboard, "asset": stale_asset},
         "tamper_cases": tamper_cases,
         "adapter": {"count": len(adapter_payloads), "payloads": adapter_payloads, "provider_calls": sum(item.get("provider_calls", 0) for item in adapter_payloads), "readiness": [item.get("readiness") for item in adapter_payloads]},
+        "adapter_pointer_tamper": adapter_pointer_tamper,
         "prompt_ir_count": len(lineage),
         "provider_calls": 0,
         "llm_calls": 0,
@@ -404,7 +488,25 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "reference_authority_resolution": trace["reference_authority_resolution"],
         "tamper_compile_again": [{"case": item["case"], "status_code": item["compile_again"].get("status_code"), "error_code": item["compile_again"].get("detail", {}).get("code")} for item in tamper_cases],
         "prompt_ir_revision": {"create": "PASS" if trace["first_compile"].get("compiled_count") == 15 else "FAIL", "reuse": "PASS" if trace["idempotency"].get("second_reused_count") == 15 else "FAIL", "policy_revision": "PASS" if trace["prompt_ir_revision_lifecycle"].get("policy_revision", {}).get("reused_count") == 0 and trace["prompt_ir_revision_lifecycle"].get("all_pointer_ids_changed") else "FAIL", "revision_then_reuse": "PASS" if trace["prompt_ir_revision_lifecycle"].get("revision_then_reuse_count") == 15 else "FAIL", "tamper_then_revision": "FAIL_CLOSED" if all(item.get("compile_again", {}).get("status_code") == 409 for item in tamper_cases) else "FAIL"},
-        "visual_asset_pointer": {"fresh": "PASS", "stale": "FAIL_CLOSED", "hash_tamper": "FAIL_CLOSED", "missing_version": "FAIL_CLOSED", "wrong_version": "FAIL_CLOSED", "ambiguous": "FAIL_CLOSED"},
+        "visual_asset_pointer": {"fresh": "PASS" if visual_asset_pointer_validation.get("fresh", {}).get("status") == "PASS" else "FAIL", "stale": "FAIL_CLOSED" if visual_asset_pointer_validation.get("stale", {}).get("status_code") == 409 else "FAIL", "hash_tamper": "FAIL_CLOSED" if visual_asset_pointer_validation.get("hash_tamper", {}).get("status_code") == 409 else "FAIL", "missing_version": "FAIL_CLOSED" if visual_asset_pointer_validation.get("missing_version", {}).get("status_code") == 409 else "FAIL", "wrong_version": "FAIL_CLOSED" if visual_asset_pointer_validation.get("wrong_version", {}).get("status_code") == 409 else "FAIL", "ambiguous": "FAIL_CLOSED" if visual_asset_pointer_validation.get("ambiguous", {}).get("status_code") == 409 else "FAIL", "legitimate_asset_revision": "PASS" if trace.get("asset_revision", {}).get("status") == "PASS" else "FAIL", "adapter_pointer_tamper": "FAIL_CLOSED" if trace.get("adapter_pointer_tamper", {}).get("status_code") == 409 else "FAIL"},
+        "provider_calls": 0,
+        "llm_calls": 0,
+        "image_calls": 0,
+        "video_calls": 0,
+        "db_migration_added": 0,
+    }
+    revision_asset_audit = {
+        "schema_version": "phase_e_prompt_ir_revision_asset_pointer_audit_v1",
+        "prompt_ir_revision": {
+            "create": "PASS" if trace["first_compile"].get("compiled_count") == 15 else "FAIL",
+            "reuse": "PASS" if trace["idempotency"].get("second_reused_count") == 15 else "FAIL",
+            "policy_revision": "PASS" if trace["prompt_ir_revision_lifecycle"].get("policy_revision", {}).get("reused_count") == 0 and trace["prompt_ir_revision_lifecycle"].get("all_pointer_ids_changed") else "FAIL",
+            "revision_then_reuse": "PASS" if trace["prompt_ir_revision_lifecycle"].get("revision_then_reuse_count") == 15 else "FAIL",
+            "tamper_then_revision": "FAIL_CLOSED" if all(item.get("compile_again", {}).get("status_code") == 409 for item in tamper_cases) else "FAIL",
+        },
+        "visual_asset_pointer": audit_artifact["visual_asset_pointer"],
+        "asset_revision": trace["asset_revision"],
+        "adapter_pointer_tamper": trace["adapter_pointer_tamper"],
         "provider_calls": 0,
         "llm_calls": 0,
         "image_calls": 0,
@@ -417,6 +519,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     (ART / "episode_01_prompt_ir_phase_e.json").write_text(json.dumps(prompt_ir_artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (ART / "episode_01_generation_payload_phase_e.json").write_text(json.dumps(generation_artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (ART / "phase_e_production_boundary_audit.json").write_text(json.dumps(audit_artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (ART / "phase_e_prompt_ir_revision_asset_pointer_audit.json").write_text(json.dumps(revision_asset_audit, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (ART / "episode_01_prompt_ir_phase_e.md").write_text("\n".join(markdown_lines), encoding="utf-8")
     (ART / "episode_01_phase_e_trace.json").write_text(json.dumps(trace, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return trace

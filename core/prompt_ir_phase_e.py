@@ -290,6 +290,49 @@ def classify_prompt_ir_compile_transition(*, current_payload: dict[str, Any], ex
     return "REUSE" if _text(current_payload.get("payload_hash") or current_payload.get("prompt_ir_payload_fingerprint")) == _text(expected_payload.get("payload_hash") or expected_payload.get("prompt_ir_payload_fingerprint")) else "REVISION"
 
 
+def compare_prompt_ir_lineage_to_current(*, stored_payload: dict[str, Any], current_snapshot: dict[str, Any], asset_authority: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Separate stored-object integrity from whether its upstream lineage is current.
+
+    The stored payload is compiled again using its own policy and the current
+    authoritative Storyboard/asset inputs.  A mismatch in source or asset
+    lineage means the intact historical PromptIR is obsolete; a mismatch in
+    any other semantic field means the stored object no longer reproduces the
+    deterministic projection and must be treated as tampered.
+    """
+    stored = _dict(stored_payload)
+    policy = _dict(stored.get("generation_policy"))
+    try:
+        expected = next(
+            item for item in compile_storyboard_snapshot_to_prompt_ir(
+                current_snapshot,
+                generation_policy=policy,
+                asset_authority=asset_authority,
+                allow_default_policy=False,
+            )
+            if item.get("storyboard_shot_id") == stored.get("storyboard_shot_id") or item.get("plan_shot_id") == stored.get("plan_shot_id")
+        )
+    except (PromptIRPhaseEError, StopIteration) as exc:
+        return {
+            "current_lineage_valid": False,
+            "obsolete_due_to_upstream_change": False,
+            "tampered": False,
+            "diagnostics": [{"code": exc.code, "message": exc.message}] if isinstance(exc, PromptIRPhaseEError) else [{"code": "PROMPT_IR_LINEAGE_MISSING"}],
+        }
+    diff = compare_prompt_ir_semantics(expected, stored)
+    if diff.get("empty"):
+        return {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False, "tampered": False, "diagnostics": [], "expected_payload": expected}
+    source_changed = expected.get("source_authority") != stored.get("source_authority")
+    assets_changed = expected.get("asset_authority_bindings") != stored.get("asset_authority_bindings")
+    upstream_changed = source_changed or assets_changed
+    return {
+        "current_lineage_valid": False,
+        "obsolete_due_to_upstream_change": upstream_changed,
+        "tampered": not upstream_changed,
+        "diagnostics": diff.get("errors", []),
+        "expected_payload": expected,
+    }
+
+
 def compile_storyboard_snapshot_to_prompt_ir(snapshot: dict[str, Any], *, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, allow_default_policy: bool = True) -> list[dict[str, Any]]:
     policy = build_generation_policy(generation_policy, allow_default=allow_default_policy)
     if not isinstance(snapshot, dict) or snapshot.get("schema_version") != "storyboard_production_snapshot_v1":
@@ -615,5 +658,5 @@ def validate_current_prompt_ir_authority(session: Any, *, book_id: int, episode:
 
 
 __all__ = [
-    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
+    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "compare_prompt_ir_lineage_to_current", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
 ]

@@ -1,17 +1,38 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_preflight_v1",
-  "status": "PASS",
-  "status_code": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_PREFLIGHT_PASS",
-  "starting_head": "854be82cd502cc919e58ffb2246683ddcebdc15c",
+  "status": "BLOCKED",
+  "status_code": "DIRECTOR_V3_EVALUATION_UPSTREAM_PHASE_A_BLOCKED",
+  "starting_head": "84025867ef3734f78df3949d6bbed024c886d0ec",
   "historical_expected_starting_head": "63c93d6e1f78a4777fff9c3e329f5eeb723846eb",
-  "expected_starting_head": "854be82cd502cc919e58ffb2246683ddcebdc15c",
-  "execution_base_status": "EXTERNAL_RUNTIME_AUTHORIZED",
+  "expected_starting_head": "2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779",
+  "execution_base_status": "REBASELINED",
   "remote_head": {
     "status": "PASS",
-    "sha": "854be82cd502cc919e58ffb2246683ddcebdc15c"
+    "sha": "10962c9fd3a0e2dd8445c6fe37f6aa76aaa7e174"
   },
-  "working_tree_dirty_count": 0,
-  "working_tree_dirty_sample": [],
+  "working_tree_dirty_count": 33,
+  "working_tree_dirty_sample": [
+    "api/prompt_ir_authority_api.py",
+    "artifacts/chain-test-with-issues-report.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-callgraph.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-epistemic-audit.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-fact-validation.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-grounding-audit.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-preflight.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-provider-ledger.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-readiness.json",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-report.md",
+    "artifacts/director-quality-v3-evaluation-upstream-phase-a-script-ir-validation.json",
+    "artifacts/e2e-production-pilot/PHASE_B_FINAL_REPORT.md",
+    "artifacts/e2e-production-pilot/PHASE_E_FINAL_REPORT.md",
+    "artifacts/e2e-production-pilot/episode_01_director_treatment_phase_b.json",
+    "artifacts/e2e-production-pilot/episode_01_generation_payload_phase_e.json",
+    "artifacts/e2e-production-pilot/episode_01_phase_b_trace.json",
+    "artifacts/e2e-production-pilot/episode_01_phase_c_trace.json",
+    "artifacts/e2e-production-pilot/episode_01_phase_d_trace.json",
+    "artifacts/e2e-production-pilot/episode_01_phase_e_trace.json",
+    "artifacts/e2e-production-pilot/episode_01_prompt_ir_phase_e.json"
+  ],
   "source_package": {
     "package_path": "work\\intake\\director_v3\\evaluation_packages\\SRC79f12d1b7f5eb828.json",
     "raw_path": "work\\intake\\director_v3\\evaluation_packages\\SRC79f12d1b7f5eb828.raw",
@@ -22,28 +43,29 @@
   "provider": {
     "status": "PASS",
     "provider": "openai-compatible",
-    "model": "mimo-v2.5",
-    "endpoint_class": "api.xiaomimimo.com",
-    "profile_id": "local-llm-2vydoz",
-    "api_key_configured": true
+    "model": "qwen3-max",
+    "endpoint_class": "10.126.126.2",
+    "profile_id": "builtin-llm-env",
+    "api_key_configured": false
   },
   "checks": {
-    "expected_starting_head": true,
-    "remote_head_matches_local": true,
-    "working_tree_clean": true,
+    "expected_starting_head": false,
+    "remote_head_matches_local": false,
+    "working_tree_clean": false,
     "source_package_verified": true,
     "provenance_verified": true,
     "provider_resolved": true,
     "provider_exposure_not_exposed": true,
     "predicted_calls_within_budget": true,
-    "no_production_mutation_plan": true,
-    "runtime_authorization": true
+    "no_production_mutation_plan": true
   },
-  "blocked_reasons": [],
+  "blocked_reasons": [
+    "EVALUATION_PHASE_A_HEAD_MISMATCH",
+    "EVALUATION_PHASE_A_REMOTE_HEAD_UNAVAILABLE_OR_MISMATCH",
+    "WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN"
+  ],
   "predicted_provider_calls": 2,
-  "provider_calls": 1,
-  "real_llm_calls": 1,
-  "real_mimo_calls": 1,
-  "authorized_execution_base": "854be82cd502cc919e58ffb2246683ddcebdc15c",
-  "runtime_authorization_execution_base_match": true
+  "provider_calls": 0,
+  "real_llm_calls": 0,
+  "real_mimo_calls": 0
 }

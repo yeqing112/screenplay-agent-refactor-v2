@@ -15,6 +15,7 @@ from core.prompt_ir_phase_e import (
     build_model_profile,
     compile_storyboard_snapshot_to_prompt_ir,
     classify_prompt_ir_compile_transition,
+    compare_prompt_ir_lineage_to_current,
     compare_prompt_ir_semantics,
     fingerprint as phase_e_fingerprint,
     resolve_current_authoritative_prompt_ir,
@@ -236,14 +237,10 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
                 old_policy = current_payload.get("generation_policy") if isinstance(current_payload.get("generation_policy"), dict) else {}
                 old_source = current_payload.get("source_authority")
                 old_assets = current_payload.get("asset_authority_bindings")
-                old_expected = next(item for item in compile_storyboard_snapshot_to_prompt_ir(snapshot_by_shot[shot_id], generation_policy=old_policy, asset_authority=asset_authority, allow_default_policy=False) if int(item.get("storyboard_shot_id")) == shot_id)
-                upstream_diff = compare_prompt_ir_semantics(old_expected, current_payload)
-                if not upstream_diff.get("empty"):
-                    expected_source = old_expected.get("source_authority")
-                    expected_assets = old_expected.get("asset_authority_bindings")
-                    upstream_changed = old_source != expected_source or old_assets != expected_assets
-                    if not upstream_changed:
-                        _conflict("PROMPT_IR_CURRENT_INTEGRITY_INVALID", "Stored PromptIR differs from current deterministic semantics without an authoritative upstream change.", diagnostics=upstream_diff.get("errors", []))
+                lineage = compare_prompt_ir_lineage_to_current(stored_payload=current_payload, current_snapshot=snapshot_by_shot[shot_id], asset_authority=asset_authority)
+                if lineage.get("tampered"):
+                    _conflict("PROMPT_IR_CURRENT_INTEGRITY_INVALID", "Stored PromptIR differs from current deterministic semantics without an authoritative change.", diagnostics=lineage.get("diagnostics", []))
+                if lineage.get("obsolete_due_to_upstream_change"):
                     revision_causes.append("UPSTREAM_AUTHORITY_CHANGED")
                 if (existing.stale_status != "FRESH" or integrity["authority"].stale_status != "FRESH") and not revision_causes:
                     _conflict("PROMPT_IR_STALE", "Current PromptIR is stale without a validated upstream revision.")

@@ -4,7 +4,6 @@
 
 ## Baseline Audit
 
-- Documented expected starting HEAD: `dbcfa83`; as-built repository already included the prior Spine→Topology closure commits before this corrective Strategy closure.
 - Historical Fresh Pilot #1 remains `FAILED`; its raw request/response/fingerprint/manifest/ledger were not modified.
 - Historical experiment validity is reclassified as `INVALID` because the Provider contract exposed legacy `must_preserve` strings while Runtime required structured anchors.
 - Existing Spine → Topology re-canary remains retired; no historical artifact or runner was changed.
@@ -19,7 +18,6 @@
 - Retired Provider cohort: `6` scenes; future experiment reuse: `false`
 - Fresh Pilot #2 inventory: `0` eligible unseen scenes; frozen: `false`; authorized: `false`
 - Provider / LLM / MiMo / HTTP / media / storage / CI calls: `0`
-- Strategy V3 targeted regression: `40 passed`; full backend regression: `1207 passed`; deterministic Golden: `5/5`
 - Atomic Expansion: `HOLD`; Production ShotPlan: `HOLD`; Human Preference: `NOT_RECORDED`
 
 ## Decision

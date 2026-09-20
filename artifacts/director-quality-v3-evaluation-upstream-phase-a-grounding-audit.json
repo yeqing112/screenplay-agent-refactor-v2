@@ -1,9 +1,8 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_grounding_audit_v1",
-  "status": "NOT_AUTHORIZED_SCOPE",
+  "status": "NOT_RUN_BLOCKED",
   "source_hash_exact": true,
-  "evidence_verification": "PASS",
+  "evidence_verification": "NOT_RUN",
   "invented_events": 0,
-  "invented_dialogues": 0,
-  "reason": "No ScriptIR stage was authorized or executed."
+  "invented_dialogues": 0
 }

@@ -291,6 +291,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "暗房环境与林晚",
             "shot_size": "MS",
             "camera_position": "工作台上方，略高于档案袋",
@@ -327,6 +329,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "顾沉与林晚",
             "shot_size": "MS",
             "camera_position": "暗房门口，顾沉身后",
@@ -363,6 +367,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "林晚的手与T恤下摆",
             "shot_size": "CU",
             "camera_position": "林晚侧后方，略低于腰部",
@@ -399,6 +405,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "顾沉与林晚",
             "shot_size": "MCU",
             "camera_position": "工作台两侧，略低于视线",
@@ -435,6 +443,8 @@
             "function": [
               "REACTION"
             ],
+            "primary_function": "REACTION",
+            "secondary_function": null,
             "subject": "林晚的面部与手部",
             "shot_size": "CU",
             "camera_position": "林晚正面略偏侧",
@@ -470,6 +480,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "顾沉与林晚",
             "shot_size": "MS",
             "camera_position": "工作台侧面，略高于两人",
@@ -505,6 +517,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "林晚",
             "shot_size": "MS",
             "camera_position": "暗房门口，顾沉离开方向",
@@ -533,7 +547,7 @@
         ],
         "notes": [],
         "compiler_version": "shot_architecture_compiler_v1",
-        "architecture_fingerprint": "ad0581fd9f329b5797b4a776e5849699eb10e7526866d13a7e066a52f6be637b",
+        "architecture_fingerprint": "c9b73c4eb93006e5f16f6fa48dc285486e6366f0ddac9a60314f487e05c6fafe",
         "source_trace": {
           "strategy_fingerprint": "f456c2f3f69f4c537537df3fa6f9d77787365edf3f8c9c406740917d46706993",
           "provider_shot_ids_ignored": true
@@ -824,6 +838,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "顾沉与林晚在暗房门外的对峙",
             "shot_size": "MS",
             "camera_position": "走廊侧方，略低于视平线",
@@ -861,6 +877,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "林晚的上半身与手部特写",
             "shot_size": "MCU",
             "camera_position": "略高于视平线，从顾沉视角方向",
@@ -897,6 +915,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "顾沉手中的胶片边缘",
             "shot_size": "CU",
             "camera_position": "与胶片边缘平齐",
@@ -932,6 +952,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "顾沉与林晚的对峙",
             "shot_size": "MS",
             "camera_position": "走廊侧方，与第一镜头类似但略近",
@@ -969,6 +991,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "胶片边缘与档案袋撕裂痕迹的对比",
             "shot_size": "CU",
             "camera_position": "与物证平齐",
@@ -1004,6 +1028,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "林晚的面部与手部反应",
             "shot_size": "MCU",
             "camera_position": "略高于视平线，从顾沉视角方向",
@@ -1040,6 +1066,8 @@
             "function": [
               "REACTION"
             ],
+            "primary_function": "REACTION",
+            "secondary_function": null,
             "subject": "林晚的手部特写",
             "shot_size": "CU",
             "camera_position": "与手部平齐",
@@ -1076,6 +1104,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "顾沉与林晚的对峙",
             "shot_size": "MS",
             "camera_position": "走廊侧方，与之前对峙镜头类似",
@@ -1113,6 +1143,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "闪回暗示：林晚使用剪刀",
             "shot_size": "CU",
             "camera_position": "多角度",
@@ -1148,6 +1180,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "林晚崩溃与走廊反光",
             "shot_size": "MS",
             "camera_position": "暗房内侧与走廊阴影处",
@@ -1178,7 +1212,7 @@
         ],
         "notes": [],
         "compiler_version": "shot_architecture_compiler_v1",
-        "architecture_fingerprint": "1d2215c39c38da15e886dd4ed5b0238af3aab6d09ac49529d6877b60337e4892",
+        "architecture_fingerprint": "f98da66be9b7615cb95eeb88d9d6d7cc01c9e79a0766cde5146ab114d4b2e3f8",
         "source_trace": {
           "strategy_fingerprint": "e7cf30b5b5fd42dae780594dde0ca63e60b194ded5d091a8ebb731e5ad858af9",
           "provider_shot_ids_ignored": true
@@ -1488,6 +1522,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "暗房门口地板上的新鲜拖痕",
             "shot_size": "CU",
             "camera_position": "低角度，贴近地面",
@@ -1523,6 +1559,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "储物柜内的黑色皮质相册夹",
             "shot_size": "CU",
             "camera_position": "储物柜内部视角，向外看",
@@ -1558,6 +1596,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "林晚放回相册夹的手和她的左侧口袋",
             "shot_size": "CU",
             "camera_position": "侧面，与林晚视线平齐",
@@ -1595,6 +1635,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "林晚",
             "shot_size": "MS",
             "camera_position": "正面，略低于视线",
@@ -1633,6 +1675,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "顾沉和林晚",
             "shot_size": "MS",
             "camera_position": "后门方向，略高于视线",
@@ -1669,6 +1713,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "顾沉的左手和外套口袋",
             "shot_size": "CU",
             "camera_position": "侧面，与顾沉口袋平齐",
@@ -1704,6 +1750,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "林晚和顾沉",
             "shot_size": "CU",
             "camera_position": "过肩镜头，交替",
@@ -1742,6 +1790,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "林晚和顾沉",
             "shot_size": "MS",
             "camera_position": "侧面，与两人平齐",
@@ -1780,6 +1830,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "晾干绳上的灰外套照片",
             "shot_size": "CU",
             "camera_position": "林晚的主观视角",
@@ -1816,6 +1868,8 @@
             "function": [
               "PRESSURE"
             ],
+            "primary_function": "PRESSURE",
+            "secondary_function": null,
             "subject": "顾沉和林晚",
             "shot_size": "CU",
             "camera_position": "过肩镜头，交替",
@@ -1852,6 +1906,8 @@
             "function": [
               "ESTABLISH"
             ],
+            "primary_function": "ESTABLISH",
+            "secondary_function": null,
             "subject": "林晚和她的旧照片",
             "shot_size": "CU",
             "camera_position": "正面，略低于视线",
@@ -1888,6 +1944,8 @@
             "function": [
               "OBSERVE"
             ],
+            "primary_function": "OBSERVE",
+            "secondary_function": null,
             "subject": "灰外套照片（闪回/叠化）与林晚手中的旧照片",
             "shot_size": "CU",
             "camera_position": "固定",
@@ -1917,7 +1975,7 @@
         ],
         "notes": [],
         "compiler_version": "shot_architecture_compiler_v1",
-        "architecture_fingerprint": "6b1d22ae9a5c388653bf55af38a5639d24dbbe8bcf0c7f98153e1775899db13c",
+        "architecture_fingerprint": "a534a75944ecc085647919ec4238b4df89546b0b4ffaf2f9b7eefb5e29e7b235",
         "source_trace": {
           "strategy_fingerprint": "1a517bca15ee51deb8295d44ea8f08a93d3bb0e6a9d5e8f5a735ecfa05d5f6dc",
           "provider_shot_ids_ignored": true

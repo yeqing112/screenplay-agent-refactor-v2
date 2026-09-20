@@ -1,26 +1,14 @@
 {
   "schema_version": "director_v3_evaluation_upstream_phase_a_fact_validation_v1",
-  "status": "PASS",
-  "attempt": 2,
-  "total_facts": 7,
-  "confirmed": 7,
+  "status": "NOT_RUN_BLOCKED",
+  "total_facts": 0,
+  "confirmed": 0,
   "proposed": 0,
   "conflict": 0,
   "unknown": 0,
-  "evidence_verified": 7,
+  "evidence_verified": 0,
   "evidence_invalid": 0,
   "claim_objective_promotion_violations": 0,
   "hard_errors": [],
-  "result_path": "artifacts/director-quality-v3-fact-evidence-attempt2-result.json",
-  "historical_attempt_1": {
-    "status": "FAIL",
-    "total_facts": 36,
-    "confirmed": 0,
-    "unknown": 36,
-    "evidence_verified": 0,
-    "evidence_invalid": 36,
-    "script_ir_calls": 0,
-    "failure_code": "SOURCE_FACT_EVIDENCE_INVALID",
-    "immutable": true
-  }
+  "reason": "provider-free gate blocked before Fact extraction"
 }

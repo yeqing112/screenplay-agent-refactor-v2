@@ -123,10 +123,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "b96e0ef23fc0600243afe40523bd9c4e2350f75680ac8de86f379c1248e4a044",
+      "payload_hash": "da95bfdeadbdca6176f63105774befdb8c5f6c9a0299c29315294984708c3454",
       "plan_shot_id": "SH_E01_SC001_001",
-      "prompt_ir_payload_fingerprint": "b96e0ef23fc0600243afe40523bd9c4e2350f75680ac8de86f379c1248e4a044",
-      "prompt_ir_semantic_fingerprint": "2df6dd58420c668534ed8a46e3bafad6d2f5bd72d647478f93eb18171f1fd3b5",
+      "prompt_ir_payload_fingerprint": "da95bfdeadbdca6176f63105774befdb8c5f6c9a0299c29315294984708c3454",
+      "prompt_ir_semantic_fingerprint": "544ea5072d17363cb93489bf2ee5cada969d252169b8472682a7177e09bd5283",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -158,12 +158,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
+        "blocking_authority_fingerprint": "24bb3674887bbad58d84048a06c507dd3cc6c654c298bd561480857a6aab2422",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
+        "shot_plan_authority_fingerprint": "352661797c9e29a19e06826d452878d3ece4e77869b2ce60ceb327b02cae5e43",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "35af25302d150735e317364eaef2244fadc8d80c43a7de565d135aa9168deb87",
-        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
+        "storyboard_projection_fingerprint": "dd8876a976064054c5a39236761793a52d9be6c10f3ee26b47f36a62d251128e",
+        "storyboard_set_payload_fingerprint": "25c1d4c109801cf4a5217c208c6c1f2958c4bcbdcf507b83054c65a12af7f2ce",
         "visual_semantic_handoff_fingerprint": "f81c77f87e6890df0b666340b12dc2dcad22d90221d948bfc40162c48b80ea28"
       },
       "spatial": {
@@ -299,10 +299,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "2ebac6aa0c089ed77d86f595eee40054ddf7e3bc4fa09be3d33dfbef7d85c3be",
+      "payload_hash": "50e628d74c7b343ae1bfaf40626d457cd9595ded0bd81713691883ec874d0dc3",
       "plan_shot_id": "SH_E01_SC001_002",
-      "prompt_ir_payload_fingerprint": "2ebac6aa0c089ed77d86f595eee40054ddf7e3bc4fa09be3d33dfbef7d85c3be",
-      "prompt_ir_semantic_fingerprint": "f6b19006dac1dfb381a028a15d2aac9313b0eae360b66e5559c002610b8ad22d",
+      "prompt_ir_payload_fingerprint": "50e628d74c7b343ae1bfaf40626d457cd9595ded0bd81713691883ec874d0dc3",
+      "prompt_ir_semantic_fingerprint": "85b233be5f64eaa349888bf9aeee424a2c5db36f387979008fb8d30835d40420",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -336,12 +336,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
+        "blocking_authority_fingerprint": "24bb3674887bbad58d84048a06c507dd3cc6c654c298bd561480857a6aab2422",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
+        "shot_plan_authority_fingerprint": "352661797c9e29a19e06826d452878d3ece4e77869b2ce60ceb327b02cae5e43",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "f5a5c4fad69840219f7b903fad2305f9682c14ffd4502251fa7fb164e9b7e69a",
-        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
+        "storyboard_projection_fingerprint": "ab386084931538e0dfbb94e92b30da1a95b2f540996436f8f73864b99d86675f",
+        "storyboard_set_payload_fingerprint": "25c1d4c109801cf4a5217c208c6c1f2958c4bcbdcf507b83054c65a12af7f2ce",
         "visual_semantic_handoff_fingerprint": "02ef3ebc6528b6a5b490a6aad7b38e5dccde69e85714bedb6f43bea4f99f1082"
       },
       "spatial": {
@@ -475,10 +475,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "93c29e690732888e2113e461b0565a7e51d873d744a54bccc8df1c60f190b3ac",
+      "payload_hash": "3b3280ff8971296b5a36695f73def27b864b5711990ff50239e8433272594c8b",
       "plan_shot_id": "SH_E01_SC001_003",
-      "prompt_ir_payload_fingerprint": "93c29e690732888e2113e461b0565a7e51d873d744a54bccc8df1c60f190b3ac",
-      "prompt_ir_semantic_fingerprint": "4761a2899c175305d88078d11a093f3c099d8d16709a0b9781e4fddb615fe48a",
+      "prompt_ir_payload_fingerprint": "3b3280ff8971296b5a36695f73def27b864b5711990ff50239e8433272594c8b",
+      "prompt_ir_semantic_fingerprint": "52965e638af83298165044340276b30e63ac0724e62c5b0f4ed4eb7f00a0a6e2",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -512,12 +512,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
+        "blocking_authority_fingerprint": "24bb3674887bbad58d84048a06c507dd3cc6c654c298bd561480857a6aab2422",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
+        "shot_plan_authority_fingerprint": "352661797c9e29a19e06826d452878d3ece4e77869b2ce60ceb327b02cae5e43",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "cc69c087a97da452a531840f14b5ddabe277fa42916ca58133ed0e51e63ebafe",
-        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
+        "storyboard_projection_fingerprint": "b26783ae321d5c786c77266a3295bb8fc980727f4acc5882721594aeb7c33e59",
+        "storyboard_set_payload_fingerprint": "25c1d4c109801cf4a5217c208c6c1f2958c4bcbdcf507b83054c65a12af7f2ce",
         "visual_semantic_handoff_fingerprint": "e0dad9d8b724da2d22755c421ac783dd6cd5982e0d8ee9462f2f5390b07bd32b"
       },
       "spatial": {
@@ -664,10 +664,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "0abefe7a3e46b87a1e6737f6e0f4fc7afa9a1a3b0f00c4437d9c8f2098d9162a",
+      "payload_hash": "91ac91af8db8718814c183eb13ed80fad8238f1f96e207202574831fc5628b07",
       "plan_shot_id": "SH_E01_SC001_004",
-      "prompt_ir_payload_fingerprint": "0abefe7a3e46b87a1e6737f6e0f4fc7afa9a1a3b0f00c4437d9c8f2098d9162a",
-      "prompt_ir_semantic_fingerprint": "ffd53f4bb2528aa4786f72c559bab0857309c65fc0af9bd8cbaa5aaa1eb4d238",
+      "prompt_ir_payload_fingerprint": "91ac91af8db8718814c183eb13ed80fad8238f1f96e207202574831fc5628b07",
+      "prompt_ir_semantic_fingerprint": "5cec756922f869e8fa1997da72b2d8a1557f4576741168645f58695ea2baeb58",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -699,12 +699,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
+        "blocking_authority_fingerprint": "24bb3674887bbad58d84048a06c507dd3cc6c654c298bd561480857a6aab2422",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
+        "shot_plan_authority_fingerprint": "352661797c9e29a19e06826d452878d3ece4e77869b2ce60ceb327b02cae5e43",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "545c2d25e6694116a5d9c6a8842e8483007c4764900d4170876f44cabf6fb701",
-        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
+        "storyboard_projection_fingerprint": "1220aa734f9e6ed5e9424476a05f28ecb19e8ecba9962acdafa586303dbae48c",
+        "storyboard_set_payload_fingerprint": "25c1d4c109801cf4a5217c208c6c1f2958c4bcbdcf507b83054c65a12af7f2ce",
         "visual_semantic_handoff_fingerprint": "05cc23026f1568ccc4bd6b4f82c848bc0c506208b947295931a55fa3b8c82f8a"
       },
       "spatial": {
@@ -862,10 +862,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "dccd8f74a9565335a655093468e2a857fc2c67757b1b7ebc26f3b6e9286ab732",
+      "payload_hash": "a3b9547d5a750e58b3a55f95b39a425c3967757304a6ef6ffedeb99d67b50fe7",
       "plan_shot_id": "SH_E01_SC001_005",
-      "prompt_ir_payload_fingerprint": "dccd8f74a9565335a655093468e2a857fc2c67757b1b7ebc26f3b6e9286ab732",
-      "prompt_ir_semantic_fingerprint": "ed7f64e30d1642137546eeaa91ad89dfb9ddbb607459b6cff440e2a7cf2b41e8",
+      "prompt_ir_payload_fingerprint": "a3b9547d5a750e58b3a55f95b39a425c3967757304a6ef6ffedeb99d67b50fe7",
+      "prompt_ir_semantic_fingerprint": "29f68f8adfcdb90c3eb3f8749ad5a88c706f76675b7d0b6245ef0e194b575c92",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -902,12 +902,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
+        "blocking_authority_fingerprint": "24bb3674887bbad58d84048a06c507dd3cc6c654c298bd561480857a6aab2422",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
+        "shot_plan_authority_fingerprint": "352661797c9e29a19e06826d452878d3ece4e77869b2ce60ceb327b02cae5e43",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "8b226161890a5fbf2050bc040f417cd630d81c76a9ec504ff245a862cc840540",
-        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
+        "storyboard_projection_fingerprint": "8e381b5e32193ae9e3945c0d7fee1189fc0123f02462ca4e0ec92cedc4d70894",
+        "storyboard_set_payload_fingerprint": "25c1d4c109801cf4a5217c208c6c1f2958c4bcbdcf507b83054c65a12af7f2ce",
         "visual_semantic_handoff_fingerprint": "d3d339737dbea5627089a929ad1653f043d648ff14a9ac745d51c6ace0a3f707"
       },
       "spatial": {
@@ -1073,10 +1073,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "c2f884c0c1c9f67d70f0c669045a2c026b988813bc9782f5fa3ecd4571d8673d",
+      "payload_hash": "b56134ddfc780522dd7f3bf97004e96cb009b781d6ee45b7491a7815e14babf3",
       "plan_shot_id": "SH_E01_SC001_006",
-      "prompt_ir_payload_fingerprint": "c2f884c0c1c9f67d70f0c669045a2c026b988813bc9782f5fa3ecd4571d8673d",
-      "prompt_ir_semantic_fingerprint": "5cfac4114fb90473d3517f3a9987d2ba0e0391e7c87bb1ed8ceab49135c1767e",
+      "prompt_ir_payload_fingerprint": "b56134ddfc780522dd7f3bf97004e96cb009b781d6ee45b7491a7815e14babf3",
+      "prompt_ir_semantic_fingerprint": "33d7037a7639c5ecde91d85567c14383e2921d8e6434dc0b60dd1ad44ddaac9f",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -1119,12 +1119,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
+        "blocking_authority_fingerprint": "24bb3674887bbad58d84048a06c507dd3cc6c654c298bd561480857a6aab2422",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
+        "shot_plan_authority_fingerprint": "352661797c9e29a19e06826d452878d3ece4e77869b2ce60ceb327b02cae5e43",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "a5e684c69497a6c06361ad8d5f734678fd72688b08d6c3e81a5ccc5b4a24a9f4",
-        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
+        "storyboard_projection_fingerprint": "dea8f8797ae20220ecc930d60dd80717275ad348f1380e8f5c7e0cc37ca61a47",
+        "storyboard_set_payload_fingerprint": "25c1d4c109801cf4a5217c208c6c1f2958c4bcbdcf507b83054c65a12af7f2ce",
         "visual_semantic_handoff_fingerprint": "f928acf09074f3605292452bd5f8625d4afa988f0d2d0ac4dbfe1162ab9d0034"
       },
       "spatial": {
@@ -1270,10 +1270,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "2550e370501601fefd764b2dd5519c3969c855a8125677a280f7a251884c2965",
+      "payload_hash": "d5f9edff45d070f1f3ceea6e9ee059f69cf40c6b5025a8092e1708f61b3fcad4",
       "plan_shot_id": "SH_E01_SC001_007",
-      "prompt_ir_payload_fingerprint": "2550e370501601fefd764b2dd5519c3969c855a8125677a280f7a251884c2965",
-      "prompt_ir_semantic_fingerprint": "d46f6d67aae51e15e53a8e2f180f0212195212316738770f9c50b1a166af4878",
+      "prompt_ir_payload_fingerprint": "d5f9edff45d070f1f3ceea6e9ee059f69cf40c6b5025a8092e1708f61b3fcad4",
+      "prompt_ir_semantic_fingerprint": "5ab8e7c700be0f4aaeeb370eb47dcebe4aea552dbeceecdfbed2e89d455e0392",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -1305,12 +1305,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
+        "blocking_authority_fingerprint": "24bb3674887bbad58d84048a06c507dd3cc6c654c298bd561480857a6aab2422",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
+        "shot_plan_authority_fingerprint": "352661797c9e29a19e06826d452878d3ece4e77869b2ce60ceb327b02cae5e43",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "338d063568b3cff2465b363107eb71efaa271101f060b6c5a9c50578c1b8a2a4",
-        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
+        "storyboard_projection_fingerprint": "59e919a52d9b593e3d26c3902bc010480f49ea432b7569c8c4c250d480263cab",
+        "storyboard_set_payload_fingerprint": "25c1d4c109801cf4a5217c208c6c1f2958c4bcbdcf507b83054c65a12af7f2ce",
         "visual_semantic_handoff_fingerprint": "12ba50e2bf552abfcfa37fc36dd20331e288291dc2ae29636e7ce441f2c2b782"
       },
       "spatial": {
@@ -1445,10 +1445,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "c7d927430686fd23506da27f35c8090374ca701c5028c5d289ec14267cc65c13",
+      "payload_hash": "bd51c5c7a50d68fb9bbcf827b8ed926d8af8315e1a86a0f1c8feb5386cb6947a",
       "plan_shot_id": "SH_E01_SC001_008",
-      "prompt_ir_payload_fingerprint": "c7d927430686fd23506da27f35c8090374ca701c5028c5d289ec14267cc65c13",
-      "prompt_ir_semantic_fingerprint": "a025fbe7b40420fbdfdc310ccbffcf0a3a730aad4e9ff1efa6688c1442dd93a6",
+      "prompt_ir_payload_fingerprint": "bd51c5c7a50d68fb9bbcf827b8ed926d8af8315e1a86a0f1c8feb5386cb6947a",
+      "prompt_ir_semantic_fingerprint": "5bec410bd276416d6cb9bac89ea5a56cf9a256e5dc5f58bcf5aef3f15d825319",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -1477,12 +1477,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "43f42ee6033f871b20016eb2035cee5540926cfb747fec4d633c21b541618dee",
+        "blocking_authority_fingerprint": "24bb3674887bbad58d84048a06c507dd3cc6c654c298bd561480857a6aab2422",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "c6be3e801cabd45073a181276bdaf06fe5ea6916d4c14e514fa1e699a116f634",
+        "shot_plan_authority_fingerprint": "352661797c9e29a19e06826d452878d3ece4e77869b2ce60ceb327b02cae5e43",
         "storyboard_materialization_set_id": 1,
-        "storyboard_projection_fingerprint": "918529a45d573d9c3177b0a309eb9e7030154684ff6ec1f86cf5fd3db8ba5a83",
-        "storyboard_set_payload_fingerprint": "84bfa7e3af0139cfeca5c59e296cca820b5d4fd549403492eaafc70a94b8b714",
+        "storyboard_projection_fingerprint": "a7093f171efed2e2138db87990bd262657fd1d91cac74deb75b705d558eb623d",
+        "storyboard_set_payload_fingerprint": "25c1d4c109801cf4a5217c208c6c1f2958c4bcbdcf507b83054c65a12af7f2ce",
         "visual_semantic_handoff_fingerprint": "ece792cbd6b98e36318c300fbf5fe351f93347bbebe0ffd371f2478e5c57a332"
       },
       "spatial": {
@@ -1648,10 +1648,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "d8e4b9556279126bcc46307ae470ee8289c17d8c2f505a7e3da26a4db7a5d2cc",
+      "payload_hash": "b82ba49beab9f22dd60162db2cbe95bdc3aa84c0d0afa2c83626b799183864ca",
       "plan_shot_id": "SH_E01_SC002_001",
-      "prompt_ir_payload_fingerprint": "d8e4b9556279126bcc46307ae470ee8289c17d8c2f505a7e3da26a4db7a5d2cc",
-      "prompt_ir_semantic_fingerprint": "6471de033324bcff352bdd8f9d077d9bfc6239f3e295fb56b556a4e52ed57f61",
+      "prompt_ir_payload_fingerprint": "b82ba49beab9f22dd60162db2cbe95bdc3aa84c0d0afa2c83626b799183864ca",
+      "prompt_ir_semantic_fingerprint": "29ba63f839369bb792492acae665f0c55b5664718bd1d27e93bf23bcbad7bc74",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -1690,12 +1690,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
+        "blocking_authority_fingerprint": "dc4d04e4d4bdf01a4d2846428fec530463cb8a62a28f19ff6f0529ae4f9d9998",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
+        "shot_plan_authority_fingerprint": "9354e5db45c9f5defaad5f5bd65cd92afd8d64613d1a15036a87fdc3a60e4689",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "0a47b4cc081b8e20eff95ade528b8da50c743ef383d01e12f5a544bef8147cd9",
-        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
+        "storyboard_projection_fingerprint": "fd9fb54cb3dceaae13c974ec83c0ba49c698400de7a4bc0548456f80a5b94b72",
+        "storyboard_set_payload_fingerprint": "5d364f4ec93e030bd55540f851d6421dc8839707e8e2f35856d8873d63b8a8c5",
         "visual_semantic_handoff_fingerprint": "4fe0486f1ec1884b8585e9cf653ba3a6013f2a57749244f0966744d61518aa13"
       },
       "spatial": {
@@ -1830,10 +1830,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "568d4eb6ba9b6e2f535f0705d9940404f1d55fdd10949b903e9fab9ffb5dbbc2",
+      "payload_hash": "0e73e6b2ee522ec883ac43b51fd75e37821020559f8d708aafdf7b874a87c011",
       "plan_shot_id": "SH_E01_SC002_002",
-      "prompt_ir_payload_fingerprint": "568d4eb6ba9b6e2f535f0705d9940404f1d55fdd10949b903e9fab9ffb5dbbc2",
-      "prompt_ir_semantic_fingerprint": "9f2bcc5e893ae93ee92343f796d58f6e89addaf3bf9f8fb6ad2b9edbbb5bd2ee",
+      "prompt_ir_payload_fingerprint": "0e73e6b2ee522ec883ac43b51fd75e37821020559f8d708aafdf7b874a87c011",
+      "prompt_ir_semantic_fingerprint": "c95d274917954e9ddac66830de07dc3f85db5b9d7cfe379aa47371fd48ea8a69",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -1861,12 +1861,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
+        "blocking_authority_fingerprint": "dc4d04e4d4bdf01a4d2846428fec530463cb8a62a28f19ff6f0529ae4f9d9998",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
+        "shot_plan_authority_fingerprint": "9354e5db45c9f5defaad5f5bd65cd92afd8d64613d1a15036a87fdc3a60e4689",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "0ba4d2c2159a8f743b5c1f52725884eec6f6c9026588039bc57edad7a1e003ff",
-        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
+        "storyboard_projection_fingerprint": "5646780298e9d8299f3504346e7211f4afef4aef92ec3ae99d07ed219b73f53b",
+        "storyboard_set_payload_fingerprint": "5d364f4ec93e030bd55540f851d6421dc8839707e8e2f35856d8873d63b8a8c5",
         "visual_semantic_handoff_fingerprint": "7d06de395cd1efc380e8e0197b53e6b0674aea009b675be8a7068a3957bab84e"
       },
       "spatial": {
@@ -2005,10 +2005,10 @@
       },
       "information_visibility": "AUDIENCE_OBSERVES_CHARACTER_DOUBT",
       "model_generation_ready": false,
-      "payload_hash": "8d6cd5dea9754ae45776157a600c81766747215e5cb0dadf953f877b6d191b35",
+      "payload_hash": "965569a08722c876aed5e441918dc2280dd767081764b97c9a259a36fe2d5bb4",
       "plan_shot_id": "SH_E01_SC002_003",
-      "prompt_ir_payload_fingerprint": "8d6cd5dea9754ae45776157a600c81766747215e5cb0dadf953f877b6d191b35",
-      "prompt_ir_semantic_fingerprint": "c25c02b9aeaf40cf652273b69dd837b443d9fd83cc73d052642a977cf28a8108",
+      "prompt_ir_payload_fingerprint": "965569a08722c876aed5e441918dc2280dd767081764b97c9a259a36fe2d5bb4",
+      "prompt_ir_semantic_fingerprint": "6809f122d237a488331bf9dbce02aca3818122eb70fad4b75530792f2da8f7cf",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -2040,12 +2040,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
+        "blocking_authority_fingerprint": "dc4d04e4d4bdf01a4d2846428fec530463cb8a62a28f19ff6f0529ae4f9d9998",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
+        "shot_plan_authority_fingerprint": "9354e5db45c9f5defaad5f5bd65cd92afd8d64613d1a15036a87fdc3a60e4689",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "da643633dffc4f20ebdfa08d5127f83cb699c79b16581eddf18632e29cfec68a",
-        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
+        "storyboard_projection_fingerprint": "eb77d53f98c57736e6ddb78b3e99f5cb08c15cdb81fbd626253dbdb198354ccc",
+        "storyboard_set_payload_fingerprint": "5d364f4ec93e030bd55540f851d6421dc8839707e8e2f35856d8873d63b8a8c5",
         "visual_semantic_handoff_fingerprint": "422deb9071d7aca9513f93bb531c1d172f194f29982549a982276916d2e00b2b"
       },
       "spatial": {
@@ -2195,10 +2195,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "b63911d5ac1ae0039188f6a3364753012b27454d87790a01e4d499830dde7827",
+      "payload_hash": "c7b812eb5bd515baa0610f4a80018060a247da9a3c6e827cc556e17d2a1f2039",
       "plan_shot_id": "SH_E01_SC002_004",
-      "prompt_ir_payload_fingerprint": "b63911d5ac1ae0039188f6a3364753012b27454d87790a01e4d499830dde7827",
-      "prompt_ir_semantic_fingerprint": "5100475ea9488d785d817a2526aa32d0241d0279657805a52a3e9836e66c240d",
+      "prompt_ir_payload_fingerprint": "c7b812eb5bd515baa0610f4a80018060a247da9a3c6e827cc556e17d2a1f2039",
+      "prompt_ir_semantic_fingerprint": "3d2c3626ff8afbf02e0fe135fa14d549e53bffb18809b5a03454ad71d9417c52",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -2236,12 +2236,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
+        "blocking_authority_fingerprint": "dc4d04e4d4bdf01a4d2846428fec530463cb8a62a28f19ff6f0529ae4f9d9998",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
+        "shot_plan_authority_fingerprint": "9354e5db45c9f5defaad5f5bd65cd92afd8d64613d1a15036a87fdc3a60e4689",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "40efc9844621ac631218723b6453d4f4f7183b0b8aa0da28633ebe132d0e03b6",
-        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
+        "storyboard_projection_fingerprint": "918abb8e7401bee337e04d5c9890fa404653b673d9f63f752e8673f7cff0e66a",
+        "storyboard_set_payload_fingerprint": "5d364f4ec93e030bd55540f851d6421dc8839707e8e2f35856d8873d63b8a8c5",
         "visual_semantic_handoff_fingerprint": "253a00aefa100d30a1d405e0af1764da428543338d5cf2ab6047fc1b34ead985"
       },
       "spatial": {
@@ -2383,10 +2383,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "42aa527e8900b89766ae4d08784f1c134ae7099d0c324eb55c3fd98a8bbd9e6a",
+      "payload_hash": "0c8659eb726aeeba66108580a9662ffb355e41f2d765a5ab7e753046fdb65e57",
       "plan_shot_id": "SH_E01_SC002_005",
-      "prompt_ir_payload_fingerprint": "42aa527e8900b89766ae4d08784f1c134ae7099d0c324eb55c3fd98a8bbd9e6a",
-      "prompt_ir_semantic_fingerprint": "605cdb84dd9c80d5c34d382df0a20cab2e31d5d93a42cc3c177e7097eb5f455d",
+      "prompt_ir_payload_fingerprint": "0c8659eb726aeeba66108580a9662ffb355e41f2d765a5ab7e753046fdb65e57",
+      "prompt_ir_semantic_fingerprint": "2691490a596c8527a36b7c05536f124b69db3e0eed35754c03067a120b5f547b",
       "prompt_ir_semantic_ready": true,
       "props": [
         {
@@ -2420,12 +2420,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
+        "blocking_authority_fingerprint": "dc4d04e4d4bdf01a4d2846428fec530463cb8a62a28f19ff6f0529ae4f9d9998",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
+        "shot_plan_authority_fingerprint": "9354e5db45c9f5defaad5f5bd65cd92afd8d64613d1a15036a87fdc3a60e4689",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "f56837e3f0256b845a3a1d61247c9d1452e0273b2ef496db857cce91178c215c",
-        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
+        "storyboard_projection_fingerprint": "c466ec8ea0b613077c6ddf9c131a946bb9f624b4834f910b56112d34c5d0a6b3",
+        "storyboard_set_payload_fingerprint": "5d364f4ec93e030bd55540f851d6421dc8839707e8e2f35856d8873d63b8a8c5",
         "visual_semantic_handoff_fingerprint": "fcf73b8e1c4933df4c6690fc2230fce45a68766016d568daf60c76b028d52e78"
       },
       "spatial": {
@@ -2554,10 +2554,10 @@
       },
       "information_visibility": "CHARACTER_AND_AUDIENCE",
       "model_generation_ready": false,
-      "payload_hash": "cb3fd5a340be72f2ca415124fd202790a5a277fbc94d44a3129d6930e1a96c33",
+      "payload_hash": "010270668d63ed134958a4fc367cf950c0d7a7c7aa40197b0c46d727ff21fa32",
       "plan_shot_id": "SH_E01_SC002_006",
-      "prompt_ir_payload_fingerprint": "cb3fd5a340be72f2ca415124fd202790a5a277fbc94d44a3129d6930e1a96c33",
-      "prompt_ir_semantic_fingerprint": "927de0a20a7dfd732f7b46774a623758e3c3ab34ff3f4f062f90d985350ea55e",
+      "prompt_ir_payload_fingerprint": "010270668d63ed134958a4fc367cf950c0d7a7c7aa40197b0c46d727ff21fa32",
+      "prompt_ir_semantic_fingerprint": "9340ca382ba130b3c832ddfb050019aa35b569a16087f7aa60708f6eb90d643c",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -2583,12 +2583,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
+        "blocking_authority_fingerprint": "dc4d04e4d4bdf01a4d2846428fec530463cb8a62a28f19ff6f0529ae4f9d9998",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
+        "shot_plan_authority_fingerprint": "9354e5db45c9f5defaad5f5bd65cd92afd8d64613d1a15036a87fdc3a60e4689",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "3fa893c6866e9d8f2000a63d56e6ffe459c666b8b433f6e2b6df99a7bba85d11",
-        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
+        "storyboard_projection_fingerprint": "4a9fbc8c681ec255041960736ea7a6286623c4dcd1ae38078ed83218a89527a9",
+        "storyboard_set_payload_fingerprint": "5d364f4ec93e030bd55540f851d6421dc8839707e8e2f35856d8873d63b8a8c5",
         "visual_semantic_handoff_fingerprint": "dbb2ca73aeb84f499770f333a0d08c2a94894feff36425c73f97037b5cd3d447"
       },
       "spatial": {
@@ -2731,10 +2731,10 @@
       },
       "information_visibility": "AUDIENCE_ONLY",
       "model_generation_ready": false,
-      "payload_hash": "49fa4a992c990af66b6ce15260e14117227b670bc4a4c0522d332883f65c0aad",
+      "payload_hash": "5001a1a4850180d3403708b2938448cf81170a4f6efb1d5db8af84a722a7d815",
       "plan_shot_id": "SH_E01_SC002_007",
-      "prompt_ir_payload_fingerprint": "49fa4a992c990af66b6ce15260e14117227b670bc4a4c0522d332883f65c0aad",
-      "prompt_ir_semantic_fingerprint": "b9889ea8056c5da191e46a55310220fe06995e43e3a0cfce0a14910659d9b651",
+      "prompt_ir_payload_fingerprint": "5001a1a4850180d3403708b2938448cf81170a4f6efb1d5db8af84a722a7d815",
+      "prompt_ir_semantic_fingerprint": "08e0252f31556f0cde6abdc1fec16588241dca2dc78ccf56ed5b80363ba5504f",
       "prompt_ir_semantic_ready": true,
       "props": [],
       "qualification_state": "PROMPT_IR_QUALIFIED",
@@ -2767,12 +2767,12 @@
         ]
       },
       "source_authority": {
-        "blocking_authority_fingerprint": "874a3feb9393a1d94bc853d9b4f3bce8bfef19762ff07bbf30cc7e747472a3c0",
+        "blocking_authority_fingerprint": "dc4d04e4d4bdf01a4d2846428fec530463cb8a62a28f19ff6f0529ae4f9d9998",
         "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
-        "shot_plan_authority_fingerprint": "9d96da73536dc781d0bf0e577fc91d35c03d5c809ee4efde59d07c38b14b27a3",
+        "shot_plan_authority_fingerprint": "9354e5db45c9f5defaad5f5bd65cd92afd8d64613d1a15036a87fdc3a60e4689",
         "storyboard_materialization_set_id": 2,
-        "storyboard_projection_fingerprint": "8e0dd0288de6880ab9d021cd00e8dfe1e519cc0bfd9bed4cf03380b035a3809f",
-        "storyboard_set_payload_fingerprint": "15f62780587a7621eed816f0a3b722d2efa8fcc73df726487dc1fbbd4a1121d2",
+        "storyboard_projection_fingerprint": "61b9b8990d347056b9cf62e39ccf6ceeafdb275b1e038548810124a7140cfef1",
+        "storyboard_set_payload_fingerprint": "5d364f4ec93e030bd55540f851d6421dc8839707e8e2f35856d8873d63b8a8c5",
         "visual_semantic_handoff_fingerprint": "c87726581fc83f1be2a072a7da7257e21cbb16d67fb110220adac67f04ad79fe"
       },
       "spatial": {

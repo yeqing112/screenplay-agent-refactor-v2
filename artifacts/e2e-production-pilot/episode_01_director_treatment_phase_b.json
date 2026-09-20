@@ -6,7 +6,7 @@
     "id": 1,
     "revision": 1,
     "payload_hash": "3321388d735a546d77090ec5b3fcd47d59ad16480c57e102a6b13277c0771c76",
-    "authority_envelope_fingerprint": "ffa653203650a977dda51414988621aced7582e369e763882ede327a31f35618"
+    "authority_envelope_fingerprint": "1d05e071c5251879bfc482bb76966ac92583faf02a6a6628f1eb348c8443d07b"
   },
   "scenes": [
     {
@@ -2364,9 +2364,9 @@
         "revision": 1,
         "payload_hash": "ed613aee53aa80644843152b047a20aa6e72070788bf256d4b659c1a06cda8df",
         "authority_id": 1,
-        "authority_fingerprint": "fe86fb32ed4f53342544cf3c969d69aa7892099103d9c049430d287169862ffa",
+        "authority_fingerprint": "0d5cf8a19198e6f7eaf39830accf0a148234125b643f49ec09647910a962ab66",
         "pointer_id": 1,
-        "pointer_fingerprint": "fe86fb32ed4f53342544cf3c969d69aa7892099103d9c049430d287169862ffa",
+        "pointer_fingerprint": "0d5cf8a19198e6f7eaf39830accf0a148234125b643f49ec09647910a962ab66",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_b_semantic_ready": true,
         "semantic_contract_ready": true,
@@ -2392,7 +2392,7 @@
           "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
           "confirmation_type": "HUMAN_CONFIRMATION",
           "confirmed": true,
-          "confirmed_at": "2026-09-21T07:30:45.234250",
+          "confirmed_at": "2026-09-21T07:44:13.527386",
           "source_proposal_origin": "HUMAN_INPUT"
         },
         "canonical_origin": "HUMAN_AUTHORED",
@@ -2412,9 +2412,9 @@
         "revision": 1,
         "payload_hash": "fa931cef9f75e59c7b4da3d3afdebfc5c0090ef040a344bc43e08f6ece629a4d",
         "authority_id": 2,
-        "authority_fingerprint": "fdf1dbde7fe45493fed117fbb4c9d2c1443eef144b574c85b5cff5f9d9737521",
+        "authority_fingerprint": "b07c3ee4f7da92fe1fb22b93a3a176017f4cec509ea00bf9dcd8d3e3f0d7d6bb",
         "pointer_id": 2,
-        "pointer_fingerprint": "fdf1dbde7fe45493fed117fbb4c9d2c1443eef144b574c85b5cff5f9d9737521",
+        "pointer_fingerprint": "b07c3ee4f7da92fe1fb22b93a3a176017f4cec509ea00bf9dcd8d3e3f0d7d6bb",
         "qualification_state": "PRODUCTION_QUALIFIED",
         "phase_b_semantic_ready": true,
         "semantic_contract_ready": true,
@@ -2440,7 +2440,7 @@
           "confirmation_actor": "USER_CONFIRMATION_BOUNDARY",
           "confirmation_type": "HUMAN_CONFIRMATION",
           "confirmed": true,
-          "confirmed_at": "2026-09-21T07:30:45.291892",
+          "confirmed_at": "2026-09-21T07:44:13.591634",
           "source_proposal_origin": "HUMAN_INPUT"
         },
         "canonical_origin": "HUMAN_AUTHORED",
