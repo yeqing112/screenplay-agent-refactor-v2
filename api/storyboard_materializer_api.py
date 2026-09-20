@@ -95,6 +95,15 @@ def _existing_set_is_fresh(session, *, pointer, set_row, plan, authority_envelop
         return False, rows
     for row in rows:
         meta = _json(getattr(row, "meta_info", "{}"), {})
+        stored_payload = meta.get("projection_payload") if isinstance(meta.get("projection_payload"), dict) else None
+        if stored_payload is not None:
+            from core.storyboard_materializer import _live_row_projection_payload
+            live_payload = _live_row_projection_payload(row, meta)
+            live_payload.pop("visual_semantic_handoff", None)
+            protected_payload = dict(stored_payload)
+            protected_payload.pop("visual_semantic_handoff", None)
+            if json.dumps(live_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str) != json.dumps(protected_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str):
+                return False, rows
         if str(row.projection_fingerprint or "") != projection_fingerprint(_row_projection_payload(row, meta)):
             return False, rows
         if any(str(getattr(row, field, "") or "").strip() for field in ("visual_prompt_static", "visual_prompt_motion", "visual_prompt_final")):

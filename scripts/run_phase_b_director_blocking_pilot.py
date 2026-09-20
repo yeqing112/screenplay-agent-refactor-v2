@@ -25,7 +25,14 @@ ART = ROOT / "artifacts" / "e2e-production-pilot"
 IR_PATH = ART / "episode_01_script_ir_phase_a.json"
 
 
-def _run_real_authority_pilot(payload: dict, treatment_items: list[dict], blocking_items: list[dict]) -> dict:
+def _run_real_authority_pilot(
+    payload: dict,
+    treatment_items: list[dict],
+    blocking_items: list[dict],
+    *,
+    post_setup=None,
+    retain_database: bool = False,
+) -> dict:
     """Persist and resolve the Phase B pilot through the existing DB authority spine.
 
     The runner uses a temporary SQLite database migrated through Alembic.  The
@@ -161,7 +168,7 @@ def _run_real_authority_pilot(payload: dict, treatment_items: list[dict], blocki
                     authority = session.query(__import__("models", fromlist=["SceneBlockingAuthority"]).SceneBlockingAuthority).filter_by(blocking_id=row.id).first()
                     pointer = session.query(__import__("models", fromlist=["SceneBlockingPointer"]).SceneBlockingPointer).filter_by(book_id=book_id, episode=1, scene_id=row.scene_id).first()
                     model = json.loads(row.spatial_model or "{}")
-                    blocking_records.append({"row_id": row.id, "revision": row.revision, "payload_hash": row.payload_hash, "authority_id": authority.id, "authority_fingerprint": authority.envelope_fingerprint, "pointer_id": pointer.id, "pointer_fingerprint": pointer.authority_envelope_fingerprint, "qualification_state": row.qualification_state, "compiler_version": model.get("compiler_version"), "compiled_states_hash": model.get("compiled_states_hash")})
+                    blocking_records.append({"scene_id": row.scene_id, "row_id": row.id, "revision": row.revision, "payload_hash": row.payload_hash, "authority_id": authority.id, "authority_fingerprint": authority.envelope_fingerprint, "pointer_id": pointer.id, "pointer_fingerprint": pointer.authority_envelope_fingerprint, "qualification_state": row.qualification_state, "compiler_version": model.get("compiler_version"), "compiled_states_hash": model.get("compiled_states_hash")})
                 # Phase C canonical shots come from the reviewed HUMAN_INPUT
                 # authoring fixture.  The preview only compiles obligations;
                 # it never invents a final shot design.
@@ -179,6 +186,16 @@ def _run_real_authority_pilot(payload: dict, treatment_items: list[dict], blocki
                         pointer = resolver_session.query(__import__("models", fromlist=["ShotPlanPointer"]).ShotPlanPointer).filter_by(book_id=book_id, episode=1, scene_id=scene_id).one()
                     phase_c_model = json.loads(resolved.model_info or "{}")
                     shot_plan_records.append({"scene_id": scene_id, "row_id": resolved.id, "revision": resolved.revision, "payload_hash": resolved.payload_hash, "authority_id": authority.id, "authority_fingerprint": authority.envelope_fingerprint, "pointer_id": pointer.id, "pointer_fingerprint": pointer.authority_envelope_fingerprint, "qualification_state": resolved.qualification_state, "phase_c_semantic_ready": phase_c_model.get("phase_c_semantic_ready", False), "shot_design_status": phase_c_model.get("shot_design_status"), "canonical_origin": phase_c_model.get("authoring_provenance", {}).get("canonical_origin", ""), "provider_calls": phase_c_model.get("provider_calls", 0), "confirm_status": confirmed.get("production_status", "ready"), "shots": json.loads(resolved.shots or "[]"), "phase_c_contract": phase_c_model.get("phase_c_contract", {})})
+                phase_d_result = None
+                if post_setup is not None:
+                    phase_d_authority = {
+                        "database": {"book_id": book_id},
+                        "treatment": treatment_records,
+                        "blocking": blocking_records,
+                        "shot_plan": shot_plan_records,
+                        "raw_authority_fabrication_count": 0,
+                    }
+                    phase_d_result = post_setup(db_file=db_file, book_id=book_id, episode=1, authority=phase_d_authority)
                 failed_candidate = {}
                 target_scene = treatment_items[0]["scene"]["scene_id"]
                 failed_preview = preview_shot_plan(book_id, 1, ShotPlanPreviewRequest(scene_id=target_scene, workflow_profile="production", persist=True))
@@ -266,12 +283,18 @@ def _run_real_authority_pilot(payload: dict, treatment_items: list[dict], blocki
                     stale_authority = stale_session.query(ShotPlanAuthority).filter_by(shot_plan_id=tamper_pointer_id_before).one()
                     stale_pointer = stale_session.query(ShotPlanPointer).filter_by(book_id=book_id, episode=1, scene_id=resolver_scene).first()
                 resolver_continuity_tamper = {"scene_id": resolver_scene, "status_code": resolver_response.get("status_code", 409) if isinstance(resolver_response, dict) else 200, "code": resolver_detail.get("code") if isinstance(resolver_detail, dict) else "", "errors": resolver_detail.get("errors", []) if isinstance(resolver_detail, dict) else [], "row_stale_status": stale_row.stale_status, "authority_stale_status": stale_authority.stale_status, "pointer_before": tamper_pointer_id_before, "pointer_after": stale_pointer.shot_plan_id if stale_pointer else None, "pointer_preserved": bool(stale_pointer and stale_pointer.shot_plan_id == tamper_pointer_id_before)}
-                return {"database": {"book_id": book_id, "script_ir": {"id": ir.id, "revision": ir.revision, "payload_hash": ir.payload_hash, "authority_envelope_fingerprint": script_ir_envelope["envelope_fingerprint"]}, "fact_snapshot": {"id": fact.id, "revision": fact.revision, "payload_hash": fact.payload_hash}, "script_ir_activation": activation}, "treatment": treatment_records, "blocking": blocking_records, "shot_plan": shot_plan_records, "failed_candidate": failed_candidate, "continuity_failed_candidate": continuity_failed_candidate, "resolver_continuity_tamper": resolver_continuity_tamper, "resolver": {"treatment": [{"scene_id": r.scene_id, "status": "PASS"} for r in treatment_resolutions], "blocking": [{"scene_id": r.scene_id, "status": "PASS"} for r in blocking_resolutions], "shot_plan": [{"scene_id": x["scene_id"], "status": "PASS", "phase_c_semantic_ready": x["phase_c_semantic_ready"]} for x in shot_plan_records]}, "activation_path": {"director": "production_confirm_service", "blocking": "production_confirm_service", "shot_plan": "production_confirm_service"}, "raw_authority_fabrication_count": 0}
+                result = {"database": {"book_id": book_id, "script_ir": {"id": ir.id, "revision": ir.revision, "payload_hash": ir.payload_hash, "authority_envelope_fingerprint": script_ir_envelope["envelope_fingerprint"]}, "fact_snapshot": {"id": fact.id, "revision": fact.revision, "payload_hash": fact.payload_hash}, "script_ir_activation": activation}, "treatment": treatment_records, "blocking": blocking_records, "shot_plan": shot_plan_records, "failed_candidate": failed_candidate, "continuity_failed_candidate": continuity_failed_candidate, "resolver_continuity_tamper": resolver_continuity_tamper, "resolver": {"treatment": [{"scene_id": r.scene_id, "status": "PASS"} for r in treatment_resolutions], "blocking": [{"scene_id": r.scene_id, "status": "PASS"} for r in blocking_resolutions], "shot_plan": [{"scene_id": x["scene_id"], "status": "PASS", "phase_c_semantic_ready": x["phase_c_semantic_ready"]} for x in shot_plan_records]}, "activation_path": {"director": "production_confirm_service", "blocking": "production_confirm_service", "shot_plan": "production_confirm_service"}, "raw_authority_fabrication_count": 0}
+                if phase_d_result is not None:
+                    result["phase_d"] = phase_d_result
+                if retain_database:
+                    result["database"]["database_path"] = str(db_file)
+                return result
     finally:
-        try:
-            db_file.unlink(missing_ok=True)
-        except OSError:
-            pass
+        if not retain_database:
+            try:
+                db_file.unlink(missing_ok=True)
+            except OSError:
+                pass
 
 def fp(value: object) -> str:
     return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
@@ -454,7 +477,13 @@ def main() -> None:
     # B artifacts before the temporary authority database is exercised.
     import runpy
     runpy.run_path(str(ROOT / "scripts" / "build_phase_c_authoring_fixture.py"), run_name="__main__")
-    real_authority = _run_real_authority_pilot(payload, treatment_items, blocking_items)
+    post_setup = None
+    retain_database = False
+    if os.environ.get("PHASE_D_REAL_PILOT") == "1":
+        from scripts.phase_d_real_materialization import materialize_and_capture
+        post_setup = materialize_and_capture
+        retain_database = False
+    real_authority = _run_real_authority_pilot(payload, treatment_items, blocking_items, post_setup=post_setup, retain_database=retain_database)
     treatment_json["authority"] = {"source": "database_resolver", "scenes": real_authority["treatment"], "resolver": real_authority["resolver"]["treatment"]}
     blocking_json["authority"] = {"source": "database_resolver", "scenes": real_authority["blocking"], "resolver": real_authority["resolver"]["blocking"]}
     treatment_json["script_ir"] = {"id": real_authority["database"]["script_ir"]["id"], "revision": real_authority["database"]["script_ir"]["revision"], "payload_hash": real_authority["database"]["script_ir"]["payload_hash"], "authority_envelope_fingerprint": real_authority["database"]["script_ir"]["authority_envelope_fingerprint"]}

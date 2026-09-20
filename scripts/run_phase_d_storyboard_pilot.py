@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import copy
 import json
+import os
+import runpy
 import sys
 from pathlib import Path
 
@@ -80,6 +82,13 @@ def render_storyboard_markdown(*, scene_id: str, scene_name: str, projections: l
 
 
 def main() -> None:
+    # The Phase D deliverable must be backed by the real Production API and a
+    # migrated temporary database.  Keep the former artifact-only projection
+    # runner available only for explicit local read-only inspection.
+    if os.environ.get("PHASE_D_READ_ONLY") != "1":
+        os.environ["PHASE_D_REAL_PILOT"] = "1"
+        runpy.run_path(str(ROOT / "scripts" / "run_phase_b_director_blocking_pilot.py"), run_name="__main__")
+        return
     source_plans = _read("episode_01_shot_plan_phase_c.json").get("plans", [])
     source_blocking = _read("episode_01_scene_blocking_phase_b.json").get("scenes", [])
     authority = _read("episode_01_shot_plan_phase_c.json").get("authority", [])

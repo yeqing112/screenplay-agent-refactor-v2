@@ -340,6 +340,38 @@ def _row_projection_payload(row: Any, meta: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _live_row_projection_payload(row: Any, meta: dict[str, Any]) -> dict[str, Any]:
+    """Reconstruct projection fields from mutable StoryboardShot columns.
+
+    ``projection_payload`` is the immutable snapshot used for the fingerprint;
+    this companion payload intentionally reads the live row columns so a
+    direct SQL/ORM edit cannot remain fresh merely because the protected JSON
+    snapshot was left untouched.
+    """
+    handoff = meta.get("prompt_compiler_handoff") if isinstance(meta.get("prompt_compiler_handoff"), dict) else {}
+    return {
+        "scene_id": getattr(row, "scene_id", ""),
+        "scene_name": getattr(row, "scene_name", ""),
+        "plan_shot_id": getattr(row, "plan_shot_id", "") or handoff.get("plan_shot_id", ""),
+        "beat_id": handoff.get("beat_id", ""),
+        "dialogue": getattr(row, "dialogue", "") or "",
+        "duration": getattr(row, "duration", None),
+        "camera_angle": getattr(row, "camera_angle", "") or "",
+        "camera_movement": getattr(row, "camera_movement", "") or "",
+        "camera_speed": getattr(row, "camera_speed", "") or "",
+        "shot_purpose": getattr(row, "shot_purpose", "") or "",
+        "transition": getattr(row, "transition", "") or "",
+        "lighting": getattr(row, "lighting", "") or "",
+        "start_state": _parse_json(getattr(row, "start_state", ""), getattr(row, "start_state", "") or ""),
+        "action_process": getattr(row, "action_process", "") or "",
+        "action_beats": meta.get("action_beats", []),
+        "end_state": _parse_json(getattr(row, "end_state", ""), getattr(row, "end_state", "") or ""),
+        "asset_bindings": meta.get("asset_bindings", _parse_json(getattr(row, "asset_links", "{}"), {})),
+        "continuity_contract": meta.get("continuity_contract", {}),
+        "visual_semantic_handoff": _parse_json(meta.get("visual_semantic_handoff"), {}),
+    }
+
+
 def mark_materialization_set_stale(session: Any, set_row: Any, reasons: list[str]) -> None:
     normalized = sorted({_text(item) for item in reasons if _text(item)})
     set_row.status = "STALE"
@@ -385,7 +417,11 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
         mark_materialization_set_stale(session, set_row, [code, "BLOCKING_POINTER_CHANGED"])
         session.commit()
         raise
-    if plan.id != pointer.shot_plan_id or plan.revision != pointer.shot_plan_revision or str(set_row.shot_plan_authority_fingerprint) != str(plan_envelope.get("envelope_fingerprint") or "") or pointer.set_payload_fingerprint != set_row.set_payload_fingerprint:
+    if pointer.set_payload_fingerprint != set_row.set_payload_fingerprint:
+        mark_materialization_set_stale(session, set_row, ["STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH"])
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": "STORYBOARD_MATERIALIZATION_FINGERPRINT_MISMATCH", "message": "Current pointer does not match the materialization set fingerprint."})
+    if plan.id != pointer.shot_plan_id or plan.revision != pointer.shot_plan_revision or str(set_row.shot_plan_authority_fingerprint) != str(plan_envelope.get("envelope_fingerprint") or ""):
         mark_materialization_set_stale(session, set_row, ["SHOT_PLAN_POINTER_CHANGED"])
         session.commit()
         raise HTTPException(status_code=409, detail={"code": "STORYBOARD_MATERIALIZATION_STALE", "message": "ShotPlan authority changed; materialization must be recreated."})
@@ -411,7 +447,11 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
         envelope_errors.append("STORYBOARD_HANDOFF_SCHEMA_CHANGED")
     if _text(stored_handoff.get("source_shot_plan_fingerprint")) != _text(current_handoff.get("source_shot_plan_fingerprint")) or _text(stored_handoff.get("handoff_fingerprint")) != _text(current_handoff.get("handoff_fingerprint")):
         envelope_errors.append("STORYBOARD_HANDOFF_FINGERPRINT_INVALID")
-    blocking_meta = set_envelope.get("blocking") if isinstance(set_envelope.get("blocking"), dict) else {}
+    # The authority envelope uses the canonical ``scene_blocking`` key.  The
+    # short ``blocking`` spelling is accepted only for older envelopes so the
+    # resolver remains current-pointer-only without manufacturing a second
+    # lineage source.
+    blocking_meta = set_envelope.get("scene_blocking") if isinstance(set_envelope.get("scene_blocking"), dict) else (set_envelope.get("blocking") if isinstance(set_envelope.get("blocking"), dict) else {})
     if str(blocking_meta.get("id")) != str(blocking.id) or str(blocking_meta.get("revision")) != str(blocking.revision) or _text(blocking_meta.get("authority_fingerprint")) != _text(blocking_envelope.get("envelope_fingerprint")):
         envelope_errors.append("BLOCKING_POINTER_CHANGED")
     if envelope_errors:
@@ -438,6 +478,23 @@ def resolve_current_authoritative_materialization(session: Any, *, book_id: int,
     for row in rows:
         meta = _parse_json(row.meta_info, {})
         stored = str(row.projection_fingerprint or "")
+        stored_payload = meta.get("projection_payload") if isinstance(meta.get("projection_payload"), dict) else None
+        live_row_payload = _live_row_projection_payload(row, meta)
+        if stored_payload is not None:
+            # Semantic handoff edits are reported by the structured semantic
+            # diff below; this comparison covers the mutable StoryboardShot
+            # projection columns themselves.
+            live_row_columns = dict(live_row_payload)
+            stored_row_columns = dict(stored_payload)
+            live_row_columns.pop("visual_semantic_handoff", None)
+            stored_row_columns.pop("visual_semantic_handoff", None)
+        else:
+            live_row_columns = live_row_payload
+            stored_row_columns = None
+        if stored_row_columns is not None and _canonical(live_row_columns) != _canonical(stored_row_columns):
+            mark_materialization_set_stale(session, set_row, ["STORYBOARD_PROJECTION_TAMPERED"])
+            session.commit()
+            raise HTTPException(status_code=409, detail={"code": "STORYBOARD_PROJECTION_TAMPERED", "message": "Storyboard projection columns no longer match their immutable projection payload."})
         if not stored or stored != projection_fingerprint(_row_projection_payload(row, meta)):
             mark_materialization_set_stale(session, set_row, ["STORYBOARD_PROJECTION_TAMPERED"])
             session.commit()
