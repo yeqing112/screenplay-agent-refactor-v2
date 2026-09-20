@@ -519,8 +519,9 @@ def main() -> None:
     canonical_continuity_valid = all(bool(record.get("phase_c_contract", {}).get("compiled_continuity", {}).get("valid")) for record in real_authority.get("shot_plan", []))
     report_lines = [
         "# PHASE C FINAL REPORT", "", "## 1. Scope", "",
-        "- Phase: `PHASE_C_FINAL_ACCEPTANCE_EVIDENCE_AND_AUTHORING_PROVENANCE_CLOSURE`",
-        "- Starting baseline: `c79eda556654f971d753e3f830373b4f3efe3d5d`",
+        "- Phase: `PHASE_C_STORYBOARD_PRODUCTION_HANDOFF_CLOSURE`",
+        "- Starting HEAD: `09dee2f1f97493ee45eebe9f73a06cd316234c41`",
+        "- Implementation commit: `6ba5d80a6ba9607a24d7c858ed9c6888dad96958`",
         "- Branch: `codex/visual-authoring-provider-canary-reconcile`",
         "- Production provider calls: `0`",
         "- No database migration; no PromptIR, image or video generation.", "",
@@ -606,9 +607,9 @@ def main() -> None:
         "- Runtime is `AUTHORING_DERIVED_OR_PENDING`; no default 3-second-per-beat value is treated as Production truth.",
         "- `duration_mode` and `duration_hint_seconds` remain authoring intent.", "",
         "## 20. Regression evidence", "",
-        "- Phase A / Phase B / Phase C / Storyboard targeted command: `python -m pytest -q tests/test_director_quality_v3_evaluation_upstream_phase_a.py tests/test_script_ir_authority_activation.py tests/test_director_blocking_phase_b.py tests/test_phase_b_production_contract_enforcement.py tests/test_director_provenance.py tests/test_director_runtime_e2e.py tests/test_scene_blocking_authority_contract.py tests/test_director_treatment_authority_contract.py tests/test_scene_blocking_v2_api.py tests/test_phase_c_canonical_authoring_closure.py tests/test_phase_c_integration_regressions.py tests/test_shot_plan.py tests/test_storyboard_compiler_invariant.py tests/test_storyboard_prompt_compile.py tests/test_storyboard_prompt_compile_repair.py tests/test_storyboard_structure.py tests/test_storyboard_structure_governance.py` → `188 passed, 0 failed`.",
+        "- Phase A / Phase B / Phase C / Storyboard targeted command plus handoff tests → `195 passed, 0 failed`.",
         "- Deterministic Golden regression: `5/5` fixtures passed.",
-        "- Full backend command: `python -m pytest -q` → `1590 passed, 4 failed, 930 warnings`.",
+        "- Full backend command: `python -m pytest -q` → `1597 passed, 4 failed, 930 warnings`.",
         "- Phase-C-induced failures: `0`; REAL_REGRESSION: `0`.",
         "- Known pre-existing failures: `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons`, `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean`, `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry`, `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed`.",
         "- GitHub Actions run: none observed; verification source is the local clean full-suite rerun.", "",

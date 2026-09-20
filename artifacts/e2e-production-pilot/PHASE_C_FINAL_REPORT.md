@@ -2,8 +2,9 @@
 
 ## 1. Scope
 
-- Phase: `PHASE_C_FINAL_ACCEPTANCE_EVIDENCE_AND_AUTHORING_PROVENANCE_CLOSURE`
-- Starting baseline: `c79eda556654f971d753e3f830373b4f3efe3d5d`
+- Phase: `PHASE_C_STORYBOARD_PRODUCTION_HANDOFF_CLOSURE`
+- Starting HEAD: `09dee2f1f97493ee45eebe9f73a06cd316234c41`
+- Implementation commit: `6ba5d80a6ba9607a24d7c858ed9c6888dad96958`
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Production provider calls: `0`
 - No database migration; no PromptIR, image or video generation.
@@ -145,26 +146,43 @@
 - `episode_01_phase_c_trace.json`
 - `phase_c_authoring_provenance_audit.json`
 - `phase_c_shot_plan_gap_audit.md`
+- `phase_c_storyboard_handoff_gap_audit.md`
+- `episode_01_storyboard_handoff_phase_c.json`
+- `phase_c_storyboard_handoff_audit.json`
 
-## 14. Verification
+## 14. Storyboard Production Handoff
+
+- Handoff schema: `storyboard_handoff_v1`; projection version: `storyboard_handoff_projection_v1`.
+- `ShotPlan.shots[]` remains the sole canonical creative authority. Legacy `purpose` and `camera` copies are ignored by the Production adapter.
+- Mapping: `shot_purpose → purpose`; `camera_state.framing_class/orientation/movement → camera.shot_size/angle/movement`; `duration_hint_seconds → duration`; `axis_contract + spatial_binding → continuity_contract`.
+- Camera speed has no Phase C canonical source and is optional/unspecified. `camera_side` and `screen_direction=maintain` are not generated.
+- Action beats are deterministic beat/actor/event references; no invented `0 → 3` second timeline is consumed.
+- Entry and exit states resolve from the first and last `Blocking Authority` state refs. Invalid refs fail closed.
+- Projection fingerprint is based on the canonical Phase C source fields plus projection version; repeated projection is byte-identical.
+- Scene 1: `8 canonical → 8 handoff → 8 materialized`; Scene 2: `7 canonical → 7 handoff → 7 materialized`.
+- Total: `15 → 15 → 15`; exact `plan_shot_id` order preserved; `creative_fallback_count=0`; `legacy_truth_reads=0`.
+- Production path proof: current Phase C Authority payload → `project_shot_design_to_storyboard_handoff()` → `materialize_storyboard_from_handoff(..., production=True)`.
+- Negative gates covered: missing purpose, missing camera state, missing duration, invalid Blocking state ref, tampered legacy camera/purpose, and failed handoff validation before writes.
+
+## 15. Verification
 
 - Provider calls: 0; raw authority fabrication: 0.
 - Phase A and Phase B upstream contracts are consumed read-only.
 - Storyboard/PromptIR/Visual/Video production was not started.
 
-## 15. Canonical model and proposal flow
+## 16. Canonical model and proposal flow
 
 - `ShotPlan.shots` is the only Production canonical ShotDesignDecision array; `phase_c_contract` contains requirements and audit metadata only.
 - Proposal flow is requirements → recorded `HUMAN_INPUT` ShotDesignDecision[] → production confirm → canonical row → Authority → Pointer → resolver.
 - `GENERATED_DRAFT` requires explicit confirmation; provider proposals require a real provider call and confirm before `PROVIDER_PROPOSAL_CONFIRMED`.
 
-## 16. Deterministic boundary
+## 17. Deterministic boundary
 
 - Production preview compiles ShotRequirements and returns `AUTHORING_REQUIRED` for rich Phase B scenes; it does not expose deterministic authored shots.
 - Requirements compile coverage, subjects, reaction contracts, props, blocking states, information and interaction-axis obligations. Framing, movement, grouping and duration intent remain proposal-owned.
 - The historical `build_phase_c_shot_plan` helper remains only for legacy compatibility tests; it is not imported or called by the Production Phase C confirm path.
 
-## 17. Semantic coverage gates
+## 18. Semantic coverage gates
 
 - Reaction coverage requires the concrete character and reaction contract ref.
 - Required subjects aggregate across shots; required props must be bound to the requirement beat and blocking state.
@@ -172,34 +190,35 @@
 - Axis continuity checks screen sides/look direction; motivated cross requires structured motivation or reorientation strategy.
 - Spatial binding, information visibility and hidden-cut structure are fail-closed.
 
-## 18. Runtime policy
+## 19. Runtime policy
 
 - Runtime is `AUTHORING_DERIVED_OR_PENDING`; no default 3-second-per-beat value is treated as Production truth.
 - `duration_mode` and `duration_hint_seconds` remain authoring intent.
 
-## 19. Regression evidence
+## 20. Regression evidence
 
-- Phase A / Phase B / Phase C / Storyboard targeted command: `python -m pytest -q tests/test_director_quality_v3_evaluation_upstream_phase_a.py tests/test_script_ir_authority_activation.py tests/test_director_blocking_phase_b.py tests/test_phase_b_production_contract_enforcement.py tests/test_director_provenance.py tests/test_director_runtime_e2e.py tests/test_scene_blocking_authority_contract.py tests/test_director_treatment_authority_contract.py tests/test_scene_blocking_v2_api.py tests/test_phase_c_canonical_authoring_closure.py tests/test_phase_c_integration_regressions.py tests/test_shot_plan.py tests/test_storyboard_compiler_invariant.py tests/test_storyboard_prompt_compile.py tests/test_storyboard_prompt_compile_repair.py tests/test_storyboard_structure.py tests/test_storyboard_structure_governance.py` → `188 passed, 0 failed`.
+- Phase A / Phase B / Phase C / Storyboard targeted command plus handoff tests → `195 passed, 0 failed`.
 - Deterministic Golden regression: `5/5` fixtures passed.
-- Full backend command: `python -m pytest -q` → `1590 passed, 4 failed, 930 warnings`.
+- Full backend command: `python -m pytest -q` → `1597 passed, 4 failed, 930 warnings`.
 - Phase-C-induced failures: `0`; REAL_REGRESSION: `0`.
 - Known pre-existing failures: `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons`, `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean`, `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry`, `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed`.
 - GitHub Actions run: none observed; verification source is the local clean full-suite rerun.
 
-## 20. Migration and scope audit
+## 21. Migration and scope audit
 
 - No database migration was added.
 - Storyboard schema/materializer architecture was not redesigned; consumer compatibility is covered by regression tests.
 - PromptIR, image, video and visual generation were not started.
 
-## 21. Working tree and delivery
+## 22. Working tree and delivery
 
-- Final commit: `HEAD` (verified against the remote branch at delivery; exact SHA is reported with the pushed commit).
+- Delivery implementation commit: `6ba5d80a6ba9607a24d7c858ed9c6888dad96958`.
+- Report verification commit: this docs-only follow-up commit; the final remote SHA is reported in the delivery message.
 - Branch: `codex/visual-authoring-provider-canary-reconcile`.
 - Final report, JSON, Markdown, trace, fixture and regression tests are committed and pushed.
 
 ## Completion token
 
-- `PHASE_C_FINAL_ACCEPTANCE_EVIDENCE_AND_AUTHORING_PROVENANCE_CLOSURE_READY_FOR_REVIEW`
+- `PHASE_C_STORYBOARD_PRODUCTION_HANDOFF_CLOSURE_READY_FOR_REVIEW`
 
 
