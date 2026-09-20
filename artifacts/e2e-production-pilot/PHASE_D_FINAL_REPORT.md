@@ -110,8 +110,8 @@ baseline before mutation:
 - projection column tamper: `STORYBOARD_PROJECTION_TAMPERED`, stale Set;
 - handoff and Set fingerprint tamper: 409, stale Set;
 - missing, extra and reordered shot: `STORYBOARD_MATERIALIZATION_SET_INCOMPLETE`;
-- information, camera, axis and asset semantic mismatch: structured semantic
-  mismatch, stale Set;
+- information, reaction, camera, axis and asset semantic mismatch: structured
+  semantic mismatch, stale Set;
 - premature prompt mutation: `STORYBOARD_PROMPT_PREMATURE_MUTATION`.
 
 The pilot proves failed candidates do not move the current Pointer and that no

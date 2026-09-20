@@ -40,16 +40,16 @@
       "materialized_shot_count": 8,
       "set_status": "MATERIALIZED",
       "stale_status": "FRESH",
-      "set_fingerprint": "be83d2498d0ee13e1839f867ccac0fa14ed78e43e8179f3192f4c457a57494b5",
+      "set_fingerprint": "071303572f8cfcb2eb0e517d9fffeef8fc27d7417466efce7e82ba802498869f",
       "projection_fingerprints": [
-        "9e35491a6ed79fe3bb8d45878fffb2375328432dba758ff0e05ad7eb1004ddb3",
-        "afae68db03d8229968f5b55f5485cb4a67200686be6d7f4a6464d8e738403bc7",
-        "0ddaf003ee051dc80c060db3666d69a349c3f07ad7303a8514d1b5be785094f2",
-        "5cd15725cd8f6efc6054bcf2800e0a20fcc220331fa69b8828f83dc734d12cf4",
-        "e6e23f7afa7773384471bf5a01809387ead6e20893dea6535ccfab1b55bfc3de",
-        "810869618ca6a1e7b3aa6f5e825400ff4f448d35600d3c51b26346f9d4b5669e",
-        "54daabab42b2d94fe61fdfa060ad716d17aca6515c24909108d08368dc3e39e4",
-        "bf2a1becdf105dab80668bef1216abb9b3d1993a8e320bf8da41d1a2c9c2a240"
+        "b0a5f5eb632141d0097bb0a2c0faabcdef8dc555d1f328b0604610a1dd163cec",
+        "2132cf5b8b7f1f7c3402432610b9cba71c6d18ec07d6709ff490cae7f444cc81",
+        "0234c12c301cee0c3e9d4aa2a998be2079d43821c3188e2f410589192fb96216",
+        "97b8f7418529c3c537b474b201c3af0ad1a3872dd5ff42197460b819c5dd9542",
+        "3f487e7b121e12858fbcf5091bf0d299c893238055581d401360ac3ad8924b7a",
+        "893732787295ff465833f5295340201d2045fc6be2ae74cd32398f83f77b53fe",
+        "4953edca6763a2d541083d0a717fe7419db6ee694f4f099ac5d6f8bcb8234c42",
+        "038377f365d60a1e94368b8b3bef5caa30c84eb0e1c29d9429dce6d4c8da4442"
       ],
       "prompt_fields_empty": true,
       "handoff_fingerprint": "afd424bfef1ac09960266e2e6f125588673f462ddb16333c6b6a4c62bfcf9fad",
@@ -95,15 +95,15 @@
       "materialized_shot_count": 7,
       "set_status": "MATERIALIZED",
       "stale_status": "FRESH",
-      "set_fingerprint": "59c9d073c1c78f03c51edd9512dad6d68a26ca65e58f5660c31adc4911760556",
+      "set_fingerprint": "d8d0f041e21649bfdfe65acd2380e16b0fe9bce92919f94c0eb7837f3523b355",
       "projection_fingerprints": [
-        "e059cb9c7d7cfeef6d4238d96495fafc5e4c827811bf4eab3cb86a20713d28eb",
-        "41e20fca0bb645e47c66883c62fd59526ac54c788ef6027454595e73801ba117",
-        "73113d8a1b89baac0449bbbfeb6c2807741a037aeb7aa119a897b83ccc781e34",
-        "0ae7e8352340cce4857513bf9b74798be929f8a33363e40293360f230befea2c",
-        "f0a239abf433fe0059bc4108576f1ab197980d8b0fab1b75cc04d029b11c5b94",
-        "b39379986af9150078722f87ab7fe26cd8cba525ce67c44d77e8b8eb321a0092",
-        "c9119ad1eff0a6a78f90e6be55c1a198a8594d2ce65bd2b51bfcacfa4b341ebb"
+        "6cca98180d1f19e37609b08a16959c242fee2d8576fafd61e0843b0fc51ee0bb",
+        "2345e2b131d623a491fb75d488b3c82493bee6ad2c9667e612fe2c67ff770550",
+        "8074dc2e4594387290fca23dfab400e518832e2a18d5543a15326ca0041edec1",
+        "87c486ca78eabb6099f752731b18ee6c2deafb5a95dee2e7c5e3906dc7e3f5f6",
+        "81195a108b34ce870c67c7e64d12e5ae1cca13713163862d66e5f1904da8d49f",
+        "b8856a8a6becb189377b8b832bd009d7273d67f10c3b4e1dd838e2720aa2226f",
+        "bc46ce62e4fb07a1eff7b21408a43e9fb832c2abf79ecfeb11241560c7392633"
       ],
       "prompt_fields_empty": true,
       "handoff_fingerprint": "bc37810c010ab66560ec6726322b3b2b142fdfbf5f26703dc8a2f681224a25bd",
@@ -225,6 +225,130 @@
                 "extra_semantic": [],
                 "changed_semantic": [
                   "information_refs"
+                ],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": false
+              },
+              "SH_E01_SC001_002": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_003": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_004": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_005": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_006": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_007": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              },
+              "SH_E01_SC001_008": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [],
+                "camera_mismatch": [],
+                "continuity_mismatch": [],
+                "asset_binding_mismatch": [],
+                "empty": true
+              }
+            },
+            "empty": false
+          }
+        }
+      },
+      "before": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "after": {
+        "set_count": 1,
+        "shot_count": 8,
+        "pointer_id": 1,
+        "materialization_set_id": 1
+      },
+      "zero_write": null,
+      "set_after": {
+        "status": "STALE",
+        "stale_status": "STALE",
+        "stale_reasons": [
+          "STORYBOARD_SEMANTIC_MISMATCH"
+        ]
+      }
+    },
+    {
+      "case": "reaction_ref_loss",
+      "scene_id": "E01_SC001",
+      "mutation": {
+        "row_id": 1,
+        "path": "reaction_contract_refs",
+        "old": [],
+        "new": "__TOGGLE__"
+      },
+      "result": {
+        "status": "FAIL",
+        "status_code": 409,
+        "detail": {
+          "code": "STORYBOARD_SEMANTIC_MISMATCH",
+          "message": "Storyboard visual semantic projection does not match the current ShotPlan.",
+          "semantic_diff": {
+            "missing_semantic": [],
+            "extra_semantic": [],
+            "camera_mismatch": [],
+            "continuity_mismatch": [],
+            "asset_binding_mismatch": [],
+            "missing_shots": [],
+            "extra_shots": [],
+            "per_shot": {
+              "SH_E01_SC001_001": {
+                "missing_semantic": [],
+                "extra_semantic": [],
+                "changed_semantic": [
+                  "reaction_contract_refs"
                 ],
                 "camera_mismatch": [],
                 "continuity_mismatch": [],
@@ -757,7 +881,7 @@
       "case": "set_fingerprint_tamper",
       "scene_id": "E01_SC001",
       "mutation": {
-        "old": "be83d2498d0ee13e1839f867ccac0fa14ed78e43e8179f3192f4c457a57494b5",
+        "old": "071303572f8cfcb2eb0e517d9fffeef8fc27d7417466efce7e82ba802498869f",
         "new": "tampered"
       },
       "result": {
