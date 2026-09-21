@@ -1,0 +1,59 @@
+{
+  "schema_version": "phase_f_fake_provider_trace_v1",
+  "episode": 1,
+  "provider": "phase-f-fake-image-provider",
+  "model": "deterministic-image-v1",
+  "provider_request_id": "fake-28073954e295f78fa6ccee89",
+  "provider_calls": 1,
+  "transport_retry_count": 0,
+  "media_type": "IMAGE",
+  "mime_type": "image/png",
+  "byte_size": 68,
+  "width": 1,
+  "height": 1,
+  "checksum_sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+  "provider_response_hash": "7cfda43620d7f4c16963e2bbbe3f7652bbf40377a1b37de5095d033f1406370e",
+  "candidate_status": "MEDIA_CANDIDATE",
+  "official_promotion_count": 0,
+  "authority_mutations": {
+    "storyboard": 0,
+    "prompt_ir": 0,
+    "visual_asset_pointer": 0,
+    "visual_reference_authority": 0
+  },
+  "lineage": {
+    "prompt_ir_version_id": 11,
+    "prompt_ir_authority_id": 13,
+    "prompt_ir_payload_hash": "episode-01-prompt-ir-hash",
+    "generation_payload_fingerprint": "episode-01-generation-payload-fp",
+    "generation_policy_fingerprint": "episode-01-generation-policy-fp",
+    "model_profile_id": "builtin-mock-image",
+    "model_profile_fingerprint": "builtin-mock-image-fp",
+    "provider_adapter_id": "image_generic",
+    "provider_adapter_version": "v1",
+    "provider_request_fingerprint": "28073954e295f78fa6ccee895bd74834d3135cc3df4a503583ec8ad5a33dc3f0"
+  },
+  "authority_mutation_proof": {
+    "before": {
+      "ScriptIRPointer": null,
+      "DirectorTreatmentPointer": null,
+      "SceneBlockingPointer": null,
+      "ShotPlanPointer": null,
+      "StoryboardPointer": null,
+      "PromptIRPointer": null,
+      "VisualAssetPointer": null,
+      "VisualReferenceAuthority": null
+    },
+    "after": {
+      "ScriptIRPointer": null,
+      "DirectorTreatmentPointer": null,
+      "SceneBlockingPointer": null,
+      "ShotPlanPointer": null,
+      "StoryboardPointer": null,
+      "PromptIRPointer": null,
+      "VisualAssetPointer": null,
+      "VisualReferenceAuthority": null
+    },
+    "unchanged": true
+  }
+}

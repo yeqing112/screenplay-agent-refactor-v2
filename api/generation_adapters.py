@@ -1419,7 +1419,8 @@ async def _generate_shapi_gemini_image(
     ][:max_references]
     parts: list[dict[str, Any]] = [{"text": _append_negative_constraints(prompt, negative_prompt)}]
 
-    async with httpx.AsyncClient(timeout=120) as client:
+    timeout_seconds = _coerce_positive_int((profile.get("default_params") or {}).get("timeout_seconds"), 120, minimum=1, maximum=3600)
+    async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         for index, reference in enumerate(normalized_references, start=1):
             reference_url = str(reference.get("image_url") or reference.get("imageUrl") or reference.get("url") or "").strip()
             parts.append({"text": _build_shapi_gemini_reference_instruction(reference, index)})
@@ -1497,7 +1498,8 @@ async def _generate_shapi_openai_image(
         negative_prompt=negative_prompt,
         reference_images=reference_images,
     )
-    async with httpx.AsyncClient(timeout=120) as client:
+    timeout_seconds = _coerce_positive_int((profile.get("default_params") or {}).get("timeout_seconds"), 120, minimum=1, maximum=3600)
+    async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         try:
             response = await client.post(
                 f"{base_url}/images/generations",
@@ -1598,7 +1600,8 @@ async def generate_image_asset(
     if negative_prompt:
         payload.setdefault("negative_prompt", negative_prompt)
 
-    async with httpx.AsyncClient(timeout=120) as client:
+    timeout_seconds = _coerce_positive_int((profile.get("default_params") or {}).get("timeout_seconds"), 120, minimum=1, maximum=3600)
+    async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         try:
             response = await client.post(
                 f"{base_url}/images/generations",

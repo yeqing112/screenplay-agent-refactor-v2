@@ -22,6 +22,7 @@
     "visual_asset_versions",
     "visual_authoring_decision_requests",
     "visual_authoring_decisions",
+    "visual_authoring_proposals",
     "visual_reference_authorities",
     "visual_reference_generation_requests",
     "visual_reference_sets"
@@ -49,6 +50,7 @@
     "visual_asset_versions",
     "visual_authoring_decision_requests",
     "visual_authoring_decisions",
+    "visual_authoring_proposals",
     "visual_reference_authorities",
     "visual_reference_generation_requests",
     "visual_reference_sets"

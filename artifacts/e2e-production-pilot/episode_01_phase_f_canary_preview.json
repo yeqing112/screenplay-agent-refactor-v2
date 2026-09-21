@@ -1,0 +1,44 @@
+{
+  "schema_version": "phase_f_canary_preview_trace_v1",
+  "phase": "PHASE_F_GENERATION_EXECUTION_PROVIDER_CANARY_CLOSURE",
+  "episode": 1,
+  "shot_scope": "single_shot",
+  "provider_calls": 0,
+  "transport_retry_count": 0,
+  "provider_request_fingerprint": "28073954e295f78fa6ccee895bd74834d3135cc3df4a503583ec8ad5a33dc3f0",
+  "generation_payload_source": "CURRENT_PROMPT_IR_V2",
+  "generation_payload_rebuilt": true,
+  "confirmation_required": true,
+  "media_generated": false,
+  "authority_mutations": {
+    "storyboard": 0,
+    "prompt_ir": 0,
+    "visual_asset_pointer": 0,
+    "visual_reference_authority": 0
+  },
+  "real_provider_canary_executed": false,
+  "reason": "PROVIDER_NOT_CONFIGURED_OR_NOT_AUTHORIZED",
+  "authority_mutation_proof": {
+    "before": {
+      "ScriptIRPointer": null,
+      "DirectorTreatmentPointer": null,
+      "SceneBlockingPointer": null,
+      "ShotPlanPointer": null,
+      "StoryboardPointer": null,
+      "PromptIRPointer": null,
+      "VisualAssetPointer": null,
+      "VisualReferenceAuthority": null
+    },
+    "after": {
+      "ScriptIRPointer": null,
+      "DirectorTreatmentPointer": null,
+      "SceneBlockingPointer": null,
+      "ShotPlanPointer": null,
+      "StoryboardPointer": null,
+      "PromptIRPointer": null,
+      "VisualAssetPointer": null,
+      "VisualReferenceAuthority": null
+    },
+    "unchanged": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "phase_f_provider_request_audit_v1",
+  "episode": 1,
+  "provider_request_fingerprint": "28073954e295f78fa6ccee895bd74834d3135cc3df4a503583ec8ad5a33dc3f0",
+  "request_snapshot_secret_free": true,
+  "provider_response_hash_secret_free": true,
+  "logical_provider_calls": 1,
+  "transport_retry_count": 0,
+  "successful_replay_provider_calls": 0,
+  "candidate_count": 1,
+  "real_provider_canary_executed": false,
+  "real_provider_reason": "PROVIDER_NOT_CONFIGURED_OR_NOT_AUTHORIZED",
+  "forbidden_mutations_verified": true,
+  "secret_fields_persisted": [],
+  "authority_mutation_proof": "episode_01_phase_f_fake_provider_trace.json",
+  "media_validation": {
+    "bytes_nonempty": true,
+    "checksum_from_canonical_bytes": true,
+    "mime_valid": true,
+    "dimensions_parseable": true,
+    "target_media_matches": "IMAGE"
+  }
+}

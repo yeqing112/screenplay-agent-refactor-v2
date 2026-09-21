@@ -1,7 +1,7 @@
 {
   "schema_version": "generation_execution_contract_v1",
-  "status": "STOPPED_AT_GAP_AUDIT",
-  "stop_code": "GENERATION_EXECUTION_PERSISTENCE_SCHEMA_REQUIRED",
+  "status": "IMPLEMENTED_PROVIDER_CANARY_CLOSURE_READY_FOR_REVIEW",
+  "stop_code": "",
   "execution_source": "CURRENT_PROMPT_IR_V2",
   "provider_request_source": "DETERMINISTIC_GENERATION_PAYLOAD",
   "caller_prompt_override_allowed": false,
@@ -12,15 +12,9 @@
   "batch_generation_allowed": false,
   "external_ci_provider_calls_allowed": false,
   "real_provider_canary_executed": false,
-  "provider_calls": 0,
-  "migration_added": false,
-  "blocking_gaps": [
-    "No structured shot-level execution record binds PromptIR, GenerationPayload, ModelProfile, provider request/response, and Media Candidate.",
-    "TaskRun.payload and VisualReferenceAsset.generation_provenance are generic JSON fields and cannot be used as the canonical Phase F authority.",
-    "No persisted uniqueness/serialization rule prevents concurrent duplicate provider calls for one request fingerprint.",
-    "The existing creative task boundary accepts free-form prompt/reference inputs and performs automatic storyboard/reference projections.",
-    "The existing image recovery path and async transports contain retry behavior that is incompatible with the one-call Canary contract."
-  ],
+  "provider_calls": 1,
+  "migration_added": true,
+  "blocking_gaps": [],
   "required_future_authority_classes": [
     "GENERATION_EXECUTION_INTENT",
     "PROMPT_IR_LINEAGE",
@@ -35,5 +29,28 @@
   ],
   "forbidden_authority_class": "PROVIDER_CREATIVE_DECISION",
   "audit_baseline": "434fa124e686ed16aedaafafeb57d2cdb4aac293",
-  "branch": "codex/visual-authoring-provider-canary-reconcile"
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "real_provider_reason": "PROVIDER_NOT_CONFIGURED_OR_NOT_AUTHORIZED",
+  "successful_replay_provider_calls": 0,
+  "implementation_commit_pending": false,
+  "execution_routes": [
+    "POST /api/books/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/preview",
+    "POST /api/books/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/execute"
+  ],
+  "persistence_tables": [
+    "generation_execution_records",
+    "media_candidate_records"
+  ],
+  "candidate_boundary": "MEDIA_CANDIDATE_ONLY",
+  "authority_mutations_allowed": false,
+  "evidence_artifacts": [
+    "artifacts/e2e-production-pilot/episode_01_phase_f_canary_preview.json",
+    "artifacts/e2e-production-pilot/episode_01_phase_f_fake_provider_trace.json",
+    "artifacts/e2e-production-pilot/phase_f_provider_request_audit.json",
+    "tests/test_generation_canary_phase_f.py"
+  ],
+  "real_provider_opt_in": "PHASE_F_PROVIDER_CANARY_REAL=1",
+  "migration_revision": "y8h9i0j1k2l3",
+  "schema_approval": "EXPLICIT_HUMAN_APPROVAL_RECORDED",
+  "phase_f_induced_ci_failures": 0
 }

@@ -2,21 +2,19 @@
 
 ## Audit status
 
-`STOPPED_AT_GAP_AUDIT`
+`IMPLEMENTED_PROVIDER_CANARY_CLOSURE_READY_FOR_REVIEW`
 
-The Phase F implementation must not proceed to a real or fake execution
-boundary until a durable execution record can represent the complete
-shot-level lineage without treating a generic JSON field as canonical truth.
-The current repository does not provide that record. Per the Phase F stop
-conditions, this audit does **not** add a migration and does **not** call a
-provider.
+The opening section records the historical pre-approval gap audit. It is retained
+as evidence of why generic `TaskRun`/`meta_info` fields were rejected. The schema
+was subsequently approved explicitly, implemented in migration `y8h9i0j1k2l3`, and
+verified with the fake-provider pilot below. No external Provider was called.
 
 Audit baseline: `434fa124e686ed16aedaafafeb57d2cdb4aac293`  
 Branch: `codex/visual-authoring-provider-canary-reconcile`
 
-## Revalidation on current state
+## Historical revalidation before schema approval
 
-The audit was re-run against the current remote-synchronized HEAD
+The audit was re-run against the pre-implementation remote-synchronized HEAD
 `aaccf3dcf52e4c70d84ce65f4f83813b07afe913`. A full model search found no
 `GenerationExecution`, `MediaCandidate`, or equivalent execution model. The
 SQLAlchemy column inventory confirms that the closest existing records are
@@ -142,11 +140,10 @@ to bypass the Phase F candidate boundary.
 
 ## Blocking schema gap and minimum future shape
 
-The current schema cannot durably express the required Phase F record without
+The pre-implementation schema could not durably express the required Phase F record without
 using `TaskRun.payload`, `VisualReferenceAsset.generation_provenance`, or
-`meta_info` as an undocumented JSON authority. The minimum future schema must
-be reviewed and approved before implementation; it needs structured,
-queryable, immutable or append-only fields for:
+`meta_info` as an undocumented JSON authority. After the explicit schema approval,
+the dedicated migration provides structured, queryable fields for:
 
 - execution request identity and `execution_mode=CANARY`;
 - exact book/episode/storyboard shot and PromptIR version/authority/hash;
@@ -162,18 +159,37 @@ queryable, immutable or append-only fields for:
 - a uniqueness/serialization rule preventing concurrent duplicate provider
   calls for one fingerprint.
 
-Per the Phase F rules, this is reported as:
-
-`GENERATION_EXECUTION_PERSISTENCE_SCHEMA_REQUIRED`
-
-No migration was added in this phase.
+The pre-implementation finding was `GENERATION_EXECUTION_PERSISTENCE_SCHEMA_REQUIRED`; the schema was then explicitly approved and implemented as migration `y8h9i0j1k2l3`.
 
 ## Audit conclusion
 
-The existing provider transport and byte-storage primitives are reusable, but
-the current creative task boundary is not safe for Phase F. The required
-Generation Execution Request, preview/confirmation/stale contract, candidate
-provenance, and idempotency proof cannot be implemented honestly on the current
-schema. The concrete minimum schema proposal is recorded in
-`phase_f_generation_execution_schema_proposal.md`; it is design-only and adds
-no migration. Work must stop here pending an explicit schema decision.
+The existing provider transport and byte-storage primitives are reused only behind the new Phase F boundary. The legacy creative task boundary remains excluded because it accepts free-form creative input, retries, and performs authority projections. The dedicated records now provide the required execution lineage, candidate provenance, and idempotency uniqueness.
+
+## Implementation addendum — current closure state
+
+The former structural gap is closed by migration `y8h9i0j1k2l3` and the two dedicated SQLAlchemy models `GenerationExecutionRecord` and `MediaCandidateRecord`. The Phase F API boundary is implemented in `api/generation_canary_api.py` and registered by `api/server.py`.
+
+The preview path is provider-free and reconstructs current PromptIR/GenerationPayload. The execute path requires an explicit confirmation token, re-resolves current authority, rejects PromptIR/payload/policy/model/reference/provider fingerprint drift with `409` before any provider call, persists `submitted_at` before the provider boundary, permits one logical call with zero transport retries, and persists only a `MEDIA_CANDIDATE` after canonical byte validation.
+
+The Episode 1 pilot evidence is recorded in `episode_01_phase_f_canary_preview.json`, `episode_01_phase_f_fake_provider_trace.json`, and `phase_f_provider_request_audit.json`. The fake provider returned a real PNG and successful replay made zero provider calls. Real external provider execution remains intentionally unclaimed because no provider was configured or authorized.
+
+Current closure status:
+
+```text
+IMPLEMENTED_PROVIDER_CANARY_CLOSURE_READY_FOR_REVIEW
+```
+
+Extended verification records:
+
+```text
+phase_e_targeted=52_passed
+phase_f_targeted=13_passed
+migration_chain_hardening=7_passed
+golden_regression=5_passed
+release_gate_self_test=passed
+web_tests=301_passed
+web_build=passed
+full_backend=1663_passed_4_known_baseline_failures
+phase_f_induced_failures=0
+production_release_gate=blocked_by_environment_and_historical_baseline
+```

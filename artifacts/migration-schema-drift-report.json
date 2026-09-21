@@ -2,16 +2,16 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 91,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 112,
     "EXTRA_LEGACY_COLUMN": 1,
-    "INDEX_DRIFT": 61,
+    "INDEX_DRIFT": 69,
     "MISSING_MIGRATION": 0,
     "NULLABILITY_DRIFT": 0,
     "TYPE_DRIFT": 0
   },
   "counts": {
     "blocking": 0,
-    "total": 153
+    "total": 182
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -498,6 +498,236 @@
       "column": "content",
       "kind": "column",
       "table": "episode_outlines"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_generation_execution_records_candidate_id",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_generation_execution_records_created_at",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "generation_payload_fingerprint"
+      ],
+      "index": "ix_generation_execution_records_generation_payload_fingerprint",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "prompt_ir_authority_id"
+      ],
+      "index": "ix_generation_execution_records_prompt_ir_authority_id",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "prompt_ir_version_id"
+      ],
+      "index": "ix_generation_execution_records_prompt_ir_version_id",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "provider_request_fingerprint"
+      ],
+      "index": "ix_generation_execution_records_provider_request_fingerprint",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_generation_execution_records_storyboard_shot_id",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "updated_at"
+      ],
+      "index": "ix_generation_execution_records_updated_at",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_generation_execution_records_created",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "generation_payload_fingerprint"
+      ],
+      "index": "ix_generation_execution_records_payload",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "prompt_ir_version_id"
+      ],
+      "index": "ix_generation_execution_records_prompt_ir",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "provider_request_fingerprint"
+      ],
+      "index": "ix_generation_execution_records_provider_request",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_generation_execution_records_shot",
+      "kind": "index",
+      "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "checksum_sha256"
+      ],
+      "index": "ix_media_candidate_records_checksum_sha256",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_media_candidate_records_created_at",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "generation_payload_fingerprint"
+      ],
+      "index": "ix_media_candidate_records_generation_payload_fingerprint",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "prompt_ir_version_id"
+      ],
+      "index": "ix_media_candidate_records_prompt_ir_version_id",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "provider_request_fingerprint"
+      ],
+      "index": "ix_media_candidate_records_provider_request_fingerprint",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "checksum_sha256"
+      ],
+      "index": "ix_media_candidate_records_checksum",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_media_candidate_records_created",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "generation_payload_fingerprint"
+      ],
+      "index": "ix_media_candidate_records_payload",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "prompt_ir_version_id"
+      ],
+      "index": "ix_media_candidate_records_prompt_ir",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "provider_request_fingerprint"
+      ],
+      "index": "ix_media_candidate_records_provider_request",
+      "kind": "index",
+      "table": "media_candidate_records"
     },
     {
       "blocking": false,
@@ -1395,6 +1625,56 @@
       "columns": [
         "asset_key"
       ],
+      "index": "ix_visual_authoring_proposals_asset_key",
+      "kind": "index",
+      "table": "visual_authoring_proposals"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_visual_authoring_proposals_book_id",
+      "kind": "index",
+      "table": "visual_authoring_proposals"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "proposal_id"
+      ],
+      "index": "ix_visual_authoring_proposals_proposal_id",
+      "kind": "index",
+      "table": "visual_authoring_proposals"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "provider_request_fingerprint"
+      ],
+      "index": "ix_visual_authoring_proposals_provider_request_fingerprint",
+      "kind": "index",
+      "table": "visual_authoring_proposals"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "request_id"
+      ],
+      "index": "ix_visual_authoring_proposals_request_id",
+      "kind": "index",
+      "table": "visual_authoring_proposals"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_key"
+      ],
       "index": "ix_visual_locations_asset_key",
       "kind": "index",
       "table": "visual_locations"
@@ -1428,6 +1708,13 @@
       "index": "ix_visual_props_asset_key",
       "kind": "index",
       "table": "visual_props"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "column": "reference_token_mapping",
+      "kind": "column",
+      "table": "visual_reference_assets"
     },
     {
       "blocking": false,
