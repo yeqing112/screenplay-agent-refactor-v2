@@ -293,6 +293,69 @@ def _asset_authority_snapshot(session: Any, *, book_id: int, prompt_payload: dic
     return {"declared": bool(result), "bindings": result, "fingerprint": _fingerprint(result)}
 
 
+def _storyboard_shot_fingerprint(shot: Any) -> str:
+    """Return the immutable storyboard identity used by Phase I binding."""
+    projection = str(getattr(shot, "projection_fingerprint", "") or "").strip()
+    if projection:
+        return projection
+    return _fingerprint(
+        {
+            "schema_version": "storyboard_shot_identity_v1",
+            "id": getattr(shot, "id", None),
+            "book_id": getattr(shot, "book_id", None),
+            "episode": getattr(shot, "episode", None),
+            "shot_id": getattr(shot, "shot_id", None),
+            "plan_shot_id": getattr(shot, "plan_shot_id", ""),
+            "scene_id": getattr(shot, "scene_id", ""),
+        }
+    )
+
+
+def _production_asset_binding_snapshot(session: Any, *, storyboard_shot_id: int) -> dict[str, Any]:
+    """Snapshot explicit H2.2 bindings without falling back to legacy metadata."""
+    from core.production_asset_authority import AssetBindingInvalid, resolve_shot_assets
+    from models import ShotAssetBinding
+
+    rows = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=storyboard_shot_id).all()
+    if not rows:
+        return {"schema_version": "phase_h2_2_binding_snapshot_v1", "declared": False, "currentness_valid": True, "bindings": [], "fingerprint": _fingerprint([])}
+    try:
+        resolved = resolve_shot_assets(session, storyboard_shot_id=storyboard_shot_id)
+    except AssetBindingInvalid as exc:
+        return {
+            "schema_version": "phase_h2_2_binding_snapshot_v1",
+            "declared": True,
+            "currentness_valid": False,
+            "bindings": [],
+            "diagnostics": [{"code": exc.code, "message": exc.message, "diagnostics": exc.diagnostics}],
+            "fingerprint": _fingerprint({"invalid": True, "diagnostics": exc.diagnostics}),
+        }
+
+    def compact(asset: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "entity_id": asset["entity_id"],
+            "asset_type": asset["asset_type"],
+            "authority_id": asset["authority_id"],
+            "version_id": asset["version_id"],
+            "authority_fingerprint": asset["authority_fingerprint"],
+            "version_fingerprint": asset["version_fingerprint"],
+            "pointer_fingerprint": asset["pointer_fingerprint"],
+        }
+
+    bindings = [compact(item) for item in resolved["characters"]]
+    if resolved.get("scene") is not None:
+        bindings.append(compact(resolved["scene"]))
+    bindings.extend(compact(item) for item in resolved["props"])
+    bindings.sort(key=lambda item: (item["asset_type"], item["entity_id"]))
+    return {
+        "schema_version": "phase_h2_2_binding_snapshot_v1",
+        "declared": True,
+        "currentness_valid": True,
+        "bindings": bindings,
+        "fingerprint": _fingerprint(bindings),
+    }
+
+
 def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord, execution: GenerationExecutionRecord) -> dict[str, Any]:
     prompt = {"declared": True, "candidate_version_id": int(candidate.prompt_ir_version_id), "candidate_payload_hash": str(candidate.prompt_ir_payload_hash)}
     pointer = session.query(PromptIRPointer).filter_by(book_id=execution.book_id, episode=execution.episode, storyboard_shot_id=execution.storyboard_shot_id).first()
@@ -325,18 +388,20 @@ def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord
         asset_bindings.append({"asset_key": asset_key, "pointer_present": pointer is not None, "current_version_id": getattr(pointer, "current_version_id", None) if pointer else None, "payload_hash": str(getattr(pointer, "payload_hash", "") or "") if pointer else "", "pointer_matches": pointer_matches})
     asset = {"declared": bool(asset_bindings), "bindings": asset_bindings}
     reference = _reference_snapshot(session, execution)
+    production_asset_binding = _production_asset_binding_snapshot(session, storyboard_shot_id=int(execution.storyboard_shot_id))
     return {
         "schema_version": "media_authority_snapshot_v1",
         "prompt_ir": prompt,
         "asset": asset,
         "asset_authority": asset_authority,
         "reference": reference,
+        "production_asset_binding": production_asset_binding,
         "generation_policy_fingerprint": str(execution.generation_policy_fingerprint or ""),
         "generation_policy_current_fingerprint": str(prompt.get("current_generation_policy_fingerprint") or ""),
         "generation_policy_matches": not prompt.get("current_generation_policy_fingerprint") or str(prompt.get("current_generation_policy_fingerprint")) == str(execution.generation_policy_fingerprint or ""),
         "generation_policy_request": generation_policy if isinstance(generation_policy, dict) else {},
         "reference_bindings_fingerprint": str(execution.reference_bindings_fingerprint or ""),
-        "currentness_valid": bool(prompt.get("matches", True)) and bool(prompt.get("generation_policy_matches", True)) and all(item.get("pointer_matches", True) for item in asset.get("bindings", [])) and all(item.get("pointer_matches", True) for item in asset_authority.get("bindings", [])) and all(item.get("exists") and item.get("pointer_matches", True) and str(item.get("status") or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.get("stale_status") or "FRESH").upper() == "FRESH" for item in reference.get("bindings", [])),
+        "currentness_valid": bool(prompt.get("matches", True)) and bool(prompt.get("generation_policy_matches", True)) and all(item.get("pointer_matches", True) for item in asset.get("bindings", [])) and all(item.get("pointer_matches", True) for item in asset_authority.get("bindings", [])) and all(item.get("exists") and item.get("pointer_matches", True) and str(item.get("status") or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.get("stale_status") or "FRESH").upper() == "FRESH" for item in reference.get("bindings", [])) and bool(production_asset_binding.get("currentness_valid", True)),
     }
 
 
@@ -447,6 +512,17 @@ def promote_media_candidate(session: Any, candidate_id: str, validation_id: str,
         _mark_validation_stale(session, validation)
         _fail("MEDIA_PROMOTION_STALE", "Current PromptIR, Asset, Reference, or Generation Policy lineage changed.", snapshot)
     book_id, episode, shot_id, media_role = _promotion_scope(execution)
+    from models import StoryboardShot
+
+    storyboard_shot = session.query(StoryboardShot).filter_by(id=shot_id).first()
+    production_asset_binding = snapshot.get("production_asset_binding") or {
+        "schema_version": "phase_h2_2_binding_snapshot_v1",
+        "declared": False,
+        "currentness_valid": True,
+        "bindings": [],
+        "fingerprint": _fingerprint([]),
+    }
+    storyboard_fingerprint = _storyboard_shot_fingerprint(storyboard_shot) if storyboard_shot is not None else ""
     existing = session.query(OfficialMediaVersion).filter_by(candidate_id=candidate.candidate_id, validation_id=validation.validation_id).first()
     if existing is not None:
         authority = session.query(OfficialMediaAuthority).filter_by(official_media_version_id=existing.official_media_version_id).first()
@@ -459,15 +535,35 @@ def promote_media_candidate(session: Any, candidate_id: str, validation_id: str,
     version_id = f"omv-{_fingerprint({'candidate': candidate.candidate_id, 'validation': validation.validation_id, 'scope': [book_id, episode, shot_id, media_role], 'revision': revision})[:40]}"
     promotion_fingerprint = _fingerprint({"candidate_fingerprint": validation.candidate_fingerprint, "validation_fingerprint": validation.technical_validation_fingerprint, "authority_snapshot_fingerprint": validation.authority_snapshot_fingerprint, "scope": [book_id, episode, shot_id, media_role], "revision": revision, "confirmation": bool(confirmation)})
     authority_id = f"oma-{promotion_fingerprint[:40]}"
-    envelope = {"schema_version": "official_media_authority_v1", "official_media_version_id": version_id, "authority_id": authority_id, "candidate_id": candidate.candidate_id, "validation_id": validation.validation_id, "lineage_hash": lineage_hash, "validation_fingerprint": validation.technical_validation_fingerprint, "promotion_fingerprint": promotion_fingerprint, "media_role": media_role, "explicit_confirmation": True}
+    envelope = {
+        "schema_version": "official_media_authority_v1",
+        "official_media_version_id": version_id,
+        "authority_id": authority_id,
+        "candidate_id": candidate.candidate_id,
+        "validation_id": validation.validation_id,
+        "generation_execution_id": execution.execution_id,
+        "storyboard_shot_id": shot_id,
+        "storyboard_shot_fingerprint": storyboard_fingerprint,
+        "plan_shot_id": str(execution.plan_shot_id or ""),
+        "prompt_ir_version_id": int(candidate.prompt_ir_version_id),
+        "prompt_ir_payload_hash": str(candidate.prompt_ir_payload_hash),
+        "lineage_hash": lineage_hash,
+        "validation_fingerprint": validation.technical_validation_fingerprint,
+        "promotion_fingerprint": promotion_fingerprint,
+        "media_role": media_role,
+        "storage_identity": str(candidate.storage_identity),
+        "checksum_sha256": str(candidate.checksum_sha256),
+        "production_asset_binding": production_asset_binding,
+        "explicit_confirmation": True,
+    }
     payload_hash = _fingerprint({"version_id": version_id, "candidate_id": candidate.candidate_id, "storage_identity": candidate.storage_identity, "checksum_sha256": candidate.checksum_sha256, "validation_id": validation.validation_id})
     version = OfficialMediaVersion(official_media_version_id=version_id, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, plan_shot_id=str(execution.plan_shot_id or ""), media_role=media_role, media_type=str(candidate.media_type), candidate_id=candidate.candidate_id, candidate_fingerprint=validation.candidate_fingerprint, storage_identity=str(candidate.storage_identity), checksum_sha256=str(candidate.checksum_sha256), mime_type=str(candidate.mime_type), byte_size=int(candidate.byte_size), width=candidate.width, height=candidate.height, duration_ms=candidate.duration_ms, prompt_ir_version_id=int(candidate.prompt_ir_version_id), prompt_ir_payload_hash=str(candidate.prompt_ir_payload_hash), generation_payload_fingerprint=str(candidate.generation_payload_fingerprint), provider_request_fingerprint=str(candidate.provider_request_fingerprint), provider_response_hash=str(candidate.provider_response_hash), validation_id=validation.validation_id, validation_fingerprint=validation.technical_validation_fingerprint, revision=revision, status="CURRENT", payload_hash=payload_hash, created_at=datetime.utcnow())
     authority = OfficialMediaAuthority(authority_id=authority_id, official_media_version_id=version_id, authority_envelope_json=_canonical(envelope), payload_hash=payload_hash, lineage_hash=lineage_hash, validation_fingerprint=validation.technical_validation_fingerprint, promotion_fingerprint=promotion_fingerprint, status="CURRENT", created_at=datetime.utcnow())
     pointer_values = {"book_id": book_id, "episode": episode, "storyboard_shot_id": shot_id, "media_role": media_role, "official_media_version_id": version_id, "authority_id": authority_id}
     pointer = session.query(OfficialMediaPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id, media_role=media_role).first()
+    pointer_is_new = pointer is None
     if pointer is None:
         pointer = OfficialMediaPointer(**pointer_values, fingerprint=_pointer_fingerprint(pointer_values), created_at=datetime.utcnow(), updated_at=datetime.utcnow())
-        session.add(pointer)
     else:
         pointer.official_media_version_id = version_id; pointer.authority_id = authority_id; pointer.fingerprint = _pointer_fingerprint(pointer_values); pointer.updated_at = datetime.utcnow()
     for old in current_versions:
@@ -476,8 +572,16 @@ def promote_media_candidate(session: Any, candidate_id: str, validation_id: str,
             old_authority = session.query(OfficialMediaAuthority).filter_by(official_media_version_id=old.official_media_version_id).first()
             if old_authority is not None:
                 old_authority.status = "SUPERSEDED"
-    session.add(version); session.add(authority)
+    # The migration has a database FK from authority -> version while the
+    # legacy ORM model intentionally has no relationship. Flush in dependency
+    # order so SQLite foreign-key enforcement cannot observe a transient
+    # authority row before its official version exists.
     try:
+        session.add(version)
+        session.flush()
+        session.add(authority)
+        if pointer_is_new:
+            session.add(pointer)
         session.commit()
     except IntegrityError:
         session.rollback()
@@ -557,3 +661,66 @@ def resolve_current_official_media(session: Any, *, book_id: int, episode: int, 
     if not snapshot.get("currentness_valid") or _fingerprint(snapshot) != validation.authority_snapshot_fingerprint:
         _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "Current upstream authority no longer matches the official record.")
     return {"pointer": pointer, "version": version, "authority": authority, "validation": validation, "candidate": candidate, "execution": execution, "technical_validation": technical, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
+
+
+def resolve_current_official_media_for_shot(
+    session: Any,
+    *,
+    book_id: int,
+    episode: int,
+    storyboard_shot_id: int,
+    media_role: str = MEDIA_ROLE_DEFAULT,
+) -> dict[str, Any]:
+    """Resolve OfficialMedia only when the complete Phase I lineage is exact.
+
+    The legacy G2 resolver remains available for rows created before H2.2. This
+    strict resolver requires the promotion envelope to carry the storyboard,
+    PromptIR, GenerationExecution, storage and explicit H2.2 asset-binding
+    snapshot. Every failure is exposed as the API-safe 409 contract requested
+    by Phase I.
+    """
+    try:
+        resolved = resolve_current_official_media(
+            session,
+            book_id=book_id,
+            episode=episode,
+            storyboard_shot_id=storyboard_shot_id,
+            media_role=media_role,
+        )
+    except MediaAuthorityError as exc:
+        _fail("OFFICIAL_MEDIA_BINDING_INVALID", exc.message, {"cause_code": exc.code, "cause_diagnostics": exc.diagnostics})
+
+    from models import PromptIRPointer, PromptIRVersion, StoryboardShot
+
+    shot = session.query(StoryboardShot).filter_by(id=storyboard_shot_id, book_id=book_id, episode=episode).first()
+    version = resolved["version"]
+    execution = resolved["execution"]
+    authority = resolved["authority"]
+    candidate = resolved["candidate"]
+    envelope = _json(authority.authority_envelope_json, {})
+    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id).first()
+    prompt = session.query(PromptIRVersion).filter_by(id=int(version.prompt_ir_version_id)).first()
+    current_assets = _production_asset_binding_snapshot(session, storyboard_shot_id=storyboard_shot_id)
+    expected_storyboard_fp = _storyboard_shot_fingerprint(shot) if shot is not None else ""
+    expected = {
+        "storyboard_shot": bool(shot and int(version.storyboard_shot_id) == int(storyboard_shot_id) and str(version.plan_shot_id or "") == str(getattr(shot, "plan_shot_id", "") or "")),
+        "storyboard_fingerprint": bool(envelope.get("storyboard_shot_fingerprint") and envelope.get("storyboard_shot_fingerprint") == expected_storyboard_fp),
+        "generation_execution": envelope.get("generation_execution_id") == execution.execution_id,
+        "prompt_version": bool(prompt and pointer and int(pointer.prompt_ir_version_id) == int(prompt.id) == int(version.prompt_ir_version_id)),
+        "prompt_fingerprint": bool(prompt and envelope.get("prompt_ir_payload_hash") == prompt.payload_hash == version.prompt_ir_payload_hash),
+        "asset_binding_declared": bool((envelope.get("production_asset_binding") or {}).get("declared")),
+        "asset_binding_current": bool(current_assets.get("declared") and current_assets.get("currentness_valid") and envelope.get("production_asset_binding", {}).get("fingerprint") == current_assets.get("fingerprint")),
+        "storage_identity": envelope.get("storage_identity") == candidate.storage_identity == version.storage_identity,
+        "checksum": envelope.get("checksum_sha256") == candidate.checksum_sha256 == version.checksum_sha256,
+    }
+    if not all(expected.values()):
+        _fail("OFFICIAL_MEDIA_BINDING_INVALID", "OfficialMedia is not bound to the current Storyboard, PromptIR, Production Asset Authority, or storage identity.", {"checks": expected, "asset_binding": current_assets})
+    return {
+        **resolved,
+        "status": "PASS",
+        "binding_status": "PASS",
+        "checks": expected,
+        "production_asset_binding": current_assets,
+        "prompt_ir": {"version_id": prompt.id, "payload_hash": prompt.payload_hash, "pointer_id": pointer.id},
+        "generation_execution_id": execution.execution_id,
+    }

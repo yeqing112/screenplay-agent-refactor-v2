@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from core.media_authority import (
     MediaAuthorityError,
     promote_media_candidate,
-    resolve_current_official_media,
+    resolve_current_official_media_for_shot,
     validate_media_candidate,
 )
 from models import Session
@@ -74,7 +74,7 @@ def promote_candidate(req: PromotionRequest):
 def resolve_official_media(book_id: int, episode: int, storyboard_shot_id: int, media_role: str):
     with Session() as session:
         try:
-            result = resolve_current_official_media(session, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, media_role=media_role)
+            result = resolve_current_official_media_for_shot(session, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, media_role=media_role)
         except MediaAuthorityError as exc:
             _raise(exc)
         return {
@@ -83,6 +83,7 @@ def resolve_official_media(book_id: int, episode: int, storyboard_shot_id: int, 
             "candidate_id": result["candidate"].candidate_id,
             "validation_id": result["validation"].validation_id,
             "storage_identity": result["version"].storage_identity,
+            "binding_status": result["binding_status"],
             "provider_calls": 0,
             "llm_calls": 0,
             "image_calls": 0,
