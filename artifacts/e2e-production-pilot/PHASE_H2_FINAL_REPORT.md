@@ -2,9 +2,9 @@
 
 ## Status
 
-`PHASE_H2_ASSET_AUTHORITY_SCHEMA_REQUIRED`
+`PHASE_H2_ASSET_AUTHORITY_SCHEMA_APPROVED_PENDING_MIGRATION`
 
-H2 完成现有资产模型审计与最小 schema proposal；未执行 migration，未修改生产数据，未创建 Official Media，未调用 Provider/Image/Video。
+H2 已完成现有资产模型审计、最小 schema proposal、schema review 与 migration plan；未执行 migration，未修改生产数据，未创建 Official Media，未调用 Provider/Image/Video。
 
 ## Existing model audit
 
@@ -29,6 +29,10 @@ H2 完成现有资产模型审计与最小 schema proposal；未执行 migration
 
 缺口说明：[phase_h2_asset_authority_gap.md](phase_h2_asset_authority_gap.md)
 
+审核结论：[phase_h2_asset_authority_schema_review.md](phase_h2_asset_authority_schema_review.md)
+
+迁移设计：[phase_h2_asset_authority_migration_plan.md](phase_h2_asset_authority_migration_plan.md)
+
 ## Episode 01 matrix
 
 [phase_h2_episode_01_asset_matrix.json](phase_h2_episode_01_asset_matrix.json) 已更新为 15 个镜头。由于 schema 尚未实现，所有 `authority_id` / `version_id` 均保持 null，并明确标记 `SCHEMA_REQUIRED`；没有伪造绑定。
@@ -43,13 +47,15 @@ H2 完成现有资产模型审计与最小 schema proposal；未执行 migration
 - Video calls：**0**
 - `FULL_REAL_END_TO_END_PRODUCTION_ACCEPTANCE_TRIGGERED=false`
 
-## Completion token
+## Review decision
 
-`PHASE_H2_ASSET_AUTHORITY_SCHEMA_REQUIRED`
+`PHASE_H2_ASSET_AUTHORITY_SCHEMA_APPROVED_PENDING_MIGRATION`
+
+该状态只批准 schema contract 与迁移设计。下一阶段可在独立批准后创建 migration；不得回填 legacy visual rows，不得升级 `VisualReferenceAuthority`，也不得修改 Candidate、Official Media 或 A–G2 authority 链。
 
 ## Verification basis
 
-本轮仅新增审计文档和矩阵，没有修改 Python/TypeScript/schema 代码；基线 HEAD 仍为 `c72e87be6e755050c8f4e0240914ea8fa90cb535`。沿用该 HEAD 已核对的验证证据：
+本轮仅新增审核/迁移设计文档，没有修改 Python/TypeScript/schema 代码；基线 HEAD 为 `78e06959bae400748a94ecd82bd2eb9c564bf4e0`。沿用该 HEAD 已核对的验证证据：
 
 - Phase F 定向：51 passed；Phase C–E/迁移：77 passed。
 - Phase G2：16 passed。
