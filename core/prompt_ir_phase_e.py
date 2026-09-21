@@ -361,6 +361,10 @@ def validate_prompt_ir_historical_integrity(session: Any, *, version: Any, autho
     shot_id = stored.get("storyboard_shot_id")
     if set_id in (None, "") or shot_id in (None, ""):
         return _historical_failure("PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "PromptIR payload is missing the historical materialization set or StoryboardShot ID.")
+    if str(getattr(version, "storyboard_shot_id", shot_id)) != str(shot_id) or str(getattr(authority, "storyboard_shot_id", shot_id)) != str(shot_id):
+        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "PromptIR version and authority do not bind the stored historical StoryboardShot.")
+    if getattr(version, "materialization_set_id", None) not in (None, 0, "", int(set_id)):
+        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "PromptIR version does not bind the stored historical materialization set.")
     materialization_set = session.query(StoryboardMaterializationSet).filter_by(id=int(set_id), book_id=version.book_id, episode=version.episode).first()
     if materialization_set is None:
         return _historical_failure("PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "Historical StoryboardMaterializationSet is missing.", diagnostics=[{"code": "PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "materialization_set_id": set_id}])
@@ -377,6 +381,13 @@ def validate_prompt_ir_historical_integrity(session: Any, *, version: Any, autho
     expected_ids = _historical_json(materialization_set.ordered_plan_shot_ids, [])
     if not isinstance(expected_ids, list) or len(rows) != len(expected_ids) or int(materialization_set.expected_shot_count) != len(rows) or int(materialization_set.materialized_shot_count) != len(rows):
         return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical Storyboard Set cardinality is inconsistent.")
+    historical_shot = next((row for row in rows if int(row.id) == int(shot_id)), None)
+    if historical_shot is None:
+        return _historical_failure(
+            "PROMPT_IR_HISTORICAL_LINEAGE_MISSING",
+            "Historical StoryboardShot is missing.",
+            diagnostics=[{"code": "PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "storyboard_shot_id": shot_id, "materialization_set_id": materialization_set.id}],
+        )
     for row in rows:
         meta = _historical_json(row.meta_info, {})
         stored_projection = meta.get("projection_payload") if isinstance(meta, dict) and isinstance(meta.get("projection_payload"), dict) else None

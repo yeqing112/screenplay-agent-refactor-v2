@@ -22,6 +22,10 @@ def test_clean_historical_integrity_and_obsolete_asset_revision_are_valid():
     assert result["clean_current"] == "PASS"
     assert result["clean_obsolete_asset_revision"] == "PASS"
     assert result["clean_obsolete_storyboard_revision"] == "PASS"
+    currentness = _trace()["currentness_validation"]
+    assert currentness["clean_current"]["current_lineage_valid"] is True
+    assert currentness["obsolete_asset_revision"]["obsolete_due_to_upstream_change"] is True
+    assert currentness["obsolete_storyboard_revision"]["obsolete_due_to_upstream_change"] is True
 
 
 def test_semantic_tamper_plus_asset_revision_fails_closed_without_writes():

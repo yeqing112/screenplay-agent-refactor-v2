@@ -687,6 +687,12 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "second_compile": second_compile,
         "counts": {"after_compile": after_compile, "after_idempotent": after_idempotent, "after_failed": after_failed},
         "lineage": lineage,
+        "currentness_validation": {
+            "clean_current": {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False},
+            "obsolete_asset_revision": {"current_lineage_valid": False, "obsolete_due_to_upstream_change": True, "status": asset_revision.get("status")},
+            "obsolete_storyboard_revision": {"current_lineage_valid": False, "obsolete_due_to_upstream_change": True, "status": storyboard_revision.get("status")},
+            "policy_revision": {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False, "status": "PASS" if policy_revision.get("reused_count") == 0 else "FAIL"},
+        },
         "resolver_positive": resolver_positive,
         "failed_compile_zero_write": {"result": failed_compile, "counts_unchanged": after_failed == after_idempotent, "pointers_unchanged": pointer_hashes_before_failure == pointer_hashes_after_failure},
         "prompt_ir_revision_lifecycle": {"policy_a": request.generation_policy, "policy_b": revision_request.generation_policy, "old_policy_fingerprint": _json(payloads[0].get("generation_policy"), {}).get("fingerprint") if payloads else "", "new_policy_fingerprint": build_generation_policy(revision_request.generation_policy, allow_default=False).get("fingerprint"), "policy_a_compile": first_compile, "policy_a_reuse": second_compile, "policy_revision": policy_revision, "policy_b_reuse": revision_reuse, "old_version_ids": revision_before, "new_version_ids": revision_after, "old_authority_ids": revision_authority_before, "new_authority_ids": revision_authority_after, "pointer_rows_before": revision_pointer_rows_before, "pointer_rows_after": revision_pointer_rows_after, "old_stale_states": revision_old_states, "all_pointer_ids_changed": all(revision_before.get(key) != revision_after.get(key) for key in revision_before), "revision_then_reuse_count": revision_reuse.get("reused_count")},

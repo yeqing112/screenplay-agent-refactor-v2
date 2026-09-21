@@ -11,105 +11,105 @@
       "schema_version": "prompt_ir_phase_e_compile_v1",
       "shots": [
         {
-          "payload_hash": "f0e1f721dbf51a2785d25bd0e2cb5dc24c807634ec71ad11b27555fef973e45b",
+          "payload_hash": "d26e8b475f62659c7d49aaeaedd2d6ce0d75d43279074fcd854315ced587fbba",
           "prompt_ir_authority_id": 31,
           "prompt_ir_version_id": 31,
           "reused": false,
           "storyboard_shot_id": 1
         },
         {
-          "payload_hash": "4ec3e9402d8050bbda015310a1b44ae13517c7995e130f88b9c81a3b3a2c6892",
+          "payload_hash": "a4a6dbef6e32383861090951c9973bf5321422a62ba558a721b09148f7c521c6",
           "prompt_ir_authority_id": 32,
           "prompt_ir_version_id": 32,
           "reused": false,
           "storyboard_shot_id": 2
         },
         {
-          "payload_hash": "b7c10b8a9211391dc4f92911a1dd916f1ccec6787214b824c11a154afa6ef57a",
+          "payload_hash": "58fe99cd98e35f203b81445d59720e92ec8a5993498928860a95455ea34df0d1",
           "prompt_ir_authority_id": 33,
           "prompt_ir_version_id": 33,
           "reused": false,
           "storyboard_shot_id": 3
         },
         {
-          "payload_hash": "0fdeb069572428b1348fb020dc74ae2ad363f39fda79fb36cbe6f6021e543c4c",
+          "payload_hash": "871c68ebb27a1f9b025ff846211a164d549e4993762b1ef228ae4270a769931d",
           "prompt_ir_authority_id": 34,
           "prompt_ir_version_id": 34,
           "reused": false,
           "storyboard_shot_id": 4
         },
         {
-          "payload_hash": "64ffe73cb06461062bd3990110d44be74f3381aab154f6d8805749f77e4d0b92",
+          "payload_hash": "162fb425ad497137efc8eb01ebd73fc5bf1aafc0bf2df251333a329569681cee",
           "prompt_ir_authority_id": 35,
           "prompt_ir_version_id": 35,
           "reused": false,
           "storyboard_shot_id": 5
         },
         {
-          "payload_hash": "9dcfd56105a3969621defa1e5506ade798e123904c0d5dc2d59258e76bff7c15",
+          "payload_hash": "176ec1cd426216a68436552f6ee97c6bbc92c59e20ff549fe2da71564088c777",
           "prompt_ir_authority_id": 36,
           "prompt_ir_version_id": 36,
           "reused": false,
           "storyboard_shot_id": 6
         },
         {
-          "payload_hash": "00b5ca0ceadfb6704f19789ad17229c00acb1160ad1a8e21230a6c760e93e9a1",
+          "payload_hash": "580b47db171bf3eedf37c20b3d8f229599a8eb058e7ba1ed96afb876c95a6975",
           "prompt_ir_authority_id": 37,
           "prompt_ir_version_id": 37,
           "reused": false,
           "storyboard_shot_id": 7
         },
         {
-          "payload_hash": "0663b674d02cfcb2bd26108ebe33600d5a5f2c15972311e55f551f3cb0dabefb",
+          "payload_hash": "78e5481ca19e1247c8d1771ca45f7a03f39addfa651b0ef4f0d0676d7e4e6ee4",
           "prompt_ir_authority_id": 38,
           "prompt_ir_version_id": 38,
           "reused": false,
           "storyboard_shot_id": 8
         },
         {
-          "payload_hash": "92de11fdb9dd79900fc236882864027b44a4e342b5c17ebdf807a570be097e70",
+          "payload_hash": "0a062c5d91c81d57c5f4c8f03c2e52631b1d3896b66cd7a9b7946020cbcfb3f0",
           "prompt_ir_authority_id": 39,
           "prompt_ir_version_id": 39,
           "reused": false,
           "storyboard_shot_id": 9
         },
         {
-          "payload_hash": "4ffc8ac1fb4ccf118fd6ec2d1f3880d72eea46decf7f5c2cf09d99acf3e311cf",
+          "payload_hash": "c1321c75148acda5e9451cfa99c374d7aa892c8d14a46ed9a5d5e4e9d18622c9",
           "prompt_ir_authority_id": 40,
           "prompt_ir_version_id": 40,
           "reused": false,
           "storyboard_shot_id": 10
         },
         {
-          "payload_hash": "2224c50fb17401e33e0bb80afdb56b185738ccb111f2f019bd25ac05d7977953",
+          "payload_hash": "01955680c1d1a2cf7944b14276d561f67454a6c6c495633470661d11eec39e07",
           "prompt_ir_authority_id": 41,
           "prompt_ir_version_id": 41,
           "reused": false,
           "storyboard_shot_id": 11
         },
         {
-          "payload_hash": "4a82f59fa370ff40c14da2fd0f205df1181d57fc432e2b05af43880a77d320af",
+          "payload_hash": "fc12237f665bec1557a67050a608803ee66330c7205869cdb8277d5d1ccb5a6b",
           "prompt_ir_authority_id": 42,
           "prompt_ir_version_id": 42,
           "reused": false,
           "storyboard_shot_id": 12
         },
         {
-          "payload_hash": "c02e41f1f0e52a27d565becf3d81ca7e5dd3687919fe105df6fd3bf29fcaad47",
+          "payload_hash": "5ee317ad2ebc1624acbe265f9002c20d0c3ae066f9293a4095a2bb516c465c50",
           "prompt_ir_authority_id": 43,
           "prompt_ir_version_id": 43,
           "reused": false,
           "storyboard_shot_id": 13
         },
         {
-          "payload_hash": "d64a33670c42c6d6089dd5815e6c6b4489891d54e33c5fba07326d859a8453ee",
+          "payload_hash": "59e7a4b7283d58b18b77719057df976819c874e5e29946bda77453f69de49080",
           "prompt_ir_authority_id": 44,
           "prompt_ir_version_id": 44,
           "reused": false,
           "storyboard_shot_id": 14
         },
         {
-          "payload_hash": "47f94ea092b0694914634b75682edd9b2a33370555691400e939954a7435b7df",
+          "payload_hash": "f9d23470de5beb3b688bde93c721d9ccec8e5282f3221630777514c3b49171b2",
           "prompt_ir_authority_id": 45,
           "prompt_ir_version_id": 45,
           "reused": false,
@@ -148,7 +148,7 @@
       "pointer_id": 1,
       "pointers_unchanged": true,
       "probe": {
-        "new_set_fingerprint": "3fcb79fcab12a969b069154f7c99921534ca83db902e94bcef945db2aa0f244d",
+        "new_set_fingerprint": "0087b40a5a1eb7b9abf9f3f86d29d103ced3bf55ac99de50591f19518b7fe070",
         "new_set_id": 3,
         "new_shot_ids": [
           16,
@@ -160,7 +160,7 @@
           22,
           23
         ],
-        "old_set_fingerprint": "85b856e22f98375f7230197fbd6790124ce1a6e2d6161c909c1db9efa77c943b",
+        "old_set_fingerprint": "99889891a04fe241656b2fb509416fa0f161dc7d0ece7e7d7bf27f631f45cb0e",
         "old_set_id": 1,
         "old_shot_ids": [
           1,
