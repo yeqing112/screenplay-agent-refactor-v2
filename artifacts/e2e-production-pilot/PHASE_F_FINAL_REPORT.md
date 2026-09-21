@@ -36,6 +36,15 @@ URL / execution identity
 
 raw API key、Authorization、Bearer、nested token、未知 registry 字段不会进入 canonical profile、fingerprint、request snapshot 或 artifact。仅 API key rotation 且 credential source identity 不变时，profile fingerprint 保持不变。
 
+## Semantic boundary decision
+
+`ProviderExecutionProfile` is an execution contract, not a creative layer. All prompt semantics originate from PromptIR / GenerationPayload. Provider profile configuration cannot add or override negative prompts, style instructions, visual facts, blocking, camera semantics, or other creative content.
+
+- `negative_prompt` and `style` in raw provider profile parameters are rejected with `GENERATION_PROVIDER_SEMANTIC_PARAM_FORBIDDEN`.
+- A `negative_prompt` present in the request snapshot is copied only from `GenerationPayload.request`; it is never sourced from provider profile configuration.
+- `supports_reference_images` and `supports_negative_prompt` are stored under `capabilities`, not `generation_params`.
+- `generation_params` contains only the typed execution schema; arbitrary nested objects and unknown keys fail closed.
+
 ## Transport contract
 
 `openai-compatible`、`shapi-openai-images`、`shapi-gemini-image` 均只从 `generation_params` 构造 Provider body，`timeout_seconds=37` 通过 `AsyncClient(timeout=37)` 生效且不进入 JSON body。GenerationPayload semantic fingerprint 不绑定 transport timeout；provider execution profile/request fingerprint 绑定 transport contract。
