@@ -16,9 +16,9 @@ Phase G2 adds the deterministic media validation and explicit promotion contract
 
 ## Verification
 
-`pytest -q tests/test_media_validation_promotion_contract.py` → **14 passed**.
+`pytest -q tests/test_media_validation_promotion_contract.py` → **16 passed**.
 
-Covered cases include validation and promotion idempotency, explicit confirmation rejection, cross-session replay, true concurrent promotion, revision and pointer movement, PromptIR drift to `STALE`, Asset Pointer revision drift, Reference Authority revision drift, candidate checksum/storage tamper, validation payload/snapshot tamper, authority lineage tamper, pointer fingerprint tamper, Official Version tamper, and fail-closed exact resolution.
+Covered cases include Candidate immutability, validation and promotion idempotency, explicit confirmation rejection, cross-session replay, true concurrent promotion, revision and pointer movement, PromptIR and Generation Policy drift to `STALE`, Asset Pointer revision drift, Reference Authority revision drift, candidate checksum/storage tamper, validation payload/snapshot tamper, authority lineage tamper, pointer fingerprint tamper, Official Version tamper, and fail-closed exact resolution.
 
 `python -m scripts.verify_migration_chain --ci` → **exit 0**.
 

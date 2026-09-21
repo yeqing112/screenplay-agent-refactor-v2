@@ -123,6 +123,18 @@ def test_media_candidate_storage_tamper_after_validation_fails_promotion_closed(
         assert session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id).count() == 0
 
 
+def test_candidate_official_status_is_rejected_without_mutation():
+    candidate_id, _execution_id, _path, _shot_id = _fixture()
+    with Session() as session:
+        candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
+        candidate.status = "OFFICIAL"
+        session.commit()
+        with pytest.raises(MediaAuthorityError) as exc:
+            validate_media_candidate(session, candidate_id)
+        assert exc.value.code == "MEDIA_CANDIDATE_IMMUTABLE_STATUS"
+        assert session.query(MediaValidationRecord).filter_by(candidate_id=candidate_id).count() == 0
+
+
 def test_validation_tamper_and_pointer_tamper_fail_closed():
     candidate_id, _execution_id, _path, _shot_id = _fixture()
     with Session() as session:
@@ -182,6 +194,25 @@ def test_prompt_ir_revision_makes_validation_stale_before_promotion():
             promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
         assert exc.value.code == "MEDIA_PROMOTION_STALE"
         assert session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id).count() == 0
+        assert session.query(MediaValidationRecord).filter_by(validation_id=validation["validation_id"]).one().status == "STALE"
+
+
+def test_generation_policy_revision_makes_validation_stale_before_promotion():
+    candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9111)
+    with Session() as session:
+        version = PromptIRVersion(id=12101, book_id=990401, episode=1, scene_id="scene-policy", storyboard_shot_id=shot_id, materialization_set_id=1, plan_shot_id="plan-policy", schema_version="prompt_ir_v2", payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}}), payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
+        session.add(version)
+        session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, prompt_ir_version_id=12101, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED"))
+        candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
+        execution = session.query(GenerationExecutionRecord).filter_by(execution_id=candidate.execution_id).one()
+        candidate.prompt_ir_version_id = execution.prompt_ir_version_id = 12101
+        session.commit()
+        validation = validate_media_candidate(session, candidate_id)
+        version.payload_json = json.dumps({"generation_policy": {"fingerprint": "policy-drifted"}})
+        session.commit()
+        with pytest.raises(MediaAuthorityError) as exc:
+            promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
+        assert exc.value.code == "MEDIA_PROMOTION_STALE"
         assert session.query(MediaValidationRecord).filter_by(validation_id=validation["validation_id"]).one().status == "STALE"
 
 
