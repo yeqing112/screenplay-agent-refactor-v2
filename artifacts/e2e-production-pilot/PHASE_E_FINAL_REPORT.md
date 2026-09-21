@@ -141,7 +141,7 @@ Production episode compilation now validates every still-current PromptIR pointe
 
 GitHub Actions production regression now installs the pinned test dependency manifest `requirements-test.txt` (`pytest==8.4.2`) before collection. The closure regression is covered by `tests/test_prompt_ir_phase_e_historical_lineage_integrity_closure.py` and verifies that pytest installation is explicit in the workflow.
 
-The first pushed commit triggered Production regression **Run #233** (`35550879680`), job **Deterministic production gate** (`106185271242`); the amended report commit `dbe0fd1` triggered **Run #234** (`35551041694`), job `106185724217`; the closure commit `e9aea39` triggered **Run #235** (`35551304302`), job `106186442313`; and the pushed implementation/report commit `f53fcbb` triggered **Run #236** (`35552315476`), job `106189211623`. The GitHub Actions job log confirms `requirements-test.txt` installed `pytest==8.4.2`, then the production gate invoked the Python regression step and completed pytest execution. Run #236 concluded with **10 failed, 1644 passed, 18 warnings**. The exact unchanged remote failures are:
+The first pushed commit triggered Production regression **Run #233** (`35550879680`), job **Deterministic production gate** (`106185271242`); the amended report commit `dbe0fd1` triggered **Run #234** (`35551041694`), job `106185724217`; the closure commit `e9aea39` triggered **Run #235** (`35551304302`), job `106186442313`; the implementation/report commit `f53fcbb` triggered **Run #236** (`35552315476`), job `106189211623`; and the historical StoryboardShot hardening commit `9f929c6` triggered **Run #237** (`35554073433`), job `106194162508`. The GitHub Actions job logs confirm `requirements-test.txt` installed `pytest==8.4.2`, then the production gate invoked the Python regression step and completed pytest execution. Runs #236 and #237 both concluded with **10 failed, 1644 passed, 18 warnings**, with the same exact node IDs. The exact unchanged remote failures are:
 
 1. `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons`
 2. `tests/test_director_quality_v3_evaluation_upstream_phase_a.py::test_eval_phase_a_uses_immutable_source_package`
@@ -154,9 +154,9 @@ The first pushed commit triggered Production regression **Run #233** (`355508796
 9. `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry`
 10. `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed`
 
-The same 10-node result was recorded for Run #235, so no new CI failure was introduced by this Phase E closure. The run's uploaded evidence artifact is `production-regression-evidence-35552315476` (artifact ID `10618728427`). These are recorded as CI regression results, not as green CI claims.
+The same 10-node result was recorded for Runs #235–#237, so no new CI failure was introduced by this Phase E closure. Uploaded evidence artifacts include `production-regression-evidence-35552315476` (artifact ID `10618728427`) and the Run #237 evidence artifact. These are recorded as CI regression results, not as green CI claims.
 
-The final local verification also passed `npm run config:verify`, `npm run test:release-gate`, and `npm --prefix web run build`. The next report push will create another production regression run; no result from that future run is claimed here.
+The final local verification also passed `npm run config:verify`, `npm run test:release-gate`, and `npm --prefix web run build`.
 
 ## Review token
 
