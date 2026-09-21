@@ -482,7 +482,7 @@ def main() -> None:
     if os.environ.get("PHASE_E_REAL_PILOT") == "1":
         from scripts.phase_e_prompt_ir_real_pilot import materialize_and_capture
         post_setup = materialize_and_capture
-        retain_database = False
+        retain_database = os.environ.get("PHASE_F_RETAIN_DB", "").strip() == "1"
     elif os.environ.get("PHASE_D_REAL_PILOT") == "1":
         from scripts.phase_d_real_materialization import materialize_and_capture
         post_setup = materialize_and_capture

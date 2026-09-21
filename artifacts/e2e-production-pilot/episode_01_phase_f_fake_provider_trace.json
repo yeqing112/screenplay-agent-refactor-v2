@@ -1,5 +1,6 @@
 {
   "schema_version": "phase_f_fake_provider_trace_v1",
+  "evidence_class": "synthetic_unit_state_machine_proof",
   "episode": 1,
   "provider": "phase-f-fake-image-provider",
   "model": "deterministic-image-v1",
@@ -24,16 +25,16 @@
   "lineage": {
     "prompt_ir_version_id": 11,
     "prompt_ir_authority_id": 13,
-    "prompt_ir_payload_hash": "episode-01-prompt-ir-hash",
-    "generation_payload_fingerprint": "episode-01-generation-payload-fp",
-    "generation_policy_fingerprint": "episode-01-generation-policy-fp",
+    "prompt_ir_payload_hash": "synthetic-fixture-prompt-ir-hash",
+    "generation_payload_fingerprint": "synthetic-fixture-generation-payload-fp",
+    "generation_policy_fingerprint": "synthetic-fixture-generation-policy-fp",
     "model_profile_id": "builtin-mock-image",
-    "model_profile_fingerprint": "builtin-mock-image-fp",
+    "model_profile_fingerprint": "synthetic-fixture-model-profile-fp",
     "provider_adapter_id": "image_generic",
     "provider_adapter_version": "v1",
     "provider_request_fingerprint": "28073954e295f78fa6ccee895bd74834d3135cc3df4a503583ec8ad5a33dc3f0"
   },
-  "authority_mutation_proof": {
+  "synthetic_authority_mutation_proof": {
     "before": {
       "ScriptIRPointer": null,
       "DirectorTreatmentPointer": null,

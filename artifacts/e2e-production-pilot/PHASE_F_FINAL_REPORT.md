@@ -1,87 +1,85 @@
-# PHASE_F_GENERATION_EXECUTION_PROVIDER_CANARY_CLOSURE_READY_FOR_REVIEW
+# PHASE_F_REPLAY_PROFILE_CONTRACT_AND_REAL_AUTHORITY_PILOT_CLOSURE_READY_FOR_REVIEW
 
-## 本轮结论
+## 本轮范围
 
-Phase F 已完成最小可审查实现：current PromptIR v2 每次重新解析并重建 GenerationPayload，经过显式 `model_profile_id` 和确认 token 后，最多执行一次无重试 Provider 调用。成功结果只落为 `MEDIA_CANDIDATE`，不会自动写回 Storyboard、PromptIR、VisualAssetPointer 或 VisualReferenceAuthority。
+本轮只收口 successful replay current validation、ProviderExecutionProfile secret boundary、transport/generation 参数分离，以及真实 A–E → F SQLite integration pilot。没有调用真实外部 Provider、没有新增 migration、没有 promotion、retry、QA 或 Phase G 行为。
 
-真实外部 Provider 未执行：
+## Replay contract
+
+Execute 现在固定按以下顺序执行：
 
 ```text
-real_provider_canary_executed=false
-reason=PROVIDER_NOT_CONFIGURED_OR_NOT_AUTHORIZED
+URL / execution identity
+→ confirmation token
+→ current A–E / PromptIR authority resolve
+→ GenerationPayload rebuild
+→ provider request fingerprint drift check
+→ candidate lineage validation
+→ state claim or zero-call reuse
 ```
 
-## 已交付
+成功 replay 只有在 current authority、payload、profile、reference、request fingerprint 和 Candidate lineage 全部一致时才返回 `reused=true`；同 current replay 为 `provider_calls=0`。错误 token、PromptIR/asset/reference/profile drift、Candidate 缺失或 lineage tamper 均 fail closed，Provider 不被调用。
 
-- `generation_execution_records`：执行意图、PromptIR/GenerationPayload/Policy、模型与 Provider 指纹、请求快照、响应 hash、调用/重试计数、状态与失败证据。
-- `media_candidate_records`：规范化媒体存储身份、SHA-256、MIME、字节数、尺寸及完整 lineage。
-- Preview 路由：provider 调用数为 0；同一 request fingerprint 幂等复用。
-- Execute 路由：确认 token、current authority 重解析、漂移检查、单次 Provider 边界、成功 replay 为 0 次调用。
-- Provider 失败或媒体校验失败：不创建 Candidate，不做 retry，不产生 authority promotion。
-- Provider transport semantic loss、PromptIR integrity、asset/reference/model drift 均在 provider 边界前 fail-closed；并发 claim 使用数据库条件更新避免同一 fingerprint 双调用。
-- request snapshot、fingerprint 和持久化审计不包含 API key、Authorization、Bearer 或 reference token secret。
-- 外部 Provider profile 必须声明 `default_params.timeout_seconds`；允许的同步 transport 使用该 profile timeout，未声明时 fail-closed。
-- 业务 `shot_id` 与数据库 `StoryboardShot.id` 已在执行边界明确校验。
+## ProviderExecutionProfile
 
-## Episode 1 单镜头 Provider-free pilot
+新增 `core/provider_execution_profile.py`，使用 `provider_execution_profile_v1` 的正向 allowlist：
 
-- Preview：`provider_calls=0`，生成 deterministic request fingerprint。
-- Fake Provider：1 次逻辑调用，返回真实 PNG（68 bytes，1×1，`image/png`），写入 1 条 `MEDIA_CANDIDATE`。
-- Successful replay：`provider_calls=0`，`reused=true`。
-- Prompt/authority drift：在 Provider 边界前返回 409，`provider_calls=0`。
-- Provider failure：`candidate_count=0`，`logical_provider_calls=1`，`transport_retry_count=0`。
+- `generation_params`：模型生成参数。
+- `transport_config.timeout_seconds`：HTTP transport contract。
+- `credential`：只保留 `configured` 与 `source_identity`。
+- `adapter`、provider、model、endpoint identity 绑定到 profile fingerprint。
 
-证据文件：
+raw API key、Authorization、Bearer、nested token、未知 registry 字段不会进入 canonical profile、fingerprint、request snapshot 或 artifact。仅 API key rotation 且 credential source identity 不变时，profile fingerprint 保持不变。
 
-- `episode_01_phase_f_canary_preview.json`
-- `episode_01_phase_f_fake_provider_trace.json`
+## Transport contract
+
+`openai-compatible`、`shapi-openai-images`、`shapi-gemini-image` 均只从 `generation_params` 构造 Provider body，`timeout_seconds=37` 通过 `AsyncClient(timeout=37)` 生效且不进入 JSON body。GenerationPayload semantic fingerprint 不绑定 transport timeout；provider execution profile/request fingerprint 绑定 transport contract。
+
+## Real Authority Integration pilot
+
+证据文件：`episode_01_phase_f_real_authority_fake_provider_trace.json`
+
+- 数据库：真实临时 SQLite，Alembic head `y8h9i0j1k2l3`。
+- A–E：真实 ScriptIR、DirectorTreatment、SceneBlocking、ShotPlan、Storyboard materialization、PromptIR pointer/version/authority。
+- Phase F：真实 `preview_generation_canary()` 与 `execute_generation_canary()`；只在 `_call_provider` 边界注入 deterministic 1×1 PNG fake provider。
+- fake provider calls：1；external provider calls：0。
+- candidate：真实 canonical local storage、SHA-256 checksum、`1×1`、`image/png`、`MEDIA_CANDIDATE`。
+- authority before/after：完全一致；authority mutations：0。
+- resolver monkeypatch：`false`；asset/storyboard resolver monkeypatch：`false`。
+
+旧的 `episode_01_phase_f_fake_provider_trace.json` 仅作为 synthetic unit/state-machine proof，不再作为 authority mutation proof。
+
+## Schema provenance
+
+现有 migration 保留且未新增：
+
+```text
+migration_present=true
+migration_revision=y8h9i0j1k2l3
+migration_architecture_review=ACCEPTED
+preimplementation_human_approval_provenance=NOT_VERIFIED
+schema_status=IMPLEMENTED_PENDING_FORMAL_APPROVAL
+```
+
+不再声称未被当前对话证明的 `EXPLICIT_HUMAN_APPROVAL_RECORDED`。
+
+## 验证
+
+- Phase F legacy/unit：`38 passed`。
+- Replay/profile contract：`2 passed`。
+- Transport contract：`3 passed`。
+- Real authority trace contract：`1 passed`。
+- 真实 pilot：SQLite + Alembic upgrade + A–E persisted lineage + fake provider，1 candidate，0 external calls。
+- Secret marker scan：测试 secret marker 在 artifacts/DB snapshots 中无命中。
+- migration 数量：未增加。
+
+Phase C–E、Golden、full backend、Web 的历史结果按上一阶段报告保留；本轮未执行真实 Provider，因此没有 Phase-F-induced external side effect。
+
+## 证据索引
+
+- `phase_f_generation_execution_contract.json`
 - `phase_f_provider_request_audit.json`
-- `tests/test_generation_canary_phase_f.py`
-
-## 验证结果
-
-- `python -m py_compile api/generation_canary_api.py api/server.py`：通过
-- `git diff --check`：通过
-- `pytest -q tests/test_generation_canary_phase_f.py`：13 passed
-- Alembic migration `y8h9i0j1k2l3`：已升级至 head
-
-Phase A–E 历史回归中的既有失败保持原状，本轮未修改其失败断言；Phase F 新增测试未发现新增失败。
-
-## Extended regression evidence
-
-- Phase C–E targeted regression: `52 passed`; Phase F final targeted suite: `13 passed`; combined rerun: `65 passed`.
-- Migration chain hardening after updating canonical head to `y8h9i0j1k2l3`: `7 passed`.
-- Golden regression: `5/5 passed`.
-- Release-gate self-test: passed.
-- Web unit tests: `51 files / 301 tests passed`.
-- Web production build: passed.
-- Full backend regression: `1663 passed, 4 failed`; the four failures are known branch/environment baseline failures (`test_director_quality_v24_offline_replay`, `test_director_quality_v3_final_spine_topology_preflight_wiring`, `test_real_llm_gray_selection`, `test_targeted_missing_fact_api`). No Phase F test failed.
-- Production release gate: blocked by development-environment and pre-existing baseline conditions (production config intentionally skipped, stale local DB missing `storyboard_shots.scene_id`, backend health timeout).
-
-## 发布与同步证据
-
-- Starting implementation HEAD: `1bdef09`
-- Formal audit baseline: `434fa124e686ed16aedaafafeb57d2cdb4aac293`
-- Implementation commit: `36301d7948fd6e4dc2b3b9a5068ee0c80848cedc`
-- Final remote HEAD: verified against `git ls-remote origin refs/heads/codex/visual-authoring-provider-canary-reconcile` at push completion; the exact hash is reported with the remote link below.
-- Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Working tree: clean
-- Remote synchronization: verified by `git ls-remote`
-- GitHub Actions Run ID: unavailable; no authenticated run listing was available in this environment, and no external Provider call was triggered.
-- External Provider calls: `0`
-- Phase-F-induced backend failures: `0`
-
-## Definition of Done audit
-
-| Requirement | Evidence |
-| --- | --- |
-| Current PromptIR is the only generation semantic source | `_resolve_execution_inputs` calls the current PromptIR resolver and deterministic adapter |
-| Caller prompt/reference/provider override blocked | Pydantic `extra=forbid`; request contains only adapter/profile/confirmation fields |
-| Explicit model profile and no secret persistence | `_resolve_profile`, profile fingerprint, secret-free snapshot tests |
-| Preview is provider-free | 13 Phase F tests and Episode 1 preview artifact show `provider_calls=0` |
-| Stale PromptIR/asset/reference/model/transport semantics fail closed | drift, integrity, semantic-loss tests; all provider calls `0` |
-| One call, zero retries, serialized claim | conditional DB claim, `logical_provider_calls=1`, `transport_retry_count=0` |
-| Candidate bytes/checksum/mime/dimensions/lineage | fake PNG trace and `media_candidate_records` schema |
-| Successful replay is idempotent | same fingerprint returns `reused=true`, `provider_calls=0` |
-| No official promotion or authority mutation | candidate status and before/after authority proof artifacts |
-| Real Provider status honest | `real_provider_canary_executed=false`, opt-in gate documented |
+- `episode_01_phase_f_real_authority_fake_provider_trace.json`
+- `tests/test_generation_canary_phase_f_replay_profile_contract.py`
+- `tests/test_generation_canary_phase_f_transport_contract.py`
+- `tests/test_generation_canary_phase_f_real_authority_integration.py`

@@ -2,11 +2,11 @@
 
 ## Audit status
 
-`IMPLEMENTED_PROVIDER_CANARY_CLOSURE_READY_FOR_REVIEW`
+`PHASE_F_REPLAY_PROFILE_CONTRACT_AND_REAL_AUTHORITY_PILOT_CLOSURE_READY_FOR_REVIEW`
 
 The opening section records the historical pre-approval gap audit. It is retained
 as evidence of why generic `TaskRun`/`meta_info` fields were rejected. The schema
-was subsequently approved explicitly, implemented in migration `y8h9i0j1k2l3`, and
+was implemented in migration `y8h9i0j1k2l3`; formal preimplementation human approval provenance is not verified, and
 verified with the fake-provider pilot below. No external Provider was called.
 
 Audit baseline: `434fa124e686ed16aedaafafeb57d2cdb4aac293`  
@@ -142,7 +142,7 @@ to bypass the Phase F candidate boundary.
 
 The pre-implementation schema could not durably express the required Phase F record without
 using `TaskRun.payload`, `VisualReferenceAsset.generation_provenance`, or
-`meta_info` as an undocumented JSON authority. After the explicit schema approval,
+`meta_info` as an undocumented JSON authority. After the architectural review,
 the dedicated migration provides structured, queryable fields for:
 
 - execution request identity and `execution_mode=CANARY`;
@@ -171,12 +171,12 @@ The former structural gap is closed by migration `y8h9i0j1k2l3` and the two dedi
 
 The preview path is provider-free and reconstructs current PromptIR/GenerationPayload. The execute path requires an explicit confirmation token, re-resolves current authority, rejects PromptIR/payload/policy/model/reference/provider fingerprint drift with `409` before any provider call, persists `submitted_at` before the provider boundary, permits one logical call with zero transport retries, and persists only a `MEDIA_CANDIDATE` after canonical byte validation.
 
-The Episode 1 pilot evidence is recorded in `episode_01_phase_f_canary_preview.json`, `episode_01_phase_f_fake_provider_trace.json`, and `phase_f_provider_request_audit.json`. The fake provider returned a real PNG and successful replay made zero provider calls. Real external provider execution remains intentionally unclaimed because no provider was configured or authorized.
+The synthetic unit evidence remains in `episode_01_phase_f_fake_provider_trace.json`; the real authority integration evidence is in `episode_01_phase_f_real_authority_fake_provider_trace.json`. The fake provider returned a real PNG and successful replay made zero provider calls. Real external provider execution remains intentionally unclaimed because no provider was configured or authorized.
 
 Current closure status:
 
 ```text
-IMPLEMENTED_PROVIDER_CANARY_CLOSURE_READY_FOR_REVIEW
+PHASE_F_REPLAY_PROFILE_CONTRACT_AND_REAL_AUTHORITY_PILOT_CLOSURE_READY_FOR_REVIEW
 ```
 
 Extended verification records:

@@ -1,6 +1,6 @@
 {
-  "schema_version": "generation_execution_contract_v1",
-  "status": "IMPLEMENTED_PROVIDER_CANARY_CLOSURE_READY_FOR_REVIEW",
+  "schema_version": "generation_execution_contract_v2",
+  "status": "PHASE_F_REPLAY_PROFILE_CONTRACT_AND_REAL_AUTHORITY_PILOT_CLOSURE_READY_FOR_REVIEW",
   "stop_code": "",
   "execution_source": "CURRENT_PROMPT_IR_V2",
   "provider_request_source": "DETERMINISTIC_GENERATION_PAYLOAD",
@@ -12,8 +12,21 @@
   "batch_generation_allowed": false,
   "external_ci_provider_calls_allowed": false,
   "real_provider_canary_executed": false,
+  "replay_requires_current_validation": true,
+  "replay_requires_confirmation": true,
+  "candidate_lineage_revalidated_on_replay": true,
+  "provider_profile_schema": "provider_execution_profile_v1",
+  "generation_transport_config_separated": true,
+  "secret_values_in_profile_fingerprint": false,
+  "timeout_in_provider_generation_body": false,
+  "real_authority_integration_pilot": true,
+  "real_external_provider_canary": false,
   "provider_calls": 1,
-  "migration_added": true,
+  "migration_present": true,
+  "migration_added": false,
+  "migration_architecture_review": "ACCEPTED",
+  "preimplementation_human_approval_provenance": "NOT_VERIFIED",
+  "schema_status": "IMPLEMENTED_PENDING_FORMAL_APPROVAL",
   "blocking_gaps": [],
   "required_future_authority_classes": [
     "GENERATION_EXECUTION_INTENT",
@@ -30,7 +43,7 @@
   "forbidden_authority_class": "PROVIDER_CREATIVE_DECISION",
   "audit_baseline": "434fa124e686ed16aedaafafeb57d2cdb4aac293",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "real_provider_reason": "PROVIDER_NOT_CONFIGURED_OR_NOT_AUTHORIZED",
+  "real_provider_reason": "EXTERNAL_PROVIDER_CANARY_NOT_EXECUTED_BY_SCOPE",
   "successful_replay_provider_calls": 0,
   "implementation_commit_pending": false,
   "execution_routes": [
@@ -51,6 +64,6 @@
   ],
   "real_provider_opt_in": "PHASE_F_PROVIDER_CANARY_REAL=1",
   "migration_revision": "y8h9i0j1k2l3",
-  "schema_approval": "EXPLICIT_HUMAN_APPROVAL_RECORDED",
+  "schema_approval": "NOT_VERIFIED",
   "phase_f_induced_ci_failures": 0
 }

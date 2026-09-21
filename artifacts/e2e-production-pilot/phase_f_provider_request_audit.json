@@ -1,7 +1,13 @@
 {
-  "schema_version": "phase_f_provider_request_audit_v1",
+  "schema_version": "phase_f_provider_request_audit_v2",
   "episode": 1,
-  "provider_request_fingerprint": "28073954e295f78fa6ccee895bd74834d3135cc3df4a503583ec8ad5a33dc3f0",
+  "provider_request_fingerprint": "702c8928b1ec0edcbe090ff05c6ae8bf8acf9ad1466e825851ed0bf02645fb84",
+  "provider_execution_profile_schema": "provider_execution_profile_v1",
+  "provider_execution_profile_fingerprint": "484c030c67734b92f9f05d349d748410ea5ca5d2b41d87e7f9616e60fd603b79",
+  "generation_params_secret_free": true,
+  "transport_config_public_snapshot": {"timeout_seconds": 120},
+  "timeout_in_provider_generation_body": false,
+  "allowed_sync_image_providers_audited": ["openai-compatible", "shapi-openai-images", "shapi-gemini-image"],
   "request_snapshot_secret_free": true,
   "provider_response_hash_secret_free": true,
   "logical_provider_calls": 1,
@@ -9,15 +15,18 @@
   "successful_replay_provider_calls": 0,
   "candidate_count": 1,
   "real_provider_canary_executed": false,
-  "real_provider_reason": "PROVIDER_NOT_CONFIGURED_OR_NOT_AUTHORIZED",
+  "real_provider_reason": "EXTERNAL_PROVIDER_CANARY_NOT_EXECUTED_BY_SCOPE",
   "forbidden_mutations_verified": true,
   "secret_fields_persisted": [],
-  "authority_mutation_proof": "episode_01_phase_f_fake_provider_trace.json",
+  "authority_mutation_proof": "episode_01_phase_f_real_authority_fake_provider_trace.json",
+  "synthetic_unit_proof": "episode_01_phase_f_fake_provider_trace.json",
   "media_validation": {
     "bytes_nonempty": true,
     "checksum_from_canonical_bytes": true,
     "mime_valid": true,
     "dimensions_parseable": true,
     "target_media_matches": "IMAGE"
-  }
+  },
+  "schema_approval": "IMPLEMENTED_PENDING_FORMAL_APPROVAL",
+  "preimplementation_human_approval_provenance": "NOT_VERIFIED"
 }

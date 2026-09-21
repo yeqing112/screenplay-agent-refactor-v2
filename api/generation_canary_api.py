@@ -38,6 +38,11 @@ from core.prompt_ir_phase_e import (
     fingerprint,
     resolve_current_authoritative_prompt_ir,
 )
+from core.provider_execution_profile import (
+    PROFILE_SCHEMA_VERSION,
+    build_provider_execution_profile,
+    fingerprint_provider_execution_profile,
+)
 from core.public_asset_storage import _load_source_bytes, _normalize_provider_image_bytes
 from models import (
     GenerationExecutionRecord,
@@ -110,22 +115,8 @@ def _response_hash(value: Any) -> str:
 
 
 def _profile_fingerprint(profile: dict[str, Any], *, adapter_id: str, adapter_version: str) -> str:
-    # This snapshot deliberately excludes api_key while detecting registry
-    # drift in provider, model, endpoint, defaults, capability, and adapter.
-    base_url = str(profile.get("base_url") or "").split("?", 1)[0].rstrip("/")
-    return fingerprint(
-        {
-            "profile_id": str(profile.get("id") or ""),
-            "capability": str(profile.get("capability") or ""),
-            "provider": str(profile.get("provider") or ""),
-            "base_url": base_url,
-            "model_name": str(profile.get("model_name") or ""),
-            "default_params": profile.get("default_params") if isinstance(profile.get("default_params"), dict) else {},
-            "enabled": bool(profile.get("enabled", True)),
-            "credential_configured": bool(profile.get("key_configured") or profile.get("api_key")),
-            "adapter_id": adapter_id,
-            "adapter_version": adapter_version,
-        }
+    return fingerprint_provider_execution_profile(
+        build_provider_execution_profile(profile, adapter_id=adapter_id, adapter_version=adapter_version)
     )
 
 
@@ -182,12 +173,17 @@ def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], paylo
     request = payload.get("request") if isinstance(payload.get("request"), dict) else {}
     # motion_prompt is retained explicitly; the provider bridge combines it
     # with the static prompt without inventing new creative content.
+    execution_profile = profile.get("provider_execution_profile") if isinstance(profile.get("provider_execution_profile"), dict) else build_provider_execution_profile(profile, adapter_id=str(adapter.get("adapter_id") or ""), adapter_version=str(adapter.get("adapter_version") or ""))
     return {
-        "schema_version": "phase_f_provider_request_v1",
-        "provider": str(profile.get("provider") or ""),
-        "model": str(profile.get("model_name") or ""),
+        "schema_version": "phase_f_provider_request_v2",
+        "provider_execution_profile_schema": PROFILE_SCHEMA_VERSION,
+        "provider": execution_profile.get("provider"),
+        "model": execution_profile.get("model"),
         "adapter_id": adapter.get("adapter_id"),
         "adapter_version": adapter.get("adapter_version"),
+        "generation_params": execution_profile.get("generation_params") or {},
+        "transport_config": execution_profile.get("transport_config") or {},
+        "credential": execution_profile.get("credential") or {},
         "target_media": "IMAGE",
         "prompt": str(request.get("prompt") or ""),
         "motion_prompt": str(request.get("motion_prompt") or ""),
@@ -222,7 +218,7 @@ def _resolve_profile(req: CanaryPreviewRequest, adapter: dict[str, Any]) -> tupl
         except (TypeError, ValueError):
             timeout_seconds = 0
         if timeout_seconds <= 0:
-            raise _error(409, "GENERATION_PROVIDER_TIMEOUT_NOT_CONFIGURED", "Phase F real provider profiles must declare default_params.timeout_seconds.")
+            raise _error(409, "GENERATION_PROVIDER_TIMEOUT_NOT_CONFIGURED", "Phase F real provider profiles must declare a positive transport timeout.")
     if provider not in {"prototype-task-adapter", *_SYNC_IMAGE_PROVIDERS}:
         raise _error(409, "GENERATION_TRANSPORT_RETRY_UNSUPPORTED", "The selected image transport cannot prove zero retries for Phase F Canary.", provider=provider)
     phase_profile = build_model_profile(
@@ -237,11 +233,16 @@ def _resolve_profile(req: CanaryPreviewRequest, adapter: dict[str, Any]) -> tupl
             },
         }
     )
-    return profile, phase_profile, _profile_fingerprint(profile, adapter_id=req.adapter_id, adapter_version=str(adapter.get("adapter_version") or ""))
+    canonical_profile = build_provider_execution_profile(profile, adapter_id=req.adapter_id, adapter_version=str(adapter.get("adapter_version") or ""))
+    # Keep raw registry fields for credentialed transport adapters, while
+    # exposing the canonical projection to every Phase F audit/request path.
+    profile = dict(profile)
+    profile["provider_execution_profile"] = canonical_profile
+    return profile, phase_profile, fingerprint_provider_execution_profile(canonical_profile)
 
 
 def _resolve_execution_inputs(session: Any, *, book_id: int, episode: int, shot_id: int, adapter_id: str, model_profile_id: str) -> dict[str, Any]:
-    from api.prompt_ir_authority import _load_current, _production_asset_authority
+    from api.prompt_ir_authority_api import _load_current, _production_asset_authority
 
     adapter = MODEL_ADAPTER_REGISTRY.get(adapter_id.lower())
     if not adapter or str(adapter.get("model_family") or "").upper() not in {"FLUX", "GENERIC_IMAGE"}:
@@ -515,6 +516,25 @@ def _serialize_execution(row: GenerationExecutionRecord) -> dict[str, Any]:
     }
 
 
+def _validate_candidate_lineage(execution: GenerationExecutionRecord, candidate: MediaCandidateRecord | None) -> None:
+    """Validate the durable candidate binding before any successful replay."""
+    if candidate is None:
+        raise _error(409, "GENERATION_EXECUTION_CANDIDATE_MISSING", "A successful execution has no persisted media candidate.", provider_calls=0)
+    checks = {
+        "execution_id": (candidate.execution_id, execution.execution_id),
+        "provider_request_fingerprint": (candidate.provider_request_fingerprint, execution.provider_request_fingerprint),
+        "generation_payload_fingerprint": (candidate.generation_payload_fingerprint, execution.generation_payload_fingerprint),
+        "prompt_ir_version_id": (candidate.prompt_ir_version_id, execution.prompt_ir_version_id),
+        "model_profile_id": (candidate.model_profile_id, execution.model_profile_id),
+        "model_profile_fingerprint": (candidate.model_profile_fingerprint, execution.model_profile_fingerprint),
+        "provider_response_hash": (candidate.provider_response_hash, execution.provider_response_hash),
+        "status": (candidate.status, "MEDIA_CANDIDATE"),
+    }
+    invalid = [key for key, (actual, expected) in checks.items() if str(actual or "") != str(expected or "")]
+    if invalid:
+        raise _error(409, "GENERATION_CANDIDATE_LINEAGE_INVALID", "Persisted candidate lineage does not match the execution record.", invalid_fields=invalid, provider_calls=0)
+
+
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/preview")
 def preview_generation_canary(book_id: int, episode: int, shot_id: int, req: CanaryPreviewRequest):
     with Session() as session:
@@ -602,20 +622,23 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
         if row is None:
             raise _error(404, "GENERATION_CANARY_PREVIEW_NOT_FOUND", "The preview execution record does not exist.")
         candidate = session.query(MediaCandidateRecord).filter_by(execution_id=row.execution_id).first()
-        if row.status in {"SUCCEEDED", "REUSED"} and candidate is not None:
-            row.status = "REUSED"
-            row.updated_at = datetime.utcnow()
-            session.commit()
-            return {"execution": _serialize_execution(row), "candidate": _serialize_candidate(candidate), "provider_calls": 0, "reused": True}
+        # When the execution row carries a candidate id but the foreign
+        # execution binding was tampered, load by the immutable candidate id
+        # so the caller receives LINEAGE_INVALID rather than silently treating
+        # it as an absent candidate.
+        if candidate is None and row.candidate_id:
+            candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=row.candidate_id).first()
+        # Confirmation is checked before current resolution and before any
+        # replay branch.  A successful record is never a bearer capability.
+        expected_token = _confirmation_token(execution_id=row.execution_id, prompt_ir_version_id=row.prompt_ir_version_id, payload_fp=row.generation_payload_fingerprint, model_profile_id=row.model_profile_id, provider_request_fp=row.provider_request_fingerprint)
+        if req.confirmation_token != expected_token:
+            raise _error(409, "GENERATION_CANARY_CONFIRMATION_MISMATCH", "The confirmation token is not bound to this preview.", provider_calls=0)
         if row.status == "RUNNING":
             raise _error(409, "GENERATION_CANARY_IN_PROGRESS", "This execution is already claimed by another worker.", provider_calls=0)
         if row.status == "FAILED":
             raise _error(409, "GENERATION_CANARY_FAILED_REQUIRES_NEW_CONFIRMATION", "A failed execution cannot be retried with the same preview.", provider_calls=0)
-        if row.status not in {"PREVIEWED", "AUTHORIZED"}:
+        if row.status not in {"PREVIEWED", "AUTHORIZED", "SUCCEEDED", "REUSED"}:
             raise _error(409, "GENERATION_CANARY_STALE", "The preview is no longer executable.", provider_calls=0)
-        expected_token = _confirmation_token(execution_id=row.execution_id, prompt_ir_version_id=row.prompt_ir_version_id, payload_fp=row.generation_payload_fingerprint, model_profile_id=row.model_profile_id, provider_request_fp=row.provider_request_fingerprint)
-        if req.confirmation_token != expected_token:
-            raise _error(409, "GENERATION_CANARY_CONFIRMATION_MISMATCH", "The confirmation token is not bound to this preview.", provider_calls=0)
         try:
             context = _resolve_execution_inputs(session, book_id=book_id, episode=episode, shot_id=shot_id, adapter_id=row.provider_adapter_id, model_profile_id=row.model_profile_id)
         except HTTPException as exc:
@@ -649,6 +672,17 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
             row.updated_at = datetime.utcnow()
             session.commit()
             raise _error(409, "GENERATION_CANARY_STALE", "Preview execution is bound to a different shot.", provider_calls=0)
+        # Replay is permitted only after the same currentness checks as a new
+        # execution, and only when the candidate lineage is self-consistent.
+        if row.status in {"SUCCEEDED", "REUSED"}:
+            try:
+                _validate_candidate_lineage(row, candidate)
+            except HTTPException:
+                raise
+            row.status = "REUSED"
+            row.updated_at = datetime.utcnow()
+            session.commit()
+            return {"execution": _serialize_execution(row), "candidate": _serialize_candidate(candidate), "provider_calls": 0, "reused": True}
         _validate_transport_semantics(context)
         _validate_real_provider_opt_in(context)
         claim_time = datetime.utcnow()
