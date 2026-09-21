@@ -174,4 +174,6 @@ The existing provider transport and byte-storage primitives are reusable, but
 the current creative task boundary is not safe for Phase F. The required
 Generation Execution Request, preview/confirmation/stale contract, candidate
 provenance, and idempotency proof cannot be implemented honestly on the current
-schema. Work must stop here pending an explicit schema decision.
+schema. The concrete minimum schema proposal is recorded in
+`phase_f_generation_execution_schema_proposal.md`; it is design-only and adds
+no migration. Work must stop here pending an explicit schema decision.

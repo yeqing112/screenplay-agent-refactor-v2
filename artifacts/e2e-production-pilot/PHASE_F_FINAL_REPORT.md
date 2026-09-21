@@ -15,6 +15,7 @@ canonical truth, and explicitly prohibit adding a migration in this stop path.
 ## Evidence
 
 - Gap audit: `phase_f_generation_execution_gap_audit.md`
+- Minimum schema proposal: `phase_f_generation_execution_schema_proposal.md`
 - Contract: `phase_f_generation_execution_contract.json`
 - Audit baseline: `434fa124e686ed16aedaafafeb57d2cdb4aac293`
 - Provider calls in this audit: `0`
