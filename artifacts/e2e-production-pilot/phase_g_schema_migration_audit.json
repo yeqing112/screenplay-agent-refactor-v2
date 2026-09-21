@@ -157,6 +157,15 @@
       "upgrade": "PASS",
       "upgrade_again": "PASS"
     },
+    "fresh_sqlite": {
+      "downgrade": "PASS",
+      "downgrade_removed_new_tables": true,
+      "new_tables_empty": true,
+      "source": "fresh SQLite",
+      "status": "PASS",
+      "upgrade": "PASS",
+      "upgrade_again": "PASS"
+    },
     "production_pilot_database": {
       "downgrade": "PASS",
       "downgrade_preserved_previous_tables": true,
@@ -172,12 +181,25 @@
   },
   "down_revision": "y8h9i0j1k2l3",
   "existing_tables_altered": false,
+  "full_real_end_to_end_production_acceptance_triggered": false,
+  "full_real_end_to_end_reason": "Official Media validation, Promotion flow, and formal asset binding proof are not implemented in Phase G schema foundation.",
   "generated_at": "2026-09-21T12:23:07.249464+00:00",
+  "image_calls": 0,
   "llm_calls": 0,
+  "migration_diff_scope": [
+    "alembic/versions/z0a1b2c3d4e5_add_media_authority_foundation.py"
+  ],
   "official_rows_created": 0,
   "overall_status": "PASS",
   "phase": "PHASE_G_MIGRATION_IMPLEMENTATION_AND_AUTHORITY_FOUNDATION",
   "provider_calls": 0,
+  "regression_scope": {
+    "full_backend": "1701 passed, 4 pre-existing environment/contract failures recorded without code changes",
+    "golden": "PASS (5/5)",
+    "migration_hardening": "PASS (7 passed)",
+    "web_build": "PASS",
+    "web_tests": "PASS (301 passed)"
+  },
   "revision": "z0a1b2c3d4e5",
   "status_token": "PHASE_G_MIGRATION_FOUNDATION_READY_FOR_VALIDATION",
   "tables_created": [
@@ -185,5 +207,67 @@
     "official_media_versions",
     "official_media_authorities",
     "official_media_pointers"
-  ]
+  ],
+  "unique_constraints": {
+    "media_validation_records": [
+      [
+        "uq_media_validation_idempotency",
+        [
+          "candidate_fingerprint",
+          "authority_snapshot_fingerprint",
+          "validator_version"
+        ]
+      ],
+      [
+        "uq_media_validation_validation_id",
+        [
+          "validation_id"
+        ]
+      ]
+    ],
+    "official_media_authorities": [
+      [
+        "uq_official_media_authority_identity",
+        [
+          "authority_id"
+        ]
+      ],
+      [
+        "uq_official_media_authority_version",
+        [
+          "official_media_version_id"
+        ]
+      ]
+    ],
+    "official_media_pointers": [
+      [
+        "uq_official_media_pointer_scope",
+        [
+          "book_id",
+          "episode",
+          "storyboard_shot_id",
+          "media_role"
+        ]
+      ]
+    ],
+    "official_media_versions": [
+      [
+        "uq_official_media_version_identity",
+        [
+          "official_media_version_id"
+        ]
+      ],
+      [
+        "uq_official_media_version_revision",
+        [
+          "book_id",
+          "episode",
+          "storyboard_shot_id",
+          "media_role",
+          "revision"
+        ]
+      ]
+    ]
+  },
+  "video_calls": 0
 }

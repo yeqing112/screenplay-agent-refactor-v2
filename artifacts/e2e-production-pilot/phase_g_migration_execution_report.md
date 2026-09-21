@@ -18,16 +18,20 @@
 | Case | Upgrade | Downgrade | Upgrade again | New tables empty | Existing data/schema unchanged | Result |
 |---|---:|---:|---:|---:|---:|---:|
 | Empty SQLite | PASS | PASS | PASS | True | True | **PASS** |
+| Fresh SQLite | PASS | PASS | PASS | True | N/A | **PASS** |
 | Existing A–F database | PASS | PASS | PASS | True | True | **PASS** |
 | Production pilot copy | PASS | PASS | PASS | True | True | **PASS** |
 
 ## Rollback and compatibility
 
-- Upgrade → downgrade → upgrade again passed for all three disposable copies.
+- Upgrade → downgrade → upgrade again passed for all four disposable copies.
 - Downgrade removes only the four Phase G tables and preserves prior A–F tables.
 - Existing A–F row hashes and table definitions are unchanged; no historical rows are rewritten.
 - Official Media row count remains `0`; no automatic promotion or Official data generation occurred.
-- Provider calls: `0`; LLM calls: `0`.
+- Candidate rows rewritten: `0`; existing Phase A–F tables, including Candidate and GenerationExecution, were unchanged.
+- Image calls: `0`; video calls: `0`; Provider calls: `0`; LLM calls: `0`.
+- `FULL_REAL_END_TO_END_PRODUCTION_ACCEPTANCE_TRIGGERED=false`; the schema foundation does not implement validation, promotion, or formal asset binding proof.
+- Alembic diff scope contains only `alembic/versions/z0a1b2c3d4e5_add_media_authority_foundation.py`.
 
 ## Evidence
 

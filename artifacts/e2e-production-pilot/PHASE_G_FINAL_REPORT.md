@@ -17,23 +17,26 @@ VisualAssetPointer structures or rows. It does not backfill Official data.
 ## Scope boundary
 
 This phase implements schema foundation only. Validation endpoint, Promotion,
-Resolver, pointer movement, Provider calls, LLM calls, and automatic Official
-record creation remain outside this phase.
+Resolver, pointer movement, Provider calls, LLM calls, image/video calls, and
+automatic Official record creation remain outside this phase.
 
 ## Verification
 
-- Empty SQLite: upgrade, downgrade, and upgrade again passed.
+- Empty SQLite and fresh SQLite: upgrade, downgrade, and upgrade again passed.
 - Existing A–F database copy: upgrade, downgrade, and upgrade again passed;
   existing table definitions and row hashes were unchanged.
 - Production pilot copy: the same round trip passed; all four new tables stayed
   empty.
 - Migration chain hardening: `MIGRATION_CHAIN_HARDENING_READY`.
+- Full Real E2E remains `false`; validation, promotion, and formal asset binding
+  proof are intentionally not implemented in this schema-only phase.
 - Phase G migration execution report:
   [`phase_g_migration_execution_report.md`](phase_g_migration_execution_report.md)
 - Machine-readable schema audit:
   [`phase_g_schema_migration_audit.json`](phase_g_schema_migration_audit.json)
 
-Provider calls: `0`. LLM calls: `0`. Official rows created: `0`.
+Provider calls: `0`. LLM calls: `0`. Image calls: `0`. Video calls: `0`.
+Official rows created: `0`. Candidate rows rewritten: `0`.
 
 ## Existing design evidence
 
