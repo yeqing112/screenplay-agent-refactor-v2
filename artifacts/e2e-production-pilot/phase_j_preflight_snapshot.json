@@ -1,0 +1,102 @@
+{
+  "schema_version": "phase_j_real_provider_preflight_snapshot_v1",
+  "generated_at_utc": "2026-09-21T23:34:25.825677+00:00",
+  "phase": "PHASE_J_REAL_PROVIDER_PRODUCTION_ACCEPTANCE",
+  "status": "REAL_PROVIDER_EXECUTION_NOT_AUTHORIZED",
+  "provider_calls": {
+    "real_provider": 0,
+    "image": 0,
+    "video": 0,
+    "object_storage": 0
+  },
+  "authorization": {
+    "phase_j_provider_authorized": false,
+    "openai_api_key_present": false,
+    "authorization_sufficient": false,
+    "secrets_recorded": false
+  },
+  "git": {
+    "head": "e6714d2b8ac9b2c2442d06a599c5f59b8685965e",
+    "branch": "codex/visual-authoring-provider-canary-reconcile",
+    "origin": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git"
+  },
+  "required_lineage_artifacts": {
+    "script": {
+      "path": "artifacts/e2e-production-pilot/episode_01_script_ir_phase_a.json",
+      "exists": true,
+      "bytes": 49577,
+      "sha256": "4731ac8ae784b87e83ea2d3f039da53ab6ccc8f159a32b0361ccc6d7645414df"
+    },
+    "director": {
+      "path": "artifacts/e2e-production-pilot/episode_01_director_treatment_phase_b.json",
+      "exists": true,
+      "bytes": 90318,
+      "sha256": "6c068d988ff1a13f9512a93be4e403540996f6264f7902f893c66291270157ab"
+    },
+    "blocking": {
+      "path": "artifacts/e2e-production-pilot/episode_01_scene_blocking_phase_b.json",
+      "exists": true,
+      "bytes": 157702,
+      "sha256": "27068df83961fe611e21905adfc08000b52ba5839ea3ab098ce76e3b8d268007"
+    },
+    "shot_plan": {
+      "path": "artifacts/e2e-production-pilot/episode_01_shot_plan_phase_c.json",
+      "exists": true,
+      "bytes": 359955,
+      "sha256": "97a9b2d4192ddc3ab9d1d3fddd766893f08e4df7873c34d81dd38b38698cc52d"
+    },
+    "storyboard": {
+      "path": "artifacts/e2e-production-pilot/episode_01_storyboard_phase_d.json",
+      "exists": true,
+      "bytes": 560711,
+      "sha256": "4432aad4518ff96a0e3a6f9b0ef298e460472f9f0fb6bde3b771e54e31fa7b95"
+    },
+    "prompt_ir": {
+      "path": "artifacts/e2e-production-pilot/episode_01_prompt_ir_phase_e.json",
+      "exists": true,
+      "bytes": 99685,
+      "sha256": "d0e8d12d26684a7beecf925c7240ea8aa2a1cb487cbe9b1f4bd5313c6c3ee131"
+    },
+    "asset_authority": {
+      "path": "artifacts/e2e-production-pilot/phase_h2_episode_01_asset_matrix.json",
+      "exists": true,
+      "bytes": 28236,
+      "sha256": "b8af1a0b90b4ad6391c791aedfb8479cf962971e88acb2ffbe95f23783c2c4c6"
+    },
+    "asset_binding": {
+      "path": "artifacts/e2e-production-pilot/phase_h2_2_episode_01_asset_binding_matrix.json",
+      "exists": true,
+      "bytes": 35935,
+      "sha256": "3145a69072b1b5a31bf435119e5208b5b334867154ea139ac9677811f1575a20"
+    },
+    "official_media_binding": {
+      "path": "artifacts/e2e-production-pilot/phase_i_visual_truth_matrix.json",
+      "exists": true,
+      "bytes": 48961,
+      "sha256": "a19fe32933dccb122964b3ba973b89c0ad74575a8ab42f20a94341e05ea264e7"
+    }
+  },
+  "acceptance_scope": {
+    "episode": "01",
+    "expected_shots": 15,
+    "execution_chain": [
+      "PromptIR",
+      "AssetBinding",
+      "GenerationExecution",
+      "MediaCandidate",
+      "MediaValidation",
+      "OfficialMediaPromotion",
+      "OfficialMedia Resolve"
+    ]
+  },
+  "blocked_reasons": [
+    "REAL_PROVIDER_EXECUTION_NOT_AUTHORIZED"
+  ],
+  "policy": {
+    "business_logic_modified": false,
+    "fallback_added": false,
+    "heuristic_added": false,
+    "automatic_retry": false,
+    "automatic_asset_swap": false
+  }
+}
