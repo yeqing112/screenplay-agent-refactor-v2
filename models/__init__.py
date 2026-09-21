@@ -23,6 +23,20 @@ from .scene_blocking import SceneBlocking, SceneBlockingAuthority, SceneBlocking
 from .shot_plan import ShotPlan, ShotPlanAuthority, ShotPlanPointer
 from .repair import RepairAttempt
 from .director_benchmark import DirectorBenchmarkRun
+from .production_asset_authority import (
+    ProductionAssetAuthorityRegistry,
+    ProductionAssetVersionRegistry,
+    CharacterAssetAuthority,
+    CharacterAssetVersion,
+    CharacterAssetPointer,
+    SceneAssetAuthority,
+    SceneAssetVersion,
+    SceneAssetPointer,
+    PropAssetAuthority,
+    PropAssetVersion,
+    PropAssetPointer,
+    ShotAssetBinding,
+)
 
 __all__ = [
     "Base", "engine", "Session",
@@ -46,4 +60,9 @@ __all__ = [
     "ShotPlan", "ShotPlanAuthority", "ShotPlanPointer",
     "RepairAttempt",
     "DirectorBenchmarkRun",
+    "ProductionAssetAuthorityRegistry", "ProductionAssetVersionRegistry",
+    "CharacterAssetAuthority", "CharacterAssetVersion", "CharacterAssetPointer",
+    "SceneAssetAuthority", "SceneAssetVersion", "SceneAssetPointer",
+    "PropAssetAuthority", "PropAssetVersion", "PropAssetPointer",
+    "ShotAssetBinding",
 ]

@@ -2,16 +2,16 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 147,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 187,
     "EXTRA_LEGACY_COLUMN": 1,
-    "INDEX_DRIFT": 78,
+    "INDEX_DRIFT": 80,
     "MISSING_MIGRATION": 0,
     "NULLABILITY_DRIFT": 0,
     "TYPE_DRIFT": 0
   },
   "counts": {
     "blocking": 0,
-    "total": 226
+    "total": 268
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -386,6 +386,97 @@
       "index": "ix_asset_semantic_governance_book_asset",
       "kind": "index",
       "table": "asset_semantic_governance_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "current_version_id"
+      ],
+      "index": "ix_character_asset_authorities_current_version",
+      "kind": "index",
+      "table": "character_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "character_id"
+      ],
+      "index": "ix_character_asset_authorities_entity",
+      "kind": "index",
+      "table": "character_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_character_asset_authorities_status",
+      "kind": "index",
+      "table": "character_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_character_asset_pointers_authority",
+      "kind": "index",
+      "table": "character_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "fingerprint"
+      ],
+      "index": "ix_character_asset_pointers_fingerprint",
+      "kind": "index",
+      "table": "character_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "version_id"
+      ],
+      "index": "ix_character_asset_pointers_version",
+      "kind": "index",
+      "table": "character_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id",
+        "revision"
+      ],
+      "index": "ix_character_asset_versions_authority_revision",
+      "kind": "index",
+      "table": "character_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "checksum"
+      ],
+      "index": "ix_character_asset_versions_checksum",
+      "kind": "index",
+      "table": "character_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_character_asset_versions_status",
+      "kind": "index",
+      "table": "character_asset_versions"
     },
     {
       "blocking": false,
@@ -1173,6 +1264,66 @@
     },
     {
       "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_production_asset_authority_registry_asset_type",
+      "kind": "index",
+      "table": "production_asset_authority_registry"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_production_asset_authority_registry_type",
+      "kind": "index",
+      "table": "production_asset_authority_registry"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_production_asset_version_registry_asset_type",
+      "kind": "index",
+      "table": "production_asset_version_registry"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_production_asset_version_registry_authority_id",
+      "kind": "index",
+      "table": "production_asset_version_registry"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_production_asset_version_registry_authority",
+      "kind": "index",
+      "table": "production_asset_version_registry"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_production_asset_version_registry_type",
+      "kind": "index",
+      "table": "production_asset_version_registry"
+    },
+    {
+      "blocking": false,
       "category": "INDEX_DRIFT",
       "columns": [
         "book_id"
@@ -1408,6 +1559,97 @@
       "blocking": false,
       "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
       "columns": [
+        "current_version_id"
+      ],
+      "index": "ix_prop_asset_authorities_current_version",
+      "kind": "index",
+      "table": "prop_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "prop_id"
+      ],
+      "index": "ix_prop_asset_authorities_entity",
+      "kind": "index",
+      "table": "prop_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_prop_asset_authorities_status",
+      "kind": "index",
+      "table": "prop_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_prop_asset_pointers_authority",
+      "kind": "index",
+      "table": "prop_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "fingerprint"
+      ],
+      "index": "ix_prop_asset_pointers_fingerprint",
+      "kind": "index",
+      "table": "prop_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "version_id"
+      ],
+      "index": "ix_prop_asset_pointers_version",
+      "kind": "index",
+      "table": "prop_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id",
+        "revision"
+      ],
+      "index": "ix_prop_asset_versions_authority_revision",
+      "kind": "index",
+      "table": "prop_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "checksum"
+      ],
+      "index": "ix_prop_asset_versions_checksum",
+      "kind": "index",
+      "table": "prop_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_prop_asset_versions_status",
+      "kind": "index",
+      "table": "prop_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
         "plan_fingerprint"
       ],
       "index": "ix_public_asset_storage_migration_records_plan_fingerprint",
@@ -1443,6 +1685,97 @@
       "index": "ix_public_asset_migration_task",
       "kind": "index",
       "table": "public_asset_storage_migration_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "current_version_id"
+      ],
+      "index": "ix_scene_asset_authorities_current_version",
+      "kind": "index",
+      "table": "scene_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_scene_asset_authorities_entity",
+      "kind": "index",
+      "table": "scene_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_scene_asset_authorities_status",
+      "kind": "index",
+      "table": "scene_asset_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_scene_asset_pointers_authority",
+      "kind": "index",
+      "table": "scene_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "fingerprint"
+      ],
+      "index": "ix_scene_asset_pointers_fingerprint",
+      "kind": "index",
+      "table": "scene_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "version_id"
+      ],
+      "index": "ix_scene_asset_pointers_version",
+      "kind": "index",
+      "table": "scene_asset_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id",
+        "revision"
+      ],
+      "index": "ix_scene_asset_versions_authority_revision",
+      "kind": "index",
+      "table": "scene_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "checksum"
+      ],
+      "index": "ix_scene_asset_versions_checksum",
+      "kind": "index",
+      "table": "scene_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_scene_asset_versions_status",
+      "kind": "index",
+      "table": "scene_asset_versions"
     },
     {
       "blocking": false,
@@ -1547,6 +1880,97 @@
       "index": "ix_scene_blockings_source_script_ir_version_id",
       "kind": "index",
       "table": "scene_blockings"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_shot_asset_bindings_asset_type",
+      "kind": "index",
+      "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_shot_asset_bindings_authority_id",
+      "kind": "index",
+      "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_shot_asset_bindings_status",
+      "kind": "index",
+      "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_shot_asset_bindings_storyboard_shot_id",
+      "kind": "index",
+      "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "version_id"
+      ],
+      "index": "ix_shot_asset_bindings_version_id",
+      "kind": "index",
+      "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_shot_asset_bindings_authority",
+      "kind": "index",
+      "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_shot_asset_bindings_shot",
+      "kind": "index",
+      "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_type",
+        "status"
+      ],
+      "index": "ix_shot_asset_bindings_type_status",
+      "kind": "index",
+      "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "version_id"
+      ],
+      "index": "ix_shot_asset_bindings_version",
+      "kind": "index",
+      "table": "shot_asset_bindings"
     },
     {
       "blocking": false,

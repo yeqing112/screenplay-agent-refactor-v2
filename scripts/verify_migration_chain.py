@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "z0a1b2c3d4e5"
+HEAD = "a1b2c3d4e5f6"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -61,6 +61,18 @@ AUTHORITY_TABLES = {
     "official_media_versions",
     "official_media_authorities",
     "official_media_pointers",
+    "production_asset_authority_registry",
+    "production_asset_version_registry",
+    "character_asset_authorities",
+    "character_asset_versions",
+    "character_asset_pointers",
+    "scene_asset_authorities",
+    "scene_asset_versions",
+    "scene_asset_pointers",
+    "prop_asset_authorities",
+    "prop_asset_versions",
+    "prop_asset_pointers",
+    "shot_asset_bindings",
 }
 
 REQUIRED_COLUMNS = {
@@ -92,6 +104,16 @@ REQUIRED_COLUMNS = {
         "book_id", "episode", "storyboard_shot_id", "media_role", "official_media_version_id",
         "authority_id", "fingerprint",
     },
+    "character_asset_authorities": {"authority_id", "character_id", "current_version_id", "fingerprint", "status"},
+    "character_asset_versions": {"version_id", "authority_id", "character_id", "visual_asset_version_id", "revision", "status"},
+    "character_asset_pointers": {"character_id", "authority_id", "version_id", "fingerprint"},
+    "scene_asset_authorities": {"authority_id", "scene_id", "current_version_id", "fingerprint", "status"},
+    "scene_asset_versions": {"version_id", "authority_id", "scene_id", "visual_asset_version_id", "revision", "status"},
+    "scene_asset_pointers": {"scene_id", "authority_id", "version_id", "fingerprint"},
+    "prop_asset_authorities": {"authority_id", "prop_id", "current_version_id", "fingerprint", "status"},
+    "prop_asset_versions": {"version_id", "authority_id", "prop_id", "visual_asset_version_id", "revision", "status"},
+    "prop_asset_pointers": {"prop_id", "authority_id", "version_id", "fingerprint"},
+    "shot_asset_bindings": {"storyboard_shot_id", "asset_type", "authority_id", "version_id", "binding_fingerprint", "status"},
 }
 
 

@@ -1,0 +1,1094 @@
+{
+  "migration": {
+    "binding_table": "shot_asset_bindings",
+    "candidate_modified": false,
+    "created_tables": [
+      "production_asset_authority_registry",
+      "production_asset_version_registry",
+      "character_asset_authorities",
+      "character_asset_versions",
+      "character_asset_pointers",
+      "scene_asset_authorities",
+      "scene_asset_versions",
+      "scene_asset_pointers",
+      "prop_asset_authorities",
+      "prop_asset_versions",
+      "prop_asset_pointers",
+      "shot_asset_bindings"
+    ],
+    "down_revision": "z0a1b2c3d4e5",
+    "legacy_tables_modified": [],
+    "official_media_modified": false,
+    "prompt_ir_modified": false,
+    "registry_tables": [
+      "production_asset_authority_registry",
+      "production_asset_version_registry"
+    ],
+    "revision": "a1b2c3d4e5f6",
+    "rollback_order": [
+      "shot_asset_bindings",
+      "*_pointers",
+      "*_authorities",
+      "*_versions",
+      "production_asset_version_registry",
+      "production_asset_authority_registry"
+    ],
+    "shot_plan_modified": false,
+    "storyboard_modified": false,
+    "typed_tables": [
+      "character_asset_authorities",
+      "character_asset_versions",
+      "character_asset_pointers",
+      "scene_asset_authorities",
+      "scene_asset_versions",
+      "scene_asset_pointers",
+      "prop_asset_authorities",
+      "prop_asset_versions",
+      "prop_asset_pointers"
+    ]
+  },
+  "schema": {
+    "character_asset_authorities": {
+      "checks": [
+        {
+          "name": "ck_character_asset_authority_status",
+          "sqltext": "status IN ('ACTIVE','STALE')"
+        }
+      ],
+      "columns": [
+        "id",
+        "authority_id",
+        "character_id",
+        "current_version_id",
+        "fingerprint",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "fk_character_asset_authority_registry",
+          "references": "production_asset_authority_registry"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "current_version_id"
+          ],
+          "name": "fk_character_asset_authority_current_version",
+          "references": "character_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "current_version_id"
+          ],
+          "name": "ix_character_asset_authorities_current_version",
+          "unique": false
+        },
+        {
+          "columns": [
+            "character_id"
+          ],
+          "name": "ix_character_asset_authorities_entity",
+          "unique": false
+        },
+        {
+          "columns": [
+            "status"
+          ],
+          "name": "ix_character_asset_authorities_status",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "uq_character_asset_authority_identity"
+        },
+        {
+          "columns": [
+            "character_id"
+          ],
+          "name": "uq_character_asset_authority_entity"
+        },
+        {
+          "columns": [
+            "fingerprint"
+          ],
+          "name": "uq_character_asset_authority_fingerprint"
+        }
+      ]
+    },
+    "character_asset_pointers": {
+      "checks": [],
+      "columns": [
+        "id",
+        "character_id",
+        "authority_id",
+        "version_id",
+        "fingerprint",
+        "created_at",
+        "updated_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "fk_character_asset_pointer_authority",
+          "references": "character_asset_authorities"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "fk_character_asset_pointer_version",
+          "references": "character_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "ix_character_asset_pointers_authority",
+          "unique": false
+        },
+        {
+          "columns": [
+            "fingerprint"
+          ],
+          "name": "ix_character_asset_pointers_fingerprint",
+          "unique": false
+        },
+        {
+          "columns": [
+            "version_id"
+          ],
+          "name": "ix_character_asset_pointers_version",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "character_id"
+          ],
+          "name": "uq_character_asset_pointer_entity"
+        },
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "uq_character_asset_pointer_authority"
+        }
+      ]
+    },
+    "character_asset_versions": {
+      "checks": [
+        {
+          "name": "ck_character_asset_version_revision_positive",
+          "sqltext": "revision > 0"
+        },
+        {
+          "name": "ck_character_asset_version_status",
+          "sqltext": "status IN ('CURRENT','SUPERSEDED','STALE')"
+        }
+      ],
+      "columns": [
+        "id",
+        "version_id",
+        "authority_id",
+        "character_id",
+        "visual_asset_version_id",
+        "storage_identity",
+        "checksum",
+        "metadata_hash",
+        "revision",
+        "status",
+        "created_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "fk_character_asset_version_registry_identity",
+          "references": "production_asset_version_registry"
+        },
+        {
+          "columns": [
+            "visual_asset_version_id"
+          ],
+          "name": "fk_character_asset_version_visual_lineage",
+          "references": "visual_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "authority_id",
+            "revision"
+          ],
+          "name": "ix_character_asset_versions_authority_revision",
+          "unique": false
+        },
+        {
+          "columns": [
+            "checksum"
+          ],
+          "name": "ix_character_asset_versions_checksum",
+          "unique": false
+        },
+        {
+          "columns": [
+            "status"
+          ],
+          "name": "ix_character_asset_versions_status",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "version_id"
+          ],
+          "name": "uq_character_asset_version_identity"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "uq_character_asset_version_authority_identity"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "revision"
+          ],
+          "name": "uq_character_asset_version_revision"
+        }
+      ]
+    },
+    "production_asset_authority_registry": {
+      "checks": [
+        {
+          "name": "ck_production_asset_authority_registry_type",
+          "sqltext": "asset_type IN ('CHARACTER','SCENE','PROP')"
+        }
+      ],
+      "columns": [
+        "authority_id",
+        "asset_type",
+        "source_table",
+        "created_at"
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "columns": [
+            "asset_type"
+          ],
+          "name": "ix_production_asset_authority_registry_type",
+          "unique": false
+        }
+      ],
+      "unique_constraints": []
+    },
+    "production_asset_version_registry": {
+      "checks": [
+        {
+          "name": "ck_production_asset_version_registry_type",
+          "sqltext": "asset_type IN ('CHARACTER','SCENE','PROP')"
+        }
+      ],
+      "columns": [
+        "version_id",
+        "authority_id",
+        "asset_type",
+        "created_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "fk_production_asset_version_registry_authority",
+          "references": "production_asset_authority_registry"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "ix_production_asset_version_registry_authority",
+          "unique": false
+        },
+        {
+          "columns": [
+            "asset_type"
+          ],
+          "name": "ix_production_asset_version_registry_type",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "uq_production_asset_version_registry_authority_version"
+        }
+      ]
+    },
+    "prop_asset_authorities": {
+      "checks": [
+        {
+          "name": "ck_prop_asset_authority_status",
+          "sqltext": "status IN ('ACTIVE','STALE')"
+        }
+      ],
+      "columns": [
+        "id",
+        "authority_id",
+        "prop_id",
+        "current_version_id",
+        "fingerprint",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "fk_prop_asset_authority_registry",
+          "references": "production_asset_authority_registry"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "current_version_id"
+          ],
+          "name": "fk_prop_asset_authority_current_version",
+          "references": "prop_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "current_version_id"
+          ],
+          "name": "ix_prop_asset_authorities_current_version",
+          "unique": false
+        },
+        {
+          "columns": [
+            "prop_id"
+          ],
+          "name": "ix_prop_asset_authorities_entity",
+          "unique": false
+        },
+        {
+          "columns": [
+            "status"
+          ],
+          "name": "ix_prop_asset_authorities_status",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "uq_prop_asset_authority_identity"
+        },
+        {
+          "columns": [
+            "prop_id"
+          ],
+          "name": "uq_prop_asset_authority_entity"
+        },
+        {
+          "columns": [
+            "fingerprint"
+          ],
+          "name": "uq_prop_asset_authority_fingerprint"
+        }
+      ]
+    },
+    "prop_asset_pointers": {
+      "checks": [],
+      "columns": [
+        "id",
+        "prop_id",
+        "authority_id",
+        "version_id",
+        "fingerprint",
+        "created_at",
+        "updated_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "fk_prop_asset_pointer_authority",
+          "references": "prop_asset_authorities"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "fk_prop_asset_pointer_version",
+          "references": "prop_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "ix_prop_asset_pointers_authority",
+          "unique": false
+        },
+        {
+          "columns": [
+            "fingerprint"
+          ],
+          "name": "ix_prop_asset_pointers_fingerprint",
+          "unique": false
+        },
+        {
+          "columns": [
+            "version_id"
+          ],
+          "name": "ix_prop_asset_pointers_version",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "prop_id"
+          ],
+          "name": "uq_prop_asset_pointer_entity"
+        },
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "uq_prop_asset_pointer_authority"
+        }
+      ]
+    },
+    "prop_asset_versions": {
+      "checks": [
+        {
+          "name": "ck_prop_asset_version_revision_positive",
+          "sqltext": "revision > 0"
+        },
+        {
+          "name": "ck_prop_asset_version_status",
+          "sqltext": "status IN ('CURRENT','SUPERSEDED','STALE')"
+        }
+      ],
+      "columns": [
+        "id",
+        "version_id",
+        "authority_id",
+        "prop_id",
+        "visual_asset_version_id",
+        "storage_identity",
+        "checksum",
+        "metadata_hash",
+        "revision",
+        "status",
+        "created_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "fk_prop_asset_version_registry_identity",
+          "references": "production_asset_version_registry"
+        },
+        {
+          "columns": [
+            "visual_asset_version_id"
+          ],
+          "name": "fk_prop_asset_version_visual_lineage",
+          "references": "visual_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "authority_id",
+            "revision"
+          ],
+          "name": "ix_prop_asset_versions_authority_revision",
+          "unique": false
+        },
+        {
+          "columns": [
+            "checksum"
+          ],
+          "name": "ix_prop_asset_versions_checksum",
+          "unique": false
+        },
+        {
+          "columns": [
+            "status"
+          ],
+          "name": "ix_prop_asset_versions_status",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "version_id"
+          ],
+          "name": "uq_prop_asset_version_identity"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "uq_prop_asset_version_authority_identity"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "revision"
+          ],
+          "name": "uq_prop_asset_version_revision"
+        }
+      ]
+    },
+    "scene_asset_authorities": {
+      "checks": [
+        {
+          "name": "ck_scene_asset_authority_status",
+          "sqltext": "status IN ('ACTIVE','STALE')"
+        }
+      ],
+      "columns": [
+        "id",
+        "authority_id",
+        "scene_id",
+        "current_version_id",
+        "fingerprint",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "fk_scene_asset_authority_registry",
+          "references": "production_asset_authority_registry"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "current_version_id"
+          ],
+          "name": "fk_scene_asset_authority_current_version",
+          "references": "scene_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "current_version_id"
+          ],
+          "name": "ix_scene_asset_authorities_current_version",
+          "unique": false
+        },
+        {
+          "columns": [
+            "scene_id"
+          ],
+          "name": "ix_scene_asset_authorities_entity",
+          "unique": false
+        },
+        {
+          "columns": [
+            "status"
+          ],
+          "name": "ix_scene_asset_authorities_status",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "uq_scene_asset_authority_identity"
+        },
+        {
+          "columns": [
+            "scene_id"
+          ],
+          "name": "uq_scene_asset_authority_entity"
+        },
+        {
+          "columns": [
+            "fingerprint"
+          ],
+          "name": "uq_scene_asset_authority_fingerprint"
+        }
+      ]
+    },
+    "scene_asset_pointers": {
+      "checks": [],
+      "columns": [
+        "id",
+        "scene_id",
+        "authority_id",
+        "version_id",
+        "fingerprint",
+        "created_at",
+        "updated_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "fk_scene_asset_pointer_authority",
+          "references": "scene_asset_authorities"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "fk_scene_asset_pointer_version",
+          "references": "scene_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "ix_scene_asset_pointers_authority",
+          "unique": false
+        },
+        {
+          "columns": [
+            "fingerprint"
+          ],
+          "name": "ix_scene_asset_pointers_fingerprint",
+          "unique": false
+        },
+        {
+          "columns": [
+            "version_id"
+          ],
+          "name": "ix_scene_asset_pointers_version",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "scene_id"
+          ],
+          "name": "uq_scene_asset_pointer_entity"
+        },
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "uq_scene_asset_pointer_authority"
+        }
+      ]
+    },
+    "scene_asset_versions": {
+      "checks": [
+        {
+          "name": "ck_scene_asset_version_revision_positive",
+          "sqltext": "revision > 0"
+        },
+        {
+          "name": "ck_scene_asset_version_status",
+          "sqltext": "status IN ('CURRENT','SUPERSEDED','STALE')"
+        }
+      ],
+      "columns": [
+        "id",
+        "version_id",
+        "authority_id",
+        "scene_id",
+        "visual_asset_version_id",
+        "storage_identity",
+        "checksum",
+        "metadata_hash",
+        "revision",
+        "status",
+        "created_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "fk_scene_asset_version_registry_identity",
+          "references": "production_asset_version_registry"
+        },
+        {
+          "columns": [
+            "visual_asset_version_id"
+          ],
+          "name": "fk_scene_asset_version_visual_lineage",
+          "references": "visual_asset_versions"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "authority_id",
+            "revision"
+          ],
+          "name": "ix_scene_asset_versions_authority_revision",
+          "unique": false
+        },
+        {
+          "columns": [
+            "checksum"
+          ],
+          "name": "ix_scene_asset_versions_checksum",
+          "unique": false
+        },
+        {
+          "columns": [
+            "status"
+          ],
+          "name": "ix_scene_asset_versions_status",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "version_id"
+          ],
+          "name": "uq_scene_asset_version_identity"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "uq_scene_asset_version_authority_identity"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "revision"
+          ],
+          "name": "uq_scene_asset_version_revision"
+        }
+      ]
+    },
+    "shot_asset_bindings": {
+      "checks": [
+        {
+          "name": "ck_shot_asset_binding_status",
+          "sqltext": "status IN ('ACTIVE','STALE')"
+        },
+        {
+          "name": "ck_shot_asset_binding_type",
+          "sqltext": "asset_type IN ('CHARACTER','SCENE','PROP')"
+        }
+      ],
+      "columns": [
+        "id",
+        "storyboard_shot_id",
+        "asset_type",
+        "authority_id",
+        "version_id",
+        "binding_fingerprint",
+        "status",
+        "created_at"
+      ],
+      "foreign_keys": [
+        {
+          "columns": [
+            "storyboard_shot_id"
+          ],
+          "name": "fk_shot_asset_binding_storyboard_shot",
+          "references": "storyboard_shots"
+        },
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "fk_shot_asset_binding_authority",
+          "references": "production_asset_authority_registry"
+        },
+        {
+          "columns": [
+            "authority_id",
+            "version_id"
+          ],
+          "name": "fk_shot_asset_binding_version",
+          "references": "production_asset_version_registry"
+        }
+      ],
+      "indexes": [
+        {
+          "columns": [
+            "authority_id"
+          ],
+          "name": "ix_shot_asset_bindings_authority",
+          "unique": false
+        },
+        {
+          "columns": [
+            "storyboard_shot_id"
+          ],
+          "name": "ix_shot_asset_bindings_shot",
+          "unique": false
+        },
+        {
+          "columns": [
+            "asset_type",
+            "status"
+          ],
+          "name": "ix_shot_asset_bindings_type_status",
+          "unique": false
+        },
+        {
+          "columns": [
+            "version_id"
+          ],
+          "name": "ix_shot_asset_bindings_version",
+          "unique": false
+        }
+      ],
+      "unique_constraints": [
+        {
+          "columns": [
+            "storyboard_shot_id",
+            "asset_type",
+            "authority_id",
+            "version_id"
+          ],
+          "name": "uq_shot_asset_binding_identity"
+        },
+        {
+          "columns": [
+            "binding_fingerprint"
+          ],
+          "name": "uq_shot_asset_binding_fingerprint"
+        }
+      ]
+    }
+  },
+  "status": "PHASE_H2_ASSET_AUTHORITY_SCHEMA_MIGRATION_READY",
+  "verification": {
+    "all_h2_tables_empty_after_upgrade": true,
+    "empty_database_cycle": {
+      "asset_counts_after_upgrade": {
+        "character_asset_authorities": 0,
+        "character_asset_pointers": 0,
+        "character_asset_versions": 0,
+        "production_asset_authority_registry": 0,
+        "production_asset_version_registry": 0,
+        "prop_asset_authorities": 0,
+        "prop_asset_pointers": 0,
+        "prop_asset_versions": 0,
+        "scene_asset_authorities": 0,
+        "scene_asset_pointers": 0,
+        "scene_asset_versions": 0,
+        "shot_asset_bindings": 0
+      },
+      "asset_counts_before_downgrade": {
+        "character_asset_authorities": 0,
+        "character_asset_pointers": 0,
+        "character_asset_versions": 0,
+        "production_asset_authority_registry": 0,
+        "production_asset_version_registry": 0,
+        "prop_asset_authorities": 0,
+        "prop_asset_pointers": 0,
+        "prop_asset_versions": 0,
+        "scene_asset_authorities": 0,
+        "scene_asset_pointers": 0,
+        "scene_asset_versions": 0,
+        "shot_asset_bindings": 0
+      },
+      "downgrade": "PASS",
+      "final_version": "a1b2c3d4e5f6",
+      "first_upgrade": "PASS",
+      "first_version": "a1b2c3d4e5f6",
+      "tables_after_downgrade": [],
+      "upgrade_again": "PASS"
+    },
+    "existing_ag2_database": {
+      "after_counts": {
+        "director_treatment_authorities": 1,
+        "media_candidate_records": 1,
+        "official_media_versions": 0,
+        "prompt_ir_versions": 1,
+        "scene_blocking_authorities": 1,
+        "script_ir_versions": 1,
+        "shot_plan_authorities": 1,
+        "storyboard_shots": 1,
+        "visual_reference_authorities": 1
+      },
+      "before_counts": {
+        "director_treatment_authorities": 1,
+        "media_candidate_records": 1,
+        "official_media_versions": 0,
+        "prompt_ir_versions": 1,
+        "scene_blocking_authorities": 1,
+        "script_ir_versions": 1,
+        "shot_plan_authorities": 1,
+        "storyboard_shots": 1,
+        "visual_reference_authorities": 1
+      },
+      "counts_unchanged": true,
+      "fixture": "existing_ag2_database",
+      "h2_asset_counts": {
+        "character_asset_authorities": 0,
+        "character_asset_pointers": 0,
+        "character_asset_versions": 0,
+        "production_asset_authority_registry": 0,
+        "production_asset_version_registry": 0,
+        "prop_asset_authorities": 0,
+        "prop_asset_pointers": 0,
+        "prop_asset_versions": 0,
+        "scene_asset_authorities": 0,
+        "scene_asset_pointers": 0,
+        "scene_asset_versions": 0,
+        "shot_asset_bindings": 0
+      },
+      "h2_asset_rows_created": 0,
+      "image_calls": 0,
+      "provider_calls": 0,
+      "upgrade": "PASS",
+      "video_calls": 0
+    },
+    "fresh_sqlite": {
+      "after_counts": {
+        "director_treatment_authorities": 1,
+        "media_candidate_records": 1,
+        "official_media_versions": 0,
+        "prompt_ir_versions": 1,
+        "scene_blocking_authorities": 1,
+        "script_ir_versions": 1,
+        "shot_plan_authorities": 1,
+        "storyboard_shots": 1,
+        "visual_reference_authorities": 1
+      },
+      "before_counts": {
+        "director_treatment_authorities": 1,
+        "media_candidate_records": 1,
+        "official_media_versions": 0,
+        "prompt_ir_versions": 1,
+        "scene_blocking_authorities": 1,
+        "script_ir_versions": 1,
+        "shot_plan_authorities": 1,
+        "storyboard_shots": 1,
+        "visual_reference_authorities": 1
+      },
+      "counts_unchanged": true,
+      "fixture": "fresh_sqlite",
+      "h2_asset_counts": {
+        "character_asset_authorities": 0,
+        "character_asset_pointers": 0,
+        "character_asset_versions": 0,
+        "production_asset_authority_registry": 0,
+        "production_asset_version_registry": 0,
+        "prop_asset_authorities": 0,
+        "prop_asset_pointers": 0,
+        "prop_asset_versions": 0,
+        "scene_asset_authorities": 0,
+        "scene_asset_pointers": 0,
+        "scene_asset_versions": 0,
+        "shot_asset_bindings": 0
+      },
+      "h2_asset_rows_created": 0,
+      "image_calls": 0,
+      "provider_calls": 0,
+      "upgrade": "PASS",
+      "video_calls": 0
+    },
+    "full_real_end_to_end_production_acceptance_triggered": false,
+    "image_calls": 0,
+    "production_pilot_copy": {
+      "after_counts": {
+        "director_treatment_authorities": 1,
+        "media_candidate_records": 1,
+        "official_media_versions": 0,
+        "prompt_ir_versions": 1,
+        "scene_blocking_authorities": 1,
+        "script_ir_versions": 1,
+        "shot_plan_authorities": 1,
+        "storyboard_shots": 1,
+        "visual_reference_authorities": 1
+      },
+      "before_counts": {
+        "director_treatment_authorities": 1,
+        "media_candidate_records": 1,
+        "official_media_versions": 0,
+        "prompt_ir_versions": 1,
+        "scene_blocking_authorities": 1,
+        "script_ir_versions": 1,
+        "shot_plan_authorities": 1,
+        "storyboard_shots": 1,
+        "visual_reference_authorities": 1
+      },
+      "counts_unchanged": true,
+      "fixture": "production_pilot_copy",
+      "h2_asset_counts": {
+        "character_asset_authorities": 0,
+        "character_asset_pointers": 0,
+        "character_asset_versions": 0,
+        "production_asset_authority_registry": 0,
+        "production_asset_version_registry": 0,
+        "prop_asset_authorities": 0,
+        "prop_asset_pointers": 0,
+        "prop_asset_versions": 0,
+        "scene_asset_authorities": 0,
+        "scene_asset_pointers": 0,
+        "scene_asset_versions": 0,
+        "shot_asset_bindings": 0
+      },
+      "h2_asset_rows_created": 0,
+      "image_calls": 0,
+      "provider_calls": 0,
+      "upgrade": "PASS",
+      "video_calls": 0
+    },
+    "provider_calls": 0,
+    "video_calls": 0
+  }
+}
