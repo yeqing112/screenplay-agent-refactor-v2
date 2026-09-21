@@ -1,4 +1,9 @@
-# PHASE_F_REPLAY_PROFILE_CONTRACT_AND_REAL_AUTHORITY_PILOT_CLOSURE_READY_FOR_REVIEW
+# PHASE_F_PROVIDER_PARAM_SEMANTIC_BOUNDARY_AND_CONCURRENT_REPLAY_CLOSURE_READY_FOR_REVIEW
+
+## Implementation commit
+
+- Branch: `codex/visual-authoring-provider-canary-reconcile`
+- Commit: `a4805db` (`Close Phase F provider boundary and concurrent replay`)
 
 ## 本轮范围
 
@@ -22,9 +27,9 @@ URL / execution identity
 
 ## ProviderExecutionProfile
 
-新增 `core/provider_execution_profile.py`，使用 `provider_execution_profile_v1` 的正向 allowlist：
+新增 `core/provider_execution_profile.py`，使用 `provider_execution_profile_v2` 的 typed 正向 allowlist：
 
-- `generation_params`：模型生成参数。
+- `generation_params`：模型生成参数；标量、布尔、数值、尺寸和 `size_by_aspect_ratio` 均显式校验，`aspect_ratio` 支持 `16:9` 等比例值。
 - `transport_config.timeout_seconds`：HTTP transport contract。
 - `credential`：只保留 `configured` 与 `source_identity`。
 - `adapter`、provider、model、endpoint identity 绑定到 profile fingerprint。
@@ -51,6 +56,10 @@ raw API key、Authorization、Bearer、nested token、未知 registry 字段不�
 
 旧的 `episode_01_phase_f_fake_provider_trace.json` 仅作为 synthetic unit/state-machine proof，不再作为 authority mutation proof。
 
+## Concurrent replay closure
+
+并发 claim 丢失后不会再次调用 Provider：`SUCCEEDED` / `REUSED` 赢家重新执行 current candidate lineage 校验；Candidate 缺失或篡改时 fail closed；`RUNNING` 返回 `GENERATION_CANARY_IN_PROGRESS`；其他状态返回冲突错误。新增测试覆盖有效赢家、Candidate 缺失、lineage 篡改和运行中赢家。
+
 ## Schema provenance
 
 现有 migration 保留且未新增：
@@ -67,18 +76,17 @@ schema_status=IMPLEMENTED_PENDING_FORMAL_APPROVAL
 
 ## 验证
 
-- Phase F core regression：`25 passed`。
-- Replay/profile contract：`3 passed`。
-- Transport contract：`3 passed`。
+- Phase F 定向回归（含并发 claim-lost、typed profile、旧核心、replay profile、transport）：`49 passed`。
 - Real authority trace contract：`1 passed`。
-- Phase F 合计：`32 passed`；migration chain hardening：`7 passed`。
+- Schema contract：typed allowlist、secret-free fingerprint、semantic parameter rejection 均通过。
+- migration chain hardening：`7 passed`。
 - 真实 pilot：SQLite + Alembic upgrade + A–E persisted lineage + fake provider，1 candidate，0 external calls。
 - Secret marker scan：测试 secret marker 在 artifacts/DB snapshots 中无命中。
 - migration 数量：未增加。
 
-Phase C–E 定向回归：`68 passed`；Golden：`5/5 passed`；Web：`301 passed`（51 个 test files）；Web production build：`passed`。
+Phase C–E/migration 定向回归：`77 passed`；Golden：`5/5 passed`；Web：`301 passed`（51 个 test files）；Web production build：`passed`。
 
-完整后端回归本轮结果：`1682 passed, 4 failed`。4 个失败均为既有 baseline/environment 失败，分别为 `test_director_quality_v24_offline_replay`、`test_director_quality_v3_final_spine_topology_preflight_wiring`、`test_real_llm_gray_selection`、`test_targeted_missing_fact_api`；未发现 Phase F 新增失败。
+完整后端回归本轮结果：`1699 passed, 4 failed`。4 个失败均为既有 baseline/environment 失败，分别为 `test_director_quality_v24_offline_replay`、`test_director_quality_v3_final_spine_topology_preflight_wiring`、`test_real_llm_gray_selection`、`test_targeted_missing_fact_api`；未发现 Phase F 新增失败。
 
 证据分类：Architecture Unit/State Machine proof ✅；Real Authority Integration with Fake Provider ✅；Real External Provider Canary ❌（按本轮范围未执行）。已尝试查询 GitHub Actions API，但返回 HTTP 403 rate limit exceeded；未据此推断 run/job 状态。
 
@@ -91,6 +99,8 @@ Phase C–E、Golden、full backend、Web 的历史结果按上一阶段报告�
 - `phase_f_generation_execution_contract.json`
 - `phase_f_provider_request_audit.json`
 - `episode_01_phase_f_real_authority_fake_provider_trace.json`
+- `tests/test_generation_canary_phase_f_concurrent_replay_closure.py`
 - `tests/test_generation_canary_phase_f_replay_profile_contract.py`
 - `tests/test_generation_canary_phase_f_transport_contract.py`
+- `tests/test_provider_execution_profile_schema_contract.py`
 - `tests/test_generation_canary_phase_f_real_authority_integration.py`

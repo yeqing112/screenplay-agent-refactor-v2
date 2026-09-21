@@ -8,6 +8,8 @@ from fastapi import HTTPException
 
 import api.generation_canary_api as canary
 from core.provider_execution_profile import (
+    PROFILE_SCHEMA_VERSION,
+    ProviderExecutionProfileError,
     build_provider_execution_profile,
     fingerprint_provider_execution_profile,
     provider_generation_params,
@@ -28,17 +30,22 @@ def test_provider_execution_profile_is_allowlisted_and_secret_free():
         "default_params": {
             "size": "1024x1024",
             "timeout_seconds": 37,
-            "nested": {"token": "PHASE_F_TEST_SECRET_DO_NOT_PERSIST"},
-            "authorization": "Bearer PHASE_F_TEST_SECRET_DO_NOT_PERSIST",
         },
     }
     profile = build_provider_execution_profile(raw, adapter_id="image_generic", adapter_version="v1")
     rendered = str(profile)
-    assert profile["schema_version"] == "provider_execution_profile_v1"
+    assert profile["schema_version"] == PROFILE_SCHEMA_VERSION
     assert profile["generation_params"] == {"size": "1024x1024"}
     assert profile["transport_config"] == {"timeout_seconds": 37}
     assert profile["credential"] == {"configured": True, "source_identity": "env-prod"}
     assert "PHASE_F_TEST_SECRET_DO_NOT_PERSIST" not in rendered
+
+    with pytest.raises(ProviderExecutionProfileError):
+        build_provider_execution_profile(
+            {**raw, "default_params": {**raw["default_params"], "nested": {"token": "secret"}}},
+            adapter_id="image_generic",
+            adapter_version="v1",
+        )
 
     rotated = dict(raw, api_key="ROTATED")
     assert fingerprint_provider_execution_profile(profile) == fingerprint_provider_execution_profile(

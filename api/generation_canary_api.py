@@ -40,6 +40,7 @@ from core.prompt_ir_phase_e import (
 )
 from core.provider_execution_profile import (
     PROFILE_SCHEMA_VERSION,
+    ProviderExecutionProfileError,
     build_provider_execution_profile,
     fingerprint_provider_execution_profile,
 )
@@ -211,7 +212,10 @@ def _resolve_profile(req: CanaryPreviewRequest, adapter: dict[str, Any]) -> tupl
         raise _error(409, "GENERATION_PROVIDER_NOT_CONFIGURED", "The explicit image provider has no configured credential.")
     if provider != "prototype-task-adapter" and (not str(profile.get("base_url") or "").strip() or not str(profile.get("model_name") or "").strip()):
         raise _error(409, "GENERATION_PROVIDER_NOT_CONFIGURED", "The explicit image provider is missing base_url or model_name.")
-    canonical_profile = build_provider_execution_profile(profile, adapter_id=req.adapter_id, adapter_version=str(adapter.get("adapter_version") or ""))
+    try:
+        canonical_profile = build_provider_execution_profile(profile, adapter_id=req.adapter_id, adapter_version=str(adapter.get("adapter_version") or ""))
+    except ProviderExecutionProfileError as exc:
+        raise _error(409, exc.code, str(exc), field=exc.field, provider_calls=0)
     if provider != "prototype-task-adapter":
         raw_params = profile.get("default_params") if isinstance(profile.get("default_params"), dict) else {}
         raw_transport = profile.get("transport_config") if isinstance(profile.get("transport_config"), dict) else {}
@@ -240,6 +244,7 @@ def _resolve_profile(req: CanaryPreviewRequest, adapter: dict[str, Any]) -> tupl
     # exposing the canonical projection to every Phase F audit/request path.
     profile = dict(profile)
     profile["provider_execution_profile"] = canonical_profile
+    profile["phase_f_strict"] = True
     return profile, phase_profile, fingerprint_provider_execution_profile(canonical_profile)
 
 
@@ -727,9 +732,12 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
             session.rollback()
             current = session.query(GenerationExecutionRecord).filter_by(execution_id=row.execution_id).first() or row
             current_candidate = session.query(MediaCandidateRecord).filter_by(execution_id=row.execution_id).first()
-            if current.status in {"SUCCEEDED", "REUSED"} and current_candidate is not None:
+            if current.status in {"SUCCEEDED", "REUSED"}:
+                _validate_candidate_lineage(current, current_candidate)
                 return {"execution": _serialize_execution(current), "candidate": _serialize_candidate(current_candidate), "provider_calls": 0, "reused": True}
-            raise _error(409, "GENERATION_CANARY_IN_PROGRESS", "This execution is already claimed by another worker.", provider_calls=0)
+            if current.status == "RUNNING":
+                raise _error(409, "GENERATION_CANARY_IN_PROGRESS", "This execution is already claimed by another worker.", provider_calls=0)
+            raise _error(409, "GENERATION_CANARY_CLAIM_LOST", "The execution claim was lost before a reusable winner completed.", provider_calls=0)
         row.status = "RUNNING"
         row.execution_mode = "CANARY"
         # ``submitted_at`` is the provider boundary audit timestamp.  It is

@@ -1229,14 +1229,14 @@ def _build_shapi_openai_images_payload(
             "请改用已配置且支持参考图的 PoYo GPT Image 2，或移除参考图后再使用 SHAPI GPT Image 2。"
         )
 
-    params = provider_generation_params(profile)
+    params = provider_generation_params(profile, strict=bool(profile.get("phase_f_strict")))
     payload: dict[str, Any] = {
         "model": str(profile.get("model_name") or "").strip(),
         "prompt": _append_negative_constraints(prompt, negative_prompt),
         # One image per production task keeps result-to-asset provenance unambiguous.
         "n": 1,
     }
-    for key in ("size", "quality", "background", "moderation", "style", "user", "response_format"):
+    for key in ("size", "quality", "background", "moderation", "response_format"):
         value = params.get(key)
         if value is not None and value != "":
             payload[key] = value
@@ -1409,7 +1409,7 @@ async def _generate_shapi_gemini_image(
     if base_url.endswith("/v1beta"):
         base_url = base_url[: -len("/v1beta")]
 
-    params = provider_generation_params(profile)
+    params = provider_generation_params(profile, strict=bool(profile.get("phase_f_strict")))
     max_references = _coerce_positive_int(params.get("max_reference_images"), 14, minimum=1, maximum=14)
     max_reference_bytes = _coerce_positive_int(
         params.get("max_reference_image_bytes"), 10 * 1024 * 1024, minimum=1 * 1024 * 1024, maximum=20 * 1024 * 1024
@@ -1420,7 +1420,7 @@ async def _generate_shapi_gemini_image(
     ][:max_references]
     parts: list[dict[str, Any]] = [{"text": _append_negative_constraints(prompt, negative_prompt)}]
 
-    timeout_seconds = provider_timeout_seconds(profile)
+    timeout_seconds = provider_timeout_seconds(profile, strict=bool(profile.get("phase_f_strict")))
     async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         for index, reference in enumerate(normalized_references, start=1):
             reference_url = str(reference.get("image_url") or reference.get("imageUrl") or reference.get("url") or "").strip()
@@ -1499,7 +1499,7 @@ async def _generate_shapi_openai_image(
         negative_prompt=negative_prompt,
         reference_images=reference_images,
     )
-    timeout_seconds = provider_timeout_seconds(profile)
+    timeout_seconds = provider_timeout_seconds(profile, strict=bool(profile.get("phase_f_strict")))
     async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         try:
             response = await client.post(
@@ -1593,7 +1593,7 @@ async def generate_image_asset(
         "prompt": prompt,
         "n": 1,
     }
-    payload.update(provider_generation_params(profile))
+    payload.update(provider_generation_params(profile, strict=bool(profile.get("phase_f_strict"))))
     payload["model"] = model_name
     payload["prompt"] = prompt
     if aspect_ratio:
@@ -1601,7 +1601,7 @@ async def generate_image_asset(
     if negative_prompt:
         payload.setdefault("negative_prompt", negative_prompt)
 
-    timeout_seconds = provider_timeout_seconds(profile)
+    timeout_seconds = provider_timeout_seconds(profile, strict=bool(profile.get("phase_f_strict")))
     async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         try:
             response = await client.post(
