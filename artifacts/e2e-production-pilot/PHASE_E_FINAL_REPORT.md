@@ -51,13 +51,13 @@ Evidence files:
 - Deterministic Golden regression: **5/5 passed**.
 - Full backend: **1640 passed, 4 historical failures**.
 
-The latest GitHub Actions production gate was run **#227** (`35544933716`)
-for commit `8402586` before this closure commit. Its deterministic production
-gate job (`106169043806`) failed with exit code 1. The unauthenticated GitHub
-UI exposed only the generic annotation (`step:8:37`), while the REST endpoint
-returned `403 rate limit exceeded`, so the exact remote test node IDs could
-not be independently recovered. The four historical failures below remain
-the local baseline and were not changed in this phase.
+The latest GitHub Actions production gate is **#228** (`35545884652`) for
+commit `8a9ba9e`. Its deterministic production gate job
+(`106171571746`) failed with exit code 1. The unauthenticated GitHub UI
+exposed the generic annotation (`step:8:37`) plus the Node.js 20 and Ubuntu
+26 runner notices; it did not expose the failing test node IDs. The four
+historical failures below remain the local baseline and were not changed in
+this phase.
 
 The unchanged historical failures are:
 
