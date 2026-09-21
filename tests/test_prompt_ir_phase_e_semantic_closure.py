@@ -202,6 +202,10 @@ def test_current_resolver_revalidates_pointer_and_authority_envelope(monkeypatch
     current_set = SimpleNamespace(id=1, scene_id=snapshots[0]["scene_id"], set_payload_fingerprint="set-1", status="MATERIALIZED", stale_status="FRESH")
     monkeypatch.setattr("core.storyboard_materializer.resolve_current_authoritative_materialization", lambda *args, **kwargs: (current_set, [current_row], snapshots[0]["authority_envelope"]))
     monkeypatch.setattr("core.storyboard_materializer.build_storyboard_production_snapshot", lambda **kwargs: snapshots[0])
+    # This unit fixture intentionally persists only the PromptIR pointer chain;
+    # the dedicated historical-lineage closure suite exercises the full
+    # MaterializationSet/StoryboardShot authority rows.
+    monkeypatch.setattr("core.prompt_ir_phase_e.validate_prompt_ir_historical_integrity", lambda *args, **kwargs: {"integrity_valid": True})
     resolved = resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id)
     assert resolved["payload"]["qualification_state"] == "PROMPT_IR_QUALIFIED"
     pointer.payload_hash = "tampered"

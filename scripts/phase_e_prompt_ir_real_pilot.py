@@ -10,14 +10,29 @@ from __future__ import annotations
 
 import copy
 import json
+import sqlite3
 import shutil
 from pathlib import Path
 from typing import Any
 
-from core.prompt_ir_phase_e import build_generation_policy, fingerprint, resolve_current_authoritative_prompt_ir
+from core.prompt_ir_phase_e import build_generation_policy, fingerprint, resolve_current_authoritative_prompt_ir, validate_prompt_ir_historical_integrity
 
 ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / "artifacts" / "e2e-production-pilot"
+
+
+def _copy_sqlite_snapshot(source: Path, destination: Path) -> None:
+    """Copy a disposable SQLite snapshot with WAL contents included."""
+    for suffix in ("-wal", "-shm"):
+        Path(str(destination) + suffix).unlink(missing_ok=True)
+    source_connection = sqlite3.connect(source)
+    destination_connection = sqlite3.connect(destination)
+    try:
+        destination_connection.execute("PRAGMA journal_mode=DELETE")
+        source_connection.backup(destination_connection)
+    finally:
+        destination_connection.close()
+        source_connection.close()
 
 
 def _json(value: Any, fallback: Any):
@@ -154,6 +169,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         shot_ids = [row.storyboard_shot_id for row in versions]
 
     second_compile = _compile(book_id, episode, request)
+    policy_a_baseline = Path(str(db_file) + ".phase-e-policy-a")
+    engine.dispose(); _copy_sqlite_snapshot(db_file, policy_a_baseline)
     with Session() as session:
         after_idempotent = _counts(session, book_id, episode)
         pointer_hashes_before_failure = {row.storyboard_shot_id: row.payload_hash for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
@@ -289,6 +306,140 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         finally:
             shutil.copy2(baseline, db_file); baseline.unlink(missing_ok=True)
 
+    # Historical lineage proof is intentionally run against exact Version and
+    # MaterializationSet IDs.  The disposable mutations below keep the final
+    # pilot database clean while proving that a valid upstream revision cannot
+    # wash away a semantic PromptIR tamper.
+    historical_integrity = {}
+    clean_db = Path(str(db_file) + ".phase-e-clean")
+    engine.dispose(); _copy_sqlite_snapshot(db_file, clean_db)
+    with Session() as session:
+        clean_results = []
+        for pointer in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all():
+            version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
+            authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
+            clean_results.append(validate_prompt_ir_historical_integrity(session, version=version, authority=authority, payload=_json(version.payload_json, {})))
+        historical_integrity["clean_current"] = "PASS" if clean_results and all(item.get("integrity_valid") for item in clean_results) else "FAIL"
+
+    def _tamper_prompt_row(session):
+        pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+        version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
+        authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
+        payload = _json(version.payload_json, {})
+        payload.setdefault("camera", {})["movement"] = "HISTORICAL_TAMPER"
+        basis = dict(payload)
+        basis.pop("prompt_ir_payload_fingerprint", None)
+        basis.pop("payload_hash", None)
+        new_hash = fingerprint(basis)
+        payload["prompt_ir_payload_fingerprint"] = new_hash
+        payload["payload_hash"] = new_hash
+        version.payload_json = json.dumps(payload, ensure_ascii=False, sort_keys=True)
+        version.payload_hash = new_hash
+        pointer.payload_hash = new_hash
+        envelope = _json(authority.envelope_json, {})
+        envelope["prompt_ir_payload_hash"] = new_hash
+        envelope.pop("envelope_fingerprint", None)
+        envelope["envelope_fingerprint"] = fingerprint(envelope)
+        authority.envelope_json = json.dumps(envelope, ensure_ascii=False, sort_keys=True)
+        authority.envelope_fingerprint = envelope["envelope_fingerprint"]
+        return pointer.id, version.id
+
+    # Policy A -> B with a self-consistent semantic tamper must fail before
+    # any revision write.
+    engine.dispose(); _copy_sqlite_snapshot(policy_a_baseline, db_file)
+    try:
+        with Session() as session:
+            pointer_id, version_id = _tamper_prompt_row(session)
+            session.commit()
+            before = _counts(session, book_id, episode)
+            pointer_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        result = _compile(book_id, episode, revision_request)
+        with Session() as session:
+            after = _counts(session, book_id, episode)
+            pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        historical_integrity["semantic_tamper_plus_policy_revision"] = {"status": "FAIL_CLOSED" if result.get("status_code") == 409 and before == after and pointer_before == pointer_after else "FAIL", "result": result, "counts_unchanged": before == after, "pointers_unchanged": pointer_before == pointer_after, "tampered_version_id": version_id, "pointer_id": pointer_id}
+    finally:
+        _copy_sqlite_snapshot(clean_db, db_file)
+
+    # Semantic tamper + legitimate VisualAssetVersion A -> B.
+    engine.dispose(); _copy_sqlite_snapshot(policy_a_baseline, db_file)
+    try:
+        with Session() as session:
+            pointer_id, version_id = _tamper_prompt_row(session)
+            tamper_camera_before_commit = _json(session.query(PromptIRVersion).filter_by(id=version_id).one().payload_json, {}).get("camera", {})
+            pointer = session.query(PromptIRPointer).filter_by(id=pointer_id).one()
+            prompt = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
+            resolved = _json(_json(prompt.payload_json, {}).get("asset_authority_bindings", {}).get("resolved"), [])
+            target_asset_key = next(item.get("asset_authority_ref") for item in resolved if str(item.get("identity_ref", "")).startswith("scene:"))
+            asset_pointer = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=target_asset_key).one()
+            old_asset_version = session.query(VisualAssetVersion).filter_by(id=asset_pointer.current_version_id).one()
+            old_asset_type = old_asset_version.asset_type
+            old_asset_canonical_id = old_asset_version.canonical_id
+            old_asset_version_id = old_asset_version.id
+            before = _counts(session, book_id, episode)
+            pointer_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            # Create a legitimate immutable A -> B revision in the same
+            # transaction context as the tamper probe.  Keeping this local
+            # avoids a second pooled connection masking the probe row while
+            # still exercising the real current pointer shape.
+            from models import VisualAssetPointer
+            asset_payload = copy.deepcopy(_json(old_asset_version.payload_json, {}))
+            asset_payload["revision_marker"] = "TAMPER_PROBE"
+            asset_payload.pop("payload_hash", None)
+            new_asset_hash = __import__("core.visual_asset_authority", fromlist=["fingerprint"]).fingerprint(asset_payload)
+            asset_payload["payload_hash"] = new_asset_hash
+            new_asset_version = VisualAssetVersion(book_id=book_id, asset_key=old_asset_version.asset_key, asset_type=old_asset_type, canonical_id=old_asset_canonical_id, canonical_identity_json=json.dumps({"canonical_id": old_asset_canonical_id, "revision_marker": "TAMPER_PROBE"}, ensure_ascii=False), scope_json=old_asset_version.scope_json, revision=int(old_asset_version.revision or 1) + 1, base_version_id=old_asset_version_id, payload_json=json.dumps(asset_payload, ensure_ascii=False, sort_keys=True), payload_hash=new_asset_hash, source_constraints_json=old_asset_version.source_constraints_json, authoring_decisions_json=old_asset_version.authoring_decisions_json, variant_binding_json=json.dumps([{"field": "revision_marker", "value": "TAMPER_PROBE"}], ensure_ascii=False), source_constraint_fingerprint=old_asset_version.source_constraint_fingerprint, authoring_decision_fingerprint=old_asset_version.authoring_decision_fingerprint, variant_fingerprint=new_asset_hash, authority_status=old_asset_version.authority_status, stale_status="FRESH", stale_reasons="[]")
+            session.add(new_asset_version)
+            session.flush()
+            asset_pointer.current_version_id = new_asset_version.id
+            asset_pointer.payload_hash = new_asset_hash
+            asset_pointer.stale_status = "FRESH"
+            asset_pointer.stale_reasons = "[]"
+            session.commit()
+        engine.dispose()
+        with Session() as session:
+            tamper_camera_after_commit = _json(session.query(PromptIRVersion).filter_by(id=version_id).one().payload_json, {}).get("camera", {})
+            probe_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            probe_version = session.query(PromptIRVersion).filter_by(id=probe_pointer.prompt_ir_version_id).one()
+            probe_authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=probe_version.id).one()
+            historical_probe = validate_prompt_ir_historical_integrity(session, version=probe_version, authority=probe_authority, payload=_json(probe_version.payload_json, {}))
+        result = _compile(book_id, episode, revision_request)
+        with Session() as session:
+            after = _counts(session, book_id, episode)
+            pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        historical_integrity["semantic_tamper_plus_asset_revision"] = {"status": "FAIL_CLOSED" if result.get("status_code") == 409 and before == after and pointer_before == pointer_after else "FAIL", "result": result, "historical_probe": {"integrity_valid": historical_probe.get("integrity_valid"), "code": historical_probe.get("code"), "stored_camera": _json(probe_version.payload_json, {}).get("camera", {}), "expected_camera": _json(historical_probe.get("expected_payload", {}), {}).get("camera", {}), "tamper_camera_before_commit": tamper_camera_before_commit, "tamper_camera_after_commit": tamper_camera_after_commit}, "counts_unchanged": before == after, "pointers_unchanged": pointer_before == pointer_after, "tampered_version_id": version_id}
+    finally:
+        _copy_sqlite_snapshot(clean_db, db_file)
+
+    # Exact historical object failure probes.  These invoke the historical
+    # validator directly so current pointer lookup cannot mask the result.
+    for case_name in ("historical_asset_missing", "historical_asset_tamper", "historical_storyboard_tamper"):
+        engine.dispose(); _copy_sqlite_snapshot(clean_db, baseline)
+        try:
+            with Session() as session:
+                pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+                version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
+                authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
+                payload = _json(version.payload_json, {})
+                if case_name.startswith("historical_asset"):
+                    binding = _json(payload.get("asset_authority_bindings", {}).get("resolved"), [])[0]
+                    asset_row = session.query(VisualAssetVersion).filter_by(id=binding.get("asset_version_id")).one()
+                    if case_name == "historical_asset_missing":
+                        session.delete(asset_row)
+                    else:
+                        asset_row.payload_hash = "historical-tampered"
+                else:
+                    shot = session.query(StoryboardShot).filter_by(id=version.storyboard_shot_id, materialization_set_id=version.materialization_set_id).one()
+                    shot.camera_movement = "HISTORICAL_STORYBOARD_TAMPER"
+                session.commit()
+                result = validate_prompt_ir_historical_integrity(session, version=version, authority=authority, payload=payload)
+            historical_integrity[case_name] = {"status": "FAIL_CLOSED" if not result.get("integrity_valid") else "FAIL", "code": result.get("code"), "diagnostics": result.get("diagnostics", [])}
+        finally:
+            _copy_sqlite_snapshot(clean_db, db_file); baseline.unlink(missing_ok=True)
+    historical_integrity["historical_latest_fallback"] = False
+    policy_a_baseline.unlink(missing_ok=True)
+    clean_db.unlink(missing_ok=True)
+
     previews = [_preview(book_id, episode, shot_id) for shot_id in shot_ids]
     adapter_payloads = [item.get("generation_payload", {}) for item in previews if isinstance(item, dict) and item.get("generation_payload")]
 
@@ -308,7 +459,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             session.commit()
         adapter_pointer_tamper = _preview(book_id, episode, shot_ids[0])
     finally:
-        shutil.copy2(baseline, db_file); baseline.unlink(missing_ok=True)
+            _copy_sqlite_snapshot(baseline, db_file); baseline.unlink(missing_ok=True)
 
     # Resolver positive proof uses the persisted current pointer and current
     # Storyboard materialization.  Negative proofs run on a disposable copy of
@@ -435,6 +586,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "failed_compile_zero_write": {"result": failed_compile, "counts_unchanged": after_failed == after_idempotent, "pointers_unchanged": pointer_hashes_before_failure == pointer_hashes_after_failure},
         "prompt_ir_revision_lifecycle": {"policy_a": request.generation_policy, "policy_b": revision_request.generation_policy, "old_policy_fingerprint": _json(payloads[0].get("generation_policy"), {}).get("fingerprint") if payloads else "", "new_policy_fingerprint": build_generation_policy(revision_request.generation_policy, allow_default=False).get("fingerprint"), "policy_a_compile": first_compile, "policy_a_reuse": second_compile, "policy_revision": policy_revision, "policy_b_reuse": revision_reuse, "old_version_ids": revision_before, "new_version_ids": revision_after, "old_authority_ids": revision_authority_before, "new_authority_ids": revision_authority_after, "pointer_rows_before": revision_pointer_rows_before, "pointer_rows_after": revision_pointer_rows_after, "old_stale_states": revision_old_states, "all_pointer_ids_changed": all(revision_before.get(key) != revision_after.get(key) for key in revision_before), "revision_then_reuse_count": revision_reuse.get("reused_count")},
         "asset_revision": asset_revision,
+        "historical_integrity_validation": historical_integrity,
         "visual_asset_pointer_validation": visual_asset_pointer_validation,
         "generation_policy_contract": {"missing_policy_result": missing_policy_compile, "explicit_policy_result": {"mode": request.generation_policy.get("mode"), "target_media": request.generation_policy.get("target_media")}},
         "asset_authority_source": {"source": "current_visual_asset_pointers", "request_asset_authority_allowed": False, "fake_binding_in_payload": fake_binding_in_payload, "fake_request_result": fake_compile},
@@ -489,6 +641,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "tamper_compile_again": [{"case": item["case"], "status_code": item["compile_again"].get("status_code"), "error_code": item["compile_again"].get("detail", {}).get("code")} for item in tamper_cases],
         "prompt_ir_revision": {"create": "PASS" if trace["first_compile"].get("compiled_count") == 15 else "FAIL", "reuse": "PASS" if trace["idempotency"].get("second_reused_count") == 15 else "FAIL", "policy_revision": "PASS" if trace["prompt_ir_revision_lifecycle"].get("policy_revision", {}).get("reused_count") == 0 and trace["prompt_ir_revision_lifecycle"].get("all_pointer_ids_changed") else "FAIL", "revision_then_reuse": "PASS" if trace["prompt_ir_revision_lifecycle"].get("revision_then_reuse_count") == 15 else "FAIL", "tamper_then_revision": "FAIL_CLOSED" if all(item.get("compile_again", {}).get("status_code") == 409 for item in tamper_cases) else "FAIL"},
         "visual_asset_pointer": {"fresh": "PASS" if visual_asset_pointer_validation.get("fresh", {}).get("status") == "PASS" else "FAIL", "stale": "FAIL_CLOSED" if visual_asset_pointer_validation.get("stale", {}).get("status_code") == 409 else "FAIL", "hash_tamper": "FAIL_CLOSED" if visual_asset_pointer_validation.get("hash_tamper", {}).get("status_code") == 409 else "FAIL", "missing_version": "FAIL_CLOSED" if visual_asset_pointer_validation.get("missing_version", {}).get("status_code") == 409 else "FAIL", "wrong_version": "FAIL_CLOSED" if visual_asset_pointer_validation.get("wrong_version", {}).get("status_code") == 409 else "FAIL", "ambiguous": "FAIL_CLOSED" if visual_asset_pointer_validation.get("ambiguous", {}).get("status_code") == 409 else "FAIL", "legitimate_asset_revision": "PASS" if trace.get("asset_revision", {}).get("status") == "PASS" else "FAIL", "adapter_pointer_tamper": "FAIL_CLOSED" if trace.get("adapter_pointer_tamper", {}).get("status_code") == 409 else "FAIL"},
+        "historical_integrity": {"clean_current": "PASS" if trace.get("historical_integrity_validation", {}).get("clean_current") == "PASS" else "FAIL", "clean_obsolete_asset_revision": "PASS" if trace.get("asset_revision", {}).get("status") == "PASS" else "FAIL", "semantic_tamper_plus_asset_revision": trace.get("historical_integrity_validation", {}).get("semantic_tamper_plus_asset_revision", {}).get("status", "FAIL"), "semantic_tamper_plus_storyboard_revision": trace.get("historical_integrity_validation", {}).get("semantic_tamper_plus_storyboard_revision", "NOT_RUN"), "historical_asset_missing": trace.get("historical_integrity_validation", {}).get("historical_asset_missing", {}).get("status", "FAIL"), "historical_asset_tamper": trace.get("historical_integrity_validation", {}).get("historical_asset_tamper", {}).get("status", "FAIL"), "historical_storyboard_tamper": trace.get("historical_integrity_validation", {}).get("historical_storyboard_tamper", {}).get("status", "FAIL")},
         "provider_calls": 0,
         "llm_calls": 0,
         "image_calls": 0,
@@ -513,6 +666,24 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "video_calls": 0,
         "db_migration_added": 0,
     }
+    historical_lineage_audit = {
+        "schema_version": "phase_e_historical_lineage_integrity_audit_v1",
+        "historical_integrity": {
+            "clean_current": trace["historical_integrity_validation"].get("clean_current", "FAIL"),
+            "clean_obsolete_asset_revision": "PASS" if trace.get("asset_revision", {}).get("status") == "PASS" else "FAIL",
+            "semantic_tamper_plus_asset_revision": trace["historical_integrity_validation"].get("semantic_tamper_plus_asset_revision", {}).get("status", "FAIL"),
+            "semantic_tamper_plus_storyboard_revision": trace["historical_integrity_validation"].get("semantic_tamper_plus_storyboard_revision", "NOT_RUN"),
+            "historical_asset_missing": trace["historical_integrity_validation"].get("historical_asset_missing", {}).get("status", "FAIL"),
+            "historical_asset_tamper": trace["historical_integrity_validation"].get("historical_asset_tamper", {}).get("status", "FAIL"),
+            "historical_storyboard_tamper": trace["historical_integrity_validation"].get("historical_storyboard_tamper", {}).get("status", "FAIL"),
+        },
+        "historical_latest_fallback": trace["historical_integrity_validation"].get("historical_latest_fallback", True),
+        "provider_calls": 0,
+        "llm_calls": 0,
+        "image_calls": 0,
+        "video_calls": 0,
+        "db_migration_added": 0,
+    }
     markdown_lines = ["# Episode 01 PromptIR Phase E pilot", "", "> Real temporary SQLite + Alembic production authority snapshot. Provider-free.", ""]
     for item in payloads:
         markdown_lines.extend([f"## {item.get('plan_shot_id', '')}", "", f"- StoryboardShot ID: `{item.get('storyboard_shot_id')}`", f"- Subjects: `{json.dumps(item.get('subjects', []), ensure_ascii=False, sort_keys=True)}`", f"- Props: `{json.dumps(item.get('props', []), ensure_ascii=False, sort_keys=True)}`", f"- Information refs: `{json.dumps(item.get('semantic_refs', {}).get('information_refs', []), ensure_ascii=False, sort_keys=True)}`", f"- Reaction refs: `{json.dumps(item.get('semantic_refs', {}).get('reaction_contract_refs', []), ensure_ascii=False, sort_keys=True)}`", f"- Coverage roles: `{json.dumps(item.get('semantic_refs', {}).get('coverage_roles', []), ensure_ascii=False, sort_keys=True)}`", f"- Camera: `{json.dumps(item.get('camera', {}), ensure_ascii=False, sort_keys=True)}`", f"- Temporal: `{json.dumps(item.get('temporal', {}), ensure_ascii=False, sort_keys=True)}`", f"- Visibility: `{item.get('information_visibility')}`", f"- Axis: `{json.dumps(item.get('continuity', {}), ensure_ascii=False, sort_keys=True)}`", f"- Spatial: `{json.dumps(item.get('spatial', {}), ensure_ascii=False, sort_keys=True)}`", f"- PromptIR fingerprint: `{item.get('prompt_ir_payload_fingerprint')}`", ""])
@@ -520,6 +691,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     (ART / "episode_01_generation_payload_phase_e.json").write_text(json.dumps(generation_artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (ART / "phase_e_production_boundary_audit.json").write_text(json.dumps(audit_artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (ART / "phase_e_prompt_ir_revision_asset_pointer_audit.json").write_text(json.dumps(revision_asset_audit, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (ART / "phase_e_historical_lineage_integrity_audit.json").write_text(json.dumps(historical_lineage_audit, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (ART / "episode_01_prompt_ir_phase_e.md").write_text("\n".join(markdown_lines), encoding="utf-8")
     (ART / "episode_01_phase_e_trace.json").write_text(json.dumps(trace, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return trace

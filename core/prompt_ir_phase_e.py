@@ -290,14 +290,158 @@ def classify_prompt_ir_compile_transition(*, current_payload: dict[str, Any], ex
     return "REUSE" if _text(current_payload.get("payload_hash") or current_payload.get("prompt_ir_payload_fingerprint")) == _text(expected_payload.get("payload_hash") or expected_payload.get("prompt_ir_payload_fingerprint")) else "REVISION"
 
 
-def compare_prompt_ir_lineage_to_current(*, stored_payload: dict[str, Any], current_snapshot: dict[str, Any], asset_authority: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Separate stored-object integrity from whether its upstream lineage is current.
+def _historical_failure(code: str, message: str, *, diagnostics: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    return {
+        "integrity_valid": False,
+        "current_lineage_valid": None,
+        "obsolete_due_to_upstream_change": None,
+        "tampered": True,
+        "code": code,
+        "message": message,
+        "diagnostics": diagnostics or [{"code": code, "message": message, "severity": "blocked"}],
+    }
 
-    The stored payload is compiled again using its own policy and the current
-    authoritative Storyboard/asset inputs.  A mismatch in source or asset
-    lineage means the intact historical PromptIR is obsolete; a mismatch in
-    any other semantic field means the stored object no longer reproduces the
-    deterministic projection and must be treated as tampered.
+
+def _historical_json(value: Any, fallback: Any) -> Any:
+    if isinstance(value, (dict, list)):
+        return value
+    try:
+        parsed = json.loads(value or "")
+        return parsed if parsed is not None else fallback
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return fallback
+
+
+def _historical_asset_payload_hash(payload: dict[str, Any]) -> str:
+    """Accept both pilot seed payloads and authority API payloads.
+
+    The authority API stores ``payload_hash`` inside the payload after hashing
+    the rest of the spec; early provider-free fixtures hash the whole payload.
+    Historical validation supports both representations without consulting a
+    current pointer.
+    """
+    from core.visual_asset_authority import fingerprint as asset_fingerprint
+
+    basis = dict(payload)
+    basis.pop("payload_hash", None)
+    return asset_fingerprint(basis if "payload_hash" in payload else payload)
+
+
+def validate_prompt_ir_historical_integrity(session: Any, *, version: Any, authority: Any, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Prove a stored PromptIR against its exact historical authorities.
+
+    This validator deliberately does not read a current Storyboard or visual
+    asset pointer.  Stale historical rows remain usable as immutable evidence;
+    only missing or fingerprint-inconsistent historical objects fail closed.
+    """
+    from core.storyboard_materializer import (
+        _live_row_projection_payload,
+        _row_projection_payload,
+        build_storyboard_production_snapshot,
+        projection_fingerprint,
+        authority_envelope_fingerprint,
+    )
+    from core.visual_asset_authority import build_reference_media_authority
+    from models import StoryboardMaterializationSet, StoryboardShot, VisualAssetVersion, VisualReferenceAuthority
+
+    stored = payload if isinstance(payload, dict) else _historical_json(getattr(version, "payload_json", "{}"), {})
+    if not isinstance(stored, dict):
+        return _historical_failure("PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH", "Stored PromptIR payload is not an object.")
+    envelope = _historical_json(getattr(authority, "envelope_json", "{}"), {})
+    source = _dict(stored.get("source_authority"))
+    envelope_source = _dict(envelope.get("source_authority"))
+    if not isinstance(envelope, dict) or _text(envelope.get("schema_version")) != "prompt_ir_authority_envelope_v2":
+        return _historical_failure("PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "PromptIR authority envelope does not declare the v2 historical lineage contract.")
+    if _text(envelope.get("envelope_fingerprint")) != fingerprint({key: value for key, value in envelope.items() if key != "envelope_fingerprint"}):
+        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "PromptIR authority envelope fingerprint is invalid.")
+    if envelope_source != source or envelope.get("generation_policy") != stored.get("generation_policy") or envelope.get("asset_authority_bindings") != stored.get("asset_authority_bindings"):
+        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "PromptIR envelope does not bind the stored historical lineage.")
+
+    set_id = source.get("storyboard_materialization_set_id")
+    shot_id = stored.get("storyboard_shot_id")
+    if set_id in (None, "") or shot_id in (None, ""):
+        return _historical_failure("PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "PromptIR payload is missing the historical materialization set or StoryboardShot ID.")
+    materialization_set = session.query(StoryboardMaterializationSet).filter_by(id=int(set_id), book_id=version.book_id, episode=version.episode).first()
+    if materialization_set is None:
+        return _historical_failure("PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "Historical StoryboardMaterializationSet is missing.", diagnostics=[{"code": "PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "materialization_set_id": set_id}])
+    set_envelope = _historical_json(materialization_set.authority_envelope_json, {})
+    if not isinstance(set_envelope, dict) or _text(set_envelope.get("authority_fingerprint")) != authority_envelope_fingerprint(set_envelope):
+        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical Storyboard authority envelope fingerprint is invalid.")
+    materialization_meta = _dict(set_envelope.get("materialization"))
+    if str(materialization_meta.get("id")) != str(materialization_set.id) or _text(materialization_meta.get("fingerprint")) != _text(materialization_set.set_payload_fingerprint):
+        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical Storyboard materialization binding does not match the persisted Set.")
+    if _text(source.get("storyboard_set_payload_fingerprint")) != _text(materialization_set.set_payload_fingerprint):
+        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "PromptIR does not bind the historical Storyboard Set fingerprint.")
+
+    rows = session.query(StoryboardShot).filter_by(book_id=version.book_id, episode=version.episode, materialization_set_id=materialization_set.id).order_by(StoryboardShot.shot_id).all()
+    expected_ids = _historical_json(materialization_set.ordered_plan_shot_ids, [])
+    if not isinstance(expected_ids, list) or len(rows) != len(expected_ids) or int(materialization_set.expected_shot_count) != len(rows) or int(materialization_set.materialized_shot_count) != len(rows):
+        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical Storyboard Set cardinality is inconsistent.")
+    for row in rows:
+        meta = _historical_json(row.meta_info, {})
+        stored_projection = meta.get("projection_payload") if isinstance(meta, dict) and isinstance(meta.get("projection_payload"), dict) else None
+        if stored_projection is not None:
+            live_projection = _live_row_projection_payload(row, meta)
+            live_projection.pop("visual_semantic_handoff", None)
+            stored_projection_without_semantic = dict(stored_projection)
+            stored_projection_without_semantic.pop("visual_semantic_handoff", None)
+            if live_projection != stored_projection_without_semantic:
+                return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical Storyboard projection columns were modified.")
+        if not _text(row.projection_fingerprint) or _text(row.projection_fingerprint) != projection_fingerprint(_row_projection_payload(row, meta)):
+            return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical Storyboard projection fingerprint is invalid.")
+        semantic = meta.get("visual_semantic_handoff") if isinstance(meta, dict) and isinstance(meta.get("visual_semantic_handoff"), dict) else {}
+        semantic_fp = fingerprint({key: value for key, value in semantic.items() if key != "projection_provenance"})
+        if row.id == int(shot_id) and (_text(source.get("storyboard_projection_fingerprint")) != _text(row.projection_fingerprint) or _text(source.get("visual_semantic_handoff_fingerprint")) != semantic_fp):
+            return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "PromptIR does not bind the exact historical StoryboardShot projection.")
+
+    historical_bindings: list[dict[str, Any]] = []
+    resolved = _list(_dict(stored.get("asset_authority_bindings")).get("resolved"))
+    for binding in resolved:
+        if not isinstance(binding, dict):
+            return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical asset binding is not an object.")
+        version_id = binding.get("asset_version_id")
+        asset_version = session.query(VisualAssetVersion).filter_by(id=version_id, book_id=version.book_id).first() if version_id not in (None, "") else None
+        if asset_version is None:
+            return _historical_failure("PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "Historical VisualAssetVersion is missing.", diagnostics=[{"code": "PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "asset_version_id": version_id}])
+        asset_payload = _historical_json(asset_version.payload_json, {})
+        if not isinstance(asset_payload, dict) or _text(binding.get("asset_authority_ref")) != _text(asset_version.asset_key) or _text(binding.get("asset_version_fingerprint")) != _text(asset_version.payload_hash) or _historical_asset_payload_hash(asset_payload) != _text(asset_version.payload_hash):
+            return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical VisualAssetVersion fingerprint or identity is invalid.")
+        historical_binding = {"asset_type": asset_version.asset_type, "canonical_asset_id": asset_version.asset_key.rsplit(":", 1)[-1], "asset_key": asset_version.asset_key, "asset_version_id": asset_version.id, "revision": asset_version.revision, "payload": asset_payload, "payload_hash": asset_version.payload_hash, "asset_version_fingerprint": asset_version.payload_hash, "authority_fingerprint": asset_version.payload_hash, "authority_status": asset_version.authority_status, "stale_status": "FRESH"}
+        reference_fp = _text(binding.get("reference_authority_fingerprint") or binding.get("reference_authority_ref"))
+        if reference_fp:
+            reference_row = session.query(VisualReferenceAuthority).filter_by(authority_fingerprint=reference_fp).first()
+            if reference_row is None:
+                return _historical_failure("PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "Historical ReferenceAuthority is missing.", diagnostics=[{"code": "PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "authority_fingerprint": reference_fp}])
+            if str(reference_row.asset_version_id) != str(asset_version.id) or _text(reference_row.asset_version_fingerprint) != _text(asset_version.payload_hash):
+                return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical ReferenceAuthority is bound to a different asset version.")
+            reference_payload = build_reference_media_authority(asset_key=reference_row.asset_key, asset_version_id=reference_row.asset_version_id, asset_version_fingerprint=reference_row.asset_version_fingerprint, reference_scope=_historical_json(reference_row.reference_scope_json, {}), image_identity=reference_row.image_identity, checksum=reference_row.checksum, storage_reference=_historical_json(reference_row.storage_reference_json, {}), generation_provenance=_historical_json(reference_row.generation_provenance_json, {}), reference_token_mapping=_historical_json(reference_row.reference_token_mapping_json, {}), lock_revision=reference_row.lock_revision, status=reference_row.status)
+            if _text(reference_payload.get("authority_fingerprint")) != _text(reference_row.authority_fingerprint):
+                return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical ReferenceAuthority fingerprint is invalid.")
+            historical_binding["reference_authority"] = {"status": reference_row.status, "stale_status": "FRESH", "authority_fingerprint": reference_row.authority_fingerprint, "asset_version_id": reference_row.asset_version_id, "asset_version_fingerprint": reference_row.asset_version_fingerprint, "reference_token": _historical_json(reference_row.reference_token_mapping_json, {}).get("token", ""), "reference_name": _historical_json(reference_row.reference_token_mapping_json, {}).get("name", "")}
+        historical_bindings.append(historical_binding)
+
+    from copy import deepcopy
+    historical_snapshot = build_storyboard_production_snapshot(materialization_set=materialization_set, rows=rows, authority_envelope=set_envelope)
+    # Historical rows may be stale because a newer Set is current.  Staleness
+    # is currentness metadata, not corruption, so compile a read-only copy.
+    historical_snapshot_for_compile = deepcopy(historical_snapshot)
+    historical_snapshot_for_compile["storyboard_materialization_authority"]["stale_status"] = "FRESH"
+    try:
+        expected = next(item for item in compile_storyboard_snapshot_to_prompt_ir(historical_snapshot_for_compile, generation_policy=stored.get("generation_policy"), asset_authority={"bindings": historical_bindings}, allow_default_policy=False) if item.get("storyboard_shot_id") == stored.get("storyboard_shot_id") or item.get("plan_shot_id") == stored.get("plan_shot_id"))
+    except (PromptIRPhaseEError, StopIteration) as exc:
+        return _historical_failure(exc.code if isinstance(exc, PromptIRPhaseEError) else "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH", str(exc))
+    diff = compare_prompt_ir_semantics(expected, stored)
+    if not diff.get("empty"):
+        return _historical_failure("PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH", "Stored PromptIR does not reproduce its historical deterministic compile.", diagnostics=diff.get("errors", []))
+    return {"integrity_valid": True, "current_lineage_valid": None, "obsolete_due_to_upstream_change": None, "tampered": False, "diagnostics": [], "historical_snapshot": historical_snapshot, "historical_asset_authority": {"bindings": historical_bindings}, "expected_payload": expected}
+
+
+def compare_prompt_ir_lineage_to_current(*, stored_payload: dict[str, Any], current_snapshot: dict[str, Any], asset_authority: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Compare only historical and current authority lineage.
+
+    Semantic integrity is proven separately by
+    :func:`validate_prompt_ir_historical_integrity`; this function must never
+    infer tamper from a current semantic diff.
     """
     stored = _dict(stored_payload)
     policy = _dict(stored.get("generation_policy"))
@@ -318,17 +462,15 @@ def compare_prompt_ir_lineage_to_current(*, stored_payload: dict[str, Any], curr
             "tampered": False,
             "diagnostics": [{"code": exc.code, "message": exc.message}] if isinstance(exc, PromptIRPhaseEError) else [{"code": "PROMPT_IR_LINEAGE_MISSING"}],
         }
-    diff = compare_prompt_ir_semantics(expected, stored)
-    if diff.get("empty"):
-        return {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False, "tampered": False, "diagnostics": [], "expected_payload": expected}
     source_changed = expected.get("source_authority") != stored.get("source_authority")
     assets_changed = expected.get("asset_authority_bindings") != stored.get("asset_authority_bindings")
-    upstream_changed = source_changed or assets_changed
+    if not source_changed and not assets_changed:
+        return {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False, "tampered": False, "diagnostics": [], "expected_payload": expected}
     return {
         "current_lineage_valid": False,
-        "obsolete_due_to_upstream_change": upstream_changed,
-        "tampered": not upstream_changed,
-        "diagnostics": diff.get("errors", []),
+        "obsolete_due_to_upstream_change": True,
+        "tampered": False,
+        "diagnostics": [{"code": "PROMPT_IR_UPSTREAM_LINEAGE_CHANGED", "source_changed": source_changed, "assets_changed": assets_changed}],
         "expected_payload": expected,
     }
 
@@ -617,6 +759,9 @@ def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episo
         fail("PROMPT_IR_AUTHORITY_ENVELOPE_TAMPERED", "PromptIR authority envelope does not bind the current payload hash.", version=version, authority=authority)
     if envelope.get("generation_policy") != payload.get("generation_policy") or envelope.get("asset_authority_bindings") != payload.get("asset_authority_bindings"):
         fail("PROMPT_IR_AUTHORITY_ENVELOPE_TAMPERED", "PromptIR authority envelope does not bind the current policy and asset lineage.", version=version, authority=authority)
+    historical = validate_prompt_ir_historical_integrity(session, version=version, authority=authority, payload=payload)
+    if not historical.get("integrity_valid"):
+        fail(historical.get("code") or "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH", historical.get("message") or "Historical PromptIR integrity validation failed.", version=version, authority=authority)
     row = session.query(StoryboardShot).filter_by(id=storyboard_shot_id, book_id=book_id, episode=episode).first()
     if row is None or not _text(row.scene_id):
         fail("PROMPT_IR_STALE", "PromptIR StoryboardShot lineage is missing.", version=version, authority=authority)
@@ -658,5 +803,5 @@ def validate_current_prompt_ir_authority(session: Any, *, book_id: int, episode:
 
 
 __all__ = [
-    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "compare_prompt_ir_lineage_to_current", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
+    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "validate_prompt_ir_historical_integrity", "compare_prompt_ir_lineage_to_current", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
 ]

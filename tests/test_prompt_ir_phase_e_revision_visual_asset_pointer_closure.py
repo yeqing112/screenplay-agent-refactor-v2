@@ -57,7 +57,9 @@ def test_lineage_validator_separates_currentness_from_stored_tamper():
     tampered = json.loads(json.dumps(stored))
     tampered["camera"]["movement"] = "TAMPERED"
     result = compare_prompt_ir_lineage_to_current(stored_payload=tampered, current_snapshot=snapshot, asset_authority={"bindings": []})
-    assert result["tampered"] is True
+    # Currentness intentionally does not infer semantic tamper.  The stored
+    # object must be checked by the historical-integrity validator first.
+    assert result["tampered"] is False
     assert result["obsolete_due_to_upstream_change"] is False
 
 

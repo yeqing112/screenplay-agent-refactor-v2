@@ -11,105 +11,105 @@
       "schema_version": "prompt_ir_phase_e_compile_v1",
       "shots": [
         {
-          "payload_hash": "da95bfdeadbdca6176f63105774befdb8c5f6c9a0299c29315294984708c3454",
+          "payload_hash": "19503f196d82f9f7692e88772ac8a450c49484a7e965856b9f632665262facf4",
           "prompt_ir_authority_id": 31,
           "prompt_ir_version_id": 31,
           "reused": false,
           "storyboard_shot_id": 1
         },
         {
-          "payload_hash": "50e628d74c7b343ae1bfaf40626d457cd9595ded0bd81713691883ec874d0dc3",
+          "payload_hash": "7648b539e1c56956af1c340e877e654e061a78fb256fac2b3038788ca4014412",
           "prompt_ir_authority_id": 32,
           "prompt_ir_version_id": 32,
           "reused": false,
           "storyboard_shot_id": 2
         },
         {
-          "payload_hash": "3b3280ff8971296b5a36695f73def27b864b5711990ff50239e8433272594c8b",
+          "payload_hash": "6a777f334ced919b711c516aab7c08492b33de18ebc5821d8e3a114be7e2a41a",
           "prompt_ir_authority_id": 33,
           "prompt_ir_version_id": 33,
           "reused": false,
           "storyboard_shot_id": 3
         },
         {
-          "payload_hash": "91ac91af8db8718814c183eb13ed80fad8238f1f96e207202574831fc5628b07",
+          "payload_hash": "2688563d25ad2f0d4bf116ef1749511631004b520415dc1d2a87bd8f3509e554",
           "prompt_ir_authority_id": 34,
           "prompt_ir_version_id": 34,
           "reused": false,
           "storyboard_shot_id": 4
         },
         {
-          "payload_hash": "a3b9547d5a750e58b3a55f95b39a425c3967757304a6ef6ffedeb99d67b50fe7",
+          "payload_hash": "40e54f8fb4a3a3738996b281c5146d34d777aaa30a0747ae4e1850eecce6f1bc",
           "prompt_ir_authority_id": 35,
           "prompt_ir_version_id": 35,
           "reused": false,
           "storyboard_shot_id": 5
         },
         {
-          "payload_hash": "b56134ddfc780522dd7f3bf97004e96cb009b781d6ee45b7491a7815e14babf3",
+          "payload_hash": "76c34778adcb05a1cf9e6e287bfbc8f083230bec6cece0a2ce2a4b8a3b7fa0a1",
           "prompt_ir_authority_id": 36,
           "prompt_ir_version_id": 36,
           "reused": false,
           "storyboard_shot_id": 6
         },
         {
-          "payload_hash": "d5f9edff45d070f1f3ceea6e9ee059f69cf40c6b5025a8092e1708f61b3fcad4",
+          "payload_hash": "7c7d8a1a55913659f97f87ca65e5b502d36f718412c368c1f1a23f9e2ed5b812",
           "prompt_ir_authority_id": 37,
           "prompt_ir_version_id": 37,
           "reused": false,
           "storyboard_shot_id": 7
         },
         {
-          "payload_hash": "bd51c5c7a50d68fb9bbcf827b8ed926d8af8315e1a86a0f1c8feb5386cb6947a",
+          "payload_hash": "8c33acb1057fad5f2047a96877cbef2a8e06672b1f264808e2fd0d0b8255fd65",
           "prompt_ir_authority_id": 38,
           "prompt_ir_version_id": 38,
           "reused": false,
           "storyboard_shot_id": 8
         },
         {
-          "payload_hash": "b82ba49beab9f22dd60162db2cbe95bdc3aa84c0d0afa2c83626b799183864ca",
+          "payload_hash": "92bbe1476f7be76de72ebd6f1def3e76c95056a8c362762caa8ee262c9319a8e",
           "prompt_ir_authority_id": 39,
           "prompt_ir_version_id": 39,
           "reused": false,
           "storyboard_shot_id": 9
         },
         {
-          "payload_hash": "0e73e6b2ee522ec883ac43b51fd75e37821020559f8d708aafdf7b874a87c011",
+          "payload_hash": "940eed129828e9adda645dc48fb5a59976b9f6d45e1843484966aefce9b6dd58",
           "prompt_ir_authority_id": 40,
           "prompt_ir_version_id": 40,
           "reused": false,
           "storyboard_shot_id": 10
         },
         {
-          "payload_hash": "965569a08722c876aed5e441918dc2280dd767081764b97c9a259a36fe2d5bb4",
+          "payload_hash": "f5c77f339c0c0392968c893a14334f0f6fc710b1851125d7be0770f22118e012",
           "prompt_ir_authority_id": 41,
           "prompt_ir_version_id": 41,
           "reused": false,
           "storyboard_shot_id": 11
         },
         {
-          "payload_hash": "c7b812eb5bd515baa0610f4a80018060a247da9a3c6e827cc556e17d2a1f2039",
+          "payload_hash": "9ada11e44e40008814756600cae7226775884c83b023d45eaeaf764423f17b8c",
           "prompt_ir_authority_id": 42,
           "prompt_ir_version_id": 42,
           "reused": false,
           "storyboard_shot_id": 12
         },
         {
-          "payload_hash": "0c8659eb726aeeba66108580a9662ffb355e41f2d765a5ab7e753046fdb65e57",
+          "payload_hash": "84adb7dc879d631907b765f0866f9bfe879830fb6a7024906649ba3ef32d33ae",
           "prompt_ir_authority_id": 43,
           "prompt_ir_version_id": 43,
           "reused": false,
           "storyboard_shot_id": 13
         },
         {
-          "payload_hash": "010270668d63ed134958a4fc367cf950c0d7a7c7aa40197b0c46d727ff21fa32",
+          "payload_hash": "aca209db2d0f9e7ef62530d38fb73ea869977e8b2a55a96f99fd940f787d5e56",
           "prompt_ir_authority_id": 44,
           "prompt_ir_version_id": 44,
           "reused": false,
           "storyboard_shot_id": 14
         },
         {
-          "payload_hash": "5001a1a4850180d3403708b2938448cf81170a4f6efb1d5db8af84a722a7d815",
+          "payload_hash": "851b86a0c641c0be8678e87d56ebc578bc3530df6d4a5ae77bf667e05ec259a2",
           "prompt_ir_authority_id": 45,
           "prompt_ir_version_id": 45,
           "reused": false,
@@ -135,6 +135,15 @@
     }
   },
   "generation_policy_required": true,
+  "historical_integrity": {
+    "clean_current": "PASS",
+    "clean_obsolete_asset_revision": "PASS",
+    "historical_asset_missing": "FAIL_CLOSED",
+    "historical_asset_tamper": "FAIL_CLOSED",
+    "historical_storyboard_tamper": "FAIL_CLOSED",
+    "semantic_tamper_plus_asset_revision": "FAIL_CLOSED",
+    "semantic_tamper_plus_storyboard_revision": "NOT_RUN"
+  },
   "image_calls": 0,
   "legacy_v1_gate": {
     "adapter_preview": {
@@ -201,7 +210,7 @@
     },
     {
       "case": "semantic_tamper",
-      "error_code": "PROMPT_IR_CURRENT_INTEGRITY_INVALID",
+      "error_code": "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH",
       "status_code": 409
     }
   ],

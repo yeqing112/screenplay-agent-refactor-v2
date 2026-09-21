@@ -19,6 +19,7 @@ from core.prompt_ir_phase_e import (
     compare_prompt_ir_semantics,
     fingerprint as phase_e_fingerprint,
     resolve_current_authoritative_prompt_ir,
+    validate_prompt_ir_historical_integrity,
     validate_prompt_ir_integrity,
 )
 from core.visual_asset_authority import VisualAssetAuthorityError, build_asset_key, production_asset_binding, resolve_current_visual_asset_authority
@@ -233,6 +234,9 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
             if existing and existing_pointer:
                 integrity = validate_prompt_ir_integrity(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, allow_stale=True)
                 current_payload = integrity["payload"]
+                historical = validate_prompt_ir_historical_integrity(session, version=integrity["version"], authority=integrity["authority"], payload=current_payload)
+                if not historical.get("integrity_valid"):
+                    _conflict(historical.get("code") or "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH", historical.get("message") or "Historical PromptIR integrity validation failed.", diagnostics=historical.get("diagnostics", []))
                 transition = classify_prompt_ir_compile_transition(current_payload=current_payload, expected_payload=ir)
                 old_policy = current_payload.get("generation_policy") if isinstance(current_payload.get("generation_policy"), dict) else {}
                 old_source = current_payload.get("source_authority")

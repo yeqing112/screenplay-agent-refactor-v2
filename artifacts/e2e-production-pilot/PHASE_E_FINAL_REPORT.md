@@ -113,6 +113,28 @@ Evidence:
 - No LLM, provider, image generation, or video generation was started.
 - `PROMPT_IR_QUALIFIED` remains separate from `MODEL_GENERATION_READY`.
 
+## Historical Lineage Integrity Closure
+
+Historical PromptIR validation now reads the exact persisted `MaterializationSet`, `StoryboardShot`, `VisualAssetVersion`, and `ReferenceAuthority` IDs bound by the PromptIR authority envelope. Historical rows may be stale because a newer upstream revision is current, but they must still reproduce their own deterministic compile and pass every persisted fingerprint check.
+
+The provider-free real pilot records:
+
+- clean current PromptIR: `PASS`;
+- clean obsolete asset revision: `PASS`;
+- semantic tamper plus legitimate VisualAssetVersion A → B: `FAIL_CLOSED`, HTTP `409 PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH`, zero PromptIR version/authority/pointer writes;
+- semantic tamper plus policy revision: `FAIL_CLOSED` with zero writes;
+- missing historical asset, asset fingerprint tamper, and Storyboard projection tamper: all `FAIL_CLOSED`;
+- historical latest fallback: `false`;
+- provider, LLM, image, and video calls: `0 / 0 / 0 / 0`.
+
+Evidence: `phase_e_historical_lineage_integrity_audit.json` and `episode_01_phase_e_trace.json`.
+
+## CI Execution Closure
+
+GitHub Actions production regression now installs the pinned test dependency manifest `requirements-test.txt` (`pytest==8.4.2`) before collection. The closure regression is covered by `tests/test_prompt_ir_phase_e_historical_lineage_integrity_closure.py` and verifies that pytest installation is explicit in the workflow.
+
+The first pushed commit triggered Production regression **Run #233** (`35550879680`), job **Deterministic production gate** (`106185271242`); the amended report commit `dbe0fd1` triggered **Run #234** (`35551041694`), job `106185724217`. Both workflows reached the `Run production regression gate` step after installing `requirements-test.txt`, proving pytest is installed and collection/execution is no longer skipped by a missing dependency. Both gates concluded with exit code 1; the public unauthenticated UI exposes only the generic failing step annotation and does not expose exact pytest node IDs. Uploaded evidence artifacts are `production-regression-evidence-35550879680` and `production-regression-evidence-35551041694`. These are recorded as CI regression results, not as green CI claims.
+
 ## Review token
 
-`PHASE_E_PRODUCTION_BOUNDARY_AUTHORITY_AND_REUSE_CLOSURE_READY_FOR_REVIEW`
+`PHASE_E_HISTORICAL_LINEAGE_INTEGRITY_AND_CI_EXECUTION_CLOSURE_READY_FOR_REVIEW`

@@ -1,0 +1,18 @@
+{
+  "db_migration_added": 0,
+  "historical_integrity": {
+    "clean_current": "PASS",
+    "clean_obsolete_asset_revision": "PASS",
+    "historical_asset_missing": "FAIL_CLOSED",
+    "historical_asset_tamper": "FAIL_CLOSED",
+    "historical_storyboard_tamper": "FAIL_CLOSED",
+    "semantic_tamper_plus_asset_revision": "FAIL_CLOSED",
+    "semantic_tamper_plus_storyboard_revision": "NOT_RUN"
+  },
+  "historical_latest_fallback": false,
+  "image_calls": 0,
+  "llm_calls": 0,
+  "provider_calls": 0,
+  "schema_version": "phase_e_historical_lineage_integrity_audit_v1",
+  "video_calls": 0
+}
