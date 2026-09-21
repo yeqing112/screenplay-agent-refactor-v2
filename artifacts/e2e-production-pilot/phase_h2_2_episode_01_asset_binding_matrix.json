@@ -1,0 +1,683 @@
+{
+  "book_id": 990401,
+  "episode": 1,
+  "rows": [
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "929ade23b7d43534bec081e05e22cc9db4e5ee0b3a1e288be3a2a7105ef4aff1",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        },
+        {
+          "authority_fingerprint": "2ea5c10e5180b019419ddc3f72dcc58041743d063fbedf1b0f80fd14690462bc",
+          "authority_id": "paa_character_4482734908c0d29375fd6d04",
+          "binding_fingerprint": "2b5e9c6dfb83c2dd699894c6c6c4d0a7668030bf75ec3c0be3367e8dedd350e5",
+          "entity_id": "TICKET_CLERK",
+          "pointer_fingerprint": "032e8d61d27dad66967f539d53018d377b43168a998db576df148772d381c1d4",
+          "status": "PASS",
+          "version_fingerprint": "4a59f2b3d81069ac7f9917cd5c3ad6133c36f7c8b820f245cf8bdcf3935b1b9a",
+          "version_id": "pav_0523142173a4d6fec2ee01b3"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC001_001",
+      "props": [
+        {
+          "authority_fingerprint": "e5a7ff514491ad4b1568256f969882dbc2ac8d183bb8e2ed80d779338d5c1cb2",
+          "authority_id": "paa_prop_aa5a918f018a56df8f2a1f0b",
+          "binding_fingerprint": "b59dae33a6ce7a0aa5ce37772e5cdbdd196cb327c470c55473a3b5f17eba86ef",
+          "entity_id": "TICKET",
+          "pointer_fingerprint": "e4a2a5573d63de1d0572a3b3c10e7502c7b06479635c0a507a1a25eb74cb84ec",
+          "status": "PASS",
+          "version_fingerprint": "4735e81d60aaa3bd922af5179ce8f8b7e780c7b948c6d31968bd457096da7a45",
+          "version_id": "pav_2132524b070f72d5366fdad8"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "c6a71c6e135a65c6e37ea31091fe2dfa4a3c63d8bc103416baded62798d323bc",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+        "binding_fingerprint": "49bd53648cadf37884f23c6714c80aea5df96ca35fe9b3b068e00c37e52a6a01",
+        "entity_id": "E01_SC001",
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "status": "PASS",
+        "version_fingerprint": "4504c333935363f9199f4d2e5ed0f79a73c3a23bbea036e9695f1954d0f9d1db",
+        "version_id": "pav_82614896978d97576aadc04f"
+      },
+      "shot_id": 1,
+      "storyboard_shot_id": 1
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "122be54d596cfb839381edb6c5d172c5e684837132a8ad316af6a59a19b33927",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC001_002",
+      "props": [
+        {
+          "authority_fingerprint": "c3eb94bed3b9e074edf6cd153ee5ed2d6eabb1815a381d3944da7e073324694c",
+          "authority_id": "paa_prop_d2c127f06725df787cc090b4",
+          "binding_fingerprint": "74357ebce2ea143a2bcb077aae512339a009c3967553b2b1eaaf8ba2ee274cf7",
+          "entity_id": "RED_UMBRELLA",
+          "pointer_fingerprint": "4aa69c716843e5e99218b597b37e2f562f93d4ceab128bfe468f30f3bb029505",
+          "status": "PASS",
+          "version_fingerprint": "876ca230fbad4358fa9d2d241b98364751f58faea298ca1160f87c4a2d42baa3",
+          "version_id": "pav_a2d118eacdefcee61de9f439"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "c6a71c6e135a65c6e37ea31091fe2dfa4a3c63d8bc103416baded62798d323bc",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+        "binding_fingerprint": "7d2b837b30e8d258e6a2f6fe353375473b97099bf3a59ca1cb64d1417fbc705d",
+        "entity_id": "E01_SC001",
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "status": "PASS",
+        "version_fingerprint": "4504c333935363f9199f4d2e5ed0f79a73c3a23bbea036e9695f1954d0f9d1db",
+        "version_id": "pav_82614896978d97576aadc04f"
+      },
+      "shot_id": 2,
+      "storyboard_shot_id": 2
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "150714c7ab86ef8ad9f3228fa33c659ff62f3ded6b0daee2715c569b86d23528",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        },
+        {
+          "authority_fingerprint": "103cb6d69fb13955f5e95039d37917c57b8b3d7c03bd59f9279e91ab7e5eaf1c",
+          "authority_id": "paa_character_37435b49c68898606711cbcc",
+          "binding_fingerprint": "6bba0b41061c1c31dc198ded97c7c103047b98f3d25ac076277e09f65769c747",
+          "entity_id": "GU_CHEN",
+          "pointer_fingerprint": "f32e707cdd47abee753a64bc7c83180361a83eb12f7943c6c929e09fa91a2dbb",
+          "status": "PASS",
+          "version_fingerprint": "2982e62442e166a10e72c01991fb808a02c50b382a51ce3854ec1a72cc3ef065",
+          "version_id": "pav_9e3aecfdf89b5a472fe93f53"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC001_003",
+      "props": [
+        {
+          "authority_fingerprint": "8de1f4ef13fed26ea73ad8949368dcc42226ad429f4a892a9e9b639145a87bf5",
+          "authority_id": "paa_prop_8b4575a1fffe142653aaa5b7",
+          "binding_fingerprint": "3f00803443649296f469948ee2b44d10ee102aa3a6417a0bfc16e150ea44b0fa",
+          "entity_id": "BROKEN_UMBRELLA_RIB",
+          "pointer_fingerprint": "8c9efa2ae9283dcc8450c53de7b92757821e3d2bab5f182afe1dbc6d957ef163",
+          "status": "PASS",
+          "version_fingerprint": "bd1d425f7abb48d4121f99b7066fb5004c508519e7725a8eb2cb1d9104e6bd73",
+          "version_id": "pav_70c4360562349eb0fa4428e4"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "c6a71c6e135a65c6e37ea31091fe2dfa4a3c63d8bc103416baded62798d323bc",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+        "binding_fingerprint": "d4bf786161181833a79a712b75dc754f7f88ada059cf3cfd304e3af97b4affb3",
+        "entity_id": "E01_SC001",
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "status": "PASS",
+        "version_fingerprint": "4504c333935363f9199f4d2e5ed0f79a73c3a23bbea036e9695f1954d0f9d1db",
+        "version_id": "pav_82614896978d97576aadc04f"
+      },
+      "shot_id": 3,
+      "storyboard_shot_id": 3
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "103cb6d69fb13955f5e95039d37917c57b8b3d7c03bd59f9279e91ab7e5eaf1c",
+          "authority_id": "paa_character_37435b49c68898606711cbcc",
+          "binding_fingerprint": "bf135c01a597cfa4304f883c4c58f3d0d2cb2db3f7641ff7c389070d7f24bb5c",
+          "entity_id": "GU_CHEN",
+          "pointer_fingerprint": "f32e707cdd47abee753a64bc7c83180361a83eb12f7943c6c929e09fa91a2dbb",
+          "status": "PASS",
+          "version_fingerprint": "2982e62442e166a10e72c01991fb808a02c50b382a51ce3854ec1a72cc3ef065",
+          "version_id": "pav_9e3aecfdf89b5a472fe93f53"
+        },
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "340a78cc6f84dbd2d9fcbf223951bc036674abfce35dcbbff954c2fa3330a93b",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC001_004",
+      "props": [],
+      "scene": {
+        "authority_fingerprint": "c6a71c6e135a65c6e37ea31091fe2dfa4a3c63d8bc103416baded62798d323bc",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+        "binding_fingerprint": "74aee5e6a64f088ddafc746ae019dc183f032990c7fcfb0ac0005f413329d156",
+        "entity_id": "E01_SC001",
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "status": "PASS",
+        "version_fingerprint": "4504c333935363f9199f4d2e5ed0f79a73c3a23bbea036e9695f1954d0f9d1db",
+        "version_id": "pav_82614896978d97576aadc04f"
+      },
+      "shot_id": 4,
+      "storyboard_shot_id": 4
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "73bc6361dfcfedda0535188765aefb55608b49069b6169d7f458023655b924ff",
+          "authority_id": "paa_character_e18c1591aecdf288c6ef9fc5",
+          "binding_fingerprint": "8777cb7a1b9495430b22afe77e25433345936fc96b1444f389534212b7b7306f",
+          "entity_id": "LU_SHU",
+          "pointer_fingerprint": "647d149f61fb8906799682cfaf3c36e708d3fd82f2ef76ea6b7be8a60027581b",
+          "status": "PASS",
+          "version_fingerprint": "a05867aa07c6dbd7e939d8c4ad4bfdb83e7203eb9b94e480dc77a075d2c78c56",
+          "version_id": "pav_b8f31e5a2c5bfabcf481be6d"
+        },
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "4214bbe83e65477d3e5f56835c52f215f807bfbf926fca98175de74a834f8e2e",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC001_005",
+      "props": [
+        {
+          "authority_fingerprint": "0f6c51c605d3464d1ae5ac5de12164f48bca08c586b17e3b14775a3990103f9a",
+          "authority_id": "paa_prop_5db065e3333e0fb67f0e85df",
+          "binding_fingerprint": "b74c2e70882eb5769c4cad110db63d8e33bd0b2739cf3ed3852c6b924decb34f",
+          "entity_id": "HANDBAG",
+          "pointer_fingerprint": "b1c2532b6725a6067a3bd971f56d30e5b273ad09ef7a26fe8c00c149c905c4de",
+          "status": "PASS",
+          "version_fingerprint": "261caba7fbf335fc7c97fbede7d431fb9e2b443c4f8ec679622187e1797039f4",
+          "version_id": "pav_2644388eab9b859fddacc2a1"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "c6a71c6e135a65c6e37ea31091fe2dfa4a3c63d8bc103416baded62798d323bc",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+        "binding_fingerprint": "0bd998b3a83a8d7799e41f951b58d7f6b4f11f1cdc492866b610dac4d8dc99d4",
+        "entity_id": "E01_SC001",
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "status": "PASS",
+        "version_fingerprint": "4504c333935363f9199f4d2e5ed0f79a73c3a23bbea036e9695f1954d0f9d1db",
+        "version_id": "pav_82614896978d97576aadc04f"
+      },
+      "shot_id": 5,
+      "storyboard_shot_id": 5
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "51ec713cf133188d95c42ac501366e95e173f73f2d2230ff725204e64eb03889",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC001_006",
+      "props": [
+        {
+          "authority_fingerprint": "8de1f4ef13fed26ea73ad8949368dcc42226ad429f4a892a9e9b639145a87bf5",
+          "authority_id": "paa_prop_8b4575a1fffe142653aaa5b7",
+          "binding_fingerprint": "5ad608eee8b2449b1e54e83af23757ec60642449f8120cd593f9938852d84de8",
+          "entity_id": "BROKEN_UMBRELLA_RIB",
+          "pointer_fingerprint": "8c9efa2ae9283dcc8450c53de7b92757821e3d2bab5f182afe1dbc6d957ef163",
+          "status": "PASS",
+          "version_fingerprint": "bd1d425f7abb48d4121f99b7066fb5004c508519e7725a8eb2cb1d9104e6bd73",
+          "version_id": "pav_70c4360562349eb0fa4428e4"
+        },
+        {
+          "authority_fingerprint": "c3eb94bed3b9e074edf6cd153ee5ed2d6eabb1815a381d3944da7e073324694c",
+          "authority_id": "paa_prop_d2c127f06725df787cc090b4",
+          "binding_fingerprint": "9b4a5a5e5cfc17e13ccfa385cf5f970502f6fbe2a85f90dea2f356551d2dd490",
+          "entity_id": "RED_UMBRELLA",
+          "pointer_fingerprint": "4aa69c716843e5e99218b597b37e2f562f93d4ceab128bfe468f30f3bb029505",
+          "status": "PASS",
+          "version_fingerprint": "876ca230fbad4358fa9d2d241b98364751f58faea298ca1160f87c4a2d42baa3",
+          "version_id": "pav_a2d118eacdefcee61de9f439"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "c6a71c6e135a65c6e37ea31091fe2dfa4a3c63d8bc103416baded62798d323bc",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+        "binding_fingerprint": "adece4c8c0486e28452cb9e3b9108c89446835d052a97d42943ec0ce85ba986d",
+        "entity_id": "E01_SC001",
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "status": "PASS",
+        "version_fingerprint": "4504c333935363f9199f4d2e5ed0f79a73c3a23bbea036e9695f1954d0f9d1db",
+        "version_id": "pav_82614896978d97576aadc04f"
+      },
+      "shot_id": 6,
+      "storyboard_shot_id": 6
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "3603502bdde153a5a4f163056c2b852c38540c4a38319d43c62db1f286a371b2",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        },
+        {
+          "authority_fingerprint": "73bc6361dfcfedda0535188765aefb55608b49069b6169d7f458023655b924ff",
+          "authority_id": "paa_character_e18c1591aecdf288c6ef9fc5",
+          "binding_fingerprint": "0aa95d54fef2c395aa91188237fc5c9c45d1ac3311b837077f1dbde8f59db2cb",
+          "entity_id": "LU_SHU",
+          "pointer_fingerprint": "647d149f61fb8906799682cfaf3c36e708d3fd82f2ef76ea6b7be8a60027581b",
+          "status": "PASS",
+          "version_fingerprint": "a05867aa07c6dbd7e939d8c4ad4bfdb83e7203eb9b94e480dc77a075d2c78c56",
+          "version_id": "pav_b8f31e5a2c5bfabcf481be6d"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC001_007",
+      "props": [],
+      "scene": {
+        "authority_fingerprint": "c6a71c6e135a65c6e37ea31091fe2dfa4a3c63d8bc103416baded62798d323bc",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+        "binding_fingerprint": "0303025bca4a96b84355e6631dfadd875120d632490524fed6b418a6d4ba8170",
+        "entity_id": "E01_SC001",
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "status": "PASS",
+        "version_fingerprint": "4504c333935363f9199f4d2e5ed0f79a73c3a23bbea036e9695f1954d0f9d1db",
+        "version_id": "pav_82614896978d97576aadc04f"
+      },
+      "shot_id": 7,
+      "storyboard_shot_id": 7
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "103cb6d69fb13955f5e95039d37917c57b8b3d7c03bd59f9279e91ab7e5eaf1c",
+          "authority_id": "paa_character_37435b49c68898606711cbcc",
+          "binding_fingerprint": "c64b277d5a299c256b427620c2732ad9183be752910f815d731946d42050733d",
+          "entity_id": "GU_CHEN",
+          "pointer_fingerprint": "f32e707cdd47abee753a64bc7c83180361a83eb12f7943c6c929e09fa91a2dbb",
+          "status": "PASS",
+          "version_fingerprint": "2982e62442e166a10e72c01991fb808a02c50b382a51ce3854ec1a72cc3ef065",
+          "version_id": "pav_9e3aecfdf89b5a472fe93f53"
+        },
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "a981d10188bde058a52277332396c721bd752540e2cddd98adc5a995ca37f819",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC001_008",
+      "props": [],
+      "scene": {
+        "authority_fingerprint": "c6a71c6e135a65c6e37ea31091fe2dfa4a3c63d8bc103416baded62798d323bc",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+        "binding_fingerprint": "cdc60b54e103e58325e8102cc88d4ee56307b79ec41bd09c1599b96bf3f15cd7",
+        "entity_id": "E01_SC001",
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "status": "PASS",
+        "version_fingerprint": "4504c333935363f9199f4d2e5ed0f79a73c3a23bbea036e9695f1954d0f9d1db",
+        "version_id": "pav_82614896978d97576aadc04f"
+      },
+      "shot_id": 8,
+      "storyboard_shot_id": 8
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "73bc6361dfcfedda0535188765aefb55608b49069b6169d7f458023655b924ff",
+          "authority_id": "paa_character_e18c1591aecdf288c6ef9fc5",
+          "binding_fingerprint": "c79097c31597e37e36a8de6f4b3170e14ace1aae54b3803ec22e9b7776769a3a",
+          "entity_id": "LU_SHU",
+          "pointer_fingerprint": "647d149f61fb8906799682cfaf3c36e708d3fd82f2ef76ea6b7be8a60027581b",
+          "status": "PASS",
+          "version_fingerprint": "a05867aa07c6dbd7e939d8c4ad4bfdb83e7203eb9b94e480dc77a075d2c78c56",
+          "version_id": "pav_b8f31e5a2c5bfabcf481be6d"
+        },
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "fca700a7d8a815aa87b2abc566d933bae6e8fa2a97e27f5084195658c79ac71c",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC002_001",
+      "props": [
+        {
+          "authority_fingerprint": "9c95e24b7cdfcb392ad9a8184a342fd463c69c99869bb83cd2be0f79c677c648",
+          "authority_id": "paa_prop_448b95db50cc241ca05842f0",
+          "binding_fingerprint": "f24ec14b927e12dd992e276ab5f100017352f9e5e7c5bbb20f6c66e81d26763e",
+          "entity_id": "APPLE",
+          "pointer_fingerprint": "4b02a5df489658567c606bc561044e597425eaa8dcd0b7405a05c0bfb99fbb12",
+          "status": "PASS",
+          "version_fingerprint": "5ecb7abdf5989caf58cdba1229ae47a56aa38ae1e6d86f2d252e60a443e60032",
+          "version_id": "pav_d7bb5b0fe5d1663d675cd283"
+        },
+        {
+          "authority_fingerprint": "2deb8042d57e807db9b56faf9ff4d0b20e0dffd6ee5593801e215763b7576140",
+          "authority_id": "paa_prop_fa781a7a4c53e709bb2421e2",
+          "binding_fingerprint": "9890f3d17868bef9c77b2822de0c62aaf25e9a7e3500becfac8cc1d5e7f58f8c",
+          "entity_id": "DOOR_LOCK",
+          "pointer_fingerprint": "6e6dae22c1db1c2f5bab42b15d52fc376db32c564df300a30f99c954c0c0bc86",
+          "status": "PASS",
+          "version_fingerprint": "bfb1829f4a8cd7b342f062d207ac9ec9316dc5f9d1cb6832f24f0d3f18768f8e",
+          "version_id": "pav_b68555898e9b16a7c3d1ea6d"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "a677987df6ac6a64336bb2137c282d13b52fc1cd733247124a0e1ef1e69f13fd",
+        "authority_id": "paa_scene_6070037502b14aed5eeeabed",
+        "binding_fingerprint": "eacd0a4b1bd2d68fb9656e79a4d6a6ddaf0e3156796b59cf16f0a3579290abf8",
+        "entity_id": "E01_SC002",
+        "pointer_fingerprint": "ec172e0d973d5c8eb9061eee6c43f61f6eee69b3e77fc6b93b854fc0b63f10a3",
+        "status": "PASS",
+        "version_fingerprint": "21fa5233755f511cba962af5184260e594b9f49840a41763caed655911c3e253",
+        "version_id": "pav_5dd54748863fe739182193a6"
+      },
+      "shot_id": 9,
+      "storyboard_shot_id": 9
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "73bc6361dfcfedda0535188765aefb55608b49069b6169d7f458023655b924ff",
+          "authority_id": "paa_character_e18c1591aecdf288c6ef9fc5",
+          "binding_fingerprint": "fcea6e07db016d8d9255a4890fda299a12d35734f5b389165480b5edcc8d4f3e",
+          "entity_id": "LU_SHU",
+          "pointer_fingerprint": "647d149f61fb8906799682cfaf3c36e708d3fd82f2ef76ea6b7be8a60027581b",
+          "status": "PASS",
+          "version_fingerprint": "a05867aa07c6dbd7e939d8c4ad4bfdb83e7203eb9b94e480dc77a075d2c78c56",
+          "version_id": "pav_b8f31e5a2c5bfabcf481be6d"
+        },
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "729598434d286afd1990cfe7bc605ddf55c77e1015e560a1b88b040ac0a74012",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC002_002",
+      "props": [],
+      "scene": {
+        "authority_fingerprint": "a677987df6ac6a64336bb2137c282d13b52fc1cd733247124a0e1ef1e69f13fd",
+        "authority_id": "paa_scene_6070037502b14aed5eeeabed",
+        "binding_fingerprint": "4d4220531ccdbd8c2db050391d851cf647baca2367392c31a910ef1eb83cdd2e",
+        "entity_id": "E01_SC002",
+        "pointer_fingerprint": "ec172e0d973d5c8eb9061eee6c43f61f6eee69b3e77fc6b93b854fc0b63f10a3",
+        "status": "PASS",
+        "version_fingerprint": "21fa5233755f511cba962af5184260e594b9f49840a41763caed655911c3e253",
+        "version_id": "pav_5dd54748863fe739182193a6"
+      },
+      "shot_id": 10,
+      "storyboard_shot_id": 10
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "d5fb4992da233b77244f76c7b16fc58081dad78a4937c80c3d1ce9ff6e1102c0",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC002_003",
+      "props": [
+        {
+          "authority_fingerprint": "0f6c51c605d3464d1ae5ac5de12164f48bca08c586b17e3b14775a3990103f9a",
+          "authority_id": "paa_prop_5db065e3333e0fb67f0e85df",
+          "binding_fingerprint": "574f740ded417141a1208b1230482df56a1b717d75933caee3b2fd711fbf6804",
+          "entity_id": "HANDBAG",
+          "pointer_fingerprint": "b1c2532b6725a6067a3bd971f56d30e5b273ad09ef7a26fe8c00c149c905c4de",
+          "status": "PASS",
+          "version_fingerprint": "261caba7fbf335fc7c97fbede7d431fb9e2b443c4f8ec679622187e1797039f4",
+          "version_id": "pav_2644388eab9b859fddacc2a1"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "a677987df6ac6a64336bb2137c282d13b52fc1cd733247124a0e1ef1e69f13fd",
+        "authority_id": "paa_scene_6070037502b14aed5eeeabed",
+        "binding_fingerprint": "6fbb4f81c2c6c689947542cb6ae112ccce712f2d34d287a934e29538d11951a8",
+        "entity_id": "E01_SC002",
+        "pointer_fingerprint": "ec172e0d973d5c8eb9061eee6c43f61f6eee69b3e77fc6b93b854fc0b63f10a3",
+        "status": "PASS",
+        "version_fingerprint": "21fa5233755f511cba962af5184260e594b9f49840a41763caed655911c3e253",
+        "version_id": "pav_5dd54748863fe739182193a6"
+      },
+      "shot_id": 11,
+      "storyboard_shot_id": 11
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "73bc6361dfcfedda0535188765aefb55608b49069b6169d7f458023655b924ff",
+          "authority_id": "paa_character_e18c1591aecdf288c6ef9fc5",
+          "binding_fingerprint": "ebc59c1e4b7e63b671c05e22002cc80c13b556c44c0f711db57e9fdfa49d6418",
+          "entity_id": "LU_SHU",
+          "pointer_fingerprint": "647d149f61fb8906799682cfaf3c36e708d3fd82f2ef76ea6b7be8a60027581b",
+          "status": "PASS",
+          "version_fingerprint": "a05867aa07c6dbd7e939d8c4ad4bfdb83e7203eb9b94e480dc77a075d2c78c56",
+          "version_id": "pav_b8f31e5a2c5bfabcf481be6d"
+        },
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "87705e58ea48da22e00175065142ce4871c800edc009b896d7ccbc290c7e8b7d",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC002_004",
+      "props": [
+        {
+          "authority_fingerprint": "740c6993276944a60cc5a9f7635770e1d9e8538791d1c12079348916905b95d9",
+          "authority_id": "paa_prop_4992c01b57d93f257265fa85",
+          "binding_fingerprint": "88fb234a1cee2c4eb67176773e84fddd33ac72f39d2ef22f3e405b611ecb507b",
+          "entity_id": "POCKET_HARD_OBJECT",
+          "pointer_fingerprint": "ac154a5d6c7b939f4189780094ac5c3f41d23e231bea4a955c9e578fd50266a4",
+          "status": "PASS",
+          "version_fingerprint": "838f9ce7c4e6c0ae371da5f291b32c75c34bdc4feb4818c0ca4c8c34bff42db6",
+          "version_id": "pav_52ad9703c71808d0f30da42f"
+        },
+        {
+          "authority_fingerprint": "50485bc8b12c147ee9a321144a7e770f59e7e68303687ac0fc07e1f05c1fb790",
+          "authority_id": "paa_prop_781a415b9a99bc858e45e9b9",
+          "binding_fingerprint": "9fef94abfdaad17b5ae0c2317101c55fe81fda2f4969cad8923c47da25cfaa5b",
+          "entity_id": "TABLE_SCRATCH",
+          "pointer_fingerprint": "dfd41d9f9709a41f227e796cdc20f43c296fc5f52f9aae313409edde82f2f77d",
+          "status": "PASS",
+          "version_fingerprint": "bea79114ec7c41fd71ce8cab470808004f7d6baf82ee237178bf62310213830d",
+          "version_id": "pav_bec2092927a69686cb114beb"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "a677987df6ac6a64336bb2137c282d13b52fc1cd733247124a0e1ef1e69f13fd",
+        "authority_id": "paa_scene_6070037502b14aed5eeeabed",
+        "binding_fingerprint": "3a7446aac98366be4e0c7bb3ac9bcfd535448810f381b63bd45a3443289235ec",
+        "entity_id": "E01_SC002",
+        "pointer_fingerprint": "ec172e0d973d5c8eb9061eee6c43f61f6eee69b3e77fc6b93b854fc0b63f10a3",
+        "status": "PASS",
+        "version_fingerprint": "21fa5233755f511cba962af5184260e594b9f49840a41763caed655911c3e253",
+        "version_id": "pav_5dd54748863fe739182193a6"
+      },
+      "shot_id": 12,
+      "storyboard_shot_id": 12
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "f28b13622e613d81938c9ad5d12709a0577a2accd78f2ef0fcd8b43eb3542fff",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC002_005",
+      "props": [
+        {
+          "authority_fingerprint": "9ff59c47097f1df9c15cbc0c50626346359c809e3c390ed91bff00a115514e01",
+          "authority_id": "paa_prop_33a841b64ffb1ff975d21ae1",
+          "binding_fingerprint": "319c034be5a09d232fee99eb0def588279bbc4afa01966901cb8218e08534fae",
+          "entity_id": "RED_FIBER",
+          "pointer_fingerprint": "7d0c422fad7529f847edd5c50624de2e4268df0646657bbebc05b49cba6ea063",
+          "status": "PASS",
+          "version_fingerprint": "d8f3305d55c4ba9273d5a618e4d449ecc7850e98be48fe3fac6d6540fb363912",
+          "version_id": "pav_3a08230c1458dedbb0f3d163"
+        }
+      ],
+      "scene": {
+        "authority_fingerprint": "a677987df6ac6a64336bb2137c282d13b52fc1cd733247124a0e1ef1e69f13fd",
+        "authority_id": "paa_scene_6070037502b14aed5eeeabed",
+        "binding_fingerprint": "9c35ea11b4ddd969043dced999936f185089bc1a158942b9e1ba9bc489666813",
+        "entity_id": "E01_SC002",
+        "pointer_fingerprint": "ec172e0d973d5c8eb9061eee6c43f61f6eee69b3e77fc6b93b854fc0b63f10a3",
+        "status": "PASS",
+        "version_fingerprint": "21fa5233755f511cba962af5184260e594b9f49840a41763caed655911c3e253",
+        "version_id": "pav_5dd54748863fe739182193a6"
+      },
+      "shot_id": 13,
+      "storyboard_shot_id": 13
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "73bc6361dfcfedda0535188765aefb55608b49069b6169d7f458023655b924ff",
+          "authority_id": "paa_character_e18c1591aecdf288c6ef9fc5",
+          "binding_fingerprint": "f78b2e521a247d830e822798c7744caa117b6fecf2797bc534ba53d7ed9ec0c1",
+          "entity_id": "LU_SHU",
+          "pointer_fingerprint": "647d149f61fb8906799682cfaf3c36e708d3fd82f2ef76ea6b7be8a60027581b",
+          "status": "PASS",
+          "version_fingerprint": "a05867aa07c6dbd7e939d8c4ad4bfdb83e7203eb9b94e480dc77a075d2c78c56",
+          "version_id": "pav_b8f31e5a2c5bfabcf481be6d"
+        },
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "93c9048c316761304e05a775b26025512ca11abf497ae93d9101decbb938b801",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC002_006",
+      "props": [],
+      "scene": {
+        "authority_fingerprint": "a677987df6ac6a64336bb2137c282d13b52fc1cd733247124a0e1ef1e69f13fd",
+        "authority_id": "paa_scene_6070037502b14aed5eeeabed",
+        "binding_fingerprint": "b8944f187dae569b927e67545d69b7c0dd32c2b61f749479f33eb3a19d19fc8b",
+        "entity_id": "E01_SC002",
+        "pointer_fingerprint": "ec172e0d973d5c8eb9061eee6c43f61f6eee69b3e77fc6b93b854fc0b63f10a3",
+        "status": "PASS",
+        "version_fingerprint": "21fa5233755f511cba962af5184260e594b9f49840a41763caed655911c3e253",
+        "version_id": "pav_5dd54748863fe739182193a6"
+      },
+      "shot_id": 14,
+      "storyboard_shot_id": 14
+    },
+    {
+      "binding_status": "PASS",
+      "characters": [
+        {
+          "authority_fingerprint": "672df32564be6e1e4b4b1178288c0e29025247b90b8bf856c1bfb9c551412a59",
+          "authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+          "binding_fingerprint": "978a443c9331b4492bc9c4a3f402242f7c14b71efc71a8293ba510440bc80481",
+          "entity_id": "LIN_WAN",
+          "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+          "status": "PASS",
+          "version_fingerprint": "0b13d894ec045cdbf6d711d769c46bf094917cca56c2d1a6cb18c0b47d79f23f",
+          "version_id": "pav_6033ae432b0d07a61f4d50e7"
+        },
+        {
+          "authority_fingerprint": "73bc6361dfcfedda0535188765aefb55608b49069b6169d7f458023655b924ff",
+          "authority_id": "paa_character_e18c1591aecdf288c6ef9fc5",
+          "binding_fingerprint": "c6aabe46bcb6cc39dce4a6795e873d0d5ee75d27c8f32292ef53d6f498259d43",
+          "entity_id": "LU_SHU",
+          "pointer_fingerprint": "647d149f61fb8906799682cfaf3c36e708d3fd82f2ef76ea6b7be8a60027581b",
+          "status": "PASS",
+          "version_fingerprint": "a05867aa07c6dbd7e939d8c4ad4bfdb83e7203eb9b94e480dc77a075d2c78c56",
+          "version_id": "pav_b8f31e5a2c5bfabcf481be6d"
+        }
+      ],
+      "plan_shot_id": "SH_E01_SC002_007",
+      "props": [],
+      "scene": {
+        "authority_fingerprint": "a677987df6ac6a64336bb2137c282d13b52fc1cd733247124a0e1ef1e69f13fd",
+        "authority_id": "paa_scene_6070037502b14aed5eeeabed",
+        "binding_fingerprint": "f4e8f83029e3253160cb7597d897efd07357b9f8874e4b3bd6065502bb6a639b",
+        "entity_id": "E01_SC002",
+        "pointer_fingerprint": "ec172e0d973d5c8eb9061eee6c43f61f6eee69b3e77fc6b93b854fc0b63f10a3",
+        "status": "PASS",
+        "version_fingerprint": "21fa5233755f511cba962af5184260e594b9f49840a41763caed655911c3e253",
+        "version_id": "pav_5dd54748863fe739182193a6"
+      },
+      "shot_id": 15,
+      "storyboard_shot_id": 15
+    }
+  ],
+  "schema_version": "phase_h2_2_episode_01_asset_binding_matrix_v1",
+  "shot_count": 15,
+  "shots_passed": 15
+}

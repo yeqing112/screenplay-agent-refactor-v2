@@ -1,0 +1,82 @@
+{
+  "book_id": 990401,
+  "counts_after": {
+    "blocking_authority": 0,
+    "director_authority": 0,
+    "media_candidate": 0,
+    "official_media": 0,
+    "prompt_ir": 0,
+    "script_authority": 0,
+    "shot_plan": 0,
+    "storyboard": 15
+  },
+  "counts_before": {
+    "blocking_authority": 0,
+    "director_authority": 0,
+    "media_candidate": 0,
+    "official_media": 0,
+    "prompt_ir": 0,
+    "script_authority": 0,
+    "shot_plan": 0,
+    "storyboard": 15
+  },
+  "currentness_test": {
+    "automatic_rebinding": false,
+    "old_binding_staled_on_new_version": true,
+    "status": "PASS"
+  },
+  "episode": 1,
+  "full_real_end_to_end_production_acceptance_triggered": false,
+  "h2_2_counts": {
+    "character_authorities": 4,
+    "character_pointers": 4,
+    "character_versions": 4,
+    "prop_authorities": 9,
+    "prop_pointers": 9,
+    "prop_versions": 9,
+    "scene_authorities": 2,
+    "scene_pointers": 2,
+    "scene_versions": 2,
+    "shot_asset_bindings": 53
+  },
+  "image_calls": 0,
+  "legacy_chain_unchanged": true,
+  "official_media_unchanged": true,
+  "provider_calls": 0,
+  "resolver": {
+    "error_code": "ASSET_BINDING_INVALID",
+    "http_conflict_status": 409,
+    "status": "PASS"
+  },
+  "schema_validation": {
+    "asset_generation_calls": 0,
+    "counts": {
+      "character_asset_authorities": 4,
+      "character_asset_pointers": 4,
+      "character_asset_versions": 4,
+      "production_asset_authority_registry": 15,
+      "production_asset_version_registry": 15,
+      "prop_asset_authorities": 9,
+      "prop_asset_pointers": 9,
+      "prop_asset_versions": 9,
+      "scene_asset_authorities": 2,
+      "scene_asset_pointers": 2,
+      "scene_asset_versions": 2,
+      "shot_asset_bindings": 53
+    },
+    "errors": [],
+    "prompt_ir_mutated": false,
+    "provider_calls": 0,
+    "resolver_created": false,
+    "schema": "phase_h2_production_asset_authority_v1",
+    "status": "PASS",
+    "storyboard_mutated": false
+  },
+  "schema_version": "phase_h2_2_asset_ingestion_audit_v1",
+  "shot_count": 15,
+  "shots_passed": 15,
+  "source_matrix": "artifacts\\e2e-production-pilot\\phase_h2_episode_01_asset_matrix.json",
+  "status": "PHASE_H2_2_ASSET_BINDING_READY",
+  "unique_assets_ingested": 15,
+  "video_calls": 0
+}

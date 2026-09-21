@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from datetime import datetime
+import hashlib
+import json
 from typing import Any
 
 from models import (
@@ -39,6 +41,233 @@ _CONFIG: dict[str, dict[str, Any]] = {
 
 class ProductionAssetSchemaError(ValueError):
     """Raised when typed H2 asset rows cannot form a valid schema envelope."""
+
+
+class AssetBindingInvalid(ProductionAssetSchemaError):
+    """A shot binding cannot be resolved to one current authority/version."""
+
+    status_code = 409
+    code = "ASSET_BINDING_INVALID"
+
+    def __init__(self, message: str, *, diagnostics: list[dict[str, Any]] | None = None):
+        super().__init__(message)
+        self.message = message
+        self.diagnostics = diagnostics or []
+
+
+def _canonical(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
+
+
+def _sha256(value: Any) -> str:
+    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
+
+
+def _source_contract(source: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate an explicit asset source; never infer from display text/URLs."""
+    if not isinstance(source, Mapping):
+        raise ProductionAssetSchemaError("asset source must be an object")
+    forbidden = {"character_name", "scene_name", "prop_name", "image_url", "filename", "prompt", "meta_info", "asset_links"}
+    if forbidden.intersection(source):
+        raise ProductionAssetSchemaError("asset source cannot use display names, prompt text, filename, URL or metadata binding")
+    storage_identity = str(source.get("storage_identity") or "").strip()
+    checksum = str(source.get("checksum") or "").strip()
+    metadata = source.get("metadata")
+    if not storage_identity or not checksum or not isinstance(metadata, Mapping):
+        raise ProductionAssetSchemaError("asset source requires storage_identity, checksum and metadata")
+    return {
+        "storage_identity": storage_identity,
+        "checksum": checksum,
+        "metadata": dict(metadata),
+        "metadata_hash": _sha256(dict(metadata)),
+    }
+
+
+def _asset_type(asset_type: str) -> str:
+    kind = str(asset_type or "").strip().upper()
+    if kind not in ASSET_TYPES:
+        raise ProductionAssetSchemaError(f"asset_type must be one of {ASSET_TYPES}")
+    return kind
+
+
+def _authority_id(*, book_id: int, asset_type: str, entity_id: str) -> str:
+    kind = _asset_type(asset_type).lower()
+    return f"paa_{kind}_{_sha256({'book_id': book_id, 'entity_id': entity_id})[:24]}"
+
+
+def _authority_fingerprint(*, book_id: int, asset_type: str, entity_id: str, authority_id: str) -> str:
+    return _sha256({"schema": "production_asset_authority_v1", "book_id": book_id, "asset_type": _asset_type(asset_type), "entity_id": entity_id, "authority_id": authority_id})
+
+
+def _version_id(*, authority_id: str, revision: int, source: Mapping[str, Any]) -> str:
+    return f"pav_{_sha256({'authority_id': authority_id, 'revision': revision, 'storage_identity': source['storage_identity'], 'checksum': source['checksum'], 'metadata_hash': source['metadata_hash']})[:24]}"
+
+
+def _version_fingerprint(*, authority_id: str, version_id: str, revision: int, source: Mapping[str, Any]) -> str:
+    return _sha256({"schema": "production_asset_version_v1", "authority_id": authority_id, "version_id": version_id, "revision": revision, "storage_identity": source["storage_identity"], "checksum": source["checksum"], "metadata_hash": source["metadata_hash"]})
+
+
+def _pointer_fingerprint(*, entity_id: str, authority_id: str, version_id: str) -> str:
+    return _sha256({"schema": "production_asset_pointer_v1", "entity_id": entity_id, "authority_id": authority_id, "version_id": version_id})
+
+
+def _binding_fingerprint(*, storyboard_shot_id: int, asset_type: str, authority_fingerprint: str, version_fingerprint: str, pointer_fingerprint: str) -> str:
+    return _sha256({"schema": "shot_asset_binding_v1", "storyboard_shot_id": storyboard_shot_id, "asset_type": _asset_type(asset_type), "authority_fingerprint": authority_fingerprint, "version_fingerprint": version_fingerprint, "pointer_fingerprint": pointer_fingerprint})
+
+
+def _entity_field(asset_type: str) -> str:
+    return {"CHARACTER": "character_id", "SCENE": "scene_id", "PROP": "prop_id"}[_asset_type(asset_type)]
+
+
+def _typed_config(asset_type: str) -> dict[str, Any]:
+    return _CONFIG[_asset_type(asset_type)]
+
+
+def ingest_production_asset(
+    session,
+    *,
+    entity_type: str,
+    entity_id: str,
+    source: Mapping[str, Any],
+    book_id: int = 990401,
+):
+    """Ingest one explicit Production Asset Authority/Version/Pointer triple.
+
+    ``source`` is a declared file/storage identity plus checksum and metadata.
+    The function never creates media, never reads PromptIR/Storyboard metadata
+    to infer identity, and never accepts a display name or URL as authority.
+    Re-ingesting changed source material creates a new immutable version and
+    moves the pointer; existing shot bindings are marked stale and are never
+    silently rebound.
+    """
+    kind = _asset_type(entity_type)
+    entity_id = str(entity_id or "").strip()
+    if not entity_id:
+        raise ProductionAssetSchemaError("entity_id is required and must be canonical")
+    source = _source_contract(source)
+    config = _typed_config(kind)
+    authority_id = _authority_id(book_id=book_id, asset_type=kind, entity_id=entity_id)
+    authority_fingerprint = _authority_fingerprint(book_id=book_id, asset_type=kind, entity_id=entity_id, authority_id=authority_id)
+    authority = session.query(config["authority"]).filter_by(authority_id=authority_id).one_or_none()
+    if authority is None:
+        session.add(ProductionAssetAuthorityRegistry(authority_id=authority_id, asset_type=kind, source_table=config["authority"].__tablename__))
+        session.flush()
+        authority = config["authority"](**{config["entity"]: entity_id, "authority_id": authority_id, "fingerprint": authority_fingerprint, "status": "ACTIVE"})
+        session.add(authority)
+        session.flush()
+    elif authority.fingerprint != authority_fingerprint or authority.status != "ACTIVE":
+        raise ProductionAssetSchemaError("existing authority fingerprint/status does not match canonical identity")
+
+    current = session.query(config["version"]).filter_by(version_id=authority.current_version_id).one_or_none() if authority.current_version_id else None
+    if current is not None and current.storage_identity == source["storage_identity"] and current.checksum == source["checksum"] and current.metadata_hash == source["metadata_hash"]:
+        version_id = current.version_id
+        revision = int(current.revision)
+        version_fingerprint = _version_fingerprint(authority_id=authority_id, version_id=version_id, revision=revision, source=source)
+    else:
+        revision = (int(current.revision) + 1) if current is not None else 1
+        version_id = _version_id(authority_id=authority_id, revision=revision, source=source)
+        version_fingerprint = _version_fingerprint(authority_id=authority_id, version_id=version_id, revision=revision, source=source)
+        if current is not None:
+            current.status = "SUPERSEDED"
+            session.query(ShotAssetBinding).filter(ShotAssetBinding.authority_id == authority_id, ShotAssetBinding.version_id == current.version_id, ShotAssetBinding.status == "ACTIVE").update({"status": "STALE"}, synchronize_session=False)
+        session.add(ProductionAssetVersionRegistry(version_id=version_id, authority_id=authority_id, asset_type=kind))
+        session.flush()
+        version = config["version"](**{config["entity"]: entity_id, "version_id": version_id, "authority_id": authority_id, "storage_identity": source["storage_identity"], "checksum": source["checksum"], "metadata_hash": source["metadata_hash"], "revision": revision, "status": "CURRENT"})
+        session.add(version)
+        session.flush()
+        authority.current_version_id = version_id
+    pointer = session.query(config["pointer"]).filter_by(**{config["entity"]: entity_id}).one_or_none()
+    pointer_fingerprint = _pointer_fingerprint(entity_id=entity_id, authority_id=authority_id, version_id=version_id)
+    if pointer is None:
+        pointer = config["pointer"](**{config["entity"]: entity_id, "authority_id": authority_id, "version_id": version_id, "fingerprint": pointer_fingerprint})
+        session.add(pointer)
+    else:
+        pointer.authority_id = authority_id
+        pointer.version_id = version_id
+        pointer.fingerprint = pointer_fingerprint
+    session.flush()
+    return {
+        "asset_type": kind,
+        "entity_id": entity_id,
+        "authority_id": authority_id,
+        "version_id": version_id,
+        "revision": revision,
+        "authority_fingerprint": authority_fingerprint,
+        "version_fingerprint": version_fingerprint,
+        "pointer_fingerprint": pointer_fingerprint,
+        "storage_identity": source["storage_identity"],
+        "checksum": source["checksum"],
+        "metadata_hash": source["metadata_hash"],
+        "provider_calls": 0,
+        "image_calls": 0,
+        "video_calls": 0,
+    }
+
+
+def _find_asset(session, *, asset_type: str, authority_id: str, version_id: str):
+    kind = _asset_type(asset_type)
+    config = _typed_config(kind)
+    authority = session.query(config["authority"]).filter_by(authority_id=authority_id).one_or_none()
+    version = session.query(config["version"]).filter_by(version_id=version_id, authority_id=authority_id).one_or_none()
+    if authority is None or version is None:
+        raise AssetBindingInvalid("asset authority/version does not exist", diagnostics=[{"asset_type": kind, "authority_id": authority_id, "version_id": version_id}])
+    entity_id = str(getattr(authority, config["entity"]))
+    pointer = session.query(config["pointer"]).filter_by(**{config["entity"]: entity_id, "authority_id": authority_id}).one_or_none()
+    if pointer is None:
+        raise AssetBindingInvalid("asset pointer does not exist", diagnostics=[{"asset_type": kind, "authority_id": authority_id}])
+    source = {"storage_identity": version.storage_identity, "checksum": version.checksum, "metadata_hash": version.metadata_hash}
+    expected_authority_fp = _authority_fingerprint(book_id=990401, asset_type=kind, entity_id=entity_id, authority_id=authority_id)
+    expected_version_fp = _version_fingerprint(authority_id=authority_id, version_id=version.version_id, revision=int(version.revision), source=source)
+    expected_pointer_fp = _pointer_fingerprint(entity_id=entity_id, authority_id=authority_id, version_id=version.version_id)
+    if authority.status != "ACTIVE" or version.status != "CURRENT" or authority.current_version_id != version.version_id or pointer.version_id != version.version_id or authority.fingerprint != expected_authority_fp or pointer.fingerprint != expected_pointer_fp:
+        raise AssetBindingInvalid("asset authority/version/pointer is stale or drifted", diagnostics=[{"asset_type": kind, "authority_id": authority_id, "version_id": version_id, "current_version_id": authority.current_version_id, "pointer_version_id": pointer.version_id}])
+    return {"asset_type": kind, "entity_id": entity_id, "authority_id": authority_id, "version_id": version.version_id, "authority_fingerprint": authority.fingerprint, "version_fingerprint": expected_version_fp, "pointer_fingerprint": pointer.fingerprint}
+
+
+def bind_shot_assets(session, *, storyboard_shot_id: int, characters: list[Mapping[str, Any]], scene: Mapping[str, Any], props: list[Mapping[str, Any]]):
+    """Persist formal shot bindings using only authority/version IDs."""
+    if not isinstance(scene, Mapping) or not scene.get("authority_id") or not scene.get("version_id"):
+        raise AssetBindingInvalid("scene binding is required")
+    requested = [("CHARACTER", item) for item in characters] + [("SCENE", scene)] + [("PROP", item) for item in props]
+    resolved = []
+    for kind, item in requested:
+        resolved.append(_find_asset(session, asset_type=kind, authority_id=str(item["authority_id"]), version_id=str(item["version_id"])))
+    for asset in resolved:
+        binding_fp = _binding_fingerprint(storyboard_shot_id=storyboard_shot_id, asset_type=asset["asset_type"], authority_fingerprint=asset["authority_fingerprint"], version_fingerprint=asset["version_fingerprint"], pointer_fingerprint=asset["pointer_fingerprint"])
+        existing = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=storyboard_shot_id, asset_type=asset["asset_type"], authority_id=asset["authority_id"], version_id=asset["version_id"]).one_or_none()
+        if existing is None:
+            session.add(ShotAssetBinding(storyboard_shot_id=storyboard_shot_id, asset_type=asset["asset_type"], authority_id=asset["authority_id"], version_id=asset["version_id"], binding_fingerprint=binding_fp, status="ACTIVE"))
+        elif existing.status != "ACTIVE" or existing.binding_fingerprint != binding_fp:
+            existing.status = "ACTIVE"
+            existing.binding_fingerprint = binding_fp
+        asset["binding_fingerprint"] = binding_fp
+    session.flush()
+    return resolved
+
+
+def resolve_shot_assets(session, *, storyboard_shot_id: int) -> dict[str, Any]:
+    """Resolve and validate a shot's formal bindings; failures are HTTP 409 compatible."""
+    rows = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=storyboard_shot_id).all()
+    if not rows:
+        raise AssetBindingInvalid("shot has no formal asset bindings")
+    result = {"storyboard_shot_id": storyboard_shot_id, "characters": [], "scene": None, "props": [], "status": "PASS"}
+    for row in rows:
+        asset = _find_asset(session, asset_type=row.asset_type, authority_id=row.authority_id, version_id=row.version_id)
+        expected = _binding_fingerprint(storyboard_shot_id=storyboard_shot_id, asset_type=row.asset_type, authority_fingerprint=asset["authority_fingerprint"], version_fingerprint=asset["version_fingerprint"], pointer_fingerprint=asset["pointer_fingerprint"])
+        if row.status != "ACTIVE" or row.binding_fingerprint != expected:
+            raise AssetBindingInvalid("shot binding fingerprint or lifecycle is invalid", diagnostics=[{"binding_id": row.id, "asset_type": row.asset_type, "status": row.status}])
+        asset["binding_fingerprint"] = row.binding_fingerprint
+        if row.asset_type == "CHARACTER":
+            result["characters"].append(asset)
+        elif row.asset_type == "SCENE":
+            if result["scene"] is not None:
+                raise AssetBindingInvalid("shot has duplicate scene bindings")
+            result["scene"] = asset
+        else:
+            result["props"].append(asset)
+    if result["scene"] is None or not result["characters"]:
+        raise AssetBindingInvalid("shot requires one scene and at least one character binding")
+    return result
 
 
 class ProductionAssetAuthorityRepository:
@@ -286,6 +515,10 @@ def assert_asset_authority_schema(session) -> dict[str, Any]:
 
 __all__ = [
     "ProductionAssetSchemaError",
+    "AssetBindingInvalid",
+    "ingest_production_asset",
+    "bind_shot_assets",
+    "resolve_shot_assets",
     "ProductionAssetAuthorityRepository",
     "validate_asset_authority_schema",
     "assert_asset_authority_schema",
