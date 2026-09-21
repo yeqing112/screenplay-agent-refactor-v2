@@ -1,0 +1,189 @@
+{
+  "candidate_rows_rewritten": 0,
+  "cases": {
+    "empty_sqlite": {
+      "downgrade": "PASS",
+      "downgrade_preserved_previous_tables": true,
+      "downgrade_removed_new_tables": true,
+      "errors": [],
+      "existing_data_unchanged": true,
+      "existing_schema_unchanged": true,
+      "new_tables": {
+        "media_validation_records": {
+          "check_constraints": [
+            "ck_media_validation_status"
+          ],
+          "foreign_keys": [
+            [
+              "fk_media_validation_candidate",
+              [
+                "candidate_id"
+              ],
+              [
+                "candidate_id"
+              ]
+            ],
+            [
+              "fk_media_validation_execution",
+              [
+                "execution_id"
+              ],
+              [
+                "execution_id"
+              ]
+            ]
+          ],
+          "indexes": [
+            "ix_media_validation_candidate",
+            "ix_media_validation_candidate_fingerprint",
+            "ix_media_validation_created",
+            "ix_media_validation_execution",
+            "ix_media_validation_status"
+          ],
+          "missing_columns": [],
+          "present": true,
+          "row_count": 0
+        },
+        "official_media_authorities": {
+          "check_constraints": [
+            "ck_official_media_authority_status"
+          ],
+          "foreign_keys": [
+            [
+              "fk_official_media_authority_version",
+              [
+                "official_media_version_id"
+              ],
+              [
+                "official_media_version_id"
+              ]
+            ]
+          ],
+          "indexes": [
+            "ix_official_media_authority_lineage",
+            "ix_official_media_authority_promotion",
+            "ix_official_media_authority_status",
+            "ix_official_media_authority_version"
+          ],
+          "missing_columns": [],
+          "present": true,
+          "row_count": 0
+        },
+        "official_media_pointers": {
+          "check_constraints": [],
+          "foreign_keys": [
+            [
+              "fk_official_media_pointer_authority",
+              [
+                "authority_id"
+              ],
+              [
+                "authority_id"
+              ]
+            ],
+            [
+              "fk_official_media_pointer_version",
+              [
+                "official_media_version_id"
+              ],
+              [
+                "official_media_version_id"
+              ]
+            ]
+          ],
+          "indexes": [
+            "ix_official_media_pointer_authority",
+            "ix_official_media_pointer_fingerprint",
+            "ix_official_media_pointer_version"
+          ],
+          "missing_columns": [],
+          "present": true,
+          "row_count": 0
+        },
+        "official_media_versions": {
+          "check_constraints": [
+            "ck_official_media_version_byte_size_nonnegative",
+            "ck_official_media_version_revision_positive",
+            "ck_official_media_version_status"
+          ],
+          "foreign_keys": [
+            [
+              "fk_official_media_version_candidate",
+              [
+                "candidate_id"
+              ],
+              [
+                "candidate_id"
+              ]
+            ],
+            [
+              "fk_official_media_version_validation",
+              [
+                "validation_id"
+              ],
+              [
+                "validation_id"
+              ]
+            ]
+          ],
+          "indexes": [
+            "ix_official_media_version_candidate",
+            "ix_official_media_version_candidate_fingerprint",
+            "ix_official_media_version_role",
+            "ix_official_media_version_shot",
+            "ix_official_media_version_status",
+            "ix_official_media_version_validation"
+          ],
+          "missing_columns": [],
+          "present": true,
+          "row_count": 0
+        }
+      },
+      "new_tables_empty": true,
+      "source": "empty SQLite",
+      "status": "PASS",
+      "upgrade": "PASS",
+      "upgrade_again": "PASS"
+    },
+    "existing_a_f_database": {
+      "downgrade": "PASS",
+      "downgrade_preserved_previous_tables": true,
+      "downgrade_removed_new_tables": true,
+      "existing_data_unchanged": true,
+      "existing_schema_unchanged": true,
+      "new_tables_empty": true,
+      "source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\db\\screenplay.db",
+      "status": "PASS",
+      "upgrade": "PASS",
+      "upgrade_again": "PASS"
+    },
+    "production_pilot_database": {
+      "downgrade": "PASS",
+      "downgrade_preserved_previous_tables": true,
+      "downgrade_removed_new_tables": true,
+      "existing_data_unchanged": true,
+      "existing_schema_unchanged": true,
+      "new_tables_empty": true,
+      "source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\db\\screenplay.db",
+      "status": "PASS",
+      "upgrade": "PASS",
+      "upgrade_again": "PASS"
+    }
+  },
+  "down_revision": "y8h9i0j1k2l3",
+  "existing_tables_altered": false,
+  "generated_at": "2026-09-21T12:23:07.249464+00:00",
+  "llm_calls": 0,
+  "official_rows_created": 0,
+  "overall_status": "PASS",
+  "phase": "PHASE_G_MIGRATION_IMPLEMENTATION_AND_AUTHORITY_FOUNDATION",
+  "provider_calls": 0,
+  "revision": "z0a1b2c3d4e5",
+  "status_token": "PHASE_G_MIGRATION_FOUNDATION_READY_FOR_VALIDATION",
+  "tables_created": [
+    "media_validation_records",
+    "official_media_versions",
+    "official_media_authorities",
+    "official_media_pointers"
+  ]
+}

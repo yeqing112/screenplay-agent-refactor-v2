@@ -2,7 +2,7 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 112,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 116,
     "EXTRA_LEGACY_COLUMN": 1,
     "INDEX_DRIFT": 69,
     "MISSING_MIGRATION": 0,
@@ -11,10 +11,34 @@
   },
   "counts": {
     "blocking": 0,
-    "total": 182
+    "total": 186
   },
   "database": "disposable temporary SQLite database",
   "entries": [
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "kind": "table",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "kind": "table",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "kind": "table",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "kind": "table",
+      "table": "official_media_versions"
+    },
     {
       "blocking": false,
       "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",

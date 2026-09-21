@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "y8h9i0j1k2l3"
+HEAD = "z0a1b2c3d4e5"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -57,6 +57,10 @@ AUTHORITY_TABLES = {
     "visual_reference_authorities",
     "visual_reference_sets",
     "visual_reference_generation_requests",
+    "media_validation_records",
+    "official_media_versions",
+    "official_media_authorities",
+    "official_media_pointers",
 }
 
 REQUIRED_COLUMNS = {
@@ -68,6 +72,26 @@ REQUIRED_COLUMNS = {
     "prompt_ir_versions": {"payload_hash", "materialization_set_id"},
     "visual_asset_versions": {"asset_key", "payload_hash", "authority_status"},
     "visual_reference_authorities": {"authority_fingerprint", "checksum"},
+    "media_validation_records": {
+        "validation_id", "candidate_id", "execution_id", "candidate_fingerprint",
+        "technical_validation_payload_json", "technical_validation_fingerprint",
+        "authority_snapshot_json", "authority_snapshot_fingerprint", "validator_version", "status",
+    },
+    "official_media_versions": {
+        "official_media_version_id", "book_id", "episode", "storyboard_shot_id", "media_role",
+        "media_type", "candidate_id", "candidate_fingerprint", "storage_identity", "checksum_sha256",
+        "mime_type", "byte_size", "prompt_ir_version_id", "prompt_ir_payload_hash",
+        "generation_payload_fingerprint", "provider_request_fingerprint", "provider_response_hash",
+        "validation_id", "validation_fingerprint", "revision", "status", "payload_hash",
+    },
+    "official_media_authorities": {
+        "authority_id", "official_media_version_id", "authority_envelope_json", "payload_hash",
+        "lineage_hash", "validation_fingerprint", "promotion_fingerprint", "status",
+    },
+    "official_media_pointers": {
+        "book_id", "episode", "storyboard_shot_id", "media_role", "official_media_version_id",
+        "authority_id", "fingerprint",
+    },
 }
 
 

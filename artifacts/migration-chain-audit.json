@@ -2,13 +2,13 @@
   "ambiguous_production_head": false,
   "cycle_detected": false,
   "forbidden_migration_patterns": [],
-  "generated_at": "2026-09-21T04:42:35.808052+00:00",
+  "generated_at": "2026-09-21T12:17:51.653087+00:00",
   "heads": [
-    "y8h9i0j1k2l3"
+    "z0a1b2c3d4e5"
   ],
   "missing_predecessors": [],
   "orphan_revisions": [],
-  "revision_count": 47,
+  "revision_count": 48,
   "revisions": [
     {
       "branch_labels": null,
@@ -1188,7 +1188,9 @@
       "file": "alembic\\versions\\y8h9i0j1k2l3_add_generation_execution_records.py",
       "model_runtime_import": false,
       "revision": "y8h9i0j1k2l3",
-      "successors": [],
+      "successors": [
+        "z0a1b2c3d4e5"
+      ],
       "tables_altered": [],
       "tables_created": [
         "generation_execution_records",
@@ -1197,6 +1199,35 @@
       "tables_dropped": [
         "media_candidate_records",
         "generation_execution_records"
+      ],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": true,
+      "down_revision": "y8h9i0j1k2l3",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\z0a1b2c3d4e5_add_media_authority_foundation.py",
+      "model_runtime_import": false,
+      "revision": "z0a1b2c3d4e5",
+      "successors": [],
+      "tables_altered": [],
+      "tables_created": [
+        "media_validation_records",
+        "official_media_versions",
+        "official_media_authorities",
+        "official_media_pointers"
+      ],
+      "tables_dropped": [
+        "official_media_pointers",
+        "official_media_authorities",
+        "official_media_versions",
+        "media_validation_records"
       ],
       "use_of_app_engine": false,
       "use_of_create_all": false
