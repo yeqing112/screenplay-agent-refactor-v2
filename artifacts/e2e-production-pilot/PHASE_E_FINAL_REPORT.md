@@ -1,5 +1,53 @@
 # PHASE_E_PRODUCTION_BOUNDARY_AUTHORITY_AND_REUSE_CLOSURE
 
+## Final Task Summary (2026-09-21)
+
+This report closes the Phase A–E production-authority work completed in the
+current task. The final deliverable is the Phase E historical-lineage and CI
+execution closure on branch
+`codex/visual-authoring-provider-canary-reconcile`.
+
+### Delivered
+
+- Kept one production spine: current Storyboard authority → explicit
+  GenerationPolicy → current Visual Asset authority → PromptIR v2 → current
+  PromptIR resolver → adapter preview.
+- Separated historical integrity from currentness. Historical validation uses
+  the exact persisted StoryboardMaterializationSet, StoryboardShot,
+  VisualAssetVersion, and ReferenceAuthority recorded in the PromptIR
+  authority envelope; it never falls back to a current or latest row.
+- Added exact historical StoryboardShot binding checks and fail-closed
+  semantic tamper handling. Any mismatch returns HTTP 409 and performs zero
+  PromptIR writes, including when a legitimate upstream revision is present.
+- Preserved valid revision behavior for Visual Asset, Storyboard, and policy
+  changes while retaining immutable historical versions.
+- Kept the change provider-free: no LLM, image, video, or external provider
+  call was introduced, and no database migration was added.
+
+### Verification and CI outcome
+
+- Focused Phase E suites: **41 passed**.
+- Combined Phase D / ShotPlan / Visual Asset / Reference / Adapter / Phase E
+  regression: **137 passed**.
+- Golden regression: **5/5 passed**.
+- Full local backend: **1650 passed, 4 unchanged historical failures**.
+- `npm run config:verify`: passed.
+- `npm run test:release-gate`: passed.
+- `npm --prefix web run build`: passed.
+- GitHub Actions production regression Run **#238** (Run ID
+  `35554309017`, job ID `106194837166`) executed pytest after installing the
+  pinned `pytest==8.4.2` test dependency. It concluded with **1644 passed,
+  10 failed, 18 warnings**. The ten failure node IDs are unchanged from the
+  prior runs and are recorded below; no new Phase E failure was introduced.
+
+### Final repository state
+
+- Branch: `codex/visual-authoring-provider-canary-reconcile`
+- HEAD and remote HEAD: `80a6305f66bac02ee7eac9e0a8da3f951280eed3`
+- Working tree: clean
+- Report path: `artifacts/e2e-production-pilot/PHASE_E_FINAL_REPORT.md`
+- Review token: `PHASE_E_HISTORICAL_LINEAGE_INTEGRITY_AND_CI_EXECUTION_CLOSURE_READY_FOR_REVIEW`
+
 ## Production Boundary Closure
 
 Phase E now has one Production spine:
@@ -154,7 +202,7 @@ The first pushed commit triggered Production regression **Run #233** (`355508796
 9. `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry`
 10. `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed`
 
-The same 10-node result was recorded for Runs #235–#237, so no new CI failure was introduced by this Phase E closure. Uploaded evidence artifacts include `production-regression-evidence-35552315476` (artifact ID `10618728427`) and the Run #237 evidence artifact. These are recorded as CI regression results, not as green CI claims.
+The same 10-node result was recorded for Runs #235–#238, so no new CI failure was introduced by this Phase E closure. Uploaded evidence artifacts include `production-regression-evidence-35552315476` (artifact ID `10618728427`) and the Run #237/#238 evidence artifacts. These are recorded as CI regression results, not as green CI claims.
 
 The final local verification also passed `npm run config:verify`, `npm run test:release-gate`, and `npm --prefix web run build`.
 
