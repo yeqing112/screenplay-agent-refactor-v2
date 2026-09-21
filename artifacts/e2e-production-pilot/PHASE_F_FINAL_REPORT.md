@@ -3,7 +3,7 @@
 ## Implementation commit
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Commit: `a4805db` (`Close Phase F provider boundary and concurrent replay`)
+- Commit: `0600e3a` (`Close Phase F provider boundary and concurrent replay`)
 
 ## 本轮范围
 
