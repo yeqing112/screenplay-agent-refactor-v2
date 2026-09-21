@@ -80,7 +80,7 @@ Phase C–E 定向回归：`68 passed`；Golden：`5/5 passed`；Web：`301 pass
 
 完整后端回归本轮结果：`1682 passed, 4 failed`。4 个失败均为既有 baseline/environment 失败，分别为 `test_director_quality_v24_offline_replay`、`test_director_quality_v3_final_spine_topology_preflight_wiring`、`test_real_llm_gray_selection`、`test_targeted_missing_fact_api`；未发现 Phase F 新增失败。
 
-证据分类：Architecture Unit/State Machine proof ✅；Real Authority Integration with Fake Provider ✅；Real External Provider Canary ❌（按本轮范围未执行）。GitHub Actions run/job 查询能力未接入本地运行环境，本报告不猜测 CI 状态。
+证据分类：Architecture Unit/State Machine proof ✅；Real Authority Integration with Fake Provider ✅；Real External Provider Canary ❌（按本轮范围未执行）。已尝试查询 GitHub Actions API，但返回 HTTP 403 rate limit exceeded；未据此推断 run/job 状态。
 
 规则审计：未发现 successful replay 在 current validation 前直接返回；Provider body 仅通过正向 allowlist 读取 `generation_params`；`timeout_seconds` 只进入 transport client；测试 secret marker 在 artifacts/DB snapshots 中命中数为 `0`。
 
