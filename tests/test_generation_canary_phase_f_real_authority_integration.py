@@ -20,6 +20,11 @@ def test_real_authority_fake_provider_trace_is_real_sqlite_and_upstream_immutabl
     assert trace["external_provider_calls"] == 0
     assert trace["authority_mutations"] == 0
     assert trace["before_authorities"] == trace["after_authorities"]
+    identities = trace["before_authorities"]["identities"]
+    for key in ("script_ir", "treatment", "blocking", "shot_plan", "storyboard_shot", "prompt_ir", "prompt_ir_pointer"):
+        assert identities[key], key
+    assert trace["phase_f_records_before"] == {"generation_execution_records": 0, "media_candidate_records": 0}
+    assert trace["phase_f_records_after"] == {"generation_execution_records": 1, "media_candidate_records": 1}
     assert trace["execution"]["status"] == "SUCCEEDED"
     assert trace["candidate"]["width"] == 1
     assert trace["candidate"]["height"] == 1

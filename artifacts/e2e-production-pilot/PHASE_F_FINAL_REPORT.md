@@ -41,10 +41,12 @@ raw API key、Authorization、Bearer、nested token、未知 registry 字段不�
 
 - 数据库：真实临时 SQLite，Alembic head `y8h9i0j1k2l3`。
 - A–E：真实 ScriptIR、DirectorTreatment、SceneBlocking、ShotPlan、Storyboard materialization、PromptIR pointer/version/authority。
+- trace 保存上述 authority 的真实 id/revision/payload hash/fingerprint before/after；核心链路均为非空，且 before/after 完全一致。
 - Phase F：真实 `preview_generation_canary()` 与 `execute_generation_canary()`；只在 `_call_provider` 边界注入 deterministic 1×1 PNG fake provider。
 - fake provider calls：1；external provider calls：0。
 - candidate：真实 canonical local storage、SHA-256 checksum、`1×1`、`image/png`、`MEDIA_CANDIDATE`。
 - authority before/after：完全一致；authority mutations：0。
+- Phase F 表计数从 `0/0` 变为 `1/1`，新增对象只有 `GenerationExecutionRecord` 与 `MediaCandidateRecord`。
 - resolver monkeypatch：`false`；asset/storyboard resolver monkeypatch：`false`。
 
 旧的 `episode_01_phase_f_fake_provider_trace.json` 仅作为 synthetic unit/state-machine proof，不再作为 authority mutation proof。
@@ -61,17 +63,20 @@ preimplementation_human_approval_provenance=NOT_VERIFIED
 schema_status=IMPLEMENTED_PENDING_FORMAL_APPROVAL
 ```
 
-不再声称未被当前对话证明的 `EXPLICIT_HUMAN_APPROVAL_RECORDED`。
+不再声称未被当前对话证明的人工批准状态。
 
 ## 验证
 
-- Phase F legacy/unit：`38 passed`。
+- Phase F core regression：`24 passed`。
 - Replay/profile contract：`2 passed`。
 - Transport contract：`3 passed`。
 - Real authority trace contract：`1 passed`。
+- Phase F 合计：`30 passed`；migration chain hardening：`7 passed`。
 - 真实 pilot：SQLite + Alembic upgrade + A–E persisted lineage + fake provider，1 candidate，0 external calls。
 - Secret marker scan：测试 secret marker 在 artifacts/DB snapshots 中无命中。
 - migration 数量：未增加。
+
+完整后端回归本轮结果：`1680 passed, 4 failed`。4 个失败均为既有 baseline/environment 失败，分别为 `test_director_quality_v24_offline_replay`、`test_director_quality_v3_final_spine_topology_preflight_wiring`、`test_real_llm_gray_selection`、`test_targeted_missing_fact_api`；未发现 Phase F 新增失败。
 
 Phase C–E、Golden、full backend、Web 的历史结果按上一阶段报告保留；本轮未执行真实 Provider，因此没有 Phase-F-induced external side effect。
 

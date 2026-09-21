@@ -211,8 +211,11 @@ def _resolve_profile(req: CanaryPreviewRequest, adapter: dict[str, Any]) -> tupl
         raise _error(409, "GENERATION_PROVIDER_NOT_CONFIGURED", "The explicit image provider has no configured credential.")
     if provider != "prototype-task-adapter" and (not str(profile.get("base_url") or "").strip() or not str(profile.get("model_name") or "").strip()):
         raise _error(409, "GENERATION_PROVIDER_NOT_CONFIGURED", "The explicit image provider is missing base_url or model_name.")
+    canonical_profile = build_provider_execution_profile(profile, adapter_id=req.adapter_id, adapter_version=str(adapter.get("adapter_version") or ""))
     if provider != "prototype-task-adapter":
-        timeout_seconds = (profile.get("default_params") or {}).get("timeout_seconds") if isinstance(profile.get("default_params"), dict) else None
+        raw_params = profile.get("default_params") if isinstance(profile.get("default_params"), dict) else {}
+        raw_transport = profile.get("transport_config") if isinstance(profile.get("transport_config"), dict) else {}
+        timeout_seconds = raw_params.get("timeout_seconds", raw_transport.get("timeout_seconds"))
         try:
             timeout_seconds = float(timeout_seconds)
         except (TypeError, ValueError):
@@ -233,7 +236,6 @@ def _resolve_profile(req: CanaryPreviewRequest, adapter: dict[str, Any]) -> tupl
             },
         }
     )
-    canonical_profile = build_provider_execution_profile(profile, adapter_id=req.adapter_id, adapter_version=str(adapter.get("adapter_version") or ""))
     # Keep raw registry fields for credentialed transport adapters, while
     # exposing the canonical projection to every Phase F audit/request path.
     profile = dict(profile)
@@ -367,7 +369,9 @@ def _validate_transport_semantics(context: dict[str, Any]) -> None:
         raise _error(409, "GENERATION_TRANSPORT_SEMANTIC_UNREPRESENTABLE", "Transport prompt does not equal the deterministic GenerationPayload prompt.", provider_calls=0)
     expected_refs = request.get("reference_bindings") if isinstance(request.get("reference_bindings"), list) else []
     actual_refs = snapshot.get("reference_bindings") if isinstance(snapshot.get("reference_bindings"), list) else []
-    if expected_refs and len(expected_refs) != len(actual_refs):
+    expected_ref_ids = [str(item.get("reference_authority_fingerprint") or item.get("reference_authority_ref") or "") for item in expected_refs if isinstance(item, dict)]
+    actual_ref_ids = [str(item.get("reference_authority_fingerprint") or item.get("reference_authority_ref") or "") for item in actual_refs if isinstance(item, dict)]
+    if expected_ref_ids != actual_ref_ids:
         raise _error(409, "GENERATION_TRANSPORT_SEMANTIC_UNREPRESENTABLE", "Transport reference bindings do not equal the deterministic GenerationPayload.", provider_calls=0)
 
 
@@ -535,6 +539,21 @@ def _validate_candidate_lineage(execution: GenerationExecutionRecord, candidate:
         raise _error(409, "GENERATION_CANDIDATE_LINEAGE_INVALID", "Persisted candidate lineage does not match the execution record.", invalid_fields=invalid, provider_calls=0)
 
 
+def _validate_url_scope(session: Any, *, execution: GenerationExecutionRecord, shot_id: int) -> None:
+    """Bind the public business shot URL before any replay capability check."""
+    from models import StoryboardShot
+
+    query = session.query(StoryboardShot)
+    current = query.filter_by(book_id=execution.book_id, episode=execution.episode, id=shot_id).first()
+    if current is None:
+        current = session.query(StoryboardShot).filter_by(book_id=execution.book_id, episode=execution.episode, shot_id=shot_id).first()
+    # Unit state-machine sessions do not persist StoryboardShot rows.  The
+    # production resolver performs the definitive check below; a real row,
+    # when present, must match the durable execution binding here.
+    if current is not None and int(getattr(current, "id", 0)) != int(execution.storyboard_shot_id):
+        raise _error(409, "GENERATION_CANARY_STALE", "The execution is bound to a different URL shot.", provider_calls=0)
+
+
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/preview")
 def preview_generation_canary(book_id: int, episode: int, shot_id: int, req: CanaryPreviewRequest):
     with Session() as session:
@@ -542,6 +561,8 @@ def preview_generation_canary(book_id: int, episode: int, shot_id: int, req: Can
         existing = session.query(GenerationExecutionRecord).filter_by(provider_request_fingerprint=context["provider_request_fingerprint"]).first()
         if existing is not None:
             candidate = session.query(MediaCandidateRecord).filter_by(execution_id=existing.execution_id).first()
+            if existing.status in {"SUCCEEDED", "REUSED"}:
+                _validate_candidate_lineage(existing, candidate)
             token = _confirmation_token(execution_id=existing.execution_id, prompt_ir_version_id=existing.prompt_ir_version_id, payload_fp=existing.generation_payload_fingerprint, model_profile_id=existing.model_profile_id, provider_request_fp=existing.provider_request_fingerprint)
             return {
                 "execution": _serialize_execution(existing),
@@ -621,6 +642,7 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
         ).first()
         if row is None:
             raise _error(404, "GENERATION_CANARY_PREVIEW_NOT_FOUND", "The preview execution record does not exist.")
+        _validate_url_scope(session, execution=row, shot_id=shot_id)
         candidate = session.query(MediaCandidateRecord).filter_by(execution_id=row.execution_id).first()
         # When the execution row carries a candidate id but the foreign
         # execution binding was tampered, load by the immutable candidate id

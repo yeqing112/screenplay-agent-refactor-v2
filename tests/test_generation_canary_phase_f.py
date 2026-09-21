@@ -333,3 +333,73 @@ def test_real_provider_requires_explicit_opt_in_before_transport(monkeypatch):
     assert exc.value.detail["code"] == "GENERATION_REAL_PROVIDER_OPT_IN_REQUIRED"
     assert exc.value.detail["provider_calls"] == 0
     assert calls == []
+
+
+def _successful_replay_fixture(monkeypatch):
+    session = _Session()
+    context = _context()
+    monkeypatch.setattr(canary, "Session", lambda: session)
+    monkeypatch.setattr(canary, "_resolve_execution_inputs", lambda *args, **kwargs: context)
+    preview = canary.preview_generation_canary(1, 1, 101, canary.CanaryPreviewRequest(adapter_id="image_generic", model_profile_id="builtin-mock-image"))
+    execution = next(row for row in session.rows if isinstance(row, GenerationExecutionRecord))
+    execution.status = "SUCCEEDED"
+    execution.provider_response_hash = "response-fp"
+    execution.candidate_id = "candidate-replay"
+    candidate = MediaCandidateRecord(
+        candidate_id="candidate-replay", execution_id=execution.execution_id, status="MEDIA_CANDIDATE", media_type="IMAGE",
+        storage_identity="local://candidate-replay", storage_reference_json='{"image_url":"local://candidate-replay"}',
+        checksum_sha256="checksum", mime_type="image/png", byte_size=68, width=1, height=1,
+        prompt_ir_version_id=execution.prompt_ir_version_id, prompt_ir_payload_hash=execution.prompt_ir_payload_hash,
+        generation_payload_fingerprint=execution.generation_payload_fingerprint, model_profile_id=execution.model_profile_id,
+        model_profile_fingerprint=execution.model_profile_fingerprint, provider_request_fingerprint=execution.provider_request_fingerprint,
+        provider_response_hash=execution.provider_response_hash, provider_task_id="task",
+    )
+    session.add(candidate)
+    request = canary.CanaryExecuteRequest(execute=True, confirmation_token=preview["confirmation_token"], preview_execution_id=execution.execution_id)
+    return session, context, execution, candidate, request
+
+
+@pytest.mark.parametrize("drift", ["prompt", "asset", "reference", "profile", "request"])
+def test_successful_replay_revalidates_current_authority_before_reuse(monkeypatch, drift):
+    session, context, _execution, _candidate, request = _successful_replay_fixture(monkeypatch)
+    if drift == "prompt":
+        context["resolved"]["version"].payload_hash = "drifted-prompt-ir"
+    elif drift == "asset":
+        context["payload"]["generation_payload_fingerprint"] = "drifted-asset-payload"
+    elif drift == "reference":
+        context["reference_bindings_fingerprint"] = "drifted-reference"
+    elif drift == "profile":
+        context["profile_fingerprint"] = "drifted-profile"
+    else:
+        context["provider_request_fingerprint"] = "drifted-request"
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(canary.execute_generation_canary(1, 1, 101, request))
+    assert exc.value.detail["code"] == "GENERATION_CANARY_STALE"
+    assert exc.value.detail["provider_calls"] == 0
+    assert next(row for row in session.rows if isinstance(row, GenerationExecutionRecord)).status == "STALE"
+
+
+@pytest.mark.parametrize("field", ["generation_payload_fingerprint", "model_profile_fingerprint", "provider_response_hash", "execution_id", "status"])
+def test_successful_replay_rejects_candidate_lineage_tamper(monkeypatch, field):
+    _session, _context_value, execution, candidate, request = _successful_replay_fixture(monkeypatch)
+    if field == "execution_id":
+        candidate.execution_id = "another-execution"
+    elif field == "status":
+        candidate.status = "OFFICIAL"
+    elif field == "provider_response_hash":
+        candidate.provider_response_hash = "tampered-response"
+    else:
+        setattr(candidate, field, "tampered-lineage")
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(canary.execute_generation_canary(1, 1, 101, request))
+    assert exc.value.detail["code"] == "GENERATION_CANDIDATE_LINEAGE_INVALID"
+    assert exc.value.detail["provider_calls"] == 0
+
+
+def test_successful_replay_rejects_missing_candidate_without_provider_call(monkeypatch):
+    session, _context_value, execution, _candidate, request = _successful_replay_fixture(monkeypatch)
+    session.rows = [row for row in session.rows if not isinstance(row, MediaCandidateRecord)]
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(canary.execute_generation_canary(1, 1, 101, request))
+    assert exc.value.detail["code"] == "GENERATION_EXECUTION_CANDIDATE_MISSING"
+    assert exc.value.detail["provider_calls"] == 0
