@@ -4,7 +4,8 @@
 
 `STOPPED_AT_GAP_AUDIT`
 
-Phase F has not been signed off. The formal audit found that the repository
+Phase F has not been signed off. The formal audit, revalidated against current
+HEAD `aaccf3dcf52e4c70d84ce65f4f83813b07afe913`, found that the repository
 does not yet have a structured, durable shot-level execution record for the
 required PromptIR → GenerationPayload → Provider Request/Response → Media
 Candidate chain. The Phase F rules explicitly prohibit using generic

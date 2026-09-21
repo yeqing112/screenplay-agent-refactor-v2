@@ -14,6 +14,26 @@ provider.
 Audit baseline: `434fa124e686ed16aedaafafeb57d2cdb4aac293`  
 Branch: `codex/visual-authoring-provider-canary-reconcile`
 
+## Revalidation on current state
+
+The audit was re-run against the current remote-synchronized HEAD
+`aaccf3dcf52e4c70d84ce65f4f83813b07afe913`. A full model search found no
+`GenerationExecution`, `MediaCandidate`, or equivalent execution model. The
+SQLAlchemy column inventory confirms that the closest existing records are
+insufficient:
+
+| Existing table | Relevant persisted columns | Missing Phase F proof |
+| --- | --- | --- |
+| `task_runs` | task identity/status/progress/book/episode/generic `payload`/error/timestamps | PromptIR, GenerationPayload, policy, profile, provider fingerprints, response hash, candidate identity, uniqueness |
+| `visual_reference_generation_requests` | request fingerprint, asset key/version, request JSON, status, provider-not-called marker | shot/PromptIR lineage, model profile fingerprint, response/media provenance, candidate state |
+| `visual_reference_assets` | asset/version, URL/path, status, checksum, generic provenance/meta JSON | execution identity, exact PromptIR and GenerationPayload bindings, provider request/response hashes, immutable attempt |
+| `visual_authoring_proposals` | authoring provider request/response fingerprints and proposal status | media bytes/candidate identity and PromptIR execution lineage |
+| `storyboard_video_retry_attempts` | source task, retry root, input fingerprint/snapshot, error/provider response | first execution record and image candidate lifecycle |
+| `storyboard_transition_frames` / `storyboard_transition_continuity_reviews` | frame/video storage, checksum, dimensions/review fields | generation request lineage and provider provenance |
+
+This current-state evidence confirms that the stop condition is structural,
+not an absence of a convenient helper or an unsearched existing table.
+
 ## Existing production path
 
 1. `POST /api/prototyping/generate-image`,
