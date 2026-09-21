@@ -544,9 +544,12 @@ def _validate_url_scope(session: Any, *, execution: GenerationExecutionRecord, s
     from models import StoryboardShot
 
     query = session.query(StoryboardShot)
-    current = query.filter_by(book_id=execution.book_id, episode=execution.episode, id=shot_id).first()
+    # The public route uses the durable business ``shot_id``.  Prefer that
+    # binding; only fall back to the database row id for older/unit fixtures
+    # that do not carry the business column.
+    current = query.filter_by(book_id=execution.book_id, episode=execution.episode, shot_id=shot_id).first()
     if current is None:
-        current = session.query(StoryboardShot).filter_by(book_id=execution.book_id, episode=execution.episode, shot_id=shot_id).first()
+        current = session.query(StoryboardShot).filter_by(book_id=execution.book_id, episode=execution.episode, id=shot_id).first()
     # Unit state-machine sessions do not persist StoryboardShot rows.  The
     # production resolver performs the definitive check below; a real row,
     # when present, must match the durable execution binding here.

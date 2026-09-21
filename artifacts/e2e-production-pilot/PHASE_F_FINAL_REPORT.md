@@ -67,16 +67,22 @@ schema_status=IMPLEMENTED_PENDING_FORMAL_APPROVAL
 
 ## 验证
 
-- Phase F core regression：`24 passed`。
-- Replay/profile contract：`2 passed`。
+- Phase F core regression：`25 passed`。
+- Replay/profile contract：`3 passed`。
 - Transport contract：`3 passed`。
 - Real authority trace contract：`1 passed`。
-- Phase F 合计：`30 passed`；migration chain hardening：`7 passed`。
+- Phase F 合计：`32 passed`；migration chain hardening：`7 passed`。
 - 真实 pilot：SQLite + Alembic upgrade + A–E persisted lineage + fake provider，1 candidate，0 external calls。
 - Secret marker scan：测试 secret marker 在 artifacts/DB snapshots 中无命中。
 - migration 数量：未增加。
 
-完整后端回归本轮结果：`1680 passed, 4 failed`。4 个失败均为既有 baseline/environment 失败，分别为 `test_director_quality_v24_offline_replay`、`test_director_quality_v3_final_spine_topology_preflight_wiring`、`test_real_llm_gray_selection`、`test_targeted_missing_fact_api`；未发现 Phase F 新增失败。
+Phase C–E 定向回归：`68 passed`；Golden：`5/5 passed`；Web：`301 passed`（51 个 test files）；Web production build：`passed`。
+
+完整后端回归本轮结果：`1682 passed, 4 failed`。4 个失败均为既有 baseline/environment 失败，分别为 `test_director_quality_v24_offline_replay`、`test_director_quality_v3_final_spine_topology_preflight_wiring`、`test_real_llm_gray_selection`、`test_targeted_missing_fact_api`；未发现 Phase F 新增失败。
+
+证据分类：Architecture Unit/State Machine proof ✅；Real Authority Integration with Fake Provider ✅；Real External Provider Canary ❌（按本轮范围未执行）。GitHub Actions run/job 查询能力未接入本地运行环境，本报告不猜测 CI 状态。
+
+规则审计：未发现 successful replay 在 current validation 前直接返回；Provider body 仅通过正向 allowlist 读取 `generation_params`；`timeout_seconds` 只进入 transport client；测试 secret marker 在 artifacts/DB snapshots 中命中数为 `0`。
 
 Phase C–E、Golden、full backend、Web 的历史结果按上一阶段报告保留；本轮未执行真实 Provider，因此没有 Phase-F-induced external side effect。
 

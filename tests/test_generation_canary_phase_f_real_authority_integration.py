@@ -11,7 +11,9 @@ TRACE = ROOT / "artifacts" / "e2e-production-pilot" / "episode_01_phase_f_real_a
 def test_real_authority_fake_provider_trace_is_real_sqlite_and_upstream_immutable():
     trace = json.loads(TRACE.read_text(encoding="utf-8"))
     assert trace["database"] == "REAL_SQLITE"
+    assert trace["database_mode"] == "REAL_SQLITE"
     assert trace["alembic_head"] == "y8h9i0j1k2l3"
+    assert trace["provider_calls"] == 1
     assert trace["real_persisted_prompt_ir"] is True
     assert trace["resolver_monkeypatched"] is False
     assert trace["asset_resolver_monkeypatched"] is False

@@ -7,6 +7,7 @@ import pytest
 from fastapi import HTTPException
 
 import api.generation_canary_api as canary
+import models
 from models import GenerationExecutionRecord, MediaCandidateRecord
 
 
@@ -98,6 +99,21 @@ def test_fake_provider_returns_real_png_and_is_deterministic():
     assert canary._png_dimensions(data) == (1, 1)
     assert result["providerRequestId"] == "fake-abc123"
     assert canary._response_hash({"api_key": "secret", "status": "ok"}) == canary._response_hash({"api_key": "different", "status": "ok"})
+
+
+def test_url_scope_binds_business_shot_id_before_database_row_id(monkeypatch):
+    class StoryboardShotFixture:
+        def __init__(self):
+            self.book_id = 1
+            self.episode = 1
+            self.shot_id = 101
+            self.id = 7
+
+    monkeypatch.setattr(models, "StoryboardShot", StoryboardShotFixture)
+    session = _Session()
+    session.rows.append(StoryboardShotFixture())
+    execution = SimpleNamespace(book_id=1, episode=1, storyboard_shot_id=7)
+    canary._validate_url_scope(session, execution=execution, shot_id=101)
 
 
 def test_request_audit_snapshot_excludes_credentials_and_reference_tokens():

@@ -10,6 +10,7 @@ import api.generation_canary_api as canary
 from core.provider_execution_profile import (
     build_provider_execution_profile,
     fingerprint_provider_execution_profile,
+    provider_generation_params,
 )
 from models import GenerationExecutionRecord, MediaCandidateRecord
 
@@ -47,6 +48,30 @@ def test_provider_execution_profile_is_allowlisted_and_secret_free():
     assert fingerprint_provider_execution_profile(profile) != fingerprint_provider_execution_profile(
         build_provider_execution_profile(changed, adapter_id="image_generic", adapter_version="v1")
     )
+
+
+def test_transport_timeout_changes_execution_fingerprint_but_not_generation_projection():
+    base = {
+        "id": "image-a",
+        "capability": "image",
+        "provider": "openai-compatible",
+        "base_url": "https://example.test/v1",
+        "model_name": "image-v1",
+        "source": "env-prod",
+        "key_configured": True,
+        "default_params": {"size": "1024x1024", "timeout_seconds": 37},
+    }
+    profile_37 = build_provider_execution_profile(base, adapter_id="image_generic", adapter_version="v1")
+    profile_61 = build_provider_execution_profile(
+        {**base, "default_params": {"size": "1024x1024", "timeout_seconds": 61}},
+        adapter_id="image_generic",
+        adapter_version="v1",
+    )
+    assert provider_generation_params({"provider_execution_profile": profile_37}) == {"size": "1024x1024"}
+    assert provider_generation_params({"provider_execution_profile": profile_61}) == {"size": "1024x1024"}
+    assert profile_37["generation_params"] == profile_61["generation_params"]
+    assert profile_37["transport_config"] != profile_61["transport_config"]
+    assert fingerprint_provider_execution_profile(profile_37) != fingerprint_provider_execution_profile(profile_61)
 
 
 def test_successful_replay_validates_confirmation_before_reuse(monkeypatch):

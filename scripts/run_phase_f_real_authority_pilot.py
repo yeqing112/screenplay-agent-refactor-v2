@@ -130,6 +130,7 @@ def run() -> dict:
             storyboard_row = session.query(__import__("models", fromlist=["StoryboardShot"]).StoryboardShot).filter_by(id=execution.storyboard_shot_id).one()
             trace = {
                 "database": "REAL_SQLITE",
+                "database_mode": "REAL_SQLITE",
                 "alembic_head": "y8h9i0j1k2l3",
                 "book_id": book_id, "episode": episode, "shot_id": shot_id,
                 "shot": {"storyboard_shot_id": storyboard_row.id, "business_shot_id": storyboard_row.shot_id, "plan_shot_id": storyboard_row.plan_shot_id, "scene_id": storyboard_row.scene_id},
@@ -144,6 +145,7 @@ def run() -> dict:
                 "phase_f_records_before": phase_f_before,
                 "phase_f_records_after": phase_f_after,
                 "authority_mutations": 0,
+                "provider_calls": len(calls),
                 "fake_provider_calls": len(calls),
                 "external_provider_calls": 0,
                 "real_persisted_prompt_ir": True,

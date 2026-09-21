@@ -43,6 +43,7 @@
   "forbidden_authority_class": "PROVIDER_CREATIVE_DECISION",
   "audit_baseline": "434fa124e686ed16aedaafafeb57d2cdb4aac293",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "implementation_commit": "e234f5aec972780a17177b548c0b52c8514e328c",
   "real_provider_reason": "EXTERNAL_PROVIDER_CANARY_NOT_EXECUTED_BY_SCOPE",
   "successful_replay_provider_calls": 0,
   "implementation_commit_pending": false,
@@ -59,8 +60,12 @@
   "evidence_artifacts": [
     "artifacts/e2e-production-pilot/episode_01_phase_f_canary_preview.json",
     "artifacts/e2e-production-pilot/episode_01_phase_f_fake_provider_trace.json",
+    "artifacts/e2e-production-pilot/episode_01_phase_f_real_authority_fake_provider_trace.json",
     "artifacts/e2e-production-pilot/phase_f_provider_request_audit.json",
-    "tests/test_generation_canary_phase_f.py"
+    "tests/test_generation_canary_phase_f.py",
+    "tests/test_generation_canary_phase_f_replay_profile_contract.py",
+    "tests/test_generation_canary_phase_f_transport_contract.py",
+    "tests/test_generation_canary_phase_f_real_authority_integration.py"
   ],
   "real_provider_opt_in": "PHASE_F_PROVIDER_CANARY_REAL=1",
   "migration_revision": "y8h9i0j1k2l3",

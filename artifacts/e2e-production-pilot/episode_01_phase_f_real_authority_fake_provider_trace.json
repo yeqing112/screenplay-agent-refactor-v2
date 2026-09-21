@@ -1,5 +1,6 @@
 {
   "database": "REAL_SQLITE",
+  "database_mode": "REAL_SQLITE",
   "alembic_head": "y8h9i0j1k2l3",
   "book_id": 990401,
   "episode": 1,
@@ -2236,6 +2237,7 @@
     "media_candidate_records": 1
   },
   "authority_mutations": 0,
+  "provider_calls": 1,
   "fake_provider_calls": 1,
   "external_provider_calls": 0,
   "real_persisted_prompt_ir": true,
