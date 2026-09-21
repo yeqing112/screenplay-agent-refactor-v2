@@ -1,0 +1,21 @@
+{
+  "phase": "PHASE_G2_MEDIA_VALIDATION_AND_PROMOTION_CONTRACT",
+  "validator_version": "media_validator_v1",
+  "validation_id": "mvr-dffd6f637a1c5cdd803dfb128af82fc953726ee4",
+  "candidate_id": "candidate-phase-g2-pilot",
+  "technical_validation_status": "TECHNICALLY_VALID",
+  "idempotent_replay": true,
+  "technical_checks": [
+    "bytes_valid",
+    "byte_size_valid",
+    "checksum_valid",
+    "mime_valid",
+    "media_type_valid",
+    "dimensions_valid",
+    "storage_valid"
+  ],
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0
+}

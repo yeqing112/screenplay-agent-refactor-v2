@@ -1,0 +1,18 @@
+{
+  "phase": "PHASE_G2_MEDIA_VALIDATION_AND_PROMOTION_CONTRACT",
+  "candidate_id": "candidate-phase-g2-pilot",
+  "validation_id": "mvr-dffd6f637a1c5cdd803dfb128af82fc953726ee4",
+  "official_media_version_id": "omv-f8fca8d5bccaabd086998a9f0f53228063fa1ddc",
+  "authority_id": "oma-8bd6f2008fe80e632c66571e79ace18747775edc",
+  "pointer_id": 1,
+  "resolved_version_id": "omv-f8fca8d5bccaabd086998a9f0f53228063fa1ddc",
+  "promotion_confirmation": true,
+  "replayed_promotion_reused": true,
+  "revision": 1,
+  "status": "CURRENT",
+  "resolver": "exact pointer only; no latest fallback",
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0
+}

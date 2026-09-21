@@ -2,43 +2,19 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 116,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 147,
     "EXTRA_LEGACY_COLUMN": 1,
-    "INDEX_DRIFT": 69,
+    "INDEX_DRIFT": 78,
     "MISSING_MIGRATION": 0,
     "NULLABILITY_DRIFT": 0,
     "TYPE_DRIFT": 0
   },
   "counts": {
     "blocking": 0,
-    "total": 186
+    "total": 226
   },
   "database": "disposable temporary SQLite database",
   "entries": [
-    {
-      "blocking": false,
-      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
-      "kind": "table",
-      "table": "media_validation_records"
-    },
-    {
-      "blocking": false,
-      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
-      "kind": "table",
-      "table": "official_media_authorities"
-    },
-    {
-      "blocking": false,
-      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
-      "kind": "table",
-      "table": "official_media_pointers"
-    },
-    {
-      "blocking": false,
-      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
-      "kind": "table",
-      "table": "official_media_versions"
-    },
     {
       "blocking": false,
       "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
@@ -752,6 +728,448 @@
       "index": "ix_media_candidate_records_provider_request",
       "kind": "index",
       "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_fingerprint"
+      ],
+      "index": "ix_media_validation_records_candidate_fingerprint",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_media_validation_records_candidate_id",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_media_validation_records_created_at",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "execution_id"
+      ],
+      "index": "ix_media_validation_records_execution_id",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_media_validation_records_status",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "validation_id"
+      ],
+      "index": "ix_media_validation_records_validation_id",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_media_validation_candidate",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_fingerprint"
+      ],
+      "index": "ix_media_validation_candidate_fingerprint",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_media_validation_created",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "execution_id"
+      ],
+      "index": "ix_media_validation_execution",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_media_validation_status",
+      "kind": "index",
+      "table": "media_validation_records"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_official_media_authorities_authority_id",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "lineage_hash"
+      ],
+      "index": "ix_official_media_authorities_lineage_hash",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "official_media_version_id"
+      ],
+      "index": "ix_official_media_authorities_official_media_version_id",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "promotion_fingerprint"
+      ],
+      "index": "ix_official_media_authorities_promotion_fingerprint",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_official_media_authorities_status",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "lineage_hash"
+      ],
+      "index": "ix_official_media_authority_lineage",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "promotion_fingerprint"
+      ],
+      "index": "ix_official_media_authority_promotion",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_official_media_authority_status",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "official_media_version_id"
+      ],
+      "index": "ix_official_media_authority_version",
+      "kind": "index",
+      "table": "official_media_authorities"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_official_media_pointers_authority_id",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_official_media_pointers_book_id",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_official_media_pointers_episode",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "fingerprint"
+      ],
+      "index": "ix_official_media_pointers_fingerprint",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "official_media_version_id"
+      ],
+      "index": "ix_official_media_pointers_official_media_version_id",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_official_media_pointers_storyboard_shot_id",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_official_media_pointer_authority",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "fingerprint"
+      ],
+      "index": "ix_official_media_pointer_fingerprint",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "official_media_version_id"
+      ],
+      "index": "ix_official_media_pointer_version",
+      "kind": "index",
+      "table": "official_media_pointers"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_official_media_versions_book_id",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_fingerprint"
+      ],
+      "index": "ix_official_media_versions_candidate_fingerprint",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_official_media_versions_candidate_id",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_official_media_versions_episode",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "media_role"
+      ],
+      "index": "ix_official_media_versions_media_role",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "official_media_version_id"
+      ],
+      "index": "ix_official_media_versions_official_media_version_id",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_official_media_versions_status",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_official_media_versions_storyboard_shot_id",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "validation_id"
+      ],
+      "index": "ix_official_media_versions_validation_id",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_official_media_version_candidate",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_fingerprint"
+      ],
+      "index": "ix_official_media_version_candidate_fingerprint",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "media_role"
+      ],
+      "index": "ix_official_media_version_role",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id",
+        "episode",
+        "storyboard_shot_id"
+      ],
+      "index": "ix_official_media_version_shot",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_official_media_version_status",
+      "kind": "index",
+      "table": "official_media_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "validation_id"
+      ],
+      "index": "ix_official_media_version_validation",
+      "kind": "index",
+      "table": "official_media_versions"
     },
     {
       "blocking": false,

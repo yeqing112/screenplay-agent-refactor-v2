@@ -95,6 +95,7 @@ from api.prompt_ir_authority_api import router as prompt_ir_authority_router
 from api.visual_asset_authority_api import router as visual_asset_authority_router
 from api.visual_authoring_provider_api import router as visual_authoring_provider_router
 from api.generation_canary_api import router as generation_canary_router
+from api.media_authority_api import router as media_authority_router
 from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
@@ -131,6 +132,7 @@ app.include_router(prompt_ir_authority_router)
 app.include_router(visual_asset_authority_router)
 app.include_router(visual_authoring_provider_router)
 app.include_router(generation_canary_router)
+app.include_router(media_authority_router)
 app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft

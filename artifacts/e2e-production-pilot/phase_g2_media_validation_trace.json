@@ -1,0 +1,80 @@
+{
+  "phase": "PHASE_G2_MEDIA_VALIDATION_AND_PROMOTION_CONTRACT",
+  "candidate_id": "candidate-phase-g2-pilot",
+  "execution_id": "exec-phase-g2-pilot",
+  "before": {
+    "candidate": {
+      "candidate_id": "candidate-phase-g2-pilot",
+      "status": "MEDIA_CANDIDATE",
+      "storage_identity": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\db\\phase_g2_uploads\\media-authority-phase-g2-pilot.png",
+      "checksum_sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+      "byte_size": 68,
+      "mime_type": "image/png",
+      "width": 1,
+      "height": 1
+    },
+    "execution": {
+      "execution_id": "exec-phase-g2-pilot",
+      "status": "SUCCEEDED",
+      "provider": "phase-f-fake-image-provider",
+      "logical_provider_calls": 1,
+      "official_promotion_count": 0,
+      "prompt_ir_version_id": 11,
+      "prompt_ir_payload_hash": "prompt-hash",
+      "generation_payload_fingerprint": "payload-phase-g2-pilot"
+    },
+    "counts": {
+      "validation": 0,
+      "official_versions": 0,
+      "official_authorities": 0,
+      "official_pointers": 0
+    }
+  },
+  "after_validation_and_promotion": {
+    "candidate": {
+      "candidate_id": "candidate-phase-g2-pilot",
+      "status": "MEDIA_CANDIDATE",
+      "storage_identity": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\db\\phase_g2_uploads\\media-authority-phase-g2-pilot.png",
+      "checksum_sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+      "byte_size": 68,
+      "mime_type": "image/png",
+      "width": 1,
+      "height": 1
+    },
+    "execution": {
+      "execution_id": "exec-phase-g2-pilot",
+      "status": "SUCCEEDED",
+      "provider": "phase-f-fake-image-provider",
+      "logical_provider_calls": 1,
+      "official_promotion_count": 0,
+      "prompt_ir_version_id": 11,
+      "prompt_ir_payload_hash": "prompt-hash",
+      "generation_payload_fingerprint": "payload-phase-g2-pilot"
+    },
+    "counts": {
+      "validation": 1,
+      "official_versions": 1,
+      "official_authorities": 1,
+      "official_pointers": 1
+    }
+  },
+  "candidate_unchanged": true,
+  "execution_unchanged": true,
+  "validation_id": "mvr-dffd6f637a1c5cdd803dfb128af82fc953726ee4",
+  "technical_validation_status": "TECHNICALLY_VALID",
+  "stale_case": {
+    "prompt_ir_revision_drift": "MEDIA_PROMOTION_STALE",
+    "validation_status_after_failure": "STALE"
+  },
+  "tamper_cases": [
+    "storage checksum mismatch",
+    "validation payload fingerprint mismatch",
+    "authority lineage mismatch",
+    "pointer fingerprint mismatch"
+  ],
+  "concurrency_case": "same candidate replay from second SQLAlchemy session reused existing official chain",
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0
+}
