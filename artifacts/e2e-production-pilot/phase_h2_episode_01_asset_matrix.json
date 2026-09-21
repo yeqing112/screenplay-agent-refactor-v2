@@ -1,0 +1,787 @@
+{
+  "schema_version": "phase_h2_episode_01_asset_matrix_v1",
+  "book_id": 990401,
+  "episode": 1,
+  "status": "PHASE_H2_ASSET_AUTHORITY_SCHEMA_REQUIRED",
+  "expected_scene_shot_counts": {
+    "E01_SC001": 8,
+    "E01_SC002": 7
+  },
+  "shot_count": 15,
+  "rows": [
+    {
+      "shot_id": 1,
+      "plan_shot_id": "SH_E01_SC001_001",
+      "scene_id": "E01_SC001",
+      "characters": [
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:售票员",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC001",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 10,
+        "existing_generic_version_id": 10,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:TICKET",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 9,
+          "existing_generic_version_id": 9,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 2,
+      "plan_shot_id": "SH_E01_SC001_002",
+      "scene_id": "E01_SC001",
+      "characters": [
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC001",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 10,
+        "existing_generic_version_id": 10,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:RED_UMBRELLA",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 7,
+          "existing_generic_version_id": 7,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 3,
+      "plan_shot_id": "SH_E01_SC001_003",
+      "scene_id": "E01_SC001",
+      "characters": [
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:顾沉",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC001",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 10,
+        "existing_generic_version_id": 10,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 2,
+          "existing_generic_version_id": 2,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 4,
+      "plan_shot_id": "SH_E01_SC001_004",
+      "scene_id": "E01_SC001",
+      "characters": [
+        {
+          "identity_ref": "character:顾沉",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC001",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 10,
+        "existing_generic_version_id": 10,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 5,
+      "plan_shot_id": "SH_E01_SC001_005",
+      "scene_id": "E01_SC001",
+      "characters": [
+        {
+          "identity_ref": "character:陆叔",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC001",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 10,
+        "existing_generic_version_id": 10,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:HANDBAG",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 4,
+          "existing_generic_version_id": 4,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 6,
+      "plan_shot_id": "SH_E01_SC001_006",
+      "scene_id": "E01_SC001",
+      "characters": [
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC001",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 10,
+        "existing_generic_version_id": 10,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 2,
+          "existing_generic_version_id": 2,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        },
+        {
+          "identity_ref": "prop:RED_UMBRELLA",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 7,
+          "existing_generic_version_id": 7,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 7,
+      "plan_shot_id": "SH_E01_SC001_007",
+      "scene_id": "E01_SC001",
+      "characters": [
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:陆叔",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC001",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 10,
+        "existing_generic_version_id": 10,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 8,
+      "plan_shot_id": "SH_E01_SC001_008",
+      "scene_id": "E01_SC001",
+      "characters": [
+        {
+          "identity_ref": "character:顾沉",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC001",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 10,
+        "existing_generic_version_id": 10,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 9,
+      "plan_shot_id": "SH_E01_SC002_001",
+      "scene_id": "E01_SC002",
+      "characters": [
+        {
+          "identity_ref": "character:陆叔",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC002",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 11,
+        "existing_generic_version_id": 11,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:APPLE",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 1,
+          "existing_generic_version_id": 1,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        },
+        {
+          "identity_ref": "prop:DOOR_LOCK",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 3,
+          "existing_generic_version_id": 3,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 10,
+      "plan_shot_id": "SH_E01_SC002_002",
+      "scene_id": "E01_SC002",
+      "characters": [
+        {
+          "identity_ref": "character:陆叔",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC002",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 11,
+        "existing_generic_version_id": 11,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 11,
+      "plan_shot_id": "SH_E01_SC002_003",
+      "scene_id": "E01_SC002",
+      "characters": [
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC002",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 11,
+        "existing_generic_version_id": 11,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:HANDBAG",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 4,
+          "existing_generic_version_id": 4,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 12,
+      "plan_shot_id": "SH_E01_SC002_004",
+      "scene_id": "E01_SC002",
+      "characters": [
+        {
+          "identity_ref": "character:陆叔",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC002",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 11,
+        "existing_generic_version_id": 11,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:POCKET_HARD_OBJECT",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 5,
+          "existing_generic_version_id": 5,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        },
+        {
+          "identity_ref": "prop:TABLE_SCRATCH",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 8,
+          "existing_generic_version_id": 8,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 13,
+      "plan_shot_id": "SH_E01_SC002_005",
+      "scene_id": "E01_SC002",
+      "characters": [
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC002",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 11,
+        "existing_generic_version_id": 11,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [
+        {
+          "identity_ref": "prop:RED_FIBER",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": true,
+          "existing_generic_pointer_id": 6,
+          "existing_generic_version_id": 6,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+        }
+      ],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 14,
+      "plan_shot_id": "SH_E01_SC002_006",
+      "scene_id": "E01_SC002",
+      "characters": [
+        {
+          "identity_ref": "character:陆叔",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC002",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 11,
+        "existing_generic_version_id": 11,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    },
+    {
+      "shot_id": 15,
+      "plan_shot_id": "SH_E01_SC002_007",
+      "scene_id": "E01_SC002",
+      "characters": [
+        {
+          "identity_ref": "character:林晚",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        },
+        {
+          "identity_ref": "character:陆叔",
+          "authority_id": null,
+          "version_id": null,
+          "existing_generic_visual_asset_pointer": false,
+          "status": "SCHEMA_REQUIRED",
+          "reason": "No production CharacterAssetAuthority/Version/Pointer exists."
+        }
+      ],
+      "scene": {
+        "identity_ref": "scene:E01_SC002",
+        "authority_id": null,
+        "version_id": null,
+        "existing_generic_visual_asset_pointer": true,
+        "existing_generic_pointer_id": 11,
+        "existing_generic_version_id": 11,
+        "status": "SCHEMA_REQUIRED",
+        "reason": "Generic VisualAssetPointer/Version is not a Production Asset Authority contract."
+      },
+      "props": [],
+      "prompt_ir_dependency": {
+        "present": true,
+        "owns_asset": false,
+        "status": "REFERENCE_ONLY_UNTIL_PRODUCTION_BINDING_EXISTS"
+      },
+      "official_media": {
+        "status": "NOT_CREATED_BY_H2",
+        "reason": "H2 foundation must not create Official Media."
+      },
+      "binding_status": "SCHEMA_REQUIRED"
+    }
+  ],
+  "summary": {
+    "shots": 15,
+    "character_bindings": 26,
+    "scene_bindings": 15,
+    "prop_bindings": 12,
+    "production_authority_rows_created": 0,
+    "production_binding_rows_created": 0,
+    "official_media_rows_created": 0,
+    "provider_calls": 0,
+    "image_calls": 0,
+    "video_calls": 0
+  },
+  "evidence": [
+    "phase_h_episode_01_asset_matrix.json",
+    "episode_01_phase_f_real_authority_fake_provider_trace.json",
+    "phase_e_production_boundary_audit.json"
+  ]
+}
