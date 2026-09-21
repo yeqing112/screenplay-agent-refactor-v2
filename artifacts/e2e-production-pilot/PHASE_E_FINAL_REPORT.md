@@ -51,8 +51,8 @@ Evidence files:
 - Deterministic Golden regression: **5/5 passed**.
 - Full backend: **1642 passed, 4 historical failures**.
 
-The implementation validation run is **#229** (`35546575977`) for commit
-`be67bef`. Its deterministic production gate job (`106173462137`) failed with
+The implementation validation run is **#231** (`35547462913`) for commit
+`55a86a4`. Its deterministic production gate job (`106175858642`) failed with
 exit code 1. The unauthenticated GitHub UI exposed the generic annotation
 (`step:8:37`) plus the Node.js 20 and Ubuntu 26 runner notices; it did not
 expose the failing test node IDs. The four historical failures below remain
