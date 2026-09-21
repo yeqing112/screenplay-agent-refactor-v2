@@ -1,0 +1,39 @@
+{
+  "schema_version": "generation_execution_contract_v1",
+  "status": "STOPPED_AT_GAP_AUDIT",
+  "stop_code": "GENERATION_EXECUTION_PERSISTENCE_SCHEMA_REQUIRED",
+  "execution_source": "CURRENT_PROMPT_IR_V2",
+  "provider_request_source": "DETERMINISTIC_GENERATION_PAYLOAD",
+  "caller_prompt_override_allowed": false,
+  "caller_reference_override_allowed": false,
+  "caller_provider_config_override_allowed": false,
+  "auto_retry_allowed": false,
+  "auto_media_promotion_allowed": false,
+  "batch_generation_allowed": false,
+  "external_ci_provider_calls_allowed": false,
+  "real_provider_canary_executed": false,
+  "provider_calls": 0,
+  "migration_added": false,
+  "blocking_gaps": [
+    "No structured shot-level execution record binds PromptIR, GenerationPayload, ModelProfile, provider request/response, and Media Candidate.",
+    "TaskRun.payload and VisualReferenceAsset.generation_provenance are generic JSON fields and cannot be used as the canonical Phase F authority.",
+    "No persisted uniqueness/serialization rule prevents concurrent duplicate provider calls for one request fingerprint.",
+    "The existing creative task boundary accepts free-form prompt/reference inputs and performs automatic storyboard/reference projections.",
+    "The existing image recovery path and async transports contain retry behavior that is incompatible with the one-call Canary contract."
+  ],
+  "required_future_authority_classes": [
+    "GENERATION_EXECUTION_INTENT",
+    "PROMPT_IR_LINEAGE",
+    "GENERATION_PAYLOAD_LINEAGE",
+    "MODEL_PROFILE_LINEAGE",
+    "PROVIDER_REQUEST_PROVENANCE",
+    "PROVIDER_RESPONSE_PROVENANCE",
+    "MEDIA_CANDIDATE",
+    "MEDIA_STORAGE_IDENTITY",
+    "EXECUTION_FAILURE",
+    "UNKNOWN_INVALID"
+  ],
+  "forbidden_authority_class": "PROVIDER_CREATIVE_DECISION",
+  "audit_baseline": "434fa124e686ed16aedaafafeb57d2cdb4aac293",
+  "branch": "codex/visual-authoring-provider-canary-reconcile"
+}
