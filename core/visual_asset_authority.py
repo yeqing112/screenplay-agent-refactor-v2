@@ -378,8 +378,14 @@ def resolve_current_visual_asset_authority(session: Any, *, book_id: int, asset_
     version = session.query(VisualAssetVersion).filter_by(id=pointer.current_version_id).first()
     if version is None:
         raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_INVALID", "Current VisualAssetPointer points to a missing VisualAssetVersion.")
-    if str(version.book_id) != str(pointer.book_id) or str(version.asset_key) != str(pointer.asset_key) or (expected_asset_type and str(version.asset_type) != str(expected_asset_type)):
+    if str(version.book_id) != str(pointer.book_id) or str(version.asset_key) != str(pointer.asset_key) or str(pointer.asset_type) != str(version.asset_type) or (expected_asset_type and (str(version.asset_type) != str(expected_asset_type) or str(pointer.asset_type) != str(expected_asset_type))):
         raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_TAMPERED", "VisualAssetPointer and VisualAssetVersion identity does not match.")
+    try:
+        version_scope = json.loads(getattr(version, "scope_json", "{}") or "{}")
+    except (TypeError, ValueError, json.JSONDecodeError):
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_TAMPERED", "VisualAssetVersion scope lineage is not valid JSON.")
+    if not isinstance(version_scope, dict) or str(pointer.scope_key or "") != scope_key(asset_key=str(version.asset_key), scope=version_scope):
+        raise VisualAssetAuthorityError("VISUAL_ASSET_POINTER_TAMPERED", "VisualAssetPointer scope does not match the current version lineage.")
     if _text(version.stale_status).upper() != "FRESH":
         raise VisualAssetAuthorityError("VISUAL_ASSET_VERSION_STALE", "Current VisualAssetVersion is stale.")
     if _text(pointer.payload_hash) != _text(version.payload_hash):

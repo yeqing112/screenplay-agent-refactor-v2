@@ -34,9 +34,9 @@ class _Session:
         return _Query(self.pointers if model.__name__ == "VisualAssetPointer" else self.versions)
 
 
-def _chain(*, pointer_stale="FRESH", version_stale="FRESH", pointer_hash="hash", version_key="book:1:prop:P1", pointer_key="book:1:prop:P1", pointer_version_id=7):
-    pointer = SimpleNamespace(book_id=1, asset_key=pointer_key, asset_type="prop", scope_key=pointer_key + "@canonical", current_version_id=pointer_version_id, payload_hash=pointer_hash, authority_status="SPEC_APPROVED", stale_status=pointer_stale)
-    version = SimpleNamespace(id=7, book_id=1, asset_key=version_key, asset_type="prop", payload_hash="hash", authority_status="SPEC_APPROVED", stale_status=version_stale)
+def _chain(*, pointer_stale="FRESH", version_stale="FRESH", pointer_hash="hash", version_key="book:1:prop:P1", pointer_key="book:1:prop:P1", pointer_asset_type="prop", pointer_scope_key=None, pointer_version_id=7):
+    pointer = SimpleNamespace(book_id=1, asset_key=pointer_key, asset_type=pointer_asset_type, scope_key=pointer_scope_key or pointer_key + "@canonical", current_version_id=pointer_version_id, payload_hash=pointer_hash, authority_status="SPEC_APPROVED", stale_status=pointer_stale)
+    version = SimpleNamespace(id=7, book_id=1, asset_key=version_key, asset_type="prop", scope_json="{}", payload_hash="hash", authority_status="SPEC_APPROVED", stale_status=version_stale)
     return _Session([pointer], [version])
 
 
@@ -74,6 +74,8 @@ def test_visual_asset_pointer_current_chain_passes():
         ("hash", "VISUAL_ASSET_POINTER_TAMPERED"),
         ("missing", "VISUAL_ASSET_POINTER_INVALID"),
         ("wrong", "VISUAL_ASSET_POINTER_TAMPERED"),
+        ("wrong_type", "VISUAL_ASSET_POINTER_TAMPERED"),
+        ("wrong_scope", "VISUAL_ASSET_POINTER_TAMPERED"),
     ],
 )
 def test_visual_asset_pointer_integrity_fail_closed(case, expected):
@@ -83,6 +85,10 @@ def test_visual_asset_pointer_integrity_fail_closed(case, expected):
         session = _chain(pointer_hash="tampered")
     elif case == "missing":
         session = _chain(pointer_version_id=999)
+    elif case == "wrong_type":
+        session = _chain(pointer_asset_type="character")
+    elif case == "wrong_scope":
+        session = _chain(pointer_scope_key="book:1:prop:P1@wrong")
     else:
         session = _chain(version_key="book:1:character:C1")
     with pytest.raises(VisualAssetAuthorityError) as error:

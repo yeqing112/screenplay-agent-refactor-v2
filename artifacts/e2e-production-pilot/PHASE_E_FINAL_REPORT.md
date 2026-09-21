@@ -46,10 +46,10 @@ Evidence files:
 ## Verification
 
 - Phase E semantic and authority regressions: **48 passed**.
-- New Production Boundary Closure suite: **9 passed**.
-- Combined focused regression: **102 passed**.
+- New Production Boundary Closure suite: **11 passed**.
+- Combined focused regression: **104 passed**.
 - Deterministic Golden regression: **5/5 passed**.
-- Full backend: **1640 passed, 4 historical failures**.
+- Full backend: **1642 passed, 4 historical failures**.
 
 The implementation validation run is **#229** (`35546575977`) for commit
 `be67bef`. Its deterministic production gate job (`106173462137`) failed with
