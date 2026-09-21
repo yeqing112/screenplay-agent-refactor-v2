@@ -43,7 +43,7 @@
   "forbidden_authority_class": "PROVIDER_CREATIVE_DECISION",
   "audit_baseline": "434fa124e686ed16aedaafafeb57d2cdb4aac293",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "implementation_commit": "e234f5aec972780a17177b548c0b52c8514e328c",
+  "implementation_commit": "b73c3eab298d5c579cfdeb10bc53d6f5e455b8c6",
   "real_provider_reason": "EXTERNAL_PROVIDER_CANARY_NOT_EXECUTED_BY_SCOPE",
   "successful_replay_provider_calls": 0,
   "implementation_commit_pending": false,
