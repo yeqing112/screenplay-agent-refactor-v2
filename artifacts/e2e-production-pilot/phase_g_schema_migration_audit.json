@@ -194,6 +194,16 @@
   "phase": "PHASE_G_MIGRATION_IMPLEMENTATION_AND_AUTHORITY_FOUNDATION",
   "provider_calls": 0,
   "regression_scope": {
+    "baseline_comparison": {
+      "baseline": "5b1f3e09a15c55baa8678dc4c755748ad3c4f07b",
+      "new_migration_regression": "NONE_IDENTIFIED",
+      "reproduced_at_baseline": [
+        "tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons",
+        "tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean",
+        "tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry"
+      ],
+      "targeted_fact_test": "PASS in isolated current and baseline runs; full-suite failure was order-dependent and not reproduced in isolation"
+    },
     "full_backend": "1701 passed, 4 pre-existing environment/contract failures recorded without code changes",
     "golden": "PASS (5/5)",
     "migration_hardening": "PASS (7 passed)",

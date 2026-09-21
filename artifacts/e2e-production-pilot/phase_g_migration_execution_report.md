@@ -32,6 +32,7 @@
 - Image calls: `0`; video calls: `0`; Provider calls: `0`; LLM calls: `0`.
 - `FULL_REAL_END_TO_END_PRODUCTION_ACCEPTANCE_TRIGGERED=false`; the schema foundation does not implement validation, promotion, or formal asset binding proof.
 - Alembic diff scope contains only `alembic/versions/z0a1b2c3d4e5_add_media_authority_foundation.py`.
+- Baseline comparison at `5b1f3e0`: three fixed failures reproduced; targeted fact test passed in isolated baseline/current runs; no migration regression identified.
 
 ## Evidence
 
