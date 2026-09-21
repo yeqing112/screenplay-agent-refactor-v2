@@ -1,0 +1,30 @@
+{
+  "schema_version": "phase_j_provider_authorization_audit_v1",
+  "generated_at_utc": "2026-09-21T23:57:03.263876+00:00",
+  "phase": "PHASE_J_PROVIDER_AUTHORIZATION_GATE",
+  "status": "REAL_PROVIDER_EXECUTION_NOT_AUTHORIZED",
+  "provider_authorized": false,
+  "credential_present": true,
+  "credential_sources": {
+    "process_openai_api_key": false,
+    "loaded_config_credential": false,
+    "configured_non_mock_registry_profile": true,
+    "config_module_loaded": true,
+    "non_mock_profile_count": 7,
+    "configured_non_mock_profile_count": 6
+  },
+  "provider_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "execution_allowed": false,
+  "blocked_reason": "REAL_PROVIDER_EXECUTION_NOT_AUTHORIZED",
+  "missing_condition": [
+    "PHASE_J_PROVIDER_AUTHORIZED=true"
+  ],
+  "secret_audit": {
+    "api_key_recorded": false,
+    "authorization_recorded": false,
+    "bearer_recorded": false,
+    "secret_recorded": false
+  }
+}
