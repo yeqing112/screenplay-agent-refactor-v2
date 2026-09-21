@@ -2,6 +2,15 @@
   "phase": "PHASE_G2_MEDIA_VALIDATION_AND_PROMOTION_CONTRACT",
   "candidate_id": "candidate-phase-g2-pilot",
   "execution_id": "exec-phase-g2-pilot",
+  "a_f_authority_counts_before": {
+    "storyboard_materialization_pointers": 0,
+    "prompt_ir_authorities": 0,
+    "prompt_ir_pointers": 0,
+    "visual_asset_pointers": 0,
+    "visual_reference_authorities": 0,
+    "generation_execution_records": 1,
+    "media_candidate_records": 1
+  },
   "before": {
     "candidate": {
       "candidate_id": "candidate-phase-g2-pilot",
@@ -58,6 +67,15 @@
       "official_pointers": 1
     }
   },
+  "a_f_authority_counts_after": {
+    "storyboard_materialization_pointers": 0,
+    "prompt_ir_authorities": 0,
+    "prompt_ir_pointers": 0,
+    "visual_asset_pointers": 0,
+    "visual_reference_authorities": 0,
+    "generation_execution_records": 1,
+    "media_candidate_records": 1
+  },
   "candidate_unchanged": true,
   "execution_unchanged": true,
   "validation_id": "mvr-dffd6f637a1c5cdd803dfb128af82fc953726ee4",
@@ -72,7 +90,7 @@
     "authority lineage mismatch",
     "pointer fingerprint mismatch"
   ],
-  "concurrency_case": "same candidate replay from second SQLAlchemy session reused existing official chain",
+  "concurrency_case": "two concurrent SQLAlchemy sessions committed one official version and one pointer; the losing promotion reused the winner",
   "provider_calls": 0,
   "llm_calls": 0,
   "image_calls": 0,

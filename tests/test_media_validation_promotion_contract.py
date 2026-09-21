@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import json
+import threading
 import uuid
 from pathlib import Path
 
@@ -24,6 +25,9 @@ from models import (
     PromptIRPointer,
     PromptIRVersion,
     Session,
+    VisualAssetPointer,
+    VisualAssetVersion,
+    VisualReferenceAuthority,
     init_db,
 )
 
@@ -91,8 +95,32 @@ def test_storage_tamper_fails_validation_without_a_validation_row():
     with Session() as session:
         with pytest.raises(MediaAuthorityError) as exc:
             validate_media_candidate(session, candidate_id)
-        assert exc.value.code in {"MEDIA_VALIDATION_FAILED", "MEDIA_BYTES_INVALID", "MEDIA_MIME_UNDETECTABLE"}
+        assert exc.value.code == "MEDIA_VALIDATION_FAILED"
         assert session.query(MediaValidationRecord).filter_by(candidate_id=candidate_id).count() == 0
+
+
+def test_media_candidate_checksum_tamper_fails_promotion_closed():
+    candidate_id, _execution_id, _path, _shot_id = _fixture()
+    with Session() as session:
+        validation = validate_media_candidate(session, candidate_id)
+        candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
+        candidate.checksum_sha256 = "tampered-checksum"
+        session.commit()
+        with pytest.raises(MediaAuthorityError) as exc:
+            promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
+        assert exc.value.code == "MEDIA_VALIDATION_TAMPERED"
+        assert session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id).count() == 0
+
+
+def test_media_candidate_storage_tamper_after_validation_fails_promotion_closed():
+    candidate_id, _execution_id, path, _shot_id = _fixture()
+    with Session() as session:
+        validation = validate_media_candidate(session, candidate_id)
+        path.write_bytes(PNG + b"tampered")
+        with pytest.raises(MediaAuthorityError) as exc:
+            promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
+        assert exc.value.code == "MEDIA_PROMOTION_STALE"
+        assert session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id).count() == 0
 
 
 def test_validation_tamper_and_pointer_tamper_fail_closed():
@@ -101,6 +129,19 @@ def test_validation_tamper_and_pointer_tamper_fail_closed():
         validation = validate_media_candidate(session, candidate_id)
         validation_row = session.query(MediaValidationRecord).filter_by(validation_id=validation["validation_id"]).one()
         validation_row.technical_validation_fingerprint = "tampered"
+        session.commit()
+        with pytest.raises(MediaAuthorityError) as exc:
+            promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
+        assert exc.value.code == "MEDIA_VALIDATION_TAMPERED"
+        assert session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id).count() == 0
+
+
+def test_validation_authority_snapshot_tamper_fails_closed():
+    candidate_id, _execution_id, _path, _shot_id = _fixture()
+    with Session() as session:
+        validation = validate_media_candidate(session, candidate_id)
+        row = session.query(MediaValidationRecord).filter_by(validation_id=validation["validation_id"]).one()
+        row.authority_snapshot_json = "{\"tampered\":true}"
         session.commit()
         with pytest.raises(MediaAuthorityError) as exc:
             promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
@@ -144,12 +185,69 @@ def test_prompt_ir_revision_makes_validation_stale_before_promotion():
         assert session.query(MediaValidationRecord).filter_by(validation_id=validation["validation_id"]).one().status == "STALE"
 
 
+def test_asset_revision_makes_validation_stale_before_promotion():
+    candidate_id, execution_id, _path, shot_id = _fixture(shot_id=9151)
+    asset_key = "book:990401:prop:PHASE_G2_ASSET"
+    with Session() as session:
+        candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
+        execution = session.query(GenerationExecutionRecord).filter_by(execution_id=execution_id).one()
+        candidate.prompt_ir_version_id = execution.prompt_ir_version_id = 11001
+        version = PromptIRVersion(
+            id=11001, book_id=990401, episode=1, scene_id="scene-asset", storyboard_shot_id=shot_id,
+            materialization_set_id=1, plan_shot_id="plan-asset", schema_version="prompt_ir_v2",
+            payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}, "asset_authority_bindings": {"resolved": [{"identity_ref": "PROP:PHASE_G2_ASSET", "asset_authority_ref": asset_key, "asset_version_id": 910001, "asset_version_fingerprint": "asset-hash", "authority_fingerprint": "asset-hash"}]}}),
+            payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test",
+            authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]",
+        )
+        asset = VisualAssetVersion(id=910001, book_id=990401, asset_key=asset_key, asset_type="prop", canonical_id="PHASE_G2_ASSET", canonical_identity_json="{}", scope_json="{}", revision=1, payload_json="{}", payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
+        pointer = PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, prompt_ir_version_id=11001, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED")
+        asset_pointer = VisualAssetPointer(book_id=990401, asset_key=asset_key, asset_type="prop", scope_key="phase-g2", current_version_id=910001, payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
+        session.add_all([version, asset, pointer, asset_pointer]); session.commit()
+        validation = validate_media_candidate(session, candidate_id)
+        asset_pointer.current_version_id = 9999999
+        asset_pointer.payload_hash = "asset-hash-drifted"
+        session.commit()
+        with pytest.raises(MediaAuthorityError) as exc:
+            promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
+        assert exc.value.code == "MEDIA_PROMOTION_STALE"
+        assert session.query(MediaValidationRecord).filter_by(validation_id=validation["validation_id"]).one().status == "STALE"
+
+
+def test_reference_revision_makes_validation_stale_before_promotion():
+    candidate_id, execution_id, _path, shot_id = _fixture(shot_id=9161)
+    asset_key = "book:990401:prop:PHASE_G2_REFERENCE"
+    with Session() as session:
+        execution = session.query(GenerationExecutionRecord).filter_by(execution_id=execution_id).one()
+        execution.request_snapshot_json = json.dumps({"media_role": "SHOT_PRIMARY_IMAGE", "reference_bindings": [{"reference_authority_fingerprint": "phase-g2-reference-fp"}]})
+        pointer = VisualAssetPointer(book_id=990401, asset_key=asset_key, asset_type="prop", scope_key="phase-g2-ref", current_version_id=920001, payload_hash="reference-asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
+        authority = VisualReferenceAuthority(visual_reference_asset_id=1, asset_key=asset_key, asset_version_id=920001, asset_version_fingerprint="reference-asset-hash", reference_scope_json="{}", image_identity="reference", checksum="reference", storage_reference_json="{}", generation_provenance_json="{}", reference_token_mapping_json="{}", lock_revision=1, status="LOCKED", authority_fingerprint="phase-g2-reference-fp", stale_status="FRESH", stale_reasons="[]")
+        session.add_all([pointer, authority]); session.commit()
+        validation = validate_media_candidate(session, candidate_id)
+        authority.asset_version_id = 920002
+        authority.asset_version_fingerprint = "reference-asset-hash-drifted"
+        session.commit()
+        with pytest.raises(MediaAuthorityError) as exc:
+            promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
+        assert exc.value.code == "MEDIA_PROMOTION_STALE"
+        assert session.query(MediaValidationRecord).filter_by(validation_id=validation["validation_id"]).one().status == "STALE"
+
+
 def test_authority_and_pointer_tamper_fail_closed():
     candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9201)
     with Session() as session:
         validation = validate_media_candidate(session, candidate_id)
         promoted = promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
         promoted["authority"].lineage_hash = "tampered"
+        session.commit()
+        with pytest.raises(MediaAuthorityError) as exc:
+            resolve_current_official_media(session, book_id=990401, episode=1, storyboard_shot_id=shot_id)
+        assert exc.value.code == "MEDIA_OFFICIAL_RESOLUTION_FAILED"
+
+    candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9202)
+    with Session() as session:
+        validation = validate_media_candidate(session, candidate_id)
+        promoted = promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
+        promoted["version"].checksum_sha256 = "tampered-version-checksum"
         session.commit()
         with pytest.raises(MediaAuthorityError) as exc:
             resolve_current_official_media(session, book_id=990401, episode=1, storyboard_shot_id=shot_id)
@@ -179,6 +277,37 @@ def test_second_session_replays_same_promotion_without_duplicate_rows():
         assert replay["reused"] is True
         assert replay["version"].official_media_version_id == version_id
         assert second_session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id, book_id=990401, episode=1, storyboard_shot_id=shot_id).count() == 1
+
+
+def test_same_candidate_concurrent_promotions_commit_one_official_chain():
+    candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9401)
+    with Session() as session:
+        validation = validate_media_candidate(session, candidate_id)
+        validation_id = validation["validation_id"]
+    barrier = threading.Barrier(2)
+    results = []
+    errors = []
+
+    def worker():
+        try:
+            with Session() as session:
+                barrier.wait(timeout=10)
+                results.append(promote_media_candidate(session, candidate_id, validation_id, confirmation=True))
+        except Exception as exc:  # pragma: no cover - assertion below reports unexpected races
+            errors.append(exc)
+
+    threads = [threading.Thread(target=worker) for _ in range(2)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(timeout=20)
+    assert not errors
+    assert len(results) == 2
+    with Session() as session:
+        versions = session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id, book_id=990401, episode=1, storyboard_shot_id=shot_id).all()
+        pointers = session.query(OfficialMediaPointer).filter_by(book_id=990401, episode=1, storyboard_shot_id=shot_id, media_role="SHOT_PRIMARY_IMAGE").all()
+        assert len(versions) == 1
+        assert len(pointers) == 1
 
     candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9301)
     with Session() as session:

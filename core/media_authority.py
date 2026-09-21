@@ -248,6 +248,51 @@ def _reference_snapshot(session: Any, execution: GenerationExecutionRecord) -> d
     return {"declared": bool(result), "bindings": result, "fingerprint": _fingerprint(result)}
 
 
+def _asset_authority_snapshot(session: Any, *, book_id: int, prompt_payload: dict[str, Any]) -> dict[str, Any]:
+    """Resolve the exact asset authority bindings embedded in current PromptIR."""
+    authority_bindings = prompt_payload.get("asset_authority_bindings") if isinstance(prompt_payload, dict) else {}
+    resolved = authority_bindings.get("resolved") if isinstance(authority_bindings, dict) else []
+    result = []
+    for item in resolved if isinstance(resolved, list) else []:
+        if not isinstance(item, dict):
+            continue
+        identity_ref = str(item.get("identity_ref") or "").strip()
+        asset_key = str(item.get("asset_authority_ref") or item.get("asset_key") or identity_ref).strip()
+        expected_version = item.get("asset_version_id")
+        expected_hash = str(item.get("asset_version_fingerprint") or "").strip()
+        expected_authority = str(item.get("authority_fingerprint") or "").strip()
+        scope_key = str(item.get("scope_key") or "").strip()
+        query = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key)
+        if scope_key:
+            query = query.filter_by(scope_key=scope_key)
+        pointer = query.first()
+        pointer_matches = bool(
+            pointer
+            and (expected_version is None or int(pointer.current_version_id or 0) == int(expected_version))
+            and (not expected_hash or str(pointer.payload_hash or "") == expected_hash)
+            and str(pointer.stale_status or "FRESH").upper() == "FRESH"
+            and str(pointer.authority_status or "").upper()
+            in {"SPEC_APPROVED", "PRODUCTION_READY", "LOCKED", "QUALIFIED", "PRODUCTION_AUTHORITATIVE"}
+        )
+        result.append(
+            {
+                "identity_ref": identity_ref,
+                "asset_key": asset_key,
+                "scope_key": scope_key,
+                "pointer_present": pointer is not None,
+                "current_version_id": getattr(pointer, "current_version_id", None) if pointer else None,
+                "payload_hash": str(getattr(pointer, "payload_hash", "") or "") if pointer else "",
+                "authority_status": str(getattr(pointer, "authority_status", "") or "") if pointer else "",
+                "stale_status": str(getattr(pointer, "stale_status", "") or "") if pointer else "",
+                "expected_version_id": expected_version,
+                "expected_payload_hash": expected_hash,
+                "expected_authority_fingerprint": expected_authority,
+                "pointer_matches": pointer_matches,
+            }
+        )
+    return {"declared": bool(result), "bindings": result, "fingerprint": _fingerprint(result)}
+
+
 def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord, execution: GenerationExecutionRecord) -> dict[str, Any]:
     prompt = {"declared": True, "candidate_version_id": int(candidate.prompt_ir_version_id), "candidate_payload_hash": str(candidate.prompt_ir_payload_hash)}
     pointer = session.query(PromptIRPointer).filter_by(book_id=execution.book_id, episode=execution.episode, storyboard_shot_id=execution.storyboard_shot_id).first()
@@ -259,6 +304,12 @@ def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord
         prompt_payload = _json(getattr(version, "payload_json", "{}"), {}) if version else {}
         current_policy_fp = str((prompt_payload.get("generation_policy") or {}).get("fingerprint") or "") if isinstance(prompt_payload, dict) else ""
         prompt.update({"pointer_present": True, "current_version_id": getattr(version, "id", None), "current_payload_hash": current_hash, "pointer_payload_hash": str(pointer.payload_hash or ""), "current_generation_policy_fingerprint": current_policy_fp, "matches": bool(version and pointer.payload_hash == version.payload_hash and int(candidate.prompt_ir_version_id) == int(version.id) and candidate.prompt_ir_payload_hash == version.payload_hash)})
+    prompt_version = session.query(PromptIRVersion).filter_by(id=int(candidate.prompt_ir_version_id)).first()
+    prompt_payload = _json(getattr(prompt_version, "payload_json", "{}"), {}) if prompt_version else {}
+    if pointer is not None:
+        current_version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).first()
+        prompt_payload = _json(getattr(current_version, "payload_json", "{}"), {}) if current_version else {}
+    asset_authority = _asset_authority_snapshot(session, book_id=execution.book_id, prompt_payload=prompt_payload)
     request = _json(execution.request_snapshot_json, {})
     generation_policy = request.get("generation_policy") if isinstance(request, dict) else {}
     raw_assets = request.get("asset_bindings", []) if isinstance(request, dict) else []
@@ -278,13 +329,14 @@ def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord
         "schema_version": "media_authority_snapshot_v1",
         "prompt_ir": prompt,
         "asset": asset,
+        "asset_authority": asset_authority,
         "reference": reference,
         "generation_policy_fingerprint": str(execution.generation_policy_fingerprint or ""),
         "generation_policy_current_fingerprint": str(prompt.get("current_generation_policy_fingerprint") or ""),
         "generation_policy_matches": not prompt.get("current_generation_policy_fingerprint") or str(prompt.get("current_generation_policy_fingerprint")) == str(execution.generation_policy_fingerprint or ""),
         "generation_policy_request": generation_policy if isinstance(generation_policy, dict) else {},
         "reference_bindings_fingerprint": str(execution.reference_bindings_fingerprint or ""),
-        "currentness_valid": bool(prompt.get("matches", True)) and bool(prompt.get("generation_policy_matches", True)) and all(item.get("pointer_matches", True) for item in asset.get("bindings", [])) and all(item.get("exists") and item.get("pointer_matches", True) and str(item.get("status") or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.get("stale_status") or "FRESH").upper() == "FRESH" for item in reference.get("bindings", [])),
+        "currentness_valid": bool(prompt.get("matches", True)) and bool(prompt.get("generation_policy_matches", True)) and all(item.get("pointer_matches", True) for item in asset.get("bindings", [])) and all(item.get("pointer_matches", True) for item in asset_authority.get("bindings", [])) and all(item.get("exists") and item.get("pointer_matches", True) and str(item.get("status") or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.get("stale_status") or "FRESH").upper() == "FRESH" for item in reference.get("bindings", [])),
     }
 
 
@@ -297,7 +349,14 @@ def validate_media_candidate(session: Any, candidate_id: str, *, validator_versi
     integrity = validate_media_candidate_integrity(session, candidate_id)
     candidate = integrity["candidate"]
     execution = integrity["execution"]
-    technical = validate_media_candidate_technical(candidate)
+    try:
+        technical = validate_media_candidate_technical(candidate)
+    except MediaAuthorityError as exc:
+        _fail(
+            "MEDIA_VALIDATION_FAILED",
+            "Candidate failed deterministic technical validation.",
+            {"cause_code": exc.code, "cause_message": exc.message, "diagnostics": exc.diagnostics},
+        )
     if not technical.get("valid"):
         _fail("MEDIA_VALIDATION_FAILED", "Candidate failed deterministic technical validation.", technical)
     snapshot = _current_authority_snapshot(session, candidate=candidate, execution=execution)
@@ -326,6 +385,20 @@ def _load_validation(session: Any, validation_id: str) -> MediaValidationRecord:
     if row is None:
         _fail("MEDIA_VALIDATION_NOT_FOUND", "Validation record does not exist.", status_code=404)
     return row
+
+
+def _validate_validation_integrity(row: MediaValidationRecord) -> None:
+    technical = _json(row.technical_validation_payload_json, {})
+    if not isinstance(technical, dict):
+        _fail("MEDIA_VALIDATION_TAMPERED", "Validation technical payload is not an object.")
+    technical_fp = technical.get("technical_validation_fingerprint")
+    basis = dict(technical)
+    basis.pop("technical_validation_fingerprint", None)
+    if technical_fp != row.technical_validation_fingerprint or _fingerprint(basis) != str(row.technical_validation_fingerprint or ""):
+        _fail("MEDIA_VALIDATION_TAMPERED", "Validation technical payload and fingerprint do not match.")
+    snapshot = _json(row.authority_snapshot_json, {})
+    if not isinstance(snapshot, dict) or _fingerprint(snapshot) != str(row.authority_snapshot_fingerprint or ""):
+        _fail("MEDIA_VALIDATION_TAMPERED", "Validation authority snapshot and fingerprint do not match.")
 
 
 def _mark_validation_stale(session: Any, row: MediaValidationRecord) -> None:
@@ -359,15 +432,13 @@ def promote_media_candidate(session: Any, candidate_id: str, validation_id: str,
     validation = _load_validation(session, validation_id)
     if validation.status not in {"TECHNICALLY_VALID", "REVIEW_REQUIRED"}:
         _fail("MEDIA_PROMOTION_STALE", "Validation is not eligible for promotion.")
+    _validate_validation_integrity(validation)
     integrity = validate_media_candidate_integrity(session, candidate_id)
     candidate = integrity["candidate"]
     execution = integrity["execution"]
     if validation.candidate_id != candidate.candidate_id or validation.execution_id != execution.execution_id or validation.candidate_fingerprint != integrity["candidate_fingerprint"]:
         _fail("MEDIA_VALIDATION_TAMPERED", "Validation is not bound to the current Candidate and execution.")
     technical = validate_media_candidate_technical(candidate)
-    stored_payload = _json(validation.technical_validation_payload_json, {})
-    if stored_payload.get("technical_validation_fingerprint") != validation.technical_validation_fingerprint:
-        _fail("MEDIA_VALIDATION_TAMPERED", "Validation payload and fingerprint do not match.")
     if not technical.get("valid") or technical.get("technical_validation_fingerprint") != validation.technical_validation_fingerprint:
         _fail("MEDIA_PROMOTION_STALE", "Candidate bytes or technical validation fingerprint changed.", technical)
     snapshot = _current_authority_snapshot(session, candidate=candidate, execution=execution)
@@ -437,14 +508,48 @@ def resolve_current_official_media(session: Any, *, book_id: int, episode: int, 
     execution = session.query(GenerationExecutionRecord).filter_by(execution_id=getattr(validation, "execution_id", "")).first() if validation else None
     if validation is None or candidate is None or execution is None or validation.status != "TECHNICALLY_VALID":
         _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "Validation, Candidate, or Execution lineage is missing or stale.")
+    try:
+        _validate_validation_integrity(validation)
+    except MediaAuthorityError:
+        _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "MediaValidationRecord integrity is tampered.")
     envelope = _json(authority.authority_envelope_json, {})
-    if not isinstance(envelope, dict) or envelope.get("official_media_version_id") != version.official_media_version_id or envelope.get("validation_fingerprint") != validation.technical_validation_fingerprint or envelope.get("promotion_fingerprint") != authority.promotion_fingerprint or authority.payload_hash != version.payload_hash:
+    if not isinstance(envelope, dict) or envelope.get("official_media_version_id") != version.official_media_version_id or envelope.get("authority_id") != authority.authority_id or envelope.get("candidate_id") != candidate.candidate_id or envelope.get("validation_id") != validation.validation_id or envelope.get("lineage_hash") != authority.lineage_hash or envelope.get("validation_fingerprint") != validation.technical_validation_fingerprint or envelope.get("promotion_fingerprint") != authority.promotion_fingerprint or authority.payload_hash != version.payload_hash:
         _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "OfficialMediaAuthority envelope or payload hash is tampered.")
     integrity = validate_media_candidate_integrity(session, candidate=candidate)
     if authority.lineage_hash != _lineage_hash(candidate, execution, validation):
         _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "OfficialMediaAuthority lineage hash is tampered.")
     if integrity["candidate_fingerprint"] != version.candidate_fingerprint:
         _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "Candidate lineage no longer matches OfficialMediaVersion.")
+    expected_version_payload_hash = _fingerprint({"version_id": version.official_media_version_id, "candidate_id": candidate.candidate_id, "storage_identity": candidate.storage_identity, "checksum_sha256": candidate.checksum_sha256, "validation_id": validation.validation_id})
+    version_fields_match = all(
+        getattr(version, field) == expected
+        for field, expected in {
+            "book_id": book_id,
+            "episode": episode,
+            "storyboard_shot_id": storyboard_shot_id,
+            "media_role": media_role,
+            "media_type": candidate.media_type,
+            "candidate_id": candidate.candidate_id,
+            "candidate_fingerprint": validation.candidate_fingerprint,
+            "storage_identity": candidate.storage_identity,
+            "checksum_sha256": candidate.checksum_sha256,
+            "mime_type": candidate.mime_type,
+            "byte_size": candidate.byte_size,
+            "width": candidate.width,
+            "height": candidate.height,
+            "duration_ms": candidate.duration_ms,
+            "prompt_ir_version_id": candidate.prompt_ir_version_id,
+            "prompt_ir_payload_hash": candidate.prompt_ir_payload_hash,
+            "generation_payload_fingerprint": candidate.generation_payload_fingerprint,
+            "provider_request_fingerprint": candidate.provider_request_fingerprint,
+            "provider_response_hash": candidate.provider_response_hash,
+            "validation_id": validation.validation_id,
+            "validation_fingerprint": validation.technical_validation_fingerprint,
+            "payload_hash": expected_version_payload_hash,
+        }.items()
+    )
+    if not version_fields_match:
+        _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "OfficialMediaVersion fields no longer match Candidate and Validation.")
     technical = validate_media_candidate_technical(candidate)
     if not technical.get("valid") or technical.get("technical_validation_fingerprint") != version.validation_fingerprint:
         _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "Canonical storage bytes no longer match the official record.")

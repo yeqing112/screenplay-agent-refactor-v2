@@ -5,6 +5,9 @@
   "candidate_id": "candidate-phase-g2-pilot",
   "technical_validation_status": "TECHNICALLY_VALID",
   "idempotent_replay": true,
+  "failed_validation_zero_write": true,
+  "promotion_failure_creates_no_official_rows": true,
+  "stale_inputs": ["PromptIR revision", "Asset Pointer revision", "Reference Authority revision"],
   "technical_checks": [
     "bytes_valid",
     "byte_size_valid",
@@ -17,5 +20,6 @@
   "provider_calls": 0,
   "llm_calls": 0,
   "image_calls": 0,
-  "video_calls": 0
+  "video_calls": 0,
+  "full_real_end_to_end_production_acceptance_triggered": false
 }

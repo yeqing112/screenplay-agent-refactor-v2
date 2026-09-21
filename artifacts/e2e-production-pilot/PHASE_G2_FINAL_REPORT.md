@@ -16,13 +16,19 @@ Phase G2 adds the deterministic media validation and explicit promotion contract
 
 ## Verification
 
-`pytest -q tests/test_media_validation_promotion_contract.py` → **8 passed**.
+`pytest -q tests/test_media_validation_promotion_contract.py` → **14 passed**.
 
-Covered cases include validation and promotion idempotency, explicit confirmation rejection, cross-session replay, revision and pointer movement, PromptIR drift to `STALE`, storage tamper, validation fingerprint tamper, authority lineage tamper, pointer fingerprint tamper, and fail-closed exact resolution.
+Covered cases include validation and promotion idempotency, explicit confirmation rejection, cross-session replay, true concurrent promotion, revision and pointer movement, PromptIR drift to `STALE`, Asset Pointer revision drift, Reference Authority revision drift, candidate checksum/storage tamper, validation payload/snapshot tamper, authority lineage tamper, pointer fingerprint tamper, Official Version tamper, and fail-closed exact resolution.
 
 `python -m scripts.verify_migration_chain --ci` → **exit 0**.
 
 Migration head remains `z0a1b2c3d4e5`; the verifier exercised the complete chain through the Phase G foundation tables.
+
+Golden regression (`python scripts/run-golden-regression.py`) → **5/5 fixtures passed**.
+
+Web regression (`npm --prefix web test -- --run`) → **51 files / 301 tests passed**. Production build (`npm --prefix web run build`) passed.
+
+Full backend regression (`pytest -q`) → **1709 passed, 10 failed**. The 10 failures are pre-existing branch artifact/configuration assertions outside G2 (historical director-quality authority fixtures, active gray registry default, and targeted fact extraction snapshot semantics); the G2 tests, Phase D/E/F tests, migration hardening, production workspace projection, and visual asset authority API all pass. No failure was introduced by the G2 changes.
 
 ## Pilot evidence
 
@@ -35,6 +41,7 @@ The local Phase F fake-provider pilot used one Candidate, one validation, and on
 - Pointer: `1`
 - Candidate status, storage identity, checksum, dimensions, and execution lineage were unchanged before and after promotion.
 - Resolver returned the exact promoted version. A replay returned `reused=true`.
+- A–F authority and execution counts were unchanged; only the four G2 rows were added (`ValidationRecord`, `OfficialMediaVersion`, `OfficialMediaAuthority`, `OfficialMediaPointer`).
 
 Machine-readable evidence:
 
@@ -47,6 +54,8 @@ Machine-readable evidence:
 Provider calls: **0** additional calls. LLM calls: **0**. Image calls: **0**. Video calls: **0**.
 
 The stored Phase F execution evidence still records its original fake-provider call; G2 performs no provider transport. No AI aesthetic, CLIP, or LLM visual scoring was introduced. Full Real E2E remains `false`. Complete asset binding and full production E2E remain outside this phase because the contract only validates and promotes an existing Phase F Candidate without changing upstream authority schemas.
+
+`FULL_REAL_END_TO_END_PRODUCTION_ACCEPTANCE_TRIGGERED=false`.
 
 ## Review status
 
