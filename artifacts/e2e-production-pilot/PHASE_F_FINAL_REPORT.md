@@ -29,7 +29,7 @@ URL / execution identity
 
 新增 `core/provider_execution_profile.py`，使用 `provider_execution_profile_v2` 的 typed 正向 allowlist：
 
-- `generation_params`：模型生成参数；标量、布尔、数值、尺寸和 `size_by_aspect_ratio` 均显式校验，`aspect_ratio` 支持 `16:9` 等比例值。
+- `generation_params`：模型生成参数；标量、布尔、数值、尺寸和 `size_by_aspect_ratio` 均显式校验，`aspect_ratio` 支持 `16:9` 等比例值；`default_params` / `transport_config` 容器本身也必须是对象。
 - `transport_config.timeout_seconds`：HTTP transport contract。
 - `credential`：只保留 `configured` 与 `source_identity`。
 - `adapter`、provider、model、endpoint identity 绑定到 profile fingerprint。
@@ -85,7 +85,7 @@ schema_status=IMPLEMENTED_PENDING_FORMAL_APPROVAL
 
 ## 验证
 
-- Phase F 定向回归（含并发 claim-lost、typed profile、旧核心、replay profile、transport）：`49 passed`。
+- Phase F 定向回归（含并发 claim-lost、typed profile、旧核心、replay profile、transport）：`51 passed`。
 - Real authority trace contract：`1 passed`。
 - Schema contract：typed allowlist、secret-free fingerprint、semantic parameter rejection 均通过。
 - migration chain hardening：`7 passed`。

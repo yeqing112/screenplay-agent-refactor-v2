@@ -40,6 +40,14 @@ def _as_dict(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+def _profile_mapping(value: Any, field: str) -> dict[str, Any]:
+    if value is None:
+        return {}
+    if not isinstance(value, dict):
+        raise _fail(field, "an object", value)
+    return value
+
+
 def _fail(field: str, expected: str, value: Any) -> ProviderExecutionProfileError:
     return ProviderExecutionProfileError(
         f"Provider execution parameter {field!r} must be {expected}; got {type(value).__name__}.",
@@ -162,8 +170,8 @@ def _credential_source_identity(profile: dict[str, Any]) -> str:
 
 
 def _normalize_timeout(profile: dict[str, Any]) -> int | float:
-    raw_params = _as_dict(profile.get("default_params"))
-    raw_transport = _as_dict(profile.get("transport_config"))
+    raw_params = _profile_mapping(profile.get("default_params"), "default_params")
+    raw_transport = _profile_mapping(profile.get("transport_config"), "transport_config")
     timeout = raw_params.get("timeout_seconds", raw_transport.get("timeout_seconds", 120))
     if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(float(timeout)):
         raise _fail("timeout_seconds", "a finite positive number", timeout)
@@ -174,7 +182,7 @@ def _normalize_timeout(profile: dict[str, Any]) -> int | float:
 
 def build_provider_execution_profile(profile: dict[str, Any], *, adapter_id: str, adapter_version: str) -> dict[str, Any]:
     """Build the canonical typed allowlisted Phase F execution projection."""
-    raw_params = _as_dict(profile.get("default_params"))
+    raw_params = _profile_mapping(profile.get("default_params"), "default_params")
     forbidden = sorted(FORBIDDEN_SEMANTIC_PROFILE_PARAMS.intersection(raw_params))
     if forbidden:
         raise ProviderExecutionProfileError(
@@ -185,7 +193,7 @@ def build_provider_execution_profile(profile: dict[str, Any], *, adapter_id: str
     unknown = sorted(set(raw_params) - GENERATION_PARAM_KEYS - CAPABILITY_PARAM_KEYS - {"timeout_seconds"})
     if unknown:
         raise ProviderExecutionProfileError(f"Unknown provider execution parameter(s): {', '.join(str(item) for item in unknown)}.", field=str(unknown[0]))
-    raw_transport = _as_dict(profile.get("transport_config"))
+    raw_transport = _profile_mapping(profile.get("transport_config"), "transport_config")
     unknown_transport = sorted(set(raw_transport) - _TRANSPORT_KEYS)
     if unknown_transport:
         raise ProviderExecutionProfileError(f"Unknown provider transport parameter(s): {', '.join(str(item) for item in unknown_transport)}.", field=str(unknown_transport[0]))

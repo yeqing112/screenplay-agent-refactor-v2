@@ -65,6 +65,15 @@ def test_typed_generation_params_fail_closed(field, value):
     assert exc.value.code == "GENERATION_PROVIDER_PARAM_INVALID"
 
 
+@pytest.mark.parametrize("field", ["default_params", "transport_config"])
+def test_profile_param_containers_fail_closed(field):
+    raw = _raw(size="1024x1024")
+    raw[field] = ["arbitrary", {"nested": "object"}]
+    with pytest.raises(ProviderExecutionProfileError) as exc:
+        build_provider_execution_profile(raw, adapter_id="image_generic", adapter_version="v2")
+    assert exc.value.code == "GENERATION_PROVIDER_PARAM_INVALID"
+
+
 @pytest.mark.parametrize("field", ["negative_prompt", "style"])
 def test_profile_semantic_params_are_rejected_before_canonicalization(field):
     with pytest.raises(ProviderExecutionProfileError) as exc:
