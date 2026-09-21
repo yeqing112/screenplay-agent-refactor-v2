@@ -95,7 +95,7 @@ schema_status=IMPLEMENTED_PENDING_FORMAL_APPROVAL
 
 Phase C–E/migration 定向回归：`77 passed`；Golden：`5/5 passed`；Web：`301 passed`（51 个 test files）；Web production build：`passed`。
 
-完整后端回归本轮结果：`1699 passed, 4 failed`。4 个失败均为既有 baseline/environment 失败，分别为 `test_director_quality_v24_offline_replay`、`test_director_quality_v3_final_spine_topology_preflight_wiring`、`test_real_llm_gray_selection`、`test_targeted_missing_fact_api`；未发现 Phase F 新增失败。
+完整后端回归本轮结果：`1701 passed, 4 failed`。4 个失败均为既有 baseline/environment 失败，分别为 `test_director_quality_v24_offline_replay`、`test_director_quality_v3_final_spine_topology_preflight_wiring`、`test_real_llm_gray_selection`、`test_targeted_missing_fact_api`；未发现 Phase F 新增失败。
 
 证据分类：Architecture Unit/State Machine proof ✅；Real Authority Integration with Fake Provider ✅；Real External Provider Canary ❌（按本轮范围未执行）。已尝试查询 GitHub Actions API，但返回 HTTP 403 rate limit exceeded；未据此推断 run/job 状态。
 
