@@ -224,6 +224,22 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
         # changed; that is a legal explicit revision, not a tamper.
         snapshot_by_shot = {int(row.get("storyboard_shot_id")): snapshot for snapshot in snapshots for row in snapshot.get("ordered_shots", [])}
         existing_by_shot = {int(item.storyboard_shot_id): item for item in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        # Prove every still-current PromptIR pointer before matching the
+        # current Storyboard shot set.  A legitimate Storyboard Set revision
+        # may materialize new StoryboardShot IDs; validating only the new IDs
+        # would allow a tampered old PromptIR to disappear from the transition
+        # loop and be washed away by an upstream revision.
+        for existing_pointer in existing_by_shot.values():
+            existing_version = session.query(PromptIRVersion).filter_by(id=existing_pointer.prompt_ir_version_id).first()
+            if existing_version is None:
+                _conflict("PROMPT_IR_CURRENT_INTEGRITY_INVALID", "PromptIR pointer references a missing version.")
+            existing_authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=existing_version.id).first()
+            if existing_authority is None:
+                _conflict("PROMPT_IR_CURRENT_INTEGRITY_INVALID", "PromptIR version is missing its authority envelope.")
+            object_integrity = validate_prompt_ir_integrity(session, book_id=book_id, episode=episode, storyboard_shot_id=int(existing_pointer.storyboard_shot_id), allow_stale=True)
+            historical_integrity = validate_prompt_ir_historical_integrity(session, version=object_integrity["version"], authority=object_integrity["authority"], payload=object_integrity["payload"])
+            if not historical_integrity.get("integrity_valid"):
+                _conflict(historical_integrity.get("code") or "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH", historical_integrity.get("message") or "Historical PromptIR integrity validation failed.", diagnostics=historical_integrity.get("diagnostics", []))
         results = []
         pending_writes = []
         for ir in compiled:

@@ -3,11 +3,12 @@
   "historical_integrity": {
     "clean_current": "PASS",
     "clean_obsolete_asset_revision": "PASS",
+    "clean_obsolete_storyboard_revision": "PASS",
     "historical_asset_missing": "FAIL_CLOSED",
     "historical_asset_tamper": "FAIL_CLOSED",
     "historical_storyboard_tamper": "FAIL_CLOSED",
     "semantic_tamper_plus_asset_revision": "FAIL_CLOSED",
-    "semantic_tamper_plus_storyboard_revision": "NOT_RUN"
+    "semantic_tamper_plus_storyboard_revision": "FAIL_CLOSED"
   },
   "historical_latest_fallback": false,
   "image_calls": 0,

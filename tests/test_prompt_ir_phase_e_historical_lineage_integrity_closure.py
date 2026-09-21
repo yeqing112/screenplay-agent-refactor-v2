@@ -21,6 +21,7 @@ def test_clean_historical_integrity_and_obsolete_asset_revision_are_valid():
     result = _audit()["historical_integrity"]
     assert result["clean_current"] == "PASS"
     assert result["clean_obsolete_asset_revision"] == "PASS"
+    assert result["clean_obsolete_storyboard_revision"] == "PASS"
 
 
 def test_semantic_tamper_plus_asset_revision_fails_closed_without_writes():
@@ -38,6 +39,15 @@ def test_semantic_tamper_plus_policy_revision_fails_closed_without_writes():
     result = _trace()["historical_integrity_validation"]["semantic_tamper_plus_policy_revision"]
     assert result["status"] == "FAIL_CLOSED"
     assert result["result"]["status_code"] == 409
+    assert result["counts_unchanged"] is True
+    assert result["pointers_unchanged"] is True
+
+
+def test_semantic_tamper_plus_storyboard_revision_fails_closed_without_writes():
+    result = _trace()["historical_integrity_validation"]["semantic_tamper_plus_storyboard_revision"]
+    assert result["status"] == "FAIL_CLOSED"
+    assert result["result"]["status_code"] == 409
+    assert result["result"]["detail"]["code"] == "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH"
     assert result["counts_unchanged"] is True
     assert result["pointers_unchanged"] is True
 
@@ -72,4 +82,3 @@ def test_ci_installs_pytest_before_production_regression():
     requirements = (ROOT / "requirements-test.txt").read_text(encoding="utf-8")
     assert "pip install -r requirements-test.txt" in workflow
     assert "pytest==8.4.2" in requirements
-

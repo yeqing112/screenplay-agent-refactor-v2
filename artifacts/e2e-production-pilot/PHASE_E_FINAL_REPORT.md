@@ -121,7 +121,9 @@ The provider-free real pilot records:
 
 - clean current PromptIR: `PASS`;
 - clean obsolete asset revision: `PASS`;
+- clean obsolete Storyboard Set A → B revision: `PASS`;
 - semantic tamper plus legitimate VisualAssetVersion A → B: `FAIL_CLOSED`, HTTP `409 PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH`, zero PromptIR version/authority/pointer writes;
+- semantic tamper plus legitimate Storyboard Set A → B: `FAIL_CLOSED`, HTTP `409 PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH`, zero PromptIR version/authority/pointer writes;
 - semantic tamper plus policy revision: `FAIL_CLOSED` with zero writes;
 - missing historical asset, asset fingerprint tamper, and Storyboard projection tamper: all `FAIL_CLOSED`;
 - historical latest fallback: `false`;
@@ -129,11 +131,15 @@ The provider-free real pilot records:
 
 Evidence: `phase_e_historical_lineage_integrity_audit.json` and `episode_01_phase_e_trace.json`.
 
+Production episode compilation now validates every still-current PromptIR pointer's historical integrity before matching the current Storyboard shot set. This prevents a new immutable StoryboardShot ID from hiding a tampered old PromptIR object.
+
 ## CI Execution Closure
 
 GitHub Actions production regression now installs the pinned test dependency manifest `requirements-test.txt` (`pytest==8.4.2`) before collection. The closure regression is covered by `tests/test_prompt_ir_phase_e_historical_lineage_integrity_closure.py` and verifies that pytest installation is explicit in the workflow.
 
-The first pushed commit triggered Production regression **Run #233** (`35550879680`), job **Deterministic production gate** (`106185271242`); the amended report commit `dbe0fd1` triggered **Run #234** (`35551041694`), job `106185724217`. Both workflows reached the `Run production regression gate` step after installing `requirements-test.txt`, proving pytest is installed and collection/execution is no longer skipped by a missing dependency. Both gates concluded with exit code 1; the public unauthenticated UI exposes only the generic failing step annotation and does not expose exact pytest node IDs. Uploaded evidence artifacts are `production-regression-evidence-35550879680` and `production-regression-evidence-35551041694`. These are recorded as CI regression results, not as green CI claims.
+The first pushed commit triggered Production regression **Run #233** (`35550879680`), job **Deterministic production gate** (`106185271242`); the amended report commit `dbe0fd1` triggered **Run #234** (`35551041694`), job `106185724217`; the previous closure commit `e9aea39` triggered **Run #235** (`35551304302`), job `106186442313`. All three workflows reached the `Run production regression gate` step after installing `requirements-test.txt`, proving pytest is installed and collection/execution is no longer skipped by a missing dependency. All three gates concluded with exit code 1; the public unauthenticated UI exposes only the generic failing step annotation and does not expose exact pytest node IDs. Uploaded evidence artifacts are `production-regression-evidence-35550879680` and `production-regression-evidence-35551041694`; Run #235 has the same public evidence limitation. These are recorded as CI regression results, not as green CI claims.
+
+The final local closure rerun of the four focused Phase E suites passed **41 tests** with one existing Pydantic deprecation warning. A push of this report commit will create the next production regression run; no result from that run is claimed here.
 
 ## Review token
 

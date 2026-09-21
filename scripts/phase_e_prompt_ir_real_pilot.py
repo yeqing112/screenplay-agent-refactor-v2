@@ -101,7 +101,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     from api.prompt_ir_authority_api import PhaseECompileRequest, _production_asset_authority
     from core.storyboard_materializer import mark_materialization_set_stale
     from core.visual_asset_authority import build_asset_key, fingerprint as asset_fingerprint, propagate_visual_asset_staleness, scope_key
-    from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, Session, StoryboardMaterializationSet, StoryboardShot, VisualAssetPointer, VisualAssetVersion, engine
+    from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, Session, StoryboardMaterializationPointer, StoryboardMaterializationSet, StoryboardShot, VisualAssetPointer, VisualAssetVersion, engine
 
     with Session() as session:
         snapshot_records = _snapshot_records(session, book_id=book_id, episode=episode)
@@ -344,6 +344,68 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         authority.envelope_fingerprint = envelope["envelope_fingerprint"]
         return pointer.id, version.id
 
+    def _create_storyboard_revision_probe(session, *, scene_id: str) -> dict[str, Any]:
+        """Create a real immutable Set/Pointer B from the current Set A.
+
+        The probe changes one deterministic projection field (lighting), keeps
+        the upstream ShotPlan/Treatment/Blocking authorities intact, computes
+        a new Set fingerprint and moves the real current pointer.  The old Set
+        and its PromptIR descendants become stale evidence, while the new Set
+        remains a valid current Storyboard authority.
+        """
+        from datetime import datetime
+        from core.storyboard_materializer import authority_envelope_fingerprint, materialization_set_fingerprint, projection_fingerprint
+        from core.shot_plan_authority import resolve_current_authoritative_shot_plan, shot_plan_payload_from_row
+        from core.scene_blocking_authority import blocking_payload_from_row, resolve_current_authoritative_scene_blocking
+        from core.director_treatment_authority import resolve_current_authoritative_treatment
+        from core.storyboard_handoff import project_shot_design_to_storyboard_handoff
+
+        current_pointer = session.query(StoryboardMaterializationPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).one()
+        old_set = session.query(StoryboardMaterializationSet).filter_by(id=current_pointer.materialization_set_id, book_id=book_id, episode=episode, scene_id=scene_id).one()
+        old_rows = session.query(StoryboardShot).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, materialization_set_id=old_set.id).order_by(StoryboardShot.shot_id).all()
+        old_envelope = _json(old_set.authority_envelope_json, {})
+        new_set = StoryboardMaterializationSet(book_id=old_set.book_id, episode=old_set.episode, scene_id=old_set.scene_id, shot_plan_id=old_set.shot_plan_id, shot_plan_revision=old_set.shot_plan_revision, shot_plan_payload_hash=old_set.shot_plan_payload_hash, shot_plan_authority_fingerprint=old_set.shot_plan_authority_fingerprint, expected_shot_count=old_set.expected_shot_count, materialized_shot_count=old_set.materialized_shot_count, ordered_plan_shot_ids=old_set.ordered_plan_shot_ids, set_payload_fingerprint="pending", materializer_version=old_set.materializer_version, materializer_policy_version=old_set.materializer_policy_version, status="MATERIALIZED", stale_status="FRESH", stale_reasons="[]", created_at=datetime.now(), activated_at=datetime.now(), updated_at=datetime.now())
+        session.add(new_set)
+        session.flush()
+        new_rows = []
+        for index, old_row in enumerate(old_rows):
+            data = {column.name: getattr(old_row, column.name) for column in StoryboardShot.__table__.columns if column.name != "id"}
+            data["materialization_set_id"] = new_set.id
+            meta = _json(old_row.meta_info, {})
+            projection = copy.deepcopy(meta.get("projection_payload") if isinstance(meta.get("projection_payload"), dict) else {})
+            if index == 0:
+                projection["lighting"] = "REVISION_PROBE_LIGHTING"
+                data["lighting"] = "REVISION_PROBE_LIGHTING"
+            data["projection_fingerprint"] = projection_fingerprint(projection)
+            meta["projection_payload"] = projection
+            data["meta_info"] = json.dumps(meta, ensure_ascii=False, sort_keys=True)
+            new_row = StoryboardShot(**data)
+            session.add(new_row)
+            session.flush()
+            new_rows.append(new_row)
+        plan, plan_envelope = resolve_current_authoritative_shot_plan(session, book_id=book_id, episode=episode, scene_id=scene_id)
+        blocking, blocking_envelope = resolve_current_authoritative_scene_blocking(session, book_id=book_id, episode=episode, scene_id=scene_id)
+        treatment, treatment_envelope = resolve_current_authoritative_treatment(session, book_id=book_id, episode=episode, scene_id=scene_id)
+        current_handoff = project_shot_design_to_storyboard_handoff(shot_plan_payload_from_row(plan), blocking=blocking_payload_from_row(blocking), require_phase_c=True)
+        authority_parts = {"shot_plan": plan_envelope, "treatment": treatment_envelope, "blocking": blocking_envelope, "storyboard_handoff": current_handoff}
+        projections = [_json(row.meta_info, {}).get("projection_payload", {}) for row in new_rows]
+        new_set_fingerprint = materialization_set_fingerprint(authority_envelope=authority_parts, projections=projections)
+        new_set.set_payload_fingerprint = new_set_fingerprint
+        new_envelope = copy.deepcopy(old_envelope)
+        materialization = new_envelope.get("materialization") if isinstance(new_envelope.get("materialization"), dict) else {}
+        materialization.update({"id": new_set.id, "fingerprint": new_set_fingerprint, "expected_shot_count": len(new_rows), "actual_shot_count": len(new_rows)})
+        new_envelope["materialization"] = materialization
+        new_envelope["authority_fingerprint"] = authority_envelope_fingerprint(new_envelope)
+        new_set.authority_envelope_json = json.dumps(new_envelope, ensure_ascii=False, sort_keys=True)
+        old_set.status = "SUPERSEDED"
+        old_set.stale_status = "STALE"
+        old_set.stale_reasons = json.dumps(["STORYBOARD_POINTER_CHANGED"], ensure_ascii=False)
+        session.query(StoryboardShot).filter_by(materialization_set_id=old_set.id).update({"materialization_status": "STALE", "production_status": "blocked"}, synchronize_session=False)
+        current_pointer.materialization_set_id = new_set.id
+        current_pointer.set_payload_fingerprint = new_set_fingerprint
+        current_pointer.updated_at = datetime.now()
+        return {"scene_id": scene_id, "old_set_id": old_set.id, "new_set_id": new_set.id, "old_set_fingerprint": old_set.set_payload_fingerprint, "new_set_fingerprint": new_set_fingerprint, "old_shot_ids": [row.id for row in old_rows], "new_shot_ids": [row.id for row in new_rows]}
+
     # Policy A -> B with a self-consistent semantic tamper must fail before
     # any revision write.
     engine.dispose(); _copy_sqlite_snapshot(policy_a_baseline, db_file)
@@ -408,6 +470,49 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             after = _counts(session, book_id, episode)
             pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         historical_integrity["semantic_tamper_plus_asset_revision"] = {"status": "FAIL_CLOSED" if result.get("status_code") == 409 and before == after and pointer_before == pointer_after else "FAIL", "result": result, "historical_probe": {"integrity_valid": historical_probe.get("integrity_valid"), "code": historical_probe.get("code"), "stored_camera": _json(probe_version.payload_json, {}).get("camera", {}), "expected_camera": _json(historical_probe.get("expected_payload", {}), {}).get("camera", {}), "tamper_camera_before_commit": tamper_camera_before_commit, "tamper_camera_after_commit": tamper_camera_after_commit}, "counts_unchanged": before == after, "pointers_unchanged": pointer_before == pointer_after, "tampered_version_id": version_id}
+    finally:
+        _copy_sqlite_snapshot(clean_db, db_file)
+
+    # Clean historical PromptIR + legitimate Storyboard Set A -> B must be a
+    # revision, proving that the historical gate does not over-tighten normal
+    # upstream currentness changes.
+    storyboard_revision = {"status": "NOT_RUN"}
+    engine.dispose(); _copy_sqlite_snapshot(policy_a_baseline, db_file)
+    try:
+        with Session() as session:
+            pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
+            scene_id = version.scene_id
+            before = _counts(session, book_id, episode)
+            pointer_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            probe = _create_storyboard_revision_probe(session, scene_id=scene_id)
+            session.commit()
+        result = _compile(book_id, episode, revision_request)
+        with Session() as session:
+            after = _counts(session, book_id, episode)
+            pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        changed = sorted(str(shot_id) for shot_id in pointer_before if pointer_before[shot_id] != pointer_after.get(shot_id))
+        storyboard_revision = {"status": "PASS" if result.get("status_code") is None and before["versions"] < after["versions"] and changed else "FAIL", "result": result, "probe": probe, "counts_before": before, "counts_after": after, "pointers_before": pointer_before, "pointers_after": pointer_after, "changed_shot_ids": changed}
+    finally:
+        _copy_sqlite_snapshot(clean_db, db_file)
+
+    # Semantic PromptIR tamper + legitimate Storyboard Set A -> B must block
+    # before any revision write, exactly like the asset-revision probe above.
+    engine.dispose(); _copy_sqlite_snapshot(policy_a_baseline, db_file)
+    try:
+        with Session() as session:
+            pointer_id, version_id = _tamper_prompt_row(session)
+            version = session.query(PromptIRVersion).filter_by(id=version_id).one()
+            scene_id = version.scene_id
+            before = _counts(session, book_id, episode)
+            pointer_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            storyboard_probe = _create_storyboard_revision_probe(session, scene_id=scene_id)
+            session.commit()
+        result = _compile(book_id, episode, revision_request)
+        with Session() as session:
+            after = _counts(session, book_id, episode)
+            pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        historical_integrity["semantic_tamper_plus_storyboard_revision"] = {"status": "FAIL_CLOSED" if result.get("status_code") == 409 and before == after and pointer_before == pointer_after else "FAIL", "result": result, "probe": storyboard_probe, "counts_unchanged": before == after, "pointers_unchanged": pointer_before == pointer_after, "tampered_version_id": version_id, "pointer_id": pointer_id}
     finally:
         _copy_sqlite_snapshot(clean_db, db_file)
 
@@ -586,6 +691,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "failed_compile_zero_write": {"result": failed_compile, "counts_unchanged": after_failed == after_idempotent, "pointers_unchanged": pointer_hashes_before_failure == pointer_hashes_after_failure},
         "prompt_ir_revision_lifecycle": {"policy_a": request.generation_policy, "policy_b": revision_request.generation_policy, "old_policy_fingerprint": _json(payloads[0].get("generation_policy"), {}).get("fingerprint") if payloads else "", "new_policy_fingerprint": build_generation_policy(revision_request.generation_policy, allow_default=False).get("fingerprint"), "policy_a_compile": first_compile, "policy_a_reuse": second_compile, "policy_revision": policy_revision, "policy_b_reuse": revision_reuse, "old_version_ids": revision_before, "new_version_ids": revision_after, "old_authority_ids": revision_authority_before, "new_authority_ids": revision_authority_after, "pointer_rows_before": revision_pointer_rows_before, "pointer_rows_after": revision_pointer_rows_after, "old_stale_states": revision_old_states, "all_pointer_ids_changed": all(revision_before.get(key) != revision_after.get(key) for key in revision_before), "revision_then_reuse_count": revision_reuse.get("reused_count")},
         "asset_revision": asset_revision,
+        "storyboard_revision": storyboard_revision,
         "historical_integrity_validation": historical_integrity,
         "visual_asset_pointer_validation": visual_asset_pointer_validation,
         "generation_policy_contract": {"missing_policy_result": missing_policy_compile, "explicit_policy_result": {"mode": request.generation_policy.get("mode"), "target_media": request.generation_policy.get("target_media")}},
@@ -641,7 +747,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "tamper_compile_again": [{"case": item["case"], "status_code": item["compile_again"].get("status_code"), "error_code": item["compile_again"].get("detail", {}).get("code")} for item in tamper_cases],
         "prompt_ir_revision": {"create": "PASS" if trace["first_compile"].get("compiled_count") == 15 else "FAIL", "reuse": "PASS" if trace["idempotency"].get("second_reused_count") == 15 else "FAIL", "policy_revision": "PASS" if trace["prompt_ir_revision_lifecycle"].get("policy_revision", {}).get("reused_count") == 0 and trace["prompt_ir_revision_lifecycle"].get("all_pointer_ids_changed") else "FAIL", "revision_then_reuse": "PASS" if trace["prompt_ir_revision_lifecycle"].get("revision_then_reuse_count") == 15 else "FAIL", "tamper_then_revision": "FAIL_CLOSED" if all(item.get("compile_again", {}).get("status_code") == 409 for item in tamper_cases) else "FAIL"},
         "visual_asset_pointer": {"fresh": "PASS" if visual_asset_pointer_validation.get("fresh", {}).get("status") == "PASS" else "FAIL", "stale": "FAIL_CLOSED" if visual_asset_pointer_validation.get("stale", {}).get("status_code") == 409 else "FAIL", "hash_tamper": "FAIL_CLOSED" if visual_asset_pointer_validation.get("hash_tamper", {}).get("status_code") == 409 else "FAIL", "missing_version": "FAIL_CLOSED" if visual_asset_pointer_validation.get("missing_version", {}).get("status_code") == 409 else "FAIL", "wrong_version": "FAIL_CLOSED" if visual_asset_pointer_validation.get("wrong_version", {}).get("status_code") == 409 else "FAIL", "ambiguous": "FAIL_CLOSED" if visual_asset_pointer_validation.get("ambiguous", {}).get("status_code") == 409 else "FAIL", "legitimate_asset_revision": "PASS" if trace.get("asset_revision", {}).get("status") == "PASS" else "FAIL", "adapter_pointer_tamper": "FAIL_CLOSED" if trace.get("adapter_pointer_tamper", {}).get("status_code") == 409 else "FAIL"},
-        "historical_integrity": {"clean_current": "PASS" if trace.get("historical_integrity_validation", {}).get("clean_current") == "PASS" else "FAIL", "clean_obsolete_asset_revision": "PASS" if trace.get("asset_revision", {}).get("status") == "PASS" else "FAIL", "semantic_tamper_plus_asset_revision": trace.get("historical_integrity_validation", {}).get("semantic_tamper_plus_asset_revision", {}).get("status", "FAIL"), "semantic_tamper_plus_storyboard_revision": trace.get("historical_integrity_validation", {}).get("semantic_tamper_plus_storyboard_revision", "NOT_RUN"), "historical_asset_missing": trace.get("historical_integrity_validation", {}).get("historical_asset_missing", {}).get("status", "FAIL"), "historical_asset_tamper": trace.get("historical_integrity_validation", {}).get("historical_asset_tamper", {}).get("status", "FAIL"), "historical_storyboard_tamper": trace.get("historical_integrity_validation", {}).get("historical_storyboard_tamper", {}).get("status", "FAIL")},
+        "historical_integrity": {"clean_current": "PASS" if trace.get("historical_integrity_validation", {}).get("clean_current") == "PASS" else "FAIL", "clean_obsolete_asset_revision": "PASS" if trace.get("asset_revision", {}).get("status") == "PASS" else "FAIL", "clean_obsolete_storyboard_revision": "PASS" if trace.get("storyboard_revision", {}).get("status") == "PASS" else "FAIL", "semantic_tamper_plus_asset_revision": trace.get("historical_integrity_validation", {}).get("semantic_tamper_plus_asset_revision", {}).get("status", "FAIL"), "semantic_tamper_plus_storyboard_revision": trace.get("historical_integrity_validation", {}).get("semantic_tamper_plus_storyboard_revision", "NOT_RUN"), "historical_asset_missing": trace.get("historical_integrity_validation", {}).get("historical_asset_missing", {}).get("status", "FAIL"), "historical_asset_tamper": trace.get("historical_integrity_validation", {}).get("historical_asset_tamper", {}).get("status", "FAIL"), "historical_storyboard_tamper": trace.get("historical_integrity_validation", {}).get("historical_storyboard_tamper", {}).get("status", "FAIL")},
         "provider_calls": 0,
         "llm_calls": 0,
         "image_calls": 0,
@@ -671,8 +777,9 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         "historical_integrity": {
             "clean_current": trace["historical_integrity_validation"].get("clean_current", "FAIL"),
             "clean_obsolete_asset_revision": "PASS" if trace.get("asset_revision", {}).get("status") == "PASS" else "FAIL",
+            "clean_obsolete_storyboard_revision": "PASS" if trace.get("storyboard_revision", {}).get("status") == "PASS" else "FAIL",
             "semantic_tamper_plus_asset_revision": trace["historical_integrity_validation"].get("semantic_tamper_plus_asset_revision", {}).get("status", "FAIL"),
-            "semantic_tamper_plus_storyboard_revision": trace["historical_integrity_validation"].get("semantic_tamper_plus_storyboard_revision", "NOT_RUN"),
+            "semantic_tamper_plus_storyboard_revision": trace["historical_integrity_validation"].get("semantic_tamper_plus_storyboard_revision", {}).get("status", "NOT_RUN"),
             "historical_asset_missing": trace["historical_integrity_validation"].get("historical_asset_missing", {}).get("status", "FAIL"),
             "historical_asset_tamper": trace["historical_integrity_validation"].get("historical_asset_tamper", {}).get("status", "FAIL"),
             "historical_storyboard_tamper": trace["historical_integrity_validation"].get("historical_storyboard_tamper", {}).get("status", "FAIL"),

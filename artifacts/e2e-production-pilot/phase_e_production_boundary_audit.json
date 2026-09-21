@@ -11,105 +11,105 @@
       "schema_version": "prompt_ir_phase_e_compile_v1",
       "shots": [
         {
-          "payload_hash": "19503f196d82f9f7692e88772ac8a450c49484a7e965856b9f632665262facf4",
+          "payload_hash": "f0e1f721dbf51a2785d25bd0e2cb5dc24c807634ec71ad11b27555fef973e45b",
           "prompt_ir_authority_id": 31,
           "prompt_ir_version_id": 31,
           "reused": false,
           "storyboard_shot_id": 1
         },
         {
-          "payload_hash": "7648b539e1c56956af1c340e877e654e061a78fb256fac2b3038788ca4014412",
+          "payload_hash": "4ec3e9402d8050bbda015310a1b44ae13517c7995e130f88b9c81a3b3a2c6892",
           "prompt_ir_authority_id": 32,
           "prompt_ir_version_id": 32,
           "reused": false,
           "storyboard_shot_id": 2
         },
         {
-          "payload_hash": "6a777f334ced919b711c516aab7c08492b33de18ebc5821d8e3a114be7e2a41a",
+          "payload_hash": "b7c10b8a9211391dc4f92911a1dd916f1ccec6787214b824c11a154afa6ef57a",
           "prompt_ir_authority_id": 33,
           "prompt_ir_version_id": 33,
           "reused": false,
           "storyboard_shot_id": 3
         },
         {
-          "payload_hash": "2688563d25ad2f0d4bf116ef1749511631004b520415dc1d2a87bd8f3509e554",
+          "payload_hash": "0fdeb069572428b1348fb020dc74ae2ad363f39fda79fb36cbe6f6021e543c4c",
           "prompt_ir_authority_id": 34,
           "prompt_ir_version_id": 34,
           "reused": false,
           "storyboard_shot_id": 4
         },
         {
-          "payload_hash": "40e54f8fb4a3a3738996b281c5146d34d777aaa30a0747ae4e1850eecce6f1bc",
+          "payload_hash": "64ffe73cb06461062bd3990110d44be74f3381aab154f6d8805749f77e4d0b92",
           "prompt_ir_authority_id": 35,
           "prompt_ir_version_id": 35,
           "reused": false,
           "storyboard_shot_id": 5
         },
         {
-          "payload_hash": "76c34778adcb05a1cf9e6e287bfbc8f083230bec6cece0a2ce2a4b8a3b7fa0a1",
+          "payload_hash": "9dcfd56105a3969621defa1e5506ade798e123904c0d5dc2d59258e76bff7c15",
           "prompt_ir_authority_id": 36,
           "prompt_ir_version_id": 36,
           "reused": false,
           "storyboard_shot_id": 6
         },
         {
-          "payload_hash": "7c7d8a1a55913659f97f87ca65e5b502d36f718412c368c1f1a23f9e2ed5b812",
+          "payload_hash": "00b5ca0ceadfb6704f19789ad17229c00acb1160ad1a8e21230a6c760e93e9a1",
           "prompt_ir_authority_id": 37,
           "prompt_ir_version_id": 37,
           "reused": false,
           "storyboard_shot_id": 7
         },
         {
-          "payload_hash": "8c33acb1057fad5f2047a96877cbef2a8e06672b1f264808e2fd0d0b8255fd65",
+          "payload_hash": "0663b674d02cfcb2bd26108ebe33600d5a5f2c15972311e55f551f3cb0dabefb",
           "prompt_ir_authority_id": 38,
           "prompt_ir_version_id": 38,
           "reused": false,
           "storyboard_shot_id": 8
         },
         {
-          "payload_hash": "92bbe1476f7be76de72ebd6f1def3e76c95056a8c362762caa8ee262c9319a8e",
+          "payload_hash": "92de11fdb9dd79900fc236882864027b44a4e342b5c17ebdf807a570be097e70",
           "prompt_ir_authority_id": 39,
           "prompt_ir_version_id": 39,
           "reused": false,
           "storyboard_shot_id": 9
         },
         {
-          "payload_hash": "940eed129828e9adda645dc48fb5a59976b9f6d45e1843484966aefce9b6dd58",
+          "payload_hash": "4ffc8ac1fb4ccf118fd6ec2d1f3880d72eea46decf7f5c2cf09d99acf3e311cf",
           "prompt_ir_authority_id": 40,
           "prompt_ir_version_id": 40,
           "reused": false,
           "storyboard_shot_id": 10
         },
         {
-          "payload_hash": "f5c77f339c0c0392968c893a14334f0f6fc710b1851125d7be0770f22118e012",
+          "payload_hash": "2224c50fb17401e33e0bb80afdb56b185738ccb111f2f019bd25ac05d7977953",
           "prompt_ir_authority_id": 41,
           "prompt_ir_version_id": 41,
           "reused": false,
           "storyboard_shot_id": 11
         },
         {
-          "payload_hash": "9ada11e44e40008814756600cae7226775884c83b023d45eaeaf764423f17b8c",
+          "payload_hash": "4a82f59fa370ff40c14da2fd0f205df1181d57fc432e2b05af43880a77d320af",
           "prompt_ir_authority_id": 42,
           "prompt_ir_version_id": 42,
           "reused": false,
           "storyboard_shot_id": 12
         },
         {
-          "payload_hash": "84adb7dc879d631907b765f0866f9bfe879830fb6a7024906649ba3ef32d33ae",
+          "payload_hash": "c02e41f1f0e52a27d565becf3d81ca7e5dd3687919fe105df6fd3bf29fcaad47",
           "prompt_ir_authority_id": 43,
           "prompt_ir_version_id": 43,
           "reused": false,
           "storyboard_shot_id": 13
         },
         {
-          "payload_hash": "aca209db2d0f9e7ef62530d38fb73ea869977e8b2a55a96f99fd940f787d5e56",
+          "payload_hash": "d64a33670c42c6d6089dd5815e6c6b4489891d54e33c5fba07326d859a8453ee",
           "prompt_ir_authority_id": 44,
           "prompt_ir_version_id": 44,
           "reused": false,
           "storyboard_shot_id": 14
         },
         {
-          "payload_hash": "851b86a0c641c0be8678e87d56ebc578bc3530df6d4a5ae77bf667e05ec259a2",
+          "payload_hash": "47f94ea092b0694914634b75682edd9b2a33370555691400e939954a7435b7df",
           "prompt_ir_authority_id": 45,
           "prompt_ir_version_id": 45,
           "reused": false,
@@ -138,11 +138,60 @@
   "historical_integrity": {
     "clean_current": "PASS",
     "clean_obsolete_asset_revision": "PASS",
+    "clean_obsolete_storyboard_revision": "PASS",
     "historical_asset_missing": "FAIL_CLOSED",
     "historical_asset_tamper": "FAIL_CLOSED",
     "historical_storyboard_tamper": "FAIL_CLOSED",
     "semantic_tamper_plus_asset_revision": "FAIL_CLOSED",
-    "semantic_tamper_plus_storyboard_revision": "NOT_RUN"
+    "semantic_tamper_plus_storyboard_revision": {
+      "counts_unchanged": true,
+      "pointer_id": 1,
+      "pointers_unchanged": true,
+      "probe": {
+        "new_set_fingerprint": "3fcb79fcab12a969b069154f7c99921534ca83db902e94bcef945db2aa0f244d",
+        "new_set_id": 3,
+        "new_shot_ids": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "old_set_fingerprint": "85b856e22f98375f7230197fbd6790124ce1a6e2d6161c909c1db9efa77c943b",
+        "old_set_id": 1,
+        "old_shot_ids": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "scene_id": "E01_SC001"
+      },
+      "result": {
+        "detail": {
+          "code": "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH",
+          "diagnostics": [
+            {
+              "actual": "HISTORICAL_TAMPER",
+              "code": "PROMPT_IR_SEMANTIC_MISMATCH",
+              "expected": "NONE",
+              "path": "camera.movement"
+            }
+          ],
+          "message": "Stored PromptIR does not reproduce its historical deterministic compile."
+        },
+        "status_code": 409
+      },
+      "status": "FAIL_CLOSED",
+      "tampered_version_id": 1
+    }
   },
   "image_calls": 0,
   "legacy_v1_gate": {
