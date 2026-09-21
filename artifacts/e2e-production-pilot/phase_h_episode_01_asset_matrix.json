@@ -1,0 +1,1046 @@
+{
+  "schema_version": "phase_h_episode_01_asset_matrix_v1",
+  "book_id": 990401,
+  "episode": 1,
+  "expected_scene_shot_counts": {
+    "E01_SC001": 8,
+    "E01_SC002": 7
+  },
+  "observed_scene_shot_counts": {
+    "E01_SC001": 8,
+    "E01_SC002": 7
+  },
+  "shot_count": 15,
+  "rows": [
+    {
+      "shot_id": 1,
+      "plan_shot_id": "SH_E01_SC001_001",
+      "scene_id": "E01_SC001",
+      "character_bindings": [
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:售票员",
+          "asset_authority_ref": "book:990401:character:售票员",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "pointer_status": "PASS",
+        "version_id": 10,
+        "version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:TICKET",
+          "asset_authority_ref": "book:990401:prop:TICKET",
+          "pointer_status": "PASS",
+          "version_id": 9,
+          "version_fingerprint": "19d26788c41cfa0979237951a56d9af2a7a2ef8ee0227b9275b18be7754e7751",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:售票员",
+          "character:林晚",
+          "prop:TICKET",
+          "scene:E01_SC001"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:售票员",
+          "character:林晚"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 2,
+      "plan_shot_id": "SH_E01_SC001_002",
+      "scene_id": "E01_SC001",
+      "character_bindings": [
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "pointer_status": "PASS",
+        "version_id": 10,
+        "version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:RED_UMBRELLA",
+          "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
+          "pointer_status": "PASS",
+          "version_id": 7,
+          "version_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "prop:RED_UMBRELLA",
+          "scene:E01_SC001"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 3,
+      "plan_shot_id": "SH_E01_SC001_003",
+      "scene_id": "E01_SC001",
+      "character_bindings": [
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:顾沉",
+          "asset_authority_ref": "book:990401:character:顾沉",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "pointer_status": "PASS",
+        "version_id": 10,
+        "version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+          "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
+          "pointer_status": "PASS",
+          "version_id": 2,
+          "version_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:顾沉",
+          "prop:BROKEN_UMBRELLA_RIB",
+          "scene:E01_SC001"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:顾沉"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 4,
+      "plan_shot_id": "SH_E01_SC001_004",
+      "scene_id": "E01_SC001",
+      "character_bindings": [
+        {
+          "identity_ref": "character:顾沉",
+          "asset_authority_ref": "book:990401:character:顾沉",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "pointer_status": "PASS",
+        "version_id": 10,
+        "version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:顾沉",
+          "scene:E01_SC001"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:顾沉"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 5,
+      "plan_shot_id": "SH_E01_SC001_005",
+      "scene_id": "E01_SC001",
+      "character_bindings": [
+        {
+          "identity_ref": "character:陆叔",
+          "asset_authority_ref": "book:990401:character:陆叔",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "pointer_status": "PASS",
+        "version_id": 10,
+        "version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:HANDBAG",
+          "asset_authority_ref": "book:990401:prop:HANDBAG",
+          "pointer_status": "PASS",
+          "version_id": 4,
+          "version_fingerprint": "71a415f0129a56d418f16c89af3c4cbda4de63607c7bef0634aa2b6582a31538",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "prop:HANDBAG",
+          "scene:E01_SC001"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 6,
+      "plan_shot_id": "SH_E01_SC001_006",
+      "scene_id": "E01_SC001",
+      "character_bindings": [
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "pointer_status": "PASS",
+        "version_id": 10,
+        "version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+          "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
+          "pointer_status": "PASS",
+          "version_id": 2,
+          "version_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        },
+        {
+          "identity_ref": "prop:RED_UMBRELLA",
+          "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
+          "pointer_status": "PASS",
+          "version_id": 7,
+          "version_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "prop:BROKEN_UMBRELLA_RIB",
+          "prop:RED_UMBRELLA",
+          "scene:E01_SC001"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 7,
+      "plan_shot_id": "SH_E01_SC001_007",
+      "scene_id": "E01_SC001",
+      "character_bindings": [
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:陆叔",
+          "asset_authority_ref": "book:990401:character:陆叔",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "pointer_status": "PASS",
+        "version_id": 10,
+        "version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "scene:E01_SC001"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 8,
+      "plan_shot_id": "SH_E01_SC001_008",
+      "scene_id": "E01_SC001",
+      "character_bindings": [
+        {
+          "identity_ref": "character:顾沉",
+          "asset_authority_ref": "book:990401:character:顾沉",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "pointer_status": "PASS",
+        "version_id": 10,
+        "version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:顾沉",
+          "scene:E01_SC001"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:顾沉"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 9,
+      "plan_shot_id": "SH_E01_SC002_001",
+      "scene_id": "E01_SC002",
+      "character_bindings": [
+        {
+          "identity_ref": "character:陆叔",
+          "asset_authority_ref": "book:990401:character:陆叔",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC002",
+        "asset_authority_ref": "book:990401:scene:E01_SC002",
+        "pointer_status": "PASS",
+        "version_id": 11,
+        "version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:APPLE",
+          "asset_authority_ref": "book:990401:prop:APPLE",
+          "pointer_status": "PASS",
+          "version_id": 1,
+          "version_fingerprint": "10ff684a8071dd7f7d27c276068aabfb962d97e5ab3387ca895dbbff1f06e812",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        },
+        {
+          "identity_ref": "prop:DOOR_LOCK",
+          "asset_authority_ref": "book:990401:prop:DOOR_LOCK",
+          "pointer_status": "PASS",
+          "version_id": 3,
+          "version_fingerprint": "bf33b28c4f7995de223faecc547c35a86772d615f7d1f296d782c5bb3a360149",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "prop:APPLE",
+          "prop:DOOR_LOCK",
+          "scene:E01_SC002"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 10,
+      "plan_shot_id": "SH_E01_SC002_002",
+      "scene_id": "E01_SC002",
+      "character_bindings": [
+        {
+          "identity_ref": "character:陆叔",
+          "asset_authority_ref": "book:990401:character:陆叔",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC002",
+        "asset_authority_ref": "book:990401:scene:E01_SC002",
+        "pointer_status": "PASS",
+        "version_id": 11,
+        "version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "scene:E01_SC002"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 11,
+      "plan_shot_id": "SH_E01_SC002_003",
+      "scene_id": "E01_SC002",
+      "character_bindings": [
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC002",
+        "asset_authority_ref": "book:990401:scene:E01_SC002",
+        "pointer_status": "PASS",
+        "version_id": 11,
+        "version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:HANDBAG",
+          "asset_authority_ref": "book:990401:prop:HANDBAG",
+          "pointer_status": "PASS",
+          "version_id": 4,
+          "version_fingerprint": "71a415f0129a56d418f16c89af3c4cbda4de63607c7bef0634aa2b6582a31538",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "prop:HANDBAG",
+          "scene:E01_SC002"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 12,
+      "plan_shot_id": "SH_E01_SC002_004",
+      "scene_id": "E01_SC002",
+      "character_bindings": [
+        {
+          "identity_ref": "character:陆叔",
+          "asset_authority_ref": "book:990401:character:陆叔",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC002",
+        "asset_authority_ref": "book:990401:scene:E01_SC002",
+        "pointer_status": "PASS",
+        "version_id": 11,
+        "version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:POCKET_HARD_OBJECT",
+          "asset_authority_ref": "book:990401:prop:POCKET_HARD_OBJECT",
+          "pointer_status": "PASS",
+          "version_id": 5,
+          "version_fingerprint": "52f8ff73ee9dbd1890475391ab1ae3390d82f2d70b9ee5a4c37927b1186381fc",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        },
+        {
+          "identity_ref": "prop:TABLE_SCRATCH",
+          "asset_authority_ref": "book:990401:prop:TABLE_SCRATCH",
+          "pointer_status": "PASS",
+          "version_id": 8,
+          "version_fingerprint": "625c30701544f1359411fcb8e03c1cfcf921b20a5adbc8b688cee8fba802b763",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "prop:POCKET_HARD_OBJECT",
+          "prop:TABLE_SCRATCH",
+          "scene:E01_SC002"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 13,
+      "plan_shot_id": "SH_E01_SC002_005",
+      "scene_id": "E01_SC002",
+      "character_bindings": [
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC002",
+        "asset_authority_ref": "book:990401:scene:E01_SC002",
+        "pointer_status": "PASS",
+        "version_id": 11,
+        "version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [
+        {
+          "identity_ref": "prop:RED_FIBER",
+          "asset_authority_ref": "book:990401:prop:RED_FIBER",
+          "pointer_status": "PASS",
+          "version_id": 6,
+          "version_fingerprint": "a24881e736ace0d037eeecaaa26431450dd33097eb4ff6293999d2c7abb98660",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "PARTIAL_POINTER_ONLY"
+        }
+      ],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "prop:RED_FIBER",
+          "scene:E01_SC002"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 14,
+      "plan_shot_id": "SH_E01_SC002_006",
+      "scene_id": "E01_SC002",
+      "character_bindings": [
+        {
+          "identity_ref": "character:陆叔",
+          "asset_authority_ref": "book:990401:character:陆叔",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC002",
+        "asset_authority_ref": "book:990401:scene:E01_SC002",
+        "pointer_status": "PASS",
+        "version_id": 11,
+        "version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "scene:E01_SC002"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    },
+    {
+      "shot_id": 15,
+      "plan_shot_id": "SH_E01_SC002_007",
+      "scene_id": "E01_SC002",
+      "character_bindings": [
+        {
+          "identity_ref": "character:林晚",
+          "asset_authority_ref": "book:990401:character:林晚",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        },
+        {
+          "identity_ref": "character:陆叔",
+          "asset_authority_ref": "book:990401:character:陆叔",
+          "pointer_status": "MISSING",
+          "version_status": "MISSING",
+          "reference_authority_status": "MISSING",
+          "resolution_status": "MISSING_CHARACTER_ASSET_AUTHORITY"
+        }
+      ],
+      "scene_binding": {
+        "identity_ref": "scene:E01_SC002",
+        "asset_authority_ref": "book:990401:scene:E01_SC002",
+        "pointer_status": "PASS",
+        "version_id": 11,
+        "version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "reference_authority_status": "MISSING",
+        "resolution_status": "PARTIAL_POINTER_ONLY"
+      },
+      "prop_bindings": [],
+      "reference_authority": {
+        "required_by_production_contract": true,
+        "resolved": false,
+        "authority_count_in_phase_f_snapshot": 0,
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔",
+          "scene:E01_SC002"
+        ]
+      },
+      "prompt_ir_dependency": {
+        "prompt_ir_present": true,
+        "prompt_ir_qualification_state": "PROMPT_IR_QUALIFIED",
+        "prompt_ir_pointer_status": "PASS",
+        "model_generation_ready": false,
+        "asset_reference_state": "BLOCKED_BY_MISSING_CHARACTER_AUTHORITY_AND_REFERENCE_AUTHORITY",
+        "missing_identity_refs": [
+          "character:林晚",
+          "character:陆叔"
+        ]
+      },
+      "official_media_status": {
+        "production_scoped_official_media": false,
+        "status": "MISSING",
+        "reason": "G2 official chain has no Episode 01 storyboard shot scope and only one isolated pilot pointer exists."
+      },
+      "completeness": false
+    }
+  ],
+  "source_evidence": [
+    "episode_01_script_ir_phase_a.json",
+    "episode_01_director_treatment_phase_b.json",
+    "episode_01_scene_blocking_phase_b.json",
+    "episode_01_shot_plan_phase_c.json",
+    "episode_01_storyboard_handoff_phase_c.json",
+    "episode_01_prompt_ir_phase_e.json",
+    "episode_01_phase_f_real_authority_fake_provider_trace.json",
+    "phase_e_production_boundary_audit.json",
+    "phase_g2_media_validation_trace.json",
+    "phase_g2_official_media_trace.json"
+  ],
+  "summary": {
+    "script_character_entities": 4,
+    "script_required_props": 5,
+    "prompt_identity_refs": {
+      "character": 4,
+      "prop": 9,
+      "scene": 2
+    },
+    "prompt_missing_ref_occurrences": {
+      "character": 26
+    },
+    "phase_f_visual_asset_pointers": 11,
+    "phase_f_character_visual_asset_pointers": 0,
+    "phase_f_scene_visual_asset_pointers": 2,
+    "phase_f_prop_visual_asset_pointers": 9,
+    "phase_f_visual_reference_authorities": 0,
+    "phase_f_prompt_ir_pointers": 15,
+    "production_scoped_official_media_shots": 0,
+    "isolated_g2_official_versions": 1,
+    "runtime_db_cross_check": {
+      "visual_asset_versions": 0,
+      "visual_asset_pointers": 0,
+      "visual_reference_authorities": 0,
+      "official_media_versions": 0,
+      "official_media_authorities": 0,
+      "official_media_pointers": 0,
+      "prompt_ir_versions": "TABLE_MISSING"
+    }
+  }
+}
