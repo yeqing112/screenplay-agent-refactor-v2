@@ -1,8 +1,8 @@
-# MEDIA_OFFICIAL_AUTHORITY_SCHEMA_REQUIRED
+# PHASE_G_SCHEMA_DESIGN_APPROVED_PENDING_MIGRATION
 
 ## Phase G decision
 
-This run stops at the Schema Gate. The current repository cannot represent an independent shot-level Official Media Version, Official Media Authority, Official Media Pointer, or persisted deterministic Media Validation Record. Implementing the requested Candidate → Validation → Promotion → Official Authority flow would require a new database migration.
+The Schema Gate remains closed for implementation: the current repository cannot represent an independent shot-level Official Media Version, Official Media Authority, Official Media Pointer, or persisted deterministic Media Validation Record. The formal design review of the proposed future schema passes with explicit field and lifecycle clarifications. Implementation still requires separate migration approval.
 
 No migration was approved for this task. No migration was added.
 
@@ -17,6 +17,14 @@ See [`phase_g_media_authority_gap_audit.md`](phase_g_media_authority_gap_audit.m
 - all discovered media/official/validation/pointer model names and tables
 
 The audit proves that existing Reference Authority and Visual Asset Pointer semantics cannot safely represent generated shot media. Candidate status remains `MEDIA_CANDIDATE`; no JSON field was used as an authority substitute.
+
+## Design review and implementation plan
+
+- [Schema Design Review](phase_g_media_authority_schema_review.md)
+- [Migration Plan](phase_g_media_authority_migration_plan.md)
+- [Migration Test Plan](phase_g_media_authority_test_plan.md)
+
+Review verdict: `PHASE_G_SCHEMA_DESIGN_APPROVED_PENDING_MIGRATION`.
 
 ## Minimal schema proposal
 
@@ -46,4 +54,6 @@ The current Phase A–F evidence is a persisted authority chain with a fake Prov
 
 ## Stop token
 
-`MEDIA_OFFICIAL_AUTHORITY_SCHEMA_REQUIRED`
+Implementation stop: `MEDIA_OFFICIAL_AUTHORITY_SCHEMA_REQUIRED`
+
+Design review completion token: `PHASE_G_SCHEMA_DESIGN_APPROVED_PENDING_MIGRATION`
