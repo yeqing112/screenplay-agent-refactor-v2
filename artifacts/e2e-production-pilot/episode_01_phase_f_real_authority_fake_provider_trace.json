@@ -2244,5 +2244,12 @@
   "resolver_monkeypatched": false,
   "asset_resolver_monkeypatched": false,
   "storyboard_resolver_monkeypatched": false,
-  "phase_f_evidence_class": "Real Authority Integration with Fake Provider"
+  "phase_f_evidence_class": "Real Authority Integration with Fake Provider",
+  "provider_execution_profile_schema": "provider_execution_profile_v2",
+  "generation_params_typed": true,
+  "candidate_status": "MEDIA_CANDIDATE",
+  "candidate_media_type": "IMAGE",
+  "auto_promotion_count": 0,
+  "auto_retry_count": 0,
+  "concurrent_replay_candidate_validation": true
 }

@@ -46,5 +46,23 @@
   "creative_semantic_params_rejected": [
     "negative_prompt",
     "style"
-  ]
+  ],
+  "generation_param_schema_version": "provider_execution_profile_v2",
+  "generation_params_typed": true,
+  "validated_generation_params": {
+    "size": "1024x1024"
+  },
+  "nested_arbitrary_values_allowed": false,
+  "provider_profile_negative_prompt_allowed": false,
+  "provider_profile_style_allowed": false,
+  "forbidden_semantic_profile_params": [
+    "negative_prompt",
+    "style"
+  ],
+  "candidate_concurrent_replay_validation": true,
+  "concurrent_replay_candidate_validation": true,
+  "creative_semantics_source": "GENERATION_PAYLOAD_ONLY",
+  "provider_body_canonical_execution_params_only": true,
+  "phase_f_transport_requires_canonical_profile": true,
+  "legacy_transport_fallback_supported_outside_phase_f": true
 }
