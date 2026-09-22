@@ -2,7 +2,8 @@
   "schema_version": "phase_j1_real_provider_readiness_matrix_v1",
   "generated_at_utc": "2026-09-22T22:20:42Z",
   "phase": "PHASE_J1_MODEL_MANAGEMENT_REAL_PROVIDER_INTEGRATION_AUDIT",
-  "audited_source_head": "f59605d",
+  "audited_source_head": "4754f5d91f1a771b424e722ea5f848918461daf9",
+  "implementation_snapshot": "f59605d",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "status": "PHASE_J1_PARALLEL_PROVIDER_PATH_DETECTED",
   "scope": {
@@ -13,7 +14,8 @@
     "image_calls": 0,
     "video_calls": 0,
     "production_authority_writes": 0,
-    "secret_values_recorded": false
+    "secret_values_recorded": false,
+    "full_real_end_to_end_production_acceptance_complete": false
   },
   "registry_snapshot": {
     "profiles": 9,
@@ -38,6 +40,9 @@
       "provider_adapter_resolved": true,
       "credential_reference_resolved": false,
       "credential_validated": false,
+      "image_provider_ready": false,
+      "model_profile_current": false,
+      "provider_profile_valid": false,
       "canonical_generation_execution_path": true,
       "production_storyboard_uses_canonical_path": false,
       "generation_execution_path_valid": false,
@@ -53,6 +58,9 @@
       "provider_adapter_resolved": true,
       "credential_reference_resolved": false,
       "credential_validated": false,
+      "video_provider_ready": false,
+      "model_profile_current": false,
+      "provider_profile_valid": false,
       "canonical_generation_execution_path": false,
       "production_storyboard_uses_canonical_path": false,
       "generation_execution_path_valid": false,
@@ -68,7 +76,25 @@
     "human_provider_authorization": false,
     "runtime_authorization_flag": false,
     "real_execution_allowed": false,
-    "reason": "Architecture audit is provider-free and no runtime authorization/credential validation evidence is present."
+    "reason": "Architecture audit is provider-free and no runtime authorization/credential validation evidence is present.",
+    "production_gate": [
+      "human_authorized",
+      "production_model_selected",
+      "model_profile_current",
+      "provider_profile_valid",
+      "credential_resolved",
+      "credential_validated",
+      "adapter_available"
+    ],
+    "image_provider_ready": false,
+    "video_provider_ready": false
+  },
+  "interface_commit_lineage": {
+    "model_registry": "1e2367d",
+    "minimax_video_adapter": ["880c701", "b1678da"],
+    "media_default_strategy": "ed32775",
+    "phase_f_generation_canary": "9745519",
+    "provider_execution_profile_boundary": "0600e3a"
   },
   "required_follow_up_states": [
     "PHASE_J1_MODEL_MANAGEMENT_PRODUCTION_INTEGRATION_REQUIRED",
