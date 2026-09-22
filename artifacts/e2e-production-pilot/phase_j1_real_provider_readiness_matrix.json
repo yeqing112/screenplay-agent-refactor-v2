@@ -1,0 +1,84 @@
+{
+  "schema_version": "phase_j1_real_provider_readiness_matrix_v1",
+  "generated_at_utc": "2026-09-22T22:20:42Z",
+  "phase": "PHASE_J1_MODEL_MANAGEMENT_REAL_PROVIDER_INTEGRATION_AUDIT",
+  "audited_source_head": "f59605d",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "status": "PHASE_J1_PARALLEL_PROVIDER_PATH_DETECTED",
+  "scope": {
+    "architecture_only": true,
+    "runtime_readiness_only": true,
+    "provider_calls": 0,
+    "llm_calls": 0,
+    "image_calls": 0,
+    "video_calls": 0,
+    "production_authority_writes": 0,
+    "secret_values_recorded": false
+  },
+  "registry_snapshot": {
+    "profiles": 9,
+    "non_mock_profiles": 7,
+    "configured_non_mock_profiles": 6,
+    "default_image": {
+      "profile_id": "local-image-mw4y52",
+      "provider": "shapi-openai-images",
+      "model": "gpt-image-2.5-flare"
+    },
+    "default_video": {
+      "profile_id": "local-video-7deneh",
+      "provider": "minimax-h3-async",
+      "model": "MiniMax-H3"
+    },
+    "default_is_production_policy_binding": false
+  },
+  "capabilities": {
+    "image": {
+      "production_model_selected": false,
+      "profile_resolved": true,
+      "provider_adapter_resolved": true,
+      "credential_reference_resolved": false,
+      "credential_validated": false,
+      "canonical_generation_execution_path": true,
+      "production_storyboard_uses_canonical_path": false,
+      "generation_execution_path_valid": false,
+      "blocking_reasons": [
+        "production route can fall back to registry default without an explicit Production GenerationPolicy binding",
+        "storyboard generate-frame bypasses canonical GenerationExecution and MediaCandidate persistence",
+        "runtime credential resolver and validation result are absent"
+      ]
+    },
+    "video": {
+      "production_model_selected": false,
+      "profile_resolved": true,
+      "provider_adapter_resolved": true,
+      "credential_reference_resolved": false,
+      "credential_validated": false,
+      "canonical_generation_execution_path": false,
+      "production_storyboard_uses_canonical_path": false,
+      "generation_execution_path_valid": false,
+      "blocking_reasons": [
+        "production route can fall back to registry default without an explicit Production GenerationPolicy binding",
+        "storyboard generate-video bypasses canonical GenerationExecution and MediaCandidate persistence",
+        "no canonical Phase F video GenerationExecution route was found",
+        "runtime credential resolver and validation result are absent"
+      ]
+    }
+  },
+  "authorization": {
+    "human_provider_authorization": false,
+    "runtime_authorization_flag": false,
+    "real_execution_allowed": false,
+    "reason": "Architecture audit is provider-free and no runtime authorization/credential validation evidence is present."
+  },
+  "required_follow_up_states": [
+    "PHASE_J1_MODEL_MANAGEMENT_PRODUCTION_INTEGRATION_REQUIRED",
+    "PHASE_J1_PRODUCTION_MODEL_SELECTION_CONTRACT_REQUIRED"
+  ],
+  "evidence": [
+    "api/model_registry.py:279-317,393-415",
+    "core/provider_execution_profile.py:183-233",
+    "api/generation_canary_api.py:251-285,565-798",
+    "api/server.py:19114-19430",
+    "api/generation_adapters.py:1533-1716"
+  ]
+}
