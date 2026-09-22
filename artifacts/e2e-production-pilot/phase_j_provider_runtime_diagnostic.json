@@ -99,5 +99,8 @@
     "authorization_header_recorded": false,
     "secret_recorded": false
   },
-  "registry_read_error_type": null
+  "registry_read_error_type": null,
+  "configuration_gap_found": true,
+  "configuration_gap_code": "PHASE_J_PROVIDER_RUNTIME_CONFIGURATION_GAP_FOUND",
+  "completion_status": "REAL_PROVIDER_EXECUTION_NOT_AUTHORIZED"
 }
