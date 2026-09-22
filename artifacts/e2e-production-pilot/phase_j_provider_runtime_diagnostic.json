@@ -1,0 +1,103 @@
+{
+  "schema_version": "phase_j_provider_runtime_diagnostic_v1",
+  "generated_at_utc": "2026-09-22T22:05:51.610604+00:00",
+  "phase": "PHASE_J_PROVIDER_RUNTIME_AUTHORIZATION_DIAGNOSTIC",
+  "status": "REAL_PROVIDER_EXECUTION_NOT_AUTHORIZED",
+  "git": {
+    "head_at_diagnostic": "4a2d88f234e53ed32d20035cd5d13e037ce65597",
+    "branch": "codex/visual-authoring-provider-canary-reconcile"
+  },
+  "side_effects": {
+    "provider_calls": 0,
+    "llm_calls": 0,
+    "image_calls": 0,
+    "video_calls": 0,
+    "database_writes": 0,
+    "production_authority_writes": 0
+  },
+  "configuration_sources": {
+    "environment_variables": {
+      "authorization_present_and_true": false,
+      "openai_key_present": false,
+      "registry_snapshot_present": false
+    },
+    "config_files": {
+      "config_py": true,
+      "dotenv": false,
+      "database_file": true,
+      "model_registry_snapshot_file": true
+    },
+    "provider_registry": {
+      "read_ok": true,
+      "profile_count": 9,
+      "non_mock_profile_count": 7,
+      "configured_non_mock_profile_count": 6,
+      "enabled_non_mock_profile_count": 7,
+      "model_endpoint_ready_non_mock_profile_count": 7
+    },
+    "credential_backend": {
+      "database_present": true,
+      "registry_read_succeeded": true,
+      "declarative_configured_profile_count": 6,
+      "runtime_secret_resolved": false,
+      "credential_validated": false
+    },
+    "runtime_injection": {
+      "authorization_injected": false,
+      "credential_injected": false,
+      "injection_sufficient": false
+    }
+  },
+  "chain": {
+    "provider_registry": {
+      "registry_configured": true,
+      "profiles_available": true
+    },
+    "provider_profile": {
+      "profile_available": true,
+      "enabled_non_mock_profile_available": true,
+      "credential_flag_available": true,
+      "model_and_endpoint_available": true,
+      "default_image_is_mock": false,
+      "default_video_is_mock": false
+    },
+    "credential_resolver": {
+      "credential_available": true,
+      "credential_validated": false,
+      "resolver_result": "DECLARATIVE_REGISTRY_FLAG_ONLY; NO_RUNTIME_SECRET_VALIDATION_PERFORMED"
+    },
+    "authorization_gate": {
+      "provider_authorized": false,
+      "authorization_gate_passed": false,
+      "missing_conditions": [
+        "PHASE_J_PROVIDER_AUTHORIZED=true",
+        "runtime credential validation"
+      ]
+    },
+    "execution_permission": {
+      "execution_allowed": false,
+      "reason": "fail_closed_until_external_authorization_and_runtime_credential_validation"
+    }
+  },
+  "diagnostic_matrix": {
+    "registry_configured": true,
+    "profile_available": true,
+    "credential_available": true,
+    "credential_validated": false,
+    "authorization_gate_passed": false,
+    "execution_allowed": false
+  },
+  "explanation": [
+    "credential_present=true is derived from non-mock model-registry key_configured metadata; it is a declaration, not proof that a runtime secret was resolved or validated.",
+    "The current runtime injection does not provide PHASE_J_PROVIDER_AUTHORIZED=true and does not provide an OPENAI_API_KEY value.",
+    "No credential resolver validation was attempted because this diagnostic is provider-free; therefore credential_validated remains false.",
+    "The authorization gate remains fail-closed and execution permission remains false; no Provider, LLM, Image, Video, or production Authority operation was attempted."
+  ],
+  "secret_audit": {
+    "key_content_recorded": false,
+    "token_recorded": false,
+    "authorization_header_recorded": false,
+    "secret_recorded": false
+  },
+  "registry_read_error_type": null
+}
