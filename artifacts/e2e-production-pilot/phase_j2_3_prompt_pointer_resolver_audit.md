@@ -22,6 +22,7 @@ Updated surfaces:
 | ORM and Alembic migration | UPDATED |
 | Phase E API preview/compile | UPDATED |
 | Phase F IMAGE canary | UPDATED |
+| Phase F real authority pilot snapshot | UPDATED (explicit IMAGE scope) |
 | OfficialMedia currentness | UPDATED |
 | Workspace projection | UPDATED |
 | Phase E real pilot resolver probes | UPDATED |
@@ -35,3 +36,5 @@ Updated surfaces:
 - migration chain hardening: PASS
 - H2 schema regression: PASS
 - provider/LLM/image/video calls: 0
+- J2.3 migration contract tests: 16 passed
+- Dual-media resolver contract tests: 4 passed

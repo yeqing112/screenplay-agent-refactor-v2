@@ -36,6 +36,7 @@ from models import (
 
 VALIDATION_VERSION = "media_validator_v1"
 MEDIA_ROLE_DEFAULT = "SHOT_PRIMARY_IMAGE"
+IMAGE_TO_VIDEO_BINDING_SCHEMA_VERSION = "image_to_video_official_media_binding_v1"
 
 
 class MediaAuthorityError(Exception):
@@ -72,6 +73,58 @@ def _json(value: Any, fallback: Any) -> Any:
 
 def _fail(code: str, message: str, diagnostics: Any = None, *, status_code: int = 409) -> None:
     raise MediaAuthorityError(code, message, diagnostics=diagnostics, status_code=status_code)
+
+
+def build_image_to_video_source_binding(*, official_media_authority: OfficialMediaAuthority, official_media_version: OfficialMediaVersion, source_prompt_ir_version_id: int | None = None, source_prompt_ir_payload_hash: str | None = None) -> dict[str, Any]:
+    """Build the structured IMAGE -> VIDEO source contract.
+
+    This is a lineage projection only.  It does not copy media rows or create
+    a VisualReferenceAuthority and it never invokes a provider.
+    """
+    return {
+        "schema_version": IMAGE_TO_VIDEO_BINDING_SCHEMA_VERSION,
+        "authority_class": "OFFICIAL_MEDIA",
+        "official_media_authority_id": str(official_media_authority.authority_id),
+        "official_media_version_id": str(official_media_version.official_media_version_id),
+        "media_role": str(official_media_version.media_role),
+        "checksum_sha256": str(official_media_version.checksum_sha256),
+        "source_prompt_ir_version_id": int(source_prompt_ir_version_id if source_prompt_ir_version_id is not None else official_media_version.prompt_ir_version_id),
+        "source_prompt_ir_payload_hash": str(source_prompt_ir_payload_hash if source_prompt_ir_payload_hash is not None else official_media_version.prompt_ir_payload_hash),
+    }
+
+
+def validate_image_to_video_source_binding(session: Any, *, execution: GenerationExecutionRecord, binding: dict[str, Any]) -> dict[str, Any]:
+    """Validate an IMAGE_TO_VIDEO source against current OfficialMedia truth."""
+    if not isinstance(binding, dict):
+        _fail("IMAGE_TO_VIDEO_SOURCE_BINDING_INVALID", "IMAGE_TO_VIDEO requires a structured OfficialMedia source binding.")
+    required = ("official_media_authority_id", "official_media_version_id", "media_role", "checksum_sha256", "source_prompt_ir_version_id", "source_prompt_ir_payload_hash")
+    missing = [key for key in required if str(binding.get(key) or "").strip() == ""]
+    if binding.get("authority_class") != "OFFICIAL_MEDIA" or missing:
+        _fail("IMAGE_TO_VIDEO_SOURCE_BINDING_INVALID", "IMAGE_TO_VIDEO source binding must identify current OfficialMedia authority and PromptIR lineage.", {"missing": missing, "authority_class": binding.get("authority_class")})
+    authority = session.query(OfficialMediaAuthority).filter_by(authority_id=str(binding["official_media_authority_id"])).first()
+    version = session.query(OfficialMediaVersion).filter_by(official_media_version_id=str(binding["official_media_version_id"])).first()
+    pointer = session.query(OfficialMediaPointer).filter_by(book_id=execution.book_id, episode=execution.episode, storyboard_shot_id=execution.storyboard_shot_id, media_role=str(binding["media_role"])).first()
+    prompt = session.query(PromptIRVersion).filter_by(id=int(binding["source_prompt_ir_version_id"])).first()
+    valid = bool(
+        authority and version and pointer and prompt
+        and authority.status == "CURRENT"
+        and version.status == "CURRENT"
+        and pointer.authority_id == authority.authority_id
+        and pointer.official_media_version_id == version.official_media_version_id
+        and int(version.book_id) == int(execution.book_id)
+        and int(version.episode) == int(execution.episode)
+        and int(version.storyboard_shot_id) == int(execution.storyboard_shot_id)
+        and str(version.media_type).upper() == "IMAGE"
+        and str(version.media_role) == "SHOT_PRIMARY_IMAGE"
+        and str(binding["media_role"]) == "SHOT_PRIMARY_IMAGE"
+        and str(binding["checksum_sha256"]) == str(version.checksum_sha256)
+        and int(prompt.id) == int(version.prompt_ir_version_id)
+        and str(prompt.payload_hash) == str(version.prompt_ir_payload_hash)
+        and str(binding["source_prompt_ir_payload_hash"]) == str(version.prompt_ir_payload_hash)
+    )
+    if not valid:
+        _fail("IMAGE_TO_VIDEO_SOURCE_BINDING_INVALID", "IMAGE_TO_VIDEO source is not the current OfficialMedia IMAGE authority for this shot.", {"authority_id": getattr(authority, "authority_id", None), "version_id": getattr(version, "official_media_version_id", None), "pointer_authority_id": getattr(pointer, "authority_id", None), "prompt_id": getattr(prompt, "id", None)})
+    return {"valid": True, "binding": dict(binding), "authority_id": authority.authority_id, "version_id": version.official_media_version_id, "source_prompt_ir_version_id": prompt.id, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
 
 
 def _candidate_fingerprint(candidate: MediaCandidateRecord, execution: GenerationExecutionRecord) -> str:
@@ -377,6 +430,13 @@ def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord
     asset_authority = _asset_authority_snapshot(session, book_id=execution.book_id, prompt_payload=prompt_payload)
     request = _json(execution.request_snapshot_json, {})
     generation_policy = request.get("generation_policy") if isinstance(request, dict) else {}
+    source_binding = request.get("image_to_video_source") if isinstance(request, dict) else None
+    image_to_video_source = {"required": str(execution.target_media or "").upper() == "VIDEO" and isinstance(generation_policy, dict) and str(generation_policy.get("mode") or "").upper() == "IMAGE_TO_VIDEO", "valid": True, "binding": source_binding}
+    if image_to_video_source["required"]:
+        try:
+            image_to_video_source = {"required": True, **validate_image_to_video_source_binding(session, execution=execution, binding=source_binding)}
+        except MediaAuthorityError as exc:
+            image_to_video_source = {"required": True, "valid": False, "code": exc.code, "diagnostics": exc.diagnostics, "binding": source_binding}
     raw_assets = request.get("asset_bindings", []) if isinstance(request, dict) else []
     asset_bindings = []
     for item in raw_assets if isinstance(raw_assets, list) else []:
@@ -402,8 +462,9 @@ def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord
         "generation_policy_current_fingerprint": str(prompt.get("current_generation_policy_fingerprint") or ""),
         "generation_policy_matches": not prompt.get("current_generation_policy_fingerprint") or str(prompt.get("current_generation_policy_fingerprint")) == str(execution.generation_policy_fingerprint or ""),
         "generation_policy_request": generation_policy if isinstance(generation_policy, dict) else {},
+        "image_to_video_source": image_to_video_source,
         "reference_bindings_fingerprint": str(execution.reference_bindings_fingerprint or ""),
-        "currentness_valid": media_scope_valid and bool(prompt.get("matches", True)) and bool(prompt.get("generation_policy_matches", True)) and all(item.get("pointer_matches", True) for item in asset.get("bindings", [])) and all(item.get("pointer_matches", True) for item in asset_authority.get("bindings", [])) and all(item.get("exists") and item.get("pointer_matches", True) and str(item.get("status") or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.get("stale_status") or "FRESH").upper() == "FRESH" for item in reference.get("bindings", [])) and bool(production_asset_binding.get("currentness_valid", True)),
+        "currentness_valid": media_scope_valid and bool(prompt.get("matches", True)) and bool(prompt.get("generation_policy_matches", True)) and bool(image_to_video_source.get("valid", True)) and all(item.get("pointer_matches", True) for item in asset.get("bindings", [])) and all(item.get("pointer_matches", True) for item in asset_authority.get("bindings", [])) and all(item.get("exists") and item.get("pointer_matches", True) and str(item.get("status") or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.get("stale_status") or "FRESH").upper() == "FRESH" for item in reference.get("bindings", [])) and bool(production_asset_binding.get("currentness_valid", True)),
     }
 
 

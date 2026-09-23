@@ -254,13 +254,23 @@ def inspect_schema(db_path: Path) -> dict[str, Any]:
             for table, columns in REQUIRED_COLUMNS.items()
             if table in tables and columns - {column["name"] for column in inspector.get_columns(table)}
         }
+        prompt_scope = {"status": "NOT_APPLICABLE"}
+        if "prompt_ir_pointers" in tables:
+            unique_constraints = inspector.get_unique_constraints("prompt_ir_pointers")
+            checks = inspector.get_check_constraints("prompt_ir_pointers")
+            indexes = inspector.get_indexes("prompt_ir_pointers")
+            composite = any(item.get("name") == "uq_prompt_ir_pointer_media_scope" and item.get("column_names") == ["book_id", "episode", "storyboard_shot_id", "target_media"] for item in unique_constraints)
+            check = any(item.get("name") == "ck_prompt_ir_pointer_target_media" and "target_media" in str(item.get("sqltext") or "") for item in checks)
+            standalone = any(item.get("column_names") == ["target_media"] for item in indexes)
+            prompt_scope = {"status": "PASS" if composite and check and not standalone else "FAIL", "target_media_column": "target_media" in {column["name"] for column in inspector.get_columns("prompt_ir_pointers")}, "target_media_single_column_index": standalone, "composite_unique": composite, "check_constraint": check, "unique_constraints": unique_constraints, "check_constraints": checks}
         return {
             "database": "disposable temporary SQLite database",
             "authority_tables_expected": sorted(AUTHORITY_TABLES),
             "authority_tables_present": sorted(AUTHORITY_TABLES & tables),
             "missing_authority_tables": missing_tables,
             "missing_authority_columns": missing_columns,
-            "status": "PASS" if not missing_tables and not missing_columns else "FAIL",
+            "prompt_ir_pointer_scope": prompt_scope,
+            "status": "PASS" if not missing_tables and not missing_columns and prompt_scope.get("status") in {"PASS", "NOT_APPLICABLE"} else "FAIL",
         }
     finally:
         engine.dispose()

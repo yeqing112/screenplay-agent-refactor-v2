@@ -90,5 +90,29 @@
   "database": "disposable temporary SQLite database",
   "missing_authority_columns": {},
   "missing_authority_tables": [],
+  "prompt_ir_pointer_scope": {
+    "check_constraint": true,
+    "check_constraints": [
+      {
+        "name": "ck_prompt_ir_pointer_target_media",
+        "sqltext": "target_media IN ('IMAGE','VIDEO')"
+      }
+    ],
+    "composite_unique": true,
+    "status": "PASS",
+    "target_media_column": true,
+    "target_media_single_column_index": false,
+    "unique_constraints": [
+      {
+        "column_names": [
+          "book_id",
+          "episode",
+          "storyboard_shot_id",
+          "target_media"
+        ],
+        "name": "uq_prompt_ir_pointer_media_scope"
+      }
+    ]
+  },
   "status": "PASS"
 }

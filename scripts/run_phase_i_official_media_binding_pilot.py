@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import copy
 import hashlib
 import json
 import shutil
@@ -160,6 +161,27 @@ def _insert_prompt_ir(session, shots: list[StoryboardShot]) -> dict[int, PromptI
     return versions
 
 
+def _insert_video_pointer_probe(session, shot: StoryboardShot, image_version: PromptIRVersion) -> dict[str, Any]:
+    """Add one legal VIDEO PromptIR scope without generating or validating video."""
+    payload = json.loads(image_version.payload_json or "{}")
+    payload = copy.deepcopy(payload)
+    policy = dict(payload.get("generation_policy") or {})
+    policy.update({"mode": "IMAGE_TO_VIDEO", "target_media": "VIDEO"})
+    payload["generation_policy"] = policy
+    payload_hash = _fp(payload)
+    now = image_version.updated_at
+    version = PromptIRVersion(book_id=image_version.book_id, episode=image_version.episode, scene_id=image_version.scene_id, storyboard_shot_id=shot.id, materialization_set_id=image_version.materialization_set_id, plan_shot_id=image_version.plan_shot_id, schema_version=image_version.schema_version, payload_json=_canonical(payload), payload_hash=payload_hash, compiler_version=image_version.compiler_version, compiler_policy_version=image_version.compiler_policy_version, retention_policy_version=image_version.retention_policy_version, authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state=image_version.asset_reference_state, model_generation_ready="false", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
+    session.add(version)
+    session.flush()
+    envelope = {"schema_version": "prompt_ir_authority_v1", "prompt_ir_version_id": version.id, "payload_hash": payload_hash, "storyboard_shot_id": shot.id, "generation_policy": policy, "fingerprint": _fp({"version_id": version.id, "payload_hash": payload_hash})}
+    authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=version.book_id, episode=version.episode, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["fingerprint"], envelope_json=_canonical(envelope), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
+    version.authority_envelope_json = _canonical(envelope)
+    pointer = PromptIRPointer(book_id=version.book_id, episode=version.episode, storyboard_shot_id=shot.id, target_media="VIDEO", prompt_ir_version_id=version.id, payload_hash=payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now)
+    session.add_all([authority, pointer])
+    session.commit()
+    return {"pointer_id": pointer.id, "version_id": version.id, "target_media": pointer.target_media, "provider_calls": 0, "video_generation_started": False}
+
+
 def _insert_generation_and_promote(session, shots: list[StoryboardShot], prompts: dict[int, PromptIRVersion], media_dir: Path) -> list[dict[str, Any]]:
     records = []
     for shot in shots:
@@ -190,7 +212,8 @@ def _drift_probe(db_path: Path, drift: str) -> dict[str, Any]:
     session = sessionmaker(bind=engine)()
     try:
         if drift == "prompt_ir":
-            version = session.query(PromptIRVersion).filter_by(storyboard_shot_id=1).one()
+            image_pointer = session.query(PromptIRPointer).filter_by(storyboard_shot_id=1, target_media="IMAGE").one()
+            version = session.query(PromptIRVersion).filter_by(id=image_pointer.prompt_ir_version_id).one()
             payload = json.loads(version.payload_json)
             payload["prompt"]["text"] += " drift"
             version.payload_json = _canonical(payload)
@@ -255,6 +278,12 @@ def run(output_dir: Path = OUT_DIR) -> dict[str, Any]:
             records = _insert_generation_and_promote(session, shots, prompts, media_dir)
             with engine.connect() as connection:
                 after_counts = _counts(connection)
+            video_pointer_probe = _insert_video_pointer_probe(session, shots[0], prompts[shots[0].id])
+            try:
+                image_after_video = resolve_current_official_media_for_shot(session, book_id=BOOK_ID, episode=1, storyboard_shot_id=shots[0].id)
+                dual_media_probe = {"image_official_before_video_pointer": "PASS", "video_pointer_created": video_pointer_probe, "image_official_after_video_pointer": "PASS" if image_after_video.get("status") == "PASS" else "FAIL", "provider_calls": 0, "video_generation_started": False}
+            except MediaAuthorityError as exc:
+                dual_media_probe = {"image_official_before_video_pointer": "PASS", "video_pointer_created": video_pointer_probe, "image_official_after_video_pointer": "FAIL", "error_code": exc.code, "provider_calls": 0, "video_generation_started": False}
             matrix_rows = []
             for record in records:
                 shot = record["shot"]
@@ -291,6 +320,7 @@ def run(output_dir: Path = OUT_DIR) -> dict[str, Any]:
                 "asset_binding_resolved": 15,
                 "prompt_ir_resolved": 15,
                 "generation_execution_resolved": 15,
+                "dual_media_probe": dual_media_probe,
                 "drift_tests": drift,
                 "provider_calls": 0,
                 "image_calls": 0,

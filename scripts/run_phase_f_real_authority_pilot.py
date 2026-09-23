@@ -81,7 +81,7 @@ def run() -> dict:
                 "storyboard_shot": project(StoryboardShot, ["id", "shot_id", "plan_shot_id", "projection_fingerprint", "materialization_status"]),
                 "prompt_ir": project(PromptIRVersion, ["id", "storyboard_shot_id", "plan_shot_id", "payload_hash", "stale_status"]),
                 "prompt_ir_authority": project(PromptIRAuthority, ["id", "prompt_ir_version_id", "envelope_fingerprint", "stale_status"], scoped=False),
-                "prompt_ir_pointer": project(PromptIRPointer, ["id", "storyboard_shot_id", "prompt_ir_version_id", "payload_hash"]),
+                "prompt_ir_pointer": project(PromptIRPointer, ["id", "storyboard_shot_id", "target_media", "prompt_ir_version_id", "payload_hash"]),
                 "visual_asset_pointer": project(VisualAssetPointer, ["id", "asset_key", "current_version_id", "payload_hash", "stale_status"], scoped=False),
                 "reference_authority": project(VisualReferenceAuthority, ["id", "asset_key", "asset_version_id", "authority_fingerprint", "checksum", "stale_status"], scoped=False),
             }
@@ -93,7 +93,9 @@ def run() -> dict:
             }
 
         with Session() as session:
-            pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.storyboard_shot_id).first()
+            # Phase F remains an IMAGE canary, so derive its exact scope
+            # explicitly rather than relying on the legacy shot-only pointer.
+            pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.storyboard_shot_id).first()
             if pointer is None:
                 raise RuntimeError("real Phase E pilot did not persist a PromptIR pointer")
             prompt_version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
@@ -131,7 +133,7 @@ def run() -> dict:
             trace = {
                 "database": "REAL_SQLITE",
                 "database_mode": "REAL_SQLITE",
-                "alembic_head": "y8h9i0j1k2l3",
+                "alembic_head": "b2c3d4e5f6g7",
                 "book_id": book_id, "episode": episode, "shot_id": shot_id,
                 "shot": {"storyboard_shot_id": storyboard_row.id, "business_shot_id": storyboard_row.shot_id, "plan_shot_id": storyboard_row.plan_shot_id, "scene_id": storyboard_row.scene_id},
                 "before_authorities": before,

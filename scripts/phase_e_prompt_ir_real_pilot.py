@@ -173,21 +173,21 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     engine.dispose(); _copy_sqlite_snapshot(db_file, policy_a_baseline)
     with Session() as session:
         after_idempotent = _counts(session, book_id, episode)
-        pointer_hashes_before_failure = {row.storyboard_shot_id: row.payload_hash for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
-        revision_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
-        revision_authority_before = {row.storyboard_shot_id: session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
-        revision_pointer_rows_before = {row.storyboard_shot_id: row.id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        pointer_hashes_before_failure = {(row.storyboard_shot_id, row.target_media): row.payload_hash for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_before = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_authority_before = {(row.storyboard_shot_id, row.target_media): session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_pointer_rows_before = {(row.storyboard_shot_id, row.target_media): row.id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
     failed_compile = _compile(book_id, episode, PhaseECompileRequest(generation_policy={"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": ["CHARACTER"]}))
     with Session() as session:
         after_failed = _counts(session, book_id, episode)
-        pointer_hashes_after_failure = {row.storyboard_shot_id: row.payload_hash for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        pointer_hashes_after_failure = {(row.storyboard_shot_id, row.target_media): row.payload_hash for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
 
     revision_request = PhaseECompileRequest(generation_policy={"mode": "IMAGE_TO_VIDEO", "target_media": "VIDEO", "required_asset_classes": []})
     policy_revision = _compile(book_id, episode, revision_request)
     with Session() as session:
-        revision_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
-        revision_authority_after = {row.storyboard_shot_id: session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
-        revision_pointer_rows_after = {row.storyboard_shot_id: row.id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_after = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_authority_after = {(row.storyboard_shot_id, row.target_media): session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        revision_pointer_rows_after = {(row.storyboard_shot_id, row.target_media): row.id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         revision_old_states = {row.id: row.stale_status for row in session.query(PromptIRVersion).filter(PromptIRVersion.id.in_(list(revision_before.values()))).all()}
     revision_reuse = _compile(book_id, episode, revision_request)
 
@@ -202,7 +202,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         from api.visual_asset_authority_api import VisualVersionBody, create_visual_asset_version
 
         with Session() as session:
-            prompt_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            prompt_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.id).first()
             prompt_version = session.query(PromptIRVersion).filter_by(id=prompt_pointer.prompt_ir_version_id).one()
             prompt_payload = _json(prompt_version.payload_json, {})
             resolved_assets = _json(prompt_payload.get("asset_authority_bindings", {}).get("resolved"), [])
@@ -211,8 +211,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             target_version = session.query(VisualAssetVersion).filter_by(id=target_pointer.current_version_id).one()
             old_asset_version_id = target_version.id
             old_asset_pointer = {"id": target_pointer.id, "asset_key": target_pointer.asset_key, "current_version_id": target_pointer.current_version_id, "payload_hash": target_pointer.payload_hash, "authority_status": target_pointer.authority_status, "stale_status": target_pointer.stale_status}
-            old_prompt_ids = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
-            old_prompt_authority_ids = {row.storyboard_shot_id: session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            old_prompt_ids = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            old_prompt_authority_ids = {(row.storyboard_shot_id, row.target_media): session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
             target_asset_type = target_pointer.asset_type
             target_canonical_id = target_version.canonical_id
 
@@ -230,8 +230,8 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         asset_revision_compile = _compile(book_id, episode, revision_request)
         with Session() as session:
             current_asset_pointer = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=target_asset_key).one()
-            new_prompt_ids = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
-            new_prompt_authority_ids = {row.storyboard_shot_id: session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            new_prompt_ids = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            new_prompt_authority_ids = {(row.storyboard_shot_id, row.target_media): session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=row.prompt_ir_version_id).one().id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
             old_prompt_stale = {row.id: row.stale_status for row in session.query(PromptIRVersion).filter(PromptIRVersion.id.in_(list(old_prompt_ids.values()))).all()}
             asset_revision = {
                 "status": "PASS" if asset_revision_compile.get("status_code") is None and current_asset_pointer.current_version_id != old_asset_version_id else "FAIL",
@@ -246,7 +246,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
                 "new_prompt_ir_version_ids": new_prompt_ids,
                 "old_prompt_ir_authority_ids": old_prompt_authority_ids,
                 "new_prompt_ir_authority_ids": new_prompt_authority_ids,
-                "changed_shot_ids": sorted(str(shot_id) for shot_id in old_prompt_ids if old_prompt_ids[shot_id] != new_prompt_ids.get(shot_id)),
+                "changed_shot_ids": sorted(str(scope[0]) for scope in old_prompt_ids if old_prompt_ids[scope] != new_prompt_ids.get(scope)),
                 "old_stale_states": old_prompt_stale,
             }
     finally:
@@ -322,7 +322,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         historical_integrity["clean_current"] = "PASS" if clean_results and all(item.get("integrity_valid") for item in clean_results) else "FAIL"
 
     def _tamper_prompt_row(session):
-        pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+        pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.id).first()
         version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
         authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
         payload = _json(version.payload_json, {})
@@ -414,11 +414,11 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             pointer_id, version_id = _tamper_prompt_row(session)
             session.commit()
             before = _counts(session, book_id, episode)
-            pointer_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            pointer_before = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         result = _compile(book_id, episode, revision_request)
         with Session() as session:
             after = _counts(session, book_id, episode)
-            pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            pointer_after = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         historical_integrity["semantic_tamper_plus_policy_revision"] = {"status": "FAIL_CLOSED" if result.get("status_code") == 409 and before == after and pointer_before == pointer_after else "FAIL", "result": result, "counts_unchanged": before == after, "pointers_unchanged": pointer_before == pointer_after, "tampered_version_id": version_id, "pointer_id": pointer_id}
     finally:
         _copy_sqlite_snapshot(clean_db, db_file)
@@ -439,7 +439,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             old_asset_canonical_id = old_asset_version.canonical_id
             old_asset_version_id = old_asset_version.id
             before = _counts(session, book_id, episode)
-            pointer_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            pointer_before = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
             # Create a legitimate immutable A -> B revision in the same
             # transaction context as the tamper probe.  Keeping this local
             # avoids a second pooled connection masking the probe row while
@@ -461,14 +461,14 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         engine.dispose()
         with Session() as session:
             tamper_camera_after_commit = _json(session.query(PromptIRVersion).filter_by(id=version_id).one().payload_json, {}).get("camera", {})
-            probe_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            probe_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.id).first()
             probe_version = session.query(PromptIRVersion).filter_by(id=probe_pointer.prompt_ir_version_id).one()
             probe_authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=probe_version.id).one()
             historical_probe = validate_prompt_ir_historical_integrity(session, version=probe_version, authority=probe_authority, payload=_json(probe_version.payload_json, {}))
         result = _compile(book_id, episode, revision_request)
         with Session() as session:
             after = _counts(session, book_id, episode)
-            pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            pointer_after = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         historical_integrity["semantic_tamper_plus_asset_revision"] = {"status": "FAIL_CLOSED" if result.get("status_code") == 409 and before == after and pointer_before == pointer_after else "FAIL", "result": result, "historical_probe": {"integrity_valid": historical_probe.get("integrity_valid"), "code": historical_probe.get("code"), "stored_camera": _json(probe_version.payload_json, {}).get("camera", {}), "expected_camera": _json(historical_probe.get("expected_payload", {}), {}).get("camera", {}), "tamper_camera_before_commit": tamper_camera_before_commit, "tamper_camera_after_commit": tamper_camera_after_commit}, "counts_unchanged": before == after, "pointers_unchanged": pointer_before == pointer_after, "tampered_version_id": version_id}
     finally:
         _copy_sqlite_snapshot(clean_db, db_file)
@@ -480,18 +480,18 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     engine.dispose(); _copy_sqlite_snapshot(policy_a_baseline, db_file)
     try:
         with Session() as session:
-            pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.id).first()
             version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
             scene_id = version.scene_id
             before = _counts(session, book_id, episode)
-            pointer_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            pointer_before = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
             probe = _create_storyboard_revision_probe(session, scene_id=scene_id)
             session.commit()
         result = _compile(book_id, episode, revision_request)
         with Session() as session:
             after = _counts(session, book_id, episode)
-            pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
-        changed = sorted(str(shot_id) for shot_id in pointer_before if pointer_before[shot_id] != pointer_after.get(shot_id))
+            pointer_after = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        changed = sorted(str(scope[0]) for scope in pointer_before if pointer_before[scope] != pointer_after.get(scope))
         storyboard_revision = {"status": "PASS" if result.get("status_code") is None and before["versions"] < after["versions"] and changed else "FAIL", "result": result, "probe": probe, "counts_before": before, "counts_after": after, "pointers_before": pointer_before, "pointers_after": pointer_after, "changed_shot_ids": changed}
     finally:
         _copy_sqlite_snapshot(clean_db, db_file)
@@ -505,13 +505,13 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             version = session.query(PromptIRVersion).filter_by(id=version_id).one()
             scene_id = version.scene_id
             before = _counts(session, book_id, episode)
-            pointer_before = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            pointer_before = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
             storyboard_probe = _create_storyboard_revision_probe(session, scene_id=scene_id)
             session.commit()
         result = _compile(book_id, episode, revision_request)
         with Session() as session:
             after = _counts(session, book_id, episode)
-            pointer_after = {row.storyboard_shot_id: row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+            pointer_after = {(row.storyboard_shot_id, row.target_media): row.prompt_ir_version_id for row in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         historical_integrity["semantic_tamper_plus_storyboard_revision"] = {"status": "FAIL_CLOSED" if result.get("status_code") == 409 and before == after and pointer_before == pointer_after else "FAIL", "result": result, "probe": storyboard_probe, "counts_unchanged": before == after, "pointers_unchanged": pointer_before == pointer_after, "tampered_version_id": version_id, "pointer_id": pointer_id}
     finally:
         _copy_sqlite_snapshot(clean_db, db_file)
@@ -522,7 +522,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         engine.dispose(); _copy_sqlite_snapshot(clean_db, baseline)
         try:
             with Session() as session:
-                pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+                pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.id).first()
                 version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
                 authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
                 payload = _json(version.payload_json, {})
@@ -555,7 +555,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     engine.dispose(); shutil.copy2(db_file, baseline)
     try:
         with Session() as session:
-            prompt_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_ids[0]).one()
+            prompt_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_ids[0], target_media="IMAGE").one()
             prompt_version = session.query(PromptIRVersion).filter_by(id=prompt_pointer.prompt_ir_version_id).one()
             resolved_assets = _json(_json(prompt_version.payload_json, {}).get("asset_authority_bindings", {}).get("resolved"), [])
             target_asset_key = next(item.get("asset_authority_ref") for item in resolved_assets if item.get("asset_authority_ref"))
@@ -573,7 +573,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     with Session() as session:
         for shot_id in shot_ids:
             shot_row = session.query(StoryboardShot).filter_by(id=shot_id, book_id=book_id, episode=episode).one()
-            current_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id).one()
+            current_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id, target_media="IMAGE").one()
             meta = _json(shot_row.meta_info, {})
             handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else {}
             asset_authority = _production_asset_authority(session, book_id=book_id, handoff=handoff if isinstance(handoff, dict) else {})
@@ -595,7 +595,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             stale_storyboard = {"set_id": set_row.id, "prompt_ir_versions_staled": sum(item.stale_status == "STALE" for item in stale_versions), "authority_stale": sum(item.stale_status == "STALE" for item in session.query(PromptIRAuthority).filter(PromptIRAuthority.prompt_ir_version_id.in_([item.id for item in stale_versions])).all())}
         shutil.copy2(baseline, db_file)
         with Session() as session:
-            current_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            current_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.id).first()
             version = session.query(PromptIRVersion).filter_by(id=current_pointer.prompt_ir_version_id).one()
             payload = _json(version.payload_json, {})
             resolved_refs = _json(payload.get("asset_authority_bindings", {}).get("resolved"), [])
@@ -616,7 +616,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
         shutil.copy2(db_file, baseline)
         try:
             with Session() as session:
-                pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+                pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.id).first()
                 version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
                 authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
                 if case_name == "pointer_tamper":
@@ -664,10 +664,10 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     engine.dispose(); shutil.copy2(db_file, baseline)
     try:
         with Session() as session:
-            pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
+            pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, target_media="IMAGE").order_by(PromptIRPointer.id).first()
             version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
             version.schema_version = "prompt_ir_authority_v1"
-                session.commit(); shot_id = version.storyboard_shot_id
+            session.commit(); shot_id = version.storyboard_shot_id
         legacy_v1_gate["compile"] = _compile(book_id, episode, request)
         legacy_v1_gate["adapter_preview"] = _preview(book_id, episode, shot_id)
     finally:

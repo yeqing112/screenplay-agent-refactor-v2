@@ -5,12 +5,15 @@
   "table": "prompt_ir_pointers",
   "columns": {
     "target_media": {"nullable": false, "check": "IMAGE|VIDEO"},
+    "version_target_media_column": false,
+    "authority_target_media_column": false,
     "legacy_unique": "removed"
   },
   "constraints": {
     "check": "ck_prompt_ir_pointer_target_media",
     "unique": "uq_prompt_ir_pointer_media_scope",
-    "unique_columns": ["book_id", "episode", "storyboard_shot_id", "target_media"]
+    "unique_columns": ["book_id", "episode", "storyboard_shot_id", "target_media"],
+    "target_media_single_column_index": false
   },
   "indexes_preserved": ["ix_prompt_ir_pointers_book_episode", "ix_prompt_ir_pointers_shot"],
   "standalone_target_media_index": false,

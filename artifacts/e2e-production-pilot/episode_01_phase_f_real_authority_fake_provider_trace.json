@@ -1,7 +1,7 @@
 {
   "database": "REAL_SQLITE",
   "database_mode": "REAL_SQLITE",
-  "alembic_head": "y8h9i0j1k2l3",
+  "alembic_head": "b2c3d4e5f6g7",
   "book_id": 990401,
   "episode": 1,
   "shot_id": 1,
@@ -925,91 +925,106 @@
           "id": 1,
           "storyboard_shot_id": 1,
           "prompt_ir_version_id": 31,
-          "payload_hash": "f5b8fe25264a3839e84aab48973d3805880b99934621dea1561e1918208bd02b"
+          "payload_hash": "f5b8fe25264a3839e84aab48973d3805880b99934621dea1561e1918208bd02b",
+          "target_media": "IMAGE"
         },
         {
           "id": 2,
           "storyboard_shot_id": 2,
           "prompt_ir_version_id": 32,
-          "payload_hash": "e69d5c17ffb328602f97a9dc266342c0ffd9744b595638d805e38f77c3e0b948"
+          "payload_hash": "e69d5c17ffb328602f97a9dc266342c0ffd9744b595638d805e38f77c3e0b948",
+          "target_media": "IMAGE"
         },
         {
           "id": 3,
           "storyboard_shot_id": 3,
           "prompt_ir_version_id": 33,
-          "payload_hash": "e70df0bf7dada59636befdc71deebbd880c7875fdfa3d6db557c6768226b0786"
+          "payload_hash": "e70df0bf7dada59636befdc71deebbd880c7875fdfa3d6db557c6768226b0786",
+          "target_media": "IMAGE"
         },
         {
           "id": 4,
           "storyboard_shot_id": 4,
           "prompt_ir_version_id": 34,
-          "payload_hash": "81582ccd18bebee50d5ef52472b60ba936c52fa5714ae3b363501a57b9c851c7"
+          "payload_hash": "81582ccd18bebee50d5ef52472b60ba936c52fa5714ae3b363501a57b9c851c7",
+          "target_media": "IMAGE"
         },
         {
           "id": 5,
           "storyboard_shot_id": 5,
           "prompt_ir_version_id": 35,
-          "payload_hash": "53438712dd9fba1a685c8ef72bb1d189bfe1f9ed4ba9ce1d302779209b6bed49"
+          "payload_hash": "53438712dd9fba1a685c8ef72bb1d189bfe1f9ed4ba9ce1d302779209b6bed49",
+          "target_media": "IMAGE"
         },
         {
           "id": 6,
           "storyboard_shot_id": 6,
           "prompt_ir_version_id": 36,
-          "payload_hash": "e228539a67cb681153955de04805e6b02ec5db4dbda87789bf3dd4eb86df9037"
+          "payload_hash": "e228539a67cb681153955de04805e6b02ec5db4dbda87789bf3dd4eb86df9037",
+          "target_media": "IMAGE"
         },
         {
           "id": 7,
           "storyboard_shot_id": 7,
           "prompt_ir_version_id": 37,
-          "payload_hash": "285df9290503fb9a90b3b23d02142d63ee073a88fb0d884fdee1e1e01412870c"
+          "payload_hash": "285df9290503fb9a90b3b23d02142d63ee073a88fb0d884fdee1e1e01412870c",
+          "target_media": "IMAGE"
         },
         {
           "id": 8,
           "storyboard_shot_id": 8,
           "prompt_ir_version_id": 38,
-          "payload_hash": "a00d4b733246a301323e3215c4ca435072caff6ff0500ff6405fdf0719a9fd2b"
+          "payload_hash": "a00d4b733246a301323e3215c4ca435072caff6ff0500ff6405fdf0719a9fd2b",
+          "target_media": "IMAGE"
         },
         {
           "id": 9,
           "storyboard_shot_id": 9,
           "prompt_ir_version_id": 39,
-          "payload_hash": "aeda3fc6f230b96a80320eb2494c6e87b6caa07bcd3e4db943edc087b20c5dec"
+          "payload_hash": "aeda3fc6f230b96a80320eb2494c6e87b6caa07bcd3e4db943edc087b20c5dec",
+          "target_media": "IMAGE"
         },
         {
           "id": 10,
           "storyboard_shot_id": 10,
           "prompt_ir_version_id": 40,
-          "payload_hash": "4a8252a0e43d25085e6c6d100f88511527e37ddb5335517c928b22bc75aef442"
+          "payload_hash": "4a8252a0e43d25085e6c6d100f88511527e37ddb5335517c928b22bc75aef442",
+          "target_media": "IMAGE"
         },
         {
           "id": 11,
           "storyboard_shot_id": 11,
           "prompt_ir_version_id": 41,
-          "payload_hash": "456fe1e0d68c012f2249a9d9aaf61c6187f88011310aac4e01c171e095016d07"
+          "payload_hash": "456fe1e0d68c012f2249a9d9aaf61c6187f88011310aac4e01c171e095016d07",
+          "target_media": "IMAGE"
         },
         {
           "id": 12,
           "storyboard_shot_id": 12,
           "prompt_ir_version_id": 42,
-          "payload_hash": "6895bf8be2f10a6735bc16cbad39a8463bdeb5e61f6ce4f87747fff7e6853e5a"
+          "payload_hash": "6895bf8be2f10a6735bc16cbad39a8463bdeb5e61f6ce4f87747fff7e6853e5a",
+          "target_media": "IMAGE"
         },
         {
           "id": 13,
           "storyboard_shot_id": 13,
           "prompt_ir_version_id": 43,
-          "payload_hash": "946b88d65502b5182e34f8a9808397491771c90c2027843e0e14392ceb7458f1"
+          "payload_hash": "946b88d65502b5182e34f8a9808397491771c90c2027843e0e14392ceb7458f1",
+          "target_media": "IMAGE"
         },
         {
           "id": 14,
           "storyboard_shot_id": 14,
           "prompt_ir_version_id": 44,
-          "payload_hash": "214153cefeceed0e556da7d0fcc5caf4a7b1974206b04170e0beeccec1463671"
+          "payload_hash": "214153cefeceed0e556da7d0fcc5caf4a7b1974206b04170e0beeccec1463671",
+          "target_media": "IMAGE"
         },
         {
           "id": 15,
           "storyboard_shot_id": 15,
           "prompt_ir_version_id": 45,
-          "payload_hash": "42907325de43f39cb2a4717e84e7dae7d05192473b90aadb696e5aa548d2c610"
+          "payload_hash": "42907325de43f39cb2a4717e84e7dae7d05192473b90aadb696e5aa548d2c610",
+          "target_media": "IMAGE"
         }
       ],
       "visual_asset_pointer": [
@@ -2059,91 +2074,106 @@
           "id": 1,
           "storyboard_shot_id": 1,
           "prompt_ir_version_id": 31,
-          "payload_hash": "f5b8fe25264a3839e84aab48973d3805880b99934621dea1561e1918208bd02b"
+          "payload_hash": "f5b8fe25264a3839e84aab48973d3805880b99934621dea1561e1918208bd02b",
+          "target_media": "IMAGE"
         },
         {
           "id": 2,
           "storyboard_shot_id": 2,
           "prompt_ir_version_id": 32,
-          "payload_hash": "e69d5c17ffb328602f97a9dc266342c0ffd9744b595638d805e38f77c3e0b948"
+          "payload_hash": "e69d5c17ffb328602f97a9dc266342c0ffd9744b595638d805e38f77c3e0b948",
+          "target_media": "IMAGE"
         },
         {
           "id": 3,
           "storyboard_shot_id": 3,
           "prompt_ir_version_id": 33,
-          "payload_hash": "e70df0bf7dada59636befdc71deebbd880c7875fdfa3d6db557c6768226b0786"
+          "payload_hash": "e70df0bf7dada59636befdc71deebbd880c7875fdfa3d6db557c6768226b0786",
+          "target_media": "IMAGE"
         },
         {
           "id": 4,
           "storyboard_shot_id": 4,
           "prompt_ir_version_id": 34,
-          "payload_hash": "81582ccd18bebee50d5ef52472b60ba936c52fa5714ae3b363501a57b9c851c7"
+          "payload_hash": "81582ccd18bebee50d5ef52472b60ba936c52fa5714ae3b363501a57b9c851c7",
+          "target_media": "IMAGE"
         },
         {
           "id": 5,
           "storyboard_shot_id": 5,
           "prompt_ir_version_id": 35,
-          "payload_hash": "53438712dd9fba1a685c8ef72bb1d189bfe1f9ed4ba9ce1d302779209b6bed49"
+          "payload_hash": "53438712dd9fba1a685c8ef72bb1d189bfe1f9ed4ba9ce1d302779209b6bed49",
+          "target_media": "IMAGE"
         },
         {
           "id": 6,
           "storyboard_shot_id": 6,
           "prompt_ir_version_id": 36,
-          "payload_hash": "e228539a67cb681153955de04805e6b02ec5db4dbda87789bf3dd4eb86df9037"
+          "payload_hash": "e228539a67cb681153955de04805e6b02ec5db4dbda87789bf3dd4eb86df9037",
+          "target_media": "IMAGE"
         },
         {
           "id": 7,
           "storyboard_shot_id": 7,
           "prompt_ir_version_id": 37,
-          "payload_hash": "285df9290503fb9a90b3b23d02142d63ee073a88fb0d884fdee1e1e01412870c"
+          "payload_hash": "285df9290503fb9a90b3b23d02142d63ee073a88fb0d884fdee1e1e01412870c",
+          "target_media": "IMAGE"
         },
         {
           "id": 8,
           "storyboard_shot_id": 8,
           "prompt_ir_version_id": 38,
-          "payload_hash": "a00d4b733246a301323e3215c4ca435072caff6ff0500ff6405fdf0719a9fd2b"
+          "payload_hash": "a00d4b733246a301323e3215c4ca435072caff6ff0500ff6405fdf0719a9fd2b",
+          "target_media": "IMAGE"
         },
         {
           "id": 9,
           "storyboard_shot_id": 9,
           "prompt_ir_version_id": 39,
-          "payload_hash": "aeda3fc6f230b96a80320eb2494c6e87b6caa07bcd3e4db943edc087b20c5dec"
+          "payload_hash": "aeda3fc6f230b96a80320eb2494c6e87b6caa07bcd3e4db943edc087b20c5dec",
+          "target_media": "IMAGE"
         },
         {
           "id": 10,
           "storyboard_shot_id": 10,
           "prompt_ir_version_id": 40,
-          "payload_hash": "4a8252a0e43d25085e6c6d100f88511527e37ddb5335517c928b22bc75aef442"
+          "payload_hash": "4a8252a0e43d25085e6c6d100f88511527e37ddb5335517c928b22bc75aef442",
+          "target_media": "IMAGE"
         },
         {
           "id": 11,
           "storyboard_shot_id": 11,
           "prompt_ir_version_id": 41,
-          "payload_hash": "456fe1e0d68c012f2249a9d9aaf61c6187f88011310aac4e01c171e095016d07"
+          "payload_hash": "456fe1e0d68c012f2249a9d9aaf61c6187f88011310aac4e01c171e095016d07",
+          "target_media": "IMAGE"
         },
         {
           "id": 12,
           "storyboard_shot_id": 12,
           "prompt_ir_version_id": 42,
-          "payload_hash": "6895bf8be2f10a6735bc16cbad39a8463bdeb5e61f6ce4f87747fff7e6853e5a"
+          "payload_hash": "6895bf8be2f10a6735bc16cbad39a8463bdeb5e61f6ce4f87747fff7e6853e5a",
+          "target_media": "IMAGE"
         },
         {
           "id": 13,
           "storyboard_shot_id": 13,
           "prompt_ir_version_id": 43,
-          "payload_hash": "946b88d65502b5182e34f8a9808397491771c90c2027843e0e14392ceb7458f1"
+          "payload_hash": "946b88d65502b5182e34f8a9808397491771c90c2027843e0e14392ceb7458f1",
+          "target_media": "IMAGE"
         },
         {
           "id": 14,
           "storyboard_shot_id": 14,
           "prompt_ir_version_id": 44,
-          "payload_hash": "214153cefeceed0e556da7d0fcc5caf4a7b1974206b04170e0beeccec1463671"
+          "payload_hash": "214153cefeceed0e556da7d0fcc5caf4a7b1974206b04170e0beeccec1463671",
+          "target_media": "IMAGE"
         },
         {
           "id": 15,
           "storyboard_shot_id": 15,
           "prompt_ir_version_id": 45,
-          "payload_hash": "42907325de43f39cb2a4717e84e7dae7d05192473b90aadb696e5aa548d2c610"
+          "payload_hash": "42907325de43f39cb2a4717e84e7dae7d05192473b90aadb696e5aa548d2c610",
+          "target_media": "IMAGE"
         }
       ],
       "visual_asset_pointer": [
