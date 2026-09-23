@@ -12,14 +12,37 @@
     "local_prior": "1760 passed, 4 failed",
     "ci_prior": "1751 passed, 13 failed"
   },
-  "parity_status": "NOT_CLOSED",
-  "remaining_local_failures": [
-    "tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons",
-    "tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean",
-    "tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry"
-  ],
+  "parity_status": "LOCAL_CONVERGED_CI_CONFIRMATION_PENDING",
+  "remaining_local_failures": [],
   "notes": [
     "The prior CI run predates the current repair commit. A new CI run is required after push.",
     "No provider, LLM, image, or video call was made."
-  ]
+  ],
+  "current_local_full_regression": {
+    "pytest_passed": 1764,
+    "pytest_failed": 0,
+    "command": "npm run check:production"
+  },
+  "golden": {
+    "passed": 5,
+    "failed": 0
+  },
+  "runtime_config": "PASS",
+  "release_gate": "PASS",
+  "web": {
+    "test_files": 51,
+    "tests_passed": 301,
+    "build": "PASS"
+  },
+  "migration": {
+    "status": "MIGRATION_CHAIN_HARDENING_READY",
+    "migration_application_runtime_imports": 0
+  },
+  "provider_calls": {
+    "provider": 0,
+    "llm": 0,
+    "image": 0,
+    "video": 0
+  },
+  "j3_started": false
 }

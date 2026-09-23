@@ -2,28 +2,32 @@
 
 ## Status
 
-`PRODUCTION_REGRESSION_GATE_CONVERGENCE_IN_PROGRESS`
+`PHASE_J2_4_TEST_ENVIRONMENT_CONVERGENCE_REQUIRED` — local gate is now converged; required GitHub Actions confirmation is pending for the repair commit.
 
-This commit packages the J2.4 regression evidence and the environment fixes needed to make CI deterministic. J3 remains blocked and was not started.
+J3 remains blocked and was not started. Provider / LLM / Image / Video external calls remained `0 / 0 / 0 / 0`.
 
 ## Changes included
 
-- Pinned `pytest-asyncio==1.1.0` so the three Phase F async transport contract cases execute in CI.
+- Pinned `pytest-asyncio==1.1.0` for the three Phase F async transport contract cases.
+- Declared `cairosvg==2.9.0` for SVG-to-PNG public asset storage.
 - Added `.gitattributes` for immutable raw evaluation sources and restored the declared raw source blob hash across Windows and Linux checkouts.
-- Added a committed deterministic approved-scene fixture and made the fresh integration pilot use it by default; explicit database paths remain available for audit tooling.
-- Added the machine-readable CI failure inventory, local/CI parity record, and Phase F transport evidence.
+- Added a committed deterministic approved-scene fixture for the fresh integration pilot.
+- Made historical offline replay provenance use an explicit historical source branch context.
+- Corrected the retired re-canary test fixture to reach the dirty-worktree assertion without changing production gate order.
+- Removed the negative E2E sample from the default production gray registry.
+- Added test isolation cleanup for orphan FactSnapshot rows and explicit cleanup for the synthetic wrong-book fixture.
 
 ## Verification
 
-- Targeted J2.4 repair and transport/storage wiring tests: **52 passed**.
-- Local remaining baseline failures: **3** (offline replay historical branch context, retired recanary assertion precedence, and active registry scope).
-- Prior CI run `35902213060` / job `107311920540`: **1751 passed, 13 failed** before this repair set.
-- Provider / LLM / Image / Video calls: **0 / 0 / 0 / 0**.
-- Migration and web/build evidence remains as recorded in `PHASE_J2_3_FINAL_REPORT.md`; no production migration was run and J3 was not started.
+- `npm run check:production`: **1764 passed, 0 failed**; Golden **5/5**; runtime configuration **PASS**; release gate **PASS**; frontend build **PASS**.
+- J2.3 authority/media regression set: **51 passed**.
+- Migration: `MIGRATION_CHAIN_HARDENING_READY`; `migration_application_runtime_imports = 0`.
+- Web: **51 files / 301 tests passed**; build **PASS**.
+- Phase F transport cases for `openai-compatible`, `shapi-openai-images`, and `shapi-gemini-image`: executed and passed; mocked transport only; external calls **0**.
 
-## Remaining closure work
+## Required CI
 
-The next CI run must confirm the cross-platform raw-source fix, deterministic fresh integration cohort, async transport dependency, SVG rasterization path, provider-free preflight, and targeted missing-fact API. The three local baseline failures remain explicitly open in `phase_j2_4_ci_failure_inventory.json`; no skips, xfails, failure allowlists, or CI-only bypasses were added.
+Prior run `35902213060` / job `107311920540` was `1751 passed, 13 failed` before this repair set. A new Required Production Regression run must be recorded after pushing this commit with its run ID, commit SHA, job ID, conclusion, and pytest totals.
 
 ## Artifacts
 

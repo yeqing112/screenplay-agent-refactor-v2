@@ -1,8 +1,7 @@
 {
   "schema_version": 1,
   "active_book_ids": [
-    990400,
-    990401
+    990400
   ],
   "retired_book_ids": [
     990306

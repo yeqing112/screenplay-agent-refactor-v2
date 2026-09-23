@@ -14,6 +14,8 @@ import shutil
 import tempfile
 from pathlib import Path
 
+import pytest
+
 
 _runtime_dir = Path(tempfile.mkdtemp(prefix="screenplay-pytest-"))
 _database_path = _runtime_dir / "screenplay.db"
@@ -46,3 +48,30 @@ def _cleanup_runtime():  # pragma: no cover - process shutdown hook
 
 
 atexit.register(_cleanup_runtime)
+
+
+@pytest.fixture(autouse=True)
+def _purge_orphan_fact_snapshots():
+    """Keep test order from reusing an id with stale fact authority rows.
+
+    A few negative fixtures intentionally use a synthetic book id that is not
+    present in ``books``.  If that row survives its test, SQLite can later
+    reuse the same integer id for a real fixture and make a read-only API test
+    observe another test's snapshot.  Purge only rows with no owning Book;
+    valid book-scoped authority data remains untouched.
+    """
+    yield
+    try:
+        from models import Book, FactRecord, FactSnapshot, Session
+
+        with Session() as session:
+            book_ids = session.query(Book.id)
+            orphan_ids = [row[0] for row in session.query(FactSnapshot.id).filter(~FactSnapshot.book_id.in_(book_ids)).all()]
+            if orphan_ids:
+                session.query(FactRecord).filter(FactRecord.snapshot_id.in_(orphan_ids)).delete(synchronize_session=False)
+                session.query(FactSnapshot).filter(FactSnapshot.id.in_(orphan_ids)).delete(synchronize_session=False)
+                session.commit()
+    except Exception:
+        # A test that failed before migrations/bootstrap must still report its
+        # own failure; cleanup is best effort during interpreter teardown.
+        pass

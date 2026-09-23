@@ -92,6 +92,9 @@ def test_authorization_false_blocks_even_when_preflight_is_otherwise_pass(monkey
 
 def test_authorized_real_path_requires_entire_worktree_clean(monkeypatch: pytest.MonkeyPatch):
     """Artifacts/config drift must block the provider before import/call."""
+    # The production cohort is retired, so explicitly use a non-retired
+    # authority fixture to reach and verify the independent dirty-tree gate.
+    monkeypatch.setattr(runner, "_authority", lambda: {})
     monkeypatch.setattr(runner, "_working_tree_dirty_paths", lambda: ["artifacts/pending.json"])
     monkeypatch.setattr(runner, "_code_changes_present", lambda: [])
     result = runner._run_real({"status": "PASS", "authorization": True}, "mimo-v2.5")

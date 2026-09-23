@@ -21,6 +21,10 @@ if str(ROOT) not in sys.path:
 ARTIFACTS = ROOT / "artifacts"
 DEFAULT_PILOT = ARTIFACTS / "director-quality-v2-3-phase-b2-pilot-20260914T040506Z.json"
 DEFAULT_EVIDENCE = ARTIFACTS / "director-quality-v2-3-phase-b2-evidence.json"
+# This replay consumes a frozen historical B2 package produced on the
+# historical branch below.  Keep that source identity explicit instead of
+# accidentally stamping the branch used to run today's offline replay.
+HISTORICAL_SOURCE_GIT_CONTEXT = {"branch": "codex/unify-formal-workspace"}
 
 
 def _dict(value: Any) -> dict[str, Any]:
@@ -161,6 +165,7 @@ def build_offline_replay(*, pilot_path: Path, evidence_path: Path) -> dict[str, 
         gate_version=_text(gate.get("schema_version")),
         metric_schema_version=_text(metrics.get("schema_version")),
         generated_at=generated_at,
+        git_context_override=HISTORICAL_SOURCE_GIT_CONTEXT,
     )
     return {
         "protocol_version": "director-quality-v2-4-offline-replay",

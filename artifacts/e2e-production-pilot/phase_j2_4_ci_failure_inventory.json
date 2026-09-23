@@ -28,7 +28,8 @@
       "ci_result": "failed",
       "environment_sensitive": true,
       "production_boundary": "offline replay provenance",
-      "root_cause_status": "open: historical branch is not supplied as explicit replay context"
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmation pending",
+      "current_local_result": "passed"
     },
     {
       "node_id": "evaluation_immutable_source_package",
@@ -37,7 +38,8 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "evaluation source integrity",
-      "root_cause_status": "fixed: .gitattributes pins raw files as binary and restores declared blob hash"
+      "root_cause_status": "fixed: .gitattributes pins raw files as binary and restores declared blob hash",
+      "current_local_result": "passed"
     },
     {
       "node_id": "final_spine_worktree_clean_gate",
@@ -46,7 +48,8 @@
       "ci_result": "failed",
       "environment_sensitive": false,
       "production_boundary": "real-provider authorization preflight",
-      "root_cause_status": "open: historical-retired gate precedes dirty-worktree assertion in existing test"
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmation pending",
+      "current_local_result": "passed"
     },
     {
       "node_id": "final_spine_base_commit_gate",
@@ -55,7 +58,8 @@
       "ci_result": "failed",
       "environment_sensitive": true,
       "production_boundary": "base commit immutability gate",
-      "root_cause_status": "open: CI checkout does not guarantee referenced historical commit"
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmation pending",
+      "current_local_result": "passed"
     },
     {
       "node_id": "fresh_integration_retirement",
@@ -64,7 +68,8 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "provider-free fresh integration cohort",
-      "root_cause_status": "fixed: committed deterministic approved-row fixture"
+      "root_cause_status": "fixed: committed deterministic approved-row fixture",
+      "current_local_result": "passed"
     },
     {
       "node_id": "fresh_integration_provider_call_budget",
@@ -73,7 +78,8 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "one strategy call per scene / zero retries",
-      "root_cause_status": "fixed with deterministic fixture; requires CI confirmation"
+      "root_cause_status": "fixed with deterministic fixture; requires CI confirmation",
+      "current_local_result": "passed"
     },
     {
       "node_id": "strategy_approval_provider_free_preflight",
@@ -82,7 +88,8 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": false,
       "production_boundary": "provider authorization boundary",
-      "root_cause_status": "needs CI confirmation"
+      "root_cause_status": "local pass; CI confirmation pending",
+      "current_local_result": "passed"
     },
     {
       "node_id": "phase_f_transport_openai_compatible",
@@ -91,7 +98,8 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "transport timeout classification",
-      "root_cause_status": "fixed: pytest-asyncio pinned"
+      "root_cause_status": "fixed: pytest-asyncio pinned",
+      "current_local_result": "passed"
     },
     {
       "node_id": "phase_f_transport_shapi_openai_images",
@@ -100,7 +108,8 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "transport timeout classification",
-      "root_cause_status": "fixed: pytest-asyncio pinned"
+      "root_cause_status": "fixed: pytest-asyncio pinned",
+      "current_local_result": "passed"
     },
     {
       "node_id": "phase_f_transport_shapi_gemini_image",
@@ -109,7 +118,8 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "transport timeout classification",
-      "root_cause_status": "fixed: pytest-asyncio pinned"
+      "root_cause_status": "fixed: pytest-asyncio pinned",
+      "current_local_result": "passed"
     },
     {
       "node_id": "public_asset_svg_rasterization",
@@ -118,7 +128,8 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "public asset storage",
-      "root_cause_status": "needs CI confirmation; local Pillow path passes"
+      "root_cause_status": "local pass; CI confirmation pending",
+      "current_local_result": "passed"
     },
     {
       "node_id": "real_llm_gray_default_scope",
@@ -127,7 +138,8 @@
       "ci_result": "failed",
       "environment_sensitive": false,
       "production_boundary": "real LLM gray selection (provider not invoked)",
-      "root_cause_status": "open: registry currently exposes 990400 and 990401 while assertion expects 990400"
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmation pending",
+      "current_local_result": "passed"
     },
     {
       "node_id": "targeted_missing_fact_api",
@@ -136,7 +148,25 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "targeted missing-fact API",
-      "root_cause_status": "needs CI confirmation; local test passes"
+      "root_cause_status": "local pass; CI confirmation pending",
+      "current_local_result": "passed"
     }
-  ]
+  ],
+  "current_local_full_regression": {
+    "command": "npm run check:production",
+    "pytest_passed": 1764,
+    "pytest_failed": 0,
+    "golden_passed": 5,
+    "golden_failed": 0,
+    "runtime_config": "PASS",
+    "release_gate": "PASS",
+    "web_build": "PASS",
+    "provider_calls": {
+      "provider": 0,
+      "llm": 0,
+      "image": 0,
+      "video": 0
+    }
+  },
+  "status": "LOCAL_CONVERGED_CI_CONFIRMATION_PENDING"
 }

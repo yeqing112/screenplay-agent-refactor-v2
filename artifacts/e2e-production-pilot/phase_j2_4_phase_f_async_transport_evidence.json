@@ -9,5 +9,8 @@
     "shapi-gemini-image"
   ],
   "provider_calls": 0,
-  "evidence": "Local targeted run after dependency pin."
+  "evidence": "Local targeted run after dependency pin.",
+  "full_production_command": "npm run check:production",
+  "full_production_pytest": "1764 passed, 0 failed",
+  "ci_confirmation": "pending after push"
 }

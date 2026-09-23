@@ -221,6 +221,7 @@ def test_contract_and_requirement_set_changes_are_stale(monkeypatch):
 def test_activation_failure_does_not_update_current_pointer_and_wrong_snapshot_is_blocked():
     client = TestClient(app)
     book_id, snapshot_id, raw_hash = _create_ready_fixture()
+    wrong_book_id = book_id + 999
     try:
         draft = client.post(f"/api/books/{book_id}/episodes/1/script-ir/build", json={"persist": True, "sourceFactSnapshotId": str(snapshot_id)}).json()
         source = build_explicit_production_script_payload({"episode": 1, "scenes": [{"name": "门厅", "beats": [{"id": "B1", "event": "进入"}]}]})
@@ -230,13 +231,19 @@ def test_activation_failure_does_not_update_current_pointer_and_wrong_snapshot_i
         with Session() as session:
             script = session.query(Script).filter_by(book_id=book_id, episode=1).one()
             assert script.current_script_ir_version_id is None
-            wrong = FactSnapshot(book_id=book_id + 999, episode=1, revision=1, status="confirmed", source_fingerprint=raw_hash, payload_hash="wrong", records_json="[]", validation_report=json.dumps({"fact_coverage": {"status": "FACT_COVERAGE_SUFFICIENT"}}))
+            wrong = FactSnapshot(book_id=wrong_book_id, episode=1, revision=1, status="confirmed", source_fingerprint=raw_hash, payload_hash="wrong", records_json="[]", validation_report=json.dumps({"fact_coverage": {"status": "FACT_COVERAGE_SUFFICIENT"}}))
             session.add(wrong); session.commit(); wrong_id = wrong.id
         blocked_wrong = client.post(f"/api/books/{book_id}/episodes/1/script-ir/activate", json={"versionId": draft["persisted_draft_id"], "confirmed": True, "factSnapshotId": wrong_id, "sourcePackageId": "SRC_TEST", "sourceVersionId": "SRC_TEST:V01:abc", "immutableSourceRawHash": raw_hash, "sourceEvidenceIndex": index, "sourceAnchorBindings": {"episode|scenes|scene_existence|episode": ["E0001"], "scene|门厅|scene_identity|scene": ["E0001"]}, "sourceStructure": source})
         assert blocked_wrong.status_code == 409
         assert blocked_wrong.json()["detail"]["code"] == "FACT_SNAPSHOT_BINDING_INVALID"
     finally:
         _cleanup(book_id)
+        # The deliberately mismatched snapshot belongs to a synthetic book
+        # identity; remove it explicitly so a later SQLite id reuse cannot
+        # make this test depend on execution order.
+        with Session() as session:
+            session.query(FactSnapshot).filter_by(book_id=wrong_book_id).delete()
+            session.commit()
 
 
 def test_placeholder_and_stale_draft_cannot_become_authority():

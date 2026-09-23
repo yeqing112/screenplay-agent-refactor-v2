@@ -109,6 +109,7 @@ def build_provenance(
     metric_schema_version: str = "",
     root: Path | None = None,
     generated_at: str | None = None,
+    git_context_override: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Build the required artifact provenance envelope."""
 
@@ -133,10 +134,15 @@ def build_provenance(
             normalized_sources.append(evidence_relative)
             if candidate.is_file():
                 source_hashes[evidence_relative] = evidence_hash
+    context = git_context(root=repo_root)
+    if git_context_override:
+        # Historical replays may carry an explicit source branch identity.
+        # Never infer that identity from the branch on which the replay runs.
+        context.update({str(key): str(value) for key, value in git_context_override.items() if value})
     return {
         "schema_version": PROVENANCE_SCHEMA_VERSION,
         "protocol_version": str(protocol_version or ""),
-        **git_context(root=repo_root),
+        **context,
         "model": _safe_model_profile(model),
         "model_profile": _safe_model_profile(model_profile),
         "scene_manifest_hash": scene_manifest_hash(scenes),
