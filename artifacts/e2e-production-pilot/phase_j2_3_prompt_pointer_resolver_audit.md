@@ -36,5 +36,7 @@ Updated surfaces:
 - migration chain hardening: PASS
 - H2 schema regression: PASS
 - provider/LLM/image/video calls: 0
-- J2.3 migration contract tests: 16 passed
+- J2.3 migration contract tests: 17 passed
+- Duplicate-derived-scope migration blocker: PASS
+- Concurrent same-scope conflict / cross-scope retention: 2 passed
 - Dual-media resolver contract tests: 4 passed

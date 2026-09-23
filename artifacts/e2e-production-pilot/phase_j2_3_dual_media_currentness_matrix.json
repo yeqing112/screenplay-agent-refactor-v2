@@ -31,6 +31,10 @@
     "rows_preserved": true,
     "schema_preserved": true
   },
+  "concurrency": {
+    "same_scope": "PASS (one committed pointer, one deterministic unique conflict)",
+    "cross_scope": "PASS (IMAGE and VIDEO pointers both retained)"
+  },
   "image_to_video_binding": {
     "structured_contract": "PASS",
     "authority_class": "OFFICIAL_MEDIA",

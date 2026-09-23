@@ -60,6 +60,50 @@ def _insert_legacy(db: Path, *, target: str | None = "IMAGE", omit_policy: bool 
     return {"payload": raw, "payload_hash": payload_hash}
 
 
+def _remove_legacy_shot_unique(db: Path) -> None:
+    """Build a malformed legacy fixture with duplicate shot rows.
+
+    The historical schema normally prevents this state with its unnamed
+    SQLite autoindex.  Rebuilding only the fixture table lets the migration
+    preflight prove it refuses duplicate *derived* media scopes rather than
+    silently selecting one row.
+    """
+    engine = create_engine(f"sqlite:///{db.as_posix()}")
+    with engine.begin() as conn:
+        conn.exec_driver_sql("PRAGMA foreign_keys=OFF")
+        conn.exec_driver_sql("ALTER TABLE prompt_ir_pointers RENAME TO prompt_ir_pointers_legacy_fixture")
+        conn.exec_driver_sql(
+            """
+            CREATE TABLE prompt_ir_pointers (
+                id INTEGER PRIMARY KEY,
+                book_id INTEGER NOT NULL,
+                episode INTEGER NOT NULL,
+                storyboard_shot_id INTEGER NOT NULL,
+                prompt_ir_version_id INTEGER NOT NULL,
+                payload_hash VARCHAR NOT NULL,
+                qualification_state VARCHAR NOT NULL DEFAULT 'PROMPT_IR_QUALIFIED',
+                created_at DATETIME,
+                updated_at DATETIME
+            )
+            """
+        )
+        conn.exec_driver_sql(
+            """
+            INSERT INTO prompt_ir_pointers
+            (id, book_id, episode, storyboard_shot_id, prompt_ir_version_id,
+             payload_hash, qualification_state, created_at, updated_at)
+            SELECT id, book_id, episode, storyboard_shot_id, prompt_ir_version_id,
+                   payload_hash, qualification_state, created_at, updated_at
+              FROM prompt_ir_pointers_legacy_fixture
+            """
+        )
+        conn.exec_driver_sql("DROP TABLE prompt_ir_pointers_legacy_fixture")
+        conn.exec_driver_sql("CREATE INDEX ix_prompt_ir_pointers_book_episode ON prompt_ir_pointers (book_id, episode)")
+        conn.exec_driver_sql("CREATE INDEX ix_prompt_ir_pointers_shot ON prompt_ir_pointers (storyboard_shot_id)")
+        conn.exec_driver_sql("PRAGMA foreign_keys=ON")
+    engine.dispose()
+
+
 def test_fresh_upgrade_has_media_scope_schema_and_empty_rows(tmp_path):
     db = tmp_path / "fresh.sqlite"
     _engine_at(db, "head")
@@ -131,6 +175,30 @@ def test_invalid_payload_hash_blocks_even_when_pointer_and_version_hash_match(tm
     engine.dispose()
     with pytest.raises(RuntimeError, match="PROMPT_IR_POINTER_MIGRATION_BLOCKED"):
         command.upgrade(_config(db), "head")
+
+
+def test_duplicate_derived_scope_blocks_before_schema_mutation(tmp_path):
+    db = tmp_path / "duplicate-derived-scope.sqlite"
+    _engine_at(db, LEGACY_HEAD)
+    _insert_legacy(db, target="IMAGE", pointer_id=1)
+    _remove_legacy_shot_unique(db)
+    engine = create_engine(f"sqlite:///{db.as_posix()}")
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "INSERT INTO prompt_ir_pointers "
+                "(id, book_id, episode, storyboard_shot_id, prompt_ir_version_id, payload_hash, qualification_state) "
+                "VALUES (2, 1, 1, 7, 11, :hash, 'PROMPT_IR_QUALIFIED')"
+            ),
+            {"hash": _payload("IMAGE")[1]},
+        )
+    engine.dispose()
+    with pytest.raises(RuntimeError, match="PROMPT_IR_POINTER_MIGRATION_BLOCKED"):
+        command.upgrade(_config(db), "head")
+    engine = create_engine(f"sqlite:///{db.as_posix()}")
+    assert "target_media" not in {item["name"] for item in inspect(engine).get_columns("prompt_ir_pointers")}
+    assert engine.connect().execute(text("select count(*) from prompt_ir_pointers")).scalar() == 2
+    engine.dispose()
 
 
 def test_malformed_payload_json_blocks_before_schema_mutation(tmp_path):
