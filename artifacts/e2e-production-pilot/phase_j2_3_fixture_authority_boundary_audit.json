@@ -22,5 +22,6 @@
   "upstream_drift": "OBSOLETE_NOT_TAMPERED",
   "valid_production_fixture_live_lineage": "PASS",
   "video_calls": 0,
-  "video_live_lineage": "PASS"
+  "video_live_lineage": "PASS",
+  "video_prompt_ir_live_lineage": "PASS"
 }

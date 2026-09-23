@@ -178,14 +178,33 @@ def _insert_video_pointer_probe(session, shot: StoryboardShot, image_version: Pr
     version = PromptIRVersion(book_id=image_version.book_id, episode=image_version.episode, scene_id=image_version.scene_id, storyboard_shot_id=shot.id, materialization_set_id=image_version.materialization_set_id, plan_shot_id=image_version.plan_shot_id, schema_version=image_version.schema_version, payload_json=_canonical(payload), payload_hash=payload_hash, compiler_version=image_version.compiler_version, compiler_policy_version=image_version.compiler_policy_version, retention_policy_version=image_version.retention_policy_version, authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state=image_version.asset_reference_state, model_generation_ready="false", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
     session.add(version)
     session.flush()
-    envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "prompt_ir_version_id": version.id, "prompt_ir_payload_hash": payload_hash, "storyboard_shot_id": shot.id, "generation_policy": policy, "asset_authority_bindings": payload.get("asset_authority_bindings", {}), "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
+    envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "prompt_ir_version_id": version.id, "prompt_ir_payload_hash": payload_hash, "storyboard_shot_id": shot.id, "source_authority": payload.get("source_authority", {}), "generation_policy": policy, "asset_authority_bindings": payload.get("asset_authority_bindings", {}), "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
     envelope["envelope_fingerprint"] = _fp(envelope)
     authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=version.book_id, episode=version.episode, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=_canonical(envelope), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
     version.authority_envelope_json = _canonical(envelope)
     pointer = PromptIRPointer(book_id=version.book_id, episode=version.episode, storyboard_shot_id=shot.id, target_media="VIDEO", prompt_ir_version_id=version.id, payload_hash=payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now)
     session.add_all([authority, pointer])
     session.commit()
-    return {"pointer_id": pointer.id, "version_id": version.id, "target_media": pointer.target_media, "provider_calls": 0, "video_generation_started": False}
+    # Exercise the same production resolver used for every PromptIR scope.
+    # The probe must prove that the VIDEO pointer has live Storyboard and
+    # asset lineage; creating a pointer alone is insufficient evidence.
+    from core.prompt_ir_phase_e import resolve_current_authoritative_prompt_ir
+
+    resolved = resolve_current_authoritative_prompt_ir(
+        session,
+        book_id=version.book_id,
+        episode=version.episode,
+        storyboard_shot_id=shot.id,
+        target_media="VIDEO",
+    )
+    return {
+        "pointer_id": pointer.id,
+        "version_id": version.id,
+        "target_media": pointer.target_media,
+        "live_lineage": "PASS" if resolved.get("snapshot") else "FAIL",
+        "provider_calls": 0,
+        "video_generation_started": False,
+    }
 
 
 def _insert_generation_and_promote(session, shots: list[StoryboardShot], prompts: dict[int, PromptIRVersion], media_dir: Path) -> list[dict[str, Any]]:

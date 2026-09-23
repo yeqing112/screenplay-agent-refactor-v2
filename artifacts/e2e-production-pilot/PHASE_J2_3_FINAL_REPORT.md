@@ -11,6 +11,7 @@ This round closes the Media Authority currentness fail open and corrects the fix
 - Current PromptIR validation requires the exact `(book, episode, storyboard shot, target_media)` pointer, payload and authority envelope integrity, generation policy fingerprint, and live Storyboard lineage.
 - Missing, stale, cross-media, scope-mismatched, policy-incomplete, or upstream-revised lineage fails closed before media validation or official promotion.
 - Legal fixtures now build the current Storyboard → PromptIR → VisualAsset authority chain. Phase I resolves 15/15 OfficialMedia, 15/15 asset bindings, 15/15 PromptIR links, and 15/15 GenerationExecution links with zero provider calls.
+- The dual-media probe resolves the VIDEO PromptIR through the production current-authority resolver with live lineage `PASS`; it does not generate video or call a provider.
 - IMAGE remains current after a VIDEO pointer is created. PromptIR, character, scene, and prop drift probes all return `OFFICIAL_MEDIA_BINDING_INVALID` with HTTP 409.
 - Provider / LLM / Image / Video calls remain `0 / 0 / 0 / 0`; J3 was not started.
 
@@ -27,6 +28,7 @@ This round closes the Media Authority currentness fail open and corrects the fix
 ## Verification
 
 - Phase I pilot: `1 passed` (`tests/test_phase_i_official_media_binding.py`).
+- J2.3 targeted authority/media regression: `32 passed`.
 - Web: `npm test` — 51 files / 301 tests passed; `npm run build` — passed.
 - Migration: `MIGRATION_CHAIN_HARDENING_READY`; `migration_application_runtime_imports = 0`.
 - Full backend final-head rerun: `1760 passed, 4 failed` (1764 collected; warnings omitted from the count). The four failures are existing baseline/configuration failures:
