@@ -22,6 +22,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / "artifacts"
 DB_PATH = ROOT / "work" / "db" / "screenplay.db"
+APPROVED_ROWS_FIXTURE_PATH = ROOT / "tests" / "fixtures" / "director_quality_v3_fresh_approved_rows.json"
 AUTHORITY_PATH = ART / "director-quality-v3-current-stage-authority.json"
 RETIRED_SCENES = {
     "book990402:e3:暗房惊魂",
@@ -95,7 +96,19 @@ def _latest(c: sqlite3.Connection, table: str, where: str, params: tuple[Any, ..
 
 
 def _approved_scene_rows(db_path: Path = DB_PATH) -> list[dict[str, Any]]:
-    """Project real approved upstream rows from SQLite, never from Golden."""
+    """Return the deterministic approved upstream cohort.
+
+    The provider-free regression gate must not depend on a developer's
+    ignored SQLite database.  The default cohort is therefore a committed
+    authority fixture snapshot.  An explicit database path remains available
+    for local audit tooling that needs to inspect a real database.
+    """
+    if db_path == DB_PATH:
+        fixture = _load(APPROVED_ROWS_FIXTURE_PATH)
+        rows = fixture.get("rows")
+        if not isinstance(rows, list):
+            raise ValueError("approved scene fixture must contain a rows list")
+        return copy.deepcopy(rows)
     if not db_path.exists():
         return []
     c = sqlite3.connect(db_path)

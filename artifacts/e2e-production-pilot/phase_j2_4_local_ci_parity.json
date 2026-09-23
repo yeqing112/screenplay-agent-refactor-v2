@@ -1,0 +1,25 @@
+{
+  "phase": "PHASE_J2_4_PRODUCTION_REGRESSION_GATE_CONVERGENCE",
+  "ci_run_id": "35902213060",
+  "ci_job_id": "107311920540",
+  "ci_commit": "cc1544a33162412465838833b28a4504d52edbeb",
+  "local_head": "2e2205f",
+  "local_targeted_tests": {
+    "passed": 52,
+    "failed": 0
+  },
+  "full_suite_reference": {
+    "local_prior": "1760 passed, 4 failed",
+    "ci_prior": "1751 passed, 13 failed"
+  },
+  "parity_status": "NOT_CLOSED",
+  "remaining_local_failures": [
+    "tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons",
+    "tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean",
+    "tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry"
+  ],
+  "notes": [
+    "The prior CI run predates the current repair commit. A new CI run is required after push.",
+    "No provider, LLM, image, or video call was made."
+  ]
+}

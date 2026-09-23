@@ -1,0 +1,3846 @@
+{
+  "schema_version": "director_quality_v3_fresh_approved_rows_v1",
+  "provider_calls": 0,
+  "source": "deterministic approved upstream fixture snapshot",
+  "rows": [
+    {
+      "scene_id": "book990402:e1:红伞幻影（一）",
+      "book_id": 990402,
+      "episode": 1,
+      "scene": {
+        "scene_id": "book990402:e1:红伞幻影（一）",
+        "name": "红伞幻影（一）",
+        "location_id": "",
+        "location_name": "临潮镇老车站候车厅",
+        "time_of_day": "凌晨一点，雨夜",
+        "weather": "雨夜，雨声密集，风大",
+        "participants": [
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16"
+        ],
+        "beats": [
+          {
+            "beat_id": "1_B01",
+            "type": "action",
+            "event": "林晚在候车厅长椅上假寐，观察环境。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "1_B02",
+            "type": "action",
+            "event": "撑红伞的女人出现，两人进行初步、试探性的对话。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "1_B03",
+            "type": "action",
+            "event": "风导致红伞晃动，林晚借机接触红伞，观察到伞骨金属箍上的新划痕。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "1_B04",
+            "type": "action",
+            "event": "林晚指尖沾上暗红色粉末。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "1_B05",
+            "type": "action",
+            "event": "两人对话涉及“怕什么”、“该怕的早就不在了”等隐晦内容。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "1_B06",
+            "type": "action",
+            "event": "林晚口袋中的长方形硬物被暗示。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          }
+        ],
+        "actions": [
+          "林晚假寐，手指摩挲袖口硬物。",
+          "撑红伞的女人站在门口，后走入厅内，将红伞靠在长椅边。",
+          "风起，红伞晃动，林晚“不经意”碰触红伞，使其靠在自己长椅扶手上。",
+          "林晚检查红伞，指腹蹭过金属箍划痕。",
+          "林晚指尖沾上暗红色粉末并摩挲。",
+          "林晚左手在口袋中按压长方形物体。"
+        ],
+        "dialogues": [
+          "林晚：这雨……一时半会儿停不了吧？",
+          "撑红伞的女人：你也在等车？",
+          "林晚：嗯。去市里的车，最早一班是……五点半吧？记不清了。这鬼地方，时刻表都快烂没了。",
+          "撑红伞的女人：五点半。",
+          "林晚：这伞……颜色真亮。这镇上，好像很少见用这么鲜艳颜色的。",
+          "撑红伞的女人：是吗？我倒觉得，雨天需要一点颜色。",
+          "林晚：哎哟，吓我一跳。没摔坏吧？",
+          "撑红伞的女人：谢谢。没坏。",
+          "林晚：不客气。这破地方，东西都脆得很，经不起折腾。",
+          "撑红伞的女人：你……一个人？这么晚，在这里，不怕？",
+          "林晚：怕什么？这镇子，安静得很。该怕的……早就不在了。",
+          "撑红伞的女人：是吗。"
+        ],
+        "state_in": {},
+        "state_out": {},
+        "required_visual_proofs": [
+          "林晚袖口内侧的硬物轮廓。",
+          "红伞金属箍上的细微新划痕。",
+          "林晚指尖的暗红色粉末。",
+          "林晚口袋中长方形物体的轮廓。"
+        ],
+        "blocking_hints": [],
+        "asset_mentions": [],
+        "script_participants": [
+          "林晚",
+          "撑红伞的女人"
+        ],
+        "book_id": 990402,
+        "episode": 1
+      },
+      "director_treatment": {
+        "id": 4,
+        "book_id": 990402,
+        "episode": 1,
+        "scene_name": "红伞幻影（一）",
+        "revision": 1,
+        "status": "approved",
+        "source_script_revision": "script-16",
+        "source_script_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b",
+        "dramatic_objective": "围绕“林晚在候车厅长椅上假寐，观察环境。”建立冲突，并通过“林晚口袋中的长方形硬物被暗示。”推进本场戏。",
+        "audience_question": "人物最终会如何改变当前局面？",
+        "character_intents": {
+          "11": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "岚",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "12": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "撑红伞的女人",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "13": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "林晚",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "14": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "母亲",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "15": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "陆叔",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "16": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "顾沉",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          }
+        },
+        "beat_map": [
+          {
+            "beat_id": "B01",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "林晚在候车厅长椅上假寐，观察环境。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B02",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "撑红伞的女人出现，两人进行初步、试探性的对话。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B03",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "风导致红伞晃动，林晚借机接触红伞，观察到伞骨金属箍上的新划痕。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B04",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "林晚指尖沾上暗红色粉末。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B05",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "两人对话涉及“怕什么”、“该怕的早就不在了”等隐晦内容。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B06",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "林晚口袋中的长方形硬物被暗示。",
+            "information_change": "",
+            "type": "action"
+          }
+        ],
+        "relationship_power_shift": "由节拍中的行动与决策呈现，不预设未声明的关系事实。",
+        "audience_emotion": "从建立预期到产生变化，再留下下一步悬念。",
+        "information_strategy": "只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。",
+        "performance_direction": "以目标、阻碍和策略驱动表演，避免只标注单一情绪。",
+        "visual_strategy": "优先呈现可观察的空间关系、动作节拍和关键道具状态。",
+        "coverage_strategy": "先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。",
+        "sound_strategy": "声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。",
+        "edit_rhythm": "按节拍强弱切换，信息揭示前保留反应空间。",
+        "constraints": [
+          "不得覆盖锁定资产事实",
+          "不得把未声明内容伪装成剧本事实"
+        ],
+        "unknowns": [],
+        "skill_id": "",
+        "skill_version": "",
+        "decision_packet_id": 8,
+        "model_info": {
+          "mode": "confirmed_llm_candidate",
+          "llm_called": true,
+          "candidate_decision": "ready_for_review",
+          "candidate_fingerprint": "19fdd70b8e7691d72dfa647512c62e51eb60d7d9635d08a41c9f369463677107",
+          "confirmed_at": "2026-09-13T04:16:49.300378",
+          "rollback_anchor": {
+            "previous_treatment_id": null,
+            "previous_revision": null
+          }
+        },
+        "prompt_fingerprint": "19fdd70b8e7691d72dfa647512c62e51eb60d7d9635d08a41c9f369463677107",
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "scene_id": "book990402:e1:红伞幻影（一）"
+      },
+      "scene_blocking": {
+        "id": 4,
+        "book_id": 990402,
+        "episode": 1,
+        "scene_name": "红伞幻影（一）",
+        "revision": 1,
+        "status": "approved",
+        "treatment_id": 6,
+        "treatment_revision": 1,
+        "source_script_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b",
+        "participants": [
+          {
+            "character_id": "11",
+            "name": "岚",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "12",
+            "name": "撑红伞的女人",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "13",
+            "name": "林晚",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "14",
+            "name": "母亲",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "15",
+            "name": "陆叔",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "16",
+            "name": "顾沉",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          }
+        ],
+        "beat_transitions": [
+          {
+            "beat_id": "B01",
+            "event": "撑红伞的女人主动开口，对话升级。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "scene_start",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B02",
+            "event": "林晚展示空手，但袖口硬物仍在。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B03",
+            "event": "灯光闪烁熄灭瞬间，两人做出防御/警惕动作。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B04",
+            "event": "撑红伞的女人直接质问林晚袖中之物。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B05",
+            "event": "撑红伞的女人蹲下检查并指出伞上划痕是新的。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B06",
+            "event": "林晚站起，反向试探并揭露对方行为模式。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B07",
+            "event": "撑红伞的女人情绪波动，承认伞“没有主人”。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B08",
+            "event": "林晚亮出母亲遗书中的红伞简笔画及“小心红伞”字条。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B09",
+            "event": "撑红伞的女人看到字条后情绪崩溃（流泪、颤抖）。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B10",
+            "event": "灯光再次熄灭，场景结束。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          }
+        ],
+        "spatial_rules": [
+          "locked_asset_identity_is_immutable",
+          "do_not_change_screen_direction_without_declared_transition",
+          "do_not_invent_character_position_when_script_is_silent",
+          "carry_forward_unresolved_positions_to_shot_plan_review"
+        ],
+        "unknowns": [
+          "未声明 岚 的画面位置",
+          "未声明 撑红伞的女人 的画面位置",
+          "未声明 林晚 的画面位置",
+          "未声明 母亲 的画面位置",
+          "未声明 陆叔 的画面位置",
+          "未声明 顾沉 的画面位置"
+        ],
+        "evidence_fingerprint": "ef5cdc735165ea3af69e6c5756457eb4e25b688d844f265dc8a9b7b45a9d4722",
+        "model_info": {
+          "mode": "confirmed_human_candidate",
+          "rollback_anchor": {
+            "previous_blocking_id": null,
+            "previous_revision": null
+          },
+          "confirmed_at": "2026-09-13T04:18:03.968780"
+        },
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "schema_version": "scene_blocking_v1",
+        "spatial_model": {},
+        "source_spatial_facts": [],
+        "creative_decisions": [],
+        "derived_constraints": {},
+        "unresolved_facts": [],
+        "camera_axis": {},
+        "validation": {},
+        "scene_id": "book990402:e1:红伞幻影（一）"
+      },
+      "fact_snapshot": {
+        "scene_id": "book990402:e1:红伞幻影（一）",
+        "snapshot_id": 1,
+        "status": "confirmed",
+        "records": [
+          {
+            "fact_id": "CH1_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "归乡者（推测）",
+            "scope": "chapter:1",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 1,
+                "field": "characters.identity",
+                "text": "归乡者（推测）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH1_CHAR_撑红伞的女人_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "撑红伞的女人",
+            "predicate": "identity",
+            "value": "未知（可能是幻影或神秘人物）",
+            "scope": "chapter:1",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 1,
+                "field": "characters.identity",
+                "text": "未知（可能是幻影或神秘人物）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH1_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "临潮镇老车站候车厅",
+            "predicate": "location",
+            "value": "临潮镇老车站候车厅",
+            "scope": "chapter:1",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 1,
+                "field": "scenes.location",
+                "text": "临潮镇老车站候车厅"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH1_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "临潮镇老车站候车厅",
+            "predicate": "time",
+            "value": "凌晨一点，雨夜",
+            "scope": "chapter:1",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 1,
+                "field": "scenes.time",
+                "text": "凌晨一点，雨夜"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "推测：回声照相馆相关者（母亲与照相馆有关联）",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "characters.identity",
+                "text": "推测：回声照相馆相关者（母亲与照相馆有关联）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_CHAR_顾沉_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "identity",
+            "value": "推测：回声照相馆店主/暗房工作者",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "characters.identity",
+                "text": "推测：回声照相馆店主/暗房工作者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "回声照相馆",
+            "predicate": "location",
+            "value": "回声照相馆",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "scenes.location",
+                "text": "回声照相馆"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "回声照相馆",
+            "predicate": "time",
+            "value": "天刚亮",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "scenes.time",
+                "text": "天刚亮"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_CHAR_顾沉_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "identity",
+            "value": "推测：神秘事件调查者或知情者",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "characters.identity",
+                "text": "推测：神秘事件调查者或知情者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "推测：事件核心人物，记忆模糊者",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "characters.identity",
+                "text": "推测：事件核心人物，记忆模糊者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "暗房",
+            "predicate": "location",
+            "value": "暗房",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.location",
+                "text": "暗房"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "暗房",
+            "predicate": "time",
+            "value": "夜晚（推测）",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.time",
+                "text": "夜晚（推测）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC2_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "暗房门外",
+            "predicate": "location",
+            "value": "暗房门外",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.location",
+                "text": "暗房门外"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC2_TIME",
+            "subject_type": "scene",
+            "subject_id": "暗房门外",
+            "predicate": "time",
+            "value": "夜晚",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.time",
+                "text": "夜晚"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "E01_CONFLICT_GUSHEN_AGE",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "age_consistency",
+            "value": "合影中的年龄与当前外貌不一致，原文未解释",
+            "scope": "episode:1",
+            "authority": "model_observation",
+            "status": "conflict",
+            "confidence": 0.82,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "script_qa",
+                "text": "合影里顾沉的年龄与现在不符"
+              }
+            ],
+            "conflict_group": "gushen-age"
+          }
+        ],
+        "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 2,
+        "script_ir_payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+        "fact_snapshot_id": 1,
+        "director_treatment_id": 4,
+        "scene_blocking_id": 4
+      },
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "eligibility_reasons": []
+    },
+    {
+      "scene_id": "book990402:e1:红伞幻影（二）",
+      "book_id": 990402,
+      "episode": 1,
+      "scene": {
+        "scene_id": "book990402:e1:红伞幻影（二）",
+        "name": "红伞幻影（二）",
+        "location_id": "",
+        "location_name": "临潮镇老车站候车厅",
+        "time_of_day": "凌晨一点后",
+        "weather": "雨夜，风大，灯光闪烁",
+        "participants": [
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16"
+        ],
+        "beats": [
+          {
+            "beat_id": "2_B01",
+            "type": "action",
+            "event": "撑红伞的女人主动开口，对话升级。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B02",
+            "type": "action",
+            "event": "林晚展示空手，但袖口硬物仍在。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B03",
+            "type": "action",
+            "event": "灯光闪烁熄灭瞬间，两人做出防御/警惕动作。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B04",
+            "type": "action",
+            "event": "撑红伞的女人直接质问林晚袖中之物。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B05",
+            "type": "action",
+            "event": "撑红伞的女人蹲下检查并指出伞上划痕是新的。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B06",
+            "type": "action",
+            "event": "林晚站起，反向试探并揭露对方行为模式。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B07",
+            "type": "action",
+            "event": "撑红伞的女人情绪波动，承认伞“没有主人”。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B08",
+            "type": "action",
+            "event": "林晚亮出母亲遗书中的红伞简笔画及“小心红伞”字条。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B09",
+            "type": "action",
+            "event": "撑红伞的女人看到字条后情绪崩溃（流泪、颤抖）。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          },
+          {
+            "beat_id": "2_B10",
+            "type": "action",
+            "event": "灯光再次熄灭，场景结束。",
+            "dramatic_function": "",
+            "information_change": "",
+            "emotion_change": ""
+          }
+        ],
+        "actions": [
+          "撑红伞的女人转身，红伞划出弧线。",
+          "林晚调整坐姿，背包滑落。",
+          "撑红伞的女人走近林晚，目光落在其口袋左手上。",
+          "林晚抽出左手展示空无一物，但袖口硬物仍在。",
+          "林晚弯腰拉背包拉链，展示内部物品。",
+          "灯光熄灭瞬间：林晚右手探向袖口；撑红伞的女人将红伞拉至身前呈防御状。",
+          "撑红伞的女人蹲下，拂过伞骨划痕。",
+          "撑红伞的女人站起后退，握伞如武器。",
+          "林晚站起，拎起背包。",
+          "林晚掏出皮夹，取出泛黄纸张展开。",
+          "撑红伞的女人看到纸张后颤抖、流泪。"
+        ],
+        "dialogues": [
+          "撑红伞的女人：这雨，一时半会儿停不了。",
+          "林晚：嗯……是挺大的。",
+          "撑红伞的女人：等人？",
+          "林晚：啊……算是吧。车晚点了。",
+          "撑红伞的女人：这个点，没车了。",
+          "林晚：没车了？那……那我怎么……",
+          "撑红伞的女人：你从哪儿来？",
+          "林晚：就……城里。过来办点事。",
+          "撑红伞的女人：办事？这种天气，这种时间？",
+          "林晚：急事嘛。没办法。",
+          "撑红伞的女人：你……一个人？",
+          "林晚：嗯。不然呢？",
+          "林晚：这电路……真够老的。",
+          "撑红伞的女人：你袖子里……藏了什么？",
+          "林晚：什么？没有啊。",
+          "撑红伞的女人：这道划痕……是新的。",
+          "林晚：划痕？伞上的吗？我看看……",
+          "撑红伞的女人：不用了。",
+          "林晚：你……认识这伞的主人？",
+          "撑红伞的女人：这伞，没有主人。",
+          "林晚：那道划痕，是新的。但伞骨末端的金属箍……磨损很旧。一把旧伞，换了个新箍，又添了新伤。你握伞的姿势，像握刀。你刚才挡在身前的动作，是防御姿态。你问我的问题，不是闲聊，是试探。你不是在等车。你是在等人。或者……在等一个东西。",
+          "撑红伞的女人：你呢？你又在等什么？",
+          "林晚：我在等一个解释。关于我母亲……为什么在遗书里，画了你的伞。"
+        ],
+        "state_in": {},
+        "state_out": {},
+        "required_visual_proofs": [
+          "林晚袖口内侧的硬物轮廓（持续存在）。",
+          "撑红伞的女人握伞姿势的变化（从靠放至紧握如武器）。",
+          "灯光熄灭瞬间两人的防御动作。",
+          "林晚展示的泛黄纸张及上面的红伞简笔画和“小心红伞”字迹。",
+          "撑红伞的女人看到字条后的流泪与颤抖。"
+        ],
+        "blocking_hints": [],
+        "asset_mentions": [],
+        "script_participants": [
+          "林晚",
+          "撑红伞的女人"
+        ],
+        "book_id": 990402,
+        "episode": 1
+      },
+      "director_treatment": {
+        "id": 6,
+        "book_id": 990402,
+        "episode": 1,
+        "scene_name": "红伞幻影（二）",
+        "revision": 1,
+        "status": "approved",
+        "source_script_revision": "script-16",
+        "source_script_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b",
+        "dramatic_objective": "围绕“撑红伞的女人主动开口，对话升级。”建立冲突，并通过“灯光再次熄灭，场景结束。”推进本场戏。",
+        "audience_question": "人物最终会如何改变当前局面？",
+        "character_intents": {
+          "11": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "岚",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "12": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "撑红伞的女人",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "13": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "林晚",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "14": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "母亲",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "15": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "陆叔",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "16": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "顾沉",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          }
+        },
+        "beat_map": [
+          {
+            "beat_id": "B01",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "撑红伞的女人主动开口，对话升级。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B02",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "林晚展示空手，但袖口硬物仍在。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B03",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "灯光闪烁熄灭瞬间，两人做出防御/警惕动作。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B04",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "撑红伞的女人直接质问林晚袖中之物。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B05",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "撑红伞的女人蹲下检查并指出伞上划痕是新的。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B06",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "林晚站起，反向试探并揭露对方行为模式。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B07",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "撑红伞的女人情绪波动，承认伞“没有主人”。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B08",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "林晚亮出母亲遗书中的红伞简笔画及“小心红伞”字条。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B09",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "撑红伞的女人看到字条后情绪崩溃（流泪、颤抖）。",
+            "information_change": "",
+            "type": "action"
+          },
+          {
+            "beat_id": "B10",
+            "dramatic_function": "推进可见行动",
+            "emotion_change": "",
+            "event": "灯光再次熄灭，场景结束。",
+            "information_change": "",
+            "type": "action"
+          }
+        ],
+        "relationship_power_shift": "由节拍中的行动与决策呈现，不预设未声明的关系事实。",
+        "audience_emotion": "从建立预期到产生变化，再留下下一步悬念。",
+        "information_strategy": "只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。",
+        "performance_direction": "以目标、阻碍和策略驱动表演，避免只标注单一情绪。",
+        "visual_strategy": "优先呈现可观察的空间关系、动作节拍和关键道具状态。",
+        "coverage_strategy": "先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。",
+        "sound_strategy": "声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。",
+        "edit_rhythm": "按节拍强弱切换，信息揭示前保留反应空间。",
+        "constraints": [
+          "不得覆盖锁定资产事实",
+          "不得把未声明内容伪装成剧本事实"
+        ],
+        "unknowns": [],
+        "skill_id": "",
+        "skill_version": "",
+        "decision_packet_id": 9,
+        "model_info": {
+          "mode": "confirmed_llm_candidate",
+          "llm_called": true,
+          "candidate_decision": "ready_for_review",
+          "candidate_fingerprint": "602fbe681ce6ccfe62c1b7c0655f89571e748fd1b8da1cdcfccb1309a7c5a3f9",
+          "confirmed_at": "2026-09-13T04:17:41.014532",
+          "rollback_anchor": {
+            "previous_treatment_id": null,
+            "previous_revision": null
+          }
+        },
+        "prompt_fingerprint": "602fbe681ce6ccfe62c1b7c0655f89571e748fd1b8da1cdcfccb1309a7c5a3f9",
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "scene_id": "book990402:e1:红伞幻影（二）"
+      },
+      "scene_blocking": {
+        "id": 6,
+        "book_id": 990402,
+        "episode": 1,
+        "scene_name": "红伞幻影（二）",
+        "revision": 1,
+        "status": "approved",
+        "treatment_id": 6,
+        "treatment_revision": 1,
+        "source_script_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b",
+        "participants": [
+          {
+            "character_id": "11",
+            "name": "岚",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "12",
+            "name": "撑红伞的女人",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "13",
+            "name": "林晚",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "14",
+            "name": "母亲",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "15",
+            "name": "陆叔",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          },
+          {
+            "character_id": "16",
+            "name": "顾沉",
+            "position": null,
+            "facing": null,
+            "anchor": null,
+            "source": "missing"
+          }
+        ],
+        "beat_transitions": [
+          {
+            "beat_id": "B01",
+            "event": "撑红伞的女人主动开口，对话升级。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "scene_start",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B02",
+            "event": "林晚展示空手，但袖口硬物仍在。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B03",
+            "event": "灯光闪烁熄灭瞬间，两人做出防御/警惕动作。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B04",
+            "event": "撑红伞的女人直接质问林晚袖中之物。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B05",
+            "event": "撑红伞的女人蹲下检查并指出伞上划痕是新的。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B06",
+            "event": "林晚站起，反向试探并揭露对方行为模式。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B07",
+            "event": "撑红伞的女人情绪波动，承认伞“没有主人”。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B08",
+            "event": "林晚亮出母亲遗书中的红伞简笔画及“小心红伞”字条。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B09",
+            "event": "撑红伞的女人看到字条后情绪崩溃（流泪、颤抖）。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B10",
+            "event": "灯光再次熄灭，场景结束。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          }
+        ],
+        "spatial_rules": [
+          "locked_asset_identity_is_immutable",
+          "do_not_change_screen_direction_without_declared_transition",
+          "do_not_invent_character_position_when_script_is_silent",
+          "carry_forward_unresolved_positions_to_shot_plan_review"
+        ],
+        "unknowns": [
+          "未声明 岚 的画面位置",
+          "未声明 撑红伞的女人 的画面位置",
+          "未声明 林晚 的画面位置",
+          "未声明 母亲 的画面位置",
+          "未声明 陆叔 的画面位置",
+          "未声明 顾沉 的画面位置"
+        ],
+        "evidence_fingerprint": "fb70ea7dc1d0c8651311fff4d4da38c8f65b21f93bacddaad76f4ba350f8c79b",
+        "model_info": {
+          "mode": "confirmed_human_candidate",
+          "rollback_anchor": {
+            "previous_blocking_id": null,
+            "previous_revision": null
+          },
+          "confirmed_at": "2026-09-13T04:18:03.987180"
+        },
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "schema_version": "scene_blocking_v1",
+        "spatial_model": {},
+        "source_spatial_facts": [],
+        "creative_decisions": [],
+        "derived_constraints": {},
+        "unresolved_facts": [],
+        "camera_axis": {},
+        "validation": {},
+        "scene_id": "book990402:e1:红伞幻影（二）"
+      },
+      "fact_snapshot": {
+        "scene_id": "book990402:e1:红伞幻影（二）",
+        "snapshot_id": 1,
+        "status": "confirmed",
+        "records": [
+          {
+            "fact_id": "CH1_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "归乡者（推测）",
+            "scope": "chapter:1",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 1,
+                "field": "characters.identity",
+                "text": "归乡者（推测）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH1_CHAR_撑红伞的女人_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "撑红伞的女人",
+            "predicate": "identity",
+            "value": "未知（可能是幻影或神秘人物）",
+            "scope": "chapter:1",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 1,
+                "field": "characters.identity",
+                "text": "未知（可能是幻影或神秘人物）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH1_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "临潮镇老车站候车厅",
+            "predicate": "location",
+            "value": "临潮镇老车站候车厅",
+            "scope": "chapter:1",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 1,
+                "field": "scenes.location",
+                "text": "临潮镇老车站候车厅"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH1_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "临潮镇老车站候车厅",
+            "predicate": "time",
+            "value": "凌晨一点，雨夜",
+            "scope": "chapter:1",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 1,
+                "field": "scenes.time",
+                "text": "凌晨一点，雨夜"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "推测：回声照相馆相关者（母亲与照相馆有关联）",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "characters.identity",
+                "text": "推测：回声照相馆相关者（母亲与照相馆有关联）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_CHAR_顾沉_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "identity",
+            "value": "推测：回声照相馆店主/暗房工作者",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "characters.identity",
+                "text": "推测：回声照相馆店主/暗房工作者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "回声照相馆",
+            "predicate": "location",
+            "value": "回声照相馆",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "scenes.location",
+                "text": "回声照相馆"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "回声照相馆",
+            "predicate": "time",
+            "value": "天刚亮",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "scenes.time",
+                "text": "天刚亮"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_CHAR_顾沉_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "identity",
+            "value": "推测：神秘事件调查者或知情者",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "characters.identity",
+                "text": "推测：神秘事件调查者或知情者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "推测：事件核心人物，记忆模糊者",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "characters.identity",
+                "text": "推测：事件核心人物，记忆模糊者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "暗房",
+            "predicate": "location",
+            "value": "暗房",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.location",
+                "text": "暗房"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "暗房",
+            "predicate": "time",
+            "value": "夜晚（推测）",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.time",
+                "text": "夜晚（推测）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC2_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "暗房门外",
+            "predicate": "location",
+            "value": "暗房门外",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.location",
+                "text": "暗房门外"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC2_TIME",
+            "subject_type": "scene",
+            "subject_id": "暗房门外",
+            "predicate": "time",
+            "value": "夜晚",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.time",
+                "text": "夜晚"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "E01_CONFLICT_GUSHEN_AGE",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "age_consistency",
+            "value": "合影中的年龄与当前外貌不一致，原文未解释",
+            "scope": "episode:1",
+            "authority": "model_observation",
+            "status": "conflict",
+            "confidence": 0.82,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "script_qa",
+                "text": "合影里顾沉的年龄与现在不符"
+              }
+            ],
+            "conflict_group": "gushen-age"
+          }
+        ],
+        "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 2,
+        "script_ir_payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+        "fact_snapshot_id": 1,
+        "director_treatment_id": 6,
+        "scene_blocking_id": 6
+      },
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "eligibility_reasons": []
+    },
+    {
+      "scene_id": "book990402:e2:回声照相馆",
+      "book_id": 990402,
+      "episode": 2,
+      "scene": {
+        "scene_id": "book990402:e2:回声照相馆",
+        "name": "回声照相馆",
+        "location_id": "",
+        "location_name": "回声照相馆",
+        "time_of_day": "清晨",
+        "weather": "晨光斜射",
+        "participants": [
+          "17",
+          "18"
+        ],
+        "beats": [
+          {
+            "beat_id": "B1",
+            "type": "发现",
+            "event": "林晚发现暗房门口地板上有新鲜湿润的拖痕，延伸至储物柜前。",
+            "dramatic_function": "引入第一个视觉谜团，暗示昨夜有人活动。",
+            "information_change": "林晚获知昨夜暗房区域有异常活动。",
+            "emotion_change": "林晚从慵懒转为警觉。"
+          },
+          {
+            "beat_id": "B2",
+            "type": "调查",
+            "event": "林晚检查储物柜，发现黑色皮质相册夹位置异常（横倒、搭扣打开、有新鲜划痕），且内部为空。",
+            "dramatic_function": "强化异常，暗示有人翻动过相册夹并可能取走了内容物。",
+            "information_change": "林晚确认相册夹被动过，内容物丢失。",
+            "emotion_change": "林晚的怀疑加深。"
+          },
+          {
+            "beat_id": "B3",
+            "type": "隐藏",
+            "event": "林晚放回相册夹时，无意识地摸了一下自己毛衣左侧口袋（内藏方形物体）。",
+            "dramatic_function": "首次暗示林晚自身也藏有秘密（旧照片）。",
+            "information_change": "观众获知林晚口袋藏有物品。",
+            "emotion_change": "林晚在调查中保持表面镇定。"
+          },
+          {
+            "beat_id": "B4",
+            "type": "相遇",
+            "event": "顾沉带着早餐进入照相馆，与林晚进行日常对话。",
+            "dramatic_function": "引入另一角色，开始表面正常的互动，为后续试探铺垫。",
+            "information_change": "顾沉出现，提及“昨晚听到动静”。",
+            "emotion_change": "林晚迅速恢复慵懒面具；顾沉表现困倦。"
+          },
+          {
+            "beat_id": "B5",
+            "type": "试探",
+            "event": "顾沉在对话中眼神掠过暗房门口，并回避关于“动静”的深入询问。",
+            "dramatic_function": "暗示顾沉可能知晓或参与昨夜事件，并试图掩饰。",
+            "information_change": "顾沉对暗房区域表现出异常关注。",
+            "emotion_change": "顾沉的回避引发林晚进一步怀疑。"
+          },
+          {
+            "beat_id": "B6",
+            "type": "隐藏",
+            "event": "顾沉回答问题时，左手一直插在外套口袋里，口袋布料绷紧，似握有物品。",
+            "dramatic_function": "暗示顾沉也藏有秘密物品。",
+            "information_change": "观众获知顾沉口袋藏有物品。",
+            "emotion_change": "顾沉保持表面自然，但动作暴露紧张。"
+          },
+          {
+            "beat_id": "B7",
+            "type": "调查",
+            "event": "林晚询问暗房灯未关及顾沉使用暗房情况，顾沉以“洗旧照片”、“客户急件”为由回应。",
+            "dramatic_function": "林晚直接试探，顾沉给出合理但可能虚假的解释。",
+            "information_change": "顾沉承认昨夜使用暗房，理由为洗照片。",
+            "emotion_change": "林晚的怀疑未减；顾沉试图平息疑问。"
+          },
+          {
+            "beat_id": "B8",
+            "type": "发现",
+            "event": "顾沉进入暗房，林晚瞥见晾干绳上一张刚定影的照片，照片中是一个穿灰色外套的人影背对镜头站在小巷，外套款式与顾沉所穿相似。",
+            "dramatic_function": "引入关键视觉线索（灰外套照片），将顾沉与神秘人影联系起来。",
+            "information_change": "林晚（及观众）看到灰外套照片，与顾沉产生关联。",
+            "emotion_change": "林晚的怀疑得到视觉印证，警惕性提升。"
+          },
+          {
+            "beat_id": "B9",
+            "type": "试探",
+            "event": "顾沉从暗房出来后，询问林晚是否看到“穿灰外套的人”。",
+            "dramatic_function": "顾沉主动试探林晚是否知晓照片内容或相关事件。",
+            "information_change": "顾沉明确提及“灰外套”线索。",
+            "emotion_change": "林晚以困惑否认；顾沉的试探未获信息。"
+          },
+          {
+            "beat_id": "B10",
+            "type": "压力测试",
+            "event": "顾沉离开前，随口询问林晚是否动过储物柜里的相册夹。",
+            "dramatic_function": "顾沉对林晚进行反试探，测试她是否发现或动了相册夹。",
+            "information_change": "顾沉确认相册夹是其关注点。",
+            "emotion_change": "顾沉表面随意，实则紧张等待回答；林晚以无辜回应。"
+          },
+          {
+            "beat_id": "B11",
+            "type": "揭示",
+            "event": "顾沉离开后，林晚从毛衣口袋掏出一张对折的旧照片，展开后显示一个年轻女人（林晚）穿着灰色外套站在照相馆门口，背面写着“1998.10.3。回声照相馆。林晚。”",
+            "dramatic_function": "揭示林晚隐藏的秘密（旧照片），并建立“灰外套”与林晚过去的直接联系。",
+            "information_change": "观众获知林晚藏有自己穿灰外套的旧照，时间地点明确。",
+            "emotion_change": "林晚表情冰冷，意识到顾沉记得此事。"
+          }
+        ],
+        "actions": [],
+        "dialogues": [],
+        "state_in": {},
+        "state_out": {},
+        "required_visual_proofs": [],
+        "blocking_hints": [],
+        "character_blocking": [
+          {
+            "character_id": "林晚",
+            "position": "柜台后",
+            "facing": "",
+            "anchor": "柜台"
+          },
+          {
+            "character_id": "林晚",
+            "position": "蹲下身",
+            "facing": "",
+            "anchor": "拖痕"
+          },
+          {
+            "character_id": "林晚",
+            "position": "储物柜前",
+            "facing": "",
+            "anchor": "储物柜"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "照相馆",
+            "facing": "",
+            "anchor": ""
+          },
+          {
+            "character_id": "顾沉",
+            "position": "柜台上",
+            "facing": "",
+            "anchor": "纸袋"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "椅子上",
+            "facing": "",
+            "anchor": "椅子"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "暗房",
+            "facing": "",
+            "anchor": "暗房门"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "暗房",
+            "facing": "",
+            "anchor": "暗房门"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "后门",
+            "facing": "",
+            "anchor": "后门"
+          },
+          {
+            "character_id": "林晚",
+            "position": "储物柜前",
+            "facing": "",
+            "anchor": "储物柜"
+          },
+          {
+            "character_id": "林晚",
+            "position": "毛衣口袋",
+            "facing": "",
+            "anchor": "毛衣口袋"
+          }
+        ],
+        "props": [
+          "老式海鸥相机",
+          "软布",
+          "黑色皮质相册夹",
+          "相纸",
+          "显影液瓶子",
+          "纸袋（豆浆和油条）",
+          "椅子",
+          "相框",
+          "暗房红色安全灯",
+          "显影盘",
+          "照片（灰外套人影）",
+          "晾干绳",
+          "对折的旧照片（林晚年轻时穿灰外套）"
+        ],
+        "asset_mentions": [
+          "暗房",
+          "储物柜",
+          "柜台",
+          "后门"
+        ],
+        "script_participants": [
+          "林晚",
+          "顾沉"
+        ],
+        "book_id": 990402,
+        "episode": 2
+      },
+      "director_treatment": {
+        "id": 20,
+        "book_id": 990402,
+        "episode": 2,
+        "scene_name": "回声照相馆",
+        "revision": 3,
+        "status": "approved",
+        "source_script_revision": "script-17",
+        "source_script_hash": "60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4",
+        "dramatic_objective": "围绕“林晚发现暗房门口地板上有新鲜湿润的拖痕，延伸至储物柜前。”建立冲突，并通过“顾沉离开后，林晚从毛衣口袋掏出一张对折的旧照片，展开后显示一个年轻女人（林晚）穿着灰色外套站在照相馆门口，背面写着“1998.10.3。回声照相馆。林晚。””推进本场戏。",
+        "audience_question": "人物最终会如何改变当前局面？",
+        "character_intents": {
+          "17": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "查明昨夜暗房异常活动的真相，并隐藏自己的秘密。",
+            "obstacle": "顾沉的出现与回避行为，以及自身秘密可能被揭露的风险。",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "表面慵懒，实则警惕，每一步试探都在评估顾沉的威胁与秘密。",
+            "tactic": "通过观察、直接询问和隐藏关键物品来推进调查，同时维持表面平静。",
+            "name": "林晚"
+          },
+          "18": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "掩饰自己昨夜在暗房的活动，并试探林晚是否知晓或动了相册夹。",
+            "obstacle": "林晚的观察力与直接提问，以及自身秘密物品可能被发现的风险。",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "表面困倦随意，实则紧张，试图用日常对话掩盖异常行为并获取信息。",
+            "tactic": "通过提供部分真实信息（洗照片）和反向提问来转移焦点，同时观察林晚反应。",
+            "name": "顾沉"
+          }
+        },
+        "beat_map": [
+          {
+            "beat_id": "B1",
+            "dramatic_function": "引入第一个视觉谜团，暗示昨夜有人活动。",
+            "emotion_change": "林晚从慵懒转为警觉。",
+            "event": "林晚发现暗房门口地板上有新鲜湿润的拖痕，延伸至储物柜前。",
+            "information_change": "林晚获知昨夜暗房区域有异常活动。",
+            "type": "发现"
+          },
+          {
+            "beat_id": "B2",
+            "dramatic_function": "强化异常，暗示有人翻动过相册夹并可能取走了内容物。",
+            "emotion_change": "林晚的怀疑加深。",
+            "event": "林晚检查储物柜，发现黑色皮质相册夹位置异常（横倒、搭扣打开、有新鲜划痕），且内部为空。",
+            "information_change": "林晚确认相册夹被动过，内容物丢失。",
+            "type": "调查"
+          },
+          {
+            "beat_id": "B3",
+            "dramatic_function": "首次暗示林晚自身也藏有秘密（旧照片）。",
+            "emotion_change": "林晚在调查中保持表面镇定。",
+            "event": "林晚放回相册夹时，无意识地摸了一下自己毛衣左侧口袋（内藏方形物体）。",
+            "information_change": "观众获知林晚口袋藏有物品。",
+            "type": "隐藏"
+          },
+          {
+            "beat_id": "B4",
+            "dramatic_function": "引入另一角色，开始表面正常的互动，为后续试探铺垫。",
+            "emotion_change": "林晚迅速恢复慵懒面具；顾沉表现困倦。",
+            "event": "顾沉带着早餐进入照相馆，与林晚进行日常对话。",
+            "information_change": "顾沉出现，提及“昨晚听到动静”。",
+            "type": "相遇"
+          },
+          {
+            "beat_id": "B5",
+            "dramatic_function": "暗示顾沉可能知晓或参与昨夜事件，并试图掩饰。",
+            "emotion_change": "顾沉的回避引发林晚进一步怀疑。",
+            "event": "顾沉在对话中眼神掠过暗房门口，并回避关于“动静”的深入询问。",
+            "information_change": "顾沉对暗房区域表现出异常关注。",
+            "type": "试探"
+          },
+          {
+            "beat_id": "B6",
+            "dramatic_function": "暗示顾沉也藏有秘密物品。",
+            "emotion_change": "顾沉保持表面自然，但动作暴露紧张。",
+            "event": "顾沉回答问题时，左手一直插在外套口袋里，口袋布料绷紧，似握有物品。",
+            "information_change": "观众获知顾沉口袋藏有物品。",
+            "type": "隐藏"
+          },
+          {
+            "beat_id": "B7",
+            "dramatic_function": "林晚直接试探，顾沉给出合理但可能虚假的解释。",
+            "emotion_change": "林晚的怀疑未减；顾沉试图平息疑问。",
+            "event": "林晚询问暗房灯未关及顾沉使用暗房情况，顾沉以“洗旧照片”、“客户急件”为由回应。",
+            "information_change": "顾沉承认昨夜使用暗房，理由为洗照片。",
+            "type": "调查"
+          },
+          {
+            "beat_id": "B8",
+            "dramatic_function": "引入关键视觉线索（灰外套照片），将顾沉与神秘人影联系起来。",
+            "emotion_change": "林晚的怀疑得到视觉印证，警惕性提升。",
+            "event": "顾沉进入暗房，林晚瞥见晾干绳上一张刚定影的照片，照片中是一个穿灰色外套的人影背对镜头站在小巷，外套款式与顾沉所穿相似。",
+            "information_change": "林晚（及观众）看到灰外套照片，与顾沉产生关联。",
+            "type": "发现"
+          },
+          {
+            "beat_id": "B9",
+            "dramatic_function": "顾沉主动试探林晚是否知晓照片内容或相关事件。",
+            "emotion_change": "林晚以困惑否认；顾沉的试探未获信息。",
+            "event": "顾沉从暗房出来后，询问林晚是否看到“穿灰外套的人”。",
+            "information_change": "顾沉明确提及“灰外套”线索。",
+            "type": "试探"
+          },
+          {
+            "beat_id": "B10",
+            "dramatic_function": "顾沉对林晚进行反试探，测试她是否发现或动了相册夹。",
+            "emotion_change": "顾沉表面随意，实则紧张等待回答；林晚以无辜回应。",
+            "event": "顾沉离开前，随口询问林晚是否动过储物柜里的相册夹。",
+            "information_change": "顾沉确认相册夹是其关注点。",
+            "type": "压力测试"
+          },
+          {
+            "beat_id": "B11",
+            "dramatic_function": "揭示林晚隐藏的秘密（旧照片），并建立“灰外套”与林晚过去的直接联系。",
+            "emotion_change": "林晚表情冰冷，意识到顾沉记得此事。",
+            "event": "顾沉离开后，林晚从毛衣口袋掏出一张对折的旧照片，展开后显示一个年轻女人（林晚）穿着灰色外套站在照相馆门口，背面写着“1998.10.3。回声照相馆。林晚。”",
+            "information_change": "观众获知林晚藏有自己穿灰外套的旧照，时间地点明确。",
+            "type": "揭示"
+          }
+        ],
+        "relationship_power_shift": "由节拍中的行动与决策呈现，不预设未声明的关系事实。",
+        "audience_emotion": "从建立预期到产生变化，再留下下一步悬念。",
+        "information_strategy": "只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。",
+        "performance_direction": "以目标、阻碍和策略驱动表演，避免只标注单一情绪。",
+        "visual_strategy": "优先呈现可观察的空间关系、动作节拍和关键道具状态。",
+        "coverage_strategy": "先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。",
+        "sound_strategy": "声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。",
+        "edit_rhythm": "按节拍强弱切换，信息揭示前保留反应空间。",
+        "constraints": [
+          "不得覆盖锁定资产事实",
+          "不得把未声明内容伪装成剧本事实"
+        ],
+        "unknowns": [],
+        "skill_id": "",
+        "skill_version": "",
+        "decision_packet_id": 17,
+        "model_info": {
+          "mode": "deterministic_identity_repair",
+          "rollback_anchor": {
+            "previous_treatment_id": 18,
+            "previous_revision": 2
+          },
+          "confirmed_at": "2026-09-13T04:51:11.312143"
+        },
+        "prompt_fingerprint": "de5850ae0b02c6657138445f0769b76e62510156a0404a63754d0009899ffead",
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "scene_id": "book990402:e2:回声照相馆"
+      },
+      "scene_blocking": {
+        "id": 18,
+        "book_id": 990402,
+        "episode": 2,
+        "scene_name": "回声照相馆",
+        "revision": 1,
+        "status": "approved",
+        "treatment_id": 20,
+        "treatment_revision": 3,
+        "source_script_hash": "60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4",
+        "participants": [
+          {
+            "character_id": "17",
+            "name": "林晚",
+            "position": "毛衣口袋",
+            "facing": null,
+            "anchor": "毛衣口袋",
+            "source": "script_declared"
+          },
+          {
+            "character_id": "18",
+            "name": "顾沉",
+            "position": "后门",
+            "facing": null,
+            "anchor": "后门",
+            "source": "script_declared"
+          }
+        ],
+        "beat_transitions": [
+          {
+            "beat_id": "B1",
+            "event": "林晚发现暗房门口地板上有新鲜湿润的拖痕，延伸至储物柜前。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "scene_start",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B2",
+            "event": "林晚检查储物柜，发现黑色皮质相册夹位置异常（横倒、搭扣打开、有新鲜划痕），且内部为空。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B3",
+            "event": "林晚放回相册夹时，无意识地摸了一下自己毛衣左侧口袋（内藏方形物体）。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B4",
+            "event": "顾沉带着早餐进入照相馆，与林晚进行日常对话。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B5",
+            "event": "顾沉在对话中眼神掠过暗房门口，并回避关于“动静”的深入询问。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B6",
+            "event": "顾沉回答问题时，左手一直插在外套口袋里，口袋布料绷紧，似握有物品。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B7",
+            "event": "林晚询问暗房灯未关及顾沉使用暗房情况，顾沉以“洗旧照片”、“客户急件”为由回应。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B8",
+            "event": "顾沉进入暗房，林晚瞥见晾干绳上一张刚定影的照片，照片中是一个穿灰色外套的人影背对镜头站在小巷，外套款式与顾沉所穿相似。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B9",
+            "event": "顾沉从暗房出来后，询问林晚是否看到“穿灰外套的人”。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B10",
+            "event": "顾沉离开前，随口询问林晚是否动过储物柜里的相册夹。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B11",
+            "event": "顾沉离开后，林晚从毛衣口袋掏出一张对折的旧照片，展开后显示一个年轻女人（林晚）穿着灰色外套站在照相馆门口，背面写着“1998.10.3。回声照相馆。林晚。”",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          }
+        ],
+        "spatial_rules": [
+          "locked_asset_identity_is_immutable",
+          "do_not_change_screen_direction_without_declared_transition",
+          "do_not_invent_character_position_when_script_is_silent",
+          "carry_forward_unresolved_positions_to_shot_plan_review"
+        ],
+        "unknowns": [],
+        "evidence_fingerprint": "71ca269b250f303b2f39d633f27fbe1bd7bb6586f8fcebd55a6ecff486d35835",
+        "model_info": {
+          "mode": "confirmed_human_candidate",
+          "rollback_anchor": {
+            "previous_blocking_id": null,
+            "previous_revision": null
+          },
+          "confirmed_at": "2026-09-13T04:52:27.377587"
+        },
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "schema_version": "scene_blocking_v1",
+        "spatial_model": {},
+        "source_spatial_facts": [],
+        "creative_decisions": [],
+        "derived_constraints": {},
+        "unresolved_facts": [],
+        "camera_axis": {},
+        "validation": {},
+        "scene_id": "book990402:e2:回声照相馆"
+      },
+      "fact_snapshot": {
+        "scene_id": "book990402:e2:回声照相馆",
+        "snapshot_id": 2,
+        "status": "confirmed",
+        "records": [
+          {
+            "fact_id": "CH2_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "推测：回声照相馆相关者（母亲与照相馆有关联）",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "characters.identity",
+                "text": "推测：回声照相馆相关者（母亲与照相馆有关联）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_CHAR_顾沉_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "identity",
+            "value": "推测：回声照相馆店主/暗房工作者",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "characters.identity",
+                "text": "推测：回声照相馆店主/暗房工作者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "回声照相馆",
+            "predicate": "location",
+            "value": "回声照相馆",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "scenes.location",
+                "text": "回声照相馆"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "回声照相馆",
+            "predicate": "time",
+            "value": "天刚亮",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "scenes.time",
+                "text": "天刚亮"
+              }
+            ],
+            "conflict_group": null
+          }
+        ],
+        "payload_hash": "a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516"
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 6,
+        "script_ir_payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+        "fact_snapshot_id": 2,
+        "director_treatment_id": 20,
+        "scene_blocking_id": 18
+      },
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "eligibility_reasons": []
+    },
+    {
+      "scene_id": "book990402:e2:暗房门口的试探",
+      "book_id": 990402,
+      "episode": 2,
+      "scene": {
+        "scene_id": "book990402:e2:暗房门口的试探",
+        "name": "暗房门口的试探",
+        "location_id": "",
+        "location_name": "回声照相馆暗房门口",
+        "time_of_day": "清晨 06:48",
+        "weather": "晨光斜射",
+        "participants": [
+          "17",
+          "18"
+        ],
+        "beats": [
+          {
+            "beat_id": "B12",
+            "type": "对峙",
+            "event": "顾沉从暗房门口出现，与背对他的林晚进行简短对话。",
+            "dramatic_function": "延续场景1的紧张氛围，开启新一轮试探。",
+            "information_change": "顾沉再次出现，询问林晚是否还在。",
+            "emotion_change": "林晚转身，恢复慵懒无害姿态；顾沉保持困倦表象。"
+          },
+          {
+            "beat_id": "B13",
+            "type": "试探",
+            "event": "顾沉询问林晚是否翻了旧相册夹，找到了什么有意思的东西。",
+            "dramatic_function": "顾沉直接试探林晚对相册夹的调查程度。",
+            "information_change": "顾沉明确知道林晚动过相册夹。",
+            "emotion_change": "林晚手指收紧，但语气保持随意。"
+          },
+          {
+            "beat_id": "B14",
+            "type": "回避",
+            "event": "林晚不直接回答，转而指出相册夹搭扣可能坏了，并称里面是空的。",
+            "dramatic_function": "林晚回避问题，同时将异常状态抛回给顾沉。",
+            "information_change": "林晚确认相册夹内为空，并暗示其损坏。",
+            "emotion_change": "林晚保持无辜；顾沉眼神飘忽。"
+          },
+          {
+            "beat_id": "B15",
+            "type": "试探",
+            "event": "顾沉进一步描述相册夹里“以前好像放着张挺特别的照片。灰扑扑的，一个人影，看不清脸。”",
+            "dramatic_function": "顾沉首次口头描述“灰外套”照片的特征，进行更具体的试探。",
+            "information_change": "顾沉描述了丢失照片的特征（灰扑扑、人影）。",
+            "emotion_change": "林晚瞳孔轻微收缩，呼吸停顿半拍。"
+          },
+          {
+            "beat_id": "B16",
+            "type": "否认",
+            "event": "林晚否认有印象，坚持里面是空的。",
+            "dramatic_function": "林晚继续隐藏自己持有照片的事实。",
+            "information_change": "林晚否认知晓顾沉描述的照片。",
+            "emotion_change": "林晚维持无辜表情，但手未离开口袋。"
+          },
+          {
+            "beat_id": "B17",
+            "type": "警告",
+            "event": "顾沉在离开前，低声警告林晚：“这照相馆……晚上别乱翻东西。有些照片，不该看的，别看。”",
+            "dramatic_function": "顾沉发出明确警告，暗示照相馆内有不应被触及的秘密。",
+            "information_change": "顾沉警告林晚不要探究某些照片。",
+            "emotion_change": "顾沉语气压低，带有威胁感；林晚表面顺从。"
+          },
+          {
+            "beat_id": "B18",
+            "type": "揭示",
+            "event": "顾沉离开后，林晚表情瞬间变冷，再次拿出对折的旧照片，但未打开，只是摩挲边缘，并盯着暗房门口的拖痕和红光。",
+            "dramatic_function": "强化林晚的秘密与决心，将她的旧照片与当前谜团（拖痕、暗房）联系起来。",
+            "information_change": "林晚再次确认自己持有旧照片，并关注暗房线索。",
+            "emotion_change": "林晚从慵懒伪装转为冰冷、锐利。"
+          },
+          {
+            "beat_id": "B19",
+            "type": "思考",
+            "event": "林晚低声自语：“灰外套……相册夹……拖痕……顾沉……你到底在藏什么？”",
+            "dramatic_function": "林晚梳理线索，明确怀疑对象为顾沉。",
+            "information_change": "林晚将线索串联，锁定顾沉为怀疑目标。",
+            "emotion_change": "林晚的怀疑转化为明确的调查方向。"
+          }
+        ],
+        "actions": [],
+        "dialogues": [],
+        "state_in": {},
+        "state_out": {},
+        "required_visual_proofs": [],
+        "blocking_hints": [],
+        "character_blocking": [
+          {
+            "character_id": "林晚",
+            "position": "站在柜台后",
+            "facing": "背对暗房门",
+            "anchor": "柜台"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "侧身从暗房门缝挤出",
+            "facing": "",
+            "anchor": "暗房门"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "靠在门框上",
+            "facing": "",
+            "anchor": "门框"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "直起身，不再靠门框",
+            "facing": "",
+            "anchor": "门框"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "走过来拿起钥匙，经过林晚身边",
+            "facing": "",
+            "anchor": "林晚"
+          },
+          {
+            "character_id": "顾沉",
+            "position": "走向后门，径直离开",
+            "facing": "",
+            "anchor": "后门"
+          },
+          {
+            "character_id": "林晚",
+            "position": "缓缓转身",
+            "facing": "面对顾沉",
+            "anchor": ""
+          },
+          {
+            "character_id": "林晚",
+            "position": "站在原地",
+            "facing": "",
+            "anchor": ""
+          },
+          {
+            "character_id": "林晚",
+            "position": "低下头",
+            "facing": "看向自己搭在口袋上的手",
+            "anchor": "口袋"
+          },
+          {
+            "character_id": "林晚",
+            "position": "用另一只手从口袋里抽出对折的旧照片",
+            "facing": "",
+            "anchor": "口袋"
+          },
+          {
+            "character_id": "林晚",
+            "position": "走到柜台后",
+            "facing": "",
+            "anchor": "柜台"
+          },
+          {
+            "character_id": "林晚",
+            "position": "抬起头",
+            "facing": "看向暗房门",
+            "anchor": "暗房门"
+          }
+        ],
+        "props": [
+          "黑色皮质相册夹（空，有划痕）",
+          "对折的旧照片（林晚年轻时穿灰外套）",
+          "钥匙",
+          "暗房红色安全灯",
+          "地板拖痕"
+        ],
+        "asset_mentions": [
+          "暗房",
+          "柜台",
+          "后门",
+          "高窗"
+        ],
+        "script_participants": [
+          "林晚",
+          "顾沉"
+        ],
+        "book_id": 990402,
+        "episode": 2
+      },
+      "director_treatment": {
+        "id": 19,
+        "book_id": 990402,
+        "episode": 2,
+        "scene_name": "暗房门口的试探",
+        "revision": 2,
+        "status": "approved",
+        "source_script_revision": "script-17",
+        "source_script_hash": "60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4",
+        "dramatic_objective": "通过顾沉对相册夹的试探和林晚的回避，揭示两人之间的秘密与对抗，并确立林晚的调查方向。",
+        "audience_question": "顾沉究竟在隐藏什么？林晚会如何利用手中的照片？",
+        "character_intents": {
+          "17": {
+            "emotion_in": "警惕与伪装",
+            "emotion_out": "冰冷与决绝",
+            "goal": "隐藏自己持有照片的事实，并试探顾沉的意图",
+            "name": "林晚",
+            "obstacle": "顾沉的直接试探与警告",
+            "power_in": 0.4,
+            "power_out": 0.6,
+            "subtext": "我知道你在撒谎，我也在隐藏，但我会找到真相。",
+            "tactic": "以无辜姿态回避，暗中观察并收集信息"
+          },
+          "18": {
+            "emotion_in": "困倦与试探",
+            "emotion_out": "威胁与离开",
+            "goal": "确认林晚是否发现了照片，并警告她停止调查",
+            "name": "顾沉",
+            "obstacle": "林晚的否认与伪装",
+            "power_in": 0.6,
+            "power_out": 0.5,
+            "subtext": "别碰你不该碰的东西，否则后果自负。",
+            "tactic": "从试探转为直接警告，试图控制局面"
+          }
+        },
+        "beat_map": [
+          {
+            "beat_id": "B12",
+            "dramatic_function": "延续场景1的紧张氛围，开启新一轮试探。",
+            "emotion_change": "林晚转身，恢复慵懒无害姿态；顾沉保持困倦表象。",
+            "event": "顾沉从暗房门口出现，与背对他的林晚进行简短对话。",
+            "information_change": "顾沉再次出现，询问林晚是否还在。",
+            "type": "对峙"
+          },
+          {
+            "beat_id": "B13",
+            "dramatic_function": "顾沉直接试探林晚对相册夹的调查程度。",
+            "emotion_change": "林晚手指收紧，但语气保持随意。",
+            "event": "顾沉询问林晚是否翻了旧相册夹，找到了什么有意思的东西。",
+            "information_change": "顾沉明确知道林晚动过相册夹。",
+            "type": "试探"
+          },
+          {
+            "beat_id": "B14",
+            "dramatic_function": "林晚回避问题，同时将异常状态抛回给顾沉。",
+            "emotion_change": "林晚保持无辜；顾沉眼神飘忽。",
+            "event": "林晚不直接回答，转而指出相册夹搭扣可能坏了，并称里面是空的。",
+            "information_change": "林晚确认相册夹内为空，并暗示其损坏。",
+            "type": "回避"
+          },
+          {
+            "beat_id": "B15",
+            "dramatic_function": "顾沉首次口头描述“灰外套”照片的特征，进行更具体的试探。",
+            "emotion_change": "林晚瞳孔轻微收缩，呼吸停顿半拍。",
+            "event": "顾沉进一步描述相册夹里“以前好像放着张挺特别的照片。灰扑扑的，一个人影，看不清脸。”",
+            "information_change": "顾沉描述了丢失照片的特征（灰扑扑、人影）。",
+            "type": "试探"
+          },
+          {
+            "beat_id": "B16",
+            "dramatic_function": "林晚继续隐藏自己持有照片的事实。",
+            "emotion_change": "林晚维持无辜表情，但手未离开口袋。",
+            "event": "林晚否认有印象，坚持里面是空的。",
+            "information_change": "林晚否认知晓顾沉描述的照片。",
+            "type": "否认"
+          },
+          {
+            "beat_id": "B17",
+            "dramatic_function": "顾沉发出明确警告，暗示照相馆内有不应被触及的秘密。",
+            "emotion_change": "顾沉语气压低，带有威胁感；林晚表面顺从。",
+            "event": "顾沉在离开前，低声警告林晚：“这照相馆……晚上别乱翻东西。有些照片，不该看的，别看。”",
+            "information_change": "顾沉警告林晚不要探究某些照片。",
+            "type": "警告"
+          },
+          {
+            "beat_id": "B18",
+            "dramatic_function": "强化林晚的秘密与决心，将她的旧照片与当前谜团（拖痕、暗房）联系起来。",
+            "emotion_change": "林晚从慵懒伪装转为冰冷、锐利。",
+            "event": "顾沉离开后，林晚表情瞬间变冷，再次拿出对折的旧照片，但未打开，只是摩挲边缘，并盯着暗房门口的拖痕和红光。",
+            "information_change": "林晚再次确认自己持有旧照片，并关注暗房线索。",
+            "type": "揭示"
+          },
+          {
+            "beat_id": "B19",
+            "dramatic_function": "林晚梳理线索，明确怀疑对象为顾沉。",
+            "emotion_change": "林晚的怀疑转化为明确的调查方向。",
+            "event": "林晚低声自语：“灰外套……相册夹……拖痕……顾沉……你到底在藏什么？”",
+            "information_change": "林晚将线索串联，锁定顾沉为怀疑目标。",
+            "type": "思考"
+          }
+        ],
+        "relationship_power_shift": "从顾沉主导试探（B12-B17）到林晚暗中掌握主动权（B18-B19），权力关系在节拍中自然流转。",
+        "audience_emotion": "从紧张对峙到悬疑加深，最终留下对顾沉动机的强烈好奇。",
+        "information_strategy": "严格遵循beat_map的信息释放，仅在B15和B18揭示关键信息，其余节拍维持表面对话。",
+        "performance_direction": "林晚需在慵懒与锐利间切换，顾沉需在困倦与威胁间转换，通过细微动作（如手指收紧、眼神飘忽）传递潜台词。",
+        "visual_strategy": "强调暗房门口的空间压迫感，利用柜台、门框等锚点构建对峙构图，关键道具（相册夹、旧照片）需在画面中清晰可见。",
+        "coverage_strategy": "聚焦于两人在暗房门口的对峙与试探，通过对话和微表情揭示紧张关系，最后以林晚的独白收尾，为后续调查铺垫。",
+        "sound_strategy": "以环境音（暗房红光嗡鸣、地板拖痕摩擦声）烘托紧张氛围，对话保持低沉，警告部分可加入轻微回声效果。",
+        "edit_rhythm": "在试探与回避的节拍间保持紧凑节奏，在警告和揭示节拍处稍作停顿以强化张力。",
+        "constraints": [
+          "不得覆盖锁定资产事实",
+          "不得把未声明内容伪装成剧本事实"
+        ],
+        "unknowns": [],
+        "skill_id": "",
+        "skill_version": "",
+        "decision_packet_id": 18,
+        "model_info": {
+          "mode": "confirmed_llm_candidate",
+          "llm_called": true,
+          "candidate_decision": "ready_for_review",
+          "candidate_fingerprint": "370d8ebd28b3bfafd84b5c206d3e6b3684510cfcf1752c2ee7198d8ec8bcd247",
+          "confirmed_at": "2026-09-13T04:47:22.505545",
+          "rollback_anchor": {
+            "previous_treatment_id": 13,
+            "previous_revision": 1
+          }
+        },
+        "prompt_fingerprint": "370d8ebd28b3bfafd84b5c206d3e6b3684510cfcf1752c2ee7198d8ec8bcd247",
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "scene_id": "book990402:e2:暗房门口的试探"
+      },
+      "scene_blocking": {
+        "id": 16,
+        "book_id": 990402,
+        "episode": 2,
+        "scene_name": "暗房门口的试探",
+        "revision": 1,
+        "status": "approved",
+        "treatment_id": 19,
+        "treatment_revision": 2,
+        "source_script_hash": "60bcca23ce607e03ecb716907f28d70d9eafb64fa70ac2a5afa6f29f103816a4",
+        "participants": [
+          {
+            "character_id": "17",
+            "name": "林晚",
+            "position": "抬起头",
+            "facing": "看向暗房门",
+            "anchor": "暗房门",
+            "source": "script_declared"
+          },
+          {
+            "character_id": "18",
+            "name": "顾沉",
+            "position": "走向后门，径直离开",
+            "facing": null,
+            "anchor": "后门",
+            "source": "script_declared"
+          }
+        ],
+        "beat_transitions": [
+          {
+            "beat_id": "B12",
+            "event": "顾沉从暗房门口出现，与背对他的林晚进行简短对话。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "scene_start",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B13",
+            "event": "顾沉询问林晚是否翻了旧相册夹，找到了什么有意思的东西。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B14",
+            "event": "林晚不直接回答，转而指出相册夹搭扣可能坏了，并称里面是空的。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B15",
+            "event": "顾沉进一步描述相册夹里“以前好像放着张挺特别的照片。灰扑扑的，一个人影，看不清脸。”",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B16",
+            "event": "林晚否认有印象，坚持里面是空的。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B17",
+            "event": "顾沉在离开前，低声警告林晚：“这照相馆……晚上别乱翻东西。有些照片，不该看的，别看。”",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B18",
+            "event": "顾沉离开后，林晚表情瞬间变冷，再次拿出对折的旧照片，但未打开，只是摩挲边缘，并盯着暗房门口的拖痕和红光。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "B19",
+            "event": "林晚低声自语：“灰外套……相册夹……拖痕……顾沉……你到底在藏什么？”",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          }
+        ],
+        "spatial_rules": [
+          "locked_asset_identity_is_immutable",
+          "do_not_change_screen_direction_without_declared_transition",
+          "do_not_invent_character_position_when_script_is_silent",
+          "carry_forward_unresolved_positions_to_shot_plan_review"
+        ],
+        "unknowns": [],
+        "evidence_fingerprint": "5beecc26f4e558c23c3f4d81108ba4cf1e33067fcfd63990226e03a38c42e98f",
+        "model_info": {
+          "mode": "confirmed_human_candidate",
+          "rollback_anchor": {
+            "previous_blocking_id": null,
+            "previous_revision": null
+          },
+          "confirmed_at": "2026-09-13T04:47:22.543464"
+        },
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "schema_version": "scene_blocking_v1",
+        "spatial_model": {},
+        "source_spatial_facts": [],
+        "creative_decisions": [],
+        "derived_constraints": {},
+        "unresolved_facts": [],
+        "camera_axis": {},
+        "validation": {},
+        "scene_id": "book990402:e2:暗房门口的试探"
+      },
+      "fact_snapshot": {
+        "scene_id": "book990402:e2:暗房门口的试探",
+        "snapshot_id": 2,
+        "status": "confirmed",
+        "records": [
+          {
+            "fact_id": "CH2_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "推测：回声照相馆相关者（母亲与照相馆有关联）",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "characters.identity",
+                "text": "推测：回声照相馆相关者（母亲与照相馆有关联）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_CHAR_顾沉_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "identity",
+            "value": "推测：回声照相馆店主/暗房工作者",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "characters.identity",
+                "text": "推测：回声照相馆店主/暗房工作者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "回声照相馆",
+            "predicate": "location",
+            "value": "回声照相馆",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "scenes.location",
+                "text": "回声照相馆"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH2_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "回声照相馆",
+            "predicate": "time",
+            "value": "天刚亮",
+            "scope": "chapter:2",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 2,
+                "field": "scenes.time",
+                "text": "天刚亮"
+              }
+            ],
+            "conflict_group": null
+          }
+        ],
+        "payload_hash": "a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516"
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 6,
+        "script_ir_payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+        "fact_snapshot_id": 2,
+        "director_treatment_id": 19,
+        "scene_blocking_id": 16
+      },
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "eligibility_reasons": []
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂",
+      "book_id": 990402,
+      "episode": 3,
+      "scene": {
+        "scene_id": "book990402:e3:暗房惊魂",
+        "name": "暗房惊魂",
+        "location_id": "",
+        "location_name": "回声照相馆暗房",
+        "time_of_day": "清晨",
+        "weather": "",
+        "participants": [
+          "19",
+          "20"
+        ],
+        "beats": [
+          {
+            "beat_id": "1",
+            "type": "视觉证明引入",
+            "event": "工作台上放着一个打开的牛皮纸档案袋，露出泛黄老照片一角，旁边散落着边缘有细微锯齿状撕裂痕迹的剪下胶片。",
+            "dramatic_function": "引入关键物证，暗示暗房内曾发生可疑事件。",
+            "information_change": "观众首次看到档案袋和可疑胶片边缘。",
+            "emotion_change": "营造悬疑、不祥的氛围。"
+          },
+          {
+            "beat_id": "2",
+            "type": "公开面具节拍",
+            "event": "林晚以刻意慵懒、漫不经心的态度工作，将显影好的模糊人影照片夹到晾干绳上。",
+            "dramatic_function": "展示林晚的表面伪装，为后续冲突铺垫。",
+            "information_change": "无。",
+            "emotion_change": "强化林晚的懒散表象。"
+          },
+          {
+            "beat_id": "3",
+            "type": "隐藏层泄露种子",
+            "event": "林晚在夹照片时，目光快速扫过档案袋，指尖极轻地划过袋口，随即收回。",
+            "dramatic_function": "暗示林晚对档案袋有隐藏的关注或秘密。",
+            "information_change": "观众察觉林晚行为中的细微异常。",
+            "emotion_change": "引发对林晚真实意图的怀疑。"
+          },
+          {
+            "beat_id": "4",
+            "type": "场景冲突视觉锚点",
+            "event": "顾沉进入暗房，停在林晚身后，目光落在档案袋和胶片边缘上。",
+            "dramatic_function": "建立对峙，将冲突焦点锁定在物证上。",
+            "information_change": "顾沉开始介入调查。",
+            "emotion_change": "紧张感开始累积。"
+          },
+          {
+            "beat_id": "5",
+            "type": "对话冲突",
+            "event": "顾沉询问林晚昨晚是否锁好暗房门，并提及门锁有松动痕迹；林晚以懒散语气回应，但擦手动作微顿。",
+            "dramatic_function": "通过门锁问题试探林晚，引发初步防御反应。",
+            "information_change": "透露门锁可能被动过，林晚反应异常。",
+            "emotion_change": "林晚从懒散转向轻微紧张。"
+          },
+          {
+            "beat_id": "6",
+            "type": "隐藏层泄露种子",
+            "event": "林晚说“没丢什么贵重东西”时，右手无意识碰了碰T恤下摆的硬质凸起轮廓，随即抚平。",
+            "dramatic_function": "暗示林晚身上可能藏有物品，与失踪底片相关。",
+            "information_change": "观众注意到林晚的隐藏动作。",
+            "emotion_change": "加深对林晚的怀疑。"
+          },
+          {
+            "beat_id": "7",
+            "type": "对话冲突",
+            "event": "顾沉拿起档案袋，询问底片是否由林晚整理；林晚声称是旧废片并剪了边角准备扔掉。",
+            "dramatic_function": "直接质问胶片来源，迫使林晚给出解释。",
+            "information_change": "林晚提供关于胶片的初步说辞。",
+            "emotion_change": "林晚表现出不耐烦，但内心紧绷。"
+          },
+          {
+            "beat_id": "8",
+            "type": "公开面具节拍",
+            "event": "林晚以惯常的懒散抱怨语气质问顾沉是否在审问她，但身体微微绷紧。",
+            "dramatic_function": "展示林晚用表面情绪掩盖真实反应。",
+            "information_change": "无。",
+            "emotion_change": "林晚的防御姿态增强。"
+          },
+          {
+            "beat_id": "9",
+            "type": "对话冲突",
+            "event": "顾沉暗示底片可能不是废片，并质问林晚是否“记得”是自己剪的；林晚瞳孔收缩，手指蜷缩掐掌心。",
+            "dramatic_function": "将冲突升级，触及林晚的记忆或秘密核心。",
+            "information_change": "顾沉提出林晚可能失忆或隐瞒的假设。",
+            "emotion_change": "林晚从不耐烦转向恐惧和困惑。"
+          },
+          {
+            "beat_id": "10",
+            "type": "对话冲突",
+            "event": "顾沉进一步暗示失踪的关键底片可能未丢，而是被某人“保管”，并扫视林晚T恤下摆；林晚下意识捂住该位置。",
+            "dramatic_function": "将怀疑直接指向林晚，迫使她做出更激烈的反应。",
+            "information_change": "顾沉明确将林晚与失踪底片联系起来。",
+            "emotion_change": "林晚的恐惧和愤怒达到高点。"
+          },
+          {
+            "beat_id": "11",
+            "type": "场景结束",
+            "event": "顾沉离开暗房，提及下午有客人取照片，要求找出有用东西；林晚面具碎裂，露出困惑、恐惧和决绝，手悬在档案袋上颤抖。",
+            "dramatic_function": "结束对峙，留下悬念和林晚的内心崩溃。",
+            "information_change": "顾沉给出最后通牒，林晚情绪彻底暴露。",
+            "emotion_change": "林晚从伪装彻底转向真实情绪的混乱。"
+          }
+        ],
+        "actions": [],
+        "dialogues": [],
+        "state_in": {},
+        "state_out": {},
+        "required_visual_proofs": [],
+        "blocking_hints": [],
+        "character_blocking": [
+          {
+            "character": "林晚",
+            "blocking": "背对门口，站在工作台前；后转身靠在工作台边缘，双手抱臂；最后背对顾沉，整理晾干绳上的照片。"
+          },
+          {
+            "character": "顾沉",
+            "blocking": "倚在门框上；走进暗房停在林晚身后约两步远；走到工作台旁；走到暗房门口手搭门把。"
+          }
+        ],
+        "props": [
+          "牛皮纸档案袋",
+          "泛黄老照片",
+          "剪下的胶片边缘",
+          "显影液",
+          "安全灯",
+          "晾干绳",
+          "镊子",
+          "脏布",
+          "化学药剂",
+          "器材"
+        ],
+        "asset_mentions": [
+          "模糊的逆光人影照片"
+        ],
+        "script_participants": [
+          "林晚",
+          "顾沉"
+        ],
+        "book_id": 990402,
+        "episode": 3
+      },
+      "director_treatment": {
+        "id": 15,
+        "book_id": 990402,
+        "episode": 3,
+        "scene_name": "暗房惊魂",
+        "revision": 1,
+        "status": "approved",
+        "source_script_revision": "script-18",
+        "source_script_hash": "0339ead00243e9771d02145d087a5a065cd88fff065eec78714ba50342d26687",
+        "dramatic_objective": "围绕“工作台上放着一个打开的牛皮纸档案袋，露出泛黄老照片一角，旁边散落着边缘有细微锯齿状撕裂痕迹的剪下胶片。”建立冲突，并通过“顾沉离开暗房，提及下午有客人取照片，要求找出有用东西；林晚面具碎裂，露出困惑、恐惧和决绝，手悬在档案袋上颤抖。”推进本场戏。",
+        "audience_question": "人物最终会如何改变当前局面？",
+        "character_intents": {
+          "19": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "林晚",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          },
+          "20": {
+            "emotion_in": "克制",
+            "emotion_out": "变化中",
+            "goal": "完成本场戏的叙事目标",
+            "name": "顾沉",
+            "obstacle": "场景中的对立力量或信息缺口",
+            "power_in": 0.5,
+            "power_out": 0.5,
+            "subtext": "",
+            "tactic": "通过行动而非解释推进局面"
+          }
+        },
+        "beat_map": [
+          {
+            "beat_id": "1",
+            "dramatic_function": "引入关键物证，暗示暗房内曾发生可疑事件。",
+            "emotion_change": "营造悬疑、不祥的氛围。",
+            "event": "工作台上放着一个打开的牛皮纸档案袋，露出泛黄老照片一角，旁边散落着边缘有细微锯齿状撕裂痕迹的剪下胶片。",
+            "information_change": "观众首次看到档案袋和可疑胶片边缘。",
+            "type": "视觉证明引入"
+          },
+          {
+            "beat_id": "2",
+            "dramatic_function": "展示林晚的表面伪装，为后续冲突铺垫。",
+            "emotion_change": "强化林晚的懒散表象。",
+            "event": "林晚以刻意慵懒、漫不经心的态度工作，将显影好的模糊人影照片夹到晾干绳上。",
+            "information_change": "无。",
+            "type": "公开面具节拍"
+          },
+          {
+            "beat_id": "3",
+            "dramatic_function": "暗示林晚对档案袋有隐藏的关注或秘密。",
+            "emotion_change": "引发对林晚真实意图的怀疑。",
+            "event": "林晚在夹照片时，目光快速扫过档案袋，指尖极轻地划过袋口，随即收回。",
+            "information_change": "观众察觉林晚行为中的细微异常。",
+            "type": "隐藏层泄露种子"
+          },
+          {
+            "beat_id": "4",
+            "dramatic_function": "建立对峙，将冲突焦点锁定在物证上。",
+            "emotion_change": "紧张感开始累积。",
+            "event": "顾沉进入暗房，停在林晚身后，目光落在档案袋和胶片边缘上。",
+            "information_change": "顾沉开始介入调查。",
+            "type": "场景冲突视觉锚点"
+          },
+          {
+            "beat_id": "5",
+            "dramatic_function": "通过门锁问题试探林晚，引发初步防御反应。",
+            "emotion_change": "林晚从懒散转向轻微紧张。",
+            "event": "顾沉询问林晚昨晚是否锁好暗房门，并提及门锁有松动痕迹；林晚以懒散语气回应，但擦手动作微顿。",
+            "information_change": "透露门锁可能被动过，林晚反应异常。",
+            "type": "对话冲突"
+          },
+          {
+            "beat_id": "6",
+            "dramatic_function": "暗示林晚身上可能藏有物品，与失踪底片相关。",
+            "emotion_change": "加深对林晚的怀疑。",
+            "event": "林晚说“没丢什么贵重东西”时，右手无意识碰了碰T恤下摆的硬质凸起轮廓，随即抚平。",
+            "information_change": "观众注意到林晚的隐藏动作。",
+            "type": "隐藏层泄露种子"
+          },
+          {
+            "beat_id": "7",
+            "dramatic_function": "直接质问胶片来源，迫使林晚给出解释。",
+            "emotion_change": "林晚表现出不耐烦，但内心紧绷。",
+            "event": "顾沉拿起档案袋，询问底片是否由林晚整理；林晚声称是旧废片并剪了边角准备扔掉。",
+            "information_change": "林晚提供关于胶片的初步说辞。",
+            "type": "对话冲突"
+          },
+          {
+            "beat_id": "8",
+            "dramatic_function": "展示林晚用表面情绪掩盖真实反应。",
+            "emotion_change": "林晚的防御姿态增强。",
+            "event": "林晚以惯常的懒散抱怨语气质问顾沉是否在审问她，但身体微微绷紧。",
+            "information_change": "无。",
+            "type": "公开面具节拍"
+          },
+          {
+            "beat_id": "9",
+            "dramatic_function": "将冲突升级，触及林晚的记忆或秘密核心。",
+            "emotion_change": "林晚从不耐烦转向恐惧和困惑。",
+            "event": "顾沉暗示底片可能不是废片，并质问林晚是否“记得”是自己剪的；林晚瞳孔收缩，手指蜷缩掐掌心。",
+            "information_change": "顾沉提出林晚可能失忆或隐瞒的假设。",
+            "type": "对话冲突"
+          },
+          {
+            "beat_id": "10",
+            "dramatic_function": "将怀疑直接指向林晚，迫使她做出更激烈的反应。",
+            "emotion_change": "林晚的恐惧和愤怒达到高点。",
+            "event": "顾沉进一步暗示失踪的关键底片可能未丢，而是被某人“保管”，并扫视林晚T恤下摆；林晚下意识捂住该位置。",
+            "information_change": "顾沉明确将林晚与失踪底片联系起来。",
+            "type": "对话冲突"
+          },
+          {
+            "beat_id": "11",
+            "dramatic_function": "结束对峙，留下悬念和林晚的内心崩溃。",
+            "emotion_change": "林晚从伪装彻底转向真实情绪的混乱。",
+            "event": "顾沉离开暗房，提及下午有客人取照片，要求找出有用东西；林晚面具碎裂，露出困惑、恐惧和决绝，手悬在档案袋上颤抖。",
+            "information_change": "顾沉给出最后通牒，林晚情绪彻底暴露。",
+            "type": "场景结束"
+          }
+        ],
+        "relationship_power_shift": "由节拍中的行动与决策呈现，不预设未声明的关系事实。",
+        "audience_emotion": "从建立预期到产生变化，再留下下一步悬念。",
+        "information_strategy": "只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。",
+        "performance_direction": "以目标、阻碍和策略驱动表演，避免只标注单一情绪。",
+        "visual_strategy": "优先呈现可观察的空间关系、动作节拍和关键道具状态。",
+        "coverage_strategy": "先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。",
+        "sound_strategy": "声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。",
+        "edit_rhythm": "按节拍强弱切换，信息揭示前保留反应空间。",
+        "constraints": [
+          "不得覆盖锁定资产事实",
+          "不得把未声明内容伪装成剧本事实"
+        ],
+        "unknowns": [],
+        "skill_id": "",
+        "skill_version": "",
+        "decision_packet_id": 15,
+        "model_info": {
+          "mode": "confirmed_llm_candidate",
+          "llm_called": true,
+          "candidate_decision": "ready_for_review",
+          "candidate_fingerprint": "8b0edae21f3132f1c4d1e3edbda845c8cbad6b751abcbd946a3462d5544c2d5b",
+          "confirmed_at": "2026-09-13T04:41:28.911871",
+          "rollback_anchor": {
+            "previous_treatment_id": null,
+            "previous_revision": null
+          }
+        },
+        "prompt_fingerprint": "8b0edae21f3132f1c4d1e3edbda845c8cbad6b751abcbd946a3462d5544c2d5b",
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "scene_id": "book990402:e3:暗房惊魂"
+      },
+      "scene_blocking": {
+        "id": 12,
+        "book_id": 990402,
+        "episode": 3,
+        "scene_name": "暗房惊魂",
+        "revision": 1,
+        "status": "approved",
+        "treatment_id": 15,
+        "treatment_revision": 1,
+        "source_script_hash": "0339ead00243e9771d02145d087a5a065cd88fff065eec78714ba50342d26687",
+        "participants": [
+          {
+            "character_id": "19",
+            "name": "林晚",
+            "position": "背对门口，站在工作台前；后转身靠在工作台边缘，双手抱臂；最后背对顾沉，整理晾干绳上的照片。",
+            "facing": null,
+            "anchor": null,
+            "source": "script_declared"
+          },
+          {
+            "character_id": "20",
+            "name": "顾沉",
+            "position": "倚在门框上；走进暗房停在林晚身后约两步远；走到工作台旁；走到暗房门口手搭门把。",
+            "facing": null,
+            "anchor": null,
+            "source": "script_declared"
+          }
+        ],
+        "beat_transitions": [
+          {
+            "beat_id": "1",
+            "event": "工作台上放着一个打开的牛皮纸档案袋，露出泛黄老照片一角，旁边散落着边缘有细微锯齿状撕裂痕迹的剪下胶片。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "scene_start",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "2",
+            "event": "林晚以刻意慵懒、漫不经心的态度工作，将显影好的模糊人影照片夹到晾干绳上。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "3",
+            "event": "林晚在夹照片时，目光快速扫过档案袋，指尖极轻地划过袋口，随即收回。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "4",
+            "event": "顾沉进入暗房，停在林晚身后，目光落在档案袋和胶片边缘上。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "5",
+            "event": "顾沉询问林晚昨晚是否锁好暗房门，并提及门锁有松动痕迹；林晚以懒散语气回应，但擦手动作微顿。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "6",
+            "event": "林晚说“没丢什么贵重东西”时，右手无意识碰了碰T恤下摆的硬质凸起轮廓，随即抚平。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "7",
+            "event": "顾沉拿起档案袋，询问底片是否由林晚整理；林晚声称是旧废片并剪了边角准备扔掉。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "8",
+            "event": "林晚以惯常的懒散抱怨语气质问顾沉是否在审问她，但身体微微绷紧。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "9",
+            "event": "顾沉暗示底片可能不是废片，并质问林晚是否“记得”是自己剪的；林晚瞳孔收缩，手指蜷缩掐掌心。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "10",
+            "event": "顾沉进一步暗示失踪的关键底片可能未丢，而是被某人“保管”，并扫视林晚T恤下摆；林晚下意识捂住该位置。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "11",
+            "event": "顾沉离开暗房，提及下午有客人取照片，要求找出有用东西；林晚面具碎裂，露出困惑、恐惧和决绝，手悬在档案袋上颤抖。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          }
+        ],
+        "spatial_rules": [
+          "locked_asset_identity_is_immutable",
+          "do_not_change_screen_direction_without_declared_transition",
+          "do_not_invent_character_position_when_script_is_silent",
+          "carry_forward_unresolved_positions_to_shot_plan_review"
+        ],
+        "unknowns": [],
+        "evidence_fingerprint": "5ef81256935b807e5dd89cd54ea61262d39252e091df1da1dbb75bcfca63cfd1",
+        "model_info": {
+          "mode": "confirmed_human_candidate",
+          "rollback_anchor": {
+            "previous_blocking_id": null,
+            "previous_revision": null
+          },
+          "confirmed_at": "2026-09-13T04:44:55.703396"
+        },
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "schema_version": "scene_blocking_v1",
+        "spatial_model": {},
+        "source_spatial_facts": [],
+        "creative_decisions": [],
+        "derived_constraints": {},
+        "unresolved_facts": [],
+        "camera_axis": {},
+        "validation": {},
+        "scene_id": "book990402:e3:暗房惊魂"
+      },
+      "fact_snapshot": {
+        "scene_id": "book990402:e3:暗房惊魂",
+        "snapshot_id": 3,
+        "status": "confirmed",
+        "records": [
+          {
+            "fact_id": "CH3_CHAR_顾沉_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "identity",
+            "value": "推测：神秘事件调查者或知情者",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "characters.identity",
+                "text": "推测：神秘事件调查者或知情者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "推测：事件核心人物，记忆模糊者",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "characters.identity",
+                "text": "推测：事件核心人物，记忆模糊者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "暗房",
+            "predicate": "location",
+            "value": "暗房",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.location",
+                "text": "暗房"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "暗房",
+            "predicate": "time",
+            "value": "夜晚（推测）",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.time",
+                "text": "夜晚（推测）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC2_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "暗房门外",
+            "predicate": "location",
+            "value": "暗房门外",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.location",
+                "text": "暗房门外"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC2_TIME",
+            "subject_type": "scene",
+            "subject_id": "暗房门外",
+            "predicate": "time",
+            "value": "夜晚",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.time",
+                "text": "夜晚"
+              }
+            ],
+            "conflict_group": null
+          }
+        ],
+        "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 5,
+        "script_ir_payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+        "fact_snapshot_id": 3,
+        "director_treatment_id": 15,
+        "scene_blocking_id": 12
+      },
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "eligibility_reasons": []
+    },
+    {
+      "scene_id": "book990402:e3:暗房惊魂（2）",
+      "book_id": 990402,
+      "episode": 3,
+      "scene": {
+        "scene_id": "book990402:e3:暗房惊魂（2）",
+        "name": "暗房惊魂（2）",
+        "location_id": "",
+        "location_name": "回声照相馆暗房门外",
+        "time_of_day": "清晨",
+        "weather": "",
+        "participants": [
+          "19",
+          "20"
+        ],
+        "beats": [
+          {
+            "beat_id": "1",
+            "type": "视觉证明引入",
+            "event": "顾沉背靠暗房门外墙壁，手插口袋，目光低垂；林晚从暗房内拉开门，逆光站立。",
+            "dramatic_function": "建立门外对峙场景，展示两人状态。",
+            "information_change": "场景转换至门外，冲突延续。",
+            "emotion_change": "延续紧张氛围。"
+          },
+          {
+            "beat_id": "2",
+            "type": "对话冲突",
+            "event": "林晚以不耐烦语气重申自己只是打工的，不清楚胶片原件，身体侧开展示暗房内部，但手指捻纽扣。",
+            "dramatic_function": "林晚试图撇清关系，但细微动作暴露紧张。",
+            "information_change": "林晚再次否认参与。",
+            "emotion_change": "林晚的防御中带有颤抖。"
+          },
+          {
+            "beat_id": "3",
+            "type": "视觉证明1",
+            "event": "顾沉从口袋抽出另一只手，捏着一小截剪下的胶片边缘，锯齿状撕裂在晨光下可见。",
+            "dramatic_function": "展示关键物证，强化顾沉的指控依据。",
+            "information_change": "观众看到顾沉持有的具体证据。",
+            "emotion_change": "林晚的困惑和警惕加深。"
+          },
+          {
+            "beat_id": "4",
+            "type": "对话冲突",
+            "event": "顾沉指出档案袋中缺少关键老照片，且胶片边缘尺寸与该照片底片边框吻合。",
+            "dramatic_function": "将物证与失踪照片直接关联，缩小怀疑范围。",
+            "information_change": "明确失踪照片的具体内容及物证关联。",
+            "emotion_change": "林晚的恐惧加剧。"
+          },
+          {
+            "beat_id": "5",
+            "type": "视觉证明2",
+            "event": "顾沉将胶片边缘举到光线中，镜头特写其锯齿状撕裂与档案袋袋口撕裂痕迹的视觉呼应。",
+            "dramatic_function": "通过视觉对比强化物证的说服力。",
+            "information_change": "观众直观看到物证间的潜在关联。",
+            "emotion_change": "冲突达到新高点。"
+          },
+          {
+            "beat_id": "6",
+            "type": "对话冲突",
+            "event": "顾沉直接质问林晚是否自己拿走了照片并剪下边缘；林晚手指蜷缩掐掌心，血色褪尽，回答“不记得”。",
+            "dramatic_function": "将指控推向顶点，触及林晚的记忆问题。",
+            "information_change": "顾沉提出林晚是嫌疑人的直接假设。",
+            "emotion_change": "林晚从恐惧转向茫然和痛苦。"
+          },
+          {
+            "beat_id": "7",
+            "type": "隐藏层泄露种子",
+            "event": "林晚在顾沉质问时手指蜷缩掐掌心，与表面困惑形成反差。",
+            "dramatic_function": "暗示林晚可能隐藏秘密或失忆。",
+            "information_change": "观众察觉林晚的深层反应。",
+            "emotion_change": "林晚的决绝开始浮现。"
+          },
+          {
+            "beat_id": "8",
+            "type": "对话冲突",
+            "event": "林晚拒绝继续对话，转身要关门；顾沉指出胶片撕裂与档案袋撕裂由同一把剪刀造成，且昨天只有林晚用过。",
+            "dramatic_function": "用最后证据封堵林晚的退路，迫使她面对。",
+            "information_change": "顾沉提供工具关联的决定性线索。",
+            "emotion_change": "林晚的决绝压过恐惧。"
+          },
+          {
+            "beat_id": "9",
+            "type": "视觉证明3",
+            "event": "林晚拉门的手僵住，镜头暗示昨天下午林晚用老式剪刀裁剪包装纸的闪回。",
+            "dramatic_function": "通过视觉关联坐实林晚与物证的联系。",
+            "information_change": "观众确认林晚使用过相关工具。",
+            "emotion_change": "冲突达到无法回避的程度。"
+          },
+          {
+            "beat_id": "10",
+            "type": "强钩子结尾",
+            "event": "林晚关门，顾沉离开时瞥见走廊阴影处反光；暗房内林晚滑坐在地抱头，满脸迷茫痛苦。",
+            "dramatic_function": "结束场景，留下多重悬念（反光、林晚崩溃）。",
+            "information_change": "暗示可能有第三方观察，林晚情绪彻底崩溃。",
+            "emotion_change": "以悬疑和角色痛苦收尾。"
+          }
+        ],
+        "actions": [],
+        "dialogues": [],
+        "state_in": {},
+        "state_out": {},
+        "required_visual_proofs": [],
+        "blocking_hints": [],
+        "character_blocking": [
+          {
+            "character": "顾沉",
+            "blocking": "背靠暗房门外墙壁；目光低垂；抬眼扫视林晚和暗房内部；向前微微倾身；转身沿走廊离开；脚步微顿侧头扫视阴影处。"
+          },
+          {
+            "character": "林晚",
+            "blocking": "从暗房内拉开门，逆光站立；身体微微侧开；后退半步背抵门框；转身要关门；背对顾沉肩膀颤抖；关门后背靠门滑坐在地抱头。"
+          }
+        ],
+        "props": [
+          "剪下的胶片边缘",
+          "风衣",
+          "工作服",
+          "纽扣",
+          "暗房门",
+          "观察窗"
+        ],
+        "asset_mentions": [
+          "老照片（父亲抱林晚）",
+          "老式剪刀"
+        ],
+        "script_participants": [
+          "林晚",
+          "顾沉"
+        ],
+        "book_id": 990402,
+        "episode": 3
+      },
+      "director_treatment": {
+        "id": 17,
+        "book_id": 990402,
+        "episode": 3,
+        "scene_name": "暗房惊魂（2）",
+        "revision": 1,
+        "status": "approved",
+        "source_script_revision": "script-18",
+        "source_script_hash": "0339ead00243e9771d02145d087a5a065cd88fff065eec78714ba50342d26687",
+        "dramatic_objective": "通过一场逐步升级的证据对质，揭示林晚可能存在的记忆问题，并暗示事件背后可能存在的第三方观察，为后续剧情埋下双重悬念。",
+        "audience_question": "林晚是否真的失忆？她与失踪照片的关联究竟是巧合还是刻意隐瞒？",
+        "character_intents": {
+          "19": {
+            "emotion_in": "警惕与防御",
+            "emotion_out": "崩溃与迷茫",
+            "goal": "否认指控并保护自己，但记忆的空白让她无法自证清白。",
+            "name": "林晚",
+            "obstacle": "顾沉步步紧逼的物证与质问，以及自身无法解释的记忆断层。",
+            "power_in": 0.4,
+            "power_out": 0.2,
+            "subtext": "我可能真的做了什么，但我完全不记得。这种恐惧比被冤枉更可怕。",
+            "tactic": "从言语否认转向身体退缩，最终被内在的混乱击垮。"
+          },
+          "20": {
+            "emotion_in": "克制的怀疑",
+            "emotion_out": "确信的指控",
+            "goal": "用证据链迫使林晚面对事实，找出照片失踪的真相。",
+            "name": "顾沉",
+            "obstacle": "林晚的否认和看似无辜的反应，以及她记忆问题带来的不确定性。",
+            "power_in": 0.6,
+            "power_out": 0.8,
+            "subtext": "证据指向你，你的反应也指向你。无论你是否记得，你都脱不了干系。",
+            "tactic": "层层递进地展示物证，用逻辑和视觉关联压缩林晚的辩解空间。"
+          }
+        },
+        "beat_map": [
+          {
+            "beat_id": "1",
+            "dramatic_function": "建立门外对峙场景，展示两人状态。",
+            "emotion_change": "延续紧张氛围。",
+            "event": "顾沉背靠暗房门外墙壁，手插口袋，目光低垂；林晚从暗房内拉开门，逆光站立。",
+            "information_change": "场景转换至门外，冲突延续。",
+            "type": "视觉证明引入"
+          },
+          {
+            "beat_id": "2",
+            "dramatic_function": "林晚试图撇清关系，但细微动作暴露紧张。",
+            "emotion_change": "林晚的防御中带有颤抖。",
+            "event": "林晚以不耐烦语气重申自己只是打工的，不清楚胶片原件，身体侧开展示暗房内部，但手指捻纽扣。",
+            "information_change": "林晚再次否认参与。",
+            "type": "对话冲突"
+          },
+          {
+            "beat_id": "3",
+            "dramatic_function": "展示关键物证，强化顾沉的指控依据。",
+            "emotion_change": "林晚的困惑和警惕加深。",
+            "event": "顾沉从口袋抽出另一只手，捏着一小截剪下的胶片边缘，锯齿状撕裂在晨光下可见。",
+            "information_change": "观众看到顾沉持有的具体证据。",
+            "type": "视觉证明1"
+          },
+          {
+            "beat_id": "4",
+            "dramatic_function": "将物证与失踪照片直接关联，缩小怀疑范围。",
+            "emotion_change": "林晚的恐惧加剧。",
+            "event": "顾沉指出档案袋中缺少关键老照片，且胶片边缘尺寸与该照片底片边框吻合。",
+            "information_change": "明确失踪照片的具体内容及物证关联。",
+            "type": "对话冲突"
+          },
+          {
+            "beat_id": "5",
+            "dramatic_function": "通过视觉对比强化物证的说服力。",
+            "emotion_change": "冲突达到新高点。",
+            "event": "顾沉将胶片边缘举到光线中，镜头特写其锯齿状撕裂与档案袋袋口撕裂痕迹的视觉呼应。",
+            "information_change": "观众直观看到物证间的潜在关联。",
+            "type": "视觉证明2"
+          },
+          {
+            "beat_id": "6",
+            "dramatic_function": "将指控推向顶点，触及林晚的记忆问题。",
+            "emotion_change": "林晚从恐惧转向茫然和痛苦。",
+            "event": "顾沉直接质问林晚是否自己拿走了照片并剪下边缘；林晚手指蜷缩掐掌心，血色褪尽，回答“不记得”。",
+            "information_change": "顾沉提出林晚是嫌疑人的直接假设。",
+            "type": "对话冲突"
+          },
+          {
+            "beat_id": "7",
+            "dramatic_function": "暗示林晚可能隐藏秘密或失忆。",
+            "emotion_change": "林晚的决绝开始浮现。",
+            "event": "林晚在顾沉质问时手指蜷缩掐掌心，与表面困惑形成反差。",
+            "information_change": "观众察觉林晚的深层反应。",
+            "type": "隐藏层泄露种子"
+          },
+          {
+            "beat_id": "8",
+            "dramatic_function": "用最后证据封堵林晚的退路，迫使她面对。",
+            "emotion_change": "林晚的决绝压过恐惧。",
+            "event": "林晚拒绝继续对话，转身要关门；顾沉指出胶片撕裂与档案袋撕裂由同一把剪刀造成，且昨天只有林晚用过。",
+            "information_change": "顾沉提供工具关联的决定性线索。",
+            "type": "对话冲突"
+          },
+          {
+            "beat_id": "9",
+            "dramatic_function": "通过视觉关联坐实林晚与物证的联系。",
+            "emotion_change": "冲突达到无法回避的程度。",
+            "event": "林晚拉门的手僵住，镜头暗示昨天下午林晚用老式剪刀裁剪包装纸的闪回。",
+            "information_change": "观众确认林晚使用过相关工具。",
+            "type": "视觉证明3"
+          },
+          {
+            "beat_id": "10",
+            "dramatic_function": "结束场景，留下多重悬念（反光、林晚崩溃）。",
+            "emotion_change": "以悬疑和角色痛苦收尾。",
+            "event": "林晚关门，顾沉离开时瞥见走廊阴影处反光；暗房内林晚滑坐在地抱头，满脸迷茫痛苦。",
+            "information_change": "暗示可能有第三方观察，林晚情绪彻底崩溃。",
+            "type": "强钩子结尾"
+          }
+        ],
+        "relationship_power_shift": "权力关系从开场的相对平衡（顾沉怀疑，林晚防御），随着证据的展示，明确转向顾沉主导，林晚在记忆困惑中彻底失去掌控。",
+        "audience_emotion": "从紧张对峙到震惊怀疑，最终陷入对林晚记忆与清白的双重悬念。",
+        "information_strategy": "严格遵循beat_map的信息释放节奏，新信息（物证关联、工具线索）仅在指定节拍出现，避免提前泄露。",
+        "performance_direction": "顾沉的表演应体现“冷静的压迫感”，通过精准的动作和停顿施加压力；林晚的表演需展现“从防御到崩溃的层次”，细微动作（捻纽扣、掐掌心）是关键。",
+        "visual_strategy": "强化“光与影”的对比（逆光、晨光、阴影反光），利用特写镜头突出关键道具（胶片边缘、纽扣、剪刀闪回）的细节，构建视觉证据链。",
+        "coverage_strategy": "聚焦于顾沉展示证据与林晚反应之间的动态张力，确保每个关键物证的揭示都与角色情绪转折点同步。",
+        "sound_strategy": "环境音（晨光、走廊寂静）衬托紧张；关键证据展示时可加入细微的、象征性的音效（如胶片撕裂声的回响）；林晚崩溃时声音设计应突出其孤立感。",
+        "edit_rhythm": "在证据展示（beat 3, 5, 9）时采用短促、有力的剪辑强调物证；在林晚反应（beat 6, 7, 10）时延长镜头，给予情绪发酵空间。",
+        "constraints": [
+          "不得覆盖锁定资产事实",
+          "不得把未声明内容伪装成剧本事实"
+        ],
+        "unknowns": [],
+        "skill_id": "",
+        "skill_version": "",
+        "decision_packet_id": 16,
+        "model_info": {
+          "mode": "confirmed_llm_candidate",
+          "llm_called": true,
+          "candidate_decision": "ready_for_review",
+          "candidate_fingerprint": "72cba30a0b26378bf1ba0a0eb79ed6fbea9f30946d336891b7422739ebfb06e6",
+          "confirmed_at": "2026-09-13T04:44:21.401428",
+          "rollback_anchor": {
+            "previous_treatment_id": null,
+            "previous_revision": null
+          }
+        },
+        "prompt_fingerprint": "72cba30a0b26378bf1ba0a0eb79ed6fbea9f30946d336891b7422739ebfb06e6",
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "scene_id": "book990402:e3:暗房惊魂（2）"
+      },
+      "scene_blocking": {
+        "id": 13,
+        "book_id": 990402,
+        "episode": 3,
+        "scene_name": "暗房惊魂（2）",
+        "revision": 1,
+        "status": "approved",
+        "treatment_id": 17,
+        "treatment_revision": 1,
+        "source_script_hash": "0339ead00243e9771d02145d087a5a065cd88fff065eec78714ba50342d26687",
+        "participants": [
+          {
+            "character_id": "19",
+            "name": "林晚",
+            "position": "从暗房内拉开门，逆光站立；身体微微侧开；后退半步背抵门框；转身要关门；背对顾沉肩膀颤抖；关门后背靠门滑坐在地抱头。",
+            "facing": null,
+            "anchor": null,
+            "source": "script_declared"
+          },
+          {
+            "character_id": "20",
+            "name": "顾沉",
+            "position": "背靠暗房门外墙壁；目光低垂；抬眼扫视林晚和暗房内部；向前微微倾身；转身沿走廊离开；脚步微顿侧头扫视阴影处。",
+            "facing": null,
+            "anchor": null,
+            "source": "script_declared"
+          }
+        ],
+        "beat_transitions": [
+          {
+            "beat_id": "1",
+            "event": "顾沉背靠暗房门外墙壁，手插口袋，目光低垂；林晚从暗房内拉开门，逆光站立。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "scene_start",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "2",
+            "event": "林晚以不耐烦语气重申自己只是打工的，不清楚胶片原件，身体侧开展示暗房内部，但手指捻纽扣。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "3",
+            "event": "顾沉从口袋抽出另一只手，捏着一小截剪下的胶片边缘，锯齿状撕裂在晨光下可见。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "4",
+            "event": "顾沉指出档案袋中缺少关键老照片，且胶片边缘尺寸与该照片底片边框吻合。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "5",
+            "event": "顾沉将胶片边缘举到光线中，镜头特写其锯齿状撕裂与档案袋袋口撕裂痕迹的视觉呼应。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "6",
+            "event": "顾沉直接质问林晚是否自己拿走了照片并剪下边缘；林晚手指蜷缩掐掌心，血色褪尽，回答“不记得”。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "7",
+            "event": "林晚在顾沉质问时手指蜷缩掐掌心，与表面困惑形成反差。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "8",
+            "event": "林晚拒绝继续对话，转身要关门；顾沉指出胶片撕裂与档案袋撕裂由同一把剪刀造成，且昨天只有林晚用过。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "9",
+            "event": "林晚拉门的手僵住，镜头暗示昨天下午林晚用老式剪刀裁剪包装纸的闪回。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          },
+          {
+            "beat_id": "10",
+            "event": "林晚关门，顾沉离开时瞥见走廊阴影处反光；暗房内林晚滑坐在地抱头，满脸迷茫痛苦。",
+            "blocking_change": "preserve_existing_spatial_relationship",
+            "entry_state": "same_as_previous",
+            "exit_state": "same_as_next"
+          }
+        ],
+        "spatial_rules": [
+          "locked_asset_identity_is_immutable",
+          "do_not_change_screen_direction_without_declared_transition",
+          "do_not_invent_character_position_when_script_is_silent",
+          "carry_forward_unresolved_positions_to_shot_plan_review"
+        ],
+        "unknowns": [],
+        "evidence_fingerprint": "23df93a6e50f64797d50d8e16f7a17bf588bfd04b43f86a4f959e433886d1839",
+        "model_info": {
+          "mode": "confirmed_human_candidate",
+          "rollback_anchor": {
+            "previous_blocking_id": null,
+            "previous_revision": null
+          },
+          "confirmed_at": "2026-09-13T04:44:55.803978"
+        },
+        "execution_status": "queued",
+        "quality_status": "draft",
+        "production_status": "blocked",
+        "workflow_profile": "production",
+        "schema_version": "scene_blocking_v1",
+        "spatial_model": {},
+        "source_spatial_facts": [],
+        "creative_decisions": [],
+        "derived_constraints": {},
+        "unresolved_facts": [],
+        "camera_axis": {},
+        "validation": {},
+        "scene_id": "book990402:e3:暗房惊魂（2）"
+      },
+      "fact_snapshot": {
+        "scene_id": "book990402:e3:暗房惊魂（2）",
+        "snapshot_id": 3,
+        "status": "confirmed",
+        "records": [
+          {
+            "fact_id": "CH3_CHAR_顾沉_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "顾沉",
+            "predicate": "identity",
+            "value": "推测：神秘事件调查者或知情者",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "characters.identity",
+                "text": "推测：神秘事件调查者或知情者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_CHAR_林晚_IDENTITY",
+            "subject_type": "character",
+            "subject_id": "林晚",
+            "predicate": "identity",
+            "value": "推测：事件核心人物，记忆模糊者",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "unknown",
+            "confidence": 0.7,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "characters.identity",
+                "text": "推测：事件核心人物，记忆模糊者"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC1_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "暗房",
+            "predicate": "location",
+            "value": "暗房",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.location",
+                "text": "暗房"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC1_TIME",
+            "subject_type": "scene",
+            "subject_id": "暗房",
+            "predicate": "time",
+            "value": "夜晚（推测）",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.time",
+                "text": "夜晚（推测）"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC2_LOCATION",
+            "subject_type": "scene",
+            "subject_id": "暗房门外",
+            "predicate": "location",
+            "value": "暗房门外",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.location",
+                "text": "暗房门外"
+              }
+            ],
+            "conflict_group": null
+          },
+          {
+            "fact_id": "CH3_SC2_TIME",
+            "subject_type": "scene",
+            "subject_id": "暗房门外",
+            "predicate": "time",
+            "value": "夜晚",
+            "scope": "chapter:3",
+            "authority": "source_text",
+            "status": "confirmed",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "chapter": 3,
+                "field": "scenes.time",
+                "text": "夜晚"
+              }
+            ],
+            "conflict_group": null
+          }
+        ],
+        "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+      },
+      "source_evidence": {
+        "database": "work\\db\\screenplay.db",
+        "script_ir_id": 5,
+        "script_ir_payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+        "fact_snapshot_id": 3,
+        "director_treatment_id": 17,
+        "scene_blocking_id": 13
+      },
+      "upstream": {
+        "fact_snapshot": true,
+        "script_ir": true,
+        "director_treatment": true,
+        "scene_blocking": true
+      },
+      "eligibility_reasons": []
+    }
+  ]
+}

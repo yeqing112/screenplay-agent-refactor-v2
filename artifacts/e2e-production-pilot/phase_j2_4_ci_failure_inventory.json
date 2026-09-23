@@ -1,0 +1,142 @@
+{
+  "phase": "PHASE_J2_4_PRODUCTION_REGRESSION_GATE_CONVERGENCE",
+  "base_commit": "2e2205f",
+  "ci_run_id": "35902213060",
+  "ci_job_id": "107311920540",
+  "ci_result": {
+    "passed": 1751,
+    "failed": 13,
+    "conclusion": "failure"
+  },
+  "local_targeted_result": {
+    "passed": 52,
+    "failed": 0,
+    "scope": "J2.4 repair and transport/storage wiring tests"
+  },
+  "provider_calls": {
+    "provider": 0,
+    "llm": 0,
+    "image": 0,
+    "video": 0
+  },
+  "j3_started": false,
+  "failures": [
+    {
+      "node_id": "offline_replay_provenance_branch",
+      "failure_type": "provenance_context",
+      "local_result": "failed",
+      "ci_result": "failed",
+      "environment_sensitive": true,
+      "production_boundary": "offline replay provenance",
+      "root_cause_status": "open: historical branch is not supplied as explicit replay context"
+    },
+    {
+      "node_id": "evaluation_immutable_source_package",
+      "failure_type": "newline_normalization",
+      "local_result": "passed_after_fix",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": true,
+      "production_boundary": "evaluation source integrity",
+      "root_cause_status": "fixed: .gitattributes pins raw files as binary and restores declared blob hash"
+    },
+    {
+      "node_id": "final_spine_worktree_clean_gate",
+      "failure_type": "assertion_precedence",
+      "local_result": "failed",
+      "ci_result": "failed",
+      "environment_sensitive": false,
+      "production_boundary": "real-provider authorization preflight",
+      "root_cause_status": "open: historical-retired gate precedes dirty-worktree assertion in existing test"
+    },
+    {
+      "node_id": "final_spine_base_commit_gate",
+      "failure_type": "shallow_checkout_history",
+      "local_result": "passed",
+      "ci_result": "failed",
+      "environment_sensitive": true,
+      "production_boundary": "base commit immutability gate",
+      "root_cause_status": "open: CI checkout does not guarantee referenced historical commit"
+    },
+    {
+      "node_id": "fresh_integration_retirement",
+      "failure_type": "ignored_database_fixture",
+      "local_result": "passed_after_fix",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": true,
+      "production_boundary": "provider-free fresh integration cohort",
+      "root_cause_status": "fixed: committed deterministic approved-row fixture"
+    },
+    {
+      "node_id": "fresh_integration_provider_call_budget",
+      "failure_type": "fixture_dependency",
+      "local_result": "passed_after_fix",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": true,
+      "production_boundary": "one strategy call per scene / zero retries",
+      "root_cause_status": "fixed with deterministic fixture; requires CI confirmation"
+    },
+    {
+      "node_id": "strategy_approval_provider_free_preflight",
+      "failure_type": "provider_free_preflight",
+      "local_result": "passed",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": false,
+      "production_boundary": "provider authorization boundary",
+      "root_cause_status": "needs CI confirmation"
+    },
+    {
+      "node_id": "phase_f_transport_openai_compatible",
+      "failure_type": "missing_async_test_dependency",
+      "local_result": "passed_after_fix",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": true,
+      "production_boundary": "transport timeout classification",
+      "root_cause_status": "fixed: pytest-asyncio pinned"
+    },
+    {
+      "node_id": "phase_f_transport_shapi_openai_images",
+      "failure_type": "missing_async_test_dependency",
+      "local_result": "passed_after_fix",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": true,
+      "production_boundary": "transport timeout classification",
+      "root_cause_status": "fixed: pytest-asyncio pinned"
+    },
+    {
+      "node_id": "phase_f_transport_shapi_gemini_image",
+      "failure_type": "missing_async_test_dependency",
+      "local_result": "passed_after_fix",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": true,
+      "production_boundary": "transport timeout classification",
+      "root_cause_status": "fixed: pytest-asyncio pinned"
+    },
+    {
+      "node_id": "public_asset_svg_rasterization",
+      "failure_type": "runtime_dependency_or_rasterizer",
+      "local_result": "passed",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": true,
+      "production_boundary": "public asset storage",
+      "root_cause_status": "needs CI confirmation; local Pillow path passes"
+    },
+    {
+      "node_id": "real_llm_gray_default_scope",
+      "failure_type": "registry_scope",
+      "local_result": "failed",
+      "ci_result": "failed",
+      "environment_sensitive": false,
+      "production_boundary": "real LLM gray selection (provider not invoked)",
+      "root_cause_status": "open: registry currently exposes 990400 and 990401 while assertion expects 990400"
+    },
+    {
+      "node_id": "targeted_missing_fact_api",
+      "failure_type": "provider_free_fail_closed",
+      "local_result": "passed",
+      "ci_result": "failed_on_prior_run",
+      "environment_sensitive": true,
+      "production_boundary": "targeted missing-fact API",
+      "root_cause_status": "needs CI confirmation; local test passes"
+    }
+  ]
+}

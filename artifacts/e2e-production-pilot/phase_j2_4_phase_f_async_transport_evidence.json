@@ -1,0 +1,13 @@
+{
+  "phase": "PHASE_J2_4_PRODUCTION_REGRESSION_GATE_CONVERGENCE",
+  "dependency": "pytest-asyncio==1.1.0",
+  "test_file": "tests/test_generation_canary_phase_f_transport_contract.py",
+  "result": "3 passed",
+  "transport_cases": [
+    "openai-compatible",
+    "shapi-openai-images",
+    "shapi-gemini-image"
+  ],
+  "provider_calls": 0,
+  "evidence": "Local targeted run after dependency pin."
+}
