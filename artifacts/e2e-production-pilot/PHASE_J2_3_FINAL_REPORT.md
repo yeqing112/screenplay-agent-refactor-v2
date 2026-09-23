@@ -29,17 +29,11 @@ This round closes the Media Authority currentness fail open. Media validation an
 - J2.3 targeted suite: passed, including media validation/promotion, fail-closed regressions, migration, dual-media currentness, concurrency, Phase I pilot, and PromptIR semantic closure tests.
 - Migration gate: `MIGRATION_CHAIN_HARDENING_READY`; fresh and repeated upgrade passed; `migration_application_runtime_imports = 0`; fixed hash vector passed.
 - Web: `web/npm test` — 51 files / 301 tests passed; `web/npm run build` — passed.
-- Full backend final-head rerun: `1750 passed, 10 failed` (1760 collected). The failures are outside this J2.3 closure and do not touch the round's implementation files:
-  - `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons` — branch provenance expected `codex/unify-formal-workspace`, actual branch differs.
-  - `tests/test_director_quality_v3_fact_coverage_foundation.py::test_authority_reconciliation_uses_three_historical_attempts_without_rewriting_lineage` — missing `provider_attempts_by_stage`.
-  - `tests/test_director_quality_v3_fact_coverage_foundation.py::test_foundation_is_provider_free_and_coverage_verifier_not_authorized` — missing `fact_coverage_foundation`.
-  - `tests/test_director_quality_v3_fact_coverage_foundation.py::test_full_source_closure_parity_is_runtime_safe_and_provider_free` — missing `fact_semantic_grounding`.
-  - `tests/test_director_quality_v3_fact_semantic_grounding.py::test_semantic_foundation_artifacts_are_provider_free_and_fail_closed` — missing `fact_semantic_grounding`.
-  - `tests/test_director_quality_v3_fact_semantic_grounding.py::test_historical_attempt1_and_attempt2_lineage_remain_preserved` — missing `phase_a_attempt_1_status`.
-  - `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean` — received `HISTORICAL_RECANARY_RETIRED`.
-  - `tests/test_director_quality_v3_semantic_verifier_canary.py::test_canary_overlay_keeps_fact_coverage_and_script_ir_blocked` — missing `semantic_verifier_canary`.
-  - `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry` — registry includes an extra book id.
-  - `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed` — unexpected FactSnapshot row.
+- Full backend final-head rerun: `1757 passed, 4 failed` (1761 collected) on commit `e09c645adb2b6fcf095189204086bdb60886aca3`. The four failures are outside J2.3 and do not touch the round's implementation files; they match the pre-existing baseline failure family:
+  - `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons` — expected branch `codex/unify-formal-workspace`, actual `codex/visual-authoring-provider-canary-reconcile`; baseline branch-provenance mismatch.
+  - `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean` — expected `WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN`, received `HISTORICAL_RECANARY_RETIRED`; baseline historical recanary gate mismatch.
+  - `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry` — expected `[990400]`, actual `[990400, 990401]`; baseline active-registry configuration mismatch.
+  - `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed` — expected no FactSnapshot, found one; baseline targeted fact API mutation mismatch.
 - GitHub Actions: `NO_GITHUB_ACTIONS_RUN_FOR_FINAL_HEAD`.
 
 ## Boundary
