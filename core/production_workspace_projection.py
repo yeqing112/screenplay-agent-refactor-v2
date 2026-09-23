@@ -348,19 +348,28 @@ def build_production_workspace_projection(session: Any, *, book_id: int) -> dict
         prompt_blockers: list[dict[str, Any]] = []
         episode_shot_ids = {int(row.id): row for row in episode_shot_rows if int(row.materialization_set_id or 0) in current_set_ids}
         for shot in sorted(episode_shot_ids.values(), key=lambda row: int(row.shot_id)):
-            pointer = next((item for item in prompt_pointers if int(item.storyboard_shot_id) == int(shot.id)), None)
-            version = prompt_versions.get(int(pointer.prompt_ir_version_id)) if pointer else None
-            authority = prompt_authorities.get(int(pointer.prompt_ir_version_id)) if pointer else None
-            current = bool(pointer and version and authority and _fresh(getattr(version, "stale_status", "")) and _fresh(getattr(authority, "stale_status", "")))
-            qualified = current and (_qualified(getattr(pointer, "qualification_state", "")) or _qualified(getattr(version, "qualification_state", "")) or _qualified(getattr(authority, "qualification_state", "")))
-            state = "complete" if qualified else ("stale" if pointer and version and not _fresh(getattr(version, "stale_status", "")) else "needs_action")
-            prompt_items.append({"shot_id": str(shot.shot_id), "storyboard_shot_id": int(shot.id), "state": state})
+            scoped = [item for item in prompt_pointers if int(item.storyboard_shot_id) == int(shot.id)]
+            prompt_by_media: dict[str, dict[str, Any]] = {}
+            for pointer in scoped:
+                target_media = str(getattr(pointer, "target_media", "") or "").upper()
+                if target_media not in {"IMAGE", "VIDEO"}:
+                    prompt_by_media[target_media or "UNKNOWN"] = {"state": "blocked", "reason": "PROMPT_IR_MEDIA_SCOPE_INVALID"}
+                    continue
+                version = prompt_versions.get(int(pointer.prompt_ir_version_id))
+                authority = prompt_authorities.get(int(pointer.prompt_ir_version_id))
+                current = bool(pointer and version and authority and _fresh(getattr(version, "stale_status", "")) and _fresh(getattr(authority, "stale_status", "")))
+                qualified = current and (_qualified(getattr(pointer, "qualification_state", "")) or _qualified(getattr(version, "qualification_state", "")) or _qualified(getattr(authority, "qualification_state", "")))
+                scope_state = "complete" if qualified else ("stale" if version and not _fresh(getattr(version, "stale_status", "")) else "needs_action")
+                prompt_by_media[target_media] = {"state": scope_state, "prompt_ir_version_id": int(version.id) if version else None, "payload_hash": getattr(version, "payload_hash", None) if version else None}
+            scope_states = [item.get("state") for item in prompt_by_media.values()]
+            state = "complete" if any(item == "complete" for item in scope_states) else ("stale" if any(item == "stale" for item in scope_states) else "needs_action")
+            prompt_items.append({"shot_id": str(shot.shot_id), "storyboard_shot_id": int(shot.id), "state": state, "prompt_ir": {key: prompt_by_media[key] for key in sorted(prompt_by_media)}})
             if state == "stale":
                 prompt_blockers.append(make_blocker(code="PROMPT_IR_STALE", book_id=book_id, episode=episode, shot_id=str(shot.shot_id), scope="shot"))
             elif state != "complete":
-                code = "PROMPT_IR_MISSING" if not pointer else "PROMPT_IR_NOT_QUALIFIED"
+                code = "PROMPT_IR_MISSING" if not scoped else "PROMPT_IR_NOT_QUALIFIED"
                 prompt_blockers.append(make_blocker(code=code, book_id=book_id, episode=episode, shot_id=str(shot.shot_id), scope="shot"))
-            all_shot_payloads.append({"episode": episode, "shot_id": str(shot.shot_id), "storyboard_shot_id": int(shot.id), "scene_id": _text(shot.scene_id), "plan_shot_id": _text(shot.plan_shot_id), "duration": int(shot.duration or 0), "camera": {"angle": _text(shot.camera_angle), "movement": _text(shot.camera_movement), "speed": _text(shot.camera_speed)}, "action": _text(shot.action_process), "entry_state": _text(shot.start_state), "exit_state": _text(shot.end_state), "prompt_ir_state": state, "reference_state": "unknown", "media_state": _text(shot.asset_status) or "not_started"})
+            all_shot_payloads.append({"episode": episode, "shot_id": str(shot.shot_id), "storyboard_shot_id": int(shot.id), "scene_id": _text(shot.scene_id), "plan_shot_id": _text(shot.plan_shot_id), "duration": int(shot.duration or 0), "camera": {"angle": _text(shot.camera_angle), "movement": _text(shot.camera_movement), "speed": _text(shot.camera_speed)}, "action": _text(shot.action_process), "entry_state": _text(shot.start_state), "exit_state": _text(shot.end_state), "prompt_ir_state": state, "prompt_ir": {key: prompt_by_media[key] for key in sorted(prompt_by_media)}, "reference_state": "unknown", "media_state": _text(shot.asset_status) or "not_started"})
         prompt_stage = _stage(key="PROMPT_IR", state=_state_from_items(prompt_items, empty_state="not_started"), detail=f"{sum(1 for item in prompt_items if item.get('state') == 'complete')}/{len(prompt_items)} 个镜头已确认" if prompt_items else "等待分镜物化", blockers=prompt_blockers, counts=_counts(prompt_items), target_route={"section": "storyboard", "episode": episode})
 
         episode_qa = [row for row in qa_rows if int(row.episode) == episode and _text(getattr(row, "fix_status", "")).lower() not in {"resolved", "closed", "accepted", "recheck_passed", "wont_fix"}]

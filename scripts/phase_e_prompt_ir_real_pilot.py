@@ -573,10 +573,11 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
     with Session() as session:
         for shot_id in shot_ids:
             shot_row = session.query(StoryboardShot).filter_by(id=shot_id, book_id=book_id, episode=episode).one()
+            current_pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id).one()
             meta = _json(shot_row.meta_info, {})
             handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else {}
             asset_authority = _production_asset_authority(session, book_id=book_id, handoff=handoff if isinstance(handoff, dict) else {})
-            resolved = resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, asset_authority=asset_authority)
+            resolved = resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, target_media=current_pointer.target_media, asset_authority=asset_authority)
             resolver_positive.append({"storyboard_shot_id": shot_id, "plan_shot_id": resolved["payload"]["plan_shot_id"], "prompt_ir_semantic_ready": resolved["payload"].get("prompt_ir_semantic_ready"), "model_generation_ready": resolved["model_generation_ready"]})
 
     # Capture independent stale propagation evidence in memory and restore the
@@ -647,7 +648,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
                 shot_id = version.storyboard_shot_id
             with Session() as session:
                 try:
-                    resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id)
+                    resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, target_media=pointer.target_media)
                     result = {"status": "UNEXPECTED_PASS"}
                 except Exception as exc:
                     result = _error(exc)
@@ -666,7 +667,7 @@ def _run_phase_e(book_id: int, episode: int, db_file: Path) -> dict[str, Any]:
             pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).order_by(PromptIRPointer.id).first()
             version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).one()
             version.schema_version = "prompt_ir_authority_v1"
-            session.commit(); shot_id = version.storyboard_shot_id
+                session.commit(); shot_id = version.storyboard_shot_id
         legacy_v1_gate["compile"] = _compile(book_id, episode, request)
         legacy_v1_gate["adapter_preview"] = _preview(book_id, episode, shot_id)
     finally:

@@ -143,7 +143,7 @@ def _ingest_and_bind(session, rows: list[dict[str, Any]], shots: list[Storyboard
 def _insert_prompt_ir(session, shots: list[StoryboardShot]) -> dict[int, PromptIRVersion]:
     versions: dict[int, PromptIRVersion] = {}
     for shot in shots:
-        payload = {"schema_version": "prompt_ir_v1", "storyboard_shot_id": shot.id, "plan_shot_id": shot.plan_shot_id, "generation_policy": {"fingerprint": POLICY_FP}, "asset_authority_bindings": {"identity_refs": [], "resolved": []}, "prompt": {"text": f"fixture prompt for {shot.plan_shot_id}"}}
+        payload = {"schema_version": "prompt_ir_v1", "storyboard_shot_id": shot.id, "plan_shot_id": shot.plan_shot_id, "generation_policy": {"fingerprint": POLICY_FP, "target_media": "IMAGE"}, "asset_authority_bindings": {"identity_refs": [], "resolved": []}, "prompt": {"text": f"fixture prompt for {shot.plan_shot_id}"}}
         version = PromptIRVersion(book_id=BOOK_ID, episode=1, scene_id=shot.scene_id or "", storyboard_shot_id=shot.id, materialization_set_id=1, plan_shot_id=shot.plan_shot_id or "", schema_version="prompt_ir_v1", payload_json=_canonical(payload), payload_hash=_fp(payload), compiler_version="phase-i-fixture", compiler_policy_version="phase-i-fixture", retention_policy_version="phase-i-fixture", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
         session.add(version)
         versions[shot.id] = version
@@ -155,7 +155,7 @@ def _insert_prompt_ir(session, shots: list[StoryboardShot]) -> dict[int, PromptI
         session.add(authority)
         session.flush()
         version.authority_envelope_json = _canonical(envelope)
-        session.add(PromptIRPointer(book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, prompt_ir_version_id=version.id, payload_hash=version.payload_hash, qualification_state="PROMPT_IR_QUALIFIED"))
+        session.add(PromptIRPointer(book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE", prompt_ir_version_id=version.id, payload_hash=version.payload_hash, qualification_state="PROMPT_IR_QUALIFIED"))
     session.commit()
     return versions
 

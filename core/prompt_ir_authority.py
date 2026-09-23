@@ -275,15 +275,21 @@ def mark_prompt_ir_stale(session: Any, version: Any, reasons: list[str]) -> None
         authority.updated_at = datetime.now()
 
 
-def resolve_current_prompt_ir(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int):
+def resolve_current_prompt_ir(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, target_media: str):
     """Resolve the current PromptIR pointer and fail closed on stale lineage."""
     from fastapi import HTTPException
     from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, StoryboardShot
     from core.storyboard_materializer import resolve_current_authoritative_materialization
+    from core.prompt_ir_phase_e import PromptIRPhaseEError, canonical_target_media
 
-    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id).first()
+    try:
+        target_media = canonical_target_media(target_media)
+    except PromptIRPhaseEError as exc:
+        raise HTTPException(status_code=409, detail={"code": exc.code, "message": exc.message})
+
+    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, target_media=target_media).first()
     if not pointer:
-        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_POINTER_MISSING", "message": "No current PromptIR pointer exists."})
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_POINTER_MISSING", "message": "No current PromptIR pointer exists for the requested media scope."})
     version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id).first()
     authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=pointer.prompt_ir_version_id).first()
     row = session.query(StoryboardShot).filter_by(id=storyboard_shot_id, book_id=book_id, episode=episode).first()
@@ -292,6 +298,17 @@ def resolve_current_prompt_ir(session: Any, *, book_id: int, episode: int, story
             mark_prompt_ir_stale(session, version, ["PROMPT_IR_POINTER_OR_PAYLOAD_INVALID"])
             session.commit()
         raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_STALE", "message": "Current PromptIR pointer or payload is invalid."})
+    try:
+        payload = json.loads(version.payload_json or "{}")
+    except (TypeError, ValueError, json.JSONDecodeError):
+        mark_prompt_ir_stale(session, version, ["PROMPT_IR_TAMPERED"])
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_TAMPERED", "message": "Current PromptIR payload is not valid JSON."})
+    stored_target = payload.get("generation_policy", {}).get("target_media") if isinstance(payload, dict) and isinstance(payload.get("generation_policy"), dict) else None
+    if stored_target != target_media or pointer.target_media != stored_target:
+        mark_prompt_ir_stale(session, version, ["PROMPT_IR_POINTER_MEDIA_SCOPE_MISMATCH"])
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_POINTER_MEDIA_SCOPE_MISMATCH", "message": "PromptIR pointer scope does not match the stored GenerationPolicy target_media."})
     try:
         materialization_set, _rows, _envelope = resolve_current_authoritative_materialization(session, book_id=book_id, episode=episode, scene_id=str(row.scene_id or ""))
     except HTTPException:
@@ -305,10 +322,10 @@ def resolve_current_prompt_ir(session: Any, *, book_id: int, episode: int, story
     return version, authority
 
 
-def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, model_profile: dict[str, Any] | None = None):
+def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, target_media: str, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, model_profile: dict[str, Any] | None = None):
     """Compatibility export for the Phase E v2 current-only resolver."""
     from core.prompt_ir_phase_e import resolve_current_authoritative_prompt_ir as _resolve
-    return _resolve(session, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, generation_policy=generation_policy, asset_authority=asset_authority, model_profile=model_profile)
+    return _resolve(session, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, target_media=target_media, generation_policy=generation_policy, asset_authority=asset_authority, model_profile=model_profile)
 
 
 __all__ = ["PROMPT_IR_SCHEMA_VERSION", "PROMPT_IR_AUTHORITY_ENVELOPE_VERSION", "PROMPT_IR_COMPILER_VERSION", "PROMPT_IR_COMPILER_POLICY_VERSION", "RETENTION_POLICY_VERSION", "STORYBOARD_CONSTRAINT", "VISUAL_ASSET_CONSTRAINT", "COMPILER_POLICY", "MODEL_ADAPTER_POLICY", "MEDIA_PENDING", "UNKNOWN_INVALID", "PromptIRAuthorityError", "prompt_ir_authority_contract", "contract_fingerprint", "prompt_ir_payload_hash", "compile_prompt_ir_from_handoff", "build_prompt_ir_authority_envelope", "ADAPTER_CONTRACTS", "serialize_prompt_ir_to_adapter", "mark_prompt_ir_stale", "resolve_current_prompt_ir", "resolve_current_authoritative_prompt_ir", "fingerprint"]

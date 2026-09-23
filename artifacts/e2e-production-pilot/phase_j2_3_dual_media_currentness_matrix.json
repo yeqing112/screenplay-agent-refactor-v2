@@ -1,0 +1,30 @@
+{
+  "status": "READY_FOR_REVIEW",
+  "fixture": {
+    "image_pointer": "IMAGE PromptIR A",
+    "video_pointer": "VIDEO PromptIR B",
+    "official_image": "I",
+    "official_video": "V"
+  },
+  "resolver": {
+    "IMAGE": "PASS exact scope",
+    "VIDEO": "PASS exact scope",
+    "image_pointer_only_video_request": "PROMPT_IR_POINTER_MISSING",
+    "historical_video_without_current_video_pointer": "PROMPT_IR_POINTER_MISSING",
+    "pointer_video_payload_image": "PROMPT_IR_POINTER_MEDIA_SCOPE_MISMATCH"
+  },
+  "official_media_currentness": {
+    "execution_IMAGE_candidate_IMAGE_version_IMAGE": "PASS",
+    "execution_VIDEO_candidate_VIDEO_version_VIDEO": "PASS",
+    "execution_candidate_media_mismatch": "FAIL_CLOSED",
+    "candidate_version_media_mismatch": "FAIL_CLOSED"
+  },
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "image_generation_calls": 0,
+  "video_generation_calls": 0,
+  "limitations": [
+    "VIDEO technical validation remains a J3 contract boundary; no fake production PASS was introduced.",
+    "IMAGE_TO_VIDEO binding is structural only and does not generate video."
+  ]
+}

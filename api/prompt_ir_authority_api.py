@@ -144,9 +144,16 @@ def compile_prompt_ir(book_id: int, episode: int, shot_id: int, req: PromptIRCom
 def preview_prompt_ir_adapter(book_id: int, episode: int, shot_id: int, req: AdapterPreviewRequest):
     with Session() as session:
         _materialization_set, row, _set_envelope = _load_current(session, book_id=book_id, episode=episode, shot_id=shot_id)
-        pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=row.id).first()
+        if not isinstance(req.generation_policy, dict) or not req.generation_policy.get("mode") or not req.generation_policy.get("target_media"):
+            _conflict("PROMPT_IR_MEDIA_SCOPE_REQUIRED", "Adapter preview requires an explicit generation_policy.target_media.")
+        try:
+            requested_policy = build_generation_policy(req.generation_policy, allow_default=False)
+        except PromptIRPhaseEError as exc:
+            _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
+        target_media = requested_policy["target_media"]
+        pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=row.id, target_media=target_media).first()
         if not pointer:
-            _conflict("PROMPT_IR_POINTER_MISSING", "Model Adapter requires a current qualified PromptIR pointer.")
+            _conflict("PROMPT_IR_POINTER_MISSING", "Model Adapter requires a current qualified PromptIR pointer for the requested media scope.")
         version = session.query(PromptIRVersion).filter_by(id=pointer.prompt_ir_version_id).first()
         if version is not None and version.schema_version != "prompt_ir_v2":
             _conflict("PROMPT_IR_V2_REQUIRED", "Production adapter preview accepts only prompt_ir_v2.")
@@ -154,8 +161,6 @@ def preview_prompt_ir_adapter(book_id: int, episode: int, shot_id: int, req: Ada
             _conflict("PROMPT_IR_NOT_QUALIFIED", "Current PromptIR is missing, stale or not qualified.")
         if version.payload_hash != pointer.payload_hash:
             _conflict("PROMPT_IR_PAYLOAD_TAMPERED", "PromptIR payload no longer matches the current pointer.")
-        if req.generation_policy and (not req.generation_policy.get("mode") or not req.generation_policy.get("target_media")):
-            _conflict("GENERATION_POLICY_REQUIRED", "An adapter preview override requires explicit mode and target_media.")
         meta = _json(row.meta_info, {})
         handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else {}
         try:
@@ -163,13 +168,13 @@ def preview_prompt_ir_adapter(book_id: int, episode: int, shot_id: int, req: Ada
             registry = MODEL_ADAPTER_REGISTRY.get(req.adapter_id.lower(), {})
             profile_input = dict(req.model_profile) if req.model_profile else {"adapter_id": req.adapter_id, "model_family": registry.get("model_family", req.adapter_id.upper()), "capabilities": req.capability_profile}
             profile = build_model_profile(profile_input)
-            resolved = resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=row.id, generation_policy=req.generation_policy or None, asset_authority=asset_authority, model_profile=profile)
-            output = adapt_prompt_ir_to_generation_payload(resolved["payload"], generation_policy=req.generation_policy or None, model_profile=profile)
+            resolved = resolve_current_authoritative_prompt_ir(session, book_id=book_id, episode=episode, storyboard_shot_id=row.id, target_media=target_media, generation_policy=requested_policy, asset_authority=asset_authority, model_profile=profile)
+            output = adapt_prompt_ir_to_generation_payload(resolved["payload"], generation_policy=requested_policy, model_profile=profile)
         except PromptIRPhaseEError as exc:
             _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
         except HTTPException:
             raise
-        return {"prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "model_generation_ready": bool(output.get("readiness", {}).get("ready")), "generation_payload": output, "provider_calls": 0, "llm_calls": 0, "media_generated": False}
+        return {"prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "target_media": target_media, "model_generation_ready": bool(output.get("readiness", {}).get("ready")), "generation_payload": output, "provider_calls": 0, "llm_calls": 0, "media_generated": False}
 
 
 @router.post("/{book_id}/episodes/{episode}/prompt-ir/compile")
@@ -223,20 +228,20 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
         # valid old row may be obsolete because current upstream authority
         # changed; that is a legal explicit revision, not a tamper.
         snapshot_by_shot = {int(row.get("storyboard_shot_id")): snapshot for snapshot in snapshots for row in snapshot.get("ordered_shots", [])}
-        existing_by_shot = {int(item.storyboard_shot_id): item for item in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
+        existing_by_scope = {(int(item.storyboard_shot_id), str(item.target_media)): item for item in session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode).all()}
         # Prove every still-current PromptIR pointer before matching the
         # current Storyboard shot set.  A legitimate Storyboard Set revision
         # may materialize new StoryboardShot IDs; validating only the new IDs
         # would allow a tampered old PromptIR to disappear from the transition
         # loop and be washed away by an upstream revision.
-        for existing_pointer in existing_by_shot.values():
+        for existing_pointer in existing_by_scope.values():
             existing_version = session.query(PromptIRVersion).filter_by(id=existing_pointer.prompt_ir_version_id).first()
             if existing_version is None:
                 _conflict("PROMPT_IR_CURRENT_INTEGRITY_INVALID", "PromptIR pointer references a missing version.")
             existing_authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=existing_version.id).first()
             if existing_authority is None:
                 _conflict("PROMPT_IR_CURRENT_INTEGRITY_INVALID", "PromptIR version is missing its authority envelope.")
-            object_integrity = validate_prompt_ir_integrity(session, book_id=book_id, episode=episode, storyboard_shot_id=int(existing_pointer.storyboard_shot_id), allow_stale=True)
+            object_integrity = validate_prompt_ir_integrity(session, book_id=book_id, episode=episode, storyboard_shot_id=int(existing_pointer.storyboard_shot_id), target_media=str(existing_pointer.target_media), allow_stale=True)
             historical_integrity = validate_prompt_ir_historical_integrity(session, version=object_integrity["version"], authority=object_integrity["authority"], payload=object_integrity["payload"])
             if not historical_integrity.get("integrity_valid"):
                 _conflict(historical_integrity.get("code") or "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH", historical_integrity.get("message") or "Historical PromptIR integrity validation failed.", diagnostics=historical_integrity.get("diagnostics", []))
@@ -244,11 +249,12 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
         pending_writes = []
         for ir in compiled:
             shot_id = int(ir["storyboard_shot_id"])
-            existing_pointer = existing_by_shot.get(shot_id)
+            target_media = str(ir.get("generation_policy", {}).get("target_media") or "")
+            existing_pointer = existing_by_scope.get((shot_id, target_media))
             existing = session.query(PromptIRVersion).filter_by(id=existing_pointer.prompt_ir_version_id).first() if existing_pointer else None
             revision_causes = []
             if existing and existing_pointer:
-                integrity = validate_prompt_ir_integrity(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, allow_stale=True)
+                integrity = validate_prompt_ir_integrity(session, book_id=book_id, episode=episode, storyboard_shot_id=shot_id, target_media=target_media, allow_stale=True)
                 current_payload = integrity["payload"]
                 historical = validate_prompt_ir_historical_integrity(session, version=integrity["version"], authority=integrity["authority"], payload=current_payload)
                 if not historical.get("integrity_valid"):
@@ -265,7 +271,7 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
                 if (existing.stale_status != "FRESH" or integrity["authority"].stale_status != "FRESH") and not revision_causes:
                     _conflict("PROMPT_IR_STALE", "Current PromptIR is stale without a validated upstream revision.")
                 if transition == "REUSE" and not revision_causes:
-                    results.append({"storyboard_shot_id": shot_id, "prompt_ir_version_id": existing.id, "reused": True, "payload_hash": existing.payload_hash})
+                    results.append({"storyboard_shot_id": shot_id, "target_media": target_media, "prompt_ir_version_id": existing.id, "reused": True, "payload_hash": existing.payload_hash})
                     continue
                 if old_policy.get("fingerprint") != policy.get("fingerprint"):
                     revision_causes.append("GENERATION_POLICY_CHANGED")
@@ -298,13 +304,14 @@ def compile_prompt_ir_phase_e(book_id: int, episode: int, req: PhaseECompileRequ
             authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=book_id, episode=episode, storyboard_shot_id=version.storyboard_shot_id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=datetime.now(), updated_at=datetime.now())
             session.add(authority)
             session.flush()
-            pointer = existing_pointer or PromptIRPointer(book_id=book_id, episode=episode, storyboard_shot_id=version.storyboard_shot_id)
+            pointer = existing_pointer or PromptIRPointer(book_id=book_id, episode=episode, storyboard_shot_id=version.storyboard_shot_id, target_media=str(ir["generation_policy"]["target_media"]))
+            pointer.target_media = str(ir["generation_policy"]["target_media"])
             pointer.prompt_ir_version_id = version.id
             pointer.payload_hash = version.payload_hash
             pointer.qualification_state = version.qualification_state
             pointer.updated_at = datetime.now()
             session.add(pointer)
-            results.append({"storyboard_shot_id": version.storyboard_shot_id, "prompt_ir_version_id": version.id, "prompt_ir_authority_id": authority.id, "reused": False, "payload_hash": version.payload_hash})
+            results.append({"storyboard_shot_id": version.storyboard_shot_id, "target_media": pointer.target_media, "prompt_ir_version_id": version.id, "prompt_ir_authority_id": authority.id, "reused": False, "payload_hash": version.payload_hash})
             if existing is not None:
                 existing.stale_status = "STALE"
                 existing.stale_reasons = json.dumps(sorted(set(revision_causes or ["PROMPT_IR_REVISED"])), ensure_ascii=False)

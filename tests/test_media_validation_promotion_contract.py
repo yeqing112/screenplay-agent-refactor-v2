@@ -185,7 +185,7 @@ def test_prompt_ir_revision_makes_validation_stale_before_promotion():
     with Session() as session:
         version = PromptIRVersion(id=11, book_id=990401, episode=1, scene_id="scene-1", storyboard_shot_id=shot_id, materialization_set_id=1, plan_shot_id="plan", schema_version="prompt_ir_v2", payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}}), payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
         session.add(version)
-        session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, prompt_ir_version_id=11, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED"))
+        session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE", prompt_ir_version_id=11, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED"))
         session.commit()
         validation = validate_media_candidate(session, candidate_id)
         version.payload_hash = "prompt-hash-drifted"
@@ -202,7 +202,7 @@ def test_generation_policy_revision_makes_validation_stale_before_promotion():
     with Session() as session:
         version = PromptIRVersion(id=12101, book_id=990401, episode=1, scene_id="scene-policy", storyboard_shot_id=shot_id, materialization_set_id=1, plan_shot_id="plan-policy", schema_version="prompt_ir_v2", payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}}), payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
         session.add(version)
-        session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, prompt_ir_version_id=12101, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED"))
+        session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE", prompt_ir_version_id=12101, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED"))
         candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
         execution = session.query(GenerationExecutionRecord).filter_by(execution_id=candidate.execution_id).one()
         candidate.prompt_ir_version_id = execution.prompt_ir_version_id = 12101
@@ -231,7 +231,7 @@ def test_asset_revision_makes_validation_stale_before_promotion():
             authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]",
         )
         asset = VisualAssetVersion(id=910001, book_id=990401, asset_key=asset_key, asset_type="prop", canonical_id="PHASE_G2_ASSET", canonical_identity_json="{}", scope_json="{}", revision=1, payload_json="{}", payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
-        pointer = PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, prompt_ir_version_id=11001, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED")
+        pointer = PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE", prompt_ir_version_id=11001, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED")
         asset_pointer = VisualAssetPointer(book_id=990401, asset_key=asset_key, asset_type="prop", scope_key="phase-g2", current_version_id=910001, payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
         session.add_all([version, asset, pointer, asset_pointer]); session.commit()
         validation = validate_media_candidate(session, candidate_id)

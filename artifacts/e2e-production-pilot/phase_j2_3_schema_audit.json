@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "head": "b2c3d4e5f6g7",
+  "down_revision": "a1b2c3d4e5f6",
+  "table": "prompt_ir_pointers",
+  "columns": {
+    "target_media": {"nullable": false, "check": "IMAGE|VIDEO"},
+    "legacy_unique": "removed"
+  },
+  "constraints": {
+    "check": "ck_prompt_ir_pointer_target_media",
+    "unique": "uq_prompt_ir_pointer_media_scope",
+    "unique_columns": ["book_id", "episode", "storyboard_shot_id", "target_media"]
+  },
+  "indexes_preserved": ["ix_prompt_ir_pointers_book_episode", "ix_prompt_ir_pointers_shot"],
+  "standalone_target_media_index": false,
+  "backfill_source": "PromptIRVersion.payload_json.generation_policy.target_media",
+  "production_database_migrated": false,
+  "provider_calls": 0,
+  "verification": {
+    "fresh_upgrade": "PASS",
+    "legacy_image_backfill": "PASS",
+    "single_scope_downgrade": "PASS",
+    "dual_scope_downgrade": "FAIL_CLOSED_BEFORE_DDL"
+  }
+}

@@ -358,7 +358,9 @@ def _production_asset_binding_snapshot(session: Any, *, storyboard_shot_id: int)
 
 def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord, execution: GenerationExecutionRecord) -> dict[str, Any]:
     prompt = {"declared": True, "candidate_version_id": int(candidate.prompt_ir_version_id), "candidate_payload_hash": str(candidate.prompt_ir_payload_hash)}
-    pointer = session.query(PromptIRPointer).filter_by(book_id=execution.book_id, episode=execution.episode, storyboard_shot_id=execution.storyboard_shot_id).first()
+    target_media = str(execution.target_media or "").strip().upper()
+    media_scope_valid = target_media in {"IMAGE", "VIDEO"} and str(candidate.media_type or "").strip().upper() == target_media
+    pointer = session.query(PromptIRPointer).filter_by(book_id=execution.book_id, episode=execution.episode, storyboard_shot_id=execution.storyboard_shot_id, target_media=target_media).first() if media_scope_valid else None
     if pointer is None:
         prompt.update({"pointer_present": False, "current_version_id": None, "current_payload_hash": "", "matches": True})
     else:
@@ -401,7 +403,7 @@ def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord
         "generation_policy_matches": not prompt.get("current_generation_policy_fingerprint") or str(prompt.get("current_generation_policy_fingerprint")) == str(execution.generation_policy_fingerprint or ""),
         "generation_policy_request": generation_policy if isinstance(generation_policy, dict) else {},
         "reference_bindings_fingerprint": str(execution.reference_bindings_fingerprint or ""),
-        "currentness_valid": bool(prompt.get("matches", True)) and bool(prompt.get("generation_policy_matches", True)) and all(item.get("pointer_matches", True) for item in asset.get("bindings", [])) and all(item.get("pointer_matches", True) for item in asset_authority.get("bindings", [])) and all(item.get("exists") and item.get("pointer_matches", True) and str(item.get("status") or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.get("stale_status") or "FRESH").upper() == "FRESH" for item in reference.get("bindings", [])) and bool(production_asset_binding.get("currentness_valid", True)),
+        "currentness_valid": media_scope_valid and bool(prompt.get("matches", True)) and bool(prompt.get("generation_policy_matches", True)) and all(item.get("pointer_matches", True) for item in asset.get("bindings", [])) and all(item.get("pointer_matches", True) for item in asset_authority.get("bindings", [])) and all(item.get("exists") and item.get("pointer_matches", True) and str(item.get("status") or "").upper() in {"LOCKED", "REFERENCE_LOCKED"} and str(item.get("stale_status") or "FRESH").upper() == "FRESH" for item in reference.get("bindings", [])) and bool(production_asset_binding.get("currentness_valid", True)),
     }
 
 
@@ -612,6 +614,12 @@ def resolve_current_official_media(session: Any, *, book_id: int, episode: int, 
     execution = session.query(GenerationExecutionRecord).filter_by(execution_id=getattr(validation, "execution_id", "")).first() if validation else None
     if validation is None or candidate is None or execution is None or validation.status != "TECHNICALLY_VALID":
         _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "Validation, Candidate, or Execution lineage is missing or stale.")
+    if not (
+        str(execution.target_media or "").strip().upper() in {"IMAGE", "VIDEO"}
+        and str(candidate.media_type or "").strip().upper() == str(execution.target_media or "").strip().upper()
+        and str(version.media_type or "").strip().upper() == str(execution.target_media or "").strip().upper()
+    ):
+        _fail("MEDIA_OFFICIAL_RESOLUTION_FAILED", "Execution, Candidate, and OfficialMedia media types disagree.")
     try:
         _validate_validation_integrity(validation)
     except MediaAuthorityError:
@@ -698,7 +706,8 @@ def resolve_current_official_media_for_shot(
     authority = resolved["authority"]
     candidate = resolved["candidate"]
     envelope = _json(authority.authority_envelope_json, {})
-    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id).first()
+    target_media = str(execution.target_media or "").strip().upper()
+    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, target_media=target_media).first()
     prompt = session.query(PromptIRVersion).filter_by(id=int(version.prompt_ir_version_id)).first()
     current_assets = _production_asset_binding_snapshot(session, storyboard_shot_id=storyboard_shot_id)
     expected_storyboard_fp = _storyboard_shot_fingerprint(shot) if shot is not None else ""
@@ -708,6 +717,7 @@ def resolve_current_official_media_for_shot(
         "generation_execution": envelope.get("generation_execution_id") == execution.execution_id,
         "prompt_version": bool(prompt and pointer and int(pointer.prompt_ir_version_id) == int(prompt.id) == int(version.prompt_ir_version_id)),
         "prompt_fingerprint": bool(prompt and envelope.get("prompt_ir_payload_hash") == prompt.payload_hash == version.prompt_ir_payload_hash),
+        "prompt_scope": bool(pointer and target_media in {"IMAGE", "VIDEO"} and str(pointer.target_media or "").upper() == target_media and str((_json(prompt.payload_json, {}).get("generation_policy") or {}).get("target_media") or "").upper() == target_media),
         "asset_binding_declared": bool((envelope.get("production_asset_binding") or {}).get("declared")),
         "asset_binding_current": bool(current_assets.get("declared") and current_assets.get("currentness_valid") and envelope.get("production_asset_binding", {}).get("fingerprint") == current_assets.get("fingerprint")),
         "storage_identity": envelope.get("storage_identity") == candidate.storage_identity == version.storage_identity,

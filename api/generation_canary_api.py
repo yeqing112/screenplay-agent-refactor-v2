@@ -257,9 +257,10 @@ def _resolve_execution_inputs(session: Any, *, book_id: int, episode: int, shot_
     profile_request = CanaryPreviewRequest(adapter_id=adapter_id, model_profile_id=model_profile_id)
     profile, phase_profile, profile_fp = _resolve_profile(profile_request, adapter)
     _materialization_set, row, _set_envelope = _load_current(session, book_id=book_id, episode=episode, shot_id=shot_id)
-    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=row.id).first()
+    target_media = "IMAGE"
+    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=row.id, target_media=target_media).first()
     if pointer is None:
-        raise _error(409, "PROMPT_IR_NOT_CURRENT", "No current PromptIR pointer exists for this shot.")
+        raise _error(409, "PROMPT_IR_POINTER_MISSING", "No current IMAGE PromptIR pointer exists for this shot.")
     meta = _json(getattr(row, "meta_info", "{}"), {})
     handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else {}
     asset_authority = _production_asset_authority(session, book_id=book_id, handoff=handoff if isinstance(handoff, dict) else {})
@@ -269,12 +270,13 @@ def _resolve_execution_inputs(session: Any, *, book_id: int, episode: int, shot_
             book_id=book_id,
             episode=episode,
             storyboard_shot_id=row.id,
+            target_media=target_media,
             generation_policy=None,
             asset_authority=asset_authority,
             model_profile=phase_profile,
         )
         policy = build_generation_policy(resolved["payload"].get("generation_policy"), allow_default=False)
-        if policy.get("target_media") != "IMAGE":
+        if policy.get("target_media") != target_media:
             raise _error(409, "GENERATION_CANARY_IMAGE_REQUIRED", "Phase F first Canary supports only an IMAGE GenerationPolicy.")
         payload = adapt_prompt_ir_to_generation_payload(resolved["payload"], generation_policy=policy, model_profile=phase_profile)
     except PromptIRPhaseEError as exc:

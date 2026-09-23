@@ -183,7 +183,7 @@ def _persist_v2_for_resolver(db, snapshot, ir):
     db.add(version)
     db.flush()
     authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=77, episode=1, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
-    pointer = PromptIRPointer(book_id=77, episode=1, storyboard_shot_id=shot.id, prompt_ir_version_id=version.id, payload_hash=payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now)
+    pointer = PromptIRPointer(book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE", prompt_ir_version_id=version.id, payload_hash=payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now)
     db.add_all([authority, pointer])
     db.commit()
     return shot, version, authority, pointer
@@ -206,12 +206,12 @@ def test_current_resolver_revalidates_pointer_and_authority_envelope(monkeypatch
     # the dedicated historical-lineage closure suite exercises the full
     # MaterializationSet/StoryboardShot authority rows.
     monkeypatch.setattr("core.prompt_ir_phase_e.validate_prompt_ir_historical_integrity", lambda *args, **kwargs: {"integrity_valid": True})
-    resolved = resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id)
+    resolved = resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE")
     assert resolved["payload"]["qualification_state"] == "PROMPT_IR_QUALIFIED"
     pointer.payload_hash = "tampered"
     db.commit()
     with pytest.raises(Exception) as exc_info:
-        resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id)
+        resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE")
     assert getattr(exc_info.value, "detail", {}).get("code") == "PROMPT_IR_POINTER_TAMPERED"
 
 

@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy import CheckConstraint, Column, DateTime, Integer, String, Text, UniqueConstraint
 
 from .base import Base
 
@@ -78,9 +78,26 @@ class PromptIRPointer(Base):
     id = Column(Integer, primary_key=True)
     book_id = Column(Integer, nullable=False, index=True)
     episode = Column(Integer, nullable=False, index=True)
-    storyboard_shot_id = Column(Integer, nullable=False, unique=True, index=True)
+    storyboard_shot_id = Column(Integer, nullable=False, index=True)
+    # This is only the current-pointer scope discriminator.  The semantic
+    # source remains PromptIRVersion.payload_json.generation_policy.target_media.
+    target_media = Column(String, nullable=False)
     prompt_ir_version_id = Column(Integer, nullable=False)
     payload_hash = Column(String, nullable=False)
     qualification_state = Column(String, nullable=False, default="PROMPT_IR_QUALIFIED")
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
+
+    __table_args__ = (
+        CheckConstraint(
+            "target_media IN ('IMAGE','VIDEO')",
+            name="ck_prompt_ir_pointer_target_media",
+        ),
+        UniqueConstraint(
+            "book_id",
+            "episode",
+            "storyboard_shot_id",
+            "target_media",
+            name="uq_prompt_ir_pointer_media_scope",
+        ),
+    )
