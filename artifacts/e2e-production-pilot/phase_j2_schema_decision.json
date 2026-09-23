@@ -1,0 +1,90 @@
+{
+  "schema_version": "phase_j2_schema_decision_v1",
+  "phase": "PHASE_J2_CANONICAL_GENERATION_CONVERGENCE_DESIGN_REVIEW",
+  "baseline_head": "5487db94f9e98cbcbf647db7a12531921d18ca06",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "status": "PHASE_J2_CANONICAL_GENERATION_DESIGN_APPROVED_PENDING_IMPLEMENTATION",
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "database_migration_performed": false,
+  "production_authority_writes": 0,
+  "full_real_end_to_end_production_acceptance_complete": false,
+  "readiness": {
+    "image_ready": false,
+    "video_ready": false,
+    "reason": "J2 defines the convergence contract only; no human authorization, runtime credential validation, or canonical storyboard delegation is active."
+  },
+  "production_gate": [
+    "human_authorized",
+    "production_model_selected",
+    "model_profile_current",
+    "adapter_resolved",
+    "credential_resolved",
+    "credential_validated"
+  ],
+  "schema_decision": {
+    "generation_execution_schema_reusable": true,
+    "media_candidate_schema_reusable": true,
+    "new_execution_tables_required": false,
+    "new_media_candidate_tables_required": false,
+    "generation_policy_change_required": false,
+    "production_selection_contract_required": true,
+    "credential_contract_required": true,
+    "adapter_binding_contract_required": true,
+    "generation_payload_media_request_contract_required": true,
+    "video_media_validation_contract_required": true,
+    "legacy_storyboard_delegation_required": true
+  },
+  "evidence": {
+    "generation_execution_fields": [
+      "target_media",
+      "status",
+      "provider_task_id",
+      "model_profile_id",
+      "model_profile_fingerprint",
+      "provider_adapter_id",
+      "provider_adapter_version",
+      "generation_payload_fingerprint",
+      "generation_policy_fingerprint",
+      "reference_bindings_fingerprint",
+      "provider_request_fingerprint"
+    ],
+    "media_candidate_fields": [
+      "media_type",
+      "storage_identity",
+      "storage_reference_json",
+      "checksum_sha256",
+      "mime_type",
+      "byte_size",
+      "width",
+      "height",
+      "duration_ms",
+      "provider_task_id",
+      "model_profile_fingerprint",
+      "provider_request_fingerprint"
+    ],
+    "validation_finding": "Existing persistence is cross-media, but core/media_authority.py technical validation currently accepts image signatures only; add video validation without a parallel execution table.",
+    "selection_finding": "GenerationPolicy is semantic and should not absorb model_profile_id; explicit production selection must be frozen in existing execution lineage.",
+    "adapter_finding": "Caller-supplied adapter_id can conflict with a ModelProfile; resolve a structured adapter binding from the profile and remove free caller selection.",
+    "credential_finding": "Registry key_configured/raw api_key is not a runtime credential reference, resolver, or validation result."
+  },
+  "required_implementation_contracts": [
+    "one shared image/video preview_generation and execute_generation service",
+    "explicit ProductionGenerationSelection with no production default fallback",
+    "profile-bound deterministic adapter resolution",
+    "typed media request in GenerationPayload",
+    "runtime CredentialReference/Resolver/Validation with secret-free persistence",
+    "video-capable deterministic candidate validator",
+    "storyboard endpoint delegation and direct-path retirement"
+  ],
+  "authority_invariants": [
+    "PromptIR remains prompt truth",
+    "GenerationPolicy remains semantic policy",
+    "Production Asset Authority and VisualReferenceAuthority remain distinct",
+    "MediaCandidate remains below OfficialMedia",
+    "polling is transport progress, not a new logical generation",
+    "no raw secret enters canonical state, fingerprints, logs, artifacts, or request snapshots"
+  ]
+}
