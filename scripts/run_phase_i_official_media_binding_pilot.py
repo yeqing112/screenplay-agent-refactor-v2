@@ -6,8 +6,11 @@ import base64
 import copy
 import hashlib
 import json
+import os
 import shutil
+import subprocess
 import tempfile
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -109,11 +112,16 @@ def _h2_counts_from_db(db_path: Path) -> dict[str, int]:
 
 
 def _insert_shots(session, rows: list[dict[str, Any]]) -> list[StoryboardShot]:
+    selected: list[StoryboardShot] = []
     for item in rows:
         scene_id = item["scene"]["identity_ref"].split(":", 1)[1]
-        session.add(StoryboardShot(book_id=BOOK_ID, episode=1, scene_name=SCENE_NAMES.get(scene_id, scene_id), scene_id=scene_id, shot_id=item["shot_id"], plan_shot_id=item["plan_shot_id"], asset_links="{}", asset_status="pending"))
+        existing = session.query(StoryboardShot).filter_by(book_id=BOOK_ID, episode=1, scene_id=scene_id, plan_shot_id=item["plan_shot_id"]).first()
+        if existing is None:
+            existing = StoryboardShot(book_id=BOOK_ID, episode=1, scene_name=SCENE_NAMES.get(scene_id, scene_id), scene_id=scene_id, shot_id=item["shot_id"], plan_shot_id=item["plan_shot_id"], asset_links="{}", asset_status="pending")
+            session.add(existing)
+        selected.append(existing)
     session.commit()
-    return session.query(StoryboardShot).filter_by(book_id=BOOK_ID, episode=1).order_by(StoryboardShot.shot_id).all()
+    return [session.query(StoryboardShot).filter_by(id=shot.id).one() for shot in selected]
 
 
 def _ingest_and_bind(session, rows: list[dict[str, Any]], shots: list[StoryboardShot]) -> dict[tuple[str, str], dict[str, Any]]:
@@ -144,22 +152,13 @@ def _ingest_and_bind(session, rows: list[dict[str, Any]], shots: list[Storyboard
 def _insert_prompt_ir(session, shots: list[StoryboardShot]) -> dict[int, PromptIRVersion]:
     versions: dict[int, PromptIRVersion] = {}
     for shot in shots:
-        payload = {"schema_version": "prompt_ir_v2", "storyboard_shot_id": shot.id, "plan_shot_id": shot.plan_shot_id, "source_authority": {"storyboard_materialization_set_id": 1, "storyboard_set_payload_fingerprint": "phase-i-materialization-set", "storyboard_projection_fingerprint": _fp({"shot_id": shot.id, "plan_shot_id": shot.plan_shot_id}), "visual_semantic_handoff_fingerprint": _fp({"shot_id": shot.id, "plan_shot_id": shot.plan_shot_id}), "shot_plan_authority_fingerprint": "phase-i-shot-plan-authority", "blocking_authority_fingerprint": "phase-i-blocking-authority", "generation_policy_fingerprint": POLICY_FP}, "generation_policy": {"fingerprint": POLICY_FP, "target_media": "IMAGE"}, "asset_authority_bindings": {"identity_refs": [], "resolved": []}, "prompt": {"text": f"fixture prompt for {shot.plan_shot_id}"}}
-        version = PromptIRVersion(book_id=BOOK_ID, episode=1, scene_id=shot.scene_id or "", storyboard_shot_id=shot.id, materialization_set_id=1, plan_shot_id=shot.plan_shot_id or "", schema_version="prompt_ir_v2", payload_json=_canonical(payload), payload_hash=_fp(payload), compiler_version="phase-i-fixture", compiler_policy_version="phase-i-fixture", retention_policy_version="phase-i-fixture", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
-        session.add(version)
+        current_pointer = session.query(PromptIRPointer).filter_by(book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE").first()
+        if current_pointer is None:
+            raise RuntimeError(f"Phase E did not persist a current IMAGE PromptIR pointer for StoryboardShot {shot.id}.")
+        version = session.query(PromptIRVersion).filter_by(id=current_pointer.prompt_ir_version_id).one()
+        if not isinstance(json.loads(version.payload_json or "{}").get("source_authority"), dict):
+            raise RuntimeError(f"Phase E PromptIR {version.id} has no source_authority.")
         versions[shot.id] = version
-    session.flush()
-    for shot in shots:
-        version = versions[shot.id]
-        payload = json.loads(version.payload_json or "{}")
-        envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "storyboard_shot_id": shot.id, "source_authority": payload["source_authority"], "generation_policy": payload["generation_policy"], "asset_authority_bindings": payload["asset_authority_bindings"], "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
-        envelope["envelope_fingerprint"] = _fp(envelope)
-        authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=_canonical(envelope), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]")
-        session.add(authority)
-        session.flush()
-        version.authority_envelope_json = _canonical(envelope)
-        session.add(PromptIRPointer(book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE", prompt_ir_version_id=version.id, payload_hash=version.payload_hash, qualification_state="PROMPT_IR_QUALIFIED"))
-    session.commit()
     return versions
 
 
@@ -167,10 +166,14 @@ def _insert_video_pointer_probe(session, shot: StoryboardShot, image_version: Pr
     """Add one legal VIDEO PromptIR scope without generating or validating video."""
     payload = json.loads(image_version.payload_json or "{}")
     payload = copy.deepcopy(payload)
-    policy = dict(payload.get("generation_policy") or {})
-    policy.update({"mode": "IMAGE_TO_VIDEO", "target_media": "VIDEO"})
+    from core.prompt_ir_phase_e import build_generation_policy, fingerprint, prompt_ir_semantic_projection
+    policy = build_generation_policy({"mode": "IMAGE_TO_VIDEO", "target_media": "VIDEO"}, allow_default=False)
     payload["generation_policy"] = policy
-    payload_hash = _fp(payload)
+    payload.setdefault("source_authority", {})["generation_policy_fingerprint"] = policy["fingerprint"]
+    payload["prompt_ir_semantic_fingerprint"] = fingerprint(prompt_ir_semantic_projection(payload))
+    payload_hash = fingerprint({key: value for key, value in payload.items() if key not in {"prompt_ir_payload_fingerprint", "payload_hash"}})
+    payload["prompt_ir_payload_fingerprint"] = payload_hash
+    payload["payload_hash"] = payload_hash
     now = image_version.updated_at
     version = PromptIRVersion(book_id=image_version.book_id, episode=image_version.episode, scene_id=image_version.scene_id, storyboard_shot_id=shot.id, materialization_set_id=image_version.materialization_set_id, plan_shot_id=image_version.plan_shot_id, schema_version=image_version.schema_version, payload_json=_canonical(payload), payload_hash=payload_hash, compiler_version=image_version.compiler_version, compiler_policy_version=image_version.compiler_policy_version, retention_policy_version=image_version.retention_policy_version, authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state=image_version.asset_reference_state, model_generation_ready="false", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
     session.add(version)
@@ -197,13 +200,19 @@ def _insert_generation_and_promote(session, shots: list[StoryboardShot], prompts
         execution_id = f"phase-i-exec-{shot.id:02d}"
         candidate_id = f"phase-i-candidate-{shot.id:02d}"
         provider_request = _fp({"execution_id": execution_id, "shot": shot.id})
-        generation_payload = _fp({"prompt_ir": prompt.payload_hash, "policy": POLICY_FP, "shot": shot.id})
-        execution = GenerationExecutionRecord(execution_id=execution_id, schema_version="generation_execution_request_v1", book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, plan_shot_id=shot.plan_shot_id or "", execution_mode="FIXTURE", status="SUCCEEDED", target_media="IMAGE", prompt_ir_version_id=prompt.id, prompt_ir_authority_id=prompt_authority.id, prompt_ir_payload_hash=prompt.payload_hash, generation_payload_fingerprint=generation_payload, generation_policy_fingerprint=POLICY_FP, model_profile_id="phase-i-fixture", model_profile_fingerprint="phase-i-fixture-v1", provider_adapter_id="fixture", provider_adapter_version="v1", reference_bindings_fingerprint="", provider_request_fingerprint=provider_request, request_snapshot_json=_canonical({"media_role": "SHOT_PRIMARY_IMAGE", "generation_policy": {"fingerprint": POLICY_FP}, "asset_bindings": []}), confirmation_binding_hash="", provider="fixture", model="deterministic-fixture", provider_request_id="", provider_task_id="", provider_response_hash=_fp({"fixture": shot.id}), logical_provider_calls=0, transport_retry_count=0, official_promotion_count=0)
+        prompt_payload = json.loads(prompt.payload_json or "{}")
+        policy = prompt_payload.get("generation_policy") if isinstance(prompt_payload.get("generation_policy"), dict) else {}
+        policy_fingerprint = str(policy.get("fingerprint") or "")
+        generation_payload = _fp({"prompt_ir": prompt.payload_hash, "policy": policy_fingerprint, "shot": shot.id})
+        execution = GenerationExecutionRecord(execution_id=execution_id, schema_version="generation_execution_request_v1", book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, plan_shot_id=shot.plan_shot_id or "", execution_mode="FIXTURE", status="SUCCEEDED", target_media="IMAGE", prompt_ir_version_id=prompt.id, prompt_ir_authority_id=prompt_authority.id, prompt_ir_payload_hash=prompt.payload_hash, generation_payload_fingerprint=generation_payload, generation_policy_fingerprint=policy_fingerprint, model_profile_id="phase-i-fixture", model_profile_fingerprint="phase-i-fixture-v1", provider_adapter_id="fixture", provider_adapter_version="v1", reference_bindings_fingerprint="", provider_request_fingerprint=provider_request, request_snapshot_json=_canonical({"media_role": "SHOT_PRIMARY_IMAGE", "generation_policy": policy, "asset_bindings": []}), confirmation_binding_hash="", provider="fixture", model="deterministic-fixture", provider_request_id="", provider_task_id="", provider_response_hash=_fp({"fixture": shot.id}), logical_provider_calls=0, transport_retry_count=0, official_promotion_count=0)
         candidate = MediaCandidateRecord(candidate_id=candidate_id, execution_id=execution_id, status="MEDIA_CANDIDATE", media_type="IMAGE", storage_identity=f"fixture://phase-i/{token}.png", storage_reference_json=_canonical({"local_path": str(path)}), checksum_sha256=checksum, mime_type="image/png", byte_size=len(PNG), width=1, height=1, duration_ms=None, prompt_ir_version_id=prompt.id, prompt_ir_payload_hash=prompt.payload_hash, generation_payload_fingerprint=generation_payload, model_profile_id="phase-i-fixture", model_profile_fingerprint="phase-i-fixture-v1", provider_request_fingerprint=provider_request, provider_response_hash=execution.provider_response_hash, provider_task_id="")
         session.add(execution)
         session.add(candidate)
         session.commit()
-        validation = validate_media_candidate(session, candidate_id)
+        try:
+            validation = validate_media_candidate(session, candidate_id)
+        except MediaAuthorityError:
+            raise
         promoted = promote_media_candidate(session, candidate_id, validation["validation_id"], confirmation=True)
         resolved = resolve_current_official_media_for_shot(session, book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id)
         records.append({"shot": shot, "execution": execution, "candidate": candidate, "validation": validation, "promoted": promoted, "resolved": resolved})
@@ -218,7 +227,7 @@ def _drift_probe(db_path: Path, drift: str) -> dict[str, Any]:
             image_pointer = session.query(PromptIRPointer).filter_by(storyboard_shot_id=1, target_media="IMAGE").one()
             version = session.query(PromptIRVersion).filter_by(id=image_pointer.prompt_ir_version_id).one()
             payload = json.loads(version.payload_json)
-            payload["prompt"]["text"] += " drift"
+            payload.setdefault("camera", {})["support"] = "DRIFT"
             version.payload_json = _canonical(payload)
             version.payload_hash = _fp(payload)
             session.commit()
@@ -258,6 +267,21 @@ def _acceptance_snapshot() -> dict[str, Any]:
     return result
 
 
+def _prepare_real_authority_db(destination: Path) -> Path:
+    """Build the disposable A–E authority chain through the real pilots."""
+    command = "import os, scripts.run_phase_b_director_blocking_pilot as phase_b; os.environ['PHASE_E_REAL_PILOT']='1'; os.environ['PHASE_E_PREPARE_ONLY']='1'; os.environ['PHASE_F_RETAIN_DB']='1'; phase_b.main(); print(os.environ['DATABASE_URL'])"
+    completed = subprocess.run([sys.executable, "-c", command], cwd=str(ROOT), check=True, capture_output=True, text=True)
+    database_url = next((line.strip() for line in reversed(completed.stdout.splitlines()) if line.strip().startswith("sqlite:///")), "")
+    if not database_url.startswith("sqlite:///"):
+        raise RuntimeError("Phase B did not expose a disposable SQLite authority database.")
+    source_text = database_url.removeprefix("sqlite:///").split("?", 1)[0]
+    source = Path(source_text)
+    if not source.exists():
+        raise RuntimeError(f"Phase B authority database is missing: {source}")
+    shutil.copy2(source, destination)
+    return source
+
+
 def run(output_dir: Path = OUT_DIR) -> dict[str, Any]:
     matrix = json.loads(MATRIX_INPUT.read_text(encoding="utf-8"))
     rows = matrix["rows"]
@@ -267,7 +291,7 @@ def run(output_dir: Path = OUT_DIR) -> dict[str, Any]:
         db_path = root / "phase-i.sqlite"
         media_dir = root / "media"
         media_dir.mkdir()
-        _upgrade(db_path)
+        retained_db: Path | None = _prepare_real_authority_db(db_path)
         engine = create_engine(f"sqlite:///{db_path.as_posix()}")
         with engine.begin() as connection:
             connection.exec_driver_sql("PRAGMA foreign_keys=ON")
@@ -340,6 +364,8 @@ def run(output_dir: Path = OUT_DIR) -> dict[str, Any]:
                 engine.dispose()
             except Exception:
                 pass
+            if retained_db is not None:
+                retained_db.unlink(missing_ok=True)
     (output_dir / "phase_i_visual_truth_matrix.json").write_text(json.dumps(visual_truth, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
     (output_dir / "phase_i_official_media_binding_audit.md").write_text(_markdown_report(audit), encoding="utf-8")
     (output_dir / "PHASE_I_FINAL_REPORT.md").write_text(_final_report(audit), encoding="utf-8")

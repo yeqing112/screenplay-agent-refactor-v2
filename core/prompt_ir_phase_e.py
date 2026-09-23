@@ -551,7 +551,7 @@ def compile_storyboard_snapshot_to_prompt_ir(snapshot: dict[str, Any], *, genera
                     ref_version_fp = _text(reference.get("asset_version_fingerprint"))
                     if not ref_version_fp or ref_version_fp != current_version_fp:
                         raise PromptIRPhaseEError("VISUAL_REFERENCE_AUTHORITY_STALE", f"Reference authority is bound to a different asset version: {identity_key}.")
-                resolved_binding = {"identity_ref": identity_key, "asset_authority_ref": _text(item.get("asset_key") or item.get("canonical_asset_id") or identity), "authority_fingerprint": _text(item.get("authority_fingerprint") or item.get("payload_hash")), "asset_version_id": item.get("asset_version_id"), "asset_version_fingerprint": _text(item.get("asset_version_fingerprint") or item.get("payload_hash")), "stale_status": _text(item.get("stale_status") or "FRESH")}
+                resolved_binding = {"identity_ref": identity_key, "asset_authority_ref": _text(item.get("asset_authority_ref") or item.get("asset_key") or item.get("canonical_asset_id") or identity), "authority_fingerprint": _text(item.get("authority_fingerprint") or item.get("payload_hash")), "asset_version_id": item.get("asset_version_id"), "asset_version_fingerprint": _text(item.get("asset_version_fingerprint") or item.get("payload_hash")), "stale_status": _text(item.get("stale_status") or "FRESH")}
                 if reference_required:
                     reference = item.get("reference_authority")
                     resolved_binding["reference_authority_ref"] = reference.get("authority_fingerprint")

@@ -445,6 +445,8 @@ def _prompt_ir_current_scope_snapshot(session: Any, *, candidate: MediaCandidate
     )
     prompt["prompt_authority_valid"] = bool(validated.get("integrity_valid") and authority is not None)
     prompt["prompt_current_lineage_valid"] = bool(validated.get("current_lineage_valid"))
+    if not prompt["prompt_current_lineage_valid"]:
+        prompt["errors"] = list(validated.get("diagnostics") or [])
     prompt["generation_policy_matches"] = bool(policy_fp) and policy_fp == execution_policy_fp
     prompt["matches"] = bool(prompt["pointer_payload_integrity_valid"] and prompt["prompt_authority_valid"])
     prompt["currentness_valid"] = bool(

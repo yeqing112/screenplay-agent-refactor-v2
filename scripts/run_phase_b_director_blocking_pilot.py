@@ -10,6 +10,8 @@ import copy
 import hashlib
 import json
 import os
+import sqlite3
+import shutil
 import tempfile
 from pathlib import Path
 import sys
@@ -47,7 +49,7 @@ def _run_real_authority_pilot(
         # runs, so update the already-loaded configuration before importing
         # models/API.  This keeps the pilot isolated without create_all.
         config.DATABASE_URL = os.environ["DATABASE_URL"]
-        from models import Book, FactSnapshot, Script, ScriptIRVersion, DecisionPacketRecord, SceneBlocking, VisualLocation, ShotPlan, ShotPlanAuthority, ShotPlanPointer, Session, init_db
+        from models import Book, FactSnapshot, Script, ScriptIRVersion, DecisionPacketRecord, SceneBlocking, VisualLocation, ShotPlan, ShotPlanAuthority, ShotPlanPointer, Session, engine, init_db
         from core.fact_snapshot import snapshot_hash
         from core.script_ir import build_script_ir, script_ir_hash, validate_script_ir
         from core.script_ir_authority import activate_script_ir, validate_authority_envelope
@@ -246,6 +248,12 @@ def _run_real_authority_pilot(
                 # Real resolver regression: re-sign only the test state so the
                 # authority envelope remains structurally valid while the
                 # canonical ShotPlan continuity is semantically invalid.
+                resolver_probe_snapshot = Path(str(db_file) + ".resolver-probe")
+                engine.dispose()
+                with sqlite3.connect(db_file) as source_connection, sqlite3.connect(resolver_probe_snapshot) as snapshot_connection:
+                    source_connection.backup(snapshot_connection)
+                source_connection.close()
+                snapshot_connection.close()
                 resolver_scene = treatment_items[-1]["scene"]["scene_id"]
                 with Session() as tamper_session:
                     tamper_pointer = tamper_session.query(ShotPlanPointer).filter_by(book_id=book_id, episode=1, scene_id=resolver_scene).one()
@@ -283,6 +291,14 @@ def _run_real_authority_pilot(
                     stale_authority = stale_session.query(ShotPlanAuthority).filter_by(shot_plan_id=tamper_pointer_id_before).one()
                     stale_pointer = stale_session.query(ShotPlanPointer).filter_by(book_id=book_id, episode=1, scene_id=resolver_scene).first()
                 resolver_continuity_tamper = {"scene_id": resolver_scene, "status_code": resolver_response.get("status_code", 409) if isinstance(resolver_response, dict) else 200, "code": resolver_detail.get("code") if isinstance(resolver_detail, dict) else "", "errors": resolver_detail.get("errors", []) if isinstance(resolver_detail, dict) else [], "row_stale_status": stale_row.stale_status, "authority_stale_status": stale_authority.stale_status, "pointer_before": tamper_pointer_id_before, "pointer_after": stale_pointer.shot_plan_id if stale_pointer else None, "pointer_preserved": bool(stale_pointer and stale_pointer.shot_plan_id == tamper_pointer_id_before)}
+                # The regression is evidence only.  Restore the clean current
+                # authority before handing a retained DB to downstream pilots.
+                engine.dispose()
+                with sqlite3.connect(resolver_probe_snapshot) as snapshot_connection, sqlite3.connect(db_file) as target_connection:
+                    snapshot_connection.backup(target_connection)
+                snapshot_connection.close()
+                target_connection.close()
+                resolver_probe_snapshot.unlink(missing_ok=True)
                 result = {"database": {"book_id": book_id, "script_ir": {"id": ir.id, "revision": ir.revision, "payload_hash": ir.payload_hash, "authority_envelope_fingerprint": script_ir_envelope["envelope_fingerprint"]}, "fact_snapshot": {"id": fact.id, "revision": fact.revision, "payload_hash": fact.payload_hash}, "script_ir_activation": activation}, "treatment": treatment_records, "blocking": blocking_records, "shot_plan": shot_plan_records, "failed_candidate": failed_candidate, "continuity_failed_candidate": continuity_failed_candidate, "resolver_continuity_tamper": resolver_continuity_tamper, "resolver": {"treatment": [{"scene_id": r.scene_id, "status": "PASS"} for r in treatment_resolutions], "blocking": [{"scene_id": r.scene_id, "status": "PASS"} for r in blocking_resolutions], "shot_plan": [{"scene_id": x["scene_id"], "status": "PASS", "phase_c_semantic_ready": x["phase_c_semantic_ready"]} for x in shot_plan_records]}, "activation_path": {"director": "production_confirm_service", "blocking": "production_confirm_service", "shot_plan": "production_confirm_service"}, "raw_authority_fabrication_count": 0}
                 if phase_d_result is not None:
                     result["phase_d"] = phase_d_result
@@ -298,6 +314,17 @@ def _run_real_authority_pilot(
 
 def fp(value: object) -> str:
     return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+def _json_safe(value: Any) -> Any:
+    """Make nested pilot evidence JSON-serializable without changing DB rows."""
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, tuple):
+        return [_json_safe(item) for item in value]
+    return value
 
 
 def character(name: str, objective: str, obstacle: str, strategy: str, shift: str, subtext: str, performance: str, avoid: str) -> dict:
@@ -496,7 +523,7 @@ def main() -> None:
     trace = {"schema_version": "phase_b_trace_v2_real_authority", "pilot": {"book_id": 990401, "episode": 1, "title": payload.get("title"), "provider_not_called": True}, "authority": real_authority, "script_ir": {"source_artifact": "episode_01_script_ir_phase_a.json"}, "visual_location_binding": {"mode": "RELATIVE_SPATIAL_MODEL", "locked_geometry_mutated": False}, "provider": {"provider_not_called": True, "calls": 0, "model": None, "tokens": 0, "latency_ms": 0, "request_fingerprint": None, "response_fingerprint": None}, "validation": {"treatment": [x["treatment"]["validation"] for x in treatment_items], "blocking": [x["blocking"]["validation"] for x in blocking_items], "repair_count": 0}, "authority_flow": {"candidate": "PASS", "validation": "PASS", "repair": "NONE", "confirm": "PASS", "authority": "PASS", "failed_candidate_moved_pointer": False, "stale_upstream": "FAIL_CLOSED", "latest_approved_fallback": False}}
     trace["activation_path"] = real_authority.get("activation_path", {"director": "production_confirm_service", "blocking": "production_confirm_service"})
     trace["raw_authority_fabrication_count"] = real_authority.get("raw_authority_fabrication_count", 0)
-    (ART / "episode_01_phase_b_trace.json").write_text(json.dumps(trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (ART / "episode_01_phase_b_trace.json").write_text(json.dumps(_json_safe(trace), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     # Phase C artifacts are projections of the confirmed canonical rows.  No
     # deterministic builder is used to author or replace ShotDesignDecision.
     phase_c_plans = []
@@ -506,7 +533,7 @@ def main() -> None:
         canonical_shots = record.get("shots", [])
         phase_c_plans.append({"contract_version": contract.get("contract_version"), "scene_id": record["scene_id"], "canonical_shots": canonical_shots, "shots": canonical_shots, "phase_c_contract": contract, "phase_c_semantic_ready": record.get("phase_c_semantic_ready", False), "shot_design_status": record.get("shot_design_status"), "canonical_origin": record.get("canonical_origin"), "runtime_estimate": contract.get("runtime_projection", {}), "payload_hash": record.get("payload_hash")})
         phase_c_validation.append({"valid": bool(record.get("phase_c_semantic_ready")), "errors": [], "coverage": contract.get("coverage_results", []), "continuity": contract.get("compiled_continuity", {})})
-    (ART / "episode_01_shot_plan_phase_c.json").write_text(json.dumps({"schema_version": "phase_c_shot_plan_pilot_v1", "book_id": 990401, "episode": 1, "plans": phase_c_plans, "authority": real_authority.get("shot_plan", [])}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (ART / "episode_01_shot_plan_phase_c.json").write_text(json.dumps(_json_safe({"schema_version": "phase_c_shot_plan_pilot_v1", "book_id": 990401, "episode": 1, "plans": phase_c_plans, "authority": real_authority.get("shot_plan", [])}), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     md_lines = ["# Episode 1 Phase C ShotPlan", ""]
     for phase_plan in phase_c_plans:
         runtime = phase_plan.get("runtime_estimate") or {}
@@ -534,10 +561,10 @@ def main() -> None:
         handoff_scenes.append({"scene_id": phase_plan["scene_id"], "scene_name": handoff_plan["scene_name"], "canonical_shot_count": len(phase_plan["shots"]), "handoff_shot_count": len(handoff["shots"]), "materialized_shot_count": len(materialized), "handoff": handoff, "materialized": materialized})
     handoff_artifact = {"schema_version": "episode_01_storyboard_handoff_phase_c_v1", "projection_version": handoff_scenes[0]["handoff"]["projection_version"], "book_id": 990401, "episode": 1, "scenes": handoff_scenes}
     handoff_audit = {"schema_version": "phase_c_storyboard_handoff_audit_v1", "canonical_shots": sum(x["canonical_shot_count"] for x in handoff_scenes), "handoff_shots": sum(x["handoff_shot_count"] for x in handoff_scenes), "materialized_shots": sum(x["materialized_shot_count"] for x in handoff_scenes), "id_order_preserved": all(a["plan_shot_id"] == b["plan_shot_id"] for scene in handoff_scenes for a, b in zip(scene["handoff"]["shots"], scene["materialized"])), "creative_fallback_count": 0, "legacy_truth_reads": 0, "production_materializer": "materialize_storyboard_from_handoff", "production": True, "scenes": [{"scene_id": x["scene_id"], "canonical_shots": x["canonical_shot_count"], "handoff_shots": x["handoff_shot_count"], "materialized_shots": x["materialized_shot_count"], "id_order_preserved": all(a["plan_shot_id"] == b["plan_shot_id"] for a, b in zip(x["handoff"]["shots"], x["materialized"])), "handoff_fingerprint": x["handoff"]["handoff_fingerprint"]} for x in handoff_scenes]}
-    (ART / "episode_01_storyboard_handoff_phase_c.json").write_text(json.dumps(handoff_artifact, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (ART / "phase_c_storyboard_handoff_audit.json").write_text(json.dumps(handoff_audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (ART / "episode_01_storyboard_handoff_phase_c.json").write_text(json.dumps(_json_safe(handoff_artifact), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (ART / "phase_c_storyboard_handoff_audit.json").write_text(json.dumps(_json_safe(handoff_audit), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     phase_trace["storyboard_handoff"] = {"schema_version": "storyboard_handoff_v1", "projection_version": handoff_artifact["projection_version"], "source": "current Phase C canonical Authority + Phase B Blocking Authority", "projection_fingerprint": {x["scene_id"]: x["handoff"]["handoff_fingerprint"] for x in handoff_scenes}, "scene_counts": [{"scene_id": x["scene_id"], "canonical_shots": x["canonical_shot_count"], "handoff_shots": x["handoff_shot_count"], "materialized_shots": x["materialized_shot_count"]} for x in handoff_scenes], "production_materialization_validation": {"production": True, "pass": True, "id_order_preserved": handoff_audit["id_order_preserved"]}, "creative_fallback_count": 0, "legacy_truth_reads": 0}
-    (ART / "episode_01_phase_c_trace.json").write_text(json.dumps(phase_trace, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (ART / "episode_01_phase_c_trace.json").write_text(json.dumps(_json_safe(phase_trace), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     human_audit = {
         "E01_SC001": [
             "空间关系与售票区建立；红伞发现与林晚反应；断伞骨证据；顾沉进入并暴露知情；陆叔介入并接管注意力；红伞与伞骨消失；林晚改变计划；陆叔过快答应；顾沉场尾警告。",

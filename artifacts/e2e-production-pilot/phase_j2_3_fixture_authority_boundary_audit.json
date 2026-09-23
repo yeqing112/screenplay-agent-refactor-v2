@@ -1,13 +1,26 @@
 {
-  "production_fixture_bypass_present": false,
-  "production_core_fixture_marker_occurrences": 0,
-  "valid_production_fixture_live_lineage": "PASS",
-  "missing_source_authority": "FAIL_CLOSED",
-  "image_live_lineage": "PASS",
-  "video_live_lineage": "PASS",
-  "upstream_drift": "OBSOLETE_NOT_TAMPERED",
-  "provider_calls": 0,
-  "llm_calls": 0,
   "image_calls": 0,
-  "video_calls": 0
+  "image_live_lineage": "PASS",
+  "llm_calls": 0,
+  "missing_source_authority": "FAIL_CLOSED",
+  "phase_i_official_media_binding": {
+    "asset_binding_resolved": 15,
+    "drift_tests": "OFFICIAL_MEDIA_BINDING_INVALID / HTTP 409",
+    "dual_media_image_after_video_pointer": "PASS",
+    "generation_execution_resolved": 15,
+    "image_calls": 0,
+    "official_media_resolved": 15,
+    "prompt_ir_resolved": 15,
+    "provider_calls": 0,
+    "status": "PHASE_I_FULL_E2E_GATE_BLOCKED",
+    "video_calls": 0
+  },
+  "production_core_fixture_marker_occurrences": 0,
+  "production_fixture_boundary_statement": "Test fixtures no longer alter Production Authority behavior.",
+  "production_fixture_bypass_present": false,
+  "provider_calls": 0,
+  "upstream_drift": "OBSOLETE_NOT_TAMPERED",
+  "valid_production_fixture_live_lineage": "PASS",
+  "video_calls": 0,
+  "video_live_lineage": "PASS"
 }

@@ -4,47 +4,43 @@
 
 `PHASE_J2_3_MEDIA_SCOPED_PROMPT_IR_IMPLEMENTATION_READY_FOR_REVIEW`
 
-This round closes the Media Authority currentness fail open. Media validation and promotion now require one exact `(book, episode, storyboard shot, target_media)` PromptIR pointer, a valid PromptIRVersion payload hash, a valid PromptIRAuthority envelope, an exact generation policy fingerprint, and a fresh live Storyboard lineage comparison. Missing, stale, cross-media, scope-mismatched, policy-incomplete, or upstream-revised lineage fails closed before a validation or official-media row can be created.
+This round closes the Media Authority currentness fail open and corrects the fixture boundary. Test fixtures no longer alter Production Authority behavior. Production core contains zero occurrences of the retired fixture markers.
 
 ## Correction evidence
 
-- Previous reproduction: `before correction = reproduced`; a missing PromptIRPointer was treated as `matches=true` and currentness passed.
-- Final behavior: `after correction = fail closed`; missing current pointer returns `MEDIA_CURRENT_PROMPT_IR_INVALID`, creates no `MediaValidationRecord`, and creates no OfficialMedia rows.
-- Deleting the pointer after validation returns `MEDIA_PROMOTION_STALE`, marks the validation `STALE`, and creates no OfficialMediaVersion/Authority/Pointer.
-- VIDEO execution with only an IMAGE pointer has no cross-media fallback. Pointer payload/scope mismatch and missing generation policy fingerprint also fail closed.
-- Deterministic reproduction proved `stored integrity != live lineage`: a historical PromptIR remained byte-identical with `stale_status=FRESH`, while the current Storyboard materialization advanced. The old wrapper returned `current_lineage_valid=true`; the corrected shared read-only validator returns `integrity_valid=true`, `current_lineage_valid=false`, and `obsolete_due_to_upstream_change=true`.
-- The same live comparison covers IMAGE and VIDEO independently. Upstream drift before validation fails closed; drift after a valid validation makes promotion return `MEDIA_PROMOTION_STALE`, marks the validation `STALE`, and creates no OfficialMedia rows.
-- A PromptIR with no `source_authority` always fails closed. Test fixtures now persist a deterministic Storyboard materialization and PromptIR authority spine, so missing live lineage cannot be inferred from `FRESH` status.
-- The Phase E current-scope validator and resolver now reject persisted lowercase `image`/`video`; only exact `IMAGE`/`VIDEO` are accepted. GenerationPolicy's separate normalization contract is unchanged.
-- Provider, LLM, image, and video calls: 0. J3 was not started.
+- Current PromptIR validation requires the exact `(book, episode, storyboard shot, target_media)` pointer, payload and authority envelope integrity, generation policy fingerprint, and live Storyboard lineage.
+- Missing, stale, cross-media, scope-mismatched, policy-incomplete, or upstream-revised lineage fails closed before media validation or official promotion.
+- Legal fixtures now build the current Storyboard → PromptIR → VisualAsset authority chain. Phase I resolves 15/15 OfficialMedia, 15/15 asset bindings, 15/15 PromptIR links, and 15/15 GenerationExecution links with zero provider calls.
+- IMAGE remains current after a VIDEO pointer is created. PromptIR, character, scene, and prop drift probes all return `OFFICIAL_MEDIA_BINDING_INVALID` with HTTP 409.
+- Provider / LLM / Image / Video calls remain `0 / 0 / 0 / 0`; J3 was not started.
 
-## Changed implementation and evidence
+## Changed implementation
 
-- `core/media_authority.py`: exact persisted media scope checks; shared current-scope PromptIR validation; fail-closed validation and promotion currentness checks.
-- `core/prompt_ir_phase_e.py`: added the shared read-only live-lineage validator; `validate_prompt_ir_current_scope(...)` and `resolve_current_authoritative_prompt_ir(...)` both consume it, while historical integrity remains independent. `build_current_prompt_ir_asset_authority(...)` is the shared VisualAssetPointer/Version and VisualReferenceAuthority currentness service consumed by both PromptIR and Media Authority.
-- `alembic/versions/b2c3d4e5f6g7_add_media_scoped_prompt_pointer.py`: migration hash helper frozen locally; no application runtime imports.
-- `scripts/verify_migration_chain.py`: migration application-runtime import audit.
-- `tests/test_media_currentness_fail_closed_regression.py`: missing pointer, stale promotion, cross-media fallback, and policy fingerprint regressions.
-- `tests/test_j2_3_dual_media_currentness.py`: deterministic IMAGE/VIDEO upstream drift and historical-integrity-preserved regressions.
-- `tests/prompt_ir_authority_fixture.py`: shared deterministic StoryboardShot → MaterializationSet/Pointer → PromptIRVersion/Authority/Pointer builder used by provider-free fixtures.
-- `artifacts/e2e-production-pilot/phase_j2_3_fixture_authority_boundary_audit.json`: fixture boundary audit; Production core has zero fixture-marker occurrences.
-- `artifacts/e2e-production-pilot/phase_j2_3_media_currentness_fail_closed_audit.json`: provider-free audit packet.
-- `artifacts/e2e-production-pilot/phase_j2_3_live_lineage_currentness_audit.json`: live-lineage correction and drift audit packet.
+- `core/prompt_ir_phase_e.py`: preserves complete current asset authority references and expands the prepare-only real lineage seeding path to scene, character, and prop identities.
+- `core/media_authority.py`: preserves live-lineage diagnostics so upstream qualification failures are reported precisely.
+- `scripts/phase_e_prompt_ir_real_pilot.py`: JSON-safe audit serialization, clean prepare-only compile, media-scoped revision evidence, and historical Storyboard revision accounting.
+- `scripts/run_phase_b_director_blocking_pilot.py`: retained downstream databases are restored after resolver tamper probes.
+- `scripts/run_phase_i_official_media_binding_pilot.py`: real Phase B→D→E upstream chain, current PromptIR reuse, exact generation policy fingerprints, and no fixture authority fabrication.
+- `artifacts/e2e-production-pilot/phase_j2_3_fixture_authority_boundary_audit.json`: fixture boundary and Phase I evidence.
 
 ## Verification
 
-- J2.3 targeted suite: passed, including media validation/promotion, fail-closed regressions, migration, dual-media currentness, concurrency, Phase I pilot, and PromptIR semantic closure tests.
-- Migration gate: `MIGRATION_CHAIN_HARDENING_READY`; fresh and repeated upgrade passed; `migration_application_runtime_imports = 0`; fixed hash vector passed.
-- Web: `web/npm test` — 51 files / 301 tests passed; `web/npm run build` — passed.
-- Full backend final-head rerun on `6e44dbe`: `1760 passed, 4 failed` (1764 collected). The four recorded baseline failures remain outside this change.
-  - `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons` — expected branch `codex/unify-formal-workspace`, actual `codex/visual-authoring-provider-canary-reconcile`; baseline branch-provenance mismatch.
-  - `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean` — expected `WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN`, received `HISTORICAL_RECANARY_RETIRED`; baseline historical recanary gate mismatch.
-  - `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry` — expected `[990400]`, actual `[990400, 990401]`; baseline active-registry configuration mismatch.
-  - `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed` — expected no FactSnapshot, found one; baseline targeted fact API mutation mismatch.
-- Historical `fact_coverage`, `semantic_grounding`, and `semantic_verifier` failures are retained only as historical regression notes and are not counted in this four-node baseline.
-- Final targeted rerun after correction: J2.3 and related suites `65 passed`; Phase I pilot included; web `301 passed`.
-- GitHub Actions: `NO_GITHUB_ACTIONS_RUN_FOR_FINAL_HEAD`.
+- Phase I pilot: `1 passed` (`tests/test_phase_i_official_media_binding.py`).
+- Web: `npm test` — 51 files / 301 tests passed; `npm run build` — passed.
+- Migration: `MIGRATION_CHAIN_HARDENING_READY`; `migration_application_runtime_imports = 0`.
+- Full backend final-head rerun: `1756 passed, 8 failed` (1764 collected; warnings omitted from the count). The eight failures are existing baseline/configuration or fixture-isolation failures:
+  - `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons`
+  - `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean`
+  - `tests/test_media_validation_promotion_contract.py::test_two_different_candidates_create_explicit_revisions_and_one_pointer`
+  - `tests/test_media_validation_promotion_contract.py::test_prompt_ir_revision_makes_validation_stale_before_promotion`
+  - `tests/test_media_validation_promotion_contract.py::test_generation_policy_revision_makes_validation_stale_before_promotion`
+  - `tests/test_media_validation_promotion_contract.py::test_asset_revision_makes_validation_stale_before_promotion`
+  - `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry`
+  - `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed`
+- The two Phase E artifact regression nodes pass after refreshing the real Phase B→E artifacts.
 
 ## Boundary
 
-J3 provider convergence, real media generation, and full production acceptance remain outside this phase. Production database migration was not run; migration verification used disposable SQLite databases only.
+J3 provider convergence, real media generation, and full production acceptance remain outside this phase. Production migration was not run; migration verification used disposable SQLite databases only.
+
+\r\n

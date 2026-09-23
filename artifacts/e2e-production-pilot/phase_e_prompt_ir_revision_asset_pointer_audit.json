@@ -1,15 +1,8 @@
 {
   "adapter_pointer_tamper": {
     "detail": {
-      "code": "VISUAL_ASSET_POINTER_TAMPERED",
-      "diagnostics": [
-        {
-          "code": "VISUAL_ASSET_POINTER_TAMPERED",
-          "message": "VisualAssetPointer payload_hash does not match the current version.",
-          "severity": "blocked"
-        }
-      ],
-      "message": "VisualAssetPointer payload_hash does not match the current version."
+      "code": "PROMPT_IR_MEDIA_SCOPE_REQUIRED",
+      "message": "Adapter preview requires an explicit generation_policy.target_media."
     },
     "status_code": 409
   },
@@ -100,180 +93,263 @@
       "schema_version": "prompt_ir_phase_e_compile_v1",
       "shots": [
         {
-          "payload_hash": "2be32dbe6234b3bd3db15320ea2578c2da35cf3280167ac12a4f7891dd9dd225",
+          "payload_hash": "824ba329babce680aca6b42c808ca18e85e3b1a699c52eaba2a66fc92d655455",
           "prompt_ir_version_id": 24,
           "reused": true,
-          "storyboard_shot_id": 9
+          "storyboard_shot_id": 9,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "2f6b73c55b79c3e84eba7e201630adb68c4efb82126d70653ba635b58d9aa72f",
+          "payload_hash": "b984f2a52bd824fb30c1a05894aa07e50ba7327a1126bbd9440467f3e0e47de7",
           "prompt_ir_version_id": 25,
           "reused": true,
-          "storyboard_shot_id": 10
+          "storyboard_shot_id": 10,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "eecf707c384ee568c81eec85a3afdd52184b59c45a45907e04300c971fe60df3",
+          "payload_hash": "a72450e8859e65a5b6393dafddce02e75ecd94eea14f2d7ccaa490d1022b4b47",
           "prompt_ir_version_id": 26,
           "reused": true,
-          "storyboard_shot_id": 11
+          "storyboard_shot_id": 11,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "d44c29b7e069081b327fdd746a14d1d667caa0c74c9fcf1bfc053c643f57a1cc",
+          "payload_hash": "86d15f6de5eeebf7b84ff4f544ea340137bc10d62be082ff6ff90408c19b0cf5",
           "prompt_ir_version_id": 27,
           "reused": true,
-          "storyboard_shot_id": 12
+          "storyboard_shot_id": 12,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "4949384d0d376dbf7e7f9e29862f74768cae2a7f26fe8a78ae5f4ceb0720f7c5",
+          "payload_hash": "4f0755497be3ab5e2ba7cbdc38cc6b8eab6bfdc1a3e7cee61b04cd2dc85a6ebc",
           "prompt_ir_version_id": 28,
           "reused": true,
-          "storyboard_shot_id": 13
+          "storyboard_shot_id": 13,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "bf67520a35485e1f7331e649e5f6bbffbf6855afe28eec6ace57bc3d252a79ae",
+          "payload_hash": "fb9d7372680c76fa3df192e661dafdfaa9036bc07d08d5e48572c9cbdaf204cb",
           "prompt_ir_version_id": 29,
           "reused": true,
-          "storyboard_shot_id": 14
+          "storyboard_shot_id": 14,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "ed3a2454d3c023cd74b868af073b3dabf60f6a774c7edee81dd525262dd61723",
+          "payload_hash": "b80dd390173897e15e9a75e36c72e469045792dc5d478ceda49edfec4bd64e23",
           "prompt_ir_version_id": 30,
           "reused": true,
-          "storyboard_shot_id": 15
+          "storyboard_shot_id": 15,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "4dae35ace1ee5c6da6feff2503291781be312f372d91aed92901819b7bb1904e",
+          "payload_hash": "7f1ccd5537f9c630a8b0de5559367104838f777129e27351d0b01da65e6d1fa0",
           "prompt_ir_authority_id": 31,
           "prompt_ir_version_id": 31,
           "reused": false,
-          "storyboard_shot_id": 1
+          "storyboard_shot_id": 1,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "e02872e55e842ac36cd1929ea32695025d309806349b197b396d787aee533184",
+          "payload_hash": "6e54aa20051d0c1545d9b7d33467cc83b4e55d2444a216c18dc280f722331104",
           "prompt_ir_authority_id": 32,
           "prompt_ir_version_id": 32,
           "reused": false,
-          "storyboard_shot_id": 2
+          "storyboard_shot_id": 2,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "e95ea00f8eb962024bdd8e6eee8ff2d1963e59a7e5cde6c6dccc7c7f99e5c78f",
+          "payload_hash": "6aed0fb50daf5e0cfae010e50bb43ef555dd242102cc4614b51d07385bb77a6a",
           "prompt_ir_authority_id": 33,
           "prompt_ir_version_id": 33,
           "reused": false,
-          "storyboard_shot_id": 3
+          "storyboard_shot_id": 3,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "2d08c33e7e13539e37115774882970ad69712b6413e0e09ec21e310de5d273f2",
+          "payload_hash": "09e9ede7fa956e88a0c59917cd322fda87ad33e7574b5b07885d89e90633881b",
           "prompt_ir_authority_id": 34,
           "prompt_ir_version_id": 34,
           "reused": false,
-          "storyboard_shot_id": 4
+          "storyboard_shot_id": 4,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "ceccc393105b9b57ce188cfa6a7642ede3b37ae58f4784e9e5b730bd29492407",
+          "payload_hash": "ea76689c8e0ccc7537d50c1cfaf97a67666d06ccb643df6e9903899d9fbde618",
           "prompt_ir_authority_id": 35,
           "prompt_ir_version_id": 35,
           "reused": false,
-          "storyboard_shot_id": 5
+          "storyboard_shot_id": 5,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "090b07a297045c3f797bcf53a08cb47be0bb3407c0fb150eaf93ce99c6c9965f",
+          "payload_hash": "f7e728a230c8a5ad264f22513ecb0e06293a41d63e95fa7cc814b719fc386a4f",
           "prompt_ir_authority_id": 36,
           "prompt_ir_version_id": 36,
           "reused": false,
-          "storyboard_shot_id": 6
+          "storyboard_shot_id": 6,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "9941df67541a7e41eb49bbc5852d87d6e9e65836fdcfaf402ba8f6aa3fde50e4",
+          "payload_hash": "ad4ca947808f25974a477eb8fd3fca4166898f4913ab7d1747b586353ec713ee",
           "prompt_ir_authority_id": 37,
           "prompt_ir_version_id": 37,
           "reused": false,
-          "storyboard_shot_id": 7
+          "storyboard_shot_id": 7,
+          "target_media": "VIDEO"
         },
         {
-          "payload_hash": "3f6abd3e5832366f97c624b4de3d4216b69de53b397f6e17f18e46532e669121",
+          "payload_hash": "4eb8ffbf9257b6cd93104f939ce90023335c57f1398cfa9a6e88d49a4b29f0a9",
           "prompt_ir_authority_id": 38,
           "prompt_ir_version_id": 38,
           "reused": false,
-          "storyboard_shot_id": 8
+          "storyboard_shot_id": 8,
+          "target_media": "VIDEO"
         }
       ]
     },
     "new_asset_version_id": 12,
     "new_prompt_ir_authority_ids": {
-      "1": 31,
-      "2": 32,
-      "3": 33,
-      "4": 34,
-      "5": 35,
-      "6": 36,
-      "7": 37,
-      "8": 38,
-      "9": 24,
-      "10": 25,
-      "11": 26,
-      "12": 27,
-      "13": 28,
-      "14": 29,
-      "15": 30
+      "(1, 'IMAGE')": 1,
+      "(1, 'VIDEO')": 31,
+      "(10, 'IMAGE')": 10,
+      "(10, 'VIDEO')": 25,
+      "(11, 'IMAGE')": 11,
+      "(11, 'VIDEO')": 26,
+      "(12, 'IMAGE')": 12,
+      "(12, 'VIDEO')": 27,
+      "(13, 'IMAGE')": 13,
+      "(13, 'VIDEO')": 28,
+      "(14, 'IMAGE')": 14,
+      "(14, 'VIDEO')": 29,
+      "(15, 'IMAGE')": 15,
+      "(15, 'VIDEO')": 30,
+      "(2, 'IMAGE')": 2,
+      "(2, 'VIDEO')": 32,
+      "(3, 'IMAGE')": 3,
+      "(3, 'VIDEO')": 33,
+      "(4, 'IMAGE')": 4,
+      "(4, 'VIDEO')": 34,
+      "(5, 'IMAGE')": 5,
+      "(5, 'VIDEO')": 35,
+      "(6, 'IMAGE')": 6,
+      "(6, 'VIDEO')": 36,
+      "(7, 'IMAGE')": 7,
+      "(7, 'VIDEO')": 37,
+      "(8, 'IMAGE')": 8,
+      "(8, 'VIDEO')": 38,
+      "(9, 'IMAGE')": 9,
+      "(9, 'VIDEO')": 24
     },
     "new_prompt_ir_version_ids": {
-      "1": 31,
-      "2": 32,
-      "3": 33,
-      "4": 34,
-      "5": 35,
-      "6": 36,
-      "7": 37,
-      "8": 38,
-      "9": 24,
-      "10": 25,
-      "11": 26,
-      "12": 27,
-      "13": 28,
-      "14": 29,
-      "15": 30
+      "(1, 'IMAGE')": 1,
+      "(1, 'VIDEO')": 31,
+      "(10, 'IMAGE')": 10,
+      "(10, 'VIDEO')": 25,
+      "(11, 'IMAGE')": 11,
+      "(11, 'VIDEO')": 26,
+      "(12, 'IMAGE')": 12,
+      "(12, 'VIDEO')": 27,
+      "(13, 'IMAGE')": 13,
+      "(13, 'VIDEO')": 28,
+      "(14, 'IMAGE')": 14,
+      "(14, 'VIDEO')": 29,
+      "(15, 'IMAGE')": 15,
+      "(15, 'VIDEO')": 30,
+      "(2, 'IMAGE')": 2,
+      "(2, 'VIDEO')": 32,
+      "(3, 'IMAGE')": 3,
+      "(3, 'VIDEO')": 33,
+      "(4, 'IMAGE')": 4,
+      "(4, 'VIDEO')": 34,
+      "(5, 'IMAGE')": 5,
+      "(5, 'VIDEO')": 35,
+      "(6, 'IMAGE')": 6,
+      "(6, 'VIDEO')": 36,
+      "(7, 'IMAGE')": 7,
+      "(7, 'VIDEO')": 37,
+      "(8, 'IMAGE')": 8,
+      "(8, 'VIDEO')": 38,
+      "(9, 'IMAGE')": 9,
+      "(9, 'VIDEO')": 24
     },
     "old_asset_version_id": 10,
     "old_prompt_ir_authority_ids": {
-      "1": 16,
-      "2": 17,
-      "3": 18,
-      "4": 19,
-      "5": 20,
-      "6": 21,
-      "7": 22,
-      "8": 23,
-      "9": 24,
-      "10": 25,
-      "11": 26,
-      "12": 27,
-      "13": 28,
-      "14": 29,
-      "15": 30
+      "(1, 'IMAGE')": 1,
+      "(1, 'VIDEO')": 16,
+      "(10, 'IMAGE')": 10,
+      "(10, 'VIDEO')": 25,
+      "(11, 'IMAGE')": 11,
+      "(11, 'VIDEO')": 26,
+      "(12, 'IMAGE')": 12,
+      "(12, 'VIDEO')": 27,
+      "(13, 'IMAGE')": 13,
+      "(13, 'VIDEO')": 28,
+      "(14, 'IMAGE')": 14,
+      "(14, 'VIDEO')": 29,
+      "(15, 'IMAGE')": 15,
+      "(15, 'VIDEO')": 30,
+      "(2, 'IMAGE')": 2,
+      "(2, 'VIDEO')": 17,
+      "(3, 'IMAGE')": 3,
+      "(3, 'VIDEO')": 18,
+      "(4, 'IMAGE')": 4,
+      "(4, 'VIDEO')": 19,
+      "(5, 'IMAGE')": 5,
+      "(5, 'VIDEO')": 20,
+      "(6, 'IMAGE')": 6,
+      "(6, 'VIDEO')": 21,
+      "(7, 'IMAGE')": 7,
+      "(7, 'VIDEO')": 22,
+      "(8, 'IMAGE')": 8,
+      "(8, 'VIDEO')": 23,
+      "(9, 'IMAGE')": 9,
+      "(9, 'VIDEO')": 24
     },
     "old_prompt_ir_version_ids": {
-      "1": 16,
-      "2": 17,
-      "3": 18,
-      "4": 19,
-      "5": 20,
-      "6": 21,
-      "7": 22,
-      "8": 23,
-      "9": 24,
-      "10": 25,
-      "11": 26,
-      "12": 27,
-      "13": 28,
-      "14": 29,
-      "15": 30
+      "(1, 'IMAGE')": 1,
+      "(1, 'VIDEO')": 16,
+      "(10, 'IMAGE')": 10,
+      "(10, 'VIDEO')": 25,
+      "(11, 'IMAGE')": 11,
+      "(11, 'VIDEO')": 26,
+      "(12, 'IMAGE')": 12,
+      "(12, 'VIDEO')": 27,
+      "(13, 'IMAGE')": 13,
+      "(13, 'VIDEO')": 28,
+      "(14, 'IMAGE')": 14,
+      "(14, 'VIDEO')": 29,
+      "(15, 'IMAGE')": 15,
+      "(15, 'VIDEO')": 30,
+      "(2, 'IMAGE')": 2,
+      "(2, 'VIDEO')": 17,
+      "(3, 'IMAGE')": 3,
+      "(3, 'VIDEO')": 18,
+      "(4, 'IMAGE')": 4,
+      "(4, 'VIDEO')": 19,
+      "(5, 'IMAGE')": 5,
+      "(5, 'VIDEO')": 20,
+      "(6, 'IMAGE')": 6,
+      "(6, 'VIDEO')": 21,
+      "(7, 'IMAGE')": 7,
+      "(7, 'VIDEO')": 22,
+      "(8, 'IMAGE')": 8,
+      "(8, 'VIDEO')": 23,
+      "(9, 'IMAGE')": 9,
+      "(9, 'VIDEO')": 24
     },
     "old_stale_states": {
+      "1": "STALE",
+      "10": "FRESH",
+      "11": "FRESH",
+      "12": "FRESH",
+      "13": "FRESH",
+      "14": "FRESH",
+      "15": "FRESH",
       "16": "STALE",
       "17": "STALE",
       "18": "STALE",
       "19": "STALE",
+      "2": "STALE",
       "20": "STALE",
       "21": "STALE",
       "22": "STALE",
@@ -284,7 +360,14 @@
       "27": "FRESH",
       "28": "FRESH",
       "29": "FRESH",
-      "30": "FRESH"
+      "3": "STALE",
+      "30": "FRESH",
+      "4": "STALE",
+      "5": "STALE",
+      "6": "STALE",
+      "7": "STALE",
+      "8": "STALE",
+      "9": "FRESH"
     },
     "status": "PASS"
   },
