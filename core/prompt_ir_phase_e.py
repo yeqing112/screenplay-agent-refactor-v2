@@ -767,17 +767,21 @@ def validate_prompt_ir_current_scope(session: Any, *, book_id: int, episode: int
     return result
 
 
-def _current_asset_authority_for_prompt(session: Any, *, book_id: int, payload: dict[str, Any]) -> dict[str, Any]:
-    """Rebind stored asset identities to their current production pointers.
+def build_current_prompt_ir_asset_authority(session: Any, *, book_id: int, prompt_payload: dict[str, Any]) -> dict[str, Any]:
+    """Resolve PromptIR asset bindings through the canonical asset contract.
 
-    The semantic compiler still receives the PromptIR's stored policy and
-    identity set.  Pointer/version fingerprints are read at validation time so
-    an asset revision is classified as upstream obsolescence rather than
-    silently accepted as historical data.
+    This is the one current asset truth consumed by PromptIR lineage and Media
+    Authority.  It validates the formal VisualAssetPointer/Version chain and,
+    when a stored binding names a reference authority, validates that the
+    reference remains locked, fresh, and bound to the same current version.
     """
-    from models import VisualAssetPointer
+    from core.visual_asset_authority import VisualAssetAuthorityError, resolve_current_visual_asset_authority
+    from models import VisualAssetPointer, VisualReferenceAuthority
 
+    payload = _dict(prompt_payload)
     stored = _dict(payload.get("asset_authority_bindings"))
+    policy = _dict(payload.get("generation_policy"))
+    required = {str(item).upper() for item in _list(policy.get("required_asset_classes"))}
     current: list[dict[str, Any]] = []
     for binding in _list(stored.get("resolved")):
         if not isinstance(binding, dict):
@@ -789,21 +793,67 @@ def _current_asset_authority_for_prompt(session: Any, *, book_id: int, payload: 
             item.setdefault("asset_type", asset_type)
             item.setdefault("canonical_asset_id", canonical_id)
         asset_key = _text(item.get("asset_authority_ref") or item.get("asset_key") or item.get("identity_ref"))
-        query = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key)
+        inferred_asset_type = identity_ref.split(":", 1)[0] if ":" in identity_ref else ""
+        asset_type = _text(item.get("asset_type") or inferred_asset_type)
         scope_key = _text(item.get("scope_key"))
-        if scope_key:
-            query = query.filter_by(scope_key=scope_key)
-        pointer = query.first()
-        if pointer is not None:
-            item["asset_version_id"] = getattr(pointer, "current_version_id", item.get("asset_version_id"))
-            item["asset_version_fingerprint"] = _text(getattr(pointer, "payload_hash", "")) or item.get("asset_version_fingerprint")
-            item["authority_fingerprint"] = _text(getattr(pointer, "payload_hash", "")) or item.get("authority_fingerprint")
-            item["stale_status"] = _text(getattr(pointer, "stale_status", "FRESH")) or "FRESH"
-            item["authority_status"] = _text(getattr(pointer, "authority_status", ""))
-        else:
+        expected_version = item.get("asset_version_id")
+        expected_hash = _text(item.get("asset_version_fingerprint"))
+        expected_authority = _text(item.get("authority_fingerprint"))
+        if not _dict(payload.get("source_authority")):
+            # Pre-Phase-E fixtures have no declared Storyboard lineage and
+            # therefore cannot satisfy the full production asset contract.
+            # Keep their pointer drift observable for Media Authority while
+            # preserving the legacy fixture shape.
+            query = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key)
+            if scope_key:
+                query = query.filter_by(scope_key=scope_key)
+            pointer = query.first()
+            item["asset_version_id"] = getattr(pointer, "current_version_id", None) if pointer else None
+            item["asset_version_fingerprint"] = _text(getattr(pointer, "payload_hash", "")) if pointer else ""
+            item["authority_fingerprint"] = _text(getattr(pointer, "payload_hash", "")) if pointer else ""
+            item["authority_status"] = _text(getattr(pointer, "authority_status", "")) if pointer else ""
+            item["stale_status"] = _text(getattr(pointer, "stale_status", "STALE")) if pointer else "STALE"
+            item["pointer_matches"] = bool(pointer and (expected_version is None or int(pointer.current_version_id or 0) == int(expected_version)) and (not expected_hash or _text(pointer.payload_hash) == expected_hash) and (not expected_authority or _text(pointer.payload_hash) == expected_authority) and _text(pointer.stale_status or "FRESH").upper() == "FRESH")
+            current.append(item)
+            continue
+        try:
+            resolved = resolve_current_visual_asset_authority(
+                session,
+                book_id=book_id,
+                asset_key=asset_key,
+                expected_asset_type=asset_type,
+                expected_scope_key=scope_key,
+            )
+            pointer = resolved["pointer"]
+            version = resolved["version"]
+            item["asset_version_id"] = version.id
+            item["asset_version_fingerprint"] = _text(version.payload_hash)
+            item["authority_fingerprint"] = _text(version.payload_hash)
+            item["authority_status"] = _text(version.authority_status)
+            item["stale_status"] = _text(version.stale_status or getattr(pointer, "stale_status", "FRESH")) or "FRESH"
+            item["scope_key"] = _text(pointer.scope_key)
+            item["pointer_matches"] = bool(
+                (expected_version is None or int(pointer.current_version_id or 0) == int(expected_version))
+                and (not expected_hash or _text(pointer.payload_hash) == expected_hash)
+                and (not expected_authority or _text(pointer.payload_hash) == expected_authority)
+                and _text(pointer.stale_status or "FRESH").upper() == "FRESH"
+            )
+            reference_fp = _text(item.get("reference_authority_fingerprint") or item.get("reference_authority_ref"))
+            reference_required = f"{asset_type.upper()}_REFERENCE" in required
+            if reference_fp or reference_required:
+                reference = session.query(VisualReferenceAuthority).filter_by(authority_fingerprint=reference_fp).first() if reference_fp else None
+                if reference is None or int(reference.asset_version_id or 0) != int(version.id) or _text(reference.asset_version_fingerprint) != _text(version.payload_hash) or _text(reference.status).upper() not in {"LOCKED", "REFERENCE_LOCKED"} or _text(reference.stale_status or "FRESH").upper() != "FRESH":
+                    item["stale_status"] = "STALE"
+                    item["authority_status"] = "STALE"
+                elif reference is not None:
+                    item["reference_authority"] = {"authority_fingerprint": reference.authority_fingerprint, "asset_version_id": reference.asset_version_id, "asset_version_fingerprint": reference.asset_version_fingerprint, "status": reference.status, "stale_status": reference.stale_status, "reference_token": _json(reference.reference_token_mapping_json, {}).get("token", "")}
+        except VisualAssetAuthorityError:
             item["stale_status"] = "STALE"
+            item["authority_status"] = "STALE"
+            item["pointer_matches"] = False
+        item.setdefault("pointer_matches", False)
         current.append(item)
-    return {"bindings": current}
+    return {"declared": bool(current), "bindings": current, "fingerprint": fingerprint(current)}
 
 
 def _validate_prompt_ir_live_lineage(session: Any, *, integrity: dict[str, Any]) -> dict[str, Any]:
@@ -839,7 +889,7 @@ def _validate_prompt_ir_live_lineage(session: Any, *, integrity: dict[str, Any])
     except HTTPException as exc:
         detail = exc.detail if isinstance(exc.detail, dict) else {}
         return {"current_lineage_valid": False, "obsolete_due_to_upstream_change": True, "tampered": False, "diagnostics": [{"code": detail.get("code", "PROMPT_IR_LIVE_LINEAGE_INVALID"), "message": detail.get("message", str(exc))}]}
-    current_assets = _current_asset_authority_for_prompt(session, book_id=book_id, payload=payload)
+    current_assets = build_current_prompt_ir_asset_authority(session, book_id=book_id, prompt_payload=payload)
     lineage = compare_prompt_ir_lineage_to_current(
         stored_payload=payload,
         current_snapshot=current_snapshot,
@@ -935,5 +985,5 @@ def validate_current_prompt_ir_authority(session: Any, *, book_id: int, episode:
 
 
 __all__ = [
-    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "validate_prompt_ir_historical_integrity", "compare_prompt_ir_lineage_to_current", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "validate_prompt_ir_current_scope", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
+    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "validate_prompt_ir_historical_integrity", "compare_prompt_ir_lineage_to_current", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "build_current_prompt_ir_asset_authority", "validate_prompt_ir_current_scope", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
 ]

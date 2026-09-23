@@ -302,48 +302,10 @@ def _reference_snapshot(session: Any, execution: GenerationExecutionRecord) -> d
 
 
 def _asset_authority_snapshot(session: Any, *, book_id: int, prompt_payload: dict[str, Any]) -> dict[str, Any]:
-    """Resolve the exact asset authority bindings embedded in current PromptIR."""
-    authority_bindings = prompt_payload.get("asset_authority_bindings") if isinstance(prompt_payload, dict) else {}
-    resolved = authority_bindings.get("resolved") if isinstance(authority_bindings, dict) else []
-    result = []
-    for item in resolved if isinstance(resolved, list) else []:
-        if not isinstance(item, dict):
-            continue
-        identity_ref = str(item.get("identity_ref") or "").strip()
-        asset_key = str(item.get("asset_authority_ref") or item.get("asset_key") or identity_ref).strip()
-        expected_version = item.get("asset_version_id")
-        expected_hash = str(item.get("asset_version_fingerprint") or "").strip()
-        expected_authority = str(item.get("authority_fingerprint") or "").strip()
-        scope_key = str(item.get("scope_key") or "").strip()
-        query = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key)
-        if scope_key:
-            query = query.filter_by(scope_key=scope_key)
-        pointer = query.first()
-        pointer_matches = bool(
-            pointer
-            and (expected_version is None or int(pointer.current_version_id or 0) == int(expected_version))
-            and (not expected_hash or str(pointer.payload_hash or "") == expected_hash)
-            and str(pointer.stale_status or "FRESH").upper() == "FRESH"
-            and str(pointer.authority_status or "").upper()
-            in {"SPEC_APPROVED", "PRODUCTION_READY", "LOCKED", "QUALIFIED", "PRODUCTION_AUTHORITATIVE"}
-        )
-        result.append(
-            {
-                "identity_ref": identity_ref,
-                "asset_key": asset_key,
-                "scope_key": scope_key,
-                "pointer_present": pointer is not None,
-                "current_version_id": getattr(pointer, "current_version_id", None) if pointer else None,
-                "payload_hash": str(getattr(pointer, "payload_hash", "") or "") if pointer else "",
-                "authority_status": str(getattr(pointer, "authority_status", "") or "") if pointer else "",
-                "stale_status": str(getattr(pointer, "stale_status", "") or "") if pointer else "",
-                "expected_version_id": expected_version,
-                "expected_payload_hash": expected_hash,
-                "expected_authority_fingerprint": expected_authority,
-                "pointer_matches": pointer_matches,
-            }
-        )
-    return {"declared": bool(result), "bindings": result, "fingerprint": _fingerprint(result)}
+    """Use the PromptIR Authority asset currentness service."""
+    from core.prompt_ir_phase_e import build_current_prompt_ir_asset_authority
+
+    return build_current_prompt_ir_asset_authority(session, book_id=book_id, prompt_payload=prompt_payload)
 
 
 def _storyboard_shot_fingerprint(shot: Any) -> str:

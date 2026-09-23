@@ -20,7 +20,7 @@ This round closes the Media Authority currentness fail open. Media validation an
 ## Changed implementation and evidence
 
 - `core/media_authority.py`: exact persisted media scope checks; shared current-scope PromptIR validation; fail-closed validation and promotion currentness checks.
-- `core/prompt_ir_phase_e.py`: added the shared read-only live-lineage validator; `validate_prompt_ir_current_scope(...)` and `resolve_current_authoritative_prompt_ir(...)` both consume it, while historical integrity remains independent.
+- `core/prompt_ir_phase_e.py`: added the shared read-only live-lineage validator; `validate_prompt_ir_current_scope(...)` and `resolve_current_authoritative_prompt_ir(...)` both consume it, while historical integrity remains independent. `build_current_prompt_ir_asset_authority(...)` is the shared VisualAssetPointer/Version and VisualReferenceAuthority currentness service consumed by both PromptIR and Media Authority.
 - `alembic/versions/b2c3d4e5f6g7_add_media_scoped_prompt_pointer.py`: migration hash helper frozen locally; no application runtime imports.
 - `scripts/verify_migration_chain.py`: migration application-runtime import audit.
 - `tests/test_media_currentness_fail_closed_regression.py`: missing pointer, stale promotion, cross-media fallback, and policy fingerprint regressions.
