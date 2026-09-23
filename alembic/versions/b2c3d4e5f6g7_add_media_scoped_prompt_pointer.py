@@ -8,12 +8,25 @@ PromptIRAuthority and does not touch any execution/media tables.
 from __future__ import annotations
 
 import json
+import hashlib
 
 import sqlalchemy as sa
 from alembic import op
 from sqlalchemy import inspect
 
-from core.prompt_ir_phase_e import _prompt_ir_payload_basis, fingerprint
+def _canonical(value: object) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
+
+
+def _prompt_ir_payload_basis(prompt_ir: dict) -> dict:
+    payload = dict(prompt_ir) if isinstance(prompt_ir, dict) else {}
+    payload.pop("prompt_ir_payload_fingerprint", None)
+    payload.pop("payload_hash", None)
+    return payload
+
+
+def fingerprint(value: object) -> str:
+    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
 
 
 revision = "b2c3d4e5f6g7"

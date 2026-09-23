@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "missing_pointer_validation": "FAIL_CLOSED",
+  "missing_pointer_promotion": "FAIL_CLOSED",
+  "cross_media_pointer_fallback": "FORBIDDEN_PASS",
+  "pointer_payload_scope_mismatch": "FAIL_CLOSED",
+  "missing_policy_fingerprint": "FAIL_CLOSED",
+  "dual_media_currentness": "PASS",
+  "migration_application_runtime_imports": 0,
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "image_generation_calls": 0,
+  "video_generation_calls": 0,
+  "j3_started": false
+}

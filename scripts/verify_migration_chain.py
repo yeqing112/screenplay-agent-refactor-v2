@@ -199,6 +199,7 @@ def audit_graph() -> dict[str, Any]:
             downgrade_classification = "REVERSIBLE"
         hazards = {
             "model_runtime_import": bool(re.search(r"(?:from|import)\s+models(?:\.|\s)|from\s+models\s+import", source)),
+            "application_runtime_import": bool(re.search(r"(?:from|import)\s+(?:core|api|config)(?:\.|\s)|from\s+(?:core|api|config)\s+import", source)),
             "application_engine": bool(re.search(r"\bengine\b|models\.engine", source)) and "op.get_bind" not in source,
             "create_all": bool(re.search(r"^\s*(?:Base\.metadata\.)?create_all\s*\(", source, re.MULTILINE)),
             "business_session": bool(re.search(r"\bSession\s*\(|from\s+sqlalchemy\.orm\s+import\s+Session", source)),
@@ -221,6 +222,7 @@ def audit_graph() -> dict[str, Any]:
             "tables_dropped": tables_dropped,
             "destructive_operation": bool(tables_dropped),
             "model_runtime_import": hazards["model_runtime_import"],
+            "application_runtime_import": hazards["application_runtime_import"],
             "use_of_app_engine": hazards["application_engine"],
             "use_of_create_all": hazards["create_all"],
             "conditional_schema_assumptions": "inspect(" in source or "get_table_names" in source,
@@ -239,6 +241,7 @@ def audit_graph() -> dict[str, Any]:
         "ambiguous_production_head": len(heads) != 1,
         "revisions": per_revision,
         "forbidden_migration_patterns": forbidden,
+        "migration_application_runtime_imports": sum(1 for item in per_revision if item.get("application_runtime_import")),
         "status": "PASS" if len(roots) == 1 and heads == [HEAD] and not missing and not forbidden else "FAIL",
     }
 

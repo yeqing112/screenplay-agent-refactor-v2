@@ -747,6 +747,25 @@ def validate_prompt_ir_integrity(session: Any, *, book_id: int, episode: int, st
     return {"integrity_valid": True, "current_lineage_valid": None, "obsolete_due_to_upstream_change": None, "tampered": False, "pointer": pointer, "version": version, "authority": authority, "payload": payload, "authority_envelope": envelope}
 
 
+def validate_prompt_ir_current_scope(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, target_media: str) -> dict[str, Any]:
+    """Validate one exact current PromptIR scope for downstream authorities.
+
+    Media Authority uses this thin wrapper instead of maintaining a second
+    pointer/version/payload verifier.  Full Storyboard semantic resolution
+    remains the responsibility of ``resolve_current_authoritative_prompt_ir``.
+    """
+    result = validate_prompt_ir_integrity(
+        session,
+        book_id=book_id,
+        episode=episode,
+        storyboard_shot_id=storyboard_shot_id,
+        target_media=target_media,
+        allow_stale=False,
+    )
+    result["current_lineage_valid"] = True
+    return result
+
+
 def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, target_media: str, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, model_profile: dict[str, Any] | None = None):
     """Resolve one v2 PromptIR through its current pointer and live lineage.
 
@@ -849,5 +868,5 @@ def validate_current_prompt_ir_authority(session: Any, *, book_id: int, episode:
 
 
 __all__ = [
-    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "validate_prompt_ir_historical_integrity", "compare_prompt_ir_lineage_to_current", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
+    "PROMPT_IR_SCHEMA_VERSION", "GENERATION_POLICY_SCHEMA_VERSION", "MODEL_PROFILE_SCHEMA_VERSION", "GENERATION_PAYLOAD_SCHEMA_VERSION", "PROMPT_IR_COMPILER_VERSION", "SOURCE_SEMANTIC_PROJECTION", "STORYBOARD_SEMANTIC_PROJECTION", "ASSET_AUTHORITY_BINDING", "GENERATION_POLICY", "MODEL_AGNOSTIC_PROMPT_SEMANTIC", "MODEL_ADAPTER_OUTPUT", "MEDIA_REQUEST_METADATA", "UNKNOWN_INVALID", "PromptIRPhaseEError", "canonical", "fingerprint", "build_generation_policy", "build_model_profile", "compile_storyboard_snapshot_to_prompt_ir", "prompt_ir_semantic_projection", "compare_prompt_ir_semantics", "classify_prompt_ir_compile_transition", "validate_prompt_ir_historical_integrity", "compare_prompt_ir_lineage_to_current", "validate_prompt_ir_against_snapshot", "MODEL_ADAPTER_REGISTRY", "evaluate_model_generation_readiness", "render_prompt_surface", "compare_prompt_ir_adapter_payload_semantics", "adapt_prompt_ir_to_generation_payload", "validate_prompt_ir_integrity", "validate_prompt_ir_current_scope", "resolve_current_authoritative_prompt_ir", "validate_current_prompt_ir_authority",
 ]

@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from core.media_authority import _current_authority_snapshot, build_image_to_video_source_binding, validate_image_to_video_source_binding
-from core.prompt_ir_phase_e import build_generation_policy, fingerprint, prompt_ir_semantic_projection, resolve_current_authoritative_prompt_ir
+from core.prompt_ir_phase_e import _prompt_ir_payload_basis, build_generation_policy, fingerprint, prompt_ir_semantic_projection, resolve_current_authoritative_prompt_ir
 from models import Base, GenerationExecutionRecord, OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion, PromptIRAuthority, PromptIRPointer, PromptIRVersion
 from tests.test_prompt_ir_phase_e_semantic_closure import _persist_v2_for_resolver, _snapshots
 
@@ -115,6 +115,11 @@ def test_video_official_currentness_snapshot_uses_video_pointer_without_fake_tec
     now = datetime.now()
     policy = build_generation_policy({"mode": "TEXT_TO_VIDEO", "target_media": "VIDEO"}, allow_default=False)
     payload = {"schema_version": "prompt_ir_v2", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
+    payload_hash = fingerprint(_prompt_ir_payload_basis(payload))
+    payload["prompt_ir_payload_fingerprint"] = payload_hash
+    payload["payload_hash"] = payload_hash
+    envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}, "prompt_ir_payload_hash": payload_hash, "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
+    envelope["envelope_fingerprint"] = fingerprint(envelope)
     video = PromptIRVersion(
         book_id=77,
         episode=1,
@@ -124,11 +129,11 @@ def test_video_official_currentness_snapshot_uses_video_pointer_without_fake_tec
         plan_shot_id="P7",
         schema_version="prompt_ir_v2",
         payload_json=json.dumps(payload, sort_keys=True),
-        payload_hash="video-prompt-hash",
+            payload_hash=payload_hash,
         compiler_version="c",
         compiler_policy_version="p",
         retention_policy_version="r",
-        authority_envelope_json="{}",
+            authority_envelope_json=json.dumps(envelope, sort_keys=True),
         qualification_state="PROMPT_IR_QUALIFIED",
         asset_reference_state="READY",
         model_generation_ready="false",
@@ -139,6 +144,7 @@ def test_video_official_currentness_snapshot_uses_video_pointer_without_fake_tec
     )
     db.add(video)
     db.flush()
+    db.add(PromptIRAuthority(prompt_ir_version_id=video.id, book_id=77, episode=1, storyboard_shot_id=7, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now))
     db.add(PromptIRPointer(book_id=77, episode=1, storyboard_shot_id=7, target_media="VIDEO", prompt_ir_version_id=video.id, payload_hash=video.payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now))
     db.commit()
     candidate = SimpleNamespace(media_type="VIDEO", prompt_ir_version_id=video.id, prompt_ir_payload_hash=video.payload_hash)

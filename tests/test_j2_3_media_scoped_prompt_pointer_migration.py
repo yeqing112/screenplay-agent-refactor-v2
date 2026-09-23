@@ -38,6 +38,15 @@ def _payload(target: str | None = "IMAGE", *, omit_policy: bool = False) -> tupl
     return raw, fingerprint(_prompt_ir_payload_basis(payload))
 
 
+def test_migration_hash_contract_has_frozen_known_vector_and_no_runtime_import():
+    literal = {"generation_policy": {"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE"}, "prompt": "known-vector"}
+    canonical = json.dumps(literal, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    assert __import__("hashlib").sha256(canonical.encode("utf-8")).hexdigest() == "1fccd65790b7c2e50561117d42bf88d2d3f1aeeb9ed7365fc24110d75729a3a2"
+    migration_source = (ROOT / "alembic" / "versions" / "b2c3d4e5f6g7_add_media_scoped_prompt_pointer.py").read_text(encoding="utf-8")
+    assert "from core." not in migration_source
+    assert "from models" not in migration_source
+
+
 def _insert_legacy(db: Path, *, target: str | None = "IMAGE", omit_policy: bool = False, pointer_id: int = 1, book: int = 1, episode: int = 1, shot: int = 7, version_book: int | None = None, version_episode: int | None = None, version_shot: int | None = None, pointer_hash: str | None = None) -> dict[str, str]:
     raw, payload_hash = _payload(target, omit_policy=omit_policy)
     engine = create_engine(f"sqlite:///{db.as_posix()}")

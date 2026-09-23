@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import threading
 import uuid
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -15,6 +17,7 @@ from core.media_authority import (
     resolve_current_official_media,
     validate_media_candidate,
 )
+from core.prompt_ir_phase_e import build_generation_policy, fingerprint
 from models import (
     GenerationExecutionRecord,
     MediaCandidateRecord,
@@ -23,6 +26,7 @@ from models import (
     OfficialMediaPointer,
     OfficialMediaVersion,
     PromptIRPointer,
+    PromptIRAuthority,
     PromptIRVersion,
     Session,
     VisualAssetPointer,
@@ -35,38 +39,83 @@ from models import (
 PNG = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")
 
 
-def _fixture(*, label: str | None = None, shot_id: int = 7001):
+def _fixture(*, label: str | None = None, shot_id: int = 7001, with_prompt_ir: bool = True):
     init_db()
     token = label or uuid.uuid4().hex
+    if label is None and shot_id == 7001:
+        shot_id = 100000 + (uuid.uuid5(uuid.NAMESPACE_URL, token).int % 900000000)
     path = Path(config.UPLOAD_DIR) / f"media-authority-{token}.png"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(PNG)
     execution_id = f"exec-{token}"
     candidate_id = f"candidate-{token}"
     with Session() as session:
+        policy = build_generation_policy({"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE"}, allow_default=False)
+        prompt_payload = {"schema_version": "prompt_ir_v2", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
+        prompt_hash = fingerprint(prompt_payload)
+        prompt_payload["prompt_ir_payload_fingerprint"] = prompt_hash
+        prompt_payload["payload_hash"] = prompt_hash
+        envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "storyboard_shot_id": shot_id, "fixture_token": token, "generation_policy": policy, "asset_authority_bindings": {"resolved": []}, "prompt_ir_payload_hash": prompt_hash, "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
+        envelope["envelope_fingerprint"] = fingerprint(envelope)
+        execution_prompt_id = (100000 + (uuid.uuid5(uuid.NAMESPACE_URL, token).int % 900000000)) if with_prompt_ir else 11
+        execution_prompt_hash = prompt_hash if with_prompt_ir else "prompt-hash"
         execution = GenerationExecutionRecord(
             execution_id=execution_id, schema_version="generation_execution_request_v1", book_id=990401,
             episode=1, storyboard_shot_id=shot_id, plan_shot_id=f"plan-{token}", execution_mode="EXECUTE",
-            status="SUCCEEDED", target_media="IMAGE", prompt_ir_version_id=11, prompt_ir_authority_id=12,
-            prompt_ir_payload_hash="prompt-hash", generation_payload_fingerprint=f"payload-{token}",
-            generation_policy_fingerprint="policy-hash", model_profile_id="fake-image",
+            status="SUCCEEDED", target_media="IMAGE", prompt_ir_version_id=execution_prompt_id, prompt_ir_authority_id=12,
+            prompt_ir_payload_hash=execution_prompt_hash, generation_payload_fingerprint=f"payload-{token}",
+            generation_policy_fingerprint=policy["fingerprint"] if with_prompt_ir else "policy-hash", model_profile_id="fake-image",
             model_profile_fingerprint="profile-hash", provider_adapter_id="fake", provider_adapter_version="v1",
             reference_bindings_fingerprint="", provider_request_fingerprint=f"request-{token}",
-            request_snapshot_json=json.dumps({"media_role": "SHOT_PRIMARY_IMAGE"}), provider_response_hash=f"response-{token}",
+            request_snapshot_json=json.dumps({"media_role": "SHOT_PRIMARY_IMAGE", "generation_policy": policy}), provider_response_hash=f"response-{token}",
             provider="phase-f-fake-image-provider", model="deterministic-image-v1", logical_provider_calls=1,
             transport_retry_count=0, official_promotion_count=0,
         )
         candidate = MediaCandidateRecord(
             candidate_id=candidate_id, execution_id=execution_id, status="MEDIA_CANDIDATE", media_type="IMAGE",
             storage_identity=str(path), storage_reference_json=json.dumps({"local_path": str(path)}),
-            checksum_sha256=__import__("hashlib").sha256(PNG).hexdigest(), mime_type="image/png", byte_size=len(PNG),
-            width=1, height=1, prompt_ir_version_id=11, prompt_ir_payload_hash="prompt-hash",
+            checksum_sha256=hashlib.sha256(PNG).hexdigest(), mime_type="image/png", byte_size=len(PNG),
+            width=1, height=1, prompt_ir_version_id=execution_prompt_id, prompt_ir_payload_hash=execution_prompt_hash,
             generation_payload_fingerprint=f"payload-{token}", model_profile_id="fake-image",
             model_profile_fingerprint="profile-hash", provider_request_fingerprint=f"request-{token}",
             provider_response_hash=f"response-{token}", provider_task_id=f"task-{token}",
         )
-        session.add(execution); session.add(candidate); session.commit()
+        session.add(execution); session.add(candidate)
+        if with_prompt_ir:
+            now = datetime.now()
+            session.add(PromptIRVersion(id=execution_prompt_id, book_id=990401, episode=1, scene_id="scene-fixture", storyboard_shot_id=shot_id, materialization_set_id=1, plan_shot_id=f"plan-{token}", schema_version="prompt_ir_v2", payload_json=json.dumps(prompt_payload, ensure_ascii=False, sort_keys=True), payload_hash=prompt_hash, compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now))
+            session.add(PromptIRAuthority(prompt_ir_version_id=execution_prompt_id, book_id=990401, episode=1, storyboard_shot_id=shot_id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now))
+            current_pointer = session.query(PromptIRPointer).filter_by(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE").first()
+            if current_pointer is None:
+                session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE", prompt_ir_version_id=execution_prompt_id, payload_hash=prompt_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now))
+            else:
+                current_pointer.prompt_ir_version_id = execution_prompt_id
+                current_pointer.payload_hash = prompt_hash
+        session.commit()
     return candidate_id, execution_id, path, shot_id
+
+
+def _install_manual_prompt_ir(session, *, version_id: int, shot_id: int, policy_fingerprint: str = "policy-hash", asset_bindings: dict | None = None):
+    policy = {"schema_version": "generation_policy_v1", "mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": [], "optional_asset_classes": [], "style_profile_id": "", "language": "", "source": "explicit_request", "fingerprint": policy_fingerprint}
+    payload = {"schema_version": "prompt_ir_v2", "generation_policy": policy, "asset_authority_bindings": asset_bindings or {"resolved": []}}
+    payload_hash = fingerprint(payload)
+    payload["prompt_ir_payload_fingerprint"] = payload_hash
+    payload["payload_hash"] = payload_hash
+    envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "storyboard_shot_id": shot_id, "generation_policy": policy, "asset_authority_bindings": asset_bindings or {"resolved": []}, "prompt_ir_payload_hash": payload_hash, "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
+    envelope["envelope_fingerprint"] = fingerprint(envelope)
+    version = session.query(PromptIRVersion).filter_by(id=version_id).one()
+    version.payload_json = json.dumps(payload, ensure_ascii=False, sort_keys=True)
+    version.payload_hash = payload_hash
+    version.authority_envelope_json = json.dumps(envelope, ensure_ascii=False, sort_keys=True)
+    session.add(PromptIRAuthority(prompt_ir_version_id=version_id, book_id=990401, episode=1, storyboard_shot_id=shot_id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]"))
+    session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE", prompt_ir_version_id=version_id, payload_hash=payload_hash, qualification_state="PROMPT_IR_QUALIFIED"))
+    candidate = session.query(MediaCandidateRecord).filter_by(prompt_ir_version_id=version_id).first()
+    if candidate:
+        candidate.prompt_ir_payload_hash = payload_hash
+    execution = session.query(GenerationExecutionRecord).filter_by(prompt_ir_version_id=version_id).first()
+    if execution:
+        execution.prompt_ir_payload_hash = payload_hash
+        execution.generation_policy_fingerprint = policy_fingerprint
 
 
 def test_validation_promotion_and_exact_resolver_are_explicit_and_idempotent():
@@ -181,11 +230,17 @@ def test_two_different_candidates_create_explicit_revisions_and_one_pointer():
 
 
 def test_prompt_ir_revision_makes_validation_stale_before_promotion():
-    candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9101)
+    candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9101, with_prompt_ir=False)
     with Session() as session:
-        version = PromptIRVersion(id=11, book_id=990401, episode=1, scene_id="scene-1", storyboard_shot_id=shot_id, materialization_set_id=1, plan_shot_id="plan", schema_version="prompt_ir_v2", payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}}), payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
+        version = PromptIRVersion(id=9101001, book_id=990401, episode=1, scene_id="scene-1", storyboard_shot_id=shot_id, materialization_set_id=1, plan_shot_id="plan", schema_version="prompt_ir_v2", payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}}), payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
         session.add(version)
-        session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE", prompt_ir_version_id=11, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED"))
+        session.flush()
+        _install_manual_prompt_ir(session, version_id=9101001, shot_id=shot_id)
+        candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
+        execution = session.query(GenerationExecutionRecord).filter_by(execution_id=candidate.execution_id).one()
+        candidate.prompt_ir_version_id = execution.prompt_ir_version_id = 9101001
+        candidate.prompt_ir_payload_hash = execution.prompt_ir_payload_hash = version.payload_hash
+        execution.generation_policy_fingerprint = "policy-hash"
         session.commit()
         validation = validate_media_candidate(session, candidate_id)
         version.payload_hash = "prompt-hash-drifted"
@@ -198,14 +253,17 @@ def test_prompt_ir_revision_makes_validation_stale_before_promotion():
 
 
 def test_generation_policy_revision_makes_validation_stale_before_promotion():
-    candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9111)
+    candidate_id, _execution_id, _path, shot_id = _fixture(shot_id=9111, with_prompt_ir=False)
     with Session() as session:
-        version = PromptIRVersion(id=12101, book_id=990401, episode=1, scene_id="scene-policy", storyboard_shot_id=shot_id, materialization_set_id=1, plan_shot_id="plan-policy", schema_version="prompt_ir_v2", payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}}), payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
+        version = PromptIRVersion(id=9111001, book_id=990401, episode=1, scene_id="scene-policy", storyboard_shot_id=shot_id, materialization_set_id=1, plan_shot_id="plan-policy", schema_version="prompt_ir_v2", payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}}), payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
         session.add(version)
-        session.add(PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE", prompt_ir_version_id=12101, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED"))
+        session.flush()
+        _install_manual_prompt_ir(session, version_id=9111001, shot_id=shot_id)
         candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
         execution = session.query(GenerationExecutionRecord).filter_by(execution_id=candidate.execution_id).one()
-        candidate.prompt_ir_version_id = execution.prompt_ir_version_id = 12101
+        candidate.prompt_ir_version_id = execution.prompt_ir_version_id = 9111001
+        candidate.prompt_ir_payload_hash = execution.prompt_ir_payload_hash = version.payload_hash
+        execution.generation_policy_fingerprint = "policy-hash"
         session.commit()
         validation = validate_media_candidate(session, candidate_id)
         version.payload_json = json.dumps({"generation_policy": {"fingerprint": "policy-drifted"}})
@@ -217,23 +275,24 @@ def test_generation_policy_revision_makes_validation_stale_before_promotion():
 
 
 def test_asset_revision_makes_validation_stale_before_promotion():
-    candidate_id, execution_id, _path, shot_id = _fixture(shot_id=9151)
+    candidate_id, execution_id, _path, shot_id = _fixture(shot_id=9151, with_prompt_ir=False)
     asset_key = "book:990401:prop:PHASE_G2_ASSET"
     with Session() as session:
         candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
         execution = session.query(GenerationExecutionRecord).filter_by(execution_id=execution_id).one()
-        candidate.prompt_ir_version_id = execution.prompt_ir_version_id = 11001
+        candidate.prompt_ir_version_id = execution.prompt_ir_version_id = 9151001
         version = PromptIRVersion(
-            id=11001, book_id=990401, episode=1, scene_id="scene-asset", storyboard_shot_id=shot_id,
+            id=9151001, book_id=990401, episode=1, scene_id="scene-asset", storyboard_shot_id=shot_id,
             materialization_set_id=1, plan_shot_id="plan-asset", schema_version="prompt_ir_v2",
             payload_json=json.dumps({"generation_policy": {"fingerprint": "policy-hash"}, "asset_authority_bindings": {"resolved": [{"identity_ref": "PROP:PHASE_G2_ASSET", "asset_authority_ref": asset_key, "asset_version_id": 910001, "asset_version_fingerprint": "asset-hash", "authority_fingerprint": "asset-hash"}]}}),
             payload_hash="prompt-hash", compiler_version="test", compiler_policy_version="test", retention_policy_version="test",
             authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]",
         )
         asset = VisualAssetVersion(id=910001, book_id=990401, asset_key=asset_key, asset_type="prop", canonical_id="PHASE_G2_ASSET", canonical_identity_json="{}", scope_json="{}", revision=1, payload_json="{}", payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
-        pointer = PromptIRPointer(book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE", prompt_ir_version_id=11001, payload_hash="prompt-hash", qualification_state="PROMPT_IR_QUALIFIED")
         asset_pointer = VisualAssetPointer(book_id=990401, asset_key=asset_key, asset_type="prop", scope_key="phase-g2", current_version_id=910001, payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
-        session.add_all([version, asset, pointer, asset_pointer]); session.commit()
+        session.add_all([version, asset, asset_pointer]); session.flush()
+        _install_manual_prompt_ir(session, version_id=9151001, shot_id=shot_id, asset_bindings={"resolved": [{"identity_ref": "PROP:PHASE_G2_ASSET", "asset_authority_ref": asset_key, "asset_version_id": 910001, "asset_version_fingerprint": "asset-hash", "authority_fingerprint": "asset-hash"}]})
+        session.commit()
         validation = validate_media_candidate(session, candidate_id)
         asset_pointer.current_version_id = 9999999
         asset_pointer.payload_hash = "asset-hash-drifted"

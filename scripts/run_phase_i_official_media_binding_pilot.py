@@ -144,15 +144,16 @@ def _ingest_and_bind(session, rows: list[dict[str, Any]], shots: list[Storyboard
 def _insert_prompt_ir(session, shots: list[StoryboardShot]) -> dict[int, PromptIRVersion]:
     versions: dict[int, PromptIRVersion] = {}
     for shot in shots:
-        payload = {"schema_version": "prompt_ir_v1", "storyboard_shot_id": shot.id, "plan_shot_id": shot.plan_shot_id, "generation_policy": {"fingerprint": POLICY_FP, "target_media": "IMAGE"}, "asset_authority_bindings": {"identity_refs": [], "resolved": []}, "prompt": {"text": f"fixture prompt for {shot.plan_shot_id}"}}
-        version = PromptIRVersion(book_id=BOOK_ID, episode=1, scene_id=shot.scene_id or "", storyboard_shot_id=shot.id, materialization_set_id=1, plan_shot_id=shot.plan_shot_id or "", schema_version="prompt_ir_v1", payload_json=_canonical(payload), payload_hash=_fp(payload), compiler_version="phase-i-fixture", compiler_policy_version="phase-i-fixture", retention_policy_version="phase-i-fixture", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
+        payload = {"schema_version": "prompt_ir_v2", "storyboard_shot_id": shot.id, "plan_shot_id": shot.plan_shot_id, "generation_policy": {"fingerprint": POLICY_FP, "target_media": "IMAGE"}, "asset_authority_bindings": {"identity_refs": [], "resolved": []}, "prompt": {"text": f"fixture prompt for {shot.plan_shot_id}"}}
+        version = PromptIRVersion(book_id=BOOK_ID, episode=1, scene_id=shot.scene_id or "", storyboard_shot_id=shot.id, materialization_set_id=1, plan_shot_id=shot.plan_shot_id or "", schema_version="prompt_ir_v2", payload_json=_canonical(payload), payload_hash=_fp(payload), compiler_version="phase-i-fixture", compiler_policy_version="phase-i-fixture", retention_policy_version="phase-i-fixture", authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]")
         session.add(version)
         versions[shot.id] = version
     session.flush()
     for shot in shots:
         version = versions[shot.id]
-        envelope = {"schema_version": "prompt_ir_authority_v1", "prompt_ir_version_id": version.id, "payload_hash": version.payload_hash, "storyboard_shot_id": shot.id, "fingerprint": _fp({"version_id": version.id, "payload_hash": version.payload_hash})}
-        authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["fingerprint"], envelope_json=_canonical(envelope), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]")
+        envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "prompt_ir_version_id": version.id, "prompt_ir_payload_hash": version.payload_hash, "storyboard_shot_id": shot.id, "generation_policy": payload["generation_policy"], "asset_authority_bindings": payload["asset_authority_bindings"], "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
+        envelope["envelope_fingerprint"] = _fp(envelope)
+        authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=BOOK_ID, episode=1, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=_canonical(envelope), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]")
         session.add(authority)
         session.flush()
         version.authority_envelope_json = _canonical(envelope)
@@ -173,8 +174,9 @@ def _insert_video_pointer_probe(session, shot: StoryboardShot, image_version: Pr
     version = PromptIRVersion(book_id=image_version.book_id, episode=image_version.episode, scene_id=image_version.scene_id, storyboard_shot_id=shot.id, materialization_set_id=image_version.materialization_set_id, plan_shot_id=image_version.plan_shot_id, schema_version=image_version.schema_version, payload_json=_canonical(payload), payload_hash=payload_hash, compiler_version=image_version.compiler_version, compiler_policy_version=image_version.compiler_policy_version, retention_policy_version=image_version.retention_policy_version, authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state=image_version.asset_reference_state, model_generation_ready="false", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
     session.add(version)
     session.flush()
-    envelope = {"schema_version": "prompt_ir_authority_v1", "prompt_ir_version_id": version.id, "payload_hash": payload_hash, "storyboard_shot_id": shot.id, "generation_policy": policy, "fingerprint": _fp({"version_id": version.id, "payload_hash": payload_hash})}
-    authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=version.book_id, episode=version.episode, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["fingerprint"], envelope_json=_canonical(envelope), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
+    envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "prompt_ir_version_id": version.id, "prompt_ir_payload_hash": payload_hash, "storyboard_shot_id": shot.id, "generation_policy": policy, "asset_authority_bindings": payload.get("asset_authority_bindings", {}), "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
+    envelope["envelope_fingerprint"] = _fp(envelope)
+    authority = PromptIRAuthority(prompt_ir_version_id=version.id, book_id=version.book_id, episode=version.episode, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=_canonical(envelope), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now)
     version.authority_envelope_json = _canonical(envelope)
     pointer = PromptIRPointer(book_id=version.book_id, episode=version.episode, storyboard_shot_id=shot.id, target_media="VIDEO", prompt_ir_version_id=version.id, payload_hash=payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now)
     session.add_all([authority, pointer])

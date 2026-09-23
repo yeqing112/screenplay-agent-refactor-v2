@@ -2,15 +2,17 @@
   "ambiguous_production_head": false,
   "cycle_detected": false,
   "forbidden_migration_patterns": [],
-  "generated_at": "2026-09-23T05:49:58.144914+00:00",
+  "generated_at": "2026-09-23T13:13:51.788655+00:00",
   "heads": [
     "b2c3d4e5f6g7"
   ],
+  "migration_application_runtime_imports": 0,
   "missing_predecessors": [],
   "orphan_revisions": [],
   "revision_count": 50,
   "revisions": [
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -32,6 +34,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -57,6 +60,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -82,6 +86,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -103,6 +108,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -129,6 +135,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -155,6 +162,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -182,6 +190,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -205,6 +214,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": true,
@@ -224,6 +234,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -249,6 +260,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -281,6 +293,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -306,6 +319,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -333,6 +347,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -358,6 +373,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -386,6 +402,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -411,6 +428,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -436,6 +454,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -460,6 +479,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -491,6 +511,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -516,6 +537,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -544,6 +566,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -569,6 +592,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -594,6 +618,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -619,6 +644,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -644,6 +670,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -669,6 +696,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": true,
@@ -694,6 +722,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -719,6 +748,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -746,6 +776,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -771,6 +802,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -794,6 +826,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -817,6 +850,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -838,6 +872,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -865,6 +900,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -892,6 +928,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -915,6 +952,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -942,6 +980,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -965,6 +1004,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
@@ -986,6 +1026,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1013,6 +1054,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1036,6 +1078,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1063,6 +1106,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1090,6 +1134,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1117,6 +1162,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1142,6 +1188,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1163,6 +1210,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1189,6 +1237,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": true,
@@ -1217,6 +1266,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
@@ -1244,6 +1294,7 @@
       "use_of_create_all": false
     },
     {
+      "application_runtime_import": false,
       "branch_labels": null,
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
