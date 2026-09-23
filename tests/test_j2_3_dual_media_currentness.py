@@ -11,7 +11,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from core.media_authority import build_image_to_video_source_binding, validate_image_to_video_source_binding
+from core.media_authority import _current_authority_snapshot, build_image_to_video_source_binding, validate_image_to_video_source_binding
 from core.prompt_ir_phase_e import build_generation_policy, fingerprint, prompt_ir_semantic_projection, resolve_current_authoritative_prompt_ir
 from models import Base, GenerationExecutionRecord, OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion, PromptIRAuthority, PromptIRPointer, PromptIRVersion
 from tests.test_prompt_ir_phase_e_semantic_closure import _persist_v2_for_resolver, _snapshots
@@ -104,6 +104,59 @@ def test_pointer_payload_media_scope_mismatch_fails_closed(monkeypatch):
     with pytest.raises(Exception) as exc_info:
         resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="VIDEO")
     assert getattr(exc_info.value, "detail", {}).get("code") == "PROMPT_IR_POINTER_MEDIA_SCOPE_MISMATCH"
+    engine.dispose()
+
+
+def test_video_official_currentness_snapshot_uses_video_pointer_without_fake_technical_pass():
+    """VIDEO lineage resolves by VIDEO scope; technical validation stays J3-bound."""
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    db = sessionmaker(bind=engine)()
+    now = datetime.now()
+    policy = build_generation_policy({"mode": "TEXT_TO_VIDEO", "target_media": "VIDEO"}, allow_default=False)
+    payload = {"schema_version": "prompt_ir_v2", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
+    video = PromptIRVersion(
+        book_id=77,
+        episode=1,
+        scene_id="S1",
+        storyboard_shot_id=7,
+        materialization_set_id=1,
+        plan_shot_id="P7",
+        schema_version="prompt_ir_v2",
+        payload_json=json.dumps(payload, sort_keys=True),
+        payload_hash="video-prompt-hash",
+        compiler_version="c",
+        compiler_policy_version="p",
+        retention_policy_version="r",
+        authority_envelope_json="{}",
+        qualification_state="PROMPT_IR_QUALIFIED",
+        asset_reference_state="READY",
+        model_generation_ready="false",
+        stale_status="FRESH",
+        stale_reasons="[]",
+        created_at=now,
+        updated_at=now,
+    )
+    db.add(video)
+    db.flush()
+    db.add(PromptIRPointer(book_id=77, episode=1, storyboard_shot_id=7, target_media="VIDEO", prompt_ir_version_id=video.id, payload_hash=video.payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now))
+    db.commit()
+    candidate = SimpleNamespace(media_type="VIDEO", prompt_ir_version_id=video.id, prompt_ir_payload_hash=video.payload_hash)
+    execution = SimpleNamespace(
+        book_id=77,
+        episode=1,
+        storyboard_shot_id=7,
+        target_media="VIDEO",
+        generation_policy_fingerprint=policy["fingerprint"],
+        request_snapshot_json=json.dumps({"generation_policy": policy, "reference_bindings": [], "asset_bindings": []}),
+        reference_bindings_fingerprint="",
+    )
+    snapshot = _current_authority_snapshot(db, candidate=candidate, execution=execution)
+    assert snapshot["prompt_ir"]["current_version_id"] == video.id
+    assert snapshot["prompt_ir"]["matches"] is True
+    assert snapshot["currentness_valid"] is True
+    assert snapshot["image_to_video_source"]["required"] is False
+    db.close()
     engine.dispose()
 
 

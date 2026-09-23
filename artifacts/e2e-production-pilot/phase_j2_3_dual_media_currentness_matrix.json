@@ -20,7 +20,8 @@
     "execution_VIDEO_candidate_VIDEO_version_VIDEO": "PASS",
     "image_official_after_video_pointer": "PASS (Phase I deterministic fixture probe)",
     "execution_candidate_media_mismatch": "FAIL_CLOSED",
-    "candidate_version_media_mismatch": "FAIL_CLOSED"
+    "candidate_version_media_mismatch": "FAIL_CLOSED",
+    "video_pointer_currentness_snapshot": "PASS (technical validation remains J3 boundary)"
   },
   "provider_calls": 0,
   "llm_calls": 0,

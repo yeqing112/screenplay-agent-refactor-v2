@@ -39,4 +39,4 @@ Updated surfaces:
 - J2.3 migration contract tests: 17 passed
 - Duplicate-derived-scope migration blocker: PASS
 - Concurrent same-scope conflict / cross-scope retention: 2 passed
-- Dual-media resolver contract tests: 4 passed
+- Dual-media resolver and VIDEO currentness-snapshot tests: 5 passed
