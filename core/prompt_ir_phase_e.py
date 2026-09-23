@@ -708,10 +708,8 @@ def validate_prompt_ir_integrity(session: Any, *, book_id: int, episode: int, st
     from fastapi import HTTPException
     from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion
 
-    try:
-        target_media = canonical_target_media(target_media)
-    except PromptIRPhaseEError as exc:
-        raise HTTPException(status_code=409, detail={"code": exc.code, "message": exc.message})
+    if target_media not in {"IMAGE", "VIDEO"}:
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_MEDIA_SCOPE_INVALID", "message": "Current PromptIR resolution requires exact target_media IMAGE or VIDEO."})
     pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, target_media=target_media).first()
     if pointer is None:
         raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_POINTER_MISSING", "message": "No current PromptIR pointer exists for the requested media scope."})
@@ -777,10 +775,8 @@ def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episo
     from core.storyboard_materializer import build_storyboard_production_snapshot, resolve_current_authoritative_materialization
     from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, StoryboardShot
 
-    try:
-        target_media = canonical_target_media(target_media)
-    except PromptIRPhaseEError as exc:
-        raise HTTPException(status_code=409, detail={"code": exc.code, "message": exc.message})
+    if target_media not in {"IMAGE", "VIDEO"}:
+        raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_MEDIA_SCOPE_INVALID", "message": "Current PromptIR resolution requires exact target_media IMAGE or VIDEO."})
 
     def fail(code: str, message: str, *, version: Any = None, authority: Any = None):
         if version is not None:

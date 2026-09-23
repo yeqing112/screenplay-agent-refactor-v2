@@ -12,6 +12,7 @@ This round closes the Media Authority currentness fail open. Media validation an
 - Final behavior: `after correction = fail closed`; missing current pointer returns `MEDIA_CURRENT_PROMPT_IR_INVALID`, creates no `MediaValidationRecord`, and creates no OfficialMedia rows.
 - Deleting the pointer after validation returns `MEDIA_PROMOTION_STALE`, marks the validation `STALE`, and creates no OfficialMediaVersion/Authority/Pointer.
 - VIDEO execution with only an IMAGE pointer has no cross-media fallback. Pointer payload/scope mismatch and missing generation policy fingerprint also fail closed.
+- The Phase E current-scope validator and resolver now reject persisted lowercase `image`/`video`; only exact `IMAGE`/`VIDEO` are accepted. GenerationPolicy's separate normalization contract is unchanged.
 - Provider, LLM, image, and video calls: 0. J3 was not started.
 
 ## Changed implementation and evidence

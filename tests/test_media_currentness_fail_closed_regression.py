@@ -68,3 +68,14 @@ def test_missing_generation_policy_fingerprint_fails_closed():
         snapshot = _current_authority_snapshot(session, candidate=candidate, execution=execution)
         assert snapshot["prompt_ir"]["generation_policy_matches"] is False
         assert snapshot["currentness_valid"] is False
+
+
+def test_persisted_lowercase_media_scope_fails_closed():
+    candidate_id, execution_id, _path, _shot_id = _fixture(label="lowercase-media-scope", shot_id=9806)
+    with Session() as session:
+        candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
+        execution = session.query(GenerationExecutionRecord).filter_by(execution_id=execution_id).one()
+        candidate.media_type = execution.target_media = "image"
+        session.commit()
+        snapshot = _current_authority_snapshot(session, candidate=candidate, execution=execution)
+        assert snapshot["currentness_valid"] is False
