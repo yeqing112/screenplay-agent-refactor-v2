@@ -2,7 +2,7 @@
 
 ## Status
 
-`PHASE_J2_4_TEST_ENVIRONMENT_CONVERGENCE_REQUIRED` — local gate is now converged; required GitHub Actions confirmation is pending for the repair commit.
+`PHASE_J2_4_PRODUCTION_REGRESSION_GATE_READY_FOR_REVIEW` — local and required GitHub Actions gates are converged.
 
 J3 remains blocked and was not started. Provider / LLM / Image / Video external calls remained `0 / 0 / 0 / 0`.
 
@@ -16,6 +16,7 @@ J3 remains blocked and was not started. Provider / LLM / Image / Video external 
 - Corrected the retired re-canary test fixture to reach the dirty-worktree assertion without changing production gate order.
 - Removed the negative E2E sample from the default production gray registry.
 - Added test isolation cleanup for orphan FactSnapshot rows and explicit cleanup for the synthetic wrong-book fixture.
+- Configured the required production workflow with `fetch-depth: 0` so frozen provenance commits are available to CI base-commit and provider-free ancestry gates.
 
 ## Verification
 
@@ -27,7 +28,7 @@ J3 remains blocked and was not started. Provider / LLM / Image / Video external 
 
 ## Required CI
 
-Prior run `35902213060` / job `107311920540` was `1751 passed, 13 failed` before this repair set. A new Required Production Regression run must be recorded after pushing this commit with its run ID, commit SHA, job ID, conclusion, and pytest totals.
+Run `35935293195` / job `107430847693` on commit `5d17d6169552ee71af34bdeacdb867a007ef6021` completed with conclusion **success**: **1764 passed, 0 failed**. The prior shallow-checkout failure was resolved by fetching full history; no test exclusions or bypasses were added.
 
 ## Artifacts
 

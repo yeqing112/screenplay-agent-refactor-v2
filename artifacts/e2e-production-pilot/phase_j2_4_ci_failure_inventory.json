@@ -1,12 +1,12 @@
 {
   "phase": "PHASE_J2_4_PRODUCTION_REGRESSION_GATE_CONVERGENCE",
   "base_commit": "2e2205f",
-  "ci_run_id": "35902213060",
-  "ci_job_id": "107311920540",
+  "ci_run_id": "35935293195",
+  "ci_job_id": "107430847693",
   "ci_result": {
-    "passed": 1751,
-    "failed": 13,
-    "conclusion": "failure"
+    "passed": 1764,
+    "failed": 0,
+    "conclusion": "success"
   },
   "local_targeted_result": {
     "passed": 52,
@@ -28,7 +28,7 @@
       "ci_result": "failed",
       "environment_sensitive": true,
       "production_boundary": "offline replay provenance",
-      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmation pending",
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35935293195",
       "current_local_result": "passed"
     },
     {
@@ -48,7 +48,7 @@
       "ci_result": "failed",
       "environment_sensitive": false,
       "production_boundary": "real-provider authorization preflight",
-      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmation pending",
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35935293195",
       "current_local_result": "passed"
     },
     {
@@ -58,7 +58,7 @@
       "ci_result": "failed",
       "environment_sensitive": true,
       "production_boundary": "base commit immutability gate",
-      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmation pending",
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35935293195",
       "current_local_result": "passed"
     },
     {
@@ -88,7 +88,7 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": false,
       "production_boundary": "provider authorization boundary",
-      "root_cause_status": "local pass; CI confirmation pending",
+      "root_cause_status": "local pass; CI confirmed by run 35935293195",
       "current_local_result": "passed"
     },
     {
@@ -128,7 +128,7 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "public asset storage",
-      "root_cause_status": "local pass; CI confirmation pending",
+      "root_cause_status": "local pass; CI confirmed by run 35935293195",
       "current_local_result": "passed"
     },
     {
@@ -138,7 +138,7 @@
       "ci_result": "failed",
       "environment_sensitive": false,
       "production_boundary": "real LLM gray selection (provider not invoked)",
-      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmation pending",
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35935293195",
       "current_local_result": "passed"
     },
     {
@@ -148,7 +148,7 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "targeted missing-fact API",
-      "root_cause_status": "local pass; CI confirmation pending",
+      "root_cause_status": "local pass; CI confirmed by run 35935293195",
       "current_local_result": "passed"
     }
   ],
@@ -168,5 +168,14 @@
       "video": 0
     }
   },
-  "status": "LOCAL_CONVERGED_CI_CONFIRMATION_PENDING"
+  "status": "CI_CONVERGED_READY_FOR_REVIEW",
+  "ci_commit": "5d17d6169552ee71af34bdeacdb867a007ef6021",
+  "ci_verification": {
+    "run_id": "35935293195",
+    "job_id": "107430847693",
+    "commit": "5d17d6169552ee71af34bdeacdb867a007ef6021",
+    "conclusion": "success",
+    "pytest_passed": 1764,
+    "pytest_failed": 0
+  }
 }
