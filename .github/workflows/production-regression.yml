@@ -23,6 +23,11 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+        with:
+          # Several deterministic provenance gates compare HEAD with frozen
+          # historical commits.  The default shallow checkout hides those
+          # commits and makes a valid descendant look BASE_COMMIT_UNKNOWN.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
