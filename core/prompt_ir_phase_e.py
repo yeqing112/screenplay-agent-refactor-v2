@@ -776,7 +776,7 @@ def build_current_prompt_ir_asset_authority(session: Any, *, book_id: int, promp
     reference remains locked, fresh, and bound to the same current version.
     """
     from core.visual_asset_authority import VisualAssetAuthorityError, resolve_current_visual_asset_authority
-    from models import VisualAssetPointer, VisualReferenceAuthority
+    from models import VisualReferenceAuthority
 
     payload = _dict(prompt_payload)
     stored = _dict(payload.get("asset_authority_bindings"))
@@ -799,23 +799,6 @@ def build_current_prompt_ir_asset_authority(session: Any, *, book_id: int, promp
         expected_version = item.get("asset_version_id")
         expected_hash = _text(item.get("asset_version_fingerprint"))
         expected_authority = _text(item.get("authority_fingerprint"))
-        if not _dict(payload.get("source_authority")) and payload.get("legacy_fixture_contract") == "deterministic_media_fixture_v1":
-            # Pre-Phase-E fixtures have no declared Storyboard lineage and
-            # therefore cannot satisfy the full production asset contract.
-            # Keep their pointer drift observable for Media Authority while
-            # preserving the legacy fixture shape.
-            query = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key)
-            if scope_key:
-                query = query.filter_by(scope_key=scope_key)
-            pointer = query.first()
-            item["asset_version_id"] = getattr(pointer, "current_version_id", None) if pointer else None
-            item["asset_version_fingerprint"] = _text(getattr(pointer, "payload_hash", "")) if pointer else ""
-            item["authority_fingerprint"] = _text(getattr(pointer, "payload_hash", "")) if pointer else ""
-            item["authority_status"] = _text(getattr(pointer, "authority_status", "")) if pointer else ""
-            item["stale_status"] = _text(getattr(pointer, "stale_status", "STALE")) if pointer else "STALE"
-            item["pointer_matches"] = bool(pointer and (expected_version is None or int(pointer.current_version_id or 0) == int(expected_version)) and (not expected_hash or _text(pointer.payload_hash) == expected_hash) and (not expected_authority or _text(pointer.payload_hash) == expected_authority) and _text(pointer.stale_status or "FRESH").upper() == "FRESH")
-            current.append(item)
-            continue
         try:
             resolved = resolve_current_visual_asset_authority(
                 session,
@@ -867,8 +850,6 @@ def _validate_prompt_ir_live_lineage(session: Any, *, integrity: dict[str, Any])
     book_id = int(getattr(integrity.get("version"), "book_id", 0) or 0)
     episode = int(getattr(integrity.get("version"), "episode", 0) or 0)
     if not _dict(payload.get("source_authority")):
-        if payload.get("legacy_fixture_contract") == "deterministic_media_fixture_v1":
-            return {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False, "tampered": False, "diagnostics": [{"code": "PROMPT_IR_LIVE_LINEAGE_NOT_DECLARED", "fixture_contract": "deterministic_media_fixture_v1"}]}
         return {"current_lineage_valid": False, "obsolete_due_to_upstream_change": True, "tampered": False, "diagnostics": [{"code": "PROMPT_IR_LIVE_LINEAGE_MISSING"}]}
     row = session.query(StoryboardShot).filter_by(id=shot_id, book_id=book_id, episode=episode).first()
     if row is None or not _text(getattr(row, "scene_id", "")):

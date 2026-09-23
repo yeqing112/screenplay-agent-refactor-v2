@@ -8,6 +8,12 @@ from core.media_authority import MediaAuthorityError, _current_authority_snapsho
 from core.prompt_ir_phase_e import _prompt_ir_payload_basis, fingerprint, validate_prompt_ir_current_scope
 from models import GenerationExecutionRecord, MediaCandidateRecord, MediaValidationRecord, OfficialMediaVersion, PromptIRPointer, Session
 from tests.test_media_validation_promotion_contract import _fixture
+from tests.prompt_ir_authority_fixture import resolve_fixture_materialization
+
+
+@pytest.fixture(autouse=True)
+def _fixture_authority_resolver(monkeypatch):
+    monkeypatch.setattr("core.storyboard_materializer.resolve_current_authoritative_materialization", resolve_fixture_materialization)
 
 
 def test_live_lineage_drift_is_not_hidden_by_fresh_stored_prompt(monkeypatch):
@@ -76,7 +82,7 @@ def test_unmarked_prompt_without_source_lineage_fails_closed_even_when_fresh():
         pointer = session.query(PromptIRPointer).filter_by(storyboard_shot_id=shot_id, target_media="IMAGE").one()
         authority = session.query(__import__("models", fromlist=["PromptIRAuthority"]).PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
         payload = __import__("json").loads(version.payload_json)
-        payload.pop("legacy_fixture_contract", None)
+        payload.pop("source_authority", None)
         payload_hash = fingerprint(_prompt_ir_payload_basis(payload))
         payload["prompt_ir_payload_fingerprint"] = payload_hash
         payload["payload_hash"] = payload_hash

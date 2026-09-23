@@ -141,14 +141,14 @@ def test_pointer_payload_media_scope_mismatch_fails_closed(monkeypatch):
     engine.dispose()
 
 
-def test_video_official_currentness_snapshot_uses_video_pointer_without_fake_technical_pass():
-    """VIDEO lineage resolves by VIDEO scope; technical validation stays J3-bound."""
+def test_video_official_currentness_snapshot_requires_live_lineage_before_technical_validation():
+    """A VIDEO pointer alone cannot manufacture current live lineage."""
     engine = create_engine("sqlite:///:memory:")
     Base.metadata.create_all(engine)
     db = sessionmaker(bind=engine)()
     now = datetime.now()
     policy = build_generation_policy({"mode": "TEXT_TO_VIDEO", "target_media": "VIDEO"}, allow_default=False)
-    payload = {"schema_version": "prompt_ir_v2", "legacy_fixture_contract": "deterministic_media_fixture_v1", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
+    payload = {"schema_version": "prompt_ir_v2", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
     payload_hash = fingerprint(_prompt_ir_payload_basis(payload))
     payload["prompt_ir_payload_fingerprint"] = payload_hash
     payload["payload_hash"] = payload_hash
@@ -194,7 +194,7 @@ def test_video_official_currentness_snapshot_uses_video_pointer_without_fake_tec
     snapshot = _current_authority_snapshot(db, candidate=candidate, execution=execution)
     assert snapshot["prompt_ir"]["current_version_id"] == video.id
     assert snapshot["prompt_ir"]["matches"] is True
-    assert snapshot["currentness_valid"] is True
+    assert snapshot["currentness_valid"] is False
     assert snapshot["image_to_video_source"]["required"] is False
     db.close()
     engine.dispose()
