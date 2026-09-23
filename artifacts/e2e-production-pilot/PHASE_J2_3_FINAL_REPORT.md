@@ -33,13 +33,13 @@ This round closes the Media Authority currentness fail open. Media validation an
 - J2.3 targeted suite: passed, including media validation/promotion, fail-closed regressions, migration, dual-media currentness, concurrency, Phase I pilot, and PromptIR semantic closure tests.
 - Migration gate: `MIGRATION_CHAIN_HARDENING_READY`; fresh and repeated upgrade passed; `migration_application_runtime_imports = 0`; fixed hash vector passed.
 - Web: `web/npm test` — 51 files / 301 tests passed; `web/npm run build` — passed.
-- Full backend final-head rerun after this correction: `1753 passed, 10 failed` (1763 collected). The J2.3 targeted suites and Phase I deterministic pilot are green. The failures are pre-existing artifact/configuration baseline families outside this change: offline replay branch provenance; historical director-quality authority artifact shape; real-path historical recanary reason; active gray registry configuration; and targeted missing-fact snapshot mutation.
+- Full backend final-head rerun on `ba1b7b2`: `1759 passed, 4 failed` (1763 collected). The J2.3 targeted suites and Phase I deterministic pilot are green. The four failures match the recorded baseline family and are outside this change: offline replay branch provenance; real-path historical recanary reason; active gray registry configuration; and targeted missing-fact snapshot mutation.
   - `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons` — expected branch `codex/unify-formal-workspace`, actual `codex/visual-authoring-provider-canary-reconcile`; baseline branch-provenance mismatch.
   - `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean` — expected `WORKTREE_NOT_CLEAN_FOR_REAL_PROVIDER_RUN`, received `HISTORICAL_RECANARY_RETIRED`; baseline historical recanary gate mismatch.
   - `tests/test_director_quality_v3_fact_coverage_foundation.py`, `tests/test_director_quality_v3_fact_semantic_grounding.py`, and `tests/test_director_quality_v3_semantic_verifier_canary.py` — expected historical authority artifact fields are absent; baseline artifact shape mismatch.
   - `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry` — expected `[990400]`, actual `[990400, 990401]`; baseline active-registry configuration mismatch.
   - `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed` — expected no FactSnapshot, found one; baseline targeted fact API mutation mismatch.
-- Final targeted rerun after correction: J2.3 suites `63 passed`; Phase I pilot `1 passed`; web `301 passed`.
+- Final targeted rerun after correction: J2.3 and related suites `64 passed`; Phase I pilot included; web `301 passed`.
 - GitHub Actions: `NO_GITHUB_ACTIONS_RUN_FOR_FINAL_HEAD`.
 
 ## Boundary

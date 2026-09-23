@@ -16,5 +16,7 @@
   "llm_calls": 0,
   "image_calls": 0,
   "video_calls": 0,
+  "full_backend_passed": 1759,
+  "full_backend_baseline_failures": 4,
   "j3_started": false
 }
