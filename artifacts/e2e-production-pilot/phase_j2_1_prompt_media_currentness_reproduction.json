@@ -1,0 +1,89 @@
+{
+  "after_video_prompt_pointer_advance": {
+    "error": {
+      "code": "OFFICIAL_MEDIA_BINDING_INVALID",
+      "diagnostics": {
+        "cause_code": "MEDIA_OFFICIAL_RESOLUTION_FAILED",
+        "cause_diagnostics": []
+      },
+      "message": "Current upstream authority no longer matches the official record."
+    },
+    "status": "FAIL"
+  },
+  "before_video_prompt": {
+    "checks": {
+      "asset_binding_current": true,
+      "asset_binding_declared": true,
+      "checksum": true,
+      "generation_execution": true,
+      "prompt_fingerprint": true,
+      "prompt_version": true,
+      "storage_identity": true,
+      "storyboard_fingerprint": true,
+      "storyboard_shot": true
+    },
+    "error": null,
+    "official_media_version_id": "omv-f77d4db28817fa4730a3714b86d795b6b32cf512",
+    "status": "PASS"
+  },
+  "database": "temporary_sqlite",
+  "fixture_only": true,
+  "historical_integrity": {
+    "checks": {
+      "candidate_execution_lineage": true,
+      "official_lineage_hash": true,
+      "official_payload_hash": true,
+      "prompt_ir_a_payload_hash_unchanged": true,
+      "technical_bytes_integrity": true,
+      "validation_envelope_integrity": true,
+      "validation_row_integrity": true
+    },
+    "classification": "historical_integrity_valid_but_current_lineage_obsolete",
+    "explanation": "PromptIR A, candidate, validation, OfficialMedia version and authority remain internally consistent; the strict currentness failure is caused by the single PromptIR pointer now selecting legal VIDEO PromptIR B.",
+    "status": "VALID"
+  },
+  "image_calls": 0,
+  "llm_calls": 0,
+  "official_image": {
+    "media_role": "SHOT_PRIMARY_IMAGE",
+    "prompt_ir_version_id": 1001,
+    "status": "CURRENT"
+  },
+  "pointer_after_advance": {
+    "payload_hash": "9e185fcfe6bb55ee6534c7e6d604060197658b3deacd450d0697b9a83a369f72",
+    "prompt_ir_version_id": 1002,
+    "target_media": "VIDEO"
+  },
+  "policies": {
+    "image": {
+      "fingerprint": "174a12e068eb0de6917903019f1df4a1518b9304f2c4f44c7ad89bbbb85cc34f",
+      "language": "",
+      "mode": "TEXT_TO_IMAGE",
+      "optional_asset_classes": [],
+      "required_asset_classes": [
+        "CHARACTER",
+        "SCENE"
+      ],
+      "schema_version": "generation_policy_v1",
+      "source": "j2-1-fixture",
+      "style_profile_id": "",
+      "target_media": "IMAGE"
+    },
+    "video": {
+      "fingerprint": "0f08704ba9cbf3c303f6f791d83b82a1420edfe89ac4980ab08bd83218b8b300",
+      "language": "",
+      "mode": "IMAGE_TO_VIDEO",
+      "optional_asset_classes": [],
+      "required_asset_classes": [
+        "CHARACTER",
+        "SCENE"
+      ],
+      "schema_version": "generation_policy_v1",
+      "source": "j2-1-fixture",
+      "style_profile_id": "",
+      "target_media": "VIDEO"
+    }
+  },
+  "provider_calls": 0,
+  "video_calls": 0
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "phase_j2_1_schema_decision_v1",
+  "phase": "PHASE_J2_1_PROMPT_IR_MEDIA_POLICY_CARDINALITY_REVIEW",
+  "baseline_head": "64692456a44b84377fa1b64d5b4046f778c06ff1",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "status": "PHASE_J2_1_MEDIA_SCOPED_PROMPT_IR_SCHEMA_REQUIRED",
+  "single_current_prompt_ir_per_shot_confirmed": true,
+  "generation_policy_bound_into_prompt_ir_semantics": true,
+  "official_media_requires_current_prompt_ir": true,
+  "image_video_currentness_conflict_reproduced": true,
+  "prompt_ir_schema_change_required": true,
+  "prompt_ir_payload_schema_change_required": false,
+  "prompt_ir_pointer_scope_change_required": true,
+  "generation_policy_authority_change_required": false,
+  "migration_required": true,
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "database_migration_performed": false,
+  "production_authority_writes": 0,
+  "fixture_only": true,
+  "full_real_end_to_end_production_acceptance_complete": false,
+  "selected_option": "B_MEDIA_SCOPED_PROMPT_IR_POINTERS",
+  "reproduction_artifact": "phase_j2_1_prompt_media_currentness_reproduction.json",
+  "schema_findings": {
+    "generation_execution_schema_reusable": true,
+    "media_candidate_schema_reusable": true,
+    "official_media_role_scope_reusable": true,
+    "video_technical_validation_gap": true,
+    "single_shot_prompt_pointer_is_cardinality_blocker": true
+  },
+  "prohibited_shortcuts": [
+    "ignore PromptIR mismatch during resolve",
+    "skip currentness for IMAGE",
+    "allow stale OfficialMedia as VIDEO reference",
+    "bypass PromptIR pointer through media_role",
+    "fallback to latest PromptIR"
+  ]
+}
