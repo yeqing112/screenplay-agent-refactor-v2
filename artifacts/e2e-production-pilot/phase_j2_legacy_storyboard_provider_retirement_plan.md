@@ -87,4 +87,3 @@ Retire the legacy branch only when:
 6. the deprecation window completes with no legacy production callers.
 
 Until these criteria are met, canonical design remains pending implementation and full real E2E stays disabled.
-

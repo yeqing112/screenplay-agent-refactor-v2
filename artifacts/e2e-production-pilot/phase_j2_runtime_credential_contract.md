@@ -110,4 +110,3 @@ The authorization flag is an explicit human decision to incur real Provider cost
 ## Validation and connectivity separation
 
 The existing Model Connectivity Test can report reachability/catalog/structural evidence. It must not promote that evidence to `validated=true` for a different execution, and it must not create `GenerationExecutionRecord`, `MediaCandidateRecord`, or OfficialMedia rows. A production execution consumes a resolver result bound to its frozen selection/profile fingerprint.
-

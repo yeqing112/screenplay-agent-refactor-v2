@@ -40,4 +40,3 @@ FULL_REAL_END_TO_END_PRODUCTION_ACCEPTANCE_COMPLETE=false
 - [Schema decision](./phase_j2_schema_decision.json)
 
 No production implementation was made in J2. The next phase may implement only the documented convergence while preserving the authority and secret-boundary invariants.
-

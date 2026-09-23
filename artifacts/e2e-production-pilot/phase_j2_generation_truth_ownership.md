@@ -109,4 +109,3 @@ AND credential_validated
 ```
 
 Validation and explicit promotion remain downstream. Provider success never writes storyboard official assets, `VisualAssetPointer`, or OfficialMedia directly.
-
