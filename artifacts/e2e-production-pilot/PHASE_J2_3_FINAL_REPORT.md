@@ -18,6 +18,8 @@ J2.3 now has media-scoped PromptIR pointers, deterministic migration backfill, e
 - Combined targeted result: 47 passed
 - Provider, LLM, image, and video calls: 0
 
+The full repository suite completed with `1725 passed, 5 failed`. The five failures are pre-existing or outside this phase: `test_director_quality_v24_offline_replay`, `test_director_quality_v3_final_spine_topology_preflight_wiring`, `test_real_llm_gray_selection`, and `test_targeted_missing_fact_api`; the Phase I fixture failure exposed by the new scope check was fixed and now passes. No J2.3 targeted test remains failing.
+
 Detailed migration, resolver, dual-media, and schema records are in the four `phase_j2_3_*` artifacts beside this report.
 
 ## Boundary
