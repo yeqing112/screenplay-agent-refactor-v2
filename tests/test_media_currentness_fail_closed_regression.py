@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 from core.media_authority import MediaAuthorityError, _current_authority_snapshot, promote_media_candidate, validate_media_candidate
-from core.prompt_ir_phase_e import validate_prompt_ir_current_scope
+from core.prompt_ir_phase_e import _prompt_ir_payload_basis, fingerprint, validate_prompt_ir_current_scope
 from models import GenerationExecutionRecord, MediaCandidateRecord, MediaValidationRecord, OfficialMediaVersion, PromptIRPointer, Session
 from tests.test_media_validation_promotion_contract import _fixture
 
@@ -67,6 +67,34 @@ def test_missing_current_prompt_pointer_fails_closed():
         # old snapshot treated a missing pointer as a matching authority.
         assert snapshot["currentness_valid"] is False
         assert shot_id == execution.storyboard_shot_id
+
+
+def test_unmarked_prompt_without_source_lineage_fails_closed_even_when_fresh():
+    candidate_id, _execution_id, _path, shot_id = _fixture(label="missing-source-lineage", shot_id=9808)
+    with Session() as session:
+        version = session.query(__import__("models", fromlist=["PromptIRVersion"]).PromptIRVersion).filter_by(storyboard_shot_id=shot_id).one()
+        pointer = session.query(PromptIRPointer).filter_by(storyboard_shot_id=shot_id, target_media="IMAGE").one()
+        authority = session.query(__import__("models", fromlist=["PromptIRAuthority"]).PromptIRAuthority).filter_by(prompt_ir_version_id=version.id).one()
+        payload = __import__("json").loads(version.payload_json)
+        payload.pop("legacy_fixture_contract", None)
+        payload_hash = fingerprint(_prompt_ir_payload_basis(payload))
+        payload["prompt_ir_payload_fingerprint"] = payload_hash
+        payload["payload_hash"] = payload_hash
+        version.payload_json = __import__("json").dumps(payload, ensure_ascii=False, sort_keys=True)
+        version.payload_hash = payload_hash
+        pointer.payload_hash = payload_hash
+        envelope = __import__("json").loads(authority.envelope_json)
+        envelope["prompt_ir_payload_hash"] = payload_hash
+        envelope.pop("envelope_fingerprint", None)
+        envelope["envelope_fingerprint"] = fingerprint(envelope)
+        authority.envelope_json = __import__("json").dumps(envelope, ensure_ascii=False, sort_keys=True)
+        authority.envelope_fingerprint = envelope["envelope_fingerprint"]
+        session.commit()
+        result = validate_prompt_ir_current_scope(session, book_id=990401, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE")
+        assert result["integrity_valid"] is True
+        assert result["current_lineage_valid"] is False
+        assert result["obsolete_due_to_upstream_change"] is True
+        assert version.stale_status == "FRESH" and authority.stale_status == "FRESH"
 
 
 def test_missing_pointer_blocks_validation_and_promotion_rows():

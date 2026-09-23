@@ -148,7 +148,7 @@ def test_video_official_currentness_snapshot_uses_video_pointer_without_fake_tec
     db = sessionmaker(bind=engine)()
     now = datetime.now()
     policy = build_generation_policy({"mode": "TEXT_TO_VIDEO", "target_media": "VIDEO"}, allow_default=False)
-    payload = {"schema_version": "prompt_ir_v2", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
+    payload = {"schema_version": "prompt_ir_v2", "legacy_fixture_contract": "deterministic_media_fixture_v1", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
     payload_hash = fingerprint(_prompt_ir_payload_basis(payload))
     payload["prompt_ir_payload_fingerprint"] = payload_hash
     payload["payload_hash"] = payload_hash

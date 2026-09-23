@@ -14,6 +14,7 @@ This round closes the Media Authority currentness fail open. Media validation an
 - VIDEO execution with only an IMAGE pointer has no cross-media fallback. Pointer payload/scope mismatch and missing generation policy fingerprint also fail closed.
 - Deterministic reproduction proved `stored integrity != live lineage`: a historical PromptIR remained byte-identical with `stale_status=FRESH`, while the current Storyboard materialization advanced. The old wrapper returned `current_lineage_valid=true`; the corrected shared read-only validator returns `integrity_valid=true`, `current_lineage_valid=false`, and `obsolete_due_to_upstream_change=true`.
 - The same live comparison covers IMAGE and VIDEO independently. Upstream drift before validation fails closed; drift after a valid validation makes promotion return `MEDIA_PROMOTION_STALE`, marks the validation `STALE`, and creates no OfficialMedia rows.
+- An unmarked PromptIR with no `source_authority` now fails closed. The only compatibility pass is an explicit `deterministic_media_fixture_v1` contract used by the provider-free Phase I fixture, so missing live lineage cannot be inferred from `FRESH` status.
 - The Phase E current-scope validator and resolver now reject persisted lowercase `image`/`video`; only exact `IMAGE`/`VIDEO` are accepted. GenerationPolicy's separate normalization contract is unchanged.
 - Provider, LLM, image, and video calls: 0. J3 was not started.
 

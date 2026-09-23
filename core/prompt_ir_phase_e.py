@@ -799,7 +799,7 @@ def build_current_prompt_ir_asset_authority(session: Any, *, book_id: int, promp
         expected_version = item.get("asset_version_id")
         expected_hash = _text(item.get("asset_version_fingerprint"))
         expected_authority = _text(item.get("authority_fingerprint"))
-        if not _dict(payload.get("source_authority")):
+        if not _dict(payload.get("source_authority")) and payload.get("legacy_fixture_contract") == "deterministic_media_fixture_v1":
             # Pre-Phase-E fixtures have no declared Storyboard lineage and
             # therefore cannot satisfy the full production asset contract.
             # Keep their pointer drift observable for Media Authority while
@@ -866,11 +866,10 @@ def _validate_prompt_ir_live_lineage(session: Any, *, integrity: dict[str, Any])
     shot_id = int(getattr(integrity.get("version"), "storyboard_shot_id", 0) or 0)
     book_id = int(getattr(integrity.get("version"), "book_id", 0) or 0)
     episode = int(getattr(integrity.get("version"), "episode", 0) or 0)
-    # Legacy deterministic fixtures that predate the persisted Phase D
-    # materialization authority do not declare a source lineage. They remain
-    # covered by historical integrity and are outside the live-lineage path.
     if not _dict(payload.get("source_authority")):
-        return {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False, "tampered": False, "diagnostics": [{"code": "PROMPT_IR_LIVE_LINEAGE_NOT_DECLARED"}]}
+        if payload.get("legacy_fixture_contract") == "deterministic_media_fixture_v1":
+            return {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False, "tampered": False, "diagnostics": [{"code": "PROMPT_IR_LIVE_LINEAGE_NOT_DECLARED", "fixture_contract": "deterministic_media_fixture_v1"}]}
+        return {"current_lineage_valid": False, "obsolete_due_to_upstream_change": True, "tampered": False, "diagnostics": [{"code": "PROMPT_IR_LIVE_LINEAGE_MISSING"}]}
     row = session.query(StoryboardShot).filter_by(id=shot_id, book_id=book_id, episode=episode).first()
     if row is None or not _text(getattr(row, "scene_id", "")):
         return {"current_lineage_valid": False, "obsolete_due_to_upstream_change": True, "tampered": False, "diagnostics": [{"code": "PROMPT_IR_LIVE_LINEAGE_MISSING"}]}

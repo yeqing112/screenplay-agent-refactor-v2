@@ -51,7 +51,7 @@ def _fixture(*, label: str | None = None, shot_id: int = 7001, with_prompt_ir: b
     candidate_id = f"candidate-{token}"
     with Session() as session:
         policy = build_generation_policy({"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE"}, allow_default=False)
-        prompt_payload = {"schema_version": "prompt_ir_v2", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
+        prompt_payload = {"schema_version": "prompt_ir_v2", "legacy_fixture_contract": "deterministic_media_fixture_v1", "generation_policy": policy, "asset_authority_bindings": {"resolved": []}}
         prompt_hash = fingerprint(prompt_payload)
         prompt_payload["prompt_ir_payload_fingerprint"] = prompt_hash
         prompt_payload["payload_hash"] = prompt_hash
@@ -97,7 +97,7 @@ def _fixture(*, label: str | None = None, shot_id: int = 7001, with_prompt_ir: b
 
 def _install_manual_prompt_ir(session, *, version_id: int, shot_id: int, policy_fingerprint: str = "policy-hash", asset_bindings: dict | None = None):
     policy = {"schema_version": "generation_policy_v1", "mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": [], "optional_asset_classes": [], "style_profile_id": "", "language": "", "source": "explicit_request", "fingerprint": policy_fingerprint}
-    payload = {"schema_version": "prompt_ir_v2", "generation_policy": policy, "asset_authority_bindings": asset_bindings or {"resolved": []}}
+    payload = {"schema_version": "prompt_ir_v2", "legacy_fixture_contract": "deterministic_media_fixture_v1", "generation_policy": policy, "asset_authority_bindings": asset_bindings or {"resolved": []}}
     payload_hash = fingerprint(payload)
     payload["prompt_ir_payload_fingerprint"] = payload_hash
     payload["payload_hash"] = payload_hash
