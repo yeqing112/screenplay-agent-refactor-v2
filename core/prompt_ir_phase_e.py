@@ -746,11 +746,12 @@ def validate_prompt_ir_integrity(session: Any, *, book_id: int, episode: int, st
 
 
 def validate_prompt_ir_current_scope(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, target_media: str) -> dict[str, Any]:
-    """Validate one exact current PromptIR scope for downstream authorities.
+    """Validate stored integrity and the live Storyboard lineage for one scope.
 
-    Media Authority uses this thin wrapper instead of maintaining a second
-    pointer/version/payload verifier.  Full Storyboard semantic resolution
-    remains the responsibility of ``resolve_current_authoritative_prompt_ir``.
+    ``stale_status`` is persisted lifecycle metadata; it is not an authority
+    oracle.  A PromptIR can remain historically intact and ``FRESH`` while its
+    current materialization has advanced, so this wrapper always performs the
+    read-only lineage comparison used by the Phase E resolver.
     """
     result = validate_prompt_ir_integrity(
         session,
@@ -760,8 +761,93 @@ def validate_prompt_ir_current_scope(session: Any, *, book_id: int, episode: int
         target_media=target_media,
         allow_stale=False,
     )
-    result["current_lineage_valid"] = True
+    lineage = _validate_prompt_ir_live_lineage(session, integrity=result)
+    result.update({key: value for key, value in lineage.items() if key not in {"pointer", "version", "authority", "payload"}})
+    result["current_lineage_valid"] = bool(lineage.get("current_lineage_valid"))
     return result
+
+
+def _current_asset_authority_for_prompt(session: Any, *, book_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+    """Rebind stored asset identities to their current production pointers.
+
+    The semantic compiler still receives the PromptIR's stored policy and
+    identity set.  Pointer/version fingerprints are read at validation time so
+    an asset revision is classified as upstream obsolescence rather than
+    silently accepted as historical data.
+    """
+    from models import VisualAssetPointer
+
+    stored = _dict(payload.get("asset_authority_bindings"))
+    current: list[dict[str, Any]] = []
+    for binding in _list(stored.get("resolved")):
+        if not isinstance(binding, dict):
+            continue
+        item = dict(binding)
+        identity_ref = _text(item.get("identity_ref"))
+        if identity_ref and ":" in identity_ref:
+            asset_type, canonical_id = identity_ref.split(":", 1)
+            item.setdefault("asset_type", asset_type)
+            item.setdefault("canonical_asset_id", canonical_id)
+        asset_key = _text(item.get("asset_authority_ref") or item.get("asset_key") or item.get("identity_ref"))
+        query = session.query(VisualAssetPointer).filter_by(book_id=book_id, asset_key=asset_key)
+        scope_key = _text(item.get("scope_key"))
+        if scope_key:
+            query = query.filter_by(scope_key=scope_key)
+        pointer = query.first()
+        if pointer is not None:
+            item["asset_version_id"] = getattr(pointer, "current_version_id", item.get("asset_version_id"))
+            item["asset_version_fingerprint"] = _text(getattr(pointer, "payload_hash", "")) or item.get("asset_version_fingerprint")
+            item["authority_fingerprint"] = _text(getattr(pointer, "payload_hash", "")) or item.get("authority_fingerprint")
+            item["stale_status"] = _text(getattr(pointer, "stale_status", "FRESH")) or "FRESH"
+            item["authority_status"] = _text(getattr(pointer, "authority_status", ""))
+        else:
+            item["stale_status"] = "STALE"
+        current.append(item)
+    return {"bindings": current}
+
+
+def _validate_prompt_ir_live_lineage(session: Any, *, integrity: dict[str, Any]) -> dict[str, Any]:
+    """Pure current-lineage validator shared by Media Authority and Phase E."""
+    from fastapi import HTTPException
+    from core.storyboard_materializer import build_storyboard_production_snapshot, resolve_current_authoritative_materialization
+    from models import StoryboardShot
+
+    payload = _dict(integrity.get("payload"))
+    shot_id = int(getattr(integrity.get("version"), "storyboard_shot_id", 0) or 0)
+    book_id = int(getattr(integrity.get("version"), "book_id", 0) or 0)
+    episode = int(getattr(integrity.get("version"), "episode", 0) or 0)
+    # Legacy deterministic fixtures that predate the persisted Phase D
+    # materialization authority do not declare a source lineage. They remain
+    # covered by historical integrity and are outside the live-lineage path.
+    if not _dict(payload.get("source_authority")):
+        return {"current_lineage_valid": True, "obsolete_due_to_upstream_change": False, "tampered": False, "diagnostics": [{"code": "PROMPT_IR_LIVE_LINEAGE_NOT_DECLARED"}]}
+    row = session.query(StoryboardShot).filter_by(id=shot_id, book_id=book_id, episode=episode).first()
+    if row is None or not _text(getattr(row, "scene_id", "")):
+        return {"current_lineage_valid": False, "obsolete_due_to_upstream_change": True, "tampered": False, "diagnostics": [{"code": "PROMPT_IR_LIVE_LINEAGE_MISSING"}]}
+    try:
+        materialization_set, rows, set_envelope = resolve_current_authoritative_materialization(
+            session,
+            book_id=book_id,
+            episode=episode,
+            scene_id=_text(row.scene_id),
+        )
+        current_snapshot = build_storyboard_production_snapshot(
+            materialization_set=materialization_set,
+            rows=rows,
+            authority_envelope=set_envelope,
+        )
+    except HTTPException as exc:
+        detail = exc.detail if isinstance(exc.detail, dict) else {}
+        return {"current_lineage_valid": False, "obsolete_due_to_upstream_change": True, "tampered": False, "diagnostics": [{"code": detail.get("code", "PROMPT_IR_LIVE_LINEAGE_INVALID"), "message": detail.get("message", str(exc))}]}
+    current_assets = _current_asset_authority_for_prompt(session, book_id=book_id, payload=payload)
+    lineage = compare_prompt_ir_lineage_to_current(
+        stored_payload=payload,
+        current_snapshot=current_snapshot,
+        asset_authority=current_assets,
+    )
+    lineage["live_snapshot"] = current_snapshot
+    lineage["current_materialization_set_id"] = getattr(materialization_set, "id", None)
+    return lineage
 
 
 def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, target_media: str, generation_policy: dict[str, Any] | None = None, asset_authority: dict[str, Any] | None = None, model_profile: dict[str, Any] | None = None):
@@ -772,8 +858,7 @@ def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episo
     semantic projection.
     """
     from fastapi import HTTPException
-    from core.storyboard_materializer import build_storyboard_production_snapshot, resolve_current_authoritative_materialization
-    from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion, StoryboardShot
+    from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion
 
     if target_media not in {"IMAGE", "VIDEO"}:
         raise HTTPException(status_code=409, detail={"code": "PROMPT_IR_MEDIA_SCOPE_INVALID", "message": "Current PromptIR resolution requires exact target_media IMAGE or VIDEO."})
@@ -821,26 +906,12 @@ def resolve_current_authoritative_prompt_ir(session: Any, *, book_id: int, episo
     historical = validate_prompt_ir_historical_integrity(session, version=version, authority=authority, payload=payload)
     if not historical.get("integrity_valid"):
         fail(historical.get("code") or "PROMPT_IR_HISTORICAL_SEMANTIC_MISMATCH", historical.get("message") or "Historical PromptIR integrity validation failed.", version=version, authority=authority)
-    row = session.query(StoryboardShot).filter_by(id=storyboard_shot_id, book_id=book_id, episode=episode).first()
-    if row is None or not _text(row.scene_id):
-        fail("PROMPT_IR_STALE", "PromptIR StoryboardShot lineage is missing.", version=version, authority=authority)
-    try:
-        materialization_set, rows, set_envelope = resolve_current_authoritative_materialization(session, book_id=book_id, episode=episode, scene_id=_text(row.scene_id))
-    except HTTPException:
-        _mark_phase_e_prompt_stale(session, version, authority, ["STORYBOARD_MATERIALIZATION_STALE"])
-        session.commit()
-        raise
-    if int(payload.get("source_authority", {}).get("storyboard_materialization_set_id") or 0) != int(materialization_set.id) or int(version.materialization_set_id or 0) != int(materialization_set.id):
-        fail("PROMPT_IR_STALE", "PromptIR does not point to the current Storyboard materialization set.", version=version, authority=authority)
-    snapshot = build_storyboard_production_snapshot(materialization_set=materialization_set, rows=rows, authority_envelope=set_envelope)
-    try:
-        expected = next(item for item in compile_storyboard_snapshot_to_prompt_ir(snapshot, generation_policy=generation_policy or payload.get("generation_policy"), asset_authority=asset_authority) if item.get("storyboard_shot_id") == storyboard_shot_id or item.get("plan_shot_id") == payload.get("plan_shot_id"))
-    except (PromptIRPhaseEError, StopIteration) as exc:
-        code = exc.code if isinstance(exc, PromptIRPhaseEError) else "PROMPT_IR_SEMANTIC_MISMATCH"
-        fail(code, "Current Storyboard semantic projection cannot reproduce PromptIR.", version=version, authority=authority)
-    diff = compare_prompt_ir_semantics(expected, payload)
-    if not diff.get("empty"):
-        fail("PROMPT_IR_SEMANTIC_MISMATCH", "PromptIR no longer matches the current Storyboard semantic projection.", version=version, authority=authority)
+    lineage = _validate_prompt_ir_live_lineage(session, integrity={"version": version, "authority": authority, "payload": payload})
+    if not lineage.get("current_lineage_valid"):
+        diagnostic = (lineage.get("diagnostics") or [{}])[0]
+        code = diagnostic.get("code") or "PROMPT_IR_STALE"
+        fail(code, "PromptIR no longer matches the current authoritative Storyboard lineage.", version=version, authority=authority)
+    snapshot = lineage.get("live_snapshot")
     if generation_policy is not None and canonical_target_media(build_generation_policy(generation_policy).get("target_media")) != target_media:
         fail("PROMPT_IR_POINTER_MEDIA_SCOPE_MISMATCH", "Requested GenerationPolicy target_media does not match the resolver scope.", version=version, authority=authority)
     if generation_policy is not None and payload.get("generation_policy", {}).get("fingerprint") != build_generation_policy(generation_policy).get("fingerprint"):

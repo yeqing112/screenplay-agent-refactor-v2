@@ -5,8 +5,55 @@ from __future__ import annotations
 import pytest
 
 from core.media_authority import MediaAuthorityError, _current_authority_snapshot, promote_media_candidate, validate_media_candidate
+from core.prompt_ir_phase_e import validate_prompt_ir_current_scope
 from models import GenerationExecutionRecord, MediaCandidateRecord, MediaValidationRecord, OfficialMediaVersion, PromptIRPointer, Session
 from tests.test_media_validation_promotion_contract import _fixture
+
+
+def test_live_lineage_drift_is_not_hidden_by_fresh_stored_prompt(monkeypatch):
+    """Deterministically reproduce the pre-correction live-lineage fail-open."""
+    from types import SimpleNamespace
+    import json
+    from tests.test_prompt_ir_phase_e_semantic_closure import _snapshots
+
+    snapshots = _snapshots()
+    snapshot = snapshots[0]
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    from models import Base
+    from core.prompt_ir_phase_e import compile_storyboard_snapshot_to_prompt_ir
+    from tests.test_prompt_ir_phase_e_semantic_closure import _persist_v2_for_resolver
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    db = sessionmaker(bind=engine)()
+    ir = compile_storyboard_snapshot_to_prompt_ir(snapshot)[0]
+    shot, _version, _authority, _pointer = _persist_v2_for_resolver(db, snapshot, ir)
+    shot_id = shot.id
+    source = snapshot["ordered_shots"][0]
+    row = SimpleNamespace(
+        id=shot_id,
+        plan_shot_id="plan-live-lineage-drift",
+        projection_fingerprint=source["projection_fingerprint"],
+        meta_info=json.dumps({
+            "visual_semantic_handoff": source["visual_semantic_handoff"],
+            "projection_payload": source["projection_payload"],
+            "prompt_compiler_handoff": source["prompt_compiler_handoff"],
+        }),
+    )
+    current_set = SimpleNamespace(id=1, scene_id=snapshot["scene_id"], set_payload_fingerprint="set-current", status="MATERIALIZED", stale_status="FRESH")
+    drifted = json.loads(json.dumps(snapshot))
+    drifted["ordered_shots"][0]["visual_semantic_handoff"]["information_visibility"] = "UPSTREAM_REVISED"
+    monkeypatch.setattr("core.storyboard_materializer.resolve_current_authoritative_materialization", lambda *args, **kwargs: (current_set, [row], drifted["authority_envelope"]))
+    monkeypatch.setattr("core.storyboard_materializer.build_storyboard_production_snapshot", lambda **kwargs: drifted)
+    monkeypatch.setattr("core.prompt_ir_phase_e.validate_prompt_ir_historical_integrity", lambda *args, **kwargs: {"integrity_valid": True})
+    # Use the isolated resolver database so the reproduction has a real
+    # StoryboardShot and persisted source authority lineage.
+    result = validate_prompt_ir_current_scope(db, book_id=77, episode=1, storyboard_shot_id=shot_id, target_media="IMAGE")
+    # This assertion is expected to fail on the pre-correction HEAD: the
+    # current-scope wrapper promoted historical integrity to live currentness.
+    assert result["current_lineage_valid"] is False
+    db.close()
+    engine.dispose()
 
 
 def test_missing_current_prompt_pointer_fails_closed():

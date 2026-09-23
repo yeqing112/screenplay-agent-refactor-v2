@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "stored_integrity_without_live_lineage_is_insufficient": true,
+  "fail_open_reproduction": "PHASE_J2_3_LIVE_LINEAGE_FAIL_OPEN_REPRODUCED",
+  "upstream_drift_before_validation": "FAIL_CLOSED",
+  "upstream_drift_after_validation": "PROMOTION_STALE",
+  "historical_integrity_after_upstream_revision": "VALID",
+  "obsolete_due_to_upstream_change": true,
+  "image_scope": "PASS",
+  "video_scope": "PASS",
+  "shared_upstream_drift_is_media_scoped": true,
+  "stale_status_is_not_currentness_oracle": true,
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "j3_started": false
+}

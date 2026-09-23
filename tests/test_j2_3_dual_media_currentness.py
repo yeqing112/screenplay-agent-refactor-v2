@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from core.media_authority import _current_authority_snapshot, build_image_to_video_source_binding, validate_image_to_video_source_binding
-from core.prompt_ir_phase_e import _prompt_ir_payload_basis, build_generation_policy, fingerprint, prompt_ir_semantic_projection, resolve_current_authoritative_prompt_ir
+from core.prompt_ir_phase_e import _prompt_ir_payload_basis, build_generation_policy, fingerprint, prompt_ir_semantic_projection, resolve_current_authoritative_prompt_ir, validate_prompt_ir_current_scope
 from models import Base, GenerationExecutionRecord, OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion, PromptIRAuthority, PromptIRPointer, PromptIRVersion
 from tests.test_prompt_ir_phase_e_semantic_closure import _persist_v2_for_resolver, _snapshots
 
@@ -71,6 +71,40 @@ def test_dual_scope_resolves_exact_image_and_video_without_fallback(monkeypatch)
     with pytest.raises(Exception) as exc_info:
         resolve_current_authoritative_prompt_ir(db, book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="VIDEO")
     assert getattr(exc_info.value, "detail", {}).get("code") == "PROMPT_IR_POINTER_MISSING"
+    engine.dispose()
+
+
+def test_live_lineage_drift_is_obsolete_for_image_and_video_without_stale_flag(monkeypatch):
+    snapshot = _snapshots()[0]
+    compiler = __import__("core.prompt_ir_phase_e", fromlist=["compile_storyboard_snapshot_to_prompt_ir"])
+    image_ir = compiler.compile_storyboard_snapshot_to_prompt_ir(snapshot)[0]
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    db = sessionmaker(bind=engine)()
+    shot, image, image_authority, _image_pointer = _persist_v2_for_resolver(db, snapshot, image_ir)
+    video, video_authority, _video_pointer = _install_video_scope(db, image, image_authority)
+    _patched_lineage(monkeypatch, snapshot, shot)
+
+    # Both scopes are initially current through the same live authority.
+    initial_image = validate_prompt_ir_current_scope(db, book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE")
+    initial_video = validate_prompt_ir_current_scope(db, book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="VIDEO")
+    assert initial_image["current_lineage_valid"] is True
+    assert initial_video["current_lineage_valid"] is True
+
+    drifted = copy.deepcopy(snapshot)
+    drifted["ordered_shots"][0]["visual_semantic_handoff"]["information_visibility"] = "UPSTREAM_REVISED"
+    monkeypatch.setattr("core.storyboard_materializer.build_storyboard_production_snapshot", lambda **kwargs: drifted)
+    changed_image = validate_prompt_ir_current_scope(db, book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE")
+    changed_video = validate_prompt_ir_current_scope(db, book_id=77, episode=1, storyboard_shot_id=shot.id, target_media="VIDEO")
+    assert changed_image["integrity_valid"] is True
+    assert changed_video["integrity_valid"] is True
+    assert changed_image["current_lineage_valid"] is False
+    assert changed_video["current_lineage_valid"] is False
+    assert changed_image["obsolete_due_to_upstream_change"] is True
+    assert changed_video["obsolete_due_to_upstream_change"] is True
+    assert image.stale_status == "FRESH" and image_authority.stale_status == "FRESH"
+    assert video.stale_status == "FRESH" and video_authority.stale_status == "FRESH"
+    db.close()
     engine.dispose()
 
 
