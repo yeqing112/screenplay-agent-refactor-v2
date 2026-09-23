@@ -37,7 +37,7 @@ This round closes the Media Authority currentness fail open and corrects the fix
   - `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry`
   - `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed`
 - The two Phase E artifact regression nodes pass after refreshing the real Phase B→E artifacts.
-- GitHub Actions for final head `eef37b0b2dcd032727918d360b2507a85dc5fe64`: [Production regression run 35899554536](https://github.com/yeqing112/screenplay-agent-refactor-v2/actions/runs/35899554536) completed with `failure` at the production regression gate step. No CI PASS is claimed for this phase.
+- GitHub Actions for final code head `cc1544a33162412465838833b28a4504d52edbeb`: [Production regression run 35902213060](https://github.com/yeqing112/screenplay-agent-refactor-v2/actions/runs/35902213060) completed with `failure` at the production regression gate step. No CI PASS is claimed for this phase.
 
 ## Boundary
 
