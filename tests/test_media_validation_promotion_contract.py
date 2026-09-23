@@ -34,7 +34,7 @@ from models import (
     VisualReferenceAuthority,
     init_db,
 )
-from tests.prompt_ir_authority_fixture import canonical_snapshot, compile_fixture_prompt, install_authority_spine, resolve_fixture_materialization
+from tests.prompt_ir_authority_fixture import build_snapshot_from_fixture, canonical_snapshot, compile_fixture_prompt, install_authority_spine, resolve_fixture_materialization
 
 
 PNG = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")
@@ -58,8 +58,11 @@ def _fixture(*, label: str | None = None, shot_id: int = 7001, with_prompt_ir: b
     with Session() as session:
         policy = build_generation_policy({"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE"}, allow_default=False)
         snapshot = canonical_snapshot()
-        shot, source_row, _storyboard_envelope = install_authority_spine(session, book_id=990401, episode=1, shot_id=shot_id, snapshot=snapshot)
-        prompt_payload = compile_fixture_prompt(snapshot=snapshot, source_row=source_row, storyboard_shot_id=shot.id, target_media="IMAGE", policy=policy)
+        shot, source_row, _storyboard_envelope = install_authority_spine(session, book_id=990401, episode=1, shot_id=shot_id, snapshot=snapshot, scene_id=f"fixture:{token}")
+        snapshot = build_snapshot_from_fixture(session, shot=shot, authority=_storyboard_envelope)
+        source_row = next(row for row in snapshot["ordered_shots"] if row.get("plan_shot_id") == shot.plan_shot_id)
+        materialization = (_storyboard_envelope.get("materialization") or {}) if isinstance(_storyboard_envelope, dict) else {}
+        prompt_payload = compile_fixture_prompt(snapshot=snapshot, source_row=source_row, storyboard_shot_id=shot.id, target_media="IMAGE", policy=policy, materialization_set_id=shot.materialization_set_id, set_payload_fingerprint=str(materialization.get("fingerprint") or f"set-{shot.materialization_set_id}"))
         prompt_hash = prompt_payload["payload_hash"]
         envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "storyboard_shot_id": shot.id, "authority_instance": token, "source_authority": prompt_payload["source_authority"], "generation_policy": prompt_payload["generation_policy"], "asset_authority_bindings": prompt_payload["asset_authority_bindings"], "prompt_ir_payload_hash": prompt_hash, "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
         envelope["envelope_fingerprint"] = fingerprint(envelope)
@@ -89,7 +92,7 @@ def _fixture(*, label: str | None = None, shot_id: int = 7001, with_prompt_ir: b
         session.add(execution); session.add(candidate)
         if with_prompt_ir:
             now = datetime.now()
-            session.add(PromptIRVersion(id=execution_prompt_id, book_id=990401, episode=1, scene_id=shot.scene_id, storyboard_shot_id=shot.id, materialization_set_id=1, plan_shot_id=shot.plan_shot_id or f"plan-{token}", schema_version="prompt_ir_v2", payload_json=json.dumps(prompt_payload, ensure_ascii=False, sort_keys=True), payload_hash=prompt_hash, compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now))
+            session.add(PromptIRVersion(id=execution_prompt_id, book_id=990401, episode=1, scene_id=shot.scene_id, storyboard_shot_id=shot.id, materialization_set_id=shot.materialization_set_id, plan_shot_id=shot.plan_shot_id or f"plan-{token}", schema_version="prompt_ir_v2", payload_json=json.dumps(prompt_payload, ensure_ascii=False, sort_keys=True), payload_hash=prompt_hash, compiler_version="test", compiler_policy_version="test", retention_policy_version="test", authority_envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now))
             session.add(PromptIRAuthority(prompt_ir_version_id=execution_prompt_id, book_id=990401, episode=1, storyboard_shot_id=shot.id, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PROMPT_IR_QUALIFIED", stale_status="FRESH", stale_reasons="[]", created_at=now, updated_at=now))
             current_pointer = session.query(PromptIRPointer).filter_by(book_id=990401, episode=1, storyboard_shot_id=shot.id, target_media="IMAGE").first()
             if current_pointer is None:
@@ -104,16 +107,30 @@ def _fixture(*, label: str | None = None, shot_id: int = 7001, with_prompt_ir: b
 
 def _install_manual_prompt_ir(session, *, version_id: int, shot_id: int, policy_fingerprint: str = "policy-hash", asset_bindings: dict | None = None):
     policy = {"schema_version": "generation_policy_v1", "mode": "TEXT_TO_IMAGE", "target_media": "IMAGE", "required_asset_classes": [], "optional_asset_classes": [], "style_profile_id": "", "language": "", "source": "explicit_request", "fingerprint": policy_fingerprint}
-    from tests.prompt_ir_authority_fixture import canonical_snapshot, compile_fixture_prompt
+    from tests.prompt_ir_authority_fixture import compile_fixture_prompt
     shot = session.query(__import__("models", fromlist=["StoryboardShot"]).StoryboardShot).filter_by(id=shot_id).one()
-    snapshot = canonical_snapshot()
+    set_row = session.query(__import__("models", fromlist=["StoryboardMaterializationSet"]).StoryboardMaterializationSet).filter_by(id=shot.materialization_set_id).one()
+    snapshot = build_snapshot_from_fixture(session, shot=shot, authority=json.loads(set_row.authority_envelope_json or "{}"))
     source_row = next(row for row in snapshot["ordered_shots"] if row.get("plan_shot_id") == shot.plan_shot_id)
-    payload = compile_fixture_prompt(snapshot=snapshot, source_row=source_row, storyboard_shot_id=shot_id, target_media="IMAGE", policy=policy)
-    payload["asset_authority_bindings"] = asset_bindings or {"resolved": []}
-    payload_hash = fingerprint(payload)
+    payload = compile_fixture_prompt(snapshot=snapshot, source_row=source_row, storyboard_shot_id=shot_id, target_media="IMAGE", policy=policy, materialization_set_id=shot.materialization_set_id, set_payload_fingerprint=set_row.set_payload_fingerprint)
+    # These tests intentionally use a named policy fingerprint so a later
+    # policy edit can be detected as a stale promotion.  Keep the fixture's
+    # persisted GenerationPolicy and its authority envelope aligned.
+    payload["generation_policy"]["fingerprint"] = policy_fingerprint
+    compiled_asset_bindings = payload.get("asset_authority_bindings") if isinstance(payload.get("asset_authority_bindings"), dict) else {}
+    provided_asset_bindings = json.loads(json.dumps(asset_bindings or {"resolved": []}))
+    identity_refs = list(compiled_asset_bindings.get("identity_refs") or [])
+    for binding in provided_asset_bindings.get("resolved", []):
+        if isinstance(binding, dict) and isinstance(binding.get("identity_ref"), str) and ":" in binding["identity_ref"]:
+            kind, canonical_id = binding["identity_ref"].split(":", 1)
+            binding["identity_ref"] = f"{kind.lower()}:{canonical_id}"
+            if binding["identity_ref"] not in identity_refs:
+                identity_refs.append(binding["identity_ref"])
+    payload["asset_authority_bindings"] = {**compiled_asset_bindings, **provided_asset_bindings, "identity_refs": identity_refs}
+    payload_hash = fingerprint({key: value for key, value in payload.items() if key not in {"prompt_ir_payload_fingerprint", "payload_hash"}})
     payload["prompt_ir_payload_fingerprint"] = payload_hash
     payload["payload_hash"] = payload_hash
-    envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "storyboard_shot_id": shot_id, "authority_instance": str(version_id), "source_authority": payload["source_authority"], "generation_policy": policy, "asset_authority_bindings": asset_bindings or {"resolved": []}, "prompt_ir_payload_hash": payload_hash, "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
+    envelope = {"schema_version": "prompt_ir_authority_envelope_v2", "storyboard_shot_id": shot_id, "authority_instance": str(version_id), "source_authority": payload["source_authority"], "generation_policy": payload["generation_policy"], "asset_authority_bindings": payload["asset_authority_bindings"], "prompt_ir_payload_hash": payload_hash, "qualification_state": "PROMPT_IR_QUALIFIED", "model_generation_ready": False, "stale_status": "FRESH"}
     envelope["envelope_fingerprint"] = fingerprint(envelope)
     version = session.query(PromptIRVersion).filter_by(id=version_id).one()
     version.payload_json = json.dumps(payload, ensure_ascii=False, sort_keys=True)
@@ -301,9 +318,9 @@ def test_asset_revision_makes_validation_stale_before_promotion():
             authority_envelope_json="{}", qualification_state="PROMPT_IR_QUALIFIED", asset_reference_state="READY", model_generation_ready="true", stale_status="FRESH", stale_reasons="[]",
         )
         asset = VisualAssetVersion(id=910001, book_id=990401, asset_key=asset_key, asset_type="prop", canonical_id="PHASE_G2_ASSET", canonical_identity_json="{}", scope_json="{}", revision=1, payload_json="{}", payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
-        asset_pointer = VisualAssetPointer(book_id=990401, asset_key=asset_key, asset_type="prop", scope_key="phase-g2", current_version_id=910001, payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
+        asset_pointer = VisualAssetPointer(book_id=990401, asset_key=asset_key, asset_type="prop", scope_key=f"{asset_key}@canonical", current_version_id=910001, payload_hash="asset-hash", authority_status="SPEC_APPROVED", stale_status="FRESH", stale_reasons="[]")
         session.add_all([version, asset, asset_pointer]); session.flush()
-        _install_manual_prompt_ir(session, version_id=9151001, shot_id=shot_id, asset_bindings={"resolved": [{"identity_ref": "PROP:PHASE_G2_ASSET", "asset_authority_ref": asset_key, "asset_version_id": 910001, "asset_version_fingerprint": "asset-hash", "authority_fingerprint": "asset-hash"}]})
+        _install_manual_prompt_ir(session, version_id=9151001, shot_id=shot_id, asset_bindings={"resolved": [{"identity_ref": "PROP:TICKET", "asset_authority_ref": asset_key, "asset_version_id": 910001, "asset_version_fingerprint": "asset-hash", "authority_fingerprint": "asset-hash", "stale_status": "FRESH"}]})
         session.commit()
         validation = validate_media_candidate(session, candidate_id)
         asset_pointer.current_version_id = 9999999

@@ -903,5 +903,3 @@ def prepare_current_prompt_ir(book_id: int, episode: int, db_file: Path) -> dict
 
 
 __all__ = ["materialize_and_capture"]
-
-\n

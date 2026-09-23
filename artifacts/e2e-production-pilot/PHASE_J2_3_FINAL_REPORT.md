@@ -21,6 +21,7 @@ This round closes the Media Authority currentness fail open and corrects the fix
 - `scripts/phase_e_prompt_ir_real_pilot.py`: JSON-safe audit serialization, clean prepare-only compile, media-scoped revision evidence, and historical Storyboard revision accounting.
 - `scripts/run_phase_b_director_blocking_pilot.py`: retained downstream databases are restored after resolver tamper probes.
 - `scripts/run_phase_i_official_media_binding_pilot.py`: real Phase B→D→E upstream chain, current PromptIR reuse, exact generation policy fingerprints, and no fixture authority fabrication.
+- `tests/prompt_ir_authority_fixture.py` and `tests/test_media_validation_promotion_contract.py`: isolate each fixture by scene/materialization scope and preserve the real current authority lineage.
 - `artifacts/e2e-production-pilot/phase_j2_3_fixture_authority_boundary_audit.json`: fixture boundary and Phase I evidence.
 
 ## Verification
@@ -28,13 +29,9 @@ This round closes the Media Authority currentness fail open and corrects the fix
 - Phase I pilot: `1 passed` (`tests/test_phase_i_official_media_binding.py`).
 - Web: `npm test` — 51 files / 301 tests passed; `npm run build` — passed.
 - Migration: `MIGRATION_CHAIN_HARDENING_READY`; `migration_application_runtime_imports = 0`.
-- Full backend final-head rerun: `1756 passed, 8 failed` (1764 collected; warnings omitted from the count). The eight failures are existing baseline/configuration or fixture-isolation failures:
+- Full backend final-head rerun: `1760 passed, 4 failed` (1764 collected; warnings omitted from the count). The four failures are existing baseline/configuration failures:
   - `tests/test_director_quality_v24_offline_replay.py::test_offline_replay_emits_provenance_reports_and_nonempty_gate_reasons`
   - `tests/test_director_quality_v3_final_spine_topology_preflight_wiring.py::test_authorized_real_path_requires_entire_worktree_clean`
-  - `tests/test_media_validation_promotion_contract.py::test_two_different_candidates_create_explicit_revisions_and_one_pointer`
-  - `tests/test_media_validation_promotion_contract.py::test_prompt_ir_revision_makes_validation_stale_before_promotion`
-  - `tests/test_media_validation_promotion_contract.py::test_generation_policy_revision_makes_validation_stale_before_promotion`
-  - `tests/test_media_validation_promotion_contract.py::test_asset_revision_makes_validation_stale_before_promotion`
   - `tests/test_real_llm_gray_selection.py::test_default_scope_uses_active_registry`
   - `tests/test_targeted_missing_fact_api.py::test_targeted_missing_fact_api_is_provider_free_and_fail_closed`
 - The two Phase E artifact regression nodes pass after refreshing the real Phase B→E artifacts.
@@ -42,5 +39,3 @@ This round closes the Media Authority currentness fail open and corrects the fix
 ## Boundary
 
 J3 provider convergence, real media generation, and full production acceptance remain outside this phase. Production migration was not run; migration verification used disposable SQLite databases only.
-
-\r\n
