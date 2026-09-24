@@ -167,6 +167,21 @@ class PublicAssetStorageTests(unittest.TestCase):
         self.assertTrue(data.startswith(b"\x89PNG\r\n\x1a\n"))
         self.assertEqual(content_type, "image/png")
 
+    def test_absolute_local_media_path_is_read_before_posix_url_resolution(self):
+        media_dir = Path(config.UPLOAD_DIR) / "generated-media"
+        media_dir.mkdir(parents=True, exist_ok=True)
+        path = media_dir / "unit-generated-media-direct-read.png"
+        path.write_bytes(b"\x89PNG\r\n\x1a\nunit-test")
+        try:
+            with patch("core.public_asset_storage._download_bytes") as download:
+                data, content_type = _load_source_bytes(str(path), local_base_url="http://127.0.0.1:18765")
+        finally:
+            path.unlink(missing_ok=True)
+
+        download.assert_not_called()
+        self.assertTrue(data.startswith(b"\x89PNG\r\n\x1a\n"))
+        self.assertEqual(content_type, "image/png")
+
     def test_shapi_gemini_prepares_bound_manual_reference_as_data_uri(self):
         media_dir = Path(config.UPLOAD_DIR) / "manual-media"
         media_dir.mkdir(parents=True, exist_ok=True)

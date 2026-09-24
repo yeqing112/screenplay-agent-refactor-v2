@@ -351,6 +351,15 @@ def _load_source_bytes(
         data = path.read_bytes()
         content_type = mimetypes.guess_type(str(path))[0] or "application/octet-stream"
         return data, content_type
+    # Persisted generated media is passed back through this helper as an
+    # absolute filesystem path.  On POSIX, such paths also start with "/";
+    # check an existing file before treating a leading slash as an API-local
+    # URL, otherwise CI would try to fetch /home/runner/... over HTTP.
+    local_path = Path(source_url)
+    if local_path.is_absolute() and local_path.is_file():
+        data = local_path.read_bytes()
+        content_type = mimetypes.guess_type(str(local_path))[0] or "application/octet-stream"
+        return data, content_type
     if source_url.startswith("/"):
         base_url = (local_base_url or config.PUBLIC_ASSET_LOCAL_BASE_URL or "").rstrip("/") + "/"
         return _download_bytes(urljoin(base_url, source_url.lstrip("/")), headers=headers)
