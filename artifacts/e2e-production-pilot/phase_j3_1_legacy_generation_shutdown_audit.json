@@ -1,6 +1,10 @@
 {
   "schema_version": "phase_j3_1_legacy_generation_shutdown_audit_v1",
   "legacy_generation_http_reachable": false,
+  "tested_legacy_aliases": [
+    "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame",
+    "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video"
+  ],
   "no_profile_generation_fail_closed": true,
   "no_profile_error_code": "PRODUCTION_MODEL_SELECTION_REQUIRED",
   "legacy_queue_production_callsites": 0,

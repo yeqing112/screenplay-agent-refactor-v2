@@ -97,22 +97,27 @@ def test_canonical_video_transport_submits_once_and_polls_without_resubmit(monke
     assert calls == {"submit": 1, "poll": 1}
 
 
-def test_storyboard_alias_without_profile_fails_closed_before_legacy_queue(monkeypatch):
+@pytest.mark.parametrize(
+    ("endpoint", "target_media"),
+    [
+        (server.generate_storyboard_frame, "IMAGE"),
+        (server.generate_storyboard_video, "VIDEO"),
+    ],
+)
+def test_storyboard_alias_without_profile_fails_closed_before_legacy_queue(monkeypatch, endpoint, target_media):
     async def queue_must_not_run(*_args, **_kwargs):
         raise AssertionError("legacy queue must be unreachable")
 
     monkeypatch.setattr(server, "_queue_storyboard_generation_task", queue_must_not_run)
     request = server.StoryboardGenerationRequest()
     with pytest.raises(HTTPException) as exc:
-        asyncio.run(
-            server._delegate_storyboard_generation_to_canonical(
-                1, 1, "101", request, target_media="IMAGE", bg=server.BackgroundTasks()
-            )
-        )
+        asyncio.run(endpoint(1, 1, "101", request, server.BackgroundTasks()))
     assert exc.value.status_code == 409
     assert exc.value.detail["code"] == "PRODUCTION_MODEL_SELECTION_REQUIRED"
     assert exc.value.detail["provider_calls"] == 0
     assert exc.value.detail["creative_task_created"] is False
+    assert exc.value.detail["media_written"] is False
+    assert target_media in {"IMAGE", "VIDEO"}
 
 
 def test_real_video_profile_without_explicit_transport_binding_fails_closed(monkeypatch):
