@@ -1537,7 +1537,14 @@ async def generate_image_asset(
     aspect_ratio: str | None,
     negative_prompt: str | None = None,
     reference_images: list[dict[str, Any]] | None = None,
+    runtime_credential: str | None = None,
 ) -> dict[str, Any]:
+    # Canonical production callers resolve credentials through
+    # RuntimeCredentialResolver and pass the short-lived value separately.
+    # Keep the registry projection secret-free; provider-specific transports
+    # receive an ephemeral shallow copy only at this boundary.
+    if runtime_credential is not None:
+        profile = {**profile, "api_key": runtime_credential}
     if profile.get("provider") == MOCK_PROVIDER:
         raise ModelProfileError("Mock provider 应由原型任务适配器处理。")
     if profile.get("provider") == POYO_ASYNC_PROVIDER:

@@ -2869,6 +2869,9 @@ export default function ProductWorkspaceStoryboardSection({
       generationChain?: string | null
       promptVersion?: number | null
       taskId?: string | null
+      executionId?: string | null
+      candidateId?: string | null
+      candidateStatus?: string | null
     },
   ) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
@@ -2880,6 +2883,9 @@ export default function ProductWorkspaceStoryboardSection({
       generationChain: options?.generationChain ?? null,
       promptVersion: options?.promptVersion ?? null,
       taskId: options?.taskId ?? null,
+      executionId: options?.executionId ?? null,
+      candidateId: options?.candidateId ?? null,
+      candidateStatus: options?.candidateStatus ?? null,
       updatedAt: new Date().toISOString(),
     })
     setRuntimeVersion((current) => current + 1)
@@ -3175,6 +3181,28 @@ export default function ProductWorkspaceStoryboardSection({
       }
 
       const payload = await response.json()
+      // Canonical production generation returns the durable Execution and
+      // Candidate projection directly. It is not a legacy background task,
+      // so keep the UI status bound to those records instead of inventing a
+      // task id or reading legacy storyboard media fields.
+      if (payload?.execution && !payload?.task_id) {
+        const executionStatus = String(payload.execution.status || '').toUpperCase()
+        if (executionStatus === 'SUCCEEDED' || payload.candidate) {
+          setGenerationState('success')
+          setGenerationMessage(`${labels.success}（候选结果，待显式采纳）`)
+          persistShotExecutionSummary(kind, kind === 'frame'
+            ? chainMeta?.generationChain === 'recompile_then_frame' ? '重编后生成首帧' : '生成首帧'
+            : chainMeta?.generationChain === 'recompile_then_video' ? '重编后继续生成视频' : '生成视频', {
+            generationChain: chainMeta?.generationChain ?? (kind === 'frame' ? 'storyboard_generate_frame' : 'storyboard_generate_video'),
+            executionId: payload.execution.execution_id,
+            candidateId: payload.candidate?.candidate_id,
+            candidateStatus: payload.candidate?.status || 'MEDIA_CANDIDATE',
+          })
+          await onRefresh()
+          return
+        }
+        throw new Error(String(payload.execution.failure_message || 'Canonical generation did not produce a media candidate.'))
+      }
       const taskId = String(payload?.task_id || '').trim()
       if (!taskId) {
         throw new Error(`\u672a\u80fd\u83b7\u53d6${labels.noun}\u4efb\u52a1\u53f7\u3002`)

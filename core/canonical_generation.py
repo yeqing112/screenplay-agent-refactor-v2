@@ -33,6 +33,11 @@ class ProductionGenerationSelection:
     def from_request(cls, *, book_id: int, episode: int, storyboard_shot_id: int, target_media: Any, model_profile_id: Any, generation_mode: Any = None) -> "ProductionGenerationSelection":
         if not str(model_profile_id or "").strip():
             raise CanonicalGenerationContractError("PRODUCTION_MODEL_SELECTION_REQUIRED", "Production generation requires an explicit model_profile_id.")
+        # The production boundary is stricter than the internal PromptIR
+        # normalizer: lowercase aliases and AUTO/DEFAULT are not execution
+        # truth and must fail closed.
+        if not isinstance(target_media, str) or target_media not in {"IMAGE", "VIDEO"}:
+            raise CanonicalGenerationContractError("GENERATION_MEDIA_SCOPE_MISMATCH", "Production generation requires exact target_media IMAGE or VIDEO.")
         try:
             media = canonical_target_media(target_media)
         except Exception as exc:
@@ -55,7 +60,7 @@ class ProductionGenerationSelection:
         return fingerprint(self.as_dict())
 
 
-def canonical_request_fingerprint(*, selection: ProductionGenerationSelection, prompt_ir_payload_hash: str, prompt_ir_version_id: int, generation_payload_fingerprint: str, generation_policy_fingerprint: str, model_profile_fingerprint: str, adapter_id: str, adapter_version: str, reference_bindings_fingerprint: str = "", source_binding: dict[str, Any] | None = None) -> str:
+def canonical_request_fingerprint(*, selection: ProductionGenerationSelection, prompt_ir_payload_hash: str, prompt_ir_version_id: int, generation_payload_fingerprint: str, generation_policy_fingerprint: str, model_profile_fingerprint: str, adapter_id: str, adapter_version: str, asset_bindings_fingerprint: str = "", reference_bindings_fingerprint: str = "", source_binding: dict[str, Any] | None = None) -> str:
     """Build the secret-free request identity shared by preview and execute."""
     return fingerprint({
         "schema_version": "canonical_generation_request_v1",
@@ -68,6 +73,7 @@ def canonical_request_fingerprint(*, selection: ProductionGenerationSelection, p
         "model_profile_fingerprint": model_profile_fingerprint,
         "adapter_id": adapter_id,
         "adapter_version": adapter_version,
+        "asset_bindings_fingerprint": asset_bindings_fingerprint,
         "reference_bindings_fingerprint": reference_bindings_fingerprint,
         "source_binding": source_binding or {},
     })

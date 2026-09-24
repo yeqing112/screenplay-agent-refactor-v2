@@ -111,6 +111,13 @@ def _error(status: int, code: str, message: str, **extra: Any) -> HTTPException:
     return HTTPException(status_code=status, detail={"code": code, "message": message, **extra})
 
 
+def _exact_target_media(value: Any) -> str:
+    """Validate the external production media scope without aliasing it."""
+    if not isinstance(value, str) or value not in {"IMAGE", "VIDEO"}:
+        raise _error(409, "GENERATION_MEDIA_SCOPE_MISMATCH", "target_media must be exactly IMAGE or VIDEO.", provider_calls=0)
+    return value
+
+
 def _json(value: Any, fallback: Any) -> Any:
     if isinstance(value, (dict, list)):
         return value
@@ -123,7 +130,7 @@ def _json(value: Any, fallback: Any) -> Any:
 
 def _redact(value: Any, *, key: str = "") -> Any:
     lowered = key.lower()
-    if any(token in lowered for token in ("api_key", "authorization", "bearer", "password", "secret")):
+    if any(token in lowered for token in ("api_key", "authorization", "bearer", "password", "secret", "runtime_credential_value")):
         return "<redacted>"
     if isinstance(value, dict):
         return {str(k): _redact(v, key=str(k)) for k, v in value.items()}
@@ -193,7 +200,7 @@ def _reference_images(session: Any, bindings: list[dict[str, Any]]) -> list[dict
     return output
 
 
-def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], payload: dict[str, Any], reference_bindings: list[dict[str, Any]], target_media: str = "IMAGE", source_binding: dict[str, Any] | None = None) -> dict[str, Any]:
+def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], payload: dict[str, Any], reference_bindings: list[dict[str, Any]], target_media: str = "IMAGE", source_binding: dict[str, Any] | None = None, asset_bindings_fingerprint: str = "") -> dict[str, Any]:
     request = payload.get("request") if isinstance(payload.get("request"), dict) else {}
     # motion_prompt is retained explicitly; the provider bridge combines it
     # with the static prompt without inventing new creative content.
@@ -209,6 +216,7 @@ def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], paylo
         "transport_config": execution_profile.get("transport_config") or {},
         "credential": execution_profile.get("credential") or {},
         "target_media": target_media,
+        "asset_bindings_fingerprint": asset_bindings_fingerprint,
         "generation_mode": str(payload.get("generation_policy", {}).get("mode") or ""),
         "duration_seconds": request.get("duration_seconds"),
         "aspect_ratio": request.get("aspect_ratio"),
@@ -354,6 +362,7 @@ def _resolve_execution_inputs(session: Any, *, book_id: int, episode: int, shot_
         "pointer": pointer,
         "resolved": resolved,
         "profile": profile,
+        "runtime_credential_value": profile.get("runtime_credential_value"),
         "phase_profile": phase_profile,
         "profile_fingerprint": profile_fp,
         "adapter": adapter,
@@ -373,15 +382,15 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str) -> t
     the structured profile binding and never inferred from provider/model
     strings.
     """
+    if not str(model_profile_id or "").strip():
+        raise _error(409, "PRODUCTION_MODEL_SELECTION_REQUIRED", "Production generation requires an explicit model_profile_id.", provider_calls=0)
     profile = get_profile(model_profile_id)
     if not profile:
         raise _error(409, "MODEL_PROFILE_NOT_FOUND", "The explicit production model profile does not exist.", provider_calls=0)
     if not profile.get("enabled", True):
         raise _error(409, "MODEL_PROFILE_STALE", "The selected production model profile is disabled.", provider_calls=0)
-    media = str(target_media or "").upper()
+    media = _exact_target_media(target_media)
     capability = "IMAGE_GENERATION" if media == "IMAGE" else "VIDEO_GENERATION" if media == "VIDEO" else ""
-    if media not in {"IMAGE", "VIDEO"}:
-        raise _error(409, "GENERATION_MEDIA_SCOPE_MISMATCH", "Production target_media must be IMAGE or VIDEO.", provider_calls=0)
     if str(profile.get("generation_capability") or "") != capability:
         raise _error(409, "MODEL_CAPABILITY_MISMATCH", "ModelProfile capability does not match target_media.", provider_calls=0)
     adapter_id = str(profile.get("adapter_id") or "").strip()
@@ -412,10 +421,14 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str) -> t
         )
     except ProviderExecutionProfileError as exc:
         raise _error(409, exc.code, str(exc), field=exc.field, provider_calls=0) from exc
-    profile = dict(profile)
+    # Do not carry a registry plaintext key into the canonical context.  The
+    # resolver result is kept only as a short-lived transport input and never
+    # enters the execution snapshot or profile fingerprint.
+    profile = {key: value for key, value in profile.items() if key != "api_key"}
     profile["provider_execution_profile"] = canonical_profile
     profile["phase_j3_canonical"] = True
     profile["credential_audit"] = runtime_credential.audit()
+    profile["runtime_credential_value"] = runtime_credential.value
     phase_profile = build_model_profile(
         {
             "model_family": adapter.get("model_family"),
@@ -477,9 +490,7 @@ def _resolve_canonical_execution_inputs(
     """Resolve all current authority inputs for both IMAGE and VIDEO."""
     from api.prompt_ir_authority_api import _load_current, _production_asset_authority
 
-    media = str(target_media or "").upper()
-    if media not in {"IMAGE", "VIDEO"}:
-        raise _error(409, "GENERATION_MEDIA_SCOPE_MISMATCH", "target_media must be explicitly IMAGE or VIDEO.", provider_calls=0)
+    media = _exact_target_media(target_media)
     profile, phase_profile, adapter, profile_fp = _resolve_canonical_profile(model_profile_id, target_media=media)
     try:
         selection = ProductionGenerationSelection.from_request(
@@ -534,8 +545,9 @@ def _resolve_canonical_execution_inputs(
         raise _error(409, "GENERATION_PAYLOAD_NOT_READY", "Current PromptIR cannot produce a ready GenerationPayload.", diagnostics=payload.get("readiness", {}).get("reasons", []), provider_calls=0)
     reference_bindings = payload.get("request", {}).get("reference_bindings", []) if isinstance(payload.get("request"), dict) else []
     reference_images = _reference_images(session, reference_bindings)
+    asset_bindings_fp = fingerprint(payload.get("asset_authority_bindings") or resolved["payload"].get("asset_authority_bindings") or {})
     reference_fp = fingerprint([{"authority_fingerprint": item.get("reference_authority_fingerprint") or item.get("reference_authority_ref")} for item in reference_bindings])
-    snapshot = _request_snapshot(profile=profile, adapter=adapter, payload=payload, reference_bindings=reference_bindings, target_media=media, source_binding=source_binding)
+    snapshot = _request_snapshot(profile=profile, adapter=adapter, payload=payload, reference_bindings=reference_bindings, target_media=media, source_binding=source_binding, asset_bindings_fingerprint=asset_bindings_fp)
     if source_storage:
         snapshot["source_storage_identity"] = source_storage
     payload_fp = str(payload.get("generation_payload_fingerprint") or "")
@@ -557,6 +569,7 @@ def _resolve_canonical_execution_inputs(
         model_profile_fingerprint=profile_fp,
         adapter_id=str(adapter.get("adapter_id") or ""),
         adapter_version=str(adapter.get("adapter_version") or ""),
+        asset_bindings_fingerprint=asset_bindings_fp,
         reference_bindings_fingerprint=reference_fp,
         source_binding=source_binding,
     )
@@ -572,11 +585,13 @@ def _resolve_canonical_execution_inputs(
         "policy": policy,
         "reference_images": reference_images,
         "reference_bindings_fingerprint": reference_fp,
+        "asset_bindings_fingerprint": asset_bindings_fp,
         "request_snapshot": snapshot,
         "provider_request_fingerprint": provider_request_fp,
         "target_media": media,
         "source_binding": source_binding,
         "source_storage_identity": source_storage,
+        "runtime_credential_value": profile.get("runtime_credential_value"),
     }
 
 
@@ -693,6 +708,7 @@ async def _call_provider(*, context: dict[str, Any]) -> dict[str, Any]:
             aspect_ratio=None,
             negative_prompt=negative,
             reference_images=context["reference_images"],
+            runtime_credential=context.get("runtime_credential_value"),
         )
     except ModelProfileError:
         raise
@@ -837,6 +853,34 @@ def _serialize_execution(row: GenerationExecutionRecord) -> dict[str, Any]:
     }
 
 
+def _canonical_preview_metadata(context: dict[str, Any]) -> dict[str, Any]:
+    payload = context.get("payload") if isinstance(context.get("payload"), dict) else {}
+    readiness = payload.get("readiness") if isinstance(payload.get("readiness"), dict) else {}
+    adapter = context.get("adapter") if isinstance(context.get("adapter"), dict) else {}
+    resolved = context.get("resolved") if isinstance(context.get("resolved"), dict) else {}
+    version = resolved.get("version")
+    authority = resolved.get("authority")
+    return {
+        "target_media": context.get("target_media"),
+        "model_profile_id": context.get("profile", {}).get("id") if isinstance(context.get("profile"), dict) else None,
+        "model_profile_fingerprint": context.get("profile_fingerprint"),
+        "adapter_id": adapter.get("adapter_id"),
+        "adapter_version": adapter.get("adapter_version"),
+        "generation_payload_fingerprint": payload.get("generation_payload_fingerprint"),
+        "request_fingerprint": context.get("provider_request_fingerprint"),
+        "authority_fingerprints": {
+            "prompt_ir_version_id": getattr(version, "id", None),
+            "prompt_ir_payload_hash": getattr(version, "payload_hash", None),
+            "prompt_ir_authority_id": getattr(authority, "id", None),
+            "asset_bindings_fingerprint": context.get("asset_bindings_fingerprint", ""),
+            "reference_bindings_fingerprint": context.get("reference_bindings_fingerprint", ""),
+            "source_binding": context.get("source_binding"),
+        },
+        "ready": bool(readiness.get("ready")),
+        "blocking_reasons": readiness.get("reasons", []) if isinstance(readiness.get("reasons", []), list) else [],
+    }
+
+
 def _validate_candidate_lineage(execution: GenerationExecutionRecord, candidate: MediaCandidateRecord | None) -> None:
     """Validate the durable candidate binding before any successful replay."""
     if candidate is None:
@@ -949,9 +993,7 @@ def preview_generation_canary(book_id: int, episode: int, shot_id: int, req: Can
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation/preview")
 def preview_canonical_generation(book_id: int, episode: int, shot_id: int, req: CanonicalPreviewRequest):
     """Preview the single production IMAGE/VIDEO generation path."""
-    target_media = str(req.target_media or "").upper()
-    if target_media not in {"IMAGE", "VIDEO"}:
-        raise _error(409, "GENERATION_MEDIA_SCOPE_MISMATCH", "target_media must be explicitly IMAGE or VIDEO.", provider_calls=0)
+    target_media = _exact_target_media(req.target_media)
     with Session() as session:
         context = _resolve_canonical_execution_inputs(
             session,
@@ -969,6 +1011,7 @@ def preview_canonical_generation(book_id: int, episode: int, shot_id: int, req: 
             return {
                 "execution": _serialize_execution(existing),
                 "candidate": _serialize_candidate(candidate),
+                **_canonical_preview_metadata(context),
                 "generation_payload": context["payload"],
                 "provider_request_snapshot": _redact(context["request_snapshot"]),
                 "confirmation_token": token,
@@ -1016,10 +1059,11 @@ def preview_canonical_generation(book_id: int, episode: int, shot_id: int, req: 
             if existing is None:
                 raise
             candidate = session.query(MediaCandidateRecord).filter_by(execution_id=existing.execution_id).first()
-            return {"execution": _serialize_execution(existing), "candidate": _serialize_candidate(candidate), "provider_calls": 0, "reused": True, "media_generated": candidate is not None}
+            return {"execution": _serialize_execution(existing), "candidate": _serialize_candidate(candidate), **_canonical_preview_metadata(context), "provider_calls": 0, "reused": True, "media_generated": candidate is not None}
         return {
             "execution": _serialize_execution(row),
             "generation_payload": context["payload"],
+            **_canonical_preview_metadata(context),
             "provider_request_snapshot": _redact(context["request_snapshot"]),
             "confirmation_token": token,
             "provider_calls": 0,
@@ -1028,8 +1072,8 @@ def preview_canonical_generation(book_id: int, episode: int, shot_id: int, req: 
         }
 
 
-@router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/execute")
-async def execute_generation_canary(book_id: int, episode: int, shot_id: int, req: CanaryExecuteRequest):
+async def _execute_generation_canary_impl(book_id: int, episode: int, shot_id: int, req: CanaryExecuteRequest, *, _canonical: bool = False):
+    stale_code = "GENERATION_PREVIEW_STALE" if _canonical else "GENERATION_CANARY_STALE"
     if not req.execute:
         raise _error(409, "GENERATION_CANARY_EXECUTE_REQUIRED", "Canary execution requires execute=true.", provider_calls=0)
     with Session() as session:
@@ -1062,7 +1106,7 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
         if row.status == "FAILED":
             raise _error(409, "GENERATION_CANARY_FAILED_REQUIRES_NEW_CONFIRMATION", "A failed execution cannot be retried with the same preview.", provider_calls=0)
         if row.status not in {"PREVIEWED", "AUTHORIZED", "SUCCEEDED", "REUSED"}:
-            raise _error(409, "GENERATION_CANARY_STALE", "The preview is no longer executable.", provider_calls=0)
+            raise _error(409, stale_code, "The preview is no longer executable.", provider_calls=0)
         try:
             if str(row.target_media or "IMAGE").upper() == "VIDEO":
                 context = _resolve_canonical_execution_inputs(
@@ -1074,15 +1118,28 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
                     model_profile_id=row.model_profile_id,
                 )
             else:
-                context = _resolve_execution_inputs(session, book_id=book_id, episode=episode, shot_id=shot_id, adapter_id=row.provider_adapter_id, model_profile_id=row.model_profile_id)
+                # Canonical IMAGE execution must re-resolve through the same
+                # profile-bound Production Generation path as VIDEO. The
+                # legacy resolver remains available only for compatibility.
+                if _canonical:
+                    context = _resolve_canonical_execution_inputs(
+                        session,
+                        book_id=book_id,
+                        episode=episode,
+                        shot_id=shot_id,
+                        target_media="IMAGE",
+                        model_profile_id=row.model_profile_id,
+                    )
+                else:
+                    context = _resolve_execution_inputs(session, book_id=book_id, episode=episode, shot_id=shot_id, adapter_id=row.provider_adapter_id, model_profile_id=row.model_profile_id)
         except HTTPException as exc:
             row.status = "STALE"
-            row.failure_code = "GENERATION_CANARY_STALE"
+            row.failure_code = stale_code
             row.failure_message = "Current authority could not be resolved from the preview snapshot."
             row.updated_at = datetime.utcnow()
             session.commit()
             diagnostics = exc.detail if isinstance(exc.detail, dict) else {"detail": str(exc.detail)}
-            raise _error(409, "GENERATION_CANARY_STALE", "Current authority could not be resolved from the preview snapshot.", diagnostics=diagnostics, provider_calls=0)
+            raise _error(409, stale_code, "Current authority could not be resolved from the preview snapshot.", diagnostics=diagnostics, provider_calls=0)
         drift_fields = {
             "prompt_ir_payload_hash": (row.prompt_ir_payload_hash, str(context["resolved"]["version"].payload_hash or "")),
             "generation_payload_fingerprint": (row.generation_payload_fingerprint, str(context["payload"].get("generation_payload_fingerprint") or "")),
@@ -1091,21 +1148,27 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
             "provider_request_fingerprint": (row.provider_request_fingerprint, context["provider_request_fingerprint"]),
             "reference_bindings_fingerprint": (row.reference_bindings_fingerprint, context["reference_bindings_fingerprint"]),
         }
+        if _canonical or context.get("asset_bindings_fingerprint"):
+            preview_snapshot = _json(row.request_snapshot_json, {})
+            drift_fields["asset_bindings_fingerprint"] = (
+                preview_snapshot.get("asset_bindings_fingerprint") if isinstance(preview_snapshot, dict) else "",
+                context.get("asset_bindings_fingerprint") or "",
+            )
         changed = [key for key, (before, after) in drift_fields.items() if str(before or "") != str(after or "")]
         if changed:
             row.status = "STALE"
-            row.failure_code = "GENERATION_CANARY_STALE"
+            row.failure_code = stale_code
             row.failure_message = "Preview authority changed: " + ", ".join(changed)
             row.updated_at = datetime.utcnow()
             session.commit()
-            raise _error(409, "GENERATION_CANARY_STALE", "Preview authority changed; create a new preview.", changed=changed, provider_calls=0)
+            raise _error(409, stale_code, "Preview authority changed; create a new preview.", changed=changed, provider_calls=0)
         if int(row.storyboard_shot_id) != int(context["row"].id):
             row.status = "STALE"
             row.failure_code = "GENERATION_CANARY_SHOT_MISMATCH"
             row.failure_message = "Preview execution is bound to a different StoryboardShot."
             row.updated_at = datetime.utcnow()
             session.commit()
-            raise _error(409, "GENERATION_CANARY_STALE", "Preview execution is bound to a different shot.", provider_calls=0)
+            raise _error(409, stale_code, "Preview execution is bound to a different shot.", provider_calls=0)
         # Replay is permitted only after the same currentness checks as a new
         # execution, and only when the candidate lineage is self-consistent.
         if row.status in {"SUCCEEDED", "REUSED"}:
@@ -1230,6 +1293,11 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
             raise _error(502, "GENERATION_EXECUTION_FAILED", str(exc)[:500], provider_calls=1, retry_calls=0)
 
 
+@router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/execute")
+async def execute_generation_canary(book_id: int, episode: int, shot_id: int, req: CanaryExecuteRequest):
+    return await _execute_generation_canary_impl(book_id, episode, shot_id, req)
+
+
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation/execute")
 async def execute_canonical_generation(book_id: int, episode: int, shot_id: int, req: CanonicalExecuteRequest):
     """Execute a confirmed canonical preview through the shared state machine."""
@@ -1240,7 +1308,14 @@ async def execute_canonical_generation(book_id: int, episode: int, shot_id: int,
         confirmation_token=req.confirmation_token,
         preview_execution_id=req.preview_execution_id,
     )
-    return await execute_generation_canary(book_id, episode, shot_id, delegated)
+    return await _execute_generation_canary_impl(book_id, episode, shot_id, delegated, _canonical=True)
 
 
-__all__ = ["router", "CanaryPreviewRequest", "CanaryExecuteRequest", "CanonicalPreviewRequest", "CanonicalExecuteRequest"]
+# Stable service names for new integrations.  The route handlers retain the
+# explicit canonical wording for backwards compatibility with the J3 review
+# artifacts, while callers do not need to depend on a phase label.
+preview_generation = preview_canonical_generation
+execute_generation = execute_canonical_generation
+
+
+__all__ = ["router", "CanaryPreviewRequest", "CanaryExecuteRequest", "CanonicalPreviewRequest", "CanonicalExecuteRequest", "preview_generation", "execute_generation"]

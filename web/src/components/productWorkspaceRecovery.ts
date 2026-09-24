@@ -27,6 +27,9 @@ export type ShotExecutionSummary = {
   generationChain?: string | null
   promptVersion?: number | null
   taskId?: string | null
+  executionId?: string | null
+  candidateId?: string | null
+  candidateStatus?: string | null
   updatedAt: string
 }
 

@@ -213,7 +213,8 @@ def test_image_to_video_binding_is_structured_and_current_authority_bound():
     db.add_all([version, authority])
     db.flush()
     pointer = OfficialMediaPointer(book_id=77, episode=1, storyboard_shot_id=7, media_role="SHOT_PRIMARY_IMAGE", official_media_version_id=version.official_media_version_id, authority_id=authority.authority_id, fingerprint="pointer-fp", created_at=now, updated_at=now)
-    db.add(pointer)
+    prompt_pointer = PromptIRPointer(book_id=77, episode=1, storyboard_shot_id=7, target_media="IMAGE", prompt_ir_version_id=prompt.id, payload_hash=prompt.payload_hash, qualification_state="PROMPT_IR_QUALIFIED", created_at=now, updated_at=now)
+    db.add_all([pointer, prompt_pointer])
     execution = SimpleNamespace(book_id=77, episode=1, storyboard_shot_id=7, target_media="VIDEO")
     binding = build_image_to_video_source_binding(official_media_authority=authority, official_media_version=version)
     assert binding["authority_class"] == "OFFICIAL_MEDIA"

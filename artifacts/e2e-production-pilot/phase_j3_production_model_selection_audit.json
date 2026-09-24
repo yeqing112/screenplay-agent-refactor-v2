@@ -6,7 +6,10 @@
     "target_media": ["IMAGE", "VIDEO"],
     "adapter_id_caller_supplied": false,
     "generation_mode_caller_supplied_optional": true,
-    "fingerprint_schema": "canonical_generation_request_v1"
+    "fingerprint_schema": "canonical_generation_request_v1",
+    "explicit_selection_required": true,
+    "registry_default_forbidden": true,
+    "caller_adapter_injection_forbidden": true
   },
   "profile_binding": {
     "image": {
@@ -28,11 +31,18 @@
     "MODEL_CAPABILITY_MISMATCH",
     "MODEL_ADAPTER_NOT_RESOLVED",
     "PRODUCTION_MODEL_SELECTION_REQUIRED",
-    "GENERATION_MEDIA_SCOPE_MISMATCH"
+    "GENERATION_MEDIA_SCOPE_MISMATCH",
+    "GENERATION_PREVIEW_STALE"
   ],
+  "authority_checks": {
+    "profile_currentness": true,
+    "capability_match": true,
+    "configured_resolved_validated_separated": true,
+    "asset_bindings_fingerprint_bound": true
+  },
   "evidence": {
     "targeted_tests": "tests/test_phase_j3_canonical_generation.py",
-    "targeted_result": "4 passed",
+    "targeted_result": "15 passed",
     "provider_calls": 0,
     "image_calls": 0,
     "video_calls": 0,

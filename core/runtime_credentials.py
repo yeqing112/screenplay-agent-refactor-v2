@@ -73,7 +73,11 @@ def resolve_runtime_credential(
 
     provider = str(profile.get("provider") or "").strip()
     configured = bool(profile.get("credential_configured", profile.get("key_configured", False)))
-    if provider == "prototype-task-adapter" and allow_mock:
+    # An injected resolver is the formal test/operations boundary and always
+    # wins, including for deterministic mock profiles.  The built-in fixture
+    # fallback is intentionally narrow and never reads a registry plaintext
+    # key; real profiles must use an explicit resolver or environment ref.
+    if resolver is None and provider == "prototype-task-adapter" and allow_mock:
         runtime = RuntimeCredential(ref, "mock-runtime-credential", True, True, True)
         return runtime
     if not configured:

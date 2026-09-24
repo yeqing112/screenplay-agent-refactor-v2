@@ -33,15 +33,15 @@ acceptance.
 
 ## Evidence
 
-- J3 targeted tests: `4 passed`.
-- Existing J3/Phase F and authority regression subsets were previously green;
-  the current targeted J3 run made `0` external calls.
-- Full `npm run check:production`: `1762 passed, 6 failed`. The six failures
-  are pre-existing director-quality-v3 authority artifact field omissions
-  (`tests/test_director_quality_v3_fact_coverage_foundation.py`,
+- J3 targeted tests: `15 passed` (`tests/test_phase_j3_canonical_generation.py`).
+- Phase F/J2 regression subset: `42 passed`.
+- Full `npm run check:production`: `1773 passed, 6 failed`. The six failures
+  are unrelated director-quality-v3 authority artifact assertions in
+  `tests/test_director_quality_v3_fact_coverage_foundation.py`,
   `tests/test_director_quality_v3_fact_semantic_grounding.py` and
-  `tests/test_director_quality_v3_semantic_verifier_canary.py`); the command
-  stopped during pytest before later steps ran.
+  `tests/test_director_quality_v3_semantic_verifier_canary.py`; they are
+  outside the J3 generation changes and prevent the script from reaching its
+  later Golden/config/release/build steps.
 - Deterministic Golden regression: `5/5`.
 - Runtime configuration verification: `PASS`.
 - Production release gate invariants: `PASS`.
@@ -50,6 +50,9 @@ acceptance.
 - No real Provider, Image, Video or paid LLM call: `0 / 0 / 0 / 0`.
 - VIDEO technical validation requires `ffprobe`; it was available on the
   local machine during the J3 targeted run.
+
+The J3 targeted and subset runs are provider-free and green. The full gate
+remains blocked by the six pre-existing artifact contract failures above.
 
 ## Boundary and follow-up
 

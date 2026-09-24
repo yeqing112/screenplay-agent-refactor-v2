@@ -116,6 +116,12 @@ def validate_image_to_video_source_binding(session: Any, *, execution: Generatio
     version = session.query(OfficialMediaVersion).filter_by(official_media_version_id=str(binding["official_media_version_id"])).first()
     pointer = session.query(OfficialMediaPointer).filter_by(book_id=execution.book_id, episode=execution.episode, storyboard_shot_id=execution.storyboard_shot_id, media_role=str(binding["media_role"])).first()
     prompt = session.query(PromptIRVersion).filter_by(id=int(binding["source_prompt_ir_version_id"])).first()
+    prompt_pointer = session.query(PromptIRPointer).filter_by(
+        book_id=execution.book_id,
+        episode=execution.episode,
+        storyboard_shot_id=execution.storyboard_shot_id,
+        target_media="IMAGE",
+    ).first()
     valid = bool(
         authority and version and pointer and prompt
         and authority.status == "CURRENT"
@@ -132,6 +138,9 @@ def validate_image_to_video_source_binding(session: Any, *, execution: Generatio
         and int(prompt.id) == int(version.prompt_ir_version_id)
         and str(prompt.payload_hash) == str(version.prompt_ir_payload_hash)
         and str(binding["source_prompt_ir_payload_hash"]) == str(version.prompt_ir_payload_hash)
+        and prompt_pointer is not None
+        and int(prompt_pointer.prompt_ir_version_id) == int(version.prompt_ir_version_id)
+        and str(prompt_pointer.payload_hash) == str(version.prompt_ir_payload_hash)
     )
     if not valid:
         _fail("IMAGE_TO_VIDEO_SOURCE_BINDING_INVALID", "IMAGE_TO_VIDEO source is not the current OfficialMedia IMAGE authority for this shot.", {"authority_id": getattr(authority, "authority_id", None), "version_id": getattr(version, "official_media_version_id", None), "pointer_authority_id": getattr(pointer, "authority_id", None), "prompt_id": getattr(prompt, "id", None)})
@@ -287,12 +296,13 @@ def validate_media_candidate_technical(candidate: MediaCandidateRecord) -> dict[
         "duration_observed_ms": duration_ms,
         "duration_valid": (expected_media_type == "IMAGE" and candidate.duration_ms is None and duration_ms is None)
         or (expected_media_type == "VIDEO" and candidate.duration_ms is not None and duration_ms is not None and abs(int(candidate.duration_ms) - int(duration_ms)) <= 100),
+        "storage_identity_valid": bool(str(candidate.storage_identity or "").strip()),
         "storage_valid": bool(source),
         "storage_source": source,
     }
     payload["valid"] = all(
         payload[key]
-        for key in ("bytes_valid", "byte_size_valid", "checksum_valid", "mime_valid", "media_type_valid", "dimensions_valid", "duration_valid", "storage_valid")
+        for key in ("bytes_valid", "byte_size_valid", "checksum_valid", "mime_valid", "media_type_valid", "dimensions_valid", "duration_valid", "storage_identity_valid", "storage_valid")
     )
     payload["technical_validation_fingerprint"] = _fingerprint(payload)
     return payload
