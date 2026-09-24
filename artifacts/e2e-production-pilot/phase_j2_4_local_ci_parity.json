@@ -1,9 +1,9 @@
 {
   "phase": "PHASE_J2_4_PRODUCTION_REGRESSION_GATE_CONVERGENCE",
-  "ci_run_id": "35935293195",
-  "ci_job_id": "107430847693",
-  "ci_commit": "5d17d6169552ee71af34bdeacdb867a007ef6021",
-  "local_head": "5d17d6169552ee71af34bdeacdb867a007ef6021",
+  "ci_run_id": "35936589757",
+  "ci_job_id": "107434875476",
+  "ci_commit": "6c2c7afb50aa234b455a061bc27809a62ac6fe43",
+  "local_head": "6c2c7afb50aa234b455a061bc27809a62ac6fe43",
   "local_targeted_tests": {
     "passed": 52,
     "failed": 0
@@ -16,7 +16,7 @@
   "parity_status": "LOCAL_CI_PARITY_CONFIRMED",
   "remaining_local_failures": [],
   "notes": [
-    "Required Production Regression run 307 completed successfully after the full-history checkout fix.",
+    "Required Production Regression run 309 completed successfully after the full-history checkout and concurrent-promotion fixes.",
     "Local and CI pytest totals match: 1764 passed, 0 failed; no provider, LLM, image, or video call was made."
   ],
   "current_local_full_regression": {

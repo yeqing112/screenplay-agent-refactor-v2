@@ -1,8 +1,8 @@
 {
   "phase": "PHASE_J2_4_PRODUCTION_REGRESSION_GATE_CONVERGENCE",
   "base_commit": "2e2205f",
-  "ci_run_id": "35935293195",
-  "ci_job_id": "107430847693",
+  "ci_run_id": "35936589757",
+  "ci_job_id": "107434875476",
   "ci_result": {
     "passed": 1764,
     "failed": 0,
@@ -28,7 +28,7 @@
       "ci_result": "failed",
       "environment_sensitive": true,
       "production_boundary": "offline replay provenance",
-      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35935293195",
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35936589757",
       "current_local_result": "passed"
     },
     {
@@ -48,7 +48,7 @@
       "ci_result": "failed",
       "environment_sensitive": false,
       "production_boundary": "real-provider authorization preflight",
-      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35935293195",
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35936589757",
       "current_local_result": "passed"
     },
     {
@@ -58,7 +58,7 @@
       "ci_result": "failed",
       "environment_sensitive": true,
       "production_boundary": "base commit immutability gate",
-      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35935293195",
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35936589757",
       "current_local_result": "passed"
     },
     {
@@ -88,7 +88,7 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": false,
       "production_boundary": "provider authorization boundary",
-      "root_cause_status": "local pass; CI confirmed by run 35935293195",
+      "root_cause_status": "local pass; CI confirmed by run 35936589757",
       "current_local_result": "passed"
     },
     {
@@ -128,7 +128,7 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "public asset storage",
-      "root_cause_status": "local pass; CI confirmed by run 35935293195",
+      "root_cause_status": "local pass; CI confirmed by run 35936589757",
       "current_local_result": "passed"
     },
     {
@@ -138,7 +138,7 @@
       "ci_result": "failed",
       "environment_sensitive": false,
       "production_boundary": "real LLM gray selection (provider not invoked)",
-      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35935293195",
+      "root_cause_status": "closed by explicit fixture/configuration or isolation fix; CI confirmed by run 35936589757",
       "current_local_result": "passed"
     },
     {
@@ -148,7 +148,17 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "targeted missing-fact API",
-      "root_cause_status": "local pass; CI confirmed by run 35935293195",
+      "root_cause_status": "local pass; CI confirmed by run 35936589757",
+      "current_local_result": "passed"
+    },
+    {
+      "node_id": "same_candidate_concurrent_promotions",
+      "failure_type": "concurrent_promotion_race",
+      "local_result": "passed_after_fix",
+      "ci_result": "failed_on_run_35935648396",
+      "environment_sensitive": true,
+      "production_boundary": "official media promotion idempotency",
+      "root_cause_status": "fixed: in-process promotion critical section serializes revision calculation and insert; CI confirmed by run 35936589757",
       "current_local_result": "passed"
     }
   ],
@@ -169,11 +179,11 @@
     }
   },
   "status": "CI_CONVERGED_READY_FOR_REVIEW",
-  "ci_commit": "5d17d6169552ee71af34bdeacdb867a007ef6021",
+  "ci_commit": "6c2c7afb50aa234b455a061bc27809a62ac6fe43",
   "ci_verification": {
-    "run_id": "35935293195",
-    "job_id": "107430847693",
-    "commit": "5d17d6169552ee71af34bdeacdb867a007ef6021",
+    "run_id": "35936589757",
+    "job_id": "107434875476",
+    "commit": "6c2c7afb50aa234b455a061bc27809a62ac6fe43",
     "conclusion": "success",
     "pytest_passed": 1764,
     "pytest_failed": 0

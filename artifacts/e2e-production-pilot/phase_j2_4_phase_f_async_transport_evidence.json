@@ -12,5 +12,5 @@
   "evidence": "Local targeted run after dependency pin.",
   "full_production_command": "npm run check:production",
   "full_production_pytest": "1764 passed, 0 failed",
-  "ci_confirmation": "confirmed in Required Production Regression run 35935293195 (job 107430847693, success)"
+  "ci_confirmation": "confirmed in Required Production Regression run 35936589757 (job 107434875476, success)"
 }

@@ -17,6 +17,7 @@ J3 remains blocked and was not started. Provider / LLM / Image / Video external 
 - Removed the negative E2E sample from the default production gray registry.
 - Added test isolation cleanup for orphan FactSnapshot rows and explicit cleanup for the synthetic wrong-book fixture.
 - Configured the required production workflow with `fetch-depth: 0` so frozen provenance commits are available to CI base-commit and provider-free ancestry gates.
+- Serialized concurrent media promotions so the same candidate and validation produce one official version/pointer chain under concurrent requests.
 
 ## Verification
 
@@ -28,7 +29,7 @@ J3 remains blocked and was not started. Provider / LLM / Image / Video external 
 
 ## Required CI
 
-Run `35935293195` / job `107430847693` on commit `5d17d6169552ee71af34bdeacdb867a007ef6021` completed with conclusion **success**: **1764 passed, 0 failed**. The prior shallow-checkout failure was resolved by fetching full history; no test exclusions or bypasses were added.
+Run `35936589757` / job `107434875476` on commit `6c2c7afb50aa234b455a061bc27809a62ac6fe43` completed with conclusion **success**: **1764 passed, 0 failed**. The prior shallow-checkout and concurrent-promotion failures were resolved in the workflow and promotion path; no test exclusions or bypasses were added.
 
 ## Artifacts
 
