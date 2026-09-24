@@ -34,7 +34,23 @@ def _load():
 
 def main() -> int:
     from core.shot_architecture import atomicity_audit, capability_assessment, aggregate_capability, normalize_architecture_ir
-    rows, pointer, raw_path_fn, parse_fn, quality_fn = _load()
+    rows, generated_pointer, raw_path_fn, parse_fn, quality_fn = _load()
+    # The current-stage authority is a shared pointer across several closed
+    # Director V3 layers.  This replay owns only the shot-architecture
+    # validator fields; rebuilding the pointer from its local minimal shape
+    # would erase fact-coverage and semantic-verifier authority recorded by
+    # earlier stages.  Start from the committed pointer and overlay only the
+    # strategy context that this replay refreshes.
+    authority_path = ARTIFACTS / "director-quality-v3-current-stage-authority.json"
+    try:
+        pointer = json.loads(authority_path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        pointer = {}
+    if not isinstance(pointer, dict):
+        pointer = {}
+    for key in ("schema_version", "strategy_layer", "identity_contract", "director_critic_review", "human_preference_review"):
+        if key in generated_pointer:
+            pointer[key] = generated_pointer[key]
     if tuple(r["scene_id"] for r in rows) != SCENES:
         raise RuntimeError("frozen scene order changed")
     assessments = []; results = []; raw_immutable = True
@@ -84,7 +100,7 @@ def main() -> int:
         "production_shotplan": "HOLD",
     }
     pointer["schema_version"] = "director_v3_current_stage_authority_v2"
-    _write(ARTIFACTS / "director-quality-v3-current-stage-authority.json", pointer)
+    _write(authority_path, pointer)
     reaction_contract = {"schema_version": "shot_architecture_reaction_semantics_contract_v1", "stimulus_ref": {"required_for_new_provider_contract": True, "canonical": "shot:SA<n>", "must_precede_reaction": True}, "legacy_without_ref": {"cue_confirmed": ["听到", "听见", "质问后", "询问后", "看到后", "得知后", "发现后", "回应"], "classification": "REACTION_STIMULUS_REVIEW_REQUIRED", "explicit_cue_classification": "REACTION_STIMULUS_CONFIRMED"}, "invalid": ["INVALID_REACTION_ORDER"], "hard_without_stimulus": "REACTION_WITHOUT_STIMULUS"}
     atomic_contract = {"schema_version": "shot_architecture_atomicity_semantics_contract_v2", "classifications": ["ATOMIC_SHOT_PASS", "CONTINUOUS_FRAMING_EVOLUTION", "DEFINITE_COMPOSITE_COVERAGE_BUNDLE", "ATOMICITY_REVIEW_REQUIRED"], "definite_patterns": ["正反打", "A/B", "双机位", "多机位", "先A再切B", "切回A", "切回B"], "continuous_movements": ["PUSH_IN", "PULL_OUT", "DOLLY", "TRACK", "TILT", "PAN", "REFRAME", "HANDHELD_SUBTLE"], "static_transition": "ATOMICITY_REVIEW_REQUIRED"}
     capability_contract = {"schema_version": "shot_architecture_capability_aggregation_contract_v1", "layers": ["STRUCTURAL", "AUTHORITY", "IDENTITY", "COVERAGE", "SPATIAL", "INFORMATION", "TOPOLOGY", "ATOMICITY", "CONTRACT", "CREATIVE"], "per_scene_signals": ["RAW_ARCHITECTURE_INVALID", "RAW_ARCHITECTURE_WEAK", "RAW_ARCHITECTURE_PROMISING_BUT_NEEDS_CONTRACT", "RAW_ARCHITECTURE_USABLE", "RAW_ARCHITECTURE_STRONG"], "aggregate": "distribution_plus_blocking_counts; never weakest-scene-minimum"}
