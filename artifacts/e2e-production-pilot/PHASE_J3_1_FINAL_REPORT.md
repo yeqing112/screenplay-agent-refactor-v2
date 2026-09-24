@@ -3,6 +3,9 @@
 Date: 2026-09-25  
 Branch: `codex/visual-authoring-provider-canary-reconcile`
 
+Validated production HEAD: `bd0920a`  
+Required CI: [run 36036427522](https://github.com/yeqing112/screenplay-agent-refactor-v2/actions/runs/36036427522) — **SUCCESS**
+
 ## Scope
 
 This round closes the production generation boundary around the canonical image/video path. Legacy storyboard aliases now fail closed unless an explicit `model_profile_id` is supplied. Runtime credentials require an explicit resolver and validator binding, and secrets remain runtime-only. Image and video execution are dispatched through the exact provider transport registry.
@@ -21,8 +24,9 @@ Boundary decision: `PHASE_J_CANONICAL_IMAGE_VIDEO_GENERATION_COMPLETE`. The subs
 ## Evidence
 
 - Focused J3/J3.1 boundary, canonical, and public-pilot tests: **28 passed**.
-- Repository-wide `pytest -q`: **1777 passed, 0 failed**.
-- `npm run check:production`: **PASS** from a clean baseline; deterministic regression **1777 passed**, Golden Project **5/5**, runtime configuration verification **PASS**, release-gate invariants **PASS**, and frontend production build **PASS**.
+- Repository-wide `pytest -q`: **1778 passed, 0 failed**.
+- `npm run check:production`: **PASS** from a clean baseline; deterministic regression **1778 passed**, Golden Project **5/5**, runtime configuration verification **PASS**, release-gate invariants **PASS**, and frontend production build **PASS**.
+- Required GitHub Actions production regression run `36036427522` for validated HEAD `bd0920a`: **SUCCESS**; the job summary reports the production gate outcome as `success`.
 - Artifact evidence:
   - `phase_j3_1_legacy_generation_shutdown_audit.json`
   - `phase_j3_1_runtime_credential_validation_audit.json`
@@ -46,5 +50,6 @@ See `phase_j3_1_full_real_e2e_trigger_audit.json` for the readiness matrix and t
 ## Files
 
 - Runtime and API changes: `api/server.py`, `api/model_registry.py`, `core/runtime_credentials.py`, `core/provider_execution_profile.py`, `core/provider_transport_registry.py`
+- Cross-platform regression fix: `core/public_asset_storage.py` now reads existing absolute POSIX media paths as local files before resolving leading-slash API URLs; this keeps the provider-free public pilot portable to Linux CI.
 - Tests: `tests/test_phase_j3_1_boundary_closure.py`, `tests/test_phase_j3_canonical_generation.py`, and `tests/test_phase_j3_1_public_pilot.py`
 - Evidence and topology: the five JSON artifacts listed above and `phase_j3_canonical_generation_topology.md`
