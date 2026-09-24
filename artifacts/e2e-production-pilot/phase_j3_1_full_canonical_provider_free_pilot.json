@@ -1,6 +1,6 @@
 {
   "schema_version": "phase_j3_1_full_canonical_provider_free_pilot_v1",
-  "status": "provider_free_contract_paths_verified",
+  "status": "provider_free_public_temp_db_pilot_verified",
   "external_calls": {
     "provider": 0,
     "image": 0,
@@ -13,14 +13,14 @@
       "generation_mode": "TEXT_TO_IMAGE",
       "preview_execute_candidate": true,
       "replay_provider_calls": 0,
-      "evidence": "tests/test_phase_j3_canonical_generation.py::test_canonical_image_mock_submit_and_candidate"
+      "evidence": "tests/test_phase_j3_1_public_pilot.py::test_public_pilot_reaches_materialization_and_phase_e_without_resolver_monkeypatch"
     },
     {
       "target_media": "VIDEO",
       "generation_mode": "TEXT_TO_VIDEO",
       "preview_execute_candidate": true,
       "replay_provider_calls": 0,
-      "evidence": "tests/test_phase_j3_canonical_generation.py::test_canonical_video_mock_submit_poll_and_candidate"
+      "evidence": "tests/test_phase_j3_1_public_pilot.py::test_public_pilot_reaches_materialization_and_phase_e_without_resolver_monkeypatch"
     },
     {
       "target_media": "VIDEO",
@@ -28,18 +28,26 @@
       "official_source_binding": true,
       "preview_execute_candidate": true,
       "replay_provider_calls": 0,
-      "evidence": "tests/test_phase_j3_canonical_generation.py::test_canonical_image_to_video_uses_official_source_and_one_logical_call"
+      "evidence": "tests/test_phase_j3_1_public_pilot.py::test_public_pilot_reaches_materialization_and_phase_e_without_resolver_monkeypatch"
     }
   ],
   "execution_records_per_path": 1,
   "candidate_records_per_path": 1,
   "official_media_auto_promotion": 0,
+  "public_temp_db": {
+    "scene_blocking_confirmed": true,
+    "shot_plan_confirmed": true,
+    "materialized_shots": 3,
+    "prompt_ir_compiled_shots": 3,
+    "official_image_pointer_created_for_image_to_video": true,
+    "official_media_pointer_count": 1
+  },
   "transport_submit_poll_replay_resubmit": {
     "submit": 1,
     "poll": "one_or_more",
     "replay_submit": 0
   },
   "authority_resolver_monkeypatched": false,
-  "canonical_input_resolver_monkeypatched": true,
-  "note": "The repository state-machine evidence covers all three provider-free media contracts; a separate public temp-DB pilot remains required before claiming full J3.1 completion."
+  "canonical_input_resolver_monkeypatched": false,
+  "note": "The public temporary-DB pilot reaches SceneBlocking confirmation, Phase C authoring confirmation, Storyboard materialization, PromptIR compilation, IMAGE, TEXT_TO_VIDEO, and IMAGE_TO_VIDEO through public preview/execute APIs. Replay is provider-free and official media is created only by the explicit pilot authority step."
 }
