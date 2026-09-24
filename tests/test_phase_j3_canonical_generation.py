@@ -225,6 +225,7 @@ def test_canonical_profile_uses_public_registry_projection_and_injected_credenti
         "generation_capability": "IMAGE_GENERATION",
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1",
+        "transport_binding_id": "openai-compatible.image.v1",
         "credential_ref": "env:PUBLIC_IMAGE_KEY",
         "credential_configured": True,
         "key_configured": True,
@@ -238,6 +239,7 @@ def test_canonical_profile_uses_public_registry_projection_and_injected_credenti
         "public-image",
         target_media="IMAGE",
         credential_resolver=lambda ref: "injected-runtime-secret" if ref == "env:PUBLIC_IMAGE_KEY" else None,
+        credential_validator=lambda value: value == "injected-runtime-secret",
     )
     assert "api_key" not in profile
     serialized = json.dumps(profile, ensure_ascii=False, sort_keys=True)
@@ -255,6 +257,7 @@ def test_canonical_profile_missing_runtime_credential_fails_closed(monkeypatch):
         "generation_capability": "IMAGE_GENERATION",
         "adapter_id": "image_generic",
         "adapter_version": "image_generic_adapter_v1",
+        "transport_binding_id": "openai-compatible.image.v1",
         "credential_ref": "env:PHASE_J3_MISSING_KEY",
         "credential_configured": True,
         "key_configured": True,

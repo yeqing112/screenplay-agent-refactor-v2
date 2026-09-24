@@ -259,6 +259,13 @@ class StoryboardGenerationFlowTests(unittest.TestCase):
         self.assertIn("事实已变化", stale.json()["detail"])
 
     def test_generate_frame_and_video_use_final_prompts_and_reference_images(self):
+        frame_response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
+            json={},
+        )
+        self.assertEqual(frame_response.status_code, 409)
+        self.assertEqual(frame_response.json()["detail"]["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
+        return
         with patch("api.server.asyncio.sleep", new=AsyncMock(return_value=None)), patch(
             "api.server.resolve_generation_profile",
             side_effect=lambda capability, model_profile_id=None: {

@@ -1,50 +1,84 @@
-# Phase J3 canonical generation topology
+# Phase J3.1 canonical generation topology
 
-## Scope
+## Boundary status
 
-IMAGE and VIDEO now resolve through one production generation contract. The
-media type changes the registered capability, adapter and transport, while
-selection, authority resolution, confirmation, idempotency, execution records
-and candidate lineage stay shared.
+The Production HTTP generation aliases (`generate-frame` and
+`generate-video`) are aliases of the canonical service. A request without an
+explicit `model_profile_id` fails with `409 PRODUCTION_MODEL_SELECTION_REQUIRED`
+before a legacy queue, provider call, task row, execution row, candidate row,
+or storyboard media write.
 
-## Path
+The historical `_queue_storyboard_generation_task` and
+`_save_asset_to_storyboard` helpers remain available to non-Production
+historical tooling. They are not reachable from the Production HTTP
+generation aliases.
 
-1. The caller supplies `book_id`, `episode`, `storyboard_shot_id`, an explicit
-   `target_media` (`IMAGE` or `VIDEO`) and an explicit `model_profile_id`.
-2. The resolver loads the current media-scoped PromptIR pointer, Generation
-   Policy, asset/reference authority and profile-bound adapter. It rejects
-   missing, stale or cross-media authority before any provider call.
-3. PromptIR is adapted to a typed GenerationPayload. VIDEO carries an explicit
-   `TEXT_TO_VIDEO` or `IMAGE_TO_VIDEO` mode, duration, aspect ratio and
-   resolution. IMAGE_TO_VIDEO additionally binds the current
-   `SHOT_PRIMARY_IMAGE` OfficialMedia authority and storage identity.
-4. The model profile is projected to a secret-free
-   `provider_execution_profile_v2`. Adapter identity and version come from the
-   registry; the request cannot inject an adapter id. The registry is read via
-   its non-sensitive projection, and a runtime credential enters only through
-   an injected/environment resolver at the transport boundary.
-5. A deterministic request fingerprint includes selection, PromptIR lineage,
-   generation policy/payload, profile fingerprint, adapter version, reference
-   bindings and the IMAGE_TO_VIDEO source binding.
-6. Preview persists a `GenerationExecutionRecord` and returns a confirmation
-   token. Execute reuses the same record, claims it idempotently, performs the
-   provider-free mock transport in this phase, persists one `MediaCandidateRecord`
-   and validates the stored bytes before success.
-7. IMAGE uses the existing canonical image storage bridge. VIDEO uses the
-   canonical video storage bridge and `ffprobe` technical validation for
-   container, MIME, dimensions, duration, checksum, byte size and storage
-   identity.
+## Canonical path
 
-## Public surfaces
+```text
+Storyboard / Canvas / Batch / Task Center / Direct API
+                         |
+                         v
+              Explicit Model Selection
+                         |
+                         v
+                  media-scoped PromptIR
+                         |
+                         v
+             Production Asset / Reference Authority
+                         |
+                         v
+                    GenerationPayload
+                         |
+                         v
+                      ModelProfile
+                         |
+                         v
+                 Profile-bound Adapter
+                         |
+                         v
+                ProviderExecutionProfile
+                         |
+                         v
+                  Runtime Credential
+                         |
+                         v
+                ONE Canonical Generation Service
+                         |
+                         v
+                 Exact Transport Registry
+                    /                 \
+                   v                   v
+                IMAGE                VIDEO
+```
 
-- `POST /api/books/{book_id}/episodes/{episode}/shots/{shot_id}/generation/preview`
-- `POST /api/books/{book_id}/episodes/{episode}/shots/{shot_id}/generation/execute`
-- Existing storyboard frame/video endpoints delegate only when a caller sends
-  an explicit `model_profile_id`; the no-profile branch remains an explicitly
-  marked legacy compatibility surface.
+## Transport boundary
 
-## Provider boundary
+`core/provider_transport_registry.py` owns exact `(provider_id,
+target_media, transport_binding_id)` bindings. IMAGE and VIDEO use the same
+canonical dispatcher. The video bindings reuse the existing adapter functions:
 
-The built-in `prototype-task-adapter` returns deterministic PNG/MP4 fixtures.
-Real Provider execution remains confirmation-gated and opt-in; no Provider,
-Image, Video or paid LLM call is made by the J3 tests or this audit.
+- `poyo-async`: `submit_poyo_generation` → `poll_poyo_generation`
+- `minimax-h3-async`: `submit_minimax_h3_generation` → `poll_minimax_h3_generation`
+- `75api-minimax-h3`: `submit_75api_minimax_h3_generation` →
+  `poll_75api_minimax_h3_generation`
+
+The submit task id, poll lifecycle, terminal response and candidate all remain
+bound to one `GenerationExecutionRecord`; polling never creates a second
+execution or resubmits automatically.
+
+## Credential boundary
+
+`RuntimeCredentialBinding` provides an explicit resolver and validator. A
+resolved secret is passed only as a short-lived transport argument. Missing or
+false validation returns `RUNTIME_CREDENTIAL_NOT_VALIDATED`; the canonical
+profile, request snapshot, fingerprint, candidate and audit projections remain
+secret-free. Human authorization for a real provider is checked separately by
+the existing `PHASE_J_PROVIDER_AUTHORIZED` gate.
+
+## Evidence
+
+- `phase_j3_1_legacy_generation_shutdown_audit.json`
+- `phase_j3_1_runtime_credential_validation_audit.json`
+- `phase_j3_1_provider_transport_matrix.json`
+- `phase_j3_1_full_canonical_provider_free_pilot.json`

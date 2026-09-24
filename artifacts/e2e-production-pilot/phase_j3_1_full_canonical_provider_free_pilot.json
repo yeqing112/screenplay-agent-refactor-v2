@@ -1,0 +1,45 @@
+{
+  "schema_version": "phase_j3_1_full_canonical_provider_free_pilot_v1",
+  "status": "provider_free_contract_paths_verified",
+  "external_calls": {
+    "provider": 0,
+    "image": 0,
+    "video": 0,
+    "paid_llm": 0
+  },
+  "paths": [
+    {
+      "target_media": "IMAGE",
+      "generation_mode": "TEXT_TO_IMAGE",
+      "preview_execute_candidate": true,
+      "replay_provider_calls": 0,
+      "evidence": "tests/test_phase_j3_canonical_generation.py::test_canonical_image_mock_submit_and_candidate"
+    },
+    {
+      "target_media": "VIDEO",
+      "generation_mode": "TEXT_TO_VIDEO",
+      "preview_execute_candidate": true,
+      "replay_provider_calls": 0,
+      "evidence": "tests/test_phase_j3_canonical_generation.py::test_canonical_video_mock_submit_poll_and_candidate"
+    },
+    {
+      "target_media": "VIDEO",
+      "generation_mode": "IMAGE_TO_VIDEO",
+      "official_source_binding": true,
+      "preview_execute_candidate": true,
+      "replay_provider_calls": 0,
+      "evidence": "tests/test_phase_j3_canonical_generation.py::test_canonical_image_to_video_uses_official_source_and_one_logical_call"
+    }
+  ],
+  "execution_records_per_path": 1,
+  "candidate_records_per_path": 1,
+  "official_media_auto_promotion": 0,
+  "transport_submit_poll_replay_resubmit": {
+    "submit": 1,
+    "poll": "one_or_more",
+    "replay_submit": 0
+  },
+  "authority_resolver_monkeypatched": false,
+  "canonical_input_resolver_monkeypatched": true,
+  "note": "The repository state-machine evidence covers all three provider-free media contracts; a separate public temp-DB pilot remains required before claiming full J3.1 completion."
+}

@@ -31,6 +31,26 @@ SHAPI_GEMINI_IMAGE_PROVIDER = "shapi-gemini-image"
 
 VIDEO_REAL_DEFAULT_ENABLED = True
 
+_TRANSPORT_BINDING_IDS = {
+    (OPENAI_COMPATIBLE_PROVIDER, "image"): "openai-compatible.image.v1",
+    (POYO_ASYNC_PROVIDER, "image"): "poyo-async.image.v1",
+    (POYO_ASYNC_PROVIDER, "video"): "poyo-async.video.v1",
+    (MINIMAX_H3_ASYNC_PROVIDER, "video"): "minimax-h3-async.video.v1",
+    (MINIMAX_H3_75API_PROVIDER, "video"): "75api-minimax-h3.video.v1",
+    (SHAPI_OPENAI_IMAGES_PROVIDER, "image"): "shapi-openai-images.image.v1",
+    (SHAPI_GEMINI_IMAGE_PROVIDER, "image"): "shapi-gemini-image.image.v1",
+}
+
+
+def _transport_binding_id(profile: dict[str, Any]) -> str:
+    explicit = str(profile.get("transport_binding_id") or "").strip()
+    if explicit:
+        return explicit
+    return _TRANSPORT_BINDING_IDS.get(
+        (str(profile.get("provider") or ""), str(profile.get("capability") or "")),
+        "",
+    )
+
 
 def _builtin_profiles() -> list[dict[str, Any]]:
     return [
@@ -91,6 +111,8 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "adapter_version": "image_generic_adapter_v1",
             "credential_ref": "builtin:mock-image",
             "credential_configured": True,
+            "runtime_binding_id": "builtin:mock-image",
+            "transport_binding_id": "prototype-task-adapter.image.v1",
         },
         {
             "id": "builtin-mock-video",
@@ -113,6 +135,8 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "adapter_version": "video_generic_adapter_v1",
             "credential_ref": "builtin:mock-video",
             "credential_configured": True,
+            "runtime_binding_id": "builtin:mock-video",
+            "transport_binding_id": "prototype-task-adapter.video.v1",
         },
     ]
 
@@ -161,6 +185,8 @@ def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str
         "adapter_version": str(profile.get("adapter_version") or ""),
         "credential_ref": str(profile.get("credential_ref") or ""),
         "credential_configured": bool(profile.get("credential_configured", bool(api_key) or bool(profile.get("key_configured")))),
+        "runtime_binding_id": str(profile.get("runtime_binding_id") or ""),
+        "transport_binding_id": _transport_binding_id(profile),
     }
     if api_key:
         out["api_key"] = api_key
@@ -209,6 +235,8 @@ def _load_saved_profiles() -> list[dict[str, Any]]:
                 "adapter_version": str(item.get("adapter_version") or ""),
                 "credential_ref": str(item.get("credential_ref") or ""),
                 "credential_configured": bool(item.get("credential_configured", bool(item.get("api_key")))),
+                "runtime_binding_id": str(item.get("runtime_binding_id") or ""),
+                "transport_binding_id": _transport_binding_id(item),
             }
         )
     return normalized
@@ -371,6 +399,8 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         "adapter_version": str(profile.get("adapter_version") or ""),
         "credential_ref": str(profile.get("credential_ref") or ""),
         "credential_configured": bool(profile.get("credential_configured", bool(profile.get("api_key")))),
+        "runtime_binding_id": str(profile.get("runtime_binding_id") or ""),
+        "transport_binding_id": _transport_binding_id(profile),
     }
 
     if provider == MOCK_PROVIDER:

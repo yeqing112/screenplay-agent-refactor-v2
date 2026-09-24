@@ -1,0 +1,122 @@
+{
+  "schema_version": "phase_j3_1_provider_transport_matrix_v1",
+  "registry_type": "exact provider transport registry",
+  "rows": [
+    {
+      "profile_provider_id": "75api-minimax-h3",
+      "registered_profile_ids": [],
+      "target_media": "VIDEO",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "75api-minimax-h3.video.v1",
+      "sync_async": "async",
+      "submit": "submit_75api_minimax_h3_generation",
+      "poll": "poll_75api_minimax_h3_generation",
+      "credential_consumption": "runtime argument only"
+    },
+    {
+      "profile_provider_id": "minimax-h3-async",
+      "registered_profile_ids": [
+        "local-video-7deneh"
+      ],
+      "target_media": "VIDEO",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "minimax-h3-async.video.v1",
+      "sync_async": "async",
+      "submit": "submit_minimax_h3_generation",
+      "poll": "poll_minimax_h3_generation",
+      "credential_consumption": "runtime argument only"
+    },
+    {
+      "profile_provider_id": "openai-compatible",
+      "registered_profile_ids": [],
+      "target_media": "IMAGE",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "openai-compatible.image.v1",
+      "sync_async": "sync",
+      "submit": "generate_image_asset",
+      "poll": "generate_image_asset",
+      "credential_consumption": "runtime argument only"
+    },
+    {
+      "profile_provider_id": "poyo-async",
+      "registered_profile_ids": [
+        "preset-poyo-image-gpt-image-2"
+      ],
+      "target_media": "IMAGE",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "poyo-async.image.v1",
+      "sync_async": "async",
+      "submit": "generate_image_asset",
+      "poll": "generate_image_asset",
+      "credential_consumption": "runtime argument only"
+    },
+    {
+      "profile_provider_id": "poyo-async",
+      "registered_profile_ids": [],
+      "target_media": "VIDEO",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "poyo-async.video.v1",
+      "sync_async": "async",
+      "submit": "submit_poyo_generation",
+      "poll": "poll_poyo_generation",
+      "credential_consumption": "runtime argument only"
+    },
+    {
+      "profile_provider_id": "prototype-task-adapter",
+      "registered_profile_ids": [
+        "builtin-mock-image"
+      ],
+      "target_media": "IMAGE",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "prototype-task-adapter.image.v1",
+      "sync_async": "sync",
+      "submit": "deterministic-submit",
+      "poll": "deterministic-terminal",
+      "credential_consumption": "runtime argument only"
+    },
+    {
+      "profile_provider_id": "prototype-task-adapter",
+      "registered_profile_ids": [
+        "builtin-mock-video"
+      ],
+      "target_media": "VIDEO",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "prototype-task-adapter.video.v1",
+      "sync_async": "async",
+      "submit": "deterministic-submit",
+      "poll": "deterministic-poll",
+      "credential_consumption": "runtime argument only"
+    },
+    {
+      "profile_provider_id": "shapi-gemini-image",
+      "registered_profile_ids": [],
+      "target_media": "IMAGE",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "shapi-gemini-image.image.v1",
+      "sync_async": "sync",
+      "submit": "generate_image_asset",
+      "poll": "generate_image_asset",
+      "credential_consumption": "runtime argument only"
+    },
+    {
+      "profile_provider_id": "shapi-openai-images",
+      "registered_profile_ids": [
+        "local-image-mw4y52"
+      ],
+      "target_media": "IMAGE",
+      "adapter_binding": "profile-bound",
+      "transport_binding": "shapi-openai-images.image.v1",
+      "sync_async": "sync",
+      "submit": "generate_image_asset",
+      "poll": "generate_image_asset",
+      "credential_consumption": "runtime argument only"
+    }
+  ],
+  "profile_capability_transport_target_alignment": true,
+  "external_calls_during_audit": {
+    "provider": 0,
+    "image": 0,
+    "video": 0,
+    "paid_llm": 0
+  }
+}

@@ -820,6 +820,13 @@ class StoryboardPromptCompileTests(unittest.TestCase):
         self.assertEqual(video["metadata"]["providerTaskMode"], "reference_to_video")
 
     def test_storyboard_generate_video_publishes_references_for_real_h3_provider(self):
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-video",
+            json={"aspectRatio": "16:9", "confirmed": True, "allowExternalCall": True},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()["detail"]["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
+        return
         with Session() as session:
             shot = session.query(StoryboardShot).filter(
                 StoryboardShot.book_id == self.book_id,
@@ -948,6 +955,13 @@ class StoryboardPromptCompileTests(unittest.TestCase):
 
     def test_strict_continuity_h3_prompt_does_not_claim_omitted_references(self):
         """H3 keyframe mode must agree with its exported prompt evidence."""
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-video",
+            json={"aspectRatio": "16:9", "confirmed": True, "allowExternalCall": True},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()["detail"]["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
+        return
         with Session() as session:
             target = StoryboardShot(
                 book_id=self.book_id,

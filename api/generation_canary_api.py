@@ -27,7 +27,7 @@ from api.generation_adapters import (
     SHAPI_OPENAI_IMAGES_PROVIDER,
     generate_image_asset,
 )
-from api.model_registry import get_profile, list_profiles
+from api.model_registry import MOCK_PROVIDER, get_profile, list_profiles
 from core.prompt_ir_phase_e import (
     MODEL_ADAPTER_REGISTRY,
     PromptIRPhaseEError,
@@ -47,6 +47,12 @@ from core.provider_execution_profile import (
 from core.canonical_generation import CanonicalGenerationContractError, ProductionGenerationSelection, canonical_request_fingerprint
 from core.public_asset_storage import _load_source_bytes, _normalize_provider_image_bytes
 from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
+from core.provider_transport_registry import (
+    ProviderTransportBinding,
+    dispatch_provider_transport,
+    get_provider_transport_binding,
+    register_provider_transport_binding,
+)
 from models import (
     GenerationExecutionRecord,
     MediaCandidateRecord,
@@ -375,7 +381,13 @@ def _resolve_execution_inputs(session: Any, *, book_id: int, episode: int, shot_
     }
 
 
-def _resolve_canonical_profile(model_profile_id: str, *, target_media: str, credential_resolver: Any = None) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], str, str]:
+def _resolve_canonical_profile(
+    model_profile_id: str,
+    *,
+    target_media: str,
+    credential_resolver: Any = None,
+    credential_validator: Any = None,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], str, str]:
     """Resolve a current profile and its registered adapter binding.
 
     The caller supplies only the profile id.  Adapter identity is read from
@@ -406,8 +418,24 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str, cred
         raise _error(409, "MODEL_ADAPTER_NOT_RESOLVED", "ModelProfile adapter binding is not registered at the requested version.", provider_calls=0)
     if str(adapter.get("target_media") or "") != media or str(adapter.get("capability") or "") != capability:
         raise _error(409, "MODEL_CAPABILITY_MISMATCH", "Profile-bound adapter capability does not match target_media.", provider_calls=0)
+    transport_binding_id = str(profile.get("transport_binding_id") or "").strip()
+    if not transport_binding_id and str(profile.get("provider") or "") != MOCK_PROVIDER:
+        code = "PHASE_J3_REAL_VIDEO_TRANSPORT_BINDING_REQUIRED" if media == "VIDEO" else "GENERATION_TRANSPORT_NOT_REGISTERED"
+        raise _error(409, code, "The selected ModelProfile has no explicit transport binding.", provider_calls=0)
+    transport_binding = get_provider_transport_binding(
+        provider_id=str(profile.get("provider") or ""),
+        target_media=media,
+        binding_id=transport_binding_id or None,
+    )
+    if transport_binding is None:
+        code = "PHASE_J3_REAL_VIDEO_TRANSPORT_BINDING_REQUIRED" if media == "VIDEO" and str(profile.get("provider") or "") != MOCK_PROVIDER else "GENERATION_TRANSPORT_NOT_REGISTERED"
+        raise _error(409, code, "The selected ModelProfile has no exact transport binding for target_media.", provider_calls=0)
     try:
-        runtime_credential = resolve_runtime_credential(profile, resolver=credential_resolver)
+        runtime_credential = resolve_runtime_credential(
+            profile,
+            resolver=credential_resolver,
+            validator=credential_validator,
+        )
     except RuntimeCredentialError as exc:
         raise _error(409, exc.code, str(exc), provider_calls=0) from exc
     # ProviderExecutionProfile is a secret-free projection.  Creative video
@@ -422,6 +450,7 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str, cred
             adapter_id=adapter_id,
             adapter_version=adapter_version,
             credential_lifecycle=runtime_credential.audit(),
+            transport_binding_id=transport_binding.binding_id,
         )
     except ProviderExecutionProfileError as exc:
         raise _error(409, exc.code, str(exc), field=exc.field, provider_calls=0) from exc
@@ -431,6 +460,7 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str, cred
     profile = {key: value for key, value in profile.items() if key != "api_key"}
     profile["provider_execution_profile"] = canonical_profile
     profile["phase_j3_canonical"] = True
+    profile["transport_binding_id"] = transport_binding.binding_id
     profile["credential_audit"] = runtime_credential.audit()
     phase_profile = build_model_profile(
         {
@@ -490,12 +520,18 @@ def _resolve_canonical_execution_inputs(
     model_profile_id: str,
     generation_mode: str | None = None,
     credential_resolver: Any = None,
+    credential_validator: Any = None,
 ) -> dict[str, Any]:
     """Resolve all current authority inputs for both IMAGE and VIDEO."""
     from api.prompt_ir_authority_api import _load_current, _production_asset_authority
 
     media = _exact_target_media(target_media)
-    profile, phase_profile, adapter, profile_fp, runtime_credential_value = _resolve_canonical_profile(model_profile_id, target_media=media, credential_resolver=credential_resolver)
+    profile, phase_profile, adapter, profile_fp, runtime_credential_value = _resolve_canonical_profile(
+        model_profile_id,
+        target_media=media,
+        credential_resolver=credential_resolver,
+        credential_validator=credential_validator,
+    )
     try:
         selection = ProductionGenerationSelection.from_request(
             book_id=book_id,
@@ -647,6 +683,47 @@ async def _fake_provider_video(*, request_snapshot: dict[str, Any], provider_req
     }
 
 
+async def _mock_image_transport(context: dict[str, Any]) -> dict[str, Any]:
+    return await _fake_provider_image(
+        request_snapshot=context["request_snapshot"],
+        provider_request_fingerprint=context["provider_request_fingerprint"],
+    )
+
+
+async def _mock_video_transport(context: dict[str, Any]) -> dict[str, Any]:
+    return await _fake_provider_video(
+        request_snapshot=context["request_snapshot"],
+        provider_request_fingerprint=context["provider_request_fingerprint"],
+    )
+
+
+# Mock profiles participate in the same exact transport dispatcher as real
+# profiles.  Their binding is provider-free and deterministic; it is not a
+# provider-name branch in canonical orchestration.
+register_provider_transport_binding(
+    ProviderTransportBinding(
+        "prototype-task-adapter.image.v1",
+        MOCK_PROVIDER,
+        "IMAGE",
+        "sync",
+        "deterministic-submit",
+        "deterministic-terminal",
+        _mock_image_transport,
+    )
+)
+register_provider_transport_binding(
+    ProviderTransportBinding(
+        "prototype-task-adapter.video.v1",
+        MOCK_PROVIDER,
+        "VIDEO",
+        "async",
+        "deterministic-submit",
+        "deterministic-poll",
+        _mock_video_transport,
+    )
+)
+
+
 def _provider_prompt(payload: dict[str, Any]) -> tuple[str, str]:
     request = payload.get("request") if isinstance(payload.get("request"), dict) else {}
     prompt = str(request.get("prompt") or "")
@@ -698,22 +775,12 @@ def _validate_real_provider_opt_in(context: dict[str, Any]) -> None:
 
 async def _call_provider(*, context: dict[str, Any]) -> dict[str, Any]:
     profile = context["profile"]
-    if str(profile.get("provider") or "") == "prototype-task-adapter":
-        if str(context.get("target_media") or "IMAGE") == "VIDEO":
-            return await _fake_provider_video(request_snapshot=context["request_snapshot"], provider_request_fingerprint=context["provider_request_fingerprint"])
-        return await _fake_provider_image(request_snapshot=context["request_snapshot"], provider_request_fingerprint=context["provider_request_fingerprint"])
-    if str(context.get("target_media") or "IMAGE") == "VIDEO":
-        raise _error(409, "GENERATION_VIDEO_TRANSPORT_NOT_REGISTERED", "No real VIDEO transport is enabled in provider-free J3.", provider_calls=0)
-    prompt, negative = _provider_prompt(context["payload"])
+    target_media = str(context.get("target_media") or "IMAGE").upper()
     try:
-        generated = await generate_image_asset(
-            profile,
-            prompt=prompt,
-            aspect_ratio=None,
-            negative_prompt=negative,
-            reference_images=context["reference_images"],
-            runtime_credential=context.get("runtime_credential_value"),
-        )
+        generated = await dispatch_provider_transport(context)
+    except LookupError as exc:
+        code = "PHASE_J3_REAL_VIDEO_TRANSPORT_BINDING_REQUIRED" if target_media == "VIDEO" and str(profile.get("provider") or "") != MOCK_PROVIDER else "GENERATION_TRANSPORT_NOT_REGISTERED"
+        raise _error(409, code, str(exc), provider_calls=0) from exc
     except ModelProfileError:
         raise
     generated.setdefault("provider", profile.get("provider"))

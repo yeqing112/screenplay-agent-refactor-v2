@@ -19439,16 +19439,21 @@ async def _delegate_storyboard_generation_to_canonical(
 
     model_profile_id = str(req.model_profile_id or "").strip()
     if not model_profile_id:
-        # Retain the historical task endpoint as an explicitly marked
-        # compatibility surface for old clients.  New production workspace
-        # callers always send model_profile_id and use the canonical path.
-        # This branch is not the J3 production authority and remains subject to
-        # the legacy confirmation gates in _queue_storyboard_generation_task.
-        result = await _queue_storyboard_generation_task(book_id, episode, shot_id, "image" if target_media == "IMAGE" else "video", req, bg)
-        if isinstance(result, dict):
-            result["legacy_endpoint_delegated"] = False
-            result["legacy_compatibility_surface"] = True
-        return result
+        # The historical endpoint names remain available as aliases, but a
+        # production request without an explicit model selection is closed
+        # before any legacy task, provider, or storyboard media write.
+        from api.generation_canary_api import _error
+
+        raise _error(
+            409,
+            "PRODUCTION_MODEL_SELECTION_REQUIRED",
+            "Production generation requires an explicit model_profile_id.",
+            provider_calls=0,
+            legacy_queue_called=False,
+            creative_task_created=False,
+            media_written=False,
+            generation_not_started=True,
+        )
     preview = preview_canonical_generation(
         book_id,
         episode,

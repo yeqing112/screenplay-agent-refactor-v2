@@ -186,6 +186,7 @@ def build_provider_execution_profile(
     adapter_id: str,
     adapter_version: str,
     credential_lifecycle: dict[str, Any] | None = None,
+    transport_binding_id: str = "",
 ) -> dict[str, Any]:
     """Build the canonical typed allowlisted Phase F execution projection."""
     raw_params = _profile_mapping(profile.get("default_params"), "default_params")
@@ -227,7 +228,7 @@ def build_provider_execution_profile(
             "resolved": bool(credential_lifecycle.get("resolved")),
             "validated": bool(credential_lifecycle.get("validated")),
         }
-    return {
+    result = {
         "schema_version": PROFILE_SCHEMA_VERSION,
         "profile_id": str(profile.get("id") or ""),
         "capability": str(profile.get("capability") or "image"),
@@ -240,6 +241,9 @@ def build_provider_execution_profile(
         "capabilities": capabilities,
         "adapter": {"adapter_id": str(adapter_id or ""), "adapter_version": str(adapter_version or "")},
     }
+    if str(transport_binding_id or "").strip():
+        result["transport_binding_id"] = str(transport_binding_id).strip()
+    return result
 
 
 def fingerprint_provider_execution_profile(profile: dict[str, Any]) -> str:

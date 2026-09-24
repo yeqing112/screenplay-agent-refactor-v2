@@ -1,0 +1,35 @@
+{
+  "schema_version": "phase_j3_1_legacy_generation_shutdown_audit_v1",
+  "legacy_generation_http_reachable": false,
+  "no_profile_generation_fail_closed": true,
+  "no_profile_error_code": "PRODUCTION_MODEL_SELECTION_REQUIRED",
+  "legacy_queue_production_callsites": 0,
+  "legacy_queue_definition_retained_for_non_production_history": true,
+  "legacy_queue_callsite_inventory": [],
+  "save_asset_to_storyboard_canonical_callsites": 0,
+  "save_asset_to_storyboard_callsite_inventory": [
+    {
+      "file": "api/server.py",
+      "line": 13534,
+      "text": "_save_asset_to_storyboard(req.book_id, req.episode, req.shot_id, kind, asset)"
+    },
+    {
+      "file": "api/server.py",
+      "line": 13762,
+      "text": "_save_asset_to_storyboard(req.book_id, req.episode, req.shot_id, kind, asset)"
+    },
+    {
+      "file": "api/server.py",
+      "line": 15197,
+      "text": "_save_asset_to_storyboard(book_id, episode, shot_id, \"image\", asset)"
+    }
+  ],
+  "provider_calls_without_profile": 0,
+  "creative_task_rows_without_profile": 0,
+  "generation_execution_rows_without_profile": 0,
+  "media_candidate_rows_without_profile": 0,
+  "storyboard_media_writes_without_profile": 0,
+  "evidence_tests": [
+    "tests/test_phase_j3_1_boundary_closure.py::test_storyboard_alias_without_profile_fails_closed_before_legacy_queue"
+  ]
+}

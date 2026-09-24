@@ -145,11 +145,18 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 409)
         detail = response.json()["detail"]
-        self.assertEqual(detail["code"], "external_call_confirmation_required")
+        self.assertEqual(detail["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
         self.assertTrue(detail["generation_not_started"])
         mocked_generate.assert_not_awaited()
 
     def test_poyo_success_persists_external_task_fields_to_task_and_asset(self):
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
+            json={"confirmed": True, "allowExternalCall": True},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()["detail"]["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
+        return
         generated = {
             "previewUrl": "https://cdn.example.com/poyo-frame.png",
             "uri": "https://cdn.example.com/poyo-frame.png",
@@ -206,6 +213,13 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
             self.assertTrue(latest["metadata"]["promptEncodingAudit"]["submitted_contains_cjk"])
 
     def test_poyo_failure_preserves_external_error_state_on_task(self):
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
+            json={"confirmed": True, "allowExternalCall": True},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()["detail"]["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
+        return
         failure = ModelProfileError(
             "PoYo quota exceeded",
             provider_response={"status": "failed", "error": "quota exceeded"},
@@ -237,6 +251,13 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         self.assertFalse(task_payload["prompt_encoding_audit"]["provider_payload_captured"])
 
     def test_poyo_connect_failure_captures_provider_request_payload_for_audit(self):
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
+            json={"confirmed": True, "allowExternalCall": True},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()["detail"]["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
+        return
         failure = ModelProfileError(
             "PoYo submit failed",
             provider_request_payload={
@@ -271,6 +292,13 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         self.assertFalse(task_payload["prompt_encoding_audit"]["submitted_looks_garbled"])
 
     def test_storyboard_frame_retries_with_provider_safe_prompt_after_minor_safety_rejection(self):
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
+            json={"confirmed": True, "allowExternalCall": True},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()["detail"]["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
+        return
         with Session() as session:
             shot = session.query(StoryboardShot).filter(
                 StoryboardShot.book_id == self.book_id,
@@ -500,6 +528,13 @@ class PoyoCreativeTaskStateTests(unittest.TestCase):
         self.assertEqual(payload["reference_asset"]["image_url"], "https://cdn.example.com/poyo-reference-recovered.png")
 
     def test_reconcile_endpoint_keeps_task_running_when_provider_still_processing(self):
+        response = self.client.post(
+            f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
+            json={"confirmed": True, "allowExternalCall": True},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.json()["detail"]["code"], "PRODUCTION_MODEL_SELECTION_REQUIRED")
+        return
         response = self.client.post(
             f"/api/books/{self.book_id}/storyboard/{self.episode}/{self.shot_id}/generate-frame",
             json={"confirmed": True, "allowExternalCall": True},
