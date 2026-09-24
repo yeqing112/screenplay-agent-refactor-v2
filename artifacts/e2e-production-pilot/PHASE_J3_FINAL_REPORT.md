@@ -35,6 +35,7 @@ acceptance.
 
 - J3 targeted tests: `22 passed` (`tests/test_phase_j3_canonical_generation.py`).
 - Phase F/J2 regression subset: `42 passed`.
+- G2/H2/I media authority regression subset: `69 passed`.
 - Full `npm run check:production`: `1773 passed, 6 failed`. The six failures
   are unrelated director-quality-v3 authority artifact assertions in
   `tests/test_director_quality_v3_fact_coverage_foundation.py`,
@@ -57,6 +58,7 @@ acceptance.
 - Storyboard, canvas, batch and task-center generation callers now carry the
   operator's explicit IMAGE/VIDEO profile selection; no-profile calls remain
   visibly labeled compatibility traffic only.
+- Required remote CI run: `35986774675` (`success`) for commit `d008e9c`.
 
 The J3 targeted and subset runs are provider-free and green. The required
 remote Production Regression run for the pushed implementation completed with
