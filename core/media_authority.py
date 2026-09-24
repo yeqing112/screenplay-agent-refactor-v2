@@ -12,6 +12,7 @@ import io
 import json
 import mimetypes
 import os
+import threading
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -37,6 +38,14 @@ from models import (
 VALIDATION_VERSION = "media_validator_v1"
 MEDIA_ROLE_DEFAULT = "SHOT_PRIMARY_IMAGE"
 IMAGE_TO_VIDEO_BINDING_SCHEMA_VERSION = "image_to_video_official_media_binding_v1"
+
+
+# Promotion computes a new scope revision before inserting the official rows.
+# Serialize that critical section in-process so concurrent requests cannot
+# both observe the same next revision and publish duplicate official rows.
+# Database uniqueness and the existing IntegrityError replay path remain the
+# cross-process safety net.
+_PROMOTION_LOCK = threading.RLock()
 
 
 class MediaAuthorityError(Exception):
@@ -592,7 +601,7 @@ def _lineage_hash(candidate: MediaCandidateRecord, execution: GenerationExecutio
     return _fingerprint({"candidate_id": candidate.candidate_id, "candidate_fingerprint": validation.candidate_fingerprint, "validation_id": validation.validation_id, "validation_fingerprint": validation.technical_validation_fingerprint, "prompt_ir_version_id": candidate.prompt_ir_version_id, "prompt_ir_payload_hash": candidate.prompt_ir_payload_hash, "generation_payload_fingerprint": candidate.generation_payload_fingerprint, "provider_request_fingerprint": candidate.provider_request_fingerprint, "provider_response_hash": candidate.provider_response_hash, "storage_identity": candidate.storage_identity, "checksum_sha256": candidate.checksum_sha256, "execution_id": execution.execution_id})
 
 
-def promote_media_candidate(session: Any, candidate_id: str, validation_id: str, *, confirmation: bool | str) -> dict[str, Any]:
+def _promote_media_candidate(session: Any, candidate_id: str, validation_id: str, *, confirmation: bool | str) -> dict[str, Any]:
     """Explicitly promote a validated Candidate atomically into official rows."""
     accepted_confirmation = confirmation is True or (
         isinstance(confirmation, str)
@@ -699,6 +708,12 @@ def promote_media_candidate(session: Any, candidate_id: str, validation_id: str,
                 return {"version": existing, "authority": authority, "pointer": pointer, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
         _fail("MEDIA_PROMOTION_CONFLICT", "Concurrent promotion conflicted with another official revision.")
     return {"version": version, "authority": authority, "pointer": pointer, "reused": False, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
+
+
+def promote_media_candidate(session: Any, candidate_id: str, validation_id: str, *, confirmation: bool | str) -> dict[str, Any]:
+    """Promote a validated candidate with an in-process atomicity guard."""
+    with _PROMOTION_LOCK:
+        return _promote_media_candidate(session, candidate_id, validation_id, confirmation=confirmation)
 
 
 def resolve_current_official_media(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, media_role: str = MEDIA_ROLE_DEFAULT) -> dict[str, Any]:
