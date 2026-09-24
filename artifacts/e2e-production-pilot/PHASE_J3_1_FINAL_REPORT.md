@@ -1,6 +1,6 @@
 # Phase J3.1 Boundary Closure — Final Report
 
-Date: 2026-09-24  
+Date: 2026-09-25  
 Branch: `codex/visual-authoring-provider-canary-reconcile`
 
 ## Scope
@@ -19,13 +19,14 @@ This round closes the production generation boundary around the canonical image/
 ## Evidence
 
 - Focused J3/J3.1 boundary, canonical, and public-pilot tests: **28 passed**.
+- Repository-wide `pytest -q`: **1777 passed, 0 failed**.
+- `npm run check:production`: **1771 passed, 6 failed** in pre-existing Director Quality artifact-order checks; no J3/J3.1 test failed. The failures are the six missing historical fields listed by the production regression output.
 - Artifact evidence:
   - `phase_j3_1_legacy_generation_shutdown_audit.json`
   - `phase_j3_1_runtime_credential_validation_audit.json`
   - `phase_j3_1_provider_transport_matrix.json`
   - `phase_j3_1_full_canonical_provider_free_pilot.json`
 - Director Quality artifact regression checks after restoring their baseline fixtures: **12 passed**.
-- Full repository run observed **1785 passed, 6 failed**. The six failures were fixture-order mutations in unrelated Director Quality artifact tests; restoring those non-J3 artifacts returns that subset to green. No J3/J3.1 test failed.
 
 ## Provider and authorization status
 
