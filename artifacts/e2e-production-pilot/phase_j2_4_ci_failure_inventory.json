@@ -78,7 +78,7 @@
       "ci_result": "failed_on_prior_run",
       "environment_sensitive": true,
       "production_boundary": "one strategy call per scene / zero retries",
-      "root_cause_status": "fixed with deterministic fixture; requires CI confirmation",
+      "root_cause_status": "fixed with deterministic fixture; CI confirmed by run 35936589757",
       "current_local_result": "passed"
     },
     {
