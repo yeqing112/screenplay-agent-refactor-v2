@@ -31,7 +31,7 @@ import {
   type ShotExecutionSummary,
 } from './productWorkspaceRecovery'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
-import { waitForCreativeTask } from './productWorkspaceGeneration'
+import { readExplicitGenerationProfileSelection, waitForCreativeTask } from './productWorkspaceGeneration'
 import {
   readBatchRunRecords,
   saveBatchRunRecord,
@@ -578,6 +578,7 @@ export default function ProductWorkspaceTasksSection({
         qaWorkbenchEpisodes,
         fetchTaskStatus: fetchStoryboardRecoveryTaskStatus as any,
         waitForCreativeTask,
+        ...readExplicitGenerationProfileSelection(),
       })
 
       if (result.refreshPendingStoryboardTasks) {
@@ -696,6 +697,13 @@ export default function ProductWorkspaceTasksSection({
         }
 
         const generationKind = selectedTask.recoveryKind === 'frame' ? 'frame' : 'video'
+        const explicitProfileSelection = readExplicitGenerationProfileSelection()
+        const modelProfileId = generationKind === 'frame'
+          ? explicitProfileSelection.imageModelProfileId
+          : explicitProfileSelection.videoModelProfileId
+        if (!modelProfileId) {
+          throw new Error(`按最新状态重新生成${generationKind === 'frame' ? '首帧' : '视频'}前必须显式选择对应模型。`)
+        }
         const latestPayload =
           generationKind === 'frame'
             ? {
@@ -722,6 +730,7 @@ export default function ProductWorkspaceTasksSection({
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               ...latestPayload,
+              modelProfileId,
               confirmed: true,
               allowExternalCall: true,
             }),

@@ -20,7 +20,9 @@ and candidate lineage stay shared.
    `SHOT_PRIMARY_IMAGE` OfficialMedia authority and storage identity.
 4. The model profile is projected to a secret-free
    `provider_execution_profile_v2`. Adapter identity and version come from the
-   registry; the request cannot inject an adapter id.
+   registry; the request cannot inject an adapter id. The registry is read via
+   its non-sensitive projection, and a runtime credential enters only through
+   an injected/environment resolver at the transport boundary.
 5. A deterministic request fingerprint includes selection, PromptIR lineage,
    generation policy/payload, profile fingerprint, adapter version, reference
    bindings and the IMAGE_TO_VIDEO source binding.

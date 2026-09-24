@@ -12,7 +12,7 @@ import {
   upsertPendingStoryboardTask,
   type StoryboardRecoveryKind,
 } from './productWorkspaceRecovery'
-import { getStoryboardGenerationLabels, waitForCreativeTask } from './productWorkspaceGeneration'
+import { getStoryboardGenerationLabels, persistExplicitGenerationProfileSelection, readExplicitGenerationProfileSelection, waitForCreativeTask } from './productWorkspaceGeneration'
 import {
   buildPromptAuthoritySummary,
   getCompilerDiagnosticMeta,
@@ -1763,7 +1763,13 @@ export default function ProductWorkspaceStoryboardSection({
     let cancelled = false
     fetchModelRegistry()
       .then((payload) => {
-        if (!cancelled) setGenerationModelProfiles(payload.profiles.filter((item) => item.enabled && (item.capability === 'image' || item.capability === 'video')))
+        if (!cancelled) {
+          const profiles = payload.profiles.filter((item) => item.enabled && (item.capability === 'image' || item.capability === 'video'))
+          const selection = readExplicitGenerationProfileSelection()
+          setGenerationModelProfiles(profiles)
+          setImageModelProfile(profiles.find((item) => item.id === selection.imageModelProfileId && item.capability === 'image') || null)
+          setVideoModelProfile(profiles.find((item) => item.id === selection.videoModelProfileId && item.capability === 'video') || null)
+        }
       })
       .catch(() => {
         if (!cancelled) setGenerationModelProfiles([])
@@ -4350,7 +4356,11 @@ export default function ProductWorkspaceStoryboardSection({
                     IMAGE 生成模型（显式选择）
                     <select
                       value={imageModelProfile?.id || ''}
-                      onChange={(event) => setImageModelProfile(generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'image') || null)}
+                      onChange={(event) => {
+                        const next = generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'image') || null
+                        setImageModelProfile(next)
+                        persistExplicitGenerationProfileSelection({ imageModelProfileId: next?.id || null, videoModelProfileId: videoModelProfile?.id || null })
+                      }}
                       className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white"
                     >
                       <option value="">请选择模型配置</option>
@@ -4361,7 +4371,11 @@ export default function ProductWorkspaceStoryboardSection({
                     VIDEO 生成模型（显式选择）
                     <select
                       value={videoModelProfile?.id || ''}
-                      onChange={(event) => setVideoModelProfile(generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'video') || null)}
+                      onChange={(event) => {
+                        const next = generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'video') || null
+                        setVideoModelProfile(next)
+                        persistExplicitGenerationProfileSelection({ imageModelProfileId: imageModelProfile?.id || null, videoModelProfileId: next?.id || null })
+                      }}
                       className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white"
                     >
                       <option value="">请选择模型配置</option>

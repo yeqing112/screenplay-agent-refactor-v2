@@ -27,7 +27,7 @@ from api.generation_adapters import (
     SHAPI_OPENAI_IMAGES_PROVIDER,
     generate_image_asset,
 )
-from api.model_registry import get_profile
+from api.model_registry import get_profile, list_profiles
 from core.prompt_ir_phase_e import (
     MODEL_ADAPTER_REGISTRY,
     PromptIRPhaseEError,
@@ -375,7 +375,7 @@ def _resolve_execution_inputs(session: Any, *, book_id: int, episode: int, shot_
     }
 
 
-def _resolve_canonical_profile(model_profile_id: str, *, target_media: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], str]:
+def _resolve_canonical_profile(model_profile_id: str, *, target_media: str, credential_resolver: Any = None) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], str, str]:
     """Resolve a current profile and its registered adapter binding.
 
     The caller supplies only the profile id.  Adapter identity is read from
@@ -384,7 +384,11 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str) -> t
     """
     if not str(model_profile_id or "").strip():
         raise _error(409, "PRODUCTION_MODEL_SELECTION_REQUIRED", "Production generation requires an explicit model_profile_id.", provider_calls=0)
-    profile = get_profile(model_profile_id)
+    # Canonical production resolution must never load the registry's legacy
+    # serialized plaintext ``api_key``.  The public profile projection keeps
+    # only credential metadata/reference; RuntimeCredentialResolver obtains a
+    # short-lived value through its explicit resolver boundary below.
+    profile = next((item for item in list_profiles(include_sensitive=False) if item.get("id") == model_profile_id), None)
     if not profile:
         raise _error(409, "MODEL_PROFILE_NOT_FOUND", "The explicit production model profile does not exist.", provider_calls=0)
     if not profile.get("enabled", True):
@@ -403,7 +407,7 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str) -> t
     if str(adapter.get("target_media") or "") != media or str(adapter.get("capability") or "") != capability:
         raise _error(409, "MODEL_CAPABILITY_MISMATCH", "Profile-bound adapter capability does not match target_media.", provider_calls=0)
     try:
-        runtime_credential = resolve_runtime_credential(profile)
+        runtime_credential = resolve_runtime_credential(profile, resolver=credential_resolver)
     except RuntimeCredentialError as exc:
         raise _error(409, exc.code, str(exc), provider_calls=0) from exc
     # ProviderExecutionProfile is a secret-free projection.  Creative video
@@ -428,7 +432,6 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str) -> t
     profile["provider_execution_profile"] = canonical_profile
     profile["phase_j3_canonical"] = True
     profile["credential_audit"] = runtime_credential.audit()
-    profile["runtime_credential_value"] = runtime_credential.value
     phase_profile = build_model_profile(
         {
             "model_family": adapter.get("model_family"),
@@ -442,7 +445,7 @@ def _resolve_canonical_profile(model_profile_id: str, *, target_media: str) -> t
             },
         }
     )
-    return profile, phase_profile, adapter, fingerprint_provider_execution_profile(canonical_profile)
+    return profile, phase_profile, adapter, fingerprint_provider_execution_profile(canonical_profile), runtime_credential.value
 
 
 def _current_image_to_video_binding(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int) -> tuple[dict[str, Any], str]:
@@ -486,12 +489,13 @@ def _resolve_canonical_execution_inputs(
     target_media: str,
     model_profile_id: str,
     generation_mode: str | None = None,
+    credential_resolver: Any = None,
 ) -> dict[str, Any]:
     """Resolve all current authority inputs for both IMAGE and VIDEO."""
     from api.prompt_ir_authority_api import _load_current, _production_asset_authority
 
     media = _exact_target_media(target_media)
-    profile, phase_profile, adapter, profile_fp = _resolve_canonical_profile(model_profile_id, target_media=media)
+    profile, phase_profile, adapter, profile_fp, runtime_credential_value = _resolve_canonical_profile(model_profile_id, target_media=media, credential_resolver=credential_resolver)
     try:
         selection = ProductionGenerationSelection.from_request(
             book_id=book_id,
@@ -591,7 +595,7 @@ def _resolve_canonical_execution_inputs(
         "target_media": media,
         "source_binding": source_binding,
         "source_storage_identity": source_storage,
-        "runtime_credential_value": profile.get("runtime_credential_value"),
+        "runtime_credential_value": runtime_credential_value,
     }
 
 

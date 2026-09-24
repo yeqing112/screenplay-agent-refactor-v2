@@ -9,7 +9,14 @@
       "payload_requirements": ["prompt", "reference_bindings when required", "aspect_ratio", "resolution"],
       "candidate_contract": ["image/png or provider image MIME", "checksum", "byte_size", "width", "height", "storage_identity"],
       "mock_transport": "deterministic PNG",
-      "provider_calls": 0
+      "provider_calls": 0,
+      "prompt_ir_resolve": true,
+      "model_profile": true,
+      "profile_bound_adapter": true,
+      "runtime_credential": "injected_or_environment_resolver",
+      "generation_payload": true,
+      "execution_record": "GenerationExecutionRecord",
+      "technical_validation": "image signature/checksum/bytes/dimensions/storage"
     },
     {
       "target_media": "VIDEO",
@@ -21,7 +28,14 @@
       "candidate_contract": ["real MP4 container", "video/mp4", "checksum", "byte_size", "width", "height", "duration_ms", "storage_identity"],
       "validator": "ffprobe",
       "mock_transport": "deterministic MP4 with async-shaped submit/poll result",
-      "provider_calls": 0
+      "provider_calls": 0,
+      "prompt_ir_resolve": true,
+      "model_profile": true,
+      "profile_bound_adapter": true,
+      "runtime_credential": "injected_or_environment_resolver",
+      "generation_payload": true,
+      "execution_record": "GenerationExecutionRecord",
+      "technical_validation": "ffprobe MP4/checksum/bytes/duration/dimensions/storage"
     }
   ],
   "shared_records": ["GenerationExecutionRecord", "MediaCandidateRecord"],

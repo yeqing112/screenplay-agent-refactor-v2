@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import json
 import os
 import shutil
 from copy import deepcopy
@@ -178,6 +179,32 @@ def test_canonical_execute_profile_drift_is_preview_stale_without_provider(monke
     assert calls == []
 
 
+@pytest.mark.parametrize("drift", ["prompt_ir", "asset", "request"])
+def test_canonical_execute_upstream_drift_is_stale_without_provider(monkeypatch, drift):
+    session = _Session()
+    context = _image_context()
+    monkeypatch.setattr(canary, "Session", lambda: session)
+    monkeypatch.setattr(canary, "_resolve_canonical_execution_inputs", lambda *args, **kwargs: context)
+    calls = []
+    async def provider(**_kwargs):
+        calls.append(1)
+        return await canary._fake_provider_image(request_snapshot=context["request_snapshot"], provider_request_fingerprint="drift")
+    monkeypatch.setattr(canary, "_call_provider", provider)
+    monkeypatch.setattr(canary, "_persist_candidate_media", lambda **kwargs: {"storage_identity": "local://image", "storage_reference": {"image_url": "local://image"}, "checksum_sha256": "x", "mime_type": "image/png", "byte_size": 1, "width": 1, "height": 1, "duration_ms": None})
+    preview = canary.preview_canonical_generation(1, 1, 101, canary.CanonicalPreviewRequest(model_profile_id="builtin-mock-image", target_media="IMAGE"))
+    if drift == "prompt_ir":
+        context["resolved"]["version"].payload_hash = "changed-prompt-ir"
+    elif drift == "asset":
+        context["asset_bindings_fingerprint"] = "changed-assets"
+    else:
+        context["provider_request_fingerprint"] = "changed-request"
+    request = canary.CanonicalExecuteRequest(execute=True, confirmation_token=preview["confirmation_token"], preview_execution_id=preview["execution"]["execution_id"])
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(canary.execute_canonical_generation(1, 1, 101, request))
+    assert exc.value.detail["code"] == "GENERATION_PREVIEW_STALE"
+    assert calls == []
+
+
 def test_runtime_credential_lifecycle_separates_validation_and_never_uses_raw_key():
     from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
 
@@ -187,6 +214,59 @@ def test_runtime_credential_lifecycle_separates_validation_and_never_uses_raw_ke
     with pytest.raises(RuntimeCredentialError) as exc:
         resolve_runtime_credential(profile, resolver=lambda _ref: "runtime-secret", validator=lambda _value: False)
     assert exc.value.code == "RUNTIME_CREDENTIAL_NOT_VALIDATED"
+
+
+def test_canonical_profile_uses_public_registry_projection_and_injected_credential(monkeypatch):
+    public_profile = {
+        "id": "public-image",
+        "provider": "openai-compatible",
+        "model_name": "image-v1",
+        "capability": "image",
+        "generation_capability": "IMAGE_GENERATION",
+        "adapter_id": "image_generic",
+        "adapter_version": "image_generic_adapter_v1",
+        "credential_ref": "env:PUBLIC_IMAGE_KEY",
+        "credential_configured": True,
+        "key_configured": True,
+        "enabled": True,
+        "base_url": "https://provider.invalid/v1",
+        "default_params": {"timeout_seconds": 30},
+    }
+    monkeypatch.setattr(canary, "list_profiles", lambda include_sensitive=False: [dict(public_profile)])
+    monkeypatch.setattr(canary, "get_profile", lambda _profile_id: (_ for _ in ()).throw(AssertionError("canonical resolution must not load sensitive registry profile")))
+    profile, _phase_profile, _adapter, _profile_fp, runtime_secret = canary._resolve_canonical_profile(
+        "public-image",
+        target_media="IMAGE",
+        credential_resolver=lambda ref: "injected-runtime-secret" if ref == "env:PUBLIC_IMAGE_KEY" else None,
+    )
+    assert "api_key" not in profile
+    serialized = json.dumps(profile, ensure_ascii=False, sort_keys=True)
+    assert "injected-runtime-secret" not in serialized
+    assert runtime_secret == "injected-runtime-secret"
+    assert profile["credential_audit"] == {"credential_ref": "env:PUBLIC_IMAGE_KEY", "configured": True, "resolved": True, "validated": True}
+
+
+def test_canonical_profile_missing_runtime_credential_fails_closed(monkeypatch):
+    profile = {
+        "id": "missing-image",
+        "provider": "openai-compatible",
+        "model_name": "image-v1",
+        "capability": "image",
+        "generation_capability": "IMAGE_GENERATION",
+        "adapter_id": "image_generic",
+        "adapter_version": "image_generic_adapter_v1",
+        "credential_ref": "env:PHASE_J3_MISSING_KEY",
+        "credential_configured": True,
+        "key_configured": True,
+        "enabled": True,
+        "base_url": "https://provider.invalid/v1",
+        "default_params": {"timeout_seconds": 30},
+    }
+    monkeypatch.setattr(canary, "list_profiles", lambda include_sensitive=False: [dict(profile)])
+    monkeypatch.delenv("env:PHASE_J3_MISSING_KEY", raising=False)
+    with pytest.raises(HTTPException) as exc:
+        canary._resolve_canonical_profile("missing-image", target_media="IMAGE")
+    assert exc.value.detail["code"] == "RUNTIME_CREDENTIAL_NOT_RESOLVED"
 
 
 def test_canonical_human_authorization_gate_is_provider_free(monkeypatch):
@@ -251,6 +331,67 @@ def test_canonical_video_mock_submit_poll_and_candidate(monkeypatch):
     assert replay["provider_calls"] == 0 and replay["reused"] is True
     assert len([row for row in session.rows if isinstance(row, GenerationExecutionRecord)]) == 1
     assert len([row for row in session.rows if isinstance(row, MediaCandidateRecord)]) == 1
+
+
+def _image_to_video_context():
+    context = _video_context()
+    context["payload"] = deepcopy(context["payload"])
+    context["payload"]["generation_payload_fingerprint"] = "image-to-video-payload"
+    context["payload"]["generation_policy"] = {"fingerprint": "image-to-video-policy", "mode": "IMAGE_TO_VIDEO", "target_media": "VIDEO", "duration_seconds": 1, "source_binding": {"official_media_authority_id": "oma-image", "official_media_version_id": "omv-image", "media_role": "SHOT_PRIMARY_IMAGE", "checksum_sha256": "image-checksum", "source_prompt_ir_version_id": 11, "source_prompt_ir_payload_hash": "image-ir-hash"}}
+    context["payload"]["request"] = {"prompt": "A locked video prompt", "motion_prompt": "A locked motion prompt", "reference_bindings": [], "mode": "IMAGE_TO_VIDEO", "target_media": "VIDEO", "duration_seconds": 1, "aspect_ratio": None, "resolution": None, "source_binding": context["payload"]["generation_policy"]["source_binding"]}
+    context["policy"] = context["payload"]["generation_policy"]
+    context["request_snapshot"] = {"schema_version": "phase_f_provider_request_v2", "prompt": "A locked video prompt", "motion_prompt": "A locked motion prompt", "target_media": "VIDEO", "generation_mode": "IMAGE_TO_VIDEO", "duration_seconds": 1, "aspect_ratio": None, "resolution": None, "reference_bindings": [], "source_binding": context["payload"]["generation_policy"]["source_binding"], "source_storage_identity": "official://image-v1"}
+    context["provider_request_fingerprint"] = "image-to-video-request-fp"
+    context["source_binding"] = context["payload"]["generation_policy"]["source_binding"]
+    context["source_storage_identity"] = "official://image-v1"
+    return context
+
+
+def test_canonical_image_to_video_uses_official_source_and_one_logical_call(monkeypatch):
+    session = _Session()
+    context = _image_to_video_context()
+    monkeypatch.setattr(canary, "Session", lambda: session)
+    monkeypatch.setattr(canary, "_resolve_canonical_execution_inputs", lambda *args, **kwargs: context)
+    monkeypatch.setattr(canary, "_persist_candidate_media", lambda **kwargs: {
+        "storage_identity": "local://video",
+        "storage_reference": {"video_url": "local://video"},
+        "checksum_sha256": "video-sha",
+        "mime_type": "video/mp4",
+        "byte_size": len(canary._FAKE_MP4),
+        "width": 2,
+        "height": 2,
+        "duration_ms": 1000,
+    })
+    preview = canary.preview_canonical_generation(1, 1, 101, canary.CanonicalPreviewRequest(model_profile_id="builtin-mock-video", target_media="VIDEO", generation_mode="IMAGE_TO_VIDEO"))
+    assert preview["authority_fingerprints"]["source_binding"]["official_media_version_id"] == "omv-image"
+    request = canary.CanonicalExecuteRequest(execute=True, confirmation_token=preview["confirmation_token"], preview_execution_id=preview["execution"]["execution_id"])
+    result = asyncio.run(canary.execute_canonical_generation(1, 1, 101, request))
+    assert result["provider_calls"] == 1
+    assert result["candidate"]["media_type"] == "VIDEO"
+    assert result["execution"]["target_media"] == "VIDEO"
+
+
+def test_canonical_image_to_video_source_drift_is_stale_without_provider(monkeypatch):
+    session = _Session()
+    context = _image_to_video_context()
+    monkeypatch.setattr(canary, "Session", lambda: session)
+    monkeypatch.setattr(canary, "_resolve_canonical_execution_inputs", lambda *args, **kwargs: context)
+    calls = []
+    async def provider(**_kwargs):
+        calls.append(1)
+        return await canary._fake_provider_video(request_snapshot=context["request_snapshot"], provider_request_fingerprint="drift")
+    monkeypatch.setattr(canary, "_call_provider", provider)
+    monkeypatch.setattr(canary, "_persist_candidate_media", lambda **kwargs: {"storage_identity": "local://video", "storage_reference": {"video_url": "local://video"}, "checksum_sha256": "x", "mime_type": "video/mp4", "byte_size": 1, "width": 2, "height": 2, "duration_ms": 1000})
+    preview = canary.preview_canonical_generation(1, 1, 101, canary.CanonicalPreviewRequest(model_profile_id="builtin-mock-video", target_media="VIDEO", generation_mode="IMAGE_TO_VIDEO"))
+    context["source_binding"] = dict(context["source_binding"], official_media_version_id="omv-image-v2")
+    context["payload"]["request"]["source_binding"] = context["source_binding"]
+    context["request_snapshot"]["source_binding"] = context["source_binding"]
+    context["provider_request_fingerprint"] = "image-to-video-request-drift"
+    request = canary.CanonicalExecuteRequest(execute=True, confirmation_token=preview["confirmation_token"], preview_execution_id=preview["execution"]["execution_id"])
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(canary.execute_canonical_generation(1, 1, 101, request))
+    assert exc.value.detail["code"] == "GENERATION_PREVIEW_STALE"
+    assert calls == []
 
 
 def test_fake_video_is_real_mp4_and_deterministic():

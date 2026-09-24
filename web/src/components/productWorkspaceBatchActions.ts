@@ -4,6 +4,7 @@ import { upsertPendingStoryboardTask, removePendingStoryboardTask } from './prod
 import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTasks'
 import type { CreativeTaskPayload } from './productWorkspaceGeneration'
 import { resolveEffectiveReferenceAssetIds } from './productWorkspaceStoryboardReferencePayload'
+import { readExplicitGenerationProfileSelection } from './productWorkspaceGeneration'
 
 export type BatchTaskAction =
   | 'batch-compile-prompts'
@@ -38,6 +39,8 @@ type ExecuteBatchTaskActionOptions = {
     fetchTask: (taskId: string) => Promise<CreativeTaskPayload>,
     options?: { softTimeoutMs?: number; pollIntervalMs?: number; maxAttempts?: number },
   ) => Promise<CreativeTaskPayload | { status: 'soft_timeout'; task_id: string }>
+  imageModelProfileId?: string | null
+  videoModelProfileId?: string | null
 }
 
 export function batchActionLabel(action: BatchTaskAction) {
@@ -90,6 +93,9 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
     fetchTaskStatus,
     waitForCreativeTask,
   } = options
+  const selection = readExplicitGenerationProfileSelection()
+  const imageModelProfileId = options.imageModelProfileId ?? selection.imageModelProfileId
+  const videoModelProfileId = options.videoModelProfileId ?? selection.videoModelProfileId
 
   if (action === 'batch-compile-prompts') {
     throw new Error('批量直接重编译已停用：请逐镜使用“受控 Prompt Compiler 草案”审核并确认，避免批量隐式调用 LLM。')
@@ -186,6 +192,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
   }
 
   if (action === 'batch-generate-frames') {
+    if (!imageModelProfileId) throw new Error('批量生成首帧前必须显式选择 IMAGE 生成模型。')
     const runningFrameKeys = new Set(
       pendingTasks
         .filter((task) => task.kind === 'frame')
@@ -212,7 +219,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
       const response = await fetch(`/api/books/${bookId}/storyboard/${target.episode}/${target.shotId}/generate-frame`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ compileIfMissing: true, confirmed: true, allowExternalCall: true }),
+        body: JSON.stringify({ modelProfileId: imageModelProfileId, compileIfMissing: true, confirmed: true, allowExternalCall: true }),
       })
 
       if (!response.ok) {
@@ -223,6 +230,10 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
 
       const payload = await response.json().catch(() => ({}))
       const taskId = String(payload.task_id || '').trim()
+      if (payload?.execution && !taskId) {
+        startedCount += 1
+        continue
+      }
       if (!taskId) {
         failedCount += 1
         failedTargets.push(`第 ${target.episode} 集 / 镜头 ${target.shotId}`)
@@ -275,6 +286,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
   }
 
   if (action === 'batch-generate-videos') {
+    if (!videoModelProfileId) throw new Error('批量生成视频前必须显式选择 VIDEO 生成模型。')
     const runningVideoKeys = new Set(
       pendingTasks
         .filter((task) => task.kind === 'video')
@@ -313,6 +325,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          modelProfileId: videoModelProfileId,
           confirmed: true,
           allowExternalCall: true,
           compileIfMissing: true,
@@ -329,6 +342,10 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
 
       const payload = await response.json().catch(() => ({}))
       const taskId = String(payload.task_id || '').trim()
+      if (payload?.execution && !taskId) {
+        startedCount += 1
+        continue
+      }
       if (!taskId) {
         failedCount += 1
         failedTargets.push(`第 ${target.episode} 集 / 镜头 ${target.shotId}`)

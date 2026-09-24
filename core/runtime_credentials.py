@@ -58,28 +58,20 @@ def resolve_runtime_credential(
     *,
     resolver: Resolver | None = None,
     validator: Callable[[str], bool] | None = None,
-    allow_mock: bool = True,
 ) -> RuntimeCredential:
     """Resolve and validate a credential without reading registry ``api_key``.
 
     A legacy plaintext ``api_key`` therefore cannot silently become a new
-    canonical credential.  Operators must configure an environment-backed or
-    injected resolver explicitly.  Mock profiles use an in-memory sentinel
-    strictly as a deterministic transport dependency.
+    canonical credential. Operators must configure an environment-backed or
+    injected resolver explicitly. Deterministic fake credentials are supplied
+    only by an injected test/operations resolver; this module has no built-in
+    mock secret fallback.
     """
     ref = credential_reference(profile)
     if not ref:
         raise RuntimeCredentialError("RUNTIME_CREDENTIAL_NOT_RESOLVED", "Canonical generation requires a credential reference.")
 
-    provider = str(profile.get("provider") or "").strip()
     configured = bool(profile.get("credential_configured", profile.get("key_configured", False)))
-    # An injected resolver is the formal test/operations boundary and always
-    # wins, including for deterministic mock profiles.  The built-in fixture
-    # fallback is intentionally narrow and never reads a registry plaintext
-    # key; real profiles must use an explicit resolver or environment ref.
-    if resolver is None and provider == "prototype-task-adapter" and allow_mock:
-        runtime = RuntimeCredential(ref, "mock-runtime-credential", True, True, True)
-        return runtime
     if not configured:
         raise RuntimeCredentialError("RUNTIME_CREDENTIAL_NOT_RESOLVED", "The selected profile has no configured runtime credential reference.", credential_ref=ref)
 

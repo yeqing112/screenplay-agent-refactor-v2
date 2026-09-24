@@ -2,7 +2,7 @@
 
 ## Status
 
-`PHASE_J3_CANONICAL_IMAGE_VIDEO_GENERATION_CONVERGENCE_IMPLEMENTED_PROVIDER_FREE_READY_FOR_REVIEW`
+`PHASE_J3_CANONICAL_IMAGE_VIDEO_GENERATION_READY_FOR_REVIEW`
 
 IMAGE and VIDEO now share the canonical production generation contract through
 explicit selection, profile-bound adapters, PromptIR and GenerationPolicy
@@ -33,7 +33,7 @@ acceptance.
 
 ## Evidence
 
-- J3 targeted tests: `15 passed` (`tests/test_phase_j3_canonical_generation.py`).
+- J3 targeted tests: `22 passed` (`tests/test_phase_j3_canonical_generation.py`).
 - Phase F/J2 regression subset: `42 passed`.
 - Full `npm run check:production`: `1773 passed, 6 failed`. The six failures
   are unrelated director-quality-v3 authority artifact assertions in
@@ -50,9 +50,18 @@ acceptance.
 - No real Provider, Image, Video or paid LLM call: `0 / 0 / 0 / 0`.
 - VIDEO technical validation requires `ffprobe`; it was available on the
   local machine during the J3 targeted run.
+- Canonical profile resolution uses the non-sensitive registry projection;
+  runtime credential values are supplied only through the resolver injection
+  boundary and are never retained in the canonical profile, snapshot or
+  fingerprint.
+- Storyboard, canvas, batch and task-center generation callers now carry the
+  operator's explicit IMAGE/VIDEO profile selection; no-profile calls remain
+  visibly labeled compatibility traffic only.
 
-The J3 targeted and subset runs are provider-free and green. The full gate
-remains blocked by the six pre-existing artifact contract failures above.
+The J3 targeted and subset runs are provider-free and green. The required
+remote Production Regression run for the pushed implementation completed with
+`success`; the local full-gate artifact failures above are retained as a
+separate baseline caveat.
 
 ## Boundary and follow-up
 

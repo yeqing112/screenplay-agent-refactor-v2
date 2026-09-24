@@ -1,5 +1,36 @@
 export type StoryboardGenerationKind = 'frame' | 'video'
 
+export type ExplicitGenerationProfileSelection = {
+  imageModelProfileId: string | null
+  videoModelProfileId: string | null
+}
+
+const EXPLICIT_PROFILE_SELECTION_KEY = 'production-generation-profile-selection-v1'
+
+export function readExplicitGenerationProfileSelection(): ExplicitGenerationProfileSelection {
+  if (typeof window === 'undefined') return { imageModelProfileId: null, videoModelProfileId: null }
+  try {
+    const raw = window.localStorage.getItem(EXPLICIT_PROFILE_SELECTION_KEY)
+    const parsed = raw ? JSON.parse(raw) : null
+    return {
+      imageModelProfileId: typeof parsed?.imageModelProfileId === 'string' && parsed.imageModelProfileId.trim() ? parsed.imageModelProfileId.trim() : null,
+      videoModelProfileId: typeof parsed?.videoModelProfileId === 'string' && parsed.videoModelProfileId.trim() ? parsed.videoModelProfileId.trim() : null,
+    }
+  } catch {
+    return { imageModelProfileId: null, videoModelProfileId: null }
+  }
+}
+
+export function persistExplicitGenerationProfileSelection(selection: ExplicitGenerationProfileSelection) {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem(EXPLICIT_PROFILE_SELECTION_KEY, JSON.stringify(selection))
+  } catch {
+    // Storage is a convenience for carrying the operator's explicit choice;
+    // the backend remains authoritative and still requires the id in each request.
+  }
+}
+
 export interface CreativeTaskPayload {
   task_id?: string
   status?: string

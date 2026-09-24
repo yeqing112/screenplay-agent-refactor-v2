@@ -7,9 +7,11 @@ storyboard frame and video endpoints remain available as a compatibility
 surface for old clients that do not yet send `model_profile_id`.
 
 When a profile id is present, those endpoints delegate to canonical preview and
-execute. The bridge preserves the existing confirmation shape while the
-canonical resolver owns media scope, PromptIR lineage, adapter binding,
-credential lifecycle, idempotency and candidate persistence.
+execute. The formal storyboard, canvas, batch and task-center callers now send
+the operator's explicit profile id. The bridge preserves the existing
+confirmation shape while the canonical resolver owns media scope, PromptIR
+lineage, adapter binding, credential lifecycle, idempotency and candidate
+persistence.
 
 When a profile id is absent, the endpoint explicitly marks the response as
 `legacy_compatibility_surface`; that branch is not counted as the J3 production

@@ -10,7 +10,8 @@ import ReactFlow, {
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import type { ScriptOutput, StoryboardShotOutput } from '../domain/bookOutputs'
-import { getStoryboardGenerationLabels, waitForCreativeTask } from './productWorkspaceGeneration'
+import { getStoryboardGenerationLabels, persistExplicitGenerationProfileSelection, readExplicitGenerationProfileSelection, waitForCreativeTask } from './productWorkspaceGeneration'
+import { fetchModelRegistry, type ModelProfileRecord } from '../services/modelRegistry'
 import type { AssetSummary } from './productWorkspaceAssets'
 import {
   fetchCreativeTaskStatus,
@@ -751,6 +752,26 @@ export default function ProductWorkspaceCanvasBetaSection({
   const [frameRecoveryTaskId, setFrameRecoveryTaskId] = useState<string | null>(null)
   const [videoRecoveryTaskId, setVideoRecoveryTaskId] = useState<string | null>(null)
   const [canvasRuntimeVersion, setCanvasRuntimeVersion] = useState(0)
+  const [generationModelProfiles, setGenerationModelProfiles] = useState<ModelProfileRecord[]>([])
+  const [imageModelProfileId, setImageModelProfileId] = useState<string | null>(() => readExplicitGenerationProfileSelection().imageModelProfileId)
+  const [videoModelProfileId, setVideoModelProfileId] = useState<string | null>(() => readExplicitGenerationProfileSelection().videoModelProfileId)
+
+  useEffect(() => {
+    let cancelled = false
+    fetchModelRegistry()
+      .then((payload) => {
+        if (cancelled) return
+        const profiles = payload.profiles.filter((item) => item.enabled && (item.capability === 'image' || item.capability === 'video'))
+        const selection = readExplicitGenerationProfileSelection()
+        setGenerationModelProfiles(profiles)
+        setImageModelProfileId(profiles.some((item) => item.id === selection.imageModelProfileId && item.capability === 'image') ? selection.imageModelProfileId : null)
+        setVideoModelProfileId(profiles.some((item) => item.id === selection.videoModelProfileId && item.capability === 'video') ? selection.videoModelProfileId : null)
+      })
+      .catch(() => {
+        if (!cancelled) setGenerationModelProfiles([])
+      })
+    return () => { cancelled = true }
+  }, [])
 
   const pendingStoryboardTasks = useMemo(
     () => readPendingStoryboardTasks(bookId),
@@ -772,6 +793,9 @@ export default function ProductWorkspaceCanvasBetaSection({
       generationChain?: string | null
       promptVersion?: number | null
       taskId?: string | null
+      executionId?: string | null
+      candidateId?: string | null
+      candidateStatus?: string | null
     },
   ) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
@@ -783,6 +807,9 @@ export default function ProductWorkspaceCanvasBetaSection({
       generationChain: options?.generationChain ?? null,
       promptVersion: options?.promptVersion ?? null,
       taskId: options?.taskId ?? null,
+      executionId: options?.executionId ?? null,
+      candidateId: options?.candidateId ?? null,
+      candidateStatus: options?.candidateStatus ?? null,
       updatedAt: new Date().toISOString(),
     })
     refreshCanvasRuntimeState()
@@ -1235,9 +1262,9 @@ export default function ProductWorkspaceCanvasBetaSection({
 
   const isShotGenerationBusy = generationState === 'submitting'
   const isCompileBusy = compileState === 'submitting'
-  const canGenerateFrame = Boolean(selectedShot?.episode && selectedShot?.shot_id) && !isShotGenerationBusy
+  const canGenerateFrame = Boolean(selectedShot?.episode && selectedShot?.shot_id && imageModelProfileId) && !isShotGenerationBusy
   const canGenerateVideo =
-    Boolean(selectedShot?.episode && selectedShot?.shot_id) && hasAdoptedFrame && !isShotGenerationBusy
+    Boolean(selectedShot?.episode && selectedShot?.shot_id && videoModelProfileId) && hasAdoptedFrame && !isShotGenerationBusy
   const resultCount = visibleGraph.nodes.length
   const hasActiveKindFilter = activeKinds.length !== FILTERABLE_KINDS.length
   const hasActiveStatusFilter = statusFilter !== 'all'
@@ -1268,6 +1295,11 @@ export default function ProductWorkspaceCanvasBetaSection({
     promptRecompileVersion?: number
   }) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    if (!imageModelProfileId) {
+      setGenerationState('error')
+      setGenerationMessage('请先在创作画布或镜头工作台显式选择 IMAGE 生成模型。')
+      return
+    }
     const labels = getStoryboardGenerationLabels('frame')
     const confirmed = typeof window === 'undefined' || window.confirm(
       '确认提交分镜图生成？该操作可能产生平台费用，并会把返回图片写回当前镜头。',
@@ -1288,6 +1320,7 @@ export default function ProductWorkspaceCanvasBetaSection({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            modelProfileId: imageModelProfileId,
             confirmed: true,
             allowExternalCall: true,
             compileIfMissing: true,
@@ -1312,6 +1345,18 @@ export default function ProductWorkspaceCanvasBetaSection({
       }
 
       const payload = await response.json()
+      if (payload?.execution && !payload?.task_id) {
+        setGenerationState('success')
+        setGenerationMessage(`${labels.success}（候选结果，待显式采纳）`)
+        persistShotExecutionSummary('frame', getCanvasExecutionSummaryLabel('frame', chainMeta?.generationChain), {
+          generationChain: chainMeta?.generationChain ?? 'canvas_generate_frame',
+          executionId: payload.execution.execution_id,
+          candidateId: payload.candidate?.candidate_id,
+          candidateStatus: payload.candidate?.status || 'MEDIA_CANDIDATE',
+        })
+        onRefreshAll()
+        return
+      }
       const taskId = String(payload?.task_id || '').trim()
       if (!taskId) throw new Error('未能获取首帧任务 ID。')
 
@@ -1369,6 +1414,11 @@ export default function ProductWorkspaceCanvasBetaSection({
     promptRecompileVersion?: number
   }) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id || !adoptedImage?.id) return
+    if (!videoModelProfileId) {
+      setGenerationState('error')
+      setGenerationMessage('请先在创作画布或镜头工作台显式选择 VIDEO 生成模型。')
+      return
+    }
     const labels = getStoryboardGenerationLabels('video')
     const confirmed = typeof window === 'undefined' || window.confirm(
       '确认提交视频生成？该操作可能产生平台费用，并会把返回视频写回当前镜头。',
@@ -1389,6 +1439,7 @@ export default function ProductWorkspaceCanvasBetaSection({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            modelProfileId: videoModelProfileId,
             confirmed: true,
             allowExternalCall: true,
             compileIfMissing: true,
@@ -1415,6 +1466,18 @@ export default function ProductWorkspaceCanvasBetaSection({
       }
 
       const payload = await response.json()
+      if (payload?.execution && !payload?.task_id) {
+        setGenerationState('success')
+        setGenerationMessage(`${labels.success}（候选结果，待显式采纳）`)
+        persistShotExecutionSummary('video', getCanvasExecutionSummaryLabel('video', chainMeta?.generationChain), {
+          generationChain: chainMeta?.generationChain ?? 'canvas_generate_video',
+          executionId: payload.execution.execution_id,
+          candidateId: payload.candidate?.candidate_id,
+          candidateStatus: payload.candidate?.status || 'MEDIA_CANDIDATE',
+        })
+        onRefreshAll()
+        return
+      }
       const taskId = String(payload?.task_id || '').trim()
       if (!taskId) throw new Error('未能获取视频任务 ID。')
 
@@ -2281,6 +2344,38 @@ export default function ProductWorkspaceCanvasBetaSection({
                         {compileMessage}
                       </div>
                     ) : null}
+                    <div className="mt-4 grid gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 md:grid-cols-2">
+                      <label className="text-xs text-slate-300">
+                        IMAGE 生成模型（显式选择）
+                        <select
+                          value={imageModelProfileId || ''}
+                          onChange={(event) => {
+                            const next = generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'image')?.id || null
+                            setImageModelProfileId(next)
+                            persistExplicitGenerationProfileSelection({ imageModelProfileId: next, videoModelProfileId })
+                          }}
+                          className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white"
+                        >
+                          <option value="">请选择模型配置</option>
+                          {generationModelProfiles.filter((item) => item.capability === 'image').map((item) => <option key={item.id} value={item.id}>{item.name} · {item.id}</option>)}
+                        </select>
+                      </label>
+                      <label className="text-xs text-slate-300">
+                        VIDEO 生成模型（显式选择）
+                        <select
+                          value={videoModelProfileId || ''}
+                          onChange={(event) => {
+                            const next = generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'video')?.id || null
+                            setVideoModelProfileId(next)
+                            persistExplicitGenerationProfileSelection({ imageModelProfileId, videoModelProfileId: next })
+                          }}
+                          className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white"
+                        >
+                          <option value="">请选择模型配置</option>
+                          {generationModelProfiles.filter((item) => item.capability === 'video').map((item) => <option key={item.id} value={item.id}>{item.name} · {item.id}</option>)}
+                        </select>
+                      </label>
+                    </div>
                     <div className="mt-4 flex flex-wrap gap-2">
                       <button
                         type="button"
