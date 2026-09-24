@@ -20,7 +20,7 @@ This round closes the production generation boundary around the canonical image/
 
 - Focused J3/J3.1 boundary, canonical, and public-pilot tests: **28 passed**.
 - Repository-wide `pytest -q`: **1777 passed, 0 failed**.
-- `npm run check:production`: **1771 passed, 6 failed** in pre-existing Director Quality artifact-order checks; no J3/J3.1 test failed. The failures are the six missing historical fields listed by the production regression output.
+- `npm run check:production`: **PASS** from a clean baseline; deterministic regression **1777 passed**, Golden Project **5/5**, runtime configuration verification **PASS**, release-gate invariants **PASS**, and frontend production build **PASS**.
 - Artifact evidence:
   - `phase_j3_1_legacy_generation_shutdown_audit.json`
   - `phase_j3_1_runtime_credential_validation_audit.json`
