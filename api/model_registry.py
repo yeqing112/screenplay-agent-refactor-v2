@@ -86,6 +86,11 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "builtin": True,
             "source": "builtin",
             "uses_mock": True,
+            "generation_capability": "IMAGE_GENERATION",
+            "adapter_id": "image_generic",
+            "adapter_version": "image_generic_adapter_v1",
+            "credential_ref": "builtin:mock-image",
+            "credential_configured": True,
         },
         {
             "id": "builtin-mock-video",
@@ -103,6 +108,11 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "builtin": True,
             "source": "builtin",
             "uses_mock": True,
+            "generation_capability": "VIDEO_GENERATION",
+            "adapter_id": "video_generic",
+            "adapter_version": "video_generic_adapter_v1",
+            "credential_ref": "builtin:mock-video",
+            "credential_configured": True,
         },
     ]
 
@@ -146,6 +156,11 @@ def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str
         "builtin": bool(profile.get("builtin", False)),
         "source": str(profile.get("source") or ("builtin" if profile.get("builtin") else "user")),
         "uses_mock": _profile_uses_mock(profile),
+        "generation_capability": str(profile.get("generation_capability") or ""),
+        "adapter_id": str(profile.get("adapter_id") or ""),
+        "adapter_version": str(profile.get("adapter_version") or ""),
+        "credential_ref": str(profile.get("credential_ref") or ""),
+        "credential_configured": bool(profile.get("credential_configured", bool(api_key) or bool(profile.get("key_configured")))),
     }
     if api_key:
         out["api_key"] = api_key
@@ -189,6 +204,11 @@ def _load_saved_profiles() -> list[dict[str, Any]]:
                 "builtin": False,
                 "source": "user",
                 "api_key": str(item.get("api_key") or "").strip(),
+                "generation_capability": str(item.get("generation_capability") or ""),
+                "adapter_id": str(item.get("adapter_id") or ""),
+                "adapter_version": str(item.get("adapter_version") or ""),
+                "credential_ref": str(item.get("credential_ref") or ""),
+                "credential_configured": bool(item.get("credential_configured", bool(item.get("api_key")))),
             }
         )
     return normalized
@@ -346,6 +366,11 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         "builtin": False,
         "source": "user",
         "api_key": str(profile.get("api_key") or "").strip(),
+        "generation_capability": str(profile.get("generation_capability") or ""),
+        "adapter_id": str(profile.get("adapter_id") or ""),
+        "adapter_version": str(profile.get("adapter_version") or ""),
+        "credential_ref": str(profile.get("credential_ref") or ""),
+        "credential_configured": bool(profile.get("credential_configured", bool(profile.get("api_key")))),
     }
 
     if provider == MOCK_PROVIDER:

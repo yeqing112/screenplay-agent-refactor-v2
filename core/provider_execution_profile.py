@@ -180,7 +180,13 @@ def _normalize_timeout(profile: dict[str, Any]) -> int | float:
     return int(timeout) if float(timeout).is_integer() else float(timeout)
 
 
-def build_provider_execution_profile(profile: dict[str, Any], *, adapter_id: str, adapter_version: str) -> dict[str, Any]:
+def build_provider_execution_profile(
+    profile: dict[str, Any],
+    *,
+    adapter_id: str,
+    adapter_version: str,
+    credential_lifecycle: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Build the canonical typed allowlisted Phase F execution projection."""
     raw_params = _profile_mapping(profile.get("default_params"), "default_params")
     forbidden = sorted(FORBIDDEN_SEMANTIC_PROFILE_PARAMS.intersection(raw_params))
@@ -208,6 +214,19 @@ def build_provider_execution_profile(profile: dict[str, Any], *, adapter_id: str
         for key in sorted(CAPABILITY_PARAM_KEYS)
         if key in raw_params
     }
+    credential = {
+        "configured": bool(profile.get("key_configured") or str(profile.get("api_key") or "").strip()),
+        "source_identity": _credential_source_identity(profile),
+    }
+    # Canonical J3 callers may add the resolver lifecycle projection.  The
+    # legacy Phase F shape remains byte-for-byte compatible when omitted.
+    if isinstance(credential_lifecycle, dict):
+        credential = {
+            "credential_ref": str(credential_lifecycle.get("credential_ref") or credential["source_identity"]),
+            "configured": bool(credential_lifecycle.get("configured")),
+            "resolved": bool(credential_lifecycle.get("resolved")),
+            "validated": bool(credential_lifecycle.get("validated")),
+        }
     return {
         "schema_version": PROFILE_SCHEMA_VERSION,
         "profile_id": str(profile.get("id") or ""),
@@ -217,10 +236,7 @@ def build_provider_execution_profile(profile: dict[str, Any], *, adapter_id: str
         "endpoint_identity": _endpoint_identity(profile),
         "generation_params": generation_params,
         "transport_config": {"timeout_seconds": _normalize_timeout(profile)},
-        "credential": {
-            "configured": bool(profile.get("key_configured") or str(profile.get("api_key") or "").strip()),
-            "source_identity": _credential_source_identity(profile),
-        },
+        "credential": credential,
         "capabilities": capabilities,
         "adapter": {"adapter_id": str(adapter_id or ""), "adapter_version": str(adapter_version or "")},
     }

@@ -19420,14 +19420,63 @@ async def _queue_storyboard_generation_task(
     }
 
 
+async def _delegate_storyboard_generation_to_canonical(
+    book_id: int,
+    episode: int,
+    shot_id: str,
+    req: StoryboardGenerationRequest,
+    *,
+    target_media: str,
+    bg: BackgroundTasks,
+):
+    """Compatibility endpoint bridge; canonical service owns production work."""
+    from api.generation_canary_api import (
+        CanonicalExecuteRequest,
+        CanonicalPreviewRequest,
+        execute_canonical_generation,
+        preview_canonical_generation,
+    )
+
+    model_profile_id = str(req.model_profile_id or "").strip()
+    if not model_profile_id:
+        # Retain the historical task endpoint as an explicitly marked
+        # compatibility surface for old clients.  New production workspace
+        # callers always send model_profile_id and use the canonical path.
+        # This branch is not the J3 production authority and remains subject to
+        # the legacy confirmation gates in _queue_storyboard_generation_task.
+        result = await _queue_storyboard_generation_task(book_id, episode, shot_id, "image" if target_media == "IMAGE" else "video", req, bg)
+        if isinstance(result, dict):
+            result["legacy_endpoint_delegated"] = False
+            result["legacy_compatibility_surface"] = True
+        return result
+    preview = preview_canonical_generation(
+        book_id,
+        episode,
+        int(_coerce_storyboard_shot_id(shot_id)),
+        CanonicalPreviewRequest(model_profile_id=model_profile_id, target_media=target_media),
+    )
+    if not req.confirmed:
+        return {**preview, "legacy_endpoint_delegated": True, "requires_confirmation": True}
+    return await execute_canonical_generation(
+        book_id,
+        episode,
+        int(_coerce_storyboard_shot_id(shot_id)),
+        CanonicalExecuteRequest(
+            execute=True,
+            confirmation_token=preview["confirmation_token"],
+            preview_execution_id=preview["execution"]["execution_id"],
+        ),
+    )
+
+
 @app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame")
 async def generate_storyboard_frame(book_id: int, episode: int, shot_id: str, req: StoryboardGenerationRequest, bg: BackgroundTasks):
-    return await _queue_storyboard_generation_task(book_id, episode, shot_id, "image", req, bg)
+    return await _delegate_storyboard_generation_to_canonical(book_id, episode, shot_id, req, target_media="IMAGE", bg=bg)
 
 
 @app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video")
 async def generate_storyboard_video(book_id: int, episode: int, shot_id: str, req: StoryboardGenerationRequest, bg: BackgroundTasks):
-    return await _queue_storyboard_generation_task(book_id, episode, shot_id, "video", req, bg)
+    return await _delegate_storyboard_generation_to_canonical(book_id, episode, shot_id, req, target_media="VIDEO", bg=bg)
 
 
 @app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/acceptance-records")

@@ -63,7 +63,7 @@ import {
 import { ProductWorkspacePromptAuthorityPanel } from './ProductWorkspacePromptAuthorityPanel'
 import { ProductWorkspaceCompileDiagnosticsPanel } from './ProductWorkspaceCompileDiagnosticsPanel'
 import { ProductWorkspaceStoryboardRepairPanel } from './ProductWorkspaceStoryboardRepairPanel'
-import { fetchModelRegistryDefaults, type ModelProfileRecord } from '../services/modelRegistry'
+import { fetchModelRegistry, type ModelProfileRecord } from '../services/modelRegistry'
 import { humanizeProductionState, type ProductionWorkspaceLoadState, type ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
@@ -1756,15 +1756,17 @@ export default function ProductWorkspaceStoryboardSection({
   )
   const [transitionOverview, setTransitionOverview] = useState<TransitionOverview | null>(null)
   const [videoModelProfile, setVideoModelProfile] = useState<ModelProfileRecord | null>(null)
+  const [imageModelProfile, setImageModelProfile] = useState<ModelProfileRecord | null>(null)
+  const [generationModelProfiles, setGenerationModelProfiles] = useState<ModelProfileRecord[]>([])
 
   useEffect(() => {
     let cancelled = false
-    fetchModelRegistryDefaults()
+    fetchModelRegistry()
       .then((payload) => {
-        if (!cancelled) setVideoModelProfile(payload.default_profiles?.video ?? null)
+        if (!cancelled) setGenerationModelProfiles(payload.profiles.filter((item) => item.enabled && (item.capability === 'image' || item.capability === 'video')))
       })
       .catch(() => {
-        if (!cancelled) setVideoModelProfile(null)
+        if (!cancelled) setGenerationModelProfiles([])
       })
     return () => { cancelled = true }
   }, [])
@@ -3111,8 +3113,13 @@ export default function ProductWorkspaceStoryboardSection({
 
     try {
       const endpoint = `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/${kind === 'frame' ? 'generate-frame' : 'generate-video'}`
+      const selectedGenerationProfile = kind === 'frame' ? imageModelProfile : videoModelProfile
+      if (!selectedGenerationProfile?.id) {
+        throw new Error(kind === 'frame' ? '请先选择 IMAGE 生成模型配置。' : '请先选择 VIDEO 生成模型配置。')
+      }
       const requestBody = kind === 'frame'
         ? {
+            modelProfileId: selectedGenerationProfile.id,
             confirmed: true,
             allowExternalCall: true,
             generationChain: chainMeta?.generationChain,
@@ -3122,6 +3129,7 @@ export default function ProductWorkspaceStoryboardSection({
             promptRecompileVersion: chainMeta?.promptRecompileVersion,
           }
         : {
+            modelProfileId: selectedGenerationProfile.id,
             confirmed: true,
             allowExternalCall: true,
             compileIfMissing: true,
@@ -4308,7 +4316,32 @@ export default function ProductWorkspaceStoryboardSection({
               </div> : null}
             </div>
 
-              {(activeStoryboardStep === 'frame' || activeStoryboardStep === 'video') ? <ProductWorkspaceStoryboardAdvancedToolsPanel
+              {(activeStoryboardStep === 'frame' || activeStoryboardStep === 'video') ? <>
+                <div className="mb-3 grid gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 md:grid-cols-2">
+                  <label className="text-xs text-slate-300">
+                    IMAGE 生成模型（显式选择）
+                    <select
+                      value={imageModelProfile?.id || ''}
+                      onChange={(event) => setImageModelProfile(generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'image') || null)}
+                      className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white"
+                    >
+                      <option value="">请选择模型配置</option>
+                      {generationModelProfiles.filter((item) => item.capability === 'image').map((item) => <option key={item.id} value={item.id}>{item.name} · {item.id}</option>)}
+                    </select>
+                  </label>
+                  <label className="text-xs text-slate-300">
+                    VIDEO 生成模型（显式选择）
+                    <select
+                      value={videoModelProfile?.id || ''}
+                      onChange={(event) => setVideoModelProfile(generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'video') || null)}
+                      className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white"
+                    >
+                      <option value="">请选择模型配置</option>
+                      {generationModelProfiles.filter((item) => item.capability === 'video').map((item) => <option key={item.id} value={item.id}>{item.name} · {item.id}</option>)}
+                    </select>
+                  </label>
+                </div>
+                <ProductWorkspaceStoryboardAdvancedToolsPanel
                 episode={selectedShot.episode}
                 shotId={String(selectedShot.shot_id)}
                 assetStatus={selectedShot.asset_status}
@@ -4344,7 +4377,8 @@ export default function ProductWorkspaceStoryboardSection({
                 onGenerateFrame={() => runStoryboardGeneration('frame')}
                 onGenerateVideo={() => runStoryboardGeneration('video')}
                 activeStep={activeStoryboardStep === 'video' ? 'video' : 'frame'}
-              /> : null}
+                />
+              </> : null}
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
               {activeStoryboardStep === 'more' ? <div className="space-y-6">

@@ -1,0 +1,29 @@
+{
+  "phase": "PHASE_J3_CANONICAL_IMAGE_VIDEO_GENERATION_CONVERGENCE_IMPLEMENTATION",
+  "rows": [
+    {
+      "target_media": "IMAGE",
+      "generation_modes": ["TEXT_TO_IMAGE", "IMAGE_EDIT"],
+      "profile_capability": "IMAGE_GENERATION",
+      "adapter": "image_generic/image_generic_adapter_v1",
+      "payload_requirements": ["prompt", "reference_bindings when required", "aspect_ratio", "resolution"],
+      "candidate_contract": ["image/png or provider image MIME", "checksum", "byte_size", "width", "height", "storage_identity"],
+      "mock_transport": "deterministic PNG",
+      "provider_calls": 0
+    },
+    {
+      "target_media": "VIDEO",
+      "generation_modes": ["TEXT_TO_VIDEO", "IMAGE_TO_VIDEO"],
+      "profile_capability": "VIDEO_GENERATION",
+      "adapter": "video_generic/video_generic_adapter_v1",
+      "payload_requirements": ["prompt", "duration_seconds", "aspect_ratio", "resolution"],
+      "image_to_video_requirements": ["current SHOT_PRIMARY_IMAGE OfficialMedia pointer", "source authority", "source PromptIR lineage", "source storage identity"],
+      "candidate_contract": ["real MP4 container", "video/mp4", "checksum", "byte_size", "width", "height", "duration_ms", "storage_identity"],
+      "validator": "ffprobe",
+      "mock_transport": "deterministic MP4 with async-shaped submit/poll result",
+      "provider_calls": 0
+    }
+  ],
+  "shared_records": ["GenerationExecutionRecord", "MediaCandidateRecord"],
+  "idempotency": "provider_request_fingerprint"
+}

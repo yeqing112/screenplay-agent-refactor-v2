@@ -1,0 +1,41 @@
+{
+  "phase": "PHASE_J3_CANONICAL_IMAGE_VIDEO_GENERATION_CONVERGENCE_IMPLEMENTATION",
+  "status": "IMPLEMENTED_PROVIDER_FREE_READY_FOR_REVIEW",
+  "selection_contract": {
+    "required": ["book_id", "episode", "storyboard_shot_id", "target_media", "model_profile_id"],
+    "target_media": ["IMAGE", "VIDEO"],
+    "adapter_id_caller_supplied": false,
+    "generation_mode_caller_supplied_optional": true,
+    "fingerprint_schema": "canonical_generation_request_v1"
+  },
+  "profile_binding": {
+    "image": {
+      "profile_id": "builtin-mock-image",
+      "generation_capability": "IMAGE_GENERATION",
+      "adapter_id": "image_generic",
+      "adapter_version": "image_generic_adapter_v1"
+    },
+    "video": {
+      "profile_id": "builtin-mock-video",
+      "generation_capability": "VIDEO_GENERATION",
+      "adapter_id": "video_generic",
+      "adapter_version": "video_generic_adapter_v1"
+    }
+  },
+  "fail_closed_checks": [
+    "MODEL_PROFILE_NOT_FOUND",
+    "MODEL_PROFILE_STALE",
+    "MODEL_CAPABILITY_MISMATCH",
+    "MODEL_ADAPTER_NOT_RESOLVED",
+    "PRODUCTION_MODEL_SELECTION_REQUIRED",
+    "GENERATION_MEDIA_SCOPE_MISMATCH"
+  ],
+  "evidence": {
+    "targeted_tests": "tests/test_phase_j3_canonical_generation.py",
+    "targeted_result": "4 passed",
+    "provider_calls": 0,
+    "image_calls": 0,
+    "video_calls": 0,
+    "paid_llm_calls": 0
+  }
+}

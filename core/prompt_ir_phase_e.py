@@ -100,6 +100,22 @@ def build_generation_policy(policy: dict[str, Any] | None = None, *, allow_defau
         "language": _text(raw.get("language")),
         "source": _text(raw.get("source") or "explicit_request"),
     }
+    # Media execution semantics are explicit policy fields.  They are copied
+    # only when declared by the authoritative PromptIR; no duration or mode is
+    # inferred from prompt text, model names, or filenames.
+    if "duration_seconds" in raw:
+        try:
+            duration = int(raw["duration_seconds"])
+        except (TypeError, ValueError):
+            raise PromptIRPhaseEError("GENERATION_POLICY_INVALID", "duration_seconds must be a positive integer.")
+        if duration <= 0:
+            raise PromptIRPhaseEError("GENERATION_POLICY_INVALID", "duration_seconds must be a positive integer.")
+        result["duration_seconds"] = duration
+    for key in ("aspect_ratio", "resolution"):
+        if key in raw and _text(raw.get(key)):
+            result[key] = _text(raw.get(key))
+    if isinstance(raw.get("source_binding"), dict):
+        result["source_binding"] = dict(raw["source_binding"])
     if mode not in {"TEXT_TO_IMAGE", "IMAGE_TO_VIDEO", "TEXT_TO_VIDEO", "IMAGE_EDIT"}:
         raise PromptIRPhaseEError("GENERATION_POLICY_INVALID", f"Unsupported generation policy mode: {mode}.")
     result["fingerprint"] = fingerprint({key: value for key, value in result.items() if key != "fingerprint"})
@@ -583,9 +599,9 @@ def validate_prompt_ir_against_snapshot(snapshot: dict[str, Any], prompt_ir: dic
 
 
 MODEL_ADAPTER_REGISTRY = {
-    "flux": {"adapter_id": "flux", "adapter_version": "flux_adapter_v1", "model_family": "FLUX", "supports_reference_images": True, "supports_negative_prompt": False},
-    "image_generic": {"adapter_id": "image_generic", "adapter_version": "image_generic_adapter_v1", "model_family": "GENERIC_IMAGE", "supports_reference_images": True, "supports_negative_prompt": False},
-    "video_generic": {"adapter_id": "video_generic", "adapter_version": "video_generic_adapter_v1", "model_family": "GENERIC_VIDEO", "supports_reference_images": True, "supports_negative_prompt": False},
+    "flux": {"adapter_id": "flux", "adapter_version": "flux_adapter_v1", "model_family": "FLUX", "capability": "IMAGE_GENERATION", "target_media": "IMAGE", "supports_reference_images": True, "supports_negative_prompt": False},
+    "image_generic": {"adapter_id": "image_generic", "adapter_version": "image_generic_adapter_v1", "model_family": "GENERIC_IMAGE", "capability": "IMAGE_GENERATION", "target_media": "IMAGE", "supports_reference_images": True, "supports_negative_prompt": False},
+    "video_generic": {"adapter_id": "video_generic", "adapter_version": "video_generic_adapter_v1", "model_family": "GENERIC_VIDEO", "capability": "VIDEO_GENERATION", "target_media": "VIDEO", "supports_reference_images": True, "supports_negative_prompt": False},
 }
 
 
@@ -673,7 +689,12 @@ def adapt_prompt_ir_to_generation_payload(prompt_ir: dict[str, Any], *, generati
         asset_type = identity_ref.split(":", 1)[0].upper() if ":" in identity_ref else "ASSET"
         role = {"SCENE": "SCENE_REFERENCE", "CHARACTER": "SUBJECT_REFERENCE", "PROP": "PROP_REFERENCE"}.get(asset_type, f"{asset_type}_REFERENCE")
         reference_bindings.append({"role": role, "identity_ref": identity_ref, "asset_authority_ref": _text(ref.get("asset_authority_ref")), "authority_fingerprint": _text(ref.get("authority_fingerprint")), "reference_authority_ref": _text(ref.get("reference_authority_ref")), "reference_authority_fingerprint": _text(ref.get("reference_authority_fingerprint")), "reference_token": _text(ref.get("reference_token"))})
-    request: dict[str, Any] = {"prompt": static_surface["text"], "motion_prompt": motion_surface["text"], "reference_bindings": reference_bindings}
+    request: dict[str, Any] = {"prompt": static_surface["text"], "motion_prompt": motion_surface["text"], "reference_bindings": reference_bindings, "mode": policy.get("mode"), "target_media": policy.get("target_media")}
+    for key in ("duration_seconds", "aspect_ratio", "resolution"):
+        if key in policy:
+            request[key] = policy[key]
+    if isinstance(policy.get("source_binding"), dict):
+        request["source_binding"] = dict(policy["source_binding"])
     if profile.get("capabilities", {}).get("supports_negative_prompt", adapter.get("supports_negative_prompt", False)):
         request["negative_prompt"] = ""
     readiness = evaluate_model_generation_readiness(prompt_ir, generation_policy=policy, model_profile=profile)

@@ -12,6 +12,8 @@ import io
 import json
 import mimetypes
 import os
+import shutil
+import subprocess
 import threading
 from dataclasses import dataclass
 from datetime import datetime
@@ -35,7 +37,7 @@ from models import (
 )
 
 
-VALIDATION_VERSION = "media_validator_v1"
+VALIDATION_VERSION = "media_validator_v2"
 MEDIA_ROLE_DEFAULT = "SHOT_PRIMARY_IMAGE"
 IMAGE_TO_VIDEO_BINDING_SCHEMA_VERSION = "image_to_video_official_media_binding_v1"
 
@@ -195,17 +197,53 @@ def _read_candidate_bytes(candidate: MediaCandidateRecord) -> tuple[bytes, str, 
     raise AssertionError("unreachable")
 
 
-def _detect_media(data: bytes, declared_type: str) -> tuple[str, int | None, int | None]:
+def _probe_video(data: bytes) -> tuple[str, int | None, int | None, int | None]:
+    """Parse a real video container through the declared ffprobe dependency."""
+    executable = os.getenv("FFPROBE_PATH") or shutil.which("ffprobe")
+    if not executable:
+        _fail("MEDIA_VIDEO_VALIDATOR_UNAVAILABLE", "ffprobe is required for deterministic VIDEO technical validation.")
+    try:
+        result = subprocess.run(
+            [executable, "-v", "error", "-print_format", "json", "-show_streams", "-show_format", "pipe:0"],
+            input=data,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=15,
+        )
+        parsed = json.loads(result.stdout.decode("utf-8", errors="replace") or "{}")
+    except (OSError, subprocess.SubprocessError, ValueError, json.JSONDecodeError) as exc:
+        _fail("MEDIA_VIDEO_CONTAINER_INVALID", "Video bytes could not be parsed by ffprobe.", {"error": str(exc)})
+    if result.returncode != 0 or not isinstance(parsed, dict):
+        _fail("MEDIA_VIDEO_CONTAINER_INVALID", "Video bytes are not a valid supported container.", {"stderr": result.stderr.decode("utf-8", errors="replace")[-500:]})
+    streams = parsed.get("streams") if isinstance(parsed.get("streams"), list) else []
+    video_stream = next((item for item in streams if isinstance(item, dict) and item.get("codec_type") == "video"), None)
+    fmt = parsed.get("format") if isinstance(parsed.get("format"), dict) else {}
+    if not video_stream or str(fmt.get("format_name") or "").lower().split(",")[0] not in {"mov", "mp4", "m4v"}:
+        _fail("MEDIA_VIDEO_CONTAINER_INVALID", "Candidate bytes do not contain a valid MP4 video stream.")
+    try:
+        duration = float(video_stream.get("duration") or fmt.get("duration") or 0)
+    except (TypeError, ValueError):
+        duration = 0
+    width = int(video_stream.get("width") or 0) or None
+    height = int(video_stream.get("height") or 0) or None
+    duration_ms = int(round(duration * 1000)) if duration > 0 else None
+    if not duration_ms:
+        _fail("MEDIA_VIDEO_DURATION_MISSING", "Video container does not expose a positive duration.")
+    return "video/mp4", width, height, duration_ms
+
+
+def _detect_media(data: bytes, declared_type: str) -> tuple[str, int | None, int | None, int | None]:
     if not data:
         _fail("MEDIA_BYTES_EMPTY", "Candidate storage bytes are empty.")
     if data.startswith(b"\x89PNG\r\n\x1a\n") and len(data) >= 24:
-        return "image/png", int.from_bytes(data[16:20], "big"), int.from_bytes(data[20:24], "big")
+        return "image/png", int.from_bytes(data[16:20], "big"), int.from_bytes(data[20:24], "big"), None
     if data.startswith(b"\xff\xd8\xff"):
         try:
             from PIL import Image
 
             with Image.open(io.BytesIO(data)) as image:
-                return "image/jpeg", int(image.width), int(image.height)
+                return "image/jpeg", int(image.width), int(image.height), None
         except Exception:
             _fail("MEDIA_BYTES_INVALID", "JPEG candidate bytes could not be decoded.")
     if data.startswith(b"RIFF") and len(data) >= 30 and data[8:12] == b"WEBP":
@@ -213,9 +251,13 @@ def _detect_media(data: bytes, declared_type: str) -> tuple[str, int | None, int
             from PIL import Image
 
             with Image.open(io.BytesIO(data)) as image:
-                return "image/webp", int(image.width), int(image.height)
+                return "image/webp", int(image.width), int(image.height), None
         except Exception:
             _fail("MEDIA_BYTES_INVALID", "WebP candidate bytes could not be decoded.")
+    # An MP4 must be parsed as a real container.  The signature check only
+    # selects the parser; declared MIME or filename never establishes truth.
+    if len(data) >= 12 and data[4:8] == b"ftyp":
+        return _probe_video(data)
     # Do not infer media truth from a filename or a declared MIME type.
     _fail("MEDIA_MIME_UNDETECTABLE", "Candidate bytes have no supported, parseable media signature.", {"declared_mime_type": declared_type})
     raise AssertionError("unreachable")
@@ -224,12 +266,12 @@ def _detect_media(data: bytes, declared_type: str) -> tuple[str, int | None, int
 def validate_media_candidate_technical(candidate: MediaCandidateRecord) -> dict[str, Any]:
     """Pure deterministic storage validation; it never writes or calls a provider."""
     data, declared_content_type, source = _read_candidate_bytes(candidate)
-    observed_mime, width, height = _detect_media(data, declared_content_type)
+    observed_mime, width, height, duration_ms = _detect_media(data, declared_content_type)
     expected_mime = str(candidate.mime_type or "").split(";", 1)[0].strip().lower()
     expected_media_type = str(candidate.media_type or "").strip().upper()
     checksum = hashlib.sha256(data).hexdigest()
     payload = {
-        "schema_version": "media_technical_validation_v1",
+        "schema_version": "media_technical_validation_v2",
         "bytes_valid": bool(data),
         "byte_size": len(data),
         "byte_size_valid": len(data) == int(candidate.byte_size or 0),
@@ -238,16 +280,19 @@ def validate_media_candidate_technical(candidate: MediaCandidateRecord) -> dict[
         "mime_observed": observed_mime,
         "mime_valid": observed_mime == expected_mime,
         "media_type": expected_media_type,
-        "media_type_valid": expected_media_type == "IMAGE" and observed_mime.startswith("image/"),
+        "media_type_valid": (expected_media_type == "IMAGE" and observed_mime.startswith("image/")) or (expected_media_type == "VIDEO" and observed_mime.startswith("video/")),
         "width_observed": width,
         "height_observed": height,
         "dimensions_valid": width == candidate.width and height == candidate.height and bool(width) and bool(height),
+        "duration_observed_ms": duration_ms,
+        "duration_valid": (expected_media_type == "IMAGE" and candidate.duration_ms is None and duration_ms is None)
+        or (expected_media_type == "VIDEO" and candidate.duration_ms is not None and duration_ms is not None and abs(int(candidate.duration_ms) - int(duration_ms)) <= 100),
         "storage_valid": bool(source),
         "storage_source": source,
     }
     payload["valid"] = all(
         payload[key]
-        for key in ("bytes_valid", "byte_size_valid", "checksum_valid", "mime_valid", "media_type_valid", "dimensions_valid", "storage_valid")
+        for key in ("bytes_valid", "byte_size_valid", "checksum_valid", "mime_valid", "media_type_valid", "dimensions_valid", "duration_valid", "storage_valid")
     )
     payload["technical_validation_fingerprint"] = _fingerprint(payload)
     return payload

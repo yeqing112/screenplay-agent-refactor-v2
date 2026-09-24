@@ -44,7 +44,9 @@ from core.provider_execution_profile import (
     build_provider_execution_profile,
     fingerprint_provider_execution_profile,
 )
+from core.canonical_generation import CanonicalGenerationContractError, ProductionGenerationSelection, canonical_request_fingerprint
 from core.public_asset_storage import _load_source_bytes, _normalize_provider_image_bytes
+from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
 from models import (
     GenerationExecutionRecord,
     MediaCandidateRecord,
@@ -62,6 +64,9 @@ _FAKE_PNG = base64.b64decode(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk"
     "+A8AAQUBAScY42YAAAAASUVORK5CYII="
 )
+_FAKE_MP4 = base64.b64decode(
+    "AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAMXbW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAAA+gAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAkF0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAA+gAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAIAAAACAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAPoAAAAAAABAAAAAAG5bWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAABAAAAAQABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAABZG1pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAASRzdGJsAAAAwHN0c2QAAAAAAAAAAQAAALBhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAIAAgBIAAAASAAAAAAAAAABFUxhdmM2Mi4yOC4xMDEgbGlieDI2NAAAAAAAAAAAAAAAGP//AAAANmF2Y0MBZAAK/+EAGWdkAAqs2V+IiMBEAAADAAQAAAMACDxIllgBAAZo6+PLIsD9+PgAAAAAEHBhc3AAAAABAAAAAQAAABRidHJ0AAAAAAAAFigAAAAAAAAAGHN0dHMAAAAAAAAAAQAAAAEAAEAAAAAAHHN0c2MAAAAAAAAAAQAAAAEAAAABAAAAAQAAABRzdHN6AAAAAAAAAsUAAAABAAAAFHN0Y28AAAAAAAAAAQAAA0cAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjYyLjEyLjEwMQAAAAhmcmVlAAACzW1kYXQAAAKtBgX//6ncRem95tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTY1IHIzMjIzIDA0ODBjYjAgLSBILjI2NC9NUEVHLTQgQVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDI1IC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcveDI2NC5odG1sIC0gb3B0aW9uczogY2FiYWM9MSByZWY9MyBkZWJsb2NrPTE6MDowIGFuYWx5c2U9MHgzOjB4MTEzIG1lPWhleCBzdWJtZT03IHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTEgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0xIDh4OGRjdD0xIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PS0yIHRocmVhZHM9MSBsb29rYWhlYWRfdGhyZWFkcz0xIHNsaWNlZF90aHJlYWRzPTAgbnI9MCBkZWNpbWF0ZT0xIGludGVybGFjZWQ9MCBibHVyYXlfY29tcGF0PTAgY29uc3RyYWluZWRfaW50cmE9MCBiZnJhbWVzPTMgYl9weXJhbWlkPTIgYl9hZGFwdD0xIGJfYmlhcz0wIGRpcmVjdD0xIHdlaWdodGI9MSBvcGVuX2dvcD0wIHdlaWdodHA9MiBrZXlpbnQ9MjUwIGtleWludF9taW49MSBzY2VuZWN1dD00MCBpbnRyYV9yZWZyZXNoPTAgcmNfbG9va2FoZWFkPTQwIHJjPWNyZiBtYnRyZWU9MSBjcmY9MjMuMCBxY29tcD0wLjYwIHFwbWluPTAgcXBtYXg9NjkgcXBzdGVwPTQgaXBfcmF0aW89MS40MCBhcT0xOjEuMDAAgAAAABBliIQAFf/+98nvwKbr29+B"
+)
 _SYNC_IMAGE_PROVIDERS = {
     "openai-compatible",
     SHAPI_OPENAI_IMAGES_PROVIDER,
@@ -74,6 +79,24 @@ class CanaryPreviewRequest(BaseModel):
 
     adapter_id: str = Field(min_length=1, validation_alias="adapter_id")
     model_profile_id: str = Field(min_length=1, validation_alias="model_profile_id")
+
+
+class CanonicalPreviewRequest(BaseModel):
+    """Explicit production selection; adapter identity is profile-bound."""
+
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    model_profile_id: str = Field(default="", validation_alias="model_profile_id")
+    target_media: str = Field(default="", validation_alias="target_media")
+    generation_mode: str | None = Field(default=None, validation_alias="generation_mode")
+
+
+class CanonicalExecuteRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    execute: bool = False
+    confirmation_token: str = Field(min_length=1)
+    preview_execution_id: str = Field(min_length=1)
 
 
 class CanaryExecuteRequest(BaseModel):
@@ -170,12 +193,12 @@ def _reference_images(session: Any, bindings: list[dict[str, Any]]) -> list[dict
     return output
 
 
-def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], payload: dict[str, Any], reference_bindings: list[dict[str, Any]]) -> dict[str, Any]:
+def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], payload: dict[str, Any], reference_bindings: list[dict[str, Any]], target_media: str = "IMAGE", source_binding: dict[str, Any] | None = None) -> dict[str, Any]:
     request = payload.get("request") if isinstance(payload.get("request"), dict) else {}
     # motion_prompt is retained explicitly; the provider bridge combines it
     # with the static prompt without inventing new creative content.
     execution_profile = profile.get("provider_execution_profile") if isinstance(profile.get("provider_execution_profile"), dict) else build_provider_execution_profile(profile, adapter_id=str(adapter.get("adapter_id") or ""), adapter_version=str(adapter.get("adapter_version") or ""))
-    return {
+    snapshot = {
         "schema_version": "phase_f_provider_request_v2",
         "provider_execution_profile_schema": PROFILE_SCHEMA_VERSION,
         "provider": execution_profile.get("provider"),
@@ -185,7 +208,11 @@ def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], paylo
         "generation_params": execution_profile.get("generation_params") or {},
         "transport_config": execution_profile.get("transport_config") or {},
         "credential": execution_profile.get("credential") or {},
-        "target_media": "IMAGE",
+        "target_media": target_media,
+        "generation_mode": str(payload.get("generation_policy", {}).get("mode") or ""),
+        "duration_seconds": request.get("duration_seconds"),
+        "aspect_ratio": request.get("aspect_ratio"),
+        "resolution": request.get("resolution"),
         "prompt": str(request.get("prompt") or ""),
         "motion_prompt": str(request.get("motion_prompt") or ""),
         "negative_prompt": str(request.get("negative_prompt") or ""),
@@ -197,6 +224,17 @@ def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], paylo
         ],
         "transport_retry_count": 0,
     }
+    if source_binding:
+        snapshot["source_binding"] = {
+            "schema_version": source_binding.get("schema_version"),
+            "official_media_authority_id": source_binding.get("official_media_authority_id"),
+            "official_media_version_id": source_binding.get("official_media_version_id"),
+            "media_role": source_binding.get("media_role"),
+            "checksum_sha256": source_binding.get("checksum_sha256"),
+            "source_prompt_ir_version_id": source_binding.get("source_prompt_ir_version_id"),
+            "source_prompt_ir_payload_hash": source_binding.get("source_prompt_ir_payload_hash"),
+        }
+    return snapshot
 
 
 def _resolve_profile(req: CanaryPreviewRequest, adapter: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any], str]:
@@ -328,6 +366,220 @@ def _resolve_execution_inputs(session: Any, *, book_id: int, episode: int, shot_
     }
 
 
+def _resolve_canonical_profile(model_profile_id: str, *, target_media: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], str]:
+    """Resolve a current profile and its registered adapter binding.
+
+    The caller supplies only the profile id.  Adapter identity is read from
+    the structured profile binding and never inferred from provider/model
+    strings.
+    """
+    profile = get_profile(model_profile_id)
+    if not profile:
+        raise _error(409, "MODEL_PROFILE_NOT_FOUND", "The explicit production model profile does not exist.", provider_calls=0)
+    if not profile.get("enabled", True):
+        raise _error(409, "MODEL_PROFILE_STALE", "The selected production model profile is disabled.", provider_calls=0)
+    media = str(target_media or "").upper()
+    capability = "IMAGE_GENERATION" if media == "IMAGE" else "VIDEO_GENERATION" if media == "VIDEO" else ""
+    if media not in {"IMAGE", "VIDEO"}:
+        raise _error(409, "GENERATION_MEDIA_SCOPE_MISMATCH", "Production target_media must be IMAGE or VIDEO.", provider_calls=0)
+    if str(profile.get("generation_capability") or "") != capability:
+        raise _error(409, "MODEL_CAPABILITY_MISMATCH", "ModelProfile capability does not match target_media.", provider_calls=0)
+    adapter_id = str(profile.get("adapter_id") or "").strip()
+    adapter_version = str(profile.get("adapter_version") or "").strip()
+    if not adapter_id or not adapter_version:
+        raise _error(409, "MODEL_ADAPTER_NOT_RESOLVED", "ModelProfile has no explicit adapter binding.", provider_calls=0)
+    adapter = MODEL_ADAPTER_REGISTRY.get(adapter_id)
+    if not isinstance(adapter, dict) or str(adapter.get("adapter_version") or "") != adapter_version:
+        raise _error(409, "MODEL_ADAPTER_NOT_RESOLVED", "ModelProfile adapter binding is not registered at the requested version.", provider_calls=0)
+    if str(adapter.get("target_media") or "") != media or str(adapter.get("capability") or "") != capability:
+        raise _error(409, "MODEL_CAPABILITY_MISMATCH", "Profile-bound adapter capability does not match target_media.", provider_calls=0)
+    try:
+        runtime_credential = resolve_runtime_credential(profile)
+    except RuntimeCredentialError as exc:
+        raise _error(409, exc.code, str(exc), provider_calls=0) from exc
+    # ProviderExecutionProfile is a secret-free projection.  Creative video
+    # duration is owned by GenerationPolicy, not provider default_params.
+    profile_for_projection = dict(profile)
+    params = dict(profile.get("default_params") or {})
+    params.pop("duration_seconds", None)
+    profile_for_projection["default_params"] = params
+    try:
+        canonical_profile = build_provider_execution_profile(
+            profile_for_projection,
+            adapter_id=adapter_id,
+            adapter_version=adapter_version,
+            credential_lifecycle=runtime_credential.audit(),
+        )
+    except ProviderExecutionProfileError as exc:
+        raise _error(409, exc.code, str(exc), field=exc.field, provider_calls=0) from exc
+    profile = dict(profile)
+    profile["provider_execution_profile"] = canonical_profile
+    profile["phase_j3_canonical"] = True
+    profile["credential_audit"] = runtime_credential.audit()
+    phase_profile = build_model_profile(
+        {
+            "model_family": adapter.get("model_family"),
+            "adapter_id": adapter_id,
+            "provider_config_ref": model_profile_id,
+            "capabilities": {
+                "supports_reference_images": bool(adapter.get("supports_reference_images")),
+                "supports_negative_prompt": bool(adapter.get("supports_negative_prompt")),
+                "supports_image": media == "IMAGE",
+                "supports_video": media == "VIDEO",
+            },
+        }
+    )
+    return profile, phase_profile, adapter, fingerprint_provider_execution_profile(canonical_profile)
+
+
+def _current_image_to_video_binding(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int) -> tuple[dict[str, Any], str]:
+    """Resolve and validate the exact current OfficialMedia IMAGE source."""
+    from types import SimpleNamespace
+    from core.media_authority import build_image_to_video_source_binding, validate_image_to_video_source_binding
+    from models import OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion
+
+    pointer = session.query(OfficialMediaPointer).filter_by(
+        book_id=book_id,
+        episode=episode,
+        storyboard_shot_id=storyboard_shot_id,
+        media_role="SHOT_PRIMARY_IMAGE",
+    ).first()
+    if pointer is None:
+        raise _error(409, "IMAGE_TO_VIDEO_SOURCE_BINDING_INVALID", "IMAGE_TO_VIDEO requires a current SHOT_PRIMARY_IMAGE OfficialMedia pointer.", provider_calls=0)
+    version = session.query(OfficialMediaVersion).filter_by(official_media_version_id=str(pointer.official_media_version_id)).first()
+    authority = session.query(OfficialMediaAuthority).filter_by(authority_id=str(pointer.authority_id)).first()
+    if version is None or authority is None:
+        raise _error(409, "IMAGE_TO_VIDEO_SOURCE_BINDING_INVALID", "IMAGE_TO_VIDEO source OfficialMedia authority is incomplete.", provider_calls=0)
+    binding = build_image_to_video_source_binding(
+        official_media_authority=authority,
+        official_media_version=version,
+        source_prompt_ir_version_id=version.prompt_ir_version_id,
+        source_prompt_ir_payload_hash=version.prompt_ir_payload_hash,
+    )
+    validate_image_to_video_source_binding(
+        session,
+        execution=SimpleNamespace(book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, target_media="VIDEO"),
+        binding=binding,
+    )
+    return binding, str(version.storage_identity or "")
+
+
+def _resolve_canonical_execution_inputs(
+    session: Any,
+    *,
+    book_id: int,
+    episode: int,
+    shot_id: int,
+    target_media: str,
+    model_profile_id: str,
+    generation_mode: str | None = None,
+) -> dict[str, Any]:
+    """Resolve all current authority inputs for both IMAGE and VIDEO."""
+    from api.prompt_ir_authority_api import _load_current, _production_asset_authority
+
+    media = str(target_media or "").upper()
+    if media not in {"IMAGE", "VIDEO"}:
+        raise _error(409, "GENERATION_MEDIA_SCOPE_MISMATCH", "target_media must be explicitly IMAGE or VIDEO.", provider_calls=0)
+    profile, phase_profile, adapter, profile_fp = _resolve_canonical_profile(model_profile_id, target_media=media)
+    try:
+        selection = ProductionGenerationSelection.from_request(
+            book_id=book_id,
+            episode=episode,
+            storyboard_shot_id=shot_id,
+            target_media=media,
+            model_profile_id=model_profile_id,
+            generation_mode=generation_mode,
+        )
+    except CanonicalGenerationContractError as exc:
+        raise _error(409, exc.code, str(exc), provider_calls=0) from exc
+    _materialization_set, row, _set_envelope = _load_current(session, book_id=book_id, episode=episode, shot_id=shot_id)
+    pointer = session.query(PromptIRPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=row.id, target_media=media).first()
+    if pointer is None:
+        raise _error(409, "PROMPT_IR_POINTER_MISSING", "No current media-scoped PromptIR pointer exists for this shot.", provider_calls=0)
+    meta = _json(getattr(row, "meta_info", "{}"), {})
+    handoff = meta.get("prompt_compiler_handoff") if isinstance(meta, dict) else {}
+    asset_authority = _production_asset_authority(session, book_id=book_id, handoff=handoff if isinstance(handoff, dict) else {})
+    try:
+        resolved = resolve_current_authoritative_prompt_ir(
+            session,
+            book_id=book_id,
+            episode=episode,
+            storyboard_shot_id=row.id,
+            target_media=media,
+            generation_policy=None,
+            asset_authority=asset_authority,
+            model_profile=phase_profile,
+        )
+        policy = build_generation_policy(resolved["payload"].get("generation_policy"), allow_default=False)
+        if policy.get("target_media") != media:
+            raise _error(409, "GENERATION_MEDIA_SCOPE_MISMATCH", "Selection, PromptIR pointer, and GenerationPolicy target_media disagree.", provider_calls=0)
+        mode = str(policy.get("mode") or "").upper()
+        if generation_mode and str(generation_mode).upper() != mode:
+            raise _error(409, "GENERATION_POLICY_MODE_MISMATCH", "Requested generation_mode does not match current PromptIR policy.", provider_calls=0)
+        allowed = {"IMAGE": {"TEXT_TO_IMAGE", "IMAGE_EDIT"}, "VIDEO": {"TEXT_TO_VIDEO", "IMAGE_TO_VIDEO"}}[media]
+        if mode not in allowed:
+            raise _error(409, "GENERATION_POLICY_INVALID", "Current PromptIR generation mode is not supported for target_media.", provider_calls=0)
+        if media == "VIDEO" and not policy.get("duration_seconds"):
+            raise _error(409, "GENERATION_POLICY_INVALID", "VIDEO policy must declare duration_seconds.", provider_calls=0)
+        source_binding: dict[str, Any] | None = None
+        source_storage = ""
+        if mode == "IMAGE_TO_VIDEO":
+            source_binding, source_storage = _current_image_to_video_binding(session, book_id=book_id, episode=episode, storyboard_shot_id=row.id)
+            policy = dict(policy)
+            policy["source_binding"] = source_binding
+        payload = adapt_prompt_ir_to_generation_payload(resolved["payload"], generation_policy=policy, model_profile=phase_profile)
+    except PromptIRPhaseEError as exc:
+        raise _error(409, exc.code, exc.message, diagnostics=exc.diagnostics, provider_calls=0) from exc
+    if not payload.get("readiness", {}).get("ready"):
+        raise _error(409, "GENERATION_PAYLOAD_NOT_READY", "Current PromptIR cannot produce a ready GenerationPayload.", diagnostics=payload.get("readiness", {}).get("reasons", []), provider_calls=0)
+    reference_bindings = payload.get("request", {}).get("reference_bindings", []) if isinstance(payload.get("request"), dict) else []
+    reference_images = _reference_images(session, reference_bindings)
+    reference_fp = fingerprint([{"authority_fingerprint": item.get("reference_authority_fingerprint") or item.get("reference_authority_ref")} for item in reference_bindings])
+    snapshot = _request_snapshot(profile=profile, adapter=adapter, payload=payload, reference_bindings=reference_bindings, target_media=media, source_binding=source_binding)
+    if source_storage:
+        snapshot["source_storage_identity"] = source_storage
+    payload_fp = str(payload.get("generation_payload_fingerprint") or "")
+    policy_fp = str(payload.get("generation_policy", {}).get("fingerprint") or policy.get("fingerprint") or "")
+    selection = ProductionGenerationSelection(
+        book_id=selection.book_id,
+        episode=selection.episode,
+        storyboard_shot_id=int(row.id),
+        target_media=selection.target_media,
+        model_profile_id=selection.model_profile_id,
+        generation_mode=str(policy.get("mode") or selection.generation_mode or "").upper() or None,
+    )
+    provider_request_fp = canonical_request_fingerprint(
+        selection=selection,
+        prompt_ir_payload_hash=str(resolved["version"].payload_hash or ""),
+        prompt_ir_version_id=int(resolved["version"].id),
+        generation_payload_fingerprint=payload_fp,
+        generation_policy_fingerprint=policy_fp,
+        model_profile_fingerprint=profile_fp,
+        adapter_id=str(adapter.get("adapter_id") or ""),
+        adapter_version=str(adapter.get("adapter_version") or ""),
+        reference_bindings_fingerprint=reference_fp,
+        source_binding=source_binding,
+    )
+    return {
+        "row": row,
+        "pointer": pointer,
+        "resolved": resolved,
+        "profile": profile,
+        "phase_profile": phase_profile,
+        "profile_fingerprint": profile_fp,
+        "adapter": adapter,
+        "payload": payload,
+        "policy": policy,
+        "reference_images": reference_images,
+        "reference_bindings_fingerprint": reference_fp,
+        "request_snapshot": snapshot,
+        "provider_request_fingerprint": provider_request_fp,
+        "target_media": media,
+        "source_binding": source_binding,
+        "source_storage_identity": source_storage,
+    }
+
+
 async def _fake_provider_image(*, request_snapshot: dict[str, Any], provider_request_fingerprint: str) -> dict[str, Any]:
     response = {
         "provider": "phase-f-fake-image-provider",
@@ -346,6 +598,33 @@ async def _fake_provider_image(*, request_snapshot: dict[str, Any], provider_req
         "providerTaskId": response["request_id"],
         "provider": response["provider"],
         "model": response["model"],
+    }
+
+
+async def _fake_provider_video(*, request_snapshot: dict[str, Any], provider_request_fingerprint: str) -> dict[str, Any]:
+    """Deterministic async-shaped MP4 transport used by provider-free tests."""
+    task_id = f"fake-video-{provider_request_fingerprint[:24]}"
+    response = {
+        "provider": "phase-j3-fake-video-provider",
+        "model": "deterministic-video-v1",
+        "request_id": task_id,
+        "task_id": task_id,
+        "status": "succeeded",
+        "media_type": "VIDEO",
+        "poll_attempts": 1,
+    }
+    data_uri = "data:video/mp4;base64," + base64.b64encode(_FAKE_MP4).decode("ascii")
+    return {
+        "previewUrl": data_uri,
+        "uri": data_uri,
+        "providerResponse": response,
+        "providerRequestPayload": request_snapshot,
+        "providerRequestId": task_id,
+        "providerTaskId": task_id,
+        "provider": response["provider"],
+        "model": response["model"],
+        "externalStatus": "succeeded",
+        "pollAttempts": 1,
     }
 
 
@@ -372,6 +651,13 @@ def _validate_transport_semantics(context: dict[str, Any]) -> None:
         )
     request = payload.get("request") if isinstance(payload.get("request"), dict) else {}
     snapshot = context.get("request_snapshot") if isinstance(context.get("request_snapshot"), dict) else {}
+    if str(request.get("target_media") or context.get("target_media") or "") != str(snapshot.get("target_media") or ""):
+        raise _error(409, "GENERATION_TRANSPORT_SEMANTIC_UNREPRESENTABLE", "Transport target_media does not equal the deterministic GenerationPayload.", provider_calls=0)
+    if str(request.get("mode") or "") != str(snapshot.get("generation_mode") or ""):
+        raise _error(409, "GENERATION_TRANSPORT_SEMANTIC_UNREPRESENTABLE", "Transport generation mode does not equal the deterministic GenerationPayload.", provider_calls=0)
+    for field in ("duration_seconds", "aspect_ratio", "resolution"):
+        if request.get(field) != snapshot.get(field):
+            raise _error(409, "GENERATION_TRANSPORT_SEMANTIC_UNREPRESENTABLE", f"Transport {field} does not equal the deterministic GenerationPayload.", provider_calls=0)
     if str(request.get("prompt") or "") != str(snapshot.get("prompt") or ""):
         raise _error(409, "GENERATION_TRANSPORT_SEMANTIC_UNREPRESENTABLE", "Transport prompt does not equal the deterministic GenerationPayload prompt.", provider_calls=0)
     expected_refs = request.get("reference_bindings") if isinstance(request.get("reference_bindings"), list) else []
@@ -384,6 +670,9 @@ def _validate_transport_semantics(context: dict[str, Any]) -> None:
 
 def _validate_real_provider_opt_in(context: dict[str, Any]) -> None:
     provider = str(context["profile"].get("provider") or "")
+    if bool(context["profile"].get("phase_j3_canonical")) and provider != "prototype-task-adapter":
+        if os.getenv("PHASE_J_PROVIDER_AUTHORIZED", "").strip().lower() not in {"1", "true", "yes"}:
+            raise _error(409, "REAL_PROVIDER_EXECUTION_NOT_AUTHORIZED", "Real canonical Provider execution requires explicit human authorization.", provider_calls=0)
     if provider != "prototype-task-adapter" and os.getenv("PHASE_F_PROVIDER_CANARY_REAL", "").strip() != "1":
         raise _error(409, "GENERATION_REAL_PROVIDER_OPT_IN_REQUIRED", "Real Provider Canary requires PHASE_F_PROVIDER_CANARY_REAL=1.", provider_calls=0)
 
@@ -391,7 +680,11 @@ def _validate_real_provider_opt_in(context: dict[str, Any]) -> None:
 async def _call_provider(*, context: dict[str, Any]) -> dict[str, Any]:
     profile = context["profile"]
     if str(profile.get("provider") or "") == "prototype-task-adapter":
+        if str(context.get("target_media") or "IMAGE") == "VIDEO":
+            return await _fake_provider_video(request_snapshot=context["request_snapshot"], provider_request_fingerprint=context["provider_request_fingerprint"])
         return await _fake_provider_image(request_snapshot=context["request_snapshot"], provider_request_fingerprint=context["provider_request_fingerprint"])
+    if str(context.get("target_media") or "IMAGE") == "VIDEO":
+        raise _error(409, "GENERATION_VIDEO_TRANSPORT_NOT_REGISTERED", "No real VIDEO transport is enabled in provider-free J3.", provider_calls=0)
     prompt, negative = _provider_prompt(context["payload"])
     try:
         generated = await generate_image_asset(
@@ -424,7 +717,7 @@ def _png_dimensions(data: bytes) -> tuple[int | None, int | None]:
         return None, None
 
 
-def _persist_candidate_media(*, source_url: str, book_id: int, execution_id: str) -> dict[str, Any]:
+def _persist_candidate_media(*, source_url: str, book_id: int, execution_id: str, target_media: str = "IMAGE") -> dict[str, Any]:
     if not source_url:
         raise _error(422, "GENERATION_MEDIA_MISSING", "Provider response did not include media bytes or a media URL.")
     # Reuse the existing canonical generated-image storage bridge.  Importing
@@ -432,32 +725,49 @@ def _persist_candidate_media(*, source_url: str, book_id: int, execution_id: str
     # identical to the existing creative pipeline.
     from api.server import _persist_generated_image_locally
 
-    result = _persist_generated_image_locally(source_url, book_id=book_id, task_id=execution_id, label="phase-f-canary")
+    normalized_media = str(target_media or "IMAGE").upper()
+    if normalized_media == "VIDEO":
+        from api.server import _persist_generated_video_locally
+        result = _persist_generated_video_locally(source_url, book_id=book_id, task_id=execution_id, label="phase-j3-canonical")
+    else:
+        result = _persist_generated_image_locally(source_url, book_id=book_id, task_id=execution_id, label="phase-f-canary")
     if not result.get("ok"):
-        raise _error(422, "GENERATION_MEDIA_INVALID", "Provider media failed canonical storage validation.", diagnostics=result)
+        raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED" if normalized_media == "VIDEO" else "GENERATION_MEDIA_INVALID", "Provider media failed canonical storage validation.", diagnostics=result)
     local_path = str(result.get("local_path") or "")
     try:
         data, content_type = _load_source_bytes(local_path)
-        data, content_type = _normalize_provider_image_bytes(data, content_type)
+        if normalized_media == "IMAGE":
+            data, content_type = _normalize_provider_image_bytes(data, content_type)
     except Exception as exc:
         raise _error(422, "GENERATION_MEDIA_INVALID", "Stored candidate bytes could not be read.", diagnostics={"error": str(exc)})
     if not data:
         raise _error(422, "GENERATION_MEDIA_INVALID", "Stored candidate bytes are empty.")
-    width, height = _png_dimensions(data)
-    if not width or not height:
-        raise _error(422, "GENERATION_MEDIA_INVALID", "Stored candidate image dimensions could not be parsed.")
+    if normalized_media == "VIDEO":
+        from core.media_authority import _detect_media
+        try:
+            observed_mime, width, height, duration_ms = _detect_media(data, content_type)
+        except Exception as exc:
+            raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED", "Stored candidate video container could not be validated.", diagnostics={"error": str(exc)}) from exc
+        if not observed_mime.startswith("video/") or not duration_ms:
+            raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED", "Stored candidate video has no valid container or duration.")
+        storage_identity = str(result.get("video_url") or "")
+        storage_reference = {"video_url": storage_identity, "local_path": local_path, "source_kind": result.get("source_kind") or "provider_url"}
+    else:
+        width, height = _png_dimensions(data)
+        duration_ms = None
+        if not width or not height:
+            raise _error(422, "GENERATION_MEDIA_INVALID", "Stored candidate image dimensions could not be parsed.")
+        storage_identity = str(result.get("image_url") or "")
+        storage_reference = {"image_url": storage_identity, "local_path": local_path, "source_kind": result.get("source_kind") or "provider_url"}
     return {
-        "storage_identity": str(result.get("image_url") or ""),
-        "storage_reference": {
-            "image_url": str(result.get("image_url") or ""),
-            "local_path": local_path,
-            "source_kind": result.get("source_kind") or "provider_url",
-        },
+        "storage_identity": storage_identity,
+        "storage_reference": storage_reference,
         "checksum_sha256": str(result.get("sha256") or hashlib.sha256(data).hexdigest()),
-        "mime_type": str(content_type or result.get("content_type") or "image/png").split(";", 1)[0].lower(),
+        "mime_type": str(content_type or result.get("content_type") or ("video/mp4" if normalized_media == "VIDEO" else "image/png")).split(";", 1)[0].lower(),
         "byte_size": len(data),
         "width": width,
         "height": height,
+        "duration_ms": duration_ms,
     }
 
 
@@ -636,6 +946,88 @@ def preview_generation_canary(book_id: int, episode: int, shot_id: int, req: Can
         }
 
 
+@router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation/preview")
+def preview_canonical_generation(book_id: int, episode: int, shot_id: int, req: CanonicalPreviewRequest):
+    """Preview the single production IMAGE/VIDEO generation path."""
+    target_media = str(req.target_media or "").upper()
+    if target_media not in {"IMAGE", "VIDEO"}:
+        raise _error(409, "GENERATION_MEDIA_SCOPE_MISMATCH", "target_media must be explicitly IMAGE or VIDEO.", provider_calls=0)
+    with Session() as session:
+        context = _resolve_canonical_execution_inputs(
+            session,
+            book_id=book_id,
+            episode=episode,
+            shot_id=shot_id,
+            target_media=target_media,
+            model_profile_id=req.model_profile_id,
+            generation_mode=req.generation_mode,
+        )
+        existing = session.query(GenerationExecutionRecord).filter_by(provider_request_fingerprint=context["provider_request_fingerprint"]).first()
+        if existing is not None:
+            candidate = session.query(MediaCandidateRecord).filter_by(execution_id=existing.execution_id).first()
+            token = _confirmation_token(execution_id=existing.execution_id, prompt_ir_version_id=existing.prompt_ir_version_id, payload_fp=existing.generation_payload_fingerprint, model_profile_id=existing.model_profile_id, provider_request_fp=existing.provider_request_fingerprint)
+            return {
+                "execution": _serialize_execution(existing),
+                "candidate": _serialize_candidate(candidate),
+                "generation_payload": context["payload"],
+                "provider_request_snapshot": _redact(context["request_snapshot"]),
+                "confirmation_token": token,
+                "provider_calls": 0,
+                "reused": existing.status in {"SUCCEEDED", "REUSED"},
+                "media_generated": candidate is not None,
+            }
+        execution_id = uuid.uuid4().hex
+        token = _confirmation_token(execution_id=execution_id, prompt_ir_version_id=int(context["resolved"]["version"].id), payload_fp=context["payload"]["generation_payload_fingerprint"], model_profile_id=req.model_profile_id, provider_request_fp=context["provider_request_fingerprint"])
+        now = datetime.utcnow()
+        row = GenerationExecutionRecord(
+            execution_id=execution_id,
+            schema_version="generation_execution_request_v1",
+            book_id=book_id,
+            episode=episode,
+            storyboard_shot_id=int(context["row"].id),
+            plan_shot_id=str(context["payload"].get("prompt_ir_ref", {}).get("plan_shot_id") or ""),
+            execution_mode="PREVIEW",
+            status="PREVIEWED",
+            target_media=target_media,
+            prompt_ir_version_id=int(context["resolved"]["version"].id),
+            prompt_ir_authority_id=int(context["resolved"]["authority"].id),
+            prompt_ir_payload_hash=str(context["resolved"]["version"].payload_hash or ""),
+            generation_payload_fingerprint=str(context["payload"].get("generation_payload_fingerprint") or ""),
+            generation_policy_fingerprint=str(context["policy"].get("fingerprint") or ""),
+            model_profile_id=req.model_profile_id,
+            model_profile_fingerprint=context["profile_fingerprint"],
+            provider_adapter_id=str(context["adapter"].get("adapter_id") or ""),
+            provider_adapter_version=str(context["adapter"].get("adapter_version") or ""),
+            reference_bindings_fingerprint=context["reference_bindings_fingerprint"],
+            provider_request_fingerprint=context["provider_request_fingerprint"],
+            request_snapshot_json=json.dumps(_redact(context["request_snapshot"]), ensure_ascii=False, sort_keys=True),
+            confirmation_binding_hash=hashlib.sha256(token.encode("utf-8")).hexdigest(),
+            provider=str(context["profile"].get("provider") or ""),
+            model=str(context["profile"].get("model_name") or ""),
+            created_at=now,
+            updated_at=now,
+        )
+        session.add(row)
+        try:
+            session.commit()
+        except Exception:
+            session.rollback()
+            existing = session.query(GenerationExecutionRecord).filter_by(provider_request_fingerprint=context["provider_request_fingerprint"]).first()
+            if existing is None:
+                raise
+            candidate = session.query(MediaCandidateRecord).filter_by(execution_id=existing.execution_id).first()
+            return {"execution": _serialize_execution(existing), "candidate": _serialize_candidate(candidate), "provider_calls": 0, "reused": True, "media_generated": candidate is not None}
+        return {
+            "execution": _serialize_execution(row),
+            "generation_payload": context["payload"],
+            "provider_request_snapshot": _redact(context["request_snapshot"]),
+            "confirmation_token": token,
+            "provider_calls": 0,
+            "reused": False,
+            "media_generated": False,
+        }
+
+
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/execute")
 async def execute_generation_canary(book_id: int, episode: int, shot_id: int, req: CanaryExecuteRequest):
     if not req.execute:
@@ -672,7 +1064,17 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
         if row.status not in {"PREVIEWED", "AUTHORIZED", "SUCCEEDED", "REUSED"}:
             raise _error(409, "GENERATION_CANARY_STALE", "The preview is no longer executable.", provider_calls=0)
         try:
-            context = _resolve_execution_inputs(session, book_id=book_id, episode=episode, shot_id=shot_id, adapter_id=row.provider_adapter_id, model_profile_id=row.model_profile_id)
+            if str(row.target_media or "IMAGE").upper() == "VIDEO":
+                context = _resolve_canonical_execution_inputs(
+                    session,
+                    book_id=book_id,
+                    episode=episode,
+                    shot_id=shot_id,
+                    target_media="VIDEO",
+                    model_profile_id=row.model_profile_id,
+                )
+            else:
+                context = _resolve_execution_inputs(session, book_id=book_id, episode=episode, shot_id=shot_id, adapter_id=row.provider_adapter_id, model_profile_id=row.model_profile_id)
         except HTTPException as exc:
             row.status = "STALE"
             row.failure_code = "GENERATION_CANARY_STALE"
@@ -753,7 +1155,8 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
         try:
             generated = await _call_provider(context=context)
             source_url = str(generated.get("uri") or generated.get("previewUrl") or "").strip()
-            media = _persist_candidate_media(source_url=source_url, book_id=book_id, execution_id=row.execution_id)
+            target_media = str(context.get("target_media") or row.target_media or "IMAGE").upper()
+            media = _persist_candidate_media(source_url=source_url, book_id=book_id, execution_id=row.execution_id, target_media=target_media)
             response_payload = generated.get("providerResponse") if isinstance(generated.get("providerResponse"), dict) else {}
             response_hash = _response_hash(response_payload)
             candidate_id = "candidate-" + uuid.uuid4().hex
@@ -761,7 +1164,7 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
                 candidate_id=candidate_id,
                 execution_id=row.execution_id,
                 status="MEDIA_CANDIDATE",
-                media_type="IMAGE",
+                media_type=target_media,
                 storage_identity=media["storage_identity"],
                 storage_reference_json=json.dumps(media["storage_reference"], ensure_ascii=False, sort_keys=True),
                 checksum_sha256=media["checksum_sha256"],
@@ -769,6 +1172,7 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
                 byte_size=media["byte_size"],
                 width=media["width"],
                 height=media["height"],
+                duration_ms=media.get("duration_ms"),
                 prompt_ir_version_id=row.prompt_ir_version_id,
                 prompt_ir_payload_hash=row.prompt_ir_payload_hash,
                 generation_payload_fingerprint=row.generation_payload_fingerprint,
@@ -826,4 +1230,17 @@ async def execute_generation_canary(book_id: int, episode: int, shot_id: int, re
             raise _error(502, "GENERATION_EXECUTION_FAILED", str(exc)[:500], provider_calls=1, retry_calls=0)
 
 
-__all__ = ["router", "CanaryPreviewRequest", "CanaryExecuteRequest"]
+@router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation/execute")
+async def execute_canonical_generation(book_id: int, episode: int, shot_id: int, req: CanonicalExecuteRequest):
+    """Execute a confirmed canonical preview through the shared state machine."""
+    if not req.execute:
+        raise _error(409, "GENERATION_EXECUTE_CONFIRMATION_REQUIRED", "Canonical execution requires execute=true.", provider_calls=0)
+    delegated = CanaryExecuteRequest(
+        execute=True,
+        confirmation_token=req.confirmation_token,
+        preview_execution_id=req.preview_execution_id,
+    )
+    return await execute_generation_canary(book_id, episode, shot_id, delegated)
+
+
+__all__ = ["router", "CanaryPreviewRequest", "CanaryExecuteRequest", "CanonicalPreviewRequest", "CanonicalExecuteRequest"]
