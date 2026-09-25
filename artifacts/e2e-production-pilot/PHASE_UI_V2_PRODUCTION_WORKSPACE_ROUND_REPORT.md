@@ -29,6 +29,9 @@
 - Retired the production Storyboard H3 submit path and manual media upload entry point; retained legacy data as read-only historical display.
 - Batch IMAGE/VIDEO eligibility now consults the V2 snapshot when available; Canvas and Task Center show V2 projected statuses and canonical GenerationExecution summaries while retaining compatibility recovery records.
 - Asset Hub binding counts now reuse the typed binding resolver and validate pointer fingerprints; stale or mismatched bindings do not make an entity production-ready.
+- The projection now reports formal requirement source, exact missing/stale entity IDs, typed current Version metadata, and the explicit `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API` boundary when the entity-first ingestion contract is unavailable.
+- Delivery export reads current V2 OfficialMedia when a V2 snapshot is supplied; legacy adopted media remains historical display data.
+- Task Center batch IMAGE/VIDEO counts are derived from V2 lane readiness and become zero with disabled actions when the V2 snapshot is unavailable.
 
 ### Documentation
 
@@ -79,7 +82,7 @@ This round does not create fake assets, placeholder media, a second authority, o
 
 ## Review boundary
 
-The implementation is ready for review as `PHASE_UI_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`. It must not be described as `UI_V2_COMPLETE`.
+The implementation is ready for review as `PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`. It must not be described as `UI_V2_COMPLETE`.
 
 The remaining review boundary is the formal entity-first Production Asset ingestion API. The UI intentionally does not synthesize Authority/Pointer/Version rows or accept browser-only uploads as production media, so the upload path is recorded as `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API`. Legacy batch/task/canvas/delivery data is display/history only and does not grant Production execution eligibility.
 

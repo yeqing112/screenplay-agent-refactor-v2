@@ -51,7 +51,7 @@ Cards are keyed by backend entity IDs and current Production Asset pointers. Man
 
 ## Tasks and canvas
 
-The existing task center and ReactFlow canvas remain reachable through the shell. Their canonical Production status is being migrated toward the V2 projection; temporary browser recovery data remains navigation-only.
+The existing task center and ReactFlow canvas remain reachable through the shell. Their canonical Production status uses the V2 projection; temporary browser recovery data remains navigation-only. If the projection is unavailable, production actions stay disabled.
 # Production truth boundary
 
 Production Workspace V2 is the execution-facing read model. Canvas, Task Center, and batch generation must use its current lane readiness; legacy adopted media is a display/history field. Delivery must remain blocked when the current OfficialMedia projection is missing or stale.

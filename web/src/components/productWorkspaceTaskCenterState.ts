@@ -1,13 +1,11 @@
 import type { StoryboardShotOutput } from '../domain/bookOutputs'
 import type { BatchRunRecord } from './productWorkspaceBatchRuns'
 import {
-  findAdoptedMediaAsset,
-  hasGeneratedFrame,
-  hasGeneratedVideo,
   hasPromptPair,
 } from './productWorkspaceBatchActions'
 import type { TaskCenterEntry, TaskCenterQaWorkbenchEpisodeSummary, TaskCenterStatus } from './productWorkspaceTasks'
 import type { WorkspaceTaskRouteOptions } from './productWorkspaceSectionContracts'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
 
 /**
  * A creator-facing task grouping. The underlying task status remains intact for
@@ -102,27 +100,22 @@ export function inferRecoveryIntentFromTask(task: TaskCenterEntry | null): Works
 export function buildBatchCounters(
   shotsByEpisode: Record<number, StoryboardShotOutput[]>,
   qaWorkbenchEpisodes: TaskCenterQaWorkbenchEpisodeSummary[],
+  productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null,
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState,
 ) {
   const batchPromptCompileCount = Object.values(shotsByEpisode).reduce(
     (sum, shots) => sum + shots.filter((shot) => !shot.prompt_locked && !hasPromptPair(shot)).length,
     0,
   )
 
-  const batchMissingFrameCount = Object.values(shotsByEpisode).reduce(
-    (sum, shots) => sum + shots.filter((shot) => !hasGeneratedFrame(shot)).length,
-    0,
-  )
+  const productionBatchUnavailable = productionWorkspaceV2State !== 'ready' || !productionWorkspaceV2
+  const batchMissingFrameCount = productionBatchUnavailable
+    ? 0
+    : productionWorkspaceV2.shots.filter((shot) => !shot.IMAGE.official.current && Boolean(shot.IMAGE.generation_readiness?.ready)).length
 
-  const batchMissingVideoCount = Object.values(shotsByEpisode).reduce((sum, shots) => {
-    return (
-      sum +
-      shots.filter((shot) => {
-        const adoptedImage = findAdoptedMediaAsset(shot.assets?.images)
-        const adoptedImagePreviewUrl = String(adoptedImage?.previewUrl || adoptedImage?.uri || '').trim()
-        return Boolean(adoptedImage?.id) && Boolean(adoptedImagePreviewUrl) && !hasGeneratedVideo(shot)
-      }).length
-    )
-  }, 0)
+  const batchMissingVideoCount = productionBatchUnavailable
+    ? 0
+    : productionWorkspaceV2.shots.filter((shot) => !shot.VIDEO.official.current && Boolean(shot.VIDEO.generation_readiness?.ready)).length
 
   const batchOpenQaEpisodeCount = qaWorkbenchEpisodes.filter(
     (item) => item.openIssueCount > 0 || item.inProgressCount > 0,
@@ -133,6 +126,7 @@ export function buildBatchCounters(
     batchMissingFrameCount,
     batchMissingVideoCount,
     batchOpenQaEpisodeCount,
+    productionBatchUnavailable,
   }
 }
 

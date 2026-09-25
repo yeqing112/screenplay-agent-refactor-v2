@@ -24,6 +24,7 @@ interface Props {
   batchPromptCompileCount: number
   batchMissingFrameCount: number
   batchMissingVideoCount: number
+  productionBatchUnavailable?: boolean
   batchOpenQaEpisodeCount: number
   onRunBatchTaskAction: (action: BatchTaskAction) => void
   onRunRecoveryTaskAction: (action: 'recovery-refresh' | 'recovery-reconcile' | 'recovery-restart' | 'recovery-regenerate-latest') => void
@@ -71,6 +72,7 @@ export default function TaskCenterDetailPanels({
   batchPromptCompileCount,
   batchMissingFrameCount,
   batchMissingVideoCount,
+  productionBatchUnavailable = false,
   batchOpenQaEpisodeCount,
   onRunBatchTaskAction,
   onRunRecoveryTaskAction,
@@ -185,7 +187,7 @@ export default function TaskCenterDetailPanels({
               <button
                 type="button"
                 onClick={() => onRunBatchTaskAction('batch-generate-frames')}
-                disabled={selectedTaskActionState.mode === 'loading' || batchMissingFrameCount === 0}
+                disabled={productionBatchUnavailable || selectedTaskActionState.mode === 'loading' || batchMissingFrameCount === 0}
                 className="rounded-lg border border-amber-500/50 px-3 py-1.5 text-xs font-medium text-amber-200 transition hover:border-amber-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 批量补首帧
@@ -193,7 +195,7 @@ export default function TaskCenterDetailPanels({
               <button
                 type="button"
                 onClick={() => onRunBatchTaskAction('batch-generate-videos')}
-                disabled={selectedTaskActionState.mode === 'loading' || batchMissingVideoCount === 0}
+                disabled={productionBatchUnavailable || selectedTaskActionState.mode === 'loading' || batchMissingVideoCount === 0}
                 className="rounded-lg border border-emerald-500/50 px-3 py-1.5 text-xs font-medium text-emerald-200 transition hover:border-emerald-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 批量补视频
@@ -201,7 +203,7 @@ export default function TaskCenterDetailPanels({
             </div>
           </div>
           <div className="mt-3 text-xs leading-6 text-slate-400">
-            当前仍有 {batchMissingFrameCount} 个镜头没有分镜图，{batchMissingVideoCount} 个镜头已经具备已采纳首帧但还没有视频；已在执行中的同类任务会自动跳过，避免重复提交。
+            {productionBatchUnavailable ? '生产状态暂时不可用，请刷新后重试；历史 adopted 记录不会作为批量生产资格。' : `当前有 ${batchMissingFrameCount} 个镜头满足 V2 IMAGE 生成条件，${batchMissingVideoCount} 个镜头满足 V2 VIDEO 生成条件；已在执行中的同类任务会自动跳过，避免重复提交。`}
           </div>
           {selectedTaskActionState.message ? (
             <PanelActionFeedback state={selectedTaskActionState.mode} message={selectedTaskActionState.message} />

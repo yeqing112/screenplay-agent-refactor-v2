@@ -9,6 +9,7 @@ import type {
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildScriptReleaseSummary } from './productWorkspaceScriptRelease'
 import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTasks'
+import type { OfficialMediaProjection, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
 
 export type DeliveryRepairSection = 'adaptation' | 'scripts' | 'storyboard' | 'assets' | 'qa'
 
@@ -461,6 +462,8 @@ export function buildDeliveryExportPackage(input: {
   makeups: VisualMakeupOutput[]
   locations: VisualLocationOutput[]
   props: VisualPropOutput[]
+  /** When supplied (including null), production delivery must use V2 OfficialMedia only. */
+  productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
   versionLabel: string
   generatedAt: string
 }): DeliveryExportPackage {
@@ -506,16 +509,20 @@ export function buildDeliveryExportPackage(input: {
             : '当前未发现交付阻塞 QA。',
     },
     readiness: input.readiness,
-    adoptedStoryboard: shots.map((shot) => ({
+    adoptedStoryboard: shots.map((shot) => {
+      const projectedShot = input.productionWorkspaceV2?.shots.find((item) => String(item.identity.episode) === String(input.readiness.episode) && String(item.identity.shot_id) === String(shot.shot_id)) ?? null
+      const useOfficialMedia = input.productionWorkspaceV2 !== undefined
+      return {
       shotId: String(shot.shot_id),
       sceneName: shot.scene_name,
       promptVersion: shot.prompt_version ?? null,
       staticPrompt: shot.visual_prompt_static ?? '',
       motionPrompt: shot.visual_prompt_motion ?? '',
       finalPrompt: shot.visual_prompt_final ?? '',
-      adoptedImage: toDeliveryMediaSnapshot(shot.assets?.images),
-      adoptedVideo: toDeliveryMediaSnapshot(shot.assets?.videos),
-    })),
+      adoptedImage: useOfficialMedia ? toDeliveryOfficialMediaSnapshot(projectedShot?.IMAGE.official ?? null) : toDeliveryMediaSnapshot(shot.assets?.images),
+      adoptedVideo: useOfficialMedia ? toDeliveryOfficialMediaSnapshot(projectedShot?.VIDEO.official ?? null) : toDeliveryMediaSnapshot(shot.assets?.videos),
+      }
+    }),
     selectedReferenceAssets: {
       characters: collectEpisodeReferenceSnapshots(
         input.makeups,
@@ -765,6 +772,18 @@ function toDeliveryMediaSnapshot(
     uri: adopted.uri,
     previewUrl: adopted.previewUrl,
     model: adopted.model,
+  }
+}
+
+function toDeliveryOfficialMediaSnapshot(media: OfficialMediaProjection | null) {
+  if (!media?.current || !media.version) return null
+  return {
+    id: String(media.version.id || ''),
+    title: `${media.version.media_type || 'MEDIA'} OfficialMedia`,
+    label: `v${media.version.revision ?? 1}`,
+    uri: media.version.storage_identity ?? undefined,
+    previewUrl: media.preview_url ?? media.preview ?? undefined,
+    model: undefined,
   }
 }
 

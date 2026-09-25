@@ -65,6 +65,7 @@ export interface MediaCandidateProjection {
   id: string
   state: string
   preview: string | null
+  preview_url?: string | null
   created_at: string | null
   model_profile_id: string
   technical_validation: MediaTechnicalValidation
@@ -74,7 +75,7 @@ export interface MediaCandidateProjection {
 
 export interface OfficialMediaProjection {
   current: boolean
-  currentness: 'current' | 'historical' | 'missing' | string
+  currentness: 'current' | 'historical' | 'obsolete' | 'invalid' | 'missing' | string
   version: {
     id: string
     revision: number | null
@@ -145,6 +146,15 @@ export interface ProductionAssetV2 {
     preview_url?: string | null
     readiness?: Record<string, unknown>
   }
+  current_version?: {
+    version_id: string | null
+    revision: number | null
+    status: string | null
+    storage_identity: string | null
+    checksum: string | null
+    metadata_hash: string | null
+    visual_asset_version_id: number | null
+  } | null
   bindings: Array<Record<string, unknown>>
   history: Array<Record<string, unknown>>
   binding_counts?: { current: number; stale: number }
@@ -188,6 +198,7 @@ export interface ProductionWorkspaceV2Snapshot {
   episodes: EpisodeProductionSummary[]
   shots: ProductionShotV2[]
   assets: ProductionAssetV2[]
+  asset_ingestion_api_available?: boolean
   view_contract: { standard: string; professional: string }
   legacy_adopted_is_display_only: true
   provider_calls?: number
@@ -446,6 +457,7 @@ function normalizeLane(value: unknown): ProductionMediaLane {
       id: String(item.id ?? ''),
       state: String(item.state ?? 'MEDIA_CANDIDATE'),
       preview: item.preview == null ? null : String(item.preview),
+      preview_url: item.preview_url == null ? (item.preview == null ? null : String(item.preview)) : String(item.preview_url),
       created_at: item.created_at == null ? null : String(item.created_at),
       model_profile_id: String(item.model_profile_id ?? ''),
       technical_validation: {
@@ -599,6 +611,15 @@ export function normalizeProductionWorkspaceV2Snapshot(value: unknown, bookId: n
         preview_url: media.preview_url == null ? null : String(media.preview_url),
         readiness: media.readiness && typeof media.readiness === 'object' ? media.readiness : undefined,
       },
+      current_version: item.current_version && typeof item.current_version === 'object' ? {
+        version_id: item.current_version.version_id == null ? null : String(item.current_version.version_id),
+        revision: item.current_version.revision == null ? null : Number(item.current_version.revision),
+        status: item.current_version.status == null ? null : String(item.current_version.status),
+        storage_identity: item.current_version.storage_identity == null ? null : String(item.current_version.storage_identity),
+        checksum: item.current_version.checksum == null ? null : String(item.current_version.checksum),
+        metadata_hash: item.current_version.metadata_hash == null ? null : String(item.current_version.metadata_hash),
+        visual_asset_version_id: item.current_version.visual_asset_version_id == null ? null : Number(item.current_version.visual_asset_version_id),
+      } : null,
       bindings: Array.isArray(item.bindings) ? item.bindings as Array<Record<string, unknown>> : [],
       history: Array.isArray(item.history) ? item.history as Array<Record<string, unknown>> : [],
       binding_counts: item.binding_counts && typeof item.binding_counts === 'object' ? { current: Number(item.binding_counts.current ?? 0), stale: Number(item.binding_counts.stale ?? 0) } : { current: 0, stale: 0 },
@@ -617,6 +638,7 @@ export function normalizeProductionWorkspaceV2Snapshot(value: unknown, bookId: n
     episodes: project.episodes,
     shots,
     assets,
+    asset_ingestion_api_available: input.asset_ingestion_api_available === true,
     view_contract: {
       standard: String(input.view_contract?.standard ?? 'state,next_action,blockers,official_media'),
       professional: String(input.view_contract?.professional ?? 'authority,pointer,prompt_ir,model,adapter,transport,execution,candidate,validation,official,history'),

@@ -56,6 +56,7 @@ interface Props {
   batchPromptCompileCount: number
   batchMissingFrameCount: number
   batchMissingVideoCount: number
+  productionBatchUnavailable?: boolean
   batchOpenQaEpisodeCount: number
   onNavigate: (section: TaskCenterSection, options?: WorkspaceTaskRouteOptions) => void
   onOpenPreview: (url: string, title: string) => void
@@ -187,6 +188,7 @@ export default function TaskCenterSelectedTaskPanel({
   batchPromptCompileCount,
   batchMissingFrameCount,
   batchMissingVideoCount,
+  productionBatchUnavailable = false,
   batchOpenQaEpisodeCount,
   onNavigate,
   onOpenPreview,
@@ -517,6 +519,7 @@ export default function TaskCenterSelectedTaskPanel({
             batchPromptCompileCount={batchPromptCompileCount}
             batchMissingFrameCount={batchMissingFrameCount}
             batchMissingVideoCount={batchMissingVideoCount}
+            productionBatchUnavailable={productionBatchUnavailable}
             batchOpenQaEpisodeCount={batchOpenQaEpisodeCount}
             onRunBatchTaskAction={onRunBatchTaskAction}
             onRunRecoveryTaskAction={onRunRecoveryTaskAction}

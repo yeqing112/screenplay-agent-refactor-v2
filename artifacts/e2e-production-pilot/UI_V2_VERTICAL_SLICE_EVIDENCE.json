@@ -22,6 +22,8 @@
     {"name": "VIDEO validate", "status": "wired", "evidence": "candidate validation uses existing media-authority contract"},
     {"name": "VIDEO promote", "status": "wired", "evidence": "promotion uses existing OfficialMedia authority contract"},
     {"name": "Official VIDEO", "status": "strict_currentness", "evidence": "current pointer/version/authority/binding and source lineage checks are required"}
+    ,{"name": "Delivery", "status": "v2_official_media_only", "evidence": "when a V2 snapshot is supplied, export media is read from current OfficialMedia; legacy adopted media is historical only"}
+    ,{"name": "Task Center batch", "status": "v2_fail_closed", "evidence": "IMAGE/VIDEO counters read V2 lane readiness and become zero with disabled actions when V2 is unavailable"}
   ],
   "local_verification": {
     "backend_projection_tests": "15 passed",

@@ -455,9 +455,9 @@ export default function ProductWorkspaceTasksSection({
   const selectedTaskShotId = useMemo(() => inferShotIdFromTaskCenterEntry(selectedTask), [selectedTask])
   const selectedTaskAssetId = useMemo(() => inferAssetIdFromTaskCenterEntry(selectedTask), [selectedTask])
   const stats = useMemo(() => summarizeTaskCenterEntries(allEntries), [allEntries])
-  const { batchPromptCompileCount, batchMissingFrameCount, batchMissingVideoCount, batchOpenQaEpisodeCount } = useMemo(
-    () => buildTaskCenterBatchCounters(shotsByEpisode, qaWorkbenchEpisodes),
-    [qaWorkbenchEpisodes, shotsByEpisode],
+  const { batchPromptCompileCount, batchMissingFrameCount, batchMissingVideoCount, batchOpenQaEpisodeCount, productionBatchUnavailable } = useMemo(
+    () => buildTaskCenterBatchCounters(shotsByEpisode, qaWorkbenchEpisodes, productionWorkspaceV2, productionWorkspaceV2State),
+    [productionWorkspaceV2, productionWorkspaceV2State, qaWorkbenchEpisodes, shotsByEpisode],
   )
   const { selectedBatchRunRecords, latestSelectedBatchRunRecord } = useMemo(
     () => selectTaskCenterBatchRunRecords(selectedTask?.id, batchRunRecords),
@@ -942,6 +942,7 @@ export default function ProductWorkspaceTasksSection({
         batchPromptCompileCount={batchPromptCompileCount}
         batchMissingFrameCount={batchMissingFrameCount}
         batchMissingVideoCount={batchMissingVideoCount}
+        productionBatchUnavailable={productionBatchUnavailable}
         batchOpenQaEpisodeCount={batchOpenQaEpisodeCount}
         onNavigate={onNavigate}
         onOpenPreview={openPreview}

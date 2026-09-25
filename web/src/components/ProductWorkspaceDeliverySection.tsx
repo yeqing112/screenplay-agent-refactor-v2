@@ -581,6 +581,7 @@ export default function ProductWorkspaceDeliverySection({
             makeups,
             locations,
             props,
+            productionWorkspaceV2,
             versionLabel: nextVersionLabel,
             generatedAt: new Date().toISOString(),
           })
@@ -599,6 +600,7 @@ export default function ProductWorkspaceDeliverySection({
       makeups,
       nextVersionLabel,
       props,
+      productionWorkspaceV2,
       scriptDecisionState,
       scripts,
       selectedAdaptationName,

@@ -45,6 +45,14 @@ function StatePill({ state, label }: { state: string; label?: string }) {
   return <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] ${tone}`}>{label ?? humanizeProductionState(state)}</span>
 }
 
+function assetMissingLabel(assetType: string) {
+  const kind = String(assetType || '').toUpperCase()
+  if (kind === 'CHARACTER') return '缺少角色参考图'
+  if (kind === 'SCENE') return '缺少场景参考图'
+  if (kind === 'PROP') return '缺少道具参考图'
+  return '缺少真实视觉资产'
+}
+
 function LaneSummary({ lane, target, mode, onGenerate, selectedProfileId, actionMessage }: { lane: ProductionMediaLane; target: 'IMAGE' | 'VIDEO'; mode: ProductionWorkspaceViewMode; onGenerate?: () => void; selectedProfileId?: string | null; actionMessage?: string }) {
   const Icon = target === 'IMAGE' ? ImageIcon : Video
   const official = lane.official.current
@@ -115,7 +123,7 @@ function CandidateList({ lane, mode, onRefresh }: { lane: ProductionMediaLane; m
           <div key={candidate.id} className="rounded-md border border-amber-500/20 bg-amber-500/5 p-2.5">
           <div className="flex items-center justify-between gap-2"><span className="text-xs font-medium text-amber-100">候选结果</span><span className="text-[10px] text-slate-500">{candidate.technical_validation.status}</span></div>
           <div className="mt-1 text-[11px] text-slate-400">{candidate.created_at ? new Date(candidate.created_at).toLocaleString() : '生成时间未知'} · {candidate.model_profile_id || '模型未记录'}</div>
-          {candidate.preview ? <a className="mt-2 inline-block text-[11px] text-violet-200 underline" href={candidate.preview} target="_blank" rel="noreferrer">预览候选结果</a> : null}
+          {candidate.preview_url ? <a className="mt-2 inline-block text-[11px] text-violet-200 underline" href={candidate.preview_url} target="_blank" rel="noreferrer">预览候选结果</a> : null}
           {mode === 'professional' ? <div className="mt-1 font-mono text-[10px] text-slate-600">candidate_id={candidate.id} · validation_id={candidate.technical_validation.validation_id || '—'}</div> : null}
           <div className="mt-2 text-[11px] text-amber-100/80">这只是候选结果，不是当前正式版本。</div>
           <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -207,7 +215,7 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
       <div className="rounded-xl border border-violet-500/25 bg-violet-500/5 p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div><div className="flex items-center gap-2 text-sm font-semibold text-white"><Layers3 className="h-4 w-4 text-violet-300" />Production Workspace</div><div className="mt-1 text-xs text-slate-400">同一份后端权威投影 · {snapshot.project.overall_progress}% · {humanizeProductionState(snapshot.project.overall_state)}</div></div>
-          <div className="flex items-center gap-2 text-xs text-slate-400"><LockKeyhole className="h-3.5 w-3.5" />只读投影</div>
+          {mode === 'professional' ? <div className="flex items-center gap-2 text-xs text-slate-400"><LockKeyhole className="h-3.5 w-3.5" />只读投影</div> : <div className="text-xs text-slate-400">生产状态</div>}
         </div>
         {projectBlocker ? <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-rose-500/25 bg-rose-500/10 p-3"><div><div className="text-sm font-medium text-rose-50">{projectBlocker.title}</div><div className="mt-1 text-xs text-rose-100/80">{projectBlocker.description}</div></div>{onNavigateSection ? <button type="button" onClick={() => onNavigateSection('assets')} className="inline-flex items-center gap-2 rounded-lg bg-rose-600 px-3 py-2 text-xs font-medium text-white hover:bg-rose-500">前往资产中心<ArrowRight className="h-3.5 w-3.5" /></button> : null}</div> : <div className="mt-4 rounded-lg border border-emerald-500/25 bg-emerald-500/10 p-3 text-sm text-emerald-100"><CheckCircle2 className="mr-2 inline h-4 w-4" />当前项目没有权威生产阻塞。</div>}
         {mode === 'professional' ? <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-2 text-xs text-slate-500">Legacy adopted：仅历史展示，不等于当前正式版本。</div> : null}
@@ -218,11 +226,13 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
         {visibleAssets.length > 0 ? <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">{visibleAssets.map((asset) => {
           const state = !asset.media.present ? 'blocked' : asset.stale_status.toUpperCase() === 'STALE' ? 'stale' : 'ready'
           const label = !asset.media.present ? '缺少真实视觉资产' : state === 'stale' ? '需要更新' : '当前有效'
-          return <button key={asset.entity_id} type="button" onClick={() => { onSelectAsset?.(asset.entity_id); onNavigateSection?.('assets') }} className="rounded-lg border border-slate-800 bg-slate-950/50 p-3 text-left hover:border-violet-400/40">
+          const missingLabel = assetMissingLabel(asset.asset_type)
+          const bindingDetail = `${asset.current_binding_count ?? asset.binding_counts?.current ?? 0} 个当前绑定${(asset.stale_binding_count ?? asset.binding_counts?.stale ?? 0) > 0 ? ` · ${(asset.stale_binding_count ?? asset.binding_counts?.stale ?? 0)} 个需更新` : ''}`
+          return <button key={`${asset.asset_type}:${asset.entity_id}`} type="button" onClick={() => { onSelectAsset?.(asset.entity_id); onNavigateSection?.('assets') }} className="rounded-lg border border-slate-800 bg-slate-950/50 p-3 text-left hover:border-violet-400/40">
             {asset.media.preview_url ? <img src={asset.media.preview_url} alt={`${asset.entity_id} 当前媒体预览`} className="mb-2 h-20 w-full rounded object-cover" /> : null}
-            <div className="flex items-center justify-between gap-2"><span className="truncate text-sm font-medium text-white">{asset.entity_id}</span><StatePill state={state} label={label} /></div>
-            <div className="mt-1 text-[11px] text-slate-500">{asset.asset_type} · 绑定 {asset.bindings.length} 个镜头 · {asset.current_version_id ? `版本 ${asset.current_version_id}` : '尚无正式版本'}</div>
-            <div className="mt-2 text-[11px] text-violet-200">{asset.media.present ? '查看实体详情与绑定 →' : '查看实体与正式摄取阻塞 →'}</div>
+            <div className="flex items-center justify-between gap-2"><span className="truncate text-sm font-medium text-white">{asset.entity_id}</span><StatePill state={state} label={asset.media.present ? label : missingLabel} /></div>
+            <div className="mt-1 text-[11px] text-slate-500">{asset.asset_type} · {bindingDetail} · {asset.current_version_id ? `版本 ${asset.current_version_id}` : '尚无正式版本'}</div>
+            <div className="mt-2 text-[11px] text-violet-200">{asset.media.present ? '查看实体详情与绑定 →' : snapshot.asset_ingestion_api_available ? '进入正式摄取流程 →' : '正式资产摄取 API 尚未提供'}</div>
           </button>
         })}</div> : <div className="mt-4 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-sm text-emerald-100">当前没有 Production Asset 记录。</div>}
         {((missingAssets.length > 8) || (missingAssets.length === 0 && assets.length > 8)) ? <button type="button" onClick={() => setShowAllAssets((value) => !value)} className="mt-3 text-xs text-violet-200 hover:text-white">{showAllAssets ? '收起资产' : missingAssets.length > 0 ? `查看全部 ${missingAssets.length} 个缺失资产` : `查看全部 ${assets.length} 个资产`}</button> : null}
