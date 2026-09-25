@@ -1,0 +1,177 @@
+{
+  "schema_version": "full_real_e2e_preflight_snapshot_v1",
+  "generated_at_utc": "2026-09-25T00:13:59.438163+00:00",
+  "phase": "FULL_REAL_END_TO_END_PRODUCTION_ACCEPTANCE",
+  "status": "FULL_REAL_E2E_BLOCKED_BY_RUNTIME_EXECUTION_AUTHORIZATION",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "origin": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "provider_calls": {
+    "provider": 0,
+    "image": 0,
+    "video": 0,
+    "paid_llm": 0,
+    "object_storage": 0
+  },
+  "authorization": {
+    "phase_j_provider_authorized": false,
+    "phase_f_provider_canary_real": false,
+    "authorization_sufficient": false,
+    "credential_material_recorded": false
+  },
+  "runtime_checks": {
+    "IMAGE": {
+      "selected_model_profile_id": "local-image-mw4y52",
+      "provider": "shapi-openai-images",
+      "real_model_profile": true,
+      "model_name": "gpt-image-2.5-flare",
+      "credential_ref": "profile:local-image-mw4y52",
+      "configured": true,
+      "resolved": false,
+      "validated": false,
+      "validation_method": "",
+      "validation_version": "",
+      "resolution_error_code": "RUNTIME_CREDENTIAL_NOT_RESOLVED",
+      "exact_transport_binding": {
+        "binding_id": "shapi-openai-images.image.v1",
+        "exists": true,
+        "provider_id": "shapi-openai-images",
+        "target_media": "IMAGE",
+        "mode": "sync",
+        "submit": "generate_image_asset",
+        "poll": "generate_image_asset"
+      }
+    },
+    "VIDEO": {
+      "selected_model_profile_id": "local-video-7deneh",
+      "provider": "minimax-h3-async",
+      "real_model_profile": true,
+      "model_name": "MiniMax-H3",
+      "credential_ref": "profile:local-video-7deneh",
+      "configured": true,
+      "resolved": false,
+      "validated": false,
+      "validation_method": "",
+      "validation_version": "",
+      "resolution_error_code": "RUNTIME_CREDENTIAL_NOT_RESOLVED",
+      "exact_transport_binding": {
+        "binding_id": "minimax-h3-async.video.v1",
+        "exists": true,
+        "provider_id": "minimax-h3-async",
+        "target_media": "VIDEO",
+        "mode": "async",
+        "submit": "submit_minimax_h3_generation",
+        "poll": "poll_minimax_h3_generation"
+      }
+    }
+  },
+  "missing_conditions": {
+    "authorization_flags": [
+      "PHASE_J_PROVIDER_AUTHORIZED=true",
+      "PHASE_F_PROVIDER_CANARY_REAL=1"
+    ],
+    "credential_refs": [
+      "IMAGE: explicit runtime credential reference",
+      "VIDEO: explicit runtime credential reference"
+    ],
+    "unresolved_bindings": [
+      "IMAGE:profile:local-image-mw4y52",
+      "VIDEO:profile:local-video-7deneh"
+    ],
+    "validator_bindings": [
+      "IMAGE: runtime credential validator binding",
+      "VIDEO: runtime credential validator binding"
+    ]
+  },
+  "real_visual_asset_media_check": {
+    "character_count": 4,
+    "scene_count": 2,
+    "prop_count": 9,
+    "authority_records_present": true,
+    "real_visual_media_present": false,
+    "source_identity_kind": "pilot://",
+    "reason": "H2.2 uses deterministic pilot metadata identities and checksums; no real reference-media bytes are available for production generation."
+  },
+  "lineage": {
+    "script_ir": {
+      "path": "artifacts/e2e-production-pilot/episode_01_script_ir_phase_a.json",
+      "exists": true,
+      "bytes": 49577,
+      "sha256": "4731ac8ae784b87e83ea2d3f039da53ab6ccc8f159a32b0361ccc6d7645414df"
+    },
+    "director_treatment": {
+      "path": "artifacts/e2e-production-pilot/episode_01_director_treatment_phase_b.json",
+      "exists": true,
+      "bytes": 90318,
+      "sha256": "7ec5cddd7fe1abb970701abc6cb4390682098170a50ec31216b32678bc4bf50b"
+    },
+    "scene_blocking": {
+      "path": "artifacts/e2e-production-pilot/episode_01_scene_blocking_phase_b.json",
+      "exists": true,
+      "bytes": 157702,
+      "sha256": "ceaa01ce18ae35362472321079b819c55f05dd1b99f006d6a1f7b2a2ceab8c2f"
+    },
+    "shot_plan": {
+      "path": "artifacts/e2e-production-pilot/episode_01_shot_plan_phase_c.json",
+      "exists": true,
+      "bytes": 359955,
+      "sha256": "650ab11a3f15575fcce1f5227fcc411a450b0095e9e316313b380b9732c660ea"
+    },
+    "storyboard": {
+      "path": "artifacts/e2e-production-pilot/episode_01_storyboard_phase_d.json",
+      "exists": true,
+      "bytes": 560711,
+      "sha256": "8ea5636b957faf784a4859157974023ab9c6d6cd40b15029fb967dfa2709ac79"
+    },
+    "prompt_ir": {
+      "path": "artifacts/e2e-production-pilot/episode_01_prompt_ir_phase_e.json",
+      "exists": true,
+      "bytes": 99685,
+      "sha256": "d99e01b40a4c9b267fd40144c2c357fc2c136270ec58ed6de1c5ee850293134c"
+    },
+    "asset_authority": {
+      "path": "artifacts/e2e-production-pilot/phase_h2_episode_01_asset_matrix.json",
+      "exists": true,
+      "bytes": 28236,
+      "sha256": "b8af1a0b90b4ad6391c791aedfb8479cf962971e88acb2ffbe95f23783c2c4c6"
+    },
+    "asset_binding": {
+      "path": "artifacts/e2e-production-pilot/phase_h2_2_episode_01_asset_binding_matrix.json",
+      "exists": true,
+      "bytes": 35935,
+      "sha256": "3145a69072b1b5a31bf435119e5208b5b334867154ea139ac9677811f1575a20"
+    },
+    "official_media_history": {
+      "path": "artifacts/e2e-production-pilot/phase_i_visual_truth_matrix.json",
+      "exists": true,
+      "bytes": 48955,
+      "sha256": "e1cc6deae0e08da19b5aafdcc4dd1f91f4f2454804ac8ff88f1629fce940d670"
+    }
+  },
+  "acceptance_scope": {
+    "book_id": 990401,
+    "episode": "01",
+    "scenes": 2,
+    "shots": 15,
+    "required_chain": [
+      "PromptIR",
+      "AssetBinding",
+      "GenerationExecution",
+      "MediaCandidate",
+      "MediaValidation",
+      "OfficialMediaPromotion",
+      "OfficialMedia Resolve"
+    ]
+  },
+  "policy": {
+    "provider_free_preflight": true,
+    "real_execution_started": false,
+    "automatic_retry": false,
+    "automatic_asset_swap": false,
+    "production_business_semantics_modified": false,
+    "new_product_capability_added": false,
+    "credential_material_recorded": false
+  },
+  "preflight_checked_head": "33abf4d88153964ede39dc4363c1a13016dfabaf",
+  "validated_production_code_head": "bd0920af39948d1bd7a37016dcbb25cf1dbe696b",
+  "report_baseline_head": "33abf4d88153964ede39dc4363c1a13016dfabaf"
+}
