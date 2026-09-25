@@ -17,7 +17,7 @@ import type {
 } from './productWorkspaceSectionContracts'
 import type { Dispatch, SetStateAction } from 'react'
 import type { AssetEpisodeInsight, AssetSummary } from './productWorkspaceAssets'
-import type { AssetCategoryFilter, AssetStatusFilter, AssetVersionFilter, RecoveryFocusContext, WorkspaceSection } from './productWorkspaceAssetViewController'
+import type { AssetCategoryFilter, AssetStatusFilter, AssetVersionFilter, ProductionAssetSelectionContext, RecoveryFocusContext, WorkspaceSection } from './productWorkspaceAssetViewController'
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
@@ -119,6 +119,8 @@ interface UseProductWorkspaceSectionBundlesParams {
   isGeneratingReference: boolean
   onDismissAssetsRecoveryFocus: () => void
   setSelectedAssetId: (value: string | null) => void
+  productionAssetSelection: ProductionAssetSelectionContext | null
+  selectProductionAsset: (context: ProductionAssetSelectionContext) => void
   onOpenAssetPreview: (url: string, label: string) => void
   onGenerateReference: (options?: GenerateReferenceOptions) => void
   onGenerateAssetReference: (assetId: string, options?: GenerateReferenceOptions) => void
@@ -325,6 +327,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onAssetVersionFilterChange: params.setAssetVersionFilter,
         onAssetSearchQueryChange: params.setAssetSearchQuery,
         onSelectAsset: params.setSelectedAssetId,
+        productionAssetSelection: params.productionAssetSelection,
+        onSelectProductionAsset: params.selectProductionAsset,
         onOpenAssetPreview: params.onOpenAssetPreview,
         onGenerateReference: params.onGenerateReference,
         onGenerateAssetReference: params.onGenerateAssetReference,

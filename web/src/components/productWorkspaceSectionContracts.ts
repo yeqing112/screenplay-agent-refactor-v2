@@ -11,6 +11,7 @@ import type {
   AssetCategoryFilter,
   AssetStatusFilter,
   AssetVersionFilter,
+  ProductionAssetSelectionContext,
   RecoveryFocusContext,
   WorkspaceSection,
 } from './productWorkspaceAssetViewController'
@@ -286,6 +287,8 @@ export interface AssetsBundle {
   onAssetVersionFilterChange: (value: AssetVersionFilter) => void
   onAssetSearchQueryChange: (value: string) => void
   onSelectAsset: (value: string | null) => void
+  productionAssetSelection: ProductionAssetSelectionContext | null
+  onSelectProductionAsset: (context: ProductionAssetSelectionContext) => void
   onOpenAssetPreview: (url: string, label: string) => void
   onGenerateReference: (options?: GenerateReferenceOptions) => void
   onGenerateAssetReference: (assetId: string, options?: GenerateReferenceOptions) => void

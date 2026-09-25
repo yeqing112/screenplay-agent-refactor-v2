@@ -70,6 +70,7 @@ def production_asset_media_readiness(
     *,
     storage_identity: Any,
     checksum: Any,
+    metadata_hash: Any = None,
     metadata: Mapping[str, Any] | None = None,
 ) -> ProductionAssetMediaReadiness:
     """Validate declared Production Asset media without provider/network I/O.
@@ -90,6 +91,8 @@ def production_asset_media_readiness(
         return ProductionAssetMediaReadiness(False, ("MEDIA_STORAGE_IDENTITY_MISSING",), source_kind)
     if not digest:
         return ProductionAssetMediaReadiness(False, ("MEDIA_CHECKSUM_MISSING",), source_kind)
+    if metadata_hash is not None and not str(metadata_hash or "").strip():
+        return ProductionAssetMediaReadiness(False, ("MEDIA_METADATA_HASH_MISSING",), source_kind)
     if source_kind in _FIXTURE_SOURCE_KINDS or scheme in _FIXTURE_SOURCE_KINDS:
         return ProductionAssetMediaReadiness(False, ("MEDIA_SOURCE_NOT_REAL",), source_kind or scheme)
     if scheme in {"data", "blob"}:
@@ -151,7 +154,11 @@ def resolve_current_production_asset_binding(session: Any, binding: Any) -> dict
         version_fingerprint=version_fingerprint,
         pointer_fingerprint=str(getattr(pointer, "fingerprint", "") or ""),
     )
-    media = production_asset_media_readiness(storage_identity=version.storage_identity, checksum=version.checksum)
+    media = production_asset_media_readiness(
+        storage_identity=version.storage_identity,
+        checksum=version.checksum,
+        metadata_hash=version.metadata_hash,
+    )
     checks = {
         "binding_active": str(getattr(binding, "status", "")).upper() == "ACTIVE",
         "authority_active": str(getattr(authority, "status", "")).upper() == "ACTIVE",

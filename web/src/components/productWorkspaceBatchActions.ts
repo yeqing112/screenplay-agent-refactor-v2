@@ -328,7 +328,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
     )
 
     if (executableShots.length === 0) {
-      throw new Error('当前没有可批量补视频的镜头，需先存在已采纳且可预览的首帧。')
+      throw new Error('当前没有可批量补视频的镜头，需先建立当前正式图片并满足 V2 VIDEO 生成条件。')
     }
 
     let startedCount = 0

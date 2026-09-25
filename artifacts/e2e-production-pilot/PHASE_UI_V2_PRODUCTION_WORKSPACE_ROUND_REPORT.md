@@ -27,11 +27,12 @@
 - Candidate cards now expose preview, technical validation status, `验证候选`, and `设为正式版本` through the existing `/api/media-authority` contract; no frontend acceptance/favorite truth was added.
 - Professional view exposes PromptIR, ModelProfile, execution and OfficialMedia lineage; standard view hides raw lineage identifiers.
 - Retired the production Storyboard H3 submit path and manual media upload entry point; retained legacy data as read-only historical display.
-- Batch IMAGE/VIDEO eligibility now consults the V2 snapshot when available; Canvas and Task Center show V2 projected statuses and canonical GenerationExecution summaries while retaining compatibility recovery records.
+- Batch IMAGE/VIDEO eligibility is V2-only; an unavailable snapshot produces zero eligible production actions and disabled controls. Canvas and Task Center show V2 projected statuses and canonical GenerationExecution summaries while retaining compatibility recovery records.
 - Asset Hub binding counts now reuse the typed binding resolver and validate pointer fingerprints; stale or mismatched bindings do not make an entity production-ready.
 - The projection now reports formal requirement source, exact missing/stale entity IDs, typed current Version metadata, and the explicit `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API` boundary when the entity-first ingestion contract is unavailable.
 - Delivery export reads current V2 OfficialMedia when a V2 snapshot is supplied; legacy adopted media remains historical display data.
 - Task Center batch IMAGE/VIDEO counts are derived from V2 lane readiness and become zero with disabled actions when the V2 snapshot is unavailable.
+- Asset selection now carries `{ entityId, assetType }` context into Asset Center; when the formal ingestion API is unavailable, the legacy reference upload controls are disabled and the UI shows `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API`.
 
 ### Documentation
 
@@ -47,10 +48,10 @@
 
 | Check | Result |
 |---|---|
-| `npm test` | 53 test files / 314 tests passed |
+| `npm test` | 53 test files / 315 tests passed |
 | `npm run build` | passed; Vite production bundle generated |
-| targeted backend V2/asset binding suite | 15 passed |
-| `npm run check:production` Python deterministic regression | 1781 passed |
+| targeted backend V2/asset binding suite | 11 passed |
+| `npm run check:production` Python deterministic regression | 1783 passed |
 | `npm run check:production` deterministic Golden regression | 5/5 passed |
 | Runtime configuration verification | passed |
 | Production release gate invariants | passed |

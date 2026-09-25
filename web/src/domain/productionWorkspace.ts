@@ -140,6 +140,8 @@ export interface ProductionAssetV2 {
     present: boolean
     storage_identity: string | null
     checksum: string | null
+    metadata_hash?: string | null
+    visual_asset_version_id?: number | null
     mime: string | null
     width: number | null
     height: number | null
@@ -176,6 +178,9 @@ export interface ProductionShotV2 {
   asset_readiness: {
     state: ProductionLaneState
     required: Record<string, Array<Record<string, unknown>>>
+    required_entities?: string[]
+    requirement_source?: string | null
+    required_entity_count?: number
     missing: string[]
     stale: string[]
     current: boolean
@@ -576,6 +581,9 @@ export function normalizeProductionWorkspaceV2Snapshot(value: unknown, bookId: n
       asset_readiness: {
         state: String(readiness.state ?? 'blocked'),
         required: readiness.required && typeof readiness.required === 'object' ? readiness.required : {},
+        required_entities: Array.isArray(readiness.required_entities) ? readiness.required_entities.map(String) : [],
+        requirement_source: readiness.requirement_source == null ? null : String(readiness.requirement_source),
+        required_entity_count: Number(readiness.required_entity_count ?? 0),
         missing: Array.isArray(readiness.missing) ? readiness.missing.map(String) : [],
         stale: Array.isArray(readiness.stale) ? readiness.stale.map(String) : [],
         current: readiness.current === true,
@@ -605,6 +613,8 @@ export function normalizeProductionWorkspaceV2Snapshot(value: unknown, bookId: n
         present: media.present === true,
         storage_identity: media.storage_identity == null ? null : String(media.storage_identity),
         checksum: media.checksum == null ? null : String(media.checksum),
+        metadata_hash: media.metadata_hash == null ? null : String(media.metadata_hash),
+        visual_asset_version_id: media.visual_asset_version_id == null ? null : Number(media.visual_asset_version_id),
         mime: media.mime == null ? null : String(media.mime),
         width: media.width == null ? null : Number(media.width),
         height: media.height == null ? null : Number(media.height),

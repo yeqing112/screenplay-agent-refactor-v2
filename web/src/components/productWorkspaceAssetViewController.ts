@@ -50,6 +50,27 @@ interface UseProductWorkspaceAssetViewParams {
 
 export type AssetCategoryFilter = 'all' | AssetCategory
 export type AssetStatusFilter = 'all' | 'missing_reference' | 'pending_selection' | 'stale_prompt' | 'locked_reference'
+export interface ProductionAssetSelectionContext {
+  entityId: string
+  assetType: string
+}
+
+export function resolveProductionAssetSelectionTarget({
+  allAssets,
+  context,
+}: {
+  allAssets: AssetSummary[]
+  context: ProductionAssetSelectionContext
+}) {
+  const entityId = String(context.entityId || '').trim()
+  const assetType = String(context.assetType || '').trim().toUpperCase()
+  if (!entityId || !assetType) return null
+  return allAssets.find((asset) => {
+    const category = asset.category === 'location' ? 'SCENE' : asset.category.toUpperCase()
+    if (category !== assetType) return false
+    return asset.id === entityId || String(asset.assetRecordId ?? '') === entityId
+  }) ?? null
+}
 export type AssetVersionFilter =
   | 'all'
   | 'base_identity'
@@ -401,6 +422,7 @@ export function useProductWorkspaceAssetView({
   setQaNavigationTarget,
 }: UseProductWorkspaceAssetViewParams) {
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null)
+  const [productionAssetSelection, setProductionAssetSelection] = useState<ProductionAssetSelectionContext | null>(null)
   const [assetEpisodeFilter, setAssetEpisodeFilter] = useState<'all' | number>('all')
   const [assetCategoryFilter, setAssetCategoryFilter] = useState<AssetCategoryFilter>('all')
   const [assetStatusFilter, setAssetStatusFilter] = useState<AssetStatusFilter>('all')
@@ -501,10 +523,11 @@ export function useProductWorkspaceAssetView({
     })
   }, [assetEpisodeInsights, versionFilteredAssets])
 
-  const selectedAsset = useMemo(
-    () => prioritizedAssets.find((asset) => asset.id === selectedAssetId) ?? prioritizedAssets[0] ?? null,
-    [prioritizedAssets, selectedAssetId],
-  )
+  const selectedAsset = useMemo(() => {
+    const matched = prioritizedAssets.find((asset) => asset.id === selectedAssetId) ?? null
+    if (productionAssetSelection) return matched
+    return matched ?? prioritizedAssets[0] ?? null
+  }, [prioritizedAssets, productionAssetSelection, selectedAssetId])
 
   const selectedAssetInsight = useMemo(
     () => (selectedAsset ? assetEpisodeInsights.get(selectedAsset.id) ?? null : null),
@@ -516,11 +539,30 @@ export function useProductWorkspaceAssetView({
       setSelectedAssetId(null)
       return
     }
+    if (productionAssetSelection) {
+      setSelectedAssetId((current) => current && prioritizedAssets.some((asset) => asset.id === current) ? current : null)
+      return
+    }
     setSelectedAssetId((current) => {
       if (current && prioritizedAssets.some((asset) => asset.id === current)) return current
       return prioritizedAssets[0]?.id ?? null
     })
-  }, [prioritizedAssets])
+  }, [prioritizedAssets, productionAssetSelection])
+
+  const selectAsset = useCallback((value: string | null) => {
+    setProductionAssetSelection(null)
+    setSelectedAssetId(value)
+  }, [])
+
+  const selectProductionAsset = useCallback((context: ProductionAssetSelectionContext) => {
+    const entityId = String(context.entityId || '').trim()
+    const assetType = String(context.assetType || '').trim().toUpperCase()
+    if (!entityId || !assetType) return
+    setProductionAssetSelection({ entityId, assetType })
+    const matched = resolveProductionAssetSelectionTarget({ allAssets, context: { entityId, assetType } })
+    setSelectedAssetId(matched?.id ?? null)
+    if (matched) setAssetCategoryFilter(matched.category)
+  }, [allAssets])
 
   useEffect(() => {
     setLinkedShotDraft(
@@ -594,7 +636,7 @@ export function useProductWorkspaceAssetView({
         })
         if (matchedAsset) {
           setAssetCategoryFilter(matchedAsset.category)
-          setSelectedAssetId(matchedAsset.id)
+          selectAsset(matchedAsset.id)
         }
         const inferredRecoveryIntent =
           options?.recoveryIntent ??
@@ -616,7 +658,7 @@ export function useProductWorkspaceAssetView({
           setAssetStatusFilter('all')
         }
         if (preferredRecoveryAsset) {
-          setSelectedAssetId(preferredRecoveryAsset.id)
+          selectAsset(preferredRecoveryAsset.id)
         }
 
         setRecoveryFocus({
@@ -686,7 +728,7 @@ export function useProductWorkspaceAssetView({
 
       setSection(target)
     },
-    [allAssets, episodeShots, setCanvasHandoffTarget, setCanvasNavigationTarget, setQaNavigationTarget, setSection, setSelectedStoryboardShotId, setTaskNavigationTarget],
+    [allAssets, episodeShots, selectAsset, setCanvasHandoffTarget, setCanvasNavigationTarget, setQaNavigationTarget, setSection, setSelectedStoryboardShotId, setTaskNavigationTarget],
   )
 
   const openAssetPreview = useCallback((url: string, label: string) => {
@@ -732,7 +774,9 @@ export function useProductWorkspaceAssetView({
 
   return {
     selectedAssetId,
-    setSelectedAssetId,
+    setSelectedAssetId: selectAsset,
+    productionAssetSelection,
+    selectProductionAsset,
     assetEpisodeFilter,
     setAssetEpisodeFilter,
     assetCategoryFilter,

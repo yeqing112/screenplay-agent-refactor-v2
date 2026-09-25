@@ -5,6 +5,7 @@ import type { AssetSummary } from './productWorkspaceAssets'
 import {
   buildInitialLinkedShotDraft,
   mergeLinkedShotDraftWithInferredShots,
+  resolveProductionAssetSelectionTarget,
   resolveAssetTaskNavigationTarget,
   resolveShotVariantNavigationTarget,
 } from './productWorkspaceAssetViewController'
@@ -122,6 +123,14 @@ describe('productWorkspaceAssetViewController', () => {
     })
 
     expect(resolved?.id).toBe('character-99')
+  })
+
+  it('resolves entity-first Production Asset selection only by canonical id and type', () => {
+    const character = buildAsset({ id: 'LIN_WAN', assetRecordId: null })
+    const scene = buildAsset({ id: 'SCENE_1', category: 'location', assetRecordId: 41 })
+    expect(resolveProductionAssetSelectionTarget({ allAssets: [character, scene], context: { entityId: 'LIN_WAN', assetType: 'CHARACTER' } })?.id).toBe('LIN_WAN')
+    expect(resolveProductionAssetSelectionTarget({ allAssets: [character, scene], context: { entityId: '41', assetType: 'SCENE' } })?.id).toBe('SCENE_1')
+    expect(resolveProductionAssetSelectionTarget({ allAssets: [character, scene], context: { entityId: 'LIN_WAN', assetType: 'PROP' } })).toBeNull()
   })
 
   it('can recover from an explicit default asset id to the matching shot variant for storyboard refinement', () => {

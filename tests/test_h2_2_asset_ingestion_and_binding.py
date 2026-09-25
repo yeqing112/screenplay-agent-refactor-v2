@@ -17,7 +17,7 @@ from core.production_asset_authority import (
     production_asset_media_readiness,
 )
 from core.production_workspace_projection_v2 import _asset_readiness
-from models import ShotAssetBinding, StoryboardShot
+from models import CharacterAssetVersion, ShotAssetBinding, StoryboardShot
 from scripts.verify_migration_chain import _upgrade
 
 
@@ -159,6 +159,52 @@ def test_v2_asset_readiness_rejects_fixture_media_and_missing_exact_entity(tmp_p
             storage_identity="pilot://episode-01/character/LIN_WAN/v1",
             checksum="sha256:fixture",
         ).present is False
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_v2_asset_readiness_accepts_list_requirement_contract_shape_and_exposes_exact_entities(tmp_path):
+    engine, session = _session(tmp_path)
+    try:
+        shot = session.query(StoryboardShot).one()
+        shot.asset_links = json.dumps({
+            "production_asset_requirements": [
+                {"asset_type": "CHARACTER", "entity_id": "LIN_WAN"},
+                "SCENE:E01_SC001",
+            ]
+        })
+        readiness = _asset_readiness(session, shot_id=shot.id, book_id=990401)
+        assert readiness["current"] is False
+        assert readiness["required_entity_count"] == 2
+        assert readiness["required_entities"] == ["CHARACTER:LIN_WAN", "SCENE:E01_SC001"]
+        assert readiness["requirement_source"] == "production_asset_requirement_contract"
+        assert readiness["missing"] == ["CHARACTER:LIN_WAN", "SCENE:E01_SC001"]
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_v2_asset_readiness_rejects_version_without_metadata_hash(tmp_path):
+    engine, session = _session(tmp_path)
+    try:
+        shot = session.query(StoryboardShot).one()
+        shot.asset_links = json.dumps({"canonical_asset_identity": {"characters": ["LIN_WAN"]}})
+        asset = ingest_production_asset(session, entity_type="CHARACTER", entity_id="LIN_WAN", source=_source("lin-wan"))
+        scene = ingest_production_asset(session, entity_type="SCENE", entity_id="E01_SC001", source=_source("scene"))
+        version = session.query(CharacterAssetVersion).filter_by(version_id=asset["version_id"]).one()
+        version.metadata_hash = None
+        bind_shot_assets(
+            session,
+            storyboard_shot_id=shot.id,
+            characters=[{"authority_id": asset["authority_id"], "version_id": asset["version_id"]}],
+            scene={"authority_id": scene["authority_id"], "version_id": scene["version_id"]},
+            props=[],
+        )
+        session.commit()
+        readiness = _asset_readiness(session, shot_id=shot.id, book_id=990401)
+        assert readiness["current"] is False
+        assert "CHARACTER:LIN_WAN" in readiness["missing"]
     finally:
         session.close()
         engine.dispose()

@@ -30,6 +30,7 @@ interface Props {
   mode: ProductionWorkspaceViewMode
   onNavigateSection?: (section: 'assets' | 'storyboard') => void
   onSelectAsset?: (entityId: string) => void
+  onSelectAssetContext?: (context: { entityId: string; assetType: string }) => void
   focusShotId?: string | null
   onRefresh?: () => void
   imageModelProfileId?: string | null
@@ -51,6 +52,12 @@ function assetMissingLabel(assetType: string) {
   if (kind === 'SCENE') return '缺少场景参考图'
   if (kind === 'PROP') return '缺少道具参考图'
   return '缺少真实视觉资产'
+}
+
+function assetMissingEntityLabel(entity: string) {
+  const [kind, ...identityParts] = String(entity || '').split(':')
+  const identity = identityParts.join(':') || entity
+  return `${assetMissingLabel(kind)}：${identity}`
 }
 
 function LaneSummary({ lane, target, mode, onGenerate, selectedProfileId, actionMessage }: { lane: ProductionMediaLane; target: 'IMAGE' | 'VIDEO'; mode: ProductionWorkspaceViewMode; onGenerate?: () => void; selectedProfileId?: string | null; actionMessage?: string }) {
@@ -157,7 +164,7 @@ function ShotCard({ shot, mode, focused, onRefresh, onGenerate, selectedImagePro
         </div>
         <div className="rounded-lg border border-sky-500/30 bg-sky-500/10 px-3 py-2 text-right"><div className="text-[10px] text-sky-200/70">唯一下一步</div><div className="mt-1 text-xs font-medium text-sky-100">{shot.next_action.label}</div></div>
       </div>
-      {shot.blockers.length > 0 ? <div className="mt-3 flex items-start gap-2 rounded-lg border border-rose-500/20 bg-rose-500/5 px-3 py-2 text-xs text-rose-100"><AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" /><span>{shot.blockers[0].message}</span></div> : null}
+      {shot.blockers.length > 0 ? <div className="mt-3 flex items-start gap-2 rounded-lg border border-rose-500/20 bg-rose-500/5 px-3 py-2 text-xs text-rose-100"><AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" /><span>{shot.blockers[0].code === 'UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API' && shot.asset_readiness.missing[0] ? assetMissingEntityLabel(shot.asset_readiness.missing[0]) : shot.blockers[0].message}</span></div> : null}
       <div className="mt-4 grid gap-3 xl:grid-cols-2">
         <LaneSummary lane={shot.IMAGE} target="IMAGE" mode={mode} selectedProfileId={selectedImageProfileId} actionMessage={actionMessages?.IMAGE} onGenerate={() => onGenerate?.('IMAGE')} />
         <LaneSummary lane={shot.VIDEO} target="VIDEO" mode={mode} selectedProfileId={selectedVideoProfileId} actionMessage={actionMessages?.VIDEO} onGenerate={() => onGenerate?.('VIDEO')} />
@@ -171,7 +178,7 @@ function ShotCard({ shot, mode, focused, onRefresh, onGenerate, selectedImagePro
   )
 }
 
-export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mode, onNavigateSection, onSelectAsset, focusShotId, onRefresh, imageModelProfileId, videoModelProfileId }: Props) {
+export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mode, onNavigateSection, onSelectAsset, onSelectAssetContext, focusShotId, onRefresh, imageModelProfileId, videoModelProfileId }: Props) {
   const [showAllAssets, setShowAllAssets] = useState(false)
   const [actionMessages, setActionMessages] = useState<Record<string, string>>({})
   const assets = snapshot?.assets ?? []
@@ -228,7 +235,7 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
           const label = !asset.media.present ? '缺少真实视觉资产' : state === 'stale' ? '需要更新' : '当前有效'
           const missingLabel = assetMissingLabel(asset.asset_type)
           const bindingDetail = `${asset.current_binding_count ?? asset.binding_counts?.current ?? 0} 个当前绑定${(asset.stale_binding_count ?? asset.binding_counts?.stale ?? 0) > 0 ? ` · ${(asset.stale_binding_count ?? asset.binding_counts?.stale ?? 0)} 个需更新` : ''}`
-          return <button key={`${asset.asset_type}:${asset.entity_id}`} type="button" onClick={() => { onSelectAsset?.(asset.entity_id); onNavigateSection?.('assets') }} className="rounded-lg border border-slate-800 bg-slate-950/50 p-3 text-left hover:border-violet-400/40">
+          return <button key={`${asset.asset_type}:${asset.entity_id}`} type="button" onClick={() => { onSelectAssetContext?.({ entityId: asset.entity_id, assetType: asset.asset_type }); onNavigateSection?.('assets') }} className="rounded-lg border border-slate-800 bg-slate-950/50 p-3 text-left hover:border-violet-400/40">
             {asset.media.preview_url ? <img src={asset.media.preview_url} alt={`${asset.entity_id} 当前媒体预览`} className="mb-2 h-20 w-full rounded object-cover" /> : null}
             <div className="flex items-center justify-between gap-2"><span className="truncate text-sm font-medium text-white">{asset.entity_id}</span><StatePill state={state} label={asset.media.present ? label : missingLabel} /></div>
             <div className="mt-1 text-[11px] text-slate-500">{asset.asset_type} · {bindingDetail} · {asset.current_version_id ? `版本 ${asset.current_version_id}` : '尚无正式版本'}</div>

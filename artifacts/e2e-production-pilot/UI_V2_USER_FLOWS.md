@@ -15,7 +15,7 @@
 
 ## Asset preparation
 
-The asset hub is entity-first. Each card shows type, current state, media presence, binding count and affected shots from the backend projection. A missing card exposes the required entity and blocker; it does not fabricate a binding while the formal ingestion API is absent.
+The asset hub is entity-first. Each card shows type, current state, media presence, binding count and affected shots from the backend projection. Selecting a V2 card passes its canonical `{ entityId, assetType }` context. A missing card exposes the required entity and blocker; it does not select a guessed legacy ID, fabricate a binding, or enable the old reference upload flow while the formal ingestion API is absent.
 
 ## Generate IMAGE
 

@@ -316,6 +316,7 @@ export default function ProductWorkspaceSectionContent({
             mode={assets.workspaceViewMode}
             onNavigateSection={assets.onNavigateSection}
             onSelectAsset={assets.onSelectAsset}
+            onSelectAssetContext={assets.onSelectProductionAsset}
             onRefresh={assets.onRefreshAll}
             imageModelProfileId={explicitGenerationSelection.imageModelProfileId}
             videoModelProfileId={explicitGenerationSelection.videoModelProfileId}
@@ -363,8 +364,12 @@ export default function ProductWorkspaceSectionContent({
             onToggleShotBinding={assets.onToggleShotBinding}
             onApplyInferredShotBindings={assets.onApplyInferredShotBindings}
           onSaveShotBindings={assets.onSaveShotBindings}
-          productionWorkspace={assets.productionWorkspace}
-          productionWorkspaceState={assets.productionWorkspaceState}
+            productionWorkspace={assets.productionWorkspace}
+            productionWorkspaceState={assets.productionWorkspaceState}
+            productionWorkspaceV2={assets.productionWorkspaceV2}
+            productionWorkspaceV2State={assets.productionWorkspaceV2State}
+            productionAssetSelection={assets.productionAssetSelection}
+            onSelectProductionAsset={assets.onSelectProductionAsset}
           />
         </>
       ) : null}

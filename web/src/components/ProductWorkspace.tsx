@@ -321,6 +321,8 @@ export default function ProductWorkspace({
     navigateTaskSection,
     navigateAssetShot,
     setSelectedAssetId,
+    productionAssetSelection,
+    selectProductionAsset,
     clearNavigationContext,
   } = useProductWorkspaceAssetView({
     allAssets,
@@ -636,6 +638,8 @@ export default function ProductWorkspace({
     isGeneratingReference: assetGenerationState === 'saving',
     onDismissAssetsRecoveryFocus: dismissAssetsRecoveryFocus,
     setSelectedAssetId,
+    productionAssetSelection: productionAssetSelection,
+    selectProductionAsset,
     onOpenAssetPreview: openAssetPreview,
     onGenerateReference: (options) => {
       void handleGenerateSelectedAssetReference(options)

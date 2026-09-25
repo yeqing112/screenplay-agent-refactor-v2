@@ -17,7 +17,8 @@ import {
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
 import SceneSemanticLayersEditor from './SceneSemanticLayersEditor'
 import PropSemanticLayersEditor from './PropSemanticLayersEditor'
-import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
+import type { ProductionAssetSelectionContext } from './productWorkspaceAssetViewController'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
@@ -92,6 +93,10 @@ interface Props {
   onSaveShotBindings: () => void
   productionWorkspace?: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
+  productionAssetSelection?: ProductionAssetSelectionContext | null
+  onSelectProductionAsset?: (context: ProductionAssetSelectionContext) => void
 }
 
 type AssetCanvasPrimaryActionPlan =
@@ -1228,6 +1233,9 @@ export default function ProductWorkspaceAssetsSection({
   onSaveShotBindings,
   productionWorkspace = null,
   productionWorkspaceState,
+  productionWorkspaceV2 = null,
+  productionWorkspaceV2State,
+  productionAssetSelection = null,
 }: Props) {
   const [referenceSourcePromptDetail, setReferenceSourcePromptDetail] = useState<{
     title: string
@@ -1332,7 +1340,12 @@ export default function ProductWorkspaceAssetsSection({
       (!assetActionFollowUp.assetId || assetActionFollowUp.assetId === selectedAsset.id),
   )
   const selectedStructuredFieldEntries = selectedAsset ? buildStructuredFieldEntries(selectedAsset.structuredVariantFields) : []
-  const canUploadManualReference = Boolean(selectedAsset?.assetRecordId && bookId > 0)
+  const productionAssetIngestionBlocked = Boolean(
+    productionAssetSelection &&
+      productionWorkspaceV2State === 'ready' &&
+      !productionWorkspaceV2?.asset_ingestion_api_available,
+  )
+  const canUploadManualReference = Boolean(selectedAsset?.assetRecordId && bookId > 0 && !productionAssetIngestionBlocked)
 
   const uploadManualReference = async () => {
     if (!selectedAsset || !manualReferenceFile || !selectedAsset.assetRecordId || bookId <= 0) return
@@ -1430,6 +1443,16 @@ export default function ProductWorkspaceAssetsSection({
   return (
     <div>
       <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} state={productionWorkspaceState} episode={assetEpisodeFilter === 'all' ? null : assetEpisodeFilter} title="资产生产状态" />
+      {productionAssetSelection ? (
+        <div className="mb-4 rounded-xl border border-amber-500/35 bg-amber-500/10 p-4 text-sm text-amber-100">
+          <div className="font-medium">已定位 Production Asset：{productionAssetSelection.assetType}:{productionAssetSelection.entityId}</div>
+          <div className="mt-1 text-xs leading-5 text-amber-100/80">
+            {productionAssetIngestionBlocked
+              ? 'UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API：当前没有正式实体摄取 API，不能用旧资产参考图上传流程代替 Production Asset 版本与绑定。'
+              : '当前已传递实体选择上下文；请在正式摄取流程中完成文件、预览和绑定确认。'}
+          </div>
+        </div>
+      ) : null}
       <div className="grid gap-6 xl:grid-cols-[0.92fr_1.2fr_0.95fr]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="flex items-center justify-between gap-3">
