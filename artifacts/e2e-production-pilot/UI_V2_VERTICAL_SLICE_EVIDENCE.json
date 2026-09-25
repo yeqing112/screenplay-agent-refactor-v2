@@ -27,7 +27,7 @@
   ],
   "local_verification": {
     "backend_projection_tests": "15 passed",
-    "frontend_tests": "53 files / 317 tests passed",
+    "frontend_tests": "53 files / 318 tests passed",
     "frontend_build": "passed",
     "production_regression": "1787 passed",
     "golden_regression": "5/5 passed",

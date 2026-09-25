@@ -25,6 +25,7 @@
 - Added independent IMAGE and VIDEO lanes, candidate versus OfficialMedia semantics, stale and unavailable states, disabled generation without an explicit model, and the 15-asset blocked entity-first cards.
 - Canvas and Task Center production generation now fail closed when the V2 projection is unavailable or the projected lane is not ready; legacy `adopted` rows remain display/history only.
 - Storyboard generation controls and direct submission now use the V2 snapshot and target lane readiness; V1-only state or an unavailable V2 projection cannot revive the legacy generation entry point.
+- Task Center batch IMAGE/VIDEO actions also require the V2 load state to be `ready`; a stale snapshot during refresh cannot authorize production requests.
 - Candidate cards now expose preview, technical validation status, `验证候选`, and `设为正式版本` through the existing `/api/media-authority` contract; no frontend acceptance/favorite truth was added.
 - Professional view exposes PromptIR, ModelProfile, execution and OfficialMedia lineage; standard view hides raw lineage identifiers.
 - Retired the production Storyboard H3 submit path and manual media upload entry point; retained legacy data as read-only historical display.
@@ -49,7 +50,7 @@
 
 | Check | Result |
 |---|---|
-| `npm test` | 53 test files / 317 tests passed |
+| `npm test` | 53 test files / 318 tests passed |
 | `npm run build` | passed; Vite production bundle generated |
 | targeted backend V2/asset binding suite | 15 passed |
 | `npm run check:production` Python deterministic regression | 1787 passed |

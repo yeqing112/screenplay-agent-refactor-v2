@@ -3,6 +3,7 @@ import {
   findProductionShotV2,
   isProductionImageGenerationReady,
   isProductionVideoGenerationReady,
+  type ProductionWorkspaceLoadState,
   type ProductionWorkspaceV2Snapshot,
 } from '../domain/productionWorkspace'
 import type { PendingStoryboardTask } from './productWorkspaceRecovery'
@@ -49,6 +50,7 @@ type ExecuteBatchTaskActionOptions = {
   imageModelProfileId?: string | null
   videoModelProfileId?: string | null
   productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
 }
 
 export function batchActionLabel(action: BatchTaskAction) {
@@ -209,7 +211,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
 
   if (action === 'batch-generate-frames') {
     if (!imageModelProfileId) throw new Error('批量生成首帧前必须显式选择 IMAGE 生成模型。')
-    if (!options.productionWorkspaceV2) throw new Error('生产状态暂时不可用，请刷新后重试。')
+    if (options.productionWorkspaceV2State !== 'ready' || !options.productionWorkspaceV2) throw new Error('生产状态暂时不可用，请刷新后重试。')
     const runningFrameKeys = new Set(
       pendingTasks
         .filter((task) => task.kind === 'frame')
@@ -302,7 +304,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
 
   if (action === 'batch-generate-videos') {
     if (!videoModelProfileId) throw new Error('批量生成视频前必须显式选择 VIDEO 生成模型。')
-    if (!options.productionWorkspaceV2) throw new Error('生产状态暂时不可用，请刷新后重试。')
+    if (options.productionWorkspaceV2State !== 'ready' || !options.productionWorkspaceV2) throw new Error('生产状态暂时不可用，请刷新后重试。')
     const runningVideoKeys = new Set(
       pendingTasks
         .filter((task) => task.kind === 'video')

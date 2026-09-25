@@ -22,7 +22,7 @@
   },
   "database_migrations": 0,
   "local_verification": {
-    "frontend_tests": "53 files / 317 tests passed",
+    "frontend_tests": "53 files / 318 tests passed",
     "targeted_backend": "15 passed",
     "production_regression": "1787 passed",
     "golden_regression": "5/5 passed",

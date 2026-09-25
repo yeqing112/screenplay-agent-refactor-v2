@@ -596,6 +596,7 @@ export default function ProductWorkspaceTasksSection({
         fetchTaskStatus: fetchStoryboardRecoveryTaskStatus as any,
         waitForCreativeTask,
         productionWorkspaceV2,
+        productionWorkspaceV2State,
         ...readExplicitGenerationProfileSelection(),
       })
 

@@ -39,6 +39,7 @@ describe('V2 batch eligibility', () => {
       waitForCreativeTask: async () => ({ status: 'done' } as any),
       imageModelProfileId: 'image-profile',
       productionWorkspaceV2: null,
+      productionWorkspaceV2State: 'unavailable',
     })).rejects.toThrow('生产状态暂时不可用')
     expect(fetchSpy).not.toHaveBeenCalled()
     fetchSpy.mockRestore()
@@ -56,6 +57,25 @@ describe('V2 batch eligibility', () => {
       waitForCreativeTask: async () => ({ status: 'done' } as any),
       videoModelProfileId: 'video-profile',
       productionWorkspaceV2: null,
+      productionWorkspaceV2State: 'unavailable',
+    })).rejects.toThrow('生产状态暂时不可用')
+    expect(fetchSpy).not.toHaveBeenCalled()
+    fetchSpy.mockRestore()
+  })
+
+  it('fails closed during a V2 refresh even when an old snapshot is still present', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch')
+    await expect(executeBatchTaskAction({
+      action: 'batch-generate-frames',
+      bookId: 990401,
+      shotsByEpisode: { 1: [{ episode: 1, shot_id: '1' } as any] },
+      pendingTasks: [],
+      qaWorkbenchEpisodes: [],
+      fetchTaskStatus: async () => ({ status: 'done' } as any),
+      waitForCreativeTask: async () => ({ status: 'done' } as any),
+      imageModelProfileId: 'image-profile',
+      productionWorkspaceV2: productionWorkspaceV2Fixture,
+      productionWorkspaceV2State: 'loading',
     })).rejects.toThrow('生产状态暂时不可用')
     expect(fetchSpy).not.toHaveBeenCalled()
     fetchSpy.mockRestore()
