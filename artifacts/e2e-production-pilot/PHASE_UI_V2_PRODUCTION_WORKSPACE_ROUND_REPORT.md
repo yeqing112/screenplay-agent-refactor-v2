@@ -58,6 +58,7 @@
 | Runtime configuration verification | passed |
 | Production release gate invariants | passed |
 | `git diff --check` | passed |
+| GitHub Required Production CI | `Production regression` succeeded for commit `d9c9f22fa11e5ce556f050a512b30144a122bf11` ([run 36162499282](https://github.com/yeqing112/screenplay-agent-refactor-v2/actions/runs/36162499282)) |
 | Real provider/image/video/paid LLM calls | 0 |
 | Database migrations | 0 |
 | Production authority writes | 0 |
@@ -91,4 +92,4 @@ The remaining review boundary is the formal entity-first Production Asset ingest
 
 ## Git delivery
 
-The implementation, V2 evidence, and release-gate reports are pushed on this branch. The exact commit and file links are supplied with the task response.
+The implementation, V2 evidence, and release-gate reports are pushed on this branch at commit `d9c9f22fa11e5ce556f050a512b30144a122bf11`. The GitHub Required Production CI for that commit succeeded in [run 36162499282](https://github.com/yeqing112/screenplay-agent-refactor-v2/actions/runs/36162499282). The exact report file links are supplied with the task response.

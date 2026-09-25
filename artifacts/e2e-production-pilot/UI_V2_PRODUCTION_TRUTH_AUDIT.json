@@ -29,6 +29,14 @@
     "release_gate": "BLOCKED"
   },
   "release_gate_report": "artifacts/production-release-gate-2026-09-25T16-25-32-562Z.md",
+  "github_required_ci": {
+    "workflow": "Production regression",
+    "run_id": 36162499282,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "d9c9f22fa11e5ce556f050a512b30144a122bf11",
+    "url": "https://github.com/yeqing112/screenplay-agent-refactor-v2/actions/runs/36162499282"
+  },
   "notes": [
     "pilot://, fixture://, canary and other fixture identities are rejected as real Production Asset media",
     "Production Workspace V2 is read-only and uses current typed Authority/Pointer/Version records",
