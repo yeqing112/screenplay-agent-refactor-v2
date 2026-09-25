@@ -25,6 +25,7 @@ import {
   upsertPendingStoryboardTask,
 } from './productWorkspaceRecovery'
 import type { CanvasNavigationTarget, TaskNavigateHandler } from './productWorkspaceSectionContracts'
+import { findProductionShotV2, type ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
 import {
   buildCanvasRecoveryActionLabel,
   buildCanvasRecoveryContinueActionPlan,
@@ -51,6 +52,8 @@ interface Props {
   navigationTarget: CanvasNavigationTarget | null
   onRefreshAll: () => void
   onNavigateTaskSection: TaskNavigateHandler
+  productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: 'loading' | 'ready' | 'unavailable'
 }
 
 type CanvasGraph = ReturnType<typeof buildProductWorkspaceCanvasBetaGraph>
@@ -736,6 +739,8 @@ export default function ProductWorkspaceCanvasBetaSection({
   navigationTarget,
   onRefreshAll,
   onNavigateTaskSection,
+  productionWorkspaceV2 = null,
+  productionWorkspaceV2State = 'unavailable',
 }: Props) {
   const [selectedEpisode, setSelectedEpisode] = useState<'all' | number>('all')
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
@@ -955,6 +960,10 @@ export default function ProductWorkspaceCanvasBetaSection({
     () => findSelectedShot(selectedNode, shotsByEpisode),
     [selectedNode, shotsByEpisode],
   )
+  const selectedProductionShot = useMemo(
+    () => findProductionShotV2(productionWorkspaceV2, selectedShot?.episode, selectedShot?.shot_id),
+    [productionWorkspaceV2, selectedShot?.episode, selectedShot?.shot_id],
+  )
   const selectedShotRuntime = useMemo(
     () =>
       selectedShot?.episode && selectedShot?.shot_id
@@ -994,6 +1003,9 @@ export default function ProductWorkspaceCanvasBetaSection({
         : null,
     [selectedShot?.episode, selectedShot?.shot_id, shotExecutionSummaries],
   )
+  const hasProductionImageSource = selectedProductionShot
+    ? Boolean(selectedProductionShot.IMAGE.official.current && selectedProductionShot.VIDEO.source_official_image?.current)
+    : Boolean(adoptedImage)
 
   const effectiveReferencePayload = useMemo(
     () => resolveEffectiveReferenceAssetIds(selectedShot),
@@ -1009,7 +1021,7 @@ export default function ProductWorkspaceCanvasBetaSection({
             frameRecoveryTaskId,
             videoRecoveryTaskId,
             hasCompiledPrompt: Boolean(selectedShot.visual_prompt_static?.trim()),
-            hasAdoptedFrame: Boolean(adoptedImage),
+            hasAdoptedFrame: hasProductionImageSource,
             hasAdoptedVideo: Boolean(adoptedVideo),
           })
         : null,
@@ -1019,7 +1031,9 @@ export default function ProductWorkspaceCanvasBetaSection({
       frameRecoveryTaskId,
       promptRecoveryTaskId,
       selectedShot,
+      selectedProductionShot,
       videoRecoveryTaskId,
+      hasProductionImageSource,
     ],
   )
   const navigationClosureStatus = useMemo(
@@ -1033,7 +1047,7 @@ export default function ProductWorkspaceCanvasBetaSection({
         pendingVideoTaskId: videoRecoveryTaskId,
         latestExecutionTaskId: selectedShotLatestExecutionSummary?.taskId ?? null,
         hasCompiledPrompt: Boolean(selectedShot?.visual_prompt_static?.trim()),
-        hasAdoptedFrame: Boolean(adoptedImage),
+        hasAdoptedFrame: hasProductionImageSource,
         hasAdoptedVideo: Boolean(adoptedVideo),
         hasReferenceAssets: effectiveReferenceAssetIds.length > 0,
       }),
@@ -1049,6 +1063,7 @@ export default function ProductWorkspaceCanvasBetaSection({
       selectedShotLatestExecutionSummary?.taskId,
       targetNodeId,
       videoRecoveryTaskId,
+      hasProductionImageSource,
     ],
   )
   const navigationActionPlan = useMemo(
@@ -1114,7 +1129,7 @@ export default function ProductWorkspaceCanvasBetaSection({
         closureStatusTone: navigationClosureStatus?.tone ?? null,
         hasSelectedShot: selectedRecoveryShotMatches,
         hasCompiledPrompt: Boolean(selectedShot?.visual_prompt_static?.trim()),
-        hasAdoptedFrame: Boolean(adoptedImage),
+        hasAdoptedFrame: hasProductionImageSource,
         hasAdoptedVideo: Boolean(adoptedVideo),
       }),
     [
@@ -1124,6 +1139,7 @@ export default function ProductWorkspaceCanvasBetaSection({
       navigationTarget?.recoveryKind,
       selectedRecoveryShotMatches,
       selectedShot?.visual_prompt_static,
+      hasProductionImageSource,
     ],
   )
   const navigationContinueChainMeta = useMemo(
@@ -1259,12 +1275,15 @@ export default function ProductWorkspaceCanvasBetaSection({
   )
 
   const hasAdoptedFrame = Boolean(adoptedImage)
+  const hasCurrentOfficialImage = selectedProductionShot
+    ? Boolean(selectedProductionShot.IMAGE.official.current && selectedProductionShot.VIDEO.source_official_image?.current)
+    : hasAdoptedFrame
 
   const isShotGenerationBusy = generationState === 'submitting'
   const isCompileBusy = compileState === 'submitting'
   const canGenerateFrame = Boolean(selectedShot?.episode && selectedShot?.shot_id && imageModelProfileId) && !isShotGenerationBusy
   const canGenerateVideo =
-    Boolean(selectedShot?.episode && selectedShot?.shot_id && videoModelProfileId) && hasAdoptedFrame && !isShotGenerationBusy
+    Boolean(selectedShot?.episode && selectedShot?.shot_id && videoModelProfileId) && hasCurrentOfficialImage && !isShotGenerationBusy
   const resultCount = visibleGraph.nodes.length
   const hasActiveKindFilter = activeKinds.length !== FILTERABLE_KINDS.length
   const hasActiveStatusFilter = statusFilter !== 'all'
@@ -1413,7 +1432,7 @@ export default function ProductWorkspaceCanvasBetaSection({
     promptRecompileTaskId?: string
     promptRecompileVersion?: number
   }) => {
-    if (!selectedShot?.episode || !selectedShot?.shot_id || !adoptedImage?.id) return
+    if (!selectedShot?.episode || !selectedShot?.shot_id || !hasCurrentOfficialImage) return
     if (!videoModelProfileId) {
       setGenerationState('error')
       setGenerationMessage('请先在创作画布或镜头工作台显式选择 VIDEO 生成模型。')
@@ -1443,7 +1462,7 @@ export default function ProductWorkspaceCanvasBetaSection({
             confirmed: true,
             allowExternalCall: true,
             compileIfMissing: true,
-            firstFrameAssetId: String(adoptedImage.id).trim(),
+            ...(selectedProductionShot ? {} : { firstFrameAssetId: String(adoptedImage?.id || '').trim() }),
             referenceAssetIds: effectiveReferenceAssetIds,
             generationChain: chainMeta?.generationChain ?? 'canvas_generate_video',
             triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
@@ -2236,6 +2255,19 @@ export default function ProductWorkspaceCanvasBetaSection({
                         </div>
                       </div>
                     ) : null}
+                    {productionWorkspaceV2State === 'loading' ? (
+                      <div className="mt-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-xs text-slate-400">正在读取权威生产状态…</div>
+                    ) : selectedProductionShot ? (
+                      <div className="mt-3 rounded-xl border border-violet-500/25 bg-violet-500/5 p-3">
+                        <div className="text-xs font-medium text-violet-200">Production Workspace 状态</div>
+                        <div className="mt-2 grid gap-2 md:grid-cols-3 text-xs text-slate-300">
+                          <div className="rounded-lg border border-slate-800 bg-slate-950 px-3 py-2">资产：{selectedProductionShot.asset_readiness.current ? '已就绪' : selectedProductionShot.asset_readiness.state === 'stale' ? '需要更新' : '缺少真实视觉资产'}</div>
+                          <div className="rounded-lg border border-slate-800 bg-slate-950 px-3 py-2">IMAGE：{selectedProductionShot.IMAGE.official.current ? '当前正式版本' : selectedProductionShot.IMAGE.candidates.count > 0 ? '候选待审核' : selectedProductionShot.IMAGE.prompt_ir.stale ? '需要更新' : '尚未建立'}</div>
+                          <div className="rounded-lg border border-slate-800 bg-slate-950 px-3 py-2">VIDEO：{selectedProductionShot.VIDEO.official.current ? '当前正式版本' : selectedProductionShot.VIDEO.source_official_image?.current ? '可使用当前正式图片' : '等待正式图片来源'}</div>
+                        </div>
+                        <div className="mt-2 text-[11px] text-slate-500">唯一下一步：{selectedProductionShot.next_action.label} · 状态来自后端 V2 投影，不读取浏览器缓存。</div>
+                      </div>
+                    ) : null}
                     {selectedShotRuntime.latestExecutionSummary || selectedShotRuntime.pendingTasks.length > 0 ? (
                       <div className="mt-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
                         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -2293,7 +2325,7 @@ export default function ProductWorkspaceCanvasBetaSection({
                         </div>
                       ) : null}
                       <div className="rounded-lg border border-slate-800 bg-slate-950 px-3 py-2">
-                        已采纳首帧：{hasAdoptedFrame ? '是' : '否'}
+                          {selectedProductionShot ? `当前正式图片：${selectedProductionShot.IMAGE.official.current ? '是' : '否'}` : `历史首帧记录：${hasAdoptedFrame ? '有' : '无'}`}
                       </div>
                       {frameRecoveryTaskId ? (
                         <div className="rounded-lg border border-slate-800 bg-slate-950 px-3 py-2">

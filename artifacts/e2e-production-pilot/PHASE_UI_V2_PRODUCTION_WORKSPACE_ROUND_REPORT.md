@@ -23,8 +23,10 @@
 - Added the V2 domain types, service, hook, fixture and `ProductionWorkspaceV2Panel`.
 - Integrated the standard/professional view switch into the existing ProductWorkspace shell.
 - Added independent IMAGE and VIDEO lanes, candidate versus OfficialMedia semantics, stale and unavailable states, disabled generation without an explicit model, and the 15-asset blocked entity-first cards.
+- Candidate cards now expose preview, technical validation status, `验证候选`, and `设为正式版本` through the existing `/api/media-authority` contract; no frontend acceptance/favorite truth was added.
 - Professional view exposes PromptIR, ModelProfile, execution and OfficialMedia lineage; standard view hides raw lineage identifiers.
 - Retired the production Storyboard H3 submit path and manual media upload entry point; retained legacy data as read-only historical display.
+- Batch IMAGE/VIDEO eligibility now consults the V2 snapshot when available; Canvas and Task Center show V2 projected statuses and canonical GenerationExecution summaries while retaining compatibility recovery records.
 
 ### Documentation
 
@@ -38,7 +40,7 @@
 
 | Check | Result |
 |---|---|
-| `npm test` | 52 test files / 307 tests passed |
+| `npm test` | 53 test files / 310 tests passed |
 | `npm run build` | passed; Vite production bundle generated |
 | `pytest -q tests/test_production_workspace_projection.py` | 4 passed |
 | `npm run check:production` Python deterministic regression | 1780 passed; 2039 warnings from existing baseline |

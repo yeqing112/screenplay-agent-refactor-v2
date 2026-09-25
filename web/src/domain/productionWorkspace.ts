@@ -176,6 +176,28 @@ export interface ProductionWorkspaceV2Snapshot {
   provider_calls?: number
 }
 
+export function findProductionShotV2(
+  snapshot: ProductionWorkspaceV2Snapshot | null | undefined,
+  episode: number | null | undefined,
+  shotId: string | number | null | undefined,
+): ProductionShotV2 | null {
+  if (!snapshot || episode == null || shotId == null) return null
+  return snapshot.shots.find((shot) => Number(shot.identity.episode) === Number(episode) && String(shot.identity.shot_id) === String(shotId)) ?? null
+}
+
+export function isProductionImageGenerationReady(shot: ProductionShotV2 | null | undefined): boolean {
+  if (!shot) return false
+  return shot.asset_readiness.current && shot.IMAGE.prompt_ir.current && !shot.IMAGE.official.current && shot.IMAGE.candidates.count === 0
+}
+
+export function isProductionVideoGenerationReady(shot: ProductionShotV2 | null | undefined): boolean {
+  if (!shot) return false
+  const sourceReady = shot.VIDEO.generation_mode === 'IMAGE_TO_VIDEO'
+    ? Boolean(shot.VIDEO.source_official_image?.current)
+    : shot.VIDEO.prompt_ir.current
+  return shot.asset_readiness.current && sourceReady && shot.VIDEO.prompt_ir.current && !shot.VIDEO.official.current && shot.VIDEO.candidates.count === 0
+}
+
 export interface ProductionNavigationTarget {
   section: string
   episode?: number | null

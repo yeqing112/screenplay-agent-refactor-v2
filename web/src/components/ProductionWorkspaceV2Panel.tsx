@@ -13,11 +13,13 @@ import {
 } from 'lucide-react'
 import {
   humanizeProductionState,
+  type MediaCandidateProjection,
   type ProductionMediaLane,
   type ProductionWorkspaceLoadState,
   type ProductionWorkspaceV2Snapshot,
   type ProductionWorkspaceViewMode,
 } from '../domain/productionWorkspace'
+import { promoteProductionMediaCandidate, validateProductionMediaCandidate } from '../services/productionWorkspace'
 
 interface Props {
   snapshot?: ProductionWorkspaceV2Snapshot | null
@@ -27,6 +29,7 @@ interface Props {
   onNavigateSection?: (section: 'assets' | 'storyboard') => void
   onSelectAsset?: (entityId: string) => void
   focusShotId?: string | null
+  onRefresh?: () => void
 }
 
 function StatePill({ state, label }: { state: string; label?: string }) {
@@ -73,23 +76,61 @@ function LaneSummary({ lane, target, mode, onGenerate }: { lane: ProductionMedia
   )
 }
 
-function CandidateList({ lane, mode }: { lane: ProductionMediaLane; mode: ProductionWorkspaceViewMode }) {
+function CandidateList({ lane, mode, onRefresh }: { lane: ProductionMediaLane; mode: ProductionWorkspaceViewMode; onRefresh?: () => void }) {
+  const [actionState, setActionState] = useState<Record<string, 'idle' | 'working' | 'error'>>({})
+  const [actionMessage, setActionMessage] = useState<Record<string, string>>({})
+
+  const runCandidateAction = async (candidate: MediaCandidateProjection) => {
+    const candidateId = String(candidate.id || '').trim()
+    if (!candidateId) return
+    const validationId = String(candidate.technical_validation.validation_id || '').trim()
+    const canPromote = candidate.technical_validation.status.toUpperCase() === 'PASS' && Boolean(validationId)
+    setActionState((current) => ({ ...current, [candidateId]: 'working' }))
+    setActionMessage((current) => ({ ...current, [candidateId]: '' }))
+    try {
+      if (canPromote) await promoteProductionMediaCandidate(candidateId, validationId)
+      else await validateProductionMediaCandidate(candidateId)
+      setActionState((current) => ({ ...current, [candidateId]: 'idle' }))
+      setActionMessage((current) => ({ ...current, [candidateId]: canPromote ? '已设为正式版本，正在刷新投影。' : '候选已完成技术验证，正在刷新投影。' }))
+      onRefresh?.()
+    } catch (error) {
+      setActionState((current) => ({ ...current, [candidateId]: 'error' }))
+      setActionMessage((current) => ({ ...current, [candidateId]: error instanceof Error ? error.message : '候选操作失败，请查看专业详情。' }))
+    }
+  }
+
   if (lane.candidates.items.length === 0) return <div className="mt-3 text-xs text-slate-500">暂无候选结果。生成后会先进入候选区，审核通过后才会成为正式版本。</div>
   return (
     <div className="mt-3 space-y-2">
       {lane.candidates.items.map((candidate) => (
-        <div key={candidate.id} className="rounded-md border border-amber-500/20 bg-amber-500/5 p-2.5">
+          <div key={candidate.id} className="rounded-md border border-amber-500/20 bg-amber-500/5 p-2.5">
           <div className="flex items-center justify-between gap-2"><span className="text-xs font-medium text-amber-100">候选结果</span><span className="text-[10px] text-slate-500">{candidate.technical_validation.status}</span></div>
           <div className="mt-1 text-[11px] text-slate-400">{candidate.created_at ? new Date(candidate.created_at).toLocaleString() : '生成时间未知'} · {candidate.model_profile_id || '模型未记录'}</div>
+          {candidate.preview ? <a className="mt-2 inline-block text-[11px] text-violet-200 underline" href={candidate.preview} target="_blank" rel="noreferrer">预览候选结果</a> : null}
           {mode === 'professional' ? <div className="mt-1 font-mono text-[10px] text-slate-600">candidate_id={candidate.id} · validation_id={candidate.technical_validation.validation_id || '—'}</div> : null}
           <div className="mt-2 text-[11px] text-amber-100/80">这只是候选结果，不是当前正式版本。</div>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={!onRefresh || actionState[candidate.id] === 'working' || (candidate.technical_validation.status.toUpperCase() !== 'PASS' && Boolean(candidate.technical_validation.validation_id))}
+              onClick={() => { void runCandidateAction(candidate) }}
+              className="rounded-md border border-amber-400/40 px-2.5 py-1.5 text-[11px] text-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {actionState[candidate.id] === 'working'
+                ? '处理中…'
+                : candidate.technical_validation.status.toUpperCase() === 'PASS' && candidate.technical_validation.validation_id
+                  ? '设为正式版本'
+                  : '验证候选'}
+            </button>
+            {actionMessage[candidate.id] ? <span className="text-[11px] text-slate-400">{actionMessage[candidate.id]}</span> : null}
+          </div>
         </div>
       ))}
     </div>
   )
 }
 
-function ShotCard({ shot, mode, focused }: { shot: ProductionWorkspaceV2Snapshot['shots'][number]; mode: ProductionWorkspaceViewMode; focused: boolean }) {
+function ShotCard({ shot, mode, focused, onRefresh }: { shot: ProductionWorkspaceV2Snapshot['shots'][number]; mode: ProductionWorkspaceViewMode; focused: boolean; onRefresh?: () => void }) {
   return (
     <article className={`rounded-xl border bg-slate-900 p-4 ${focused ? 'border-violet-400/60 ring-1 ring-violet-400/30' : 'border-slate-800'}`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -105,19 +146,19 @@ function ShotCard({ shot, mode, focused }: { shot: ProductionWorkspaceV2Snapshot
         <LaneSummary lane={shot.VIDEO} target="VIDEO" mode={mode} />
       </div>
       <div className="mt-3 grid gap-3 xl:grid-cols-2">
-        <CandidateList lane={shot.IMAGE} mode={mode} />
-        <CandidateList lane={shot.VIDEO} mode={mode} />
+        <CandidateList lane={shot.IMAGE} mode={mode} onRefresh={onRefresh} />
+        <CandidateList lane={shot.VIDEO} mode={mode} onRefresh={onRefresh} />
       </div>
       {mode === 'professional' ? <div className="mt-3 rounded-md border border-slate-800 bg-slate-950/40 p-2.5 font-mono text-[10px] leading-5 text-slate-600">storyboard_shot_id={shot.identity.storyboard_shot_id} · plan_shot_id={shot.identity.plan_shot_id || '—'} · scene_id={shot.scene.id || '—'}</div> : null}
     </article>
   )
 }
 
-export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mode, onNavigateSection, onSelectAsset, focusShotId }: Props) {
+export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mode, onNavigateSection, onSelectAsset, focusShotId, onRefresh }: Props) {
   const [showAllAssets, setShowAllAssets] = useState(false)
   const assets = snapshot?.assets ?? []
   const missingAssets = useMemo(() => assets.filter((asset) => !asset.media.present), [assets])
-  const visibleAssets = showAllAssets ? assets : missingAssets.slice(0, 8)
+  const visibleAssets = showAllAssets ? assets : (missingAssets.length > 0 ? missingAssets : assets).slice(0, 8)
 
   if (state === 'loading' || (!snapshot && state !== 'unavailable')) return <div className="rounded-xl border border-slate-800 bg-slate-900 p-5 text-sm text-slate-400">正在读取 Production Workspace…</div>
   if (state === 'unavailable' || !snapshot) return <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-5 text-sm text-rose-100"><div className="font-medium">Production Workspace 暂时不可用</div><div className="mt-2 text-xs text-rose-100/80">{error || '请刷新后重试。不会用浏览器缓存替代权威生产状态。'}</div></div>
@@ -136,11 +177,20 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
 
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
         <div className="flex flex-wrap items-start justify-between gap-3"><div><div className="text-sm font-semibold text-white">资产准备</div><div className="mt-1 text-xs text-slate-400">实体优先 · {assets.length} 个 Production Assets · {missingAssets.length} 个缺少真实视觉资产</div></div><Info className="h-4 w-4 text-slate-500" /></div>
-        {missingAssets.length > 0 ? <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">{visibleAssets.map((asset) => <button key={asset.entity_id} type="button" onClick={() => { onSelectAsset?.(asset.entity_id); onNavigateSection?.('assets') }} className="rounded-lg border border-slate-800 bg-slate-950/50 p-3 text-left hover:border-violet-400/40"><div className="flex items-center justify-between gap-2"><span className="truncate text-sm font-medium text-white">{asset.entity_id}</span><StatePill state="blocked" label="缺少真实视觉资产" /></div><div className="mt-1 text-[11px] text-slate-500">{asset.asset_type} · {asset.bindings.length > 0 ? `影响镜头：${asset.bindings.map((binding) => String(binding.storyboard_shot_id ?? '')).filter(Boolean).join('、')}` : '当前没有生产绑定'}</div><div className="mt-2 text-[11px] text-violet-200">选择实体并上传绑定 →</div></button>)}</div> : <div className="mt-4 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-sm text-emerald-100">所有当前实体都有可用媒体投影。</div>}
-        {missingAssets.length > 8 ? <button type="button" onClick={() => setShowAllAssets((value) => !value)} className="mt-3 text-xs text-violet-200 hover:text-white">{showAllAssets ? '收起资产' : `查看全部 ${missingAssets.length} 个缺失资产`}</button> : null}
+        {visibleAssets.length > 0 ? <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">{visibleAssets.map((asset) => {
+          const state = !asset.media.present ? 'blocked' : asset.stale_status.toUpperCase() === 'STALE' ? 'stale' : 'ready'
+          const label = !asset.media.present ? '缺少真实视觉资产' : state === 'stale' ? '需要更新' : '当前有效'
+          return <button key={asset.entity_id} type="button" onClick={() => { onSelectAsset?.(asset.entity_id); onNavigateSection?.('assets') }} className="rounded-lg border border-slate-800 bg-slate-950/50 p-3 text-left hover:border-violet-400/40">
+            {asset.media.storage_identity ? <img src={asset.media.storage_identity} alt={`${asset.entity_id} 当前媒体预览`} className="mb-2 h-20 w-full rounded object-cover" /> : null}
+            <div className="flex items-center justify-between gap-2"><span className="truncate text-sm font-medium text-white">{asset.entity_id}</span><StatePill state={state} label={label} /></div>
+            <div className="mt-1 text-[11px] text-slate-500">{asset.asset_type} · 绑定 {asset.bindings.length} 个镜头 · {asset.current_version_id ? `版本 ${asset.current_version_id}` : '尚无正式版本'}</div>
+            <div className="mt-2 text-[11px] text-violet-200">{asset.media.present ? '查看实体详情与绑定 →' : '选择实体并上传绑定 →'}</div>
+          </button>
+        })}</div> : <div className="mt-4 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-sm text-emerald-100">当前没有 Production Asset 记录。</div>}
+        {((missingAssets.length > 8) || (missingAssets.length === 0 && assets.length > 8)) ? <button type="button" onClick={() => setShowAllAssets((value) => !value)} className="mt-3 text-xs text-violet-200 hover:text-white">{showAllAssets ? '收起资产' : missingAssets.length > 0 ? `查看全部 ${missingAssets.length} 个缺失资产` : `查看全部 ${assets.length} 个资产`}</button> : null}
       </div>
 
-      <div className="space-y-3"><div className="flex items-center justify-between gap-3"><div><div className="text-sm font-semibold text-white">镜头生产</div><div className="mt-1 text-xs text-slate-500">IMAGE 与 VIDEO 是两条独立泳道；候选结果不会自动成为正式版本。</div></div><CircleDashed className="h-4 w-4 text-slate-500" /></div>{snapshot.shots.length > 0 ? snapshot.shots.map((shot) => <ShotCard key={`${shot.identity.episode}-${shot.identity.storyboard_shot_id}`} shot={shot} mode={mode} focused={String(shot.identity.shot_id) === String(focusShotId ?? '')} />) : <div className="rounded-xl border border-dashed border-slate-700 bg-slate-900 p-5 text-sm text-slate-400">当前投影还没有可展示的镜头。</div>}</div>
+      <div className="space-y-3"><div className="flex items-center justify-between gap-3"><div><div className="text-sm font-semibold text-white">镜头生产</div><div className="mt-1 text-xs text-slate-500">IMAGE 与 VIDEO 是两条独立泳道；候选结果不会自动成为正式版本。</div></div><CircleDashed className="h-4 w-4 text-slate-500" /></div>{snapshot.shots.length > 0 ? snapshot.shots.map((shot) => <ShotCard key={`${shot.identity.episode}-${shot.identity.storyboard_shot_id}`} shot={shot} mode={mode} focused={String(shot.identity.shot_id) === String(focusShotId ?? '')} onRefresh={onRefresh} />) : <div className="rounded-xl border border-dashed border-slate-700 bg-slate-900 p-5 text-sm text-slate-400">当前投影还没有可展示的镜头。</div>}</div>
     </section>
   )
 }

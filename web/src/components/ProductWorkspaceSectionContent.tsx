@@ -132,6 +132,7 @@ export default function ProductWorkspaceSectionContent({
             error={dashboard.productionWorkspaceV2Error}
             mode={dashboard.workspaceViewMode}
             onNavigateSection={dashboard.onNavigateSection}
+            onRefresh={dashboard.onRefreshAll}
           />
           <div className="mt-6">
             <ProductWorkspaceDashboardSection
@@ -257,6 +258,7 @@ export default function ProductWorkspaceSectionContent({
             mode={storyboard.workspaceViewMode}
             focusShotId={storyboard.selectedStoryboardShotId}
             onNavigateSection={storyboard.onNavigateSection}
+            onRefresh={storyboard.onRefreshAll}
           />
           <CanvasHandoffBanner handoff={storyboard.canvasHandoff} />
           <ProductWorkspaceStoryboardSection
@@ -294,6 +296,8 @@ export default function ProductWorkspaceSectionContent({
           navigationTarget={canvas.navigationTarget}
           onRefreshAll={canvas.onRefreshAll}
           onNavigateTaskSection={canvas.onNavigateTaskSection}
+          productionWorkspaceV2={canvas.productionWorkspaceV2}
+          productionWorkspaceV2State={canvas.productionWorkspaceV2State}
         />
       ) : null}
 
@@ -306,6 +310,7 @@ export default function ProductWorkspaceSectionContent({
             mode={assets.workspaceViewMode}
             onNavigateSection={assets.onNavigateSection}
             onSelectAsset={assets.onSelectAsset}
+            onRefresh={assets.onRefreshAll}
           />
           <CanvasHandoffBanner handoff={assets.canvasHandoff} />
           <ProductWorkspaceAssetsSection
@@ -390,6 +395,8 @@ export default function ProductWorkspaceSectionContent({
           onNavigate={tasks.onNavigateTaskSection}
           productionWorkspace={tasks.productionWorkspace}
           productionWorkspaceState={tasks.productionWorkspaceState}
+          productionWorkspaceV2={tasks.productionWorkspaceV2}
+          productionWorkspaceV2State={tasks.productionWorkspaceV2State}
         />
       ) : null}
 

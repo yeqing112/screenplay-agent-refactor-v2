@@ -1,4 +1,10 @@
 import type { StoryboardShotOutput } from '../domain/bookOutputs'
+import {
+  findProductionShotV2,
+  isProductionImageGenerationReady,
+  isProductionVideoGenerationReady,
+  type ProductionWorkspaceV2Snapshot,
+} from '../domain/productionWorkspace'
 import type { PendingStoryboardTask } from './productWorkspaceRecovery'
 import { upsertPendingStoryboardTask, removePendingStoryboardTask } from './productWorkspaceRecovery'
 import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTasks'
@@ -41,6 +47,7 @@ type ExecuteBatchTaskActionOptions = {
   ) => Promise<CreativeTaskPayload | { status: 'soft_timeout'; task_id: string }>
   imageModelProfileId?: string | null
   videoModelProfileId?: string | null
+  productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
 }
 
 export function batchActionLabel(action: BatchTaskAction) {
@@ -81,6 +88,14 @@ export function findAdoptedMediaAsset(
 
 export function getShotReferenceAssetIds(shot: StoryboardShotOutput) {
   return resolveEffectiveReferenceAssetIds(shot).assetIds
+}
+
+export function isProductionBatchImageEligible(snapshot: ProductionWorkspaceV2Snapshot | null | undefined, episode: number, shotId: string | number) {
+  return isProductionImageGenerationReady(findProductionShotV2(snapshot, episode, shotId))
+}
+
+export function isProductionBatchVideoEligible(snapshot: ProductionWorkspaceV2Snapshot | null | undefined, episode: number, shotId: string | number) {
+  return isProductionVideoGenerationReady(findProductionShotV2(snapshot, episode, shotId))
 }
 
 export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOptions): Promise<BatchTaskExecutionResult> {
@@ -201,7 +216,10 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
 
     const executableShots = Object.entries(shotsByEpisode).flatMap(([episode, shots]) =>
       shots
-        .filter((shot) => !hasGeneratedFrame(shot))
+        .filter((shot) => {
+          const projection = findProductionShotV2(options.productionWorkspaceV2, Number(episode), shot.shot_id)
+          return projection ? isProductionBatchImageEligible(options.productionWorkspaceV2, Number(episode), shot.shot_id) : !hasGeneratedFrame(shot)
+        })
         .filter((shot) => !runningFrameKeys.has(`${Number(episode)}:${String(shot.shot_id)}`))
         .map((shot) => ({ episode: Number(episode), shotId: String(shot.shot_id) })),
     )
@@ -296,18 +314,20 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
     const executableShots = Object.entries(shotsByEpisode).flatMap(([episode, shots]) =>
       shots
         .map((shot) => {
-          const adoptedImage = findAdoptedMediaAsset(shot.assets?.images)
-          const adoptedImagePreviewUrl = String(adoptedImage?.previewUrl || adoptedImage?.uri || '').trim()
+          const projection = findProductionShotV2(options.productionWorkspaceV2, Number(episode), shot.shot_id)
+          const adoptedImage = projection ? null : findAdoptedMediaAsset(shot.assets?.images)
+          const officialImage = projection?.IMAGE.official.current ? projection.IMAGE.official.version : null
           return {
             episode: Number(episode),
             shotId: String(shot.shot_id),
-            firstFrameAssetId: String(adoptedImage?.id || '').trim(),
-            firstFrameUrl: adoptedImagePreviewUrl,
+            firstFrameAssetId: String(officialImage?.id || adoptedImage?.id || '').trim(),
+            firstFrameUrl: String(officialImage?.storage_identity || adoptedImage?.previewUrl || adoptedImage?.uri || '').trim(),
             referenceAssetIds: getShotReferenceAssetIds(shot),
-            hasVideo: hasGeneratedVideo(shot),
+            hasVideo: projection ? !isProductionVideoGenerationReady(projection) : hasGeneratedVideo(shot),
+            projection,
           }
         })
-        .filter((shot) => shot.firstFrameAssetId && shot.firstFrameUrl && !shot.hasVideo)
+        .filter((shot) => shot.projection ? isProductionBatchVideoEligible(options.productionWorkspaceV2, shot.episode, shot.shotId) : Boolean(shot.firstFrameAssetId && shot.firstFrameUrl && !shot.hasVideo))
         .filter((shot) => !runningVideoKeys.has(`${shot.episode}:${shot.shotId}`)),
     )
 
@@ -329,8 +349,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
           confirmed: true,
           allowExternalCall: true,
           compileIfMissing: true,
-          firstFrameAssetId: target.firstFrameAssetId,
-          referenceAssetIds: target.referenceAssetIds,
+          ...(target.projection ? {} : { firstFrameAssetId: target.firstFrameAssetId, referenceAssetIds: target.referenceAssetIds }),
         }),
       })
 

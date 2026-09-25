@@ -148,6 +148,7 @@ export interface DashboardBundle {
   dashboardActions: DashboardAction[]
   episodeProgress: EpisodeProgress[]
   onNavigateSection: (section: WorkspaceSection) => void
+  onRefreshAll: () => void
   onNavigateTarget: (target: import('../domain/productionWorkspace').ProductionNavigationTarget) => void
   productionWorkspace: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
@@ -316,6 +317,8 @@ export interface CanvasBundle {
   navigationTarget: CanvasNavigationTarget | null
   onRefreshAll: () => void
   onNavigateTaskSection: TaskNavigateHandler
+  productionWorkspaceV2: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
 }
 
 export interface QaBundle {
@@ -346,6 +349,8 @@ export interface TasksBundle {
   onNavigateTaskSection: TaskNavigateHandler
   productionWorkspace: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceV2: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
 }
 
 export interface DeliveryBundle {

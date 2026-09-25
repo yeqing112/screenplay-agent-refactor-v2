@@ -65,7 +65,7 @@ import TaskCenterOverviewPanel from './productWorkspaceTaskCenterOverviewPanel'
 import TaskCenterSelectedTaskPanel from './productWorkspaceTaskCenterSelectedTaskPanel'
 import { fetchAgentTimeline, reconcileAgentProjectUpdates } from '../services/agent'
 import { buildAgentTaskCenterEntries } from './productWorkspaceAgentTasks'
-import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
@@ -86,6 +86,8 @@ interface Props {
   ) => void
   productionWorkspace?: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
 }
 
 type TaskActionState = {
@@ -148,6 +150,8 @@ export default function ProductWorkspaceTasksSection({
   onNavigate,
   productionWorkspace = null,
   productionWorkspaceState,
+  productionWorkspaceV2 = null,
+  productionWorkspaceV2State,
 }: Props) {
   const [workflowBucket, setWorkflowBucket] = useState<TaskCenterWorkflowBucket>('attention')
   const [statusFilter, setStatusFilter] = useState<'all' | TaskCenterStatus>('all')
@@ -165,6 +169,17 @@ export default function ProductWorkspaceTasksSection({
   const [qaWorkbenchEpisodes, setQaWorkbenchEpisodes] = useState<TaskCenterQaWorkbenchEpisodeSummary[]>([])
   const [batchRunRecords, setBatchRunRecords] = useState<Record<string, BatchRunRecord[]>>({})
   const [agentEntries, setAgentEntries] = useState<TaskCenterEntry[]>([])
+
+  const productionExecutionSummary = useMemo(() => {
+    const shots = productionWorkspaceV2?.shots ?? []
+    const executions = shots.flatMap((shot) => [shot.IMAGE.latest_execution, shot.VIDEO.latest_execution]).filter(Boolean)
+    const candidates = shots.reduce((total, shot) => total + shot.IMAGE.candidates.count + shot.VIDEO.candidates.count, 0)
+    return {
+      executionCount: executions.length,
+      runningCount: executions.filter((item) => ['RUNNING', 'QUEUED', 'PREVIEWED'].includes(String(item?.state || '').toUpperCase())).length,
+      candidateCount: candidates,
+    }
+  }, [productionWorkspaceV2])
 
   const openPreview = useCallback((url: string, title: string) => {
     if (!url) return
@@ -578,6 +593,7 @@ export default function ProductWorkspaceTasksSection({
         qaWorkbenchEpisodes,
         fetchTaskStatus: fetchStoryboardRecoveryTaskStatus as any,
         waitForCreativeTask,
+        productionWorkspaceV2,
         ...readExplicitGenerationProfileSelection(),
       })
 
@@ -902,6 +918,17 @@ export default function ProductWorkspaceTasksSection({
   return (
     <div>
       <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} title="任务与生产阻塞" />
+      <div className="mb-4 rounded-xl border border-violet-500/20 bg-violet-500/5 px-4 py-3 text-xs text-slate-300">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="font-medium text-violet-100">Canonical GenerationExecution</span>
+          <span className="text-slate-500">{productionWorkspaceV2State === 'loading' ? '正在同步权威状态…' : productionWorkspaceV2State === 'ready' ? '来自 Production Workspace V2' : '权威执行投影暂不可用'}</span>
+        </div>
+        <div className="mt-2 flex flex-wrap gap-3 text-slate-400">
+          <span>最近执行 {productionExecutionSummary.executionCount}</span>
+          <span>进行中 {productionExecutionSummary.runningCount}</span>
+          <span>候选待审核 {productionExecutionSummary.candidateCount}</span>
+        </div>
+      </div>
       <div className="grid gap-6 xl:grid-cols-[0.95fr_minmax(0,1.2fr)_0.95fr]">
       <TaskCenterListPanel
         workflowBucket={workflowBucket}

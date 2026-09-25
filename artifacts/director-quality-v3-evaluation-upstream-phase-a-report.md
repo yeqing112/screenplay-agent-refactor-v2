@@ -4,11 +4,11 @@
 
 ## Baseline Audit
 
-- Historical expected HEAD: `63c93d6e1f78a4777fff9c3e329f5eeb723846eb`; resolved execution base: `2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779` (`REBASELINED`); observed `bd7db4cd4205081090f0d812f669621952152471`.
+- Historical expected HEAD: `63c93d6e1f78a4777fff9c3e329f5eeb723846eb`; resolved execution base: `2c2e3bc4649b2e6d0bb50ac3ed697c73da9bf779` (`REBASELINED`); observed `a7e6f4920295ca796e548b2422d2f2291b416a62`.
 - Remote `origin/codex/unify-formal-workspace`: `10962c9fd3a0e2dd8445c6fe37f6aa76aaa7e174`.
 - Immutable source package: `SRC79f12d1b7f5eb828` / `SRC79f12d1b7f5eb828:V01:d001bab5cc82`.
 - Raw hash verification: `PASS`; provenance: `PASS`.
-- Working tree dirty entries: `26`; no files were reset, stashed, deleted or overwritten.
+- Working tree dirty entries: `15`; no files were reset, stashed, deleted or overwritten.
 
 ## Final As-Built Verification
 

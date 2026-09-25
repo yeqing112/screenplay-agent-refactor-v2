@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { productionWorkspaceV2Fixture } from '../fixtures/productionWorkspaceV2'
 import ProductionWorkspaceV2Panel from '../components/ProductionWorkspaceV2Panel'
@@ -6,12 +6,36 @@ import {
   normalizeProductionWorkspaceV2Snapshot,
   validateProductionWorkspaceV2Snapshot,
 } from './productionWorkspace'
+import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
 
 describe('production workspace V2 contract', () => {
   it('does not require provider_calls to render a V2 projection', () => {
     const payload = { ...productionWorkspaceV2Fixture, provider_calls: 4 }
     expect(validateProductionWorkspaceV2Snapshot(payload)).toEqual([])
     expect(normalizeProductionWorkspaceV2Snapshot(payload, 990401).book_id).toBe(990401)
+  })
+
+  it('restores the authoritative V2 snapshot after browser recovery caches are cleared', async () => {
+    const clear = vi.fn()
+    vi.stubGlobal('localStorage', { clear })
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ ...productionWorkspaceV2Fixture, provider_calls: 9 }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    globalThis.localStorage.clear()
+    const snapshot = await fetchProductionWorkspaceV2(990401)
+
+    expect(clear).toHaveBeenCalledOnce()
+    expect(fetchMock).toHaveBeenCalledWith('/api/books/990401/production-workspace-v2')
+    expect(snapshot.book_id).toBe(990401)
+    expect(snapshot.legacy_adopted_is_display_only).toBe(true)
+    expect(snapshot.shots[0].asset_readiness.state).toBe('blocked')
   })
 
   it('keeps the standard view focused on state and hides raw lineage ids', () => {
@@ -65,6 +89,25 @@ describe('production workspace V2 contract', () => {
     expect(html).toContain('当前正式版本')
     expect(html).toContain('视频来源：当前正式图片')
     expect(html).toContain('这只是候选结果，不是当前正式版本。')
+  })
+
+  it('exposes only the canonical validation or promotion action for a candidate', () => {
+    const shot = productionWorkspaceV2Fixture.shots[0]
+    const candidate = {
+      id: 'candidate-image-review', state: 'MEDIA_CANDIDATE', preview: null, created_at: null, model_profile_id: 'image-profile',
+      technical_validation: { status: 'PASS', validation_id: 'validation-review', mime: 'image/png', width: 1024, height: 576, duration_ms: null, details: {} }, checksum: 'sha', storage_identity: null,
+    }
+    const html = renderToStaticMarkup(
+      <ProductionWorkspaceV2Panel
+        snapshot={{ ...productionWorkspaceV2Fixture, shots: [{ ...shot, IMAGE: { ...shot.IMAGE, candidates: { count: 1, latest: candidate, items: [candidate] } } }] }}
+        state="ready"
+        mode="standard"
+        onRefresh={() => undefined}
+      />,
+    )
+    expect(html).toContain('设为正式版本')
+    expect(html).not.toContain('accepted=true')
+    expect(html).not.toContain('favorite=true')
   })
 
   it('labels stale prompt state as needing an update', () => {

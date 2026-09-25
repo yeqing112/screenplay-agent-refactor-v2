@@ -176,6 +176,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         dashboardActions: params.dashboardActions,
         episodeProgress: params.episodeProgress,
         onNavigateSection: params.onNavigateSection,
+        onRefreshAll: params.onRefreshAll,
         onNavigateTarget: (target: ProductionNavigationTarget) => {
           const section = String(target.section || '') as WorkspaceSection
           if (section === 'dashboard') {
@@ -291,6 +292,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         navigationTarget: params.canvasNavigationTarget,
         onRefreshAll: params.onRefreshAll,
         onNavigateTaskSection: params.onNavigateTaskSection,
+        productionWorkspaceV2: params.productionWorkspaceV2,
+        productionWorkspaceV2State: params.productionWorkspaceV2State,
       },
       assets: {
         bookId: params.bookId,
@@ -368,6 +371,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onNavigateTaskSection: params.onNavigateTaskSection,
         productionWorkspace: params.productionWorkspace,
         productionWorkspaceState: params.productionWorkspaceState,
+        productionWorkspaceV2: params.productionWorkspaceV2,
+        productionWorkspaceV2State: params.productionWorkspaceV2State,
       },
       delivery: {
         bookId: params.bookId,
