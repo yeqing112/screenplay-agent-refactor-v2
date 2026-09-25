@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { productionWorkspaceV2Fixture } from '../fixtures/productionWorkspaceV2'
 import {
+  executeBatchTaskAction,
   isProductionBatchImageEligible,
   isProductionBatchVideoEligible,
 } from './productWorkspaceBatchActions'
@@ -24,5 +25,39 @@ describe('V2 batch eligibility', () => {
     }
     expect(isProductionBatchImageEligible(ready, 1, '1')).toBe(false)
     expect(isProductionBatchVideoEligible(ready, 1, '1')).toBe(true)
+  })
+
+  it('fails closed without a V2 snapshot before issuing IMAGE generation requests', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch')
+    await expect(executeBatchTaskAction({
+      action: 'batch-generate-frames',
+      bookId: 990401,
+      shotsByEpisode: { 1: [{ episode: 1, shot_id: '1' } as any] },
+      pendingTasks: [],
+      qaWorkbenchEpisodes: [],
+      fetchTaskStatus: async () => ({ status: 'done' } as any),
+      waitForCreativeTask: async () => ({ status: 'done' } as any),
+      imageModelProfileId: 'image-profile',
+      productionWorkspaceV2: null,
+    })).rejects.toThrow('生产状态暂时不可用')
+    expect(fetchSpy).not.toHaveBeenCalled()
+    fetchSpy.mockRestore()
+  })
+
+  it('fails closed without a V2 snapshot before issuing VIDEO generation requests', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch')
+    await expect(executeBatchTaskAction({
+      action: 'batch-generate-videos',
+      bookId: 990401,
+      shotsByEpisode: { 1: [{ episode: 1, shot_id: '1' } as any] },
+      pendingTasks: [],
+      qaWorkbenchEpisodes: [],
+      fetchTaskStatus: async () => ({ status: 'done' } as any),
+      waitForCreativeTask: async () => ({ status: 'done' } as any),
+      videoModelProfileId: 'video-profile',
+      productionWorkspaceV2: null,
+    })).rejects.toThrow('生产状态暂时不可用')
+    expect(fetchSpy).not.toHaveBeenCalled()
+    fetchSpy.mockRestore()
   })
 })

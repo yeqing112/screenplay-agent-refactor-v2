@@ -375,6 +375,8 @@ export interface DeliveryBundle {
   props: VisualPropOutput[]
   canvasHandoff: CanvasHandoffTarget | null
   onNavigateTaskSection: TaskNavigateHandler
+  productionWorkspaceV2: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
 }
 
 export interface PreviewBundle {

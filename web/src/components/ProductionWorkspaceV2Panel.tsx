@@ -61,6 +61,7 @@ function LaneSummary({ lane, target, mode, onGenerate, selectedProfileId, action
         <div><div className="text-slate-600">正式版本</div><div className="mt-1 text-slate-200">{official ? '当前正式版本' : '尚未建立'}</div></div>
       </div>
       {target === 'VIDEO' ? <div className="mt-3 rounded-md border border-slate-800 bg-slate-900/60 px-2.5 py-2 text-xs text-slate-400">视频来源：{lane.source_official_image?.current ? '当前正式图片' : lane.generation_mode === 'IMAGE_TO_VIDEO' ? '等待当前正式图片' : lane.generation_mode === 'TEXT_TO_VIDEO' ? '文本生成' : '等待当前 VIDEO PromptIR'}</div> : null}
+      {official && lane.official.preview_url ? <a className="mt-2 inline-block text-[11px] text-emerald-200 underline" href={lane.official.preview_url} target="_blank" rel="noreferrer">预览当前正式版本</a> : null}
       <div className="mt-3 flex items-center justify-between gap-2">
         <span className="text-[11px] text-slate-500">{selectedProfileId ? `本次选择：${selectedProfileId}` : '请选择已配置的生成模型'}{lane.model.last_execution_profile_id ? ` · 上次执行：${lane.model.last_execution_profile_id}` : ''}</span>
         <button type="button" disabled={!onGenerate || !selectedProfileId || (lane.generation_readiness ? !lane.generation_readiness.ready : (!lane.prompt_ir.current || official))} onClick={onGenerate} className="rounded-md border border-slate-700 px-2.5 py-1.5 text-[11px] text-slate-300 disabled:cursor-not-allowed disabled:opacity-50">{target === 'IMAGE' ? '生成图片' : '生成视频'}</button>
@@ -72,9 +73,11 @@ function LaneSummary({ lane, target, mode, onGenerate, selectedProfileId, action
           <summary className="flex cursor-pointer list-none items-center justify-between text-[11px] text-slate-400"><span>查看专业链路</span><ChevronDown className="h-3.5 w-3.5" /></summary>
           <div className="mt-2 space-y-1 font-mono text-[10px] leading-5 text-slate-500">
             <div>PromptIR: {String(lane.prompt_ir.version ?? '—')} · {lane.prompt_ir.payload_hash || 'no hash'}</div>
+            {target === 'VIDEO' ? <div>GenerationMode: {lane.generation_mode || '—'} · source={lane.generation_mode_source || '—'}</div> : null}
             <div>ModelProfile: {lane.model.selected_profile_id || '未显式选择'}</div>
             <div>Execution: {lane.latest_execution?.id || '—'} · {lane.latest_execution?.state || '—'}</div>
             <div>OfficialMedia: {lane.official.version?.id || '—'} · {lane.official.authority?.id || '—'}</div>
+            <div>Official currentness: {lane.official.currentness}</div>
           </div>
         </details>
       ) : null}
@@ -219,7 +222,7 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
             {asset.media.preview_url ? <img src={asset.media.preview_url} alt={`${asset.entity_id} 当前媒体预览`} className="mb-2 h-20 w-full rounded object-cover" /> : null}
             <div className="flex items-center justify-between gap-2"><span className="truncate text-sm font-medium text-white">{asset.entity_id}</span><StatePill state={state} label={label} /></div>
             <div className="mt-1 text-[11px] text-slate-500">{asset.asset_type} · 绑定 {asset.bindings.length} 个镜头 · {asset.current_version_id ? `版本 ${asset.current_version_id}` : '尚无正式版本'}</div>
-            <div className="mt-2 text-[11px] text-violet-200">{asset.media.present ? '查看实体详情与绑定 →' : '选择实体并上传绑定 →'}</div>
+            <div className="mt-2 text-[11px] text-violet-200">{asset.media.present ? '查看实体详情与绑定 →' : '查看实体与正式摄取阻塞 →'}</div>
           </button>
         })}</div> : <div className="mt-4 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-sm text-emerald-100">当前没有 Production Asset 记录。</div>}
         {((missingAssets.length > 8) || (missingAssets.length === 0 && assets.length > 8)) ? <button type="button" onClick={() => setShowAllAssets((value) => !value)} className="mt-3 text-xs text-violet-200 hover:text-white">{showAllAssets ? '收起资产' : missingAssets.length > 0 ? `查看全部 ${missingAssets.length} 个缺失资产` : `查看全部 ${assets.length} 个资产`}</button> : null}

@@ -38,6 +38,23 @@ describe('production workspace V2 contract', () => {
     expect(snapshot.shots[0].asset_readiness.state).toBe('blocked')
   })
 
+  it('integrates backend response normalization into the V2 panel render', async () => {
+    const readyShot = {
+      ...productionWorkspaceV2Fixture.shots[0],
+      asset_readiness: { ...productionWorkspaceV2Fixture.shots[0].asset_readiness, state: 'ready', current: true, missing: [], stale: [] },
+      IMAGE: {
+        ...productionWorkspaceV2Fixture.shots[0].IMAGE,
+        prompt_ir: { ...productionWorkspaceV2Fixture.shots[0].IMAGE.prompt_ir, current: true, state: 'complete' },
+        generation_readiness: { ready: true, reason_codes: [], primary_blocker: null, blockers: [] },
+      },
+    }
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ...productionWorkspaceV2Fixture, shots: [readyShot] }) }))
+    const snapshot = await fetchProductionWorkspaceV2(990401, { imageModelProfileId: 'image-profile' })
+    const html = renderToStaticMarkup(<ProductionWorkspaceV2Panel snapshot={snapshot} state="ready" mode="standard" imageModelProfileId="image-profile" />)
+    expect(globalThis.fetch).toHaveBeenCalledWith('/api/books/990401/production-workspace-v2?image_model_profile_id=image-profile')
+    expect(html).toContain('>生成图片</button>')
+  })
+
   it('keeps the standard view focused on state and hides raw lineage ids', () => {
     const html = renderToStaticMarkup(<ProductionWorkspaceV2Panel snapshot={productionWorkspaceV2Fixture} state="ready" mode="standard" />)
     expect(html).toContain('缺少真实视觉资产')

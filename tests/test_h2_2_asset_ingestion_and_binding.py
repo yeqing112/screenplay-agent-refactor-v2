@@ -4,6 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -13,7 +14,9 @@ from core.production_asset_authority import (
     bind_shot_assets,
     ingest_production_asset,
     resolve_shot_assets,
+    production_asset_media_readiness,
 )
+from core.production_workspace_projection_v2 import _asset_readiness
 from models import ShotAssetBinding, StoryboardShot
 from scripts.verify_migration_chain import _upgrade
 
@@ -120,6 +123,42 @@ def test_resolver_rejects_missing_formal_binding(tmp_path):
             resolve_shot_assets(session, storyboard_shot_id=session.query(StoryboardShot).one().id)
         assert exc.value.status_code == 409
         assert exc.value.code == "ASSET_BINDING_INVALID"
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_v2_asset_readiness_rejects_fixture_media_and_missing_exact_entity(tmp_path):
+    engine, session = _session(tmp_path)
+    try:
+        shot = session.query(StoryboardShot).one()
+        shot.asset_links = json.dumps({
+            "canonical_asset_identity": {
+                "scene": "E01_SC001",
+                "characters": ["LIN_WAN", "GU_CHEN"],
+                "props": ["RED_UMBRELLA"],
+            }
+        })
+        lin_wan = ingest_production_asset(session, entity_type="CHARACTER", entity_id="LIN_WAN", source=_source("lin-wan"))
+        scene = ingest_production_asset(session, entity_type="SCENE", entity_id="E01_SC001", source=_source("scene"))
+        prop = ingest_production_asset(session, entity_type="PROP", entity_id="RED_UMBRELLA", source=_source("umbrella"))
+        bind_shot_assets(
+            session,
+            storyboard_shot_id=shot.id,
+            characters=[{"authority_id": lin_wan["authority_id"], "version_id": lin_wan["version_id"]}],
+            scene={"authority_id": scene["authority_id"], "version_id": scene["version_id"]},
+            props=[{"authority_id": prop["authority_id"], "version_id": prop["version_id"]}],
+        )
+        session.commit()
+
+        readiness = _asset_readiness(session, shot_id=shot.id, book_id=990401)
+        assert readiness["current"] is False
+        assert "CHARACTER:GU_CHEN" in readiness["missing"]
+        assert "CHARACTER:LIN_WAN" in readiness["missing"]
+        assert production_asset_media_readiness(
+            storage_identity="pilot://episode-01/character/LIN_WAN/v1",
+            checksum="sha256:fixture",
+        ).present is False
     finally:
         session.close()
         engine.dispose()

@@ -434,15 +434,26 @@ def _asset_projection(session: Any, *, base_assets: list[dict[str, Any]], book_i
             pointer = session.query(pointer_model).filter_by(**{entity_field: entity_id, "authority_id": authority_id}).first()
             media = {"present": False, "storage_identity": None, "checksum": None, "mime": None, "width": None, "height": None, "preview_url": None}
             if version is not None:
-                from core.production_asset_authority import production_asset_media_readiness
+                from core.production_asset_authority import _pointer_fingerprint, production_asset_media_readiness
 
                 ready = production_asset_media_readiness(storage_identity=version.storage_identity, checksum=version.checksum)
-                media = {"present": bool(ready.present and _text(getattr(authority, "status", "")).upper() == "ACTIVE" and _text(getattr(version, "status", "")).upper() == "CURRENT" and pointer is not None and _text(getattr(pointer, "version_id", "")) == _text(getattr(version, "version_id", ""))), "storage_identity": _text(getattr(version, "storage_identity", "")) or None, "checksum": _text(getattr(version, "checksum", "")) or None, "mime": None, "width": None, "height": None, "preview_url": _preview_url(getattr(version, "storage_identity", "")), "readiness": ready.to_dict()}
+                pointer_exact = bool(
+                    pointer is not None
+                    and _text(getattr(pointer, "authority_id", "")) == authority_id
+                    and _text(getattr(pointer, "version_id", "")) == _text(getattr(version, "version_id", ""))
+                    and _text(getattr(pointer, "fingerprint", "")) == _pointer_fingerprint(
+                        entity_id=entity_id,
+                        authority_id=authority_id,
+                        version_id=str(getattr(version, "version_id", "")),
+                    )
+                )
+                media = {"present": bool(ready.present and _text(getattr(authority, "status", "")).upper() == "ACTIVE" and _text(getattr(version, "status", "")).upper() == "CURRENT" and _text(getattr(authority, "current_version_id", "")) == _text(getattr(version, "version_id", "")) and pointer_exact), "storage_identity": _text(getattr(version, "storage_identity", "")) or None, "checksum": _text(getattr(version, "checksum", "")) or None, "mime": None, "width": None, "height": None, "preview_url": _preview_url(getattr(version, "storage_identity", "")), "readiness": ready.to_dict() | {"pointer_exact": pointer_exact}}
             item = by_key.setdefault((kind, entity_id), {"asset_key": f"book:{book_id}:{kind.lower()}:{entity_id}", "asset_type": kind.lower()})
             row_bindings = binding_by_authority.get(authority_id, [])
-            current_count = sum(1 for row in row_bindings if _text(row.status).upper() == "ACTIVE" and version and _text(row.version_id) == _text(getattr(version, "version_id", "")))
-            stale_count = sum(1 for row in row_bindings if _text(row.status).upper() != "ACTIVE" or not version or _text(row.version_id) != _text(getattr(version, "version_id", "")))
-            item.update({"entity_id": entity_id, "asset_type": kind, "current_version_id": _text(getattr(version, "version_id", "")) or None, "revision": getattr(version, "revision", None) if version else None, "authority_status": _text(getattr(authority, "status", "")) or None, "stale_status": "FRESH" if media["present"] else "STALE", "reference_state": item.get("reference_state", "needs_action"), "reference_count": int(item.get("reference_count", 0) or 0), "locked_reference": bool(item.get("locked_reference", False)), "media": media, "bindings": [{"storyboard_shot_id": int(row.storyboard_shot_id), "authority_id": _text(row.authority_id), "version_id": _text(row.version_id), "status": _text(row.status) or "ACTIVE", "current": bool(version and _text(row.version_id) == _text(getattr(version, "version_id", "")) and _text(row.status).upper() == "ACTIVE")} for row in sorted(row_bindings, key=lambda value: int(value.storyboard_shot_id))], "binding_counts": {"current": current_count, "stale": stale_count}, "stale_binding_count": stale_count, "current_binding_count": current_count, "history": item.get("history", [])})
+            resolved_bindings = [(row, resolve_current_production_asset_binding(session, row)) for row in row_bindings]
+            current_count = sum(1 for _row, resolved in resolved_bindings if resolved.get("current"))
+            stale_count = sum(1 for _row, resolved in resolved_bindings if not resolved.get("current"))
+            item.update({"entity_id": entity_id, "asset_type": kind, "current_version_id": _text(getattr(version, "version_id", "")) or None, "revision": getattr(version, "revision", None) if version else None, "authority_status": _text(getattr(authority, "status", "")) or None, "stale_status": "FRESH" if media["present"] else "STALE", "reference_state": item.get("reference_state", "needs_action"), "reference_count": int(item.get("reference_count", 0) or 0), "locked_reference": bool(item.get("locked_reference", False)), "media": media, "bindings": [{"storyboard_shot_id": int(row.storyboard_shot_id), "authority_id": _text(row.authority_id), "version_id": _text(row.version_id), "status": _text(row.status) or "ACTIVE", "current": bool(resolved.get("current"))} for row, resolved in sorted(resolved_bindings, key=lambda pair: int(pair[0].storyboard_shot_id))], "binding_counts": {"current": current_count, "stale": stale_count}, "stale_binding_count": stale_count, "current_binding_count": current_count, "history": item.get("history", [])})
     for item in by_key.values():
         item.setdefault("entity_id", _text(item.get("asset_key")).split(":")[-1])
         item.setdefault("media", {"present": False, "storage_identity": None, "checksum": None, "mime": None, "width": None, "height": None, "preview_url": None})

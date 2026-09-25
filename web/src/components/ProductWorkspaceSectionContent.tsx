@@ -434,6 +434,8 @@ export default function ProductWorkspaceSectionContent({
               props={delivery.props}
               canvasHandoff={delivery.canvasHandoff}
               onNavigate={delivery.onNavigateTaskSection}
+              productionWorkspaceV2={delivery.productionWorkspaceV2}
+              productionWorkspaceV2State={delivery.productionWorkspaceV2State}
             />
           </>
         </WorkspaceSectionErrorBoundary>

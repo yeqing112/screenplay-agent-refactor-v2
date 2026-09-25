@@ -2279,6 +2279,10 @@ export default function ProductWorkspaceCanvasBetaSection({
                     ) : null}
                     {productionWorkspaceV2State === 'loading' ? (
                       <div className="mt-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-xs text-slate-400">正在读取权威生产状态…</div>
+                    ) : productionWorkspaceV2State !== 'ready' || !productionWorkspaceV2 ? (
+                      <div className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-5 text-amber-100">
+                        生产状态不可用，请刷新后重试。历史图片或视频记录仅供查看，不能作为生产生成依据。
+                      </div>
                     ) : selectedProductionShot ? (
                       <div className="mt-3 rounded-xl border border-violet-500/25 bg-violet-500/5 p-3">
                         <div className="text-xs font-medium text-violet-200">Production Workspace 状态</div>

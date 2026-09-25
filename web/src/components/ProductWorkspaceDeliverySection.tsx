@@ -26,6 +26,7 @@ import { buildQaWorkbenchSummary, type QaWorkbenchResponse } from './productWork
 import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTasks'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import type { CanvasHandoffTarget, TaskNavigateHandler } from './productWorkspaceSectionContracts'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
 
 type RecordState = 'idle' | 'loading' | 'saving' | 'saved' | 'error'
 type ExportRecordApi = Record<string, any>
@@ -61,6 +62,47 @@ interface Props {
   props: VisualPropOutput[]
   canvasHandoff?: CanvasHandoffTarget | null
   onNavigate: TaskNavigateHandler
+  productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
+}
+
+function applyProductionTruthToReadiness(
+  readinessList: DeliveryEpisodeReadiness[],
+  snapshot: ProductionWorkspaceV2Snapshot | null | undefined,
+  state: ProductionWorkspaceLoadState | undefined,
+) {
+  const projectionReady = state === 'ready' && Boolean(snapshot)
+  return readinessList.map((readiness) => {
+    const projectedShots = projectionReady
+      ? (snapshot?.shots ?? []).filter((shot) => Number(shot.identity.episode) === readiness.episode)
+      : []
+    const imageReady = projectedShots.filter((shot) => shot.IMAGE.official.current).length
+    const videoReady = projectedShots.filter((shot) => shot.VIDEO.official.current).length
+    const productionMediaReady = projectionReady && projectedShots.length === readiness.totalShots && imageReady === readiness.totalShots && videoReady === readiness.totalShots
+    if (productionMediaReady) return readiness
+    const blockedItem: DeliveryBlockedItem = {
+      code: imageReady < readiness.totalShots ? 'missing_images' : 'missing_videos',
+      label: imageReady < readiness.totalShots ? '缺当前正式分镜图' : '缺当前正式视频',
+      detail: projectionReady
+        ? '最终交付只读取当前 OfficialMedia；历史 adopted 记录不能放行生产交付。'
+        : '生产状态暂时不可用，请刷新后重试。',
+      targetSection: 'storyboard',
+      priority: 'high',
+      episode: readiness.episode,
+    }
+    return {
+      ...readiness,
+      canExport: false,
+      statusLabel: '待补齐',
+      blockedReasons: [...readiness.blockedReasons, blockedItem.label],
+      blockedItems: [...readiness.blockedItems, blockedItem],
+      recommendedRepairSection: readiness.recommendedRepairSection ?? 'storyboard',
+      recommendedRepairLabel: readiness.recommendedRepairLabel || '返回镜头工作台确认当前正式媒体',
+      imageReadyShots: projectionReady ? imageReady : 0,
+      videoReadyShots: projectionReady ? videoReady : 0,
+      readyShots: 0,
+    }
+  })
 }
 
 export function buildDeliveryCanvasHandoffSummary(input: {
@@ -233,6 +275,8 @@ export default function ProductWorkspaceDeliverySection({
   props,
   canvasHandoff,
   onNavigate,
+  productionWorkspaceV2 = null,
+  productionWorkspaceV2State,
 }: Props) {
   const [rawRecords, setRawRecords] = useState<ExportRecordApi[]>([])
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null)
@@ -265,7 +309,7 @@ export default function ProductWorkspaceDeliverySection({
     }
   }, [bookId])
 
-  const readinessList = useMemo(
+  const baseReadinessList = useMemo(
     () =>
       buildDeliveryEpisodeReadiness({
         hasExplicitLockedAdaptation: Boolean(adaptationLockedAt),
@@ -279,6 +323,11 @@ export default function ProductWorkspaceDeliverySection({
         props,
       }),
     [scripts, scriptDecisionState, shotsByEpisode, qaEntries, qaWorkbenchEpisodes, makeups, locations, props],
+  )
+
+  const readinessList = useMemo(
+    () => applyProductionTruthToReadiness(baseReadinessList, productionWorkspaceV2, productionWorkspaceV2State),
+    [baseReadinessList, productionWorkspaceV2, productionWorkspaceV2State],
   )
 
   const selectedReadiness = useMemo(

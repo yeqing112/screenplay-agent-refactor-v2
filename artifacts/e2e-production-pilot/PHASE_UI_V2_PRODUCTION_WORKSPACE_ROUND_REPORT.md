@@ -3,7 +3,7 @@
 - Date: 2026-09-25
 - Stage: `PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`
 - Outcome: `PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`
-- Scope: read-only Production Workspace V2 convergence over the existing authority-backed backend
+- Scope: read-only Production Workspace V2 convergence over the existing authority-backed backend, with typed asset binding closure and release-gate evidence
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote: `https://github.com/yeqing112/screenplay-agent-refactor-v2.git`
 
@@ -28,6 +28,7 @@
 - Professional view exposes PromptIR, ModelProfile, execution and OfficialMedia lineage; standard view hides raw lineage identifiers.
 - Retired the production Storyboard H3 submit path and manual media upload entry point; retained legacy data as read-only historical display.
 - Batch IMAGE/VIDEO eligibility now consults the V2 snapshot when available; Canvas and Task Center show V2 projected statuses and canonical GenerationExecution summaries while retaining compatibility recovery records.
+- Asset Hub binding counts now reuse the typed binding resolver and validate pointer fingerprints; stale or mismatched bindings do not make an entity production-ready.
 
 ### Documentation
 
@@ -43,10 +44,10 @@
 
 | Check | Result |
 |---|---|
-| `npm test` | 53 test files / 311 tests passed |
+| `npm test` | 53 test files / 314 tests passed |
 | `npm run build` | passed; Vite production bundle generated |
-| `pytest -q tests/test_production_workspace_projection.py` | 4 passed |
-| `npm run check:production` Python deterministic regression | 1780 passed; 2039 warnings from existing baseline |
+| targeted backend V2/asset binding suite | 15 passed |
+| `npm run check:production` Python deterministic regression | 1781 passed |
 | `npm run check:production` deterministic Golden regression | 5/5 passed |
 | Runtime configuration verification | passed |
 | Production release gate invariants | passed |
@@ -55,6 +56,15 @@
 | Database migrations | 0 |
 | Production authority writes | 0 |
 | Fake or placeholder Production assets | 0 |
+
+## Release gate evidence
+
+The full staging release gate was executed and recorded in:
+
+- `artifacts/production-release-gate-2026-09-25T14-45-16-170Z.json`
+- `artifacts/production-release-gate-2026-09-25T14-45-16-170Z.md`
+
+Result: `BLOCKED` (fail-closed). Deterministic production regression, Golden, sample registry, and gate invariants passed. The remaining blocked steps are production configuration, shot-planning quality against the local database (`storyboard_shots.scene_id` is absent), storyboard prompt gate waiting for `127.0.0.1:18765/health`, and real-browser release E2E waiting for the same health endpoint. These environment/service blockers do not change the local verification results above.
 
 ## Production blocker retained
 
@@ -75,4 +85,4 @@ The remaining review boundary is the formal entity-first Production Asset ingest
 
 ## Git delivery
 
-The implementation and generated regression outputs are pushed on this branch. The exact implementation and report commit links are supplied with the task response.
+The implementation, V2 evidence, and release-gate reports are pushed on this branch. The exact commit and file links are supplied with the task response.

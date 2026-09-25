@@ -396,6 +396,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         props: params.props,
         canvasHandoff: params.canvasHandoffTarget?.target === 'delivery' ? params.canvasHandoffTarget : null,
         onNavigateTaskSection: params.onNavigateTaskSection,
+        productionWorkspaceV2: params.productionWorkspaceV2,
+        productionWorkspaceV2State: params.productionWorkspaceV2State,
       },
       preview: {
         assetPreviewUrl: params.assetPreviewUrl,
