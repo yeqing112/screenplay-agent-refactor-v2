@@ -60,6 +60,10 @@ function assetMissingEntityLabel(entity: string) {
   return `${assetMissingLabel(kind)}：${identity}`
 }
 
+function isPromotableValidationStatus(status: string) {
+  return ['PASS', 'TECHNICALLY_VALID', 'REVIEW_REQUIRED'].includes(String(status || '').trim().toUpperCase())
+}
+
 function LaneSummary({ lane, target, mode, onGenerate, selectedProfileId, actionMessage }: { lane: ProductionMediaLane; target: 'IMAGE' | 'VIDEO'; mode: ProductionWorkspaceViewMode; onGenerate?: () => void; selectedProfileId?: string | null; actionMessage?: string }) {
   const Icon = target === 'IMAGE' ? ImageIcon : Video
   const official = lane.official.current
@@ -108,7 +112,7 @@ function CandidateList({ lane, mode, onRefresh }: { lane: ProductionMediaLane; m
     const candidateId = String(candidate.id || '').trim()
     if (!candidateId) return
     const validationId = String(candidate.technical_validation.validation_id || '').trim()
-    const canPromote = candidate.technical_validation.status.toUpperCase() === 'PASS' && Boolean(validationId)
+    const canPromote = isPromotableValidationStatus(candidate.technical_validation.status) && Boolean(validationId)
     setActionState((current) => ({ ...current, [candidateId]: 'working' }))
     setActionMessage((current) => ({ ...current, [candidateId]: '' }))
     try {
@@ -136,13 +140,13 @@ function CandidateList({ lane, mode, onRefresh }: { lane: ProductionMediaLane; m
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <button
               type="button"
-              disabled={!onRefresh || actionState[candidate.id] === 'working' || (candidate.technical_validation.status.toUpperCase() !== 'PASS' && Boolean(candidate.technical_validation.validation_id))}
+              disabled={!onRefresh || actionState[candidate.id] === 'working' || (isPromotableValidationStatus(candidate.technical_validation.status) === false && Boolean(candidate.technical_validation.validation_id))}
               onClick={() => { void runCandidateAction(candidate) }}
               className="rounded-md border border-amber-400/40 px-2.5 py-1.5 text-[11px] text-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {actionState[candidate.id] === 'working'
                 ? '处理中…'
-                : candidate.technical_validation.status.toUpperCase() === 'PASS' && candidate.technical_validation.validation_id
+                : isPromotableValidationStatus(candidate.technical_validation.status) && candidate.technical_validation.validation_id
                   ? '设为正式版本'
                   : '验证候选'}
             </button>

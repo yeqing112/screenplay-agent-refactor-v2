@@ -286,6 +286,8 @@ export default function ProductWorkspaceSectionContent({
           initialStoryboardStep={storyboard.initialStoryboardStep}
             productionWorkspace={storyboard.productionWorkspace}
             productionWorkspaceState={storyboard.productionWorkspaceState}
+            productionWorkspaceV2={storyboard.productionWorkspaceV2}
+            productionWorkspaceV2State={storyboard.productionWorkspaceV2State}
           />
         </>
       ) : null}

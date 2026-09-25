@@ -1,6 +1,6 @@
 # UI V2 Legacy UI Retirement Audit
 
-Date: 2026-09-25
+Date: 2026-09-26
 Scope: `web/src` production workspace callsites
 
 ## Provider-specific H3 entry point
@@ -24,7 +24,7 @@ submit-machine-prompt-provider / 真实提交 MiniMax H3 / 真实提交 H3: 0 re
 | `web/src/components/productWorkspaceDelivery.ts:748,758,842-843,909,917-918,967` | historical export snapshot | delivery export preserves old evidence and does not create OfficialMedia |
 | `web/src/components/ProductWorkspaceDeliverySection.tsx:790,795` | historical delivery metrics | not used by V2 readiness |
 | `web/src/components/ProductWorkspaceStoryboardMediaPanel.tsx:68` | `LEGACY_DISPLAY` | explicitly labelled `Legacy / Historical` |
-| `web/src/components/ProductWorkspaceStoryboardSection.tsx:1595,1644-1659,2183-2216,2291-2297,4212-4277` | storyboard compatibility and recovery | legacy display/recovery only; V2 panel owns current OfficialMedia semantics |
+| `web/src/components/ProductWorkspaceStoryboardSection.tsx:1595,1644-1659,2183-2216,2291-2297,4212-4277` | storyboard compatibility and recovery | legacy display/recovery only; V2 panel owns current OfficialMedia semantics; generation controls and direct submission are V2 lane-gated |
 | `web/src/components/productWorkspaceTaskCenterState.ts:120-122` | recovery compatibility | task-center batch eligibility is V2-gated; unavailable V2 yields zero eligibility |
 | `web/src/components/ProductWorkspaceTasksSection.tsx:718-720` | legacy request fallback | retained only for compatibility endpoint payload construction; it cannot grant readiness |
 

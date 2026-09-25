@@ -1,6 +1,6 @@
 # UI V2 Production Workspace Convergence — Final Round Report
 
-- Date: 2026-09-25
+- Date: 2026-09-26
 - Stage: `PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`
 - Outcome: `PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`
 - Scope: read-only Production Workspace V2 convergence over the existing authority-backed backend, with typed asset binding closure and release-gate evidence
@@ -24,6 +24,7 @@
 - Integrated the standard/professional view switch into the existing ProductWorkspace shell.
 - Added independent IMAGE and VIDEO lanes, candidate versus OfficialMedia semantics, stale and unavailable states, disabled generation without an explicit model, and the 15-asset blocked entity-first cards.
 - Canvas and Task Center production generation now fail closed when the V2 projection is unavailable or the projected lane is not ready; legacy `adopted` rows remain display/history only.
+- Storyboard generation controls and direct submission now use the V2 snapshot and target lane readiness; V1-only state or an unavailable V2 projection cannot revive the legacy generation entry point.
 - Candidate cards now expose preview, technical validation status, `验证候选`, and `设为正式版本` through the existing `/api/media-authority` contract; no frontend acceptance/favorite truth was added.
 - Professional view exposes PromptIR, ModelProfile, execution and OfficialMedia lineage; standard view hides raw lineage identifiers.
 - Retired the production Storyboard H3 submit path and manual media upload entry point; retained legacy data as read-only historical display.
@@ -48,10 +49,10 @@
 
 | Check | Result |
 |---|---|
-| `npm test` | 53 test files / 315 tests passed |
+| `npm test` | 53 test files / 317 tests passed |
 | `npm run build` | passed; Vite production bundle generated |
-| targeted backend V2/asset binding suite | 11 passed |
-| `npm run check:production` Python deterministic regression | 1783 passed |
+| targeted backend V2/asset binding suite | 15 passed |
+| `npm run check:production` Python deterministic regression | 1787 passed |
 | `npm run check:production` deterministic Golden regression | 5/5 passed |
 | Runtime configuration verification | passed |
 | Production release gate invariants | passed |
@@ -65,8 +66,8 @@
 
 The full staging release gate was executed and recorded in:
 
-- `artifacts/production-release-gate-2026-09-25T14-45-16-170Z.json`
-- `artifacts/production-release-gate-2026-09-25T14-45-16-170Z.md`
+- `artifacts/production-release-gate-2026-09-25T16-25-32-562Z.json`
+- `artifacts/production-release-gate-2026-09-25T16-25-32-562Z.md`
 
 Result: `BLOCKED` (fail-closed). Deterministic production regression, Golden, sample registry, and gate invariants passed. The remaining blocked steps are production configuration, shot-planning quality against the local database (`storyboard_shots.scene_id` is absent), storyboard prompt gate waiting for `127.0.0.1:18765/health`, and real-browser release E2E waiting for the same health endpoint. These environment/service blockers do not change the local verification results above.
 

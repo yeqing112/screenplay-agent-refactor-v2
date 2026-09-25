@@ -2183,7 +2183,9 @@ export default function ProductWorkspaceAssetsSection({
                 </div>
                 {!canUploadManualReference ? (
                   <div className="mt-2 text-xs text-amber-200/90">
-                    当前资产还没有正式资产记录 ID，先保存镜头绑定或完成资产回填后即可上传。
+                    {productionAssetIngestionBlocked
+                      ? 'UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API：正式实体摄取 API 尚未提供，旧参考图上传不会写入 Production Asset。'
+                      : '当前资产还没有正式资产记录 ID，先保存镜头绑定或完成资产回填后即可上传。'}
                   </div>
                 ) : null}
                 {manualReferenceMessage ? (

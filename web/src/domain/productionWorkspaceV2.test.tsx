@@ -112,7 +112,7 @@ describe('production workspace V2 contract', () => {
     const shot = productionWorkspaceV2Fixture.shots[0]
     const candidate = {
       id: 'candidate-image-review', state: 'MEDIA_CANDIDATE', preview: null, created_at: null, model_profile_id: 'image-profile',
-      technical_validation: { status: 'PASS', validation_id: 'validation-review', mime: 'image/png', width: 1024, height: 576, duration_ms: null, details: {} }, checksum: 'sha', storage_identity: null,
+      technical_validation: { status: 'TECHNICALLY_VALID', validation_id: 'validation-review', mime: 'image/png', width: 1024, height: 576, duration_ms: null, details: {} }, checksum: 'sha', storage_identity: null,
     }
     const html = renderToStaticMarkup(
       <ProductionWorkspaceV2Panel

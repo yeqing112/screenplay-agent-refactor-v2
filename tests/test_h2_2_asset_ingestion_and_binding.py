@@ -153,12 +153,41 @@ def test_v2_asset_readiness_rejects_fixture_media_and_missing_exact_entity(tmp_p
 
         readiness = _asset_readiness(session, shot_id=shot.id, book_id=990401)
         assert readiness["current"] is False
+        assert readiness["state"] == "blocked"
         assert "CHARACTER:GU_CHEN" in readiness["missing"]
         assert "CHARACTER:LIN_WAN" in readiness["missing"]
         assert production_asset_media_readiness(
             storage_identity="pilot://episode-01/character/LIN_WAN/v1",
             checksum="sha256:fixture",
         ).present is False
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_v2_asset_readiness_classifies_active_binding_with_missing_media_as_blocked(tmp_path):
+    engine, session = _session(tmp_path)
+    try:
+        shot = session.query(StoryboardShot).one()
+        shot.asset_links = json.dumps({
+            "production_asset_requirements": [{"asset_type": "CHARACTER", "entity_id": "LIN_WAN"}]
+        })
+        character = ingest_production_asset(session, entity_type="CHARACTER", entity_id="LIN_WAN", source=_source("lin-wan"))
+        scene = ingest_production_asset(session, entity_type="SCENE", entity_id="E01_SC001", source=_source("scene"))
+        version = session.query(CharacterAssetVersion).filter_by(version_id=character["version_id"]).one()
+        version.storage_identity = None
+        bind_shot_assets(
+            session,
+            storyboard_shot_id=shot.id,
+            characters=[{"authority_id": character["authority_id"], "version_id": character["version_id"]}],
+            scene={"authority_id": scene["authority_id"], "version_id": scene["version_id"]},
+            props=[],
+        )
+        session.commit()
+        readiness = _asset_readiness(session, shot_id=shot.id, book_id=990401)
+        assert readiness["current"] is False
+        assert readiness["state"] == "blocked"
+        assert "CHARACTER:LIN_WAN" in readiness["missing"]
     finally:
         session.close()
         engine.dispose()

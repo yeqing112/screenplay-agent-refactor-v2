@@ -22,13 +22,13 @@
   },
   "database_migrations": 0,
   "local_verification": {
-    "frontend_tests": "53 files / 314 tests passed",
+    "frontend_tests": "53 files / 317 tests passed",
     "targeted_backend": "15 passed",
-    "production_regression": "1781 passed",
+    "production_regression": "1787 passed",
     "golden_regression": "5/5 passed",
     "release_gate": "BLOCKED"
   },
-  "release_gate_report": "artifacts/production-release-gate-2026-09-25T14-45-16-170Z.md",
+  "release_gate_report": "artifacts/production-release-gate-2026-09-25T16-25-32-562Z.md",
   "notes": [
     "pilot://, fixture://, canary and other fixture identities are rejected as real Production Asset media",
     "Production Workspace V2 is read-only and uses current typed Authority/Pointer/Version records",

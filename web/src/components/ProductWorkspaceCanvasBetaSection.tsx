@@ -92,6 +92,19 @@ type CanvasShotRuntimeSummaryCard = {
   latestSourceLine: string | null
 }
 
+export function shouldShowCanvasShotPrimaryAction(input: {
+  productionWorkspaceV2State?: 'loading' | 'ready' | 'unavailable'
+  hasSelectedProductionShot: boolean
+  hasReadyLane: boolean
+  hasPendingRecovery: boolean
+}) {
+  return Boolean(
+    input.productionWorkspaceV2State === 'ready' &&
+      input.hasSelectedProductionShot &&
+      (input.hasReadyLane || input.hasPendingRecovery),
+  )
+}
+
 export type CanvasViewNode = CanvasGraphNode & {
   isGroup?: boolean
   groupedNodeIds?: string[]
@@ -1014,17 +1027,26 @@ export default function ProductWorkspaceCanvasBetaSection({
 
   const effectiveReferenceAssetIds = effectiveReferencePayload.assetIds
   const shotPrimaryActionPlan = useMemo(
-    () =>
-      selectedShot
-        ? buildCanvasShotPrimaryActionPlan({
-            promptRecoveryTaskId,
-            frameRecoveryTaskId,
-            videoRecoveryTaskId,
-            hasCompiledPrompt: Boolean(selectedShot.visual_prompt_static?.trim()),
-            hasAdoptedFrame: hasProductionImageSource,
-            hasAdoptedVideo: Boolean(adoptedVideo),
-          })
-        : null,
+    () => {
+      const hasPendingRecovery = Boolean(promptRecoveryTaskId || frameRecoveryTaskId || videoRecoveryTaskId)
+      const hasReadyLane = Boolean(
+        selectedProductionShot?.IMAGE.generation_readiness?.ready ||
+          selectedProductionShot?.VIDEO.generation_readiness?.ready,
+      )
+      // The backend V2 projection owns production readiness. When neither
+      // lane is executable and there is no recovery task, the V2 status card
+      // below is the only next-action surface; do not resurrect the legacy
+      // canvas state machine as a generation CTA.
+      if (!selectedShot || !shouldShowCanvasShotPrimaryAction({ productionWorkspaceV2State, hasSelectedProductionShot: Boolean(selectedProductionShot), hasReadyLane, hasPendingRecovery })) return null
+      return buildCanvasShotPrimaryActionPlan({
+        promptRecoveryTaskId,
+        frameRecoveryTaskId,
+        videoRecoveryTaskId,
+        hasCompiledPrompt: Boolean(selectedShot.visual_prompt_static?.trim()),
+        hasAdoptedFrame: hasProductionImageSource,
+        hasAdoptedVideo: Boolean(adoptedVideo),
+      })
+    },
     [
       adoptedImage,
       adoptedVideo,
@@ -1032,6 +1054,7 @@ export default function ProductWorkspaceCanvasBetaSection({
       promptRecoveryTaskId,
       selectedShot,
       selectedProductionShot,
+      productionWorkspaceV2State,
       videoRecoveryTaskId,
       hasProductionImageSource,
     ],

@@ -27,11 +27,11 @@
   ],
   "local_verification": {
     "backend_projection_tests": "15 passed",
-    "frontend_tests": "53 files / 314 tests passed",
+    "frontend_tests": "53 files / 317 tests passed",
     "frontend_build": "passed",
-    "production_regression": "1781 passed",
+    "production_regression": "1787 passed",
     "golden_regression": "5/5 passed",
-    "release_gate": "BLOCKED; see production-release-gate-2026-09-25T14-45-16-170Z.md",
+    "release_gate": "BLOCKED; see production-release-gate-2026-09-25T16-25-32-562Z.md",
     "github_ci": "reported separately after push"
   },
   "remaining_blocker": "UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API"

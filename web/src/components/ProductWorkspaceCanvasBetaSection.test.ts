@@ -6,6 +6,7 @@ import {
   buildCanvasShotPrimaryActionPlan,
   buildNavigationContinueChainMeta,
   getCanvasExecutionSummaryLabel,
+  shouldShowCanvasShotPrimaryAction,
 } from './ProductWorkspaceCanvasBetaSection'
 
 describe('ProductWorkspaceCanvasBetaSection helpers', () => {
@@ -107,6 +108,12 @@ describe('ProductWorkspaceCanvasBetaSection helpers', () => {
     ).toMatchObject({
       action: 'open_storyboard',
     })
+  })
+
+  it('does not expose a legacy generation CTA while V2 is unavailable or blocked', () => {
+    expect(shouldShowCanvasShotPrimaryAction({ productionWorkspaceV2State: 'unavailable', hasSelectedProductionShot: false, hasReadyLane: true, hasPendingRecovery: false })).toBe(false)
+    expect(shouldShowCanvasShotPrimaryAction({ productionWorkspaceV2State: 'ready', hasSelectedProductionShot: true, hasReadyLane: false, hasPendingRecovery: false })).toBe(false)
+    expect(shouldShowCanvasShotPrimaryAction({ productionWorkspaceV2State: 'ready', hasSelectedProductionShot: true, hasReadyLane: true, hasPendingRecovery: false })).toBe(true)
   })
 
   it('prioritizes task recovery over new generation when pending tasks still exist', () => {

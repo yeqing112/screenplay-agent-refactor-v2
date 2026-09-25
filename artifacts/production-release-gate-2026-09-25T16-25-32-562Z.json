@@ -1,0 +1,50 @@
+{
+  "mode": "production_release_gate",
+  "generated_at": "2026-09-25T16:25:32.563Z",
+  "release_green": false,
+  "steps": [
+    {
+      "id": "production_config",
+      "name": "production configuration verification",
+      "command": "npm run config:verify:production",
+      "exit_code": 0,
+      "passed": false,
+      "release_blocker": "DEPLOYMENT_ENV must be production or staging for a release gate"
+    },
+    {
+      "id": "sample_registry",
+      "name": "production sample registry validation",
+      "command": "npm run validate:sample-registry",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "id": "shot_planning_gate",
+      "name": "shot planning quality gate",
+      "command": "npm run audit:shot-planning:gate",
+      "exit_code": 1,
+      "passed": false
+    },
+    {
+      "id": "storyboard_prompt_gate",
+      "name": "storyboard prompt zero-error gate",
+      "command": "npm run audit:storyboard:zero-error-gate",
+      "exit_code": 1,
+      "passed": false
+    },
+    {
+      "id": "production_regression",
+      "name": "deterministic production regression",
+      "command": "npm run check:production",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "id": "real_browser_release_e2e",
+      "name": "production real-browser regression",
+      "command": "npm run e2e:real-samples:release",
+      "exit_code": 1,
+      "passed": false
+    }
+  ]
+}

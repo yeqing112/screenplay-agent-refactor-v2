@@ -50,7 +50,11 @@ function buildAsset(overrides: Partial<AssetSummary> = {}): AssetSummary {
   }
 }
 
-function renderSection(selectedAsset: AssetSummary | null, assetEpisodeInsights = new Map<string, AssetEpisodeInsight>()) {
+function renderSection(
+  selectedAsset: AssetSummary | null,
+  assetEpisodeInsights = new Map<string, AssetEpisodeInsight>(),
+  productionAssetSelection?: { entityId: string; assetType: string },
+) {
   const prioritizedAssets = selectedAsset ? [selectedAsset] : []
   return renderToStaticMarkup(
     <ProductWorkspaceAssetsSection
@@ -105,6 +109,9 @@ function renderSection(selectedAsset: AssetSummary | null, assetEpisodeInsights 
       onToggleShotBinding={() => {}}
       onApplyInferredShotBindings={() => {}}
       onSaveShotBindings={() => {}}
+      productionWorkspaceV2={{ asset_ingestion_api_available: false } as any}
+      productionWorkspaceV2State="ready"
+      productionAssetSelection={productionAssetSelection ?? null}
     />,
   )
 }
@@ -132,6 +139,14 @@ describe('ProductWorkspaceAssetsSection', () => {
     expect(html).toContain('上传当前资产参考图')
     expect(html).toContain('支持人物、场景、道具手动上传')
     expect(html).toContain('上传并锁定')
+  })
+
+  it('blocks legacy upload after an entity-first Production Asset selection when ingestion API is unavailable', () => {
+    const html = renderSection(buildAsset(), new Map(), { entityId: 'asset-character-1', assetType: 'CHARACTER' })
+
+    expect(html).toContain('UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API')
+    expect(html).toContain('旧参考图上传不会写入 Production Asset')
+    expect(html).toContain('disabled=""')
   })
 
   it('separates structured asset facts from reference image prompt and negative prompt', () => {

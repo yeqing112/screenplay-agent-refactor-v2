@@ -53,6 +53,8 @@ interface StoryboardAdvancedToolsPanelProps {
   shotId: string
   assetStatus?: string | null
   canGenerateFromGate: boolean
+  canGenerateFrame?: boolean
+  canGenerateVideo?: boolean
   hasAdoptedFrame: boolean
   isGenerationBusy: boolean
   generationState: GenerationUiState
@@ -88,6 +90,8 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
   shotId,
   assetStatus,
   canGenerateFromGate,
+  canGenerateFrame = canGenerateFromGate,
+  canGenerateVideo = canGenerateFromGate,
   hasAdoptedFrame,
   isGenerationBusy,
   generationState,
@@ -149,9 +153,9 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
           <div className="mt-1 text-xs leading-5 text-slate-400">先把当前镜头导演语言和锁定素材生成一张可检查的画面。</div>
           <button
             type="button"
-            disabled={!canGenerateFromGate || isGenerationBusy}
+            disabled={!canGenerateFrame || isGenerationBusy}
             onClick={() => { void onGenerateFrame() }}
-            className={`mt-3 rounded-lg px-3 py-2 text-xs font-medium transition ${!canGenerateFromGate || isGenerationBusy ? 'cursor-not-allowed border border-slate-800 bg-slate-900 text-slate-500' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}
+            className={`mt-3 rounded-lg px-3 py-2 text-xs font-medium transition ${!canGenerateFrame || isGenerationBusy ? 'cursor-not-allowed border border-slate-800 bg-slate-900 text-slate-500' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}
           >
             {generationState === 'frame' ? '正在生成分镜图…' : '生成分镜图'}
           </button>
@@ -161,9 +165,9 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
           <div className="mt-1 text-xs leading-5 text-slate-400">需要先有一张已采纳分镜图，系统会使用当前镜头的多参考输入。</div>
           <button
             type="button"
-            disabled={!canGenerateFromGate || !hasAdoptedFrame || isGenerationBusy}
+            disabled={!canGenerateVideo || !hasAdoptedFrame || isGenerationBusy}
             onClick={() => { void onGenerateVideo() }}
-            className={`mt-3 rounded-lg px-3 py-2 text-xs font-medium transition ${!canGenerateFromGate || !hasAdoptedFrame || isGenerationBusy ? 'cursor-not-allowed border border-slate-800 bg-slate-900 text-slate-500' : 'bg-fuchsia-600 text-white hover:bg-fuchsia-500'}`}
+            className={`mt-3 rounded-lg px-3 py-2 text-xs font-medium transition ${!canGenerateVideo || !hasAdoptedFrame || isGenerationBusy ? 'cursor-not-allowed border border-slate-800 bg-slate-900 text-slate-500' : 'bg-fuchsia-600 text-white hover:bg-fuchsia-500'}`}
           >
             {generationState === 'video' ? '正在生成视频…' : '生成视频'}
           </button>

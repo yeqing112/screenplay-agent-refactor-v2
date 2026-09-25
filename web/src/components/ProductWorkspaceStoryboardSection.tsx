@@ -64,7 +64,15 @@ import { ProductWorkspacePromptAuthorityPanel } from './ProductWorkspacePromptAu
 import { ProductWorkspaceCompileDiagnosticsPanel } from './ProductWorkspaceCompileDiagnosticsPanel'
 import { ProductWorkspaceStoryboardRepairPanel } from './ProductWorkspaceStoryboardRepairPanel'
 import { fetchModelRegistry, type ModelProfileRecord } from '../services/modelRegistry'
-import { humanizeProductionState, type ProductionWorkspaceLoadState, type ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import {
+  findProductionShotV2,
+  humanizeProductionState,
+  isProductionImageGenerationReady,
+  isProductionVideoGenerationReady,
+  type ProductionWorkspaceLoadState,
+  type ProductionWorkspaceSnapshot,
+  type ProductionWorkspaceV2Snapshot,
+} from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 
 interface Props {
@@ -91,6 +99,8 @@ interface Props {
   initialStoryboardStep?: StoryboardStep
   productionWorkspace?: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
 }
 
 export function buildStoryboardCanvasHandoffSummary(input: {
@@ -206,6 +216,8 @@ type StoryboardCanvasPrimaryActionPlan =
 
 export function buildStoryboardCanvasPrimaryActionPlan(input: {
   canGenerateFromGate: boolean
+  canGenerateFrame?: boolean
+  canGenerateVideo?: boolean
   productionMode?: boolean
   productionBlocker?: { recommended_action?: string; description?: string; target_section?: string | null } | null
   promptRecoveryTaskId?: string | null
@@ -216,6 +228,8 @@ export function buildStoryboardCanvasPrimaryActionPlan(input: {
   hasReferenceImages?: boolean
   hasAdoptedVideo: boolean
 }) {
+  const canGenerateFrame = input.canGenerateFrame ?? input.canGenerateFromGate
+  const canGenerateVideo = input.canGenerateVideo ?? input.canGenerateFromGate
   if (!input.canGenerateFromGate) {
     if (input.productionMode) {
       return {
@@ -265,6 +279,14 @@ export function buildStoryboardCanvasPrimaryActionPlan(input: {
   }
 
   if (!input.hasAdoptedFrame && !input.hasReferenceImages) {
+    if (!canGenerateFrame && input.productionMode) {
+      return {
+        action: 'production_blocked',
+        label: input.productionBlocker?.recommended_action || '先处理生产阻塞',
+        detail: input.productionBlocker?.description || '当前 IMAGE 泳道尚未满足 V2 生产条件。',
+        targetSection: input.productionBlocker?.target_section,
+      } satisfies StoryboardCanvasPrimaryActionPlan
+    }
     return {
       action: 'generate_frame',
       label: '先生成首帧',
@@ -272,7 +294,7 @@ export function buildStoryboardCanvasPrimaryActionPlan(input: {
     } satisfies StoryboardCanvasPrimaryActionPlan
   }
 
-  if (!input.hasAdoptedVideo) {
+  if (!input.hasAdoptedVideo && canGenerateVideo) {
     const videoInputDetail = input.hasReferenceImages
       ? '当前镜头已有多参考图，下一步可以用参考资产继续生成视频。'
       : '当前镜头已经有已采纳首帧，下一步可以直接沿用当前输入继续生成视频。'
@@ -280,6 +302,15 @@ export function buildStoryboardCanvasPrimaryActionPlan(input: {
       action: 'generate_video',
       label: '继续生成视频',
       detail: videoInputDetail,
+    } satisfies StoryboardCanvasPrimaryActionPlan
+  }
+
+  if (input.productionMode && !canGenerateVideo) {
+    return {
+      action: 'production_blocked',
+      label: input.productionBlocker?.recommended_action || '先处理生产阻塞',
+      detail: input.productionBlocker?.description || '当前 VIDEO 泳道尚未满足 V2 生产条件。',
+      targetSection: input.productionBlocker?.target_section,
     } satisfies StoryboardCanvasPrimaryActionPlan
   }
 
@@ -1680,6 +1711,8 @@ export default function ProductWorkspaceStoryboardSection({
   initialStoryboardStep = 'overview',
   productionWorkspace = null,
   productionWorkspaceState,
+  productionWorkspaceV2 = null,
+  productionWorkspaceV2State,
 }: Props) {
   const [promptVersions, setPromptVersions] = useState<PromptVersionRecord[]>([])
   const [historyState, setHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
@@ -2103,6 +2136,10 @@ export default function ProductWorkspaceStoryboardSection({
     () => productionWorkspace?.shots.find((shot) => String(shot.episode) === String(selectedShot?.episode ?? selectedEpisode) && String(shot.shot_id) === String(selectedShot?.shot_id ?? '')) ?? null,
     [productionWorkspace?.shots, selectedEpisode, selectedShot?.episode, selectedShot?.shot_id],
   )
+  const productionShotV2 = useMemo(
+    () => findProductionShotV2(productionWorkspaceV2, selectedShot?.episode ?? selectedEpisode, selectedShot?.shot_id),
+    [productionWorkspaceV2, selectedEpisode, selectedShot?.episode, selectedShot?.shot_id],
+  )
   const selectedShotCompileContextDisplay = useMemo(
     () => sanitizeCompileContextForDisplay(selectedShot?.prompt_compile_context ?? {}),
     [selectedShot?.prompt_compile_context],
@@ -2234,9 +2271,16 @@ export default function ProductWorkspaceStoryboardSection({
   const promptRecoveryTaskId =
     selectedShotRuntime.pendingTasks.find((item) => item.kind === 'prompt')?.taskId ?? null
   const isGenerationBusy = generationState === 'frame' || generationState === 'video'
+  const v2ProductionReady = productionWorkspaceV2State === 'ready' && Boolean(productionWorkspaceV2) && Boolean(productionShotV2)
+  const canGenerateFrameFromV2 = productionMode
+    ? v2ProductionReady && isProductionImageGenerationReady(productionShotV2)
+    : storyboardGate.status === 'ready'
+  const canGenerateVideoFromV2 = productionMode
+    ? v2ProductionReady && isProductionVideoGenerationReady(productionShotV2)
+    : storyboardGate.status === 'ready'
   const canGenerateFromGate = productionMode
-    ? productionWorkspaceState === 'ready' && Boolean(authorityShot) && ['complete', 'ready', 'PRODUCTION_QUALIFIED'].includes(String(authorityShot?.prompt_ir_state || '').trim()) && !['blocked', 'stale', 'needs_action'].includes(String(authorityShot?.reference_state || '').trim())
-      : storyboardGate.status === 'ready'
+    ? canGenerateFrameFromV2 || canGenerateVideoFromV2
+    : storyboardGate.status === 'ready'
   const productionBlocker = useMemo(() => {
     if (!productionMode || !productionWorkspace) return null
     const episodeSummary = productionWorkspace.episodes.find((item) => String(item.episode) === String(selectedShot?.episode ?? selectedEpisode))
@@ -2304,6 +2348,8 @@ export default function ProductWorkspaceStoryboardSection({
     () =>
       buildStoryboardCanvasPrimaryActionPlan({
         canGenerateFromGate,
+        canGenerateFrame: canGenerateFrameFromV2,
+        canGenerateVideo: canGenerateVideoFromV2,
         productionMode,
         productionBlocker,
         promptRecoveryTaskId,
@@ -2370,14 +2416,16 @@ export default function ProductWorkspaceStoryboardSection({
             ? () => { void runPromptRepairAndContinue('video') }
             : undefined,
         onGenerateFrame:
-          canGenerateFromGate && !isGenerationBusy ? () => { void runStoryboardGeneration('frame') } : undefined,
+          canGenerateFrameFromV2 && !isGenerationBusy ? () => { void runStoryboardGeneration('frame') } : undefined,
         onGenerateVideo:
-          canGenerateFromGate && hasAdoptedFrame && !isGenerationBusy ? () => { void runStoryboardGeneration('video') } : undefined,
+          canGenerateVideoFromV2 && hasAdoptedFrame && !isGenerationBusy ? () => { void runStoryboardGeneration('video') } : undefined,
       }),
     [
       adoptedVideo,
       blockingIssues.length,
       canGenerateFromGate,
+      canGenerateFrameFromV2,
+      canGenerateVideoFromV2,
       characterBindingSummaries,
       compilerWarnings,
       compilerChecks,
@@ -2985,6 +3033,18 @@ export default function ProductWorkspaceStoryboardSection({
     },
   ) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    if (productionMode) {
+      const laneReady = kind === 'frame' ? canGenerateFrameFromV2 : canGenerateVideoFromV2
+      if (!laneReady) {
+        setGenerationState('error')
+        setGenerationMessage(
+          productionWorkspaceV2State !== 'ready' || !productionWorkspaceV2
+            ? 'Production Workspace V2 状态不可用，暂不能提交生成。'
+            : `当前镜头尚未满足 ${kind === 'frame' ? 'IMAGE' : 'VIDEO'} 生产条件，请先按 V2 唯一下一步处理。`,
+        )
+        return
+      }
+    }
     const labels = getStoryboardGenerationLabels(kind)
     const confirmed = typeof window === 'undefined' || window.confirm(
       kind === 'video'
@@ -4269,6 +4329,8 @@ export default function ProductWorkspaceStoryboardSection({
                 shotId={String(selectedShot.shot_id)}
                 assetStatus={selectedShot.asset_status}
                 canGenerateFromGate={canGenerateFromGate}
+                canGenerateFrame={canGenerateFrameFromV2}
+                canGenerateVideo={canGenerateVideoFromV2}
                 hasAdoptedFrame={hasAdoptedFrame}
                 isGenerationBusy={isGenerationBusy}
                 generationState={generationState}

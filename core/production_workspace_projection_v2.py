@@ -343,7 +343,18 @@ def _asset_readiness(session: Any, *, shot_id: int, book_id: int) -> dict[str, A
                 required.setdefault(kind, []).append({"entity_id": entity_id, "authority_id": None, "version_id": None, "status": "MISSING", "current": False, "media": {}, "failed_checks": ["binding_missing"], "fingerprint": None})
                 missing.append(f"{kind}:{entity_id}")
                 continue
-            bindings_for_requirement = matching[:1]
+            # A version rollover can leave a historical STALE row beside the
+            # current binding. Prefer a row that resolves through the live
+            # Authority/Pointer/Version chain, then keep the oldest row as a
+            # deterministic fail-closed fallback when none resolves.
+            bindings_for_requirement = sorted(
+                matching,
+                key=lambda pair: (
+                    bool(pair[1].get("current")),
+                    -int(getattr(pair[0], "id", 0) or 0),
+                ),
+                reverse=True,
+            )[:1]
             for binding, resolved in bindings_for_requirement:
                 _append_resolved_requirement(required, missing, stale, kind, entity_id, binding, resolved)
         # A formal requirement contract is authoritative; a binding row that
@@ -406,7 +417,11 @@ def _append_resolved_requirement(required: dict[str, list[dict[str, Any]]], miss
     required.setdefault(kind, []).append(row)
     key = f"{kind}:{entity_id}"
     if not resolved.get("current"):
-        media_failure = any(code.startswith("media_") for code in failed_checks)
+        media_failure = (
+            not bool(media.get("present"))
+            or any(str(code).lower().startswith("media_") for code in failed_checks)
+            or "media_present" in {str(code).lower() for code in failed_checks}
+        )
         if row["status"].upper() == "STALE" or (not media_failure and failed_checks):
             stale.append(key)
         else:
